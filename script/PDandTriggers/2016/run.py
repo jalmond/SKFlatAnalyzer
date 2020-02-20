@@ -2,7 +2,7 @@ import os
 
 triggers = open('TriggersForCheck.txt').readlines()
 
-PDs = ["SingleElectron", "SinglePhoton", "DoubleEG", "SingleMuon", "DoubleMuon"]
+PDs = ["SingleElectron", "SinglePhoton", "DoubleEG", "SingleMuon", "DoubleMuon", "MuonEG"]
 
 for trigger in triggers:
   trigger = trigger.strip('\n')

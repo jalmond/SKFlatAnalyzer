@@ -1,0 +1,1 @@
+/gv0/DATA/SKFlat/Run2Legacy_v3/2016/PrivateMC/WR_MG_LO_FullSim_HLTInfo/WRtoNLtoLLJJ_WR4000_N1000_MG_Full/2019_09_26_091506/SKFlatNtuple_2016_MC_1.root

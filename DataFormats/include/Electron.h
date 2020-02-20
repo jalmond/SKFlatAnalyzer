@@ -118,9 +118,18 @@ public:
   inline bool passMVAID_iso_WP90() const {return PassSelector(POG_MVA_ISO_WP90); }
   inline bool passHEEPID() const {return PassSelector(POG_HEEP); }
 
+  bool passHEEPIDFast() const;
   bool Pass_SUSYMVAWP(TString wp) const;
   bool Pass_SUSYTight() const;
   bool Pass_SUSYLoose() const;
+  bool Pass_HNPairTight() const;
+  bool Pass_HNPairLoose() const;
+  bool Pass_HNPairLooseNoIP() const;
+  bool Pass_HNPairVeto() const;
+  bool Pass_HNWRTight() const;
+  bool Pass_HNWRLoose() const;
+  bool Pass_HNWRVeto() const;
+  bool Pass_HNWRNoIso() const;
 
   void SetRelPFIso_Rho(double r);
   double EA();

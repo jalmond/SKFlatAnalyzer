@@ -15,4 +15,15 @@
 #pragma link C++ class SkimTree_HNFake+;
 #pragma link C++ class MeasureJetTaggingEfficiency+;
 
+#pragma link C++ class CalcCFRate+;
+#pragma link C++ class CalcFakeRate+;
+#pragma link C++ class GenStudy+;
+#pragma link C++ class HNWRAnalyzer+;
+#pragma link C++ class HNWRSignalStudy+;
+#pragma link C++ class HNWRGenMatching+;
+#pragma link C++ class TriggerNormCheck+;
+#pragma link C++ class TriggerWithPtRange+;
+
+#pragma link C++ class  MyPlayGround+;
+
 #endif

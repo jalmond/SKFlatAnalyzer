@@ -36,13 +36,26 @@ public:
     Central,
     JetResUp, JetResDown,
     JetEnUp, JetEnDown,
+    MuonRecoSFUp, MuonRecoSFDown,
     MuonEnUp, MuonEnDown,
+    MuonIDSFUp, MuonIDSFDown,
+    MuonISOSFUp, MuonISOSFDown,
+    MuonTriggerSFUp, MuonTriggerSFDown,
+    ElectronRecoSFUp, ElectronRecoSFDown,
     ElectronResUp, ElectronResDown,
     ElectronEnUp, ElectronEnDown,
+    ElectronIDSFUp, ElectronIDSFDown,
+    ElectronTriggerSFUp, ElectronTriggerSFDown,
+    LSFSFUp, LSFSFDown,
+    PUUp, PUDown,
+    ZPtRwUp, ZPtRwDown,
+    PrefireUp, PrefireDown,
     NSyst
   };
   Syst syst_;
   TString GetSystType();
+
+  double dRSeparation;
 
   void Clear();
 

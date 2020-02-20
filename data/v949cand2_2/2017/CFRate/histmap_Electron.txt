@@ -1,2 +1,4 @@
 HNPairLoose	Electron_HNPairLoose_CFRates.root
 HNPairTight	Electron_HNPairTight_CFRates.root
+HNWRLoose	Electron_HNWRLoose_CFRates.root
+HNWRTight	Electron_HNWRTight_CFRates.root

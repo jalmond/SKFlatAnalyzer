@@ -452,6 +452,7 @@ double MCCorrection::MuonTrigger_SF(TString ID, TString trig, const std::vector<
     eff_MC = 1.-eff_MC;
 
     value = eff_DATA/eff_MC;
+    if(IsFastSim) value = eff_DATA;
 
 /*
     if(eff_DATA==0||eff_MC==0){
@@ -667,7 +668,6 @@ double MCCorrection::ElectronTrigger_SF(TString ID, TString trig, const std::vec
 
     value = eff_DATA/eff_MC;
     if(IsFastSim) value = eff_DATA;
-
 
 /*
     if(eff_DATA==0||eff_MC==0){

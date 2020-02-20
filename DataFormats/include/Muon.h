@@ -100,8 +100,16 @@ public:
 
   //==== ID
   bool PassID(TString ID) const;
+  bool Pass_POGTight() const;
   bool Pass_POGTightWithTightIso() const;
   bool Pass_POGHighPtWithLooseTrkIso() const;
+  bool Pass_HNPairTight() const;
+  bool Pass_HNPairLoose() const;
+  bool Pass_HNPairVeto() const;
+  bool Pass_HNWRTight() const;
+  bool Pass_HNWRLoose() const;
+  bool Pass_HNWRVeto() const;
+  bool Pass_HNWRNoIso() const;
   bool Pass_TESTID() const;
   
   void SetTrackerLayers(int n);

@@ -1,0 +1,1 @@
+/gv0/DATA/SKFlat/Run2Legacy_v4/2017/PrivateMC/WR_MG_LO_FastSim/WRtoNLtoLLJJ_WR3400_N1800/2020_01_07_102217/SKFlatNtuple_2017_MC_1.root

@@ -22,7 +22,7 @@ for line in lines:
 
   if alias.startswith("HNPairToJJJJ"):
     out_Sig_PairN.write(infoline)
-  elif alias.startswith("WR_"):
+  elif alias.startswith("WRtoNLtoLLJJ"):
     out_Sig_HNWR.write(infoline)
   else:
     out_MC.write(infoline)

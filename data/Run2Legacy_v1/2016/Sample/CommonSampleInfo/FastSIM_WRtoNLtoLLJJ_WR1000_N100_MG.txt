@@ -1,0 +1,2 @@
+# alias PD xsec nmc sumw
+FastSIM_WRtoNLtoLLJJ_WR1000_N100_MG	WRtoNLtoLLJJ_WR1000_N100_MG	1.	20000	19924

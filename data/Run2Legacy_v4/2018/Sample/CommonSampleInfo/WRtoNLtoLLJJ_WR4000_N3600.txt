@@ -1,0 +1,2 @@
+# alias PD xsec nmc sumw
+WRtoNLtoLLJJ_WR4000_N3600	WRtoNLtoLLJJ_WR4000_N3600	1.	60000	50342

@@ -147,6 +147,13 @@ bool Electron::PassID(TString ID) const{
   //==== XXX veto Gap Always
   if(etaRegion()==GAP) return false;
 
+  if(ID=="HNWRTight") return Pass_HNWRTight();
+  if(ID=="HNWRLoose") return Pass_HNWRLoose();
+  if(ID=="HNWRTightFastSim") return passHEEPIDFast();
+  if(ID=="HNWRVeto") return Pass_HNWRVeto();
+  if(ID=="HNWRNoIso") return Pass_HNWRNoIso();
+  if(ID=="HNWRLT") return ( Pass_HNWRTight() || Pass_HNWRLoose() );
+
   //==== POG
   if(ID=="passVetoID") return passVetoID();
   if(ID=="passLooseID") return passLooseID();
@@ -160,6 +167,10 @@ bool Electron::PassID(TString ID) const{
   //==== Customized
   if(ID=="SUSYTight") return Pass_SUSYTight();
   if(ID=="SUSYLoose") return Pass_SUSYLoose();
+  if(ID=="HNPairTight") return Pass_HNPairTight();
+  if(ID=="HNPairLoose") return Pass_HNPairLoose();
+  if(ID=="HNPairLooseNoIP") return Pass_HNPairLooseNoIP();
+  if(ID=="HNPairVeto") return Pass_HNPairVeto();
   if(ID=="NOCUT") return true;
   if(ID=="TEST") return Pass_TESTID();
 
@@ -168,6 +179,20 @@ bool Electron::PassID(TString ID) const{
 
   return false;
 }
+
+bool Electron::passHEEPIDFast() const{
+
+  int HEEPIDCutBit = IDCutBit().at(11);
+
+  //==== https://twiki.cern.ch/twiki/bin/view/CMS/CutBasedElectronIdentificationRun2#Applying_Individual_Cuts_of_a_Se
+  //==== We want to remove the last cut
+
+  int HEEPBitWithoutEcalDriven = 2048-1;
+
+  return (HEEPIDCutBit & HEEPBitWithoutEcalDriven) == (HEEPBitWithoutEcalDriven) ;
+
+}
+
 
 bool Electron::Pass_SUSYMVAWP(TString wp) const{
 
@@ -215,6 +240,170 @@ bool Electron::Pass_SUSYLoose() const{
   if(! (NMissingHits()==0) ) return false;
 
   return true;
+}
+
+//==== HN Pair
+
+bool Electron::Pass_HNPairTight() const {
+/*
+  if(! Pass_SUSYMVAWP("Tight") ) return false;
+  if(! (MiniRelIso()<0.1) ) return false;
+  if(! (fabs(dXY())<0.05 && fabs(dZ())<0.1 && fabs(IP3D()/IP3Derr())<8.) ) return false;
+  if(! PassConversionVeto() ) return false;
+  if(! (NMissingHits()<2) ) return false;
+*/
+
+  if(!Pass_CutBasedLooseNoIso()) return false;
+  if(! (MiniRelIso()<0.1) ) return false;
+
+  if( fabs(scEta()) <= 1.479 ){
+    if(!( fabs(dXY())<0.05 )) return false;
+    if(!( fabs(dZ()) <0.10 )) return false;
+  }
+  else{
+    if(!( fabs(dXY())<0.10 )) return false;
+    if(!( fabs(dZ()) <0.20 )) return false;
+  }
+
+  return true;
+}
+
+bool Electron::Pass_HNPairLoose() const {
+/*
+  if(! Pass_SUSYMVAWP("Loose") ) return false;
+  if(! (MiniRelIso()<0.4) ) return false;
+  if(! (fabs(dXY())<0.05 && fabs(dZ())<0.1 && fabs(IP3D()/IP3Derr())<8.) ) return false;
+  if(! PassConversionVeto() ) return false;
+  if(! (NMissingHits()<2) ) return false;
+*/
+
+  if(!Pass_CutBasedVetoNoIso()) return false;
+  if(! (MiniRelIso()<0.6) ) return false;
+
+  if( fabs(scEta()) <= 1.479 ){
+    if(!( fabs(dXY())<0.05 )) return false;
+    if(!( fabs(dZ()) <0.10 )) return false;
+  }
+  else{
+    if(!( fabs(dXY())<0.10 )) return false;
+    if(!( fabs(dZ()) <0.20 )) return false;
+  }
+
+  return true;
+
+}
+
+bool Electron::Pass_HNPairLooseNoIP() const {
+/*
+  if(! Pass_SUSYMVAWP("Loose") ) return false;
+  if(! (MiniRelIso()<0.4) ) return false;
+  if(! (fabs(dXY())<0.05 && fabs(dZ())<0.1 && fabs(IP3D()/IP3Derr())<8.) ) return false;
+  if(! PassConversionVeto() ) return false;
+  if(! (NMissingHits()<2) ) return false;
+*/
+
+  if(!Pass_CutBasedVetoNoIso()) return false;
+  if(! (MiniRelIso()<0.6) ) return false;
+
+  return true;
+
+}
+
+bool Electron::Pass_HNPairVeto() const {
+/*
+  if(! Pass_SUSYMVAWP("Loose") ) return false;
+  if(! (MiniRelIso()<0.4) ) return false;
+*/
+
+  if(!Pass_CutBasedVetoNoIso()) return false;
+  if(! (MiniRelIso()<0.6) ) return false;
+  
+  return true;
+}
+
+//==== HN WR
+
+bool Electron::Pass_HNWRTight() const {
+
+  if(! passHEEPID() ) return false;
+
+  return true;
+}
+
+bool Electron::Pass_HNWRLoose() const {
+
+  if(! (HoverE() < 0.5) ) return false;
+
+  if( fabs(scEta()) <= 1.479 ){
+
+    if(! (Full5x5_sigmaIetaIeta() < 0.0112) ) return false;
+    if(! (fabs(dEtaSeed()) < 0.00377) ) return false;
+    if(! (fabs(dPhiIn()) < 0.0884) ) return false;
+    //if(! (HoverE() < 0.05 + 1.16/scE() + 0.0324*Rho()/scE()) ) return false;
+    if(! (fabs(InvEminusInvP()) < 0.193) ) return false;
+    if(! (NMissingHits() <= 1) ) return false;
+    if(! (PassConversionVeto()) ) return false;
+
+    return true;
+
+  }
+  else{
+
+    if(! (Full5x5_sigmaIetaIeta() < 0.0425) ) return false;
+    if(! (fabs(dEtaSeed()) < 0.00674) ) return false;
+    if(! (fabs(dPhiIn()) <  0.169 ) ) return false;
+    //if(! (HoverE() < 0.0441 + 2.54/scE() + 0.183*Rho()/scE()) ) return false;
+    if(! (fabs(InvEminusInvP()) < 0.111) ) return false;
+    if(! (NMissingHits() <= 1) ) return false;
+    if(! (PassConversionVeto()) ) return false;
+
+    return true;
+
+  }
+
+  return true;
+
+}
+
+bool Electron::Pass_HNWRVeto() const {
+
+  if( fabs(scEta()) <= 1.479 ){
+
+    if(! (Full5x5_sigmaIetaIeta() < 0.0112) ) return false;
+    if(! (fabs(dEtaSeed()) < 0.00377) ) return false;
+    if(! (fabs(dPhiIn()) < 0.0884) ) return false;
+    //if(! (HoverE() < 0.05 + 1.16/scE() + 0.0324*Rho()/scE()) ) return false;
+    if(! (fabs(InvEminusInvP()) < 0.193) ) return false;
+    if(! (NMissingHits() <= 1) ) return false;
+    if(! (PassConversionVeto()) ) return false;
+
+    return true;
+
+  }
+  else{
+  
+    if(! (Full5x5_sigmaIetaIeta() < 0.0425) ) return false;
+    if(! (fabs(dEtaSeed()) < 0.00674) ) return false;
+    if(! (fabs(dPhiIn()) <  0.169 ) ) return false;
+    //if(! (HoverE() < 0.0441 + 2.54/scE() + 0.183*Rho()/scE()) ) return false;
+    if(! (fabs(InvEminusInvP()) < 0.111) ) return false;
+    if(! (NMissingHits() <= 1) ) return false;
+    if(! (PassConversionVeto()) ) return false;
+
+    return true;
+
+  }
+
+  return true;
+
+}
+
+bool Electron::Pass_HNWRNoIso() const {
+
+  if(! Pass_CutBasedLooseNoIso() ) return false;
+
+  return true;
+
 }
 
 //==== TEST ID

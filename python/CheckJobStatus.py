@@ -35,6 +35,8 @@ def GetLogLastLine(lines):
       continue
     elif "Eur.Phys.J." in l:
       continue
+    elif "SKFlat.py" in l:
+      continue
     else:
       return l
 

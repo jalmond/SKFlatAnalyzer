@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import os,sys,time
+import subprocess
 import argparse
 import datetime
 from CheckJobStatus import *
@@ -360,6 +361,7 @@ while [ "$SumNoAuth" -ne 0 ]; do
 done
 
 cat err.log >&2
+
 '''.format(SKFlatV, base_rundir, SCRAM_ARCH, cmsswrel)
     run_commands.close()
 
@@ -855,6 +857,20 @@ try:
                 os.system('mv job_0/hists.root '+outputname+'.root')
 
             else:
+
+              HaddRightNow = False
+              if IsTAMSA:
+                NHaddRunning = int(subprocess.check_output('ps -ef | grep '+USER+' | grep -v condor_shadow | grep "sh -c hadd" | grep -v "grep" | wc -l',shell=True).strip('\n'))
+                if NHaddRunning<=1:
+                  HaddRightNow = True
+              else:
+                HaddRightNow = True
+              if not HaddRightNow:
+                print '[SKFlat.py] '+str(NHaddRunning)+" hadd jobs are running. Let's do this one later.."
+                print '[SKFlat.py] --> jobdir ='+base_rundir
+                os.chdir(cwd)
+                continue
+
               if IsKISTI or IsTAMSA:
                 os.system('hadd -f '+outputname+'.root output/*.root >> JobStatus.log')
                 os.system('rm output/*.root')

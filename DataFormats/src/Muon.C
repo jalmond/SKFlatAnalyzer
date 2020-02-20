@@ -97,6 +97,13 @@ void Muon::SetMVA(double MVA){
 }
 
 bool Muon::PassID(TString ID) const {
+
+  if(ID=="HNWRTight") return Pass_HNWRTight();
+  if(ID=="HNWRLoose") return Pass_HNWRLoose();
+  if(ID=="HNWRVeto") return Pass_HNWRVeto();
+  if(ID=="HNWRNoIso") return Pass_HNWRNoIso();
+  if(ID=="HNWRLT") return ( Pass_HNWRTight() || Pass_HNWRLoose() );
+
   //==== POG
   if(ID=="POGTight") return isPOGTight();
   if(ID=="POGHighPt") return isPOGHighPt();
@@ -105,6 +112,9 @@ bool Muon::PassID(TString ID) const {
   if(ID=="POGTightWithTightIso") return Pass_POGTightWithTightIso();
   if(ID=="POGHighPtWithLooseTrkIso") return Pass_POGHighPtWithLooseTrkIso();
   //==== Customized
+  if(ID=="HNPairTight") return Pass_HNPairTight();
+  if(ID=="HNPairLoose") return Pass_HNPairLoose();
+  if(ID=="HNPairVeto") return Pass_HNPairVeto();
   if(ID=="TEST") return Pass_TESTID();
 
   //==== No cut
@@ -125,6 +135,55 @@ bool Muon::Pass_POGHighPtWithLooseTrkIso() const {
   if(!( isPOGHighPt() )) return false;
   if(!( TrkIso()/TuneP4().Pt()<0.1 )) return false;
   return true;
+}
+
+//==== HN Pair
+
+bool Muon::Pass_HNPairTight() const {
+  if(! isPOGMedium() ) return false;
+  if(! (MiniRelIso()<0.2) ) return false;
+  if(! (fabs(dXY())<0.05 && fabs(dZ())<0.1 && fabs(IP3D()/IP3Derr())<4.) ) return false;
+  return true;
+}
+bool Muon::Pass_HNPairLoose() const {
+  if(! isPOGMedium() ) return false;
+  if(! (MiniRelIso()<0.6) ) return false;
+  return true;
+}
+bool Muon::Pass_HNPairVeto() const {
+  if(! isPOGLoose() ) return false;
+  if(! (MiniRelIso()<0.6) ) return false;
+  return true;
+}
+
+//==== HN WR
+
+bool Muon::Pass_HNWRTight() const {
+
+  if(! isPOGHighPt() ) return false;
+  if(! ( (TrkIso()/TuneP4().Pt())<0.1 ) ) return false;
+
+  return true;
+}
+bool Muon::Pass_HNWRLoose() const {
+
+  if(! isPOGLoose() ) return false;
+
+  return true;
+}
+bool Muon::Pass_HNWRVeto() const {
+
+  if(! isPOGLoose() ) return false;
+
+  return true;
+}
+
+bool Muon::Pass_HNWRNoIso() const {
+
+  if(! isPOGLoose() ) return false;
+
+  return true;
+
 }
 
 //==== TEST ID

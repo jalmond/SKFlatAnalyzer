@@ -93,6 +93,7 @@ void Jet::SetTightLepVetoJetID(double b){
 
 bool Jet::PassID(TString ID) const {
 
+  if(ID=="HN") return Pass_HN();
   if(ID=="tight") return Pass_tightJetID();
   if(ID=="tightLepVeto") return Pass_tightLepVetoJetID();
 
@@ -100,6 +101,14 @@ bool Jet::PassID(TString ID) const {
   exit(EXIT_FAILURE);
 
   return false;
+
+}
+
+bool Jet::Pass_HN() const {
+
+  if(! Pass_tightLepVetoJetID() ) return false;
+
+  return true;
 
 }
 
