@@ -346,7 +346,8 @@ void ExampleRun::executeEventFromParameter(AnalyzerParameter param){
     if( mcCorr->IsBTagged_2a(jtp_DeepCSV_Medium, jets.at(ij)) ) NBJets_WithSF_2a++;
 
   }
-
+  
+  cout << "NBJets_WithSF_2a = " << NBJets_WithSF_2a << endl;
   
   //=========================
   //==== Event selections..
