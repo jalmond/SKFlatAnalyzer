@@ -34,12 +34,13 @@ bool Event::PassTrigger(TString trig){
 bool Event::PassTrigger(std::vector<TString> trigs){
 
   for(unsigned int i=0; i<trigs.size(); i++){
+
     TString this_check_trig = trigs.at(i);
 
-    //cout << this_check_trig << endl;
     for(unsigned int j=0; j<j_HLT_TriggerName.size(); j++){
-
-      //cout << j_HLT_TriggerName.at(j) << endl;
+      
+      TString tmp_trig= TString(j_HLT_TriggerName.at(j));
+      //      if(tmp_trig.Contains("Mu") ||tmp_trig.Contains("mu") )  cout << j_HLT_TriggerName.at(j) << endl;
       if( j_HLT_TriggerName.at(j).find(this_check_trig)!=std::string::npos ){
         return true;
       }

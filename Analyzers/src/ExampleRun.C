@@ -19,12 +19,12 @@ void ExampleRun::initializeAnalyzer(){
   //==== I defined "vector<TString> MuonIDs;" in Analyzers/include/ExampleRun.h
   MuonIDs = {
     "POGMedium",
-    "POGTight"
+    "POGLoose"
   };
   //==== corresponding Muon ID SF Keys for mcCorr->MuonID_SF()
   MuonIDSFKeys = {
     "NUM_MediumID_DEN_genTracks",
-    "NUM_TightID_DEN_genTracks",
+    "NUM_MediumID_DEN_genTracks"
   };
 
   //==== At this point, sample informations (e.g., IsDATA, DataStream, MCSample, or DataYear) are all set
@@ -243,16 +243,39 @@ void ExampleRun::executeEventFromParameter(AnalyzerParameter param){
   //========================
 
   if(!PassMETFilter()) return;
-
+  
   Event ev = GetEvent();
   Particle METv = ev.GetMETVector();
 
   //==============
   //==== Trigger
   //==============
-  if(! (ev.PassTrigger(IsoMuTriggerName) )) return;
+  bool unprescaled_trig= true;
+  if(! (ev.PassTrigger(IsoMuTriggerName) ))unprescaled_trig =false;
+
+  vector<TString> trigger_list_mu;
+  vector<TString> trigger_list_dimu;
+  trigger_list_mu.push_back("HLT_Mu20_v");
+  trigger_list_mu.push_back("HLT_Mu27_v");
+  trigger_list_mu.push_back("HLT_Mu50_v");
+  trigger_list_mu.push_back("HLT_Mu8_v");
+  trigger_list_mu.push_back("HLT_Mu17_v");
+  trigger_list_mu.push_back("HLT_Mu55_v");
+  trigger_list_mu.push_back("HLT_TkMu50_v");
+  trigger_list_dimu.push_back("HLT_Mu17_Mu8_v");
+  trigger_list_dimu.push_back("HLT_Mu17_Mu8_DZ_v");
+  trigger_list_dimu.push_back("HLT_Mu20_Mu10_v");
+  trigger_list_dimu.push_back("HLT_Mu20_Mu10_DZ_v");
+  trigger_list_dimu.push_back("HLT_Mu17_TkMu8_DZ_v");
+  trigger_list_dimu.push_back("HLT_Mu27_TkMu8_v");
+  trigger_list_dimu.push_back("HLT_Mu30_TkMu11_v");
 
 
+
+  bool single_mu=true;
+  bool single_dimu=true;
+  if(! (ev.PassTrigger(trigger_list_mu) )) single_mu=false;
+  if(! (ev.PassTrigger(trigger_list_dimu) )) single_dimu=false;
 
   //======================
   //==== Copy AllObjects
@@ -343,12 +366,15 @@ void ExampleRun::executeEventFromParameter(AnalyzerParameter param){
     //==== No SF
     if( this_discr > mcCorr->GetJetTaggingCutValue(JetTagging::DeepCSV, JetTagging::Medium) ) NBJets_NoSF++;
     //==== 2a
-    if( mcCorr->IsBTagged_2a(jtp_DeepCSV_Medium, jets.at(ij)) ) NBJets_WithSF_2a++;
-
+    if( mcCorr->IsBTagged_2a(jtp_DeepCSV_Medium, jets.at(ij)) )  NBJets_WithSF_2a++;
+    
   }
-  
-  cout << "NBJets_WithSF_2a = " << NBJets_WithSF_2a << endl;
-  
+ 
+   
+  // vector<Gen> gens = GetGens();
+  //
+  //PrintGen(gens);     
+
   //=========================
   //==== Event selections..
   //=========================
@@ -356,13 +382,33 @@ void ExampleRun::executeEventFromParameter(AnalyzerParameter param){
   //==== dimuon
   if(muons.size() != 2) return;
 
+  if(muons.at(0).Charge() != muons.at(1).Charge()) return;
   //==== leading muon has trigger-safe pt
-  if( muons.at(0).Pt() <= TriggerSafePtCut ) return;
+  if( muons.at(0).Pt() <= 20. ) return;
+  if( muons.at(1).Pt() <= 10. ) return;
 
-  //==== On-Z
-  Particle ZCand = muons.at(0) + muons.at(1);
-  if(!IsOnZ(ZCand.M(), 15.)) return;
+  bool is_pp = (muons.at(0).Charge() >0) ? true : false;
+  
+  //==== ll
+  Particle llCand = muons.at(0) + muons.at(1);
 
+
+  //==== delta R mu Jet cuts
+  Jet J;
+  bool pass_drmuJ(false);
+  bool is_bjet_mm(false);
+  for(unsigned int ij = 0 ; ij < jets.size(); ij++){
+
+    if(muons.at(0).DeltaR(jets[ij]) < 0.3) {
+      if(muons.at(1).DeltaR(jets[ij]) < 0.3) {
+	J = jets.at(ij);
+	pass_drmuJ=true;
+	if( mcCorr->IsBTagged_2a(jtp_DeepCSV_Medium, jets.at(ij)) )  is_bjet_mm=true;
+	
+      } // dr mu2 
+    }// dR mu1
+  }
+    
   //===================
   //==== Event weight
   //===================
@@ -385,7 +431,7 @@ void ExampleRun::executeEventFromParameter(AnalyzerParameter param){
 
     //==== Example of applying Muon scale factors
     for(unsigned int i=0; i<muons.size(); i++){
-
+      
       double this_idsf  = mcCorr->MuonID_SF (param.Muon_ID_SF_Key,  muons.at(i).Eta(), muons.at(i).MiniAODPt());
 
       //==== If you have iso SF, do below. Here we don't.
@@ -393,16 +439,47 @@ void ExampleRun::executeEventFromParameter(AnalyzerParameter param){
       double this_isosf = 1.;
 
       weight *= this_idsf*this_isosf;
-
+      
     }
 
+  } //==== close of MC weights 
+
+
+  if(unprescaled_trig)     JSFillHist(param.Name,"IsoMuNonPrescaled_ll_Cand_"+param.Name,  llCand.M(), weight, 200, 0., 200.);
+  
+  
+  //=== Set up MET object
+  
+  //=== Condition for muon JJ 
+  if(pass_drmuJ){
+    
+    TString s_bjet="J";
+    if(is_bjet_mm) s_bjet = "BJ"; 
+    TString s_charge = "minusminus";
+    if(is_pp) s_charge = "plusplus";
+
+
+    TString trig="";
+    if(single_dimu) trig="Trig_DiMu";
+    else  if(single_dimu) trig="Trig_SingleMu";
+
+    JSFillHist(param.Name, trig+"_"+s_bjet + "_ll_"+s_charge +"_Cand_ll_Mass_"+param.Name, llCand.M(), weight, 200, 0., 200.);
+    JSFillHist(param.Name, trig+"_"+s_bjet + "_ll_"+s_charge +"_Cand_ll_Pt_"+param.Name, llCand.Pt(), weight, 50, 0., 500.);
+    JSFillHist(param.Name, trig+"_"+s_bjet + "_ll_"+s_charge +"_Cand_ll_Eta_"+param.Name, llCand.Pt(), weight, 60, -3., 3.);
+    JSFillHist(param.Name, trig+"_"+s_bjet + "_ll_"+s_charge +"_Cand_ll_sumPt_"+param.Name, muons[0].Pt()+muons[1].Pt(), weight, 50, 0., 500.);
+    JSFillHist(param.Name, trig+"_"+s_bjet + "_ll_"+s_charge +"_njets" +param.Name, jets.size() , weight,  10, 0., 10.);
+    JSFillHist(param.Name, trig+"_"+s_bjet + "_ll_"+s_charge +"_met" +param.Name, METv.Pt() , weight , 50, 0., 200.);
+    JSFillHist(param.Name, trig+"_"+s_bjet + "_ll_"+s_charge +"_Cand_J_Pt" +param.Name, J.Pt() ,weight , 50, 0., 400.);
+    JSFillHist(param.Name, trig+"_"+s_bjet + "_ll_"+s_charge +"_Cand_J_Eta" +param.Name, J.Eta(),weight  , 60, -3., 3.);
+
+
+    //=== lepton plots
+    JSFillHist(param.Name, trig+"_"+s_bjet + "_ll_"+s_charge +"_Cand_l1_reliso_"+param.Name,  muons[0].RelIso() , weight, 50, 0., 10.);
+    JSFillHist(param.Name, trig+"_"+s_bjet + "_ll_"+s_charge +"_Cand_l2_reliso_"+param.Name,  muons[1].RelIso() , weight, 50, 0., 10.);
+    JSFillHist(param.Name, trig+"_"+s_bjet + "_ll_"+s_charge +"_Cand_l1_ip3d_"+param.Name,  muons[0].IP3D() , weight, 50, 0., 10.);
+    JSFillHist(param.Name, trig+"_"+s_bjet + "_ll_"+s_charge +"_Cand_l2_ip3d_"+param.Name,  muons[1].IP3D() , weight, 50, 0., 10.);
+
   }
-
-  //==========================
-  //==== Now fill histograms
-  //==========================
-
-  JSFillHist(param.Name, "ZCand_Mass_"+param.Name, ZCand.M(), weight, 40, 70., 110.);
 
 }
 
