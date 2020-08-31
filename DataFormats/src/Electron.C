@@ -142,6 +142,31 @@ double Electron::EA(){
 
 }
 
+bool Electron::PassID(TString ID, bool cc, double dx_b ,double dx_e,double dz_b,double dz_e) const{
+  bool pass_id= PassID(ID);
+
+  if(!pass_id) return false;
+  if(cc){
+    if(! (PassConversionVeto()) ) return false;
+    if(! (IsGsfCtfScPixChargeConsistent()) ) return false;
+  }
+  
+
+  if( fabs(scEta()) <= 1.479 ){
+    if(!( fabs(dZ()) < dz_b )) return false;
+    if(!( fabs(dXY()) < dx_b )) return false;
+  }
+  else{
+    if(!( fabs(dZ()) < dz_e )) return false;
+    if(!( fabs(dXY()) < dx_e )) return false;
+
+  }
+
+  if(! (Pass_TriggerEmulation()) ) return false;
+
+  return true;
+}
+  
 bool Electron::PassID(TString ID) const{
 
   //==== XXX veto Gap Always

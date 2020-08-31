@@ -665,6 +665,27 @@ std::vector<Muon> AnalyzerCore::SelectMuons(const std::vector<Muon>& muons, TStr
 }
 
 std::vector<Electron> AnalyzerCore::SelectElectrons(const std::vector<Electron>& electrons, TString id, double ptmin, double fetamax){
+  
+  std::vector<Electron> out;
+  for(unsigned int i=0; i<electrons.size(); i++){
+    if(!( electrons.at(i).Pt()>ptmin )){
+      //cout << "Fail Pt : pt = " << electrons.at(i).Pt() << ", cut = " << ptmin << endl;                 
+      continue;
+    }
+    if(!( fabs(electrons.at(i).scEta())<fetamax )){
+      //cout << "Fail Eta : eta = " << fabs(electrons.at(i).scEta()) << ", cut = " << fetamax << endl;    
+      continue;
+    }
+    if(!( electrons.at(i).PassID(id) )){
+      //cout << "Fail ID" << endl;                                                                        
+      continue;
+    }
+    out.push_back(electrons.at(i));
+  }
+  return out;
+}
+
+std::vector<Electron> AnalyzerCore::SelectElectrons(const std::vector<Electron>& electrons, TString id, double ptmin, double fetamax, bool cc, double dx_b, double dx_e,double dz_b,double dz_e){
 
   std::vector<Electron> out;
   for(unsigned int i=0; i<electrons.size(); i++){
@@ -676,7 +697,7 @@ std::vector<Electron> AnalyzerCore::SelectElectrons(const std::vector<Electron>&
       //cout << "Fail Eta : eta = " << fabs(electrons.at(i).scEta()) << ", cut = " << fetamax << endl;
       continue;
     }
-    if(!( electrons.at(i).PassID(id) )){
+    if(!( electrons.at(i).PassID(id, cc, dx_b, dx_e, dz_b, dz_e) )){
       //cout << "Fail ID" << endl;
       continue;
     }
@@ -1803,12 +1824,13 @@ TH3D* AnalyzerCore::GetHist3D(TString histname){
 }
 
 
-void AnalyzerCore::FillHist(TString histname, double value, double weight, int n_bin, double x_min, double x_max){
+void AnalyzerCore::FillHist(TString histname, double value, double weight, int n_bin, double x_min, double x_max , TString label){
 
   TH1D *this_hist = GetHist1D(histname);
   if( !this_hist ){
     this_hist = new TH1D(histname, "", n_bin, x_min, x_max);
     this_hist->SetDirectory(NULL);
+    this_hist->GetXaxis()->SetTitle(label);
     maphist_TH1D[histname] = this_hist;
   }
 

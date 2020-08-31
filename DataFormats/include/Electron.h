@@ -147,6 +147,8 @@ public:
   void SetRelPFIso_Rho(double r);
   double EA();
 
+
+  bool PassID(TString ID, bool cc, double dx_b ,double dx_e,double dz_b,double dz_e) const;
   //==== ID
   bool PassID(TString ID) const;
   bool Pass_TESTID() const;

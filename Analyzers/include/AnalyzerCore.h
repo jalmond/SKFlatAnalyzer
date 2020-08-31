@@ -92,6 +92,7 @@ public:
   //==================================================+
 
   std::vector<Electron> SelectElectrons(const std::vector<Electron>& electrons, TString id, double ptmin, double fetamax);
+  std::vector<Electron> SelectElectrons(const std::vector<Electron>& electrons, TString id, double ptmin, double fetamax, bool cc, double dx_b, double dx_e,double dz_b,double dz_e);
 
   std::vector<Muon> UseTunePMuon(const std::vector<Muon>& muons);
   std::vector<Muon> SelectMuons(const std::vector<Muon>& muons, TString id, double ptmin, double fetamax);
@@ -116,6 +117,8 @@ public:
   std::vector<FatJet> SmearFatJets(const std::vector<FatJet>& jets, int sys);
   std::vector<FatJet> ScaleSDMassFatJets(const std::vector<FatJet>& jets, int sys);
   std::vector<FatJet> SmearSDMassFatJets(const std::vector<FatJet>& jets, int sys);
+
+
 
   //====================
   //==== Event Filters
@@ -199,7 +202,7 @@ public:
   TH2D* GetHist2D(TString histname);
   TH3D* GetHist3D(TString histname);
 
-  void FillHist(TString histname, double value, double weight, int n_bin, double x_min, double x_max);
+  void FillHist(TString histname, double value, double weight, int n_bin, double x_min, double x_max, TString label="");
   void FillHist(TString histname, double value, double weight, int n_bin, double *xbins);
   void FillHist(TString histname,
                 double value_x, double value_y,
