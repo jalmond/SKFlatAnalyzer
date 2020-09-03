@@ -26,7 +26,7 @@ void HNtypeI_JA::initializeAnalyzer(){
 
   MuonVetoIDs      = {"HNVeto2016", "POGLoose"};
 
-
+  
   MuonTriggers.clear();
   MuonTriggersH.clear();
   ElectronTriggers.clear();
@@ -44,7 +44,7 @@ void HNtypeI_JA::initializeAnalyzer(){
 
 
     // Electron trigger adopted from AN2019_031
-    //https://twiki.cern.ch/twiki/bin/view/CMS/EgHLTPathDetails#HLT_Ele23_Ele12_CaloIdL_Trac_AN1
+
     ElectronTriggers.push_back("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v");          // 35918.219492947
     //SingleElectronTriggers.push_back("HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_MW_v");
     SingleElectronTriggers.push_back("HLT_Ele27_WPTight_Gsf_v");
@@ -142,7 +142,6 @@ void HNtypeI_JA::executeEvent(){
 
   //PrintGen(gens);
 
-
   //************************************************///
   //-----------------------------------------------////
   //-----------------------------------------------////
@@ -210,7 +209,8 @@ void HNtypeI_JA::executeEvent(){
   ELIDs.push_back("passTightID");
   ELIDs.push_back("passMVAID_iso_WP90");
   ELIDs.push_back("passMVAID_iso_WP80");
-  
+  ELIDs.push_back("HNTight2016");
+
 
   for(unsigned int it_id=0; it_id<ELIDs.size(); it_id++){
     
@@ -220,10 +220,19 @@ void HNtypeI_JA::executeEvent(){
 
     TString MuonVetoID  = MuonVetoIDs.at(0);
     TString ElectronTightID = ELIDs.at(it_id);
-    TString ElectronLooseID =  "passLooseID";
-    TString ElectronVetoID  = "passLooseID";
-    TString FakeRateID =  "passLooseID";
+    TString ElectronLooseID = "";
+    TString ElectronVetoID  = "";
 
+    if(ELIDs.at(it_id).Contains("MVA"))   {
+      ElectronLooseID = "HNMVALoose";
+      ElectronVetoID  = "HNVeto2016";
+    }
+    else {
+      ElectronLooseID = "HNLoose";
+      ElectronVetoID  = "HNVeto";
+
+    }
+    TString FakeRateID =  ElectronLooseID;
     param.Clear();
 
     param.syst_ = AnalyzerParameter::Central;
@@ -261,82 +270,25 @@ void HNtypeI_JA::executeEvent(){
     // have list of IP cuts to modify ID
     //
     //************************************************///
-    TString charge_const="";
-    vector<TString> v_dx;
-    v_dx.push_back("b0.025_ec0.025");
-    v_dx.push_back("b0.025_ec0.050");
-    v_dx.push_back("b0.050_ec0.050");
-    v_dx.push_back("b0.050_ec0.075");
-    v_dx.push_back("b0.050_ec0.100");
-    v_dx.push_back("b999_ec999");
-    vector<TString> v_dz;
-    v_dz.push_back("b0.05_ec0.10");
-    v_dz.push_back("b0.10_ec0.10");
-    v_dz.push_back("b0.10_ec0.15");
-    v_dz.push_back("b0.10_ec0.20");
-    v_dz.push_back("b999_ec999");
 
+    //************************************************///
+    // change param name to link to IP/CC cuts
+    //************************************************///
+    param.Name = "HNtypeI_JA_"+ElectronTightID;
     
     //************************************************///
-    // loop over charge cut values 0/1
-    ///************************************************///
-    for(int icc=0; icc < 2; icc++){
-      TString s_cc = (icc) ? "chargeconst" : "" ;
-
-      //************************************************///
-      // loop over vector of IP dx values 0.025-999
-      //************************************************///
-      for(unsigned int idx=0; idx < v_dx.size();idx++){
-	
-	double  d_dx_b(-999.), d_dx_e(-999.);
-	if(v_dx[idx].Contains("b0.025")) d_dx_b= 0.025;
-	if(v_dx[idx].Contains("b0.05")) d_dx_b= 0.05;
-	if(v_dx[idx].Contains("b999")) d_dx_b= 999.;
-	if(v_dx[idx].Contains("ec0.075")) d_dx_e= 0.075;
-	if(v_dx[idx].Contains("ec0.05")) d_dx_e= 0.05;
-	if(v_dx[idx].Contains("ec0.1")) d_dx_e= 0.1;
-	if(v_dx[idx].Contains("ec999")) d_dx_e= 999.;
-	
-	for(unsigned int idz=0; idz < v_dz.size();idz++){
-	  //************************************************///
-	  // loop over vector of IP Z values
-	  //************************************************///
-	  double d_dz_b(-999.), d_dz_e(-999.);
-	  if(v_dz[idz].Contains("b0.05")) d_dz_b= 0.05;
-	  if(v_dz[idz].Contains("b0.10")) d_dz_b= 0.1;
-	  if(v_dz[idz].Contains("b999")) d_dz_b= 999.;
-	  if(v_dz[idz].Contains("ec0.10")) d_dz_e= 0.10;
-	  if(v_dz[idz].Contains("ec0.15")) d_dz_e= 0.15;
-	  if(v_dz[idz].Contains("ec0.20")) d_dz_e= 0.2;
-	  if(v_dz[idz].Contains("ec999")) d_dz_e= 999.;
-	  
-	  //************************************************///
-	  // change param name to link to IP/CC cuts
-	  //************************************************///
-	  param.Name = "HNtypeI_JA_"+ElectronTightID+s_cc+v_dx[idx]+v_dz[idz];
-	  
-	  //************************************************///
-	  // run event
-	  //************************************************///
-	  executeEventFromParameter(param, ElectronTightID, s_cc, d_dx_b, d_dx_e, d_dz_b, d_dz_e);
-	}
-      }
-    }
+    // run event
+    //************************************************///
+    
+    executeEventFromParameter(param, ElectronTightID,ElectronLooseID, "chargeconst", 0.05, 0.05, 0.1, 0.1,999.,999.);
   } 
 }
 
-void HNtypeI_JA::executeEventFromParameter(AnalyzerParameter param, TString El_ID, TString cc, double dx_b, double dx_e, double dz_b, double dz_e){
+void HNtypeI_JA::executeEventFromParameter(AnalyzerParameter param, TString El_ID, TString loose_id, TString s_cc, double dx_b, double dx_e, double dz_b, double dz_e, double iso_b, double iso_e){
   
   //************************************************///
   // plot CR species cuts for All plots to be made
   //************************************************///
-  bool plot_CR=false;
-
-  if (cc && dx_b == 0.05 && dx_e==0.1 && dz_b == 0.1 && dz_e == 0.2) plot_CR=true;
-  if (!cc && dx_b == 0.05 && dx_e==0.1 && dz_b == 0.1 && dz_e == 0.2) plot_CR=true;
-
-  bool nom_ID = (El_ID == "passTightID") ? true : false; 
-  if(!(cc && dx_b == 0.05 && dx_e==0.1 && dz_b == 0.1 && dz_e == 0.2)) nom_ID=false;
 
   //************************************************///
   // IsCentral true means nominal analysis settings
@@ -351,7 +303,7 @@ void HNtypeI_JA::executeEventFromParameter(AnalyzerParameter param, TString El_I
   double weight = 1.;
   //************************************************///
   
-  if(Signal) weight_norm_1invpb=1.;
+  //  if(Signal) weight_norm_1invpb=1.;
   
   //************************************************///
   // MC weights initial settings
@@ -365,7 +317,7 @@ void HNtypeI_JA::executeEventFromParameter(AnalyzerParameter param, TString El_I
 
     //==== Apply Prefire
     weight *= weight_Prefire;
-    if (nom_ID) FillWeightHist("prefire_"+param.Name, weight_Prefire);
+    FillWeightHist("prefire_"+param.Name, weight_Prefire);
 
   }
 
@@ -384,6 +336,7 @@ void HNtypeI_JA::executeEventFromParameter(AnalyzerParameter param, TString El_I
 
   FillCutFlow(IsCentral, "CutFlow", "METFilter_"+param.Name, weight);
   
+
   bool PassDoubleElectronTrig = ev.PassTrigger(ElectronTriggers);
   bool PassSingleElectronTrig = ev.PassTrigger(SingleElectronTriggers);
   
@@ -399,7 +352,6 @@ void HNtypeI_JA::executeEventFromParameter(AnalyzerParameter param, TString El_I
 
   vector<Electron> this_AllElectrons = AllElectrons;
   vector<Muon> this_AllMuons = AllMuons;
-  vector<Muon> this_AllTunePMuons = AllTunePMuons;
   vector<Jet> this_AllJets = AllJets;
   vector<FatJet> this_AllFatJets = AllFatJets;
 
@@ -436,10 +388,15 @@ void HNtypeI_JA::executeEventFromParameter(AnalyzerParameter param, TString El_I
   //
   //************************************************///   
   
-  std::vector<Electron> myelectrons = SelectElectrons(this_AllElectrons, El_ID, param.Electron_MinPt, 2.4, cc, dx_b, dx_e, dz_b, dz_e );
+  std::vector<Electron> myelectrons = SelectElectrons(this_AllElectrons, El_ID, param.Electron_MinPt, 2.4, true, dx_b, dx_e, dz_b, dz_e ,999., 999.);
+  if(RunFake)  myelectrons = SelectElectrons(this_AllElectrons, loose_id, param.Electron_MinPt, 2.4, true, 0.2,0.2,0.5,0.5,999.,999.);
   std::vector<Electron> veto_electrons = SelectElectrons(this_AllElectrons, param.Electron_Veto_ID, param.Electron_MinPt, 2.4);
   std::vector<Muon> mymuons = SelectMuons(this_AllMuons,param.Muon_Veto_ID, param.Muon_MinPt, 2.4);
 
+  for(unsigned int ielv=0; ielv < veto_electrons.size() ; ielv++){
+    FillHist( "Misc/mva_noiso_"+param.Name, veto_electrons[ielv].MVANoIso() ,weight, 100, -1.,1 ,"MVA noniso");
+    
+  }
   //************************************************///   
   // when running data level fakes set this true
   //************************************************///   
@@ -470,6 +427,9 @@ void HNtypeI_JA::executeEventFromParameter(AnalyzerParameter param, TString El_I
   std::vector<Jet>      jets         = SelectJets(this_AllJets, param.Jet_ID, 20., 2.5);
   std::sort(jets.begin(), jets.end(), PtComparing);
 
+
+
+
   //************************************************///
   // jet up b jet variable
   // --- use medium Deep CVS
@@ -497,14 +457,15 @@ void HNtypeI_JA::executeEventFromParameter(AnalyzerParameter param, TString El_I
       TString Electron_ID_SF_Key      =  El_ID;
       
       double this_recosf = mcCorr->ElectronReco_SF(myelectrons.at(i).scEta(),myelectrons.at(i).Pt(), SystDir_ElectronRecoSF);
-      double this_idsf = mcCorr->ElectronID_SF(Electron_ID_SF_Key, myelectrons.at(i).scEta(), myelectrons.at(i).Pt(), SystDir_ElectronIDSF);
+      double this_idsf = 1.;
+      if(Electron_ID_SF_Key != "HNTight2016")  mcCorr->ElectronID_SF(Electron_ID_SF_Key, myelectrons.at(i).scEta(), myelectrons.at(i).Pt(), SystDir_ElectronIDSF);
       weight *= this_recosf*this_idsf;
-      if (nom_ID) FillWeightHist("el_reco_sf_"+param.Name, this_recosf);
-      if (nom_ID) FillWeightHist("el_id_sf_"+param.Name, this_idsf);
+      FillWeightHist("el_reco_sf_"+param.Name, this_recosf);
+      FillWeightHist("el_id_sf_"+param.Name, this_idsf);
 
     }
   }
-    
+
   //************************************************///   
   //==== Sum Pts : ST/HT
   //************************************************///   
@@ -524,7 +485,7 @@ void HNtypeI_JA::executeEventFromParameter(AnalyzerParameter param, TString El_I
   ST += METv.Pt();
 
   
-  //************************************************///   
+  //**************/data6/Users/jalmond/SKFlatRunlog/2020_08_31_210519__862799__HNtypeI_JA__Year2016__SkimTree_Dilepton__TAMSA1/DoubleEG_periodB_ver2**********************************///   
   // set up strings for CR hist
   //************************************************///   
   TString reg="";
@@ -539,17 +500,17 @@ void HNtypeI_JA::executeEventFromParameter(AnalyzerParameter param, TString El_I
   if(!(PassDoubleElectronTrig)) return;
 
 
-  if(plot_CR){
-    FillHist( param.Name+"/nelectrons"+param.Name, myelectrons.size() ,weight, 5, 0., 5,"N_{electron}");
-    FillHist( param.Name+"nmuons"+param.Name, mymuons.size() ,weight, 5, 0., 5,"N_{muon}");
-    FillHist( param.Name+"nelectrons_veto"+param.Name, veto_electrons.size() ,weight, 5, 0., 5,"N_{electron}");
-  }
+  FillHist( "NObj/nelectrons"+param.Name, myelectrons.size() ,weight, 5, 0., 5,"N_{electron}");
+  FillHist( "NObj/nmuons"+param.Name, mymuons.size() ,weight, 5, 0., 5,"N_{muon}");
+  FillHist( "NObj/nelectrons_veto"+param.Name, veto_electrons.size() ,weight, 5, 0., 5,"N_{electron}");
 
+
+  bool plot_CR=true;
   //************************************************///   
   // ZZ CR plots
   //************************************************///   
   
-  if(myelectrons.size() ==4 && mymuons.size() == 0){
+  if(myelectrons.size() ==4 && mymuons.size() == 0 && veto_electrons.size()==4){
     if(myelectrons[0].Pt() > 25. && myelectrons[3].Pt()  > 15.) {
       if(NBJets ==0){
 	bool m_llos_l10(false), z_cr_pass(false);
@@ -557,22 +518,22 @@ void HNtypeI_JA::executeEventFromParameter(AnalyzerParameter param, TString El_I
 	Particle Z2Cand;
 
 	for(unsigned int iel =0; iel < myelectrons.size()-1 ; iel++){
-	  for(unsigned int iel2 =1; iel2 < myelectrons.size() ; iel2++){
+	  for(unsigned int iel2 =iel+1; iel2 < myelectrons.size() ; iel2++){
 	    if(iel== iel2) continue;
 	    Z1Cand = myelectrons.at(iel) + myelectrons.at(iel2);
 	    if(myelectrons.at(iel).Charge() != myelectrons.at(iel2).Charge()){
 	      if(Z1Cand.M() < 10) m_llos_l10=true;
 	    }
-	    int el1(-9), el2(-9);
-	    if(el1 ==0 && iel2==1){ el1=2; el2=3;    Z2Cand = myelectrons.at(2) + myelectrons.at(3);}
-	    if(el1 ==0 && iel2==2){ el1=1; el2=3;    Z2Cand = myelectrons.at(1) + myelectrons.at(3);}
-	    if(el1 ==0 && iel2==3){ el1=1; el2=2;    Z2Cand = myelectrons.at(1) + myelectrons.at(2);}
-	    if(el1 ==1 && iel2==2){ el1=0; el2=3;    Z2Cand = myelectrons.at(0) + myelectrons.at(3);}
-            if(el1 ==1 && iel2==3){ el1=0; el2=2;    Z2Cand = myelectrons.at(0) + myelectrons.at(2);}
-	    if(el1 ==2 && iel2==3){ el1=0; el2=1;    Z2Cand = myelectrons.at(0) + myelectrons.at(1);}
+	    int zel1(-9), zel2(-9);
+	    if(iel ==0 && iel2==1){ zel1=2; zel2=3;    Z2Cand = myelectrons.at(2) + myelectrons.at(3);}
+	    if(iel ==0 && iel2==2){ zel1=1; zel2=3;    Z2Cand = myelectrons.at(1) + myelectrons.at(3);}
+	    if(iel ==0 && iel2==3){ zel1=1; zel2=2;    Z2Cand = myelectrons.at(1) + myelectrons.at(2);}
+	    if(iel ==1 && iel2==2){ zel1=0; zel2=3;    Z2Cand = myelectrons.at(0) + myelectrons.at(3);}
+            if(iel ==1 && iel2==3){ zel1=0; zel2=2;    Z2Cand = myelectrons.at(0) + myelectrons.at(2);}
+	    if(iel ==2 && iel2==3){ zel1=0; zel2=1;    Z2Cand = myelectrons.at(0) + myelectrons.at(1);}
 
 	    if(myelectrons.at(iel).Charge() != myelectrons.at(iel2).Charge()){
-	      if(myelectrons.at(el1).Charge() != myelectrons.at(el2).Charge()){
+	      if(myelectrons.at(zel1).Charge() != myelectrons.at(zel2).Charge()){
 		if(fabs(Z1Cand.M() - 90.1) < 15.){
 		  if(fabs(Z2Cand.M() - 90.1) < 15.){
 		    z_cr_pass=true;
@@ -591,8 +552,8 @@ void HNtypeI_JA::executeEventFromParameter(AnalyzerParameter param, TString El_I
   //************************************************///   
   // WZ CR plots
   //************************************************///   
-  if(myelectrons.size() ==3 && mymuons.size() == 0){
-    if(myelectrons[0].Pt() > 25. && myelectrons[2].Pt()  > 15.) {
+  if(myelectrons.size() ==3 && mymuons.size() == 0 && veto_electrons.size()==3){
+    if(myelectrons[0].Pt() > 25. && myelectrons[1].Pt()  > 15.) {
       if(METv.Pt() > 50.){
 	if(NBJets ==0){
 	  bool m_llos_l10(false);
@@ -600,7 +561,7 @@ void HNtypeI_JA::executeEventFromParameter(AnalyzerParameter param, TString El_I
 	  int iel_Z1(0), iel_Z2(0), iel_W(0);
 	  float mass_diff_tmp=999999.;
 	  for(unsigned int iel =0; iel < myelectrons.size()-1 ; iel++){
-	    for(unsigned int iel2 =1; iel2 < myelectrons.size() ; iel2++){
+	    for(unsigned int iel2 =iel+1; iel2 < myelectrons.size() ; iel2++){
 	      if(iel== iel2) continue;
 	      Particle llCand = myelectrons.at(iel) + myelectrons.at(iel2);
 	      if(myelectrons.at(iel).Charge() != myelectrons.at(iel2).Charge()){
@@ -614,6 +575,7 @@ void HNtypeI_JA::executeEventFromParameter(AnalyzerParameter param, TString El_I
 	      }
 	    }
 	  }
+	  FillRegionPlots(plot_CR,"WZtmp_cr"+ charge_s , met_label +param.Name, jets,  fatjets,  myelectrons, mymuons,  METv, nPV, weight);
 	  if(!m_llos_l10){
 	    
 	    if((iel_Z1 + iel_Z2)==3) iel_W=0;
@@ -641,20 +603,22 @@ void HNtypeI_JA::executeEventFromParameter(AnalyzerParameter param, TString El_I
   //************************************************///   
   //************************************************///   
   //************************************************///   
+
+
+  if(veto_electrons.size()!=2) return;
   if(myelectrons.size()!=2)  return;
   if(mymuons.size() > 0)  return;
 
   //************************************************///   
   // charge_s is string to label ++ vs +-
   //************************************************///   
-  charge_s= (myelectrons[0].Charge() ==  myelectrons[1].Charge() )  ?  charge_s = "_same_sign" : "_opposite_sign";
+  charge_s= (myelectrons[0].Charge() ==  myelectrons[1].Charge() )  ?  charge_s = "same_sign" : "opposite_sign";
 
   //************************************************///   
   // apply trigger level pt cuts
   //************************************************///   
   if(myelectrons[0].Pt() < 25.) return;
   if(myelectrons[1].Pt() < 15.) return;
-
 
   //************************************************///   
   // create proxy for Z/W candidates
@@ -669,38 +633,50 @@ void HNtypeI_JA::executeEventFromParameter(AnalyzerParameter param, TString El_I
   // select Z peak
   //************************************************///   
   if(llCand.M() < 100. && llCand.M() > 60.){
-    FillRegionPlots(plot_CR,"DYCR"+ charge_s , met_label +param.Name, jets,  fatjets,  myelectrons, mymuons,  METv, nPV, weight);
+    FillRegionPlots(plot_CR,"DYCR_"+ charge_s , met_label +param.Name, jets,  fatjets,  myelectrons, mymuons,  METv, nPV, weight);
     // PU syst
     //FillRegionPlots(plot_CR,"DYCR_pu_up"+ charge_s , met_label +param.Name, jets,  fatjets,  myelectrons, mymuons,  METv, nPV, weight_pu_up);
     //FillRegionPlots(plot_CR,"DYCR_pu_down"+ charge_s , met_label +param.Name, jets,  fatjets,  myelectrons, mymuons,  METv, nPV, weight_pu_down);
     //1FillRegionPlots(plot_CR,"DYCR_nopu"+ charge_s , met_label +param.Name, jets,  fatjets,  myelectrons, mymuons,  METv, nPV, weight_nopu);
   }
-  else   FillRegionPlots(plot_CR,"presel"+ charge_s , met_label +param.Name, jets,  fatjets,  myelectrons, mymuons,  METv, nPV, weight);
-
-  //************************************************///   
-  // SR selections
-  //************************************************///   
-
-  double met2_st = METv.Pt()*METv.Pt()/ ST;
-  if(met2_st < 15 && NBJets == 0 ){
-    if( jets.size() > 1 && fatjets.size() == 0) {  
-
-      FillSigRegionPlots1("SR1_highmass_"+ charge_s , met_label +param.Name, jets,  fatjets,  myelectrons, mymuons,  METv, nPV, weight, 999.,999.,999.,999.,999.,999.,999.,999.,999.,999.,999.);
-      FillSigRegionPlots1("SR1_mn100_"+ charge_s , met_label +param.Name, jets,  fatjets,  myelectrons, mymuons,  METv, nPV, weight, 4, 25., 3.1, 25., 15., 50.,120., 120., 50., 110., 6.);
-      FillSigRegionPlots1("SR1_mn200_"+ charge_s , met_label +param.Name, jets,  fatjets,  myelectrons, mymuons,  METv, nPV, weight, 4, 25., 3.1, 55., 40., 50.,120., 220.,160., 225.,  6.);
-      FillSigRegionPlots1("SR1_mn500_"+ charge_s , met_label +param.Name, jets,  fatjets,  myelectrons, mymuons,  METv, nPV, weight, 4, 25., 999., 125., 65., 50.,120., 560.,400., 555., 6.);
-      FillSigRegionPlots1("SR1_mn1100_"+ charge_s , met_label +param.Name, jets,  fatjets,  myelectrons, mymuons,  METv, nPV, weight, 4, 25., 999., 125., 999., 50.,120., 760.,400., 1490., 6.);
-      
+  else {
+    TString ev_type="";
+    if(RunFake) {
+      bool el1_tight=myelectrons[0].PassID(El_ID, true, dx_b, dx_e, dz_b, dz_e,999.,999.);
+      bool el2_tight=myelectrons[1].PassID(El_ID, true, dx_b, dx_e, dz_b, dz_e,999.,999.);
+      if(el1_tight&&el2_tight)ev_type = "TT_";
+      if(el1_tight&&!el2_tight)ev_type = "TL_";
+      if(!el1_tight&&el2_tight)ev_type = "LT_";
+      if(!el1_tight&&!el2_tight)ev_type = "LL_";
+      FillRegionPlots(plot_CR,"presel_"+ev_type+ charge_s , met_label +param.Name, jets,  fatjets,  myelectrons, mymuons,  METv, nPV, weight);
     }
-    if(fatjets.size() > 0) {
-
-      FillSigRegionPlots2("SR2_highmass"+ charge_s , met_label +param.Name, jets,  fatjets,  myelectrons, mymuons,  METv, nPV, weight,  999.,  999.,  999.,  999.,  999.,  999.,  999.);
-      FillSigRegionPlots2("SR2_highmass"+ charge_s , met_label +param.Name, jets,  fatjets,  myelectrons, mymuons,  METv, nPV, weight, 25.,15., 40.,130., 90., 220., 15.);
-      FillSigRegionPlots2("SR2_highmass"+ charge_s , met_label +param.Name, jets,  fatjets,  myelectrons, mymuons,  METv, nPV, weight, 100., 20., 40., 130., 173., 220., 15.); 
-      FillSigRegionPlots2("SR2_highmass"+ charge_s , met_label +param.Name, jets,  fatjets,  myelectrons, mymuons,  METv, nPV, weight, 120., 35., 40., 130., 440., 565., 15.); 
-      FillSigRegionPlots2("SR2_highmass"+ charge_s , met_label +param.Name, jets,  fatjets,  myelectrons, mymuons,  METv, nPV, weight, 140., 999.,40., 130., 1035., 1395., 15.); 
-
-
+    FillRegionPlots(plot_CR,"presel_"+ charge_s , met_label +param.Name, jets,  fatjets,  myelectrons, mymuons,  METv, nPV, weight);
+    
+    
+    //************************************************///   
+    // SR selections
+    //************************************************///   
+    
+    double met2_st = METv.Pt()*METv.Pt()/ ST;
+    if(met2_st < 15 && NBJets == 0 ){
+      if( jets.size() > 1 && fatjets.size() == 0) {  
+	
+	FillSigRegionPlots1("SR1_highmass_"+ charge_s , met_label +param.Name, jets,  fatjets,  myelectrons, mymuons,  METv, nPV, weight, 999.,999.,999.,999.,999.,999.,999.,999.,999.,999.,999.);
+	FillSigRegionPlots1("SR1_mn100_"+ charge_s , met_label +param.Name, jets,  fatjets,  myelectrons, mymuons,  METv, nPV, weight, 4, 25., 3.1, 25., 15., 50.,120., 120., 50., 110., 6.);
+	FillSigRegionPlots1("SR1_mn200_"+ charge_s , met_label +param.Name, jets,  fatjets,  myelectrons, mymuons,  METv, nPV, weight, 4, 25., 3.1, 55., 40., 50.,120., 220.,160., 225.,  6.);
+	FillSigRegionPlots1("SR1_mn500_"+ charge_s , met_label +param.Name, jets,  fatjets,  myelectrons, mymuons,  METv, nPV, weight, 4, 25., 999., 125., 65., 50.,120., 560.,400., 555., 6.);
+	FillSigRegionPlots1("SR1_mn1100_"+ charge_s , met_label +param.Name, jets,  fatjets,  myelectrons, mymuons,  METv, nPV, weight, 4, 25., 999., 125., 999., 50.,120., 760.,400., 1490., 6.);
+	
+      }
+      if(fatjets.size() > 0) {
+	
+	FillSigRegionPlots2("SR2_highmass"+ charge_s , met_label +param.Name, jets,  fatjets,  myelectrons, mymuons,  METv, nPV, weight,  999.,  999.,  999.,  999.,  999.,  999.,  999.);
+	FillSigRegionPlots2("SR2_mn100_"+ charge_s , met_label +param.Name, jets,  fatjets,  myelectrons, mymuons,  METv, nPV, weight, 25.,15., 40.,130., 90., 220., 15.);
+	FillSigRegionPlots2("SR2_mn200_"+ charge_s , met_label +param.Name, jets,  fatjets,  myelectrons, mymuons,  METv, nPV, weight, 100., 20., 40., 130., 173., 220., 15.); 
+	FillSigRegionPlots2("SR2_mn500_"+ charge_s , met_label +param.Name, jets,  fatjets,  myelectrons, mymuons,  METv, nPV, weight, 120., 35., 40., 130., 440., 565., 15.); 
+	FillSigRegionPlots2("SR2_mn1100_"+ charge_s , met_label +param.Name, jets,  fatjets,  myelectrons, mymuons,  METv, nPV, weight, 140., 999.,40., 130., 1035., 1395., 15.); 
+      }
+      
     }
   }
 }
@@ -718,7 +694,7 @@ HNtypeI_JA::~HNtypeI_JA(){
 void HNtypeI_JA::MakeSignalPlots(){
   bool mupt_pass=true;
   int mother_nu(0);
-  int ind_w(0);
+  unsigned int ind_w(0);
   TString  mu_ch="";
   if(Signal){
     gens = GetGens();
@@ -811,11 +787,14 @@ void HNtypeI_JA::MakeSignalPlots(){
 }
 void HNtypeI_JA::FillSigRegionPlots1(TString label_1, TString label_2,  std::vector<Jet> jets, std::vector<FatJet> fatjets,  std::vector<Electron> els, std::vector<Muon> mus, Particle  met, double nvtx,  double w,  double var1,  double var2, double var3, double var4, double var5, double var6, double var7, double var8, double var9, double var10, double var11){
 
+  
   if(els.size() < 2) return;
   if(jets.size() < 2) return;
-  if(jets.size() >= var1) return;
-  if(jets[0].Pt() < var2)return;
 
+  if(var1==999){
+    if(jets.size() >= var1) return;
+    if(jets[0].Pt() < var2)return;
+  }
   float dijetmass_tmp=999.;
   float dijetmass=9990000.;
   int m=-999;
@@ -841,20 +820,22 @@ void HNtypeI_JA::FillSigRegionPlots1(TString label_1, TString label_2,  std::vec
   Particle W1cand = jets[m] + jets[n]+els[0] + els[1];
   Particle N1cand = jets[m] + jets[n]+els[0];
   Particle N2cand = jets[m] + jets[n]+els[1];
-  if(Wcand.DeltaR(els[1]) > var3) return;
-  if(els[0].Pt() < var4) return;
-  if(els[1].Pt() < var5) return;
-  if(Wcand.M() < var6) return;
-  if(Wcand.M() > var7) return;
-  if(W1cand.M() < var8) return;
-  if(N1cand.M() < var9 && N2cand.M()  < var9) return;
-  if(N1cand.M()  > var10 && N2cand.M()  > var10) return;
-  if(met2/ST > var11) return;
+  if(var1==999){
 
-  FillHist( label_2+ "/"+ label_1 +  "_reco_mlljj_"  + label_2,  W1cand.M(),  w, 200, 0, 2000, "Reco M_{lljj}");
-  FillHist( label_2+ "/"+ label_1 +  "_reco_ml1jj_"  + label_2,  N1cand.M(),  w, 200, 0, 2000, "Reco M_{l1jj}");
-  FillHist( label_2+ "/"+ label_1 +  "_reco_ml2jj_"  + label_2,  N2cand.M(),  w, 200, 0, 2000, "Reco M_{l2jj}");
-  FillHist( label_2+ "/"+ label_1 +  "_njets_" + label_2, jets.size() , w, 10, 0., 10., "N_{jets}");
+    if(Wcand.DeltaR(els[1]) > var3) return;
+    if(els[0].Pt() < var4) return;
+    if(els[1].Pt() < var5) return;
+    if(Wcand.M() < var6) return;
+    if(Wcand.M() > var7) return;
+    if(W1cand.M() < var8) return;
+    if(N1cand.M() < var9 && N2cand.M()  < var9) return;
+    if(N1cand.M()  > var10 && N2cand.M()  > var10) return;
+    if(met2/ST > var11) return;
+  }
+  FillHist( label_1+ "/"+ label_1 +  "_reco_mlljj_"  + label_2,  W1cand.M(),  w, 100, 0, 2000, "Reco M_{lljj}");
+  FillHist( label_1+ "/"+ label_1 +  "_reco_ml1jj_"  + label_2,  N1cand.M(),  w, 100, 0, 2000, "Reco M_{l1jj}");
+  FillHist( label_1+ "/"+ label_1 +  "_reco_ml2jj_"  + label_2,  N2cand.M(),  w, 100, 0, 2000, "Reco M_{l2jj}");
+  FillHist( label_1+ "/"+ label_1 +  "_njets_" + label_2, jets.size() , w, 10, 0., 10., "N_{jets}");
 
 }
 
@@ -886,28 +867,31 @@ void HNtypeI_JA::FillSigRegionPlots2(TString label_1, TString label_2,  std::vec
   Particle N1cand = fatjets[m] +els[0];
   Particle N2cand = fatjets[m] +els[1];
 
-  if(els[0].Pt() < var1) return;
-  if(els[1].Pt() < var2) return;
-  if(Wcand.M() < var3) return;
-  if(Wcand.M() > var4) return;
-  if(N1cand.M()  < var5 && N2cand.M()  < var5) return;
-  if(N1cand.M()  > var6 && N2cand.M()  > var6) return;
-  if(met2/ST > var7) return;
-
-  FillHist( label_2+ "/"+ label_1 +  "_reco_mlljj_"  + label_2,  W1cand.M(),  w, 200, 0, 2000, "Reco M_{lljj}");
-  FillHist( label_2+ "/"+ label_1 +  "_reco_ml1jj_"  + label_2,  N1cand.M(),  w, 200, 0, 2000, "Reco M_{l1jj}");
-  FillHist( label_2+ "/"+ label_1 +  "_reco_ml2jj_"  + label_2,  N2cand.M(),  w, 200, 0, 2000, "Reco M_{l2jj}");
-  FillHist( label_2+ "/"+ label_1 +  "_njets_" + label_2, jets.size() , w, 10, 0., 10., "N_{jets}");
+  if(var1==999){
+    
+    if(els[0].Pt() < var1) return;
+    if(els[1].Pt() < var2) return;
+    if(Wcand.M() < var3) return;
+    if(Wcand.M() > var4) return;
+    if(N1cand.M()  < var5 && N2cand.M()  < var5) return;
+    if(N1cand.M()  > var6 && N2cand.M()  > var6) return;
+    if(met2/ST > var7) return;
+  }
+  FillHist( label_1+ "/"+ label_1 +  "_reco_mllJ_"  + label_2,  W1cand.M(),  w, 20, 0, 2000, "Reco M_{lljj}");
+  FillHist( label_1+ "/"+ label_1 +  "_reco_ml1J_"  + label_2,  N1cand.M(),  w, 20, 0, 2000, "Reco M_{l1jj}");
+  FillHist( label_1+ "/"+ label_1 +  "_reco_ml2J_"  + label_2,  N2cand.M(),  w, 20, 0, 2000, "Reco M_{l2jj}");
+  FillHist( label_1+ "/"+ label_1 +  "_njets_" + label_2, jets.size() , w, 10, 0., 10., "N_{jets}");
 
 }
 void HNtypeI_JA::FillRegionPlots(bool plotCR, TString label_1, TString label_2,  std::vector<Jet> jets, std::vector<FatJet> fatjets,  std::vector<Electron> els, std::vector<Muon> mus, Particle  met, double nvtx,  double w){
-
+  
+  //cout << "FillRegionPlots: " << label_1 << " " << label_2 << " plotCR = " << plotCR << " nel = " << els.size()  <<  endl;
 
   if(!plotCR) return;
 
   int NBJets=0;
   for(unsigned int i=0; i<jets.size(); i++){
-    FillHist( label_2+ "/"+ label_1 + "_jet_pt_"+ label_2,  jets[i].Pt() , w, 60, 0., 300., "Jet p_{T} GeV");
+    FillHist( label_1+ "/"+ label_1 + "_jet_pt_"+ label_2,  jets[i].Pt() , w, 60, 0., 300., "Jet p_{T} GeV");
 
     if( mcCorr->IsBTagged_2a(JetTagging::Parameters(JetTagging::DeepCSV,
                                                     JetTagging::Medium, 
@@ -943,40 +927,43 @@ void HNtypeI_JA::FillRegionPlots(bool plotCR, TString label_1, TString label_2, 
     }
     lljjCand = els.at(0) + els.at(1) + jets[m]+jets[n];
     
-    FillHist( label_2+ "/"+ label_1 +  "_reco_mjj_"  + label_2,   (jets[m]+jets[n]).M(),  w, 250, 0, 250, "Reco M_{jj}");
-    if(els.size()> 0)FillHist( label_2+ "/"+ label_1 +  "_reco_ml1jj_"  + label_2,   (els[0] + jets[m]+jets[n]).M(),  w, 250, 0, 1000, "Reco M_{l1jj}");
+    FillHist( label_1+ "/"+ label_1 +  "_reco_mjj_"  + label_2,   (jets[m]+jets[n]).M(),  w, 250, 0, 250, "Reco M_{jj}");
+    if(els.size()> 0)FillHist( label_1+ "/"+ label_1 +  "_reco_ml1jj_"  + label_2,   (els[0] + jets[m]+jets[n]).M(),  w, 250, 0, 1000, "Reco M_{l1jj}");
     if(els.size()> 1){
-      FillHist( label_2+ "/"+ label_1 +  "_reco_ml2jj_"  + label_2,   (els[1] + jets[m]+jets[n]).M(),  w, 250, 0, 1000, "Reco M_{l2jj} ");
-      FillHist( label_2+ "/"+ label_1 +  "_reco_mlljj_"  + label_2,  lljjCand.M(),  w, 250, 0, 1000, "Reco M_{lljj}");
+      FillHist( label_1+ "/"+ label_1 +  "_reco_ml2jj_"  + label_2,   (els[1] + jets[m]+jets[n]).M(),  w, 250, 0, 1000, "Reco M_{l2jj} ");
+      FillHist( label_1+ "/"+ label_1 +  "_reco_mlljj_"  + label_2,  lljjCand.M(),  w, 250, 0, 1000, "Reco M_{lljj}");
     }
   }
-  if(fatjets.size() > 0)FillHist( label_2+ "/"+ label_1 +  "_reco_mllJ_"  + label_2,  llJCand.M(),  w, 250, 0, 1000, "Reco M_{llJ}");
+  if(fatjets.size() > 0)FillHist( label_1+ "/"+ label_1 +  "_reco_mllJ_"  + label_2,  llJCand.M(),  w, 250, 0, 1000, "Reco M_{llJ}");
   
-  FillHist( label_2+ "/"+ label_1 + "_nPV_"+ label_2,  nvtx , w, 60, 0., 60.);
-  FillHist( label_2+ "/"+ label_1 +  "_njets_" + label_2, jets.size() , w, 10, 0., 10., "N_{jets}");
+  FillHist( label_1+ "/"+ label_1 + "_nPV_"+ label_2,  nvtx , w, 60, 0., 60.);
+  FillHist( label_1+ "/"+ label_1 +  "_njets_" + label_2, jets.size() , w, 10, 0., 10., "N_{jets}");
   
-  FillHist( label_2+ "/"+ label_1 +  "_met_" + label_2, met.Pt()  , w, 200, 0., 400.,"MET GeV");
-  FillHist( label_2+ "/"+ label_1 +  "_nbjets_" + label_2, NBJets , w, 5, 0., 5., "N_{b jets}");
-  FillHist( label_2+ "/"+ label_1 +  "_ll_mass_" + label_2,  llCand.M(), w, 200, 0., 400., "M_{ll} GeV");
+  FillHist( label_1+ "/"+ label_1 +  "_met_" + label_2, met.Pt()  , w, 200, 0., 400.,"MET GeV");
+  FillHist( label_1+ "/"+ label_1 +  "_nbjets_" + label_2, NBJets , w, 5, 0., 5., "N_{b jets}");
+  FillHist( label_1+ "/"+ label_1 +  "_ll_mass_" + label_2,  llCand.M(), w, 200, 0., 400., "M_{ll} GeV");
   
   
   for(unsigned int i=0; i < fatjets.size(); i++){
-    FillHist( label_2+ "/"+ label_1 + "_fatjet_pt_"+ label_2,  fatjets[i].Pt() , w, 60, 0., 300., "AK8 Jet p_{T} GeV");
-    FillHist( label_2+ "/"+ label_1 + "_fatjet_pt_"+ label_2,  fatjets[i].SDMass() , w, 100, 0., 500., "Mass_{softdrop} GeV");
-    FillHist( label_2+ "/"+ label_1 + "_fatjet_pt_"+ label_2,  fatjets[i].PuppiTau2()/ fatjets[i].PuppiTau1() , w, 400, 0., 2., "#tau_{21}");
+    FillHist( label_1+ "/"+ label_1 + "_fatjet_pt_"+ label_2,  fatjets[i].Pt() , w, 60, 0., 300., "AK8 Jet p_{T} GeV");
+    FillHist( label_1+ "/"+ label_1 + "_fatjet_pt_"+ label_2,  fatjets[i].SDMass() , w, 100, 0., 500., "Mass_{softdrop} GeV");
+    FillHist( label_1+ "/"+ label_1 + "_fatjet_pt_"+ label_2,  fatjets[i].PuppiTau2()/ fatjets[i].PuppiTau1() , w, 400, 0., 2., "#tau_{21}");
     
   }
   for(unsigned int i=0; i < els.size(); i++){
-    FillHist( label_2+ "/"+ label_1 + "_el_pt_" + label_2  , els.at(i).Pt() , w, 500, 0., 1000., "el p_{T} GeV");
-    FillHist( label_2+ "/"+ label_1 + "_el_dxy_" + label_2  , els.at(i).dXY() , w, 500, -1., 1., "dXY");
-    FillHist( label_2+ "/"+ label_1 + "_el_dz_" + label_2  , els.at(i).dZ() , w, 500, -1., 1., "dZ");
-    FillHist( label_2+ "/"+ label_1 + "_el_reliso_" + label_2  , els.at(i).RelIso() , w, 50, 0., 1., "R_{ISO} GeV");
-    FillHist( label_2+ "/"+ label_1 + "_el_eta_"+ label_2  , els.at(i).Eta() , w, 60, -3., 3.,"el #eta");
-    FillHist( label_2+ "/"+ label_1 +  "_el_mt_" + label_2, MT(met, els[i])  , w, 200, 0., 400.,"M_{T} GeV");
-    FillHist( label_2+ "/"+ label_1 +  "_el_cc_" + label_2, els[i].IsGsfCtfScPixChargeConsistent()  , w, 2, 0., 2.,"Charge Cons.");
-    FillHist( label_2+ "/"+ label_1 +  "_el_convveto_" + label_2, els[i].PassConversionVeto()  , w, 2, 0., 2.,"Conv. veto.");
-    FillHist( label_2+ "/"+ label_1 + "_el_mva_" + label_2  , els.at(i).MVAIso() , w, 100, -1., 1., "el mva");
-    FillHist( label_2+ "/"+ label_1 + "_el_mvanoniso_" + label_2  , els.at(i).MVANoIso() , w, 100, -1., 1., "el mva nonIso");
+    TString el_lab="el1";
+    if(i==1) el_lab="el2";
+    if(i==2) el_lab="el3";
+    FillHist( label_1+ "/"+ label_1 + "_"+el_lab+"_pt_" + label_2  , els.at(i).Pt() , w, 500, 0., 1000., "el p_{T} GeV");
+    FillHist( label_1+ "/"+ label_1 + "_"+el_lab+"_dxy_" + label_2  , els.at(i).dXY() , w, 500, -1., 1., "dXY");
+    FillHist( label_1+ "/"+ label_1 + "_"+el_lab+"_dz_" + label_2  , els.at(i).dZ() , w, 500, -1., 1., "dZ");
+    FillHist( label_1+ "/"+ label_1 + "_"+el_lab+"_reliso_" + label_2  , els.at(i).RelIso() , w, 50, 0., 1., "R_{ISO} GeV");
+    FillHist( label_1+ "/"+ label_1 + "_"+el_lab+"_eta_"+ label_2  , els.at(i).Eta() , w, 60, -3., 3.,"el #eta");
+    FillHist( label_1+ "/"+ label_1 +  "_"+el_lab+"_mt_" + label_2, MT(met, els[i])  , w, 200, 0., 400.,"M_{T} GeV");
+    FillHist( label_1+ "/"+ label_1 +  "_"+el_lab+"_cc_" + label_2, els[i].IsGsfCtfScPixChargeConsistent()  , w, 2, 0., 2.,"Charge Cons.");
+    FillHist( label_1+ "/"+ label_1 +  "_"+el_lab+"_convveto_" + label_2, els[i].PassConversionVeto()  , w, 2, 0., 2.,"Conv. veto.");
+    FillHist( label_1+ "/"+ label_1 + "_"+el_lab+"_mva_" + label_2  , els.at(i).MVAIso() , w, 100, -1., 1., "el mva");
+    FillHist( label_1+ "/"+ label_1 + "_"+el_lab+"_mvanoniso_" + label_2  , els.at(i).MVANoIso() , w, 100, -1., 1., "el mva nonIso");
   }
   return;
 }

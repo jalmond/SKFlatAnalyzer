@@ -116,6 +116,7 @@ public:
   inline bool passMVAID_noIso_WP90() const {return PassSelector(POG_MVA_NOISO_WP90); }
   inline bool passMVAID_iso_WP80() const {return PassSelector(POG_MVA_ISO_WP80); }
   inline bool passMVAID_iso_WP90() const {return PassSelector(POG_MVA_ISO_WP90); }
+  inline bool passMVAID_noiso_WPLoose() const {return PassSelector(POG_MVA_NOISO_WPLOOSE); }
   inline bool passHEEPID() const {return PassSelector(POG_HEEP); }
   bool passHEEP2018Prompt() const; // HEEP
   bool Pass_HEEP_dZ() const; //HEEP
@@ -136,6 +137,7 @@ public:
 
   bool Pass_HNVeto(double relisoCut) const;
   bool Pass_HNLoose(double relisoCut, double dxyCut, double dzCut) const;
+  bool Pass_HNLoosest() const;
   bool Pass_HNTight(double relisoCut, double dxyCut, double dzCut) const;
 
   bool Pass_ISRLoose(double relisoCut) const;
@@ -148,12 +150,13 @@ public:
   double EA();
 
 
-  bool PassID(TString ID, bool cc, double dx_b ,double dx_e,double dz_b,double dz_e) const;
+  bool PassID(TString ID, bool cc, double dx_b ,double dx_e,double dz_b,double dz_e, double iso_b, double iso_e) const;
   //==== ID
   bool PassID(TString ID) const;
   bool Pass_TESTID() const;
 
   bool Pass_CutBasedLooseNoIso() const;
+  bool Pass_CutBasedMediumNoIso() const;
   bool Pass_CutBasedVetoNoIso() const;
   bool Pass_CutBasedLoose() const;
   bool Pass_CutBasedVeto() const;

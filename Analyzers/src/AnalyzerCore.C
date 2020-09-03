@@ -685,7 +685,7 @@ std::vector<Electron> AnalyzerCore::SelectElectrons(const std::vector<Electron>&
   return out;
 }
 
-std::vector<Electron> AnalyzerCore::SelectElectrons(const std::vector<Electron>& electrons, TString id, double ptmin, double fetamax, bool cc, double dx_b, double dx_e,double dz_b,double dz_e){
+std::vector<Electron> AnalyzerCore::SelectElectrons(const std::vector<Electron>& electrons, TString id, double ptmin, double fetamax, bool cc, double dx_b, double dx_e,double dz_b,double dz_e, double iso_b, double iso_e){
 
   std::vector<Electron> out;
   for(unsigned int i=0; i<electrons.size(); i++){
@@ -697,7 +697,7 @@ std::vector<Electron> AnalyzerCore::SelectElectrons(const std::vector<Electron>&
       //cout << "Fail Eta : eta = " << fabs(electrons.at(i).scEta()) << ", cut = " << fetamax << endl;
       continue;
     }
-    if(!( electrons.at(i).PassID(id, cc, dx_b, dx_e, dz_b, dz_e) )){
+    if(!( electrons.at(i).PassID(id, cc, dx_b, dx_e, dz_b, dz_e, iso_b, iso_e) )){
       //cout << "Fail ID" << endl;
       continue;
     }

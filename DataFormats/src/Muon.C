@@ -110,6 +110,9 @@ bool Muon::PassID(TString ID) const {
   //==== Customized
   if(ID=="TEST") return Pass_TESTID();
   if(ID=="HNVeto2016") return Pass_HNVeto2016();
+  //if(ID=="HNLoosest") return Pass_HNLoose2016(0.4, 0.2, 0.1, 3.);
+  if(ID=="HNLoosest") return Pass_HNVeto2016();
+
   if(ID=="HNLoose2016") return Pass_HNLoose2016(0.4, 0.2, 0.1, 3.);
   if(ID=="HNLoose2016IsoUp") return Pass_HNLoose2016(0.5, 0.2, 0.1, 3.);
   if(ID=="HNLoose2016IsoDown") return Pass_HNLoose2016(0.3, 0.2, 0.1, 3.);

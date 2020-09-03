@@ -1,3 +1,5 @@
+ID      SF     passMVAID_iso_WP90      2017_ElectronMVA90.root EGamma_SF2D     TH2F
+ID      SF      passMVAID_noIso_WP90    2017_ElectronMVA90noiso.root    EGamma_SF2D     TH2F
 ID	SF	passMVAID_iso_WP80	2017_ElectronMVA80.root	EGamma_SF2D	TH2F
 ID	SF	passMVAID_noIso_WP80	2017_ElectronMVA80noiso.root	EGamma_SF2D	TH2F
 ID	SF	passTightID	2017_ElectronTight.root	EGamma_SF2D	TH2F

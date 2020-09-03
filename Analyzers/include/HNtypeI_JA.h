@@ -8,7 +8,9 @@ class HNtypeI_JA : public AnalyzerCore {
  public:
 
   void initializeAnalyzer();
-  void executeEventFromParameter(AnalyzerParameter param, TString El_ID, TString cc, double dx_b, double dx_e, double dz_b, double dz_e);
+  void executeEventFromParameter(AnalyzerParameter param, TString El_ID, TString tightID, TString cc, double dx_b, double dx_e, double dz_b, double dz_e,  double iso_b, double iso_e);
+				 
+  
   void executeEvent();
 
   HNtypeI_JA();
