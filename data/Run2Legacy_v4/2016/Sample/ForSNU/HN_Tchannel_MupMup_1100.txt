@@ -1,0 +1,2 @@
+/gv0/DATA/SKFlat/Run2Legacy_v4/2016/PrivateMC/HNtypeI/MajoranaNeutrinoToMupMup_Tchannel_M-1100_TuneCUETP8M1_13TeV-madgraph/SKFlat_Run2Legacy_v4/200130_082056/0000/SKFlatNtuple_2016_MC_2.root
+/gv0/DATA/SKFlat/Run2Legacy_v4/2016/PrivateMC/HNtypeI/MajoranaNeutrinoToMupMup_Tchannel_M-1100_TuneCUETP8M1_13TeV-madgraph/SKFlat_Run2Legacy_v4/200130_082056/0000/SKFlatNtuple_2016_MC_1.root

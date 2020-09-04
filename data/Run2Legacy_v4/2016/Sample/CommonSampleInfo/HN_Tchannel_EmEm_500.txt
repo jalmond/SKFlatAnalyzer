@@ -1,0 +1,1 @@
+HN_Tchannel_EmEm_500  MajoranaNeutrinoToEmEm_Tchannel_M-500_TuneCUETP8M1_13TeV-madgraph 7.81e-05 46000 46000 

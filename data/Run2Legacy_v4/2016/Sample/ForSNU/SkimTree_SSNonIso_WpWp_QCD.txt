@@ -1,0 +1,2 @@
+/gv0/DATA/SKFlat/Run2Legacy_v4/2016/MC_SkimTree_SSNonIso/WpWpJJ_QCD_TuneCUETP8M1_13TeV-madgraph-pythia8/2020_09_02_191150/SKFlatNtuple_2016_MC_0.root
+/gv0/DATA/SKFlat/Run2Legacy_v4/2016/MC_SkimTree_SSNonIso/WpWpJJ_QCD_TuneCUETP8M1_13TeV-madgraph-pythia8/2020_09_02_191150/SKFlatNtuple_2016_MC_1.root
