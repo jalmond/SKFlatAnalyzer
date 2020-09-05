@@ -1,0 +1,2 @@
+# alias PD xsec nmc sumw
+HN_Tchannel_EpEp_800_nlo  HeavyNeutrinoToEpEp_Tchannel_M800_NLO 0.0000294 50000 14798.0 

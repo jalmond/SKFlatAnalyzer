@@ -1,0 +1,2 @@
+# alias PD xsec nmc sumw
+HN_Schannel_MumMum_800_nlo  HeavyNeutrinoToMumMum_Schannel_M800_NLO 0.0000277 50000 27340.0 
