@@ -1838,12 +1838,14 @@ void AnalyzerCore::FillHist(TString histname, double value, double weight, int n
 
 }
 
-void AnalyzerCore::FillHist(TString histname, double value, double weight, int n_bin, double *xbins){
+void AnalyzerCore::FillHist(TString histname, double value, double weight, int n_bin, double *xbins, TString label){
 
   TH1D *this_hist = GetHist1D(histname);
   if( !this_hist ){
     this_hist = new TH1D(histname, "", n_bin, xbins);
     this_hist->SetDirectory(NULL);
+    this_hist->GetXaxis()->SetTitle(label);
+
     maphist_TH1D[histname] = this_hist;
   }
 

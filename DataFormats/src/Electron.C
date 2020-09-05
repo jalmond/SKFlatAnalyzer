@@ -182,6 +182,7 @@ bool Electron::PassID(TString ID) const{
   if(ID=="passLooseID") return passLooseID();
   if(ID=="passMediumID") return passMediumID();
   if(ID=="passTightID") return passTightID();
+  if(ID=="passTightID_nocc") return passTightID();
   //if(ID=="passHEEPID") return passHEEPID();
   //if(ID=="passHEEPID2018Prompt") return passHEEP2018Prompt(); // HEEP
   //if(ID=="HEEP_dZ") return Pass_HEEP_dZ(); // HEEP
@@ -197,7 +198,7 @@ bool Electron::PassID(TString ID) const{
   //if(ID=="TEST") return Pass_TESTID();
   //if(ID=="TightWithIPcut") return Pass_CutBasedTightWithIPcut();
   if(ID=="HNVeto2016") return Pass_HNVeto2016();
-  //if(ID=="HNLoose2016") return Pass_HNLoose2016(0.6, 0.2, 0.1, 10.);
+  if(ID=="HNLoose2016") return Pass_HNLoose2016(0.6, 0.2, 0.1, 10.);
   //if(ID=="HNLoose2016IsoUp") return Pass_HNLoose2016(0.7, 0.2, 0.1, 10.);
   //if(ID=="HNLoose2016IsoUp") return Pass_HNLoose2016(0.5, 0.2, 0.1, 10.);
   if(ID=="HNTight2016") return Pass_HNTight2016();
