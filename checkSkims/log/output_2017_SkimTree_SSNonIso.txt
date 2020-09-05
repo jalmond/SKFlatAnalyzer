@@ -1,0 +1,45 @@
+________________________________________________________________________________________________________________________________________________________________________________________________________
+Sample name                                       Alias                         Production Tag      nFiles Nevent    (NOSKIM)      skim_factor(0)%      ForSNU/Input.txt #BadFiles    Valid_CheckSkim   
+                                                                                                                                                                                      DIFF/NOSKIM   SKIM 
+________________________________________________________________________________________________________________________________________________________________________________________________________
+[1]WW_TuneCP5_13TeV-p                             WW_pythia                     2020_09_02_202450   85     201605    (7765828)      2.1591              Yes              0            0.0
+[1]ST_t-channel_antitop_5f_TuneCP5_PSweights_...  SingleTop_tch_antitop_        2020_09_02_202604   258    44779     (7765400)      0.4887              Yes              0            0.0
+[1]ST_t-channel_top_5f_TuneCP5_13TeV-powheg-p                                   2020_09_02_202604   413    63964     (11709100)     0.4683              Yes              0            0.0
+[1]QCD_Pt-20to30_EMEnriched_TuneCP5_13TeV_pyt     QCD_Pt-20to30_EMEnrich        2020_09_02_202604   125    48        (11212810)     0.0067              Yes              0            0.0
+[1]WZZ_Tune                                       WZZ                           2020_09_02_202604   5      23227     (250000)       7.5261              Yes              0            0.0
+[1]TTWJetsToLNu_TuneCP5_PSweights_13TeV-amcat...  ttWToLNu                      2020_09_02_202604   122    1032316   (4908905)      14.8636             Yes              0            0.0
+[1]TTTo2L2Nu_TuneCP5_PSweights_13TeV-powheg-p     TTLL_powheg                   2020_09_02_202450   1056   23014803  (69155808)     24.2153             Yes              0            0.0
+[1]ST_s-channel_4f_leptonDecays_TuneCP5_PSwei...  Singl                         2020_09_02_202604   147    183322    (9914948)      1.5167              Yes              0            0.0
+[1]QCD_Pt-120to170_EMEnriched_TuneCP5_13TeV_p     QCD_Pt-120to170_EMEnri        2020_09_02_202604   163    748       (8515107)      0.0272              Yes              0            0.0
+[1]WZ_TuneCP5_13TeV-p                             WZ_pythia                     2020_09_02_202450   50     157886    (3928630)      3.5410              Yes              0            0.0
+[1]TGJets_TuneCP5_13TeV_amcatnlo_madspin_pyth     TG                            2020_09_02_202604   60     26490     (1909000)      1.1033              Yes              0            0.0
+[1]WGToLNuG_01J_5f_TuneCP5_13TeV-amcatnloFXFX     WGToLNuG_0                    2020_09_03_092904   418    275883    (25918966)     0.9622              Yes              0            0.0
+[1]DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX     DYJets                        2020_09_02_202450   2329   51644893  (209747524)    21.2596             Yes              0            0.0
+[1]ZZ_TuneCP5_13TeV-p                             ZZ_pythia                     2020_09_02_202450   27     134627    (1925931)      6.1470              Yes              0            0.0
+[1]TTGJets_TuneCP5_13TeV-amcatnloFXFX-madspin     TTG                           2020_09_02_202604   193    441850    (7349100)      4.3291              Yes              0            0.0
+[1]W                                              WpWp_EWK                      2020_09_02_202604   16     47986     (145800)       25.7839             Yes              0            0.0
+[1]ZZZ_Tune                                       ZZZ                           2020_09_02_202604   22     29185     (250000)       9.4099              Yes              0            0.0
+[1]WWTo2L2Nu_NNPDF31_TuneCP5_PSweights_13TeV-...  WWTo2L                        2020_09_02_202604   25     465001    (2000000)      18.7406             Yes              0            0.0
+[1]WWToLNuQQ_NNPDF31_TuneCP5_13TeV-powheg-pyt     WWToLN                        2020_09_02_202604   122    26494     (8782525)      0.2842              Yes              0            0.0
+[1]QCD_Pt-300toInf_EMEnriched_TuneCP5_13TeV_p     QCD_Pt-300toInf_EMEnri        2020_09_02_202604   49     716       (2874295)      0.0394              Yes              0            0.0
+[1]DYJetsToLL_M-10to50_TuneCP5_13TeV-madgraph...  DYJets1                       2020_09_02_202604   957    485426    (79058069)     0.6465              Yes              0            0.0
+[1]TTToSemiLeptonic_TuneCP5_13TeV-powheg-pyth     TTLJ_powheg                   2020_09_02_202604   828    1143692   (43732445)     1.9885              Yes              0            0.0
+[1]W                                              WpWp_QCD                      2020_09_02_202604   14     36234     (150000)       19.1629             Yes              0            0.0
+[1]GluGluToContinToZZTo4e_13TeV_TuneCP5_MCFM7...  ggZZTo4e                      2020_09_02_202604   57     843893    (985300)       68.8889             Yes              0            0.0
+[1]GluGluHToZZTo4L_M125_13TeV_powheg2_JHUGenV...  ggHToZZTo4L                   2020_09_02_202604   95     1039929   (1976312)      43.1837             Yes              0            0.0
+[1]GluGluToContinToZZTo2e2mu_13TeV_TuneCP5_MC...  ggZZTo2e2mu                   2020_09_02_202604   25     459781    (500000)       74.4531             Yes              0            0.0
+[1]QCD_Pt-30to50_EMEnriched_TuneCP5_13TeV_pyt     QCD_Pt-30to50_EMEnrich        2020_09_02_202604   176    158       (14766010)     0.0102              Yes              0            0.0
+[1]QCD_Pt-80to120_EMEnriched_TuneCP5_13TeV_py     QCD_Pt-80to120_EMEnric        2020_09_02_202604   108    503       (9104852)      0.0177              Yes              0            0.0
+[1]WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythi     WJets_MG                      2020_09_02_202450   488    12232     (30008250)     0.0619              Yes              0            0.0
+[1]ST_tW_antitop_5f_NoFullyHadronicDecays_Tun...  SingleTop_tW_antitop_N...     2020_09_02_202604   103    460915    (5635539)      5.9434              Yes              0            0.0
+[1]ST_tW_top_5f_NoFullyHadronicDecays_TuneCP5...  SingleTop_tW_top_NoFul        2020_09_02_202604   88     416822    (5103599)      5.9656              Yes              0            0.0
+[1]VBF_HToZZTo4L_M125_13TeV_powheg2_JHUGenV70...  VBF_HToZZ                     2020_09_02_202604   29     573641    (1000000)      46.2373             Yes              0            0.0
+[1]VHToNonbb_M125_13TeV_amcatnloFXFX_madspin_     VHToNonbb                     2020_09_02_202604   35     50230     (918508)       4.3598              Yes              0            0.0
+[1]WW                                             WWTo2L2Nu_                    2020_09_02_202604   31     135212    (968000)       12.0062             Yes              0            0.0
+[1]WWW_4                                          WWW                           2020_09_02_202604   21     19834     (232300)       6.5387              Yes              0            0.0
+[1]WWZ_4                                          WWZ                           2020_09_02_202604   24     21193     (250000)       6.6772              Yes              0            0.0
+[1]GluGluToContinToZZTo2e2tau_13TeV_TuneCP5_M...  ggZZTo2e2t                    2020_09_02_202604   25     294027    (500000)       46.3735             Yes              0            0.0
+[1]ttHToNonbb_M125_TuneCP5_13TeV-powheg-pythi     ttHToNonbb                    2020_09_02_202604   164    997082    (7966779)      8.9388              Yes              0            0.0
+[1]t                                              ttZ                           2020_09_02_202604   199    929998    (8536618)      8.1085              Yes              0            0.0
+[1]QCD_Pt-50to80_EMEnriched_TuneCP5_13TeV_pyt     QCD_Pt-50to80_EMEnrich        2020_09_02_202604   128    298       (10477146)     0.0147              Yes              0            0.0
+[1]ZGToLLG_01J_5f_TuneCP5_13TeV-amcatnloFXFX-     ZGToLLG_01J                   2020_09_03_093307   526    9268056   (30490034)     25.4693             Yes              0            0.0
