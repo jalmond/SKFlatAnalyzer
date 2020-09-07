@@ -118,9 +118,8 @@ public:
   inline bool passMVAID_iso_WP90() const {return PassSelector(POG_MVA_ISO_WP90); }
   inline bool passMVAID_noiso_WPLoose() const {return PassSelector(POG_MVA_NOISO_WPLOOSE); }
   inline bool passHEEPID() const {return PassSelector(POG_HEEP); }
+
   bool passHEEP2018Prompt() const; // HEEP
-  bool Pass_HEEP_dZ() const; //HEEP
-  bool Pass_HEEP2018_dZ() const; // HEEP
 
   bool Pass_SUSYMVAWP(TString wp) const;
   bool Pass_SUSYTight() const;
