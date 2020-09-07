@@ -26,6 +26,7 @@ class HNtypeI_JA : public AnalyzerCore {
   bool isEE;
   bool isMM;
   bool Signal;
+  bool SignalOS;
   bool PromptLeptonOnly;
 
   bool HEM1516;
@@ -90,9 +91,9 @@ class HNtypeI_JA : public AnalyzerCore {
   double GetMass(TString type , std::vector<Jet> jets, std::vector<FatJet> fatjets);
   void FilAllElectronPlots(TString label , TString cut,  std::vector<Electron> els, float w);
   double MT(Particle a, Particle b);
-  void FillRegionPlots(bool plotCR,TString label_1, TString label_2,  std::vector<Jet> jets, std::vector<FatJet> fatjets,  std::vector<Electron> els, std::vector<Muon> mus, Particle  met, double nvtx, double w);
-  void FillSigRegionPlots1(int sysdir, TString sys, double sysval, TString label_1, TString label_2,  std::vector<Jet> jets, std::vector<FatJet> fatjets,  std::vector<Electron> els, std::vector<Muon> mus, Particle  met, double nvtx, double w, double var1,  double var2, double var3, double var4, double var5, double var6, double var7, double var8, double var9, double var10, double var11);
-  void FillSigRegionPlots2(int sysdir, TString sys, double sysval, TString label_1, TString label_2,  std::vector<Jet> jets, std::vector<FatJet> fatjets,  std::vector<Electron> els, std::vector<Muon> mus, Particle  met, double nvtx, double w, double var1,  double var2, double var3, double var4, double var5, double var6, double var7);
+  void FillRegionPlots(int channel, bool plotCR,TString label_1, TString label_2,  std::vector<Jet> jets, std::vector<FatJet> fatjets,  std::vector<Electron> els, std::vector<Muon> mus, Particle  met, double nvtx, double w);
+  void FillSigRegionPlots1(int channel,int sysdir, TString sys, double sysval, TString label_1, TString label_2,  std::vector<Jet> jets, std::vector<FatJet> fatjets,  std::vector<Electron> els, std::vector<Muon> mus, Particle  met, double nvtx, double w, double var1,  double var2, double var3, double var4, double var5, double var6, double var7, double var8, double var9, double var10, double var11);
+  void FillSigRegionPlots2(int channel,int sysdir, TString sys, double sysval, TString label_1, TString label_2,  std::vector<Jet> jets, std::vector<FatJet> fatjets,  std::vector<Electron> els, std::vector<Muon> mus, Particle  met, double nvtx, double w, double var1,  double var2, double var3, double var4, double var5, double var6, double var7);
 
 
   void MakeSignalPlots();

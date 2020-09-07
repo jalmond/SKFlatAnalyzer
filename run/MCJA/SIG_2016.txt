@@ -10,7 +10,6 @@ HN_Schannel_MupMup_100
 HN_Schannel_MupMup_200
 HN_Schannel_MupMup_500
 HN_Schannel_MupMup_1100
-HN_Tchannel_MupMup_100
 HN_Tchannel_MupMup_200
 HN_Tchannel_MupMup_500
 HN_Tchannel_MupMup_1100
