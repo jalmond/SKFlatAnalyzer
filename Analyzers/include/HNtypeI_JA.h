@@ -1,4 +1,4 @@
-#ifndef HNWRAnalyzer_h
+#ifndef HNtypeI_JA_h
 #define HNtypeI_JA_h
 
 #include "TRandom.h"
@@ -90,10 +90,29 @@ class HNtypeI_JA : public AnalyzerCore {
   bool PassHNID(TString TightID, Electron el);
   double GetMass(TString type , std::vector<Jet> jets, std::vector<FatJet> fatjets);
   void FilAllElectronPlots(TString label , TString cut,  std::vector<Electron> els, float w);
+  void FilAllMuonPlots(TString label , TString cut,  std::vector<Muon> mus, float w);
   double MT(Particle a, Particle b);
   void FillRegionPlots(int channel, bool plotCR,TString label_1, TString label_2,  std::vector<Jet> jets, std::vector<FatJet> fatjets,  std::vector<Electron> els, std::vector<Muon> mus, Particle  met, double nvtx, double w);
-  void FillSigRegionPlots1(int channel,int sysdir, TString sys, double sysval, TString label_1, TString label_2,  std::vector<Jet> jets, std::vector<FatJet> fatjets,  std::vector<Electron> els, std::vector<Muon> mus, Particle  met, double nvtx, double w, double var1,  double var2, double var3, double var4, double var5, double var6, double var7, double var8, double var9, double var10, double var11);
-  void FillSigRegionPlots2(int channel,int sysdir, TString sys, double sysval, TString label_1, TString label_2,  std::vector<Jet> jets, std::vector<FatJet> fatjets,  std::vector<Electron> els, std::vector<Muon> mus, Particle  met, double nvtx, double w, double var1,  double var2, double var3, double var4, double var5, double var6, double var7);
+  void FillSigRegionPlots1(int channel,int sysdir, TString sys, double sysval, TString label_1, TString label_2, TString label_3,  std::vector<Jet> jets, std::vector<FatJet> fatjets,  std::vector<Electron> els, std::vector<Muon> mus, Particle  met, double nvtx, double w, double var1,  double var2, double var3, double var4, double var5, double var6, double var7, double var8, double var9, double var10, double var11);
+  void FillSigRegionPlots2(int channel,int sysdir, TString sys, double sysval, TString label_1, TString label_2, TString label_3,  std::vector<Jet> jets, std::vector<FatJet> fatjets,  std::vector<Electron> els, std::vector<Muon> mus, Particle  met, double nvtx, double w, double var1,  double var2, double var3, double var4, double var5, double var6, double var7);
+
+
+  int GetNBJets();
+
+  void FillZZCRPlots(int i_channel, std::vector<Electron> electrons, std::vector<Electron> electrons_veto, std::vector<Muon> muons, std::vector<Muon> muons_veto, std::vector<Jet> jets, std::vector<FatJet> fatjets,  Event ev, TString label, float w);
+  void FillWZCRPlots(int i_channel, std::vector<Electron> electrons, std::vector<Electron> electrons_veto, std::vector<Muon> muons, std::vector<Muon> muons_veto, std::vector<Jet> jets, std::vector<FatJet> fatjets,  Event ev, TString label, float w);
+				 
+
+
+  void FillAllSignalRegion1(int i_channel, TString signal_region, bool isdata, TString charge_s, TString label, std::vector<Jet> jets, std::vector<FatJet> fatjets, std::vector<Electron> electrons, std::vector<Muon> muons,  Particle _met,int _npv , double w );
+					
+  void FillAllSignalRegion2(int i_channel, TString signal_region, bool isdata, TString charge_s, TString label, std::vector<Jet> jets, std::vector<FatJet> fatjets, std::vector<Electron> electrons, std::vector<Muon> muons,  Particle _met,int _npv , double w );
+
+			    
+
+  vector<pair<int, pair<TString, double> > >  GetSyst(int i_channel, bool isdata);
+  double GetST( std::vector<Electron> electrons, std::vector<Muon> muons, std::vector<Jet> jets, std::vector<FatJet> fatjets,  Event ev);
+  double GetST( std::vector<Electron> electrons, std::vector<Muon> muons, std::vector<Jet> jets, std::vector<FatJet> fatjets, Particle met);
 
 
   void MakeSignalPlots();
@@ -109,6 +128,7 @@ class HNtypeI_JA : public AnalyzerCore {
 
   void FillWeightHist(TString label, double _weight);
   void FillCutFlow(bool IsCentral, TString suffix, TString histname, double weight);
+  void FillEventCutflow(int charge_s,int version,float wt,TString cut,    TString label);
 
   //==== LSF SF
   double LSFSF(int lepflav, int dir);

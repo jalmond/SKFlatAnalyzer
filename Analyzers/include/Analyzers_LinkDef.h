@@ -17,6 +17,7 @@
 #pragma link C++ class SkimTree_SSNonIso+;
 #pragma link C++ class SkimTree_Dilepton+;
 #pragma link C++ class SkimTree_HNFake+;
+#pragma link C++ class FakeRateHN+;
 #pragma link C++ class MeasureJetTaggingEfficiency+;
 #pragma link C++ class HNAnalyzerCore+;
 #pragma link C++ class HNtypeI_FakeRate+;

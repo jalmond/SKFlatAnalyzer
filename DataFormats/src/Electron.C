@@ -183,6 +183,7 @@ bool Electron::PassID(TString ID) const{
   if(ID=="passMediumID") return passMediumID();
   if(ID=="passTightID") return passTightID();
   if(ID=="passTightID_nocc") return passTightID();
+  if(ID=="passTightID_noccb") return passTightID();
   //if(ID=="passHEEPID") return passHEEPID();
   //if(ID=="passHEEPID2018Prompt") return passHEEP2018Prompt(); // HEEP
   //if(ID=="HEEP_dZ") return Pass_HEEP_dZ(); // HEEP
@@ -363,6 +364,7 @@ bool Electron::Pass_HNVeto2016() const{
     if(! (MVANoIso()>-0.1) ) return false;
   }
   if(! (fabs(dXY())<0.2 && fabs(dZ())<0.5) ) return false;
+
   if(! (RelIso()<0.6) ) return false;
 
   return true;

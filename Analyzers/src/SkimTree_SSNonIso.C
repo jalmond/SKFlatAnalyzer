@@ -5,9 +5,9 @@ void SkimTree_SSNonIso::initializeAnalyzer(){
   outfile->cd();
   cout << "[SkimTree_SSNonIso::initializeAnalyzer()] gDirectory = " << gDirectory->GetName() << endl;
   newtree = fChain->CloneTree(0);
-
+  /*
   if( MCSample.Contains("HN") ){
-    cout << "[SkimTree_SSNonIso::initializeAnalyzer()] This is HN sample, so saving gen_* and LHE_* for Z-pt reweighting" << endl;
+  cout << "[SkimTree_SSNonIso::initializeAnalyzer()] This is HN sample, so saving gen_* and LHE_* for Z-pt reweighting" << endl;
   }
   else{
     cout << "[SkimTree_SSNonIso::initializeAnalyzer()] Throwing away gen_* and LHE_*" << endl;
@@ -16,7 +16,9 @@ void SkimTree_SSNonIso::initializeAnalyzer(){
       newtree->SetBranchStatus("LHE_*",0);
       newtree->SetBranchStatus("gen_weight",1); // for MCweight()
     }
-  }
+    }
+  */
+
 
   triggers.clear();
   if(DataYear==2016){

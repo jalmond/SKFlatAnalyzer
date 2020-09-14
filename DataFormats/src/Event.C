@@ -73,12 +73,22 @@ double Event::GetTriggerLumi(TString trig){
     else if(trig=="HLT_Mu3_PFJet40_v"){
       return 7.408;
     }
+    else if(trig=="HLT_Mu8_TrkIsoVVL_v"){
+      return 7.801;
+    }
+    else if(trig=="HLT_Mu17_TrkIsoVVL_v"){
+      return 216.748;
+    }
     else if(trig=="HLT_IsoMu24_v"){
       return 35918.219;
     }
     else if(trig=="HLT_Ele8_CaloIdL_TrackIdL_IsoVL_PFJet30_v"){
       return 6.988;
     }
+    else if(trig=="HLT_Ele17_CaloIdM_TrackIdM_PFJet30_v"){
+      return 62.761;
+    }
+
     else if(trig=="HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_v"){
       return 14.851;
     }
@@ -123,6 +133,12 @@ double Event::GetTriggerLumi(TString trig){
     }
     else if(trig=="HLT_Mu3_PFJet40_v"){
       return 4.612;
+    }
+    else if(trig=="HLT_Mu8_TrkIsoVVL_v"){
+      return 2.903;
+    }
+    else if(trig=="HLT_Mu17_TrkIsoVVL_v"){
+      return 65.943;
     }
     else if(trig=="HLT_Mu8_v"){
       //==== 180829 Norm Checked : sf = 1.41036
@@ -199,6 +215,9 @@ double Event::GetTriggerLumi(TString trig){
     else if(trig=="HLT_Ele15_CaloIdL_TrackIdL_IsoVL_PFJet30_v"){
       return 0.001;
     }
+    else if(trig=="HLT_Ele17_CaloIdM_TrackIdM_PFJet30_v"){
+      return 35.594;
+    }
     else if(trig=="HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v"){
       return 43.468;
     }
@@ -232,6 +251,28 @@ double Event::GetTriggerLumi(TString trig){
     if(trig=="Full"){
       return 59735.969;
     }
+    else if(trig=="HLT_Ele8_CaloIdL_TrackIdL_IsoVL_PFJet30_v"){
+      return 6.412;
+    }
+    else if(trig=="HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_v"){
+      return 38.849;
+    }
+    else if(trig=="HLT_Ele17_CaloIdM_TrackIdM_PFJet30_v"){
+      return 38.861;
+    }
+    else if(trig=="HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v"){
+      return 38.906;
+    }
+    else if(trig=="HLT_Mu3_PFJet40_v"){
+      return 2.696;
+    }
+    else if(trig=="HLT_Mu8_TrkIsoVVL_v"){
+      return 8.561;
+    }
+    else if(trig=="HLT_Mu17_TrkIsoVVL_v"){
+      return 45.781;
+    }
+
     else{
       cout << "[Event::GetTriggerLumi] Wrong trigger (DataYear=" << j_DataYear << ", trig=" << trig << ")" << endl;
       exit(EXIT_FAILURE);

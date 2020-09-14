@@ -1,2 +1,2 @@
 # alias PD xsec nmc sumw
-HN_Schannel_EmEm_1500_nlo  HeavyNeutrinoToEmEm_Schannel_M1500_NLO 0.00000121 50000 25170.0 
+HN_Schannel_EmEm_1500_nlo  HeavyNeutrinoToEmEm_Schannel_M1500_NLO 2.7225e-07 30000 25170.0 

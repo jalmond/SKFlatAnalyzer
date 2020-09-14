@@ -1,0 +1,2 @@
+# alias PD xsec nmc sumw
+HN_Tchannel_EmEm_500_nlo  HeavyNeutrinoToEmEm_Tchannel_M500_NLO 3.5145e-05 30000 13980.0 

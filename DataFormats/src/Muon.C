@@ -132,7 +132,7 @@ bool Muon::PassID(TString ID) const {
   if(ID=="HNLooseV2") return Pass_HNLoose(0.4, 0.05, 0.1);
   if(ID=="HNLooseV2IsoUp") return Pass_HNLoose(0.5, 0.05, 0.1);
   if(ID=="HNLooseV2IsoDown") return Pass_HNLoose(0.3, 0.05, 0.1);
-  if(ID=="HNTightV1") return Pass_HNTight(0.1, 0.05, 0.1);
+  if(ID=="HNTightV1") return Pass_HNTight(0.07, 0.01, 0.1);
   if(ID=="HNTightV2") return Pass_HNTight(0.1, 0.01, 0.04);
 
   if(ID=="ISRLoose") return Pass_ISRLoose(0.4);
@@ -215,7 +215,7 @@ bool Muon::Pass_HNLoose(double relisoCut, double dxyCut, double dzCut) const {
 bool Muon::Pass_HNTight(double relisoCut, double dxyCut, double dzCut) const {
   if(!( isPOGTight() )) return false;
   if(!( RelIso()<relisoCut )) return false;
-  if(!( fabs(dXY())<dxyCut && fabs(dZ())<dzCut) ) return false;
+  if(!( fabs(dXY())<dxyCut && fabs(dZ())<dzCut &&fabs(IP3D()/IP3Derr())<3. )) return false;
   return true;
 }
 

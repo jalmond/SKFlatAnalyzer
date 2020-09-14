@@ -1,2 +1,2 @@
 # alias PD xsec nmc sumw
-HN_Tchannel_MupMup_900_nlo  HeavyNeutrinoToMupMup_Tchannel_M900_NLO 0.0000222 50000 14670.0 
+HN_Tchannel_MupMup_900_nlo  HeavyNeutrinoToMupMup_Tchannel_M900_NLO 1.221e-05 30000 14670.0 
