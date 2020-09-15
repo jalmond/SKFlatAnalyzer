@@ -171,12 +171,13 @@ def RunCheckSumList(inputlist , inputlist_skim, skim, y):
 
 def RemoveJobFile(filepath, alias, skim,y):
     dirpath="/data6/Users/jalmond/SKFlatOutput//Run2Legacy_v4/GetEffLumi/"+y+"/"
-    if os.path.exists(dirpath+"/CheckSkim_"+skim+"_"+alias+".root"):
-        os.system("rm " + dirpath+"/CheckSkim_"+skim+"_"+alias+".root")
-    if not os.path.exists(dirpath+"/CheckSkim_"+alias+".root"):
-        os.system("rm " + dirpath+"/CheckSkim_"+alias+".root")
-    if not os.path.exists(dirpath+"/GetEffLumi_"+_x+".root"):
-        os.system("rm " + dirpath+"/GetEffLumi_"+_x+".root")
+    dirpath2="/data6/Users/jalmond/SKFlatOutput//Run2Legacy_v4/CheckSkim/"+y+"/"
+    if os.path.exists(dirpath2+"/CheckSkim_"+skim+"_"+alias+".root"):
+        os.system("rm " + dirpath2+"/CheckSkim_"+skim+"_"+alias+".root")
+    if not os.path.exists(dirpath2+"/CheckSkim_"+alias+".root"):
+        os.system("rm " + dirpath2+"/CheckSkim_"+alias+".root")
+    if not os.path.exists(dirpath+"/GetEffLumi_"+alias+".root"):
+        os.system("rm " + dirpath+"/GetEffLumi_"+alias+".root")
     return
 
 def RunCheckWSum(filepath, alias,y ):
@@ -267,7 +268,7 @@ datetag= ["-"]
 import ROOT
 
 
-ex_datetag=["2020_06"]
+ex_datetag=["2020_06","2020_09_02","2020_09_03"]
 other_tags=[]
 samples_added=[]
 test=False

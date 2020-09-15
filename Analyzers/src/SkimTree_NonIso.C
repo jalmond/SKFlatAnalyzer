@@ -18,6 +18,9 @@ void SkimTree_NonIso::initializeAnalyzer(){
     }
   }
 
+  isSingleMu = HasFlag("isSingleMu");
+
+
   triggers.clear();
   if(DataYear==2016){
     triggers = {
@@ -31,26 +34,58 @@ void SkimTree_NonIso::initializeAnalyzer(){
     };
   }
   else if(DataYear==2017){
-    triggers = {
-      "HLT_Mu3_PFJet40_v",                             // SingleMuon
-      "HLT_Mu8_TrkIsoVVL_v",                           // DoubleMuon
-      "HLT_Mu17_TrkIsoVVL_v",                          // DoubleMuon
-      "HLT_Ele8_CaloIdL_TrackIdL_IsoVL_PFJet30_v",     // SingleElectron
-      "HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_v",    // SingleElectron
-      "HLT_Ele17_CaloIdM_TrackIdM_PFJet30_v",          // SingleElectron
-      "HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v"     // SingleElectron
-    };
+    if(IsData){
+      if(isSingleMu) triggers = { "HLT_Mu3_PFJet40_v"};
+      else{
+	triggers = {
+	  "HLT_Mu8_TrkIsoVVL_v",                           // DoubleMuon
+	  "HLT_Mu17_TrkIsoVVL_v",                          // DoubleMuon
+	  "HLT_Ele8_CaloIdL_TrackIdL_IsoVL_PFJet30_v",     // SingleElectron
+	  "HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_v",    // SingleElectron
+	  "HLT_Ele17_CaloIdM_TrackIdM_PFJet30_v",          // SingleElectron
+	  "HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v"     // SingleElectron
+	};
+      }
+    }
+    else {
+      triggers = {
+	"HLT_Mu3_PFJet40_v",
+	"HLT_Mu8_TrkIsoVVL_v",                           // DoubleMuon                                                                                                          
+	"HLT_Mu17_TrkIsoVVL_v",                          // DoubleMuon                                                                                                          
+	"HLT_Ele8_CaloIdL_TrackIdL_IsoVL_PFJet30_v",     // SingleElectron                                                                                                      
+	"HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_v",    // SingleElectron                                                                                                      
+	"HLT_Ele17_CaloIdM_TrackIdM_PFJet30_v",          // SingleElectron                                                                                                      
+	"HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v"     // SingleElectron                                                                                                      
+      };
+
+    }
   }
   else if(DataYear==2018){
-    triggers = {
-      "HLT_Mu3_PFJet40_v",                             // SingleMuon
-      "HLT_Mu8_TrkIsoVVL_v",                           // DoubleMuon
-      "HLT_Mu17_TrkIsoVVL_v",                          // DoubleMuon
-      "HLT_Ele8_CaloIdL_TrackIdL_IsoVL_PFJet30_v",     // EGamma
-      "HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_v",    // EGamma
-      "HLT_Ele17_CaloIdM_TrackIdM_PFJet30_v",          // EGamma
-      "HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v"     // EGamma
-    };
+    if(IsData){
+      if(isSingleMu) triggers = {"HLT_Mu3_PFJet40_v"};
+      else {
+	triggers = {
+	  "HLT_Mu8_TrkIsoVVL_v",                           // DoubleMuon
+	  "HLT_Mu17_TrkIsoVVL_v",                          // DoubleMuon
+	  "HLT_Ele8_CaloIdL_TrackIdL_IsoVL_PFJet30_v",     // EGamma
+	  "HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_v",    // EGamma
+	  "HLT_Ele17_CaloIdM_TrackIdM_PFJet30_v",          // EGamma
+	  "HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v"     // EGamma
+	};
+      }
+    }
+    else{
+      triggers = {
+	"HLT_Mu3_PFJet40_v",
+	"HLT_Mu8_TrkIsoVVL_v",                           // DoubleMuon                                                                                                          
+	"HLT_Mu17_TrkIsoVVL_v",                          // DoubleMuon                                                                                                          
+	"HLT_Ele8_CaloIdL_TrackIdL_IsoVL_PFJet30_v",     // EGamma                                                                                                              
+	"HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_v",    // EGamma                                                                                                              
+	"HLT_Ele17_CaloIdM_TrackIdM_PFJet30_v",          // EGamma                                                                                                              
+	"HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v"     // EGamma                                                                                                              
+      };
+
+    }
   }
   else{
     cout << "[SkimTree_NonIso::initializeAnalyzer] DataYear is wrong : " << DataYear << endl;
@@ -84,8 +119,8 @@ void SkimTree_NonIso::executeEvent(){
 
   //==== Skim 2) at least two leptons (e or mu) with pt > "LeptonPtCut"
 
-  vector<Muon> allmuons = GetMuons("HNLoosest", 10., 2.4);
-  vector<Electron> allel = GetElectrons("HNLoosest", 10., 2.4);
+  vector<Muon> allmuons = GetMuons("HNLoosest", 5., 2.4);
+  vector<Electron> allel = GetElectrons("HNLoosest", 8., 2.4);
 
   int NLep = allmuons.size() + allel.size();
   

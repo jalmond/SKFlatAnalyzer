@@ -865,7 +865,6 @@
 /gv0/DATA/SKFlat/Run2Legacy_v4/2018/MC_SkimTree_SSNonIso/WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/2020_09_08_224547/SKFlatNtuple_2018_MC_877.root
 /gv0/DATA/SKFlat/Run2Legacy_v4/2018/MC_SkimTree_SSNonIso/WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/2020_09_08_224547/SKFlatNtuple_2018_MC_878.root
 /gv0/DATA/SKFlat/Run2Legacy_v4/2018/MC_SkimTree_SSNonIso/WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/2020_09_08_224547/SKFlatNtuple_2018_MC_879.root
-/gv0/DATA/SKFlat/Run2Legacy_v4/2018/MC_SkimTree_SSNonIso/WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/2020_09_08_224547/SKFlatNtuple_2018_MC_88.root
 /gv0/DATA/SKFlat/Run2Legacy_v4/2018/MC_SkimTree_SSNonIso/WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/2020_09_08_224547/SKFlatNtuple_2018_MC_880.root
 /gv0/DATA/SKFlat/Run2Legacy_v4/2018/MC_SkimTree_SSNonIso/WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/2020_09_08_224547/SKFlatNtuple_2018_MC_881.root
 /gv0/DATA/SKFlat/Run2Legacy_v4/2018/MC_SkimTree_SSNonIso/WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/2020_09_08_224547/SKFlatNtuple_2018_MC_882.root

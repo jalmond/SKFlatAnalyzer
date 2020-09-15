@@ -183,7 +183,8 @@ bool Electron::PassID(TString ID) const{
   if(ID=="passMediumID") return passMediumID();
   if(ID=="passTightID") return passTightID();
   if(ID=="passTightID_nocc") return passTightID();
-  if(ID=="passTightID_noccb") return passTightID();
+  if(ID=="passTightID_noccb") return passTightID_NoCCB();
+  if(ID=="passLooseID_noccb") return passLooseID_NoCCB();
   //if(ID=="passHEEPID") return passHEEPID();
   //if(ID=="passHEEPID2018Prompt") return passHEEP2018Prompt(); // HEEP
   //if(ID=="HEEP_dZ") return Pass_HEEP_dZ(); // HEEP
@@ -386,6 +387,38 @@ bool Electron::Pass_HNLoose2016(double relisoCut, double dxyCut, double dzCut, d
   if(! (IsGsfCtfScPixChargeConsistent()) ) return false;
 
   if(! (Pass_TriggerEmulation()) ) return false;
+
+  return true;
+}
+
+bool Electron::passTightID_NoCCB() const {
+
+  if(! (passTightID()) ) return false;
+  if(! (PassConversionVeto()) ) return false;
+  if(! (Pass_TriggerEmulation()) ) return false;
+  if( fabs(scEta())  <= 1.479 ){
+    if( !(fabs(dXY()) < 0.05 && fabs(dZ())< 0.1 )) return false;
+  }
+  else{
+    if(! (IsGsfCtfScPixChargeConsistent()) )return false;
+    if( !(fabs(dXY()) < 0.05 && fabs(dZ())< 0.1 )) return false;
+  }
+
+  return true;
+}
+bool Electron::passLooseID_NoCCB() const {
+
+  if(! (Pass_CutBasedLooseNoIso()) ) return false;
+  if(! (PassConversionVeto()) ) return false;
+  if(! (Pass_TriggerEmulation()) ) return false;
+  if( fabs(scEta())  <= 1.479 ){
+    if( !(fabs(dXY()) < 0.1 && fabs(dZ())< 0.2 )) return false;
+  }
+  else{
+    if(! (IsGsfCtfScPixChargeConsistent()) )return false;
+    if( !(fabs(dXY()) < 0.1 && fabs(dZ())< 0.2 )) return false;
+  }
+  if(! (RelIso()<0.6) ) return false;
 
   return true;
 }

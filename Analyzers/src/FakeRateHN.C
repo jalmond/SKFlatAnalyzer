@@ -95,26 +95,32 @@ void FakeRateHN::executeEvent(){
   //************************************************///
   vector<pair<TString, TString> > MuIDs; vector<pair<TString, TString> > ELIDs;
   vector<TString> channel;
-  vector<TString>  loose_id;
+  vector<TString>  mu_loose_id;
+  vector<TString>  el_loose_id;
   if(isEE||!IsDATA){
     channel.push_back("EE");
-    //channel.push_back("EE");
+    channel.push_back("EE");
     ELIDs.push_back(make_pair("HNTight2016", "HNVeto2016"));
-    //ELIDs.push_back(make_pair("passTightID", "HNVeto2016"));
+    ELIDs.push_back(make_pair("passTightID_noccb", "HNVeto2016"));
     MuIDs.push_back(make_pair("HNVeto2016","HNVeto2016"));
-    //MuIDs.push_back(make_pair("HNVeto2016","HNVeto2016"));
-    //loose_id.push_back("HNLoose2016");
-    loose_id.push_back("HNLoose2016");
+    MuIDs.push_back(make_pair("HNVeto2016","HNVeto2016"));
+    el_loose_id.push_back("HNLoose2016");
+    el_loose_id.push_back("passLooseID_noccb");
+    mu_loose_id.push_back("HNLoose2016");
+    mu_loose_id.push_back("HNLoose2016");
   }
   if(isSingleMu || isMM||!IsDATA){
     channel.push_back("MuMu");
-    //channel.push_back("MuMu");
-    //ELIDs.push_back(make_pair("HNVeto2016", "HNVeto2016"));
+    channel.push_back("MuMu");
+    ELIDs.push_back(make_pair("HNVeto2016", "HNVeto2016"));
     ELIDs.push_back(make_pair("HNVeto2016", "HNVeto2016"));
     MuIDs.push_back(make_pair("HNTight2016", "HNVeto2016"));
-    //MuIDs.push_back(make_pair("POGTightPFIsoVeryTight","HNVeto2016"));
-    //loose_id.push_back("HNLoose2016");
-    loose_id.push_back("HNLoose2016");
+    MuIDs.push_back(make_pair("POGTightPFIsoVeryTight","HNVeto2016"));
+    mu_loose_id.push_back("HNLoose2016");
+    mu_loose_id.push_back("HNLoose2016");
+    el_loose_id.push_back("HNLoose2016");
+    el_loose_id.push_back("HNLoose2016");
+
 
   }
   
@@ -136,9 +142,9 @@ void FakeRateHN::executeEvent(){
 
     TString MuonTightID      = MuIDs[it_id].first;
     TString MuonVetoID      = MuIDs[it_id].second;
-    TString MuonLooseID  =  loose_id[it_id];
+    TString MuonLooseID  =  mu_loose_id[it_id];
     TString ElectronTightID = ELIDs[it_id].first;
-    TString ElectronLooseID = loose_id[it_id];
+    TString ElectronLooseID = el_loose_id[it_id];
     TString ElectronVetoID  = ELIDs[it_id].second;
 
     TString FakeRateID =  ElectronLooseID;
@@ -345,9 +351,7 @@ void FakeRateHN::executeEventFromParameter(AnalyzerParameter param, TString El_I
   // select trigger
   //************************************************///   
 
-  param.Name = param.Electron_Tight_ID;
   if(ee) RunE(tight_electrons, loose_electrons,tight_muons,loose_muons, jets, fatjets, ev,  param, weight);
-  param.Name = param.Muon_Tight_ID;
   if(!ee) RunM(tight_electrons, loose_electrons,tight_muons,loose_muons,  jets, fatjets,ev, param, weight);
   
 }
@@ -819,7 +823,7 @@ void FakeRateHN::GetFakeRates(std::vector<Muon> loose_mu, std::vector<Muon> tigh
     float mu_pt = loose_mu.at(0).Pt();
     //float mu_pt_corr = loose_mu.at(0).Pt()*(1+max(0.,(loose_mu.at(0).RelIso()-isocut))) ; /// will need changing for systematics 
     float mu_pt_corr =  loose_mu[0].CalcPtCone(loose_mu[0].RelIso(), 0.07);
-
+    if(mu_pt_corr > 200.) mu_pt_corr = 200.;
     TString triggerslist_3="HLT_Mu3_PFJet40_v";
     TString triggerslist_8="HLT_Mu8_TrkIsoVVL_v";
     TString triggerslist_17="HLT_Mu17_TrkIsoVVL_v";
@@ -908,8 +912,8 @@ void FakeRateHN::GetFakeRates(std::vector<Muon> loose_mu, std::vector<Muon> tigh
       FillHist(("TightMu" + tag + "_pt_eta").Data(), mu_pt, fabs(tight_mu.at(0).Eta()),  w, 8, ptbins, 4 , etabins2);
       FillHist(("TightMu" + tag + "_pt").Data(), mu_pt,  w, 8, ptbins);
       if(fill_plot){
-	FillHist(("TightMu" + tag + "_ptcorr_eta").Data(), mu_pt_corr, fabs(tight_mu.at(0).Eta()), weight_ptcorr, 7, ptbins, 4 , etabins2);
-	FillHist(("TightMu" + tag + "_ptcorr").Data(), mu_pt_corr,  weight_ptcorr, 7, ptbins,"p_{T} cone (GeV");
+	FillHist(("TightMu" + tag + "_ptcorr_eta").Data(), mu_pt_corr, fabs(tight_mu.at(0).Eta()), weight_ptcorr, 7, ptbinscone, 4 , etabins2);
+	FillHist(("TightMu" + tag + "_ptcorr").Data(), mu_pt_corr,  weight_ptcorr, 7, ptbinscone,"p_{T} cone (GeV");
       }
     }
   }

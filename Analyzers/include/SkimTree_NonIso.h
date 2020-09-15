@@ -16,6 +16,8 @@ public:
 
   TTree *newtree;
 
+  bool isSingleMu;
+
   vector<TString> triggers;
   void WriteHist();
 

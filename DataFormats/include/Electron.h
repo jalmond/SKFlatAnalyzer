@@ -112,6 +112,7 @@ public:
   inline bool passLooseID()  const {return PassSelector(POG_CB_LOOSE); }
   inline bool passMediumID() const {return PassSelector(POG_CB_MEDIUM); }
   inline bool passTightID()  const {return PassSelector(POG_CB_TIGHT); }
+
   inline bool passMVAID_noIso_WP80() const {return PassSelector(POG_MVA_NOISO_WP80); }
   inline bool passMVAID_noIso_WP90() const {return PassSelector(POG_MVA_NOISO_WP90); }
   inline bool passMVAID_iso_WP80() const {return PassSelector(POG_MVA_ISO_WP80); }
@@ -124,7 +125,8 @@ public:
   bool Pass_SUSYMVAWP(TString wp) const;
   bool Pass_SUSYTight() const;
   bool Pass_SUSYLoose() const;
-
+  bool passTightID_NoCCB() const;
+  bool passLooseID_NoCCB() const;
   bool Pass_CutBasedTightWithIPcut() const;
 
   //==== HN ID

@@ -1833,7 +1833,6 @@ void AnalyzerCore::FillEventCutflow(TString histname, double weight, vector<TStr
 
     maphist_TH1D[histname] = this_hist;
   }
-
   this_hist->Fill(label, weight);
 
 }

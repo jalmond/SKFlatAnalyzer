@@ -1,9 +1,0 @@
-#SKFlat.py -a HNtypeI_JA -i HN_S_mm_100 -n 50  --userflags Signal -y 2016
-SKFlat.py -a HNtypeI_JA -i HN_S_mm_200 -n 50  --userflags Signal -y 2016
-SKFlat.py -a HNtypeI_JA -i HNToMuMu_Sch_M200 -n 1  --userflags Signal -y 2016
-#SKFlat.py -a HNtypeI_JA -i HN_S_mm_500 -n 50  --userflags Signal  -y 2016
-#SKFlat.py -a HNtypeI_JA -i HN_S_mm_1100 -n 50  --userflags Signal  -y 2016
-#SKFlat.py -a HNtypeI_JA -i HN_S_ee_100 -n 50   --userflags Signal -y 2016
-#SKFlat.py -a HNtypeI_JA -i HN_S_ee_200 -n 50   --userflags Signal -y 2016
-#SKFlat.py -a HNtypeI_JA -i HN_S_ee_500 -n 50   --userflags Signal -y 2016
-#SKFlat.py -a HNtypeI_JA -i HN_S_ee_1100 -n 50   --userflags Signal -y 2016
