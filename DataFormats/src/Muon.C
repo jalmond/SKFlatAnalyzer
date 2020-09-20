@@ -148,6 +148,7 @@ bool Muon::PassID(TString ID) const {
   if(ID=="POGTightPFIsoMedium") return Pass_POGTightPFIsoMedium();
   if(ID=="POGTightPFIsoTight") return Pass_POGTightPFIsoTight();
   if(ID=="POGTightPFIsoVeryTight") return Pass_POGTightPFIsoVeryTight();
+  if(ID=="POGTightPFIsoVeryVeryTight") return Pass_POGTightPFIsoVeryVeryTight();
 
   if(ID=="POGTightCutsWithTightIso") return Pass_POGTightCutsWithTightIso();
 
@@ -282,6 +283,12 @@ bool Muon::Pass_POGTightPFIsoTight() const {
 bool Muon::Pass_POGTightPFIsoVeryTight() const {
   if(!( isPOGTight() )) return false;
   if(!( PassSelector(PFIsoVeryTight) )) return false;
+  return true;
+}
+
+bool Muon::Pass_POGTightPFIsoVeryVeryTight() const {
+  if(!( isPOGTight() )) return false;
+  if(!( PassSelector(PFIsoVeryVeryTight) )) return false;
   return true;
 }
 

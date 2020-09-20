@@ -181,6 +181,12 @@ public:
   std::vector<Jet> JetsAwayFromPhoton(const std::vector<Jet>& jets, const std::vector<Photon>& photons, double mindr);
   Particle AddFatJetAndLepton(const FatJet& fatjet, const Lepton& lep);
 
+  //--------- JA
+
+  double GetIsoFromID(TString channel, TString id, double eta, double pt);
+				  
+
+
   //==== GenMatching
 
   void PrintGen(const std::vector<Gen>& gens);

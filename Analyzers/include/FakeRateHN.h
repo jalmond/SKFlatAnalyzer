@@ -31,7 +31,7 @@ class FakeRateHN : public AnalyzerCore {
   TRandom3* rand_;
 
 
-  void GetFakeRates(std::vector<Electron> loose_el, std::vector<Electron> tight_el,TString tightlabel,  std::vector<Jet> jets,std::vector<Jet> alljets, TString tag, float isocutb, float isocute,double w);
+  void GetFakeRates(std::vector<Electron> loose_el, std::vector<Electron> tight_el,TString tightlabel,  std::vector<Jet> jets,std::vector<Jet> alljets, TString tag, float isocut,double w);
   void GetFakeRates(std::vector<Muon> loose_el, std::vector<Muon> tight_el,TString tightlabel,  std::vector<Jet> jets,std::vector<Jet> alljets, TString tag, double w, float isocut);
   
   double GetPrescale( std::vector<Electron> electrons, bool passlowest, bool passlow, bool passhigh, bool highest, bool passshighest);
@@ -40,10 +40,10 @@ class FakeRateHN : public AnalyzerCore {
   float GetPrescale( std::vector<Muon> muons,bool pass3, bool pass2, bool pass1 );
 
 
-  void MakeFakeRatePlots(TString label, TString eltag,   std::vector<Electron> tightelectrons,std::vector<Electron> electrons,   std::vector <Jet> jets, std::vector<Jet> alljets,  float precale_w, float isocutb, float isocute,float w, Particle MET);
+  void MakeFakeRatePlots(TString label, TString eltag,   std::vector<Electron> tightelectrons,std::vector<Electron> electrons,   std::vector <Jet> jets, std::vector<Jet> alljets,  float precale_w, float isocut, float w, Particle MET);
   void MakeFakeRatePlots(TString label, TString eltag,   std::vector<Muon> tightelectrons,std::vector<Muon> electrons,   std::vector <Jet> jets, std::vector<Jet> alljets,  float precale_w,float w,float isocut,  Particle MET);
 
-  void GetFakeRateAndPromptRates(std::vector<Electron> electrons, TString eltag, std::vector<Electron> tightelectrons, float isocutb, float isocute,float w, TString tightid);
+  void GetFakeRateAndPromptRates(std::vector<Electron> electrons, TString eltag, std::vector<Electron> tightelectrons, float isocut,float w, TString tightid);
   void GetFakeRateAndPromptRates(std::vector<Muon> electrons, TString eltag, std::vector<Muon> tightelectrons,float w, float isocut);
 
 

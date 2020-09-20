@@ -102,10 +102,12 @@ void FakeRateHN::executeEvent(){
     channel.push_back("EE");
     ELIDs.push_back(make_pair("HNTight2016", "HNVeto2016"));
     ELIDs.push_back(make_pair("passTightID_noccb", "HNVeto2016"));
-    MuIDs.push_back(make_pair("HNVeto2016","HNVeto2016"));
-    MuIDs.push_back(make_pair("HNVeto2016","HNVeto2016"));
     el_loose_id.push_back("HNLoose2016");
     el_loose_id.push_back("passLooseID_noccb");
+    
+    // muon holders
+    MuIDs.push_back(make_pair("HNVeto2016","HNVeto2016"));
+    MuIDs.push_back(make_pair("HNVeto2016","HNVeto2016"));
     mu_loose_id.push_back("HNLoose2016");
     mu_loose_id.push_back("HNLoose2016");
   }
@@ -217,10 +219,6 @@ void FakeRateHN::executeEventFromParameter(AnalyzerParameter param, TString El_I
   // plot CR species cuts for All plots to be made
   //************************************************///
 
-  //************************************************///
-  // IsCentral true means nominal analysis settings
-  //************************************************///
-  bool IsCentral = !( param.Name.Contains("Syst_") );
  
   //************************************************///
   // setup event level objects
@@ -270,8 +268,6 @@ void FakeRateHN::executeEventFromParameter(AnalyzerParameter param, TString El_I
   //************************************************///   
   // setup systematic variables
   //************************************************///   
-  int SystDir_ElectronIDSF(0);
-  int SystDir_ElectronRecoSF(0);
 
   //************************************************///   
   //==== PU reweight for MC
@@ -335,22 +331,6 @@ void FakeRateHN::executeEventFromParameter(AnalyzerParameter param, TString El_I
   std::sort(jets.begin(), jets.end(), PtComparing);
 
 
-  //************************************************///
-  // jet up b jet variable
-  // --- use medium Deep CVS
-  //************************************************///
-  int NBJets=GetNBJets();
-
-  
-  //************************************************///
-  //@@@@ Apply lepton scale factors
-  //************************************************///
-
-  
-  //************************************************///   
-  // select trigger
-  //************************************************///   
-
   if(ee) RunE(tight_electrons, loose_electrons,tight_muons,loose_muons, jets, fatjets, ev,  param, weight);
   if(!ee) RunM(tight_electrons, loose_electrons,tight_muons,loose_muons,  jets, fatjets,ev, param, weight);
   
@@ -408,7 +388,9 @@ void FakeRateHN::RunM(std::vector<Electron> tight_el, std::vector<Electron> loos
   // remove if muon                                                                                                                          
   if(loose_el.size() > 0) return;
 
-  GetFakeRateAndPromptRates(loose_mu,label, tight_mu,w,0.07);
+
+  double isocut = GetIsoFromID("MuMu", param.Muon_Tight_ID,loose_mu[0].Eta(), loose_mu[0].Pt());
+  GetFakeRateAndPromptRates(loose_mu,label, tight_mu,w,isocut);
 
 
 
@@ -458,8 +440,9 @@ void FakeRateHN::RunE(std::vector<Electron> tight_el, std::vector<Electron> loos
   // remove if muon 
   if(loose_mu.size() > 0) return;
 
-
-  GetFakeRateAndPromptRates(loose_el,label, tight_el,0.08,0.08,w,"ELECTRON_HN_TIGHT");
+  double isocut = GetIsoFromID("EE", param.Electron_Tight_ID,loose_el[0].Eta(), loose_el[0].Pt());
+  
+  GetFakeRateAndPromptRates(loose_el,label, tight_el,isocut,w,param.Electron_Tight_ID);
 
 
 
@@ -470,9 +453,10 @@ void FakeRateHN::RunE(std::vector<Electron> tight_el, std::vector<Electron> loos
 void FakeRateHN::GetFakeRateAndPromptRates(std::vector<Muon> muonLooseColl, TString mutag, std::vector<Muon> muonTightColl, float w, float isocut){
 
 
-  TString triggerslist_3="HLT_Mu3_PFJet40_v";
-  TString triggerslist_8="HLT_Mu8_TrkIsoVVL_v";
-  TString triggerslist_17="HLT_Mu17_TrkIsoVVL_v";
+  //  TString triggerslist_3="HLT_Mu3_PFJet40_v";
+  //TString triggerslist_8="HLT_Mu8_TrkIsoVVL_v";
+  //TString triggerslist_17="HLT_Mu17_TrkIsoVVL_v";
+
   if(muonLooseColl.size()<1) return;
   
   Event ev = GetEvent();
@@ -500,7 +484,7 @@ void FakeRateHN::GetFakeRateAndPromptRates(std::vector<Muon> muonLooseColl, TStr
   return;
 }
 
-void FakeRateHN::GetFakeRateAndPromptRates(std::vector<Electron> electronLooseColl, TString eltag, std::vector<Electron> electronTightColl, float isocutb, float isocute,  float w, TString tightid ){
+void FakeRateHN::GetFakeRateAndPromptRates(std::vector<Electron> electronLooseColl, TString eltag, std::vector<Electron> electronTightColl, float isocut,  float w, TString tightid ){
   
   
   Event ev = GetEvent();
@@ -538,7 +522,7 @@ void FakeRateHN::GetFakeRateAndPromptRates(std::vector<Electron> electronLooseCo
   
   
 
-  MakeFakeRatePlots(tightid, eltag, electronTightColl,electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, isocutb, isocute,w, METv);
+  MakeFakeRatePlots(tightid, eltag, electronTightColl,electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, isocut,w, METv);
   
   
   return;
@@ -695,7 +679,7 @@ void FakeRateHN::MakeFakeRatePlots(TString label, TString mutag,   std::vector<M
   if(!IsData) {
     if(muons.size() > 0){
       /// ONLY INCLUDE MUONS FROM W/Z                                                                                                                     
-      if(GetLeptonType(muons.at(0), gens) ==1) truth_match=true;
+      if(GetLeptonType(muons.at(0), gens) > 0 ) truth_match=true;
     }
     else truth_match = true;
   }
@@ -713,7 +697,7 @@ void FakeRateHN::MakeFakeRatePlots(TString label, TString mutag,   std::vector<M
 }
 
 
-void FakeRateHN::MakeFakeRatePlots(TString label, TString eltag,   std::vector<Electron> electrons_tight, std::vector<Electron> electrons,  std::vector<Jet> jets, std::vector<Jet> alljets, float prescale_w, float isocutb, float isocute ,float w, Particle MET){
+void FakeRateHN::MakeFakeRatePlots(TString label, TString eltag,   std::vector<Electron> electrons_tight, std::vector<Electron> electrons,  std::vector<Jet> jets, std::vector<Jet> alljets, float prescale_w, float isocut ,float w, Particle MET){
   
   if(electrons.size() != 1 ) return;
   
@@ -731,7 +715,7 @@ void FakeRateHN::MakeFakeRatePlots(TString label, TString eltag,   std::vector<E
   if(!IsData) {
     if(electrons.size() > 0){
       /// ONLY INCLUDE ELECTRONS FROM W/Z
-      if(GetLeptonType(electrons.at(0), gens) ==1) truth_match=true;
+      if(GetLeptonType(electrons.at(0), gens) > 0 )  truth_match=true;
     }
     else truth_match = true;
   }
@@ -744,10 +728,10 @@ void FakeRateHN::MakeFakeRatePlots(TString label, TString eltag,   std::vector<E
   if(truth_match){
     if(jets.size() >= 1){
 
-      if(useevent20)GetFakeRates(electrons, electrons_tight,label, jets, alljets,  label+"_20", isocutb, isocute,(prescale_w * w));
-      if(useevent30)GetFakeRates(electrons, electrons_tight,label, jets, alljets,  label+"_30", isocutb, isocute,(prescale_w * w));
-      if(useevent40)GetFakeRates(electrons, electrons_tight,label, jets, alljets,  label+"_40", isocutb, isocute,(prescale_w * w));
-      if(useevent60)GetFakeRates(electrons, electrons_tight, label,jets, alljets,  label+"_60", isocutb, isocute,(prescale_w * w));
+      if(useevent20)GetFakeRates(electrons, electrons_tight,label, jets, alljets,  label+"_20", isocut,(w));
+      if(useevent30)GetFakeRates(electrons, electrons_tight,label, jets, alljets,  label+"_30", isocut,(w));
+      if(useevent40)GetFakeRates(electrons, electrons_tight,label, jets, alljets,  label+"_40", isocut,(w));
+      if(useevent60)GetFakeRates(electrons, electrons_tight, label,jets, alljets,  label+"_60", isocut,(w));
     }
   }
 }
@@ -814,26 +798,25 @@ void FakeRateHN::GetFakeRates(std::vector<Muon> loose_mu, std::vector<Muon> tigh
 
   double ptbinscone[8] = { 10., 15.,20.,30.,40.,50.,  60., 200.};
   double ptbins[9] = { 5., 10., 15.,20.,30.,45.,60.,100., 200.};
-  double etabin[2] = { 0.,  2.5};
-  double etabins[4] = { 0., 0.8,1.479,  2.5};
   double etabins2[5] = { 0.,0.8,  1.479, 2.,  2.5};
 
   Event ev = GetEvent();
   if(loose_mu.size() == 1 && jets.size() >= 1){
     float mu_pt = loose_mu.at(0).Pt();
-    //float mu_pt_corr = loose_mu.at(0).Pt()*(1+max(0.,(loose_mu.at(0).RelIso()-isocut))) ; /// will need changing for systematics 
-    float mu_pt_corr =  loose_mu[0].CalcPtCone(loose_mu[0].RelIso(), 0.07);
+    float mu_pt_corr =  loose_mu[0].CalcPtCone(loose_mu[0].RelIso(), isocut);
     if(mu_pt_corr > 200.) mu_pt_corr = 200.;
+
     TString triggerslist_3="HLT_Mu3_PFJet40_v";
     TString triggerslist_8="HLT_Mu8_TrkIsoVVL_v";
     TString triggerslist_17="HLT_Mu17_TrkIsoVVL_v";
 
 
     float weight_ptcorr=w;
-    float weight_pt=w;
+
     bool fill_plot=false;
     if (mu_pt_corr > 5  && mu_pt_corr < 15){
       if(mu_pt > 5.) {
+
 	if(ev.PassTrigger(triggerslist_3)) {
 	  fill_plot=true;
 	  if(!IsData)weight_ptcorr = w * ev.GetTriggerLumi(triggerslist_3);
@@ -842,12 +825,12 @@ void FakeRateHN::GetFakeRates(std::vector<Muon> loose_mu, std::vector<Muon> tigh
 	  fill_plot=false;
 	  weight_ptcorr = 0.;
 	}
-      
+	
 	if(IsData){
 	  if(DataYear!=2016){
 	    if(!isSingleMu) {
 	      fill_plot=false;
-	    weight_ptcorr = 0.;
+	      weight_ptcorr = 0.;
 	    }
 	  }
 	}
@@ -857,6 +840,7 @@ void FakeRateHN::GetFakeRates(std::vector<Muon> loose_mu, std::vector<Muon> tigh
 
     else if ( mu_pt_corr < 30){
       if(mu_pt > 10) {
+
 	if(ev.PassTrigger(triggerslist_8)) {
 	  fill_plot=true;
           if(!IsData)weight_ptcorr= w * ev.GetTriggerLumi(triggerslist_8);
@@ -900,32 +884,34 @@ void FakeRateHN::GetFakeRates(std::vector<Muon> loose_mu, std::vector<Muon> tigh
       }
     }
     
-    
-    FillHist(("LooseMu" + tag + "_pt_eta").Data(), mu_pt, fabs(loose_mu.at(0).Eta()),  w, 8, ptbins, 4 , etabins2);
-    FillHist(("LooseMu" + tag + "_pt").Data(), mu_pt,   w, 8, ptbins);
+    /// Get precale weiht for normal pt bins
+    double prescale_mu = GetPrescale(loose_mu,   ev.PassTrigger(triggerslist_3),ev.PassTrigger(triggerslist_8), ev.PassTrigger(triggerslist_17));
+      
+    FillHist(("LooseMu" + tag + "_pt_eta").Data(), mu_pt, fabs(loose_mu.at(0).Eta()),  prescale_mu*w, 8, ptbins, 4 , etabins2);
+    FillHist(("LooseMu" + tag + "_pt").Data(), mu_pt,   prescale_mu*w, 8, ptbins, "p_{T} (GeV)");
+    FillHist(("LooseMu" + tag + "_pt").Data(), mu_pt,   prescale_mu*w, 4, etabins2,"#eta");
     if(fill_plot){
       FillHist(("LooseMu" + tag + "_ptcorr_eta").Data(), mu_pt_corr, fabs(loose_mu.at(0).Eta()),  weight_ptcorr, 7, ptbinscone, 4 , etabins2);
-      FillHist(("LooseMu" + tag + "_ptcorr").Data(), mu_pt_corr,  weight_ptcorr, 7,ptbinscone,"p_{T} cone (GeV");
+      FillHist(("LooseMu" + tag + "_ptcorr").Data(), mu_pt_corr,  weight_ptcorr, 7,ptbinscone,"p_{T} cone (GeV)");
     }
     
     if( tight_mu.size() == 1){
-      FillHist(("TightMu" + tag + "_pt_eta").Data(), mu_pt, fabs(tight_mu.at(0).Eta()),  w, 8, ptbins, 4 , etabins2);
-      FillHist(("TightMu" + tag + "_pt").Data(), mu_pt,  w, 8, ptbins);
+      FillHist(("TightMu" + tag + "_pt_eta").Data(), mu_pt, fabs(tight_mu.at(0).Eta()),  w*prescale_mu, 8, ptbins, 4 , etabins2);
+      FillHist(("TightMu" + tag + "_pt").Data(), mu_pt,  w*prescale_mu, 8, ptbins, "p_{T} (GeV)");
+      FillHist(("TightMu" + tag + "_eta").Data(),fabs(tight_mu.at(0).Eta()),  w*prescale_mu, 4, etabins2,"#eta");
       if(fill_plot){
 	FillHist(("TightMu" + tag + "_ptcorr_eta").Data(), mu_pt_corr, fabs(tight_mu.at(0).Eta()), weight_ptcorr, 7, ptbinscone, 4 , etabins2);
-	FillHist(("TightMu" + tag + "_ptcorr").Data(), mu_pt_corr,  weight_ptcorr, 7, ptbinscone,"p_{T} cone (GeV");
+	FillHist(("TightMu" + tag + "_ptcorr").Data(), mu_pt_corr,  weight_ptcorr, 7, ptbinscone,"p_{T} cone (GeV)");
       }
     }
   }
   return;
 }
 
-void FakeRateHN::GetFakeRates(std::vector<Electron> loose_el, std::vector<Electron> tight_el, TString tightlabel,  std::vector<Jet> jets,  std::vector<Jet> alljets, TString tag,float isocutb, float isocute, double w){
+void FakeRateHN::GetFakeRates(std::vector<Electron> loose_el, std::vector<Electron> tight_el, TString tightlabel,  std::vector<Jet> jets,  std::vector<Jet> alljets, TString tag,float isocut, double w){
   
   double ptbins[8] = { 10., 15.,23.,30.,35., 40.,60.,200.};
   double ptbinsb[8] = { 10., 15.,20.,30.,45.,60.,100., 200.};
-  double etabin[2] = { 0.,  2.5};
-  double etabins[4] = { 0., 0.8,1.479,  2.5};
   double etabins2[5] = { 0.,0.8,  1.479, 2.,  2.5};
 
   /// for most cuts just plot pt_eta
@@ -942,15 +928,11 @@ void FakeRateHN::GetFakeRates(std::vector<Electron> loose_el, std::vector<Electr
   
   
   float el_pt = loose_el.at(0).Pt();
-  float isocut = isocutb;
-  if(fabs(loose_el.at(0).Eta()) > 1.479)isocut = isocute;
-
-  float el_pt_corr =  loose_el[0].CalcPtCone(loose_el[0].RelIso(), 0.08);
+  float el_pt_corr =  loose_el[0].CalcPtCone(loose_el[0].RelIso(), isocut);
   if(el_pt_corr > 200.) el_pt_corr = 200.;
 
   
   float weight_ptcorr=w;
-  float weight_pt=w;
   bool fill_plot=false;
   
   if (el_pt_corr > 10  && el_pt_corr < 23){
@@ -1011,22 +993,28 @@ void FakeRateHN::GetFakeRates(std::vector<Electron> loose_el, std::vector<Electr
   
   if(loose_el.size() == 1 && jets.size() >= 1){
     
-    if(el_pt > 10.)FillHist(("LooseEl" + tag + "_pt_eta").Data(), el_pt, fabs(loose_el.at(0).Eta()),  w, 7, ptbinsb, 4 , etabins2);
+    double prescale = GetPrescale(loose_el,  ev.PassTrigger(triggerslist_8), ev.PassTrigger(triggerslist_12), ev.PassTrigger(triggerslist_18), ev.PassTrigger( triggerslist_23), ev.PassTrigger(triggerslist_23));
+
+    if(el_pt > 10.)FillHist(("LooseEl" + tag + "_pt_eta").Data(), el_pt, fabs(loose_el.at(0).Eta()),  w*(prescale), 7, ptbinsb, 4 , etabins2);
+    if(el_pt > 10.)FillHist(("LooseEl" + tag + "_pt").Data(), el_pt, w*(prescale), 7, ptbinsb,"p_{T}  (GeV)");
+    if(el_pt > 10.)FillHist(("LooseEl" + tag + "_eta").Data(), fabs(loose_el.at(0).Eta()), w*(prescale), 4 , etabins2,"#eta");
     if(fill_plot)FillHist(("LooseEl" + tag + "_ptcorr_eta").Data(), el_pt_corr, fabs(loose_el.at(0).Eta()),  weight_ptcorr, 7, ptbins, 4 , etabins2);
     if(fill_plot)FillHist(("LooseEl" + tag + "_ptcorr").Data(), el_pt_corr, weight_ptcorr,7, ptbins,"p_{T} cone (GeV)");
     
     
     if( tight_el.size() == 1){
-      if(el_pt > 10.)FillHist(("TightEl" + tag + "_pt_eta").Data(), el_pt, fabs(tight_el.at(0).Eta()),  w, 7, ptbinsb, 4 , etabins2);
       if(fill_plot)FillHist(("TightEl" + tag + "_ptcorr_eta").Data(), el_pt_corr, fabs(tight_el.at(0).Eta()),  weight_ptcorr, 7, ptbins, 4 , etabins2);
       if(fill_plot)FillHist(("TightEl" + tag + "_ptcorr").Data(), el_pt_corr,  weight_ptcorr, 7, ptbins, "p_{T} cone (GeV)");
+      if(el_pt > 10.)FillHist(("TightEl" + tag + "_pt_eta").Data(), el_pt, fabs(tight_el.at(0).Eta()),  w*prescale, 7, ptbinsb, 4 , etabins2);
+      if(el_pt > 10.)     FillHist(("TightEl" + tag + "_pt").Data(), el_pt, w*(prescale), 7, ptbinsb,"p_{T}  (GeV)");
+      if(el_pt > 10.)FillHist(("TightEl" + tag + "_eta").Data(), fabs(tight_el.at(0).Eta()), w*(prescale), 4 , etabins2,"#eta");
+
     }
   }
   
   return;
   
 }
-
 
 
 FakeRateHN::FakeRateHN(){

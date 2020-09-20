@@ -75,6 +75,50 @@ void AnalyzerCore::SetOutfilePath(TString outname){
   outfile = new TFile(outname,"RECREATE");
 };
 
+double AnalyzerCore::GetIsoFromID(TString channel, TString id, double eta, double pt){
+
+  if(channel == "MuMu") {
+    if (id == "HNTight2016") return 0.07;
+    if (id == "POGTightPFIsoVeryVeryTight") return 0.05;
+    if (id == "POGTightPFIsoVeryTight") return 0.1;
+    if (id == "POGTightPFIsoTight") return 0.15;
+    if (id == "POGTightPFIsoMedium") return 0.2;
+    if (id == "POGTightPFIsoLoose") return 0.25;
+    if (id == "POGTightPFIsoVeto") return 0.4;
+  }
+  else if(channel == "EE"){
+    if( id == "HNTight2016") return 0.08;
+    if( id == "passTightID_noccb") {
+      if(fabs(eta) < 1.479) return (0.0287 + (0.506/pt));
+      else  return (0.0445 + (0.963/pt));
+    }
+    if( id == "passTightID_nocc") {
+      if(fabs(eta) < 1.479) return (0.0287 + (0.506/pt));
+      else  return (0.0445 + (0.963/pt));
+    }
+    if( id == "passTightID_noccb") {
+      if(fabs(eta) < 1.479) return (0.0287 + (0.506/pt));
+      else  return (0.0445 + (0.963/pt));
+    }
+
+    if( id == "passTightID") {
+      if(fabs(eta) < 1.479) return (0.0287 + (0.506/pt));
+      else  return (0.0445 + (0.963/pt));
+    }
+    if( id == "passMediumID") {
+      if(fabs(eta) < 1.479) return (0.0478 + (0.506/pt));
+      else  return (0.0658 + (0.963/pt));
+    }
+  }
+  else if(channel == "EMu"){
+
+  }
+  else return 0.;
+  return 0.;
+
+
+}
+
 Event AnalyzerCore::GetEvent(){
 
   Event ev;

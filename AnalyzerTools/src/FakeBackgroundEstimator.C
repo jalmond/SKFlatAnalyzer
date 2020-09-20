@@ -28,11 +28,11 @@ void FakeBackgroundEstimator::ReadHistograms(){
     for(int i=0;i<histlist->Capacity();i++){
       TString this_frname = histlist->At(i)->GetName();
       histDir->cd();
-      map_hist_Electron[a+"_"+this_frname] = (TH2D *)file->Get(this_frname)->Clone();
+      if (!this_frname.Contains(a)) continue;
+      map_hist_Electron[this_frname] = (TH2D *)file->Get(this_frname)->Clone();
       file->Close();
       delete file;
       origDir->cd();
-      //cout << "[FakeBackgroundEstimator::FakeBackgroundEstimator] map_hist_Electron : " << a+"_"+this_frname << endl;
     }
   }
 
@@ -47,8 +47,9 @@ void FakeBackgroundEstimator::ReadHistograms(){
     TList *histlist = file->GetListOfKeys();
     for(int i=0;i<histlist->Capacity();i++){
       TString this_frname = histlist->At(i)->GetName();
+      if (!this_frname.Contains(a)) continue;
       histDir->cd();
-      map_hist_Muon[a+"_"+this_frname] = (TH2D *)file->Get(this_frname)->Clone();
+      map_hist_Muon[this_frname] = (TH2D *)file->Get(this_frname)->Clone();
       file->Close();
       delete file;
       origDir->cd();
@@ -86,6 +87,7 @@ double FakeBackgroundEstimator::GetElectronFakeRate(TString ID, TString key, dou
   mapit = map_hist_Electron.find(ID+"_"+key);
 
   if(mapit==map_hist_Electron.end()){
+
     if(IgnoreNoHist) return 1.;
     else{
 //      cout << "[FakeBackgroundEstimator::GetElectronFakeRate] No"<< ID+"_"+key <<endl;

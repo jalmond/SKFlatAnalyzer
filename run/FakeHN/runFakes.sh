@@ -1,8 +1,8 @@
 if [[ "$1"  == "DATA"  ||  SkimTree_SSNonIso"$1"  == "data" ]];
 then
-    #SKFlat.py -a FakeRateHN  -l DataFake/2016_data_ee.txt --skim SkimTree_NonIso -n 100  --userflags isEE --nmax 150  -y 2016
-    #SKFlat.py -a FakeRateHN  -l DataFake/2017_data_ee.txt --skim SkimTree_NonIso -n 100  --userflags isEE --nmax 150  -y 2017
-    #SKFlat.py -a FakeRateHN  -l DataFake/2018_data_ee.txt --skim SkimTree_NonIso -n 100  --userflags isEE --nmax 150  -y 2018
+    SKFlat.py -a FakeRateHN  -l DataFake/2016_data_ee.txt --skim SkimTree_NonIso -n 100  --userflags isEE --nmax 150  -y 2016
+    SKFlat.py -a FakeRateHN  -l DataFake/2017_data_ee.txt --skim SkimTree_NonIso -n 100  --userflags isEE --nmax 150  -y 2017
+    SKFlat.py -a FakeRateHN  -l DataFake/2018_data_ee.txt --skim SkimTree_NonIso -n 100  --userflags isEE --nmax 150  -y 2018
     SKFlat.py -a FakeRateHN  -l DataFake/2016_data_mm.txt --skim SkimTree_NonIso -n 100  --userflags isMM --nmax 150  -y 2016
     SKFlat.py -a FakeRateHN  -l DataFake/2017_data_mm.txt --skim SkimTree_NonIso -n 100  --userflags isMM --nmax 150  -y 2017
     SKFlat.py -a FakeRateHN  -l DataFake/2017_data_m.txt  -n 100 --skim SkimTree_NonIso  --userflags isSingleMu --nmax 150  -y 2017

@@ -125,8 +125,13 @@ public:
   bool Pass_SUSYMVAWP(TString wp) const;
   bool Pass_SUSYTight() const;
   bool Pass_SUSYLoose() const;
+  bool passTightIDHN() const;
+  bool passMediumIDHN() const;
+  bool passLooseIDHN() const;
   bool passTightID_NoCCB() const;
+  bool passTightID_NoCC() const;
   bool passLooseID_NoCCB() const;
+  bool passLooseID_NoCC() const;
   bool Pass_CutBasedTightWithIPcut() const;
 
   //==== HN ID

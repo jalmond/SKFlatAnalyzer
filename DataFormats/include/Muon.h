@@ -137,6 +137,7 @@ public:
   bool Pass_POGTightPFIsoMedium() const;
   bool Pass_POGTightPFIsoTight() const;
   bool Pass_POGTightPFIsoVeryTight() const;
+  bool Pass_POGTightPFIsoVeryVeryTight() const;
 
   bool Pass_POGTightCutsWithTightIso() const;
 
