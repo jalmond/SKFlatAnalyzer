@@ -37,6 +37,8 @@ class HNtypeI_JA : public AnalyzerCore {
   // Trigger
   vector<TString> MuonTriggers;
   vector<TString> MuonTriggersH;
+  vector<TString> HighPtMuonTriggers;
+  vector<TString> HighPtMuonTriggersH;
   vector<TString> ElectronTriggers;
   vector<TString> SingleElectronTriggers;
   vector<TString> EMuTriggers;

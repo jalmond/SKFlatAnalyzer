@@ -23,19 +23,36 @@ void SkimTree_NonIso::initializeAnalyzer(){
 
   triggers.clear();
   if(DataYear==2016){
-    triggers = {
-      "HLT_Mu3_PFJet40_v",                             // DoubleMuon
-      "HLT_Mu8_TrkIsoVVL_v",                           // DoubleMuon
-      "HLT_Mu17_TrkIsoVVL_v",                          // DoubleMuon
-      "HLT_Ele8_CaloIdL_TrackIdL_IsoVL_PFJet30_v",     // DoubleEG
-      "HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_v",    // DoubleEG
-      "HLT_Ele17_CaloIdM_TrackIdM_PFJet30_v",          // DoubleEG
-      "HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v"     // DoubleEG
-    };
+    if(IsData){
+      if(isSingleMu) triggers = { "HLT_Mu50_v"};
+      triggers = {
+	"HLT_Mu3_PFJet40_v",                             // DoubleMuon
+	"HLT_Mu8_TrkIsoVVL_v",                           // DoubleMuon
+	"HLT_Mu17_TrkIsoVVL_v",                          // DoubleMuon
+	"HLT_Ele8_CaloIdL_TrackIdL_IsoVL_PFJet30_v",     // DoubleEG
+	"HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_v",    // DoubleEG
+	"HLT_Ele17_CaloIdM_TrackIdM_PFJet30_v",          // DoubleEG
+	"HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v"     // DoubleEG
+      };
+    }
+    else{
+      triggers = {
+        "HLT_Mu3_PFJet40_v",                             // DoubleMuon                                                                         
+	"HLT_Mu50_v",
+
+        "HLT_Mu8_TrkIsoVVL_v",                           // DoubleMuon                                                                         
+        "HLT_Mu17_TrkIsoVVL_v",                          // DoubleMuon                                                                         
+        "HLT_Ele8_CaloIdL_TrackIdL_IsoVL_PFJet30_v",     // DoubleEG                                                                           
+        "HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_v",    // DoubleEG                                                                           
+        "HLT_Ele17_CaloIdM_TrackIdM_PFJet30_v",          // DoubleEG                                                                           
+        "HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v"     // DoubleEG                                                                           
+      };
+
+    }
   }
   else if(DataYear==2017){
     if(IsData){
-      if(isSingleMu) triggers = { "HLT_Mu3_PFJet40_v"};
+      if(isSingleMu) triggers = { "HLT_Mu3_PFJet40_v","HLT_Mu50_v"};
       else{
 	triggers = {
 	  "HLT_Mu8_TrkIsoVVL_v",                           // DoubleMuon
@@ -49,6 +66,7 @@ void SkimTree_NonIso::initializeAnalyzer(){
     }
     else {
       triggers = {
+	"HLT_Mu50_v",
 	"HLT_Mu3_PFJet40_v",
 	"HLT_Mu8_TrkIsoVVL_v",                           // DoubleMuon                                                                                                          
 	"HLT_Mu17_TrkIsoVVL_v",                          // DoubleMuon                                                                                                          
@@ -62,7 +80,7 @@ void SkimTree_NonIso::initializeAnalyzer(){
   }
   else if(DataYear==2018){
     if(IsData){
-      if(isSingleMu) triggers = {"HLT_Mu3_PFJet40_v"};
+      if(isSingleMu) triggers = {"HLT_Mu3_PFJet40_v","HLT_Mu50_v"};
       else {
 	triggers = {
 	  "HLT_Mu8_TrkIsoVVL_v",                           // DoubleMuon
@@ -77,6 +95,7 @@ void SkimTree_NonIso::initializeAnalyzer(){
     else{
       triggers = {
 	"HLT_Mu3_PFJet40_v",
+	"HLT_Mu50_v",
 	"HLT_Mu8_TrkIsoVVL_v",                           // DoubleMuon                                                                                                          
 	"HLT_Mu17_TrkIsoVVL_v",                          // DoubleMuon                                                                                                          
 	"HLT_Ele8_CaloIdL_TrackIdL_IsoVL_PFJet30_v",     // EGamma                                                                                                              

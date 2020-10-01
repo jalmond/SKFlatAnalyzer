@@ -108,50 +108,33 @@ bool Muon::PassID(TString ID) const {
   if(ID=="POGTightWithTightIso") return Pass_POGTightWithTightIso();
   if(ID=="POGHighPtWithLooseTrkIso") return Pass_POGHighPtWithLooseTrkIso();
   //==== Customized
-  if(ID=="TEST") return Pass_TESTID();
+  
+  if(ID=="POGHighPtTight") return  Pass_POGHighPtTight();
+  if(ID=="POGHighPtLoose") return  Pass_POGHighPtLoose();
+
+  if(ID=="POGHighPtMixTight") return  Pass_POGHighPtTightMixed();
+  if(ID=="POGHighPtMixLoose") return  Pass_POGHighPtLooseMixed();
+
+
   if(ID=="HNVeto2016") return Pass_HNVeto2016();
-  //if(ID=="HNLoosest") return Pass_HNLoose2016(0.4, 0.2, 0.1, 3.);
   if(ID=="HNLoosest") return Pass_HNVeto2016();
 
   if(ID=="HNLoose2016") return Pass_HNLoose2016(0.4, 0.2, 0.1, 3.);
-  if(ID=="HNLoose2016IsoUp") return Pass_HNLoose2016(0.5, 0.2, 0.1, 3.);
-  if(ID=="HNLoose2016IsoDown") return Pass_HNLoose2016(0.3, 0.2, 0.1, 3.);
-  if(ID=="HNLoose2016dxyVar1") return Pass_HNLoose2016(0.4, 0.5, 0.1, 3.);
-  if(ID=="HNLoose2016dxyVar2") return Pass_HNLoose2016(0.4, 0.3, 0.1, 3.);
-  if(ID=="HNLoose2016dxyVar3") return Pass_HNLoose2016(0.4, 0.05, 0.1, 3.);
-  if(ID=="HNLoose2016dzUp") return Pass_HNLoose2016(0.4, 0.2, 0.12, 3.);
-  if(ID=="HNLoose2016dzDown") return Pass_HNLoose2016(0.4, 0.2, 0.08, 3.);
-  if(ID=="HNLoose2016SIPVar1") return Pass_HNLoose2016(0.4, 0.2, 0.1, 8.);
-  if(ID=="HNLoose2016SIPVar1") return Pass_HNLoose2016(0.4, 0.2, 0.1, 6.);
-  if(ID=="HNLoose2016SIPVar1") return Pass_HNLoose2016(0.4, 0.2, 0.1, 4.5);
   if(ID=="HNTight2016") return Pass_HNTight2016();
 
-  if(ID=="HNLooseV1") return Pass_HNLoose(0.4, 0.2, 0.5);
-  if(ID=="HNLooseV1IsoUp") return Pass_HNLoose(0.5, 0.2, 0.5);
-  if(ID=="HNLooseV1IsoDown") return Pass_HNLoose(0.3, 0.2, 0.5);
-  if(ID=="HNLooseV2") return Pass_HNLoose(0.4, 0.05, 0.1);
-  if(ID=="HNLooseV2IsoUp") return Pass_HNLoose(0.5, 0.05, 0.1);
-  if(ID=="HNLooseV2IsoDown") return Pass_HNLoose(0.3, 0.05, 0.1);
+  /// looser IP
+  if(ID=="HNLooseV1") return Pass_HNLoose(0.4,  0.2, 0.5);
   if(ID=="HNTightV1") return Pass_HNTight(0.07, 0.01, 0.1);
-  if(ID=="HNTightV2") return Pass_HNTight(0.1, 0.01, 0.04);
+  if(ID=="HNTightV2") return Pass_HNTight(0.07, 0.05, 0.2);
 
-  if(ID=="ISRLoose") return Pass_ISRLoose(0.4);
-  if(ID=="ISRLooseIsoUp") return Pass_ISRLoose(0.5);
-  if(ID=="ISRLooseIsoDown") return Pass_ISRLoose(0.3);
-  if(ID=="ISRTight") return Pass_ISRTight();
 
-  if(ID=="POGTightRelIso25") return Pass_POGTightRelIso25();
-  if(ID=="POGTightRelIso20") return Pass_POGTightRelIso20();
-  if(ID=="POGTightRelIso15") return Pass_POGTightRelIso15();
-  if(ID=="POGTightRelIso10") return Pass_POGTightRelIso10();
+
+
   if(ID=="POGTightPFIsoLoose") return Pass_POGTightPFIsoLoose();
   if(ID=="POGTightPFIsoMedium") return Pass_POGTightPFIsoMedium();
   if(ID=="POGTightPFIsoTight") return Pass_POGTightPFIsoTight();
   if(ID=="POGTightPFIsoVeryTight") return Pass_POGTightPFIsoVeryTight();
   if(ID=="POGTightPFIsoVeryVeryTight") return Pass_POGTightPFIsoVeryVeryTight();
-
-  if(ID=="POGTightCutsWithTightIso") return Pass_POGTightCutsWithTightIso();
-
   if(ID=="CutBasedTightNoIP") return Pass_CutBasedTightNoIP();
 
   //==== No cut
@@ -168,6 +151,41 @@ bool Muon::Pass_POGTightWithTightIso() const {
   if(!( RelIso()<0.15 ))  return false;
   return true;
 }
+
+bool Muon::Pass_POGHighPtLooseMixed() const {
+  if(this->Pt() < 50) return Pass_HNLoose2016(0.4, 0.2, 0.1, 3.);
+  if(!( isPOGHighPt() )) return false;
+  if(!( TrkIso()/TuneP4().Pt()<0.3 )) return false;
+  return true;
+}
+
+bool Muon::Pass_POGHighPtTightMixed() const {
+  if(this->Pt() < 60) return Pass_POGTightPFIsoVeryTight(); 
+  
+  if(!( isPOGHighPt() )) return false;
+  if(!( TrkIso()/TuneP4().Pt()<0.1 )) return false;
+
+
+  return true;
+}
+
+
+
+bool Muon::Pass_POGHighPtLoose() const {
+  if(this->Pt() < 50) return false;
+  if(!( isPOGHighPt() )) return false;
+  if(!( TrkIso()/TuneP4().Pt()<0.3 )) return false;
+  return true;
+}
+
+bool Muon::Pass_POGHighPtTight() const {
+  if(this->Pt() < 60) return false;
+  if(!( isPOGHighPt() )) return false;
+  if(!( TrkIso()/TuneP4().Pt()<0.1 )) return false;
+  return true;
+}
+
+
 bool Muon::Pass_POGHighPtWithLooseTrkIso() const {
   if(!( isPOGHighPt() )) return false;
   if(!( TrkIso()/TuneP4().Pt()<0.1 )) return false;
@@ -288,7 +306,8 @@ bool Muon::Pass_POGTightPFIsoVeryTight() const {
 
 bool Muon::Pass_POGTightPFIsoVeryVeryTight() const {
   if(!( isPOGTight() )) return false;
-  if(!( PassSelector(PFIsoVeryVeryTight) )) return false;
+  if(!( RelIso()<0.05 )) return false;
+  
   return true;
 }
 

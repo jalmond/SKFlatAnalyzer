@@ -1,0 +1,9 @@
+DYJets10to50_MG
+TTLJ_powheg
+TTLL_powheg
+WW_pythia
+WZ_pythia
+ZZ_pythia
+SingleTop_sch_Lep
+SingleTop_tW_antitop_NoFullyHad
+SingleTop_tW_top_NoFullyHad

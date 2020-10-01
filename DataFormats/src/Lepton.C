@@ -13,6 +13,7 @@ Lepton::Lepton() : Particle() {
   j_MiniRelIso = -999.;
   j_ptcone = -999.;
   j_LeptonFlavour = NONE;
+  j_LeptonType = -999;
 }
 
 Lepton::~Lepton(){
@@ -48,6 +49,9 @@ void Lepton::SetMiniIso(double ch, double nh, double ph, double pu, double rho, 
 
 }
 
+void Lepton::SetLeptonType(int t){
+  j_LeptonType= t;
+}
 void Lepton::SetLeptonFlavour(Flavour f){
   j_LeptonFlavour = f;
 }

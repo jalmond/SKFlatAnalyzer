@@ -15,7 +15,7 @@ class HNtypeI_Dilepton : public AnalyzerCore {
   void RunMM(std::vector<Electron> electrons, std::vector<Electron> electrons_veto, std::vector<Muon> muons, std::vector<Muon> muons_veto, std::vector<Jet> jets, std::vector<FatJet> fatjets,  Event ev, AnalyzerParameter param,  float w);
 			 
 
-
+  double GetCFWeightElectron(std::vector<Electron> electrons , TString tight_id);
 
   double CalculateDiLepWeight( double fr1, double fr2, bool mu1Tight, bool mu2Tight);
   double GetFakeRateEl(double eta, double pt, TString id);
@@ -35,6 +35,7 @@ class HNtypeI_Dilepton : public AnalyzerCore {
   bool Signal;
   bool SignalOS;
   bool PromptLeptonOnly;
+  bool isSingleMu;
 
   bool HEM1516;
   bool BeforeRun319077;
@@ -42,6 +43,7 @@ class HNtypeI_Dilepton : public AnalyzerCore {
 
 
   // Trigger
+  vector<TString> HighPtMuonTriggers;
   vector<TString> MuonTriggers;
   vector<TString> MuonTriggersH;
   vector<TString> ElectronTriggers;

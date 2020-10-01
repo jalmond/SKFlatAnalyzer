@@ -16,7 +16,10 @@ public:
 
   TTree *newtree;
 
+  bool isSingleMu;
+
   vector<TString> triggers;
+  vector<TString> triggers_dimu;
   void WriteHist();
 
   double LeptonPtCut, AK4JetPtCut, AK8JetPtCut;

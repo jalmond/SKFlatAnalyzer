@@ -106,7 +106,7 @@ def RunCheckWeight(alias_list, skim,y ):
     test=False
     if not test:
         if os.path.exists(inputlist):
-            os.system("SKFlat.py -a GetEffLumi -l " + inputlist + " -n 50  --nmax 100  -y "+y )
+            os.system("SKFlat.py -a GetEffLumi -l " + inputlist + " -n 50  --nmax 200  -y "+y )
     if inputlist != "NONE":
         os.system("rm " + inputlist)
         
@@ -152,16 +152,16 @@ def RunCheckSumList(inputlist , inputlist_skim, skim, y):
     if inputlist_skim != "NONE" and os.path.exists(inputlist_skim):
         if inputlist != "NONE" and os.path.exists(inputlist):
             #print "SKFlat.py -a CheckSkim -l " + inputlist_skim + "  --skim " + skim + " -n 30  --nmax 100  -y "+y   + " &"
-            os.system("SKFlat.py -a CheckSkim -l " + inputlist_skim + "  --skim " + skim + " -n 30  --nmax 100  -y "+y   + " &")
+            os.system("SKFlat.py -a CheckSkim -l " + inputlist_skim + "  --skim " + skim + " -n 30  --nmax 200  -y "+y   + " &")
 
                         
         else:
             #print "SKFlat.py -a CheckSkim -l " + inputlist_skim + "  --skim " + skim + " -n 30  --nmax 100  -y "+y
-            os.system("SKFlat.py -a CheckSkim -l " + inputlist_skim + "  --skim " + skim + " -n 30  --nmax 100  -y "+y  )
+            os.system("SKFlat.py -a CheckSkim -l " + inputlist_skim + "  --skim " + skim + " -n 30  --nmax 200  -y "+y  )
 
     if inputlist != "NONE" and os.path.exists(inputlist):
         #print "SKFlat.py -a CheckSkim -l " + inputlist + " -n 60  --nmax 100  -y "+y
-        os.system("SKFlat.py -a CheckSkim -l " + inputlist + " -n 60  --nmax 100  -y "+y )
+        os.system("SKFlat.py -a CheckSkim -l " + inputlist + " -n 100  --nmax 200  -y "+y )
     if inputlist != "NONE":
         os.system("rm " + inputlist)
         
@@ -199,9 +199,12 @@ def RunCheckSum(filepath, alias, skim,y ):
     test=False
     if not test:
         if not os.path.exists(dirpath+"/CheckSkim_"+skim+"_"+alias+".root"):
-            os.system("SKFlat.py -a CheckSkim -i " + alias + "  --skim " + skim + " -n 30  --nmax 100  -y "+y   + " &")
+            if "DY" in alias or "TT" in alias:
+                os.system("SKFlat.py -a CheckSkim -i " + alias + "  --skim " + skim + " -n 100  --nmax 200  -y "+y   + " &")
+            else:
+                os.system("SKFlat.py -a CheckSkim -i " + alias + "  --skim " + skim + " -n 30  --nmax 200  -y "+y   + " &")
         if not os.path.exists(dirpath+"/CheckSkim_"+alias+".root"):
-            os.system("SKFlat.py -a CheckSkim -i " + alias + " -n 60  --nmax 100  -y "+y )
+            os.system("SKFlat.py -a CheckSkim -i " + alias + " -n 60  --nmax 200  -y "+y )
 
     vals = CheckEventCount(dirpath, alias, skim)
     return vals
@@ -251,16 +254,33 @@ def CheckMyFile(ver, filename, prod, nfile):
     return BadFile
 
 from optparse import OptionParser
-parser = OptionParser()
-parser.add_option("-y", "--year"  , dest="year", default="AA",help="which year to run")
-parser.add_option("-s", "--sample", dest="sample" , default="AA", help="which sample")
+import argparse
 
-(options, args) = parser.parse_args()
-in_samples=options.sample
-in_year=options.year
+parser = argparse.ArgumentParser(description='option')
+parser.add_argument('-s', dest='sample', default="NONE")
+parser.add_argument('-y', dest='year', default="NONE")
+parser.add_argument('--Update', action='store_true')
+parser.add_argument('--All', action='store_true')
+parser.add_argument('--Run2', action='store_true')
+args = parser.parse_args()
+
+in_samples=args.sample
+in_year=args.year
+
+if not args.All:
+    if in_samples == "NONE":
+        print "CheckSkims::ERROR in input. No sample selected.. Use -s sample* or -All to run all samples"
+        exit()
+if not args.Run2:
+    if in_year == "NONE":
+        print "CheckSkims::ERROR in input. No data year selected. Use -y year or -Full to run all years"
+        exit()
+
+if not args.Update:
+    print "Skim code assumed unchanged since last running. Will use same samples."
 
 years = ["2016", "2017","2018"]
-if not  in_year == "AA":
+if not  in_year == "NONE":
     years = [in_year]
 tag="Run2Legacy_v4"
 skim="SkimTree_SSNonIso"
@@ -268,7 +288,7 @@ datetag= ["-"]
 import ROOT
 
 
-ex_datetag=["2020_06","2020_09_02","2020_09_03"]
+ex_datetag=["2020_06","2020_09_02","2020_09_03","2020_09_09"]
 other_tags=[]
 samples_added=[]
 test=False
@@ -299,7 +319,7 @@ for y in years:
 
     for f in listdir("/gv0/DATA/SKFlat/"+tag+"/"+y+"/MC"+skim_tmp+"/"):
         
-        if not in_samples == "AA":
+        if not in_samples == "NONE":
             if not  in_samples in f:
                 continue
 
@@ -337,10 +357,6 @@ if not _AliasFound:
     years=[]
     print "File to run sample is missing..."
     for i in range(0, len(_al_sample)):
-        #if _al_alias_found[i]:
-         #   print _al_sample[i] + "  file path " + _al_alias[i]
-        #else:
-
         if not _al_alias_found[i]:
             print _al_sample[i] + "  missing common file in "   + _al_alias[i] 
 
@@ -355,7 +371,7 @@ if len(years) > 0:
     xsec_2016_name="xsec_file2016.txt"
     xsec_2017_name="xsec_file2017.txt"
     xsec_2018_name="xsec_file2018.txt"
-    if not in_samples == "AA":
+    if not in_samples == "NONE":
         xsec_2016_name="xsec/xsec_file2016_"+in_samples+".txt"
         xsec_2017_name="xsec/xsec_file2017_"+in_samples+".txt"
         xsec_2018_name="xsec/xsec_file2018_"+in_samples+".txt"
@@ -408,7 +424,7 @@ if len(years) > 0:
         print x
     
     for _x in years:
-        if not in_samples == "AA":
+        if not in_samples == "NONE":
             print "Xsec for " + _x + " printed in xsec_file"+y+"_"+in_samples +".txt"
 
     if len(_xsec_warnings) > 0:
@@ -431,7 +447,7 @@ for y in years:
             skim_tmp=skim
 
         for f in listdir("/gv0/DATA/SKFlat/"+tag+"/"+y+"/MC"+skim_tmp+"/"):
-            if not in_samples == "AA":
+            if not in_samples == "NONE":
                 if not  in_samples in f:
                     continue
 
@@ -467,6 +483,7 @@ for y in years:
                                 nFiles=nFiles+1
                 if VERBOSE:
                     print "NFiles = " + str(nFiles)
+
                 _samples.append("/gv0/DATA/SKFlat/"+tag+"/"+y+"/MC"+skim_tmp+"/"+f )
                 _dir.append("/gv0/DATA/SKFlat/"+tag+"/"+y+"/MC"+skim_tmp+"/" )
                 _alias.append("/gv0/DATA/SKFlat/"+tag+"/"+y+"/MC"+skim_tmp+"/" +f + alias)
@@ -541,7 +558,8 @@ while count < len(_samples):
     skim_def=skim+"_"
     if not skim:
         skim_def=skim
-    if not os.path.exists("/data6/Users/jalmond/2020/HL_SKFlatAnalyzer/SKFlatAnalyzer/data/Run2Legacy_v4/"+_year[count]+"/Sample/ForSNU/"+skim_def+_alias[count].replace(_samples[count],'')+".txt"):
+    _al=_alias[count]
+    if not os.path.exists("/data6/Users/jalmond/2020/HL_SKFlatAnalyzer/SKFlatAnalyzer/data/Run2Legacy_v4/"+_year[count]+"/Sample/ForSNU/"+skim_def+_al.replace(_samples[count],'')+".txt"):
 
         # if _poss_runBATCH then only checking batch jobs and not outputting info so can continue when no alias part
         if _poss_runBATCH:
@@ -554,17 +572,22 @@ while count < len(_samples):
             continue
         else:
             # not running batch jobs so can just output sampe details
-            
-            sample_outfix = len(_samples[count].replace(_dir[count],'')) - sample_space +8
+            _sample=_samples[count]
+            sample_outfix = len(_sample.replace(_dir[count],'')) - sample_space +8
             sample_fix=""
-            if len(_samples[count].replace(_dir[count],'')) > sample_space -8 :
+            _sample=_samples[count]
+            if len(_sample.replace(_dir[count],'')) > sample_space -8 :
                 sample_fix="..."
                 alias_fix=""
-            if len(_alias[count].replace(_samples[count],'')) > alias_space -8:
+            _al=_alias[count]
+            if len(_al.replace(_samples[count],'')) > alias_space -8:
                 alias_fix="..."
-            sampletag= GetDirName(_dir[count], dirlist,_ndirlist) + _samples[count].replace(_dir[count],'')[:- sample_outfix] + sample_fix
-            alias_outfix = len(_alias[count].replace(_samples[count],'')) - alias_space +8
-
+            _sample=_samples[count]
+            sampletag= GetDirName(_dir[count], dirlist,_ndirlist) + _sample.replace(_dir[count],'')[:- sample_outfix] + sample_fix
+            if sample_outfix <= 0:
+                sampletag= GetDirName(_dir[count], dirlist,_ndirlist) + _samples[count].replace(_dir[count],'')
+            _al=_alias[count]
+            alias_outfix = len(_al.replace(_samples[count],'')) - alias_space +8
             aliastag= _alias[count].replace(_samples[count],'')[:- alias_outfix] +alias_fix
             print sampletag + " "*(sample_space-len(sampletag)) + aliastag + " "*  (alias_space-len(aliastag)) + _date_tags[count].replace(_samples[count],'')  + " "*(prod_space-len(_date_tags[count].replace(_samples[count],'')))   + str(_nFiles[count]).replace(_samples[count],'')  + " "*(nfile_space - len(str(_nFiles[count]).replace(_samples[count],'')))   + "--"  +" "*(10-len("--" ))   + "--" + " "*( nev_space -10 - len("--")) + "--"  + " "*( size_space - 2)   + "--"  + " "*( input_space - 2)   + "--" + "           __"
             print_log.append(sampletag + " "*(sample_space-len(sampletag)) + aliastag + " "*  (alias_space-len(aliastag)) + _date_tags[count].replace(_samples[count],'')  + " "*(prod_space-len(_date_tags[count].replace(_samples[count],'')))   + str(_nFiles[count]).replace(_samples[count],'')  + " "*(nfile_space - len(str(_nFiles[count]).replace(_samples[count],'')))   + "--"  +" "*(10-len("--" ))   + "--" + " "*( nev_space -10 - len("--")) + "--"  + " "*( size_space - 2)   + "--"  + " "*( input_space - 2)   + "--" + "           __")
@@ -651,7 +674,7 @@ while count < len(_samples):
             ev_log=str(ev_Vals[0]) + " :  " + str(ev_Vals[1])
 
         if not matched_sumw:
-            sample_list_file=[ "-999"]
+            sample_list_file.append( "-999")
 
         neventR=float(nevents)/float(nevents_orig)
 
@@ -663,9 +686,12 @@ while count < len(_samples):
         if len(_alias[count].replace(_samples[count],'')) > alias_space:
             alias_fix="..."
         sampletag= GetDirName(_dir[count], dirlist,_ndirlist) + _samples[count].replace(_dir[count],'')[:- sample_outfix] + sample_fix
+        if sample_outfix <= 0:
+            sampletag= GetDirName(_dir[count], dirlist,_ndirlist) + _samples[count].replace(_dir[count],'')
         alias_outfix = len(_alias[count].replace(_samples[count],'')) - alias_space +8
 
         aliastag= _alias[count].replace(_samples[count],'')[:- alias_outfix] +alias_fix
+
         print sampletag + " "*(sample_space-len(sampletag)) + aliastag + " "*  (alias_space-len(aliastag)) + _date_tags[count].replace(_samples[count],'') + " "*(prod_space-len(_date_tags[count].replace(_samples[count],''))) + str(_nFiles[count]).replace(_samples[count],'') + " "*(nfile_space - len(str(_nFiles[count]).replace(_samples[count],'')))  + str(nevents) +" "*(10-len(str(nevents) )) + "(%.0f)" %(nevents_orig) + " "*( nev_space -10 - len("(%.0f)" %(nevents_orig))) + "%.4f" %(100*skim_size/orig_size) + " "*( size_space - len("%.4f" %(100*skim_size/orig_size))) + used_sample  + " "*( input_space - len(used_sample)) + str(len(sample_list_file)) + " "*12  + ev_log
         print_log.append(sampletag + " "*(sample_space-len(sampletag)) + aliastag + " "*  (alias_space-len(aliastag)) + _date_tags[count].replace(_samples[count],'') + " "*(prod_space-len(_date_tags[count].replace(_samples[count],''))) + str(_nFiles[count]).replace(_samples[count],'') + " "*(nfile_space - len(str(_nFiles[count]).replace(_samples[count],'')))  + str(nevents) +" "*(10-len(str(nevents) )) + "(%.0f)" %(nevents_orig) + " "*( nev_space -10 - len("(%.0f)" %(nevents_orig))) + "%.4f" %(100*skim_size/orig_size) + " "*( size_space - len("%.4f" %(100*skim_size/orig_size))) + used_sample  + " "*( input_space - len(used_sample)) + str(len(sample_list_file)) + " "*12  + ev_log)
         
@@ -732,7 +758,7 @@ while count < len(_samples):
         commonfile.close()
 
         if not matched_sumw:
-            sample_list_file=[ "-999"]
+            sample_list_file.append( "-999")
 
         nevents = NEvents("/data6/Users/jalmond/2020/HL_SKFlatAnalyzer/SKFlatAnalyzer/data/Run2Legacy_v4/"+_year[count]+"/Sample/ForSNU/"+skim_def+_alias[count].replace(_samples[count],'')+".txt")
         nevents_orig = NEvents("/data6/Users/jalmond/2020/HL_SKFlatAnalyzer/SKFlatAnalyzer/data/Run2Legacy_v4/"+_year[count]+"/Sample/ForSNU/"+_alias[count].replace(_samples[count],'')+".txt")
@@ -745,6 +771,9 @@ while count < len(_samples):
         if ev_Vals[0] != ev_Vals[1]:
             ev_log=str(ev_Vals[0]) + " :  " + str(ev_Vals[1])
 
+        # TEST
+        print _alias[count]  +" - > - " + _samples[count]
+
         print " "*sample_space  + " "*  (alias_space)    + _date_tags[count].replace(_samples[count],'')  + " "*(prod_space-len(_date_tags[count].replace(_samples[count],'')))    + str(_nFiles[count]).replace(_samples[count],'')    + " "*(nfile_space - len(str(_nFiles[count]).replace(_samples[count],'')))   + str(nevents)  +" "*(10-len(str(nevents) ))   + "(%.0f)" %(nevents_orig)   + " "*( nev_space -10 - len("(%.0f)" %(nevents_orig)))  + "%.4f" %(100*skim_size/orig_size)   + " "*( size_space - len("%.4f" %(100*skim_size/orig_size)))    + used_sample    + " "*( input_space - len(used_sample))   + str(len(sample_list_file))  + " "*12 + ev_log
         print_log.append(" "*sample_space + _alias[count].replace(_samples[count],'')   + " "*  (alias_space-len(_alias[count].replace(_samples[count],'')))    + _date_tags[count].replace(_samples[count],'')  + " "*(prod_space-len(_date_tags[count].replace(_samples[count],'')))    + str(_nFiles[count]).replace(_samples[count],'')    + " "*(nfile_space - len(str(_nFiles[count]).replace(_samples[count],'')))   + str(nevents)  +" "*(10-len(str(nevents) ))   + "(%.0f)" %(nevents_orig)   + " "*( nev_space -10 - len("(%.0f)" %(nevents_orig)))  + "%.4f" %(100*skim_size/orig_size)   + " "*( size_space - len("%.4f" %(skim_size/orig_size)))    + used_sample    + " "*( input_space - len(used_sample))   + str(len(sample_list_file))  + " "*12 + ev_log)
     
@@ -752,12 +781,12 @@ while count < len(_samples):
 
 
 outname="log/output"+skim+".txt"
-if not in_samples == "AA":
+if not in_samples == "NONE":
     outname="log/output_"+in_samples+"_"+skim+".txt"
-    if not in_year == "AA":
+    if not in_year == "NONE":
         outname="log/output_"+in_samples+"_"+in_year+"_"+skim+".txt"
 else:
-    if not in_year == "AA":
+    if not in_year == "NONE":
         outname="log/output_"+ in_year+"_"+skim+".txt"
 
 

@@ -86,6 +86,7 @@ public:
   std::vector<Gen> GetGens();
   std::vector<LHE> GetLHEs();
 
+  bool IsCF(Electron el, std::vector<Gen> gens);
   //===================================================
   //==== Get objects METHOD 2
   //==== Get AllObject in the begining, and apply cut
@@ -197,6 +198,11 @@ public:
   int GetLeptonType(const Lepton& lep, const std::vector<Gen>& gens);
   int GetGenPhotonType(const Gen& genph, const std::vector<Gen>& gens);
   bool IsSignalPID(int pid);
+
+
+  //==== JA
+  bool SameCharge(vector<Electron> els);
+  bool SameCharge(vector<Muon> mus);
 
   //==== Plotting
 

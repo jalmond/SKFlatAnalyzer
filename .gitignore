@@ -3,6 +3,12 @@
 *.d
 *.so
 *_Dict.cxx
+*/*~
+*/*/*~
+run/Opt/
+run/lists/
+checkSkims/xsec/xsec_file201*_*.txt
+checkSkims/xsec*.txt
 lib/*.tar.gz
 */obj
 *_submit.sh

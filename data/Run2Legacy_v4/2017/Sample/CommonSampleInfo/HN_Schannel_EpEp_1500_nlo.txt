@@ -1,0 +1,2 @@
+# alias PD xsec nmc sumw
+HN_Schannel_EpEp_1500_nlo  HeavyNeutrinoToEpEp_Schannel_M1500_NLO 3.3275e-07 30000 27624.0 

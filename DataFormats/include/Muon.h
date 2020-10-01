@@ -102,6 +102,10 @@ public:
   bool PassID(TString ID) const;
   bool Pass_POGTightWithTightIso() const;
   bool Pass_POGHighPtWithLooseTrkIso() const;
+  bool Pass_POGHighPtTight() const;
+  bool Pass_POGHighPtTightMixed() const;
+  bool Pass_POGHighPtLoose() const;
+  bool Pass_POGHighPtLooseMixed() const;
   bool Pass_TESTID() const;
 
   void SetValidMuonHits(int n);

@@ -115,8 +115,8 @@ public:
 
   inline bool passMVAID_noIso_WP80() const {return PassSelector(POG_MVA_NOISO_WP80); }
   inline bool passMVAID_noIso_WP90() const {return PassSelector(POG_MVA_NOISO_WP90); }
-  inline bool passMVAID_iso_WP80() const {return PassSelector(POG_MVA_ISO_WP80); }
-  inline bool passMVAID_iso_WP90() const {return PassSelector(POG_MVA_ISO_WP90); }
+  inline bool passMVAID_Iso_WP80() const {return PassSelector(POG_MVA_ISO_WP80); }
+  inline bool passMVAID_Iso_WP90() const {return PassSelector(POG_MVA_ISO_WP90); }
   inline bool passMVAID_noiso_WPLoose() const {return PassSelector(POG_MVA_NOISO_WPLOOSE); }
   inline bool passHEEPID() const {return PassSelector(POG_HEEP); }
 
@@ -124,6 +124,17 @@ public:
 
   bool Pass_SUSYMVAWP(TString wp) const;
   bool Pass_SUSYTight() const;
+  bool passMVAID_noIso_WP80HN() const;
+  bool passMVAID_noIso_WP90HN() const;
+  bool passMVAID_noIso_WP80HNLoose() const;
+  bool passMVAID_noIso_WP90HNLoose() const;
+  
+  bool passMVAID_Iso_WP80HN() const;
+  bool passMVAID_Iso_WP90HN() const;
+  bool passMVAID_Iso_WP80HNLoose() const;
+  bool passMVAID_Iso_WP90HNLoose() const;
+
+  bool PassHNIsGsfCtfScPixChargeConsistent() const;
   bool Pass_SUSYLoose() const;
   bool passTightIDHN() const;
   bool passMediumIDHN() const;
@@ -139,12 +150,15 @@ public:
 
   bool Pass_HNVeto2016() const;
   bool Pass_HNLoose2016(double relisoCut, double dxyCut, double dzCut, double sipCut) const;
+  bool Pass_HNLoose2016MVAISO( double dxyCut, double dzCut, double sipCut) const;
   bool Pass_HNTight2016() const;
 
   bool Pass_HNVeto(double relisoCut) const;
   bool Pass_HNLoose(double relisoCut, double dxyCut, double dzCut) const;
+  bool Pass_HNLooseID(double relisoCut, double dxyCut, double dzCut) const;
   bool Pass_HNLoosest() const;
   bool Pass_HNTight(double relisoCut, double dxyCut, double dzCut) const;
+  bool Pass_HNMedium(double relisoCut, double dxyCut, double dzCut) const;
 
   bool Pass_ISRLoose(double relisoCut) const;
   bool Pass_ISRTight() const;

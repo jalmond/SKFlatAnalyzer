@@ -2,6 +2,8 @@
 
 void SkimTree_SSNonIso::initializeAnalyzer(){
 
+  isSingleMu = HasFlag("isSingleMu");
+
   outfile->cd();
   cout << "[SkimTree_SSNonIso::initializeAnalyzer()] gDirectory = " << gDirectory->GetName() << endl;
   newtree = fChain->CloneTree(0);
@@ -19,12 +21,21 @@ void SkimTree_SSNonIso::initializeAnalyzer(){
     }
   */
 
+  triggers_dimu.clear();
 
   triggers.clear();
   if(DataYear==2016){
+    triggers_dimu = {
+      "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v",
+      "HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v",
+      "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v",
+      "HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v"
+    };
     triggers = {
       "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v",
       "HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v",
+      "HLT_Mu50_v",
+      "HLT_TkMu50_v",
       "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v",
       "HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v",
       "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v",
@@ -35,17 +46,29 @@ void SkimTree_SSNonIso::initializeAnalyzer(){
     };
   }
   else if(DataYear==2017){
+    triggers_dimu = {
+      "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_v",
+    };
+
     triggers = {
       "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_v",
       "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v",
+      "HLT_Mu50_v",
+      "HLT_TkMu50_v",
       "HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v",
       "HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v"
     };
   }
   else if(DataYear==2018){
+    triggers_dimu = {
+      "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v",
+
+    };
     triggers = {
       "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v",
       "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v",
+      "HLT_Mu50_v",
+      "HLT_TkMu50_v",
       "HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v",
       "HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v"
     };
@@ -66,11 +89,12 @@ void SkimTree_SSNonIso::executeEvent(){
   Event ev;
   ev.SetTrigger(*HLT_TriggerName);
 
+
   //==== Skim 1 ) trigger
   if(! (ev.PassTrigger(triggers)) ) return;
 
+  if(isSingleMu && (ev.PassTrigger(triggers_dimu))) return;
   
-
   std::vector<Muon>     muonPreColl     = GetMuons("HNLoosest", 8., 2.4);
   std::vector<Electron> electronPreColl = GetElectrons("HNLoosest", 8., 2.5);
 
@@ -96,10 +120,10 @@ void SkimTree_SSNonIso::executeEvent(){
   if      ( NLep >= 3 ){ 
     HasSS2lOR3l = true; 
     if(NMu==0 ){
-      if(electronPreColl.at(0).Pt() > 23. && electronPreColl.at(1).Pt() > 12 &&  electronPreColl.at(2).Pt() > 10) LeadLepPt = true;
+      if(electronPreColl.at(0).Pt() > 23. && electronPreColl.at(1).Pt() > 12) LeadLepPt = true;
     }  
     else if(NEl==0){
-      if(muonPreColl.at(0).Pt() > 17. && muonPreColl.at(1).Pt() > 8 &&  muonPreColl.at(2 ).Pt() > 5) LeadLepPt = true;
+      if(muonPreColl.at(0).Pt() > 17. && muonPreColl.at(1).Pt() > 8) LeadLepPt = true;
     }
     else LeadLepPt = true;
     
@@ -107,13 +131,16 @@ void SkimTree_SSNonIso::executeEvent(){
   else if ( NLep == 2 ){
     HasSS2lOR3l = true;
   }
+  
   if(NMu==2 && muonPreColl.at(0).Pt()>  17.    ) LeadLepPt = true;
-  if(NEl==2 && electronPreColl.at(0).Pt()>23 && electronPreColl.at(0).Pt()>10) LeadLepPt = true;
+  if(NEl==2 && electronPreColl.at(0).Pt()>23 && electronPreColl.at(1).Pt()>10) LeadLepPt = true;
   if(NMu==1 && NEl==1 && electronPreColl.at(0).Pt()>23 ) LeadLepPt = true;
   if(NMu==1 && NEl==1 && muonPreColl.at(0).Pt()>23 ) LeadLepPt = true;
-  if( !(HasSS2lOR3l && LeadLepPt) ) return;
-  //if( !(HasSS2lOR3l)) return;
 
+  if( !(HasSS2lOR3l && LeadLepPt) ) {
+    return;
+  }
+  //if( !(HasSS2lOR3l)) return;
   //=============================
   //==== If survived, fill tree
   //=============================

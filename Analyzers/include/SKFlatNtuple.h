@@ -98,6 +98,8 @@ public :
    Double_t        vertex_Y;
    Double_t        vertex_Z;
    vector<string>  *HLT_TriggerName;
+   vector<double>  *mu_type;
+   vector<double>  *el_type;
    vector<double>  *jet_pt;
    vector<double>  *jet_eta;
    vector<double>  *jet_phi;
@@ -791,6 +793,8 @@ public :
    TBranch        *b_pfMET_Type1_PhiCor_phi_shifts;   //!
    TBranch        *b_pfMET_Type1_PhiCor_SumEt_shifts;   //!
 
+   TBranch        *b_mu_type;   //!
+   TBranch        *b_el_type;   //!
 };
 
 #endif

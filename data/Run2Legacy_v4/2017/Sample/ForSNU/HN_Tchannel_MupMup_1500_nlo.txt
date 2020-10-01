@@ -1,0 +1,1 @@
+/gv0/DATA/SKFlat/Run2Legacy_v4/2016/PrivateMC/HNtypeI/HeavyNeutrinoToMupMup_Tchannel_M1500_NLO/SKFlat_Run2Legacy_v4/200831_045005/0000/SKFlatNtuple_2016_MC_1.root

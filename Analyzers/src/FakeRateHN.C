@@ -98,30 +98,105 @@ void FakeRateHN::executeEvent(){
   vector<TString>  mu_loose_id;
   vector<TString>  el_loose_id;
   if(isEE||!IsDATA){
-    channel.push_back("EE");
-    channel.push_back("EE");
+
     ELIDs.push_back(make_pair("HNTight2016", "HNVeto2016"));
-    ELIDs.push_back(make_pair("passTightID_noccb", "HNVeto2016"));
-    el_loose_id.push_back("HNLoose2016");
-    el_loose_id.push_back("passLooseID_noccb");
-    
-    // muon holders
-    MuIDs.push_back(make_pair("HNVeto2016","HNVeto2016"));
-    MuIDs.push_back(make_pair("HNVeto2016","HNVeto2016"));
-    mu_loose_id.push_back("HNLoose2016");
-    mu_loose_id.push_back("HNLoose2016");
+    el_loose_id.push_back("HNLoose");
+
+
+    ELIDs.push_back(make_pair("HNTightV1", "HNVeto2016"));
+    el_loose_id.push_back("HNLoose");
+
+
+    ELIDs.push_back(make_pair("HNTightV2", "HNVeto2016"));
+    el_loose_id.push_back("HNLoose");
+
+
+    ELIDs.push_back(make_pair("HNTightV3", "HNVeto2016"));
+    el_loose_id.push_back("HNLoose");
+
+
+    ELIDs.push_back(make_pair("HNMediumV1", "HNVeto2016"));
+    el_loose_id.push_back("HNLoose");
+
+
+    ELIDs.push_back(make_pair("HNMediumV2", "HNVeto2016"));
+    el_loose_id.push_back("HNLoose");
+
+
+    ELIDs.push_back(make_pair("HNMediumV3", "HNVeto2016"));
+    el_loose_id.push_back("HNLoose");
+
+
+    // TIGHT POG + no CC in low pt                                                       
+    ELIDs.push_back(make_pair("passTightID_nocc", "HNVeto2016"));
+    el_loose_id.push_back("passLooseID_nocc");
+
+    // POG + IP + CC                                                                     
+    ELIDs.push_back(make_pair("passTightID", "HNVeto2016"));
+    el_loose_id.push_back("passLooseID");
+
+    ELIDs.push_back(make_pair("passMediumID", "HNVeto2016"));
+    el_loose_id.push_back("passLooseID");
+
+
+    ELIDs.push_back(make_pair("passMVAID_noIso_WP80","HNVeto2016"));
+    el_loose_id.push_back("passMVAID_noIso_WP80Loose");
+
+    ELIDs.push_back(make_pair("passMVAID_noIso_WP90","HNVeto2016"));
+    el_loose_id.push_back("passMVAID_noIso_WP90Loose");
+
+    ELIDs.push_back(make_pair("passMVAID_iso_WP80","HNVeto2016"));
+    el_loose_id.push_back("passMVAID_iso_WP80Loose");
+
+    ELIDs.push_back(make_pair("passMVAID_iso_WP90","HNVeto2016"));
+    el_loose_id.push_back("passMVAID_iso_WP90Loose");
+
+
+    for (auto i: ELIDs) {
+      channel.push_back("EE");
+      MuIDs.push_back(make_pair("HNVeto2016","HNVeto2016"));
+      mu_loose_id.push_back("HNLoose2016");
+    }
   }
   if(isSingleMu || isMM||!IsDATA){
-    channel.push_back("MuMu");
-    channel.push_back("MuMu");
-    ELIDs.push_back(make_pair("HNVeto2016", "HNVeto2016"));
-    ELIDs.push_back(make_pair("HNVeto2016", "HNVeto2016"));
-    MuIDs.push_back(make_pair("HNTight2016", "HNVeto2016"));
     MuIDs.push_back(make_pair("POGTightPFIsoVeryTight","HNVeto2016"));
     mu_loose_id.push_back("HNLoose2016");
+
+    MuIDs.push_back(make_pair("POGHighPtMixTight", "HNVeto2016"));
+    mu_loose_id.push_back("POGHighPtMixLoose"); // ---> FIX FR PT BIN                    
+
+    MuIDs.push_back(make_pair("POGTightPFIsoVeryVeryTight","HNVeto2016"));
     mu_loose_id.push_back("HNLoose2016");
-    el_loose_id.push_back("HNLoose2016");
-    el_loose_id.push_back("HNLoose2016");
+
+    MuIDs.push_back(make_pair("POGTightPFIsoTight","HNVeto2016"));
+    mu_loose_id.push_back("HNLoose2016");
+
+    MuIDs.push_back(make_pair("POGTightPFIsoMedium","HNVeto2016"));
+    mu_loose_id.push_back("HNLoose2016");
+
+    MuIDs.push_back(make_pair("POGTightPFIsoLoose","HNVeto2016"));
+    mu_loose_id.push_back("HNLoose2016");
+
+    MuIDs.push_back(make_pair("HNTightV1", "HNVeto2016"));
+    mu_loose_id.push_back("HNLoose2016");
+
+    MuIDs.push_back(make_pair("HNTightV2", "HNVeto2016"));
+    mu_loose_id.push_back("HNLoose2016");
+
+
+    MuIDs.push_back(make_pair("HNTight2016", "HNVeto2016"));
+    mu_loose_id.push_back("HNLoose2016");
+
+    MuIDs.push_back(make_pair("POGHighPtTight", "HNVeto2016"));
+    mu_loose_id.push_back("POGHighPtLoose");
+
+    int iel= MuIDs.size() - channel.size();
+    for (int i =0; i < iel; i++){
+      channel.push_back("MuMu");
+      el_loose_id.push_back("HNLoose2016");
+      ELIDs.push_back(make_pair("HNVeto2016", "HNVeto2016"));
+    }
+
 
 
   }
@@ -136,6 +211,7 @@ void FakeRateHN::executeEvent(){
     }
   }
 
+ 
   for(unsigned int it_id=0; it_id<ELIDs.size(); it_id++){
     
     //************************************************///
@@ -800,6 +876,12 @@ void FakeRateHN::GetFakeRates(std::vector<Muon> loose_mu, std::vector<Muon> tigh
   double ptbins[9] = { 5., 10., 15.,20.,30.,45.,60.,100., 200.};
   double etabins2[5] = { 0.,0.8,  1.479, 2.,  2.5};
 
+  if(tag.Contains("HighPt")){
+    if(loose_mu.size() == 1){
+      if(loose_mu.at(0).Pt() < 50.) return;
+      if(loose_mu[0].CalcPtCone(loose_mu[0].RelIso(), isocut) < 60.) return;
+    }
+  }
   Event ev = GetEvent();
   if(loose_mu.size() == 1 && jets.size() >= 1){
     float mu_pt = loose_mu.at(0).Pt();

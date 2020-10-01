@@ -26,14 +26,18 @@ void CFBackgroundEstimator::ReadHistograms(){
     for(int i=0;i<histlist->Capacity();i++){
       TString this_cfname = histlist->At(i)->GetName();
       histDir->cd();
-      map_hist_Electron[a+"_"+this_cfname] = (TH1D *)file->Get(this_cfname)->Clone();
+      if (!this_cfname.Contains(a)) continue;
+      map_hist_Electron[this_cfname] = (TH1D *)file->Get(this_cfname)->Clone();
       file->Close();
       delete file;
       origDir->cd();
-      //cout << "[CFBackgroundEstimator::CFBackgroundEstimator] map_hist_Electron : " << a+"_"+this_cfname << endl;
-    }
-  }
 
+      //cout << "[CFBackgroundEstimator::CFBackgroundEstimator] map_hist_Electron : " << this_cfname << endl;
+    }
+
+
+  }
+  
   string elline2;
   ifstream in2(datapath+"/histmap_Muon.txt");
   while(getline(in2,elline2)){
@@ -75,20 +79,15 @@ double CFBackgroundEstimator::GetElectronCFRate(TString ID, TString key, double 
   eta = fabs(eta);
   if(eta>=2.5) eta = 2.49;
 
-  TString EtaRegion = "InnerBarrel";
-  if(eta<0.8) EtaRegion = "InnerBarrel";
-  else if(eta<1.479) EtaRegion = "OuterBarrel";
-  else EtaRegion = "EndCap";
 
-  std::map< TString, TH1D* >::const_iterator mapit;
-  mapit = map_hist_Electron.find(ID+"_"+key+"_"+EtaRegion+"_InvGenPt");
+  std::map< TString, TH1D* >::const_iterator mapit;                                                                                                                               
+  mapit = map_hist_Electron.find(ID+"_"+key);
 
   if(mapit==map_hist_Electron.end()){
-    cout << "[CFBackgroundEstimator::GetElectronCFRate] No"<< ID+"_"+key+"_"+EtaRegion+"_InvGenPt" <<endl;
     exit(EXIT_FAILURE);
   }
 
-  int this_bin = (mapit->second)->FindBin(1./pt);
+  int this_bin = (mapit->second)->FindBin(pt,eta);
   value = (mapit->second)->GetBinContent(this_bin);
   error = (mapit->second)->GetBinError(this_bin);
 

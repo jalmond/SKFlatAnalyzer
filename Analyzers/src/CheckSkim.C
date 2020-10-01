@@ -5,6 +5,8 @@ void CheckSkim::initializeAnalyzer(){
   triggers.clear();
   if(DataYear==2016){
     triggers = {
+      "HLT_Mu50_v",
+      "HLT_TkMu50_v",
       "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v",
       "HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v",
       "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v",
@@ -18,6 +20,9 @@ void CheckSkim::initializeAnalyzer(){
   }
   else if(DataYear==2017){
     triggers = {
+      "HLT_Mu50_v",
+      "HLT_TkMu50_v",
+
       "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_v",
       "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v",
       "HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v",
@@ -26,6 +31,9 @@ void CheckSkim::initializeAnalyzer(){
   }
   else if(DataYear==2018){
     triggers = {
+      "HLT_Mu50_v",
+      "HLT_TkMu50_v",
+
       "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v",
       "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v",
       "HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v",
@@ -57,8 +65,9 @@ void CheckSkim::executeEvent(){
   int NLep = NEl+NMu;
 
   if(NLep!=2) return;
-  if(NEl > 0 && electronPreColl[0].Pt() < 25.) return;
-  if(NMu > 0 && muonPreColl[0].Pt() < 20.) return;
+  if(NEl > 0 && electronPreColl[0].Pt() < 25) return;
+  if(NEl > 1 && electronPreColl[1].Pt() < 10) return;
+  if(NMu > 0 && muonPreColl[0].Pt() < 25.) return;
 
   double MCweight = 1.;
   //  if(!IsDATA) MCweight = gen_weight>0 ? 1. : -1. ;

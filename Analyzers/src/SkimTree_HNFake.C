@@ -10,6 +10,7 @@ void SkimTree_HNFake::initializeAnalyzer(){
   if(DataYear==2016){
     triggers = {
       "HLT_Mu3_PFJet40_v",                             // DoubleMuon
+      "HLT_Mu50_v",
       "HLT_Mu8_TrkIsoVVL_v",                           // DoubleMuon
       "HLT_Mu17_TrkIsoVVL_v",                          // DoubleMuon
       "HLT_Ele8_CaloIdL_TrackIdL_IsoVL_PFJet30_v",     // DoubleEG

@@ -1,0 +1,2 @@
+# alias PD xsec nmc sumw
+HN_Schannel_MupMup_800_nlo  HeavyNeutrinoToMupMup_Schannel_M800_NLO 7.59e-06 30000 28032.0 

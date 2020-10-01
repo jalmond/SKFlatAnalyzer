@@ -1,0 +1,4 @@
+/gv0/DATA/SKFlat/Run2Legacy_v4/2016/PrivateMC/HNtypeI/HeavyNeutrinoToMupMup_Schannel_M1400_NLO/SKFlat_Run2Legacy_v4/200830_150512/0000/SKFlatNtuple_2016_MC_4.root
+/gv0/DATA/SKFlat/Run2Legacy_v4/2016/PrivateMC/HNtypeI/HeavyNeutrinoToMupMup_Schannel_M1400_NLO/SKFlat_Run2Legacy_v4/200830_150512/0000/SKFlatNtuple_2016_MC_1.root
+/gv0/DATA/SKFlat/Run2Legacy_v4/2016/PrivateMC/HNtypeI/HeavyNeutrinoToMupMup_Schannel_M1400_NLO/SKFlat_Run2Legacy_v4/200830_150512/0000/SKFlatNtuple_2016_MC_2.root
+/gv0/DATA/SKFlat/Run2Legacy_v4/2016/PrivateMC/HNtypeI/HeavyNeutrinoToMupMup_Schannel_M1400_NLO/SKFlat_Run2Legacy_v4/200830_150512/0000/SKFlatNtuple_2016_MC_3.root

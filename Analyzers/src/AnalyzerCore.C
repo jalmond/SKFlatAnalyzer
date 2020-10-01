@@ -79,24 +79,29 @@ double AnalyzerCore::GetIsoFromID(TString channel, TString id, double eta, doubl
 
   if(channel == "MuMu") {
     if (id == "HNTight2016") return 0.07;
+    if (id == "HNTightV1") return 0.07;
+    if (id == "HNTightV2") return 0.07;
+
     if (id == "POGTightPFIsoVeryVeryTight") return 0.05;
     if (id == "POGTightPFIsoVeryTight") return 0.1;
     if (id == "POGTightPFIsoTight") return 0.15;
     if (id == "POGTightPFIsoMedium") return 0.2;
     if (id == "POGTightPFIsoLoose") return 0.25;
     if (id == "POGTightPFIsoVeto") return 0.4;
+
+    if (id == "POGHighPtTight") return 0.1;
+    if (id == "POGHighPtMixTight") return 0.1;
   }
   else if(channel == "EE"){
+
     if( id == "HNTight2016") return 0.08;
-    if( id == "passTightID_noccb") {
+   
+    if( id.Contains("HNTightV")) {
       if(fabs(eta) < 1.479) return (0.0287 + (0.506/pt));
       else  return (0.0445 + (0.963/pt));
     }
+
     if( id == "passTightID_nocc") {
-      if(fabs(eta) < 1.479) return (0.0287 + (0.506/pt));
-      else  return (0.0445 + (0.963/pt));
-    }
-    if( id == "passTightID_noccb") {
       if(fabs(eta) < 1.479) return (0.0287 + (0.506/pt));
       else  return (0.0445 + (0.963/pt));
     }
@@ -105,10 +110,19 @@ double AnalyzerCore::GetIsoFromID(TString channel, TString id, double eta, doubl
       if(fabs(eta) < 1.479) return (0.0287 + (0.506/pt));
       else  return (0.0445 + (0.963/pt));
     }
+    if( id.Contains("HNMediumV")) {
+      if(fabs(eta) < 1.479) return (0.0478 + (0.506/pt));
+      else  return (0.0658 + (0.963/pt));
+    }
     if( id == "passMediumID") {
       if(fabs(eta) < 1.479) return (0.0478 + (0.506/pt));
       else  return (0.0658 + (0.963/pt));
     }
+    if( id == "passMVAID_noIso_WP80") return 0.08;
+    if( id == "passMVAID_noIso_WP90") return 0.08;
+    if( id == "passMVAID_Iso_WP80") return 999.0;
+    if( id == "passMVAID_Iso_WP90") return 999.0;
+
   }
   else if(channel == "EMu"){
 
@@ -142,6 +156,8 @@ std::vector<Muon> AnalyzerCore::GetAllMuons(){
     mu.SetCharge(muon_charge->at(i));
     mu.SetMiniAODPt(muon_pt->at(i));
     mu.SetMiniAODTunePPt(muon_TuneP_pt->at(i));
+
+    if(mu_type)mu.SetLeptonType(mu_type->at(i));
 
     double rc = muon_roch_sf->at(i);
     double rc_err = muon_roch_sf_up->at(i)-rc;
@@ -215,6 +231,7 @@ std::vector<Electron> AnalyzerCore::GetAllElectrons(){
     el.SetEnShift(  electron_Energy_Scale_Up->at(i)/electron_Energy->at(i), electron_Energy_Scale_Down->at(i)/electron_Energy->at(i) );
     el.SetResShift( electron_Energy_Smear_Up->at(i)/electron_Energy->at(i), electron_Energy_Smear_Down->at(i)/electron_Energy->at(i) );
 
+    if(el_type)el.SetLeptonType(el_type->at(i));
     el.SetPtEtaPhiE(1., electron_eta->at(i), electron_phi->at(i), electron_Energy->at(i));
     double el_theta = el.Theta();
     double el_pt = electron_Energy->at(i) * TMath::Sin( el_theta );
@@ -964,6 +981,20 @@ bool AnalyzerCore::PassMETFilter(){
 
 }
 
+bool AnalyzerCore::SameCharge(vector<Muon> mus){
+    
+  if(mus.size() != 2) return false;
+  if(mus[0].Charge() == mus[1].Charge()) return true;
+  return false;
+}
+
+bool AnalyzerCore::SameCharge(vector<Electron> els){
+
+  if(els.size() != 2) return false;
+  if(els[0].Charge() == els[1].Charge()) return true;
+  return false;
+}
+
 void AnalyzerCore::initializeAnalyzerTools(){
 
   //==== MCCorrection
@@ -1213,7 +1244,7 @@ std::vector<Electron> AnalyzerCore::ElectronPromptOnly(const std::vector<Electro
 
   for(unsigned int i=0; i<electrons.size(); i++){
     if(GetLeptonType(electrons.at(i), gens)<=0) continue;
-    out.push_back( electrons.at(i) );
+    if(!IsCF(electrons.at(i), gens))out.push_back( electrons.at(i) );
   }
 
   return out;
@@ -1390,6 +1421,17 @@ void AnalyzerCore::PrintGen(const std::vector<Gen>& gens){
 
 }
 
+bool AnalyzerCore::IsCF(Electron el, std::vector<Gen> gens){
+  
+  int charge_el_reco = el.Charge();
+  Lepton l = Lepton(el);
+
+  Gen gen_el= GetGenMatchedLepton(l, gens);
+  int pdgid = gen_el.PID() ;
+  if( (pdgid * charge_el_reco) > 0) return true;
+		
+  return false;
+}
 Gen AnalyzerCore::GetGenMatchedLepton(const Lepton& lep, const std::vector<Gen>& gens){
 
   //==== find status 1 lepton
@@ -1555,6 +1597,7 @@ bool AnalyzerCore::IsFromHadron(const Gen& me, const std::vector<Gen>& gens){
 
 int AnalyzerCore::GetLeptonType(const Lepton& lep, const std::vector<Gen>& gens){
 
+  if(lep.LeptonType() != -999) return lep.LeptonType();
   //==== [Type]
   //====  1 : EWPrompt
   //====  2 : Signal Daughter

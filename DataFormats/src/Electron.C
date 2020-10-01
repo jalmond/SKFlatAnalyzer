@@ -177,57 +177,55 @@ bool Electron::PassID(TString ID) const{
   //==== XXX veto Gap Always
   if(etaRegion()==GAP) return false;
 
+  if(ID=="NOCUT") return true;
+
   //==== POG
   if(ID=="passVetoID") return passVetoID();
-  //if(ID=="passLooseID") return passLooseID();
-  //if(ID=="passMediumID") return passMediumID();
-  //if(ID=="passTightID") return passTightID();
 
-  /// POG + IP +CC
-  if(ID=="passLooseID") return passLooseIDHN();
-  if(ID=="passMediumID") return passMediumIDHN();
-  if(ID=="passTightID") return passTightIDHN();
+  /// POG + POG IP +CC
+  
+  if(ID=="passLooseID")   return passLooseIDHN(); // non POG IP/ISO
+  if(ID=="passMediumID")  return passMediumIDHN();
+  if(ID=="passTightID")   return passTightIDHN();
 
-  if(ID=="passTightID_nocc") return passTightID_NoCC();
-  if(ID=="passTightID_noccb") return passTightID_NoCCB();
+  if(ID=="passTightID_nocc") return passTightID_NoCC(); // passTightIDHN no CC
+
+  if(ID=="HNTight2016") return Pass_HNTight2016();  // EXO-17-028
+  if(ID=="HNTightV1") return Pass_HNTight(0.08, 0.05, 0.1); // HNCC + POG IP
+  if(ID=="HNTightV2") return Pass_HNTight(0.08, 0.02, 0.1); // HNCC + VAR IP   
+  if(ID=="HNTightV3") return Pass_HNTight(0.08, 0.01, 0.1);// HNCC + VAR IP   
+
+  if(ID=="HNMediumV1") return Pass_HNMedium(0.08, 0.05, 0.1); // HNCC + POG IP
+  if(ID=="HNMediumV2") return Pass_HNMedium(0.08, 0.02, 0.1);// HNCC + VAR IP  
+  if(ID=="HNMediumV3") return Pass_HNMedium(0.08, 0.01, 0.1);// HNCC + VAR IP  
+  if(ID=="HNLoose")   return  Pass_HNLooseID(0.6,0.2,0.1); // non POG IP/ISO                                                
+
+
+
+  if(ID=="passMVAID_noIso_WP80") return passMVAID_noIso_WP80HN(); // MVA 80 + iso 0.08 + POG IP + HNCC
+  if(ID=="passMVAID_noIso_WP90") return passMVAID_noIso_WP90HN(); // MVA 90 + iso 0.08 + POG IP + HNCC 
+  if(ID=="passMVAID_iso_WP80") return passMVAID_Iso_WP80HN(); // isoMVA 80 + POG IP + HNCC 
+  if(ID=="passMVAID_iso_WP90") return passMVAID_Iso_WP90HN(); // isoMVA 90 + POG IP + HNCC 
+  
+
+  /// Loose+veto
   if(ID=="passLooseID_nocc") return passLooseID_NoCC();
-  if(ID=="passLooseID_noccb") return passLooseID_NoCCB();
-  //if(ID=="passHEEPID") return passHEEPID();
-  //if(ID=="passHEEPID2018Prompt") return passHEEP2018Prompt(); // HEEP
-  //if(ID=="HEEP_dZ") return Pass_HEEP_dZ(); // HEEP
-  //if(ID=="HEEP2018_dZ") return Pass_HEEP2018_dZ(); // HEEP
-  if(ID=="passMVAID_noIso_WP80") return passMVAID_noIso_WP80();
-  if(ID=="passMVAID_noIso_WP90") return passMVAID_noIso_WP90();
-  if(ID=="passMVAID_iso_WP80") return passMVAID_iso_WP80();
-  if(ID=="passMVAID_iso_WP90") return passMVAID_iso_WP90();
-  //==== Customized
-  //if(ID=="SUSYTight") return Pass_SUSYTight();
-  //if(ID=="SUSYLoose") return Pass_SUSYLoose();
-  if(ID=="NOCUT") return true;
-  //if(ID=="TEST") return Pass_TESTID();
-  //if(ID=="TightWithIPcut") return Pass_CutBasedTightWithIPcut();
+
   if(ID=="HNVeto2016") return Pass_HNVeto2016();
   if(ID=="HNLoose2016") return Pass_HNLoose2016(0.6, 0.2, 0.1, 10.);
-  //if(ID=="HNLoose2016IsoUp") return Pass_HNLoose2016(0.7, 0.2, 0.1, 10.);
-  //if(ID=="HNLoose2016IsoUp") return Pass_HNLoose2016(0.5, 0.2, 0.1, 10.);
-  if(ID=="HNTight2016") return Pass_HNTight2016();
+
 
   if(ID=="HNVeto") return Pass_HNVeto(0.6);
-  if(ID=="HNLoose") return Pass_HNLoose(0.6, 999., 999.);
+  //  if(ID=="HNLoose") return Pass_HNLoose(0.6, 999., 999.);
   if(ID=="HNLoosest") return Pass_HNLoosest();
-  //if(ID=="HNLooseV1IsoUp") return Pass_HNLoose(0.7, 0.2, 0.2);
-  //if(ID=="HNLooseV1IsoDown") return Pass_HNLoose(0.5, 0.2, 0.2);
-  //if(ID=="HNLooseV2") return Pass_HNLoose(0.6, 0.05, 0.1);
-  //if(ID=="HNLooseV2IsoUp") return Pass_HNLoose(0.7, 0.05, 0.1);
-  //if(ID=="HNLooseV2IsoDown") return Pass_HNLoose(0.5, 0.05, 0.1);
   
-  //if(ID=="HNTightV1") return Pass_HNTight(0.08, 0.05, 0.1);
-  //if(ID=="HNTightV2") return Pass_HNTight(0.08, 0.01, 0.04);
+  if(ID=="passMVAID_noIso_WP80Loose") return passMVAID_noIso_WP80HNLoose();
+  if(ID=="passMVAID_noIso_WP90Loose") return passMVAID_noIso_WP90HNLoose();
+  if(ID=="passMVAID_iso_WP80Loose") return passMVAID_Iso_WP80HNLoose();
+  if(ID=="passMVAID_iso_WP90Loose") return passMVAID_Iso_WP90HNLoose();
 
-  //if(ID=="ISRLoose") return Pass_ISRLoose(0.6);
-  //if(ID=="ISRLooseIsoUp") return Pass_ISRLoose(0.7);
-  //if(ID=="ISRLooseIsoDown") return Pass_ISRLoose(0.5);
-  //if(ID=="ISRTight") return Pass_ISRTight();
+  
+  
 
   if(ID=="HNMVALoose") return Pass_HNMVALoose(0.6, 999., 999.);
   if(ID=="HNMVATight") return Pass_HNMVATight(0.08, 0.05, 0.1);
@@ -378,6 +376,28 @@ bool Electron::Pass_HNVeto2016() const{
   return true;
 }
 
+bool Electron::Pass_HNLoose2016MVAISO(double dxyCut, double dzCut, double sipCut) const{
+
+  if( fabs(scEta()) <= 0.8 ){
+    if(! (MVAIso()>-0.1) ) return false;
+  }
+  else if( fabs(scEta()) > 0.8 && fabs(scEta()) <= 1.479 ){
+    if(! (MVAIso()>0.1) ) return false;
+  }
+  else{
+    if(! (MVAIso()>-0.1) ) return false;
+  }
+  if(! (fabs(dXY())<dxyCut && fabs(dZ())<dzCut && fabs(IP3D()/IP3Derr())<sipCut) ) return false;
+
+  if(! (PassConversionVeto()) ) return false;
+  if(! PassHNIsGsfCtfScPixChargeConsistent())  return false;
+
+  if(! (Pass_TriggerEmulation()) ) return false;
+
+  return true;
+}
+
+
 bool Electron::Pass_HNLoose2016(double relisoCut, double dxyCut, double dzCut, double sipCut) const{
   if( fabs(scEta()) <= 0.8 ){
     if(! (MVANoIso()>-0.1) ) return false;
@@ -402,14 +422,8 @@ bool Electron::passTightIDHN() const{
   if(! (passTightID()) ) return false;
   if(! (PassConversionVeto()) ) return false;
   if(! (Pass_TriggerEmulation()) ) return false;
-  if( fabs(scEta())  <= 1.479 ){
-    if(! (IsGsfCtfScPixChargeConsistent()) )return false;
-    if( !(fabs(dXY()) < 0.05 && fabs(dZ())< 0.1 )) return false;
-  }
-  else{
-    if(! (IsGsfCtfScPixChargeConsistent()) )return false;
-    if( !(fabs(dXY()) < 0.05 && fabs(dZ())< 0.1 )) return false;
-  }
+  if(! (IsGsfCtfScPixChargeConsistent()) )return false;
+  if( !(fabs(dXY()) < 0.05 && fabs(dZ())< 0.1 && fabs(IP3D()/IP3Derr()) < 4.)) return false;
 
   return true;
 }
@@ -417,14 +431,9 @@ bool Electron::passMediumIDHN() const{
   if(! (passMediumID()) ) return false;
   if(! (PassConversionVeto()) ) return false;
   if(! (Pass_TriggerEmulation()) ) return false;
-  if( fabs(scEta())  <= 1.479 ){
-    if(! (IsGsfCtfScPixChargeConsistent()) )return false;
-    if( !(fabs(dXY()) < 0.05 && fabs(dZ())< 0.1 )) return false;
-  }
-  else{
-    if(! (IsGsfCtfScPixChargeConsistent()) )return false;
-    if( !(fabs(dXY()) < 0.05 && fabs(dZ())< 0.1 )) return false;
-  }
+  if(! (IsGsfCtfScPixChargeConsistent()) )return false;
+  if( !(fabs(dXY()) < 0.05 && fabs(dZ())< 0.1 && fabs(IP3D()/IP3Derr()) < 4. )) return false;
+
 
   return true;  
 }
@@ -432,13 +441,8 @@ bool Electron::passTightID_NoCC() const {
   if(! (passTightID()) ) return false;
   if(! (PassConversionVeto()) ) return false;
   if(! (Pass_TriggerEmulation()) ) return false;
-  if( fabs(scEta())  <= 1.479 ){
-    if( !(fabs(dXY()) < 0.05 && fabs(dZ())< 0.1 )) return false;
-  }
-  else{
-    if( !(fabs(dXY()) < 0.05 && fabs(dZ())< 0.1 )) return false;
-  }
-
+  if( !(fabs(dXY()) < 0.05 && fabs(dZ())< 0.1 && fabs(IP3D()/IP3Derr()) < 4.)) return false;
+  
   return true;
 }
 
@@ -447,47 +451,111 @@ bool Electron::passTightID_NoCCB() const {
   if(! (passTightID()) ) return false;
   if(! (PassConversionVeto()) ) return false;
   if(! (Pass_TriggerEmulation()) ) return false;
-  if( fabs(scEta())  <= 1.479 ){
-    if( !(fabs(dXY()) < 0.05 && fabs(dZ())< 0.1 )) return false;
-  }
-  else{
-    if(! (IsGsfCtfScPixChargeConsistent()) )return false;
-    if( !(fabs(dXY()) < 0.05 && fabs(dZ())< 0.1 )) return false;
-  }
-
+  if(! PassHNIsGsfCtfScPixChargeConsistent()) return false;
+  if( !(fabs(dXY()) < 0.05 && fabs(dZ())< 0.1  && fabs(IP3D()/IP3Derr()) < 4.)) return false;
   return true;
 }
 bool Electron::passLooseID_NoCC() const {
 
-  if(! (Pass_CutBasedLooseNoIso()) ) return false;
+  if(! (Pass_CutBasedVetoNoIso()) ) return false;
   if(! (PassConversionVeto()) ) return false;
   if(! (Pass_TriggerEmulation()) ) return false;
-  if( fabs(scEta())  <= 1.479 ){
-    if( !(fabs(dXY()) < 0.1 && fabs(dZ())< 0.2 )) return false;
-  }
-  else{
-    if( !(fabs(dXY()) < 0.1 && fabs(dZ())< 0.2 )) return false;
-  }
+  if( !(fabs(dXY()) < 0.1 && fabs(dZ())< 0.2 )) return false;
   if(! (RelIso()<0.6) ) return false;
 
   return true;
 }
 
+
+bool Electron::passMVAID_noIso_WP80HN() const {
+  if(!(passMVAID_noIso_WP80())) return false;
+  if(! (PassConversionVeto()) ) return false;
+  if(! (Pass_TriggerEmulation()))return false;
+  if(! (RelIso()<0.08) ) return false;
+  if( !(fabs(dXY()) < 0.05 && fabs(dZ())< 0.1  && fabs(IP3D()/IP3Derr())<4.)) return false;
+  if(! PassHNIsGsfCtfScPixChargeConsistent()) return false;
+
+  return true;
+  
+}
+bool Electron::passMVAID_noIso_WP80HNLoose() const {
+  if(!(Pass_HNLoose2016(0.6, 0.2, 0.1, 10.))) return false;
+  return true;
+}
+
+
+bool Electron::passMVAID_Iso_WP90HN() const {
+  if(!(passMVAID_Iso_WP90())) return false;
+  if(! (PassConversionVeto()) ) return false;
+  if(! (Pass_TriggerEmulation()))return false;
+  if( !(fabs(dXY()) < 0.05 && fabs(dZ())< 0.1 &&fabs(IP3D()/IP3Derr())<4.)) return false;
+  if(! PassHNIsGsfCtfScPixChargeConsistent())  return false;
+  return true;
+}
+
+bool Electron::passMVAID_Iso_WP80HN() const {
+  if(!(passMVAID_Iso_WP80())) return false;
+  if(! (PassConversionVeto()) ) return false;
+  if(! (Pass_TriggerEmulation()))return false;
+  if( !(fabs(dXY()) < 0.05 && fabs(dZ())< 0.1 &&fabs(IP3D()/IP3Derr())<4.)) return false;
+  if(! PassHNIsGsfCtfScPixChargeConsistent())  return false;
+  return true;
+}
+
+bool Electron::passMVAID_Iso_WP80HNLoose() const {
+  if(!(Pass_HNLoose2016MVAISO( 0.2, 0.1, 10.))) return false;
+  return true;
+}
+
+bool Electron::passMVAID_Iso_WP90HNLoose() const {
+  if(!(Pass_HNLoose2016MVAISO( 0.2, 0.1, 10.))) return false;
+  return true;
+}
+
+
+bool Electron::PassHNIsGsfCtfScPixChargeConsistent() const{
+
+  if(  fabs(scEta()) <= 1.479 ){
+    if (this->Pt() < 150.) {
+      if(! (IsGsfCtfScPixChargeConsistent()) )return false;
+    }
+  }
+  else {
+    if (this->Pt() < 250.) {
+      if(! (IsGsfCtfScPixChargeConsistent()) )return false;
+    }
+  }
+  
+  return true;
+}
+
+bool Electron::passMVAID_noIso_WP90HN() const {
+  if(!(passMVAID_noIso_WP90())) return false;
+  if(! (PassConversionVeto()) ) return false;
+  if(! (Pass_TriggerEmulation()))return false;
+  if(! (RelIso()<0.08) ) return false;
+  if( !(fabs(dXY()) < 0.05 && fabs(dZ())< 0.1 &&fabs(IP3D()/IP3Derr())<4.)) return false;
+  if(! PassHNIsGsfCtfScPixChargeConsistent()) return false;
+  return true;
+  
+}
+bool Electron::passMVAID_noIso_WP90HNLoose() const {
+  if(!(Pass_HNLoose2016(0.6, 0.2, 0.1, 10.))) return false;
+  return true;
+}
+
+
 bool Electron::passLooseIDHN() const {
 
-  if(! (Pass_CutBasedLooseNoIso()) ) return false;
+  if(! (Pass_CutBasedVetoNoIso()) ) return false;
   if(! (PassConversionVeto()) ) return false;
   if(! (Pass_TriggerEmulation()) ) return false;
-  if( fabs(scEta())  <= 1.479 ){
-    if( !(fabs(dXY()) < 0.1 && fabs(dZ())< 0.2 )) return false;
-    if(! (IsGsfCtfScPixChargeConsistent()) )return false;
-  }
-  else{
-    if(! (IsGsfCtfScPixChargeConsistent()) )return false;
-    if( !(fabs(dXY()) < 0.1 && fabs(dZ())< 0.2 )) return false;
-  }
-  if(! (RelIso()<0.6) ) return false;
+  if( !(fabs(dXY()) < 0.1 && fabs(dZ())< 0.2 && fabs(IP3D()/IP3Derr())<10.)) return false;
 
+  if(! (IsGsfCtfScPixChargeConsistent()) )return false;
+
+  if(! (RelIso()<0.6) ) return false;
+  
   return true;
 }
 
@@ -497,13 +565,8 @@ bool Electron::passLooseID_NoCCB() const {
   if(! (Pass_CutBasedLooseNoIso()) ) return false;
   if(! (PassConversionVeto()) ) return false;
   if(! (Pass_TriggerEmulation()) ) return false;
-  if( fabs(scEta())  <= 1.479 ){
-    if( !(fabs(dXY()) < 0.1 && fabs(dZ())< 0.2 )) return false;
-  }
-  else{
-    if(! (IsGsfCtfScPixChargeConsistent()) )return false;
-    if( !(fabs(dXY()) < 0.1 && fabs(dZ())< 0.2 )) return false;
-  }
+  if(! PassHNIsGsfCtfScPixChargeConsistent()) return false;
+  if( !(fabs(dXY()) < 0.1 && fabs(dZ())< 0.2 &&fabs(IP3D()/IP3Derr())<10.)) return false;
   if(! (RelIso()<0.6) ) return false;
 
   return true;
@@ -556,11 +619,35 @@ bool Electron::Pass_HNLoose(double relisoCut, double dxyCut, double dzCut) const
   return true;
 }
 
+bool Electron::Pass_HNLooseID(double relisoCut, double dxyCut, double dzCut) const{
+
+  if(! (Pass_CutBasedVetoNoIso()) ) return false;
+
+  if(! (RelIso()<relisoCut) ) return false;
+  if(! (fabs(dXY())<dxyCut && fabs(dZ())<dzCut && fabs(IP3D()/IP3Derr())<10.    )) return false;
+  if(! PassHNIsGsfCtfScPixChargeConsistent()) return false;
+
+  if(! (Pass_TriggerEmulation()) ) return false;
+  return true;
+
+}
+
+bool Electron::Pass_HNMedium(double relisoCut, double dxyCut, double dzCut) const{
+  if(! (passMediumID()) ) return false;
+  if(! (RelIso()<relisoCut) ) return false;
+  if(! (fabs(dXY())<dxyCut && fabs(dZ())<dzCut && fabs(IP3D()/IP3Derr())<4    )) return false;
+  if(! PassHNIsGsfCtfScPixChargeConsistent()) return false;
+
+  if(! (Pass_TriggerEmulation()) ) return false;
+  return true;
+}
+
+
 bool Electron::Pass_HNTight(double relisoCut, double dxyCut, double dzCut) const{
   if(! (passTightID()) ) return false;
   if(! (RelIso()<relisoCut) ) return false;
-  if(! (fabs(dXY())<dxyCut && fabs(dZ())<dzCut) ) return false;
-  if(! (IsGsfCtfScPixChargeConsistent()) ) return false;
+  if(! (fabs(dXY())<dxyCut && fabs(dZ())<dzCut && fabs(IP3D()/IP3Derr())<4 ))   return false;
+  if(! PassHNIsGsfCtfScPixChargeConsistent()) return false;
   if(! (Pass_TriggerEmulation()) ) return false;
   return true;
 }

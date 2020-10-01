@@ -106,7 +106,7 @@ bool Jet::PassID(TString ID) const {
 
 bool Jet::Pass_HNTight() const {
   if(!Pass_tightJetID()) return false;
-//  if(!PassPileupMVA("loose")) return false;
+  //  if(!PassPileupMVA("loose")) return false;
 
   return true;
 }
@@ -226,7 +226,7 @@ bool Jet::PassPileupMVA(TString WP) const {
       if(this->Pt() < 10.){ if(PileupJetId() > -0.47) pass=true; }
       else if(this->Pt() < 20.){ if(PileupJetId() > -0.47) pass=true; }
       else if(this->Pt() < 30.){ if(PileupJetId() > -0.47) pass=true; }
-      else if(this->Pt() < 50.){ if(PileupJetId() > -0.38) pass=true; }
+      else if(this->Pt() < 50.){ if(PileupJetId() > -0.30) pass=true; }
       else pass=true;
     }
     else pass=true;

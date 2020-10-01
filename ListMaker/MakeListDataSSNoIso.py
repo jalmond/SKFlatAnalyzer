@@ -5,25 +5,26 @@ years =["2016","2017","2018"]
 tag="Run2Legacy_v4"
 skim="SkimTree_SSNonIso"
 #skim="SkimTree_NonIso"
-datetag="2020_09_0"
+datetag="2020_10_"
 check=[]
 for y in years:
     periodlist=[]
     datasets=[]
     if y == "2016":
         periodlist = ["B_ver2","C","D","E","F","G","H"]
-        datasets=["DoubleEG","DoubleMuon"]
+        datasets=["DoubleEG","DoubleMuon","SingleMuon","MuonEG"]
     if y == "2017":
 
         periodlist = ["B","C","D","E","F"]
         if skim == "SkimTree_NonIso":
             datasets=["SingleElectron","DoubleMuon"]
         else:
-            datasets=["DoubleEG","DoubleMuon"]
+            datasets=["DoubleEG","DoubleMuon","SingleMuon","MuonEG"]
 
     if y == "2018":
         periodlist = ["A","B","C","D"]
-        datasets=["EGamma","DoubleMuon"]
+        datasets=["EGamma","DoubleMuon","SingleMuon","MuonEG"]
+
     for d in datasets:
         for p in periodlist:
             print ""

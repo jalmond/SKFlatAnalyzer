@@ -33,6 +33,9 @@ public:
   enum Flavour{
     NONE, ELECTRON, MUON
   };
+
+  inline int LeptonType() const {return j_LeptonType;}
+  void SetLeptonType(int t);
   inline Flavour LeptonFlavour() const {return j_LeptonFlavour;}
   void SetLeptonFlavour(Flavour f);
   inline bool IsElectron() const {return j_LeptonFlavour==ELECTRON;}
@@ -72,6 +75,7 @@ private:
   double j_ptcone;
   Flavour j_LeptonFlavour;
 
+  int j_LeptonType;
   ClassDef(Lepton,1)
 
 };

@@ -101,6 +101,8 @@ void SKFlatNtuple::Init()
 
    // Set object pointer
    HLT_TriggerName = 0;
+   mu_type=0;
+   el_type=0;
    jet_pt = 0;
    jet_eta = 0;
    jet_phi = 0;
@@ -445,6 +447,11 @@ void SKFlatNtuple::Init()
    fChain->SetBranchAddress("vertex_Y", &vertex_Y, &b_PVy);
    fChain->SetBranchAddress("vertex_Z", &vertex_Z, &b_PVz);
    fChain->SetBranchAddress("HLT_TriggerName", &HLT_TriggerName, &b_HLT_TriggerName);
+   // JA
+   //   static TString invalidBranch("this is not in the chain");
+   if(fChain->GetListOfBranches()->FindObject("mu_type"))   fChain->SetBranchAddress("mu_type", &mu_type, &b_mu_type);
+   if(fChain->GetListOfBranches()->FindObject("el_type"))fChain->SetBranchAddress("el_type", &el_type, &b_el_type);
+
    fChain->SetBranchAddress("jet_pt", &jet_pt, &b_jet_pt);
    fChain->SetBranchAddress("jet_eta", &jet_eta, &b_jet_eta);
    fChain->SetBranchAddress("jet_phi", &jet_phi, &b_jet_phi);
