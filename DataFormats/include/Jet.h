@@ -27,17 +27,26 @@ public:
     else if(s>0) return j_En_up;
     else return j_En_down;
   }
+
   void SetResShift(double res_up, double res_down);
+
+  void SetRes(double res);
+  void SetPxUnSmeared(double px);
+  void SetPyUnSmeared(double py);
   inline double ResShift(int s) const {
     if(s==0) return 1.;
     else if(s>0) return j_Res_up;
     else return j_Res_down;
   }
 
+
   void SetTightJetID(double b);
   void SetTightLepVetoJetID(double b);
   inline bool Pass_tightJetID() const { return j_tightJetID; }
   inline bool Pass_tightLepVetoJetID() const { return j_tightLepVetoJetID; }
+  inline double Res() const { return j_Res;}
+  inline double PxUnSmeared()  const { return j_PxUnSmeared;}
+  inline double PyUnSmeared()  const { return j_PyUnSmeared;}
   bool Pass_HNTight() const;
 
   bool PassID(TString ID) const;
@@ -50,6 +59,8 @@ private:
   double  j_area;
   int j_partonFlavour;
   int j_hadronFlavour;
+  double  j_PxUnSmeared;
+  double  j_PyUnSmeared;
   double  j_CSVv2;
   double  j_DeepCSV;
   double  j_DeepFlavour_b;
@@ -72,6 +83,7 @@ private:
   double j_PileupJetId;
   double j_En_up;
   double j_En_down;
+  double j_Res;
   double j_Res_up;
   double j_Res_down;
   bool j_tightJetID, j_tightLepVetoJetID;

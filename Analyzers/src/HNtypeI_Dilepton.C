@@ -6,25 +6,32 @@ void HNtypeI_Dilepton::initializeAnalyzer(){
   //==== Userflags
   //================
 
+  // dataset
   isSingleMu = HasFlag("isSingleMu");
-
-  RunFake = HasFlag("RunFake");
-  RunCF = HasFlag("RunCF");
-  Signal = HasFlag("Signal");
-  SignalOS = HasFlag("SignalOS");
-  if(SignalOS) Signal=SignalOS;
-  PromptLeptonOnly = HasFlag("PromptLeptonOnly");
-  
   isEE = HasFlag("isEE");
   isMM = HasFlag("isMM");
   if(isSingleMu) isMM=HasFlag("isSingleMu");
 
+
+  // bkg flags 
+  RunFake = HasFlag("RunFake");
+  RunCF = HasFlag("RunCF");
+
+  // signal flags 
+  Signal = HasFlag("Signal");
+  SignalOS = HasFlag("SignalOS");
+  if(SignalOS) Signal=SignalOS;
+
+  PromptLeptonOnly = HasFlag("PromptLeptonOnly");
+  
+  /// Other flags
   RunSyst = HasFlag("RunSyst");
   if(IsDATA) RunSyst = false;
 
   HEM1516 = HasFlag("HEM1516");
 
-
+  
+  ///// random number for fake systs
   rand_ = new TRandom3(1234);
 
 
@@ -60,7 +67,6 @@ void HNtypeI_Dilepton::initializeAnalyzer(){
 
     if(isEE || !IsDATA){
       ElectronTriggers.push_back("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v");          // 35918.219492947
-      //SingleElectronTriggers.push_back("HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_MW_v");
       SingleElectronTriggers.push_back("HLT_Ele27_WPTight_Gsf_v");
       SingleElectronTriggers.push_back("HLT_Ele115_CaloIdVT_GsfTrkIdT_v");
     }
@@ -81,7 +87,12 @@ void HNtypeI_Dilepton::initializeAnalyzer(){
   }
   else if(DataYear==2017){
     if(isMM || !IsDATA)    MuonTriggers.push_back("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_v");
-    if(isEE || ! IsDATA)ElectronTriggers.push_back("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v");
+    if(isEE || ! IsDATA){
+      ElectronTriggers.push_back("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v");
+      SingleElectronTriggers.push_back("HLT_Ele27_WPTight_Gsf_v");
+      SingleElectronTriggers.push_back("HLT_Ele115_CaloIdVT_GsfTrkIdT_v");
+
+    }
     if(isMM || !IsDATA) HighPtMuonTriggers = {"HLT_Mu50_v"};
 
     //    EMuTriggers.push_back("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v");
@@ -97,7 +108,12 @@ void HNtypeI_Dilepton::initializeAnalyzer(){
   }
   else if(DataYear==2018){
     if(isMM|| !IsDATA)MuonTriggers.push_back("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v");
-    if(isEE|| !IsDATA)ElectronTriggers.push_back("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v");
+    if(isEE|| !IsDATA){
+      ElectronTriggers.push_back("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v");
+      SingleElectronTriggers.push_back("HLT_Ele27_WPTight_Gsf_v");
+      SingleElectronTriggers.push_back("HLT_Ele115_CaloIdVT_GsfTrkIdT_v");
+
+    }
     if(isMM || !IsDATA)HighPtMuonTriggers = {"HLT_Mu50_v"};
 
     //EMuTriggers.push_back("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v");
@@ -114,7 +130,9 @@ void HNtypeI_Dilepton::initializeAnalyzer(){
 
   //==== b tagging
   std::vector<JetTagging::Parameters> jtps;
+  jtps.push_back( JetTagging::Parameters(JetTagging::DeepCSV, JetTagging::Loose, JetTagging::incl, JetTagging::comb) );
   jtps.push_back( JetTagging::Parameters(JetTagging::DeepCSV, JetTagging::Medium, JetTagging::incl, JetTagging::comb) );
+  jtps.push_back( JetTagging::Parameters(JetTagging::DeepCSV, JetTagging::Tight, JetTagging::incl, JetTagging::comb) );
   mcCorr->SetJetTaggingParameters(jtps);
 
 
@@ -146,9 +164,8 @@ void HNtypeI_Dilepton::initializeAnalyzer(){
 void HNtypeI_Dilepton::executeEvent(){
 
   bool run_Debug=false;
-  if(run_Debug){
-    if (event != 497362754) return;
-  }
+  if(run_Debug &&  (event != 497362754)) return;
+  
   //************************************************
   //-----------------------------------------------
   //-----------------------------------------------
@@ -208,15 +225,15 @@ void HNtypeI_Dilepton::executeEvent(){
   AllElectrons = GetAllElectrons();
   AllJets = GetAllJets();
   AllFatJets = puppiCorr->Correct(GetAllFatJets());
+
   if(run_Debug){
     for(auto i : AllMuons){
       cout << "Muon " << i.Pt() << " " << i.Eta() << " " << i.PassID("HNLoosest")<<  endl;
     }
     
     for(auto i : AllElectrons){
-      //    "HNMediumV1", "HNVeto2016")
       cout << "Electron " << i.Pt() << " " <<i.Eta() << " " << i.PassID("HNLoosest") << " " << i.PassID("HNVeto2016") << " " << i.PassID("HNMediumV1") <<  endl;
-  }
+    }
   }
   //************************************************///
   // make signal specifc plots
@@ -237,12 +254,11 @@ void HNtypeI_Dilepton::executeEvent(){
   // setup list of IDs
   //************************************************///
   vector<pair<TString, TString> > MuIDs; vector<pair<TString, TString> > ELIDs;
-  vector<TString> channel;
-  vector<TString>  mu_loose_id;
-  vector<TString>  el_loose_id;
+  vector<TString>  mu_loose_id;  vector<TString>  el_loose_id;
+  vector<HNtypeI_Dilepton::Flavour> channel;
 
   if(isEE||!IsDATA){
-    /*
+    
     ELIDs.push_back(make_pair("HNTight2016", "HNVeto2016"));
     el_loose_id.push_back("HNLoose2016");
 
@@ -254,11 +270,11 @@ void HNtypeI_Dilepton::executeEvent(){
 
     ELIDs.push_back(make_pair("HNTightV3", "HNVeto2016"));
     el_loose_id.push_back("HNLoose");
-    */
+    
 
     ELIDs.push_back(make_pair("HNMediumV1", "HNVeto2016"));
     el_loose_id.push_back("HNLoose");
-    /*
+
     ELIDs.push_back(make_pair("HNMediumV2", "HNVeto2016"));
     el_loose_id.push_back("HNLoose");
 
@@ -290,9 +306,9 @@ void HNtypeI_Dilepton::executeEvent(){
     ELIDs.push_back(make_pair("passMVAID_iso_WP90","HNVeto2016"));
     el_loose_id.push_back("passMVAID_iso_WP90Loose");
 
-    */
+
     for (auto i: ELIDs) { 
-      channel.push_back("EE");
+      channel.push_back(EE);
       MuIDs.push_back(make_pair("HNVeto2016","HNVeto2016"));
       mu_loose_id.push_back("HNLoose2016");
     }
@@ -332,7 +348,7 @@ void HNtypeI_Dilepton::executeEvent(){
 
     int iel= MuIDs.size() - channel.size();
     for (int i =0; i < iel; i++){
-      channel.push_back("MuMu");
+      channel.push_back(MuMu);
       el_loose_id.push_back("HNLoose2016");
       ELIDs.push_back(make_pair("HNVeto2016", "HNVeto2016"));
     }
@@ -346,19 +362,18 @@ void HNtypeI_Dilepton::executeEvent(){
     //************************************************///
 
     TString MuonTightID      = MuIDs[it_id].first;
-    TString MuonVetoID      = MuIDs[it_id].second;
-    TString MuonLooseID  =  mu_loose_id[it_id];
-    TString ElectronTightID = ELIDs[it_id].first;
-    TString ElectronLooseID = el_loose_id[it_id];
-    TString ElectronVetoID  = ELIDs[it_id].second;
+    TString MuonVetoID       = MuIDs[it_id].second;
+    TString MuonLooseID      = mu_loose_id[it_id];
+    TString ElectronTightID  = ELIDs[it_id].first;
+    TString ElectronLooseID  = el_loose_id[it_id];
+    TString ElectronVetoID   = ELIDs[it_id].second;
 
-    TString FakeRateID =  ElectronLooseID;
-    if(channel[it_id] == "MuMu") FakeRateID = MuonLooseID;
+    TString FakeRateID       = ElectronLooseID;
+    if(channel[it_id] == MuMu) FakeRateID = MuonLooseID;
     param.Clear();
 
-
-    TString Tight_ID = ElectronTightID;
-    if(channel[it_id] == "MuMu") Tight_ID = MuonTightID;
+    TString Tight_ID         = ElectronTightID;
+    if(channel[it_id] == MuMu) Tight_ID = MuonTightID;
 
   
     param.syst_ = AnalyzerParameter::Central;
@@ -369,12 +384,12 @@ void HNtypeI_Dilepton::executeEvent(){
     //==== Muon ID
     param.Muon_Tight_ID        = MuonTightID;
     param.Muon_Loose_ID        = MuonLooseID;
-    param.Muon_Veto_ID        = MuonVetoID;
-    param.Muon_FR_ID          = MuonLooseID;     // ID name in histmap_Electron.txt
-    param.Muon_FR_Key         = MuonTightID+"_AwayJetPt40";  // histname                                                                              
+    param.Muon_Veto_ID         = MuonVetoID;
+    param.Muon_FR_ID           = MuonLooseID;     // ID name in histmap_Electron.txt
+    param.Muon_FR_Key          = MuonTightID+"_AwayJetPt40";  // histname                                                                              
 
     param.Muon_MinPt = 10.;
-    param.Muon_UsePtCone      = true;
+    param.Muon_UsePtCone       = true;
 
     //==== Electron ID
     param.Electron_Tight_ID       = ElectronTightID;
@@ -389,8 +404,8 @@ void HNtypeI_Dilepton::executeEvent(){
     param.Electron_UsePtCone      = true;
 
     //==== Jet ID
-    param.Jet_ID    = "HNTight";
-    param.FatJet_ID = "HNTight";
+    param.Jet_ID    = "tight";
+    param.FatJet_ID = "tight";
 
 
     //************************************************///
@@ -402,7 +417,9 @@ void HNtypeI_Dilepton::executeEvent(){
     //************************************************///
     // change param name to link to IP/CC cuts
     //************************************************///
-    param.Name = "HNtypeI_Dilepton_"+channel[it_id] + "_" +Tight_ID;
+    if(channel[it_id]==MuMu)param.Name = "HNtypeI_Dilepton_MuMu_" +Tight_ID;
+    if(channel[it_id]==EE)  param.Name = "HNtypeI_Dilepton_EE_" +Tight_ID;
+    //    if(channel[it_id]==EMu) param.Name = "HNtypeI_Dilepton_EMU_" +Tight_ID;
     
     //************************************************///
     // run event
@@ -412,31 +429,29 @@ void HNtypeI_Dilepton::executeEvent(){
   } 
 }
 
-void HNtypeI_Dilepton::executeEventFromParameter(AnalyzerParameter param, TString El_ID, TString channel){
+void HNtypeI_Dilepton::executeEventFromParameter(AnalyzerParameter param, TString Tight_ID, HNtypeI_Dilepton::Flavour channel){
   
-
-  bool ee = true;
-  if (channel == "MuMu") ee = false;
+  bool     IsEE      =  (channel == EE);
+  TString  channel_s =  (IsEE)  ? "EE" : "MuMu";
 
   //************************************************///
   // plot CR species cuts for All plots to be made
   //************************************************///
+  // Only run over all jet collections for one ID                                                                                 
+  bool run_opt_jets(false);
+  if (IsEE   && Tight_ID=="HNMediumV1")             run_opt_jets=true;
+  if (!IsEE  && Tight_ID=="POGTightPFIsoVeryTight") run_opt_jets=true;
 
   //************************************************///
   // IsCentral true means nominal analysis settings
   //************************************************///
-  bool IsCentral = !( param.Name.Contains("Syst_") );
+  //  bool IsCentral = !( param.Name.Contains("Syst_") );
  
   //************************************************///
   // setup event level objects
   Event ev = GetEvent();
-  Particle METv = ev.GetMETVector();
-
   double weight = 1.;
   //************************************************///
-  
-  //  if(Signal) weight_norm_1invpb=1.;
-  
   //************************************************///
   // MC weights initial settings
   // -- set to full trigger luminosity for data taking year
@@ -445,13 +460,11 @@ void HNtypeI_Dilepton::executeEventFromParameter(AnalyzerParameter param, TStrin
   //************************************************///
   if(!IsDATA){
     
-    
     weight *= weight_norm_1invpb*ev.GetTriggerLumi("Full")*ev.MCweight();
 
     //==== Apply Prefire
     weight *= weight_Prefire;
     FillWeightHist("prefire_"+param.Name, weight_Prefire);
-
   }
 
   //************************************************///  
@@ -459,17 +472,14 @@ void HNtypeI_Dilepton::executeEventFromParameter(AnalyzerParameter param, TStrin
   //************************************************///   
 
 
-  //bool PassSingleElectronTrig = ev.PassTrigger(SingleElectronTriggers);
-
-
   //======================
   //==== Copy AllObjects
   //======================
 
   vector<Electron> this_AllElectrons = AllElectrons;
-  vector<Muon>     this_AllMuons = AllMuons;
-  vector<Jet> this_AllJets = AllJets;
-  vector<FatJet> this_AllFatJets = AllFatJets;
+  vector<Muon>     this_AllMuons     = AllMuons;
+  vector<Jet>      this_AllJets      = AllJets;
+  vector<FatJet>   this_AllFatJets   = AllFatJets;
 
   //************************************************///   
   // setup systematic variables
@@ -481,13 +491,13 @@ void HNtypeI_Dilepton::executeEventFromParameter(AnalyzerParameter param, TStrin
   //==== PU reweight for MC
   //************************************************///   
 
-  double weight_pu_up = weight;
+  double weight_pu_up   = weight;
   double weight_pu_down = weight;
   if(!IsDATA){
 
-    double this_pureweight = 1.;
-    double this_pureweight_up = 1.;
-    double this_pureweight_down = 1.;
+    double this_pureweight       = 1.;
+    double this_pureweight_up    = 1.;
+    double this_pureweight_down  = 1.;
     this_pureweight = weight_PU;
     this_pureweight = weight_PU_Down;
     this_pureweight = weight_PU_Up;
@@ -510,7 +520,7 @@ void HNtypeI_Dilepton::executeEventFromParameter(AnalyzerParameter param, TStrin
 
   /// Get collecton of temporary leptons
   std::vector<Electron>  tmp_myelectrons = SelectElectrons(this_AllElectrons, elID, 10., 2.5);
-  std::vector<Muon>     tmp_mymuons     = SelectMuons    (this_AllMuons,   muID, 10., 2.4);
+  std::vector<Muon>      tmp_mymuons     = SelectMuons    (this_AllMuons,     muID, 10., 2.4);
 
   /// declare main collection of leptons
   std::vector<Muon>         mymuons    ;
@@ -518,15 +528,13 @@ void HNtypeI_Dilepton::executeEventFromParameter(AnalyzerParameter param, TStrin
 
   /// If running fake need loose collection and change pt to ptcone
   /// if running MC need to truth match
-  ///
-  
 
   if(RunCF){
-    mymuons = tmp_mymuons;
+    mymuons     = tmp_mymuons;
     myelectrons = tmp_myelectrons;
-
   }
   else if(RunFake) {
+
     for(unsigned int i=0; i<tmp_myelectrons.size(); i++){
       //==== electrons is a const vector. So in this function, we have to copy the elements like below                                                       
       double isocut_el = GetIsoFromID("EE", param.Electron_Tight_ID,tmp_myelectrons.at(i).Eta(), tmp_myelectrons.at(i).Pt());   
@@ -550,7 +558,7 @@ void HNtypeI_Dilepton::executeEventFromParameter(AnalyzerParameter param, TStrin
   }
   else if(Signal){
     // If signal keep all leptons in case truth matching is bugged 
-    mymuons = tmp_mymuons;
+    mymuons     = tmp_mymuons;
     myelectrons = tmp_myelectrons;
   }
   else{
@@ -559,58 +567,16 @@ void HNtypeI_Dilepton::executeEventFromParameter(AnalyzerParameter param, TStrin
     myelectrons = ElectronPromptOnly(tmp_myelectrons, gens);
   }
   
-  //if(RunFake&& ee)  myelectrons = SelectElectrons(this_AllElectrons, param.Electron_Loose_ID , param.Electron_MinPt, 2.5);
-  //if(RunFake&& !ee) mymuons  = SelectMuons(this_AllMuons, param.Muon_Loose_ID, param.Muon_MinPt, 2.4);
+  // veto leptons use all available
+  std::vector<Electron>     veto_electrons     = SelectElectrons(this_AllElectrons, param.Electron_Veto_ID, 10., 2.5);
+  std::vector<Muon>         veto_muons         = SelectMuons(this_AllMuons, param.Muon_Veto_ID, 5., 2.4);
 
-  std::vector<Electron> tmpveto_electrons = SelectElectrons(this_AllElectrons, param.Electron_Veto_ID, 10., 2.5);
-  std::vector<Muon> tmpveto_muons= SelectMuons(this_AllMuons, param.Muon_Veto_ID, 5., 2.4);
-
-  std::vector<Muon>     veto_muons     = MuonPromptOnly(tmpveto_muons, gens);
-  std::vector<Electron>     veto_electrons = ElectronPromptOnly(tmpveto_electrons, gens);
-
-  /*
-  if(ee){
-    if(param.Electron_Tight_ID == "HNTight2016") {
-      FilAllElectronPlots(param.Name, param.Electron_Veto_ID,veto_electrons,weight);
-    }
-    FilAllElectronPlots(param.Name, param.Electron_Tight_ID, myelectrons,weight);
-  }
-  else {
-    if(mymuons.size()==2)FilAllMuonPlots(param.Name,"muons",  mymuons, weight );
-    if(veto_muons.size()==2){
-      if(veto_muons[0].Charge()==veto_muons[1].Charge())FilAllMuonPlots(param.Name,"ss_vetomuons",  veto_muons, weight );      
-    }
-    }*/
-
-  
- 
+  // pt order collections 
   std::sort(myelectrons.begin(), myelectrons.end(), PtComparing);
   std::sort(mymuons.begin(), mymuons.end(), PtComparing);
   std::sort(veto_muons.begin(), veto_muons.end(), PtComparing);
   std::sort(veto_electrons.begin(),veto_electrons.end(), PtComparing);
   
-  if(SameCharge(myelectrons)){
-
-    Particle llCand = myelectrons.at(0) + myelectrons.at(1);
-    if(llCand.M() > 101. || llCand.M() < 81.){
-
-      for (auto iel: myelectrons) {
-	FillHist( "GeneralPlots/el_pt"+param.Electron_Tight_ID, iel.Pt(), weight, 50, 0. , 500.,"pt");
-	
-	if(fabs(iel.Eta()) < 1.5){
-	  FillHist( "GeneralPlots/el_barrel_pt"+param.Electron_Tight_ID, iel.Pt(), weight, 50, 0. , 500.,"pt");
-	  if(iel.IsGsfCtfScPixChargeConsistent ())	  FillHist( "GeneralPlots/el_barrel_cc_pt"+param.Electron_Tight_ID, iel.Pt(), weight, 50, 0. , 500.,"pt");
-	}
-	else{
-	  FillHist( "GeneralPlots/el_endcap_pt"+param.Electron_Tight_ID, iel.Pt(), weight, 50, 0. , 500.,"pt");
-	  if(iel.IsGsfCtfScPixChargeConsistent ())        FillHist( "GeneralPlots/el_endcap_cc_pt"+param.Electron_Tight_ID, iel.Pt(), weight, 50, 0. , 500.,"pt");
-	  
-	}
-	if(iel.IsGsfCtfScPixChargeConsistent ()) FillHist( "GeneralPlots/el_cc_pt"+param.Electron_Tight_ID, iel.Pt(), weight, 50, 0. , 500.,"pt");
-	
-      }
-    }
-  }
 
   //************************************************///   
   //==== Jets vectors
@@ -621,82 +587,58 @@ void HNtypeI_Dilepton::executeEventFromParameter(AnalyzerParameter param, TStrin
   // - ------ 40. < SDmass < 130 GeV
   //************************************************///   
 
-  std::vector<FatJet>   fatjets_tmp         = SelectFatJets(this_AllFatJets, param.FatJet_ID, 200, 2.7);
+  std::vector<FatJet>   fatjets_tmp  = SelectFatJets(this_AllFatJets, param.FatJet_ID, 200, 5.);
+  std::vector<Jet>      jets_tmp     = SelectJets(this_AllJets, param.Jet_ID, 20., 2.7);
 
-  std::vector<Jet>      jets_tmp   = SelectJets(this_AllJets, param.Jet_ID, 20., 2.7);
 
+  std::sort(fatjets_tmp.begin(), fatjets_tmp.end(), PtComparing);
 
-  std::vector<FatJet>      fatjets;
-
-  for(unsigned int ijet =0; ijet < fatjets_tmp.size(); ijet++){
-    for(unsigned int iel=0 ; iel < veto_electrons.size(); iel++){
-      if(SameCharge(veto_electrons))FillHist( "GeneralPlots/deltaR_fj_lep"+param.Electron_Tight_ID, fatjets_tmp[ijet].DeltaR(veto_electrons[iel]) ,weight, 50, 0., 5,"#DeltaR(l,AK8)");
-    }
-    for(unsigned int iel=0 ; iel < veto_muons.size(); iel++){
-      if(SameCharge(veto_muons))FillHist( "GeneralPlots/deltaR_fj_lep"+param.Muon_Tight_ID, fatjets_tmp[ijet].DeltaR(veto_muons[iel]) ,weight, 50, 0., 5,"#DeltaR(l,AK8)");
-    }   
-
-    bool jetok=true;
-
-    for(unsigned int iel=0 ; iel < veto_electrons.size(); iel++){
-      if(fatjets_tmp[ijet].DeltaR(veto_electrons[iel]) < 1.) jetok = false;
-    }
-    for(unsigned int iel=0 ; iel < veto_muons.size(); iel++){
-      if(fatjets_tmp[ijet].DeltaR(veto_muons[iel]) < 1.) jetok = false;
-    }
-    if(jetok) fatjets.push_back(fatjets_tmp[ijet]);
-    
-  }
+  map<TString,   std::vector<FatJet> > fatjet_map;
+  //fatjet_map["ak8_exo_17_028"]               = GetAK8Jets(fatjets_tmp, 200., 2.7, true,  1., true, 0.75, true, 40., 130., veto_electrons, veto_muons);
+  fatjet_map["ak8_type1"]                      = GetAK8Jets(fatjets_tmp, 200., 2.7, true,  1., true, -999, true, 40., 130., veto_electrons, veto_muons);
+  std::vector<FatJet> fatjets                  = GetAK8Jets(fatjets_tmp, 200., 2.7, true,  1., true, -999, true, 40., 130., veto_electrons, veto_muons);
   
+  if(run_opt_jets){
+    /// 
+    fatjet_map["ak8_eta2_7_dr1"]               = GetAK8Jets(fatjets_tmp, 200., 2.7, true,  1.,  false, -999, false, -999, -999, veto_electrons, veto_muons);
+    fatjet_map["ak8_eta2_7_dr08"]              = GetAK8Jets(fatjets_tmp, 200., 2.7, true,  0.8, false, -999, false, -999, -999, veto_electrons, veto_muons);
+    fatjet_map["ak8_eta2_7_nocleaning"]        = GetAK8Jets(fatjets_tmp, 200., 2.7, false, 1.,  false, -999, false, -999, -999, veto_electrons, veto_muons);
+    fatjet_map["ak8_eta2_5_dr1"]               = GetAK8Jets(fatjets_tmp, 200., 2.5, true,  1.,  false, -999, false, -999, -999, veto_electrons, veto_muons);
+    fatjet_map["ak8_eta2_5_dr08"]              = GetAK8Jets(fatjets_tmp, 200., 2.5, true,  0.8, false, -999, false, -999, -999, veto_electrons, veto_muons);
+    fatjet_map["ak8_eta2_5_nocleaning"]        = GetAK8Jets(fatjets_tmp, 200., 2.5, false, 1.,  false, -999, false, -999, -999, veto_electrons, veto_muons);
+    
+    fatjet_map["ak8_tau21_eta2_7_dr1"]               = GetAK8Jets(fatjets_tmp, 200., 2.7, true,  1.,  true, -999, true, -999, -999, veto_electrons, veto_muons);
+    fatjet_map["ak8_tau21_eta2_7_dr08"]              = GetAK8Jets(fatjets_tmp, 200., 2.7, true,  0.8, true, -999, true, -999, -999, veto_electrons, veto_muons);
+    fatjet_map["ak8_tau21_eta2_7_nocleaning"]        = GetAK8Jets(fatjets_tmp, 200., 2.7, false, 1.,  true, -999, true, -999, -999, veto_electrons, veto_muons);
+    fatjet_map["ak8_tau21_eta2_5_dr1"]               = GetAK8Jets(fatjets_tmp, 200., 2.5, true,  1.,  true, -999, true, -999, -999, veto_electrons, veto_muons);
+    fatjet_map["ak8_tau21_eta2_5_dr08"]              = GetAK8Jets(fatjets_tmp, 200., 2.5, true,  0.8, true, -999, true, -999, -999, veto_electrons, veto_muons);
+    fatjet_map["ak8_tau21_eta2_5_nocleaning"]        = GetAK8Jets(fatjets_tmp, 200., 2.5, false, 1.,  true, -999, true, -999, -999, veto_electrons, veto_muons);
+  }
+
+  // Fill AK8 plots
+  if(IsEE   && SameCharge(myelectrons)) MakeAK8JetPlots(param, fatjet_map, veto_electrons,veto_muons,weight);
+  if(!IsEE  && SameCharge(mymuons))     MakeAK8JetPlots(param, fatjet_map, veto_electrons,veto_muons,weight);
   
+  MakeGeneralPlots(mymuons, myelectrons,fatjet_map, param, weight);
+
+  /// Get Jet Map  ak4_type1 used in analysis
+  std::sort(jets_tmp.begin(), jets_tmp.end(), PtComparing);
   
-  if(SameCharge(myelectrons)){ 
-    int type1=fabs(GetLeptonType(myelectrons.at(0), gens));
-    int type2=fabs(GetLeptonType(myelectrons.at(1), gens));
-    
-    Particle llCand = myelectrons.at(0) + myelectrons.at(1);
-    if(llCand.M() > 101. || llCand.M() < 81.) FillHist( "GeneralPlots/DeltaRLL_"+param.Electron_Tight_ID, myelectrons[0].DeltaR(myelectrons[1]), weight, 50, 0., 5,"#DeltaR(l,l)");
-    
-    FillHist( "GeneralPlots/LeptonType_"+ param.Electron_Tight_ID, type1,type2, weight, 20, -10,10., 20,-10.,10.);
-    
-  }
-  if(SameCharge(mymuons)){
-    FillHist( "GeneralPlots/DeltaRLL_"+param.Muon_Tight_ID, mymuons[0].DeltaR(mymuons[1]), weight, 50, 0., 5,"#DeltaR(l,l)");
-  }
-  std::vector<Jet>      jets;
-  std::vector<Jet>      jets_pu;
-  for(unsigned int ijet =0; ijet < jets_tmp.size(); ijet++){
-    bool jetok=true;
-    
-    for(unsigned int iel=0 ; iel < veto_electrons.size(); iel++){
-      if(jets_tmp[ijet].DeltaR(veto_electrons[iel]) < 0.4) jetok = false;
-    }
-    for(unsigned int iel=0 ; iel < veto_muons.size(); iel++){
-      if(jets_tmp[ijet].DeltaR(veto_muons[iel]) < 0.4) jetok = false;
-    }
-    for(unsigned int ifjet =0; ifjet < fatjets.size(); ifjet++){
-      if(jets_tmp[ijet].DeltaR(fatjets[ifjet]) < 0.8) jetok = false;
-    }
-    
-    if(jetok) jets.push_back(jets_tmp[ijet]);
+  map<TString,   std::vector<Jet> > jet_map;
+  //jet_map["ak4_exo_17_028"]              = GetAK4Jets(jets_tmp, 20., 2.7, true,  0.4, 0.8, "loose", veto_electrons, veto_muons,fatjets);
+  jet_map["ak4_type1"]                   = GetAK4Jets(jets_tmp, 20., 2.7, true,  0.4,  0.8,"", veto_electrons, veto_muons,fatjets);
+  if(run_opt_jets){
+    jet_map["ak4_eta27_pileup_loose"]                   = GetAK4Jets(jets_tmp, 20., 2.7, true,  0.4,0.8, "loose", veto_electrons, veto_muons,fatjets);
+    jet_map["ak4_eta27_pileup_medium"]                  = GetAK4Jets(jets_tmp, 20., 2.7, true,  0.4,0.8, "medium", veto_electrons, veto_muons,fatjets);
+    jet_map["ak4_eta27_pileup_tight"]                   = GetAK4Jets(jets_tmp, 20., 2.7, true,  0.4,0.8, "tight", veto_electrons, veto_muons,fatjets);
+    jet_map["ak4_eta25_pileup_loose"]                   = GetAK4Jets(jets_tmp, 20., 2.5, true,  0.4,0.8, "loose", veto_electrons, veto_muons,fatjets);
+    jet_map["ak4_eta25_pileup_medium"]                  = GetAK4Jets(jets_tmp, 20., 2.5, true,  0.4,0.8, "medium", veto_electrons, veto_muons,fatjets);
+    jet_map["ak4_eta25_pileup_tight"]                   = GetAK4Jets(jets_tmp, 20., 2.5, true,  0.4,0.8, "tight", veto_electrons, veto_muons,fatjets);
   }
 
-  
-  for(unsigned int ijet =0; ijet < jets.size(); ijet++){
-    if(jets[ijet].PassPileupMVA("loose"))jets_pu.push_back(jets[ijet]);
-  }
-
-  std::sort(jets.begin(), jets.end(), PtComparing);
-  std::sort(jets_pu.begin(), jets_pu.end(), PtComparing);
-  std::sort(fatjets.begin(), fatjets.end(), PtComparing);
-
-
-  //************************************************///
-  // jet up b jet variable
-  // --- use medium Deep CVS
-  //************************************************///
-  //  int NBJets=GetNBJets();
-
+  // Fill AK4 plots                                                                                                                                           
+  if(IsEE   && SameCharge(myelectrons)) MakeAK4JetPlots(param, jet_map, veto_electrons,veto_muons,weight);
+  if(!IsEE  && SameCharge(mymuons))     MakeAK4JetPlots(param, jet_map, veto_electrons,veto_muons,weight);
   
   //************************************************///
   //@@@@ Apply lepton scale factors
@@ -707,14 +649,19 @@ void HNtypeI_Dilepton::executeEventFromParameter(AnalyzerParameter param, TStrin
     //==== lepton scale factors here
 
     mcCorr->IgnoreNoHist = param.MCCorrrectionIgnoreNoHist;
-    if(ee){
-      for(unsigned int i=0; i<myelectrons.size(); i++){
+    vector<TString> SF_list = {"passMediumID","passTightID","passMVAID_iso_WP80","passMVAID_iso_WP90"};
+    if(IsEE){
+      for (auto el: myelectrons){
 	
-	TString Electron_ID_SF_Key      =  El_ID;
-	
-	double this_recosf = mcCorr->ElectronReco_SF(myelectrons.at(i).scEta(),myelectrons.at(i).Pt(), SystDir_ElectronRecoSF);
-	double this_idsf = 1.;
-	//if(!Electron_ID_SF_Key.Contains("HNTight") && !Electron_ID_SF_Key.Contains("nocc"))  mcCorr->ElectronID_SF(Electron_ID_SF_Key, myelectrons.at(i).scEta(), myelectrons.at(i).Pt(), SystDir_ElectronIDSF);
+	TString Electron_ID_SF_Key      =  Tight_ID;
+	bool apply_ID_SF=false;
+
+	for(auto i : SF_list){
+	  if(i==Tight_ID) apply_ID_SF=true;
+	}
+
+	double this_recosf  = mcCorr->ElectronReco_SF(el.scEta(),el.Pt(), SystDir_ElectronRecoSF);
+	double this_idsf    = (apply_ID_SF) ? mcCorr->ElectronID_SF(Electron_ID_SF_Key, el.scEta(), el.Pt(), SystDir_ElectronIDSF) :  1.;
 	weight *= this_recosf*this_idsf;
 	FillWeightHist("el_reco_sf_"+param.Name, this_recosf);
 	FillWeightHist("el_id_sf_"+param.Name, this_idsf);
@@ -722,92 +669,87 @@ void HNtypeI_Dilepton::executeEventFromParameter(AnalyzerParameter param, TStrin
       }
     }
     else{
-
+      /// Fill MM 
     }
   }
 
   //************************************************///   
   // select trigger
   //************************************************///   
-
-  if(ee) RunEE(myelectrons, veto_electrons,mymuons,veto_muons, jets, fatjets, ev,  param, weight);
-  else  RunMM(myelectrons, veto_electrons,mymuons,veto_muons,  jets, fatjets,ev, param, weight);
   
-  //param.Name = param.Name+"_pujets";
-  //if(ee) RunEE(myelectrons, veto_electrons,mymuons,veto_muons, jets_pu, fatjets, ev,  param, weight);
-  //else  RunMM(myelectrons, veto_electrons,mymuons,veto_muons,  jets_pu, fatjets,ev, param, weight);
-
+  FillObjectSizes (myelectrons, veto_electrons,mymuons,veto_muons,  jet_map, fatjet_map, ev,  param, weight,channel_s);
+  if(IsEE)   RunEE(myelectrons, veto_electrons,mymuons,veto_muons,  jet_map, fatjet_map, ev,  param, weight);
+  if(!IsEE)  RunMM(myelectrons, veto_electrons,mymuons,veto_muons,  jet_map, fatjet_map, ev,  param, weight);
+  
 
 }
 
-
-
-bool HNtypeI_Dilepton::PassHNID(TString TightID, Electron el){
-
-  
-  bool pass=true;
-  if(!el.PassID(TightID) ) pass=false;
-  
-  if (TightID == "passTightID" || TightID == "passMediumID" ||   TightID == "passMVAID_iso_WP90" ||   TightID == "passMVAID_iso_WP80" ){
-    if (! (el.IsGsfCtfScPixChargeConsistent() &&   el.Pass_TriggerEmulation()))  pass=false;
-	
-    if( fabs(el.scEta()) <= 1.479 ){
-      if( (fabs(el.dXY())<0.05 && fabs(el.dZ())<0.1) )  pass=false;
-    }
-    else{
-      if( !(fabs(el.dXY())<0.1 && fabs(el.dZ())<0.2) )  pass=false;
-    }
-  }// ID
-
-  if (TightID == "passTightID_nocc" ){
-    if (! el.Pass_TriggerEmulation())  pass=false;
-    
-    if( fabs(el.scEta()) <= 1.479 ){
-      if( (fabs(el.dXY())<0.05 && fabs(el.dZ())<0.1) )  pass=false;
-    }
-    else{
-      if( !(fabs(el.dXY())<0.1 && fabs(el.dZ())<0.2) )  pass=false;
-    }
-  }// ID     
-  if (TightID == "passTightID_noccb" ){
-    if (! el.Pass_TriggerEmulation())  pass=false;
-
-    if( fabs(el.scEta()) <= 1.479 ){
-      if( (fabs(el.dXY())<0.05 && fabs(el.dZ())<0.1) )  pass=false;
-    }
-    else{
-      if (!el.IsGsfCtfScPixChargeConsistent())  pass=false;
-      if( !(fabs(el.dXY())<0.1 && fabs(el.dZ())<0.2) )  pass=false;
-    }
-  }// ID  
-  return pass;
-
-
-
-}
-
-void HNtypeI_Dilepton::RunMM(std::vector<Electron> electrons, std::vector<Electron> electrons_veto, std::vector<Muon> muons, std::vector<Muon> muons_veto, std::vector<Jet> jets, std::vector<FatJet> fatjets,  Event ev, AnalyzerParameter param,  float w){
+void  HNtypeI_Dilepton::FillObjectSizes(std::vector<Electron> electrons, std::vector<Electron> electrons_veto, std::vector<Muon> muons, std::vector<Muon> muons_veto, std::map<TString, std::vector<Jet> > map_jets, std::map<TString, std::vector<FatJet> > map_fatjets,  Event ev, AnalyzerParameter param,  float weight_ll, TString  channel_s){
   
   TString label = param.Name;
-  TString channel_s="_MuMu";
-  Particle METv = ev.GetMETVector();
-  int i_channel=1;
 
-                                                                                                                                                                                  
+  bool debug=false;
+  if(debug){
+    cout << "HNtypeI_Dilepton::FillObjectSizes::INFO " << endl;
+    cout << "HNtypeI_Dilepton::FillObjectSizes::INFO  #electrons    = "<<  electrons.size() << endl;
+    cout << "HNtypeI_Dilepton::FillObjectSizes::INFO  #muon         = "<<  muons.size() << endl;
+    cout << "HNtypeI_Dilepton::FillObjectSizes::INFO  #electrons (veto) = "<<  electrons_veto.size() << endl;
+    cout << "HNtypeI_Dilepton::FillObjectSizes::INFO  #muon      (veto) = "<<  muons_veto.size() << endl;
+  }
+  FillHist( "NObj/n_electrons_"+label+channel_s, electrons.size() ,weight_ll, 5, 0., 5,"N_{electron}");
+  FillHist( "NObj/n_muons_"+label+channel_s,muons.size() ,weight_ll, 5, 0., 5,"N_{muons}");
+  FillHist( "NObj/n_electrons_veto_"+label+channel_s, electrons_veto.size() ,weight_ll, 5, 0., 5,"N_{electron}");
+  FillHist( "NObj/n_muons_veto_"+label+channel_s , muons_veto.size() ,weight_ll, 5, 0., 5,"N_{muon}");
+  
+  for(auto fatjet : map_fatjets){
+    FillHist( "NObj/n_ak8jet_"+fatjet.first+"_"+label+channel_s, fatjet.second.size() ,weight_ll, 5, 0., 5,"N_{AK8}");
+    if(debug)cout << "HNtypeI_Dilepton::FillObjectSizes::INFO " << fatjet.first << " = " << fatjet.second.size() << endl;
+  }
+  for(auto jet : map_jets){
+    FillHist( "NObj/n_ak4jet_"+jet.first+"_"+label+channel_s, jet.second.size() ,weight_ll, 10, 0., 10,"N_{AK4}");
+    if(debug)cout << "HNtypeI_Dilepton::FillObjectSizes::INFO " << jet.first << " = " << jet.second.size() << endl;
+  }
+  
+}
 
-  FillEventCutflow(0,i_channel,w, "NoCut",param.Name);
 
-  FillCutFlow(true, "CutFlow", "NoCut_"+param.Name, w);
-  FillCutFlow(true, "CutFlow", "NoCut_no_weight_"+param.Name, 1.);
+void HNtypeI_Dilepton::RunMM(std::vector<Electron> electrons, std::vector<Electron> electrons_veto, std::vector<Muon> muons, std::vector<Muon> muons_veto, std::map<TString, std::vector<Jet> > map_jets, std::map<TString, std::vector<FatJet> > map_fatjets,  Event ev, AnalyzerParameter param,  float weight_mm ){
+  
 
-  FillEventCutflow(0,i_channel,w, "METFilter",param.Name);
+  /// Get FatJet collection  'ak8_type1'
+  std::map<TString, std::vector<FatJet> >::iterator map_fatjet_it = map_fatjets.find("ak8_type1");
 
-  FillCutFlow(true, "CutFlow", "METFilter_"+param.Name, w);
+  if(map_fatjet_it == map_fatjets.end() ) return;
+  std::vector<FatJet> fatjets = map_fatjet_it->second;
 
 
+  std::map<TString, std::vector<Jet> >::iterator map_jet_it = map_jets.find("ak4_type1");
+  if(map_jet_it == map_jets.end() )return;
+  std::vector<Jet> jets = map_jet_it->second;
+
+  TString label    = param.Name;
+  TString channel_s="MuMu";
+  HNtypeI_Dilepton::Flavour  flavour  = MuMu;
+
+  /// Get MET l corrected for jet smearing in MC
+  Particle METunsmearedv = ev.GetMETVector();
+  Particle METv =UpdateMETSmearedJet(METunsmearedv, jets);
+  
+  
+  FillEventCutflow(AllCharge,flavour,weight_mm, "NoCut",param.Name);
+  if(!PassMETFilter()) return;
+  FillEventCutflow(AllCharge,flavour,weight_mm, "METFilter",param.Name);
+
+  // Apply trigger
   bool PassDoubleMuonTrig = ev.PassTrigger(MuonTriggers);
   bool PassHighPtMuonTrig = ev.PassTrigger(HighPtMuonTriggers);
   // if singlemuon dataset and passes double mu trigger veto
+  if(SameCharge(muons)){
+    if(PassDoubleMuonTrig)FillHist( "Trigger/muons"+label+channel_s, 1 ,weight_mm, 5, 0., 5,"");
+    if(PassHighPtMuonTrig)FillHist( "Trigger/muons"+label+channel_s, 2 ,weight_mm, 5, 0., 5,"");
+    if(PassDoubleMuonTrig||PassHighPtMuonTrig)FillHist( "Trigger/muons"+label+channel_s, 3 ,weight_mm, 5, 0., 5,"");
+  }
+
   if(isSingleMu && PassDoubleMuonTrig)  return;
   if(isSingleMu && !PassHighPtMuonTrig) return;
   // if MC OR double and Mu50
@@ -815,60 +757,48 @@ void HNtypeI_Dilepton::RunMM(std::vector<Electron> electrons, std::vector<Electr
   
   // if Data and doublemuon dataset use double triggers only
   if(IsData &&!isSingleMu && !(PassDoubleMuonTrig)) return;
-
-
-  if(!IsData){
-    if(DataYear==2016){
+  
+  /// Fix needed in 2016 muon trigger mc event weights
+  if(!IsData && DataYear==2016){
 
       double dimu_trig_weight=0.;
-      if(ev.PassTrigger(HighPtMuonTriggers)|| ev.PassTrigger(MuonTriggers)) dimu_trig_weight += 27267.591;
-      if(ev.PassTrigger(HighPtMuonTriggers)||ev.PassTrigger(MuonTriggersH)) dimu_trig_weight += 8650.628;
+      if(ev.PassTrigger(HighPtMuonTriggers)|| ev.PassTrigger(MuonTriggers))  dimu_trig_weight += 27267.591;
+      if(ev.PassTrigger(HighPtMuonTriggers)|| ev.PassTrigger(MuonTriggersH)) dimu_trig_weight += 8650.628;
 
-      w *= dimu_trig_weight / ev.GetTriggerLumi("Full");
-    }
+      weight_mm *= (dimu_trig_weight / ev.GetTriggerLumi("Full"));
   }
   
-  FillEventCutflow(0,i_channel,w, "Trigger_mu",param.Name);
-
-  FillHist( "MMNObj/nelectrons"+label+channel_s, electrons.size() ,w, 5, 0., 5,"N_{electron}");
-  FillHist( "MMNObj/nmuons"+label  +channel_s  , muons.size()   ,w, 5, 0., 5,"N_{muon}");
-  FillHist( "MMNObj/nelectrons_veto"+label+channel_s, electrons_veto.size() ,w, 5, 0., 5,"N_{electron}");
-
-
-  //************************************************///
-  // ZZ CR plots                                                                                                                                                                                               
-  //************************************************///                                                                                                                                                                                                                                                                                                                                                                         
-  int NBJets=GetNBJets();
-
+  FillEventCutflow(AllCharge,flavour,weight_mm, "Trigger_mu",param.Name);
 
   //************************************************///                                                                                                                                                    
   //  prompt lepton CRs
   //************************************************///                                                                                                                                                                                      
-  FillZZCRPlots(i_channel, electrons, electrons_veto, muons,  muons_veto, jets, fatjets, ev, label, w);
-  FillWZCRPlots(i_channel, electrons, electrons_veto, muons,  muons_veto, jets, fatjets, ev, label, w);
+  FillZZCRPlots(flavour, electrons, electrons_veto, muons,  muons_veto, jets, fatjets, ev, label, weight_mm);
+  FillWZCRPlots(flavour, electrons, electrons_veto, muons,  muons_veto, jets, fatjets, ev, label, weight_mm);
+  //FillZGCRPlots(flavour, electrons, electrons_veto, muons,  muons_veto, jets, fatjets, ev, label, weight_mm);
+  //FillWGCRPlots(flavour, electrons, electrons_veto, muons,  muons_veto, jets, fatjets, ev, label, weight_mm);
 
   // Dimuon selection 
   
-  if(muons.size()!=2)  return;
+  if(muons.size()  != 2 ) return;
   if(muons[0].Pt() < 20.) return;
   if(muons[1].Pt() < 10.) return;  
 
-  if(RunFake) w*= GetFakeWeightMuon(muons, param.Muon_Tight_ID);
-
-
+  // If running fake bkg now set weight to Fake weight
+  if(RunFake) weight_mm= GetFakeWeightMuon(muons, param.Muon_Tight_ID);
 
   // setup sting to separate SS/OS
-  TString charge_s= (muons[0].Charge() ==  muons[1].Charge() )  ?  "same_sign" : "opposite_sign";
-  int charge_i = (muons[0].Charge() ==  muons[1].Charge() )  ?  1 : -1;
+  TString    charge_s = (muons[0].Charge() ==  muons[1].Charge() )  ?  "same_sign" : "opposite_sign";
+  HNtypeI_Dilepton::ChargeType charge_i = (muons[0].Charge() ==  muons[1].Charge() )  ?  SS : OS;
 
-  if(SignalOS) charge_s= "opposite_sign";
+  if(SignalOS) { charge_s= "opposite_sign"; charge_i=OS;}
 
-  FillEventCutflow(charge_i,i_channel, w, "Dilep_mu_"+charge_s,param.Name);
+  FillEventCutflow(charge_i,flavour, weight_mm, "Dilep_mu_"+charge_s,param.Name);
   
   // lepton veto
   if(muons_veto.size()!=2) return;
   if(electrons_veto.size() > 0)  return;
-  FillEventCutflow(charge_i,i_channel,w, "Lep_veto_mu_"+charge_s,param.Name);
+  FillEventCutflow(charge_i,flavour,weight_mm, "Lep_veto_mu_"+charge_s,param.Name);
 
 
   //************************************************///                                                                                                                                                      
@@ -877,83 +807,130 @@ void HNtypeI_Dilepton::RunMM(std::vector<Electron> electrons, std::vector<Electr
   //************************************************///                                                                                                                          
   
   if (llCand.M() < 10.) return;
-  FillEventCutflow(charge_i,i_channel,w, "Dimu_mass_"+charge_s,param.Name);
+  FillEventCutflow(charge_i,flavour,weight_mm, "Dimu_mass_"+charge_s,param.Name);
 
-  //************************************************///                                                                                                                                                                                                                                                                                                                                  
+  
+  //  Run High Mass with main jet collections                                                                                                                
+  double FatJetTau21_SF = GetEventFatJetSF(fatjets,"ak8_type1", 0);      
+  FillWeightHist("fatjet_ak8_type1_sf_"+param.Name,FatJetTau21_SF);
+  RunHighMassSR(charge_i,channel_s, flavour, charge_s, llCand, label, jets,  fatjets,  electrons, muons,  METv, nPV, weight_mm*FatJetTau21_SF, ev, param, true);
+  
+  for(auto map_fatjet_it : map_fatjets){
+    if(map_fatjet_it.first == "ak8_type1") continue;
+
+    FatJetTau21_SF = GetEventFatJetSF( map_fatjet_it.second, map_fatjet_it.first, 0);
+    FillWeightHist("fatjet"+map_fatjet_it.first+"_sf_"+param.Name,FatJetTau21_SF);
+  
+    RunHighMassSR(charge_i, channel_s, flavour, charge_s, llCand, label+map_fatjet_it.first, jets,  map_fatjet_it.second,  electrons, muons,  METv, nPV, weight_mm*FatJetTau21_SF,  ev,param,false);
+  }
+  
+  for(auto map_jet_it : map_jets){
+    if(map_jet_it.first == "ak4_type1") continue;
+    
+    RunHighMassSR(charge_i, channel_s, flavour, charge_s, llCand, label+map_jet_it.first, map_jet_it.second,fatjets,  electrons, muons,  METv, nPV, weight_mm,  ev,param,false);
+  }
+
+}
+
+void HNtypeI_Dilepton::RunHighMassSR(HNtypeI_Dilepton::ChargeType charge_i, TString channel_s,HNtypeI_Dilepton::Flavour flavour, TString charge_s,Particle llCand, TString label, vector<Jet> jets, vector<FatJet> fatjets,  vector<Electron> electrons , vector<Muon> muons, Particle METv, int mPV, double weight_hm, Event ev, AnalyzerParameter param, bool FullAnalysis){
+
   TString signal_region1 = (charge_s=="same_sign")  ?  "SR1" : "SR3";
   TString signal_region2 = (charge_s=="same_sign")  ?  "SR2" : "SR4";
 
-  
+  /// forget SR3
+  if(signal_region1=="SR3") return;
+    
+
   int njets = jets.size() + fatjets.size();
+
+  
+  /// High Mass Region removes 0 jet binsxs
+
   if(njets == 0 ) {
-    FillRegionPlots(i_channel,true,"zerojet"+channel_s+"_"+ charge_s , label, jets,  fatjets,  electrons, muons,  METv, nPV, w);
+    if(FullAnalysis)    FillRegionPlots(flavour,true,"zerojet"+channel_s+"_"+ charge_s , label, jets,  fatjets,  electrons, muons,  METv, nPV, weight_hm);
     return;
   }
-
-
-  FillEventCutflow(charge_i,i_channel,w, "Jet_req_"+charge_s,param.Name);
+  if(FullAnalysis)      FillEventCutflow(charge_i,flavour,weight_hm, "Jet_req_"+charge_s,param.Name);
   
+  bool inZpeak = (llCand.M() < 101. && llCand.M() > 81.) ;
+  if(FullAnalysis &&  inZpeak)   FillRegionPlots(flavour,true,"DYCR"+channel_s+"_"+ charge_s , label, jets,  fatjets,  electrons, muons,  METv, nPV, weight_hm);
+  
+  if(flavour == EE && inZpeak ) return;
+  if(flavour == EE)     FillEventCutflow(charge_i,flavour,weight_hm, "noZ_"+charge_s,param.Name);
 
-  if(llCand.M() < 101. && llCand.M() > 81.)   FillRegionPlots(i_channel,true,"DYCR"+channel_s+"_"+ charge_s , label, jets,  fatjets,  electrons, muons,  METv, nPV, w);
   
   double ST = GetST(electrons, muons, jets, fatjets, ev);
   double met2_st = pow(METv.Pt(),2.)/ ST;
-  TString ev_type="";
-  if(RunFake) {
-    bool el1_tight=muons[0].PassID(param.Muon_Tight_ID);
-    bool el2_tight=muons[1].PassID(param.Muon_Tight_ID);
-    if(el1_tight&&el2_tight)ev_type = "TT_";
-    if(el1_tight&&!el2_tight)ev_type = "TL_";
-    if(!el1_tight&&el2_tight)ev_type = "LT_";
-    if(!el1_tight&&!el2_tight)ev_type = "LL_";
-    FillRegionPlots(i_channel,true,"presel"+channel_s+"_"+ev_type+ charge_s , label, jets,  fatjets,  electrons, muons,  METv, nPV, w);
-    FillRegionPlots(i_channel,true,"presel_now_"+channel_s+"_"+ev_type+ charge_s , label, jets,  fatjets,  electrons, muons,  METv, nPV, 1.);
-    
+
+  if(FullAnalysis){
+    TString ev_type="";
+    if(RunFake) {
+      bool el1_tight=muons[0].PassID(param.Muon_Tight_ID);
+      bool el2_tight=muons[1].PassID(param.Muon_Tight_ID);
+      if(el1_tight&&el2_tight)ev_type = "TT_";
+      if(el1_tight&&!el2_tight)ev_type = "TL_";
+      if(!el1_tight&&el2_tight)ev_type = "LT_";
+      if(!el1_tight&&!el2_tight)ev_type = "LL_";
+      FillRegionPlots(flavour,true,"presel"+channel_s+"_"+ev_type+ charge_s , label, jets,  fatjets,  electrons, muons,  METv, nPV, weight_hm);
+      FillRegionPlots(flavour,true,"presel_no_weight_"+channel_s+"_"+ev_type+ charge_s , label, jets,  fatjets,  electrons, muons,  METv, nPV, 1.);
+      
+    }
   }
   
-  //cout << "HNtypeI_Dilepton::INFO " << event << " " << run << endl;
+  if(FullAnalysis)FillRegionPlots(flavour,true,"presel"+channel_s+"_"+ charge_s , label, jets,  fatjets,  electrons, muons,  METv, nPV, weight_hm);
 
-  FillRegionPlots(i_channel,true,"presel"+channel_s+"_"+ charge_s , label, jets,  fatjets,  electrons, muons,  METv, nPV, w);
-  
+  ////////////////////////////////////////  
+  // SR Variables                                                                                                                                            
+  ////////////////////////////////////////      
+  int  NBJets       =  GetNBJets("HNTight","medium");
+  bool PassHMMet    = (met2_st < 15);
+  bool PassBJetVeto = (NBJets==0); 
+  double LowerMassSR1WmassCut = 30.;
+  double UpperMassSR1WmassCut = 150.;
+  double LowerMassSR2WmassCut = 50.;
+  double UpperMassSR2WmassCut = 150.;
+
   ////////////////////////////////////////
   ////////////////////////////////////////
   // SR selections                        
   ////////////////////////////////////////
-  ////////////////////////////////////////                                                                                                                                                               
-  
-  if(met2_st < 15)          FillEventCutflow(charge_i,i_channel,w, "MET_"+charge_s,param.Name);
+  ////////////////////////////////////////                                                                                                                   
+  if(FullAnalysis && PassHMMet)          FillEventCutflow(charge_i,flavour,weight_hm, "MET_"+charge_s,param.Name);
   
   
   // require low MET and 0 bjets
-  if(met2_st < 15 && NBJets == 0 ){
-    FillEventCutflow(charge_i,i_channel,w, "BJet_"+charge_s,param.Name);
+  if(PassHMMet && PassBJetVeto){
+
+    if(FullAnalysis) FillEventCutflow(charge_i,flavour,weight_hm, "BJet_"+charge_s,param.Name);
+    
     if(fatjets.size() == 0){
+      // remove low jet pt events
       if(jets[0].Pt() < 25.) return;
     }
+
     if(njets == 1 && fatjets.size() == 0) {
-      FillRegionPlots(i_channel,true,"singlejet"+channel_s+"_"+ charge_s , label, jets,  fatjets,  electrons, muons,  METv, nPV, w);
+      if(FullAnalysis) FillRegionPlots(flavour,true,"singlejet_"+channel_s+"_"+ charge_s , label, jets,  fatjets,  electrons, muons,  METv, nPV, weight_hm);
     }
-    
+
+
     // SR1/3 with 0 AK8 jets
     if( jets.size() > 1 && fatjets.size() == 0) {
       
       // SR1/3  MM                                                                   
-      FillEventCutflow(charge_i,i_channel,w, "HighMassJet_"+charge_s,param.Name); 
+      if(FullAnalysis)FillEventCutflow(charge_i,flavour,weight_hm, "HighMassJet_"+charge_s,param.Name); 
       
       
       // make MJJ mass cut in W wondow
-      if(GetMass(signal_region1, jets, fatjets) < 150. && GetMass(signal_region1, jets, fatjets) > 30.){
+      if(GetMass(signal_region1, jets, fatjets) < UpperMassSR1WmassCut && GetMass(signal_region1, jets, fatjets) > LowerMassSR1WmassCut){
 	
-	FillEventCutflow(charge_i,i_channel,w, "HighMassSR_"+charge_s,param.Name);          
-	FillRegionPlots(i_channel,true,signal_region1+"_Highmass" , label, jets,  fatjets,  electrons, muons,  METv, nPV, w);
+	if(FullAnalysis)FillEventCutflow(charge_i,flavour,weight_hm, "HighMassSR_"+charge_s,param.Name);          
+	if(FullAnalysis)FillRegionPlots(flavour,true,signal_region1+"_Highmass" , label, jets,  fatjets,  electrons, muons,  METv, nPV, weight_hm);
 	
-	FillAllSignalRegion1(i_channel, signal_region1, IsDATA,  charge_s, label, jets, fatjets,  electrons, muons,  METv, nPV ,w );
+	FillAllSignalRegion1(flavour, signal_region1, IsDATA,  charge_s, label, jets, fatjets,  electrons, muons,  METv, nPV ,weight_hm ,FullAnalysis);
 	
-	FillEventCutflow(charge_i,i_channel,w, "Highmass_"+signal_region1,param.Name);
-	
-	
-	
-	
+	if(FullAnalysis)FillEventCutflow(charge_i,flavour,weight_hm, "Highmass_"+signal_region1,param.Name);
+		
+ 	
       } // mass req
       
       
@@ -961,28 +938,27 @@ void HNtypeI_Dilepton::RunMM(std::vector<Electron> electrons, std::vector<Electr
     else if(fatjets.size() > 0) {
       // SR2/4  MM
 
-      
-      FillEventCutflow(charge_i,i_channel,w, "HighMassJet_"+charge_s,param.Name);             
-      // make mass window cut on fatjet
-      if(GetMass(signal_region2,jets, fatjets) <150. &&GetMass(signal_region2,jets, fatjets) > 50.){
-
-
-	// fill general high mass plots
-	FillRegionPlots(i_channel,true,signal_region2 + "_Highmass", label, jets,  fatjets,  electrons, muons,  METv, nPV, w);
+      if(FullAnalysis)FillEventCutflow(charge_i,flavour,weight_hm, "HighMassJet_"+charge_s,param.Name);             
+	// make mass window cut on fatjet
+	if(GetMass(signal_region2,jets, fatjets) < UpperMassSR2WmassCut  &&GetMass(signal_region2,jets, fatjets) > LowerMassSR2WmassCut){
+	  
+	  
+	  // fill general high mass plots
+	  if(FullAnalysis)FillRegionPlots(flavour,true,signal_region2 + "_Highmass", label, jets,  fatjets,  electrons, muons,  METv, nPV, weight_hm);
 
 	// fill all mass binned plots 
-	FillAllSignalRegion2(i_channel, signal_region2, IsDATA,  charge_s, label, jets, fatjets,  electrons, muons,  METv, nPV  ,w);
-	FillEventCutflow(charge_i,i_channel,w, "Highmass_"+signal_region2,param.Name);
+	  FillAllSignalRegion2(flavour, signal_region2, IsDATA,  charge_s, label, jets, fatjets,  electrons, muons,  METv, nPV  ,weight_hm,FullAnalysis);
+	if(FullAnalysis)FillEventCutflow(charge_i,flavour,weight_hm, "Highmass_"+signal_region2,param.Name);
       } // end of mass req
     }// 0 AK8
   } // end met/nbjet                                                                                       
   else{
     // SR1/3 with 0 AK8 jets                                                                                                    
-    if( jets.size() > 1 && fatjets.size() == 0) FillRegionPlots(i_channel,true,signal_region1 + "_HighmassCR", label, jets,  fatjets,  electrons, muons,  METv, nPV, w);
+    if(FullAnalysis&& jets.size() > 1 && fatjets.size() == 0) FillRegionPlots(flavour,true,signal_region1 + "_HighmassCR", label, jets,  fatjets,  electrons, muons,  METv, nPV, weight_hm);
+  
+    if(FullAnalysis&&fatjets.size() > 0 )FillRegionPlots(flavour,true,signal_region2 + "_HighmassCR", label, jets,  fatjets,  electrons, muons,  METv, nPV, weight_hm);
     
-    if(fatjets.size() > 0 )FillRegionPlots(i_channel,true,signal_region2 + "_HighmassCR", label, jets,  fatjets,  electrons, muons,  METv, nPV, w);
     
-
   } // end else of jet req
   return;
   
@@ -991,134 +967,257 @@ void HNtypeI_Dilepton::RunMM(std::vector<Electron> electrons, std::vector<Electr
 
 
 
-void HNtypeI_Dilepton::FillAllSignalRegion1(int i_channel, TString signal_region1, bool isdata, TString charge_s, TString label, std::vector<Jet> jets, std::vector<FatJet> fatjets, std::vector<Electron> electrons, std::vector<Muon> muons,   Particle _MET,int _npv  , double w     ){
+void HNtypeI_Dilepton::FillAllSignalRegion1(HNtypeI_Dilepton::Flavour flavour, TString signal_region1, bool isdata, TString charge_s, TString label, std::vector<Jet> jets, std::vector<FatJet> fatjets, std::vector<Electron> electrons, std::vector<Muon> muons,   Particle _MET,int _npv  , double w    , bool FullAnalysis ){
 
-  vector<pair<int, pair<TString, double> > >  systs = GetSyst(i_channel, isdata);
+  vector<pair<int, pair<TString, double> > >  systs = GetSyst(flavour, isdata);
  
   for(unsigned int isys =0; isys < systs.size(); isys++){
 
-    if (i_channel == 0){
+    FillSigRegionPlots1(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 + "_highmass","", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 9999.,9999.,9999.,9999.,9999.,9999.,9999.,9999.,9999.,9999.,9999.);
+
+    if(!FullAnalysis) continue;
+    if (flavour == EE){
 
       // EE SR1/3
-      FillSigRegionPlots1(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 + "_highmass","", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 9999.,9999.,9999.,9999.,9999.,9999.,9999.,9999.,9999.,9999.,9999.);
+
+      FillSigRegionPlots1(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 , "_mn100", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 3.1, 25., 15., 50.,120., 120., 50., 110., 6.);
+      FillSigRegionPlots1(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 , "_mn125", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 3.1, 30., 25., 50.,120., 140., 90., 140., 6.);
+      FillSigRegionPlots1(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 , "_mn200", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 3.1, 55., 40., 50.,120., 220.,160., 225.,  6.);
+      FillSigRegionPlots1(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 , "_mn250", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 3.1, 70., 60., 50.,120., 310.,220., 270.,  6.);
+      FillSigRegionPlots1(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 , "_mn300", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 999., 80., 60., 50.,120., 370.,235., 335.,  6.);
+      FillSigRegionPlots1(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 , "_mn400", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 999., 100., 65., 50.,120., 450.,335., 450.,  6.);
 
 
-      FillSigRegionPlots1(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 , "_mn100", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 3.1, 25., 15., 50.,120., 120., 50., 110., 6.);
-      FillSigRegionPlots1(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 , "_mn125", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 3.1, 30., 25., 50.,120., 140., 90., 140., 6.);
-      FillSigRegionPlots1(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 , "_mn200", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 3.1, 55., 40., 50.,120., 220.,160., 225.,  6.);
-      FillSigRegionPlots1(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 , "_mn250", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 3.1, 70., 60., 50.,120., 310.,220., 270.,  6.);
-      FillSigRegionPlots1(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 , "_mn300", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 999., 80., 60., 50.,120., 370.,235., 335.,  6.);
-      FillSigRegionPlots1(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 , "_mn400", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 999., 100., 65., 50.,120., 450.,335., 450.,  6.);
-
-
-      FillSigRegionPlots1(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second, signal_region1 , "_mn500", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 9999., 125., 65., 50.,120., 560.,400., 555., 6.);
-      FillSigRegionPlots1(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second, signal_region1 , "_mn600", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 9999., 125., 0., 50.,120., 760.,400., 690., 6.);
-      FillSigRegionPlots1(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second, signal_region1 , "_mn700", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 9999., 125., 0., 50.,120., 760.,400., 966., 6.);
-      FillSigRegionPlots1(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second, signal_region1 , "_mn800", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 9999., 125., 0., 50.,120., 760.,400., 1130., 6.);
-      FillSigRegionPlots1(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second, signal_region1 , "_mn900", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 9999., 125., 0., 50.,120., 760.,400., 1300., 6.);
-      FillSigRegionPlots1(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second, signal_region1 , "_mn1000", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 9999., 125., 0., 50.,120., 760.,400., 1490., 6.);
-      FillSigRegionPlots1(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 , "_mn1100", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 9999., 125., 0., 50.,120., 760.,400., 1490., 6.);
-      FillSigRegionPlots1(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 , "_mn1200", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 9999., 125., 0., 50.,120., 760.,400., 1600., 6.);
-      FillSigRegionPlots1(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 , "_mn1300", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 9999., 125., 0., 50.,120., 760.,400., 1930., 6.);
-      FillSigRegionPlots1(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 , "_mn1400", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 9999., 125., 0., 50.,120., 760.,400., 1930., 6.);
-      FillSigRegionPlots1(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 , "_mn1500", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 9999., 125., 0., 50.,120., 760.,400., 1930., 6.);
-      FillSigRegionPlots1(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 , "_mn1700", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 9999., 125., 0., 50.,120., 760.,400., 1930., 6.);
-      FillSigRegionPlots1(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 , "_mn2000", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 9999., 125., 0., 50.,120., 760.,400., 1930., 6.);
+      FillSigRegionPlots1(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second, signal_region1 , "_mn500", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 9999., 125., 65., 50.,120., 560.,400., 555., 6.);
+      FillSigRegionPlots1(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second, signal_region1 , "_mn600", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 9999., 125., 0., 50.,120., 760.,400., 690., 6.);
+      FillSigRegionPlots1(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second, signal_region1 , "_mn700", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 9999., 125., 0., 50.,120., 760.,400., 966., 6.);
+      FillSigRegionPlots1(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second, signal_region1 , "_mn800", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 9999., 125., 0., 50.,120., 760.,400., 1130., 6.);
+      FillSigRegionPlots1(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second, signal_region1 , "_mn900", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 9999., 125., 0., 50.,120., 760.,400., 1300., 6.);
+      FillSigRegionPlots1(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second, signal_region1 , "_mn1000", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 9999., 125., 0., 50.,120., 760.,400., 1490., 6.);
+      FillSigRegionPlots1(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 , "_mn1100", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 9999., 125., 0., 50.,120., 760.,400., 1490., 6.);
+      FillSigRegionPlots1(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 , "_mn1200", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 9999., 125., 0., 50.,120., 760.,400., 1600., 6.);
+      FillSigRegionPlots1(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 , "_mn1300", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 9999., 125., 0., 50.,120., 760.,400., 1930., 6.);
+      FillSigRegionPlots1(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 , "_mn1400", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 9999., 125., 0., 50.,120., 760.,400., 1930., 6.);
+      FillSigRegionPlots1(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 , "_mn1500", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 9999., 125., 0., 50.,120., 760.,400., 1930., 6.);
+      FillSigRegionPlots1(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 , "_mn1700", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 9999., 125., 0., 50.,120., 760.,400., 1930., 6.);
+      FillSigRegionPlots1(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 , "_mn2000", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 9999., 125., 0., 50.,120., 760.,400., 1930., 6.);
 
     }
-    if (i_channel == 1){
-      
-      /// MM plots
-      FillSigRegionPlots1(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 + "_highmass","", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 9999.,9999.,9999.,9999.,9999.,9999.,9999.,9999.,9999.,9999.,9999.);
+    if (flavour == MuMu){
       
       // CC limits                                                                                                                                                                                                                                                                                                                                             
-      FillSigRegionPlots1(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 , "_mn100", label, jets,  fatjets ,  electrons, muons,  _MET, _npv, w, 4, 25., 3.1, 25., 15., 50.,120., 110., 55., 115., 9.);
-      FillSigRegionPlots1(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 , "_mn125", label, jets,  fatjets ,  electrons, muons,  _MET, _npv, w, 4, 25., 3.1, 25., 25., 50.,120., 140., 85., 140., 7.);      
-      FillSigRegionPlots1(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 , "_mn200", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 3.1, 50., 40., 50.,120., 250.,160., 215.,  7.);
-      FillSigRegionPlots1(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 , "_mn250", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 3.1, 85., 45., 50.,120., 310.,215., 270.,  7.);      
-      FillSigRegionPlots1(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 , "_mn300", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 999., 100., 50., 50.,120., 370.,225., 340.,  7.);
-      FillSigRegionPlots1(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 , "_mn400", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 999., 110., 60., 50.,120., 490.,296., 490.,  7.);
-      FillSigRegionPlots1(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second, signal_region1 , "_mn500", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 9999., 110., 60., 50.,120., 610.,370., 550., 7.);
-      FillSigRegionPlots1(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 , "_mn600", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 3.1, 110., 0., 50.,120., 680.,370., 630.,  7.);
-      FillSigRegionPlots1(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 , "_mn700", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 3.1, 110., 0., 50.,120., 800.,370., 885.,  7.);
-      FillSigRegionPlots1(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 , "_mn800", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 3.1, 110., 0., 50.,120., 800.,370., 890.,  7.);
-      FillSigRegionPlots1(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 , "_mn900", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 3.1, 110., 0., 50.,120., 800.,370., 1225.,  7.);
-      FillSigRegionPlots1(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 , "_mn1000", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 3.1, 110., 0., 50.,120., 800.,370., 1230.,  7.);
-      FillSigRegionPlots1(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 , "_mn1100", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 9999., 110., 0., 50.,120., 800.,370., 1245., 6.);
-      FillSigRegionPlots1(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 , "_mn1200", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 3.1, 110., 0., 50.,120., 800.,370., 1690.,  7.);
-      FillSigRegionPlots1(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 , "_mn1300", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 3.1, 110., 0., 50.,120., 800.,370., 1890.,  7.);
-      FillSigRegionPlots1(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 , "_mn1400", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 3.1, 110., 0., 50.,120., 800.,370., 1940.,  7.);
-      FillSigRegionPlots1(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 , "_mn1500", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 9999., 110., 0., 50.,120., 800.,370., 2220., 6.);
-      FillSigRegionPlots1(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 , "_mn1700", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 9999., 110., 0., 50.,120., 800.,370., 2220., 6.);
-      FillSigRegionPlots1(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 , "_mn2000", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 9999., 110., 0., 50.,120., 800.,370., 2220., 6.);
+      FillSigRegionPlots1(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 , "_mn100", label, jets,  fatjets ,  electrons, muons,  _MET, _npv, w, 4, 25., 3.1, 25., 15., 50.,120., 110., 55., 115., 9.);
+      FillSigRegionPlots1(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 , "_mn125", label, jets,  fatjets ,  electrons, muons,  _MET, _npv, w, 4, 25., 3.1, 25., 25., 50.,120., 140., 85., 140., 7.);      
+      FillSigRegionPlots1(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 , "_mn200", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 3.1, 50., 40., 50.,120., 250.,160., 215.,  7.);
+      FillSigRegionPlots1(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 , "_mn250", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 3.1, 85., 45., 50.,120., 310.,215., 270.,  7.);      
+      FillSigRegionPlots1(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 , "_mn300", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 999., 100., 50., 50.,120., 370.,225., 340.,  7.);
+      FillSigRegionPlots1(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 , "_mn400", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 999., 110., 60., 50.,120., 490.,296., 490.,  7.);
+      FillSigRegionPlots1(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second, signal_region1 , "_mn500", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 9999., 110., 60., 50.,120., 610.,370., 550., 7.);
+      FillSigRegionPlots1(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 , "_mn600", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 3.1, 110., 0., 50.,120., 680.,370., 630.,  7.);
+      FillSigRegionPlots1(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 , "_mn700", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 3.1, 110., 0., 50.,120., 800.,370., 885.,  7.);
+      FillSigRegionPlots1(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 , "_mn800", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 3.1, 110., 0., 50.,120., 800.,370., 890.,  7.);
+      FillSigRegionPlots1(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 , "_mn900", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 3.1, 110., 0., 50.,120., 800.,370., 1225.,  7.);
+      FillSigRegionPlots1(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 , "_mn1000", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 3.1, 110., 0., 50.,120., 800.,370., 1230.,  7.);
+      FillSigRegionPlots1(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 , "_mn1100", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 9999., 110., 0., 50.,120., 800.,370., 1245., 6.);
+      FillSigRegionPlots1(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 , "_mn1200", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 3.1, 110., 0., 50.,120., 800.,370., 1690.,  7.);
+      FillSigRegionPlots1(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 , "_mn1300", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 3.1, 110., 0., 50.,120., 800.,370., 1890.,  7.);
+      FillSigRegionPlots1(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 , "_mn1400", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 3.1, 110., 0., 50.,120., 800.,370., 1940.,  7.);
+      FillSigRegionPlots1(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 , "_mn1500", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 9999., 110., 0., 50.,120., 800.,370., 2220., 6.);
+      FillSigRegionPlots1(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 , "_mn1700", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 9999., 110., 0., 50.,120., 800.,370., 2220., 6.);
+      FillSigRegionPlots1(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region1 , "_mn2000", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 4, 25., 9999., 110., 0., 50.,120., 800.,370., 2220., 6.);
 
     } // MM
     
   }// end of syst
 }
 
-void HNtypeI_Dilepton::FillAllSignalRegion2(int i_channel, TString signal_region2, bool isdata, TString charge_s, TString label, std::vector<Jet> jets, std::vector<FatJet> fatjets, std::vector<Electron> electrons, std::vector<Muon> muons, Particle _MET,int _npv  , double w){
+void HNtypeI_Dilepton::FillAllSignalRegion2(HNtypeI_Dilepton::Flavour flavour, TString signal_region2, bool isdata, TString charge_s, TString label, std::vector<Jet> jets, std::vector<FatJet> fatjets, std::vector<Electron> electrons, std::vector<Muon> muons, Particle _MET,int _npv  , double w, bool FullAnalysis){
   
+  // get loop of systs + one nominal                                                                                                                         
 
-  // get loop of systs + one nominal                                                                                                                                                                                                                                                                                                                         
-  vector<pair<int, pair<TString, double> > >  systs = GetSyst(i_channel, isdata);
+  vector<pair<int, pair<TString, double> > >  systs = GetSyst(flavour, isdata);
   for(unsigned int isys =0; isys < systs.size(); isys++){
 
     // fill an inclusive high mass selection                                                                                                                                                                                                                                                                                                                 
-    FillSigRegionPlots2(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 + "_highmass","", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w,  9999.,  9999.,  9999.,  9999.,  9999.,  9999.,  9999.);
+    FillSigRegionPlots2(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 + "_highmass","", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w,  9999.,  9999.,  9999.,  9999.,  9999.,  9999.,  9999.);
 
+    if(!FullAnalysis) continue;
 
-    if(i_channel == 0){
+    if(flavour == EE){
       // EE SR2/4
-       FillSigRegionPlots2(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn100", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 25.,15., 40.,130., 90., 220., 15.);
-       FillSigRegionPlots2(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn125", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 60.,15., 40.,130., 123., 145., 15.);////////////////
-      FillSigRegionPlots2(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn200", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 100., 20., 40., 130., 173., 220., 15.);
-      FillSigRegionPlots2(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn250", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 100., 25., 40., 130., 220., 305., 15.);//////////////
-      FillSigRegionPlots2(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn300", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 100., 30., 40., 130., 270, 330., 15.);
-      FillSigRegionPlots2(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn400", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 100., 35., 40., 130., 330., 440., 15.);
-      FillSigRegionPlots2(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn500", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 120., 35., 40., 130., 440., 565., 15.);
-      FillSigRegionPlots2(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn600", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 120., 0., 40., 130., 565., 675., 15.);
-      FillSigRegionPlots2(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn700", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 140., 0., 40., 130., 635., 775., 15.);
-      FillSigRegionPlots2(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn800", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 140., 0., 40., 130., 740., 1005., 15.);
-      FillSigRegionPlots2(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn900", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 140., 0., 40., 130., 865., 1030., 15.);
-      FillSigRegionPlots2(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn1000", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 140., 0., 40., 130., 890., 1185., 15.);
-      FillSigRegionPlots2(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn1100", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 140., 0.,40., 130., 1035., 1395., 15.);
-      FillSigRegionPlots2(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn1200", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 140., 0.,40., 130., 1085., 1460., 15.);
-      FillSigRegionPlots2(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn1300", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 140., 0.,40., 130., 1140., 1590., 15.);///////////
-      FillSigRegionPlots2(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn1400", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 140., 0.,40., 130., 1245., 1700., 15.);///////
-      FillSigRegionPlots2(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn1500", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 140., 0.,40., 130., 1300., 1800., 15.);
-      FillSigRegionPlots2(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn1700", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 140., 0.,40., 130., 1300., 1800., 15.);
-      FillSigRegionPlots2(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn2000", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 140., 0.,40., 130., 1300., 1800., 15.);
+       FillSigRegionPlots2(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn100", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 25.,15., 40.,130., 90., 220., 15.);
+       FillSigRegionPlots2(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn125", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 60.,15., 40.,130., 123., 145., 15.);////////////////
+      FillSigRegionPlots2(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn200", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 100., 20., 40., 130., 173., 220., 15.);
+      FillSigRegionPlots2(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn250", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 100., 25., 40., 130., 220., 305., 15.);//////////////
+      FillSigRegionPlots2(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn300", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 100., 30., 40., 130., 270, 330., 15.);
+      FillSigRegionPlots2(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn400", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 100., 35., 40., 130., 330., 440., 15.);
+      FillSigRegionPlots2(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn500", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 120., 35., 40., 130., 440., 565., 15.);
+      FillSigRegionPlots2(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn600", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 120., 0., 40., 130., 565., 675., 15.);
+      FillSigRegionPlots2(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn700", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 140., 0., 40., 130., 635., 775., 15.);
+      FillSigRegionPlots2(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn800", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 140., 0., 40., 130., 740., 1005., 15.);
+      FillSigRegionPlots2(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn900", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 140., 0., 40., 130., 865., 1030., 15.);
+      FillSigRegionPlots2(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn1000", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 140., 0., 40., 130., 890., 1185., 15.);
+      FillSigRegionPlots2(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn1100", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 140., 0.,40., 130., 1035., 1395., 15.);
+      FillSigRegionPlots2(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn1200", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 140., 0.,40., 130., 1085., 1460., 15.);
+      FillSigRegionPlots2(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn1300", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 140., 0.,40., 130., 1140., 1590., 15.);///////////
+      FillSigRegionPlots2(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn1400", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 140., 0.,40., 130., 1245., 1700., 15.);///////
+      FillSigRegionPlots2(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn1500", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 140., 0.,40., 130., 1300., 1800., 15.);
+      FillSigRegionPlots2(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn1700", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 140., 0.,40., 130., 1300., 1800., 15.);
+      FillSigRegionPlots2(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn2000", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 140., 0.,40., 130., 1300., 1800., 15.);
 
     }
-    if(i_channel == 1){
+    if(flavour == MuMu){
       // fill mass binned selections                                                                                                                                                                                                                                                                                                                           
       // MM SR2/4
-      FillSigRegionPlots2(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn100", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 25.,  15., 40.,130., 98., 145., 15.);
-      FillSigRegionPlots2(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn125", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 60.,  15., 40.,130., 110., 150., 15.);
-      FillSigRegionPlots2(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn200", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 100., 20., 40., 130., 175., 235., 15.);
-      FillSigRegionPlots2(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn250", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 140., 25., 40., 130., 226., 280., 15.);
-      FillSigRegionPlots2(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn300", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 140., 20., 40., 130., 280., 340., 15.);
-      FillSigRegionPlots2(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn400", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 140., 65., 40., 130., 340., 445., 15.);
-      FillSigRegionPlots2(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn500", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 140., 65., 40., 130., 445., 560., 15.);
-      FillSigRegionPlots2(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn600", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 140., 0., 40., 130., 560., 685., 15.);
-      FillSigRegionPlots2(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn700", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 140., 0., 40., 130., 635., 825., 15.);
-      FillSigRegionPlots2(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn800", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 140., 0., 40., 130., 755., 960., 15.);
-      FillSigRegionPlots2(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn900", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 140., 0., 40., 130., 840., 1055., 15.);
-      FillSigRegionPlots2(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn1000", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 140., 0., 40., 130., 900., 1205., 15.);
-      FillSigRegionPlots2(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn1100", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 140., 0.,40., 130., 990., 1250., 15.);
-      FillSigRegionPlots2(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn1200", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 140., 0.,40., 130., 1035., 1430., 15.);
-      FillSigRegionPlots2(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn1300", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 140., 0.,40., 130., 1110., 1595., 15.);
-      FillSigRegionPlots2(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn1400", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 140., 0.,40., 130., 1285., 1700., 15.);
-      FillSigRegionPlots2(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn1500", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 140., 0.,40., 130., 1330., 1800., 15.);
-      FillSigRegionPlots2(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn1700", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 140., 0.,40., 130., 1330., 1800., 15.);
-      FillSigRegionPlots2(i_channel,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn2000", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 140., 0.,40., 130., 1330., 1800., 15.);
+      FillSigRegionPlots2(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn100", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 25.,  15., 40.,130., 98., 145., 15.);
+      FillSigRegionPlots2(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn125", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 60.,  15., 40.,130., 110., 150., 15.);
+      FillSigRegionPlots2(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn200", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 100., 20., 40., 130., 175., 235., 15.);
+      FillSigRegionPlots2(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn250", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 140., 25., 40., 130., 226., 280., 15.);
+      FillSigRegionPlots2(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn300", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 140., 20., 40., 130., 280., 340., 15.);
+      FillSigRegionPlots2(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn400", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 140., 65., 40., 130., 340., 445., 15.);
+      FillSigRegionPlots2(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn500", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 140., 65., 40., 130., 445., 560., 15.);
+      FillSigRegionPlots2(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn600", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 140., 0., 40., 130., 560., 685., 15.);
+      FillSigRegionPlots2(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn700", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 140., 0., 40., 130., 635., 825., 15.);
+      FillSigRegionPlots2(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn800", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 140., 0., 40., 130., 755., 960., 15.);
+      FillSigRegionPlots2(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn900", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 140., 0., 40., 130., 840., 1055., 15.);
+      FillSigRegionPlots2(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn1000", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 140., 0., 40., 130., 900., 1205., 15.);
+      FillSigRegionPlots2(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn1100", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 140., 0.,40., 130., 990., 1250., 15.);
+      FillSigRegionPlots2(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn1200", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 140., 0.,40., 130., 1035., 1430., 15.);
+      FillSigRegionPlots2(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn1300", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 140., 0.,40., 130., 1110., 1595., 15.);
+      FillSigRegionPlots2(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn1400", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 140., 0.,40., 130., 1285., 1700., 15.);
+      FillSigRegionPlots2(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn1500", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 140., 0.,40., 130., 1330., 1800., 15.);
+      FillSigRegionPlots2(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn1700", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 140., 0.,40., 130., 1330., 1800., 15.);
+      FillSigRegionPlots2(flavour,systs[isys].first, systs[isys].second.first,  systs[isys].second.second,signal_region2 , "_mn2000", label, jets,  fatjets,  electrons, muons,  _MET, _npv, w, 140., 0.,40., 130., 1330., 1800., 15.);
     }
   } // end of syst                   
     
 
 }
-vector<pair<int, pair<TString, double> > >  HNtypeI_Dilepton::GetSyst(int i_channel, bool isdata){
+
+void HNtypeI_Dilepton::MakeAK4JetPlots(AnalyzerParameter param,map<TString, vector<Jet> > jet_map, vector<Electron>  veto_electrons, vector<Muon>  veto_muons, double w){
+  
+  for(map<TString,   std::vector<Jet> >::iterator mit = jet_map.begin(); mit != jet_map.end(); mit++){
+
+    for(unsigned int ijet =0; ijet < mit->second.size(); ijet++){
+
+      for(auto vel : veto_electrons){
+	FillHist( "AK4Plots/deltaR_j_lep"+param.Electron_Tight_ID+"_"+mit->first, mit->second[ijet].DeltaR(vel),w, 50, 0., 5,"#DeltaR(l,AK4)");
+      }
+    }
+  }
+  return;
+}
+
+void HNtypeI_Dilepton::MakeAK8JetPlots(AnalyzerParameter param,map<TString, vector<FatJet> > fatjet_map, vector<Electron>  veto_electrons, vector<Muon>  veto_muons, double w){
+
+  for(map<TString,   std::vector<FatJet> >::iterator mit = fatjet_map.begin(); mit != fatjet_map.end(); mit++){
+    
+    for(unsigned int ijet =0; ijet < mit->second.size(); ijet++){
+      
+      for(auto vel : veto_electrons){
+	
+       FillHist( "AK8Plots/deltaR_fj_lep"+param.Electron_Tight_ID+"_"+mit->first, mit->second[ijet].DeltaR(vel) ,w, 50, 0., 5,"#DeltaR(l,AK8)");
+      }
+    
+      FillHist( "AK8Plots/AK8Jet_pt_"+param.Electron_Tight_ID+"_"+mit->first, mit->second[ijet].Pt() , w, 100, 0., 1000., "AK8 jet p_{T} (GeV)");
+      FillHist( "AK8Plots/AK8Jet_eta_"+param.Electron_Tight_ID+"_"+mit->first, mit->second[ijet].Eta() , w, 100, -5., 5., "AK8 jet #eta");
+      FillHist( "AK8Plots/AK8Jet_mass_"+param.Electron_Tight_ID+"_"+mit->first, mit->second[ijet].SDMass(),w, 40, 0., 200., "AK8 SDMass");
+      FillHist( "AK8Plots/AK8Jet_mass_"+param.Electron_Tight_ID+"_"+mit->first, mit->second[ijet].PuppiTau21(),w, 20, 0., 1., "AK8 #tau_{2}/#tau_{1}");
+      
+      for(auto vem : veto_muons){
+
+	FillHist( "AK8Plots/deltaR_fj_lep"+param.Muon_Tight_ID+"_"+mit->first, mit->second[ijet].DeltaR(vem) ,w, 50, 0., 5,"#DeltaR(l,AK8)");
+      }
+    }
+  }
+  return;
+}
+
+
+vector<Jet>   HNtypeI_Dilepton::GetAK4Jets(vector<Jet> jets, double pt_cut ,  double eta_cut, bool lepton_cleaning  , double dr_lep_clean, double dr_ak8_clean, TString pu_tag, vector<Electron>  veto_electrons, vector<Muon>  veto_muons, vector<FatJet> fatjets){
+
+  vector<Jet> output_jets;
+  for(unsigned int ijet =0; ijet < jets.size(); ijet++){
+    bool jetok=true;
+
+    if(fabs(jets[ijet].Eta() > eta_cut)) continue;
+    if(jets[ijet].Pt() < pt_cut)continue;
+
+    for(unsigned int iel=0 ; iel < veto_electrons.size(); iel++){
+      if(jets[ijet].DeltaR(veto_electrons[iel]) < dr_lep_clean) jetok = false;
+    }
+    
+    for(unsigned int iel=0 ; iel < veto_muons.size(); iel++){
+      if(jets[ijet].DeltaR(veto_muons[iel]) < dr_lep_clean) jetok = false;
+    }
+    for(unsigned int ifjet =0; ifjet < fatjets.size(); ifjet++){
+      if(jets[ijet].DeltaR(fatjets[ifjet]) <dr_ak8_clean) jetok = false;
+    }
+    
+    if(!jetok) continue;
+    if(pu_tag=="")output_jets.push_back(jets[ijet]);
+    else if(jets[ijet].PassPileupMVA(pu_tag)) output_jets.push_back(jets[ijet]);
+  }
+  return output_jets;
+}
+
+
+vector<FatJet>   HNtypeI_Dilepton::GetAK8Jets(vector<FatJet> fatjets, double pt_cut ,  double eta_cut, bool lepton_cleaning  , double dr_lep_clean , bool apply_tau21, double tau21_cut , bool apply_masscut, double sdmass_lower_cut,  double sdmass_upper_cut, vector<Electron>  veto_electrons, vector<Muon>  veto_muons){
+
+  vector<FatJet> output_fatjets;
+  for(unsigned int ijet =0; ijet < fatjets.size(); ijet++){
+    
+    bool jetok=true;
+    
+    for(unsigned int iel=0 ; iel < veto_electrons.size(); iel++){
+      if(fatjets[ijet].DeltaR(veto_electrons[iel]) < dr_lep_clean) jetok = false;
+    }
+    
+    for(unsigned int iel=0 ; iel < veto_muons.size(); iel++){
+      if(fatjets[ijet].DeltaR(veto_muons[iel]) < dr_lep_clean) jetok = false;
+    }
+    
+    double lower_sd_mass_cut=sdmass_lower_cut;
+    double upper_sd_mass_cut=sdmass_upper_cut;
+    if(sdmass_lower_cut < 0.){
+      lower_sd_mass_cut = 40.;
+      upper_sd_mass_cut = 130.;
+      if(DataYear==2017){
+	//https://twiki.cern.ch/twiki/bin/view/CMS/JetWtagging                                                                                                                                                
+	lower_sd_mass_cut=65.;
+	upper_sd_mass_cut=105.;
+      }
+    }
+    // tau21 cut has SF so need to apply SD mass for 2017
+    if(apply_tau21) {
+      if(DataYear==2017) {
+	lower_sd_mass_cut  = 65.; 
+	upper_sd_mass_cut  = 105.;
+      }
+    } 
+    
+    double tau_21_cut = tau21_cut;
+    if(tau21_cut < 0.){
+      if(DataYear==2016) tau_21_cut = 0.55;
+      if(DataYear==2017) tau_21_cut = 0.45;
+      if(DataYear==2018) tau_21_cut = 0.45;
+    }
+    
+    if( fabs(fatjets[ijet].Eta()) > eta_cut)    continue;
+    if( fabs(fatjets[ijet].Pt())  < pt_cut)    continue;
+    
+    if(lepton_cleaning && !jetok)  continue;
+    if(apply_tau21 && !fatjets[ijet].PassPuppiTau21(tau_21_cut))  continue;
+    if(apply_masscut && !fatjets[ijet].PassSDMassrange(lower_sd_mass_cut,upper_sd_mass_cut)) continue;
+    
+    output_fatjets.push_back(fatjets[ijet]);
+  }
+  
+  
+  return output_fatjets;
+}
+
+vector<pair<int, pair<TString, double> > >  HNtypeI_Dilepton::GetSyst(HNtypeI_Dilepton::Flavour flavour, bool isdata){
 
   vector<pair<int, pair<TString, double> > >   systs;
   systs.push_back(make_pair(0,make_pair("",0.)));
@@ -1135,66 +1234,76 @@ vector<pair<int, pair<TString, double> > >  HNtypeI_Dilepton::GetSyst(int i_chan
   return systs;
 }
 
-int HNtypeI_Dilepton::GetNBJets(){
+
+int HNtypeI_Dilepton::GetNBJets(TString ID, TString WP ){
 
   vector<Jet> this_AllJets = AllJets;
-
-  std::vector<Jet>      jets   = SelectJets(this_AllJets,"HNTight", 20., 2.5);
+  std::vector<Jet>      jets   = SelectJets(this_AllJets,ID, 20., 2.5);
 
   int NBJets=0;
 
-  for(unsigned int i=0; i<jets.size(); i++){
+  JetTagging::WP jwp = JetTagging::Medium;
+  if  (WP == "Loose")  jwp = JetTagging::Loose;
+  if  (WP == "Tight")  jwp = JetTagging::Tight;
 
+  for(unsigned int i=0; i<jets.size(); i++){
     if( mcCorr->IsBTagged_2a(JetTagging::Parameters(JetTagging::DeepCSV,
-                                                    JetTagging::Medium,                                                    JetTagging::incl, JetTagging::comb), jets.at(i)) ) NBJets++;
+                                                    jwp, 
+						    JetTagging::incl, JetTagging::comb), jets.at(i)) ) NBJets++;
   }
 
   return NBJets;
 }
 
-void HNtypeI_Dilepton::RunEE(std::vector<Electron> electrons, std::vector<Electron> electrons_veto, std::vector<Muon> muons, std::vector<Muon> muons_veto, std::vector<Jet> jets, std::vector<FatJet> fatjets,  Event ev, AnalyzerParameter param,  float w){
+
+
+void HNtypeI_Dilepton::RunEE(std::vector<Electron> electrons, std::vector<Electron> electrons_veto, std::vector<Muon> muons, std::vector<Muon> muons_veto, std::map<TString, std::vector<Jet> > map_jets, std::map<TString, std::vector<FatJet> > map_fatjets,  Event ev, AnalyzerParameter param,  float weight_ee){
+  
+  std::map<TString, std::vector<FatJet> >::iterator map_fatjet_it = map_fatjets.find("ak8_type1");
+  if(map_fatjet_it == map_fatjets.end() )return;
+  std::vector<FatJet> fatjets = map_fatjet_it->second;
+
+  std::map<TString, std::vector<Jet> >::iterator map_jet_it = map_jets.find("ak8_type1");
+  if(map_jet_it == map_jets.end() )return;
+  std::vector<Jet> jets = map_jet_it->second;
 
 
   TString channel_s="_EE";
-  int i_channel=0;
+  HNtypeI_Dilepton::Flavour flavour=EE;
   TString label = param.Name;
-  Particle METv = ev.GetMETVector();
+
+  Particle METUnsmearedv = ev.GetMETVector();
+  Particle METv =UpdateMETSmearedJet(METUnsmearedv, jets);
+
   
-  FillEventCutflow(0,i_channel,w, "NoCut",param.Name);
-
-  FillCutFlow(true, "CutFlow", "NoCut_"+param.Name, w);
-  FillCutFlow(true, "CutFlow", "NoCut_no_weight_"+param.Name, 1.);
-
-
+  FillEventCutflow(AllCharge,flavour,weight_ee, "NoCut",param.Name);
   if(!PassMETFilter()) return;
-  FillEventCutflow(0,i_channel,w, "METFilter",param.Name);
-  
-  FillCutFlow(true, "CutFlow", "METFilter_"+param.Name, w);
+  FillEventCutflow(AllCharge,flavour,weight_ee, "METFilter",param.Name);
 
-
-  
+  bool PassSingleElectronTrig = ev.PassTrigger(SingleElectronTriggers);
   bool PassDoubleElectronTrig = ev.PassTrigger(ElectronTriggers);  
+  if(SameCharge(electrons)){
+    if(PassDoubleElectronTrig)FillHist( "Trigger/electrons"+label+channel_s, 1 ,weight_ee, 5, 0., 5,"");
+    if(PassSingleElectronTrig)FillHist( "Trigger/electrons"+label+channel_s, 2 ,weight_ee, 5, 0., 5,"");
+    if(PassDoubleElectronTrig||PassSingleElectronTrig)FillHist( "Trigger/electrons"+label+channel_s, 3 ,weight_ee, 5, 0., 5,"");
+  }
+
   if(!(PassDoubleElectronTrig)) return;
 
  
   /// 0 = SS+OS filling
-  FillEventCutflow(0,i_channel,w, "Trigger_el",param.Name);
+  FillEventCutflow(AllCharge,flavour,weight_ee, "Trigger_el",param.Name);
   
-
-  int NBJets=GetNBJets();
-
-
-
-  FillHist( "NObj/nelectrons"+label+channel_s, electrons.size() ,w, 5, 0., 5,"N_{electron}");
-  FillHist( "NObj/nmuons"+label+channel_s    , muons.size()   ,w, 5, 0., 5,"N_{muon}");
-  FillHist( "NObj/nelectrons_veto"+label+channel_s, electrons_veto.size() ,w, 5, 0., 5,"N_{electron}");
+  FillHist( "NObj/nelectrons"+label+channel_s, electrons.size() ,weight_ee, 5, 0., 5,"N_{electron}");
+  FillHist( "NObj/nmuons"+label+channel_s    , muons.size()   ,weight_ee, 5, 0., 5,"N_{muon}");
+  FillHist( "NObj/nelectrons_veto"+label+channel_s, electrons_veto.size() ,weight_ee, 5, 0., 5,"N_{electron}");
   
 
   //************************************************///   
   // Fill Prompt CR plots
   //************************************************///   
-  FillZZCRPlots(i_channel, electrons, electrons_veto, muons,  muons_veto, jets, fatjets, ev, label, w);
-  FillWZCRPlots(i_channel, electrons, electrons_veto, muons,  muons_veto, jets, fatjets, ev, label, w);
+  FillZZCRPlots(EE, electrons, electrons_veto, muons,  muons_veto, jets, fatjets, ev, label, weight_ee);
+  FillWZCRPlots(EE, electrons, electrons_veto, muons,  muons_veto, jets, fatjets, ev, label, weight_ee);
 
 
   //************************************************///    
@@ -1210,12 +1319,12 @@ void HNtypeI_Dilepton::RunEE(std::vector<Electron> electrons, std::vector<Electr
   if(electrons[1].Pt() < 15.) return;
 
   if(RunFake) {
-    FillHist( "FakePlots/El_fakeweight"+label+channel_s    , GetFakeWeightElectron(electrons,param.Electron_Tight_ID)   ,w, 20000, -1000., 1000,"N_{muon}");
+    FillHist( "FakePlots/El_fakeweight"+label+channel_s    , GetFakeWeightElectron(electrons,param.Electron_Tight_ID)   ,weight_ee, 200, -10., 10,"N_{muon}");
   }
   
-  if(RunFake) w*= GetFakeWeightElectron(electrons,param.Electron_Tight_ID);
-  if(RunCF)   w*= GetCFWeightElectron(electrons,param.Electron_Tight_ID);
-  if(RunCF)   FillHist( "CFPlots/El_cfweight"+label+channel_s    , GetCFWeightElectron(electrons,param.Electron_Tight_ID) ,w, 1000, 0., 1.);
+  if(RunFake) weight_ee = GetFakeWeightElectron(electrons,param.Electron_Tight_ID);
+  if(RunCF)   weight_ee = GetCFWeightElectron(electrons,param.Electron_Tight_ID);
+  if(RunCF)   FillHist( "CFPlots/El_cfweight"+label+channel_s    , GetCFWeightElectron(electrons,param.Electron_Tight_ID) ,weight_ee, 1000, 0., 1.);
 
 
   //************************************************/// 
@@ -1223,277 +1332,83 @@ void HNtypeI_Dilepton::RunEE(std::vector<Electron> electrons, std::vector<Electr
   //************************************************/// 
   
   TString charge_s= (electrons[0].Charge() ==  electrons[1].Charge() )  ?  "same_sign" : "opposite_sign";
-  //if(RunCF&& charge_s == "same_sign") return;
+  HNtypeI_Dilepton::ChargeType charge_i = (electrons[0].Charge() ==  electrons[1].Charge() )  ?  SS : OS;
+
   if(RunCF){
-    if(charge_s == "same_sign") charge_s = "same_sign";
-    else   charge_s = "opposite_sign";
-    
+    if(charge_s == "opposite_sign") {charge_s = "same_sign"; charge_i=SS;}
+    else {  charge_s = "opposite_sign"; }
+    charge_i=OS;
   }
 
-  if(SignalOS) charge_s= "opposite_sign";
+  if(SignalOS){ charge_s= "opposite_sign"; charge_i=OS;}
 
-  
-  int charge_i = (electrons[0].Charge() ==  electrons[1].Charge() )  ?  1 : -1;
-  FillEventCutflow(charge_i,i_channel,w, "Dilep_el_"+charge_s,param.Name);
+  FillEventCutflow(charge_i,EE,weight_ee, "Dilep_el_"+charge_s,param.Name);
 
   if(electrons_veto.size()!=2) return;
   if(muons_veto.size() > 0)  return;
-  FillEventCutflow(charge_i,i_channel,w, "Lep_veto_el_"+charge_s,param.Name);
+  FillEventCutflow(charge_i,EE,weight_ee, "Lep_veto_el_"+charge_s,param.Name);
 
-  /*
-  if(charge_s=="same_sign"){
-    
-    if(param.Electron_Tight_ID == "HNTight2016") {
-      FilAllElectronPlots("SS"+param.Name, param.Electron_Veto_ID, electrons_veto,w);
-    }
-    FilAllElectronPlots("SS"+param.Name, param.Electron_Tight_ID, electrons,w);
-  }
-  */
   //************************************************///   
   // create proxy for Z/W candidates
   //************************************************///   
   Particle llCand = electrons.at(0) + electrons.at(1);
   
   if(llCand.M() < 10) return;
-  FillEventCutflow(charge_i,i_channel,w, "Diel_mass_"+charge_s,param.Name);
-
-  TString signal_region1 = (charge_s=="same_sign")  ?  "SR1" : "SR3";
-  TString signal_region2 = (charge_s=="same_sign")  ?  "SR2" : "SR4";
+  FillEventCutflow(charge_i,EE,weight_ee, "Diel_mass_"+charge_s,param.Name);
 
 
-  //************************************************///   
-  // select Z peak
-  //************************************************///   
-  int njets = jets.size() + fatjets.size();
-  if(njets == 0 ) {
-    FillRegionPlots(i_channel,true,"zerojet"+channel_s+"_"+ charge_s , label, jets,  fatjets,  electrons, muons,  METv, nPV, w);
-    return;
+  double FatJetTau21_SF = GetEventFatJetSF(fatjets,"ak8_type1", 0);
+  FillWeightHist("fatjet_ak8_type1_sf_"+param.Name,FatJetTau21_SF);
+
+  RunHighMassSR(charge_i,channel_s, EE, charge_s, llCand, label, jets,  fatjets,  electrons, muons,  METv, nPV,weight_ee*FatJetTau21_SF, ev, param,  true);
+
+  for(auto map_fatjet_it : map_fatjets){
+    if(map_fatjet_it.first == "ak8_type1") continue;
+    FatJetTau21_SF = GetEventFatJetSF(map_fatjet_it.second,map_fatjet_it.first, 0);
+    FillWeightHist("fatjet_"+map_fatjet_it.first+"_sf_"+param.Name,FatJetTau21_SF);
+
+    RunHighMassSR(charge_i, channel_s, EE, charge_s, llCand, label+map_fatjet_it.first, jets,  map_fatjet_it.second,  electrons, muons,  METv, nPV, weight_ee, ev, param, false);
   }
 
+  for(auto map_jet_it : map_jets){
+    if(map_jet_it.first == "ak4_type1") continue;
+    RunHighMassSR(charge_i, channel_s, EE, charge_s, llCand, label+map_jet_it.first,  map_jet_it.second, fatjets,  electrons, muons,  METv, nPV, weight_ee, ev, param, false);
+  }
+}
 
-  FillEventCutflow(charge_i,i_channel,w, "Jet_req_"+charge_s,param.Name);
-
-
-  double ST = GetST(electrons, muons, jets, fatjets, ev);
-  double met2_st = pow(METv.Pt(),2.)/ ST;
-
-
-  if(llCand.M() < 101. && llCand.M() > 81.)   FillRegionPlots(i_channel,true,"DYCR"+channel_s+"_" +charge_s, label, jets,  fatjets,  electrons, muons,  METv, nPV, w);
+double HNtypeI_Dilepton::GetEventFatJetSF(vector<FatJet> fatjets, TString label, int dir){
   
-  else {
+  double FatJetTau21_SF(1);
+  for (auto ifj : fatjets){
+    FatJetTau21_SF*=GetFatJetSF(ifj, label,dir);
+  }
+  return FatJetTau21_SF;
 
-    FillEventCutflow(charge_i,i_channel,w, "noZ_"+charge_s,param.Name);
+}
 
-    TString ev_type="";
-    if(RunFake) {
-      bool el1_tight=electrons[0].PassID(param.Electron_Tight_ID);
-      bool el2_tight=electrons[1].PassID(param.Electron_Tight_ID);
+double HNtypeI_Dilepton::GetFatJetSF(FatJet fatjet, TString tag,  int dir){
 
-      if(el1_tight&&el2_tight)ev_type = "TT_";
-      if(el1_tight&&!el2_tight)ev_type = "TL_";
-      if(!el1_tight&&el2_tight)ev_type = "LT_";
-      if(!el1_tight&&!el2_tight)ev_type = "LL_";
-      FillRegionPlots(i_channel,true,"presel"+channel_s+"_"+ev_type+"_"+charge_s, label, jets,  fatjets,  electrons, muons,  METv, nPV, w);
-      //FillRegionPlots(i_channel,true,"presel_now_"+channel_s+"_"+ev_type+"_"+charge_s, label, jets,  fatjets,  electrons, muons,  METv, nPV, 1.);
-    }
-    FillRegionPlots(i_channel,true,"presel"+channel_s+"_"+charge_s, label, jets,  fatjets,  electrons, muons,  METv, nPV, w);
-    if(charge_s=="same_sign")cout << "HNtypeI_Dilepton::INFO " << event << " " << run << endl;
+  if(IsData) return 1.;
+  float fsys = -1;
+  if(dir > 0) fsys =1;
+  if(dir==0) fsys=0.;
 
-    
-    //************************************************///   
-    // SR selections
-    //************************************************///   
+  double loose_sf(1.);
+  if(DataYear==2016) loose_sf = 1.03 + fsys*0.14;
+  if(DataYear==2017) loose_sf = 0.957 + fsys*0.074;
+  if(DataYear==2018) loose_sf = 0.980 + fsys*0.027;
 
+  if(tag=="ak8_type1") return loose_sf;
+  if (tag.Contains("_tau21" ))  return loose_sf;
 
-    if(met2_st < 15)FillEventCutflow(charge_i,i_channel,w, "MET_"+charge_s,param.Name);
+  return 1.;
 
+}
 
-    // MET + Bjet req
-    if(met2_st < 15 && NBJets == 0 ){
-
-      if(fatjets.size() == 0){
-	if(jets[0].Pt() <25.) return;
-      }
-
-      FillEventCutflow(charge_i,i_channel,w, "BJet_"+charge_s,param.Name);
-      
-      if(njets == 1 && fatjets.size() == 0) {
-	FillRegionPlots(i_channel,true,"singlejet"+channel_s+"_"+ charge_s , label, jets,  fatjets,  electrons, muons,  METv, nPV, w);
-      }
-      // Jet Req
-      if( jets.size() > 1 && fatjets.size() == 0) {  
-        FillEventCutflow(charge_i,i_channel,w, "HighMassJet_"+charge_s,param.Name);
-
-	if(GetMass(signal_region1, jets, fatjets) < 150. && GetMass(signal_region1, jets, fatjets) > 30.){
-	  FillEventCutflow(charge_i,i_channel,w, "HighMassSR_"+charge_s,param.Name);
-	  
-
-	  //// SR1 
-	  FillRegionPlots(i_channel,true,signal_region1 + "_Highmass", label, jets,  fatjets,  electrons, muons,  METv, nPV, w);
-	  FillAllSignalRegion1(i_channel, signal_region1, IsDATA,  charge_s, label, jets, fatjets,  electrons, muons,  METv, nPV ,w );
-	  FillEventCutflow(charge_i,i_channel,w, "Highmass_"+signal_region1,param.Name);
-
-	} // mass req        
-	
-      } //jet req
-      
-     // MET BJet
-      else if(fatjets.size() > 0) {
-        FillEventCutflow(charge_i,i_channel,w, "HighMassJet_"+charge_s,param.Name);
-	
-	if(GetMass(signal_region2,jets, fatjets) <130. &&GetMass(signal_region2,jets, fatjets) > 40.){
-	  
-	  FillEventCutflow(charge_i,i_channel,w, "HighMassSR_"+charge_s,param.Name);
-	  
-	  // fill all mass binned plots                                                                                                                                                                                                               
-	  //// SR2                                                                                                                                                                                                                                
-	  FillRegionPlots(i_channel,true,signal_region2 + "_Highmass", label, jets,  fatjets,  electrons, muons,  METv, nPV, w);
-	  FillAllSignalRegion2(i_channel, signal_region2, IsDATA,  charge_s, label, jets, fatjets,  electrons, muons,  METv,  nPV ,w );
-	  FillEventCutflow(charge_i,i_channel,w, "Highmass_"+signal_region2,param.Name);
-	}// J mass
-      } // 0 AK8
-    } // end met/nbjet
-    else{
-
-      if(fatjets.size() > 0)FillRegionPlots(i_channel,true,signal_region2 +"_HighmassCR", label, jets,  fatjets, electrons, muons,  METv, nPV, w);
-      else if(jets.size()>1) FillRegionPlots(i_channel,true,signal_region1 +"_HighmassCR", label, jets,  fatjets, electrons, muons,  METv, nPV, w);
-			   
-      
-		      
-
-    }
-  } // end else of jet req
-
-
-
-} /// end function RunEE
 
 double HNtypeI_Dilepton::GetFakeRateEl(double eta, double pt, TString id){
 
   return fakeEst->GetElectronFakeRate(id,"AwayJetPt40",eta, pt, 0);
-
-
-  if(DataYear==2016){
-    if(fabs(eta) < 0.8){
-      if(pt < 15.) return 0.049;
-      if(pt < 23.) return 0.054;
-      if(pt < 35.) return 0.071;
-      if(pt < 40.) return 0.074;
-      if(pt < 60.) return 0.108;
-      if(pt < 60.) return 0.200;
-      else return  0.200;
-    }
-    else  if(fabs(eta) < 1.479){
-      if(pt < 15.) return 0.154;
-      if(pt < 23.) return 0.094;
-      if(pt < 35.) return 0.091;
-      if(pt < 40.) return 0.143;
-      if(pt < 60.) return 0.118;
-      if(pt < 60.) return 0.171;
-      else return  0.171;
-    }
-    else if(fabs(eta) < 2.){
-      if(pt < 15.) return 0.221;
-      if(pt < 23.) return 0.152;
-      if(pt < 35.) return 0.140;
-      if(pt < 40.) return 0.161;
-      if(pt < 60.) return 0.176;
-      if(pt < 60.) return 0.223;
-      else return  0.228;
-    }
-    else{
-      if(pt < 15.) return 0.180;
-      if(pt < 23.) return 0.113 ;
-      if(pt < 35.) return 0.144 ;
-      if(pt < 40.) return 0.130;
-      if(pt < 60.) return 0.183 ;
-      if(pt < 60.) return 0.184 ;
-      else return  0.194;
-      
-    }
-  }
-  if(DataYear==2017){
-    if(fabs(eta) < 0.8){
-      if(pt < 15.) return 0.065;
-      if(pt < 23.) return 0.068;
-      if(pt < 35.) return 0.081;
-      if(pt < 40.) return 0.100;
-      if(pt < 60.) return 0.142 ;
-      if(pt < 60.) return 0.229 ;
-      else return  0.469;
-    }
-    else  if(fabs(eta) < 1.479){
-      if(pt < 15.) return 0.141;
-      if(pt < 23.) return 0.143;
-      if(pt < 35.) return 0.120;
-      if(pt < 40.) return 0.113;
-      if(pt < 60.) return 0.150;
-      if(pt < 60.) return 0.228;
-      else return  0.37;
-    }
-    else if(fabs(eta) < 2.){
-      if(pt < 15.) return 0.277;
-      if(pt < 23.) return 0.182 ;
-      if(pt < 30.) return 0.208;
-      if(pt < 35.) return 0.204;
-      if(pt < 40.) return 0.2001;
-      if(pt < 60.) return 0.227;
-      else return  0.358;
-    }
-    else{
-      if(pt < 15.) return 0.369;
-      if(pt < 23.) return 0.211;
-      if(pt < 30.) return 0.181;
-      if(pt < 35.) return 0.213;
-      if(pt < 40.) return 0.148;
-      if(pt < 60.) return 0.248;
-      else return  0.289;
-      
-    }
-  }
-
-  if(DataYear==2018){
-    if(fabs(eta) < 0.8){
-      if(pt < 15.) return 0.038;
-      if(pt < 23.) return 0.064;
-      if(pt < 30.) return 0.085;
-      if(pt < 35.) return 0.098;
-      if(pt < 40.) return 0.078;
-      if(pt < 60.) return 0.200;
-      else return  0.449;
-    }
-    else  if(fabs(eta) < 1.479){
-      if(pt < 15.) return 0.144;
-      if(pt < 23.) return 0.112;
-      if(pt < 30.) return 0.111;
-      if(pt < 35.) return 0.133;
-      if(pt < 40.) return 0.137;
-      if(pt < 60.) return 0.211;
-      else return  0.366;
-    }
-    else if(fabs(eta) < 2.){
-      if(pt < 15.) return 0.28;
-      if(pt < 23.) return 0.183;
-      if(pt < 30.) return 0.173;
-      if(pt < 35.) return 0.195;
-      if(pt < 40.) return 0.183;
-      if(pt < 60.) return 0.238;
-      else return  0.342;
-    }
-    else{
-      if(pt < 15.) return 0.28;
-      if(pt < 23.) return  0.201;
-      if(pt < 30.) return 0.205;
-      if(pt < 35.) return 0.235;
-      if(pt < 40.) return 0.206;
-      if(pt < 60.) return 0.236;
-      else return  0.290;
-      
-    }
-  }
-
-  return 1.;
-
 
   return 1.;
 
@@ -1503,129 +1418,6 @@ double HNtypeI_Dilepton::GetFakeRateM(double eta, double pt, TString id){
 
   return fakeEst->GetMuonFakeRate(id, "AwayJetPt40",eta, pt, 0);
 
-  ///double ptbinscone[8] = { 10., 15.,20.,30.,40.,50.,  60., 200.};
-  // double ptbins[9] = { 5., 10., 15.,20.,30.,45.,60.,100., 200.};  
-  //double etabins2[5] = { 0.,0.8,  1.479, 2.,  2.5};
-
-  if(DataYear == 2018){
-    if(fabs(eta) < 0.8){
-      if(pt < 15.) return 0.119;
-      if(pt < 20.) return 0.102;
-      if(pt < 30.) return 0.092;
-      if(pt < 40.) return 0.095;
-      if(pt < 50.) return 0.0937;
-      if(pt < 60.) return 0.132;
-      else return  0.33;
-    }
-    else  if(fabs(eta) < 1.479){
-      if(pt < 15.) return 0.160;
-      if(pt < 20.) return 0.117;
-      if(pt < 30.) return 0.097;
-      if(pt < 40.) return 0.114;
-      if(pt < 50.) return 0.153;
-      if(pt < 60.) return 0.243;
-      else return  0.37;
-    }
-    else if(fabs(eta) < 2.){
-      if(pt < 15.) return 0.158;
-      if(pt < 20.) return 0.150;
-      if(pt < 30.) return 0.122;
-      if(pt < 40.) return 0.163;
-      if(pt < 50.) return 0.161;
-      if(pt < 60.) return 0.189;
-      else return  0.39;
-    }
-    else{
-      if(pt < 15.) return 0.172;
-      if(pt < 20.) return 0.167;
-      if(pt < 30.) return 0.160;
-      if(pt < 40.) return 0.193;
-      if(pt < 50.) return 0.223;
-      if(pt < 60.) return 0.299;
-      else return  0.38;
-      
-    }
-  }	
-  if(DataYear == 2017){
-    if(fabs(eta) < 0.8){
-      if(pt < 15.) return 0.111;
-      if(pt < 20.) return 0.0896;
-      if(pt < 30.) return 0.0755;
-      if(pt < 40.) return 0.0087;
-      if(pt < 50.) return 0.103;
-      if(pt < 60.) return 0.158;
-      else return  0.33;
-    }
-    else  if(fabs(eta) < 1.479){
-      if(pt < 15.) return 0.104;
-      if(pt < 20.) return 0.120;
-      if(pt < 30.) return 0.087;
-      if(pt < 40.) return 0.109;
-      if(pt < 50.) return 0.132;
-      if(pt < 60.) return 0.216;
-      else return  0.35;
-    }
-    else if(fabs(eta) < 2.){
-      if(pt < 15.) return 0.163;
-      if(pt < 20.) return 0.146;
-      if(pt < 30.) return 0.134;
-      if(pt < 40.) return 0.144;
-      if(pt < 50.) return 0.130;
-      if(pt < 60.) return 0.295;
-      else return  0.394;
-    }
-    else{
-      if(pt < 15.) return 0.168;
-      if(pt < 20.) return 0.163;
-      if(pt < 30.) return 0.160;
-      if(pt < 40.) return 0.186;
-      if(pt < 50.) return 0.146;
-      if(pt < 60.) return 0.242;
-      else return  0.426;
-
-    }
-  }
-
-  if(DataYear == 2016){
-    if(fabs(eta) < 0.8){
-      if(pt < 15.) return 0.091;
-      if(pt < 20.) return 0.077;
-      if(pt < 30.) return 0.0578;
-      if(pt < 40.) return 0.0700;
-      if(pt < 50.) return 0.0990;
-      if(pt < 60.) return 0.137;
-      else return  0.322;
-    }
-    else  if(fabs(eta) < 1.479){
-      if(pt < 15.) return 0.100;
-      if(pt < 20.) return 0.0882;
-      if(pt < 30.) return 0.0658;
-      if(pt < 40.) return 0.0814;
-      if(pt < 50.) return 0.1179;
-      if(pt < 60.) return 0.167;
-      else return  0.322;
-    }
-    else if(fabs(eta) < 2.){
-      if(pt < 15.) return 0.128;
-      if(pt < 20.) return 0.127;
-      if(pt < 30.) return 0.110;
-      if(pt < 40.) return 0.110;
-      if(pt < 50.) return 0.124;
-      if(pt < 60.) return 0.200;
-      else return  0.394;
-    }
-    else{
-      if(pt < 15.) return 0.154;
-      if(pt < 20.) return 0.138;
-      if(pt < 30.) return 0.122;
-      if(pt < 40.) return 0.150;
-      if(pt < 50.) return 0.186;
-      if(pt < 60.) return 0.229;
-      else return  0.361;
-
-    }
-  }
-	    
   return 1.;
 
 }
@@ -1817,21 +1609,85 @@ void HNtypeI_Dilepton::FilAllElectronPlots(TString label , TString cut,  std::ve
 
 }
 
+void HNtypeI_Dilepton::MakeGeneralPlots(vector<Muon> mymuons, vector<Electron> myelectrons, map<TString, vector<FatJet> > fatjet_map, AnalyzerParameter param ,double weight){
+
+  if(SameCharge(myelectrons)){
+    int type1=fabs(GetLeptonType(myelectrons.at(0), gens));
+    int type2=fabs(GetLeptonType(myelectrons.at(1), gens));
+
+    Particle llCand = myelectrons.at(0) + myelectrons.at(1);
+    if(llCand.M() > 101. || llCand.M() < 81.) FillHist( "GeneralPlots/DeltaRLL_"+param.Electron_Tight_ID, myelectrons[0].DeltaR(myelectrons[1]), weight, 50, 0., 5,"#DeltaR(l,l)");
+							
+    
+    FillHist( "GeneralPlots/LeptonType_"+ param.Electron_Tight_ID, type1,type2, weight, 20, -10,10., 20,-10.,10.);
+
+  }
+  if(SameCharge(mymuons)){
+    FillHist( "GeneralPlots/DeltaRLL_"+param.Muon_Tight_ID, mymuons[0].DeltaR(mymuons[1]), weight, 50, 0., 5,"#DeltaR(l,l)");
+  }
 
 
-void HNtypeI_Dilepton::FillZZCRPlots(int i_channel, std::vector<Electron> electrons, std::vector<Electron> electrons_veto, std::vector<Muon> muons, std::vector<Muon> muons_veto, std::vector<Jet> jets, std::vector<FatJet> fatjets,  Event ev, TString label, float w){
+  if(SameCharge(myelectrons)){
+    
+    Particle llCand = myelectrons.at(0) + myelectrons.at(1);
+    if(llCand.M() > 101. || llCand.M() < 81.){
+      
+      for (auto iel: myelectrons) {
+	FillHist( "GeneralPlots/el_pt"+param.Electron_Tight_ID, iel.Pt(), weight, 50, 0. , 500.,"pt");
+	
+	if(fabs(iel.Eta()) < 1.5){
+	  FillHist( "GeneralPlots/el_barrel_pt"+param.Electron_Tight_ID, iel.Pt(), weight, 50, 0. , 500.,"pt");
+	  if(iel.IsGsfCtfScPixChargeConsistent ())        FillHist( "GeneralPlots/el_barrel_cc_pt"+param.Electron_Tight_ID, iel.Pt(), weight, 50, 0. , 500.,"pt");
 
-  Particle METv = ev.GetMETVector();
+	}
+	else{
+	  FillHist( "GeneralPlots/el_endcap_pt"+param.Electron_Tight_ID, iel.Pt(), weight, 50, 0. , 500.,"pt");
+	  if(iel.IsGsfCtfScPixChargeConsistent ())        FillHist( "GeneralPlots/el_endcap_cc_pt"+param.Electron_Tight_ID, iel.Pt(), weight, 50, 0. , 500.,"pt");
+
+	  
+	  
+	}
+	if(iel.IsGsfCtfScPixChargeConsistent ()) FillHist( "GeneralPlots/el_cc_pt"+param.Electron_Tight_ID, iel.Pt(), weight, 50, 0. , 500.,"p\
+t");
+	
+      }
+    }
+  }
 
 
-  TString channel_s= (i_channel==0) ?  "_EE" : "_MuMu";
+  for(map<TString,   std::vector<FatJet> >::iterator mit = fatjet_map.begin(); mit != fatjet_map.end(); mit++){
 
-  double lep1_ptcut= (i_channel==0) ?   25. : 20.;
-  double lep2_ptcut= (i_channel==0) ?   15. : 15.;
+    for(unsigned int ijet =0; ijet < mit->second.size(); ijet++){
+      for(unsigned int iel=0 ; iel < myelectrons.size(); iel++){
+        if(SameCharge(myelectrons))FillHist( "GeneralPlots/deltaR_fj_lep"+param.Electron_Tight_ID+"_"+mit->first, mit->second[ijet].DeltaR(myelectrons[iel]) ,weight, 50, 0., 5,"#DeltaR(l,AK8)");
+      }
+      for(unsigned int iel=0 ; iel < mymuons.size(); iel++){
+        if(SameCharge(mymuons))FillHist( "GeneralPlots/deltaR_fj_lep"+param.Muon_Tight_ID+"_"+mit->first, mit->second[ijet].DeltaR(mymuons[iel]) ,weight, 50, 0., 5,"#DeltaR(l,AK8)");
+      }
+    }
+  }
 
-  int NBJets=GetNBJets();
 
-  if(i_channel == 1){
+ 
+  return;
+}
+
+
+void HNtypeI_Dilepton::FillZZCRPlots(HNtypeI_Dilepton::Flavour flavour, std::vector<Electron> electrons, std::vector<Electron> electrons_veto, std::vector<Muon> muons, std::vector<Muon> muons_veto, std::vector<Jet> jets, std::vector<FatJet> fatjets,  Event ev, TString label, float w){
+
+  Particle METUnsmearedv = ev.GetMETVector();
+  Particle METv =UpdateMETSmearedJet(METUnsmearedv, jets);
+
+
+  TString channel_s= (flavour==EE) ?  "_EE" : "_MuMu";
+
+  double lep1_ptcut= (flavour==EE) ?   25. : 20.;
+  double lep2_ptcut= (flavour==EE) ?   15. : 15.;
+
+
+  int NBJets=GetNBJets("HNTight","medium");
+
+  if(flavour == MuMu){
     if(muons.size() ==4 && electrons_veto.size() == 0 && muons_veto.size()==4){
       if(muons[0].Pt() > lep1_ptcut && muons[3].Pt()  > lep2_ptcut) {
 	if(NBJets ==0){
@@ -1866,8 +1722,8 @@ void HNtypeI_Dilepton::FillZZCRPlots(int i_channel, std::vector<Electron> electr
 	      
 	    }
 	  }
-	  if(!m_llos_l10 && z_cr_pass)      FillRegionPlots(i_channel,true,"ZZ_cr"+channel_s , label, jets,  fatjets,  electrons, muons,  METv, nPV, w);
-	  if(!m_llos_l10 && z_cr_pass)      FillRegionPlots(i_channel,true,"ZZ_cr" , label, jets,  fatjets,  electrons, muons,  METv, nPV, w);
+	  if(!m_llos_l10 && z_cr_pass)      FillRegionPlots(flavour,true,"ZZ_cr"+channel_s , label, jets,  fatjets,  electrons, muons,  METv, nPV, w);
+	  if(!m_llos_l10 && z_cr_pass)      FillRegionPlots(flavour,true,"ZZ_cr" , label, jets,  fatjets,  electrons, muons,  METv, nPV, w);
 	}
       }
     }// end ZZ                                                                                                                                                                                                                                  
@@ -1908,8 +1764,8 @@ void HNtypeI_Dilepton::FillZZCRPlots(int i_channel, std::vector<Electron> electr
 
 	    }
 	  }
-	  if(!m_llos_l10 && z_cr_pass)      FillRegionPlots(i_channel,true,"ZZ_cr" , label, jets,  fatjets,  electrons, muons,  METv, nPV, w);
-	  if(!m_llos_l10 && z_cr_pass)      FillRegionPlots(i_channel,true,"ZZ_cr"+channel_s , label, jets,  fatjets,  electrons, muons,  METv, nPV, w);
+	  if(!m_llos_l10 && z_cr_pass)      FillRegionPlots(flavour,true,"ZZ_cr" , label, jets,  fatjets,  electrons, muons,  METv, nPV, w);
+	  if(!m_llos_l10 && z_cr_pass)      FillRegionPlots(flavour,true,"ZZ_cr"+channel_s , label, jets,  fatjets,  electrons, muons,  METv, nPV, w);
 	}
       }
     }// end ZZ            
@@ -1936,28 +1792,30 @@ double HNtypeI_Dilepton::GetST( std::vector<Electron> electrons, std::vector<Muo
   for(unsigned int i=0; i<fatjets.size(); i++)_st += fatjets.at(i).Pt();
   for(unsigned int i=0; i<muons.size(); i++) _st +=  muons[i].Pt();
   for(unsigned int i=0; i<electrons.size(); i++) _st +=  electrons[i].Pt();
-  Particle METv = ev.GetMETVector();
+  Particle METUnsmearedv = ev.GetMETVector();
+  Particle METv =UpdateMETSmearedJet(METUnsmearedv, jets);
 
   _st += METv.Pt();
 
   return _st;
 }
-void HNtypeI_Dilepton::FillWZCRPlots(int i_channel, std::vector<Electron> electrons, std::vector<Electron> electrons_veto, std::vector<Muon> muons, std::vector<Muon> muons_veto, std::vector<Jet> jets, std::vector<FatJet> fatjets,  Event ev, TString label, float w){
+void HNtypeI_Dilepton::FillWZCRPlots(HNtypeI_Dilepton::Flavour flavour, std::vector<Electron> electrons, std::vector<Electron> electrons_veto, std::vector<Muon> muons, std::vector<Muon> muons_veto, std::vector<Jet> jets, std::vector<FatJet> fatjets,  Event ev, TString label, float w){
 
 
-  Particle METv = ev.GetMETVector();
-  
-  TString channel_s= (i_channel==0) ?  "_EE" : "_MuMu";
+  Particle METUnsmearedv = ev.GetMETVector();
+  Particle METv =UpdateMETSmearedJet(METUnsmearedv, jets);
 
-  double lep1_ptcut= (i_channel==0) ?   25. : 20.;
-  double lep2_ptcut= (i_channel==0) ?   15. : 15.;
+  TString channel_s= (flavour==EE) ?  "_EE" : "_MuMu";
+
+  double lep1_ptcut= (flavour==EE) ?   25. : 20.;
+  double lep2_ptcut= (flavour==EE) ?   15. : 15.;
   double metcut = 50.;
   double mtcut = 20.;
   double trilep_masscut=105.;
 
-  int NBJets=GetNBJets();
+  int NBJets=GetNBJets("HNTight","medium");
 
-  if(i_channel == 1){
+  if(flavour == MuMu){
     // muon channel   require 3 muons and 0 electrons
     if(muons.size() ==3 && electrons_veto.size() == 0 && muons_veto.size()==3){
       // pass pt cuts
@@ -2003,9 +1861,9 @@ void HNtypeI_Dilepton::FillWZCRPlots(int i_channel, std::vector<Electron> electr
 		if(MT(METv, muons.at(iel_W)) > mtcut){
 		  if((muons.at(0) + muons.at(1) + muons.at(2)).M()  > trilep_masscut){
 		    // fill channel specific plots
-		    FillRegionPlots(i_channel,true,"WZ_cr"+channel_s , label, jets,  fatjets,  electrons, muons,  METv, nPV, w);
+		    FillRegionPlots(flavour,true,"WZ_cr"+channel_s , label, jets,  fatjets,  electrons, muons,  METv, nPV, w);
 		    // fill plot for all channels
-		    FillRegionPlots(i_channel,true,"WZ_cr" , label, jets,  fatjets,  electrons, muons,  METv, nPV, w);
+		    FillRegionPlots(flavour,true,"WZ_cr" , label, jets,  fatjets,  electrons, muons,  METv, nPV, w);
 		  }
 		}
 	      }
@@ -2051,8 +1909,8 @@ void HNtypeI_Dilepton::FillWZCRPlots(int i_channel, std::vector<Electron> electr
 	      if(mass_diff_tmp < 10.){
 		if(MT(METv, electrons.at(iel_W)) > mtcut){
 		  if((electrons.at(0) + electrons.at(1) + electrons.at(2)).M()  > trilep_masscut){
-		    FillRegionPlots(i_channel,true,"WZ_cr"+channel_s , label, jets,  fatjets,  electrons, muons,  METv, nPV, w);
-		    FillRegionPlots(i_channel,true,"WZ_cr" , label, jets,  fatjets,  electrons, muons,  METv, nPV, w);
+		    FillRegionPlots(flavour,true,"WZ_cr"+channel_s , label, jets,  fatjets,  electrons, muons,  METv, nPV, w);
+		    FillRegionPlots(flavour,true,"WZ_cr" , label, jets,  fatjets,  electrons, muons,  METv, nPV, w);
 		  }
 		}
 	      }
@@ -2202,13 +2060,13 @@ double  HNtypeI_Dilepton::GetMass(TString type , std::vector<Jet> jets, std::vec
   return -9999.;
 }
 
-void HNtypeI_Dilepton::FillSigRegionPlots1(int channel, int systdir, TString syst, double sysval, TString label_1, TString label_2, TString label_3,  std::vector<Jet> jets, std::vector<FatJet> fatjets,  std::vector<Electron> els, std::vector<Muon> mus, Particle  met, double nvtx,  double w,  double var1,  double var2, double var3, double var4, double var5, double var6, double var7, double var8, double var9, double var10, double var11){
+void HNtypeI_Dilepton::FillSigRegionPlots1(HNtypeI_Dilepton::Flavour channel, int systdir, TString syst, double sysval, TString label_1, TString label_2, TString label_3,  std::vector<Jet> jets, std::vector<FatJet> fatjets,  std::vector<Electron> els, std::vector<Muon> mus, Particle  met, double nvtx,  double w,  double var1,  double var2, double var3, double var4, double var5, double var6, double var7, double var8, double var9, double var10, double var11){
 
   Particle lep1, lep2;
-  if(channel == 0 && els.size() < 2) return;
-  if(channel == 1 && mus.size() < 2) return;
-  if(channel == 0 ){ lep1 = els[0]; lep2 = els[1];}
-  if(channel == 1 ){ lep1 = mus[0]; lep2 = mus[1];}
+  if(channel == EE && els.size() < 2) return;
+  if(channel == MuMu && mus.size() < 2) return;
+  if(channel == EE ){ lep1 = els[0]; lep2 = els[1];}
+  if(channel == MuMu ){ lep1 = mus[0]; lep2 = mus[1];}
 
   
   if(jets.size() < 2) return;
@@ -2262,10 +2120,10 @@ void HNtypeI_Dilepton::FillSigRegionPlots1(int channel, int systdir, TString sys
       if (rand_n > sysval && systdir==1) w*=(2);
     }
     
-    int cutflow_index = 3;
-    if(channel == 0 )cutflow_index = 4;
-    int charge_i = (lep1.Charge() ==  lep2.Charge() )  ?  1 : -1;
-    if(RunCF) charge_i = (lep1.Charge() ==  lep2.Charge() )  ?  -1 : 1;
+    HNtypeI_Dilepton::Region cutflow_index = MuMu_SR1;
+    if(channel == EE )cutflow_index = EE_SR1;
+    HNtypeI_Dilepton::ChargeType charge_i = (lep1.Charge() ==  lep2.Charge() )  ?  SS : OS;
+    if(RunCF) charge_i = (lep1.Charge() ==  lep2.Charge() )  ?  OS : SS;
 
     if(syst=="")FillEventCutflow(charge_i,cutflow_index,w, label_1+label_2,label_1+label_3);
     //if(syst=="")FillRegionPlots(channel,true,label_1+label_2+"_All_"+label_3 , label_1, jets,  fatjets,  els, mus,  met, nPV, w);
@@ -2368,13 +2226,13 @@ void HNtypeI_Dilepton::FillSigRegionPlots1(int channel, int systdir, TString sys
 
 }
 
-void HNtypeI_Dilepton::FillSigRegionPlots2(int channel, int systdir, TString syst, double sysval,TString label_1, TString label_2, TString label_3,  std::vector<Jet> jets, std::vector<FatJet> fatjets,  std::vector<Electron> els, std::vector<Muon> mus, Particle  met, double nvtx,  double w,  double var1,  double var2, double var3, double var4, double var5, double var6, double var7){
+void HNtypeI_Dilepton::FillSigRegionPlots2(HNtypeI_Dilepton::Flavour channel, int systdir, TString syst, double sysval,TString label_1, TString label_2, TString label_3,  std::vector<Jet> jets, std::vector<FatJet> fatjets,  std::vector<Electron> els, std::vector<Muon> mus, Particle  met, double nvtx,  double w,  double var1,  double var2, double var3, double var4, double var5, double var6, double var7){
 
    Particle lep1, lep2;
-   if(channel == 0 && els.size() < 2) return;
-   if(channel == 1 && mus.size() < 2) return;
-   if(channel == 0 ){ lep1 = els[0]; lep2 = els[1];}
-   if(channel == 1 ){ lep1 = mus[0]; lep2 = mus[1];}
+   if(channel == EE   && els.size() < 2) return;
+   if(channel == MuMu && mus.size() < 2) return;
+   if(channel == EE   ){ lep1 = els[0]; lep2 = els[1];}
+   if(channel == MuMu ){ lep1 = mus[0]; lep2 = mus[1];}
 
    
   if(fatjets.size() == 0) return;
@@ -2420,10 +2278,11 @@ void HNtypeI_Dilepton::FillSigRegionPlots2(int channel, int systdir, TString sys
     }
     FillHist( label_1+ "/"+ label_1+label_2 +  "_nevent_"  + label_3+"_"+syst,  1.,  w, 2, 0.,2. , "N cut");
 
-    int cutflow_index = 5;
-    if(channel == 0 )cutflow_index = 6;
-    int charge_i = (lep1.Charge() ==  lep2.Charge() )  ?  1 : -1;
-    if(RunCF) charge_i = (lep1.Charge() ==  lep2.Charge() )  ?  -1 : 1;
+    HNtypeI_Dilepton::Region  cutflow_index = MuMu_SR2;
+    if(channel == EE )cutflow_index = EE_SR2;
+    HNtypeI_Dilepton::ChargeType charge_i = (lep1.Charge() ==  lep2.Charge() )  ?  SS : OS;
+
+    if(RunCF) charge_i = (lep1.Charge() ==  lep2.Charge() )  ?  OS : SS;
 
 
     if(syst=="")FillEventCutflow(charge_i,cutflow_index,w, label_1+label_2,label_1+label_3);
@@ -2489,20 +2348,24 @@ void HNtypeI_Dilepton::FillSigRegionPlots2(int channel, int systdir, TString sys
 
 
 }
-void HNtypeI_Dilepton::FillRegionPlots(int channel, bool plotCR, TString label_1, TString label_2,  std::vector<Jet> jets, std::vector<FatJet> fatjets,  std::vector<Electron> els, std::vector<Muon> mus, Particle  met, double nvtx,  double w){
+void HNtypeI_Dilepton::FillRegionPlots(HNtypeI_Dilepton::Flavour channel, bool plotCR, TString label_1, TString label_2,  std::vector<Jet> jets, std::vector<FatJet> fatjets,  std::vector<Electron> els, std::vector<Muon> mus, Particle  met, double nvtx,  double w){
   
-  //cout << "FillRegionPlots: " << label_1 << " " << label_2 << " plotCR = " << plotCR << " nel = " << els.size()  <<  endl;
-
+  bool debug(false);
+  if(debug){
+    if(channel == EE ) cout << "FillRegionPlotsEE: " << label_1 << " " << label_2 << " plotCR = " << plotCR << " nel = " << els.size()  <<  endl;
+    if(channel == MuMu ) cout << "FillRegionPlotsMuMu: " << label_1 << " " << label_2 << " plotCR = " << plotCR << " nel = " << els.size()  <<  endl; 
+    else cout << "FillRegionPlots: " << label_1 << " " << label_2 << " plotCR = " << plotCR << " nel = " << els.size()  <<  endl;
+  }
 
   Particle lep1, lep2;
-  if(channel == 0 && els.size() < 2) return;
-  if(channel == 1 && mus.size() < 2) return;
-  if(channel == 0 ){ lep1 = els[0]; lep2 = els[1];}
-  if(channel == 1 ){ lep1 = mus[0]; lep2 = mus[1];}
+  if(channel == EE   && els.size() < 2) return;
+  if(channel == MuMu && mus.size() < 2) return;
+  if(channel == EE   ){ lep1 = els[0]; lep2 = els[1];}
+  if(channel == MuMu ){ lep1 = mus[0]; lep2 = mus[1];}
   
   if(!plotCR) return;
 
-  int NBJets=GetNBJets();
+  int NBJets=GetNBJets("HNTight","medium");
 
 
   
@@ -2538,7 +2401,7 @@ void HNtypeI_Dilepton::FillRegionPlots(int channel, bool plotCR, TString label_1
     Particle WCand  = jets[m]+jets[n];
     Particle N1Cand  = jets[m]+jets[n]+lep1;
     Particle N2Cand  = jets[m]+jets[n]+lep2;
-    
+   
     FillHist( label_1+ "/"+ label_1 +  "_reco_ml1jj_ml2jj_"  + label_2,  N1Cand.M(), N2Cand.M(), w, 100, 0., 2000., 100, 0., 2000.);
 
     FillHist( label_1+ "/"+ label_1 +  "_reco_jj_lep1_dr_"  + label_2,   WCand.DeltaR(lep1),  w, 10, 0, 5, "#DeltaR (W,lep1)");
@@ -2593,7 +2456,7 @@ void HNtypeI_Dilepton::FillRegionPlots(int channel, bool plotCR, TString label_1
 
     FillHist( label_1+ "/"+ label_1 + "_jet_pt_"+ label_2,  jets[i].Pt() , w, 400, 0., 2000., "AK4 Jet p_{T} GeV");
     FillHist( label_1+ "/"+ label_1 + "_jet_eta_"+ label_2,  jets[i].Eta() , w, 100, -5., 5., "AK4 Jet #eta ");
-    if(channel == 0 ){
+    if(channel ==EE ){
       if(jets[i].DeltaR(els[0]) < mindRelj1) mindRelj1=jets[i].DeltaR(els[0]);
       if(jets[i].DeltaR(els[0]) < mindRelj2) mindRelj2=jets[i].DeltaR(els[1]);
       
@@ -2606,7 +2469,7 @@ void HNtypeI_Dilepton::FillRegionPlots(int channel, bool plotCR, TString label_1
       FillHist( label_1+ "/"+ label_1 + "_jet_lep2_dr_"+ label_2,  jets[i].DeltaR(els[1]) , w, 10, 0., 5., "#Delta R(l2,j)");
 
     }
-    if(channel == 1 ){
+    if(channel == MuMu ){
       if(jets[i].DeltaR(mus[0]) < mindRelj1) mindRmuj1=jets[i].DeltaR(mus[0]);
       if(jets[i].DeltaR(mus[0]) < mindRelj2) mindRmuj2=jets[i].DeltaR(mus[1]);
 
@@ -2620,17 +2483,17 @@ void HNtypeI_Dilepton::FillRegionPlots(int channel, bool plotCR, TString label_1
     }
     FillHist( label_1+"/"+label_1+"_DeltaRJ_MET_" + label_2,  jets[i].DeltaR(met) ,w, 50,  0., 5,"#DeltaR(J,met)");
   }
-  if(channel == 0 ) FillHist( label_1+ "/"+ label_1 + "_jet_lep1_mindr_"+ label_2, mindRelj1  , w, 10, 0., 5., "#Delta R(l1,j)") ;
-  if(channel == 0 ) FillHist( label_1+ "/"+ label_1 + "_jet_lep2_mindr_"+ label_2, mindRelj2  , w, 10, 0., 5., "#Delta R(l1,j)") ;
-  if(channel == 1 ) FillHist( label_1+ "/"+ label_1 + "_jet_lep1_mindr_"+ label_2, mindRmuj1  , w, 10, 0., 5., "#Delta R(l1,j)") ;
-  if(channel == 1 ) FillHist( label_1+ "/"+ label_1 + "_jet_lep2_mindr_"+ label_2, mindRmuj2  , w, 10, 0., 5., "#Delta R(l1,j)") ;
+  if(channel == EE ) FillHist( label_1+ "/"+ label_1 + "_jet_lep1_mindr_"+ label_2, mindRelj1  , w, 10, 0., 5., "#Delta R(l1,j)") ;
+  if(channel == EE ) FillHist( label_1+ "/"+ label_1 + "_jet_lep2_mindr_"+ label_2, mindRelj2  , w, 10, 0., 5., "#Delta R(l1,j)") ;
+  if(channel == MuMu ) FillHist( label_1+ "/"+ label_1 + "_jet_lep1_mindr_"+ label_2, mindRmuj1  , w, 10, 0., 5., "#Delta R(l1,j)") ;
+  if(channel == MuMu ) FillHist( label_1+ "/"+ label_1 + "_jet_lep2_mindr_"+ label_2, mindRmuj2  , w, 10, 0., 5., "#Delta R(l1,j)") ;
 
-  if(channel == 0 ) {
+  if(channel ==EE ) {
     FillHist( label_1+ "/"+ label_1 + "_sumlep_eta_"+ label_2, (fabs(els[0].Eta())+  fabs(els[1].Eta())) , w, 10, 0., 5.);
     if(fabs(els[0].Eta()) > fabs(els[1].Eta()))    FillHist( label_1+ "/"+ label_1 + "_maxlep_eta_"+ label_2, fabs(els[0].Eta()) , w, 10, 0., 2.5);
     else  FillHist( label_1+ "/"+ label_1 + "_maxlep_eta_"+ label_2, fabs(els[1].Eta()) , w, 10, 0., 2.5);
   }
-  if(channel == 1 ) {
+  if(channel == MuMu ) {
     FillHist( label_1+ "/"+ label_1 + "_sumlep_eta_"+ label_2, (fabs(mus[0].Eta())+  fabs(mus[1].Eta())) , w, 10, 0., 5.);
     if(fabs(mus[0].Eta()) > fabs(mus[1].Eta()))    FillHist( label_1+ "/"+ label_1 + "_maxlep_eta_"+ label_2, fabs(mus[0].Eta()) , w, 10, 0., 2.5);
     else  FillHist( label_1+ "/"+ label_1 + "_maxlep_eta_"+ label_2, fabs(mus[1].Eta()) , w, 10, 0., 2.5);
@@ -2642,11 +2505,11 @@ void HNtypeI_Dilepton::FillRegionPlots(int channel, bool plotCR, TString label_1
     FillHist( label_1+ "/"+ label_1 + "_fatjet_sdmass_"+ label_2,  fatjets[i].SDMass() , w, 100, 0., 500., "Mass_{softdrop} GeV");
     FillHist( label_1+ "/"+ label_1 + "_fatjet_tau21_"+ label_2,  fatjets[i].PuppiTau2()/ fatjets[i].PuppiTau1() , w, 400, 0., 2., "#tau_{21}");
   
-    if(channel == 0 ){
+    if(channel == EE ){
       FillHist( label_1+ "/"+ label_1 + "_fatjet_lep1_dr_"+ label_2,  fatjets[i].DeltaR(els[0]) , w, 10, 0., 5., "#Delta R(l1,fj)") ;
       FillHist( label_1+ "/"+ label_1 + "_fatjet_lep2_dr_"+ label_2,  fatjets[i].DeltaR(els[1]) , w, 10, 0., 5., "#Delta R(l2,fj)");
     }
-    if(channel == 1 ){
+    if(channel == MuMu ){
       FillHist( label_1+ "/"+ label_1 + "_fatjet_lep1_dr_"+ label_2,  fatjets[i].DeltaR(mus[0]) , w, 10, 0., 5., "#Delta R(l1,fj)") ;
       FillHist( label_1+ "/"+ label_1 + "_fatjet_lep2_dr_"+ label_2,  fatjets[i].DeltaR(mus[1]) , w, 10, 0., 5., "#Delta R(l2,fj)");
     }
@@ -2656,7 +2519,7 @@ void HNtypeI_Dilepton::FillRegionPlots(int channel, bool plotCR, TString label_1
 
   
   
-  if(channel == 0 ){
+  if(channel == EE ){
     FillHist( label_1+"/"+label_1+"_DeltaRl1_MET_" + label_2,  els[0].DeltaR(met) ,w, 50,  0., 5,"#DeltaR(l1,met)");
     FillHist( label_1+"/"+label_1+"_DeltaRl2_MET_" + label_2,  els[1].DeltaR(met) ,w, 50,  0., 5,"#DeltaR(l2,met)");
     FillHist( label_1+"/"+label_1+"_DeltaRLL_"+ label_2, els[0].DeltaR(els[1]) ,w, 50,  0., 5,"#DeltaR(l,l)");
@@ -2711,26 +2574,8 @@ std::vector<Jet> HNtypeI_Dilepton::JetsVetoLeptonInside(std::vector<Jet> jets, s
 
 }
 
-bool HNtypeI_Dilepton::LeptonPassID(Lepton &lepton, TString ID){
 
-  if(lepton.LeptonFlavour()==Lepton::ELECTRON){
-    Electron *el = (Electron *)&lepton;
-    return el->PassID(ID);
-  }
-  else if(lepton.LeptonFlavour()==Lepton::MUON){
-    Muon *mu = (Muon *)&lepton;
-    return mu->PassID(ID);
-  }
-  else{
-    cerr << "[HNtypeI_Dilepton::LeptonPassID] lepton flavour wrong.." << endl;
-    exit(EXIT_FAILURE);
-    return false;
-  }
-
-}
-
-
-void HNtypeI_Dilepton::FillEventCutflow(int charge_i, int cf,float wt, TString cut,   TString label){
+void HNtypeI_Dilepton::FillEventCutflow(HNtypeI_Dilepton::ChargeType charge_i, HNtypeI_Dilepton::Flavour cf,float wt, TString cut,   TString label){
 
   // cf lables what hist to fill
   // charge_i :+1 means SS, -1 means OS ; 0 means OS/SS
@@ -2740,13 +2585,13 @@ void HNtypeI_Dilepton::FillEventCutflow(int charge_i, int cf,float wt, TString c
 
   // DiEl EXO17-028                                                                                                                                                              
   
-  
-  if(cf== 0){
-    TString charge_ = (charge_i == 1) ? "same_sign" : "opposite_sign";
+  //  cout << charge_i << " " << cf << " " << cut << " " << label << endl;
+  if(cf == EE){
+    TString charge_ = (charge_i == SS) ? "same_sign" : "opposite_sign";
     vector<TString> labels_ss = {"NoCut", "METFilter", "Trigger_el", "Dilep_el_same_sign","Lep_veto_el_same_sign", "Diel_mass_same_sign", "Jet_req_same_sign", "noZ_same_sign","MET_same_sign","BJet_same_sign","HighMassJet_same_sign","HighMassSR_same_sign", "Highmass_SR1", "Highmass_SR2"};
     vector<TString> labels_os = {"NoCut", "METFilter", "Trigger_el", "Dilep_el_opposite_sign","Lep_veto_el_opposite_sign","Diel_mass_opposite_sign","Jet_req_opposite_sign", "noZ_opposite_sign","MET_opposite_sign","BJet_opposite_sign","HighMassJet_opposite_sign", "HighMassSR_opposite_sign" ,"Highmass_SR3", "Highmass_SR4"};
-    if(charge_i == 1)    AnalyzerCore::FillEventCutflow(label+"exo_17_028_diel_"+charge_, wt, labels_ss, cut);
-    else if(charge_i == -1)    AnalyzerCore::FillEventCutflow(label+"exo_17_028_diel_"+charge_, wt, labels_os, cut);
+    if(charge_i == SS)    AnalyzerCore::FillEventCutflow(label+"exo_17_028_diel_"+charge_, wt, labels_ss, cut);
+    else if(charge_i == OS)    AnalyzerCore::FillEventCutflow(label+"exo_17_028_diel_"+charge_, wt, labels_os, cut);
     else {
       AnalyzerCore::FillEventCutflow(label+"exo_17_028_diel_same_sign", wt, labels_ss, cut);
       AnalyzerCore::FillEventCutflow(label+"exo_17_028_diel_opposite_sign", wt, labels_os, cut);
@@ -2755,12 +2600,12 @@ void HNtypeI_Dilepton::FillEventCutflow(int charge_i, int cf,float wt, TString c
   }
 
   // DiMu EXO17-028                                                                                                                                                                                                                                                                                           
-  if(cf == 1){
-    TString charge_ = (charge_i == 1) ? "same_sign" : "opposite_sign";
+  if(cf == MuMu){
+    TString charge_ = (charge_i == SS) ? "same_sign" : "opposite_sign";
     vector<TString> labels_ss = {"NoCut", "METFilter", "Trigger_mu", "Dilep_mu_same_sign","Lep_veto_mu_same_sign", "Dimu_mass_same_sign", "Jet_req_same_sign", "MET_same_sign","BJet_same_sign","HighMassJet_same_sign" ,"HighMassSR_same_sign","Highmass_SR1", "Highmass_SR2"};
     vector<TString> labels_os = {"NoCut", "METFilter", "Trigger_mu", "Dilep_mu_opposite_sign","Lep_veto_mu_opposite_sign","Dimu_mass_opposite_sign","Jet_req_opposite_sign", "MET_opposite_sign","BJet_opposite_sign","HighMassJet_opposite_sign","HighMassSR_opposite_sign", "Highmass_SR3", "Highmass_SR4"};
-    if(charge_i == 1)    AnalyzerCore::FillEventCutflow(label+"exo_17_028_dimu_"+charge_, wt, labels_ss, cut);
-    else if(charge_i == -1)    AnalyzerCore::FillEventCutflow(label+"exo_17_028_dimu_"+charge_, wt, labels_os, cut);
+    if(charge_i == SS)    AnalyzerCore::FillEventCutflow(label+"exo_17_028_dimu_"+charge_, wt, labels_ss, cut);
+    else if(charge_i == OS)    AnalyzerCore::FillEventCutflow(label+"exo_17_028_dimu_"+charge_, wt, labels_os, cut);
     else {
       AnalyzerCore::FillEventCutflow(label+"exo_17_028_dimu_same_sign", wt, labels_ss, cut);
       AnalyzerCore::FillEventCutflow(label+"exo_17_028_dimu_opposite_sign", wt, labels_os, cut);
@@ -2768,15 +2613,17 @@ void HNtypeI_Dilepton::FillEventCutflow(int charge_i, int cf,float wt, TString c
     return;
   }
 
-  // DiMu SR1                                                                                                                                                                                                                                                                                                 
+  // DiMu SR1                                                                                                                     
+  return;
+}        
+void HNtypeI_Dilepton::FillEventCutflow(HNtypeI_Dilepton::ChargeType charge_i,Region cf,float wt, TString cut,   TString label){                                                            
   vector<TString> masses = {"100","125","200","250","300","400","500","600","700","800","900","1000","1100","1200","1300","1400","1500","1700","2000"};
   
-  if(cf== 3){
+  if(cf == MuMu_SR1){
 
     vector<TString> labels;
     
-    bool _ss = (charge_i  >= 0)  ? true : false;
-    if(_ss) {
+    if(charge_i  == SS ) {
  
       for (unsigned int x=0; x < masses.size(); x++) labels.push_back("SR1_mn"+masses[x] );
       AnalyzerCore::FillEventCutflow(label+"exo_17_028_MuMu_SR1", wt, labels, cut);
@@ -2789,11 +2636,10 @@ void HNtypeI_Dilepton::FillEventCutflow(int charge_i, int cf,float wt, TString c
   }
 
   // DiEL SR1/3                                                                                                                                                                                                                                                                                               
-  if(cf== 4){
+  if(cf== EE_SR1){
     vector<TString> labels;
 
-    bool _ss = (charge_i  >= 0) ? true : false;
-    if(_ss) {
+    if(charge_i  == SS ) {
       for (unsigned int x=0; x < masses.size(); x++) labels.push_back("SR1_mn"+masses[x] );
       AnalyzerCore::FillEventCutflow(label+"exo_17_028_EE_SR1", wt, labels, cut);
     }
@@ -2804,10 +2650,9 @@ void HNtypeI_Dilepton::FillEventCutflow(int charge_i, int cf,float wt, TString c
 
     }
   }
-  if(cf== 5){
+  if(cf== MuMu_SR2){
     vector<TString> labels;
-    bool _ss = (charge_i  >= 0)  ? true : false;
-    if(_ss) {
+    if(charge_i  == SS ) {
       for (unsigned int x=0; x < masses.size(); x++) labels.push_back("SR2_mn"+masses[x] );
 
       AnalyzerCore::FillEventCutflow(label+"exo_17_028_MuMu_SR2", wt, labels, cut);
@@ -2818,12 +2663,10 @@ void HNtypeI_Dilepton::FillEventCutflow(int charge_i, int cf,float wt, TString c
 
     }
   }
-  if(cf== 6){
+  if(cf== EE_SR2){
     vector<TString> labels;
 
-    bool _ss = (charge_i  >= 0)  ? true : false;
-
-    if(_ss) {
+    if(charge_i  == SS ) {
       for (unsigned int x=0; x < masses.size(); x++) labels.push_back("SR2_mn"+masses[x] );
 
       AnalyzerCore::FillEventCutflow(label+"exo_17_028_EE_SR2", wt, labels, cut);
@@ -2854,25 +2697,3 @@ void HNtypeI_Dilepton::FillCutFlow(bool IsCentral, TString suffix, TString histn
 
 }
 
-double HNtypeI_Dilepton::LSFSF(int lepflav, int dir){
-
-  //==== lepflav = 0 : electron-jet
-  //==== lepflav = 1 : mu-jet
-
-  if(lepflav==0){
-    if(dir==0)     return 1.04;
-    else if(dir>0) return 1.04+0.03;
-    else           return 1.04-0.04;
-  }
-  else if(lepflav==1){
-    if(dir==0)     return 1.01;
-    else if(dir>0) return 1.01+0.03;
-    else           return 1.01-0.03;
-  }
-  else{
-    cerr << "[HNtypeI_Dilepton::LSFSF] wrong lepflav : " <<  lepflav << endl;
-    exit(EXIT_FAILURE);
-    return 1.;
-  }
-
-}
