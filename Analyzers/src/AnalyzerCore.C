@@ -565,6 +565,7 @@ std::vector<Gen> AnalyzerCore::GetGens(){
 
   std::vector<Gen> out;
   if(IsDATA) return out;
+  if(!gen_charge)  return out;
 
   for(unsigned int i=0; i<gen_pt->size(); i++){
 

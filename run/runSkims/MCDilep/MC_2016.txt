@@ -26,6 +26,8 @@ WZZ
 WpWp_EWK
 WpWp_QCD
 ZZZ
+ggZZTo4mu
+ggZZTo2mu2tau
 ggZZTo4e
 ggZZTo2e2tau
 ggHToZZTo4L

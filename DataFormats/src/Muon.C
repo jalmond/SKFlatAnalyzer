@@ -153,14 +153,17 @@ bool Muon::Pass_POGTightWithTightIso() const {
 }
 
 bool Muon::Pass_POGHighPtLooseMixed() const {
-  if(this->Pt() < 50) return Pass_HNLoose2016(0.4, 0.2, 0.1, 3.);
+  if(Pass_HNLoose2016(0.4, 0.2, 0.1, 3.)) return true;
+  if(this->Pt() < 50) return false;
   if(!( isPOGHighPt() )) return false;
   if(!( TrkIso()/TuneP4().Pt()<0.3 )) return false;
   return true;
 }
 
 bool Muon::Pass_POGHighPtTightMixed() const {
-  if(this->Pt() < 60) return Pass_POGTightPFIsoVeryTight(); 
+  if(Pass_POGTightPFIsoVeryTight()) return true;
+  
+  if(this->Pt() < 60) return false;
   
   if(!( isPOGHighPt() )) return false;
   if(!( TrkIso()/TuneP4().Pt()<0.1 )) return false;

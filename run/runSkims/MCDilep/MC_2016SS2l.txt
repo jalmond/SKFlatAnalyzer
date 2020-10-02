@@ -1,5 +1,6 @@
-DYJets
+1;95;0cDYJets
 TTLL_powheg
+WJets_MG
 ZGTo2LG
 WGToLNuG
 WZTo3LNu_powheg
@@ -19,3 +20,16 @@ ZZZ
 ttHToNonbb
 ttWToLNu
 ttZ
+SingleTop_sch_Lep
+SingleTop_tW_antitop_NoFullyHad
+SingleTop_tW_top_NoFullyHad
+SingleTop_tch_antitop_Incl
+SingleTop_tch_top_Incl
+ggHToZZTo4L
+ggZZTo4e
+ggZZTo4mu
+ggZZTo2e2tau
+ggZZTo2e2mu
+ggZZTo2mu2tau
+WWTo2L2Nu_powheg
+WWToLNuQQ_powheg

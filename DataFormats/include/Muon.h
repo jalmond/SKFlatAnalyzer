@@ -160,7 +160,7 @@ private:
   double j_MVA, j_lowptMVA, j_softMVA;
   int j_validmuonhits, j_matchedstations, j_pixelHits, j_trackerLayers;
 
-  ClassDef(Muon,1);
+  ClassDef(Muon,2);
 };
 
 #endif

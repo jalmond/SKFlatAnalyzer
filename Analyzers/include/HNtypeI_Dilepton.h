@@ -59,7 +59,7 @@ class HNtypeI_Dilepton : public AnalyzerCore {
   bool isMM;
   bool Signal;
   bool SignalOS;
-  bool PromptLeptonOnly;
+  bool IncludeFakeLepton;
   bool isSingleMu;
 
   bool HEM1516;
@@ -124,8 +124,8 @@ class HNtypeI_Dilepton : public AnalyzerCore {
   std::vector<Jet>   GetAK4Jets(std::vector<Jet> jets, double pt_cut ,  double eta_cut, bool lepton_cleaning  , double dr_lep_clean , double dr_ak8_clean , TString pustring,  std::vector<Electron>  veto_electrons, std::vector<Muon>  veto_muons, std::vector<FatJet> fatjets);
 
 
-  void MakeAK8JetPlots(AnalyzerParameter param,map<TString, std::vector<FatJet> > fatjet_map, std::vector<Electron>  veto_electrons, std::vector<Muon>  veto_muons, double w);					   
-  void MakeAK4JetPlots(AnalyzerParameter param,map<TString, std::vector<Jet> > jet_map, std::vector<Electron>  veto_electrons, std::vector<Muon>  veto_muons, double w);					   
+  void MakeAK8JetPlots(Flavour flavour, AnalyzerParameter param,map<TString, std::vector<FatJet> > fatjet_map, std::vector<Electron>  veto_electrons, std::vector<Muon>  veto_muons, double w);					   
+  void MakeAK4JetPlots(Flavour flavour,AnalyzerParameter param,map<TString, std::vector<Jet> > jet_map, std::vector<Electron>  veto_electrons, std::vector<Muon>  veto_muons, double w);					   
   std::vector<Jet> JetsVetoLeptonInside(std::vector<Jet> jets, std::vector<Electron *> els, std::vector<Muon *> mus, double dR=0.4);
   bool LeptonPassID(Lepton &lepton, TString ID);
   std::vector<Lepton *> MakeLeptonPointerVector(std::vector<Muon *>& muons, double TightIso=-999, bool UseMini=false);
@@ -154,8 +154,11 @@ class HNtypeI_Dilepton : public AnalyzerCore {
   int GetNBJets(TString ID, TString WP);
 
   void FillZZCRPlots(HNtypeI_Dilepton::Flavour flavour, std::vector<Electron> electrons, std::vector<Electron> electrons_veto, std::vector<Muon> muons, std::vector<Muon> muons_veto, std::vector<Jet> jets, std::vector<FatJet> fatjets,  Event ev, TString label, float w);
+
   void FillWZCRPlots(HNtypeI_Dilepton::Flavour flavour, std::vector<Electron> electrons, std::vector<Electron> electrons_veto, std::vector<Muon> muons, std::vector<Muon> muons_veto, std::vector<Jet> jets, std::vector<FatJet> fatjets,  Event ev, TString label, float w);
-				 
+
+  void FillZGCRPlots(HNtypeI_Dilepton::Flavour flavour, std::vector<Electron> electrons, std::vector<Electron> electrons_veto, std::vector<Muon> muons, std::vector<Muon> muons_veto, std::vector<Jet> jets, std::vector<FatJet> fatjets,  Event ev, TString label, float w);
+  void FillWGCRPlots(HNtypeI_Dilepton::Flavour flavour, std::vector<Electron> electrons, std::vector<Electron> electrons_veto, std::vector<Muon> muons, std::vector<Muon> muons_veto, std::vector<Jet> jets, std::vector<FatJet> fatjets,  Event ev, TString label, float w);				 
 
 
   void FillAllSignalRegion1(HNtypeI_Dilepton::Flavour flavour, TString signal_region, bool isdata, TString charge_s, TString label, std::vector<Jet> jets, std::vector<FatJet> fatjets, std::vector<Electron> electrons, std::vector<Muon> muons,  Particle _met,int _npv , double w , bool full);
