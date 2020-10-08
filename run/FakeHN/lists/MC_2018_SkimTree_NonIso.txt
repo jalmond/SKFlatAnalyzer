@@ -1,3 +1,6 @@
+WW_pythia
+WZ_pythia
+ZZ_pythia
 WJets_MG
 DYJets10to50_MG
 DYJets

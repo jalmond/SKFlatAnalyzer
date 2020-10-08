@@ -168,40 +168,47 @@ void HNtypeI_CF::executeEvent(){
   vector<TString>  mu_loose_id;
   vector<TString>  el_loose_id;
 
-  
+  ELIDs.push_back(make_pair("HEEPv7", "HNVeto"));
+  el_loose_id.push_back("HEEPLoose");
+
+  ELIDs.push_back(make_pair("HEEP2018", "HNVeto"));
+  el_loose_id.push_back("HEEPLoose");
+
   ELIDs.push_back(make_pair("HNTight2016", "HNVeto2016"));
   el_loose_id.push_back("HNLoose2016");
   
-  ELIDs.push_back(make_pair("HNTightV1", "HNVeto2016"));
+  ELIDs.push_back(make_pair("HNTightV1", "HNVeto"));
   el_loose_id.push_back("HNLoose");
   
-  ELIDs.push_back(make_pair("HNTightV2", "HNVeto2016"));
+  ELIDs.push_back(make_pair("HNTightV2", "HNVeto"));
   el_loose_id.push_back("HNLoose");
   
-  ELIDs.push_back(make_pair("HNTightV3", "HNVeto2016"));
+  ELIDs.push_back(make_pair("HNTightV3", "HNVeto"));
   el_loose_id.push_back("HNLoose");
   
-  
-  ELIDs.push_back(make_pair("HNMediumV1", "HNVeto2016"));
+  ELIDs.push_back(make_pair("HNTightV4", "HNVeto"));
+  el_loose_id.push_back("HNLoose");
+
+  ELIDs.push_back(make_pair("HNMediumV1", "HNVeto"));
   el_loose_id.push_back("HNLoose");
   
-  ELIDs.push_back(make_pair("HNMediumV2", "HNVeto2016"));
+  ELIDs.push_back(make_pair("HNMediumV2", "HNVeto"));
   el_loose_id.push_back("HNLoose");
   
-  ELIDs.push_back(make_pair("HNMediumV3", "HNVeto2016"));
+  ELIDs.push_back(make_pair("HNMediumV3", "HNVeto"));
   el_loose_id.push_back("HNLoose");
   
   
   
   // TIGHT POG + no CC in low pt
-  ELIDs.push_back(make_pair("passTightID_nocc", "HNVeto2016"));
+  ELIDs.push_back(make_pair("passTightID_nocc", "HNVeto"));
   el_loose_id.push_back("passLooseID_nocc");
   
   // POG + IP + CC
-  ELIDs.push_back(make_pair("passTightID", "HNVeto2016"));
+  ELIDs.push_back(make_pair("passTightID", "HNVeto"));
   el_loose_id.push_back("passLooseID");
   
-  ELIDs.push_back(make_pair("passMediumID", "HNVeto2016"));
+  ELIDs.push_back(make_pair("passMediumID", "HNVeto"));
   el_loose_id.push_back("passLooseID");
   
   ELIDs.push_back(make_pair("passMVAID_noIso_WP80","HNVeto2016"));

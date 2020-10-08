@@ -8,8 +8,8 @@ void SkimTree_SSHN::initializeAnalyzer(){
   cout << "[SkimTree_SSHN::initializeAnalyzer()] gDirectory = " << gDirectory->GetName() << endl;
   newtree = fChain->CloneTree(0);
   
-  el_type = 0;
-  mu_type = 0;
+  //el_type = 0;
+  //mu_type = 0;
 
   //  b_el_type = newtree->Branch("el_type",&el_type,"el_type");
   //b_mu_type = newtree->Branch("mu_type",&mu_type,"mu_type");
@@ -19,14 +19,14 @@ void SkimTree_SSHN::initializeAnalyzer(){
   }
   else{
     cout << "[SkimTree_SSHN::initializeAnalyzer()] Throwing away gen_* and LHE_*" << endl;
-    if(!IsDATA){
+    /*if(!IsDATA){
       newtree->SetBranchStatus("gen_*",0);
       newtree->SetBranchStatus("LHE_*",0);
       newtree->SetBranchStatus("gen_weight",1); // for MCweight()
  
       newtree->Branch("el_type", &el_type);
       newtree->Branch("mu_type", &mu_type);
-    }
+      }*/
   }
 
 
@@ -109,6 +109,7 @@ void SkimTree_SSHN::executeEvent(){
   std::sort(muonPreColl.begin(), muonPreColl.end(), PtComparing);
   std::sort(electronPreColl.begin(), electronPreColl.end(), PtComparing);
   
+  /*
   gens = GetGens();
 
   for(auto i : GetAllMuons()){
@@ -123,7 +124,7 @@ void SkimTree_SSHN::executeEvent(){
       if(IsCF(i, gens)) type = 10;
       el_type->push_back(type);
     }
-  }
+    }*/
 
   int NEl  = electronPreColl.size();
   int NMu  = muonPreColl.size();
@@ -179,10 +180,11 @@ void SkimTree_SSHN::executeEvent(){
   //=============================
 
   newtree->Fill();
-  if(!IsData){
+
+  /*  if(!IsData){
     mu_type->clear();
     el_type->clear();
-  }
+    }*/
 }
 
 void SkimTree_SSHN::executeEventFromParameter(AnalyzerParameter param){

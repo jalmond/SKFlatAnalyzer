@@ -103,9 +103,9 @@ public:
   bool Pass_POGTightWithTightIso() const;
   bool Pass_POGHighPtWithLooseTrkIso() const;
   bool Pass_POGHighPtTight() const;
-  bool Pass_POGHighPtTightMixed() const;
+  bool Pass_POGHighPtTightOR() const;
   bool Pass_POGHighPtLoose() const;
-  bool Pass_POGHighPtLooseMixed() const;
+  bool Pass_POGHighPtLooseOR() const;
   bool Pass_TESTID() const;
 
   void SetValidMuonHits(int n);
@@ -125,8 +125,8 @@ public:
   bool Pass_HNLoose2016(double relisoCut, double dxyCut, double dzCut, double sipCut) const;
   bool Pass_HNTight2016() const;
 
-  bool Pass_HNLoose(double relisoCut, double dxyCut, double dzCut) const;
-  bool Pass_HNTight(double relisoCut, double dxyCut, double dzCut) const;
+  bool Pass_HNLoose(double relisoCut, double dxyCut, double dzCut,double sipCut) const;
+  bool Pass_HNTight(double relisoCut, double dxyCut, double dzCut,double sipCut) const;
 
   bool Pass_ISRLoose(double relisoCut) const;
   bool Pass_ISRTight() const;
@@ -137,11 +137,11 @@ public:
   bool Pass_POGTightRelIso15() const;
   bool Pass_POGTightRelIso10() const;
 
-  bool Pass_POGTightPFIsoLoose() const;
-  bool Pass_POGTightPFIsoMedium() const;
-  bool Pass_POGTightPFIsoTight() const;
-  bool Pass_POGTightPFIsoVeryTight() const;
-  bool Pass_POGTightPFIsoVeryVeryTight() const;
+  bool Pass_POGTightPFIsoLoose(bool applyIP) const;
+  bool Pass_POGTightPFIsoMedium(bool applyIP) const;
+  bool Pass_POGTightPFIsoTight(bool applyIP) const;
+  bool Pass_POGTightPFIsoVeryTight(bool applyIP) const;
+  bool Pass_POGTightPFIsoVeryVeryTight(bool applyIP) const;
 
   bool Pass_POGTightCutsWithTightIso() const;
 

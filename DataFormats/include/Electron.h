@@ -36,6 +36,7 @@ public:
   inline double UncorrE() const { return j_EnergyUnCorr; }
   inline double UncorrPt() const { return Pt() * j_EnergyUnCorr/E(); }
 
+  bool PassHNID()const ;
   void SetPassConversionVeto(bool b);
   inline int PassConversionVeto() const { return j_passConversionVeto; }
   void SetNMissingHits(int n);
@@ -119,6 +120,8 @@ public:
   inline bool passMVAID_Iso_WP90() const {return PassSelector(POG_MVA_ISO_WP90); }
   inline bool passMVAID_noiso_WPLoose() const {return PassSelector(POG_MVA_NOISO_WPLOOSE); }
   inline bool passHEEPID() const {return PassSelector(POG_HEEP); }
+  
+  bool passLooseHEEPID() const;
 
   bool passHEEP2018Prompt() const; // HEEP
 
@@ -147,17 +150,20 @@ public:
 
   //==== HN ID
   bool Pass_TriggerEmulation() const;
+  bool Pass_TriggerEmulationLoose() const;
 
   bool Pass_HNVeto2016() const;
   bool Pass_HNLoose2016(double relisoCut, double dxyCut, double dzCut, double sipCut) const;
+
   bool Pass_HNLoose2016MVAISO( double dxyCut, double dzCut, double sipCut) const;
+  bool Pass_HNLoose2016MVANonIso( double relisoCut,double dxyCut, double dzCut, double sipCut) const;
   bool Pass_HNTight2016() const;
 
   bool Pass_HNVeto(double relisoCut) const;
   bool Pass_HNLoose(double relisoCut, double dxyCut, double dzCut) const;
-  bool Pass_HNLooseID(double relisoCut, double dxyCut, double dzCut) const;
+  bool Pass_HNLooseID(double relisoCut, double dxyCut, double dzCut, double sipCut) const;
   bool Pass_HNLoosest() const;
-  bool Pass_HNTight(double relisoCut, double dxyCut, double dzCut) const;
+  bool Pass_HNTight(double relisoCut, double dxyCut, double dzCut, double sipCut) const;
   bool Pass_HNMedium(double relisoCut, double dxyCut, double dzCut) const;
 
   bool Pass_ISRLoose(double relisoCut) const;

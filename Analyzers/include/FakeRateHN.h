@@ -31,6 +31,10 @@ class FakeRateHN : public AnalyzerCore {
   TRandom3* rand_;
 
 
+  void FillRegionPlots( TString label_1, TString label_2,  std::vector<Jet> jets, std::vector<FatJet> fatjets,  std::vector<Electron> els, std::vector<Muon> mus, Particle  met,  double w);
+				    
+				    
+
   void GetFakeRates(std::vector<Electron> loose_el, std::vector<Electron> tight_el,TString tightlabel,  std::vector<Jet> jets,std::vector<Jet> alljets, TString tag, float isocut,double w);
   void GetFakeRates(std::vector<Muon> loose_el, std::vector<Muon> tight_el,TString tightlabel,  std::vector<Jet> jets,std::vector<Jet> alljets, TString tag, double w, float isocut);
   

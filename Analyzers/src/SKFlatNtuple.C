@@ -449,8 +449,8 @@ void SKFlatNtuple::Init()
    fChain->SetBranchAddress("HLT_TriggerName", &HLT_TriggerName, &b_HLT_TriggerName);
    // JA
    //   static TString invalidBranch("this is not in the chain");
-   if(fChain->GetListOfBranches()->FindObject("mu_type"))   fChain->SetBranchAddress("mu_type", &mu_type, &b_mu_type);
-   if(fChain->GetListOfBranches()->FindObject("el_type"))fChain->SetBranchAddress("el_type", &el_type, &b_el_type);
+   //if(fChain->GetListOfBranches()->FindObject("mu_type"))   fChain->SetBranchAddress("mu_type", &mu_type, &b_mu_type);
+   //if(fChain->GetListOfBranches()->FindObject("el_type"))fChain->SetBranchAddress("el_type", &el_type, &b_el_type);
 
    fChain->SetBranchAddress("jet_pt", &jet_pt, &b_jet_pt);
    fChain->SetBranchAddress("jet_eta", &jet_eta, &b_jet_eta);

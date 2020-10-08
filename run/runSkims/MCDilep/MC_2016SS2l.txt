@@ -1,4 +1,4 @@
-1;95;0cDYJets
+DYJets
 TTLL_powheg
 WJets_MG
 ZGTo2LG
@@ -33,3 +33,6 @@ ggZZTo2e2mu
 ggZZTo2mu2tau
 WWTo2L2Nu_powheg
 WWToLNuQQ_powheg
+WZ_pythia
+ZZ_pythia
+WW_pythia

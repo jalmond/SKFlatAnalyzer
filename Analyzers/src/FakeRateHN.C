@@ -103,39 +103,45 @@ void FakeRateHN::executeEvent(){
     el_loose_id.push_back("HNLoose");
 
 
-    ELIDs.push_back(make_pair("HNTightV1", "HNVeto2016"));
+    ELIDs.push_back(make_pair("HNTightV1", "HNVeto"));
+    el_loose_id.push_back("HNLoose");
+
+    ELIDs.push_back(make_pair("HEEPv7", "HNVeto"));
+    el_loose_id.push_back("HEEPLoose");
+    ELIDs.push_back(make_pair("HEEP2018", "HNVeto"));
+    el_loose_id.push_back("HEEPLoose");
+
+    ELIDs.push_back(make_pair("HNTightV2", "HNVeto"));
     el_loose_id.push_back("HNLoose");
 
 
-    ELIDs.push_back(make_pair("HNTightV2", "HNVeto2016"));
+    ELIDs.push_back(make_pair("HNTightV3", "HNVeto"));
+    el_loose_id.push_back("HNLoose");
+
+    ELIDs.push_back(make_pair("HNTightV4", "HNVeto"));
+    el_loose_id.push_back("HNLooseV2");
+
+    ELIDs.push_back(make_pair("HNMediumV1", "HNVeto"));
     el_loose_id.push_back("HNLoose");
 
 
-    ELIDs.push_back(make_pair("HNTightV3", "HNVeto2016"));
+    ELIDs.push_back(make_pair("HNMediumV2", "HNVeto"));
     el_loose_id.push_back("HNLoose");
 
 
-    ELIDs.push_back(make_pair("HNMediumV1", "HNVeto2016"));
-    el_loose_id.push_back("HNLoose");
-
-
-    ELIDs.push_back(make_pair("HNMediumV2", "HNVeto2016"));
-    el_loose_id.push_back("HNLoose");
-
-
-    ELIDs.push_back(make_pair("HNMediumV3", "HNVeto2016"));
+    ELIDs.push_back(make_pair("HNMediumV3", "HNVeto"));
     el_loose_id.push_back("HNLoose");
 
 
     // TIGHT POG + no CC in low pt                                                       
-    ELIDs.push_back(make_pair("passTightID_nocc", "HNVeto2016"));
+    ELIDs.push_back(make_pair("passTightID_nocc", "HNVeto"));
     el_loose_id.push_back("passLooseID_nocc");
 
     // POG + IP + CC                                                                     
-    ELIDs.push_back(make_pair("passTightID", "HNVeto2016"));
+    ELIDs.push_back(make_pair("passTightID", "HNVeto"));
     el_loose_id.push_back("passLooseID");
 
-    ELIDs.push_back(make_pair("passMediumID", "HNVeto2016"));
+    ELIDs.push_back(make_pair("passMediumID", "HNVeto"));
     el_loose_id.push_back("passLooseID");
 
 
@@ -160,28 +166,33 @@ void FakeRateHN::executeEvent(){
   }
   if(isSingleMu || isMM||!IsDATA){
     MuIDs.push_back(make_pair("POGTightPFIsoVeryTight","HNVeto2016"));
-    mu_loose_id.push_back("HNLoose2016");
+    mu_loose_id.push_back("HNLooseV1");
 
     MuIDs.push_back(make_pair("POGHighPtMixTight", "HNVeto2016"));
     mu_loose_id.push_back("POGHighPtMixLoose"); // ---> FIX FR PT BIN                    
 
     MuIDs.push_back(make_pair("POGTightPFIsoVeryVeryTight","HNVeto2016"));
-    mu_loose_id.push_back("HNLoose2016");
+    mu_loose_id.push_back("HNLooseV1");
 
     MuIDs.push_back(make_pair("POGTightPFIsoTight","HNVeto2016"));
-    mu_loose_id.push_back("HNLoose2016");
+    mu_loose_id.push_back("HNLooseV1");
+
+
+    MuIDs.push_back(make_pair("POGTightStandardPFIsoTight","HNVeto2016"));
+    mu_loose_id.push_back("HNLooseStandard");                                         \
+
 
     MuIDs.push_back(make_pair("POGTightPFIsoMedium","HNVeto2016"));
-    mu_loose_id.push_back("HNLoose2016");
+    mu_loose_id.push_back("HNLooseV1");
 
     MuIDs.push_back(make_pair("POGTightPFIsoLoose","HNVeto2016"));
-    mu_loose_id.push_back("HNLoose2016");
+    mu_loose_id.push_back("HNLooseV1");
 
     MuIDs.push_back(make_pair("HNTightV1", "HNVeto2016"));
-    mu_loose_id.push_back("HNLoose2016");
+    mu_loose_id.push_back("HNLooseV1");
 
     MuIDs.push_back(make_pair("HNTightV2", "HNVeto2016"));
-    mu_loose_id.push_back("HNLoose2016");
+    mu_loose_id.push_back("HNLooseV1");
 
 
     MuIDs.push_back(make_pair("HNTight2016", "HNVeto2016"));
@@ -468,6 +479,54 @@ void FakeRateHN::RunM(std::vector<Electron> tight_el, std::vector<Electron> loos
   double isocut = GetIsoFromID("MuMu", param.Muon_Tight_ID,loose_mu[0].Eta(), loose_mu[0].Pt());
   GetFakeRateAndPromptRates(loose_mu,label, tight_mu,w,isocut);
 
+  TString triggerslist_3="HLT_Mu3_PFJet40_v";                                                                                                                                  
+  TString triggerslist_8="HLT_Mu8_TrkIsoVVL_v";                                                                                                                                  
+  TString triggerslist_17="HLT_Mu17_TrkIsoVVL_v";        
+  float prescale_trigger = GetPrescale(loose_mu,   ev.PassTrigger(triggerslist_3),ev.PassTrigger(triggerslist_8), ev.PassTrigger(triggerslist_17));                     
+
+  if(prescale_trigger == 0.) return;
+  w*=prescale_trigger;
+
+  bool truth_match= false;
+  if(!IsData) {
+
+    /// ONLY INCLUDE ELECTRONS FROM W/Z                                                                           
+    gens = GetGens();
+    if(GetLeptonType(loose_mu.at(0), gens) > 0 ) truth_match=true;
+
+  }
+  else truth_match=true;
+
+
+
+  if(jets.size() > 0){
+    if(jets.at(0).Pt() > 40.){
+      FillRegionPlots("SingleLooseMuJet_"+param.Muon_Tight_ID , label, jets,  fatjets,  loose_el,loose_mu,  METv, w);
+
+      if(truth_match)       FillRegionPlots("SingleLooseMuJet_matched_"+param.Muon_Tight_ID , label, jets,  fatjets, loose_el,  loose_mu,  METv, w);
+      if(tight_mu.size()==1) {
+        FillRegionPlots("SingleTightMuJet_"+param.Muon_Tight_ID , label, jets,  fatjets,  loose_el,loose_mu,  METv, w);
+        if(truth_match) FillRegionPlots("SingleTightMuJet_matched_"+param.Electron_Tight_ID , label, jets,  fatjets, loose_el, loose_mu,  METv, w);
+      }
+    }
+  }
+
+  Double_t MT=0;
+  Double_t METdphi=0;
+  for(unsigned int imu = 0; imu < tight_mu.size();  imu++){
+    METdphi = TVector2::Phi_mpi_pi((tight_mu.at(imu).Phi()- METv.Phi()));
+    MT = sqrt(2.* tight_mu.at(imu).Et()*METv.Pt() * (1 - cos( METdphi)));
+  }
+  if(METv.Pt()  > 30 && (60. < MT)  &&(MT < 100.) &&truth_match){
+    if(jets.size() > 0 && tight_mu.size()==1){
+      if(jets[0].Pt() > 40){
+        if(truth_match) FillRegionPlots("SingleTightMu_promptCR_"+param.Muon_Tight_ID , label, jets,  fatjets,  loose_el,loose_mu, METv, w);
+
+      }
+    }
+  }
+
+
 
 
   return;
@@ -506,7 +565,22 @@ void FakeRateHN::RunE(std::vector<Electron> tight_el, std::vector<Electron> loos
   Particle METv = ev.GetMETVector();
   
   if(loose_el.size() != 1) return;
-  
+ 
+  FillHist(("Electron" + param.Name + "_EHIso").Data(), loose_el[0].dr03EcalRecHitSumEt()+loose_el[0].dr03HcalDepth1TowerSumEt(),  1., 1200, -2., 10.,"");
+  FillHist(("Electron" + param.Name + "_hovere").Data(), loose_el[0].HoverE(),  1., 2200, -2., 20.,"");
+  FillHist(("Electron" + param.Name + "_trkiso").Data(), loose_el[0].TrkIso(),  1., 200, 0., 100.,"");
+  FillHist(("Electron" + param.Name + "_dxy").Data(), abs(loose_el[0].dXY()),  1., 1000, 0., 1.,"");
+
+  if(tight_el.size()==1){
+    FillHist(("ElectronTight" + param.Name + "_EHIso").Data(), loose_el[0].dr03EcalRecHitSumEt()+loose_el[0].dr03HcalDepth1TowerSumEt(),  1., 1200, -2., 10.,"");
+    FillHist(("ElectronTight" + param.Name + "_hovere").Data(), loose_el[0].HoverE(),  1., 2200, -2., 20.,"");
+    FillHist(("ElectronTight" + param.Name + "_trkiso").Data(), loose_el[0].TrkIso(),  1., 200, 0., 100.,"");
+    FillHist(("ElectronTight" + param.Name + "_dxy").Data(), abs(loose_el[0].dXY()),  1., 1000, 0., 1.,"");
+
+
+  }
+
+
   TString triggerslist_8="HLT_Ele8_CaloIdL_TrackIdL_IsoVL_PFJet30_v";   /// -> tighter cut in lepton ID form tighter trigger emulation cut                                     
   TString triggerslist_12="HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_v";
   TString triggerslist_18="HLT_Ele17_CaloIdM_TrackIdM_PFJet30_v";
@@ -521,6 +595,50 @@ void FakeRateHN::RunE(std::vector<Electron> tight_el, std::vector<Electron> loos
   GetFakeRateAndPromptRates(loose_el,label, tight_el,isocut,w,param.Electron_Tight_ID);
 
 
+  float prescale_trigger =  GetPrescale(loose_el,  ev.PassTrigger(triggerslist_8), ev.PassTrigger(triggerslist_12), ev.PassTrigger(triggerslist_18), ev.PassTrigger(triggerslist_23), ev.PassTrigger(triggerslist_33));                                                                                                                               
+																					       
+  if(prescale_trigger == 0.) return;
+  w*=prescale_trigger;
+  
+  bool truth_match= false;
+  if(!IsData) {
+
+    /// ONLY INCLUDE ELECTRONS FROM W/Z                                                                                                      
+    gens = GetGens();
+    if(GetLeptonType(loose_el.at(0), gens) > 0 ) truth_match=true;
+
+    
+  }
+  else truth_match=true;
+  
+  
+  
+  if(jets.size() > 0){
+    if(jets.at(0).Pt() > 40.){
+      FillRegionPlots("SingleLooseElJet_"+param.Electron_Tight_ID , label, jets,  fatjets,  loose_el, loose_mu,  METv, w);
+     
+      if(truth_match)       FillRegionPlots("SingleLooseElJet_matched_"+param.Electron_Tight_ID , label, jets,  fatjets, loose_el, loose_mu,  METv, w);
+      if(tight_el.size()==1) {
+	FillRegionPlots("SingleTightElJet_"+param.Electron_Tight_ID , label, jets,  fatjets,  loose_el, loose_mu,  METv, w);
+	if(truth_match) FillRegionPlots("SingleTightElJet_matched_"+param.Electron_Tight_ID , label, jets,  fatjets,  loose_el, loose_mu , METv, w);
+      }
+    }
+  }
+  
+  Double_t MT=0;
+  Double_t METdphi=0;
+  for(unsigned int iel = 0; iel < tight_el.size();  iel++){
+    METdphi = TVector2::Phi_mpi_pi((tight_el.at(iel).Phi()- METv.Phi()));
+    MT = sqrt(2.* tight_el.at(iel).Et()*METv.Pt() * (1 - cos( METdphi)));
+  }
+  if(METv.Pt()  > 30 && (60. < MT)  &&(MT < 100.) &&truth_match){
+    if(jets.size() > 0 && tight_el.size()==1){
+      if(jets[0].Pt() > 40){
+	if(truth_match) FillRegionPlots("SingleTightEl_promptCR_"+param.Electron_Tight_ID , label, jets,  fatjets,  loose_el, loose_mu, METv, w);
+	
+      }
+    }
+  }
 
 } /// end function RunE
 
@@ -619,7 +737,7 @@ float FakeRateHN::GetPrescale( std::vector<Muon> muons,bool pass3, bool pass2, b
     if(muons.at(0).Pt() >= 20.){
       if(pass1){
 	if(IsData) return 1.;
-	prescale_trigger = ev.PassTrigger("HLT_Mu17_TrkIsoVVL_v"); //// 20 + GeV bins
+	prescale_trigger = ev.GetTriggerLumi("HLT_Mu17_TrkIsoVVL_v");
       }
       else {
 	if(IsData) return 0;
@@ -630,7 +748,7 @@ float FakeRateHN::GetPrescale( std::vector<Muon> muons,bool pass3, bool pass2, b
 
       if(pass2){
 	if(IsData) return 1.;
-        prescale_trigger = ev.PassTrigger("HLT_Mu8_TrkIsoVVL_v") ; //// 20 + GeV bins
+        prescale_trigger = ev.GetTriggerLumi("HLT_Mu8_TrkIsoVVL_v") ; //// 20 + GeV bins
       }
       else {
 	if(IsData) return 0;
@@ -640,7 +758,7 @@ float FakeRateHN::GetPrescale( std::vector<Muon> muons,bool pass3, bool pass2, b
     else  if(muons.at(0).Pt() >= 5.){
       if(pass3){
         if(IsData) return 1.;
-        prescale_trigger =  ev.PassTrigger("HLT_Mu3_PFJet40_v") ; //// 20 + GeV bins                                                                         
+        prescale_trigger =  ev.GetTriggerLumi("HLT_Mu3_PFJet40_v") ; //// 20 + GeV bins                                                                         
       }
       else {
         if(IsData) return 0;
@@ -872,20 +990,22 @@ bool FakeRateHN::UseEvent(std::vector<Electron> electrons,  std::vector< Jet> je
 
 void FakeRateHN::GetFakeRates(std::vector<Muon> loose_mu, std::vector<Muon> tight_mu, TString tightlabel,  std::vector<Jet> jets,  std::vector<Jet> lljets, TString tag,double w, float isocut){
 
-  double ptbinscone[8] = { 10., 15.,20.,30.,40.,50.,  60., 200.};
+  double ptbinscone[9] = { 6., 10., 15.,20.,30.,40.,50.,  60., 200.};
+  double ptbinsconev2[10] = { 6.,10., 15.,20.,30.,40.,50.,  60., 100.,200.};
   double ptbins[9] = { 5., 10., 15.,20.,30.,45.,60.,100., 200.};
   double etabins2[5] = { 0.,0.8,  1.479, 2.,  2.5};
 
   if(tag.Contains("HighPt")){
     if(loose_mu.size() == 1){
-      if(loose_mu.at(0).Pt() < 50.) return;
-      if(loose_mu[0].CalcPtCone(loose_mu[0].RelIso(), isocut) < 60.) return;
+      if(loose_mu.at(0).Pt() < 60.) return;
+      //if(loose_mu[0].CalcPtCone(loose_mu[0].TrkIso()/loose_mu[0].TuneP4().Pt(), isocut) < 60.) return;
     }
   }
   Event ev = GetEvent();
   if(loose_mu.size() == 1 && jets.size() >= 1){
     float mu_pt = loose_mu.at(0).Pt();
     float mu_pt_corr =  loose_mu[0].CalcPtCone(loose_mu[0].RelIso(), isocut);
+    if(tag.Contains("HighPt")) mu_pt_corr=mu_pt;
     if(mu_pt_corr > 200.) mu_pt_corr = 200.;
 
     TString triggerslist_3="HLT_Mu3_PFJet40_v";
@@ -896,9 +1016,10 @@ void FakeRateHN::GetFakeRates(std::vector<Muon> loose_mu, std::vector<Muon> tigh
     float weight_ptcorr=w;
 
     bool fill_plot=false;
-    if (mu_pt_corr > 5  && mu_pt_corr < 15){
+    if(mu_pt_corr< 5) {}
+    else if (mu_pt_corr > 5  && mu_pt_corr < 15){
       if(mu_pt > 5.) {
-
+	
 	if(ev.PassTrigger(triggerslist_3)) {
 	  fill_plot=true;
 	  if(!IsData)weight_ptcorr = w * ev.GetTriggerLumi(triggerslist_3);
@@ -971,10 +1092,19 @@ void FakeRateHN::GetFakeRates(std::vector<Muon> loose_mu, std::vector<Muon> tigh
       
     FillHist(("LooseMu" + tag + "_pt_eta").Data(), mu_pt, fabs(loose_mu.at(0).Eta()),  prescale_mu*w, 8, ptbins, 4 , etabins2);
     FillHist(("LooseMu" + tag + "_pt").Data(), mu_pt,   prescale_mu*w, 8, ptbins, "p_{T} (GeV)");
-    FillHist(("LooseMu" + tag + "_pt").Data(), mu_pt,   prescale_mu*w, 4, etabins2,"#eta");
+    FillHist(("LooseMu" + tag + "_eta").Data(), mu_pt,   prescale_mu*w, 4, etabins2,"#eta");
     if(fill_plot){
-      FillHist(("LooseMu" + tag + "_ptcorr_eta").Data(), mu_pt_corr, fabs(loose_mu.at(0).Eta()),  weight_ptcorr, 7, ptbinscone, 4 , etabins2);
-      FillHist(("LooseMu" + tag + "_ptcorr").Data(), mu_pt_corr,  weight_ptcorr, 7,ptbinscone,"p_{T} cone (GeV)");
+      FillHist(("LooseMu" + tag + "_ptcorr1_eta").Data(), mu_pt_corr, fabs(loose_mu.at(0).Eta()),  weight_ptcorr, 8, ptbinscone, 4 , etabins2);
+      FillHist(("LooseMu" + tag + "_ptcorr_eta").Data(), mu_pt_corr, fabs(loose_mu.at(0).Eta()),  weight_ptcorr, 9, ptbinsconev2, 4 , etabins2);
+      if(fabs(loose_mu.at(0).Eta()) < 1.5){
+	FillHist(("LooseMu" + tag + "_barrel_ptcorr1").Data(), mu_pt_corr,  weight_ptcorr, 8,ptbinscone,"p_{T} cone (GeV)");
+	FillHist(("LooseMu" + tag + "_barrel_ptcorr").Data(), mu_pt_corr,  weight_ptcorr, 9,ptbinsconev2,"p_{T} cone (GeV)");
+      }
+      else{
+	FillHist(("LooseMu" + tag + "_endcap_ptcorr1").Data(), mu_pt_corr,  weight_ptcorr, 8,ptbinscone,"p_{T} cone (GeV)");
+        FillHist(("LooseMu" + tag + "_endcap_ptcorr").Data(), mu_pt_corr,  weight_ptcorr, 9,ptbinsconev2,"p_{T} cone (GeV)");
+
+      }
     }
     
     if( tight_mu.size() == 1){
@@ -982,8 +1112,20 @@ void FakeRateHN::GetFakeRates(std::vector<Muon> loose_mu, std::vector<Muon> tigh
       FillHist(("TightMu" + tag + "_pt").Data(), mu_pt,  w*prescale_mu, 8, ptbins, "p_{T} (GeV)");
       FillHist(("TightMu" + tag + "_eta").Data(),fabs(tight_mu.at(0).Eta()),  w*prescale_mu, 4, etabins2,"#eta");
       if(fill_plot){
-	FillHist(("TightMu" + tag + "_ptcorr_eta").Data(), mu_pt_corr, fabs(tight_mu.at(0).Eta()), weight_ptcorr, 7, ptbinscone, 4 , etabins2);
-	FillHist(("TightMu" + tag + "_ptcorr").Data(), mu_pt_corr,  weight_ptcorr, 7, ptbinscone,"p_{T} cone (GeV)");
+	FillHist(("TightMu" + tag + "_ptcorr1_eta").Data(), mu_pt_corr, fabs(tight_mu.at(0).Eta()), weight_ptcorr, 8, ptbinscone, 4 , etabins2);
+	FillHist(("TightMu" + tag + "_ptcorr_eta").Data(), mu_pt_corr, fabs(tight_mu.at(0).Eta()), weight_ptcorr, 9, ptbinsconev2, 4 , etabins2);
+	if(fabs(loose_mu.at(0).Eta()) < 1.5){
+	  
+	  FillHist(("TightMu" + tag + "_barrel_ptcorr1").Data(), mu_pt_corr,  weight_ptcorr, 8, ptbinscone,"p_{T} cone (GeV)");
+	  FillHist(("TightMu" + tag + "_barrel_ptcorr").Data(), mu_pt_corr,  weight_ptcorr, 9, ptbinsconev2,"p_{T} cone (GeV)");
+	  
+	}
+	else{
+	  
+          FillHist(("TightMu" + tag + "_endcap_ptcorr1").Data(), mu_pt_corr,  weight_ptcorr, 8, ptbinscone,"p_{T} cone (GeV)");
+          FillHist(("TightMu" + tag + "_endcap_ptcorr").Data(), mu_pt_corr,  weight_ptcorr, 9, ptbinsconev2,"p_{T} cone (GeV)");
+
+	}
       }
     }
   }
@@ -992,7 +1134,9 @@ void FakeRateHN::GetFakeRates(std::vector<Muon> loose_mu, std::vector<Muon> tigh
 
 void FakeRateHN::GetFakeRates(std::vector<Electron> loose_el, std::vector<Electron> tight_el, TString tightlabel,  std::vector<Jet> jets,  std::vector<Jet> alljets, TString tag,float isocut, double w){
   
+
   double ptbins[8] = { 10., 15.,23.,30.,35., 40.,60.,200.};
+  double ptbinsv2[9] = { 10., 15.,23.,30.,35., 40.,60.,100.,200.};
   double ptbinsb[8] = { 10., 15.,20.,30.,45.,60.,100., 200.};
   double etabins2[5] = { 0.,0.8,  1.479, 2.,  2.5};
 
@@ -1008,7 +1152,12 @@ void FakeRateHN::GetFakeRates(std::vector<Electron> loose_el, std::vector<Electr
 
   if(loose_el.size() != 1) return;
   
-  
+  if(tag.Contains("HEEP")){
+    if(loose_el.size() == 1){
+      if(loose_el.at(0).Pt() < 35.) return;
+    }    
+  }  
+
   float el_pt = loose_el.at(0).Pt();
   float el_pt_corr =  loose_el[0].CalcPtCone(loose_el[0].RelIso(), isocut);
   if(el_pt_corr > 200.) el_pt_corr = 200.;
@@ -1071,7 +1220,6 @@ void FakeRateHN::GetFakeRates(std::vector<Electron> loose_el, std::vector<Electr
     }// pt 
   }// end ptbin check
 
-
   
   if(loose_el.size() == 1 && jets.size() >= 1){
     
@@ -1080,13 +1228,30 @@ void FakeRateHN::GetFakeRates(std::vector<Electron> loose_el, std::vector<Electr
     if(el_pt > 10.)FillHist(("LooseEl" + tag + "_pt_eta").Data(), el_pt, fabs(loose_el.at(0).Eta()),  w*(prescale), 7, ptbinsb, 4 , etabins2);
     if(el_pt > 10.)FillHist(("LooseEl" + tag + "_pt").Data(), el_pt, w*(prescale), 7, ptbinsb,"p_{T}  (GeV)");
     if(el_pt > 10.)FillHist(("LooseEl" + tag + "_eta").Data(), fabs(loose_el.at(0).Eta()), w*(prescale), 4 , etabins2,"#eta");
-    if(fill_plot)FillHist(("LooseEl" + tag + "_ptcorr_eta").Data(), el_pt_corr, fabs(loose_el.at(0).Eta()),  weight_ptcorr, 7, ptbins, 4 , etabins2);
-    if(fill_plot)FillHist(("LooseEl" + tag + "_ptcorr").Data(), el_pt_corr, weight_ptcorr,7, ptbins,"p_{T} cone (GeV)");
-    
+    if(fill_plot)FillHist(("LooseEl" + tag + "_ptcorr1_eta").Data(), el_pt_corr, fabs(loose_el.at(0).Eta()),  weight_ptcorr, 7, ptbins, 4 , etabins2);
+    if(fill_plot)FillHist(("LooseEl" + tag + "_ptcorr_eta").Data(), el_pt_corr, fabs(loose_el.at(0).Eta()),  weight_ptcorr, 8, ptbinsv2, 4 , etabins2);
+    if(fabs(loose_el.at(0).Eta()) <1.5){
+      if(fill_plot)FillHist(("LooseEl" + tag + "_barrel_ptcorr1").Data(), el_pt_corr, weight_ptcorr,7, ptbins,"p_{T} cone (GeV)");
+      if(fill_plot)FillHist(("LooseEl" + tag + "_barrel_ptcorr").Data(), el_pt_corr, weight_ptcorr,8, ptbinsv2,"p_{T} cone (GeV)");
+    }
+    else{
+      if(fill_plot)FillHist(("LooseEl" + tag + "_endcap_ptcorr1").Data(), el_pt_corr, weight_ptcorr,7, ptbins,"p_{T} cone (GeV)");
+      if(fill_plot)FillHist(("LooseEl" + tag + "_endcap_ptcorr").Data(), el_pt_corr, weight_ptcorr,8, ptbinsv2,"p_{T} cone (GeV)");
+
+    }
     
     if( tight_el.size() == 1){
-      if(fill_plot)FillHist(("TightEl" + tag + "_ptcorr_eta").Data(), el_pt_corr, fabs(tight_el.at(0).Eta()),  weight_ptcorr, 7, ptbins, 4 , etabins2);
-      if(fill_plot)FillHist(("TightEl" + tag + "_ptcorr").Data(), el_pt_corr,  weight_ptcorr, 7, ptbins, "p_{T} cone (GeV)");
+      if(fill_plot)FillHist(("TightEl" + tag + "_ptcorr1_eta").Data(), el_pt_corr, fabs(tight_el.at(0).Eta()),  weight_ptcorr, 7, ptbins, 4 , etabins2);
+      if(fill_plot)FillHist(("TightEl" + tag + "_ptcorr_eta").Data(), el_pt_corr, fabs(tight_el.at(0).Eta()),  weight_ptcorr, 8, ptbinsv2, 4 , etabins2);
+      if(fabs(loose_el.at(0).Eta()) <1.5){
+	if(fill_plot)FillHist(("TightEl" + tag + "_barrel_ptcorr1").Data(), el_pt_corr,  weight_ptcorr, 7, ptbins, "p_{T} cone (GeV)");
+	if(fill_plot)FillHist(("TightEl" + tag + "_barrel_ptcorr").Data(), el_pt_corr,  weight_ptcorr, 8, ptbinsv2, "p_{T} cone (GeV)");
+      }
+      else{
+	if(fill_plot)FillHist(("TightEl" + tag + "_endcap_ptcorr1").Data(), el_pt_corr,  weight_ptcorr, 7, ptbins, "p_{T} cone (GeV)");
+        if(fill_plot)FillHist(("TightEl" + tag + "_endcap_ptcorr").Data(), el_pt_corr,  weight_ptcorr, 8, ptbinsv2, "p_{T} cone (GeV)");
+
+      }
       if(el_pt > 10.)FillHist(("TightEl" + tag + "_pt_eta").Data(), el_pt, fabs(tight_el.at(0).Eta()),  w*prescale, 7, ptbinsb, 4 , etabins2);
       if(el_pt > 10.)     FillHist(("TightEl" + tag + "_pt").Data(), el_pt, w*(prescale), 7, ptbinsb,"p_{T}  (GeV)");
       if(el_pt > 10.)FillHist(("TightEl" + tag + "_eta").Data(), fabs(tight_el.at(0).Eta()), w*(prescale), 4 , etabins2,"#eta");
@@ -1110,6 +1275,22 @@ FakeRateHN::FakeRateHN(){
 
 }
 
+void FakeRateHN::FillRegionPlots( TString label_1, TString label_2,  std::vector<Jet> jets, std::vector<FatJet> fatjets,  std::vector<Electron> els, std::vector<Muon> mus, Particle  met,  double w){
+  
+  if((els.size()+ mus.size()) != 1) return;
+  Particle lep1;
+  if(els.size()==1) lep1=els[0];
+  else lep1 = mus[0];
+
+  FillHist( label_1+ "/"+ label_1 +  "_lep1_pt_" + label_2, lep1.Pt()  , w, 400, 0., 2000.,"p_{T} GeV");
+
+  FillHist( label_1+ "/"+ label_1 +  "_lep1_eta_" + label_2, lep1.Eta()  , w, 30, -3., 3,"#eta");
+  
+  FillHist( label_1+ "/"+ label_1 +  "_met_" + label_2, met.Pt()  , w, 200, 0., 400.,"MET GeV");
+
+  FillHist( label_1+ "/"+ label_1 +  "_njets_" + label_2, jets.size() , w, 10, 0., 10., "N_{jets}");
+
+}
 
 
 

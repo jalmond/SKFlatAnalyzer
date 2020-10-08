@@ -85,6 +85,7 @@ double AnalyzerCore::GetIsoFromID(TString channel, TString id, double eta, doubl
     if (id == "POGTightPFIsoVeryVeryTight") return 0.05;
     if (id == "POGTightPFIsoVeryTight") return 0.1;
     if (id == "POGTightPFIsoTight") return 0.15;
+    if (id == "POGTightStandardPFIsoTight") return 0.15;
     if (id == "POGTightPFIsoMedium") return 0.2;
     if (id == "POGTightPFIsoLoose") return 0.25;
     if (id == "POGTightPFIsoVeto") return 0.4;
@@ -157,7 +158,7 @@ std::vector<Muon> AnalyzerCore::GetAllMuons(){
     mu.SetMiniAODPt(muon_pt->at(i));
     mu.SetMiniAODTunePPt(muon_TuneP_pt->at(i));
 
-    if(mu_type)mu.SetLeptonType(mu_type->at(i));
+    //if(mu_type)mu.SetLeptonType(mu_type->at(i));
 
     double rc = muon_roch_sf->at(i);
     double rc_err = muon_roch_sf_up->at(i)-rc;
@@ -231,7 +232,7 @@ std::vector<Electron> AnalyzerCore::GetAllElectrons(){
     el.SetEnShift(  electron_Energy_Scale_Up->at(i)/electron_Energy->at(i), electron_Energy_Scale_Down->at(i)/electron_Energy->at(i) );
     el.SetResShift( electron_Energy_Smear_Up->at(i)/electron_Energy->at(i), electron_Energy_Smear_Down->at(i)/electron_Energy->at(i) );
 
-    if(el_type)el.SetLeptonType(el_type->at(i));
+    //if(el_type)el.SetLeptonType(el_type->at(i));
     el.SetPtEtaPhiE(1., electron_eta->at(i), electron_phi->at(i), electron_Energy->at(i));
     double el_theta = el.Theta();
     double el_pt = electron_Energy->at(i) * TMath::Sin( el_theta );
@@ -1626,7 +1627,7 @@ bool AnalyzerCore::IsFromHadron(const Gen& me, const std::vector<Gen>& gens){
 
 int AnalyzerCore::GetLeptonType(const Lepton& lep, const std::vector<Gen>& gens){
 
-  if(lep.LeptonType() != -999) return lep.LeptonType();
+  //if(lep.LeptonType() != -999) return lep.LeptonType();
   //==== [Type]
   //====  1 : EWPrompt
   //====  2 : Signal Daughter

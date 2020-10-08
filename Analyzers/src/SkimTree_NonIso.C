@@ -11,11 +11,6 @@ void SkimTree_NonIso::initializeAnalyzer(){
   }
   else{
     cout << "[SkimTree_NonIso::initializeAnalyzer()] Throwing away gen_* and LHE_*" << endl;
-    if(!IsDATA){
-      newtree->SetBranchStatus("gen_*",0);
-      newtree->SetBranchStatus("LHE_*",0);
-      newtree->SetBranchStatus("gen_weight",1); // for MCweight()
-    }
   }
 
   isSingleMu = HasFlag("isSingleMu");
