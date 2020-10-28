@@ -128,17 +128,88 @@ bool Muon::PassID(TString ID) const {
   /// looser IP
   if(ID=="HNLooseV1") return Pass_HNLoose(0.4,  0.2, 0.5,10.);
   if(ID=="HNLooseStandard") return Pass_HNLoose(0.4,  0.2, 0.5,99999.);
-  if(ID=="HNTightV1") return Pass_HNTight(0.07, 0.01, 0.1,3.);
-  if(ID=="HNTightV2") return Pass_HNTight(0.07, 0.05, 0.2,3.);
-  if(ID=="HNTightV3") return Pass_HNTight(0.07, 0.05, 0.2,4.);
 
-  if(ID=="POGTightStandardPFIsoTight") return Pass_POGTightPFIsoTight(false);
 
-  if(ID=="POGTightPFIsoLoose") return Pass_POGTightPFIsoLoose(true);
-  if(ID=="POGTightPFIsoMedium") return Pass_POGTightPFIsoMedium(true);
-  if(ID=="POGTightPFIsoTight") return Pass_POGTightPFIsoTight(true);
-  if(ID=="POGTightPFIsoVeryTight") return Pass_POGTightPFIsoVeryTight(true);
-  if(ID=="POGTightPFIsoVeryVeryTight") return Pass_POGTightPFIsoVeryVeryTight(true);
+  if(ID=="HNTight_Iso05_dxy_02_ip_3") return Pass_HNTight(0.05,0.02,0.05,3.);
+  if(ID=="HNTight_Iso05_dxy_02_ip_4") return Pass_HNTight(0.05,0.02,0.05,4.);
+  if(ID=="HNTight_Iso05_dxy_02_ip_999") return Pass_HNTight(0.05,0.02,0.05,999.);
+  if(ID=="HNTight_Iso05_dxy_05_ip_3") return Pass_HNTight(0.05,0.05,0.05,3.);
+  if(ID=="HNTight_Iso05_dxy_05_dz_01_ip_3") return Pass_HNTight(0.05,0.05,0.1,3.);
+  if(ID=="HNTight_Iso05_dxy_05_ip_4") return Pass_HNTight(0.05,0.05,0.05,4.);
+  if(ID=="HNTight_Iso05_dxy_05_ip_999") return Pass_HNTight(0.05,0.05,0.05,999.);
+  if(ID=="HNTight_Iso05_dxy_20_ip_3") return Pass_HNTight(0.05,0.2, 0.5,3.);
+  if(ID=="HNTight_Iso05_dxy_20_ip_4") return Pass_HNTight(0.05,0.2, 0.5,4.);
+  if(ID=="HNTight_Iso05_dxy_20_ip_999") return Pass_HNTight(0.05,0.2, 0.5,999.);
+
+
+  if(ID=="HNTight_Iso06_dxy_02_ip_3") return Pass_HNTight(0.06,0.02,0.05,3.);
+  if(ID=="HNTight_Iso06_dxy_02_ip_4") return Pass_HNTight(0.06,0.02,0.05,4.);
+  if(ID=="HNTight_Iso06_dxy_02_ip_999") return Pass_HNTight(0.06,0.02,0.05,999.);
+  if(ID=="HNTight_Iso06_dxy_05_ip_3") return Pass_HNTight(0.06,0.05,0.05,3.);
+  if(ID=="HNTight_Iso06_dxy_05_ip_4") return Pass_HNTight(0.06,0.05,0.05,4.);
+  if(ID=="HNTight_Iso06_dxy_05_ip_999") return Pass_HNTight(0.06,0.05,0.05,999.);
+  if(ID=="HNTight_Iso06_dxy_20_ip_3") return Pass_HNTight(0.05,0.2, 0.5,3.);
+  if(ID=="HNTight_Iso06_dxy_20_ip_4") return Pass_HNTight(0.05,0.2, 0.5,4.);
+  if(ID=="HNTight_Iso06_dxy_20_ip_999") return Pass_HNTight(0.05,0.2, 0.5,999.);
+
+  if(ID=="HNTight_Iso07_dxy_02_ip_3") return Pass_HNTight(0.07,0.02,0.05,3.);
+  if(ID=="HNTight_Iso07_dxy_02_ip_4") return Pass_HNTight(0.07,0.02,0.05,4.);
+  if(ID=="HNTight_Iso07_dxy_02_ip_999") return Pass_HNTight(0.07,0.02,0.05,999.);
+  if(ID=="HNTight_Iso07_dxy_05_ip_3") return Pass_HNTight(0.07,0.05,0.05,3.);
+  if(ID=="HNTight_Iso07_dxy_05_ip_4") return Pass_HNTight(0.07,0.05,0.05,4.);
+  if(ID=="HNTight_Iso07_dxy_05_ip_999") return Pass_HNTight(0.07,0.05,0.05,999.);
+  if(ID=="HNTight_Iso07_dxy_20_ip_3") return Pass_HNTight(0.07,0.2, 0.5,3.);
+  if(ID=="HNTight_Iso07_dxy_20_ip_4") return Pass_HNTight(0.07,0.2, 0.5,4.);
+  if(ID=="HNTight_Iso07_dxy_20_ip_999") return Pass_HNTight(0.07,0.2, 0.5,999.);
+
+
+  if(ID=="HNTight_Iso08_dxy_02_ip_3") return Pass_HNTight(0.08,0.02,0.05,3.);
+  if(ID=="HNTight_Iso08_dxy_02_ip_4") return Pass_HNTight(0.08,0.02,0.05,4.);
+  if(ID=="HNTight_Iso08_dxy_02_ip_999") return Pass_HNTight(0.08,0.02,0.05,999.);
+  if(ID=="HNTight_Iso08_dxy_05_ip_3") return Pass_HNTight(0.08,0.05,0.05,3.);
+  if(ID=="HNTight_Iso08_dxy_05_ip_4") return Pass_HNTight(0.08,0.05,0.05,4.);
+  if(ID=="HNTight_Iso08_dxy_05_ip_999") return Pass_HNTight(0.08,0.05,0.05,999.);
+  if(ID=="HNTight_Iso08_dxy_20_ip_3") return Pass_HNTight(0.08,0.2, 0.5,3.);
+  if(ID=="HNTight_Iso08_dxy_20_ip_4") return Pass_HNTight(0.08,0.2, 0.5,4.);
+  if(ID=="HNTight_Iso08_dxy_20_ip_999") return Pass_HNTight(0.08,0.2, 0.5,999.);
+
+
+  if(ID=="HNTight_Iso09_dxy_02_ip_3") return Pass_HNTight(0.09,0.02,0.05,3.);
+  if(ID=="HNTight_Iso09_dxy_02_ip_4") return Pass_HNTight(0.09,0.02,0.05,4.);
+  if(ID=="HNTight_Iso09_dxy_02_ip_999") return Pass_HNTight(0.09,0.02,0.05,999.);
+  if(ID=="HNTight_Iso09_dxy_05_ip_3") return Pass_HNTight(0.09,0.05,0.05,3.);
+  if(ID=="HNTight_Iso09_dxy_05_ip_4") return Pass_HNTight(0.09,0.05,0.05,4.);
+  if(ID=="HNTight_Iso09_dxy_05_ip_999") return Pass_HNTight(0.09,0.05,0.05,999.);
+  if(ID=="HNTight_Iso09_dxy_20_ip_3") return Pass_HNTight(0.09,0.2, 0.5,3.);
+  if(ID=="HNTight_Iso09_dxy_20_ip_4") return Pass_HNTight(0.09,0.2, 0.5,4.);
+  if(ID=="HNTight_Iso09_dxy_20_ip_999") return Pass_HNTight(0.09,0.2, 0.5,999.);
+
+  if(ID=="HNTight_Iso10_dxy_02_ip_3") return Pass_HNTight(0.1,0.02,0.05,3.);
+  if(ID=="HNTight_Iso10_dxy_02_ip_4") return Pass_HNTight(0.1,0.02,0.05,4.);
+  if(ID=="HNTight_Iso10_dxy_02_ip_999") return Pass_HNTight(0.1,0.02,0.05,999.);
+  if(ID=="HNTight_Iso10_dxy_05_ip_3") return Pass_HNTight(0.1,0.05,0.05,3.);
+  if(ID=="HNTight_Iso10_dxy_05_ip_4") return Pass_HNTight(0.1,0.05,0.05,4.);
+  if(ID=="HNTight_Iso10_dxy_05_ip_999") return Pass_HNTight(0.1,0.05,0.05,999.);
+  if(ID=="HNTight_Iso10_dxy_20_ip_3") return Pass_HNTight(0.1,0.2, 0.5,3.);
+  if(ID=="HNTight_Iso10_dxy_20_ip_4") return Pass_HNTight(0.1,0.2, 0.5,4.);
+  if(ID=="HNTight_Iso10_dxy_20_ip_999") return Pass_HNTight(0.1,0.2, 0.5,999.);
+
+
+
+  if(ID=="HNTightPFIsoLoose") return Pass_POGTightPFIsoLoose(true);
+  if(ID=="HNTightPFIsoMedium") return Pass_POGTightPFIsoMedium(true);
+  if(ID=="HNTightPFIsoTight") return Pass_POGTightPFIsoTight(true);
+  if(ID=="HNTightPFIsoVeryTight") return Pass_POGTightPFIsoVeryTight(true);
+  if(ID=="HNTightPFIsoVeryVeryTight") return Pass_POGTightPFIsoVeryVeryTight(true);
+
+  if(ID=="POGTightPFIsoLoose") return Pass_POGTightPFIsoLoose(false);
+  if(ID=="POGTightPFIsoMedium") return Pass_POGTightPFIsoMedium(false);
+  if(ID=="POGTightPFIsoTight") return Pass_POGTightPFIsoTight(false);
+  if(ID=="POGTightPFIsoVeryTight") return Pass_POGTightPFIsoVeryTight(false);
+  if(ID=="POGTightPFIsoVeryVeryTight") return Pass_POGTightPFIsoVeryVeryTight(false);
+  
+  
+
   if(ID=="CutBasedTightNoIP") return Pass_CutBasedTightNoIP();
 
   //==== No cut
@@ -193,6 +264,7 @@ bool Muon::Pass_POGHighPtWithLooseTrkIso() const {
 }
 
 bool Muon::Pass_HNVeto2016() const {
+  //  if(Pass_POGHighPtTight()) return true;
   if(!( isPOGLoose() )) return false;
   if(!( fabs(dXY())<0.2 && fabs(dZ())<0.5) ) return false;
   if(!( RelIso()<0.6 ))  return false;
@@ -221,7 +293,7 @@ bool Muon::Pass_HNLoose(double relisoCut, double dxyCut, double dzCut,double sip
   if(!( isPOGLoose() )) return false;
   //if(!( IsType(GlobalMuon) )) return false;
   if(!( fabs(dXY())<dxyCut && fabs(dZ())<dzCut) ) return false;
-  if(!(fabs(IP3D()/IP3Derr())<10. )) return false;
+  if(!(fabs(IP3D()/IP3Derr())<sipCut )) return false;
   if(!( RelIso()<relisoCut )) return false;
   if(!( Chi2()<50. )) return false;
   
@@ -281,7 +353,8 @@ bool Muon::Pass_POGTightPFIsoLoose(bool applyIP) const {
   if(!( isPOGTight() )) return false;
   if(!( PassSelector(PFIsoLoose) )) return false;
   if(applyIP) {
-    if(!(fabs(IP3D()/IP3Derr())<3. )) return false;
+    if(!( fabs(dXY())< 0.02 && fabs(dZ())<0.05 &&fabs(IP3D()/IP3Derr())<3. )) return false;
+
   }
   return true;
 }
@@ -290,7 +363,8 @@ bool Muon::Pass_POGTightPFIsoMedium(bool applyIP) const {
   if(!( isPOGTight() )) return false;
   if(!( PassSelector(PFIsoMedium) )) return false;
   if(applyIP) {
-    if(!(fabs(IP3D()/IP3Derr())<3. )) return false;
+    if(!( fabs(dXY())< 0.02 && fabs(dZ())<0.05 &&fabs(IP3D()/IP3Derr())<3. )) return false;
+
   }
   return true;
 }
@@ -299,7 +373,8 @@ bool Muon::Pass_POGTightPFIsoTight(bool applyIP) const {
   if(!( isPOGTight() )) return false;
   if(!( PassSelector(PFIsoTight) )) return false;
   if(applyIP) {
-    if(!(fabs(IP3D()/IP3Derr())<3. )) return false;
+    if(!( fabs(dXY())< 0.02 && fabs(dZ())<0.05 &&fabs(IP3D()/IP3Derr())<3. )) return false;
+
   }
   return true;
 }
@@ -308,7 +383,7 @@ bool Muon::Pass_POGTightPFIsoVeryTight(bool applyIP) const {
   if(!( isPOGTight() )) return false;
   if(!( PassSelector(PFIsoVeryTight) )) return false;
   if(applyIP) {
-    if(!(fabs(IP3D()/IP3Derr())<3. )) return false;
+    if(!( fabs(dXY())< 0.02 && fabs(dZ())<0.05 &&fabs(IP3D()/IP3Derr())<3. )) return false;
   }
   return true;
 }
@@ -317,7 +392,7 @@ bool Muon::Pass_POGTightPFIsoVeryVeryTight(bool applyIP) const {
   if(!( isPOGTight() )) return false;
   if(!( RelIso()<0.05 )) return false;
   if(applyIP) {
-    if(!(fabs(IP3D()/IP3Derr())<3. )) return false;
+    if(!( fabs(dXY())< 0.02 && fabs(dZ())<0.05 &&fabs(IP3D()/IP3Derr())<3. )) return false;
   }
   return true;
 }

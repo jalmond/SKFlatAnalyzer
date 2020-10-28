@@ -83,6 +83,7 @@ double AnalyzerCore::GetIsoFromID(TString channel, TString id, double eta, doubl
     if (id == "HNTightV2") return 0.07;
 
     if (id == "POGTightPFIsoVeryVeryTight") return 0.05;
+    if (id == "HNTight_Iso07_dxy_02_ip_3")  return 0.07;
     if (id == "POGTightPFIsoVeryTight") return 0.1;
     if (id == "POGTightPFIsoTight") return 0.15;
     if (id == "POGTightStandardPFIsoTight") return 0.15;
@@ -96,17 +97,21 @@ double AnalyzerCore::GetIsoFromID(TString channel, TString id, double eta, doubl
   else if(channel == "EE"){
 
     if( id == "HNTight2016") return 0.08;
-   
+    
     if( id.Contains("HNTightV")) {
       if(fabs(eta) < 1.479) return (0.0287 + (0.506/pt));
       else  return (0.0445 + (0.963/pt));
     }
-
+    //passPOGTight_TTrig_HNTC
     if( id == "passTightID_nocc") {
       if(fabs(eta) < 1.479) return (0.0287 + (0.506/pt));
       else  return (0.0445 + (0.963/pt));
     }
+    if( id.Contains("passPOGTight")){
+      if(fabs(eta) < 1.479) return (0.0287 + (0.506/pt));
+      else  return (0.0445 + (0.963/pt));
 
+    }
     if( id == "passTightID") {
       if(fabs(eta) < 1.479) return (0.0287 + (0.506/pt));
       else  return (0.0445 + (0.963/pt));
@@ -119,6 +124,8 @@ double AnalyzerCore::GetIsoFromID(TString channel, TString id, double eta, doubl
       if(fabs(eta) < 1.479) return (0.0478 + (0.506/pt));
       else  return (0.0658 + (0.963/pt));
     }
+
+    if( id == "passMVAID_noIso_WP90V16") return 0.05;  
     if( id == "passMVAID_noIso_WP80") return 0.08;
     if( id == "passMVAID_noIso_WP90") return 0.08;
     if( id == "passMVAID_Iso_WP80") return 999.0;
@@ -1171,8 +1178,11 @@ std::vector<Muon> AnalyzerCore::MuonPromptOnly(const std::vector<Muon>& muons, c
   std::vector<Muon> out;
 
   for(unsigned int i=0; i<muons.size(); i++){
-    if(GetLeptonType(muons.at(i), gens)<=0) continue;
-    out.push_back( muons.at(i) );
+    bool pass=false;
+    if(GetLeptonType(muons.at(i), gens)>0)pass=true;
+    //    if(GetLeptonType(muons.at(i), gens)== -5)pass=true;
+    //    if(GetLeptonType(muons.at(i), gens)== -6)pass=true;
+    if(pass)out.push_back( muons.at(i) );
   }
 
   return out;
@@ -1273,8 +1283,12 @@ std::vector<Electron> AnalyzerCore::ElectronPromptOnly(const std::vector<Electro
   std::vector<Electron> out;
 
   for(unsigned int i=0; i<electrons.size(); i++){
-    if(GetLeptonType(electrons.at(i), gens)<=0) continue;
-    if(!IsCF(electrons.at(i), gens))out.push_back( electrons.at(i) );
+    bool pass=false;
+    if(GetLeptonType(electrons.at(i), gens) > 0)pass=true;
+    if(GetLeptonType(electrons.at(i), gens)== -5)pass=true;
+    if(GetLeptonType(electrons.at(i), gens)== -6)pass=true;
+    //    if(IsCF(electrons.at(i), gens)) pass=false;
+    if(pass)out.push_back( electrons.at(i) );
   }
 
   return out;
@@ -1940,6 +1954,12 @@ TH3D* AnalyzerCore::GetHist3D(TString histname){
   
 }
 
+
+void AnalyzerCore::FillEventCutflowAll(TString histname, double weight, vector<TString> lables, TString label){
+  FillEventCutflow(histname,weight,lables, label);
+
+  FillEventCutflow(histname+"_no_weight",1.,lables, label);
+}
 void AnalyzerCore::FillEventCutflow(TString histname, double weight, vector<TString> lables, TString label){
 
   TH1D *this_hist = GetHist1D(histname);

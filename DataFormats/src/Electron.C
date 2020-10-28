@@ -145,13 +145,6 @@ double Electron::EA(){
 bool Electron::PassID(TString ID, bool cc, double dx_b ,double dx_e,double dz_b,double dz_e, double iso_b, double iso_e) const{
   bool pass_id= PassID(ID);
 
-  if(!pass_id) return false;
-  if(cc){
-    if(! (PassConversionVeto()) ) return false;
-    if(! (IsGsfCtfScPixChargeConsistent()) ) return false;
-  }
-  
-
   if( fabs(scEta()) <= 1.479 ){
     if(!( fabs(dZ()) < dz_b )) return false;
     if(!( fabs(dXY()) < dx_b )) return false;
@@ -163,11 +156,8 @@ bool Electron::PassID(TString ID, bool cc, double dx_b ,double dx_e,double dz_b,
     if(!( fabs(dXY()) < dx_e )) return false;
     if(!( fabs(RelIso()) < iso_e )) return false;
     if( dx_e != 999. && fabs(IP3D()/IP3Derr())>4) return false;
-
-
   }
 
-  if(! (Pass_TriggerEmulation()) ) return false;
 
   return true;
 }
@@ -184,40 +174,169 @@ bool Electron::PassID(TString ID) const{
 
   /// POG + POG IP +CC
   
-  if(ID=="passLooseID")   return passLooseIDHN(); // non POG IP/ISO
-  if(ID=="passMediumID")  return passMediumIDHN();
-  if(ID=="passTightIDT")   return passTightIDHN()&&Pass_TriggerEmulation();
-  if(ID=="passTightID")   return passTightIDHN()&&Pass_TriggerEmulationLoose();
+  if(ID=="passLooseID")      return passLooseIDHN(); // non POG IP/ISO
+  if(ID=="passMediumID")     return passMediumIDHN();
+  if(ID=="passTightID")      return passTightIDHN()&&Pass_TriggerEmulation();
   if(ID=="passTightIDNoT")   return passTightIDHN();
+
+
+  if(ID=="passPOGTight")                  return passTightID_NoCC();
+  if(ID=="passPOGTight_IP4")              return passTightID_NoCC()&&(fabs(IP3D()/IP3Derr())<4.);
+  if(ID=="passPOGTight_TC")               return passTightID_NoCC()&&IsGsfCtfScPixChargeConsistent();
+  if(ID=="passPOGTight_TC_IP4")           return passTightID_NoCC()&&IsGsfCtfScPixChargeConsistent()&&(fabs(IP3D()/IP3Derr())<4.);
+  if(ID=="passPOGTight_HNTC_NOPC")        return passTightID_NoCC()&&PassHNIsGsfCtfScPixChargeConsistent();
+  if(ID=="passPOGTight_HNTC")             return passTightID_NoCC()&&PassHNIsGsfCtfScPixChargeConsistent()&&PassConversionVeto();
+  if(ID=="passPOGTight_HNTC_IP4")         return passTightID_NoCC()&&PassHNIsGsfCtfScPixChargeConsistent()&&PassConversionVeto()&&(fabs(IP3D()/IP3Derr())<4.);
   
+  if(ID=="passPOGTight_TTrig")            return passTightID_NoCC()&&Pass_TriggerEmulation();
+  if(ID=="passPOGTight_TTrig_TC")            return passTightID_NoCC()&&Pass_TriggerEmulation()&&IsGsfCtfScPixChargeConsistent();
+  if(ID=="passPOGTight_TTrig_IP4")        return passTightID_NoCC()&&(fabs(IP3D()/IP3Derr())<4.)&&Pass_TriggerEmulation();
+  if(ID=="passPOGTight_TTrig_HNTC")       return passTightID_NoCC()&&PassHNID();
+  if(ID=="passPOGTightv1_TTrig_HNTC")       return Pass_HNTight(999.0, 0.02, 0.02, 0.1,4,4);
+  if(ID=="passPOGTightv2_TTrig_HNTC")       return Pass_HNTight(999.0, 0.05, 0.05, 0.1,4,4);
 
-  if(ID=="passTightID_nocc") return passTightID_NoCC(); // passTightIDHN no CC
+  if(ID=="passPOGTight_TTrig_HNTC_IP4")   return passTightID_NoCC()&&PassHNID()&&(fabs(IP3D()/IP3Derr())<4.);
+  if(ID=="passPOGTight_TTrig_HNTC_IP45")  return passTightID_NoCC()&&PassHNID()&&(fabs(IP3D()/IP3Derr())<4.5);
+  if(ID=="passPOGTight_TTrig_HNTC_IP5")   return passTightID_NoCC()&&PassHNID()&&(fabs(IP3D()/IP3Derr())<5.);
 
-  if(ID=="HNTight2016") return Pass_HNTight2016();  // EXO-17-028
-  if(ID=="HNTightV1") return Pass_HNTight(0.08, 0.05, 0.1,4); // HNCC + POG IP
-  if(ID=="HNTightV2") return Pass_HNTight(0.08, 0.02, 0.1,4); // HNCC + VAR IP   
-  if(ID=="HNTightV3") return Pass_HNTight(0.08, 0.01, 0.1,4);// HNCC + VAR IP   
-  if(ID=="HNTightV4") return Pass_HNTight(0.08, 0.05, 0.1,9999.);// HNCC + VAR IP   
 
-  if(ID=="HNMediumV1") return Pass_HNMedium(0.08, 0.05, 0.1); // HNCC + POG IP
-  if(ID=="HNMediumV2") return Pass_HNMedium(0.08, 0.02, 0.1);// HNCC + VAR IP  
-  if(ID=="HNMediumV3") return Pass_HNMedium(0.08, 0.01, 0.1);// HNCC + VAR IP  
 
-  if(ID=="HEEPv7")  return passHEEPID()&&PassHNID();
-  //if(ID=="HEEPv7T")  return (passHEEPID()&&Pass_TriggerEmulationLoose());
-  if(ID=="HEEP2018")  return passHEEP2018Prompt()&&PassHNID();
-  //if(ID=="HEEP2018T")  return (passHEEP2018Prompt()&&Pass_TriggerEmulationLoose());
+
+  if(ID=="passPOGTight_TTrig_HNTC_100_100")       return passTightID_NoCC()&&  Pass_TriggerEmulation()&& PassConversionVeto()&&PassHNIsGsfCtfScPixChargeConsistentVar(100.,100.);
+  if(ID=="passPOGTight_TTrig_HNTC_100_150")       return passTightID_NoCC()&&  Pass_TriggerEmulation()&& PassConversionVeto()&&PassHNIsGsfCtfScPixChargeConsistentVar(100.,150.);
+  if(ID=="passPOGTight_TTrig_HNTC_100_200")       return passTightID_NoCC()&&  Pass_TriggerEmulation()&& PassConversionVeto()&&PassHNIsGsfCtfScPixChargeConsistentVar(100.,200.);
+  if(ID=="passPOGTight_TTrig_HNTC_100_250")       return passTightID_NoCC()&&  Pass_TriggerEmulation()&& PassConversionVeto()&&PassHNIsGsfCtfScPixChargeConsistentVar(100.,250.);
+  if(ID=="passPOGTight_TTrig_HNTC_100_300")       return passTightID_NoCC()&&  Pass_TriggerEmulation()&& PassConversionVeto()&&PassHNIsGsfCtfScPixChargeConsistentVar(100.,300.);
+  if(ID=="passPOGTight_TTrig_HNTC_100_350")       return passTightID_NoCC()&&  Pass_TriggerEmulation()&& PassConversionVeto()&&PassHNIsGsfCtfScPixChargeConsistentVar(100.,350.);
+  if(ID=="passPOGTight_TTrig_HNTC_100_400")       return passTightID_NoCC()&&  Pass_TriggerEmulation()&& PassConversionVeto()&&PassHNIsGsfCtfScPixChargeConsistentVar(100.,400.);
+
+  if(ID=="passPOGTight_TTrig_HNTC_150_200")       return passTightID_NoCC()&&  Pass_TriggerEmulation()&& PassConversionVeto()&&PassHNIsGsfCtfScPixChargeConsistentVar(150.,200.);
+  if(ID=="passPOGTight_TTrig_HNTC_150_150")       return passTightID_NoCC()&&  Pass_TriggerEmulation()&& PassConversionVeto()&&PassHNIsGsfCtfScPixChargeConsistentVar(150.,150.);
+
+  if(ID=="passPOGTight_TTrig_HNTC_150_250")       return passTightID_NoCC()&&  Pass_TriggerEmulation()&& PassConversionVeto()&&PassHNIsGsfCtfScPixChargeConsistentVar(150.,250.);
+  if(ID=="passPOGTight_TTrig_HNTC_150_300")       return passTightID_NoCC()&&  Pass_TriggerEmulation()&& PassConversionVeto()&&PassHNIsGsfCtfScPixChargeConsistentVar(150.,300.);
+  if(ID=="passPOGTight_TTrig_HNTC_150_350")       return passTightID_NoCC()&&  Pass_TriggerEmulation()&& PassConversionVeto()&&PassHNIsGsfCtfScPixChargeConsistentVar(150.,350.);
+  if(ID=="passPOGTight_TTrig_HNTC_150_400")       return passTightID_NoCC()&&  Pass_TriggerEmulation()&& PassConversionVeto()&&PassHNIsGsfCtfScPixChargeConsistentVar(150.,400.);
+
+
+  if(ID=="passPOGTight_TTrig_HNTC_200_200")       return passTightID_NoCC()&&  Pass_TriggerEmulation()&& PassConversionVeto()&&PassHNIsGsfCtfScPixChargeConsistentVar(200.,200.);
+  if(ID=="passPOGTight_TTrig_HNTC_200_250")       return passTightID_NoCC()&&  Pass_TriggerEmulation()&& PassConversionVeto()&&PassHNIsGsfCtfScPixChargeConsistentVar(200.,250.);
+  if(ID=="passPOGTight_TTrig_HNTC_200_300")       return passTightID_NoCC()&&  Pass_TriggerEmulation()&& PassConversionVeto()&&PassHNIsGsfCtfScPixChargeConsistentVar(200.,300.);
+  if(ID=="passPOGTight_TTrig_HNTC_200_350")       return passTightID_NoCC()&&  Pass_TriggerEmulation()&& PassConversionVeto()&&PassHNIsGsfCtfScPixChargeConsistentVar(200.,350.);
+  if(ID=="passPOGTight_TTrig_HNTC_200_400")       return passTightID_NoCC()&&  Pass_TriggerEmulation()&& PassConversionVeto()&&PassHNIsGsfCtfScPixChargeConsistentVar(200.,400.);
+
+
+  if(ID=="passPOGTight_TTrig_HNTC_250_250")       return passTightID_NoCC()&&  Pass_TriggerEmulation()&& PassConversionVeto()&&PassHNIsGsfCtfScPixChargeConsistentVar(250.,250.);
+  if(ID=="passPOGTight_TTrig_HNTC_250_300")       return passTightID_NoCC()&&  Pass_TriggerEmulation()&& PassConversionVeto()&&PassHNIsGsfCtfScPixChargeConsistentVar(250.,300.);
+  if(ID=="passPOGTight_TTrig_HNTC_250_350")       return passTightID_NoCC()&&  Pass_TriggerEmulation()&& PassConversionVeto()&&PassHNIsGsfCtfScPixChargeConsistentVar(250.,350.);
+  if(ID=="passPOGTight_TTrig_HNTC_250_400")       return passTightID_NoCC()&&  Pass_TriggerEmulation()&& PassConversionVeto()&&PassHNIsGsfCtfScPixChargeConsistentVar(250.,400.);
+
+  if(ID=="passPOGTight_TTrig_HNTC_300_300")       return passTightID_NoCC()&&  Pass_TriggerEmulation()&& PassConversionVeto()&&PassHNIsGsfCtfScPixChargeConsistentVar(300.,300.);
+  if(ID=="passPOGTight_TTrig_HNTC_300_350")       return passTightID_NoCC()&&  Pass_TriggerEmulation()&& PassConversionVeto()&&PassHNIsGsfCtfScPixChargeConsistentVar(300.,350.);
+  if(ID=="passPOGTight_TTrig_HNTC_300_400")       return passTightID_NoCC()&&  Pass_TriggerEmulation()&& PassConversionVeto()&&PassHNIsGsfCtfScPixChargeConsistentVar(300.,400.);
+  
+  if(ID=="passPOGTight_TTrig_HNTC_350_350")       return passTightID_NoCC()&&  Pass_TriggerEmulation()&& PassConversionVeto()&&PassHNIsGsfCtfScPixChargeConsistentVar(350.,350.);
+  if(ID=="passPOGTight_TTrig_HNTC_350_400")       return passTightID_NoCC()&&  Pass_TriggerEmulation()&& PassConversionVeto()&&PassHNIsGsfCtfScPixChargeConsistentVar(350.,400.);
+
+  if(ID=="passPOGTight_TTrig_HNTC_400_400")       return passTightID_NoCC()&&  Pass_TriggerEmulation()&& PassConversionVeto()&&PassHNIsGsfCtfScPixChargeConsistentVar(400.,400.);
+
+
+
+  
+  if(ID=="passPOGMedium")            return passMediumID_NoCC();
+  if(ID=="passPOGMedium_TC")         return passMediumID_NoCC()&&IsGsfCtfScPixChargeConsistent();
+  if(ID=="passPOGMedium_TC_IP4")     return passMediumID_NoCC()&&IsGsfCtfScPixChargeConsistent()&&(fabs(IP3D()/IP3Derr())<4.);
+  if(ID=="passPOGMedium_HNTC")       return passMediumID_NoCC()&&PassHNID();
+  if(ID=="passPOGMedium_HNTC_IP4")   return passMediumID_NoCC()&&PassHNID()                     &&(fabs(IP3D()/IP3Derr())<4.);
+
+
+     
+  if(ID=="HNTight2016") return Pass_HNTight2016()&&(fabs(dXY())<0.01);  // EXO-17-028
+  if(ID=="HNTight2016Update") return Pass_HNTight2016();  // EXO-17-028
+  if(ID=="HNTight_dxy05_10_dz01_ip4_4") return Pass_HNTight(999.0, 0.05, 0.1, 0.1,4,4);
+  if(ID=="HNTight_dxy05_10_dz01_ip4_5") return Pass_HNTight(999.0, 0.05, 0.1, 0.1,4,5);
+  if(ID=="HNTight_dxy05_05_dz01_ip4_4") return Pass_HNTight(999.0, 0.05, 0.05, 0.1,4,4);
+  if(ID=="HNTight_dxy05_05_dz01_ip4_5") return Pass_HNTight(999.0, 0.05, 0.05, 0.1,4,5);
+  if(ID=="HNTight_dxy05_10_dz01_ip3_4") return Pass_HNTight(999.0, 0.05, 0.1, 0.1,3,4);
+  if(ID=="HNTight_dxy05_10_dz01_ip3_3") return Pass_HNTight(999.0, 0.05, 0.1, 0.1,3,3);
+  if(ID=="HNTight_dxy05_05_dz01_ip3_4") return Pass_HNTight(999.0, 0.05, 0.05, 0.1,3,4);
+  if(ID=="HNTight_dxy05_05_dz01_ip3_3") return Pass_HNTight(999.0, 0.05, 0.05, 0.1,3,3);
+
+  if(ID=="HNTight_dxy02_05_dz01_ip4_4") return Pass_HNTight(999.0, 0.02, 0.05, 0.1,4,4);
+  if(ID=="HNTight_dxy02_05_dz01_ip4_5") return Pass_HNTight(999.0, 0.02, 0.05, 0.1,4,5);
+  if(ID=="HNTight_dxy02_02_dz01_ip4_4") return Pass_HNTight(999.0, 0.02, 0.02, 0.1,4,4);
+  if(ID=="HNTight_dxy02_02_dz01_ip4_5") return Pass_HNTight(999.0, 0.02, 0.02, 0.1,4,5);
+  if(ID=="HNTight_dxy02_02_dz01_ip3_4") return Pass_HNTight(999.0, 0.02, 0.02, 0.1,3,4);
+  if(ID=="HNTight_dxy02_02_dz01_ip3_3") return Pass_HNTight(999.0, 0.02, 0.02, 0.1,3,3);
+
+  if(ID=="HNTight_dxy05_10_dz01_ip999") return Pass_HNTight(999.0, 0.05, 0.1, 0.1,999.,999.);
+  if(ID=="HNTight_dxy05_05_dz01_ip999") return Pass_HNTight(999.0, 0.05, 0.05, 0.1,999.,999.);
+  if(ID=="HNTight_dxy02_05_dz01_ip999") return Pass_HNTight(999.0, 0.02, 0.05, 0.1,999.,999.);
+  if(ID=="HNTight_dxy02_02_dz01_ip999") return Pass_HNTight(999.0, 0.02, 0.02, 0.1,999.,999.);
+  
+    
+  if(ID=="HNMedium_dxy05_10_dz01_ip4_4") return Pass_HNMedium(999.0, 0.05, 0.1, 0.1,4,4);
+  if(ID=="HNMedium_dxy05_10_dz01_ip4_5") return Pass_HNMedium(999.0, 0.05, 0.1, 0.1,4,5);
+  if(ID=="HNMedium_dxy05_05_dz01_ip4_4") return Pass_HNMedium(999.0, 0.05, 0.1, 0.1,4,4);
+  if(ID=="HNMedium_dxy05_05_dz01_ip4_5") return Pass_HNMedium(999.0, 0.05, 0.1, 0.1,4,5);
+  if(ID=="HNMedium_dxy05_10_dz01_ip3_4") return Pass_HNMedium(999.0, 0.05, 0.1, 0.1,3,4);
+  if(ID=="HNMedium_dxy05_10_dz01_ip3_3") return Pass_HNMedium(999.0, 0.05, 0.1, 0.1,3,3);
+  if(ID=="HNMedium_dxy05_10_dz01_ip3_4") return Pass_HNMedium(999.0, 0.05, 0.1, 0.1,3,4);
+  if(ID=="HNMedium_dxy05_10_dz01_ip3_3") return Pass_HNMedium(999.0, 0.05, 0.1, 0.1,3,3);
+
+  if(ID=="HNMedium_dxy02_05_dz01_ip4_4") return Pass_HNMedium(999.0, 0.02, 0.05, 0.1,4,4);
+  if(ID=="HNMedium_dxy02_05_dz01_ip4_5") return Pass_HNMedium(999.0, 0.02, 0.05, 0.1,4,5);
+  if(ID=="HNMedium_dxy02_02_dz01_ip4_4") return Pass_HNMedium(999.0, 0.02, 0.02, 0.1,4,4);
+  if(ID=="HNMedium_dxy02_02_dz01_ip4_5") return Pass_HNMedium(999.0, 0.02, 0.02, 0.1,4,5);
+  if(ID=="HNMedium_dxy02_02_dz01_ip3_4") return Pass_HNMedium(999.0, 0.02, 0.02, 0.1,3,4);
+  if(ID=="HNMedium_dxy02_02_dz01_ip3_3") return Pass_HNMedium(999.0, 0.02, 0.02, 0.1,3,3);
+
+  if(ID=="HNMedium_dxy05_10_dz01_ip999") return Pass_HNMedium(999.0, 0.05, 0.1, 0.1,999.,999.);
+  if(ID=="HNMedium_dxy05_05_dz01_ip999") return Pass_HNMedium(999.0, 0.05, 0.1, 0.1,999.,999.);
+  if(ID=="HNMedium_dxy02_05_dz01_ip999") return Pass_HNMedium(999.0, 0.02, 0.05, 0.1,999.,999.);
+  if(ID=="HNMedium_dxy02_02_dz01_ip999") return Pass_HNMedium(999.0, 0.02, 0.02, 0.1,999.,999.);
+  
+  if(ID=="HEEPv7")  return passHEEPID();
+  if(ID=="HNHEEPv7")  return passHEEPID()&&PassHNID();
+
+  if(ID=="HNHEEP2018")  return passHEEP2018Prompt()&&PassHNID();
+  if(ID=="HEEP2018")  return passHEEP2018Prompt();
+
   if(ID=="HEEPLoose")  return passLooseHEEPID()&&PassHNID();
-  //if(ID=="HEEPLooseT")  return (passLooseHEEPID()&&Pass_TriggerEmulationLoose());
 
-  if(ID=="HNLoose")   return  Pass_HNLooseID(0.6,0.2,0.1,10); // non POG IP/ISO                                                
+
+  if(ID=="HNLoose")   return  Pass_HNLooseID(0.6,0.2,0.1,10); // non POG IP/ISO                                               
   if(ID=="HNLooseV2")   return  Pass_HNLooseID(0.6,0.2,0.1,9999); // non POG IP/ISO                                                
+  if(ID=="HNLooseV3")   return  Pass_HNLooseID(0.6,0.02,0.1,4.); // non POG IP/ISO                                                
+  if(ID=="HNLooseV4")   return  Pass_HNLooseID(0.6,0.05,0.1,4.); // non POG IP/ISO                                                
 
   if(ID=="passMVAID_noIso_WP80") return passMVAID_noIso_WP80HN(); // MVA 80 + iso 0.08 + POG IP + HNCC
   if(ID=="passMVAID_noIso_WP90") return passMVAID_noIso_WP90HN(); // MVA 90 + iso 0.08 + POG IP + HNCC 
+  if(ID=="passMVAID_noIso_WP90V2") return passMVAID_noIso_WP90XHN(0.08,0.02,0.05,4); // MVA 90 + iso 0.08 + POG IP + HNCC 
+  if(ID=="passMVAID_noIso_WP90V3") return passMVAID_noIso_WP90XHN(0.08,0.05,0.1,4); // MVA 90 + iso 0.08 + POG IP + HNCC _
+  if(ID=="passMVAID_noIso_WP90V4") return passMVAID_noIso_WP90XHN(0.08,0.02,0.05,5); // MVA 90 + iso 0.08 + POG IP + HNCC         
+  if(ID=="passMVAID_noIso_WP90V5") return passMVAID_noIso_WP90XHN(0.08,0.05,0.1,5); // MVA 90 + iso 0.08 + POG IP + HNCC _       
+  if(ID=="passMVAID_noIso_WP90V6") return passMVAID_noIso_WP90XHN(0.08,0.02,0.05,999.); // MVA 90 + iso 0.08 + POG IP + HNCC         
+  if(ID=="passMVAID_noIso_WP90V7") return passMVAID_noIso_WP90XHN(0.08,0.05,0.1,999.); // MVA 90 + iso 0.08 + POG IP + HNCC _        
+  if(ID=="passMVAID_noIso_WP90V8") return passMVAID_noIso_WP90XHN(0.08,0.02,0.05,4); // MVA 90 + iso 0.08 + POG IP + HNCC                      
+  if(ID=="passMVAID_noIso_WP90V9") return passMVAID_noIso_WP90XHN(0.06,0.05,0.1,4); // MVA 90 + iso 0.08 + POG IP + HNCC _                     
+  if(ID=="passMVAID_noIso_WP90V10") return passMVAID_noIso_WP90XHN(0.06,0.02,0.05,5); // MVA 90 + iso 0.08 + POG IP + HNCC                      
+  if(ID=="passMVAID_noIso_WP90V11") return passMVAID_noIso_WP90XHN(0.06,0.05,0.1,5); // MVA 90 + iso 0.08 + POG IP + HNCC _                     
+  if(ID=="passMVAID_noIso_WP90V12") return passMVAID_noIso_WP90XHN(0.06,0.02,0.05,999.); // MVA 90 + iso 0.08 + POG IP + HNCC                   
+  if(ID=="passMVAID_noIso_WP90V13") return passMVAID_noIso_WP90XHN(0.06,0.05,0.1,999.); // MVA 90 + iso 0.08 + POG IP + HNCC _                  
+  if(ID=="passMVAID_noIso_WP90V14") return passMVAID_noIso_WP90XHN(0.05,0.02,0.05,4); // MVA 90 + iso 0.08 + POG IP + HNCC                      
+  if(ID=="passMVAID_noIso_WP90V15") return passMVAID_noIso_WP90XHN(0.05,0.05,0.1,4); // MVA 90 + iso 0.08 + POG IP + HNCC _                     
+  if(ID=="passMVAID_noIso_WP90V16") return passMVAID_noIso_WP90XHN(0.05,0.02,0.05,5); // MVA 90 + iso 0.08 + POG IP + HNCC                      
+  if(ID=="passMVAID_noIso_WP90V17") return passMVAID_noIso_WP90XHN(0.05,0.05,0.1,5); // MVA 90 + iso 0.08 + POG IP + HNCC _                     
+  if(ID=="passMVAID_noIso_WP90V18") return passMVAID_noIso_WP90XHN(0.05,0.02,0.05,999.); // MVA 90 + iso 0.08 + POG IP + HNCC                   
+  if(ID=="passMVAID_noIso_WP90V19") return passMVAID_noIso_WP90XHN(0.05,0.05,0.1,999.); // MVA 90 + iso 0.08 + POG IP + HNCC _                  
+
   if(ID=="passMVAID_iso_WP80") return passMVAID_Iso_WP80HN(); // isoMVA 80 + POG IP + HNCC 
   if(ID=="passMVAID_iso_WP90") return passMVAID_Iso_WP90HN(); // isoMVA 90 + POG IP + HNCC 
-  
+  if(ID=="passPOGMVAID_noIso_WP80") return passPOGMVAID_noIso_WP80HN(); // MVA 80 + iso 0.08 + POG IP + HNCC                            
+  if(ID=="passPOGMVAID_noIso_WP90") return passPOGMVAID_noIso_WP90HN(); // MVA 90 + iso 0.08 + POG IP + HNCC                            
+  if(ID=="passPOGMVAID_iso_WP80") return passPOGMVAID_Iso_WP80HN(); // isoMVA 80 + POG IP + HNCC                                        
+  if(ID=="passPOGMVAID_iso_WP90") return passPOGMVAID_Iso_WP90HN(); // isoMVA 90 + POG IP + HNCC          
 
   /// Loose+veto
   if(ID=="passLooseID_nocc") return passLooseID_NoCC();
@@ -235,6 +354,7 @@ bool Electron::PassID(TString ID) const{
   if(ID=="passMVAID_iso_WP80Loose") return passMVAID_Iso_WP80HNLoose();
   if(ID=="passMVAID_iso_WP90Loose") return passMVAID_Iso_WP90HNLoose();
 
+  if(ID=="passMVAID_noIso_WP90LooseV2") return Pass_HNLoose2016MVANonIso(0.6,0.02,0.05,5);
   
   
 
@@ -363,6 +483,7 @@ bool Electron::Pass_TriggerEmulationLoose() const{
   // Trigger emulation (See https://twiki.cern.ch/twiki/bin/viewauth/CMS/SUSLeptonSF#ID_IP_ISO_AN1)                                                           
   // Cuts (IdL, IdM) in single electron triggers                                                                                                              
   // No Iso cuts in the trigger with IdM                                                                                                                      
+  if(this->Pt() < 40. && this->Pt() > 20.) return Pass_TriggerEmulation();
 
   if(! (ecalPFClusterIso()/UncorrPt() < 0.5) ) return false;    // < 0.5                                                                                     
   if(! (hcalPFClusterIso()/UncorrPt() < 0.3) ) return false;    // < 0.3                                                                                     
@@ -456,7 +577,7 @@ bool Electron::PassHNID() const{
   if(! (PassConversionVeto()) ) return false;
   if(! PassHNIsGsfCtfScPixChargeConsistent())  return false;
 
-  if(! (Pass_TriggerEmulationLoose()) ) return false;
+  if(! (Pass_TriggerEmulation()) ) return false;
   return true;
 }
 
@@ -477,7 +598,7 @@ bool Electron::Pass_HNLoose2016MVANonIso(double relisoCut, double dxyCut, double
   if(! (PassConversionVeto()) ) return false;
   if(! PassHNIsGsfCtfScPixChargeConsistent())  return false;
 
-  if(! (Pass_TriggerEmulationLoose()) ) return false;
+  if(! (Pass_TriggerEmulation()) ) return false;
 
   return true;
 }
@@ -519,7 +640,7 @@ bool Electron::passTightIDHN() const{
 bool Electron::passMediumIDHN() const{
   if(! (passMediumID()) ) return false;
   if(! (PassConversionVeto()) ) return false;
-  if(! (Pass_TriggerEmulationLoose()) ) return false;
+  if(! (Pass_TriggerEmulation()) ) return false;
   if(! (IsGsfCtfScPixChargeConsistent()) )return false;
   if( fabs(scEta())<= 1.479 ){
     if( !(fabs(dXY()) < 0.05 && fabs(dZ())< 0.1 && fabs(IP3D()/IP3Derr()) < 4.)) return false;
@@ -531,14 +652,28 @@ bool Electron::passMediumIDHN() const{
 
   return true;  
 }
+
+bool Electron::passMediumID_NoCC() const {
+  if(! (passMediumID()) ) return false;
+  if(! (PassConversionVeto()) ) return false;
+  if(! (Pass_TriggerEmulation()) ) return false;
+  if( fabs(scEta())<= 1.479 ){
+    if( !(fabs(dXY()) < 0.05 && fabs(dZ())< 0.1)) return false;
+  }
+  else   if( !(fabs(dXY()) < 0.1 && fabs(dZ())< 0.2)) return false;
+
+
+  return true;
+}
+
 bool Electron::passTightID_NoCC() const {
   if(! (passTightID()) ) return false;
   if(! (PassConversionVeto()) ) return false;
   if(! (Pass_TriggerEmulationLoose()) ) return false;
   if( fabs(scEta())<= 1.479 ){
-    if( !(fabs(dXY()) < 0.05 && fabs(dZ())< 0.1 && fabs(IP3D()/IP3Derr()) < 4.)) return false;
+    if( !(fabs(dXY()) < 0.05 && fabs(dZ())< 0.1)) return false;
   }
-  else   if( !(fabs(dXY()) < 0.1 && fabs(dZ())< 0.2 && fabs(IP3D()/IP3Derr()) < 4.)) return false;
+    else   if( !(fabs(dXY()) < 0.1 && fabs(dZ())< 0.2)) return false;
 
   
   return true;
@@ -551,9 +686,9 @@ bool Electron::passTightID_NoCCB() const {
   if(! (Pass_TriggerEmulationLoose()) ) return false;
   if(! PassHNIsGsfCtfScPixChargeConsistent()) return false;
   if( fabs(scEta())<= 1.479 ){
-    if( !(fabs(dXY()) < 0.05 && fabs(dZ())< 0.1 && fabs(IP3D()/IP3Derr()) < 4.)) return false;
+    if( !(fabs(dXY()) < 0.05 && fabs(dZ())< 0.1)) return false;
   }
-  else   if( !(fabs(dXY()) < 0.1 && fabs(dZ())< 0.2 && fabs(IP3D()/IP3Derr()) < 4.)) return false;
+  else   if( !(fabs(dXY()) < 0.1 && fabs(dZ())< 0.2 )) return false;
 
   return true;
 }
@@ -562,7 +697,7 @@ bool Electron::passLooseID_NoCC() const {
   if(! (Pass_CutBasedVetoNoIso()) ) return false;
   if(! (PassConversionVeto()) ) return false;
   if(! (Pass_TriggerEmulationLoose()) ) return false;
-  if( !(fabs(dXY()) < 0.2 && fabs(dZ())< 0.2 && fabs(IP3D()/IP3Derr()) < 10.)) return false;
+  if( !(fabs(dXY()) < 0.2 && fabs(dZ())< 0.2 )) return false;
   if(! (RelIso()<0.6) ) return false;
 
   return true;
@@ -572,7 +707,7 @@ bool Electron::passLooseID_NoCC() const {
 bool Electron::passMVAID_noIso_WP80HN() const {
   if(!(passMVAID_noIso_WP80())) return false;
   if(! (PassConversionVeto()) ) return false;
-  if(! (Pass_TriggerEmulationLoose()))return false;
+  if(! (Pass_TriggerEmulation()))return false;
   if(! (RelIso()<0.08) ) return false;
   if( fabs(scEta())<= 1.479 ){
     if( !(fabs(dXY()) < 0.05 && fabs(dZ())< 0.1 && fabs(IP3D()/IP3Derr()) < 4.)) return false;
@@ -583,6 +718,41 @@ bool Electron::passMVAID_noIso_WP80HN() const {
   return true;
   
 }
+
+bool Electron::passPOGMVAID_noIso_WP80HN() const {
+  if(!(passMVAID_noIso_WP80())) return false;
+  if(! (PassConversionVeto()) ) return false;
+  if(! (Pass_TriggerEmulation()))return false;
+  if(! PassHNIsGsfCtfScPixChargeConsistent()) return false;
+  return true;
+
+}
+bool Electron::passPOGMVAID_noIso_WP90HN() const {
+  if(!(passMVAID_noIso_WP90())) return false;
+  if(! (PassConversionVeto()) ) return false;
+  if(! (Pass_TriggerEmulation()))return false;
+  if(! PassHNIsGsfCtfScPixChargeConsistent()) return false;
+  return true;
+
+}
+
+bool Electron::passPOGMVAID_Iso_WP90HN() const {
+  if(!(passMVAID_Iso_WP90())) return false;
+  if(! (PassConversionVeto()) ) return false;
+  if(! (Pass_TriggerEmulation()))return false;
+  if(! PassHNIsGsfCtfScPixChargeConsistent())  return false;
+  return true;
+}
+
+bool Electron::passPOGMVAID_Iso_WP80HN() const {
+  if(!(passMVAID_Iso_WP80())) return false;
+  if(! (PassConversionVeto()) ) return false;
+  if(! (Pass_TriggerEmulation()))return false;
+  if(! PassHNIsGsfCtfScPixChargeConsistent())  return false;
+  return true;
+}
+
+
 bool Electron::passMVAID_noIso_WP80HNLoose() const {
   if(!(Pass_HNLoose2016MVANonIso(0.6, 0.2, 0.1, 10.))) return false;
 
@@ -593,7 +763,7 @@ bool Electron::passMVAID_noIso_WP80HNLoose() const {
 bool Electron::passMVAID_Iso_WP90HN() const {
   if(!(passMVAID_Iso_WP90())) return false;
   if(! (PassConversionVeto()) ) return false;
-  if(! (Pass_TriggerEmulationLoose()))return false;
+  if(! (Pass_TriggerEmulation()))return false;
   if( fabs(scEta())<= 1.479 ){
     if( !(fabs(dXY()) < 0.05 && fabs(dZ())< 0.1 && fabs(IP3D()/IP3Derr()) < 4.)) return false;
   }
@@ -606,7 +776,7 @@ bool Electron::passMVAID_Iso_WP90HN() const {
 bool Electron::passMVAID_Iso_WP80HN() const {
   if(!(passMVAID_Iso_WP80())) return false;
   if(! (PassConversionVeto()) ) return false;
-  if(! (Pass_TriggerEmulationLoose()))return false;
+  if(! (Pass_TriggerEmulation()))return false;
   if( fabs(scEta())<= 1.479 ){
     if( !(fabs(dXY()) < 0.05 && fabs(dZ())< 0.1 && fabs(IP3D()/IP3Derr()) < 4.)) return false;
   }
@@ -626,16 +796,18 @@ bool Electron::passMVAID_Iso_WP90HNLoose() const {
   return true;
 }
 
-
 bool Electron::PassHNIsGsfCtfScPixChargeConsistent() const{
+  return PassHNIsGsfCtfScPixChargeConsistentVar(300., 350.);
+}
+bool Electron::PassHNIsGsfCtfScPixChargeConsistentVar(double pt1, double pt2) const{
 
   if(  fabs(scEta()) <= 1.479 ){
-    if (this->Pt() < 150.) {
+    if (this->Pt() < pt1) {
       if(! (IsGsfCtfScPixChargeConsistent()) )return false;
     }
   }
   else {
-    if (this->Pt() < 250.) {
+    if (this->Pt() < pt2) {
       if(! (IsGsfCtfScPixChargeConsistent()) )return false;
     }
   }
@@ -643,10 +815,23 @@ bool Electron::PassHNIsGsfCtfScPixChargeConsistent() const{
   return true;
 }
 
+bool Electron::passMVAID_noIso_WP90XHN(double relisoCut, double dxyCut, double dzCut, double sipCut) const {
+  if(!(passMVAID_noIso_WP90())) return false;
+  if(! (PassConversionVeto()) ) return false;
+  if(! (Pass_TriggerEmulation()))return false;
+  if(! (RelIso()<relisoCut) ) return false;
+  if( fabs(scEta())<= 1.479 ){
+    if( !(fabs(dXY()) < dxyCut && fabs(dZ())< dzCut && fabs(IP3D()/IP3Derr()) < sipCut)) return false;
+  }
+  else   if( !(fabs(dXY()) < dxyCut && fabs(dZ())< dzCut && fabs(IP3D()/IP3Derr()) < sipCut)) return false;
+  if(! PassHNIsGsfCtfScPixChargeConsistent()) return false;
+  return true;
+
+}
 bool Electron::passMVAID_noIso_WP90HN() const {
   if(!(passMVAID_noIso_WP90())) return false;
   if(! (PassConversionVeto()) ) return false;
-  if(! (Pass_TriggerEmulationLoose()))return false;
+  if(! (Pass_TriggerEmulation()))return false;
   if(! (RelIso()<0.08) ) return false;
   if( fabs(scEta())<= 1.479 ){
     if( !(fabs(dXY()) < 0.05 && fabs(dZ())< 0.1 && fabs(IP3D()/IP3Derr()) < 4.)) return false;
@@ -667,7 +852,7 @@ bool Electron::passLooseIDHN() const {
 
   if(! (Pass_CutBasedVetoNoIso()) ) return false;
   if(! (PassConversionVeto()) ) return false;
-  if(! (Pass_TriggerEmulationLoose()) ) return false;
+  if(! (Pass_TriggerEmulation()) ) return false;
   if( !(fabs(dXY()) < 0.2 && fabs(dZ())< 0.2 && fabs(IP3D()/IP3Derr())<10.)) return false;
 
   if(! (IsGsfCtfScPixChargeConsistent()) )return false;
@@ -692,12 +877,12 @@ bool Electron::Pass_HNTight2016() const{
   else{
     if(! (MVANoIso()>0.5) ) return false;
   }
-  if(! (fabs(dXY())<0.01 && fabs(dZ())<0.04 && fabs(IP3D()/IP3Derr())<4.) ) return false;
+  if(! (fabs(dXY())<0.02 && fabs(dZ())<0.04 && fabs(IP3D()/IP3Derr())<4.) ) return false;
   if(! (RelIso()<0.08) ) return false;
   if(! (PassConversionVeto()) ) return false;
   if(! (IsGsfCtfScPixChargeConsistent()) ) return false;
 
-  if(! (Pass_TriggerEmulationLoose()) ) return false;
+  if(! (Pass_TriggerEmulation()) ) return false;
 
   return true;
 }
@@ -731,28 +916,42 @@ bool Electron::Pass_HNLooseID(double relisoCut, double dxyCut, double dzCut, dou
   if(! (fabs(dXY())<dxyCut && fabs(dZ())<dzCut && fabs(IP3D()/IP3Derr())<ipcut    )) return false;
   if(! PassHNIsGsfCtfScPixChargeConsistent()) return false;
 
-  if(! (Pass_TriggerEmulationLoose()) ) return false;
+  if(! (Pass_TriggerEmulation()) ) return false;
   return true;
 
 }
 
-bool Electron::Pass_HNMedium(double relisoCut, double dxyCut, double dzCut) const{
+bool Electron::Pass_HNMedium(double relisoCut, double dxyCut1, double dxyCut2, double dzCut, double ipcut1, double ipcut2) const{
+
   if(! (passMediumID()) ) return false;
   if(! (RelIso()<relisoCut) ) return false;
-  if(! (fabs(dXY())<dxyCut && fabs(dZ())<dzCut && fabs(IP3D()/IP3Derr())<4    )) return false;
+  if( fabs(scEta()) <= 1.479 ){
+    if(! (fabs(dXY())<dxyCut1 && fabs(dZ())<dzCut && fabs(IP3D()/IP3Derr())<ipcut1 ))   return false;
+  }
+  else{
+    if(! (fabs(dXY())<dxyCut2 && fabs(dZ())<dzCut && fabs(IP3D()/IP3Derr())<ipcut2 ))   return false;
+
+  }
+
   if(! PassHNIsGsfCtfScPixChargeConsistent()) return false;
 
-  if(! (Pass_TriggerEmulationLoose()) ) return false;
+  if(! (Pass_TriggerEmulation()) ) return false;
   return true;
 }
 
 
-bool Electron::Pass_HNTight(double relisoCut, double dxyCut, double dzCut, double ipcut) const{
+bool Electron::Pass_HNTight(double relisoCut, double dxyCut1, double dxyCut2, double dzCut, double ipcut1, double ipcut2) const{
   if(! (passTightID()) ) return false;
   if(! (RelIso()<relisoCut) ) return false;
-  if(! (fabs(dXY())<dxyCut && fabs(dZ())<dzCut && fabs(IP3D()/IP3Derr())<ipcut ))   return false;
+  if( fabs(scEta()) <= 1.479 ){
+    if(! (fabs(dXY())<dxyCut1 && fabs(dZ())<dzCut && fabs(IP3D()/IP3Derr())<ipcut1 ))   return false;
+  }
+  else{
+    if(! (fabs(dXY())<dxyCut2 && fabs(dZ())<dzCut && fabs(IP3D()/IP3Derr())<ipcut2 ))   return false;
+
+  }
   if(! PassHNIsGsfCtfScPixChargeConsistent()) return false;
-  if(! (Pass_TriggerEmulationLoose()) ) return false;
+  if(! (Pass_TriggerEmulation()) ) return false;
   return true;
 }
 

@@ -118,7 +118,7 @@ double FakeBackgroundEstimator::GetMuonFakeRate(TString ID, TString key, double 
 
 //  if(pt>=200) pt = 199;
 //  if(eta>=2.5) eta = 2.49;
-  if(pt>=100) pt = 99;
+  if(pt>=60) pt = 59;
   //==== HOTFIX FIXME
 //  if(eta<0.8 && pt>=150) pt = 149.;
 

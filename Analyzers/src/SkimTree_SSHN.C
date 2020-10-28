@@ -8,27 +8,6 @@ void SkimTree_SSHN::initializeAnalyzer(){
   cout << "[SkimTree_SSHN::initializeAnalyzer()] gDirectory = " << gDirectory->GetName() << endl;
   newtree = fChain->CloneTree(0);
   
-  //el_type = 0;
-  //mu_type = 0;
-
-  //  b_el_type = newtree->Branch("el_type",&el_type,"el_type");
-  //b_mu_type = newtree->Branch("mu_type",&mu_type,"mu_type");
-
-  if( MCSample.Contains("HN") ){
-  cout << "[SkimTree_SSHN::initializeAnalyzer()] This is HN sample, so saving gen_* and LHE_* for Z-pt reweighting" << endl;
-  }
-  else{
-    cout << "[SkimTree_SSHN::initializeAnalyzer()] Throwing away gen_* and LHE_*" << endl;
-    /*if(!IsDATA){
-      newtree->SetBranchStatus("gen_*",0);
-      newtree->SetBranchStatus("LHE_*",0);
-      newtree->SetBranchStatus("gen_weight",1); // for MCweight()
- 
-      newtree->Branch("el_type", &el_type);
-      newtree->Branch("mu_type", &mu_type);
-      }*/
-  }
-
 
   triggers_dimu.clear();
 
@@ -103,7 +82,7 @@ void SkimTree_SSHN::executeEvent(){
 
   if(isSingleMu && (ev.PassTrigger(triggers_dimu))) return;
   
-  std::vector<Muon>     muonPreColl     = GetMuons("HNLoosest", 8., 2.4);
+  std::vector<Muon>     muonPreColl     = GetMuons("HNLoosest", 7., 2.4);
   std::vector<Electron> electronPreColl = GetElectrons("HNLoosest", 8., 2.5);
 
   std::sort(muonPreColl.begin(), muonPreColl.end(), PtComparing);
@@ -152,10 +131,10 @@ void SkimTree_SSHN::executeEvent(){
   if      ( NLep >= 3 ){ 
     HasSS2lOR3l = true; 
     if(NMu==0 ){
-      if(electronPreColl.at(0).Pt() > 23. && electronPreColl.at(1).Pt() > 12) LeadLepPt = true;
+      if(electronPreColl.at(0).Pt() > 23.) LeadLepPt = true;
     }  
     else if(NEl==0){
-      if(muonPreColl.at(0).Pt() > 17. && muonPreColl.at(1).Pt() > 8) LeadLepPt = true;
+      if(muonPreColl.at(0).Pt() > 17.) LeadLepPt = true;
     }
     else LeadLepPt = true;
     
@@ -169,7 +148,7 @@ void SkimTree_SSHN::executeEvent(){
   }
   
   if(NMu==2 && muonPreColl.at(0).Pt()>  17.    ) LeadLepPt = true;
-  if(NEl==2 && electronPreColl.at(0).Pt()>23 && electronPreColl.at(1).Pt()>10) LeadLepPt = true;
+  if(NEl==2 && electronPreColl.at(0).Pt()>23 ) LeadLepPt = true;
   if(NMu==1 && NEl==1 && electronPreColl.at(0).Pt()>23 ) LeadLepPt = true;
   if(NMu==1 && NEl==1 && muonPreColl.at(0).Pt()>23 ) LeadLepPt = true;
 

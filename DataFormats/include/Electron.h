@@ -129,19 +129,30 @@ public:
   bool Pass_SUSYTight() const;
   bool passMVAID_noIso_WP80HN() const;
   bool passMVAID_noIso_WP90HN() const;
+  bool passMVAID_noIso_WP90XHN(double relisoCut, double dxyCut, double dzCut, double sipCut) const;
+  bool passPOGMVAID_noIso_WP80HN() const;
+  bool passPOGMVAID_noIso_WP90HN() const;
+
+
+
   bool passMVAID_noIso_WP80HNLoose() const;
   bool passMVAID_noIso_WP90HNLoose() const;
   
   bool passMVAID_Iso_WP80HN() const;
   bool passMVAID_Iso_WP90HN() const;
+  bool passPOGMVAID_Iso_WP80HN() const;
+  bool passPOGMVAID_Iso_WP90HN() const;
+
   bool passMVAID_Iso_WP80HNLoose() const;
   bool passMVAID_Iso_WP90HNLoose() const;
 
   bool PassHNIsGsfCtfScPixChargeConsistent() const;
+  bool PassHNIsGsfCtfScPixChargeConsistentVar(double pt1, double pt2) const;
   bool Pass_SUSYLoose() const;
   bool passTightIDHN() const;
   bool passMediumIDHN() const;
   bool passLooseIDHN() const;
+  bool passMediumID_NoCC() const;
   bool passTightID_NoCCB() const;
   bool passTightID_NoCC() const;
   bool passLooseID_NoCCB() const;
@@ -163,8 +174,8 @@ public:
   bool Pass_HNLoose(double relisoCut, double dxyCut, double dzCut) const;
   bool Pass_HNLooseID(double relisoCut, double dxyCut, double dzCut, double sipCut) const;
   bool Pass_HNLoosest() const;
-  bool Pass_HNTight(double relisoCut, double dxyCut, double dzCut, double sipCut) const;
-  bool Pass_HNMedium(double relisoCut, double dxyCut, double dzCut) const;
+  bool Pass_HNTight(double relisoCut,double dxyCut1, double dxyCut2, double dzCut, double sipCut1, double sipCut2) const;
+  bool Pass_HNMedium(double relisoCut,double dxyCut1, double dxyCut2, double dzCut, double sipCut1, double sipCut2) const;
 
   bool Pass_ISRLoose(double relisoCut) const;
   bool Pass_ISRTight() const;

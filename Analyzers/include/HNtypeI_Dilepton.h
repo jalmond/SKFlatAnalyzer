@@ -44,7 +44,7 @@ class HNtypeI_Dilepton : public AnalyzerCore {
   
   // analysis function to run CR
  void RunMMCR(std::vector<Electron> electrons, std::vector<Electron> electrons_veto, std::vector<Muon> muons, std::vector<Muon> muons_veto, std::vector<Jet> jets, std::vector<FatJet> fatjets,  Event ev, AnalyzerParameter param,  float weight_mm );		 
- void RunEECR(std::vector<Electron> electrons, std::vector<Electron> electrons_veto, std::vector<Muon> muons, std::vector<Muon> muons_veto, std::vector<Jet> jets, std::vector<FatJet> fatjets,  Event ev, AnalyzerParameter param,  float weight_mm );		 
+ void RunEECR(int ptbin,std::vector<Electron> electrons, std::vector<Electron> electrons_veto, std::vector<Muon> muons, std::vector<Muon> muons_veto, std::vector<Jet> jets, std::vector<FatJet> fatjets,  Event ev, AnalyzerParameter param,  float weight_mm );		 
 				 
  // function to get MC SF weights
  double GetElectronMCWeight(std::vector<Electron> electrons, TString Tight_ID,AnalyzerParameter param );

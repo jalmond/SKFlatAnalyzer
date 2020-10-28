@@ -132,17 +132,18 @@ void MCCorrection::ReadHistograms(){
     is >> b; // syst
     is >> c; // rootfile name
 
-    if(DataYear == 2017 && a!=MCSample) continue;
+    //if(DataYear == 2017 && a!=MCSample) continue;
     
     TFile *file = new TFile(PUReweightPath+c);
 /*    if( (TH1D *)file->Get(a+"_"+b) ){
       histDir->cd();
       map_hist_pileup[a+"_"+b+"_pileup"] = (TH1D *)file->Get(a+"_"+b)->Clone();
     }*/
-    if( (TH1D *)file->Get(a+"_"+b) || (TH1D *)file->Get(b) ){
+    if( (TH1D *)file->Get(a+"_"+b) || (TH1D *)file->Get(b) || (TH1D *)file->Get(a)){
       histDir->cd();
-      if( (TH1D *)file->Get(a+"_"+b) ) map_hist_pileup[a+"_"+b+"_pileup"] = (TH1D *)file->Get(a+"_"+b)->Clone(); // wrongPU in 2017, b = central/sig_up/sig_down, c = Pileup_reweight_69p2_mb.root  ||  PU in 2016, 2018
-      if( (TH1D *)file->Get(b) ) map_hist_pileup[a+"_"+b+"_pileup"] = (TH1D *)file->Get(b)->Clone();             // correctPU in 2017, b = PUReweight_2017(+Up/Down), c = PUReweight_2017.root
+      
+      //if( (TH1D *)file->Get(a+"_"+b) ) map_hist_pileup[a+"_"+b+"_pileup"] = (TH1D *)file->Get(a+"_"+b)->Clone(); // wrongPU in 2017, b = central/sig_up/sig_down, c = Pileup_reweight_69p2_mb.root  ||  PU in 2016, 2018
+      if( (TH1D *)file->Get(a) ) map_hist_pileup["PUReweight__"+b+"_pileup"] = (TH1D *)file->Get(a)->Clone();             // correctPU in 2017, b = PUReweight_2017(+Up/Down), c = PUReweight_2017.root
     }
     else{
       cout << "[MCCorrection::ReadHistograms] No : " << a + "_" + b << endl;
@@ -773,13 +774,14 @@ double MCCorrection::GetPileUpWeightBySampleName(int N_pileup, int syst){
 
 }
 
-double MCCorrection::GetPileUpWeight(int N_pileup, int syst){
+double MCCorrection::GetPileUpWeight( int N_pileup, int syst){
 
-  int this_bin = N_pileup+1;
-  if(N_pileup >= 100) this_bin=100;
+  int this_bin = N_pileup;
+  if(N_pileup >= 59) this_bin=59;
+  if(N_pileup <= 5) this_bin=5;
 
 //  TString this_histname = "MC_" + TString::Itoa(DataYear,10);
-  TString this_histname = "PUReweight_";
+  TString this_histname = "PUReweight";
   if(syst == 0){
 //    this_histname += "_central_pileup";
     this_histname += TString::Itoa(DataYear,10)+"_pileup";

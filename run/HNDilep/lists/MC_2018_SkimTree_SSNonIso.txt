@@ -1,12 +1,9 @@
 SingleTop_tW_antitop_NoFullyHad
 SingleTop_sch_Lep
 SingleTop_tch_top_Incl
-DYJets
 SingleTop_tW_top_NoFullyHad
-TTLL_powheg
 ZZ_pythia
 WWTo2L2Nu_powheg
 WWToLNuQQ_powheg
 DYJets10to50_MG
-TTLJ_powheg
 SingleTop_tch_antitop_Incl

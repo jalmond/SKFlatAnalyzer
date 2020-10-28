@@ -9,3 +9,4 @@ Trigger Eff_DATA  IsoMu24_POGTight  RunAveraged_Eff_Trigger.root  IsoMu24_OR_Iso
 Trigger Eff_MC  IsoMu24_POGTight  RunAveraged_Eff_Trigger.root  IsoMu24_OR_IsoTkMu24_PtEtaBins/efficienciesMC/pt_abseta_MC
 Trigger	Eff_DATA	Mu50_POGHighPtLooseTrkIso	HighPtMuonTriggerSF_Run2016.root	Eff_Data
 Trigger	Eff_MC	Mu50_POGHighPtLooseTrkIso	HighPtMuonTriggerSF_Run2016.root	Eff_MC
+ID      SF      HNTightV1      IDRate13TeV_mu_2016.root HNTightV1NVertexReweightsDATA

@@ -28,6 +28,7 @@
 #pragma link C++ class HNtypeI_SR+;
 #pragma link C++ class HNtypeI_JA+;
 #pragma link C++ class HNtypeI_Dilepton+;
+#pragma link C++ class HNDilepton+;
 #pragma link C++ class HNtypeI_SR_2016H+;
 #pragma link C++ class HNtypeI_Cutflow+;
 #pragma link C++ class HNtypeI_Muon_SR+;

@@ -168,6 +168,16 @@ void HNtypeI_CF::executeEvent(){
   vector<TString>  mu_loose_id;
   vector<TString>  el_loose_id;
 
+  ELIDs.push_back(make_pair("passPOGTight_TTrig_HNTC","HNVeto2016"));       el_loose_id.push_back("HNLooseV2");
+  ELIDs.push_back(make_pair("passMVAID_noIso_WP90V16","HNVeto2016"));  el_loose_id.push_back("passMVAID_noIso_WP90LooseV2");                               \
+
+  ELIDs.push_back(make_pair("passPOGTightv1_TTrig_HNTC","HNVeto2016"));  el_loose_id.push_back("HNLoose");
+  ELIDs.push_back(make_pair("passPOGTightv2_TTrig_HNTC","HNVeto2016"));  el_loose_id.push_back("HNLoose");
+  ELIDs.push_back(make_pair("HNTight_dxy05_05_dz01_ip4_4","HNVeto2016"));  el_loose_id.push_back("HNLooseV3");
+  ELIDs.push_back(make_pair("HNTight_dxy02_02_dz01_ip4_4","HNVeto2016"));  el_loose_id.push_back("HNLooseV4");
+
+
+  /*
   ELIDs.push_back(make_pair("HEEPv7", "HNVeto"));
   el_loose_id.push_back("HEEPLoose");
 
@@ -222,7 +232,7 @@ void HNtypeI_CF::executeEvent(){
   
   ELIDs.push_back(make_pair("passMVAID_iso_WP90","HNVeto2016"));
   el_loose_id.push_back("passMVAID_iso_WP90Loose");
-  
+  */
   
   for (auto i: ELIDs) { 
     channel.push_back("EE");
