@@ -72,6 +72,7 @@ public:
   std::vector<Photon> GetAllPhotons();
   std::vector<Photon> GetPhotons(TString id, double ptmin, double fetamax);
 
+  bool PassID(std::vector<Electron> electrons, TString ID);
   //==== If TightIso is set, it calculate ptcone
   //==== If UseMini is true, Lepton::RelIso() returns MiniRelIso
   std::vector<Lepton *> MakeLeptonPointerVector(const std::vector<Muon>& muons, double TightIso=-999, bool UseMini=false);
@@ -173,6 +174,9 @@ public:
   Particle UpdateMET(const Particle& METv, const std::vector<Muon>& muons);
   Particle UpdateMETSmearedJet(const Particle& METv, const std::vector<Jet>& jets);
   std::vector<Muon> MuonApplyPtCut(const std::vector<Muon>& muons, double ptcut);
+  TString GetElType(Electron el, const std::vector<Gen>& gens);
+  TString GetElTypeString(Electron el, const std::vector<Gen>& gens);
+  TString GetElTypeTString(Electron el, const std::vector<Gen>& gens);
   std::vector<Electron> ElectronPromptOnly(const std::vector<Electron>& electrons, const std::vector<Gen>& gens);
   std::vector<Electron> ElectronUsePtCone(const std::vector<Electron>& electrons);
   Electron ElectronUsePtCone(const Electron& electron);
@@ -215,6 +219,9 @@ public:
   TH2D* GetHist2D(TString histname);
   TH3D* GetHist3D(TString histname);
 
+  void FillTypeCutflow(TString histname, double weight, vector<TString> lables, TString label1, TString label2);
+
+  void FillFullTypeCutflow(TString histname, double weight, vector<TString> lables, TString label1, TString label2);
   void FillEventCutflow(TString histname, double weight, vector<TString> lables, TString label);
   void FillEventCutflowAll(TString histname, double weight, vector<TString> lables, TString label);
 

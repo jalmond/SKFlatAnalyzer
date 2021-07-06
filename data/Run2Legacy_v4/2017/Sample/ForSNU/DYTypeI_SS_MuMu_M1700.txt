@@ -1,0 +1,1 @@
+/gv0/DATA/SKFlat/Run2Legacy_v4/2017/PrivateMC/HNtypeI/DYTypeI_SS_MuMu_M1700/DYTypeI_NLO_SF_M1700_SS_MuMu_2017_Ntuple.root

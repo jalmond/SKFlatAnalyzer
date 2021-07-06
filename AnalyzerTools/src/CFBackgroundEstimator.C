@@ -78,7 +78,7 @@ double CFBackgroundEstimator::GetElectronCFRate(TString ID, TString key, double 
 
   eta = fabs(eta);
   if(eta>=2.5) eta = 2.49;
-
+  if(pt > 200) pt=199.;
 
   std::map< TString, TH1D* >::const_iterator mapit;                                                                                                                               
   mapit = map_hist_Electron.find(ID+"_"+key);

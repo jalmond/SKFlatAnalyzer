@@ -144,7 +144,10 @@ void SkimTree_SSHN::executeEvent(){
     else if (HasFatJet) HasSS2lOR3l = true;
     if(SameCharge(electronPreColl))    HasSS2lOR3l = true;
     else if (HasFatJet) HasSS2lOR3l = true;
-
+    if(electronPreColl.size() == 1 &&  muonPreColl.size() == 1){
+      if( electronPreColl[0].Charge() ==  muonPreColl[0].Charge()) HasSS2lOR3l = true;
+      
+    }
   }
   
   if(NMu==2 && muonPreColl.at(0).Pt()>  17.    ) LeadLepPt = true;

@@ -1,0 +1,1 @@
+/gv0/DATA/SKFlat/Run2Legacy_v4/2017/PrivateMC/HNtypeI/VBFTypeI_OS_MuMu_M1000/VBFTypeI_NLO_SF_M1000_OS_MuMu_2017_Ntuple.root

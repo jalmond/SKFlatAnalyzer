@@ -32,7 +32,7 @@ public :
      fChain->Add(filename);
    }
 
-   Long64_t MaxEvent, NSkipEvent;
+   Long64_t MaxEvent, NSkipEvent,_jentry,_nentries;
    int LogEvery;
    bool IsDATA;
    TString DataStream;

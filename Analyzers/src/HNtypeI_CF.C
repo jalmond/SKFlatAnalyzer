@@ -168,13 +168,27 @@ void HNtypeI_CF::executeEvent(){
   vector<TString>  mu_loose_id;
   vector<TString>  el_loose_id;
 
-  ELIDs.push_back(make_pair("passPOGTight_TTrig_HNTC","HNVeto2016"));       el_loose_id.push_back("HNLooseV2");
-  ELIDs.push_back(make_pair("passMVAID_noIso_WP90V16","HNVeto2016"));  el_loose_id.push_back("passMVAID_noIso_WP90LooseV2");                               \
+  ELIDs.push_back(make_pair("HNTightV1","HNVeto2016"));  el_loose_id.push_back("HNLooseV5");
+  ELIDs.push_back(make_pair("HNTight2016", "HNVeto2016"));    el_loose_id.push_back("HNLoose2016");
 
-  ELIDs.push_back(make_pair("passPOGTightv1_TTrig_HNTC","HNVeto2016"));  el_loose_id.push_back("HNLoose");
-  ELIDs.push_back(make_pair("passPOGTightv2_TTrig_HNTC","HNVeto2016"));  el_loose_id.push_back("HNLoose");
-  ELIDs.push_back(make_pair("HNTight_dxy05_05_dz01_ip4_4","HNVeto2016"));  el_loose_id.push_back("HNLooseV3");
-  ELIDs.push_back(make_pair("HNTight_dxy02_02_dz01_ip4_4","HNVeto2016"));  el_loose_id.push_back("HNLooseV4");
+  ELIDs.push_back(make_pair("HN2016", "HNVeto2016"));    el_loose_id.push_back("HN2016_Loose");
+  ELIDs.push_back(make_pair("HN2016RelaxedIP", "HNVeto2016"));    el_loose_id.push_back("HN2016RelaxedIP_Loose");
+  
+  ELIDs.push_back(make_pair("HN2017", "HNVeto2016"));    el_loose_id.push_back("HN2017_Loose");
+  ELIDs.push_back(make_pair("HN2017RelaxedIP", "HNVeto2016"));    el_loose_id.push_back("HN2017RelaxedIP_Loose");
+
+  ELIDs.push_back(make_pair("HN2018", "HNVeto2016"));    el_loose_id.push_back("HN2018_Loose");
+  ELIDs.push_back(make_pair("HN2018RelaxedIP", "HNVeto2016"));    el_loose_id.push_back("HN2018RelaxedIP_Loose");
+
+
+
+  //ELIDs.push_back(make_pair("passPOGTight_TTrig_HNTC","HNVeto2016"));       el_loose_id.push_back("HNLooseV2");
+  //  ELIDs.push_back(make_pair("passMVAID_noIso_WP90V16","HNVeto2016"));  el_loose_id.push_back("passMVAID_noIso_WP90LooseV2");                    ELIDs.push_back(make_pair("HNTightV1","HNVeto2016"));  el_loose_id.push_back("passMVAID_noIso_WP90LooseV2");   
+
+  //ELIDs.push_back(make_pair("passPOGTightv1_TTrig_HNTC","HNVeto2016"));  el_loose_id.push_back("HNLoose");
+  //  ELIDs.push_back(make_pair("passPOGTightv2_TTrig_HNTC","HNVeto2016"));  el_loose_id.push_back("HNLoose");
+  //  ELIDs.push_back(make_pair("HNTight_dxy05_05_dz01_ip4_4","HNVeto2016"));  el_loose_id.push_back("HNLooseV3");
+  //  ELIDs.push_back(make_pair("HNTight_dxy02_02_dz01_ip4_4","HNVeto2016"));  el_loose_id.push_back("HNLooseV4");
 
 
   /*
@@ -417,19 +431,19 @@ void HNtypeI_CF::executeEventFromParameter(AnalyzerParameter param, TString El_I
 
   for(unsigned int iel=0; iel< myelectrons.size(); iel++){
 
-    double ptbins[10] = { 10., 15.,20.,30.,40.,50.,  60., 200.,400., 2000.};
+    double ptbins[11] = { 10., 15.,20.,30.,40.,50.,  60., 200.,300.,400., 2000.};
     double etabins2[5] = { 0.,0.8,  1.479, 2.,  2.5};
     
-    FillHist(("el_pt_eta"+param.Electron_Tight_ID).Data(), myelectrons[iel].Pt(), fabs(myelectrons[iel].Eta()),  weight, 9, ptbins, 4 , etabins2);
-    if(IsCF(myelectrons[iel],gens))       FillHist(("el_cf_pt_eta"+param.Electron_Tight_ID).Data(), myelectrons[iel].Pt(), fabs(myelectrons[iel].Eta()),  weight, 9, ptbins, 4 , etabins2);
+    FillHist(("el_pt_eta"+param.Electron_Tight_ID).Data(), myelectrons[iel].Pt(), fabs(myelectrons[iel].Eta()),  weight, 10, ptbins, 4 , etabins2);
+    if(IsCF(myelectrons[iel],gens))       FillHist(("el_cf_pt_eta"+param.Electron_Tight_ID).Data(), myelectrons[iel].Pt(), fabs(myelectrons[iel].Eta()),  weight, 10, ptbins, 4 , etabins2);
 
     if(fabs(myelectrons[iel].Eta()) < 1.5 ) {
-      FillHist( "el_barrel_pt"+param.Electron_Tight_ID, myelectrons[iel].Pt(), weight, 9 ,ptbins,"pt");
-      if(IsCF(myelectrons[iel],gens))   FillHist( "el_cf_barrel_pt"+param.Electron_Tight_ID, myelectrons[iel].Pt(), weight, 9 ,ptbins,"pt");
+      FillHist( "el_barrel_pt"+param.Electron_Tight_ID, myelectrons[iel].Pt(), weight, 10 ,ptbins,"pt");
+      if(IsCF(myelectrons[iel],gens))   FillHist( "el_cf_barrel_pt"+param.Electron_Tight_ID, myelectrons[iel].Pt(), weight, 10 ,ptbins,"pt");
     }
     else{
-      FillHist( "el_endcap_pt"+param.Electron_Tight_ID, myelectrons[iel].Pt(), weight, 9 ,ptbins,"pt");
-      if(IsCF(myelectrons[iel], gens))      FillHist( "el_cf_endcap_pt"+param.Electron_Tight_ID, myelectrons[iel].Pt(), weight, 9 ,ptbins,"pt");
+      FillHist( "el_endcap_pt"+param.Electron_Tight_ID, myelectrons[iel].Pt(), weight, 10 ,ptbins,"pt");
+      if(IsCF(myelectrons[iel], gens))      FillHist( "el_cf_endcap_pt"+param.Electron_Tight_ID, myelectrons[iel].Pt(), weight, 10 ,ptbins,"pt");
 
     }
 

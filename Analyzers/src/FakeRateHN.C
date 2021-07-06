@@ -98,75 +98,220 @@ void FakeRateHN::executeEvent(){
   vector<TString>  mu_loose_id;
   vector<TString>  el_loose_id;
   if(isEE||!IsDATA){
+
+
+    ELIDs.push_back(make_pair("HNTight2016", "HNVeto2016"));    el_loose_id.push_back("HNLoose2016");                                                                                                     
+    ELIDs.push_back(make_pair("HN2016", "HNVeto2016"));    el_loose_id.push_back("HN2016_Loose");                                                                                                     
+    ELIDs.push_back(make_pair("HN2017", "HNVeto2016"));    el_loose_id.push_back("HN2017_Loose");                                                                                                     
+    ELIDs.push_back(make_pair("HN2018", "HNVeto2016"));    el_loose_id.push_back("HN2018_Loose");                                                                                                     
+
+    ELIDs.push_back(make_pair("HN2016RelaxedIP", "HNVeto2016"));    el_loose_id.push_back("HN2016RelaxedIP_Loose");
+    ELIDs.push_back(make_pair("HN2017RelaxedIP", "HNVeto2016"));    el_loose_id.push_back("HN2017RelaxedIP_Loose");
+    ELIDs.push_back(make_pair("HN2018RelaxedIP", "HNVeto2016"));    el_loose_id.push_back("HN2018RelaxedIP_Loose");
+    
+
+    //HN2016
+
     /*
-    ELIDs.push_back(make_pair("HNTight2016", "HNVeto2016"));
-    el_loose_id.push_back("HNLoose");
+    // =========  HEEP IDS  ================================ //                                                                                               
+    ELIDs.push_back(make_pair("HEEPv7",     "HNVeto"));       el_loose_id.push_back("HEEPLoose");
+    ELIDs.push_back(make_pair("HEEP2018",   "HNVeto"));       el_loose_id.push_back("HEEPLoose");
+    ELIDs.push_back(make_pair("HNHEEPv7",   "HNVeto"));       el_loose_id.push_back("HNHEEPLoose");
+    ELIDs.push_back(make_pair("HNHEEP2018", "HNVeto"));       el_loose_id.push_back("HNHEEPLoose");
+    // =========  EXO-17-028 IDS  ================================ //                                                                                         
+    ELIDs.push_back(make_pair("HNTight2016", "HNVeto2016"));                el_loose_id.push_back("HNLoose2016");
+    ELIDs.push_back(make_pair("HNTight2016Update", "HNVeto2016"));          el_loose_id.push_back("HNLoose2016Update");
+    ELIDs.push_back(make_pair("HNTight2016NOIP", "HNVeto2016"));            el_loose_id.push_back("HNLoose2016NOIP");
+    ELIDs.push_back(make_pair("HNTight2016UpdateNOIP", "HNVeto2016"));      el_loose_id.push_back("HNLoose2016UpdateNOIP");
+
+    ELIDs.push_back(make_pair("HNTight_dxy05_10_dz01_ip4_4", "HNVeto"));    el_loose_id.push_back("HNLoose");
+    ELIDs.push_back(make_pair("HNTight_dxy05_10_dz01_ip4_5", "HNVeto"));    el_loose_id.push_back("HNLoose");
+    ELIDs.push_back(make_pair("HNTight_dxy05_05_dz01_ip4_4", "HNVeto"));    el_loose_id.push_back("HNLoose");
+    ELIDs.push_back(make_pair("HNTight_dxy05_05_dz01_ip4_5", "HNVeto"));    el_loose_id.push_back("HNLoose");
+    ELIDs.push_back(make_pair("HNTight_dxy05_10_dz01_ip4_4", "HNVeto"));    el_loose_id.push_back("HNLoose");
+    ELIDs.push_back(make_pair("HNTight_dxy05_10_dz01_ip4_5", "HNVeto"));    el_loose_id.push_back("HNLoose");
+    ELIDs.push_back(make_pair("HNTight_dxy05_05_dz01_ip4_4", "HNVeto"));    el_loose_id.push_back("HNLoose");
+    ELIDs.push_back(make_pair("HNTight_dxy05_05_dz01_ip4_5", "HNVeto"));    el_loose_id.push_back("HNLoose");
+
+    ELIDs.push_back(make_pair("HNTight_dxy02_05_dz01_ip4_4", "HNVeto"));    el_loose_id.push_back("HNLoose");
+    ELIDs.push_back(make_pair("HNTight_dxy02_05_dz01_ip4_5", "HNVeto"));    el_loose_id.push_back("HNLoose");
+    ELIDs.push_back(make_pair("HNTight_dxy02_02_dz01_ip4_4", "HNVeto"));    el_loose_id.push_back("HNLoose");
+    ELIDs.push_back(make_pair("HNTight_dxy02_02_dz01_ip4_5", "HNVeto"));    el_loose_id.push_back("HNLoose");
+    ELIDs.push_back(make_pair("HNTight_dxy02_02_dz01_ip3_4", "HNVeto"));    el_loose_id.push_back("HNLoose");
+    ELIDs.push_back(make_pair("HNTight_dxy02_02_dz01_ip3_3", "HNVeto"));    el_loose_id.push_back("HNLoose");
+    ELIDs.push_back(make_pair("HNTight_dxy05_10_dz01_ip999", "HNVeto"));    el_loose_id.push_back("HNLoose");
+    ELIDs.push_back(make_pair("HNTight_dxy05_05_dz01_ip999", "HNVeto"));    el_loose_id.push_back("HNLoose");
+    ELIDs.push_back(make_pair("HNTight_dxy02_05_dz01_ip999", "HNVeto"));    el_loose_id.push_back("HNLoose");
+    ELIDs.push_back(make_pair("HNTight_dxy02_02_dz01_ip999", "HNVeto"));    el_loose_id.push_back("HNLoose");
+
+    ELIDs.push_back(make_pair("HNTight_dxy05_10_dz01_ip4_4NOIP", "HNVeto"));    el_loose_id.push_back("HNLoose_dxy05_10_dz01_ip4_4");
+    ELIDs.push_back(make_pair("HNTight_dxy05_10_dz01_ip4_5NOIP", "HNVeto"));    el_loose_id.push_back("HNLoose_dxy05_10_dz01_ip4_5");
+    ELIDs.push_back(make_pair("HNTight_dxy05_05_dz01_ip4_4NOIP", "HNVeto"));    el_loose_id.push_back("HNLoose_dxy05_05_dz01_ip4_4");
+    ELIDs.push_back(make_pair("HNTight_dxy05_05_dz01_ip4_5NOIP", "HNVeto"));    el_loose_id.push_back("HNLoose_dxy05_05_dz01_ip4_5");
+    ELIDs.push_back(make_pair("HNTight_dxy05_10_dz01_ip3_4NOIP", "HNVeto"));    el_loose_id.push_back("HNLoose_dxy05_10_dz01_ip3_4");
+    ELIDs.push_back(make_pair("HNTight_dxy05_10_dz01_ip3_3NOIP", "HNVeto"));    el_loose_id.push_back("HNLoose_dxy05_10_dz01_ip3_3");
+    ELIDs.push_back(make_pair("HNTight_dxy02_05_dz01_ip4_4NOIP", "HNVeto"));    el_loose_id.push_back("HNLoose_dxy02_05_dz01_ip4_4");
+    ELIDs.push_back(make_pair("HNTight_dxy02_05_dz01_ip4_5NOIP", "HNVeto"));    el_loose_id.push_back("HNLoose_dxy02_05_dz01_ip4_5");
+    ELIDs.push_back(make_pair("HNTight_dxy02_02_dz01_ip4_4NOIP", "HNVeto"));    el_loose_id.push_back("HNLoose_dxy02_02_dz01_ip4_4");
+    ELIDs.push_back(make_pair("HNTight_dxy02_02_dz01_ip4_5NOIP", "HNVeto"));    el_loose_id.push_back("HNLoose_dxy02_02_dz01_ip4_5");
+    ELIDs.push_back(make_pair("HNTight_dxy02_02_dz01_ip3_4NOIP", "HNVeto"));    el_loose_id.push_back("HNLoose_dxy02_02_dz01_ip3_4");
+    ELIDs.push_back(make_pair("HNTight_dxy02_02_dz01_ip3_3NOIP", "HNVeto"));    el_loose_id.push_back("HNLoose_dxy02_02_dz01_ip3_3");
+    ELIDs.push_back(make_pair("HNTight_dxy05_10_dz01_ip999NOIP", "HNVeto"));    el_loose_id.push_back("HNLoose_dxy05_10_dz01_ip999");
+    ELIDs.push_back(make_pair("HNTight_dxy05_05_dz01_ip999NOIP", "HNVeto"));    el_loose_id.push_back("HNLoose_dxy05_05_dz01_ip999");
+    ELIDs.push_back(make_pair("HNTight_dxy02_05_dz01_ip999NOIP", "HNVeto"));    el_loose_id.push_back("HNLoose_dxy02_05_dz01_ip999");
+    ELIDs.push_back(make_pair("HNTight_dxy02_02_dz01_ip999NOIP", "HNVeto"));    el_loose_id.push_back("HNLoose_dxy02_02_dz01_ip999");
 
 
-    ELIDs.push_back(make_pair("HNTightV1", "HNVeto"));
-    el_loose_id.push_back("HNLoose");
+    ELIDs.push_back(make_pair("HNMedium_dxy05_10_dz01_ip4_4", "HNVeto"));    el_loose_id.push_back("HNLoose");
+    ELIDs.push_back(make_pair("HNMedium_dxy05_10_dz01_ip4_5", "HNVeto"));    el_loose_id.push_back("HNLoose");
+    ELIDs.push_back(make_pair("HNMedium_dxy05_05_dz01_ip4_4", "HNVeto"));    el_loose_id.push_back("HNLoose");
+    ELIDs.push_back(make_pair("HNMedium_dxy05_05_dz01_ip4_5", "HNVeto"));    el_loose_id.push_back("HNLoose");
+    ELIDs.push_back(make_pair("HNMedium_dxy05_10_dz01_ip3_4", "HNVeto"));    el_loose_id.push_back("HNLoose");
+    ELIDs.push_back(make_pair("HNMedium_dxy05_10_dz01_ip3_3", "HNVeto"));    el_loose_id.push_back("HNLoose");
+    ELIDs.push_back(make_pair("HNMedium_dxy05_10_dz01_ip3_4", "HNVeto"));    el_loose_id.push_back("HNLoose");
+    ELIDs.push_back(make_pair("HNMedium_dxy05_10_dz01_ip3_3", "HNVeto"));    el_loose_id.push_back("HNLoose");
+    ELIDs.push_back(make_pair("HNMedium_dxy02_05_dz01_ip4_4", "HNVeto"));    el_loose_id.push_back("HNLoose");
+    ELIDs.push_back(make_pair("HNMedium_dxy02_05_dz01_ip4_5", "HNVeto"));    el_loose_id.push_back("HNLoose");
+    ELIDs.push_back(make_pair("HNMedium_dxy02_02_dz01_ip4_4", "HNVeto"));    el_loose_id.push_back("HNLoose");
+    ELIDs.push_back(make_pair("HNMedium_dxy02_02_dz01_ip4_5", "HNVeto"));    el_loose_id.push_back("HNLoose");
+    ELIDs.push_back(make_pair("HNMedium_dxy02_02_dz01_ip3_4", "HNVeto"));    el_loose_id.push_back("HNLoose");
+    ELIDs.push_back(make_pair("HNMedium_dxy02_02_dz01_ip3_3", "HNVeto"));    el_loose_id.push_back("HNLoose");
+    ELIDs.push_back(make_pair("HNMedium_dxy05_10_dz01_ip999", "HNVeto"));    el_loose_id.push_back("HNLoose");
+    ELIDs.push_back(make_pair("HNMedium_dxy05_05_dz01_ip999", "HNVeto"));    el_loose_id.push_back("HNLoose");
+    ELIDs.push_back(make_pair("HNMedium_dxy02_05_dz01_ip999", "HNVeto"));    el_loose_id.push_back("HNLoose");
+    ELIDs.push_back(make_pair("HNMedium_dxy02_02_dz01_ip999", "HNVeto"));    el_loose_id.push_back("HNLoose");
 
-    ELIDs.push_back(make_pair("HEEPv7", "HNVeto"));
-    el_loose_id.push_back("HEEPLoose");
-    ELIDs.push_back(make_pair("HEEP2018", "HNVeto"));
-    el_loose_id.push_back("HEEPLoose");
-
-    ELIDs.push_back(make_pair("HNTightV2", "HNVeto"));
-    el_loose_id.push_back("HNLoose");
-
-
-    ELIDs.push_back(make_pair("HNTightV3", "HNVeto"));
-    el_loose_id.push_back("HNLoose");
-
-    ELIDs.push_back(make_pair("HNTightV4", "HNVeto"));
-    el_loose_id.push_back("HNLooseV2");
-
-    ELIDs.push_back(make_pair("HNMediumV1", "HNVeto"));
-    el_loose_id.push_back("HNLoose");
+    ELIDs.push_back(make_pair("HNMedium_dxy05_10_dz01_ip4_4NOIP", "HNVeto"));    el_loose_id.push_back("HNLoose_dxy05_10_dz01_ip4_4");
+    ELIDs.push_back(make_pair("HNMedium_dxy05_10_dz01_ip4_5NOIP", "HNVeto"));    el_loose_id.push_back("HNLoose_dxy05_10_dz01_ip4_4");
+    ELIDs.push_back(make_pair("HNMedium_dxy05_05_dz01_ip4_4NOIP", "HNVeto"));    el_loose_id.push_back("HNLoose_dxy05_05_dz01_ip4_4");
+    ELIDs.push_back(make_pair("HNMedium_dxy05_05_dz01_ip4_5NOIP", "HNVeto"));    el_loose_id.push_back("HNLoose_dxy05_05_dz01_ip4_4");
+    ELIDs.push_back(make_pair("HNMedium_dxy02_05_dz01_ip4_4NOIP", "HNVeto"));    el_loose_id.push_back("HNLoose_dxy05_10_dz01_ip4_4");
+    ELIDs.push_back(make_pair("HNMedium_dxy02_05_dz01_ip4_5NOIP", "HNVeto"));    el_loose_id.push_back("HNLoose_dxy05_10_dz01_ip4_4");
+    ELIDs.push_back(make_pair("HNMedium_dxy02_02_dz01_ip4_4NOIP", "HNVeto"));    el_loose_id.push_back("HNLoose_dxy05_10_dz01_ip4_4");
+    ELIDs.push_back(make_pair("HNMedium_dxy02_02_dz01_ip4_5NOIP", "HNVeto"));    el_loose_id.push_back("HNLoose_dxy05_10_dz01_ip4_4");
+    ELIDs.push_back(make_pair("HNMedium_dxy02_02_dz01_ip3_4NOIP", "HNVeto"));    el_loose_id.push_back("HNLoose_dxy05_10_dz01_ip4_4");
+    ELIDs.push_back(make_pair("HNMedium_dxy02_02_dz01_ip3_3NOIP", "HNVeto"));    el_loose_id.push_back("HNLoose_dxy05_10_dz01_ip4_4");
+    ELIDs.push_back(make_pair("HNMedium_dxy05_10_dz01_ip999NOIP", "HNVeto"));    el_loose_id.push_back("HNLoose_dxy05_10_dz01_ip4_4");
+    ELIDs.push_back(make_pair("HNMedium_dxy05_05_dz01_ip999NOIP", "HNVeto"));    el_loose_id.push_back("HNLoose_dxy05_10_dz01_ip4_4");
+    ELIDs.push_back(make_pair("HNMedium_dxy02_05_dz01_ip999NOIP", "HNVeto"));    el_loose_id.push_back("HNLoose_dxy05_10_dz01_ip4_4");
+    ELIDs.push_back(make_pair("HNMedium_dxy02_02_dz01_ip999NOIP", "HNVeto"));    el_loose_id.push_back("HNLoose_dxy05_10_dz01_ip4_4");
 
 
-    ELIDs.push_back(make_pair("HNMediumV2", "HNVeto"));
-    el_loose_id.push_back("HNLoose");
+
+    ELIDs.push_back(make_pair("passPOGTight", "HNVeto"));              el_loose_id.push_back("passLooseID_nocc");
+    ELIDs.push_back(make_pair("passPOGTight_HNTC_NOPC", "HNVeto"));    el_loose_id.push_back("passLooseID_nocc");
+    ELIDs.push_back(make_pair("passPOGTight_TC", "HNVeto"));           el_loose_id.push_back("passLooseID");
+    ELIDs.push_back(make_pair("passPOGTight_IP4", "HNVeto"));          el_loose_id.push_back("passLooseID");
+    ELIDs.push_back(make_pair("passPOGTight_TC_IP4", "HNVeto"));       el_loose_id.push_back("passLooseID");
+    ELIDs.push_back(make_pair("passPOGTight_HNTC", "HNVeto"));         el_loose_id.push_back("passLooseID");
+    ELIDs.push_back(make_pair("passPOGTight_HNTC_IP4", "HNVeto"));     el_loose_id.push_back("passLooseID");
+    ELIDs.push_back(make_pair("passPOGTight_TTrig", "HNVeto"));        el_loose_id.push_back("passLooseID");
+    ELIDs.push_back(make_pair("passPOGTight_TTrig_TC", "HNVeto"));     el_loose_id.push_back("passLooseID");
+    ELIDs.push_back(make_pair("passPOGTight_TTrig_IP4", "HNVeto"));    el_loose_id.push_back("passLooseID");
+    ELIDs.push_back(make_pair("passPOGTight_TTrig_HNTC", "HNVeto"));   el_loose_id.push_back("passLooseID");
+    ELIDs.push_back(make_pair("passPOGTight_TTrig_HNTC_IP4", "HNVeto"));    el_loose_id.push_back("passLooseID");
+    ELIDs.push_back(make_pair("passPOGTight_TTrig_HNTC_IP45", "HNVeto"));   el_loose_id.push_back("passLooseID");
+    ELIDs.push_back(make_pair("passPOGTight_TTrig_HNTC_IP5", "HNVeto"));    el_loose_id.push_back("passLooseID");
+    ELIDs.push_back(make_pair("passPOGMedium", "HNVeto"));           el_loose_id.push_back("passLooseID");
+    ELIDs.push_back(make_pair("passPOGMedium_TC", "HNVeto"));        el_loose_id.push_back("passLooseID");
+    ELIDs.push_back(make_pair("passPOGMedium_TC_IP4", "HNVeto"));    el_loose_id.push_back("passLooseID");
+    ELIDs.push_back(make_pair("passPOGMedium_HNTC", "HNVeto"));      el_loose_id.push_back("passLooseID");
+    ELIDs.push_back(make_pair("passPOGMedium_HNTC_IP4", "HNVeto"));  el_loose_id.push_back("passLooseID");
 
 
-    ELIDs.push_back(make_pair("HNMediumV3", "HNVeto"));
-    el_loose_id.push_back("HNLoose");
+    // POG M + IP + tight charge                                                                                                                              
+    ELIDs.push_back(make_pair("passMediumID", "HNVeto"));    el_loose_id.push_back("passLooseID");
+    ELIDs.push_back(make_pair("passTightID", "HNVeto"));    el_loose_id.push_back("passLooseID");
+
+    // POG MVA noISo + POG IP + tight charge                                                                                                                  
+    ELIDs.push_back(make_pair("passMVAID_noIso_WP80","HNVeto2016"));
+    el_loose_id.push_back("passMVAID_noIso_WP80Loose");
+    ELIDs.push_back(make_pair("passMVAID_noIso_WP90","HNVeto2016"));     el_loose_id.push_back("passMVAID_noIso_WP90Loose");
+    ELIDs.push_back(make_pair("passMVAID_noIso_WP90V2","HNVeto2016"));     el_loose_id.push_back("passMVAID_noIso_WP90Loose");
+    ELIDs.push_back(make_pair("passMVAID_noIso_WP90V3","HNVeto2016"));     el_loose_id.push_back("passMVAID_noIso_WP90Loose");
+    ELIDs.push_back(make_pair("passMVAID_noIso_WP90V4","HNVeto2016"));     el_loose_id.push_back("passMVAID_noIso_WP90Loose");
+    ELIDs.push_back(make_pair("passMVAID_noIso_WP90V5","HNVeto2016"));     el_loose_id.push_back("passMVAID_noIso_WP90Loose");
+    ELIDs.push_back(make_pair("passMVAID_noIso_WP90V6","HNVeto2016"));     el_loose_id.push_back("passMVAID_noIso_WP90Loose");
+    ELIDs.push_back(make_pair("passMVAID_noIso_WP90V7","HNVeto2016"));     el_loose_id.push_back("passMVAID_noIso_WP90Loose");
+    ELIDs.push_back(make_pair("passMVAID_noIso_WP90V8","HNVeto2016"));     el_loose_id.push_back("passMVAID_noIso_WP90Loose");
+    ELIDs.push_back(make_pair("passMVAID_noIso_WP90V9","HNVeto2016"));     el_loose_id.push_back("passMVAID_noIso_WP90Loose");
+    ELIDs.push_back(make_pair("passMVAID_noIso_WP90V10","HNVeto2016"));     el_loose_id.push_back("passMVAID_noIso_WP90Loose");
+    ELIDs.push_back(make_pair("passMVAID_noIso_WP90V11","HNVeto2016"));     el_loose_id.push_back("passMVAID_noIso_WP90Loose");
+    ELIDs.push_back(make_pair("passMVAID_noIso_WP90V12","HNVeto2016"));     el_loose_id.push_back("passMVAID_noIso_WP90Loose");
+    ELIDs.push_back(make_pair("passMVAID_noIso_WP90V13","HNVeto2016"));     el_loose_id.push_back("passMVAID_noIso_WP90Loose");
+    ELIDs.push_back(make_pair("passMVAID_noIso_WP90V14","HNVeto2016"));     el_loose_id.push_back("passMVAID_noIso_WP90Loose");
+    ELIDs.push_back(make_pair("passMVAID_noIso_WP90V15","HNVeto2016"));     el_loose_id.push_back("passMVAID_noIso_WP90Loose");
+    ELIDs.push_back(make_pair("passMVAID_noIso_WP90V16","HNVeto2016"));     el_loose_id.push_back("passMVAID_noIso_WP90Loose");
+    ELIDs.push_back(make_pair("passMVAID_noIso_WP90V17","HNVeto2016"));     el_loose_id.push_back("passMVAID_noIso_WP90Loose");
+    ELIDs.push_back(make_pair("passMVAID_noIso_WP90V18","HNVeto2016"));     el_loose_id.push_back("passMVAID_noIso_WP90Loose");
+    ELIDs.push_back(make_pair("passMVAID_noIso_WP90V19","HNVeto2016"));     el_loose_id.push_back("passMVAID_noIso_WP90Loose");
+
+    ELIDs.push_back(make_pair("passMVAID_iso_WP80","HNVeto2016"));        el_loose_id.push_back("passMVAID_iso_WP80Loose");
+
+    ELIDs.push_back(make_pair("passMVAID_iso_WP90","HNVeto2016"));        el_loose_id.push_back("passMVAID_iso_WP90Loose");
+
+    ELIDs.push_back(make_pair("passPOGMVAID_noIso_WP80","HNVeto2016"));    el_loose_id.push_back("passMVAID_noIso_WP80Loose");
+
+    ELIDs.push_back(make_pair("passPOGMVAID_noIso_WP90","HNVeto2016"));    el_loose_id.push_back("passMVAID_noIso_WP90Loose");
+
+    // POG MVA Iso + POG IP + tight charge                                                                                                                    
+    ELIDs.push_back(make_pair("passPOGMVAID_iso_WP80","HNVeto2016"));    el_loose_id.push_back("passMVAID_iso_WP80Loose");
+
+    ELIDs.push_back(make_pair("passPOGMVAID_iso_WP90","HNVeto2016"));    el_loose_id.push_back("passMVAID_iso_WP90Loose");
+
+
+    
+    ELIDs.push_back(make_pair("HNTight2016", "HNVeto2016"));    el_loose_id.push_back("HNLoose");
+    ELIDs.push_back(make_pair("HNTightV1", "HNVeto"));   el_loose_id.push_back("HNLoose");
+
+    ELIDs.push_back(make_pair("HEEPv7", "HNVeto"));    el_loose_id.push_back("HEEPLoose");
+    ELIDs.push_back(make_pair("HEEP2018", "HNVeto"));    el_loose_id.push_back("HEEPLoose");
+
+    ELIDs.push_back(make_pair("HNTightV2", "HNVeto"));    el_loose_id.push_back("HNLoose");
+    ELIDs.push_back(make_pair("HNTightV3", "HNVeto"));    el_loose_id.push_back("HNLoose");
+    ELIDs.push_back(make_pair("HNTightV4", "HNVeto"));    el_loose_id.push_back("HNLooseV2");
+
+    ELIDs.push_back(make_pair("HNMediumV1", "HNVeto"));    el_loose_id.push_back("HNLoose");
+
+
+    ELIDs.push_back(make_pair("HNMediumV2", "HNVeto"));    el_loose_id.push_back("HNLoose");
+    
+    
+    ELIDs.push_back(make_pair("HNMediumV3", "HNVeto"));    el_loose_id.push_back("HNLoose");
 
 
     // TIGHT POG + no CC in low pt                                                       
-    ELIDs.push_back(make_pair("passTightID_nocc", "HNVeto"));
-    el_loose_id.push_back("passLooseID_nocc");
+    ELIDs.push_back(make_pair("passTightID_nocc", "HNVeto"));    el_loose_id.push_back("passLooseID_nocc");
 
     // POG + IP + CC                                                                     
-    ELIDs.push_back(make_pair("passTightID", "HNVeto"));
-    el_loose_id.push_back("passLooseID");
+    ELIDs.push_back(make_pair("passTightID", "HNVeto"));    el_loose_id.push_back("passLooseID");
 
-    ELIDs.push_back(make_pair("passMediumID", "HNVeto"));
-    el_loose_id.push_back("passLooseID");
-
-
-    ELIDs.push_back(make_pair("passMVAID_noIso_WP80","HNVeto2016"));
-    el_loose_id.push_back("passMVAID_noIso_WP80Loose");
-
-    ELIDs.push_back(make_pair("passMVAID_noIso_WP90","HNVeto2016"));
-    el_loose_id.push_back("passMVAID_noIso_WP90Loose");
-
-    ELIDs.push_back(make_pair("passMVAID_iso_WP80","HNVeto2016"));
-    el_loose_id.push_back("passMVAID_iso_WP80Loose");
-
-    ELIDs.push_back(make_pair("passMVAID_iso_WP90","HNVeto2016"));
-    el_loose_id.push_back("passMVAID_iso_WP90Loose");
-
-    */
-    //ELIDs.push_back(make_pair("passPOGTight_TTrig_HNTC","HNVeto2016"));       el_loose_id.push_back("HNLooseV2"); 
+    ELIDs.push_back(make_pair("passMediumID", "HNVeto"));    el_loose_id.push_back("passLooseID");
     
-    //ELIDs.push_back(make_pair("passMVAID_noIso_WP90V16","HNVeto2016"));  el_loose_id.push_back("passMVAID_noIso_WP90LooseV2");                             
+
+    ELIDs.push_back(make_pair("passMVAID_noIso_WP80","HNVeto2016"));    el_loose_id.push_back("passMVAID_noIso_WP80Loose");
+
+    ELIDs.push_back(make_pair("passMVAID_noIso_WP90","HNVeto2016"));    el_loose_id.push_back("passMVAID_noIso_WP90Loose");
+
+    ELIDs.push_back(make_pair("passMVAID_iso_WP80","HNVeto2016"));    el_loose_id.push_back("passMVAID_iso_WP80Loose");
+
+    ELIDs.push_back(make_pair("passMVAID_iso_WP90","HNVeto2016"));    el_loose_id.push_back("passMVAID_iso_WP90Loose");
+
+    
+    ELIDs.push_back(make_pair("passPOGTight_TTrig_HNTC","HNVeto2016"));       el_loose_id.push_back("HNLooseV2"); 
+    
+    ELIDs.push_back(make_pair("passMVAID_noIso_WP90V16","HNVeto2016"));  el_loose_id.push_back("passMVAID_noIso_WP90LooseV2");                             
     
     ELIDs.push_back(make_pair("passPOGTightv1_TTrig_HNTC","HNVeto2016"));  el_loose_id.push_back("HNLoose");
     ELIDs.push_back(make_pair("passPOGTightv2_TTrig_HNTC","HNVeto2016"));  el_loose_id.push_back("HNLoose");
     ELIDs.push_back(make_pair("HNTight_dxy02_02_dz01_ip4_4","HNVeto2016"));  el_loose_id.push_back("HNLooseV3");
     ELIDs.push_back(make_pair("HNTight_dxy05_05_dz01_ip4_4","HNVeto2016"));  el_loose_id.push_back("HNLooseV4");
-              
+
+
+    */
+
+
+    ELIDs.push_back(make_pair("HNTightV1","HNVeto2016"));  el_loose_id.push_back("HNLooseV5");
     for (auto i: ELIDs) {
       channel.push_back("EE");
       MuIDs.push_back(make_pair("HNVeto2016","HNVeto2016"));
@@ -175,10 +320,10 @@ void FakeRateHN::executeEvent(){
   }
   if(isSingleMu || isMM||!IsDATA){
     
+    
+    //MuIDs.push_back(make_pair("HNTightPFIsoVeryVeryTight","HNVeto2016"));       mu_loose_id.push_back("HNLooseV1");
 
-    MuIDs.push_back(make_pair("POGTightPFIsoVeryVeryTight","HNVeto2016"));       mu_loose_id.push_back("HNLooseStandard");
-
-    MuIDs.push_back(make_pair("HNTight_Iso07_dxy_02_ip_3","HNVeto2016"));       mu_loose_id.push_back("HNLooseV1");
+    //    MuIDs.push_back(make_pair("HNTight_Iso07_dxy_02_ip_3","HNVeto2016"));       mu_loose_id.push_back("HNLooseV1");
     
         /*
     MuIDs.push_back(make_pair("POGTightPFIsoVeryTight","HNVeto2016"));

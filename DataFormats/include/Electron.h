@@ -36,6 +36,8 @@ public:
   inline double UncorrE() const { return j_EnergyUnCorr; }
   inline double UncorrPt() const { return Pt() * j_EnergyUnCorr/E(); }
 
+
+  bool PassMVA(double mva1, double mva2, double mva3) const;
   bool PassHNID()const ;
   void SetPassConversionVeto(bool b);
   inline int PassConversionVeto() const { return j_passConversionVeto; }
@@ -130,6 +132,7 @@ public:
   bool passMVAID_noIso_WP80HN() const;
   bool passMVAID_noIso_WP90HN() const;
   bool passMVAID_noIso_WP90XHN(double relisoCut, double dxyCut, double dzCut, double sipCut) const;
+  bool passMVAID_noIso_XHN(double relisoCut, double dxyCut, double dzCut, double sipCut) const;
   bool passPOGMVAID_noIso_WP80HN() const;
   bool passPOGMVAID_noIso_WP90HN() const;
 
@@ -186,12 +189,13 @@ public:
   void SetRelPFIso_Rho(double r);
   double EA();
 
-
+  bool passIDHN(int ID, double dxy_b, double dxy_e, double dz_b,double dz_e, double sip_b, double sip_e, double iso_b,double iso_e, double miso_b, double miso_e) const;
   bool PassID(TString ID, bool cc, double dx_b ,double dx_e,double dz_b,double dz_e, double iso_b, double iso_e) const;
   //==== ID
   bool PassID(TString ID) const;
   bool Pass_TESTID() const;
 
+  bool Pass_CutBasedTightNoIso() const;
   bool Pass_CutBasedLooseNoIso() const;
   bool Pass_CutBasedMediumNoIso() const;
   bool Pass_CutBasedVetoNoIso() const;

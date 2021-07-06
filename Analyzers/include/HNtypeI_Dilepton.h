@@ -152,6 +152,7 @@ class HNtypeI_Dilepton : public AnalyzerCore {
   void MakeGeneralPlots(std::vector<Muon> muons,std::vector<Electron> myelectrons, std::map<TString, std::vector<FatJet> > fatjet_map,AnalyzerParameter param ,double weights);
   
   // Plotter functions                                                                                                                                                                                                                                                                                                                                               
+  void FillAllElectronPlots(TString label , TString cut,  Electron els, float w);
   void FilAllElectronPlots(TString label , TString cut,  std::vector<Electron> els, float w);
   void FilAllMuonPlots(TString label , TString cut,  std::vector<Muon> mus, float w);
 

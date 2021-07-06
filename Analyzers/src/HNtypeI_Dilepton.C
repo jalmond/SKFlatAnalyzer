@@ -266,8 +266,24 @@ void HNtypeI_Dilepton::executeEvent(){
     //ELIDs.push_back(make_pair("passPOGTightv1_TTrig_HNTC","HNVeto2016"));  el_loose_id.push_back("HNLoose");
     //ELIDs.push_back(make_pair("passPOGTightv2_TTrig_HNTC","HNVeto2016"));  el_loose_id.push_back("HNLoose");
     //ELIDs.push_back(make_pair("HNTight_dxy02_02_dz01_ip4_4","HNVeto2016"));  el_loose_id.push_back("HNLooseV3");
-    ELIDs.push_back(make_pair("HNTight_dxy05_05_dz01_ip4_4","HNVeto2016"));  el_loose_id.push_back("HNLooseV4");
+    ELIDs.push_back(make_pair("HNTightV1","HNVeto2016"));  el_loose_id.push_back("HNLooseV5");
+    ELIDs.push_back(make_pair("HNTight2016", "HNVeto2016"));    el_loose_id.push_back("HNLoose2016");
 
+    if(DataYear==2016){
+
+    ELIDs.push_back(make_pair("HN2016", "HNVeto2016"));    el_loose_id.push_back("HN2016_Loose");
+    ELIDs.push_back(make_pair("HN2016RelaxedIP", "HNVeto2016"));    el_loose_id.push_back("HN2016RelaxedIP_Loose");
+    }
+    if(DataYear==2017){
+      
+    ELIDs.push_back(make_pair("HN2017", "HNVeto2016"));    el_loose_id.push_back("HN2017_Loose");
+    ELIDs.push_back(make_pair("HN2017RelaxedIP", "HNVeto2016"));    el_loose_id.push_back("HN2017RelaxedIP_Loose");
+    }
+    if(DataYear==2018){
+
+    ELIDs.push_back(make_pair("HN2018", "HNVeto2016"));    el_loose_id.push_back("HN2018_Loose");
+    ELIDs.push_back(make_pair("HN2018RelaxedIP", "HNVeto2016"));    el_loose_id.push_back("HN2018RelaxedIP_Loose");
+    }
 
     for (auto i: ELIDs) { 
       channel.push_back(EE);
@@ -285,7 +301,7 @@ void HNtypeI_Dilepton::executeEvent(){
     //MuIDs.push_back(make_pair("POGHighPtMixTight", "HNVeto2016"));
     //mu_loose_id.push_back("POGHighPtMixLoose"); // ---> FIX FR PT BIN
 
-    MuIDs.push_back(make_pair("POGTightPFIsoVeryVeryTight","HNVeto2016"));       mu_loose_id.push_back("HNLooseStandard");
+    MuIDs.push_back(make_pair("HNTightPFIsoVeryVeryTight","HNVeto2016"));       mu_loose_id.push_back("HNLooseV1");
     
     //MuIDs.push_back(make_pair("HNTight_Iso07_dxy_02_ip_3","HNVeto2016"));       mu_loose_id.push_back("HNLooseV1");
     
@@ -389,8 +405,8 @@ void HNtypeI_Dilepton::executeEventFromParameter(AnalyzerParameter param, TStrin
   //************************************************///
   // Only run over all jet collections for one ID                                                                                 
   bool run_opt_jets(false);
-  if (IsEE   && Tight_ID=="HNTight_dxy05_05_dz01_ip4_4")             run_opt_jets=true;
-  if (!IsEE  && Tight_ID=="POGTightPFIsoVeryVeryTight") run_opt_jets=true;
+  if (IsEE   && Tight_ID=="HNTightV1")             run_opt_jets=true;
+  if (!IsEE  && Tight_ID=="HNTightPFIsoVeryVeryTight") run_opt_jets=true;
 
   //************************************************///
   // IsCentral true means nominal analysis settings
@@ -521,11 +537,26 @@ void HNtypeI_Dilepton::executeEventFromParameter(AnalyzerParameter param, TStrin
   
   else{
     /// MC remove fakes
-    mymuons     = MuonPromptOnly(tmp_mymuons, gens);
-    myelectrons = ElectronPromptOnly(tmp_myelectrons, gens);
-    //mymuons     = tmp_mymuons;
-    //myelectrons = tmp_myelectrons;
+    //mymuons     = MuonPromptOnly(tmp_mymuons, gens);
+    //myelectrons = ElectronPromptOnly(tmp_myelectrons, gens);
+    mymuons     = tmp_mymuons;
+    myelectrons = tmp_myelectrons;
   }
+  std::vector<Muon> Prompt_mymuons     = MuonPromptOnly(tmp_mymuons, gens);
+  std::vector<Electron> Prompt_myelectrons = ElectronPromptOnly(tmp_myelectrons, gens);
+
+  std::vector<Electron>     veto_electrons     = SelectElectrons(this_AllElectrons, param.Electron_Veto_ID, 10., 2.5);
+  
+  for(auto iel : veto_electrons){
+    TString el_type = GetElTypeString(iel,gens);
+    FillAllElectronPlots ("", el_type+"el",iel, weight);
+  }
+  
+
+  //if(Prompt_mymuons.size() == 2 && isMM) return;
+  //if(Prompt_myelectrons.size() == 2 && !isMM) return;
+
+  
   
   std::vector<Electron> myelectrons_noconv;
   for(auto iel : myelectrons){
@@ -535,7 +566,9 @@ void HNtypeI_Dilepton::executeEventFromParameter(AnalyzerParameter param, TStrin
     }
   }
   // veto leptons use all available
-  std::vector<Electron>     veto_electrons     = SelectElectrons(this_AllElectrons, param.Electron_Veto_ID, 10., 2.5);
+
+
+  
   std::vector<Muon>         veto_muons         = SelectMuons(this_AllMuons, param.Muon_Veto_ID, 5., 2.4);
 
   // pt order collections 
@@ -948,6 +981,7 @@ void HNtypeI_Dilepton::RunHighMassSR(HNtypeI_Dilepton::ChargeType charge_i, TStr
   
   if(FullAnalysis&& flavour==MuMu && DEBUG) FilAllMuonPlots (label, "presel"+channel_s+"_"+ charge_s,muons, weight_hm);
   if(FullAnalysis&& flavour==EE && DEBUG) FilAllElectronPlots (label, "presel"+channel_s+"_"+ charge_s,electrons, weight_hm);
+
 
   ////////////////////////////////////////  
   // SR Variables                                                                                                                                            
@@ -1498,6 +1532,95 @@ void HNtypeI_Dilepton::RunEE(int ptbin, std::vector<Electron> electrons, std::ve
   //************************************************///   
   //************************************************///   
   
+
+  if(electrons_veto.size()==2){
+    if(electrons_veto[1].Pt() > 15){
+      if(muons_veto.size() == 0 && electrons_veto.at(0).IsGsfCtfScPixChargeConsistent() && electrons_veto.at(1).IsGsfCtfScPixChargeConsistent() ){
+	Particle vllCand = electrons_veto.at(0) + electrons_veto.at(1);
+	bool inZpeakv = (vllCand.M() < 101. && vllCand.M() > 81.) ;
+
+	if(vllCand.M() > 10 && !inZpeakv){
+	  
+	  vector<TString> ellabels = {"NF","NF_Conv","NF_CF","NF_CF_Conv","F","F_Conv","F_CF","F_CF_Conv"};
+	  TString el_type1 = GetElType(electrons_veto.at(0) ,gens);
+	  TString el_type2 = GetElType(electrons_veto.at(1) ,gens);
+	  
+
+
+	  TString el_fulltype1 = TString::Itoa(fabs(GetLeptonType(electrons_veto.at(0), gens)), 10);
+	  TString el_fulltype2 = TString::Itoa(fabs(GetLeptonType(electrons_veto.at(1), gens)), 10);
+	  
+	  if(GetLeptonType(electrons_veto.at(0), gens) < 0) el_fulltype1 = "-"+el_fulltype1;
+	  if(GetLeptonType(electrons_veto.at(1), gens) < 0) el_fulltype2 = "-"+el_fulltype2;
+	  
+	  vector<TString> elfulllabels = {"-6","-5","-4","-3","-2","-1","0","1","2","3","4","5","6"};
+	  
+
+	  for(auto iel : electrons_veto){
+	    TString el_fulltype = GetElTypeTString(iel,gens);
+	    FillAllElectronPlots ("", "Type"+el_fulltype+"el",iel  , weight_ee);
+	  }
+	  
+
+
+	  if(electrons_veto.at(0).Charge() == electrons_veto.at(1).Charge()){
+	    if(jets.size() > 1 &&   fatjets.size() ==0)  FillTypeCutflow("SS_Type_SR1",weight_ee, ellabels,el_type1, el_type2);
+
+	    else   FillTypeCutflow("SS_Type_SR2",weight_ee, ellabels,el_type1, el_type2);
+
+	    if(jets.size() > 1 &&   fatjets.size() ==0)  FillFullTypeCutflow("SS_FullType_SR1",weight_ee, elfulllabels,el_fulltype1, el_fulltype2);
+
+            else   FillFullTypeCutflow("SS_FullType_SR2",weight_ee, elfulllabels,el_fulltype1, el_fulltype2);
+
+
+	    for(auto iel : electrons_veto){
+	      TString el_type = GetElTypeString(iel,gens);
+	      TString el_fulltype = GetElTypeTString(iel,gens);
+
+	      FillAllElectronPlots ("SS_SR", el_type+"el",iel, weight_ee);
+	      
+	      
+	      if(jets.size() > 1 &&   fatjets.size() ==0)                 FillAllElectronPlots ("SS_SR1", el_type+"el",iel, weight_ee);
+	      else FillAllElectronPlots ("SS_SR2", el_type+"el",iel, weight_ee);
+	      
+	      if(jets.size() > 1 &&   fatjets.size() ==0)                 FillAllElectronPlots ("SS_SR1", "Type"+el_fulltype+"el",iel, weight_ee);
+	      else FillAllElectronPlots ("SS_SR2", "Type"+el_fulltype+"el",iel, weight_ee);
+	    }
+	    
+	    
+	  }
+	  else{
+	    if(vllCand.M() > 110.){
+	      
+	      for(auto iel : electrons_veto){
+
+		TString el_type = GetElTypeString(iel,gens);
+		TString el_fulltype = GetElTypeTString(iel,gens);
+
+
+		FillAllElectronPlots ("OS_SR", el_type+"el",iel, weight_ee);
+		if(jets.size() > 1 &&   fatjets.size() ==0)                 FillAllElectronPlots ("OS_SR1", el_type+"el",iel, weight_ee);
+		else FillAllElectronPlots ("OS_SR2", el_type+"el",iel, weight_ee);
+		if(jets.size() > 1 &&   fatjets.size() ==0)                 FillAllElectronPlots ("OS_SR1", "Type"+el_fulltype+"el",iel, weight_ee);
+                else FillAllElectronPlots ("OS_SR2", "Type"+el_fulltype+"el",iel, weight_ee);
+
+	      }
+	      if(jets.size() > 1 &&   fatjets.size() ==0)  FillTypeCutflow("OS_Type_SR1",weight_ee, ellabels,el_type1, el_type2);
+	      else   FillTypeCutflow("OS_Type_SR2",weight_ee, ellabels,el_type1, el_type2);
+	      
+	      if(jets.size() > 1 &&   fatjets.size() ==0)  FillFullTypeCutflow("OS_FullType_SR1",weight_ee, elfulllabels,el_fulltype1, el_fulltype2);
+
+	      else   FillFullTypeCutflow("OS_FullType_SR2",weight_ee, elfulllabels,el_fulltype1, el_fulltype2);
+
+
+	    }
+	  }
+	}
+      }
+    }
+  }
+ 
+
   if(electrons.size()!=2)  return;
   if(electrons[0].Pt() < 25.) return;
   if(electrons[1].Pt() < 15.) return;
@@ -1921,6 +2044,46 @@ void HNtypeI_Dilepton::FilAllMuonPlots(TString label , TString cut,  std::vector
     FillHist( cut+ "/IP3D_"+mu_lab+ label  , muons.at(i).IP3D()/muons.at(i).IP3Derr(), w, 400, -20., 20., "IP3D");
   }
 }
+
+
+void HNtypeI_Dilepton::FillAllElectronPlots(TString label , TString cut,  Electron el, float w){
+  
+  if(!el.IsGsfCtfScPixChargeConsistent()) return;
+
+  FillHist( cut+ "/eta_"+ label  , fabs(el.Eta()) , w, 60, 0., 3.,"el #eta");
+
+  if(fabs(el.Eta()) < 1.5) label = "barrel_"+label;
+  else label = "endcap_"+label;
+
+  FillHist( cut+ "/pt_vetoel_"+label , el.Pt() , w, 500, 0., 1000., "el p_{T} GeV");
+  FillHist( cut+ "/dxy_vetoel_"+label , fabs(el.dXY()) , w, 500, 0., 0.2, "dXY");
+  FillHist( cut+ "/dz_vetoel_"+label , fabs(el.dZ()) , w, 500, 0., 0.5, "dZ");
+  FillHist( cut+ "/IP3D_"+label  , fabs(el.IP3D()/el.IP3Derr()), w, 400, 0., 20., "IP3D");
+
+  FillHist( cut+ "/reliso_vetoel_"+label , el.RelIso() , w, 50, 0., 1., "R_{ISO} GeV");
+  FillHist( cut+ "/eta_"+ label  , fabs(el.Eta()) , w, 60,0., 3.,"el #eta");
+  FillHist( cut+ "/cc_vetoel", el.IsGsfCtfScPixChargeConsistent()  , w, 2, 0., 2.,"Charge Cons.");
+  FillHist( cut+ "/convveto_vetoel", el.PassConversionVeto()  , w, 2, 0., 2.,"Conv. veto.");
+  FillHist( cut+ "/mva_vetoel_"+label , el.MVAIso() , w, 100, -1., 1., "el mva");
+  FillHist( cut+ "/mvanoniso_vetoel_"+label , el.MVANoIso() , w, 100, -1., 1., "el mva nonIso");
+  FillHist( cut+ "/Full5x5_sigmaIetaIeta_"+label , el.Full5x5_sigmaIetaIeta() , w, 1000, 0., 0.1, "sigmaIetaIeta");
+  FillHist( cut+ "/dEtaSeed_"+label , fabs(el.dEtaSeed()) , w, 1000, 0., 0.1, "dEtaSeed");
+  FillHist( cut+ "/dPhiIn_"+label , fabs(el.dPhiIn()) , w, 1000, 0, 0.1, "dPhiIn");
+  FillHist( cut+ "/HoverE_"+label , el.HoverE() , w, 100, 0., 0.5, "H/E");
+  FillHist( cut+ "/InvEminusInvP_"+label , el.InvEminusInvP() , w, 100, 0., 0.2, "1/E - 1/P");
+  FillHist( cut+ "/e2x5OverE5x5_"+label , fabs(el.e2x5OverE5x5()) , w, 100, 0., 1., "e2x5OverE5x5");
+  FillHist( cut+ "/e1x5OverE5x5_"+label , fabs(el.e1x5OverE5x5()) , w, 100, 0., 1., "e1x5OverE5x5");
+  FillHist( cut+ "/dr03EcalRecHitSumEt_"+label , el.dr03EcalRecHitSumEt() , w, 100, 0., 1., "dr03EcalRecHitSumEt");
+  FillHist( cut+ "/dr03HcalDepth1TowerSumEt_"+label , el.dr03HcalDepth1TowerSumEt() , w, 100, 0., 1., "dr03HcalDepth1TowerSumEt");
+  FillHist( cut+ "/dr03HcalTowerSumEt_"+label , el.dr03HcalTowerSumEt() , w, 100, 0., 1., "dr03HcalTowerSumEt");
+  FillHist( cut+ "/dr03TkSumPt_"+label , el.dr03TkSumPt() , w, 100, 0., 1., "dr03TkSumPt");
+  FillHist( cut+ "/ecalPFClusterIso_"+label , el.ecalPFClusterIso() , w, 100, 0., 1., "ecalPFClusterIso");
+  FillHist( cut+ "/hcalPFClusterIso_"+label , el.hcalPFClusterIso() , w, 100, 0., 1., "hcalPFClusterIso");
+  FillHist( cut+ "/isEcalDriven_"+label , el.isEcalDriven() , w, 100, 0., 1., "isEcalDriven");
+
+}
+
+
 void HNtypeI_Dilepton::FilAllElectronPlots(TString label , TString cut,  std::vector<Electron> els, float w){
 
   FillHist( cut+ "/nelectrons"+label , size(els) , w, 5, 0., 5., "n_{el}");
@@ -1933,33 +2096,8 @@ void HNtypeI_Dilepton::FilAllElectronPlots(TString label , TString cut,  std::ve
       FillHist( cut+ "/pt_vetoel_cc_"+el_lab+label , els.at(i).Pt() , w, 500, 0., 1000., "el p_{T} GeV");
       
     }
-    continue;
-    FillHist( cut+ "/pt_vetoel_"+el_lab+label , els.at(i).Pt() , w, 500, 0., 1000., "el p_{T} GeV");
-    FillHist( cut+ "/dxy_vetoel_"+el_lab+label , els.at(i).dXY() , w, 500, -0.2, 0.2, "dXY");
-    FillHist( cut+ "/dz_vetoel_"+el_lab+label , els.at(i).dZ() , w, 500, -0.5, 0.5, "dZ");
-    FillHist( cut+ "/IP3D_"+el_lab+ label  , els.at(i).IP3D()/els.at(i).IP3Derr(), w, 400, -20., 20., "IP3D");
 
-    FillHist( cut+ "/reliso_vetoel_"+label , els.at(i).RelIso() , w, 50, 0., 1., "R_{ISO} GeV");
-    FillHist( cut+ "/eta_"+ label  , els.at(i).Eta() , w, 60, -3., 3.,"el #eta");
-    FillHist( cut+ "/cc_vetoel", els[i].IsGsfCtfScPixChargeConsistent()  , w, 2, 0., 2.,"Charge Cons.");
-    FillHist( cut+ "/convveto_vetoel", els[i].PassConversionVeto()  , w, 2, 0., 2.,"Conv. veto.");
-    FillHist( cut+ "/mva_vetoel_"+label , els.at(i).MVAIso() , w, 100, -1., 1., "el mva");
-    FillHist( cut+ "/mvanoniso_vetoel_"+label , els.at(i).MVANoIso() , w, 100, -1., 1., "el mva nonIso");
-    FillHist( cut+ "/Full5x5_sigmaIetaIeta_"+label , els.at(i).Full5x5_sigmaIetaIeta() , w, 1000, 0., 0.1, "");
-    FillHist( cut+ "/dEtaSeed_"+label , els.at(i).dEtaSeed() , w, 1000, -0.1, 0.1, "");
-    FillHist( cut+ "/dPhiIn_"+label , els.at(i).dPhiIn() , w, 1000, -.1, 0.1, "");
-    FillHist( cut+ "/HoverE_"+label , els.at(i).HoverE() , w, 100, 0., 0.5, "");
-    FillHist( cut+ "/InvEminusInvP_"+label , els.at(i).InvEminusInvP() , w, 100, 0., 0.2, "");
-    FillHist( cut+ "/e2x5OverE5x5_"+label , els.at(i).e2x5OverE5x5() , w, 100, -1., 1., "");
-    FillHist( cut+ "/e1x5OverE5x5_"+label , els.at(i).e1x5OverE5x5() , w, 100, -1., 1., "");
-    FillHist( cut+ "/TrkIso_"+label , els.at(i).TrkIso() , w, 100, 0., 1., "");
-    FillHist( cut+ "/dr03EcalRecHitSumEt_"+label , els.at(i).dr03EcalRecHitSumEt() , w, 100, 0., 1., "");
-    FillHist( cut+ "/dr03HcalDepth1TowerSumEt_"+label , els.at(i).dr03HcalDepth1TowerSumEt() , w, 100, 0., 1., "");
-    FillHist( cut+ "/dr03HcalTowerSumEt_"+label , els.at(i).dr03HcalTowerSumEt() , w, 100, 0., 1., "");
-    FillHist( cut+ "/dr03TkSumPt_"+label , els.at(i).dr03TkSumPt() , w, 100, 0., 1., "");
-    FillHist( cut+ "/ecalPFClusterIso_"+label , els.at(i).ecalPFClusterIso() , w, 100, 0., 1., "");
-    FillHist( cut+ "/hcalPFClusterIso_"+label , els.at(i).hcalPFClusterIso() , w, 100, 0., 1., "");
-    FillHist( cut+ "/isEcalDriven_"+label , els.at(i).isEcalDriven() , w, 100, 0., 1., "");
+    //FillAllElectronPlots(el_label+label, cut, el, w);
 
   }
   return;

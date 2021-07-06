@@ -323,6 +323,18 @@ std::vector<Electron> AnalyzerCore::GetElectrons(TString id, double ptmin, doubl
 
 }
 
+bool AnalyzerCore::PassID(std::vector<Electron> electrons, TString ID){
+  
+  int nel(0);
+  for(auto el : electrons){
+    
+    if( el.PassID(ID) ) nel++;
+    
+  }
+  if (nel ==2) return true;
+  return false;
+}
+
 std::vector<Lepton *> AnalyzerCore::MakeLeptonPointerVector(const std::vector<Muon>& muons, double TightIso, bool UseMini){
 
   std::vector<Lepton *> out;
@@ -1276,6 +1288,38 @@ std::vector<Muon> AnalyzerCore::MuonApplyPtCut(const std::vector<Muon>& muons, d
 
 }
 
+TString AnalyzerCore::GetElType(Electron el, const std::vector<Gen>& gens){
+  if(IsDATA) return "";
+  TString tag = "";
+  if(GetLeptonType(el, gens) > 0) tag += "NF";
+  else tag += "F";
+
+  if(fabs(GetLeptonType(el, gens))  >=4)  tag += "_Conv";
+  if(IsCF(el, gens)) tag += "_CF";
+
+  return tag;
+}
+TString AnalyzerCore::GetElTypeString(Electron el, const std::vector<Gen>& gens){
+  if(IsDATA) return "";
+  TString tag = "";
+  if(GetLeptonType(el, gens) > 0) tag += "NonFake";
+  else tag += "Fake";
+  
+  if(fabs(GetLeptonType(el, gens))  >=4)  tag += "_Conv";
+  if(IsCF(el, gens)) tag += "_CF";
+  
+  return tag;
+}
+
+TString AnalyzerCore::GetElTypeTString(Electron el, const std::vector<Gen>& gens){
+  if(IsDATA) return "";
+  TString tag = "";
+  if(GetLeptonType(el, gens) < 0) tag = "Minus";
+  tag+=TString::Itoa(fabs(GetLeptonType(el, gens)), 10);
+  return tag;
+}
+
+
 std::vector<Electron> AnalyzerCore::ElectronPromptOnly(const std::vector<Electron>& electrons, const std::vector<Gen>& gens){
 
   if(IsDATA) return electrons;
@@ -1973,6 +2017,43 @@ void AnalyzerCore::FillEventCutflow(TString histname, double weight, vector<TStr
   this_hist->Fill(label, weight);
 
 }
+
+
+
+void AnalyzerCore::FillFullTypeCutflow(TString histname, double weight, vector<TString> lables, TString label1, TString label2){
+
+  TH2D *this_hist = GetHist2D(histname);
+  if( !this_hist ){
+    this_hist = new TH2D("FillEventFullType/"+histname, "", lables.size(), 0, lables.size(),  lables.size(), 0, lables.size());
+    this_hist->SetDirectory(NULL);
+    for (unsigned int i=0 ; i < lables.size(); i++)  this_hist->GetXaxis()->SetBinLabel(i+1,lables[i]);
+    for (unsigned int i=0 ; i < lables.size(); i++)  this_hist->GetYaxis()->SetBinLabel(i+1,lables[i]);
+
+    maphist_TH2D[histname] = this_hist;
+  }
+
+  this_hist->Fill(label1, label2, fabs(weight));
+
+}
+
+
+void AnalyzerCore::FillTypeCutflow(TString histname, double weight, vector<TString> lables, TString label1, TString label2){
+
+  TH2D *this_hist = GetHist2D(histname);
+  if( !this_hist ){
+    this_hist = new TH2D("FillEventType/"+histname, "", lables.size(), 0, lables.size(),  lables.size(), 0, lables.size());
+    this_hist->SetDirectory(NULL);
+    for (unsigned int i=0 ; i < lables.size(); i++)  this_hist->GetXaxis()->SetBinLabel(i+1,lables[i]);
+    for (unsigned int i=0 ; i < lables.size(); i++)  this_hist->GetYaxis()->SetBinLabel(i+1,lables[i]);
+
+    maphist_TH2D[histname] = this_hist;
+  }
+
+  this_hist->Fill(label1, label2, fabs(weight));
+
+}
+
+
 void AnalyzerCore::FillHist(TString histname, double value, double weight, int n_bin, double x_min, double x_max , TString label){
 
   TH1D *this_hist = GetHist1D(histname);

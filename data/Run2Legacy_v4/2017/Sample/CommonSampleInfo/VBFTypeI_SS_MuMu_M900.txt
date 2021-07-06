@@ -1,0 +1,2 @@
+# alias PD xsec nmc sumw
+VBFTypeI_SS_MuMu_M900	VBFTypeI_NLO_SF_M900_2017	8.5171526743e-08	35566	16666

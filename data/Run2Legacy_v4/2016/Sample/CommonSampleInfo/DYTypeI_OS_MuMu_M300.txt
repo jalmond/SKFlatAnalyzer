@@ -1,0 +1,2 @@
+# alias PD xsec nmc sumw
+DYTypeI_OS_MuMu_M300	DYTypeI_NLO_SF_M300_2016	7.43681976965e-06	48116	45118

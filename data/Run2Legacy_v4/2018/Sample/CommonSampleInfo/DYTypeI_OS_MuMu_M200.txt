@@ -1,0 +1,2 @@
+# alias PD xsec nmc sumw
+DYTypeI_OS_MuMu_M200	DYTypeI_NLO_SF_M200_2018	3.57786272755e-05	49273	45875

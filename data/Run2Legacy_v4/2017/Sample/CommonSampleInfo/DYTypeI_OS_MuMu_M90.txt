@@ -1,0 +1,2 @@
+# alias PD xsec nmc sumw
+DYTypeI_OS_MuMu_M90	DYTypeI_NLO_SF_M90_2017	0.001643333169	124470	111576

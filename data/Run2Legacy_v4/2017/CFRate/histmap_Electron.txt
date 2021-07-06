@@ -1,4 +1,4 @@
-HNTight_dxy02_02_dz01_ip4_4_HNCF CFRate13TeV_el_2017.root
-HNTight_dxy05_05_dz01_ip4_4_HNCF CFRate13TeV_el_2017.root 
-passPOGTightv1_TTrig_HNTC_HNCF CFRate13TeV_el_2017.root 
-passPOGTightv2_TTrig_HNTC_HNCF CFRate13TeV_el_2017.root 
+HNTightV1_HNCF CFRate13TeV_el_2017.root 
+HNTight2016 CFRate13TeV_el_2017.root
+HN2017RelaxedIP CFRate13TeV_el_2017.root
+HN2017 CFRate13TeV_el_2017.root

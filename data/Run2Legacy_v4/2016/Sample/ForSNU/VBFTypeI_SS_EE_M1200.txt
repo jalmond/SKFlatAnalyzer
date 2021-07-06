@@ -1,0 +1,1 @@
+/gv0/DATA/SKFlat/Run2Legacy_v4/2016/PrivateMC/HNtypeI/VBFTypeI_SS_EE_M1200/VBFTypeI_NLO_SF_M1200_SS_EE_2016_Ntuple.root
