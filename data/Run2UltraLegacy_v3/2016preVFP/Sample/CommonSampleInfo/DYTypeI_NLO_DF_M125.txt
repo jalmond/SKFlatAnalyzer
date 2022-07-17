@@ -1,0 +1,2 @@
+# alias PD xsec nmc sumsign sumw
+DYTypeI_NLO_DF_M125	DYTypeI_NLO_DF_M125	20.74972105	375100	341360.0	389.408570472 

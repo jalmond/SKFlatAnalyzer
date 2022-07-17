@@ -1,0 +1,2 @@
+# alias PD xsec nmc sumsign sumw
+DYTypeI_NLO_DF_M400	DYTypeI_NLO_DF_M400	0.1962474301	305800	286800.0	3.0052023445 
