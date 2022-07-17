@@ -5,3 +5,6 @@
 *_Dict.cxx
 lib/*.tar.gz
 */obj
+lib/
+python/UserInfo_jalmond.py
+script/BadFileChecker/
