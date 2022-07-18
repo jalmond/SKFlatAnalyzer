@@ -13,6 +13,8 @@ def IsData(alias):
     if "DoubleMuon" in alias:
         return True
 
+    if "EGamma" in alias:
+        return True
 
     if "MuonEG" in alias:
         return True
@@ -94,23 +96,18 @@ def nevents(_filename):
 
     _localfile = open(_filename, "r")
     nevent_tree1=0
-    nevent_tree2=0
     
     for f in _localfile:
         #os.system("ls " + f.split()[0])
         _file = ROOT.TFile((f.split())[0])
         _tree  = _file.Get("recoTree/SKFlat")
-        _tree2  = _file.Get("SKFlat")
         if _tree:
             nevent_tree1 = nevent_tree1 + _tree.GetEntries()
-        if _tree2:
-            nevent_tree2 = nevent_tree2 + _tree2.GetEntries()
         _file.Close()
     _localfile.close()
 
     return nevent_tree1
     print "recoTree/SKFlat  has a total event count of " + str(nevent_tree1)
-    print "SKFlat metafile  has a total event count of " + str(nevent_tree2)
 
 
 
@@ -568,66 +565,66 @@ def make_common_sampleinfo(array_from_googledoc,array_from_googledoc_sig,_era, _
             os.system('rm ' + data_skoutput+"/"+ var_alias +".txt")
 
 
-def update_summarymc_file(_var_alias,_var_xsec,_summary_file_path, _era, _nevents_no_w,_nevents_sign , _nevents_w):
+def update_summarymc_file(list_update, _era, _summary_file_path):
 
-    """ fill arr_copy_file with lines in local MC summary file"""
-    print_message(1,"update_summarymc_file ["+_era+"]")
+    print_message(1,"update_summarymc_file ")
 
 
     arr_copy_file=[]
     r_mc_outfile=open(_summary_file_path,'r')
     for line in r_mc_outfile:
         arr_copy_file.append(line)
-    r_mc_outfile.close()    
+    r_mc_outfile.close()
 
 
     _tmp_path_mc_outfile="tmp_summary_"+_era+".txt"
     w_mc_outfile = open(_tmp_path_mc_outfile, "w")
-    #w_mc_outfile.write('# alias PD xsec nmc sumsign sumw \n')
-    len1=20
-    len2=50
-    for mc_info_lin in arr_copy_file:
-        if len(mc_info_lin.split())==0:
-            continue
-        if len(mc_info_lin.split()[0]) > len1:
-            len1= len(mc_info_lin.split()[0]) +5
-        if len(mc_info_lin.split()[1]) > len2:
-            len2= len(mc_info_lin.split()[1]) +5
 
 
     for mc_info_lin in arr_copy_file:
         if len(mc_info_lin.split())==0:
             continue
-            
-        if mc_info_lin.split()[0] == _var_alias:
 
-            update_line=False
-            if not mc_info_lin.split()[2] == _var_xsec:
-                update_line=True
+        _var_alias=""
+        _var_xsec=0
 
-            if not float(mc_info_lin.split()[3]) == float(_nevents_no_w):
-                update_line=True
-            if not float(mc_info_lin.split()[4]) == float(_nevents_sign):
-                update_line=True
-            if not float(mc_info_lin.split()[5]) == float(_nevents_w):
-                update_line=True
+        _nevents_no_w=0.
+        _nevents_sign=0.
+        _nevents_w=0.
 
-            if update_line:
-                #line_to_file = mc_info_lin.split()[0] + "\t"*(len1-len(mc_info_lin.split()[0]))  + mc_info_lin.split()[1] + " "*(len2-len(mc_info_lin.split()[1])) + str(_var_xsec) + " "*(20-len(_var_xsec)) + "   " + str(_nevents_no_w)  + "      "+str(_nevents_w) +" \n"
-                line_to_file = mc_info_lin.split()[0] + "\t" + mc_info_lin.split()[1] + "\t"+ str(_var_xsec) + "\t" +  str(_nevents_no_w)  + "\t"+str(_nevents_sign) + "\t"+str(_nevents_w) +" \n"
+        update_alias=False
+        for up_line in list_update:
+            if len(up_line) ==0 :
+                continue
 
-                if not mc_info_lin == line_to_file:
-                    print "Updating : " +mc_info_lin 
-                    print "----->     " + line_to_file
-                w_mc_outfile.write(line_to_file)
+            if  mc_info_lin.split()[0] == up_line[0]:
+               update_alias=True
+               _var_alias=up_line[0]
+               _var_xsec=up_line[1]
+               _nevents_no_w=up_line[2]
+               _nevents_sign=up_line[3]
+               _nevents_w=up_line[4]
+               break
+
+
+        if update_alias:
+
+            line_to_file = mc_info_lin.split()[0] + "\t" + mc_info_lin.split()[1] + "\t"+ str(_var_xsec) + "\t" +  str(_nevents_no_w)  + "\t"+str(_nevents_sign) + "\t"+str(_nevents_w) +" \n"
+
+            if not mc_info_lin == line_to_file:
+                print "Updating : " +mc_info_lin
+                print "----->     " + line_to_file
+            w_mc_outfile.write(line_to_file)
         else:
             w_mc_outfile.write(mc_info_lin)
-                
-    w_mc_outfile.close()    
-    
-    
+
+    w_mc_outfile.close()
+
+
 
     os.system('mv ' + _tmp_path_mc_outfile + ' '  + _summary_file_path )
+
+
     
 
 
@@ -785,6 +782,8 @@ def update_mc_samplelist_from_googledoc(array_from_googledoc,array_from_googledo
 
 def check_bad_files(badfile_dir,_era, _dir, RunFull):
     
+    if not RunFull:
+        return 
     print_message(1,"check_bad_files ["+_era+"] ["+ _dir +"]")
     currentdir = os.getenv("PWD")
     os.chdir(badfile_dir)
@@ -1076,6 +1075,9 @@ def get_effective_lumi(array_from_googledoc,array_from_googledoc_sig,_era,_skout
     ''' run over ds list at tamsa and fill common samplefile'''
 
     print ('Fill CommonSampleFiles')
+
+    update_array=[]
+
     for dsn in _dirlist:
         ''' access alias and xsec fmor google doc'''
 
@@ -1143,7 +1145,7 @@ def get_effective_lumi(array_from_googledoc,array_from_googledoc_sig,_era,_skout
             nevents_no_w=nevents(_skdatadir + _era+ "/Sample/ForSNU/"+var_alias + ".txt")
             print "CommonSampleInfo updated for nevents_w " + str(nevents_w)
 
-        if not float(orig_nevent_sign)==nevents_sign:
+        elif not float(orig_nevent_sign)==nevents_sign:
             update_file=True
             nevents_no_w=nevents(_skdatadir + _era+ "/Sample/ForSNU/"+var_alias + ".txt")
             print "CommonSampleInfo updated for nevents_sign " + str(nevents_sign)
@@ -1159,8 +1161,12 @@ def get_effective_lumi(array_from_googledoc,array_from_googledoc_sig,_era,_skout
 
             common_list.close()
             os.system("git diff " + _skdatadir + _era+ "/Sample/CommonSampleInfo/"+var_alias+".txt")
-        update_summarymc_file(var_alias,var_xsec,_summary_path, _era, nevents_no_w, nevents_sign , nevents_w )      
 
+            update_array.append([var_alias,var_xsec, nevents_no_w, nevents_sign , nevents_w])
+
+
+    if len(update_array) > 0:
+        update_summarymc_file(update_array,_era,_summary_path)
 
     return return_list
 
@@ -1281,8 +1287,7 @@ def check_file_diff(array_from_googledoc,array_from_googledoc_sig,_era, _dsn,  _
                 print "removing " + _skoutput+"/"+ var_alias +".txt"
                 print "###############################"*2
 
-            if not "Type" in var_alias:
-                check_bad_files(_var_skflat_wd+"/script/BadFileChecker/",_era, _dir, RunFull)                                                                                                                                                               
+            check_bad_files(_var_skflat_wd+"/script/BadFileChecker/",_era, _dir, RunFull)                                                                                                                                                               
 
     if not hasBadFile:
         print 'no bad/corrupt files found....'
