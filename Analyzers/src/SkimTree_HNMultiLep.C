@@ -2,8 +2,6 @@
 
 void SkimTree_HNMultiLep::initializeAnalyzer(){
 
-  isSingleMu = HasFlag("isSingleMu");
-
   outfile->cd();
   cout << "[SkimTree_HNMultiLep::initializeAnalyzer()] gDirectory = " << gDirectory->GetName() << endl;
   newtree = fChain->CloneTree(0);
@@ -94,7 +92,7 @@ void SkimTree_HNMultiLep::executeEvent(){
   //==== Skim 1 ) trigger
   if(! (ev.PassTrigger(triggers)) ) return;
 
-  if(isSingleMu && (ev.PassTrigger(triggers_dimu))) return;
+  if(this->DataStream == "SingleMuon" && (ev.PassTrigger(triggers_dimu))) return;
   
   std::vector<Muon>     muonPreColl     = GetMuons("HNLoosest", 7., 2.4);
   std::vector<Electron> electronPreColl = GetElectrons("HNLoosest", 8., 2.5);
