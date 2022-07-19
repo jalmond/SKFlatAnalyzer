@@ -321,6 +321,10 @@ def GetTimeStamp(sk_path,_dsn):
 
 
 def MissingSamples(array_gd,array_gd_sig,sk_path,_era):
+<<<<<<< HEAD
+=======
+
+>>>>>>> Run2UltraLegacy-jalmond
     
     missing = []
     wrong_assign=[]
@@ -373,7 +377,11 @@ def MissingSamples(array_gd,array_gd_sig,sk_path,_era):
         _dir_tmp.replace(sk_path+'/','')
         if not _dir_tmp in dsn_list:
             
+<<<<<<< HEAD
             skip_dsn_list=open(os.getenv("SKFlat_WD")+"/SKFlatSampleList/config/DSN_Skip.txt","r")
+=======
+            skip_dsn_list=open(os.getenv("SKFlat_WD")+"/script/SKFlatSampleList/config/DSN_Skip.txt","r")
+>>>>>>> Run2UltraLegacy-jalmond
             skip=False
             for line in skip_dsn_list:
                 if "END" in line:
@@ -390,7 +398,11 @@ def MissingSamples(array_gd,array_gd_sig,sk_path,_era):
             
 
     for x in missing_dsn:
+<<<<<<< HEAD
         #skip_dsn_list=open(os.getenv("SKFlat_WD")+"/SKFlatSampleList/config/DSN_Skip.txt","r")
+=======
+        #skip_dsn_list=open(os.getenv("SKFlat_WD")+"/script/SKFlatSampleList/config/DSN_Skip.txt","r")
+>>>>>>> Run2UltraLegacy-jalmond
         #skip=False
         #for line in skip_dsn_list:
         #    if line.split()[1] == x:
@@ -399,6 +411,12 @@ def MissingSamples(array_gd,array_gd_sig,sk_path,_era):
         #if not skip:
         print 'echo "'+ _era+ ' ' +  x + '"  >> config/DSN_Skip.txt'
     if len(missing_dsn)> 0:
+<<<<<<< HEAD
+=======
+        var_userinput= raw_input ('If running on SM MC and these are signals you can ignore.... Should we continue [y/n]:')                                                              
+        if var_userinput == "y":                                                                                                                        
+            return 
+>>>>>>> Run2UltraLegacy-jalmond
         exit()
 
 
@@ -440,7 +458,11 @@ def CheckDuplicates(array_gd):
             dsn_list.append(row[1])
     return False
 
+<<<<<<< HEAD
 def PrintSampleInfo(array_gd,array_gd_sig):
+=======
+def PrintSampleInfo(array_gd):
+>>>>>>> Run2UltraLegacy-jalmond
 
     print 'Summary for SKFlat TAMSA samples'
     nwidth=254
@@ -532,7 +554,11 @@ def check_processed_status(_dsnlist,_era):
 
 
 
+<<<<<<< HEAD
 def make_common_sampleinfo(array_from_googledoc,array_from_googledoc_sig,_era, _dirlist, _outfiledir,data_skoutput):
+=======
+def make_common_sampleinfo(array_from_googledoc,_era, _dirlist, _outfiledir,data_skoutput):
+>>>>>>> Run2UltraLegacy-jalmond
 
     print_message(1,"make_commonsample_file ["+_era+"]")
 
@@ -540,11 +566,20 @@ def make_common_sampleinfo(array_from_googledoc,array_from_googledoc_sig,_era, _
         
         array_gd = array_from_googledoc
 
+<<<<<<< HEAD
         if find_googledoc_from_dsn(array_gd,_era, "alias", DSN) == "NULL":
             array_gd = array_from_googledoc_sig
             
         var_alias = find_googledoc_var_from_dsn(array_gd,_era, "alias", DSN)
         var_xsec  = find_googledoc_var_from_dsn(array_gd,_era, "xsec" , DSN)
+=======
+        var_alias = find_googledoc_var_from_dsn(array_gd,_era, "alias", DSN)
+        var_xsec  = find_googledoc_var_from_dsn(array_gd,_era, "xsec" , DSN)
+        
+        if var_alias == "NULL":
+            print "skipping " + DSN
+            continue
+>>>>>>> Run2UltraLegacy-jalmond
 
         if os.path.exists(_outfiledir+"/"+var_alias+".txt"):
             #print "make_common_sampleinfo: "+_outfiledir+"/"+var_alias+".txt already exists..."  
@@ -554,7 +589,11 @@ def make_common_sampleinfo(array_from_googledoc,array_from_googledoc_sig,_era, _
 
         commonfile= open(_outfiledir+"/"+ var_alias+".txt","w")
         commonfile.write("# alias PD xsec nmc sumsign sumw \n")
+<<<<<<< HEAD
         commonfile.write(var_alias + "\t" + DSN + "\t" + var_xsec +   "\t" + "1." + "\t" + "1."  + "\t" + "1." )
+=======
+        commonfile.write(var_alias + "\t" + DSN + "\t" + var_xsec +   "\t" + "1." + "\t" + "1."  + "\t" + "1.\n" )
+>>>>>>> Run2UltraLegacy-jalmond
         commonfile.close()
         print "make_common_sampleinfo: added file " + _outfiledir+"/"+ var_alias+".txt"
         
@@ -565,6 +604,7 @@ def make_common_sampleinfo(array_from_googledoc,array_from_googledoc_sig,_era, _
             os.system('rm ' + data_skoutput+"/"+ var_alias +".txt")
 
 
+<<<<<<< HEAD
 def update_summarymc_file(list_update, _era, _summary_file_path):
 
     print_message(1,"update_summarymc_file ")
@@ -626,6 +666,20 @@ def update_summarymc_file(list_update, _era, _summary_file_path):
 
 
     
+=======
+def update_summarymc_file(_era):
+    
+    print_message(1,"update_summarymc_file ")
+    currentdir = os.getenv("PWD")
+    var_skflat_wd=os.getenv("SKFlat_WD")
+    FLAT_Version= ReadConfig("SKFlatVersion")
+
+    os.chdir(var_skflat_wd+"/data/"+FLAT_Version+"/"+_era+"/Sample/")
+    os.system("python Summarize.py" )
+    os.chdir(currentdir)
+    return 
+
+>>>>>>> Run2UltraLegacy-jalmond
 
 
 
@@ -662,7 +716,11 @@ def check_xsec_in_current_list( _dslist, _dsn, _varname):
     return b_to_update
 
 
+<<<<<<< HEAD
 def update_mc_samplelist_from_googledoc(array_from_googledoc,array_from_googledoc_sig,_era, _dirlist, _path_mc_outfile, _path_sklat_dir,work_dir):
+=======
+def update_mc_samplelist_from_googledoc(array_from_googledoc,_era, _dirlist, _path_mc_outfile, _path_sklat_dir,work_dir):
+>>>>>>> Run2UltraLegacy-jalmond
 
     
     update_list=[]
@@ -692,12 +750,21 @@ def update_mc_samplelist_from_googledoc(array_from_googledoc,array_from_googledo
 
         array_gd = array_from_googledoc
 
+<<<<<<< HEAD
         if find_googledoc_from_dsn(array_gd,_era,"alias", dsn) == "NULL":
             array_gd = array_from_googledoc_sig
+=======
+>>>>>>> Run2UltraLegacy-jalmond
 
         var_alias = find_googledoc_var_from_dsn(array_gd,_era,"alias", dsn)
         var_xsec  = find_googledoc_var_from_dsn(array_gd,_era,"xsec" , dsn)
 
+<<<<<<< HEAD
+=======
+        if var_alias == "NULL" :
+            continue
+
+>>>>>>> Run2UltraLegacy-jalmond
         if n_directories(_path_sklat_dir+_era+"/MC/"+dsn) == 0:
             print "update_mc_samplelist_from_googledoc ["+_era+"] directory "+ dsn + " is missing." 
             continue
@@ -707,7 +774,11 @@ def update_mc_samplelist_from_googledoc(array_from_googledoc,array_from_googledo
             print ('DSN= ',dsn)
             print( _path_mc_outfile, _path_sklat_dir,work_dir)  
             
+<<<<<<< HEAD
             skip_dsn_list=open(os.getenv("SKFlat_WD")+"/SKFlatSampleList/config/DSN_Skip.txt","r")
+=======
+            skip_dsn_list=open(os.getenv("SKFlat_WD")+"/script/SKFlatSampleList/config/DSN_Skip.txt","r")
+>>>>>>> Run2UltraLegacy-jalmond
             skip=False
             for line in skip_dsn_list:
                 if line.split()[1] == dsn and line.split()[0] == _era:
@@ -794,7 +865,22 @@ def check_bad_files(badfile_dir,_era, _dir, RunFull):
     os.chdir(currentdir)
     
 
+<<<<<<< HEAD
 def CopyCommonSampleFiles(commonpath, geteff_path, _path_mc_outfile,gd_list_wo_skipped):
+=======
+def CopyCommonSampleFiles(_era,commonpath, geteff_path, _path_mc_outfile,gd_list_wo_skipped):
+
+
+    currentdir = os.getenv("PWD")
+    var_skflat_wd=os.getenv("SKFlat_WD")
+    FLAT_Version= ReadConfig("SKFlatVersion")
+
+    print ("python Summarize.py")
+    os.chdir(var_skflat_wd+"/data/"+FLAT_Version+"/"+_era+"/Sample/")
+    os.system("python Summarize.py" )
+    os.chdir(currentdir)
+    os.system('cat ' + _path_mc_outfile)
+>>>>>>> Run2UltraLegacy-jalmond
 
     print('Removing files in ' + geteff_path)
 
@@ -820,7 +906,10 @@ def CopyCommonSampleFiles(commonpath, geteff_path, _path_mc_outfile,gd_list_wo_s
                 alias_copy_file.append(alias)
                 w_mc_outfile.write(line)
             
+<<<<<<< HEAD
 
+=======
+>>>>>>> Run2UltraLegacy-jalmond
     r_mc_outfile.close()
     w_mc_outfile.close()
     os.system('mv ' + _path_mc_outfile_tmp + ' ' + _path_mc_outfile)
@@ -974,12 +1063,25 @@ def CopyCommonSampleFiles(commonpath, geteff_path, _path_mc_outfile,gd_list_wo_s
         print x
     print '-'*40
 
+<<<<<<< HEAD
+=======
+    print ("python Summarize.py")
+    os.chdir(var_skflat_wd+"/data/"+FLAT_Version+"/"+_era+"/Sample/")
+    os.system("python Summarize.py" )
+    os.chdir(currentdir)
+    os.system('cat ' + _path_mc_outfile)
+    
+>>>>>>> Run2UltraLegacy-jalmond
 
         
     return
 
 
+<<<<<<< HEAD
 def get_effective_lumi(array_from_googledoc,array_from_googledoc_sig,_era,_skoutput ,data_skoutput, _skdatadir,_dirlist,_summary_path,skim_list, _workdir, RunFull):
+=======
+def get_effective_lumi(array_from_googledoc,_era,_skoutput ,data_skoutput, _skdatadir,_dirlist,_summary_path,skim_list, _workdir, RunFull):
+>>>>>>> Run2UltraLegacy-jalmond
 
     """  fill file with all alias that has not been ran previously"""
 
@@ -996,10 +1098,20 @@ def get_effective_lumi(array_from_googledoc,array_from_googledoc_sig,_era,_skout
         
         array_gd = array_from_googledoc
 
+<<<<<<< HEAD
         if find_googledoc_from_dsn(array_gd,_era,"alias", dsn) == "NULL":
             array_gd = array_from_googledoc_sig
 
         var_alias = find_googledoc_var_from_dsn(array_gd,_era,"alias", dsn)
+=======
+
+        var_alias = find_googledoc_var_from_dsn(array_gd,_era,"alias", dsn)
+
+        if var_alias == "NULL" :
+            print "Skipping NULL [get_effective_lumi] " +dsn
+            continue
+
+>>>>>>> Run2UltraLegacy-jalmond
         if not os.path.exists(data_skoutput+"/"+ var_alias +".txt"):
             print "get_effective_lumi: adding " + var_alias + " to processing list"
             arr_alias_torun.append(var_alias)
@@ -1082,10 +1194,17 @@ def get_effective_lumi(array_from_googledoc,array_from_googledoc_sig,_era,_skout
         ''' access alias and xsec fmor google doc'''
 
         array_gd = array_from_googledoc
+<<<<<<< HEAD
         if find_googledoc_from_dsn(array_gd,_era,"alias", dsn) == "NULL":
             array_gd = array_from_googledoc_sig
 
         var_alias = find_googledoc_var_from_dsn(array_gd,_era,"alias", dsn)
+=======
+
+        var_alias = find_googledoc_var_from_dsn(array_gd,_era,"alias", dsn)
+        if var_alias == "NULL" :
+            continue
+>>>>>>> Run2UltraLegacy-jalmond
 
 
         if not RunFull:
@@ -1166,7 +1285,11 @@ def get_effective_lumi(array_from_googledoc,array_from_googledoc_sig,_era,_skout
 
 
     if len(update_array) > 0:
+<<<<<<< HEAD
         update_summarymc_file(update_array,_era,_summary_path)
+=======
+        update_summarymc_file(_era)
+>>>>>>> Run2UltraLegacy-jalmond
 
     return return_list
 
@@ -1226,7 +1349,11 @@ def check_samplefile_diff(orig_dir, updated_dir, geteff_filepath):
                 
                 
     
+<<<<<<< HEAD
 def check_file_diff(array_from_googledoc,array_from_googledoc_sig,_era, _dsn,  _path_to_skflat_mc, _path_to_samplefiles,_var_skflat_wd,_skoutput, work_dir, RunFull):
+=======
+def check_file_diff(array_from_googledoc,_era, _dsn,  _path_to_skflat_mc, _path_to_samplefiles,_var_skflat_wd,_skoutput, work_dir, RunFull):
+>>>>>>> Run2UltraLegacy-jalmond
     
     from os import listdir
     from os.path import isfile,isdir, join
@@ -1246,11 +1373,18 @@ def check_file_diff(array_from_googledoc,array_from_googledoc_sig,_era, _dsn,  _
         
         array_gd = array_from_googledoc
 
+<<<<<<< HEAD
         if find_googledoc_from_dsn(array_gd,_era,"alias", _dir) == "NULL":
             array_gd = array_from_googledoc_sig
             
         var_alias = find_googledoc_var_from_dsn(array_gd,_era,"alias", _dir)
         
+=======
+        var_alias = find_googledoc_var_from_dsn(array_gd,_era,"alias", _dir)
+        if var_alias == "NULL" :
+            continue
+
+>>>>>>> Run2UltraLegacy-jalmond
         runBadFile=False
         
         if var_alias+".txt" in arr_snufiles:
@@ -1308,6 +1442,13 @@ def get_alias_perera(_era, dirlist):
             var_url = get_url_from_era(_era,True)
 
         var_alias = find_googledoc_var_from_dsn(_era,"alias", x, var_url)
+<<<<<<< HEAD
+=======
+        if var_alias == "NULL" :
+            print "Skipping " +var_alias
+            continue
+
+>>>>>>> Run2UltraLegacy-jalmond
         arr_alias.append(var_alias)
     return arr_alias
 
@@ -1344,4 +1485,8 @@ def print_alias_perera(_era, dirlist):
             var_url = get_url_from_era(_era,True)
 
         var_alias = find_googledoc_var_from_dsn(_era,"alias", x, var_url)
+<<<<<<< HEAD
+=======
+
+>>>>>>> Run2UltraLegacy-jalmond
         print var_alias

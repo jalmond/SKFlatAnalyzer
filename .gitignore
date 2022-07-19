@@ -1,3 +1,4 @@
+*~
 *.pyc
 *.pcm
 *.d
@@ -5,5 +6,10 @@
 *_Dict.cxx
 lib/*.tar.gz
 */obj
+<<<<<<< HEAD
 SKFlatSampleList/*.pyc
 SKFlatSampleList/tmp*
+=======
+data/Run2UltraLegacy_*/*/Sample/*/*Type*
+data/Run2UltraLegacy_*/*/Sample/*/*private*
+>>>>>>> Run2UltraLegacy-jalmond

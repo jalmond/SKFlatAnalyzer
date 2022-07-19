@@ -39,6 +39,10 @@ parser = argparse.ArgumentParser(description='option')
 parser.add_argument('-e', dest='era', default="NULL")
 parser.add_argument('-s', dest='skim', default="NULL")
 parser.add_argument('--Full', action='store_true')
+<<<<<<< HEAD
+=======
+parser.add_argument('--Signal', action='store_true')
+>>>>>>> Run2UltraLegacy-jalmond
 parser.add_argument('--UserInput', action='store_true')
 parser.add_argument('--VERBOSE', action='store_true')
 args = parser.parse_args()
@@ -63,6 +67,28 @@ else:
 
 
 
+<<<<<<< HEAD
+=======
+GIT_BRANCH="Run2UltraLegacy-jalmond"
+GIT_BRANCH_SIGNAL="HNL_Run2UltraLegacy"
+
+os.system("git br -vv | grep '*' > tempGIT.txt")
+git_branch_infoline = open("tempGIT.txt").readlines()[0]
+os.system('rm tempGIT.txt')
+print git_branch_infoline.split()[1] 
+if args.Signal:
+    if not  git_branch_infoline.split()[1] == GIT_BRANCH_SIGNAL:
+        print ("ERROR: Running SIGNAL option in wrong branch... exit ")
+        print ("git co " + GIT_BRANCH_SIGNAL)
+        exit()
+else:
+    if not  git_branch_infoline.split()[1] == GIT_BRANCH:
+        print ("ERROR: Running in wrong branch... exit ")
+        print ("git co " + GIT_BRANCH)
+
+        exit()
+
+>>>>>>> Run2UltraLegacy-jalmond
 if args.UserInput:
     update_script=os.getenv("SKFlat_WD")+'/bin/UpdateSampleForSNU.sh'
 
@@ -117,7 +143,11 @@ for era in arr_eras:
     print 'UpdateTamsaSKFlatSampleInput: Skipping the following DSN:'
     print '-'*70
             
+<<<<<<< HEAD
     skip_dsn_list=open(os.getenv("SKFlat_WD")+"/SKFlatSampleList/config/DSN_Skip.txt","r")
+=======
+    skip_dsn_list=open(os.getenv("SKFlat_WD")+"/script/SKFlatSampleList/config/DSN_Skip.txt","r")
+>>>>>>> Run2UltraLegacy-jalmond
 
     for line in skip_dsn_list:
         era_skip = line.split()[0]
@@ -160,7 +190,14 @@ for era in arr_eras:
 
 
     array_from_googledoc        = get_array_from_googledoc(era,miniaod_versions,False)
+<<<<<<< HEAD
     array_from_googledoc_signal = get_array_from_googledoc(era,miniaod_versions,True)
+=======
+    array_from_googledoc_sig    = get_array_from_googledoc(era,miniaod_versions,True)
+
+    if args.Signal:
+        array_from_googledoc = array_from_googledoc_sig
+>>>>>>> Run2UltraLegacy-jalmond
     
 
     up2_start_era_time = time.time()
@@ -172,7 +209,11 @@ for era in arr_eras:
 
     AssignTimeStamp(path_sklat_dir+era+'/MC/',array_from_googledoc)
 
+<<<<<<< HEAD
     MissingSamples(array_from_googledoc,array_from_googledoc_signal,path_sklat_dir+era+'/MC/',era)
+=======
+    MissingSamples(array_from_googledoc,array_from_googledoc_sig,path_sklat_dir+era+'/MC/',era)
+>>>>>>> Run2UltraLegacy-jalmond
 
     up3_start_era_time = time.time()
     vtimes.append(["Missing_file_time",time.time()])
@@ -184,8 +225,11 @@ for era in arr_eras:
     if args.VERBOSE:
         for row in array_from_googledoc:
             print row[0] + ' '*(40-len(row[0])) + row[1] + ' '*(70-len(row[1]) ) + row[2]                                                                                                  
+<<<<<<< HEAD
         for row in array_from_googledoc_signal:
             print row[0] + ' '*(40-len(row[0])) + row[1] + ' '*(70-len(row[1]) ) + row[2]                                                                                                  
+=======
+>>>>>>> Run2UltraLegacy-jalmond
     os.system('cp -r  ' +var_skflat_wd+"/data/"+FLAT_Version+"/"+era+"/Sample/ForSNU/ " + workdir +'/' )
 
     if args.Full:
@@ -199,6 +243,7 @@ for era in arr_eras:
     vtimes.append(["Pre_sample_setup_time",time.time()])
     
 
+<<<<<<< HEAD
 
     CopyCommonSampleFiles(var_skflat_wd+"/data/"+FLAT_Version+"/"+era+"/Sample/CommonSampleInfo/",var_sk_out+"/"+FLAT_Version+"/SampleCheck/"+era+"/", path_dir_sk_datadir+era+"/Sample/SampleSummary_MC.txt",_skdir_list)
 
@@ -206,11 +251,22 @@ for era in arr_eras:
     vtimes.append(["post_sample_setup_time",time.time()])
 
     UpdateFiles = update_mc_samplelist_from_googledoc(array_from_googledoc,array_from_googledoc_signal,era,_skdir_list,path_dir_sk_datadir+era+"/Sample/SampleSummary_MC.txt" ,path_sklat_dir, workdir)
+=======
+    CopyCommonSampleFiles(era,var_skflat_wd+"/data/"+FLAT_Version+"/"+era+"/Sample/CommonSampleInfo/",var_sk_out+"/"+FLAT_Version+"/SampleCheck/"+era+"/", path_dir_sk_datadir+era+"/Sample/SampleSummary_MC.txt",_skdir_list)
+
+    vtimes.append(["post_sample_setup_time",time.time()])
+
+    UpdateFiles = update_mc_samplelist_from_googledoc(array_from_googledoc,era,_skdir_list,path_dir_sk_datadir+era+"/Sample/SampleSummary_MC.txt" ,path_sklat_dir, workdir)
+>>>>>>> Run2UltraLegacy-jalmond
     
     vtimes.append(["post_update_file_time",time.time()])
 
 
+<<<<<<< HEAD
     check_file_diff(array_from_googledoc,array_from_googledoc_signal,era,UpdateFiles,path_sklat_dir,var_skflat_wd+"/data/"+FLAT_Version+"/"+era+"/Sample/ForSNU/",var_skflat_wd,var_sk_out+"/"+FLAT_Version+"/SampleCheck/"+era+"/", workdir, args.Full)
+=======
+    check_file_diff(array_from_googledoc,era,UpdateFiles,path_sklat_dir,var_skflat_wd+"/data/"+FLAT_Version+"/"+era+"/Sample/ForSNU/",var_skflat_wd,var_sk_out+"/"+FLAT_Version+"/SampleCheck/"+era+"/", workdir, args.Full)
+>>>>>>> Run2UltraLegacy-jalmond
 
 
     vtimes.append(["post_filediff_time",time.time()])
@@ -229,14 +285,22 @@ for era in arr_eras:
             print '-'*75
             print ''
             
+<<<<<<< HEAD
             PrintSampleInfo(array_from_googledoc,array_from_googledoc_signal)            
+=======
+            PrintSampleInfo(array_from_googledoc)            
+>>>>>>> Run2UltraLegacy-jalmond
 
             CheckMultipleTimeStamps(path_sklat_dir+era+'/MC/')
             
             if CheckDuplicates(array_from_googledoc):
                 print '-----------------------'*3
+<<<<<<< HEAD
             if CheckDuplicates(array_from_googledoc_signal):
                 print '-----------------------'*3
+=======
+            update_summarymc_file(_era)
+>>>>>>> Run2UltraLegacy-jalmond
 
             continue
             
@@ -273,7 +337,11 @@ for era in arr_eras:
     up_start_comm_time = time.time()
 
 
+<<<<<<< HEAD
     make_common_sampleinfo(array_from_googledoc,array_from_googledoc_signal,era,_skdir_list,var_skflat_wd+"/data/"+FLAT_Version+"/"+era+"/Sample/CommonSampleInfo/",var_sk_out+"/"+FLAT_Version+"/SampleCheck/")
+=======
+    make_common_sampleinfo(array_from_googledoc,era,_skdir_list,var_skflat_wd+"/data/"+FLAT_Version+"/"+era+"/Sample/CommonSampleInfo/",var_sk_out+"/"+FLAT_Version+"/SampleCheck/")
+>>>>>>> Run2UltraLegacy-jalmond
     up_end_comm_time = time.time()
 
     if args.VERBOSE:
@@ -284,7 +352,11 @@ for era in arr_eras:
     up_start_eff_time = time.time()
 
     #''' check if sample is new and run eff lumi, and fill summary and input files with nevent info'''
+<<<<<<< HEAD
     updated_list = get_effective_lumi(array_from_googledoc,array_from_googledoc_signal,era,var_sk_out+"/"+FLAT_Version+"/", var_sk_out+"/"+FLAT_Version+"/SampleCheck/"+era+"/", path_dir_sk_datadir, _skdir_list,path_dir_sk_datadir+era+"/Sample/SampleSummary_MC.txt",skim_list, workdir,args.Full)
+=======
+    updated_list = get_effective_lumi(array_from_googledoc,era,var_sk_out+"/"+FLAT_Version+"/", var_sk_out+"/"+FLAT_Version+"/SampleCheck/"+era+"/", path_dir_sk_datadir, _skdir_list,path_dir_sk_datadir+era+"/Sample/SampleSummary_MC.txt",skim_list, workdir,args.Full)
+>>>>>>> Run2UltraLegacy-jalmond
 
 
     vtimes.append(["post_get_effective_lumi_diff_time",time.time()])
@@ -307,7 +379,11 @@ for era in arr_eras:
             os.system('bash '+update_script+' '+path_sklat_dir+era+'/MC_'+skim+'/')
     os.system('rm -rf ' + workdir)
 
+<<<<<<< HEAD
     PrintSampleInfo(array_from_googledoc,array_from_googledoc_signal)
+=======
+    PrintSampleInfo(array_from_googledoc)
+>>>>>>> Run2UltraLegacy-jalmond
     
     vtimes.append(["post_summary_time",time.time()])
 
@@ -316,9 +392,19 @@ for era in arr_eras:
 
     if CheckDuplicates(array_from_googledoc):
         print '-----------------------'*3
+<<<<<<< HEAD
     if CheckDuplicates(array_from_googledoc_signal):
         print '-----------------------'*3
 
 
     vtimes.append(["finished_ime",time.time()])
     Exit(vtimes,True)
+=======
+
+
+    vtimes.append(["finished_ime",time.time()])
+
+    update_summarymc_file(era)
+            
+Exit(vtimes,True)
+>>>>>>> Run2UltraLegacy-jalmond

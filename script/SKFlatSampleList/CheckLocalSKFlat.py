@@ -27,7 +27,11 @@ def get_skflat_on_tamsa(_path,_era):
     arr_skflatdir.sort()
 
 
+<<<<<<< HEAD
     skip_dsn_list=open(os.getenv("SKFlat_WD")+"/SKFlatSampleList/config/DSN_Skip.txt","r")
+=======
+    skip_dsn_list=open(os.getenv("SKFlat_WD")+"/script/SKFlatSampleList/config/DSN_Skip.txt","r")
+>>>>>>> Run2UltraLegacy-jalmond
 
     for line in skip_dsn_list:
         if len(line.split()) ==  2:

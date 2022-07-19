@@ -1,2 +1,6 @@
 # alias PD xsec nmc sumsign sumw
+<<<<<<< HEAD
 QCD_Pt-80to120_EMEnriched	QCD_Pt-80to120_EMEnriched_TuneCP5_13TeV-pythia8	367500	9615795	9615795.0	9617412.94118 
+=======
+QCD_Pt-80to120_EMEnriched	QCD_Pt-80to120_EMEnriched_TuneCP5_13TeV-pythia8	367500	4804788	4804788.0	4805600.8324 
+>>>>>>> Run2UltraLegacy-jalmond
