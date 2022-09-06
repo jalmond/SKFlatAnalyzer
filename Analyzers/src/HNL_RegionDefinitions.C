@@ -847,7 +847,6 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
     // Change Name of param to include Flavour channel
     TString channel_string = GetChannelString(dilep_channel);
     param.Name = channel_string + "/" + param.DefName + "_RunAllControlRegions";
-    param.Name = channel_string + "/" + param.DefName + "_RunAllControlRegions";
 
     float weight_channel = weight_ll;
 
