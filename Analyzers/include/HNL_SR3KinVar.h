@@ -40,7 +40,7 @@ class HNL_SR3KinVar : public HNL_RegionDefinitions {
   Float_t Mjj12, Mjj13, Mjj14, Mjj23, Mjj24, Mjj34;
 
   Float_t PtWj1, PtWj2;
-  Float_t dRlW12, dRlW22;
+  Float_t dRWjj, dRlW12, dRlW22;
   Float_t M_W2_jj, M_N1_l1jj, M_N2_l2jj,M_W1_lljj;
   
   Float_t w_tot;

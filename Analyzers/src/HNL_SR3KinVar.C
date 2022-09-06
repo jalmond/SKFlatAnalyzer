@@ -73,13 +73,14 @@ void HNL_SR3KinVar::initializeAnalyzer(){
 
   tree_mm->Branch("PtWj1", &PtWj1, "PtWj1/F");          tree_ee->Branch("PtWj1", &PtWj1, "PtWj1/F");               tree_em->Branch("PtWj1", &PtWj1, "PtWj1/F");
   tree_mm->Branch("PtWj2", &PtWj2, "PtWj2/F");          tree_ee->Branch("PtWj2", &PtWj2, "PtWj2/F");               tree_em->Branch("PtWj2", &PtWj2, "PtWj2/F");
+  tree_mm->Branch("dRWjj", &dRWjj, "dRlW22/F");         tree_ee->Branch("dRWjj", &dRWjj, "dRlW22/F");              tree_em->Branch("dRWjj", &dRWjj, "dRlW22/F");
   tree_mm->Branch("dRlW12", &dRlW12, "dRlW12/F");       tree_ee->Branch("dRlW12", &dRlW12, "dRlW12/F");            tree_em->Branch("dRlW12", &dRlW12, "dRlW12/F");
   tree_mm->Branch("dRlW22", &dRlW22, "dRlW22/F");       tree_ee->Branch("dRlW22", &dRlW22, "dRlW22/F");            tree_em->Branch("dRlW22", &dRlW22, "dRlW22/F");
   tree_mm->Branch("M_W1_lljj", &M_W1_lljj, "M_W1_lljj/F");    tree_ee->Branch("M_W1_lljj", &M_W1_lljj, "M_W1_lljj/F");    tree_em->Branch("M_W1_lljj", &M_W1_lljj, "M_W1_lljj/F");
   tree_mm->Branch("M_N1_l1jj", &M_N1_l1jj, "M_N1_l1jj/F");      tree_ee->Branch("M_N1_l1jj", &M_N1_l1jj, "M_N1_l1jj/F");      tree_em->Branch("M_N1_l1jj", &M_N1_l1jj, "M_N1_l1jj/F");
   tree_mm->Branch("M_N2_l2jj", &M_N2_l2jj, "M_N2_l2jj/F");      tree_ee->Branch("M_N2_l2jj", &M_N2_l2jj, "M_N2_l2jj/F");      tree_em->Branch("M_N2_l2jj", &M_N2_l2jj, "M_N2_l2jj/F");
 
-  tree_mm->Branch("w_tot", &w_tot, "w_tot/F");          tree_ee->Branch("w_tot", &w_tot, "w_tot/F");
+  tree_mm->Branch("w_tot", &w_tot, "w_tot/F");          tree_ee->Branch("w_tot", &w_tot, "w_tot/F");               tree_em->Branch("w_tot", &w_tot, "w_tot/F");
 
   outfile->cd();
 
@@ -285,6 +286,7 @@ void HNL_SR3KinVar::MakeTreeSS2L(HNL_LeptonCore::Channel lep_channel,vector<Lept
 
   PtWj1     = JetColl.size() > 1 ? JetColl[m].Pt() : -1.;
   PtWj2     = JetColl.size() > 1 ? JetColl[n].Pt() : -1.;
+  dRWjj     = JetColl.size() > 1 ? JetColl[m].DeltaR(JetColl[n]) : -1.;
   dRlW12    = JetColl.size() > 1 ? LepTColl.at(0)->DeltaR(JetColl[m] + JetColl[n]) : -1.;
   dRlW22    = JetColl.size() > 1 ? LepTColl.at(1)->DeltaR(JetColl[m] + JetColl[n]) : -1.;
   M_W2_jj   = JetColl.size() > 1 ? (JetColl[m] + JetColl[n]).M() : -1.;
@@ -322,7 +324,7 @@ void HNL_SR3KinVar::InitializeTreeVars(){
   Mjj12=-1, Mjj13=-1, Mjj14=-1, Mjj23=-1, Mjj24=-1, Mjj34=-1;
 
   PtWj1=-1, PtWj2=-1;
-  dRlW12=-1, dRlW22=-1;
+  dRWjj=-1, dRlW12=-1, dRlW22=-1;
   M_W2_jj=-1, M_W1_lljj=-1, M_N1_l1jj=-1, M_N2_l2jj=-1;
 
   w_tot=-1;
