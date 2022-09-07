@@ -191,7 +191,86 @@ void HNL_LeptonCore::initializeAnalyzer(){
     cout << "TrigList_Full_EG  : "<< itrig << endl;
   } 
 
+  
+  //SetupMVAReader();
 }
+
+void HNL_LeptonCore::SetupMVAReader(){
+
+  InitializeTreeVars();
+
+  MVAReader->AddVariable("Nj"      , &Nj      );
+  MVAReader->AddVariable("Nvbfj", &Nvbfj);
+  MVAReader->AddVariable("Ptl1", &Ptl1);
+  MVAReader->AddVariable("Ptl2", &Ptl2);
+  MVAReader->AddVariable("Ptj1", &Ptj1);
+  MVAReader->AddVariable("Ptj2", &Ptj2);
+  MVAReader->AddVariable("MET2ST", &MET2ST);
+  MVAReader->AddVariable("HTLT1", &HTLT1);
+  MVAReader->AddVariable("HTLT2", &HTLT2);
+  MVAReader->AddVariable("dRll", &dRll);
+  MVAReader->AddVariable("dRlj11", &dRlj11);
+  MVAReader->AddVariable("dRlj12", &dRlj12);
+  MVAReader->AddVariable("dRlj21", &dRlj21);
+  MVAReader->AddVariable("dRlj22", &dRlj22);
+  MVAReader->AddVariable("MSSSF", &MSSSF);
+  MVAReader->AddVariable("Mlj11", &Mlj11);
+  MVAReader->AddVariable("Mlj12", &Mlj12);
+  MVAReader->AddVariable("Mlj21", &Mlj21);
+  MVAReader->AddVariable("Mlj22", &Mlj22);
+  MVAReader->AddVariable("Mllj1", &Mllj1);
+  MVAReader->AddVariable("Mllj2", &Mllj2);
+  MVAReader->AddVariable("PtWj1", &PtWj1);
+  MVAReader->AddVariable("PtWj2", &PtWj2);
+  MVAReader->AddVariable("dRWjj", &dRWjj);
+  MVAReader->AddVariable("dRlW12", &dRlW12);
+  MVAReader->AddVariable("dRlW22", &dRlW22);
+  MVAReader->AddVariable("M_W2_jj", &M_W2_jj);
+  MVAReader->AddVariable("M_W1_lljj", &M_W1_lljj);
+  MVAReader->AddVariable("M_N1_l1jj", &M_N1_l1jj);
+  MVAReader->AddVariable("M_N2_l2jj", &M_N2_l2jj);
+  MVAReader->AddSpectator("w_tot", &w_tot);
+
+
+  TString AnalyzerPath=std::getenv("SKFlat_WD");
+  TString MVAPath="/data/Run2UltraLegacy_v3/2018/BDTClassifier/results_xml/";
+  MNStrList = {"85","90", "95", "100", "125", "150", "200", "250", "300", "400","500"};
+  vector <TString> Channels = {"MuMu","EE","EMu"};
+  for(unsigned int im=0; im<MNStrList.size() ; im++){
+    for(auto ich : Channels){
+      TString FileName ="DYTypeI_"+ich+ "_M"+MNStrList.at(im)+"_Mode0_Run2_BDT.weights.xml";
+      TString MVATagStr = "BDTG_M"+MNStrList.at(im)+"_"+ich;
+
+      MVAReader->BookMVA(MVATagStr, AnalyzerPath+MVAPath+FileName);
+    }
+  }
+
+
+  
+
+}
+
+
+void HNL_LeptonCore::InitializeTreeVars(){
+
+  Nj=-1, Nvbfj=-1;
+  Ptl1=-1, Ptl2=-1, Ptj1=-1, Ptj2=-1, Ptj3=-1, MET=-1, HTLT=-1, HTLT1=-1,HTLT2=-1,LT=-1,  HT=-1, MET2HT=-1, MET2ST=-1;
+  dEtall=-1, dRll=-1, dRjj12=-1, dRjj23=-1, dRjj13=-1;
+  dRlj11=-1, dRlj12=-1, dRlj13=-1, dRlj21=-1, dRlj22=-1, dRlj23=-1;
+  MSSSF=-1, Mlj11=-1, Mlj12=-1, Mlj13=-1, Mlj21=-1, Mlj22=-1, Mlj23=-1;
+  MTvl1=-1, MTvl2=-1, Mllj1=-1, Mllj2=-1, Mllj3=-1, Mllj4=-1;
+  Mlljj12=-1, Mlljj13=-1, Mlljj14=-1, Mlljj23=-1, Mlljj24=-1, Mlljj34=-1;
+  Mljj112=-1, Mljj113=-1, Mljj114=-1, Mljj123=-1, Mljj124=-1, Mljj134=-1;
+  Mljj212=-1, Mljj213=-1, Mljj214=-1, Mljj223=-1, Mljj224=-1, Mljj234=-1;
+  Mjj12=-1, Mjj13=-1, Mjj14=-1, Mjj23=-1, Mjj24=-1, Mjj34=-1;
+
+  PtWj1=-1, PtWj2=-1;
+  dRWjj=-1, dRlW12=-1, dRlW22=-1;
+  M_W2_jj=-1, M_W1_lljj=-1, M_N1_l1jj=-1, M_N2_l2jj=-1;
+  
+  w_tot=-1.;
+}
+
 
 void HNL_LeptonCore::TriggerPrintOut(Event ev){
   
@@ -2121,6 +2200,14 @@ void HNL_LeptonCore::FillEventCutflow(HNL_LeptonCore::SearchRegion sr, float eve
 		  "SR3_Wmass", "SR3_J1Pt",     "SR3_MET",      "SR3_bveto"};
       EVhitname= "SR3";
     }
+    if( sr==SR3BDT){
+      labels = {  "Presel", "NoAK8Jet", "FailVBF",    "SR3_lep_charge" ,     "SR3_lep_pt",      "SR3_dilep_mass",      "SR3_jet",       "SR3_dijet",
+                  "SR3_Wmass", "SR3_J1Pt",     "SR3_MET",      "SR3_bveto"};
+      EVhitname= "SR3BDT";
+    }
+
+
+
     if(sr==SR4){
       labels = {      "SR4_3lep",             "SR4_3lep_veto", "SR4_3lep_chargereq",   "SR4_3lep_bjet",      "SR4_3lep_Zmlll",       "SR4_3lep_Zmll_os",      "SR4_lll_mu"};
       EVhitname= "SR4";
@@ -2225,6 +2312,21 @@ void HNL_LeptonCore::FillEventCutflow(HNL_LeptonCore::SearchRegion sr, float eve
       labels = {"QMSR1_bin1","QMSR1_bin2","QMSR1_bin3","QMSR1_bin4","QMSR1_bin5","QMSR1_bin6","QMSR1_bin7","QMSR2_bin1","QMSR2_bin2",  "QMSR3_bin1","QMSR3_bin2","QMSR3_bin3","QMSR3_bin4","QMSR3_bin5","QMSR3_bin6","QMSR3_bin7","QMSR3_bin8","QMSR3_bin9","QMSR3_bin10","QMSR3_bin11","QMSR3_bin12","QMSR3_bin13","QMSR3_bin14", "QMSR3_bin15","QMSR3_bin16"   , "QPSR1_bin1","QPSR1_bin2","QPSR1_bin3","QPSR1_bin4","QPSR1_bin5","QPSR1_bin6","QPSR1_bin7","QPSR2_bin1","QPSR2_bin2",  "QPSR3_bin1","QPSR3_bin2","QPSR3_bin3","QPSR3_bin4","QPSR3_bin5","QPSR3_bin6","QPSR3_bin7","QPSR3_bin8","QPSR3_bin9","QPSR3_bin10","QPSR3_bin11","QPSR3_bin12","QPSR3_bin13","QPSR3_bin14", "QPSR3_bin15","QPSR3_bin16"};
       EVhitname ="ElectronMuonChargeSplitSR";
     }
+
+    if(sr==MuonSRBDT){
+      labels = {"SR1_bin1","SR1_bin2","SR1_bin3","SR1_bin4","SR1_bin5","SR1_bin6","SR1_bin7","SR2_bin1", "SR2_bin2",  "SR3_bin1","SR3_bin2","SR3_bin3","SR3_bin4","SR3_bin5","SR3_bin6","SR3_bin7","SR3_bin8","SR3_bin9","SR3_bin10","SR3_bin11","SR3_bin12","SR3_bin13","SR3_bin14", "SR3_bin15","SR3_bin16", "SR3_bin17","SR3_bin18","SR3_bin19"};
+      EVhitname ="MuonSR";
+    }
+    if(sr==ElectronSRBDT){
+      labels = {"SR1_bin1","SR1_bin2","SR1_bin3","SR1_bin4","SR1_bin5","SR1_bin6","SR1_bin7","SR2_bin1","SR2_bin2",  "SR3_bin1","SR3_bin2","SR3_bin3","SR3_bin4","SR3_bin5","SR3_bin6","SR3_bin7","SR3_bin8","SR3_bin9","SR3_bin10","SR3_bin11","SR3_bin12","SR3_bin13","SR3_bin14", "SR3_bin15","SR3_bin16", "SR3_bin17","SR3_bin18","SR3_bin19"};
+      EVhitname ="ElectronSR";
+    }
+    if(sr==ElectronMuonSRBDT){
+      labels = {"SR1_bin1","SR1_bin2","SR1_bin3","SR1_bin4","SR1_bin5","SR1_bin6","SR1_bin7","SR2_bin1","SR2_bin2",  "SR3_bin1","SR3_bin2","SR3_bin3","SR3_bin4","SR3_bin5","SR3_bin6","SR3_bin7","SR3_bin8","SR3_bin9","SR3_bin10","SR3_bin11","SR3_bin12","SR3_bin13","SR3_bin14", "SR3_bin15","SR3_bin16", "SR3_bin17","SR3_bin18","SR3_bin19"};
+      EVhitname ="ElectronMuonSR";
+    }
+
+
   }
   
   
@@ -3316,6 +3418,7 @@ double HNL_LeptonCore::PassEventTypeFilter(vector<Lepton *> leps , vector<Gen> g
   for(auto ilep: leps){
     int LepType=GetLeptonType_JH(*ilep, gens);
     if( LepType >=4 || LepType < -4) nConv++;
+
   }
   if(RunConv && nConv==0)  return false;
   if(!RunConv && nConv > 0) return false;

@@ -22,4 +22,3 @@ WZJJToLNu_private
 WZTo3LNu_amcatnlo
 WZTo3LNu_mllmin4p0_powheg
 WZ_pythia
-WAJJToLNuAJJ_EWK_private

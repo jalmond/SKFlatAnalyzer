@@ -31,6 +31,11 @@
 #include "GEScaleSyst.h"
 #include "PDFReweight.h"
 
+#include "TMVA/Tools.h"
+#include "TMVA/Reader.h"
+#include "TMVA/MethodCuts.h"
+
+
 #define M_Z 91.1876
 #define M_W 80.379
 

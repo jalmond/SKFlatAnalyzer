@@ -1,7 +1,6 @@
-TG
 WGToLNuG
 ZGToLLG
 WWG
 WZG
 DYJets
-WJets_amcatnlo
+WJets_MG

@@ -18,4 +18,3 @@ ZZTo4L_powheg
 ZZZ
 WZJJToLNu_private
 WZTo3LNu_amcatnlo
-WAJJToLNuAJJ_EWK_private

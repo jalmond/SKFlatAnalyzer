@@ -7,7 +7,7 @@ njobs_data=25
 nmax=300
 skim=' '
 declare  -a era_list=("2016postVFP" "2016preVFP" "2017" "2018")
-declare  -a era_list=("2018")
+
 if [[ $1 == "DY" ]]; then
 
     SKFlat.py -a $analyzer  -l $mcpath/DY.txt  -n $njobs  --nmax ${nmax}   -e 2018 &

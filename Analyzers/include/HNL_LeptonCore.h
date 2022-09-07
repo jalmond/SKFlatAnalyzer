@@ -2,6 +2,9 @@
 #define HNL_LeptonCore_h
 
 #include "TRandom.h"
+#include "TMVA/Tools.h"
+#include "TMVA/Reader.h"
+#include "TMVA/MethodCuts.h"
 
 #include "AnalyzerCore.h"
 
@@ -67,9 +70,16 @@ class HNL_LeptonCore : public AnalyzerCore {
     MuonSRQQ,
     ElectronSRQQ,
     ElectronMuonSRQQ,
+    MuonSRBDT,
+    ElectronSRBDT,
+    ElectronMuonSRBDT,
+    MuonSRBDTQQ,
+    ElectronSRBDTQQ,
+    ElectronMuonSRBDTQQ,
     SR1,
     SR2,
     SR3,
+    SR3BDT,
     SR4,
     Presel,
     PreselSS,
@@ -105,7 +115,7 @@ class HNL_LeptonCore : public AnalyzerCore {
   //========== MAIN ANALYZER FUNCTIONS
 
   void initializeAnalyzer();
-
+  void SetupMVAReader();
   AnalyzerParameter InitialiseHNLParameters( TString analysis_tag, vector<vector<TString> >  param_vec);
   AnalyzerParameter InitialiseHNLParameter(TString s_setup, TString tag);  
 
@@ -326,6 +336,32 @@ class HNL_LeptonCore : public AnalyzerCore {
   TH1D *hist_PUReweight_Down;
 
   double weight_PU, weight_PU_Up, weight_PU_Down;
+
+
+  /// BDT 
+
+
+  vector<TString> MNStrList;
+  TMVA::Reader *MVAReader;
+
+  void InitializeTreeVars();
+
+  Float_t Nj, Nvbfj;
+  Float_t Ptl1, Ptl2, Ptj1, Ptj2, Ptj3, MET,MET2ST, HT,HTLT,HTLT1,HTLT2, LT,  MET2HT;
+  Float_t dEtall, dRll, dRjj12, dRjj23, dRjj13;
+  Float_t dRlj11, dRlj12, dRlj13, dRlj21, dRlj22, dRlj23;
+  Float_t dphivl1, dphivl2, dphivj1, dphivj2, dphivj3;
+  Float_t MSSSF,  Mlj11, Mlj12, Mlj13, Mlj21, Mlj22, Mlj23;
+  Float_t MTvl1, MTvl2, MTvll, Mllj1, Mllj2, Mllj3, Mllj4;
+  Float_t Mlljj12, Mlljj13, Mlljj14, Mlljj23, Mlljj24, Mlljj34;
+  Float_t Mljj112, Mljj113, Mljj114, Mljj123, Mljj124, Mljj134;
+  Float_t Mljj212, Mljj213, Mljj214, Mljj223, Mljj224, Mljj234;
+  Float_t Mjj12, Mjj13, Mjj14, Mjj23, Mjj24, Mjj34;
+
+  Float_t PtWj1, PtWj2;
+  Float_t dRWjj, dRlW12, dRlW22;
+  Float_t M_W2_jj, M_N1_l1jj, M_N2_l2jj,M_W1_lljj;
+  Float_t w_tot;
 
 
 

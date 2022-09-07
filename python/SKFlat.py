@@ -706,6 +706,7 @@ queue {0}
       runCfileFullPath = thisjob_dir+'run.C'
 
     IncludeLine = 'R__LOAD_LIBRARY(/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/lhapdf/6.2.3/lib/libLHAPDF.so)\n'
+    IncludeLine = IncludeLine+'R__LOAD_LIBRARY(/cvmfs/cms.cern.ch/slc7_amd64_gcc900/cms/cmssw/CMSSW_11_3_0/external/slc7_amd64_gcc900/lib/libTMVA.so)\n'
 
     out = open(runCfileFullPath, 'w')
     print>>out,'''{3}

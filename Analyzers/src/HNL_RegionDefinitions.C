@@ -43,8 +43,10 @@ void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq, s
 
     //cout << "ParamName = " << param.Name << endl;
     std::vector<Lepton *> leps       = MakeLeptonPointerVector(muons,electrons,param);
-
+    
     if(!PassEventTypeFilter(leps, gens)) continue;
+
+    if(!ConversionSplitting(leps,gens)) continue;
 
     if(!IsData && RunPromptTLRemoval){
       weight_channel = -1*weight_ll* GetFakeWeight(leps, param , false);
@@ -96,9 +98,6 @@ void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq, s
     }
 
     if(RunFake){
-      cout << "------------------------------------------------------------------------------------------------------" << endl;
-      cout << "Param " << param.Name << endl;
-      cout << "weight_channel = " << weight_channel << endl;
       weight_channel = GetFakeWeight(leps, param_channel, true);
       FillWeightHist(param_channel.Name+"/FakeWeight",weight_channel);
     }
@@ -114,7 +113,15 @@ void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq, s
     if (dilep_channel == EE) LimitRegionsQ =HNL_LeptonCore::ElectronSRQQ;
     if (dilep_channel == EMu) LimitRegionsQ =HNL_LeptonCore::ElectronMuonSRQQ;
 
+    HNL_LeptonCore::SearchRegion LimitRegionsBDT = HNL_LeptonCore::MuonSRBDT;
+    if (dilep_channel == EE) LimitRegionsBDT =HNL_LeptonCore::ElectronSRBDT;
+    if (dilep_channel == EMu) LimitRegionsBDT =HNL_LeptonCore::ElectronMuonSRBDT;
+    HNL_LeptonCore::SearchRegion LimitRegionsBDTQ = HNL_LeptonCore::MuonSRBDTQQ;
+    if (dilep_channel == EE) LimitRegionsBDTQ =HNL_LeptonCore::ElectronSRBDTQQ;
+    if (dilep_channel == EMu) LimitRegionsBDTQ =HNL_LeptonCore::ElectronMuonSRBDTQQ;
+
     
+
     if(!PassPreselection(dilep_channel,qq, leps, leps_veto, TauColl, JetColl, VBF_JetColl, AK8_JetColl, B_JetColl,ev, METv ,param_channel,"", weight_channel)) continue;
 
     TString  lep_charge =  (leps[0]->Charge() < 0)  ? "QM" :  "QP";
@@ -123,19 +130,33 @@ void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq, s
       TString SRbin= RunSignalRegionAK8String (dilep_channel,qq, leps, leps_veto, TauColl, JetColl, AK8_JetColl, B_JetColl,ev, METv ,param_channel,"", weight_channel) ;
       if(SRbin != "false") FillEventCutflow(LimitRegions, weight_channel, SRbin,"LimitInput/"+param.Name);
       if(SRbin != "false") FillEventCutflow(LimitRegionsQ, weight_channel, lep_charge+SRbin,"LimitInput/"+param.Name);
+
+      for(unsigned int im=0; im<MNStrList.size(); im++){
+	if(SRbin != "false") FillEventCutflow(LimitRegionsBDT, weight_channel, SRbin,"LimitInputBDT/"+param.Name+"/"+MNStrList[im]);
+      }
     }
     else{
       
       TString SRbin = RunSignalRegionWWString( dilep_channel,qq, leps, leps_veto,  TauColl, JetCollLoose, VBF_JetColl,  AK8_JetColl, B_JetColl,ev, METv, param_channel,  "", weight_channel);
-      
-      
+            
       if(SRbin != "false"){
 	FillEventCutflow(LimitRegions, weight_channel, SRbin,"LimitInput/"+param.Name);
 	FillEventCutflow(LimitRegionsQ, weight_channel, lep_charge+SRbin,"LimitInput/"+param.Name);
+
+	for(unsigned int im=0; im<MNStrList.size(); im++){
+	  if(SRbin != "false") FillEventCutflow(LimitRegionsBDT, weight_channel, SRbin,"LimitInputBDT/"+param.Name+"/"+MNStrList[im]);
+	}
+	
       }
       else{
-	SRbin  = RunSignalRegionAK4String (dilep_channel,qq, leps, leps_veto, TauColl, JetColl, AK8_JetColl, B_JetColl, ev, METv ,param_channel,"", weight_channel);
 
+	for(unsigned int im=0; im<MNStrList.size(); im++){
+	  TString SRBDT = RunSignalRegionAK4StringBDT(MNStrList[im], dilep_channel,qq, leps, leps_veto, TauColl, JetColl, VBF_JetColl, B_JetColl, ev, METv ,param_channel,"", weight_channel);
+          if(SRBDT != "false") FillEventCutflow(LimitRegionsBDT, weight_channel, SRBDT,"LimitInputBDT/"+param.Name+"/"+MNStrList[im]);
+        }
+
+	SRbin  = RunSignalRegionAK4String (dilep_channel,qq, leps, leps_veto, TauColl, JetColl, AK8_JetColl, B_JetColl, ev, METv ,param_channel,"", weight_channel);
+	
 	if(SRbin != "false"){
 	  FillEventCutflow(LimitRegions, weight_channel, SRbin,"LimitInput/"+param.Name);
 	  FillEventCutflow(LimitRegionsQ, weight_channel, lep_charge+SRbin,"LimitInput/"+param.Name);
@@ -196,18 +217,7 @@ bool  HNL_RegionDefinitions::PassPreselection(HNL_LeptonCore::Channel channel,HN
   if(run_Debug) cout << "HNL_RegionDefinitions::PassTriggerSelection " << GetChannelString(channel) <<  endl;
 
   
-  int nel_hem(0);
-  if (channel==EE){
-    if (DataEra=="2018"){
-      for(auto iel : leps){
-	if (iel->Eta() < -1.25){
-          if((iel->Phi() < -0.82) && (iel->Phi() > -1.62)) nel_hem++;
-	}
-      }
-    }
-  }
-
-  if(nel_hem > 0) return false;
+  if(!PassHEMVeto(channel, leps)) return false;
 
 
   // Make sure events contain 2 leps
@@ -446,6 +456,167 @@ bool  HNL_RegionDefinitions::RunSignalRegionAK4(HNL_LeptonCore::Channel channel,
   if(SR3String == "false") return false;
   else return true;
 
+}
+
+
+
+TString HNL_RegionDefinitions::RunSignalRegionAK4StringBDT(TString mN, HNL_LeptonCore::Channel channel, HNL_LeptonCore::ChargeType qq ,std::vector<Lepton *> LepTColl,   std::vector<Lepton *> leps_veto, std::vector<Tau> TauColl,std::vector<Jet> JetColl, std::vector<Jet> JetVBFColl, std::vector<Jet> B_JetColl, Event ev, Particle METv, AnalyzerParameter param, TString PostLabel ,  float w){
+  
+
+  if(!CheckLeptonFlavourForChannel(channel, LepTColl)) return "false";
+  FillEventCutflow(HNL_LeptonCore::SR3BDT, w, "SR3_lep_pt",param.Name,param.WriteOutVerbose);
+
+  if (leps_veto.size() != 2) return "false";
+
+  if(qq==Plus && LepTColl[0]->Charge() < 0) return "false";
+  if(qq==Minus && LepTColl[0]->Charge() > 0) return "false";
+
+  FillEventCutflow(HNL_LeptonCore::SR3BDT, w, "SR3_lep_charge",param.Name,param.WriteOutVerbose);
+
+  Particle ll =  (*LepTColl[0]) + (*LepTColl[1]);
+  if (channel==EE  && (fabs(ll.M()-90.) < 15)) return "false";
+
+  FillEventCutflow(HNL_LeptonCore::SR3BDT, w, "SR3_dilep_mass",param.Name,param.WriteOutVerbose);
+  float Mll = GetLLMass(LepTColl);
+
+  Nj      = JetColl.size();
+  Nvbfj   = JetVBFColl.size();
+  Ptl1    = LepTColl[0]->Pt();
+  Ptl2    = LepTColl.at(1)->Pt();
+  LT      = GetLT(LepTColl);
+  Ptj1    =  JetColl.size()<1? -1.: JetColl.at(0).Pt();
+  Ptj2    =  JetColl.size()<2? -1.:JetColl.at(1).Pt();
+  Ptj3    =  JetColl.size()<3? -1.:JetColl.at(2).Pt();
+  MET     = METv.Pt();
+  
+  dEtall  = abs(LepTColl.at(0)->Eta()-LepTColl.at(1)->Eta());
+  dRll    = LepTColl.at(0)->DeltaR(*LepTColl.at(1));
+  dRjj12  =  JetColl.size()<2? -1.:JetColl.at(0).DeltaR(JetColl.at(1));
+  dRjj23  =  JetColl.size()<3? -1.:JetColl.at(1).DeltaR(JetColl.at(2));
+  dRjj13  =  JetColl.size()<3? -1.:JetColl.at(0).DeltaR(JetColl.at(2));
+  dRlj11  =  JetColl.size()<1? -1.:LepTColl.at(0)->DeltaR(JetColl.at(0));
+  dRlj12  =  JetColl.size()<2? -1.:LepTColl.at(0)->DeltaR(JetColl.at(1));
+  dRlj13  =  JetColl.size()<3? -1.:LepTColl.at(0)->DeltaR(JetColl.at(2));
+  dRlj21  =  JetColl.size()<1? -1.:LepTColl.at(1)->DeltaR(JetColl.at(0));
+  dRlj22  =  JetColl.size()<2? -1.:LepTColl.at(1)->DeltaR(JetColl.at(1));
+  dRlj23  =  JetColl.size()<3? -1.:LepTColl.at(1)->DeltaR(JetColl.at(2));
+  
+  MSSSF   = Mll;
+  Mlj11   =  JetColl.size()<1? -1.:(*LepTColl.at(0)+JetColl.at(0)).M();
+  Mlj12   =  JetColl.size()<2? -1.:(*LepTColl.at(0)+JetColl.at(1)).M();
+  Mlj13   =  JetColl.size()<3? -1.:(*LepTColl.at(0)+JetColl.at(2)).M();
+  Mlj21   =  JetColl.size()<1? -1.:(*LepTColl.at(1)+JetColl.at(0)).M();
+  Mlj22   =  JetColl.size()<2? -1.:(*LepTColl.at(1)+JetColl.at(1)).M();
+  Mlj23   =  JetColl.size()<3? -1.:(*LepTColl.at(1)+JetColl.at(2)).M();
+  MTvl1   = MT(*LepTColl.at(0),METv);
+  MTvl2   = MT(*LepTColl.at(1),METv);
+  Mllj1   =  JetColl.size()<1? -1.:(*LepTColl.at(0)+*LepTColl.at(1)+JetColl.at(0)).M();
+  Mllj2   =  JetColl.size()<2? -1.:(*LepTColl.at(0)+*LepTColl.at(1)+JetColl.at(1)).M();
+  Mllj3   =  JetColl.size()<3? -1.:(*LepTColl.at(0)+*LepTColl.at(1)+JetColl.at(2)).M();
+  Mllj4   = JetColl.size()<4? -1.:(*LepTColl.at(0)+*LepTColl.at(1)+JetColl.at(3)).M();
+  Mlljj12 =  JetColl.size()<2? -1.:(*LepTColl.at(0)+*LepTColl.at(1)+JetColl.at(0)+JetColl.at(1)).M();
+  Mlljj13 =  JetColl.size()<3? -1.:(*LepTColl.at(0)+*LepTColl.at(1)+JetColl.at(0)+JetColl.at(2)).M();
+  Mlljj14 = JetColl.size()<4? -1.:(*LepTColl.at(0)+*LepTColl.at(1)+JetColl.at(0)+JetColl.at(3)).M();
+  Mlljj23 =  JetColl.size()<3? -1.:(*LepTColl.at(0)+*LepTColl.at(1)+JetColl.at(1)+JetColl.at(2)).M();
+  Mlljj24 = JetColl.size()<4? -1.:(*LepTColl.at(0)+*LepTColl.at(1)+JetColl.at(1)+JetColl.at(3)).M();
+  Mlljj34 = JetColl.size()<4? -1.:(*LepTColl.at(0)+*LepTColl.at(1)+JetColl.at(2)+JetColl.at(3)).M();
+  Mljj112 =  JetColl.size()<2? -1.:(*LepTColl.at(0)+JetColl.at(0)+JetColl.at(1)).M();
+  Mljj113 =  JetColl.size()<3? -1.:(*LepTColl.at(0)+JetColl.at(0)+JetColl.at(2)).M();
+  Mljj114 = JetColl.size()<4? -1.:(*LepTColl.at(0)+JetColl.at(0)+JetColl.at(3)).M();
+  //return;
+  Mljj123 =  JetColl.size()<3? -1.:(*LepTColl.at(0)+JetColl.at(1)+JetColl.at(2)).M();
+  Mljj124 = JetColl.size()<4? -1.:(*LepTColl.at(0)+JetColl.at(1)+JetColl.at(3)).M();
+  Mljj134 = JetColl.size()<4? -1.:(*LepTColl.at(0)+JetColl.at(2)+JetColl.at(3)).M();
+  Mljj212 =  JetColl.size()<2? -1.:(*LepTColl.at(1)+JetColl.at(0)+JetColl.at(1)).M();
+  Mljj213 =  JetColl.size()<3? -1.:(*LepTColl.at(1)+JetColl.at(0)+JetColl.at(2)).M();
+  Mljj214 = JetColl.size()<4? -1.:(*LepTColl.at(1)+JetColl.at(0)+JetColl.at(3)).M();
+  Mljj223 =  JetColl.size()<3? -1.:(*LepTColl.at(1)+JetColl.at(1)+JetColl.at(2)).M();
+  Mljj224 = JetColl.size()<4? -1.:(*LepTColl.at(1)+JetColl.at(1)+JetColl.at(3)).M();
+  Mljj234 = JetColl.size()<4? -1.:(*LepTColl.at(1)+JetColl.at(2)+JetColl.at(3)).M();
+  Mjj12   =  JetColl.size()<2? -1.:(JetColl.at(0)+JetColl.at(1)).M();
+  Mjj13   =  JetColl.size()<3? -1.:(JetColl.at(0)+JetColl.at(2)).M();
+  Mjj14   = JetColl.size()<4? -1.:(JetColl.at(0)+JetColl.at(3)).M();
+  Mjj23   =  JetColl.size()<3? -1.:(JetColl.at(1)+JetColl.at(2)).M();
+  Mjj24   = JetColl.size()<4? -1.:(JetColl.at(1)+JetColl.at(3)).M();
+  Mjj34   = JetColl.size()<4? -1.:(JetColl.at(2)+JetColl.at(3)).M();
+  
+  //Vars requiring complex algo.
+  HT      = 0;
+  for(unsigned int itj=0; itj<JetColl.size(); itj++){ HT+=JetColl.at(itj).Pt(); }
+  
+  HTLT=HT/LT;
+  HTLT1=HT/LepTColl.at(0)->Pt();
+  HTLT2=HT/LepTColl.at(1)->Pt();
+  
+  std::vector<FatJet> FatJetColl;
+  
+  double ST = GetST( LepTColl, JetColl, FatJetColl, METv);
+  
+  MET2HT  = JetColl.size()<1? -1.:pow(MET,2.)/HT;
+  MET2ST  = pow(MET,2.)/ST;
+  
+  const float MW = 80.379;
+  float dijetmass_tmp=9999.;
+  float dijetmass=99990000.;
+  int m=-999;
+  int n=-999;
+  
+  for(UInt_t emme=0; emme<JetColl.size(); emme++){
+    for(UInt_t enne=emme+1; enne<JetColl.size(); enne++) {
+      
+      dijetmass_tmp = (JetColl[emme]+JetColl[enne]).M();
+      //if(emme == enne) continue;
+      
+      if ( fabs(dijetmass_tmp-MW) < fabs(dijetmass-MW) ) {
+	dijetmass = dijetmass_tmp;
+	m = emme;
+	n = enne;
+      }
+    }
+  }
+
+  PtWj1     = JetColl.size() > 1 ? JetColl[m].Pt() : -1.;
+  PtWj2     = JetColl.size() > 1 ? JetColl[n].Pt() : -1.;
+  dRWjj     = JetColl.size() > 1 ? JetColl[m].DeltaR(JetColl[n]) : -1.;
+  dRlW12    = JetColl.size() > 1 ? LepTColl.at(0)->DeltaR(JetColl[m] + JetColl[n]) : -1.;
+  dRlW22    = JetColl.size() > 1 ? LepTColl.at(1)->DeltaR(JetColl[m] + JetColl[n]) : -1.;
+  M_W2_jj   = JetColl.size() > 1 ? (JetColl[m] + JetColl[n]).M() : -1.;
+  M_W1_lljj = JetColl.size() > 1 ? (JetColl[m] + JetColl[n] + *LepTColl.at(0) + *LepTColl.at(1)).M() : -1.;
+  M_N1_l1jj = JetColl.size() > 1 ? (JetColl[m] + JetColl[n] + *LepTColl.at(0)).M() : -1.;
+  M_N2_l2jj = JetColl.size() > 1 ? (JetColl[m] + JetColl[n] + *LepTColl.at(1)).M() : -1.;
+  
+  
+  //for(unsigned int im=0; im<MNStrList.size(); im++){
+    
+  TString FileName ="DYTypeI_"+GetChannelString(channel)+  "_M"+mN+"_Mode0_Run2_BDT.weights.xml";
+  TString MVATagStr = "BDTG_M"+mN+"_"+GetChannelString(channel);
+  
+  float MVAvalue = MVAReader->EvaluateMVA(MVATagStr);
+  
+  FillHist("LimitSR3BDT/"+param.Name+"/SignalBins_M"+mN, MVAvalue, w, 40, -1., 1.);
+  if(MVAvalue < -0.5) return "SR3_bin1";
+  else if(MVAvalue< -0.45) return "SR3_bin2";
+  else if(MVAvalue< -0.4) return "SR3_bin3";
+  else if(MVAvalue< -0.35) return "SR3_bin4";
+  else if(MVAvalue< -0.3) return "SR3_bin5";
+  else if(MVAvalue< -0.25) return "SR3_bin6";
+  else if(MVAvalue< -0.2) return "SR3_bin7";
+  else if(MVAvalue< -0.15) return "SR3_bin8";
+  else if(MVAvalue< -0.1) return "SR3_bin9";
+  else if(MVAvalue< -0.05) return "SR3_bin10";
+  else if(MVAvalue< 0.) return "SR3_bin11";
+  else if(MVAvalue< 0.05) return "SR3_bin12";
+  else if(MVAvalue< 0.10) return "SR3_bin13";
+  else if(MVAvalue< 0.15) return "SR3_bin14";
+  else if(MVAvalue< 0.2) return "SR3_bin15";
+  else if(MVAvalue< 0.25) return "SR3_bin16";
+  else if(MVAvalue< 0.3) return "SR3_bin17";
+  else if(MVAvalue< 0.35) return "SR3_bin18";
+  else  return "SR3_bin19";
+  
+  
+
+  return "true";
 }
 
 
@@ -704,12 +875,11 @@ bool HNL_RegionDefinitions::RunSignalRegionTrilepton(HNL_LeptonCore::Channel cha
 
 HNL_RegionDefinitions::HNL_RegionDefinitions(){
       
-
-
 }
  
 HNL_RegionDefinitions::~HNL_RegionDefinitions(){
 
+  
 }
 
 
@@ -798,40 +968,13 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
   ///  Select events based on NConv and if running Run_Conv
   FillHist("CR_BeforeConvCut", 1. , weight_ll, 2., 0.,  2.);
 
-  if(!IsData){
-    cout << "-------------------------------------------------------------------------" << endl;
-    int nConv(0);
-    for(auto ilep: LepsT){
-
-      int LepType=GetLeptonType_JH(*ilep, gens);
-      cout << ilep->GetFlavour() << " GenType = " <<  LepType << endl;
-      if( LepType >=4 || LepType < -4) nConv++;
-    }
-
-    if(run_Debug)cout <<  "Number of Conversions = " << nConv << endl;
-
-    FillHist( "CR_NConv", nConv , weight_ll, 2., 0.,  2.);
-
-    if(RunPromptTLRemoval){
-      weight_ll = -1*weight_ll* GetFakeWeight(LepsT, param , false);
-      cout << "RunPromptTLRemoval : weight = " << weight_ll << endl;
-    }
-
-    else {
-      if(RunConv && nConv==0)  {
-	cout << "Removing events that has no conv. " << endl;
-	return;
-
-      }
-      if(!RunConv && nConv > 0) return;
-    }
+  
+  if(!PassEventTypeFilter(LepsT, gens)) return;
+  
+  if(!IsData && RunPromptTLRemoval){
+    weight_ll = -1*weight_ll* GetFakeWeight(LepsT, param , false);
   }
 
-  FillHist("CR_AfterConvCut", 1. , weight_ll, 2., 0.,  2.);
-
-  if(run_Debug) {
-    for(auto ilep: LepsV) cout <<  ilep->GetFlavour() << " Pt = " << ilep->Pt() << " Eta = " << ilep->Eta() << " PassTID =" << ilep->PassLepID() << endl;
-  }
 
   for(unsigned int ic = 0; ic < channels.size(); ic++){
 

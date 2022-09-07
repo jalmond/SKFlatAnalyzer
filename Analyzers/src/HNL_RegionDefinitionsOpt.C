@@ -96,9 +96,6 @@ void HNL_RegionDefinitionsOpt::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq
     }
 
     if(RunFake){
-      cout << "------------------------------------------------------------------------------------------------------" << endl;
-      cout << "Param " << param.Name << endl;
-      cout << "weight_channel = " << weight_channel << endl;
       weight_channel = GetFakeWeight(leps, param_channel, true);
       FillWeightHist(param_channel.Name+"/FakeWeight",weight_channel);
     }
@@ -185,9 +182,15 @@ bool  HNL_RegionDefinitionsOpt::PassPreselection(HNL_LeptonCore::Channel channel
   
   FillEventCutflow(HNL_LeptonCore::ChannelDepTrigger, w, GetChannelString(channel) +"_MultiTrigger", "ChannelCutFlow/"+param.DefName,param.WriteOutVerbose);
   
-  if(param.SRConfig.Contains("Trig1OR") && !(PassMultiTriggerSelection(channel, ev, leps,"Dilep","HighPt")))  return false;
-  else if(param.SRConfig.Contains("Trig2OR") && !(PassMultiTriggerSelection(channel, ev, leps,"Dilep","Lep")))  return false;
-  else if(param.SRConfig.Contains("Trig3OR") && !((PassMultiTriggerSelection(channel, ev, leps,"Dilep","Lep")) || PassMultiTriggerSelection(channel, ev, leps,"Dilep", "HighPt"))) return false;
+  if(param.SRConfig.Contains("Trig1OR")){
+    if( !(PassMultiTriggerSelection(channel, ev, leps,"Dilep","HighPt")))  return false;
+  }
+  else if(param.SRConfig.Contains("Trig2OR")){
+    if(!(PassMultiTriggerSelection(channel, ev, leps,"Dilep","Lep")))  return false;
+  }
+  else if(param.SRConfig.Contains("Trig3OR")){
+    if( !((PassMultiTriggerSelection(channel, ev, leps,"Dilep","Lep")) || PassMultiTriggerSelection(channel, ev, leps,"Dilep", "HighPt"))) return false;
+  }
   else      if (!PassTriggerSelection(channel, ev, leps,"Dilep")) return false;
   
   w *= HNLZvtxSF(channel);
@@ -427,25 +430,32 @@ TString HNL_RegionDefinitionsOpt::RunSignalRegionWWString(HNL_LeptonCore::Channe
   Fill_RegionPlots(channel, 0, param.Name,"InclusiveSR2" ,  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w,param.WriteOutVerbose);
 
   if (param.SRConfig.Contains("VBFLeadJet")){
+
     if (param.SRConfig.Contains("MJJ450")){
       if(!PassVBF(JetColl,leps,450., true)) return "false";
     }
-    if (param.SRConfig.Contains("MJJ500")){
+    else if (param.SRConfig.Contains("MJJ500")){
       if(!PassVBF(JetColl,leps,500., true)) return "false";
     }   
-    if (param.SRConfig.Contains("MJJ600")){
+    else if (param.SRConfig.Contains("MJJ600")){
       if(!PassVBF(JetColl,leps,600., true)) return "false";
     }
-    if (param.SRConfig.Contains("MJJ750")){
+    else if (param.SRConfig.Contains("MJJ750")){
       if(!PassVBF(JetColl,leps,750., true)) return "false";
     }
-    if (param.SRConfig.Contains("MJJ800")){
+    else if (param.SRConfig.Contains("MJJ800")){
       if(!PassVBF(JetColl,leps,800., true)) return "false";
     }
-    if (param.SRConfig.Contains("MJJ850")){
+    else if (param.SRConfig.Contains("MJJ850")){
       if(!PassVBF(JetColl,leps,850., true)) return "false";
     }
-    if(!PassVBF(JetColl,leps,750., true)) return "false";
+    else if (param.SRConfig.Contains("MJJ900")){
+      if(!PassVBF(JetColl,leps,900., true)) return "false";
+    }
+    else if (param.SRConfig.Contains("MJJ1000")){
+      if(!PassVBF(JetColl,leps,1000., true)) return "false";
+    }
+    else if(!PassVBF(JetColl,leps,750., true)) return "false";
 
   }
   else   if (param.SRConfig.Contains("VBFAwayJet")){
@@ -453,24 +463,31 @@ TString HNL_RegionDefinitionsOpt::RunSignalRegionWWString(HNL_LeptonCore::Channe
     if (param.SRConfig.Contains("MJJ450")){
       if(!PassVBF(JetColl,leps,450., false)) return "false";
     }   
-    if (param.SRConfig.Contains("MJJ500")){
+    else if (param.SRConfig.Contains("MJJ500")){
       if(!PassVBF(JetColl,leps,500., false)) return "false";
     }
-    if (param.SRConfig.Contains("MJJ600")){
+    else if (param.SRConfig.Contains("MJJ600")){
       if(!PassVBF(JetColl,leps,600., false)) return "false";
     }
-    if (param.SRConfig.Contains("MJJ750")){
+    else if (param.SRConfig.Contains("MJJ750")){
       if(!PassVBF(JetColl,leps,750., false)) return "false";
     }
-    if (param.SRConfig.Contains("MJJ800")){
+    else if (param.SRConfig.Contains("MJJ800")){
       if(!PassVBF(JetColl,leps,800., false)) return "false";
     }
-    if (param.SRConfig.Contains("MJJ850")){
+    else if (param.SRConfig.Contains("MJJ850")){
       if(!PassVBF(JetColl,leps,850., false)) return "false";
     }
 
-    if(!PassVBF(JetColl,leps,750., false)) return "false";
+    else if (param.SRConfig.Contains("MJJ900")){
+      if(!PassVBF(JetColl,leps,900., false)) return "false";
+    }
+    else if (param.SRConfig.Contains("MJJ1000")){
+      if(!PassVBF(JetColl,leps,1000., false)) return "false";
+    }
 
+    else if(!PassVBF(JetColl,leps,750., false)) return "false";
+    
   }
 
   else       if(!PassVBF(JetColl,leps,750., true)) return "false";
@@ -500,10 +517,17 @@ TString HNL_RegionDefinitionsOpt::RunSignalRegionWWString(HNL_LeptonCore::Channe
 
   double htltcut = 2.;
   
-  if (param.SRConfig.Contains("HTLT1_")) htltcut = 1.;
-  if (param.SRConfig.Contains("HTLT125_")) htltcut = 1.25;
+  if (param.SRConfig.Contains("HTLT10_")) htltcut = 1.;
+  if (param.SRConfig.Contains("HTLT11_")) htltcut = 1.1;
+  if (param.SRConfig.Contains("HTLT12_")) htltcut = 1.2;
+  if (param.SRConfig.Contains("HTLT13_")) htltcut = 1.3;
+  if (param.SRConfig.Contains("HTLT14_")) htltcut = 1.4;
   if (param.SRConfig.Contains("HTLT15_")) htltcut = 1.5;
-  if (param.SRConfig.Contains("HTLT175_")) htltcut = 175.;
+  if (param.SRConfig.Contains("HTLT16_")) htltcut = 1.6;
+  if (param.SRConfig.Contains("HTLT17_")) htltcut = 1.7;
+  if (param.SRConfig.Contains("HTLT18_")) htltcut = 1.8;
+  if (param.SRConfig.Contains("HTLT19_")) htltcut = 1.9;
+  if (param.SRConfig.Contains("HTLT20_")) htltcut = 2.;
 
 
   if (HT/leps[0]->Pt() < htltcut){
@@ -569,17 +593,35 @@ TString HNL_RegionDefinitionsOpt::RunSignalRegionAK4String(HNL_LeptonCore::Chann
   
   int  NB_JetColl      =  B_JetColl.size();
 
+  double pt_bin1= 80.;
+  if (param.SRConfig.Contains("SR3_bin1pt_60_")) pt_bin1= 60.;
+  if (param.SRConfig.Contains("SR3_bin1pt_70_")) pt_bin1= 70.;
+  if (param.SRConfig.Contains("SR3_bin1pt_80_")) pt_bin1= 80.;
+  if (param.SRConfig.Contains("SR3_bin1pt_90_")) pt_bin1= 90.;
+  if (param.SRConfig.Contains("SR3_bin1pt_100_")) pt_bin1= 100.;
+  if (param.SRConfig.Contains("SR3_bin1pt_120_")) pt_bin1= 120.;
+
+  double pt_bin2= 80.;
+  if (param.SRConfig.Contains("SR3_bin2pt_60_")) pt_bin2= 60.;
+  if (param.SRConfig.Contains("SR3_bin2pt_70_")) pt_bin2= 70.;
+  if (param.SRConfig.Contains("SR3_bin2pt_80_")) pt_bin2= 80.;
+  if (param.SRConfig.Contains("SR3_bin2pt_90_")) pt_bin2= 90.;
+  if (param.SRConfig.Contains("SR3_bin2pt_100_")) pt_bin2= 100.;
+  if (param.SRConfig.Contains("SR3_bin2pt_120_")) pt_bin2= 120.;
+
+
+
   if(NB_JetColl==0 && PassHMMet){
     if(JetColl.size()==0)     Fill_RegionPlots(channel, 0, param.Name,"ZeroJetSR3" ,TauColl,  JetColl, AK8_JetColl, leps,  METv, nPV, w,param.WriteOutVerbose);
     else if(JetColl.size()==1)     Fill_RegionPlots(channel, 0, param.Name,"OneJetSR3" ,  TauColl,JetColl, AK8_JetColl, leps,  METv, nPV, w,param.WriteOutVerbose);
   }
   
-  if((NB_JetColl==0 && PassHMMet) && JetColl.size() == 0 && leps[1]->Pt() > 80.) {
+  if((NB_JetColl==0 && PassHMMet) && JetColl.size() == 0 && leps[1]->Pt() > pt_bin1) {
     FillHist( "LimitSR3/"+param.Name+"/SignalBins",   0.5, w, 16, 0, 16.,  "Signalbins");
     FillHist( "LimitSR3/"+param.Name+"/SignalBinsQ",   0.5*leps[0]->Charge(), w, 32, -16, 16., "Signalbins");                                       
     return "SR3_bin1";
   }
-  if((NB_JetColl==0 && PassHMMet) && JetColl.size() == 1 && leps[1]->Pt() > 80.) {
+  if((NB_JetColl==0 && PassHMMet) && JetColl.size() == 1 && leps[1]->Pt() > pt_bin2) {
     FillHist( "LimitSR3/"+param.Name+"/SignalBins",   1.5, w, 16, 0, 16., "Signalbins");
     FillHist( "LimitSR3/"+param.Name+"/SignalBinsQ",   1.5*leps[0]->Charge(), w, 32, -16, 16., "Signalbins");                                       
     return "SR3_bin2";

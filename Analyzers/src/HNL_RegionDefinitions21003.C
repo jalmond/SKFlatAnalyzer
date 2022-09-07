@@ -71,11 +71,9 @@ bool  HNL_RegionDefinitions21003::RunSignalRegionWW(HNL_LeptonCore::Channel chan
     FillEventCutflow(HNL_LeptonCore::SR2, w, "SR2_bveto",param.Name,param.WriteOutVerbose);
     
     double HTLT[5] = { 0.,1., 2, 5., 10};
-    double QHTLT[9] = { -10., -5., -2.,-1.,0.,1., 2, 5., 10.};
     double ht_lt = (HT/leps[0]->Pt() > 10.) ? 9. : HT/leps[0]->Pt();
     
     FillHist( "LimitSR2/"+param.Name+"/HT_LT1_Central",  ht_lt,  w, 4, HTLT, "Reco HT/LT1");
-    FillHist( "LimitSR2/"+param.Name+"/Q_HT_LT1_Central",  leps[0]->Charge()*ht_lt ,  w, 8 , QHTLT, "Reco HT/LT1 * Q");
     
     FillEventCutflow(HNL_LeptonCore::ChannelDepSR2, w, GetChannelString(channel) +"_SR2", "ChannelCutFlow/"+param.DefName,param.WriteOutVerbose);
     

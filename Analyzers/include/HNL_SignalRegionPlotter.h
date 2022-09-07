@@ -2,6 +2,10 @@
 #define HNL_SignalRegionPlotter_h
 
 #include "HNL_RegionDefinitions.h"
+#include "TMVA/Tools.h"
+#include "TMVA/Reader.h"
+#include "TMVA/MethodCuts.h"
+
 
 class HNL_SignalRegionPlotter : public HNL_RegionDefinitions {
 

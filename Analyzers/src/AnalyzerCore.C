@@ -1455,12 +1455,27 @@ double AnalyzerCore::GetFatJetSF(FatJet fatjet, TString tag,  int dir){
 
 
   double loose_sf(1.);
-  if(DataYear==2016) loose_sf = 1.03 + fsys*0.14;
-  if(DataYear==2017) loose_sf = 0.974 + fsys*0.029;
-  if(DataYear==2018) loose_sf = 0.980 + fsys*0.019;
+  if(tag.Contains("HP")){
+    if(DataYear==2016) loose_sf = 0.99  + fsys*0.11;
+    if(DataYear==2017) loose_sf = 0.974 + fsys*0.029;
+    if(DataYear==2018) loose_sf = 0.980 + fsys*0.019;
+    return loose_sf;
+  }
+  else if(tag.Contains("LP")){
+    
+    if(DataYear==2016) loose_sf = 1.03 + fsys*0.14;
 
-  if(tag=="ak8_type1") return loose_sf;
-  if (tag.Contains("_tau21" ))  return loose_sf;
+    else if(DataYear==2017) {
+      if (fatjet.PuppiTau21() < 0.45) loose_sf = 0.974 + fsys*0.029;
+      else if (fatjet.PuppiTau21() < 0.75)    loose_sf = 1.136 + fsys*0.162;
+    }
+
+    else if(DataYear==2018) {
+      if (fatjet.PuppiTau21() <0.45) loose_sf = 0.980 + fsys*0.019;
+      else if (fatjet.PuppiTau21() < 0.75)  loose_sf = 1.20 + fsys*0.194;
+    }
+    return loose_sf;
+  }
 
   return 1.;
 
@@ -1593,6 +1608,7 @@ vector<FatJet>  AnalyzerCore::GetAK8Jets(vector<FatJet> fatjets, double pt_cut ,
 
 vector<FatJet>  AnalyzerCore::GetAK8Jetsv2(vector<FatJet> fatjets, double pt_cut ,  double eta_cut, bool lepton_cleaning  , double dr_lep_clean , bool apply_tau21, double tau21_cut , bool apply_masscut, double sdmass_lower_cut,  double sdmass_upper_cut, double WQCDTagger, vector<Electron>  veto_electrons, vector<Muon>  veto_muons){
 
+
   vector<FatJet> output_fatjets;
   for(unsigned int ijet =0; ijet < fatjets.size(); ijet++){
 
@@ -1629,12 +1645,18 @@ vector<FatJet>  AnalyzerCore::GetAK8Jetsv2(vector<FatJet> fatjets, double pt_cut
     }
 
     double tau_21_cut = tau21_cut;
-    if(tau21_cut < 0.){
+    if(tau21_cut > 0.){
       if(DataYear==2016) tau_21_cut = 0.55;
+      if(DataYear==2017) tau_21_cut = 0.75;
+      if(DataYear==2018) tau_21_cut = 0.75;
+    }
+    else{
+
+      if(DataYear==2016) tau_21_cut = 0.35;
       if(DataYear==2017) tau_21_cut = 0.45;
       if(DataYear==2018) tau_21_cut = 0.45;
-    }
 
+    }
     if( fabs(fatjets[ijet].Eta()) > eta_cut)    continue;
     if( fabs(fatjets[ijet].Pt())  < pt_cut)    continue;
 
@@ -1837,8 +1859,8 @@ std::vector<FatJet> AnalyzerCore::ScaleSDMassFatJets(const std::vector<FatJet>& 
 
     double current_SDMass (1.);    
     if(DataYear == 2016) current_SDMass = this_jet.SDMass() * (1. + double(sys) * 0.0094 );
-    //if(DataYear == 2017) current_SDMass = this_jet.SDMass() * (0.982 + double(sys) * 0.004 );
-    //if(DataYear == 2018) current_SDMass = this_jet.SDMass() * (0.982 + double(sys) * 0.004 );
+    if(DataYear == 2017) current_SDMass = this_jet.SDMass() * (0.982 + double(sys) * 0.004 );
+    if(DataYear == 2018) current_SDMass = this_jet.SDMass() * (0.982 + double(sys) * 0.004 ); // FIX
 
     this_jet.SetSDMass( current_SDMass );
     
@@ -1858,8 +1880,8 @@ std::vector<FatJet> AnalyzerCore::SmearSDMassFatJets(const std::vector<FatJet>& 
     double current_SDMass (1.);
     //https://twiki.cern.ch/twiki/bin/viewauth/CMS/JetWtagging#2017_scale_factors_and_correctio
     if(DataYear == 2016) current_SDMass = this_jet.SDMass() * (1. + double(sys) * 0.20 );
-    //if(DataYear == 2017) current_SDMass = this_jet.SDMass() * (1.09 + double(sys) * 0.05 );
-    //if(DataYear == 2018) current_SDMass = this_jet.SDMass() * (1.09 + double(sys) * 0.05 );
+    if(DataYear == 2017) current_SDMass = this_jet.SDMass() * (1.09 + double(sys) * 0.05 );
+    if(DataYear == 2018) current_SDMass = this_jet.SDMass() * (1.09 + double(sys) * 0.05 ); //FIX
     
     this_jet.SetSDMass( current_SDMass );
 
@@ -3044,8 +3066,11 @@ void AnalyzerCore::PrintGen(const std::vector<Gen>& gens){
   cout << "index\tPID\tStatus\tMIdx\tMPID\tStart\tPt\tEta\tPhi\tM" << endl;
   for(unsigned int i=2; i<gens.size(); i++){
     Gen gen = gens.at(i);
-    vector<int> history = TrackGenSelfHistory(gen, gens);
-    cout << i << "\t" << gen.PID() << "\t" << gen.Status() << "\t" << gen.MotherIndex() << "\t" << gens.at(gen.MotherIndex()).PID()<< "\t" << history[0] << "\t";
+    if(!MCSample.Contains("Sherpa")){
+      vector<int> history = TrackGenSelfHistory(gen, gens);
+      cout << i << "\t" << gen.PID() << "\t" << gen.Status() << "\t" << gen.MotherIndex() << "\t" << gens.at(gen.MotherIndex()).PID()<< "\t" << history[0] << "\t";
+    }
+  
     printf("%.2f\t%.2f\t%.2f\t%.2f\n",gen.Pt(), gen.Eta(), gen.Phi(), gen.M());
   }
 
@@ -3259,7 +3284,7 @@ bool AnalyzerCore::ConversionSplitting(std::vector<Lepton *> leps,const std::vec
   
 
   if(IsData) return true;
-
+  
   int nlep_pt20(0);
 
   for(auto ilep : leps){
@@ -3267,11 +3292,11 @@ bool AnalyzerCore::ConversionSplitting(std::vector<Lepton *> leps,const std::vec
     if(ilep->Pt() > 15.) nlep_pt20++;
   }
  
-  if(MCSample.Contains("WG") ||MCSample.Contains("ZG") || MCSample.Contains("TG")){
+  if(MCSample.Contains("WGTo") ||MCSample.Contains("ZGTo")){
     if(nlep_pt20 ==3) return true;
     else return false;
   }
-  else if(MCSample.Contains("DY") || MCSample.Contains("WJ") || MCSample.Contains("TTLL") || MCSample.Contains("Single")) {
+  else if(MCSample.Contains("DYJet") || MCSample.Contains("WJet")) {
 
     if(nlep_pt20 !=3) return true;
     else return false;
@@ -3318,13 +3343,13 @@ bool AnalyzerCore::ConversionVeto(std::vector<Lepton *> leps,const std::vector<G
     PrintGen(gens);
   }
   
-  if(MCSample.Contains("WG") ||MCSample.Contains("ZG") || MCSample.Contains("TG"))   {
+  if(MCSample.Contains("WGTo") ||MCSample.Contains("ZGTo") )   {
     if(!photon_found) return true;
     if(!GENTMatched)cout << "GHENT Conv event removed in " << MCSample << endl;
     cout << "Matched photon pt = " << ph_pt << endl;
     return GENTMatched;
   }
-  else if(MCSample.Contains("DY") || MCSample.Contains("WJ") || MCSample.Contains("TTLL") || MCSample.Contains("Single")) {
+  else if(MCSample.Contains("DYJet") || MCSample.Contains("WJet") ){
     if(!photon_found) return true;
     cout << "Matched photon pt = " << ph_pt << endl;
     return !GENTMatched;
