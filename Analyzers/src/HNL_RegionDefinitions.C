@@ -401,10 +401,47 @@ TString HNL_RegionDefinitions::RunSignalRegionWWString(HNL_LeptonCore::Channel c
   if(qq==Minus && leps[0]->Charge() > 0) return "false";
 
   FillEventCutflow(HNL_LeptonCore::SR2,w, "SR2_lep_charge",param.Name,param.WriteOutVerbose);
-
+  
   FillEventCutflow(HNL_LeptonCore::SR2, w, "SR2_lep_pt",param.Name,param.WriteOutVerbose);
 
   Fill_RegionPlots(channel, 0, param.Name,"InclusiveSR2" ,  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w,param.WriteOutVerbose);
+
+  bool use_leadjets=true;
+  double ll_dphi = fabs(TVector2::Phi_mpi_pi( ( (*leps[0]).Phi() - (*leps[1]).Phi() )) );
+  if(ll_dphi < 2.) return false;
+  FillEventCutflow(HNL_LeptonCore::SR2, w, "SR2_DPhi",param.Name,param.WriteOutVerbose);
+  
+  if( ( (*leps[0]) + (*leps[1]) ).M() < 20.) return false;
+  if(JetColl.size() < 2) return false;
+  FillEventCutflow(HNL_LeptonCore::SR2, w, "SR2_DiJet",param.Name,param.WriteOutVerbose);
+
+  double maxDiJetDeta=0.;
+  int ijet1(-1), ijet2(-1);
+  for(unsigned int ij = 0; ij < JetColl.size()-1; ij++){
+    for(unsigned int ij2 = ij+1; ij2 < JetColl.size(); ij2++){
+
+      double deta = fabs(JetColl[ij].Eta() - JetColl[ij2].Eta());
+      if(deta > maxDiJetDeta) {
+	maxDiJetDeta=deta;
+	ijet1=ij;
+	ijet2=ij2;
+      }
+    }
+  }
+  if(use_leadjets){ijet1=0;ijet2=1;}
+
+  if(maxDiJetDeta < 2.5) return false;
+  FillEventCutflow(HNL_LeptonCore::SR2, w, "SR2_DiJetEta",param.Name,param.WriteOutVerbose);
+
+  Particle JJ = JetColl[ijet1] + JetColl[ijet2];
+  FillEventCutflow(HNL_LeptonCore::SR2, w, "SR2_DiJetMass",param.Name,param.WriteOutVerbose);
+  if(JJ.M() < 750) return false;
+
+  double Av_JetEta= 0.5*(JetColl[ijet1].Eta()+ JetColl[ijet2].Eta());
+  double zeppenfeld = TMath::Max((*leps[0]).Eta()  - Av_JetEta , (*leps[1]).Eta()  - Av_JetEta ) /maxDiJetDeta;
+
+  if(zeppenfeld > 0.75) return false;
+
 
   if(!PassVBF(JetColl,leps,750., true)) return "false";
 
@@ -989,7 +1026,7 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
 
     // Change Name of param to include Flavour channel
     TString channel_string = GetChannelString(dilep_channel);
-    param.Name = channel_string + "/" + param.DefName + "_RunAllControlRegions";
+    param.Name = channel_string + "/" + param.DefName ;
 
     float weight_channel = weight_ll;
 

@@ -1,0 +1,2 @@
+# alias PD xsec nmc sumsign sumw
+WJetsToLNu_HT-2500ToInf	WJetsToLNu_HT-2500ToInf_TuneCP5_13TeV-madgraphMLM-pythia8	0.008067	709514	709514.0	709514.0 

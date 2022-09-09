@@ -236,14 +236,14 @@ int  Electron::PassIDTight(TString ID) const{
   // ===== Type-1                                                   
 
 
-  if(ID=="HNMVA_") {
+  if(ID.Contains("HNMVA_")) {
     TString mva_st = ID.ReplaceAll("HNMVA_","");
     std::string mva_s = std::string(mva_st);
     std::string::size_type sz;     // alias of size_t                                                                                                                      
 
     double mva_d = std::stod (mva_s,&sz);
 
-    return ((passIDHN(3,0.02, 0.02, 0.1,0.1, 5.,5., 0.1, 0.1, -999., -999.)&&PassMVA(mva_d,mva_d,mva_d))  ? 1 : 0);
+    return ((passIDHN(3,0.04, 0.04, 0.1,0.1, 5.,5., 0.1, 0.1, -999., -999.)&&PassMVA(mva_d,mva_d,mva_d))  ? 1 : 0);
   }                                                                                                                              
   if(ID=="HN2016")                 return passIDHN(3,0.01, 0.01, 0.04,0.04, 4.,4., 0.1, 0.06, -999., -999.)&&PassMVA(0.65,0.81, 0.89) ? 1 : 0 ;
   if(ID=="HNRelaxedIP2016")        return passIDHN(3,0.05, 0.05, 0.1,0.1, 4.,4., 0.1, 0.05, -999., -999.)&&PassMVA(0.65,0.81, 0.89) ? 1 : 0 ;

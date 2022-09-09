@@ -272,6 +272,7 @@ std::vector<Electron> AnalyzerCore::GetAllElectrons(){
     el.SetdZ(electron_dzVTX->at(i), electron_dzerrVTX->at(i));
     el.SetIP3D(electron_3DIPVTX->at(i), electron_3DIPerrVTX->at(i));
     el.SetMVA(electron_MVAIso->at(i), electron_MVANoIso->at(i));
+    el.SetLepMVA( electron_MVANoIso->at(i));
     el.SetPassConversionVeto(electron_passConversionVeto->at(i));
     el.SetNMissingHits(electron_mHits->at(i));
     el.SetRho(Rho);
@@ -483,7 +484,7 @@ double AnalyzerCore::GetIsoFromID(TString  lep_type, TString id, double eta, dou
 
     if (id == "POGHighPtTight") return 0.1;
     if (id == "POGHighPtMixTight") return 0.1;
-    if (id.Contains("MVA")) return 0.4;
+    if (id.Contains("HNMVA_")) return 0.1;
   }
   else if(lep_type == "Electron"){
 
@@ -493,27 +494,27 @@ double AnalyzerCore::GetIsoFromID(TString  lep_type, TString id, double eta, dou
       if(fabs(eta) < 1.479) return (0.0287 + (0.506/pt));
       else  return (0.0445 + (0.963/pt));
     }
-    if( id = "HN2016") {
+    if( id == "HN2016") {
       if(fabs(eta) < 1.479) return 0.1;
       else  return (0.06);
     }
-    if( id = "HN2017") {
+    if( id == "HN2017") {
       if(fabs(eta) < 1.479) return 0.085;
       else  return (0.05);
     }
-    if( id = "HN2018") {
+    if( id == "HN2018") {
       if(fabs(eta) < 1.479) return 0.095;
       else  return (0.07);
     }
-    if( id = "HNRelaxedIP2016") {
+    if( id == "HNRelaxedIP2016") {
       if(fabs(eta) < 1.479) return 0.1;
       else  return (0.05);
     }
-    if( id = "HNRelaxedIP2017") {
+    if( id == "HNRelaxedIP2017") {
       if(fabs(eta) < 1.479) return 0.1;
       else  return (0.05);
     }
-    if( id = "HNRelaxedIP2018") {
+    if( id == "HNRelaxedIP2018") {
       if(fabs(eta) < 1.479) return 0.095;
       else  return (0.07);
     }
@@ -548,6 +549,9 @@ double AnalyzerCore::GetIsoFromID(TString  lep_type, TString id, double eta, dou
     if( id == "passMVAID_noIso_WP90") return 0.08;
     if( id == "passMVAID_Iso_WP80") return 999.0;
     if( id == "passMVAID_Iso_WP90") return 999.0;
+
+    if (id.Contains("HNMVA_")) return 0.1;
+
 
   }
   cout << "[HNL_LeptonCore::GetIsoFromID ] ID not found.." << endl;
@@ -2340,6 +2344,11 @@ float AnalyzerCore::GetKFactor(){
   else if(MCSample.Contains("ttW") && !MCSample.Contains("To")){
     weight = 600.8/610.;
   }
+  else if(MCSample.Contains("WJet") && MCSample.Contains("HT")){
+    return 1.21;
+  }
+
+
 
   return weight;
 

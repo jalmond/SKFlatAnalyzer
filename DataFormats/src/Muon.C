@@ -334,7 +334,7 @@ bool Muon::PassMVA(double mva1, double mva2) const {
 
   if (this->Pt() < 5) return false;
   if(!( isPOGLoose() )) return false;
-  if(MiniRelIso() > 0.4)  return false;
+  if(MiniRelIso() > 0.1)  return false;
   if(!( fabs(dXY())< 0.05 && fabs(dZ())< 0.1 && fabs(IP3D()/IP3Derr())< 8.) ) return false;
   
   if( fabs(this->Eta()) <= 0.8 ){
