@@ -17,8 +17,14 @@ WZZ
 ZZTo4L_powheg
 ZZTo4L_m_1toInf_powheg
 ZZ_pythia
+ZGToLLG
 ZZZ
 WZJJToLNu_private
+WAJJToLNuAJJ_EWK_private
 WZTo3LNu_amcatnlo
 WZTo3LNu_mllmin4p0_powheg
 WZ_pythia
+WGToLNuG
+DYJets
+TTLL_powheg
+TTLJ_powheg
