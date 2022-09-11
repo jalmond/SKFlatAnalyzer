@@ -44,7 +44,7 @@ void HNL_FakeRate::executeEvent(){
   paramnames.push_back("passPOGTight"  );
   paramnames.push_back("passPOGMedium"  );
   paramnames.push_back("HNMVA"  );
-  paramnames.push_back("HNTightV2_LIP");
+  //paramnames.push_back("HNTightV2_LIP");
  
   for (auto i: ELIDs) {
     channel.push_back(EE);
@@ -102,17 +102,17 @@ void HNL_FakeRate::executeEvent(){
     //==== Jet ID
     param.Jet_ID    = "tight";
 
-    //    param.WriteOutVerbose = -1;  Run All IDs and make All plots
+    //    param.WriteOutVerbose = -1;  Run All IDs and make All Region plots
     //    param.WriteOutVerbose = -2;  Run All IDs and make only FR
     //    param.WriteOutVerbose = -3;  Run All IDs and make only FR + PR
-    //     param.WriteOutVerbose = 1;  Run Main ID and make All plots
+    //     param.WriteOutVerbose = 1;  Run Main ID and make All Region plots
     //     param.WriteOutVerbose = 2;  Run Main ID and make  only FR 
     //     param.WriteOutVerbose = 3;  Run Main ID and make  only FR + PR
     //     param.WriteOutVerbose = 0;  makes NVertx plots
-    param.WriteOutVerbose= 1; // 0 means only make FR  1 means FR+PR  2 means SR+PR + CR plots  3 means makes NVertx plots
+    param.WriteOutVerbose= -2; // 0 means only make FR  1 means FR+PR  2 means SR+PR + CR plots  3 means makes NVertx plots
    
     
-    if(fabs(param.WriteOutVerbose) >=0){
+    if(param.WriteOutVerbose >=0){
       if (channel[it_id]==MuMu && MuonTightID != "HNTightV2") continue;
       if (channel[it_id]==EE   && ElectronTightID != "HNTightV2") continue;
     }
@@ -145,8 +145,7 @@ void HNL_FakeRate::executeEventFromParameter(AnalyzerParameter param, TString El
   std::vector<Electron> loose_electrons     = GetElectrons( param,param.Electron_Loose_ID, 9.5, 2.5,false) ;
   std::vector<Muon>     loose_muons         = GetMuons    ( param,param.Muon_Loose_ID, 5, 2.4, false);
   
-
-  std::vector<Jet> jets_tmp     = GetJets   ( param, "tight", 30., 5.);
+  std::vector<Jet> jets_tmp     = GetJets   ( param, "tight", 30., 2.7);
   std::vector<Jet> jets; 
   for(unsigned int ijet =0; ijet < jets_tmp.size(); ijet++){
     bool jetok=true;
@@ -195,8 +194,6 @@ void HNL_FakeRate::executeEventFromParameter(AnalyzerParameter param, TString El
 
 void HNL_FakeRate::RunM(std::vector<Electron> loose_el,  std::vector<Muon> loose_mu, std::vector<Jet> jets,   AnalyzerParameter param,  float event_weight){
 
-
-  
   if(IsData){
     if(this->DataStream == "DoubleEG") return;
     if(this->DataStream == "SingleElectron") return;
@@ -228,16 +225,27 @@ void HNL_FakeRate::RunM(std::vector<Electron> loose_el,  std::vector<Muon> loose
     return;
   }
 
-  //else event_weight*= ApplyNvtxReweight(nPV,);
   
-  GetFakeRateAndPromptRates(param, leps,blepsT,jets,param.Name+channel_s,event_weight,isocut);
+  if(fabs(param.WriteOutVerbose) > 1 ){
+    GetFakeRateAndPromptRates(param, leps,blepsT,jets,param.Name+channel_s,event_weight,isocut);
+    return;
+  }
 
-  if(fabs(param.WriteOutVerbose) > 1) return;
-  
   if (param.Muon_Tight_ID != "HNTightV2") return;
+
+  MakeDiLepPlots(MuMu,param, ev, leps,blepsT,param.Name+channel_s,event_weight);
 
   if(loose_mu.size() != 1) return;
   
+  bool has_away_jet=false;
+  for(unsigned int ij=0; ij < jets.size(); ij++){
+    if(jets.at(ij).Pt() < 40.) continue;
+    float dphi =fabs(TVector2::Phi_mpi_pi(loose_mu[0].Phi()- jets.at(ij).Phi()));
+    if(dphi > 2.5){
+      has_away_jet=true;
+    }
+  }
+
   /// Make plots to check control of prompt leptons and to plot Loose and Tight Samples
   /// Only run when not running MANY IDs so param.WriteOutVerbose is set to 2
 
@@ -245,8 +253,6 @@ void HNL_FakeRate::RunM(std::vector<Electron> loose_el,  std::vector<Muon> loose
   float prescale_trigger = GetPrescale(leps);
   if(prescale_trigger == 0.) return;
   event_weight*=prescale_trigger;
-
-
 
 
   bool truth_match= false;
@@ -261,10 +267,10 @@ void HNL_FakeRate::RunM(std::vector<Electron> loose_el,  std::vector<Muon> loose
       
       // Plot for 1  lep + Jet pT > trig pt
       FillRegionPlots("MuMu", "SingleLooseMuJet_"+param.Name , jets,   loose_el,loose_mu,  METv, event_weight);
-      if(truth_match)       FillRegionPlots("MuMu","SingleLooseMuJet_matched_"+param.Name, jets,   loose_el,  loose_mu,  METv, event_weight);
+      if(has_away_jet)       FillRegionPlots("MuMu","SingleLooseMuAwayJet_"+param.Name, jets,   loose_el,  loose_mu,  METv, event_weight);
       if(blepsT[0]){
         FillRegionPlots("MuMu","SingleTightMuJet_"+param.Name,  jets,  loose_el,loose_mu,  METv, event_weight);
-        if(truth_match) FillRegionPlots("MuMu","SingleTightMuJet_matched_"+param.Name, jets,  loose_el, loose_mu,  METv, event_weight);
+        if(has_away_jet) FillRegionPlots("MuMu","SingleTightMuAwayJet_"+param.Name, jets,  loose_el, loose_mu,  METv, event_weight);
       }
     }
   }
@@ -272,13 +278,30 @@ void HNL_FakeRate::RunM(std::vector<Electron> loose_el,  std::vector<Muon> loose
   Double_t MT=0;
   Double_t METdphi=0;
   for(unsigned int imu = 0; imu < loose_mu.size();  imu++){
-    METdphi = TVector2::Phi_mpi_pi((loose_mu.at(imu).Phi()- METv.Phi()));
+    METdphi=  TVector2::Phi_mpi_pi((loose_mu.at(imu).Phi()- METv.Phi()));
     MT = sqrt(2.* loose_mu.at(imu).Et()*METv.Pt() * (1 - cos( METdphi)));
   }
-  if(METv.Pt()  > 30 && (60. < MT)  &&(MT < 100.) &&truth_match){
-    if(jets.size() > 0 && blepsT[0]){
-      if(jets[0].Pt() > 40){
-        if(truth_match) FillRegionPlots("MuMu","SingleTightMu_promptCR_"+param.Name, jets,  loose_el,loose_mu, METv, event_weight);
+  if((60. < MT)  &&(MT < 100.)){
+    if(loose_mu[0].Pt() > 20){
+      if(jets.size() > 0 && blepsT[0]){
+	if(jets[0].Pt() > 40){
+	  
+	  FillRegionPlots("MuMu","SingleTightMu_promptCR_"+param.Name, jets,  loose_el,loose_mu, METv, event_weight);
+	  if(has_away_jet)FillRegionPlots("MuMu","SingleTightMuAwayJet_promptCR_"+param.Name, jets,  loose_el,loose_mu, METv, event_weight);
+
+	  bool isPrompt=false;
+	  for(unsigned int ij=0; ij < jets.size(); ij++){
+	    if(jets.at(ij).Pt() < 40.) continue;
+	    float dphi =fabs(TVector2::Phi_mpi_pi(loose_mu[0].Phi()- jets.at(ij).Phi()));
+	    if(dphi > 2.5){
+	      if((jets.at(ij).Pt() /  loose_mu[0].Pt() ) < 1.) isPrompt = true;
+	    }
+	  }
+	  
+	  if (isPrompt) FillRegionPlots("MuMu","SingleTightMu_promptCR2_"+param.Name, jets,  loose_el,loose_mu, METv, event_weight);
+	  if (isPrompt&&has_away_jet) FillRegionPlots("MuMu","SingleTightMuAwayJet_promptCR2_"+param.Name, jets,  loose_el,loose_mu, METv, event_weight);
+	}
+	
       }
     }
   }
@@ -341,16 +364,28 @@ void HNL_FakeRate::RunE( std::vector<Electron> loose_el, std::vector<Muon> loose
     return;
   }
 
-  else   event_weight*= ApplyNvtxReweight(nPV,"");
-  GetFakeRateAndPromptRates(param, leps,blepsT,jets,param.Name+channel_s,event_weight,isocut);
+  if(fabs(param.WriteOutVerbose) > 1) {
+    GetFakeRateAndPromptRates(param, leps,blepsT,jets,param.Name+channel_s,event_weight,isocut);
+    return;
+  }
 
-  if(fabs(param.WriteOutVerbose) > 1) return;
-  
+
   if (param.Electron_Tight_ID != "HNTightV2") return;
+
+  MakeDiLepPlots(EE,param, ev, leps,blepsT,param.Name+channel_s,event_weight);
   
   if(loose_el.size() != 1) return;
 
- 
+  bool has_away_jet=false;
+  for(unsigned int ij=0; ij < jets.size(); ij++){
+    if(jets.at(ij).Pt() < 40.) continue;
+    float dphi =fabs(TVector2::Phi_mpi_pi(loose_el[0].Phi()- jets.at(ij).Phi()));
+    if(dphi > 2.5){
+      has_away_jet=true;
+    }
+  } 
+
+
   float prescale_trigger =  GetPrescale(leps);
   if(prescale_trigger == 0.) return;
   event_weight*=prescale_trigger;
@@ -367,10 +402,10 @@ void HNL_FakeRate::RunE( std::vector<Electron> loose_el, std::vector<Muon> loose
   if(jets.size() > 0){
     if(jets.at(0).Pt() > 40.){
       FillRegionPlots("EE","SingleLooseElJet_"+param.Name , jets,   loose_el,loose_mu,  METv, event_weight);
-      if(truth_match)       FillRegionPlots("EE","SingleLooseElJet_matched_"+param.Name, jets,   loose_el,  loose_mu,  METv, event_weight);
+      if(has_away_jet)      FillRegionPlots("EE","SingleLooseElAwayJet_"+param.Name , jets,   loose_el,loose_mu,  METv, event_weight);
       if(blepsT[0]){
         FillRegionPlots("EE","SingleTightElJet_"+param.Name,  jets,  loose_el,loose_mu,  METv, event_weight);
-        if(truth_match) FillRegionPlots("EE","SingleTightElJet_matched_"+param.Name, jets,  loose_el, loose_mu,  METv, event_weight);
+        if(has_away_jet) FillRegionPlots("EE","SingleTightElAwayJet_"+param.Name, jets,  loose_el, loose_mu,  METv, event_weight);
       }
     }
   }
@@ -381,13 +416,29 @@ void HNL_FakeRate::RunE( std::vector<Electron> loose_el, std::vector<Muon> loose
     METdphi = TVector2::Phi_mpi_pi((loose_el.at(iel).Phi()- METv.Phi()));
     MT = sqrt(2.* loose_el.at(iel).Et()*METv.Pt() * (1 - cos( METdphi)));
   }
-  if(METv.Pt()  > 30 && (60. < MT)  &&(MT < 100.) &&truth_match){
-    if(jets.size() > 0 && blepsT[0]){
-      if(jets[0].Pt() > 40){
-        if(truth_match) FillRegionPlots("EE","SingleTightEl_promptCR_"+param.Name, jets,  loose_el,loose_mu, METv, event_weight);
+  if((60. < MT)  &&(MT < 100.)){
+    if(loose_el[0].Pt() > 25){
+      if(jets.size() > 0 && blepsT[0]){
+	if(jets[0].Pt() > 40){
+	  FillRegionPlots("EE","SingleTightEl_promptCR_"+param.Name, jets,  loose_el,loose_mu, METv, event_weight);
+	  if(has_away_jet)	  FillRegionPlots("EE","SingleTightElAwayJet_promptCR_"+param.Name, jets,  loose_el,loose_mu, METv, event_weight);
+
+	  bool isPrompt=false;
+          for(unsigned int ij=0; ij < jets.size(); ij++){
+	    if(jets.at(ij).Pt() < 40.) continue;
+            float dphi =fabs(TVector2::Phi_mpi_pi(loose_el[0].Phi()- jets.at(ij).Phi()));
+            if(dphi > 2.5){
+              if((jets.at(ij).Pt() /  loose_el[0].Pt() ) < 1.) isPrompt = true;
+	    }
+	  }
+	  
+          if (isPrompt ) FillRegionPlots("EE","SingleTightEl_promptCR2_"+param.Name, jets,  loose_el,loose_mu, METv, event_weight);
+	  if (isPrompt && has_away_jet) FillRegionPlots("EE","SingleTightElAwayJet_promptCR2_"+param.Name, jets,  loose_el,loose_mu, METv, event_weight);
+	}
       }
     }
   }
+  
 
 
   bool useevent40 = UseEvent(leps , jets, 40., METv,event_weight);
@@ -411,7 +462,7 @@ void HNL_FakeRate::RunE( std::vector<Electron> loose_el, std::vector<Muon> loose
 
 double HNL_FakeRate::ApplyNvtxReweight(int NPV, TString Key){
 
-  if(!IsData) return 1.;
+  if(IsData) return 1.;
   if(!NvtxSFFile->GetListOfKeys()->Contains(Key)){ printf("[Error] No %s in NvtxSF File.\n", Key.Data()); return -1.; }
 
   std::map<TString, TH1D*>::iterator mapit = maphist_NvtxSF.find(Key);
@@ -428,11 +479,156 @@ double HNL_FakeRate::ApplyNvtxReweight(int NPV, TString Key){
 
 }
 
+
+void HNL_FakeRate::MakeDiLepPlots(HNL_LeptonCore::Channel channel, AnalyzerParameter param, Event ev, std::vector<Lepton *> leps,std::vector<bool> blepsT,  TString label, float event_weight){
+
+  if(leps.size() != 2) return;
+  if(!blepsT[0] || !blepsT[1]) return;
+
+  // now we have 2 Tight leptons                                                                                                                             
+
+  TString plot_dir = GetChannelString(channel);
+
+  // Make Z peak                                                                                                                                            
+  Particle Z = (*leps[0]) + (*leps[1]);
+  if(leps[0]->Charge() == leps[1]->Charge()) return;
+  bool PassZMass = (fabs(90. - Z.M()) < 10.) ? true : false;
+
+  std::vector<Jet> jets_tmp     = GetJets   ( param, param.Jet_ID, 20., 5.);
+  JetTagging::Parameters param_jets = JetTagging::Parameters(JetTagging::DeepJet, JetTagging::Medium, JetTagging::incl, JetTagging::mujets);
+  std::vector<Jet> BJetColl    = GetBJets(param, jets_tmp , param_jets);
+  double sf_btag               = GetBJetSF(param, jets_tmp, param_jets);
+  if(!IsData )event_weight*= sf_btag;
+
+  if(BJetColl.size() > 0) return;
+
+  int nbin_pt    =6;
+  double bins_pt[nbin_pt+1] = {0.,5., 10., 20., 30., 50., 200. };
+
+  if(channel == MuMu){
+
+    TString triggerslist_3="HLT_Mu3_PFJet40_v";
+    TString triggerslist_8="HLT_Mu8_TrkIsoVVL_v";
+    TString triggerslist_17="HLT_Mu17_TrkIsoVVL_v";
+
+    double NVxt_Mu3 =  ApplyNvtxReweight(nPV,triggerslist_3);
+    double NVxt_Mu8 =  ApplyNvtxReweight(nPV,triggerslist_8);
+    double NVxt_Mu17 =  ApplyNvtxReweight(nPV,triggerslist_17);
+
+    bool Mu3PD= (!IsDATA || (IsDATA&& ev.IsPDForTrigger(triggerslist_3, this->DataStream) ));
+    bool Mu8PD= (!IsDATA || (IsDATA&& ev.IsPDForTrigger(triggerslist_8, this->DataStream) ));
+    bool Mu17PD= (!IsDATA || (IsDATA&& ev.IsPDForTrigger(triggerslist_17, this->DataStream) ));
+
+    bool pass_3 = ev.PassTrigger(triggerslist_3) && Mu3PD;
+    bool pass_8 = ev.PassTrigger(triggerslist_8) && Mu8PD;
+    bool pass_17 = ev.PassTrigger(triggerslist_17) && Mu17PD;
+
+
+    if(pass_3){
+      if(leps[1]->Pt() > 5){
+        double prescale_weight  =  (IsDATA) ? 1. : ev.GetTriggerLumi(triggerslist_3)*NVxt_Mu3;
+	
+        if(PassZMass) {
+	  for(auto ilep : leps)FillHist(( plot_dir +  "/RegionPlots_Dilep/"+triggerslist_3 + "_LepPt").Data(), ilep->Pt() , event_weight*prescale_weight,nbin_pt, bins_pt);
+        }
+        FillHist(( plot_dir +  "/RegionPlots_Dilep/"+triggerslist_3 + "_LLMass").Data(), Z.M() , event_weight*prescale_weight, 100., 0., 200);
+      }
+    }
+    
+    if(pass_8){
+      if(leps[1]->Pt() > 10){
+        double prescale_weight  =  (IsDATA) ? 1. : ev.GetTriggerLumi(triggerslist_8)*NVxt_Mu8;
+	
+        if(PassZMass){
+	  for(auto ilep : leps)FillHist(( plot_dir +  "/RegionPlots_Dilep/"+triggerslist_8 + "_LepPt").Data(), ilep->Pt() , event_weight*prescale_weight,nbin_pt, bins_pt);
+        }
+        FillHist(( plot_dir +  "/RegionPlots_Dilep/"+triggerslist_8 + "_LLMass").Data(), Z.M() , event_weight*prescale_weight, 100., 0., 200);
+
+      }
+    }
+    if(pass_17){
+      if(leps[1]->Pt() > 20){
+        double prescale_weight  =  (IsDATA) ? 1. : ev.GetTriggerLumi(triggerslist_17)*NVxt_Mu17;
+        if(PassZMass){
+          for(auto ilep : leps)FillHist(( plot_dir +  "/RegionPlots_Dilep/"+triggerslist_17 + "_LepPt").Data(), ilep->Pt() , event_weight*prescale_weight,nbin_pt, bins_pt);
+        }
+        FillHist(( plot_dir +  "/RegionPlots_Dilep/"+triggerslist_17 + "_LLMass").Data(), Z.M() , event_weight*prescale_weight, 100., 0., 200);
+      }
+    }
+  }
+  
+  if(channel == EE){
+
+    TString triggerslist_8="HLT_Ele8_CaloIdL_TrackIdL_IsoVL_PFJet30_v";
+    TString triggerslist_12="HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_v";
+    TString triggerslist_17="HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_v";
+    TString triggerslist_23="HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v";
+    bool El8PD= (!IsDATA || (IsDATA&& ev.IsPDForTrigger(triggerslist_8, this->DataStream) ));
+    bool EL12PD= (!IsDATA || (IsDATA&& ev.IsPDForTrigger(triggerslist_12, this->DataStream) ));
+    bool EL17PD= (!IsDATA || (IsDATA&& ev.IsPDForTrigger(triggerslist_17, this->DataStream) ));
+    bool EL23PD= (!IsDATA || (IsDATA&& ev.IsPDForTrigger(triggerslist_23, this->DataStream) ));
+
+    bool pass_8 = ev.PassTrigger(triggerslist_8) && El8PD;
+    bool pass_12 = ev.PassTrigger(triggerslist_12) && EL12PD ;
+    bool pass_17 = ev.PassTrigger(triggerslist_17) && EL17PD;
+    bool pass_23 = ev.PassTrigger(triggerslist_23) && EL23PD;
+    double NVxt_El8 =  ApplyNvtxReweight(nPV,triggerslist_8);
+    double NVxt_El12 =  ApplyNvtxReweight(nPV,triggerslist_12);
+    double NVxt_El23 =  ApplyNvtxReweight(nPV,triggerslist_23);
+
+
+    if(pass_8){
+      if(leps[1]->Pt() > 10){
+        double prescale_weight  =  (IsDATA) ? 1. : ev.GetTriggerLumi(triggerslist_8)*NVxt_El8;
+        if(PassZMass){
+          for(auto ilep : leps)FillHist(( plot_dir +  "/RegionPlots_Dilep/"+triggerslist_8 + "_LepPt").Data(), ilep->Pt() , event_weight*prescale_weight,nbin_pt, bins_pt);
+        }
+        FillHist(( plot_dir +  "/RegionPlots_Dilep/"+triggerslist_8 + "_LLMass").Data(), Z.M() , event_weight*prescale_weight, 100., 0., 200);
+
+      }
+    }
+    if(pass_12){
+      if(leps[1]->Pt() > 14){
+        double prescale_weight  =  (IsDATA) ? 1. : ev.GetTriggerLumi(triggerslist_12)*NVxt_El12;
+        if(PassZMass){
+          for(auto ilep : leps)FillHist(( plot_dir +  "/RegionPlots_Dilep/"+triggerslist_12 + "_LepPt").Data(), ilep->Pt() , event_weight*prescale_weight,nbin_pt, bins_pt);
+        }
+        FillHist(( plot_dir +  "/RegionPlots_Dilep/"+triggerslist_12 + "_LLMass").Data(), Z.M() , event_weight*prescale_weight, 100., 0., 200);
+      }
+    }
+
+    if(pass_17){
+      if(leps[1]->Pt() > 20){
+        double prescale_weight  =  (IsDATA) ? 1. : ev.GetTriggerLumi(triggerslist_17)*NVxt_El12;
+        if(PassZMass){
+          for(auto ilep : leps)FillHist(( plot_dir +  "/RegionPlots_Dilep/"+triggerslist_17 + "_LepPt").Data(), ilep->Pt() , event_weight*prescale_weight,nbin_pt, bins_pt);
+        }
+        FillHist(( plot_dir +  "/RegionPlots_Dilep/"+triggerslist_17 + "_LLMass").Data(), Z.M() , event_weight*prescale_weight, 100., 0., 200);
+      }
+    }
+    if(pass_23){
+      if(leps[1]->Pt() > 25){
+        double prescale_weight  =  (IsDATA) ? 1. : ev.GetTriggerLumi(triggerslist_23)*NVxt_El23;
+        if(PassZMass){
+          for(auto ilep : leps)FillHist(( plot_dir +  "/RegionPlots_Dilep/"+triggerslist_23 + "_LepPt").Data(), ilep->Pt() , event_weight*prescale_weight,nbin_pt, bins_pt);
+        }
+        FillHist(( plot_dir +  "/RegionPlots_Dilep/"+triggerslist_23 + "_LLMass").Data(), Z.M() , event_weight*prescale_weight, 100., 0., 200);
+      }
+    }
+  }
+
+  return;
+
+
+}
+
+
+
 void HNL_FakeRate::MakeNVertexDistPrescaledTrig(HNL_LeptonCore::Channel channel, AnalyzerParameter param, Event ev, std::vector<Lepton *> leps,std::vector<bool> blepsT,  TString label, float event_weight){
   
 
   if(leps.size() != 2) return;
-  if(!blepsT[0] && !blepsT[1]) return;
+  if(!blepsT[0] || !blepsT[1]) return;
   
   // now we have 2 Tight leptons
   // Make Z peak 
@@ -483,7 +679,6 @@ void HNL_FakeRate::MakeNVertexDistPrescaledTrig(HNL_LeptonCore::Channel channel,
 
 	if(PassZMass) {
 	  FillHist(( triggerslist_3 + "_Nvtx").Data(),  nPV , event_weight*prescale_weight,nbin_npv, bins_npv);
-	  for(auto ilep : leps)FillHist(( triggerslist_3 + "_LepPt").Data(), ilep->Pt() , event_weight*prescale_weight,nbin_pt, bins_pt);
 	}
 	FillHist(( triggerslist_3 + "_LLMass").Data(), Z.M() , event_weight*prescale_weight, 100., 0., 200);
       }
@@ -494,7 +689,6 @@ void HNL_FakeRate::MakeNVertexDistPrescaledTrig(HNL_LeptonCore::Channel channel,
 
 	if(PassZMass){
 	  FillHist(( triggerslist_8 + "_Nvtx").Data(),  nPV , event_weight*prescale_weight,nbin_npv, bins_npv);
-	  for(auto ilep : leps)FillHist(( triggerslist_8 + "_LepPt").Data(), ilep->Pt() , event_weight*prescale_weight,nbin_pt, bins_pt);
 	}
         FillHist(( triggerslist_8 + "_LLMass").Data(), Z.M() , event_weight*prescale_weight, 100., 0., 200);
 
@@ -505,7 +699,6 @@ void HNL_FakeRate::MakeNVertexDistPrescaledTrig(HNL_LeptonCore::Channel channel,
 	double prescale_weight  =  (IsDATA) ? 1. : ev.GetTriggerLumi(triggerslist_17);
 	if(PassZMass){
 	  FillHist(( triggerslist_17 + "_Nvtx").Data(),  nPV , event_weight*prescale_weight,nbin_npv, bins_npv);
-	  for(auto ilep : leps)FillHist(( triggerslist_17 + "_LepPt").Data(), ilep->Pt() , event_weight*prescale_weight,nbin_pt, bins_pt);
 	} 
 	FillHist(( triggerslist_17 + "_LLMass").Data(), Z.M() , event_weight*prescale_weight, 100., 0., 200);
       }
@@ -536,7 +729,6 @@ void HNL_FakeRate::MakeNVertexDistPrescaledTrig(HNL_LeptonCore::Channel channel,
         double prescale_weight  =  (IsDATA) ? 1. : ev.GetTriggerLumi(triggerslist_8);
 	if(PassZMass){
 	  FillHist(( triggerslist_8 + "_Nvtx").Data(),  nPV , event_weight*prescale_weight,nbin_npv, bins_npv);
-	  for(auto ilep : leps)FillHist(( triggerslist_8 + "_LepPt").Data(), ilep->Pt() , event_weight*prescale_weight,nbin_pt, bins_pt);
 	}
         FillHist(( triggerslist_8 + "_LLMass").Data(), Z.M() , event_weight*prescale_weight, 100., 0., 200);
 
@@ -547,7 +739,6 @@ void HNL_FakeRate::MakeNVertexDistPrescaledTrig(HNL_LeptonCore::Channel channel,
         double prescale_weight  =  (IsDATA) ? 1. : ev.GetTriggerLumi(triggerslist_12);
 	if(PassZMass){
 	  FillHist(( triggerslist_12 + "_Nvtx").Data(),  nPV , event_weight*prescale_weight,nbin_npv, bins_npv);
-	  for(auto ilep : leps)FillHist(( triggerslist_12 + "_LepPt").Data(), ilep->Pt() , event_weight*prescale_weight,nbin_pt, bins_pt);
 	}
 	FillHist(( triggerslist_12 + "_LLMass").Data(), Z.M() , event_weight*prescale_weight, 100., 0., 200);
 	      }
@@ -557,7 +748,6 @@ void HNL_FakeRate::MakeNVertexDistPrescaledTrig(HNL_LeptonCore::Channel channel,
         double prescale_weight  =  (IsDATA) ? 1. : ev.GetTriggerLumi(triggerslist_17);
 	if(PassZMass){
 	  FillHist(( triggerslist_17 + "_Nvtx").Data(),  nPV , event_weight*prescale_weight,nbin_npv, bins_npv);
-	  for(auto ilep : leps)FillHist(( triggerslist_17 + "_LepPt").Data(), ilep->Pt() , event_weight*prescale_weight,nbin_pt, bins_pt);
 	}
 	FillHist(( triggerslist_17 + "_LLMass").Data(), Z.M() , event_weight*prescale_weight, 100., 0., 200);
       }
@@ -567,7 +757,6 @@ void HNL_FakeRate::MakeNVertexDistPrescaledTrig(HNL_LeptonCore::Channel channel,
         double prescale_weight  =  (IsDATA) ? 1. : ev.GetTriggerLumi(triggerslist_23);
 	if(PassZMass){
 	  FillHist(( triggerslist_23 + "_Nvtx").Data(),  nPV , event_weight*prescale_weight,nbin_npv, bins_npv);
-	  for(auto ilep : leps)FillHist(( triggerslist_23 + "_LepPt").Data(), ilep->Pt() , event_weight*prescale_weight,nbin_pt, bins_pt);
 	}
         FillHist(( triggerslist_23 + "_LLMass").Data(), Z.M() , event_weight*prescale_weight, 100., 0., 200);
       }
@@ -679,7 +868,6 @@ float HNL_FakeRate::GetPrescale(std::vector<Lepton *>   leps  ){
 
   if(leps.size() != 1) return 0.;
 
-  
   Event ev = GetEvent();
   float prescale_trigger= 1.;
   if(leps[0]->LeptonFlavour() == Lepton::MUON){
@@ -818,8 +1006,10 @@ bool HNL_FakeRate::UseEvent(std::vector<Lepton *> leps ,  std::vector< Jet> jets
         for(unsigned int ij=0; ij < jets.size(); ij++){
           if(jets.at(ij).Pt() < awayjetcut) continue;
           float dphi =fabs(TVector2::Phi_mpi_pi(leps.at(ielT)->Phi()- jets.at(ij).Phi()));
+	  if( (jets.at(ij).ChargedEmEnergyFraction()) > 0.65)  continue;
+
           if(dphi > 2.5){
-            if((jets.at(ij).Pt() /  leps.at(ielT)->Pt() ) < 1.) continue;
+            if((jets.at(ij).Pt() /  leps.at(ielT)->Pt() ) < 1.2) continue;
             useevent = true;
           }
 	}
@@ -835,22 +1025,22 @@ bool HNL_FakeRate::UseEvent(std::vector<Lepton *> leps ,  std::vector< Jet> jets
 void HNL_FakeRate::GetFakeRates(std::vector<Lepton *> leps,std::vector<bool> blepsT,  AnalyzerParameter param,TString tightlabel,  std::vector<Jet> jets,  TString tag,float event_weight, float isocut){
 					 
   bool IsMuon=(leps[0]->LeptonFlavour() == Lepton::MUON);
-  int nbin_ptcone=  IsMuon ? 10 : 9;
-  int nbin_pt    = IsMuon ? 10 : 10;
+  int nbin_ptcone=  IsMuon ? 10 : 8;
+  int nbin_pt    = IsMuon ? 10 : 9;
   int nbin_eta   = 4;
   
   double ptbinscone  [nbin_ptcone+1];
   double ptbins      [nbin_pt+1];
   double etabins   [nbin_eta+1   ] =  { 0.,0.8,  1.479, 2.,  2.5};
   if(IsMuon){
-    vector<double> vptbinscone = {6.,10., 15.,20.,25.,30.,35.,40.,50., 60.,200. } ;
-    vector<double> vptbins =  { 5., 10., 15.,20.,25.,30.,35.,40.,50.,60.,200.} ; 
+    vector<double> vptbinscone = {6.,10., 15.,20.,25.,30.,35.,40.,50., 60.,100. } ;
+    vector<double> vptbins =  { 5., 10., 15.,20.,25.,30.,35.,40.,50.,60.,100.} ; 
     std::copy(vptbinscone.begin(), vptbinscone.end(), ptbinscone);
     std::copy(vptbins.begin(), vptbins.end(), ptbins);
   }
   else{
-    vector<double> vptbinscone = { 10., 15.,23.,30.,35., 40.,50.,60.,100.,200.};
-    vector<double> vptbins     = { 10., 15.,20.,25.,30., 35.,40.,50.,60.,100., 200.};
+    vector<double> vptbinscone = { 10., 15.,23.,30.,35., 40.,50.,60.,100.};
+    vector<double> vptbins     = { 10., 15.,20.,25.,30., 35.,40.,50.,60.,100.};
     std::copy(vptbinscone.begin(), vptbinscone.end(), ptbinscone);
     std::copy(vptbins.begin(), vptbins.end(), ptbins);
 
@@ -863,8 +1053,8 @@ void HNL_FakeRate::GetFakeRates(std::vector<Lepton *> leps,std::vector<bool> ble
   float lep_reliso  = leps[0]->RelIso();
   float lep_ip3d    = fabs(leps[0]->IP3D()/leps[0]->IP3Derr());
   float lep_mva     =  leps[0]->lep_mva();
-  float lep_dxy     = leps[0]->dXY();
-  if(lep_pt_corr > 200.) lep_pt_corr = 200.;
+  float lep_dxy     = fabs(leps[0]->dXY());
+  if(lep_pt_corr > 100.) lep_pt_corr = 99.;
 
   float weight_ptcorr=event_weight;
   float weight_pt=event_weight;
@@ -1013,24 +1203,63 @@ HNL_FakeRate::~HNL_FakeRate(){
 void HNL_FakeRate::FillRegionPlots( TString plot_dir, TString region,  std::vector<Jet> jets,  std::vector<Electron> els, std::vector<Muon> mus, Particle  met,  double w){
   
   if((els.size()+ mus.size()) != 1) return;
-  Particle lep1;
+  Lepton lep1;
   if(els.size()==1) lep1=els[0];
   else lep1 = mus[0];
 
-  FillHist( plot_dir +  "/RegionPlots_"+ region+ "/lep1_pt", lep1.Pt()  , w, 400, 0., 2000.,"p_{T} GeV");
+  int nbin_pt    =11;
+  double ptbins    [nbin_pt    +1] = { 0.,15.,20.,30.,35., 40.,50., 60., 80., 100.,200.,2000.};
 
-  FillHist( plot_dir +  "/RegionPlots_"+ region+ "/lep1_eta", lep1.Eta()  , w, 30, -3., 3,"#eta");
+  FillHist( plot_dir +  "/RegionPlots_"+ region+ "/Lep1_binned_pt", lep1.Pt()  , w, nbin_pt, ptbins,"p_{T} GeV");
+  FillHist( plot_dir +  "/RegionPlots_"+ region+ "/Lep1_pt", lep1.Pt()  , w, 400, 0., 2000.,"p_{T} GeV");
+  FillHist( plot_dir +  "/RegionPlots_"+ region+ "/Lep1_eta", lep1.Eta()  , w, 30, -3., 3,"#eta");
+  FillHist( plot_dir +  "/RegionPlots_"+ region+ "/Lep1_lep_jet_ptrel", lep1.lep_jet_ptrel(), w, 50., 0., 2.,"PtRel");
+  FillHist( plot_dir +  "/RegionPlots_"+ region+ "/Lep1_lep_jet_ptratio", lep1.lep_jet_ptratio(), w, 50., 0., 2.,"PtRel");
+
+  FillHist( plot_dir +  "/RegionPlots_"+ region+ "/Met", met.Pt()  , w, 200, 0., 400.,"MET GeV");
+  FillHist( plot_dir +  "/RegionPlots_"+ region+ "/MetPhi", met.Phi()  , w, 100, -5, 5,"MET GeV");
+  FillHist( plot_dir +  "/RegionPlots_"+ region+ "/njets" , jets.size() , w, 5, 0., 5., "N_{jets}");
+
+  float lep_reliso  = lep1.RelIso();
+  float lep_minireliso  = lep1.MiniRelIso();
+  float lep_ip3d    = fabs(lep1.IP3D()/lep1.IP3Derr());
+  float lep_mva     =  lep1.lep_mva();
+  float lep_dxy     = fabs(lep1.dXY());
+
+  if(els.size() > 0)   FillHist( plot_dir +  "/RegionPlots_"+ region+ "/NMissingHits", els[0].NMissingHits(), w, 5, 0., 5.);
+
+
+  FillHist( plot_dir +  "/RegionPlots_"+ region+ "/Reliso", lep_reliso, w, 50, 0., 1.);
+  FillHist( plot_dir +  "/RegionPlots_"+ region+ "/MiniReliso", lep_minireliso, w, 50, 0., 1.);
+  FillHist( plot_dir +  "/RegionPlots_"+ region+ "/dXY",    lep_dxy, w, 100, 0., 0.5);
+  FillHist( plot_dir +  "/RegionPlots_"+ region+ "/IP3D",   lep_ip3d, w, 50, 0., 10.);
+  FillHist( plot_dir +  "/RegionPlots_"+ region+ "/Mva",    lep_mva, w, 50, -1., 1.);
+
+
+
+  double lep_jet_ratio= 0.;
+  double jet_CEEF = 0.;  double jet_CHEF = 0.;
+  for(unsigned int ij=0; ij < jets.size(); ij++){
+    if(jets.at(ij).Pt() < 40.) continue;
+    float dphi =fabs(TVector2::Phi_mpi_pi(lep1.Phi()- jets.at(ij).Phi()));
+    if(dphi > 2.5){
+      lep_jet_ratio = jets.at(ij).Pt() /  lep1.Pt();
+      jet_CEEF = jets.at(ij).ChargedEmEnergyFraction();
+      jet_CHEF = jets.at(ij).ChargedHadEnergyFraction();
+    }
+  }
   
-  FillHist( plot_dir +  "/RegionPlots_"+ region+ "/met", met.Pt()  , w, 200, 0., 400.,"MET GeV");
-
-  FillHist( plot_dir +  "/RegionPlots_"+ region+ "/njets" , jets.size() , w, 10, 0., 10., "N_{jets}");
+  FillHist( plot_dir +  "/RegionPlots_"+ region+ "/JetLepPtRatio" , lep_jet_ratio  , w, 50, 0., 5.,"P^{jet}_{T} / P^{lepton}_{T}");
+  FillHist( plot_dir +  "/RegionPlots_"+ region+ "/AwayJetChargedEMEnergyFraction" , jet_CEEF  , w, 50, 0., 2.,"Jet charged EMF");
+  FillHist( plot_dir +  "/RegionPlots_"+ region+ "/AwayJetChargedHadEnergyFraction" , jet_CHEF  , w, 50, 0., 2.,"Jet charged EMF");
+  
 
 
   double METdphi = TVector2::Phi_mpi_pi(lep1.Phi()-met.Phi());
   double MT = sqrt(2.* lep1.Et()*met.Pt() * (1 - cos( METdphi)));
-
-  FillHist( plot_dir +  "/RegionPlots_"+ region+ "/Mt" , MT  , w, 50, 0., 100.,"MET GeV");
-
+  
+  FillHist( plot_dir +  "/RegionPlots_"+ region+ "/Mt" , MT  , w, 40, 0., 200.,"MET GeV");
+  
 }
 
 

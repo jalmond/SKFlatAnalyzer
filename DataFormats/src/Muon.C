@@ -153,7 +153,6 @@ bool Muon::PassID(TString ID) const {
 
   }
 
-  if(ID=="HNTightMVA")  return isMvaTight();
   if(ID=="HNTightMVAVL")  return PassMVA(0.,0.,0.);
   if(ID=="HNTightMVAL")  return PassMVA(0.15,0.15,0.15);
   if(ID=="HNTightMVAM")  return PassMVA(0.45,0.45,0.45);
@@ -334,8 +333,8 @@ bool Muon::PassMVA(double mva1, double mva2) const {
 
   if (this->Pt() < 5) return false;
   if(!( isPOGLoose() )) return false;
-  if(MiniRelIso() > 0.1)  return false;
-  if(!( fabs(dXY())< 0.05 && fabs(dZ())< 0.1 && fabs(IP3D()/IP3Derr())< 8.) ) return false;
+  if(RelIso() > 0.1)  return false;
+  if(!( fabs(dXY())< 0.05 && fabs(dZ())< 0.1 && fabs(IP3D()/IP3Derr())< 5.) ) return false;
   
   if( fabs(this->Eta()) <= 0.8 ){
     if(! (MVA()>mva1) ) return false;
@@ -360,7 +359,7 @@ bool Muon::PassMVA(double mva1, double mva2, double mva3) const {
 
   if (this->Pt() < 5) return false;
   if(!( isPOGLoose() )) return false;
-  if(MiniRelIso() > 0.4)  return false;
+  if(RelIso() > 0.1)  return false;
   if(!( fabs(dXY())< 0.01 && fabs(dZ())< 0.1 && fabs(IP3D()/IP3Derr())< 5.) ) return false;
 
   if( fabs(this->Eta()) <= 0.8 ){
@@ -419,7 +418,7 @@ bool Muon::Pass_POGHighPtTightOR() const {
 
 
 bool Muon::Pass_POGHighPtLoose() const {
-  if(this->Pt() < 60) return false;
+  //if(this->Pt() < 60) return false;
   if(!( isPOGLoose() )) return false;
   if(!( IsType(GlobalMuon) )) return false;
   if(!( TrkIso()/TuneP4().Pt()<0.3 )) return false;
@@ -427,7 +426,7 @@ bool Muon::Pass_POGHighPtLoose() const {
 }
 
 bool Muon::Pass_POGHighPtTight() const {
-  if(this->Pt() < 60) return false;
+  //if(this->Pt() < 60) return false;
   if(!( isPOGHighPt() )) return false;
   if(!( TrkIso()/TuneP4().Pt()<0.1 )) return false;
   return true;
@@ -469,9 +468,9 @@ bool Muon::Pass_HNTight2016() const {
 bool Muon::Pass_HNLooseMVA() const{
 
   if(!( isPOGLoose() )) return false;
-  if(!( fabs(dXY())< 0.05 && fabs(dZ())<0.1) ) return false;
-  if(!( MiniRelIso()< 0.4 )) return false;
-  if(!(fabs(IP3D()/IP3Derr())< 8 )) return false;
+  if(!( fabs(dXY())< 0.2 && fabs(dZ())<0.1) ) return false;
+  if(!( RelIso()< 0.4 )) return false;
+  if(!(fabs(IP3D()/IP3Derr())< 3 )) return false;
   return true;
 
 

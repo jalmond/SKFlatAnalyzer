@@ -30,6 +30,9 @@ class HNL_FakeRate  : public HNL_LeptonCore {
   void GetFakeRateAndPromptRates(AnalyzerParameter param, std::vector<Lepton *> leps,std::vector<bool> blepsT, std::vector<Jet>    jetCollTight, TString label, float event_weight, float isocut);
 
   
+  void MakeDiLepPlots(HNL_LeptonCore::Channel channel, AnalyzerParameter param, Event ev, std::vector<Lepton *> leps,std::vector<bool> blepsT,  TString label, float event_weight);
+				    
+    
   float GetPrescale( std::vector<Lepton *> leps);
 
   void MakeFakeRatePlots(TString label, TString mutag,AnalyzerParameter param,  std::vector<Lepton *> leps , std::vector<bool> blepsT, std::vector<Jet> jets,  float event_weight, float isocut, Particle MET);

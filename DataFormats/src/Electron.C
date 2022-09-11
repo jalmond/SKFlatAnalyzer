@@ -245,12 +245,38 @@ int  Electron::PassIDTight(TString ID) const{
 
     return ((passIDHN(3,0.04, 0.04, 0.1,0.1, 5.,5., 0.1, 0.1, -999., -999.)&&PassMVA(mva_d,mva_d,mva_d))  ? 1 : 0);
   }                                                                                                                              
-  if(ID=="HN2016")                 return passIDHN(3,0.01, 0.01, 0.04,0.04, 4.,4., 0.1, 0.06, -999., -999.)&&PassMVA(0.65,0.81, 0.89) ? 1 : 0 ;
-  if(ID=="HNRelaxedIP2016")        return passIDHN(3,0.05, 0.05, 0.1,0.1, 4.,4., 0.1, 0.05, -999., -999.)&&PassMVA(0.65,0.81, 0.89) ? 1 : 0 ;
-  if(ID=="HN2017")                 return passIDHN(3,0.01, 0.01, 0.04,0.04, 5.,5., 0.085, 0.05, -999., -999.)&&PassMVA(0.65,0.67, 0.89) ? 1 : 0 ;
-  if(ID=="HNRelaxedIP2017")        return passIDHN(3,0.05, 0.05, 0.1,0.1, 5.,5., 0.1, 0.05, -999., -999.)&&PassMVA(0.65,0.71, 0.89) ? 1 : 0 ;
-  if(ID=="HN2018")                 return passIDHN(3,0.01, 0.01, 0.04,0.04, 5.,5., 0.095, 0.07, -999., -999.)&&PassMVA(0.65,0.75, 0.89) ? 1 : 0 ;
-  if(ID=="HNRelaxedIP2018")        return passIDHN(3,0.05, 0.05, 0.1,0.1, 5.,5., 0.095, 0.07, -999., -999.)&&PassMVA(0.65,0.75, 0.89) ? 1 : 0 ;
+  if(ID.Contains("HNMVALoose_")) {
+    TString mva_st = ID.ReplaceAll("HNMVALoose_","");
+    std::string mva_s = std::string(mva_st);
+    std::string::size_type sz;     // alias of size_t                                                                                                                                        
+
+    double mva_d = std::stod (mva_s,&sz);
+
+    return ((PassMVA(mva_d,mva_d,mva_d))  ? 1 : 0);
+  }                   
+
+
+  if(ID=="HN2016")                 {
+    bool passID = passIDHN(3,0.015, 0.015, 0.02,0.02, 5.,5., 0.08, 0.07, -999., -999.)&&passMVAID_noIso_WP90()  ? 1 : 0 ;
+    if(! (Pass_TriggerEmulation()) ) return false;
+    if(!isEcalDriven())return false;
+    return passID;
+  };
+  if(ID=="HN2016CC")                 {
+    bool passID = passIDHN(3,0.015, 0.015, 0.02,0.02, 5.,5., 0.08, 0.07, -999., -999.)&&passMVAID_noIso_WP90()  ? 1 : 0 ;
+    if(! (PassConversionVeto()) ) return false;
+    if(! PassHNIsGsfCtfScPixChargeConsistent())  return false;
+
+    if(! (Pass_TriggerEmulation()) ) return false;
+
+    if(!isEcalDriven()) return false;
+    return passID;
+  };
+  if(ID=="HNRelaxedIP2016")        return passIDHN(3,0.05, 0.05, 0.1,0.1, 4.,4., 0.1, 0.05, -999., -999.) &&passMVAID_noIso_WP90()  ? 1 : 0 ;
+  if(ID=="HN2017")                 return passIDHN(3,0.01, 0.01, 0.04,0.04, 5.,5., 0.085, 0.05, -999., -999.)&&passMVAID_noIso_WP90()  ? 1 : 0 ;
+  if(ID=="HNRelaxedIP2017")        return passIDHN(3,0.05, 0.05, 0.1,0.1, 5.,5., 0.1, 0.05, -999., -999.)&&passMVAID_noIso_WP90()  ? 1 : 0 ;
+  if(ID=="HN2018")                 return passIDHN(3,0.01, 0.01, 0.04,0.04, 5.,5., 0.095, 0.07, -999., -999.)&&passMVAID_noIso_WP90()  ? 1 : 0 ;
+  if(ID=="HNRelaxedIP2018")        return passIDHN(3,0.05, 0.05, 0.1,0.1, 5.,5., 0.095, 0.07, -999., -999.)&&passMVAID_noIso_WP90()  ? 1 : 0 ;
 
   return -1;
 
@@ -265,10 +291,8 @@ int  Electron::PassIDLoose(TString ID) const{
   if(ID=="HNHEEPLoose")  return passLooseHEEPID()&&PassHNID() ? 1 : 0; 
 
   //=== loose user                                                                                                                                                                                       
-
-  if(ID=="HNLooseMVA") return ((passIDHN(3,0.2, 0.2, 0.5,0.5, 10.,10., 0.6, 0.6, -999., -999.)&&PassMVA(-0.1,0.1, -0.1))  ? 1 : 0);
-;
-  
+  if(ID=="HNLooseMVA") return ((passIDHN(3,0.2, 0.2, 0.2,0.2, 10.,10., 0.6, 0.6, -999., -999.)&&PassMVA(-0.1,0.1, -0.1))  ? 1 : 0);
+    
   if(ID=="HNLooseV1")   return      Pass_HNLooseID(0.6,0.2,0.1,10) ? 1 : 0;  // V POG IP/ISO   17028 IP                                                                                                                   
   if(ID=="HNLooseV2")   return  Pass_HNLooseID(0.6,0.2,0.1,9999) ? 1 : 0;  // V POG IP/ISO                                                                                                                   
   if(ID=="HNLooseV3")    return  Pass_HNLooseID(0.6,0.02,0.1,4.) ? 1 : 0;  // V POG IP/ISO                                                                                                                    
@@ -607,16 +631,16 @@ bool Electron::Pass_TriggerEmulation() const{
   if( fabs(scEta()) <= 1.479 ){
     if(! (Full5x5_sigmaIetaIeta() < 0.011) ) return false;       // < 0.013, 0.011
     if(! (fabs(dEtaSeed()) < 0.005) ) return false;              // < 0.01 , 0.006
-    if(! (fabs(dPhiIn()) < 0.04) ) return false;                 // < 0.07 , 0.15
-    if(! (HoverE() < 0.08) ) return false;                       // < 0.13 , 0.12 
-    if(! (fabs(InvEminusInvP()) < 0.01) ) return false;          // < 9999., 0.05
+    if(! (fabs(dPhiIn()) < 0.07) ) return false;                 // < 0.07 , 0.15
+    if(! (HoverE() < 0.1) ) return false;                       // < 0.13 , 0.12 
+    if(! (fabs(InvEminusInvP()) < 0.1) ) return false;          // < 9999., 0.05
   }
   else{
-    if(! (Full5x5_sigmaIetaIeta() < 0.031) ) return false;       // < 0.035, 0.031
-    if(! (fabs(dEtaSeed()) < 0.007) ) return false;              // < 0.015, 0.0085
+    if(! (Full5x5_sigmaIetaIeta() < 0.035) ) return false;       // < 0.035, 0.031
+    if(! (fabs(dEtaSeed()) < 0.008) ) return false;              // < 0.015, 0.0085
     if(! (fabs(dPhiIn()) < 0.08) ) return false;                 // < 0.1  , 0.1
-    if(! (HoverE() < 0.08) ) return false;                       // < 0.13 , 0.1
-    if(! (fabs(InvEminusInvP()) < 0.01) ) return false;          // < 9999., 0.05
+    if(! (HoverE() < 0.1) ) return false;                       // < 0.13 , 0.1
+    if(! (fabs(InvEminusInvP()) < 0.1) ) return false;          // < 9999., 0.05
   }
 
   return true;
@@ -804,7 +828,7 @@ bool Electron::passIDHN(int ID, double dxy_b, double dxy_e, double dz_b,double d
   
   if(! (PassConversionVeto()) ) return false;
   if(! (Pass_TriggerEmulation()) ) return false;
-  if(! (IsGsfCtfScPixChargeConsistent()) )return false;
+  if(! (IsGsfCtfScPixChargeConsistent()) )return false; /// FIX
 
   return true;
 }

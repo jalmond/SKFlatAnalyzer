@@ -1,3 +1,4 @@
+
 #include "AnalyzerCore.h"
 
 AnalyzerCore::AnalyzerCore(){
@@ -812,7 +813,7 @@ std::vector<Jet> AnalyzerCore::GetAllJets(){
     jet.SetPileupJetId(jet_PileupJetId->at(i));
     jet.SetTightJetID(jet_tightJetID->at(i));
     jet.SetTightLepVetoJetID(jet_tightLepVetoJetID->at(i));
-
+    
     out.push_back(jet);
   }
 
@@ -2648,88 +2649,7 @@ std::vector<Muon> AnalyzerCore::MuonWithoutGap(const std::vector<Muon>& muons){
   return out;
 
 }
-vector<Muon> AnalyzerCore::GetLepCollByRunType(const std::vector<Muon>& MuColl, vector<Gen>& TruthColl, AnalyzerParameter param, TString Option){
 
-  if(Option == ""){
-    if(param.MuFakeMethod == "MC") Option+="HFake";
-    if(param.ConvMethod == "MC") Option+="NHConv";
-  }
-
-  ///cout << "AnalyzerCore::GetLepCollByRunType  Muon Option = " << Option << endl;
-
-  bool GetHadFake=false,  GetNHIntConv=false, GetNHExtConv=false;
-
-  if(Option.Contains("HFake"))           GetHadFake   =true;
-  if(Option.Contains("NHConv"))         {GetNHIntConv =true; GetNHExtConv=true;}
-  else{ if(Option.Contains("NHIntConv")) GetNHIntConv =true;
-    if(Option.Contains("NHExtConv")) GetNHExtConv =true; }
-
-  if(     Option=="Fake"     )          {GetHadFake   =true; GetNHExtConv=true;}
-
-  
-  if(IsData)  return MuColl;
-  if(MCSample.Contains("Type")) return MuColl;
-
-
-  vector<Muon> ReturnVec;
-  for(unsigned int i=0; i<MuColl.size(); i++){
-    if(Option=="NoSel")  ReturnVec.push_back(MuColl.at(i));
-    else {
-      int LepType=GetLeptonType_JH(MuColl.at(i), TruthColl); bool PassSel=true;
-      if( LepType > 0 && LepType < 4) PassSel=true; 
-      if( GetHadFake    && (LepType<0 && LepType>=-4) ) PassSel=true;
-      if( GetNHIntConv &&         LepType>=4         ) PassSel=true;
-      if( GetNHExtConv &&         LepType<-4         ) PassSel=true;
-      if( PassSel ) ReturnVec.push_back(MuColl.at(i));
-    }
-  }
-
-  return ReturnVec;
-}
-
-
-
-
-vector<Electron> AnalyzerCore::GetLepCollByRunType(const vector<Electron>& ElColl, vector<Gen>& TruthColl, AnalyzerParameter param, TString Option){
-
-  
-  if(Option == ""){
-    if(param.ElFakeMethod == "MC") Option+="HFake";
-    if(param.ConvMethod == "MC") Option+="NHConv";
-    if(param.CFMethod == "MC")     Option+="CF";
-  }
-
-  //cout << "AnalyzerCore::GetLepCollByRunType Electron  Option = " << Option << endl;
-  bool GetHadFake=false,  GetNHIntConv=false, GetNHExtConv=false, GetCF=false;
-  
-  if(Option.Contains("HFake"))           GetHadFake   =true;
-  if(Option.Contains("CF"))              GetCF   =true;
-  if(Option.Contains("NHConv"))         {GetNHIntConv =true; GetNHExtConv=true;}
-  else{ if(Option.Contains("NHIntConv")) GetNHIntConv =true;
-    if(Option.Contains("NHExtConv")) GetNHExtConv =true; }
-  
-  if(     Option=="Fake"     )          {GetHadFake   =true; GetNHExtConv=true;}
-
-
-  if(IsData)  return ElColl;
-  if(MCSample.Contains("Type")) return ElColl;
-
-  vector<Electron> ReturnVec;
-  for(unsigned int i=0; i<ElColl.size(); i++){
-    if (Option == "NoSel") ReturnVec.push_back(ElColl.at(i));
-    else {
-      int LepType=GetLeptonType_JH(ElColl.at(i), TruthColl); bool PassSel=true;
-      if( LepType > 0 && LepType < 4) PassSel=true;
-      if( GetHadFake    && (LepType<0 && LepType>=-4) ) PassSel=true;
-      if( GetNHIntConv &&         LepType>=4         ) PassSel=true;
-      if( GetNHExtConv &&         LepType<-4         ) PassSel=true;
-      if( GetCF   && IsCF(ElColl.at(i), TruthColl) ) PassSel=true;
-      if( !GetCF && IsCF(ElColl.at(i), TruthColl) ) PassSel=false;
-      if( PassSel ) ReturnVec.push_back(ElColl.at(i));
-    }
-  }
-  return ReturnVec;
-}
 
 vector<Muon> AnalyzerCore::SkimLepColl(const vector<Muon>& MuColl, vector<Gen>& TruthColl, AnalyzerParameter param, TString Option){
 
@@ -2739,19 +2659,21 @@ vector<Muon> AnalyzerCore::SkimLepColl(const vector<Muon>& MuColl, vector<Gen>& 
   if(Option.Contains("HFake"))           GetHadFake   =true;
   if(Option.Contains("EWtau"))           GetEWtau     =true;
   if(Option.Contains("NHConv"))         {GetNHIntConv =true; GetNHExtConv=true;}
-  else{ if(Option.Contains("NHIntConv")) GetNHIntConv =true;
-    if(Option.Contains("NHExtConv")) GetNHExtConv =true; }
+  else{ 
+    if(Option.Contains("NHIntConv")) GetNHIntConv =true;
+    if(Option.Contains("NHExtConv")) GetNHExtConv =true; 
+  }
   if(     Option=="Fake"     )          {GetHadFake   =true; GetNHExtConv=true;}
 
 
-  cout << "El Sel : " << Option<< endl;
 
   vector<Muon> ReturnVec;
   for(unsigned int i=0; i<MuColl.size(); i++){
 
     if(IsData) ReturnVec.push_back(MuColl.at(i));
     else {
-      int LepType=GetLeptonType_JH(MuColl.at(i), TruthColl); bool PassSel=false;
+      int LepType=GetLeptonType_JH(MuColl.at(i), TruthColl); 
+      bool PassSel=false;
       
       if( GetPrompt    && (LepType==1 || LepType==2) ) PassSel=true;
       if( GetHadFake   && (LepType<0 && LepType>=-4) ) PassSel=true;

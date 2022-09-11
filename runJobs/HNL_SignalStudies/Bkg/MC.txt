@@ -1,0 +1,7 @@
+TTLJ_powheg
+DYJets
+WJets_MG
+ZZTo4L_powheg
+WZTo3LNu_amcatnlo
+WGToLNuG
+ZGToLLG

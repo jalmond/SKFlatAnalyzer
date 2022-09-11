@@ -40,14 +40,135 @@ void HNL_SignalStudies::executeEvent(){
   }
   if(process.Contains("OS")) return;
 
+
+
+  vector<Muon> InputMuons = GetMuons    ( "NoCut", 10., 2.4);
+  vector<Electron> InputElectrons = GetElectrons    ( "NoCut", 15., 2.4);
+
+  FillAllMuonPlots("Inclusive", "AllMuons"  , InputMuons , weight);
+  FillAllElectronPlots("Inclusive", "AllElectrons"  , InputElectrons , weight);
+
+
+  vector<Muon>     InputMuons2 = GetMuons    ( "HNLooseMVA", 10., 2.4);
+  vector<Electron> InputElectrons2 = GetElectrons    ( "HNLoosest", 15., 2.5);
+  vector<Electron> InputElectrons3 = GetElectrons    ( "passMVAID_noIso_WP90", 15., 2.5);
+  vector<Electron> InputElectrons4 = GetElectrons    ( "HN2016", 15., 2.5); 
+  vector<Electron> InputElectrons5 = GetElectrons    ( "HN2016CC", 15., 2.5);
+
+  
+  vector<Muon> FakeMuons = SkimLepColl(InputMuons2, gens, param, "HFake");
+  vector<Muon> ConvMuons = SkimLepColl(InputMuons2, gens, param, "NHExtConv");
+
+  vector<Electron> FakeElectrons = SkimLepColl(InputElectrons2, gens, param, "HFake");
+  vector<Electron> FakeElectrons2 = SkimLepColl(InputElectrons3, gens, param, "HFake");
+  vector<Electron> ConvElectrons = SkimLepColl(InputElectrons2, gens, param, "NHExtConv");
+
+  FillAllMuonPlots("Inclusive", "SignalMuons"  , InputMuons2 , weight);
+  FillAllElectronPlots("Inclusive", "SignalElectrons"  , InputElectrons2 , weight);
+  FillAllElectronPlots("Inclusive", "SignalElectronsMVA90"  , InputElectrons3 , weight);
+  FillAllElectronPlots("Inclusive", "SignalElectrons2016"  , InputElectrons4 , weight);
+  FillAllElectronPlots("Inclusive", "SignalElectrons2016CC"  , InputElectrons5 , weight);
+
+  FillAllMuonPlots("Inclusive", "FakeMuons"  , FakeMuons , weight);
+  FillAllElectronPlots("Inclusive", "FakeElectrons"  , FakeElectrons , weight);
+  FillAllElectronPlots("Inclusive", "FakeElectronsMVA90"  , FakeElectrons2 , weight);
+
+  FillAllMuonPlots("Inclusive", "ConvMuons"  , ConvMuons , weight);
+  FillAllElectronPlots("Inclusive", "ConvElectrons"  , ConvElectrons , weight);
+
+  // determine MVA cuts for signals 
+  
+  for(unsigned int i=0; i < 200; i++){
+    double mva_1 = (-1.+0.01*double(i)); 
+    std::string mva1= std::to_string(mva_1);
+    
+    TString label = "HNMVA_"+mva1;
+    vector<Muon>     SigMVAMuons  = GetMuons    ( label, 10., 2.4);
+    vector<Muon>     BkgMVAMuons  = SkimLepColl( SigMVAMuons, gens, param, "Fake");
+    
+    for(auto imu : SigMVAMuons){
+      TString eta_label="";
+      if(fabs(imu.Eta()) < 1.5) eta_label = "_barrel";
+      else eta_label = "_endcap";
+
+      double mu_pt = (imu.Pt() > 100) ? 99: imu.Pt();
+      
+      FillHist("MVAOpt/SigMuon/"+label+eta_label,  mu_pt, weight,  90, 10., 100.);
+      if(SameCharge(SigMVAMuons))FillHist("MVAOpt/SigMuonSS/"+label+eta_label, mu_pt, weight,  90, 10., 100.);
+    }
+    
+    for(auto imu : BkgMVAMuons){
+      TString eta_label="";
+      if(fabs(imu.Eta()) < 1.5) eta_label = "_barrel";
+      else eta_label = "_endcap";
+      double mu_pt = (imu.Pt() > 100) ? 99: imu.Pt();
+
+      FillHist("MVAOpt/BkgMuon/"+label+eta_label, mu_pt, weight, 90, 10., 100.);
+      if(SameCharge(BkgMVAMuons)) FillHist("MVAOpt/BkgMuonSS/"+label+eta_label, mu_pt, weight, 90, 10., 100.);
+    }
+  }
+
+  for(unsigned int i=0; i < 200; i++){
+    double mva_1 = (-1.+0.01*double(i));
+    std::string mva1= std::to_string(mva_1);
+
+    TString label = "HNMVA_"+mva1;
+    vector<Electron>     SigMVAElectrons  = GetElectrons    ( label, 15., 2.5);
+    vector<Electron>     BkgMVAElectrons  = SkimLepColl( SigMVAElectrons, gens, param, "Fake");
+
+    TString labelL = "HNMVALoose_"+mva1;
+    vector<Electron>     SigMVAElectronsLoose  = GetElectrons    ( labelL, 15., 2.5);
+    vector<Electron>     BkgMVAElectronsLoose  = SkimLepColl( SigMVAElectrons, gens, param, "Fake");
+
+
+    for(auto imu : SigMVAElectrons){
+      TString eta_label="";
+      if(fabs(imu.Eta()) < 1.5) eta_label = "_barrel";
+      else eta_label = "_endcap";
+
+      double mu_pt = (imu.Pt() > 100) ? 99: imu.Pt();
+
+      FillHist("MVAOpt/SigElectron/"+label+eta_label, mu_pt, weight, 90, 10., 100.);
+      if(SameCharge(SigMVAElectrons)) FillHist("MVAOpt/SigElectronSS/"+label+eta_label, mu_pt, weight, 90, 10., 100.);
+    }
+
+    for(auto imu : SigMVAElectronsLoose){
+      TString eta_label="";
+      if(fabs(imu.Eta()) < 1.5) eta_label = "_barrel";
+      else eta_label = "_endcap";
+
+      double mu_pt = (imu.Pt() > 100) ? 99: imu.Pt();
+
+      FillHist("LooseMVAOpt/SigElectron/"+label+eta_label, mu_pt, weight, 90, 10., 100.);
+      if(SameCharge(SigMVAElectrons)) FillHist("LooseMVAOpt/SigElectronSS/"+label+eta_label, mu_pt, weight, 90, 10., 100.);
+    }
+
+
+    for(auto imu : BkgMVAElectronsLoose){
+      TString eta_label="";
+      if(fabs(imu.Eta()) < 1.5) eta_label = "_barrel";
+      else eta_label = "_endcap";
+
+      double mu_pt = (imu.Pt() > 100) ? 99: imu.Pt();
+
+      FillHist("LooseMVAOpt/BkgElectron/"+label+eta_label, mu_pt, weight, 90, 10., 100.);
+      if(SameCharge(BkgMVAElectronsLoose))       FillHist("LooseMVAOpt/BkgElectronSS/"+label+eta_label, mu_pt, weight, 90, 10., 100.);
+
+    }
+  }
+   
+
+  return;
+  
   vector<HNL_LeptonCore::Channel> channels = {EE,MuMu, EMu};
 
 
   for(auto dilep_channel : channels){
 
-    
-    if (!SelectChannel(dilep_channel)) continue;
-    
+    if(MCSample.Contains("Type")){
+      if (!SelectChannel(dilep_channel)) continue;
+    }
+
     TString channel = GetChannelString(dilep_channel) ;
     FillHist ("NoCut_"+channel, 1, weight, 2, 0., 2.,"");
     
@@ -57,12 +178,6 @@ void HNL_SignalStudies::executeEvent(){
     
     if(MCSample.Contains("SSWWType") && MCSample.Contains("private"))  MakeType1SSWWSignalPlots(channel, false);
   
-
-
-  
-    FillAllMuonPlots("Inclusive_"+channel, "SignalMuons"  , GetMuons    ( "NoCut", 10., 2.4) , weight);
-    FillAllElectronPlots("Inclusive_"+channel, "SignalElectrons"  , GetElectrons    ( "NoCut", 15., 2.4) , weight);
-    
     std::vector<Electron>   ElectronCollT1 = GetElectrons( param.Electron_Tight_ID, 10., 2.5);
     std::vector<Muon>       MuonCollT1     = GetMuons    ( param.Muon_Tight_ID, 5., 2.4);
 
