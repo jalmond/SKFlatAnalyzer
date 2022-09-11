@@ -2195,6 +2195,11 @@ double AnalyzerCore::GetFakeWeight(std::vector<Lepton *> leps, AnalyzerParameter
     //cout  << this_fr1 << " " << this_fr2  << " " << this_pr1 << " " << this_pr2 <<  " pass " << leps[0]->PassLepID() << " " << leps[1]->PassLepID() << endl;
     //cout << "Pt/Eta 1 " << fabs(leps[0]->Eta()) << " " <<  leps[0]->Pt() << endl;
     //cout << "Pt/Eta 2 " << fabs(leps[1]->Eta()) << " " <<  leps[1]->Pt() << endl;
+
+    // TMP FIX TO PT 
+    if (leps[1]->LeptonFlavour() == Lepton::ELECTRON && leps[1]->Pt() < 20) this_fr2*= 1.2;
+    if (leps[1]->LeptonFlavour() == Lepton::MUON && leps[1]->Pt() < 20) this_fr2*= 1.25;
+    
     this_weight = fakeEst->CalculateDilepWeight(this_pr1,this_fr1, this_pr2, this_fr2, leps[0]->PassLepID(),leps[1]->PassLepID(),0);
 
     //cout << this_weight << " 2L"<<endl;
@@ -2438,8 +2443,6 @@ double AnalyzerCore::GetCFWeightElectron(vector<Lepton *> lepptrs, AnalyzerParam
   return cfweight;
 
 }
-
-
 
 
 

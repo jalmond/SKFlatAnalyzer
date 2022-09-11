@@ -3,8 +3,8 @@ rundir=HNL_SignalStudies
 mcpath=${SKFlat_WD}/runJobs/${analyzer}/Signals/
 bkgpath=${SKFlat_WD}/runJobs/${analyzer}/Bkg/
 datapath=${SKFlat_WD}/runJobs/${analyzer}/DATA/
-njobs=15
-njobs_data=25
+njobs=20
+njobs_data=200
 nmax=300
 skim=' '
 declare  -a era_list=("2016postVFP" "2016preVFP" "2017" "2018")
@@ -58,8 +58,8 @@ if [[ $1 == "Q" ]]; then
         SKFlat.py -a $analyzer  -l $mcpath/DYsample.txt  -n $njobs  --nmax ${nmax}   -e ${i} &
         SKFlat.py -a $analyzer  -l $mcpath/VBFsample.txt  -n $njobs  --nmax ${nmax}   -e ${i} &
         SKFlat.py -a $analyzer  -l $mcpath/SSWWsample.txt  -n $njobs  --nmax ${nmax}   -e ${i} &
-        SKFlat.py -a $analyzer  -l $bkgpath/MC.txt  -n 200   --nmax ${nmax}   -e ${i}  &
-        SKFlat.py -a $analyzer  -l $bkgpath/QCD.txt  -n 25  --nmax ${nmax}   -e ${i} 
+        SKFlat.py -a $analyzer  -l $bkgpath/MC.txt  -n 400   --nmax ${nmax}   -e ${i}  &
+        SKFlat.py -a $analyzer  -l $bkgpath/QCD.txt  -n 100  --nmax ${nmax}   -e ${i} 
     done
 
 fi

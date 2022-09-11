@@ -828,7 +828,7 @@ bool Electron::passIDHN(int ID, double dxy_b, double dxy_e, double dz_b,double d
   
   if(! (PassConversionVeto()) ) return false;
   if(! (Pass_TriggerEmulation()) ) return false;
-  if(! (IsGsfCtfScPixChargeConsistent()) )return false; /// FIX
+  //if(! (IsGsfCtfScPixChargeConsistent()) )return false; /// FIX
 
   return true;
 }
