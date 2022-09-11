@@ -86,6 +86,8 @@ public:
   double GetCFWeightElectron(std::vector<Electron> electrons ,  AnalyzerParameter param);
   double GetCFWeightElectron(vector<double> el_pt, vector<double> el_eta ,  AnalyzerParameter param);
   double GetCFWeightElectron(std::vector<Lepton* > leps ,  AnalyzerParameter param);
+  double GetCFrates(TString id, double pt, double eta); //JH
+  double GetCFWeightElectron(vector<Lepton *> lepptrs, AnalyzerParameter param, bool applySF, int syst); //JH
   std::vector<Electron> GetAllElectrons();
   std::vector<Electron> GetElectrons(TString id, double ptmin, double fetamax, bool vetoHEM = false);
   std::vector<Electron> GetElectrons(AnalyzerParameter param, TString id, double ptmin, double fetamax ,bool Run_Fake=false, bool vetoHEM=false);

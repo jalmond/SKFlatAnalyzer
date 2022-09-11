@@ -89,7 +89,8 @@ void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq, s
       if(IsData && SameCharge(leps)) continue;
       if(!IsData && !SameCharge(leps)) continue;
       
-      if(IsData)weight_channel = GetCFWeightElectron(leps, param_channel);
+      //if(IsData)weight_channel = GetCFWeightElectron(leps, param_channel);
+      if(IsData)weight_channel = GetCFWeightElectron(leps, param_channel, true, 0); //JH
       if(IsData)FillWeightHist(param.Name+"/CFWeight",weight_channel);
 
     }
@@ -1081,14 +1082,17 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
 	if(IsData && SameCharge(LepsT)) continue;
 	if(!IsData && !SameCharge(LepsT)) continue;
 	
-	if(IsData)weight_channel = GetCFWeightElectron(LepsT, param);
+	//if(IsData)weight_channel = GetCFWeightElectron(LepsT, param);
+  if(IsData)weight_channel = GetCFWeightElectron(LepsT, param, true, 0); //JH
 	if(IsData)FillWeightHist(param.Name+"/CFWeight",weight_channel);
       }
       else continue;
     }
-    if(LepsT.size() == 2){
-      if(!SameCharge(LepsT)) continue;
-    }
+		else{
+			if(LepsT.size() == 2){
+        if(!SameCharge(LepsT)) continue;
+      }
+		} //JH
     
     
     if(FillSSPreselectionPlots(dilep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, param, weight_channel)) passed.push_back("SSPresel");
@@ -1099,6 +1103,7 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
     if(FillWWCR2Plots  (dilep_channel, LepsT, LepsV, VBF_JetColl, AK8_JetColl, B_JetColl, ev, METv, param, weight_channel)) passed.push_back("WpWp_CR2");
     if(FillWWCRNPPlots(dilep_channel, LepsT, LepsV, VBF_JetColl, AK8_JetColl, B_JetColl, ev, METv, param, weight_channel)) passed.push_back("WpWp_CRNP");
     if(FillWWCRNP2Plots(dilep_channel, LepsT, LepsV, VBF_JetColl, AK8_JetColl, B_JetColl, ev, METv, param, weight_channel)) passed.push_back("WpWp_CRNP2");
+    if(FillWWCRNP3Plots(dilep_channel, LepsT, LepsV, VBF_JetColl, AK8_JetColl, B_JetColl, ev, METv, param, weight_channel)) passed.push_back("WpWp_CRNP3");
     if(FillWZ2CRPlots (trilep_channel, LepsT, LepsV, VBF_JetColl, AK8_JetColl, B_JetColl, ev, METv, param, weight_channel)) passed.push_back("WZ2_CR");
     if(FillWZBCRPlots (trilep_channel, LepsT, LepsV, VBF_JetColl, AK8_JetColl, B_JetColl, ev, METv, param, weight_channel)) passed.push_back("WZB_CR");
     
@@ -1439,8 +1444,8 @@ bool HNL_RegionDefinitions::FillWWCRNP2Plots(HNL_LeptonCore::Channel channel, st
 
 
   if(run_Debug){
-    cout << "HNL_WpWpNP_TwoLepton_CR " << param.Name << " " << event  << endl;
-    for(auto ilep: leps) cout << "HNL_WpWpNP_TwoLepton_CR Type " <<  GetLeptonType(*ilep, gens) << endl;
+    cout << "HNL_WpWpNP2_TwoLepton_CR " << param.Name << " " << event  << endl;
+    for(auto ilep: leps) cout << "HNL_WpWpNP2_TwoLepton_CR Type " <<  GetLeptonType(*ilep, gens) << endl;
   }
 
   Fill_RegionPlots(channel, true,"HNL_WpWpNP2_TwoLepton_CR" , param.Name, jets_eta5,  AK8_JetColl,  leps,  METv, nPV, w);
@@ -1449,6 +1454,45 @@ bool HNL_RegionDefinitions::FillWWCRNP2Plots(HNL_LeptonCore::Channel channel, st
 
 }
 
+bool HNL_RegionDefinitions::FillWWCRNP3Plots(HNL_LeptonCore::Channel channel, std::vector<Lepton *> leps, std::vector<Lepton *> leps_veto   , std::vector<Jet> jets_eta5, std::vector<FatJet> AK8_JetColl,std::vector< Jet> B_JetColl,  Event ev, Particle METv, AnalyzerParameter param, float w){ //JH
+
+
+  // low mjj region
+
+  if(!CheckLeptonFlavourForChannel(channel, leps)) return false;
+  if (leps_veto.size() != 2) return false;
+
+  if(jets_eta5.size() < 2) return false;
+
+  std::vector<Jet> JetColl                  = GetAK4Jets(jets_eta5, 20., 2.5, true,  0.4,0.8,"",    leps_veto,AK8_JetColl);
+  int NB_JetColl = B_JetColl.size();
+
+  Particle ll =  *leps[0] + *leps[1];
+
+  // two highest pt jets with                                                                                                                                                                                      
+  Jet j1 = jets_eta5[0] ;
+  Jet j2 = jets_eta5[1];
+  if(!(j1.Pt() > 30.) && (j2.Pt() > 30.)) return false;
+
+	if ( ll.M() < 20.) return false;
+  if (NB_JetColl>0) return false;
+  if ((j1+j2).M() < 150. || (j1+j2).M() > 500.) return false;
+
+  double DiJetDeta = fabs(j1.Eta() - j2.Eta());
+  if (DiJetDeta  <2.5) return false;
+
+  if (channel==EE  && (fabs(ll.M()-90.) < 15)) return false;
+
+  if(run_Debug){
+    cout << "HNL_WpWpNP3_TwoLepton_CR " << param.Name << " " << event  << endl;
+    for(auto ilep: leps) cout << "HNL_WpWpNP3_TwoLepton_CR Type " <<  GetLeptonType(*ilep, gens) << endl;
+  }
+
+  Fill_RegionPlots(channel, true,"HNL_WpWpNP3_TwoLepton_CR" , param.Name, jets_eta5,  AK8_JetColl,  leps,  METv, nPV, w);
+
+  return true;
+
+}
 
 
 bool HNL_RegionDefinitions::FillOSPreselectionPlots(HNL_LeptonCore::Channel channel, std::vector<Lepton *> leps, std::vector<Lepton *> leps_veto   , std::vector<Jet> JetColl, std::vector<FatJet> AK8_JetColl, std::vector<Jet> B_JetColl,  Event ev, Particle METv, AnalyzerParameter param, float w){
@@ -1490,7 +1534,7 @@ bool HNL_RegionDefinitions::FillSSPreselectionPlots(HNL_LeptonCore::Channel chan
 
   int njets = JetColl.size() + AK8_JetColl.size();
 
-  if(SameCharge(leps))Fill_RegionPlots(channel,1,"HNL_SSPresel_TwoLepton"  , param.Name, JetColl,  AK8_JetColl,  leps,  METv, nPV, w);
+	Fill_RegionPlots(channel,1,"HNL_SSPresel_TwoLepton"  , param.Name, JetColl,  AK8_JetColl,  leps,  METv, nPV, w); //JH
   return true;
 
 }
@@ -1511,8 +1555,7 @@ bool HNL_RegionDefinitions::FillSSVBFPreselectionPlots(HNL_LeptonCore::Channel c
 
 
   if(VBF_JetColl.size() < 2) return false;
-  if(!SameCharge(leps)) return false;
-  Fill_RegionPlots(channel,1,"HNL_SSVBFPresel_TwoLepton"  , param.Name, VBF_JetColl,  AK8_JetColl,  leps,  METv, nPV, w);
+	Fill_RegionPlots(channel,1,"HNL_SSVBFPresel_TwoLepton"  , param.Name, VBF_JetColl,  AK8_JetColl,  leps,  METv, nPV, w); //JH
 
   return true;
 
@@ -1613,7 +1656,7 @@ bool HNL_RegionDefinitions::FillHighMassBJetCRPlots(HNL_LeptonCore::Channel chan
   if(ll.M() < 10) return false;
   int NB_JetColl = B_JetColl.size();
 
-  if(NB_JetColl  < 2) return false;
+  if(NB_JetColl  < 1) return false;
   Fill_RegionPlots(channel,1,"HNL_HighMassBJet_TwoLepton_CR"  , param.Name, JetColl,  AK8_JetColl,  leps,  METv, nPV, w);
 
   return true;
