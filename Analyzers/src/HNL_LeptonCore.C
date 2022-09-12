@@ -617,10 +617,12 @@ AnalyzerParameter HNL_LeptonCore::InitialiseHNLParameter(TString s_setup, TStrin
     param.Muon_FR_ID = "HNLooseV1";
     param.Electron_FR_ID = "HNLooseV4";
     
-    param.Muon_FR_Key  ="ptcone_ptfix_eta_AwayJetPt40";
+    //param.Muon_FR_Key  ="ptcone_ptfix_eta_AwayJetPt40";
+    param.Muon_FR_Key  ="Haneol_AwayJetPt40";
     //param.Muon_PR_Key  ="ptcone_eta_central";
   
-    param.Electron_FR_Key  = "ptcone_ptfix_eta_AwayJetPt40"; //JH
+    //param.Electron_FR_Key  = "ptcone_ptfix_eta_AwayJetPt40"; //JH
+    param.Electron_FR_Key  = "Haneol_AwayJetPt40"; //JH
     //param.Electron_PR_Key  ="ptcone_eta_central";
 
     param.Muon_RECO_SF_Key = "MuonRecoSF";
@@ -820,6 +822,7 @@ void HNL_LeptonCore::PrintParam(AnalyzerParameter param){
   cout << "Muon_Trigger_SF_Key = " << param.Muon_Trigger_SF_Key << endl;
   cout << "Muon_Trigger_NameForSF = " << param.Muon_Trigger_NameForSF << endl;
   cout << "Muon_FR_ID = " << param.Muon_FR_ID << endl;
+  cout << "Muon_FR_Key = " << param.Muon_FR_Key << endl;
   cout << "Jet_ID = " << param.Jet_ID << endl;
   cout << "FatJet_ID = " << param.FatJet_ID << endl;
   
@@ -2368,7 +2371,7 @@ void HNL_LeptonCore::FillEventCutflow(HNL_LeptonCore::SearchRegion sr, float eve
   if(verbose_level==0){
     if(sr==CR){
       
-      labels = { "TopAK8_CR","ZAK8_CR","WpWp_CR1","WpWp_CR2","WpWp_CRNP","WpWp_CRNP2","ZZ_CR","ZZLoose_CR","ZG_CR","WG_CR","WZ_CR","WG_Method2_CR","ZG_Method2_CR","WZ2_CR","WZB_CR","HighMassSR1_CR","HighMassSR2_CR","HighMassSR3_CR" ,"HighMass1Jet_CR","HighMassBJet_CR","HighMassNP_CR","ZNP_CR","SSPresel","SSVBFPresel"};
+      labels = { "TopAK8_CR","ZAK8_CR","WpWp_CR1","WpWp_CR2","WpWp_CRNP","WpWp_CRNP2","WpWp_CRNP3","ZZ_CR","ZZLoose_CR","ZG_CR","WG_CR","WZ_CR","WG_Method2_CR","ZG_Method2_CR","WZ2_CR","WZB_CR","HighMassSR1_CR","HighMassSR2_CR","HighMassSR3_CR" ,"HighMass1Jet_CR","HighMassBJet_CR","HighMassNP_CR","ZNP_CR","SSPresel","SSVBFPresel"};
       
       
       EVhitname ="ControlRegions";

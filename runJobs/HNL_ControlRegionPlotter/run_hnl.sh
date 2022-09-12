@@ -9,8 +9,8 @@ nmax=300
 skim=' '
 #declare  -a era_list=("2016postVFP" "2016preVFP" "2017" "2018")
 #declare  -a era_list=("2016preVFP")
-declare  -a era_list=("2016postVFP" "2017")
-#declare  -a era_list=("2017")
+#declare  -a era_list=("2016postVFP" "2017")
+declare  -a era_list=("2017")
 #declare  -a era_list=( "2018")
 
 if [[ $1 == "WZ" ]]; then
@@ -101,13 +101,13 @@ if [[ $1 == "" ]]; then
 
     for i in "${era_list[@]}"
     do
-SKFlat.py -a $analyzer  -l $datapath/DATA_${i}.txt  -n ${njobs_data}  --nmax ${nmax}   -e ${i}  --skim SkimTree_HNMultiLep  &
+#SKFlat.py -a $analyzer  -l $datapath/DATA_${i}.txt  -n ${njobs_data}  --nmax ${nmax}   -e ${i}  --skim SkimTree_HNMultiLep  &
 SKFlat.py -a $analyzer  -l $datapath/DATA_${i}.txt  -n ${njobs_data}  --nmax ${nmax}   -e ${i}  --skim SkimTree_HNMultiLep --userflags RunFake  &
-SKFlat.py -a $analyzer  -l $datapath/DATA_DoubleEG_${i}.txt  -n ${njobs_data}  --nmax ${nmax}   -e ${i}  --skim SkimTree_Dilepton --userflags RunCF  &
-SKFlat.py -a $analyzer  -l $datapath/DATA_MuonEG_${i}.txt  -n ${njobs_data}  --nmax ${nmax}   -e ${i}  --userflags RunCF  &
-SKFlat.py -a $analyzer  -l $mcpath/MC.txt  -n $njobs  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLep &
-SKFlat.py -a $analyzer  -l $mcpath/Conv.txt  -n $njobs  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLep --userflags RunConv&
-SKFlat.py -a $analyzer  -l $mcpath/PromptRemoval.txt  -n $njobs  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLep --userflags RunPromptTLRemoval&
+#SKFlat.py -a $analyzer  -l $datapath/DATA_DoubleEG_${i}.txt  -n ${njobs_data}  --nmax ${nmax}   -e ${i}  --skim SkimTree_Dilepton --userflags RunCF  &
+#SKFlat.py -a $analyzer  -l $datapath/DATA_MuonEG_${i}.txt  -n ${njobs_data}  --nmax ${nmax}   -e ${i}  --userflags RunCF  &
+#SKFlat.py -a $analyzer  -l $mcpath/MC.txt  -n $njobs  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLep &
+#SKFlat.py -a $analyzer  -l $mcpath/Conv.txt  -n $njobs  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLep --userflags RunConv&
+#SKFlat.py -a $analyzer  -l $mcpath/PromptRemoval.txt  -n $njobs  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLep --userflags RunPromptTLRemoval&
 #SKFlat.py -a $analyzer  -l $mcpath/CF.txt  -n $njobs_data  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLep --userflags RunCF &
 
     done

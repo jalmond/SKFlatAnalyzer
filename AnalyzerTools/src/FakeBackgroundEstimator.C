@@ -32,9 +32,9 @@ void FakeBackgroundEstimator::ReadHistograms(){
     for(int i=0;i<histlist->Capacity();i++){
       TString this_frname = histlist->At(i)->GetName();
 
-      if (!this_frname.Contains(b)) continue;
-      if (!this_frname.Contains(c)) continue;
-      if (!this_frname.Contains(d)) continue;
+      //if (!this_frname.Contains(b)) continue;
+      //if (!this_frname.Contains(c)) continue;
+      //if (!this_frname.Contains(d)) continue; //JH : Haneol's fake rate histogram doesn't contain these names //XXX Beware that John's histogram SHOULD include these lines
 
       histDir->cd();
 
@@ -63,9 +63,9 @@ void FakeBackgroundEstimator::ReadHistograms(){
     TList *histlist = file->GetListOfKeys();
     for(int i=0;i<histlist->Capacity();i++){
       TString this_frname = histlist->At(i)->GetName();
-      if (!this_frname.Contains(b)) continue;
-      if (!this_frname.Contains(c)) continue;
-      if (!this_frname.Contains(d)) continue;
+      //if (!this_frname.Contains(b)) continue;
+      //if (!this_frname.Contains(c)) continue;
+      //if (!this_frname.Contains(d)) continue; //JH : Haneol's fake rate histogram doesn't contain these names //XXX Beware that John's histogram SHOULD include these lines
       
       histDir->cd();
 
@@ -107,7 +107,7 @@ double FakeBackgroundEstimator::GetElectronFakeRate(TString ID, TString key, dou
     if(IgnoreNoHist) return 1.;
     else{
 
-      cout << "[FakeBackgroundEstimator::GetElectronFakeRate] No"<< ID+"_"+key <<endl;
+      cout << "[FakeBackgroundEstimator::GetElectronFakeRate] No "<< ID+"_"+key <<endl;
       exit(ENODATA);
     }
   }

@@ -1062,6 +1062,14 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
 
     if(RunFake&&IsData){
       weight_channel = GetFakeWeight(LepsT, param , false);
+			if(LepsT.size()==2){
+        if(dilep_channel == EMu){
+			  	if(JetColl.size()==0 && LepsT[1]->Pt()<20) weight_channel *= 1.115;
+			 	}
+				else if(dilep_channel == MuMu){
+			  	if(JetColl.size()==0 && LepsT[1]->Pt()<20) weight_channel *= 1.16;
+			 	} //JH : FIXME TMP FIX
+			}
       FillWeightHist(param.Name+"/FakeWeight",weight_channel);
     }
 
@@ -1152,7 +1160,7 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
     
     
 
-    vector<TString> cutlabels = { "TopAK8_CR","ZAK8_CR","WpWp_CR1","WpWp_CR2","WpWp_CRNP","WpWp_CRNP2","ZZ_CR","ZZLoose_CR","ZG_CR","WG_CR","WZ_CR","WG_Method2_CR","ZG_Method2_CR","WZ2_CR","WZB_CR","HighMassSR1_CR","HighMassSR2_CR","HighMassSR3_CR","HighMass1Jet_CR","HighMassBJet_CR","HighMassNP_CR","ZNP_CR","SSPresel","SSVBFPresel"};
+    vector<TString> cutlabels = { "TopAK8_CR","ZAK8_CR","WpWp_CR1","WpWp_CR2","WpWp_CRNP","WpWp_CRNP2","WpWp_CRNP3","ZZ_CR","ZZLoose_CR","ZG_CR","WG_CR","WZ_CR","WG_Method2_CR","ZG_Method2_CR","WZ2_CR","WZB_CR","HighMassSR1_CR","HighMassSR2_CR","HighMassSR3_CR","HighMass1Jet_CR","HighMassBJet_CR","HighMassNP_CR","ZNP_CR","SSPresel","SSVBFPresel"};
     
     for(auto ip : passed) FillEventCutflow(HNL_LeptonCore::CR, weight_channel, ip, "ChannelCutflow/"+param.Name);
     

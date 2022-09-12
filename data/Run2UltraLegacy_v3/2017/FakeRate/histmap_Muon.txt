@@ -1,5 +1,6 @@
 FakeRate	HNTightV2	ptcone_eta        AwayJetPt40	    FakeRate13TeV_mu_2017.root
 FakeRate	HNTightV2	ptcone_ptfix_eta        AwayJetPt40	    FakeRate13TeV_mu_ptfix_2017.root
+FakeRate	HNTightV2	Haneol        AwayJetPt40	    Muon_FakeRate_HNTightV2_2017.root
 FakeRate	HNTight_17028	ptcone_eta        AwayJetPt40   FakeRate13TeV_mu_2017.root
 FakeRate	HNTight_17028	ptcone_ptfix_eta        AwayJetPt40   FakeRate13TeV_mu_ptfix_2017.root
 FakeRate	POGTightWithTightIso	ptcone_eta        AwayJetPt40	FakeRate13TeV_mu_2017.root

@@ -2198,7 +2198,7 @@ double AnalyzerCore::GetFakeWeight(std::vector<Lepton *> leps, AnalyzerParameter
 
     // TMP FIX TO PT 
     //if (leps[1]->LeptonFlavour() == Lepton::ELECTRON && leps[1]->Pt() < 20) this_fr2*= 1.2;
-    //if (leps[1]->LeptonFlavour() == Lepton::MUON && leps[1]->Pt() < 20) this_fr2*= 1.25; //JH : optimize this value
+    if (leps[1]->LeptonFlavour() == Lepton::MUON && leps[1]->Pt() < 20) this_fr2*= 1.1; //JH : optimize this value
     
     this_weight = fakeEst->CalculateDilepWeight(this_pr1,this_fr1, this_pr2, this_fr2, leps[0]->PassLepID(),leps[1]->PassLepID(),0);
 
