@@ -7,8 +7,11 @@ njobs=30
 njobs_data=100
 nmax=300
 skim=' '
-declare  -a era_list=("2016postVFP" "2016preVFP" "2017" "2018")
-declare  -a era_list=( "2018")
+#declare  -a era_list=("2016postVFP" "2016preVFP" "2017" "2018")
+#declare  -a era_list=("2016preVFP")
+declare  -a era_list=("2016postVFP" "2017")
+#declare  -a era_list=("2017")
+#declare  -a era_list=( "2018")
 
 if [[ $1 == "WZ" ]]; then
 
