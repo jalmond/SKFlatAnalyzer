@@ -108,7 +108,6 @@ SKFlat.py -a $analyzer  -l $datapath/DATA_${i}.txt  -n ${njobs_data}  --nmax ${n
 #SKFlat.py -a $analyzer  -l $mcpath/MC.txt  -n $njobs  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLep &
 #SKFlat.py -a $analyzer  -l $mcpath/Conv.txt  -n $njobs  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLep --userflags RunConv&
 #SKFlat.py -a $analyzer  -l $mcpath/PromptRemoval.txt  -n $njobs  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLep --userflags RunPromptTLRemoval&
-#SKFlat.py -a $analyzer  -l $mcpath/CF.txt  -n $njobs_data  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLep --userflags RunCF &
 
     done
 
