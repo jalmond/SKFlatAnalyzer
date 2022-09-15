@@ -67,8 +67,8 @@ void HNL_ControlRegionPlotter::RunControlRegions(AnalyzerParameter param){
   TString el_ID = (RunFake||RunPromptTLRemoval) ?  param.Electron_FR_ID : param.Electron_Tight_ID ;
   TString mu_ID = (RunFake||RunPromptTLRemoval) ?  param.Muon_FR_ID :  param.Muon_Tight_ID ;
 
-  double Min_Muon_Pt     = (RunFake) ? 8. : 10.;
-  double Min_Electron_Pt = (RunFake) ? 8. : 10.;
+  double Min_Muon_Pt     = (RunFake) ? 3. : 5.;
+  double Min_Electron_Pt = (RunFake) ? 7. : 10.;
 
   if(run_Debug) {
     cout << "Min_Muon_Pt = " << Min_Muon_Pt << endl;
