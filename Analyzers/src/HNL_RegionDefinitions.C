@@ -304,32 +304,32 @@ TString HNL_RegionDefinitions::RunSignalRegionAK8String(HNL_LeptonCore::Channel 
   Fill_RegionPlots(channel, 0, param.Name,"InclusiveSR1" , TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w,param.WriteOutVerbose);
   
   double dPhil2_l = fabs(TVector2::Phi_mpi_pi( ( (AK8_JetColl[0] + *leps[1]).Phi() - (leps[0]->Phi() ))));
-  if(leps[0]->Pt() < 100) return "false";
+  if(leps[0]->Pt() < 100) return "false"; //JH : l1pt > 100 GeV
   FillEventCutflow(HNL_LeptonCore::SR1, w, "SR1_LepPt",param.Name,param.WriteOutVerbose);
 
   double dRl2_l2_cut = 2.;//(GetMass(signal_region1,JetColl, AK8_JetColl,  leps) > 1000) ? 2.5 : 1.5;
 
-  if (dPhil2_l > dRl2_l2_cut){
+  if (dPhil2_l > dRl2_l2_cut){ //JH : dPhi(N,l2) > 2
 
     FillEventCutflow(HNL_LeptonCore::SR1, w, "SR1_DphiN_Wlep",param.Name,param.WriteOutVerbose);
     
 
-    if(!HasTightTau) {
+    if(!HasTightTau) { //JH : tight, non-overlapped tau veto
       FillEventCutflow(HNL_LeptonCore::SR1, w, "SR1_TauVeto",param.Name,param.WriteOutVerbose);
       
-      if( ( HT/leps[0]->Pt()) < 4.) {
+      if( ( HT/leps[0]->Pt()) < 4.) { //JH : HT/L1pt < 4
 	FillEventCutflow(HNL_LeptonCore::SR1, w, "SR1_HTPt",param.Name,param.WriteOutVerbose);
 	
 	
-	if(GetMass(signal_region1,JetColl, AK8_JetColl,  leps) > LowerMassSR1WmassCut ){
+	if(GetMass(signal_region1,JetColl, AK8_JetColl,  leps) > LowerMassSR1WmassCut ){ //JH : M(llJ) > 500 GeV
 	  
 	  
 	  FillEventCutflow(HNL_LeptonCore::SR1, w, "SR1_Wmass",param.Name,param.WriteOutVerbose); 
 	  FillEventCutflow(HNL_LeptonCore::SR1, w, "SR1_MET",param.Name,param.WriteOutVerbose);
-	  if(PassHMMet&&PassBJetMVeto)FillEventCutflow(HNL_LeptonCore::SR1, w, "SR1_bveto",param.Name,param.WriteOutVerbose);
+	  if(PassHMMet&&PassBJetMVeto)FillEventCutflow(HNL_LeptonCore::SR1, w, "SR1_bveto",param.Name,param.WriteOutVerbose); //JH : MET2ST < 15, B veto
 	  
 	  
-	  if(PassHMMet&&PassBJetMVeto) {
+	  if(PassHMMet&&PassBJetMVeto) { //JH : bin based on N1(=Jl1) mass, charge (in)dependent
 	    
 	    
 	    //Fill Limit plot
