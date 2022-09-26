@@ -122,6 +122,11 @@ public:
 
   bool passIDHN(int ID, double dxy_b, double dxy_e, double dz_b,double dz_e, double sip_b, double sip_e, double iso_b,double iso_e, double miso_b, double miso_e) const;
 
+  int  PassLooseIDOpt( ) const;
+  int PassIDOptMulti(TString dxy_method, TString sel_methodB,TString sel_methodEC,  TString iso_methodB,TString iso_methodEC ) const;
+			    
+    
+
   bool PassMVA(double mva1, double mva2, double mva3) const;
   bool PassMVA(double mva1, double mva2) const;
 

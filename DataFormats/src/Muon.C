@@ -1,4 +1,7 @@
 #include "Muon.h"
+#include <iostream>
+#include <sstream>
+#include <string>
 
 ClassImp(Muon)
 
@@ -143,6 +146,48 @@ bool Muon::PassID(TString ID) const {
   if(ID=="HNLoosePOG") return Pass_HNLoose(0.4,  0.2, 0.5,99999.);
 
 
+  if(ID.Contains("MuOpt")){
+    
+    TString ID_sub = ID;
+    ID_sub = ID_sub.ReplaceAll("_"," ");
+    string sID_sub = string(ID_sub);
+
+    vector<TString> subStrings;
+    istringstream ID_subs(sID_sub);
+    do {
+      string subs;
+      ID_subs >> subs;
+      subStrings.push_back(TString(subs));
+    } while (ID_subs);
+
+
+    TString dxy_method = "";
+    TString iso_methodB="";
+    TString iso_methodEC="";
+    TString pog_methodB="";
+    TString pog_methodEC="";
+
+    for(unsigned int i=0; i < subStrings.size(); i++){
+      if (subStrings[i].Contains("DXY")) dxy_method=subStrings[i];
+      if (subStrings[i].Contains("MVAB")) pog_methodB=subStrings[i];
+      if (subStrings[i].Contains("MVAEC")) pog_methodEC=subStrings[i];
+
+      if (subStrings[i].Contains("POG")) pog_methodB=subStrings[i];
+      if (subStrings[i].Contains("POG")) pog_methodEC=subStrings[i];
+
+      if (subStrings[i].Contains("ISOB")) iso_methodB=subStrings[i];
+      if (subStrings[i].Contains("ISOEC")) iso_methodEC=subStrings[i];
+    }
+
+    if(ID.Contains("MuOptLoose")) return PassLooseIDOpt();
+
+    return   PassIDOptMulti(dxy_method, pog_methodB,pog_methodEC, iso_methodB,iso_methodEC);
+
+  }
+
+
+
+
   if(ID.Contains("HNMVA_")){
     TString mva_st = ID.ReplaceAll("HNMVA_","");
     std::string mva_s = std::string(mva_st);
@@ -164,71 +209,112 @@ bool Muon::PassID(TString ID) const {
   if(ID=="HNTightV2") return Pass_HNTight(0.07, 0.05, 0.1, 3.);
 
 
+  if(ID=="HNOpt")                 {
 
+    if( fabs(this->Eta())<= 1.479 ){
+
+      double dxy_cut = 0.01 ;
+      if(this->Pt() > 10 && this->Pt()  < 60.) dxy_cut -= (this->Pt() - 10.) * 0.005/ 50.;
+      if(this->Pt() > 60.) dxy_cut = 0.005;
+      if(fabs(dXY()) >  dxy_cut)   return false;
+      if(fabs(dZ()) >  0.05)   return false;
+      if(RelIso() > 0.2) return false;
+      //if(fabs(IP3D()/IP3Derr())> 5.)  return false;
+
+      //double mva_cut_B = -0.4 ;
+      //if(this->Pt() > 10 && this->Pt()  < 60.) mva_cut_B -= (this->Pt() -10.) * 1.2/ 50.;
+      //if(this->Pt() > 60.) mva_cut_B = 0.8;
+      //if(! (MVA()> mva_cut_B) ) return false;
+
+    }
+    else{
+
+      double dxy_cut = 0.01 ;
+      if(this->Pt() > 10 && this->Pt()< 60.) dxy_cut -= (this->Pt() - 10.) * 0.005/ 50.;
+      if(this->Pt() > 60.) dxy_cut = 0.005;
+
+      if(fabs(dXY()) >  dxy_cut)   return false;
+      if(fabs(dZ()) >  0.05)   return false;
+      if(RelIso() > 0.2) return false;
+
+      // if(fabs(IP3D()/IP3Derr())> 7.5)  return false;
+      //double mva_cut_EC = -0.5 ;
+      //if(this->Pt() > 10 && this->Pt()  < 60.) mva_cut_EC -= ( this->Pt()-10.) * 1.1/ 50.;
+      //if(this->Pt() > 60.) mva_cut_EC = 0.6;
+
+      //if(! (MVA()> mva_cut_EC) ) return false;
+      
+
+    }
+    return true;
+  }
+
+
+
+  if(ID=="HNTight_Iso05_dxy_01_ip_3") return Pass_HNTight(0.05,0.01,0.05,3.);
+  if(ID=="HNTight_Iso05_dxy_01_ip_4") return Pass_HNTight(0.05,0.01,0.05,4.);
+  if(ID=="HNTight_Iso05_dxy_01_ip_999") return Pass_HNTight(0.05,0.01,0.05,999.);
   if(ID=="HNTight_Iso05_dxy_02_ip_3") return Pass_HNTight(0.05,0.02,0.05,3.);
   if(ID=="HNTight_Iso05_dxy_02_ip_4") return Pass_HNTight(0.05,0.02,0.05,4.);
   if(ID=="HNTight_Iso05_dxy_02_ip_999") return Pass_HNTight(0.05,0.02,0.05,999.);
-  if(ID=="HNTight_Iso05_dxy_05_ip_3") return Pass_HNTight(0.05,0.05,0.05,3.);
-  if(ID=="HNTight_Iso05_dxy_05_dz_01_ip_3") return Pass_HNTight(0.05,0.05,0.1,3.);
-  if(ID=="HNTight_Iso05_dxy_05_ip_4") return Pass_HNTight(0.05,0.05,0.05,4.);
-  if(ID=="HNTight_Iso05_dxy_05_ip_999") return Pass_HNTight(0.05,0.05,0.05,999.);
-  if(ID=="HNTight_Iso05_dxy_20_ip_3") return Pass_HNTight(0.05,0.2, 0.5,3.);
-  if(ID=="HNTight_Iso05_dxy_20_ip_4") return Pass_HNTight(0.05,0.2, 0.5,4.);
-  if(ID=="HNTight_Iso05_dxy_20_ip_999") return Pass_HNTight(0.05,0.2, 0.5,999.);
+  if(ID=="HNTight_Iso05_dxy_05_ip_3") return Pass_HNTight(0.05,0.05, 0.05,3.);
+  if(ID=="HNTight_Iso05_dxy_05_ip_4") return Pass_HNTight(0.05,0.05, 0.05,4.);
+  if(ID=="HNTight_Iso05_dxy_05_ip_999") return Pass_HNTight(0.05,0.05, 0.05,999.);
 
 
+  if(ID=="HNTight_Iso06_dxy_01_ip_3") return Pass_HNTight(0.06,0.01,0.05,3.);
+  if(ID=="HNTight_Iso06_dxy_01_ip_4") return Pass_HNTight(0.06,0.01,0.05,4.);
+  if(ID=="HNTight_Iso06_dxy_01_ip_999") return Pass_HNTight(0.06,0.01,0.05,999.);
   if(ID=="HNTight_Iso06_dxy_02_ip_3") return Pass_HNTight(0.06,0.02,0.05,3.);
   if(ID=="HNTight_Iso06_dxy_02_ip_4") return Pass_HNTight(0.06,0.02,0.05,4.);
   if(ID=="HNTight_Iso06_dxy_02_ip_999") return Pass_HNTight(0.06,0.02,0.05,999.);
-  if(ID=="HNTight_Iso06_dxy_05_ip_3") return Pass_HNTight(0.06,0.05,0.05,3.);
-  if(ID=="HNTight_Iso06_dxy_05_ip_4") return Pass_HNTight(0.06,0.05,0.05,4.);
-  if(ID=="HNTight_Iso06_dxy_05_ip_999") return Pass_HNTight(0.06,0.05,0.05,999.);
-  if(ID=="HNTight_Iso06_dxy_20_ip_3") return Pass_HNTight(0.05,0.2, 0.5,3.);
-  if(ID=="HNTight_Iso06_dxy_20_ip_4") return Pass_HNTight(0.05,0.2, 0.5,4.);
-  if(ID=="HNTight_Iso06_dxy_20_ip_999") return Pass_HNTight(0.05,0.2, 0.5,999.);
+  if(ID=="HNTight_Iso06_dxy_05_ip_3") return Pass_HNTight(0.06,0.05, 0.05,3.);
+  if(ID=="HNTight_Iso06_dxy_05_ip_4") return Pass_HNTight(0.06,0.05, 0.05,4.);
+  if(ID=="HNTight_Iso06_dxy_05_ip_999") return Pass_HNTight(0.06,0.05, 0.05,999.);
 
+
+  if(ID=="HNTight_Iso07_dxy_01_ip_3") return Pass_HNTight(0.07,0.01,0.05,3.);
+  if(ID=="HNTight_Iso07_dxy_01_ip_4") return Pass_HNTight(0.07,0.01,0.05,4.);
+  if(ID=="HNTight_Iso07_dxy_01_ip_999") return Pass_HNTight(0.07,0.01,0.05,999.);
   if(ID=="HNTight_Iso07_dxy_02_ip_3") return Pass_HNTight(0.07,0.02,0.05,3.);
   if(ID=="HNTight_Iso07_dxy_02_ip_4") return Pass_HNTight(0.07,0.02,0.05,4.);
   if(ID=="HNTight_Iso07_dxy_02_ip_999") return Pass_HNTight(0.07,0.02,0.05,999.);
-  if(ID=="HNTight_Iso07_dxy_05_ip_3") return Pass_HNTight(0.07,0.05,0.05,3.);
-  if(ID=="HNTight_Iso07_dxy_05_ip_4") return Pass_HNTight(0.07,0.05,0.05,4.);
-  if(ID=="HNTight_Iso07_dxy_05_ip_999") return Pass_HNTight(0.07,0.05,0.05,999.);
-  if(ID=="HNTight_Iso07_dxy_20_ip_3") return Pass_HNTight(0.07,0.2, 0.5,3.);
-  if(ID=="HNTight_Iso07_dxy_20_ip_4") return Pass_HNTight(0.07,0.2, 0.5,4.);
-  if(ID=="HNTight_Iso07_dxy_20_ip_999") return Pass_HNTight(0.07,0.2, 0.5,999.);
+  if(ID=="HNTight_Iso07_dxy_05_ip_3") return Pass_HNTight(0.07,0.05, 0.05,3.);
+  if(ID=="HNTight_Iso07_dxy_05_ip_4") return Pass_HNTight(0.07,0.05, 0.05,4.);
+  if(ID=="HNTight_Iso07_dxy_05_ip_999") return Pass_HNTight(0.07,0.05, 0.05,999.);
 
 
+  if(ID=="HNTight_Iso08_dxy_01_ip_3") return Pass_HNTight(0.08,0.01,0.05,3.);
+  if(ID=="HNTight_Iso08_dxy_01_ip_4") return Pass_HNTight(0.08,0.01,0.05,4.);
+  if(ID=="HNTight_Iso08_dxy_01_ip_999") return Pass_HNTight(0.08,0.01,0.05,999.);
   if(ID=="HNTight_Iso08_dxy_02_ip_3") return Pass_HNTight(0.08,0.02,0.05,3.);
   if(ID=="HNTight_Iso08_dxy_02_ip_4") return Pass_HNTight(0.08,0.02,0.05,4.);
   if(ID=="HNTight_Iso08_dxy_02_ip_999") return Pass_HNTight(0.08,0.02,0.05,999.);
-  if(ID=="HNTight_Iso08_dxy_05_ip_3") return Pass_HNTight(0.08,0.05,0.05,3.);
-  if(ID=="HNTight_Iso08_dxy_05_ip_4") return Pass_HNTight(0.08,0.05,0.05,4.);
-  if(ID=="HNTight_Iso08_dxy_05_ip_999") return Pass_HNTight(0.08,0.05,0.05,999.);
-  if(ID=="HNTight_Iso08_dxy_20_ip_3") return Pass_HNTight(0.08,0.2, 0.5,3.);
-  if(ID=="HNTight_Iso08_dxy_20_ip_4") return Pass_HNTight(0.08,0.2, 0.5,4.);
-  if(ID=="HNTight_Iso08_dxy_20_ip_999") return Pass_HNTight(0.08,0.2, 0.5,999.);
+  if(ID=="HNTight_Iso08_dxy_05_ip_3") return Pass_HNTight(0.08,0.05, 0.05,3.);
+  if(ID=="HNTight_Iso08_dxy_05_ip_4") return Pass_HNTight(0.08,0.05, 0.05,4.);
+  if(ID=="HNTight_Iso08_dxy_05_ip_999") return Pass_HNTight(0.08,0.05, 0.05,999.);
 
 
+  if(ID=="HNTight_Iso09_dxy_01_ip_3") return Pass_HNTight(0.09,0.01,0.05,3.);
+  if(ID=="HNTight_Iso09_dxy_01_ip_4") return Pass_HNTight(0.09,0.01,0.05,4.);
+  if(ID=="HNTight_Iso09_dxy_01_ip_999") return Pass_HNTight(0.09,0.01,0.05,999.);
   if(ID=="HNTight_Iso09_dxy_02_ip_3") return Pass_HNTight(0.09,0.02,0.05,3.);
   if(ID=="HNTight_Iso09_dxy_02_ip_4") return Pass_HNTight(0.09,0.02,0.05,4.);
   if(ID=="HNTight_Iso09_dxy_02_ip_999") return Pass_HNTight(0.09,0.02,0.05,999.);
-  if(ID=="HNTight_Iso09_dxy_05_ip_3") return Pass_HNTight(0.09,0.05,0.05,3.);
-  if(ID=="HNTight_Iso09_dxy_05_ip_4") return Pass_HNTight(0.09,0.05,0.05,4.);
-  if(ID=="HNTight_Iso09_dxy_05_ip_999") return Pass_HNTight(0.09,0.05,0.05,999.);
-  if(ID=="HNTight_Iso09_dxy_20_ip_3") return Pass_HNTight(0.09,0.2, 0.5,3.);
-  if(ID=="HNTight_Iso09_dxy_20_ip_4") return Pass_HNTight(0.09,0.2, 0.5,4.);
-  if(ID=="HNTight_Iso09_dxy_20_ip_999") return Pass_HNTight(0.09,0.2, 0.5,999.);
+  if(ID=="HNTight_Iso09_dxy_05_ip_3") return Pass_HNTight(0.09,0.05, 0.05,3.);
+  if(ID=="HNTight_Iso09_dxy_05_ip_4") return Pass_HNTight(0.09,0.05, 0.05,4.);
+  if(ID=="HNTight_Iso09_dxy_05_ip_999") return Pass_HNTight(0.09,0.05, 0.05,999.);
 
-  if(ID=="HNTight_Iso10_dxy_02_ip_3") return Pass_HNTight(0.1,0.02,0.05,3.);
-  if(ID=="HNTight_Iso10_dxy_02_ip_4") return Pass_HNTight(0.1,0.02,0.05,4.);
-  if(ID=="HNTight_Iso10_dxy_02_ip_999") return Pass_HNTight(0.1,0.02,0.05,999.);
-  if(ID=="HNTight_Iso10_dxy_05_ip_3") return Pass_HNTight(0.1,0.05,0.05,3.);
-  if(ID=="HNTight_Iso10_dxy_05_ip_4") return Pass_HNTight(0.1,0.05,0.05,4.);
-  if(ID=="HNTight_Iso10_dxy_05_ip_999") return Pass_HNTight(0.1,0.05,0.05,999.);
-  if(ID=="HNTight_Iso10_dxy_20_ip_3") return Pass_HNTight(0.1,0.2, 0.5,3.);
-  if(ID=="HNTight_Iso10_dxy_20_ip_4") return Pass_HNTight(0.1,0.2, 0.5,4.);
-  if(ID=="HNTight_Iso10_dxy_20_ip_999") return Pass_HNTight(0.1,0.2, 0.5,999.);
 
+  if(ID=="HNTight_Iso10_dxy_01_ip_3") return Pass_HNTight(0.10,0.01,0.05,3.);
+  if(ID=="HNTight_Iso10_dxy_01_ip_4") return Pass_HNTight(0.10,0.01,0.05,4.);
+  if(ID=="HNTight_Iso10_dxy_01_ip_999") return Pass_HNTight(0.10,0.01,0.05,999.);
+  if(ID=="HNTight_Iso10_dxy_02_ip_3") return Pass_HNTight(0.10,0.02,0.05,3.);
+  if(ID=="HNTight_Iso10_dxy_02_ip_4") return Pass_HNTight(0.10,0.02,0.05,4.);
+  if(ID=="HNTight_Iso10_dxy_02_ip_999") return Pass_HNTight(0.10,0.02,0.05,999.);
+  if(ID=="HNTight_Iso10_dxy_05_ip_3") return Pass_HNTight(0.10,0.05, 0.05,3.);
+  if(ID=="HNTight_Iso10_dxy_05_ip_4") return Pass_HNTight(0.10,0.05, 0.05,4.);
+  if(ID=="HNTight_Iso10_dxy_05_ip_999") return Pass_HNTight(0.10,0.05, 0.05,999.);
 
 
   if(ID=="HNTightPFIsoLoose") return Pass_POGTightPFIsoLoose(true);
@@ -357,10 +443,10 @@ bool Muon::PassMVA(double mva1, double mva2, double mva3) const {
   //      if (muon.pt() > 5 and muon.isLooseMuon() and muon.passed(reco::Muon::MiniIsoLoose) and sip3D < 8.0 and                                                                                   
   //dB2D < 0.05 and dz < 0.1) {                                                                                                                                                                    
 
-  if (this->Pt() < 5) return false;
-  if(!( isPOGLoose() )) return false;
-  if(RelIso() > 0.1)  return false;
-  if(!( fabs(dXY())< 0.01 && fabs(dZ())< 0.1 && fabs(IP3D()/IP3Derr())< 5.) ) return false;
+  //if (this->Pt() < 5) return false;
+  //if(!( isPOGLoose() )) return false;
+  //if(RelIso() > 0.1)  return false;
+  //if(!( fabs(dXY())< 0.02 && fabs(dZ())< 0.1 && fabs(IP3D()/IP3Derr())< 5.) ) return false;
 
   if( fabs(this->Eta()) <= 0.8 ){
     if(! (MVA()>mva1) ) return false;
@@ -392,6 +478,139 @@ bool Muon::PassSoftMVA(double mva1, double mva2, double mva3) const {
   }
 
   return true;
+}
+
+int  Muon::PassLooseIDOpt( ) const{
+
+  if(!( isPOGLoose() )) return 0;
+  if(fabs(dXY()) >  0.2)   return 0;
+  if(fabs(dZ()) >  0.5)   return 0;
+  if(! (RelIso()< 0.4) ) return 0;
+
+  return 1;
+
+}
+
+int  Muon::PassIDOptMulti(TString dxy_method, TString sel_methodB,TString sel_methodEC,  TString iso_methodB,TString iso_methodEC ) const{
+
+  bool DEBUG=false;
+
+  if( fabs(this->Eta())<= 1.479 ){
+
+    double dxy_cut = 0.01 ;
+    if(dxy_method.Contains("B1")) {
+      if(this->Pt() > 10 && this->Pt()  < 60.) dxy_cut -= (this->Pt() - 10.) * 0.005/ 50.;
+      if(this->Pt() > 60.) dxy_cut = 0.005;
+      if(fabs(dXY()) >  dxy_cut)   {
+        if(DEBUG) cout << " DXY  FAIL" << endl;
+        return 0;
+      }
+    }
+    
+    if(fabs(dZ()) >  0.05)   return 0;
+
+    if(fabs(IP3D()/IP3Derr())> 5.)  return 0;
+
+    if(DEBUG) cout << " sel_methodB = " << sel_methodB << endl;
+
+     if(sel_methodB.Contains("MVA")){
+
+      TString mva_st = sel_methodB.ReplaceAll("MVAB","");
+      std::string mva_s = std::string(mva_st);
+      std::string::size_type sz;     // alias of size_t                                                                        
+
+
+      double mva_d = std::stod (mva_s,&sz);
+      double mva_cut_B =  mva_d ;//-0.5 ;                                                                                                                                                                                                      
+
+      if(this->Pt() > 10 && this->Pt()  < 60.) mva_cut_B += (this->Pt() - 10.) * (0.9 - mva_d)/ 50.;
+      if(this->Pt()  > 60.)  mva_cut_B = 0.9;
+
+      if(DEBUG) cout << "pt = " <<  this->Pt()  << " mva = " << MVA() << " cut =" << mva_cut_B << endl;
+
+      if(! (MVA()> mva_cut_B) ) return 0;
+    }
+    else{
+      if(sel_methodB == "POGT"){
+        if(! (isPOGTight()) ) return 0;
+      }
+      if(sel_methodB == "POGM"){
+        if(! (isPOGTight()) ) return 0;
+      }
+    }
+    if(iso_methodB != ""){
+
+      TString iso_st = iso_methodB.ReplaceAll("ISOB","");
+      std::string iso_s = std::string(iso_st);
+      std::string::size_type sz;     // alias of size_t                                                                                                                                                                                                                                                                                                          
+
+      double iso_d = std::stod (iso_s,&sz);
+      double iso_cut_B =  iso_d ;
+
+      if(DEBUG) cout << "RelIso " << iso_cut_B << endl;
+      if(! (RelIso()<iso_cut_B) ) return false;
+    }
+  }
+  else{
+    if(DEBUG) cout << "PassIDOpt ENDCAP " << endl;
+
+
+    if(dxy_method.Contains("EC1")) {
+
+      double dxy_cut = 0.01 ;
+      if(this->Pt() > 10 && this->Pt()< 60.) dxy_cut -= (this->Pt()- 10.) * 0.005/ 50.;
+      if(this->Pt()  > 60.) dxy_cut = 0.005;
+
+      if(DEBUG) cout << "pt = " << this->Pt() << " DXY cut = " << dxy_cut << " value = " << fabs(dXY()) <<  endl;
+      if(fabs(dXY()) >  dxy_cut)   {
+        if(DEBUG) cout << " DXY  FAIL" << endl;
+        return 0;
+      }
+    }
+    if(fabs(dZ()) >  0.07)   return 0;
+    if(fabs(IP3D()/IP3Derr())> 7.5)  return 0;
+
+    if(iso_methodEC != ""){
+
+      TString iso_st = iso_methodEC.ReplaceAll("ISOEC","");
+      std::string iso_s = std::string(iso_st);
+      std::string::size_type sz;     // alias of size_t                                                                                                                                                                                                                                                                                                          
+      double iso_d = std::stod (iso_s,&sz);
+      double iso_cut_EC =  iso_d ;
+
+      if(DEBUG) cout << "RelIso " << iso_cut_EC << endl;
+
+      if(! (RelIso()<iso_cut_EC) ) return false;
+    }
+
+    if(sel_methodEC.Contains("MVA")){
+
+      TString mva_st = sel_methodEC.ReplaceAll("MVAEC","");
+      std::string mva_s = std::string(mva_st);
+      std::string::size_type sz;     // alias of size_t                                                                                                      
+
+      double mva_d = std::stod (mva_s,&sz);
+      double mva_cut_EC =  mva_d ;//-0.5 ;                                                                                                                  
+      
+      if(this->Pt() > 10 && this->Pt()  < 60.) mva_cut_EC += (this->Pt() - 10.) * (0.9 - mva_d)/ 50.;
+      if(this->Pt()  > 60.)  mva_cut_EC = 0.9;
+
+      if(DEBUG) cout << "pt = " <<  this->Pt() << " mva = " <<MVA() << " cut =" << mva_cut_EC << endl;
+
+      if(! (MVA()> mva_cut_EC) ) return 0;
+    }
+    else{
+      if(sel_methodEC == "POGT"){
+        if(! (isPOGTight()) ) return false;
+      }
+      if(sel_methodEC == "POGM"){
+        if(! (isPOGMedium()) ) return false;
+      }
+
+    }
+  }
+  return 1;
+
 }
 
 
@@ -470,7 +689,7 @@ bool Muon::Pass_HNLooseMVA() const{
   if(!( isPOGLoose() )) return false;
   if(!( fabs(dXY())< 0.2 && fabs(dZ())<0.1) ) return false;
   if(!( RelIso()< 0.4 )) return false;
-  if(!(fabs(IP3D()/IP3Derr())< 3 )) return false;
+  //if(!(fabs(IP3D()/IP3Derr())< 3 )) return false;
   return true;
 
 
@@ -541,7 +760,7 @@ bool Muon::Pass_POGTightPFIsoLoose(bool applyIP) const {
   if(!( isPOGTight() )) return false;
   if(!( PassSelector(PFIsoLoose) )) return false;
   if(applyIP) {
-    if(!( fabs(dXY())< 0.02 && fabs(dZ())<0.05 &&fabs(IP3D()/IP3Derr())<3. )) return false;
+    if(!( fabs(dXY())< 0.02 && fabs(dZ())<0.05)) return false;
 
   }
   return true;
@@ -551,7 +770,7 @@ bool Muon::Pass_POGTightPFIsoMedium(bool applyIP) const {
   if(!( isPOGTight() )) return false;
   if(!( PassSelector(PFIsoMedium) )) return false;
   if(applyIP) {
-    if(!( fabs(dXY())< 0.02 && fabs(dZ())<0.05 &&fabs(IP3D()/IP3Derr())<3. )) return false;
+    if(!( fabs(dXY())< 0.02 && fabs(dZ())<0.05 )) return false;
 
   }
   return true;
@@ -561,7 +780,7 @@ bool Muon::Pass_POGTightPFIsoTight(bool applyIP) const {
   if(!( isPOGTight() )) return false;
   if(!( PassSelector(PFIsoTight) )) return false;
   if(applyIP) {
-    if(!( fabs(dXY())< 0.02 && fabs(dZ())<0.05 &&fabs(IP3D()/IP3Derr())<3. )) return false;
+    if(!( fabs(dXY())< 0.02 && fabs(dZ())<0.05)) return false;
 
   }
   return true;
@@ -571,7 +790,7 @@ bool Muon::Pass_POGTightPFIsoVeryTight(bool applyIP) const {
   if(!( isPOGTight() )) return false;
   if(!( PassSelector(PFIsoVeryTight) )) return false;
   if(applyIP) {
-    if(!( fabs(dXY())< 0.02 && fabs(dZ())<0.05 &&fabs(IP3D()/IP3Derr())<3. )) return false;
+    if(!( fabs(dXY())< 0.02 && fabs(dZ())<0.05)) return false;
   }
   return true;
 }
@@ -580,7 +799,7 @@ bool Muon::Pass_POGTightPFIsoVeryVeryTight(bool applyIP) const {
   if(!( isPOGTight() )) return false;
   if(!( RelIso()<0.05 )) return false;
   if(applyIP) {
-    if(!( fabs(dXY())< 0.02 && fabs(dZ())<0.05 &&fabs(IP3D()/IP3Derr())<3. )) return false;
+    if(!( fabs(dXY())< 0.02 && fabs(dZ())<0.05)) return false;
   }
   return true;
 }

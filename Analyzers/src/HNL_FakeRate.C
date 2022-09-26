@@ -32,42 +32,129 @@ void HNL_FakeRate::executeEvent(){
   //                  PassConversionVeto() IsGsfCtfScPixChargeConsistent Pass_TriggerEmulation
   // HNLoose_17028 : Pass_HNLoose2016(0.6, 0.2, 0.1, 10.) && MVA(-0.1, 0.1, -0.1) PassConversionVeto() IsGsfCtfScPixChargeConsistent Pass_TriggerEmulation
 
-  ELIDs.push_back(make_pair("HNTight_17028", "HNLoose_17028")); 
+  /*ELIDs.push_back(make_pair("HNTight_17028", "HNLoose_17028")); 
   ELIDs.push_back(make_pair("HNTightV2",    "HNLooseV4")); 
   ELIDs.push_back(make_pair("passPOGTight", "HNLoosePOG"));
   ELIDs.push_back(make_pair("passPOGMedium","HNLoosePOG"));
-  ELIDs.push_back(make_pair("HNLooseMVA",   "HNLooseMVA"));
-  //ELIDs.push_back(make_pair("HNTightV2","HNLooseV4_LooseIP"));
-
+  ELIDs.push_back(make_pair("passMVAID_noIso_WP80",   "passMVAID_noIso_WP80Loose"));
+  ELIDs.push_back(make_pair("passMVAID_noIso_WP90",   "passMVAID_noIso_WP90Loose"));
+  ELIDs.push_back(make_pair("HN2016POG",   "HNLoosePOG"));
+  ELIDs.push_back(make_pair("HN2016POGCC",   "HNLoosePOG"));
+  ELIDs.push_back(make_pair("HN2016MVA",   "HNLooseMVA"));
+  ELIDs.push_back(make_pair("HN2016MVA2",   "HNLooseMVA"));
+  ELIDs.push_back(make_pair("HN2016MVA2CC",   "HNLooseMVA"));
+ç
   paramnames.push_back("HNTight_17028"  );
   paramnames.push_back("HNTightV2"      );
   paramnames.push_back("passPOGTight"  );
   paramnames.push_back("passPOGMedium"  );
-  paramnames.push_back("HNMVA"  );
-  //paramnames.push_back("HNTightV2_LIP");
- 
-  for (auto i: ELIDs) {
-    channel.push_back(EE);
-    MuIDs.push_back(make_pair("HNVeto2016","HNLoose_17028"));
+  paramnames.push_back("passMVAID_noIso_WP80"  );
+  paramnames.push_back("passMVAID_noIso_WP90"  );
+  paramnames.push_back("HN2016POG"  );
+  paramnames.push_back("HN2016POGCC"  );
+  paramnames.push_back("HN2016MVA"  );
+  paramnames.push_back("HN2016MVA2"  );
+  paramnames.push_back("HN2016MVA2CC"  );*/
+
+  bool ElectronOpt=true;
+  if (ElectronOpt){
+    vector<TString> vTrig = {"LooseTrig_","TightTrig_"};                                                                                 
+    vector<TString> vConv = {"","ConvBEC_"};
+    vector<TString> vCC = {"CCBEC_"};
+    vector<TString> vMVAB;
+    vector<TString> vMVAEC;
+    for(unsigned int imva=0 ; imva < 70 ; imva++){
+      double mva_d= -0.5 + double(imva)*0.02;
+      std::string mvaS= std::to_string(mva_d);
+      vMVAB.push_back("MVAB"+mvaS+"_");
+    }
+    for(unsigned int imva=0 ; imva < 85 ; imva++){
+      double mva_d= -0.8 + imva*0.02;
+      std::string mvaS= std::to_string(mva_d);
+      vMVAEC.push_back("MVAEC"+mvaS+"_");
+    }
+    
+    vector<TString> OptElectronsIDs;
+    for(auto iTrig : vTrig){
+      for(auto iConv : vConv){
+	for(auto iCC : vCC){
+	  for(auto iMVAB : vMVAB) OptElectronsIDs.push_back(iTrig+iConv+iCC+iMVAB+"MVAEC-0.8_ISOB0.2_ISOEC0.2_DXYB1EC1");
+	  for(auto iMVAEC : vMVAEC) OptElectronsIDs.push_back(iTrig+iConv+iCC+iMVAEC+"MVAB-0.5_ISOB0.2_ISOEC0.2_DXYB1EC1");
+	  OptElectronsIDs.push_back(iTrig+iConv+iCC+"POGT_ISOB0.2_ISOEC0.2_DXYB1EC1");
+	  OptElectronsIDs.push_back(iTrig+iConv+iCC+"POGM_ISOB0.2_ISOEC0.2_DXYB1EC1");
+	  OptElectronsIDs.push_back(iTrig+iConv+iCC+"POGTNoIso_ISOB0.2_ISOEC0.2_DXYB1EC1");
+	  OptElectronsIDs.push_back(iTrig+iConv+iCC+"POGMNoIso_ISOB0.2_ISOEC0.2_DXYB1EC1");
+	}
+      }
+    }
+    
+    for (auto i: OptElectronsIDs) {
+      paramnames.push_back("El_"+i);     
+      ELIDs.push_back(make_pair("ElOpt_"+i, "ElOptLoose_"+i));
+    }
+    for (auto i: ELIDs) {
+      channel.push_back(EE);
+      MuIDs.push_back(make_pair("HNVeto2016","HNLoose_17028"));
+    }
+    
+    if( paramnames.size() != ELIDs.size()) return;
   }
 
+  
 
   // MUON IDS
-  MuIDs.push_back(make_pair("POGTightWithTightIso","HNLoosePOG"));
+  /*MuIDs.push_back(make_pair("HNTightPFIsoMedium","HNLoosePOG"));
+  MuIDs.push_back(make_pair("HNTightPFIsoTight","HNLoosePOG"));
+  MuIDs.push_back(make_pair("HNTightPFIsoVeryTight","HNLoosePOG"));
+  MuIDs.push_back(make_pair("HNTightPFIsoVeryVeryTight","HNLoosePOG"));
   MuIDs.push_back(make_pair("HNTight_17028","HNLoose_17028"));
   MuIDs.push_back(make_pair("HNTightV2","HNLooseV1"));
   MuIDs.push_back(make_pair("HNLooseMVA","HNLooseMVA"));
-
+  
+  paramnames.push_back("POGTightWithMediumIso");
   paramnames.push_back("POGTightWithTightIso");
+  paramnames.push_back("POGTightWithVeryTightIso");
+  paramnames.push_back("POGTightWithVeryVeryTightIso");
   paramnames.push_back("HNTight_17028");
   paramnames.push_back("HNTightV2");
-  paramnames.push_back("HNMVA");
+  paramnames.push_back("HNMVA");*/
 
+
+  bool MuonOpt=true;
+  if (MuonOpt){
+    vector<TString> vMVAB;
+    vector<TString> vMVAEC;
+    for(unsigned int imva=0 ; imva < 65 ; imva++){
+      double mva_d= -0.4 + double(imva)*0.02;
+      std::string mvaS= std::to_string(mva_d);
+      vMVAB.push_back("MVAB"+mvaS+"_");
+    }
+    for(unsigned int imva=0 ; imva < 80 ; imva++){
+      double mva_d= -0.7 + imva*0.02;
+      std::string mvaS= std::to_string(mva_d);
+      vMVAEC.push_back("MVAEC"+mvaS+"_");
+    }
+
+    vector<TString> OptMuonsIDs;
+    for(auto iMVAB : vMVAB) OptMuonsIDs.push_back(iMVAB+"MVAEC-0.7_ISOB0.2_ISOEC0.2_DXYB1EC1");
+    for(auto iMVAEC : vMVAEC) OptMuonsIDs.push_back(iMVAEC+"MVAB-0.4_ISOB0.2_ISOEC0.2_DXYB1EC1");
+    OptMuonsIDs.push_back("POGT_ISOB0.2_ISOEC0.2_DXYB1EC1");
+    OptMuonsIDs.push_back("POGM_ISOB0.2_ISOEC0.2_DXYB1EC1");
+    
+    for (auto i: OptMuonsIDs){
+      paramnames.push_back("Mu_"+i);
+      MuIDs.push_back(make_pair("MuOpt_"+i, "MuOptLoose_"+i));
+    }
+
+  }
+  
   int iel= MuIDs.size() - channel.size();
   for (int i =0; i < iel; i++){
     channel.push_back(MuMu);
     ELIDs.push_back(make_pair("HNVeto2016","HNLoose_17028"));
   }
+
+  if( paramnames.size() != ELIDs.size()) return;
 
 
   for(unsigned int it_id=0; it_id<ELIDs.size(); it_id++){
@@ -161,33 +248,11 @@ void HNL_FakeRate::executeEventFromParameter(AnalyzerParameter param, TString El
 
   if(channel==EE) {
 
-    if(param.Name.Contains("MVA")){
-
-      for(unsigned int j1=0; j1 < 41; j1++){
-        double mva_1 = double(0.1+0.02*double(j1));          std::string mva1= std::to_string(mva_1);
-	
-        param.Name = "HNMVA_"+mva1;
-        param.Electron_Tight_ID = "HNMVA_"+mva1;
-
-	RunE(loose_electrons,loose_muons, jets,  param, weight);
-      }
-    }
-    else   RunE(loose_electrons,loose_muons, jets,  param, weight);
+    RunE(loose_electrons,loose_muons, jets,  param, weight);
     
   }
   if(channel==MuMu){
-    if(param.Name.Contains("MVA")){
-      
-      for(unsigned int j1=0; j1 < 41; j1++){
-	double mva_1 = (0.1+0.02*double(j1));          std::string mva1= std::to_string(mva_1);
-	
-	param.Name = "HNMVA_"+mva1;
-	param.Muon_Tight_ID = "HNMVA_"+mva1;
-	
-	RunM(loose_electrons,loose_muons,  jets, param, weight);
-      }
-    }
-    else    RunM(loose_electrons,loose_muons,  jets, param, weight);
+    RunM(loose_electrons,loose_muons,  jets, param, weight);
   }
 }
 

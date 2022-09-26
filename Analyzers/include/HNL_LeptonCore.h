@@ -165,6 +165,10 @@ class HNL_LeptonCore : public AnalyzerCore {
 
   // JA Added functions                                                                                                                                                                                                                     
 
+
+  vector<Muon> GetSignalLeptons(const std::vector<Muon>& MuColl, vector<Gen>& TruthColl);
+  vector<Electron> GetSignalLeptons(const std::vector<Electron>& ElColl, vector<Gen>& TruthColl);
+
   vector<Muon> GetLepCollByRunType(const vector<Muon>& MuColl, vector<Gen>& TruthColl, AnalyzerParameter param, TString Option="NoSel");
   vector<Electron> GetLepCollByRunType(const vector<Electron>& ElColl, vector<Gen>& TruthColl, AnalyzerParameter param, TString Option="NoSel");
 

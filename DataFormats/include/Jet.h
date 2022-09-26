@@ -22,6 +22,9 @@ public:
   void SetEnergyFractions(double cH, double nH, double nEM, double cEM, double muE);
   inline double ChargedEmEnergyFraction() const { return j_chargedEmEnergyFraction;}
   inline double ChargedHadEnergyFraction() const { return j_chargedHadronEnergyFraction;}
+  inline double NeutralEmEnergyFraction() const { return j_neutralEmEnergyFraction;}
+  inline double NeutralHadEnergyFraction() const { return j_neutralHadronEnergyFraction;}
+  inline double MuonEnergyFraction() const { return j_muonEnergyFraction;}
 
   void SetMultiplicities(double cM, double nM);
   void SetPileupJetId(double v);

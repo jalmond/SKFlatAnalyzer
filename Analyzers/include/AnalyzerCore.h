@@ -391,8 +391,8 @@ public:
 
   vector<Muon> SkimLepColl(const vector<Muon>& MuColl, vector<Gen>& TruthColl, AnalyzerParameter param, TString Option);
   vector<Electron> SkimLepColl(const vector<Electron>& ElColl, vector<Gen>& TruthColl, AnalyzerParameter param,TString Option);
-  vector<Electron> SkimLepColl(const vector<Electron>& ElColl, AnalyzerParameter param,TString Option);
-  vector<Muon> SkimLepColl(const vector<Muon>& MuColl, AnalyzerParameter param, TString Option);
+  vector<Electron> SkimLepColl(const vector<Electron>& ElColl,TString Option);
+  vector<Muon> SkimLepColl(const vector<Muon>& MuColl,  TString Option);
   vector<Jet> SkimJetColl(const vector<Jet>& JetColl, vector<Gen>& TruthColl, AnalyzerParameter param,TString Option);
   bool HasEWLepInJet(Jet Jet, vector<Gen>& TruthColl, TString Option);
 

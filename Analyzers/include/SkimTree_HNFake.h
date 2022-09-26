@@ -1,9 +1,10 @@
 #ifndef SkimTree_HNFake_h
 #define SkimTree_HNFake_h
 
-#include "AnalyzerCore.h"
+#include "HNL_LeptonCore.h"
 
-class SkimTree_HNFake : public AnalyzerCore {
+
+class SkimTree_HNFake : public HNL_LeptonCore {
 
 public:
 

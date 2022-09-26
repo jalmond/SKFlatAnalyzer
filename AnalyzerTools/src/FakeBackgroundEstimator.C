@@ -95,11 +95,16 @@ double FakeBackgroundEstimator::GetElectronFakeRate(TString ID, TString key, dou
 
   eta = fabs(eta);
 
-  if(pt>=80) pt = 79;
+  if(pt>=60) pt = 59;
   if(pt < 10) pt=11;
-
+  
+  ID = ID.ReplaceAll("ElOpt_","");
+  ID = ID.ReplaceAll("MuOpt_","");
+  
   std::map< TString, TH2D* >::const_iterator mapit;
   //passPOGMedium_LIP_ptcone_eta_AwayJetPt60;1
+
+  //cout << "FakeRate_"+ID+"_"+key << endl;
   mapit = map_hist_Electron.find("FakeRate_"+ID+"_"+key);
 
   if(mapit==map_hist_Electron.end()){
@@ -190,12 +195,15 @@ double FakeBackgroundEstimator::GetMuonFakeRate(TString ID, TString key, double 
   double error = 0.;
 
   eta = fabs(eta);
-  if(pt>=80) pt = 79;
+  if(pt>=60) pt = 59;
   if(pt < 7) pt=7;
 
+  ID = ID.ReplaceAll("ElOpt_","");
+  ID = ID.ReplaceAll("MuOpt_","");
   
   std::map< TString, TH2D* >::const_iterator mapit;
   mapit = map_hist_Muon.find("FakeRate_"+ID+"_"+key);
+  //  cout << "FakeRate_"+ID+"_"+key << endl;
 
   if(mapit==map_hist_Muon.end()){
     if(IgnoreNoHist) return 1.;

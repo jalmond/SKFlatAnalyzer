@@ -1,4 +1,4 @@
-void BDTType1(int run_mode=0)
+void BDTType1(int run_mode=0, TString era="2016")
 {
 
 
@@ -6,7 +6,7 @@ void BDTType1(int run_mode=0)
   TMVA::gConfig().GetVariablePlotting().fNbins1D = 500; 
   
   //2018 
-  const TString path = "/data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_SR3KinVar/2018/";
+  const TString path = "/data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_SR3KinVar/"+era+"/";
   
   TFile* fsin = TFile::Open(path+"Signal/HNL_SR3KinVar_MC_SkimTree_HNL_SS_MuMu_BDT_TRAIN_DYTypeI_NLO_DF_M100.root");
   

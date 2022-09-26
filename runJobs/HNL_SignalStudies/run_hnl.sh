@@ -43,23 +43,33 @@ if [[ $1 == "" ]]; then
     do
 	SKFlat.py -a $analyzer  -l $mcpath/DY.txt  -n $njobs  --nmax ${nmax}   -e ${i} &
 	SKFlat.py -a $analyzer  -l $mcpath/VBF.txt  -n $njobs  --nmax ${nmax}   -e ${i} &
-	SKFlat.py -a $analyzer  -l $mcpath/SSWW.txt  -n $njobs  --nmax ${nmax}   -e ${i} &
-        SKFlat.py -a $analyzer  -l $bkgpath/MC.txt  -n ${njobs_data}  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLep &
-	SKFlat.py -a $analyzer  -l $bkgpath/QCD.txt  -n ${njobs_data}  --nmax ${nmax}   -e ${i}  --skim SkimTree_HNMultiLep
+	SKFlat.py -a $analyzer  -l $mcpath/SSWW.txt  -n $njobs  --nmax ${nmax}   -e ${i} 
+        SKFlat.py -a $analyzer  -l $bkgpath/MC.txt  -n ${njobs_data}  --nmax ${nmax}   -e ${i} &
+	SKFlat.py -a $analyzer  -l $bkgpath/QCD.txt  -n ${njobs_data}  --nmax ${nmax}   -e ${i} 
+    done
+
+fi
+
+if [[ $1 == "SIG" ]]; then
+
+    for i in "${era_list[@]}"
+    do
+        SKFlat.py -a $analyzer  -l $mcpath/DY.txt  -n $njobs  --nmax ${nmax}   -e ${i} &
+        SKFlat.py -a $analyzer  -l $mcpath/VBF.txt  -n $njobs  --nmax ${nmax}   -e ${i} &
+        SKFlat.py -a $analyzer  -l $mcpath/SSWW.txt  -n $njobs  --nmax ${nmax}   -e ${i}
     done
 
 fi
 
 
-if [[ $1 == "Q" ]]; then
+
+if [[ $1 == "Sample" ]]; then
 
     for i in "${era_list[@]}"
     do
         SKFlat.py -a $analyzer  -l $mcpath/DYsample.txt  -n $njobs  --nmax ${nmax}   -e ${i} &
         SKFlat.py -a $analyzer  -l $mcpath/VBFsample.txt  -n $njobs  --nmax ${nmax}   -e ${i} &
         SKFlat.py -a $analyzer  -l $mcpath/SSWWsample.txt  -n $njobs  --nmax ${nmax}   -e ${i} &
-        SKFlat.py -a $analyzer  -l $bkgpath/MC.txt  -n 400   --nmax ${nmax}   -e ${i}  &
-        SKFlat.py -a $analyzer  -l $bkgpath/QCD.txt  -n 100  --nmax ${nmax}   -e ${i} 
     done
 
 fi
@@ -68,11 +78,11 @@ fi
 
 if [[ $1 == "MC" ]]; then
 
-    declare  -a era_list=("2018")
+    declare  -a era_list=("2017")
 
     for i in "${era_list[@]}"
     do
-        SKFlat.py -a $analyzer  -l $bkgpath/MC.txt  -n 200  --nmax 300   -e ${i} &
+        SKFlat.py -a $analyzer  -i TTLJ_powheg   -n 250  --nmax 400   -e ${i} --skim SkimTree_HNMultiLep &
     done
     
 fi

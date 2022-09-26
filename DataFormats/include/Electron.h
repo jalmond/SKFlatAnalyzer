@@ -165,6 +165,7 @@ public:
   //==== HN ID
   bool Pass_TriggerEmulation() const;
   bool Pass_TriggerEmulationLoose() const;
+  bool Pass_TriggerEmulationN(int cut) const;
 
   bool Pass_HNVeto2016() const;
   bool Pass_HNLoose2016(double relisoCut, double dxyCut, double dzCut, double sipCut) const;
@@ -189,6 +190,9 @@ public:
   void SetRelPFIso_Rho(double r);
   double EA();
 
+  int  PassLooseIDOpt(TString  trigger, TString dxy_method, TString sel_methodB,TString sel_methodEC, TString conv_method, TString chg_method, TString iso_methodB,TString iso_methodEC ) const;
+
+  int  PassIDOptMulti(TString  trigger, TString dxy_method, TString mva_methodB, TString mva_methodEC, TString conv_method, TString chg_method, TString iso_methodB, TString iso_methodEC) const;
   bool passIDHN(int ID, double dxy_b, double dxy_e, double dz_b,double dz_e, double sip_b, double sip_e, double iso_b,double iso_e, double miso_b, double miso_e) const;
   bool PassIDOpt(TString ID, bool cc, double dx_b ,double dx_e,double dz_b,double dz_e, double iso_b, double iso_e) const;
   //==== ID

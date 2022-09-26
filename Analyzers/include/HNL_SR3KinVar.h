@@ -17,8 +17,10 @@ class HNL_SR3KinVar : public HNL_RegionDefinitions {
   vector<TString> TrigList_DblMu, TrigList_DblEG, TrigList_MuEG;
 
   void MakeTreeSS2L(HNL_LeptonCore::Channel, vector<Lepton *>  LepTColl,
+                    vector<Jet>& JetAllColl,
                     vector<Jet>& JetColl, 
-		    vector<Jet>& JetVBFColl, 
+		    vector<Jet>& JetVBFColl,
+                    vector<Jet>& JetBTagColl, 
 		    Particle& vMET, float weight, TString Label);
 
   TTree *tree_mm;
@@ -27,8 +29,11 @@ class HNL_SR3KinVar : public HNL_RegionDefinitions {
   void WriteHist();
   void InitializeTreeVars();
 
-  Int_t Nj, Nvbfj;
-  Float_t Ptl1, Ptl2, Ptj1, Ptj2, Ptj3, MET,MET2ST, HT,HTLT,HTLT1,HTLT2, LT,  MET2HT;
+  Int_t Nj, Nvbfj, Nb;
+  Float_t Ptl1, Ptl2, Ptj1, Ptj2, Ptj3, MET, MET2ST, HT, HTLT, HTLT1, HTLT2, LT, MET2HT, Etal1, Etal2;
+  Float_t PtRatiol1, PtRatiol2, PtRatioAJl1, PtRatioAJl2, PtRelv0l1, PtRelv1l1, PtRelv0l2, PtRelv1l2;
+  Float_t CEMFracAJl1, CEMFracAJl2, NEMFracAJl1, NEMFracAJl2, CHFracAJl1, CHFracAJl2, NHFracAJl1, NHFracAJl2, MuFracAJl1, MuFracAJl2, JetDiscAJl1, JetDiscAJl2;
+  Float_t CEMFracCJl1, CEMFracCJl2, NEMFracCJl1, NEMFracCJl2, CHFracCJl1, CHFracCJl2, NHFracCJl1, NHFracCJl2, MuFracCJl1, MuFracCJl2, JetDiscCJl1, JetDiscCJl2;
   Float_t dEtall, dRll, dRjj12, dRjj23, dRjj13;
   Float_t dRlj11, dRlj12, dRlj13, dRlj21, dRlj22, dRlj23;
   Float_t dphivl1, dphivl2, dphivj1, dphivj2, dphivj3;
