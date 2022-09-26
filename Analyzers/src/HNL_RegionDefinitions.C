@@ -2133,10 +2133,15 @@ bool HNL_RegionDefinitions::FillZGCRPlots(HNL_LeptonCore::Channel channel, std::
 
 bool HNL_RegionDefinitions::FillWGCRPlots(HNL_LeptonCore::Channel channel, std::vector<Lepton *> leps, std::vector<Lepton *> leps_veto, std::vector<Jet> JetColl, std::vector<FatJet> AK8_JetColl, std::vector<Jet> B_JetColl,  Event ev, Particle METv, AnalyzerParameter param, float w){
 
+  vector<TString> WGCRcuts = {"Start","CheckLepFlavor","LowMassMesonVeto","MassOSSFlt4","MTgt30","bveto","METgt30"};
+
+  FillEventCutflowAll( "HNL_WG_ThreeLepton_CR/CutFlow_"+param.Name,"cutflow", w, WGCRcuts, "Start"); //JH
 
   if(!CheckLeptonFlavourForChannel(channel, leps)) return false;
+  FillEventCutflowAll( "HNL_WG_ThreeLepton_CR/CutFlow_"+param.Name,"cutflow", w, WGCRcuts, "CheckLepFlavor"); //JH
 
   if(HasLowMassMeson(leps)) return false;
+  FillEventCutflowAll( "HNL_WG_ThreeLepton_CR/CutFlow_"+param.Name,"cutflow", w, WGCRcuts, "LowMassMesonVeto"); //JH
 
   double metcut = 30.;
   double mt_cut = 30.;
@@ -2150,12 +2155,19 @@ bool HNL_RegionDefinitions::FillWGCRPlots(HNL_LeptonCore::Channel channel, std::
   if(ll2.Charge() == 0 && (ll2.M() < 4.)) passlos_ll_mass=true;
   if(ll3.Charge() == 0 && (ll3.M() < 4.)) passlos_ll_mass=true;
   if(!passlos_ll_mass) return false;
-  Particle lll = (*leps[0]) + (*leps[1])+ (*leps[2]);
+  FillEventCutflowAll( "HNL_WG_ThreeLepton_CR/CutFlow_"+param.Name,"cutflow", w, WGCRcuts, "MassOSSFlt4"); //JH
+  
+	Particle lll = (*leps[0]) + (*leps[1])+ (*leps[2]);
   double MT_lll = M_T(METv,lll);
 
   if(MT_lll <= mt_cut) return false;
+  FillEventCutflowAll( "HNL_WG_ThreeLepton_CR/CutFlow_"+param.Name,"cutflow", w, WGCRcuts, "MTgt30"); //JH
+
   if(NB_JetColl > 0)return false;
+  FillEventCutflowAll( "HNL_WG_ThreeLepton_CR/CutFlow_"+param.Name,"cutflow", w, WGCRcuts, "bveto"); //JH
+
   if(METv.Pt() < metcut)return false;
+  FillEventCutflowAll( "HNL_WG_ThreeLepton_CR/CutFlow_"+param.Name,"cutflow", w, WGCRcuts, "METgt30"); //JH
 
   if(run_Debug){
     cout << "HNL_WG_ThreeLepton_CR " << param.Name << " " << event  << endl;

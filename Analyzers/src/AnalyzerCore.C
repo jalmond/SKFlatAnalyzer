@@ -3797,8 +3797,6 @@ void AnalyzerCore::FillWeightHist(TString label, double _weight){
   return;
 }
 
-
-
 void AnalyzerCore::FillHist(TString histname, double value, double weight, int n_bin, double x_min, double x_max , TString label){
 
   TH1D *this_hist = GetHist1D(histname);
