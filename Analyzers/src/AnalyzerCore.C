@@ -3559,8 +3559,8 @@ bool AnalyzerCore::ConversionVeto(std::vector<Lepton *> leps,const std::vector<G
   //                                                                                                                                             
   
   if (IsData) return true;
- 
-  if( leps.size() != 3) return false;
+
+  if(leps.size()==0) return false;
 
   double ph_pt=-1;
   bool photon_found=false;
@@ -3590,11 +3590,11 @@ bool AnalyzerCore::ConversionVeto(std::vector<Lepton *> leps,const std::vector<G
   //}
   
   if(MCSample.Contains("WGTo") ||MCSample.Contains("ZGTo") )   {
-    if(leps.at(2)->Pt()>15.) return true;
+    if(leps.back()->Pt()>15.) return true;
     else return GENTMatched;
   }
   else if(MCSample.Contains("DYJet") || MCSample.Contains("WJet") ){
-    if(leps.at(2)->Pt()>15.) return false;
+    if(leps.back()->Pt()>15.) return false;
 		else return !GENTMatched;
   }
 

@@ -2186,7 +2186,8 @@ void HNL_LeptonCore::FillEventCutflowDef(TString analysis_dir_name,TString histn
 
 
   if( !this_hist ){
-    TString cf_name="FillEventCutflow";
+    TString cf_name=""; //JH
+    //TString cf_name="FillEventCutflow";
     //if(histname.Contains("Syst")) cf_name= "FillEventCutflow_Syst";
     //if(histname.Contains("SR")) cf_name="FillEventCutflow_SR";
     if(histname.Contains("_massbinned")) cf_name="FillEventCutflow_MassBinned";
