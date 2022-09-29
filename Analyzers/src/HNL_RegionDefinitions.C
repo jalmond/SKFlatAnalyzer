@@ -1130,6 +1130,13 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
       if(FillWGCRPlots( trilep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, param, weight_channel)) passed.push_back("WG_CR");
       if(FillZGCRPlots( trilep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, param, weight_channel)) passed.push_back("ZG_CR");
     }
+    // Use ZG, WG as they are, regardless of photon match
+    if(ConversionVeto_Backup(LepsT,gens)){
+      AnalyzerParameter paramTMP0=param;
+      paramTMP0.Name=param.Name+"_ConvMethodBackup";
+      if(FillWGCRPlots( trilep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTMP0, weight_channel)) passed.push_back("WG_Method0_CR");
+      if(FillZGCRPlots( trilep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTMP0, weight_channel)) passed.push_back("ZG_Method0_CR");
+    }
     // Treat using pt cit method
     if(ConversionSplitting(LepsT,gens)){
       

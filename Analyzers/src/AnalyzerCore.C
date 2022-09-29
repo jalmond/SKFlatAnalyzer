@@ -3478,20 +3478,20 @@ bool AnalyzerCore::ConversionSplitting(std::vector<Lepton *> leps,const std::vec
 
   if(IsData) return true;
   
-  int nlep_pt20(0);
+  int nlep_pt15(0);
 
   for(auto ilep : leps){
 
-    if(ilep->Pt() > 15.) nlep_pt20++;
+    if(ilep->Pt() > 15.) nlep_pt15++;
   }
  
   if(MCSample.Contains("WGTo") ||MCSample.Contains("ZGTo")){
-    if(nlep_pt20 ==3) return true;
+    if(nlep_pt15 ==3) return true;
     else return false;
   }
   else if(MCSample.Contains("DYJet") || MCSample.Contains("WJet")) {
 
-    if(nlep_pt20 !=3) return true;
+    if(nlep_pt15 !=3) return true;
     else return false;
 
   }
@@ -3500,7 +3500,7 @@ bool AnalyzerCore::ConversionSplitting(std::vector<Lepton *> leps,const std::vec
  
 }
 
-bool AnalyzerCore::ConversionVeto(std::vector<Lepton *> leps,const std::vector<Gen>& gens){
+bool AnalyzerCore::ConversionVeto_Backup(std::vector<Lepton *> leps,const std::vector<Gen>& gens){ //JH : back-up
 
   // function vetos conversion events in DY/X+G                                                                                                  
   // since Z/G and WG have cut on photon in GEN need to overlap with DY                                                                          
@@ -3516,9 +3516,9 @@ bool AnalyzerCore::ConversionVeto(std::vector<Lepton *> leps,const std::vector<G
     for(unsigned int i=2; i<gens.size(); i++){
       Gen gen = gens.at(i);
       if(ilep->DeltaR(gen) < 0.2) {
-	if(gen.PID() == 22 && gen.isPromptFinalState()) ph_pt = gen.Pt();
+      if(gen.PID() == 22 && gen.isPromptFinalState()) ph_pt = gen.Pt();
         if(gen.PID() == 22 && gen.isPromptFinalState() && gen.Pt()> 15.) {
-	  photon_found=true;
+          photon_found=true;
           GENTMatched=true;
           for(unsigned int j=2; j<gens.size(); j++){
             if(!(fabs(gens.at(j).PID()) <7 || fabs(gens.at(j).PID()) == 21)) continue;
@@ -3531,10 +3531,10 @@ bool AnalyzerCore::ConversionVeto(std::vector<Lepton *> leps,const std::vector<G
     if(GENTMatched) break;
   }
 
-  if(!photon_found) {
-    cout << "No Matching photon found " << endl;
-    PrintGen(gens);
-  }
+  //if(!photon_found) {
+  //  cout << "No Matching photon found " << endl;
+  //  PrintGen(gens);
+  //}
   
   if(MCSample.Contains("WGTo") ||MCSample.Contains("ZGTo") )   {
     if(!photon_found) return true;
@@ -3551,6 +3551,55 @@ bool AnalyzerCore::ConversionVeto(std::vector<Lepton *> leps,const std::vector<G
   return true;
 }
 
+bool AnalyzerCore::ConversionVeto(std::vector<Lepton *> leps,const std::vector<Gen>& gens){
+
+  // function vetos conversion events in DY/X+G                                                                                                  
+  // since Z/G and WG have cut on photon in GEN need to overlap with DY                                                                          
+  // Photon Cut is 15 GeV                                                                                                                        
+  //                                                                                                                                             
+  
+  if (IsData) return true;
+ 
+  if( leps.size() != 3) return false;
+
+  double ph_pt=-1;
+  bool photon_found=false;
+  bool GENTMatched=false;
+  for(auto ilep : leps){
+    for(unsigned int i=2; i<gens.size(); i++){
+      Gen gen = gens.at(i);
+      if(ilep->DeltaR(gen) < 0.2) {
+        if(gen.PID() == 22 && gen.isPromptFinalState()) ph_pt = gen.Pt();
+        if(gen.PID() == 22 && gen.isPromptFinalState() && gen.Pt()> 15.) {
+          photon_found=true;
+          GENTMatched=true;
+          for(unsigned int j=2; j<gens.size(); j++){
+            if(!(fabs(gens.at(j).PID()) <7 || fabs(gens.at(j).PID()) == 21)) continue;
+            if(gens.at(j).Status() != 23) continue;
+            if(gens.at(j).DeltaR(gen) <0.05)GENTMatched=false;
+          }
+        }
+      }
+    }
+    if(GENTMatched) break;
+  }
+
+  //if(!photon_found) {
+  //  cout << "No Matching photon found " << endl;
+  //  PrintGen(gens);
+  //}
+  
+  if(MCSample.Contains("WGTo") ||MCSample.Contains("ZGTo") )   {
+    if(leps.at(2)->Pt()>15.) return true;
+    else return GENTMatched;
+  }
+  else if(MCSample.Contains("DYJet") || MCSample.Contains("WJet") ){
+    if(leps.at(2)->Pt()>15.) return false;
+		else return !GENTMatched;
+  }
+
+  return true;
+}
 
 
 
