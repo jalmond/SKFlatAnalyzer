@@ -26,6 +26,8 @@ void FakeBackgroundEstimator::ReadHistograms(){
     is >> c; // <var key>
     is >> d; // <syst key>
     is >> e; // <rootfilename>
+
+    if(a.Contains("#")) continue; //JH : skip so many histograms
     
     TFile *file = new TFile(datapath+"/"+e);
     TList *histlist = file->GetListOfKeys();
@@ -58,6 +60,7 @@ void FakeBackgroundEstimator::ReadHistograms(){
     is >> c; // <var key> 
     is >> d; // <syst key>
     is >> e; // <rootfilename>                                                                                                                                                                    
+    if(a.Contains("#")) continue; //JH : skip so many histograms
 
     TFile *file = new TFile(datapath+"/"+e);
     TList *histlist = file->GetListOfKeys();
