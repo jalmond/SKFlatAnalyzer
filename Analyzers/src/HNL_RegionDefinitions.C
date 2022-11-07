@@ -2071,10 +2071,15 @@ bool HNL_RegionDefinitions::FillZGCRPlots(HNL_LeptonCore::Channel channel, std::
   vector<TString> ZGCRcuts = {"Start","CheckLepFlavor","ZMass3l","MassOSSFgt10","NoOSSFZ","NoOSSFZ2","bveto","METlt50"};
 
   FillEventCutflowAll( "HNL_ZG_ThreeLepton_CR/CutFlow_"+param.Name,"cutflow", w, ZGCRcuts, "Start"); //JH
+  //if(leps.size()==3){
+  //  FillHist( "HNL_ZG_ThreeLepton_CR/CutFlow_"+param.Name+"/Start_l3pt", leps.at(2)->Pt(), w, 200, 0, 200., "l_{3} p_{T}");
+  //  if(leps.at(2)->GetFlavour()=="Electron"&&leps.at(2)->Pt()<15.) cout << "3rd electron pt : " << leps.at(2)->Pt() << ", weight : " << w << endl; 
+  //  if(leps.at(2)->GetFlavour()=="Muon"&&leps.at(2)->Pt()<10.) cout << "3rd muon pt : " << leps.at(2)->Pt() << ", weight : " << w << endl; 
+  //}	
 
   if(!CheckLeptonFlavourForChannel(channel, leps)) return false;
   FillEventCutflowAll( "HNL_ZG_ThreeLepton_CR/CutFlow_"+param.Name,"cutflow", w, ZGCRcuts, "CheckLepFlavor");
-  FillHist( "HNL_ZG_ThreeLepton_CR/CutFlow_"+param.Name+"/CheckLepFlavor_l3pt", leps.at(2)->Pt(), w, 200, 0, 200., "l_{3} p_{T}");
+  //FillHist( "HNL_ZG_ThreeLepton_CR/CutFlow_"+param.Name+"/CheckLepFlavor_l3pt", leps.at(2)->Pt(), w, 200, 0, 200., "l_{3} p_{T}");
 
   double metcut = 50.;
   int NB_JetColl=B_JetColl.size();
@@ -2083,7 +2088,7 @@ bool HNL_RegionDefinitions::FillZGCRPlots(HNL_LeptonCore::Channel channel, std::
   bool passZmass_lll_Window = (fabs(lll.M() - 90.1) < 15.);
   if(!passZmass_lll_Window) return false;
   FillEventCutflowAll( "HNL_ZG_ThreeLepton_CR/CutFlow_"+param.Name,"cutflow", w, ZGCRcuts, "ZMass3l");
-  FillHist( "HNL_ZG_ThreeLepton_CR/CutFlow_"+param.Name+"/ZMass3l_l3pt", leps.at(2)->Pt(), w, 200, 0, 200., "l_{3} p_{T}");
+  //FillHist( "HNL_ZG_ThreeLepton_CR/CutFlow_"+param.Name+"/ZMass3l_l3pt", leps.at(2)->Pt(), w, 200, 0, 200., "l_{3} p_{T}");
 
   Particle ll1 = *leps[0] + *leps[1];
   Particle ll2 = *leps[0] + *leps[2];
@@ -2104,23 +2109,23 @@ bool HNL_RegionDefinitions::FillZGCRPlots(HNL_LeptonCore::Channel channel, std::
   
   if(RemoveLowOSSFMass) return false;
   FillEventCutflowAll( "HNL_ZG_ThreeLepton_CR/CutFlow_"+param.Name,"cutflow", w, ZGCRcuts, "MassOSSFgt10");
-  FillHist( "HNL_ZG_ThreeLepton_CR/CutFlow_"+param.Name+"/MassOSSFgt10_l3pt", leps.at(2)->Pt(), w, 200, 0, 200., "l_{3} p_{T}");
+  //FillHist( "HNL_ZG_ThreeLepton_CR/CutFlow_"+param.Name+"/MassOSSFgt10_l3pt", leps.at(2)->Pt(), w, 200, 0, 200., "l_{3} p_{T}");
 
   if(OSSFMInZPeak) return false;
   FillEventCutflowAll( "HNL_ZG_ThreeLepton_CR/CutFlow_"+param.Name,"cutflow", w, ZGCRcuts, "NoOSSFZ");
-  FillHist( "HNL_ZG_ThreeLepton_CR/CutFlow_"+param.Name+"/NoOSSFZ_l3pt", leps.at(2)->Pt(), w, 200, 0, 200., "l_{3} p_{T}");
+  //FillHist( "HNL_ZG_ThreeLepton_CR/CutFlow_"+param.Name+"/NoOSSFZ_l3pt", leps.at(2)->Pt(), w, 200, 0, 200., "l_{3} p_{T}");
 
   if(ZmassOSSFWindowCheck(leps,15.)) return false;
   FillEventCutflowAll( "HNL_ZG_ThreeLepton_CR/CutFlow_"+param.Name,"cutflow", w, ZGCRcuts, "NoOSSFZ2");
-  FillHist( "HNL_ZG_ThreeLepton_CR/CutFlow_"+param.Name+"/NoOSSFZ2_l3pt", leps.at(2)->Pt(), w, 200, 0, 200., "l_{3} p_{T}");
+  //FillHist( "HNL_ZG_ThreeLepton_CR/CutFlow_"+param.Name+"/NoOSSFZ2_l3pt", leps.at(2)->Pt(), w, 200, 0, 200., "l_{3} p_{T}");
 
   if(NB_JetColl > 0) return false;
   FillEventCutflowAll( "HNL_ZG_ThreeLepton_CR/CutFlow_"+param.Name,"cutflow", w, ZGCRcuts, "bveto");
-  FillHist( "HNL_ZG_ThreeLepton_CR/CutFlow_"+param.Name+"/bveto_l3pt", leps.at(2)->Pt(), w, 200, 0, 200., "l_{3} p_{T}");
+  //FillHist( "HNL_ZG_ThreeLepton_CR/CutFlow_"+param.Name+"/bveto_l3pt", leps.at(2)->Pt(), w, 200, 0, 200., "l_{3} p_{T}");
 
   if(METv.Pt() > metcut) return false;
   FillEventCutflowAll( "HNL_ZG_ThreeLepton_CR/CutFlow_"+param.Name,"cutflow", w, ZGCRcuts, "METlt50");
-  FillHist( "HNL_ZG_ThreeLepton_CR/CutFlow_"+param.Name+"/METlt50_l3pt", leps.at(2)->Pt(), w, 200, 0, 200., "l_{3} p_{T}");
+  //FillHist( "HNL_ZG_ThreeLepton_CR/CutFlow_"+param.Name+"/METlt50_l3pt", leps.at(2)->Pt(), w, 200, 0, 200., "l_{3} p_{T}");
 
       
   if(run_Debug){

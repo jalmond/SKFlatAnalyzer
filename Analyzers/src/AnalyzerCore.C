@@ -3588,7 +3588,7 @@ bool AnalyzerCore::ConversionVeto(std::vector<Lepton *> leps,const std::vector<G
   //  cout << "No Matching photon found " << endl;
   //  PrintGen(gens);
   //}
-  
+
   if(MCSample.Contains("WGTo") ||MCSample.Contains("ZGTo") )   {
     if(leps.back()->Pt()>15.) return true;
     else return GENTMatched;

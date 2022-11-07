@@ -5099,7 +5099,7 @@ double MCCorrection::ElectronID_SF(TString ID, double sceta, double pt, int sys)
   double value = 1.;
   double error = 0.;
 
-  if(pt<10.) pt = 10.1;
+  if(pt<15.) pt = 15.1; //JH : HOTFIX for case electron ID SF doesn't have entry below 15 GeV
   if(pt>=500.) pt = 499.9;
   if(sceta>=2.5) sceta = 2.49;
   if(sceta<-2.5) sceta = -2.49;

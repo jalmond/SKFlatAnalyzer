@@ -1,9 +1,10 @@
 TG
 WGToLNuG
+#WGToLNuG_MG
 ZGToLLG
 WWG
 WZG
 DYJets
 WJets_MG
 WJets_amcatnlo
-WJets_Sherpa
+#WJets_Sherpa
