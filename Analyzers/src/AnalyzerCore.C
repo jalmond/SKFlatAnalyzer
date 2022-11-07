@@ -3485,17 +3485,24 @@ bool AnalyzerCore::ConversionSplitting(std::vector<Lepton *> leps,const std::vec
     if(ilep->Pt() > 15.) nlep_pt15++;
   }
  
-  if(MCSample.Contains("WGTo") ||MCSample.Contains("ZGTo")){
+  //if(MCSample.Contains("WGTo") ||MCSample.Contains("ZGTo")){
+  //  if(nlep_pt15 ==3) return true;
+  //  else return false;
+  //}
+  //else if(MCSample.Contains("DYJet") || MCSample.Contains("WJet")) {
+  //  if(nlep_pt15 !=3) return true;
+  //  else return false;
+  //}
+  
+  if(MCSample.Contains("ZGTo")){
     if(nlep_pt15 ==3) return true;
     else return false;
   }
-  else if(MCSample.Contains("DYJet") || MCSample.Contains("WJet")) {
-
+  else if(MCSample.Contains("DYJet")) {
     if(nlep_pt15 !=3) return true;
     else return false;
-
   }
-  
+
   return true;
  
 }
@@ -3536,13 +3543,25 @@ bool AnalyzerCore::ConversionVeto_Backup(std::vector<Lepton *> leps,const std::v
   //  PrintGen(gens);
   //}
   
-  if(MCSample.Contains("WGTo") ||MCSample.Contains("ZGTo") )   {
+  //if(MCSample.Contains("WGTo") ||MCSample.Contains("ZGTo") )   {
+  //  if(!photon_found) return true;
+  //  if(!GENTMatched)cout << "GHENT Conv event removed in " << MCSample << endl;
+  //  cout << "Matched photon pt = " << ph_pt << endl;
+  //  return GENTMatched;
+  //}
+  //else if(MCSample.Contains("DYJet") || MCSample.Contains("WJet") ){
+  //  if(!photon_found) return true;
+  //  cout << "Matched photon pt = " << ph_pt << endl;
+  //  return !GENTMatched;
+  //}
+
+  if(MCSample.Contains("ZGTo") )   {
     if(!photon_found) return true;
     if(!GENTMatched)cout << "GHENT Conv event removed in " << MCSample << endl;
     cout << "Matched photon pt = " << ph_pt << endl;
     return GENTMatched;
   }
-  else if(MCSample.Contains("DYJet") || MCSample.Contains("WJet") ){
+  else if(MCSample.Contains("DYJet")){
     if(!photon_found) return true;
     cout << "Matched photon pt = " << ph_pt << endl;
     return !GENTMatched;
@@ -3589,11 +3608,20 @@ bool AnalyzerCore::ConversionVeto(std::vector<Lepton *> leps,const std::vector<G
   //  PrintGen(gens);
   //}
 
-  if(MCSample.Contains("WGTo") ||MCSample.Contains("ZGTo") )   {
+  //if(MCSample.Contains("WGTo") ||MCSample.Contains("ZGTo") )   {
+  //  if(leps.back()->Pt()>15.) return true;
+  //  else return GENTMatched;
+  //}
+  //else if(MCSample.Contains("DYJet") || MCSample.Contains("WJet") ){
+  //  if(leps.back()->Pt()>15.) return false;
+	//	else return !GENTMatched;
+  //}
+
+  if(MCSample.Contains("ZGTo") )   {
     if(leps.back()->Pt()>15.) return true;
     else return GENTMatched;
   }
-  else if(MCSample.Contains("DYJet") || MCSample.Contains("WJet") ){
+  else if(MCSample.Contains("DYJet")){
     if(leps.back()->Pt()>15.) return false;
 		else return !GENTMatched;
   }
