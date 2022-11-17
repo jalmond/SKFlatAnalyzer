@@ -9,9 +9,36 @@ public:
   Lepton();
   ~Lepton();
 
+
+  enum EtaRegion{
+    IB, OB, GAP, EC
+  };
+  inline EtaRegion etaRegion() const {
+    double sceta = fabs(this->Eta());
+    if( sceta < 0.8 ) return IB;
+    else if( sceta < 1.444 ) return OB;
+    else if( sceta < 1.566 ) return GAP;
+    else return EC;
+  }
+  
+  inline TString  etaRegionString() const {
+    double sceta = fabs(this->Eta());
+    if( sceta < 0.8 ) return "IB";
+    else if( sceta < 1.566 ) return "OB";
+    else return "EE";
+  }
+
+
+
   void SetdXY(double dXY, double dXYerr);
   inline double dXY() const {return j_dXY;}
   inline double dXYerr() const {return j_dXYerr;}
+
+  inline double LogdXY() const {return std::log(fabs(j_dXY));}
+  inline double LogdZ() const {return std::log(fabs(j_dZ));}
+  inline double LogdXYSig() const {return std::log(fabs(j_dXY/j_dXYerr));}
+  inline double LogdZSig() const {return std::log(fabs(j_dZ/j_dZerr));}
+
 
   void SetLepMVA(double mva);
   inline double lep_mva() const {return j_lep_mva;}
@@ -37,9 +64,20 @@ public:
   void SetRelIso(double r);
   inline double RelIso() const {return j_RelIso;}
 
+  inline double MiniIsoChHad() const {return j_MiniIso_ChHad;}
+  inline double MiniIsoNHad() const {return j_MiniIso_NHad;}
+  inline double MiniIsoPhHad() const {return j_MiniIso_PhHad;}
+  inline double IsoChHad() const {return j_Iso_ChHad;}
+  inline double IsoNHad() const {return j_Iso_NHad;}
+  inline double IsoPhHad() const {return j_Iso_PhHad;}
+
+
   //==== SUSY mini Iso has same formula for Muon and Electron
   void SetMiniIso(double ch, double nh, double ph, double pu, double rho, double EA);
   inline double MiniRelIso() const {return j_MiniRelIso;}
+
+  void SetLepIso(double ch, double nh, double ph);
+
 
   enum Flavour{
     NONE, ELECTRON, MUON, TAU
@@ -65,6 +103,12 @@ public:
   inline TString GetFlavour() const {
     if (j_LeptonFlavour==ELECTRON) return "Electron";
     else return "Muon";
+  }
+
+  inline TString GetEtaRegion() const {
+    if(fabs(this->Eta()) < 0.8) return "BB";
+    if(fabs(this->Eta()) < 1.5) return "EB";
+    return "EE";
   }
 
   inline float miniIsoDr() const {
@@ -99,6 +143,8 @@ private:
   double j_IP3D, j_IP3Derr;
 
   double j_RelIso, j_MiniRelIso;
+  double j_MiniIso_ChHad,j_MiniIso_NHad,j_MiniIso_PhHad;
+  double j_Iso_ChHad,j_Iso_NHad,j_Iso_PhHad;
   double j_ptcone;
   double j_lep_jetptrel,j_lep_jetptratio;
   Flavour j_LeptonFlavour;

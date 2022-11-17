@@ -28,32 +28,95 @@ public:
   inline double scEta() const { return j_scEta; }
   inline double scPhi() const { return j_scPhi; }
   inline double scE() const { return j_scE; }
+
+
+  // MVA
   void SetMVA(double mvaiso, double mvanoiso);
   inline double MVAIso() const { return j_mvaiso; }
   inline double MVANoIso() const { return j_mvanoiso; }
+
+  inline bool PassMVANoIsoResponse(double A, double B, double C){
+    double mva_resp = MVANoIsoResponse();
+    double cut = A - std::exp(-Pt() / B) * C;
+    if (mva_resp < cut) return true;
+    return false;
+  }
+
+  inline bool PassMVAIsoResponse(double A, double B, double C){
+    double mva_resp = MVAIsoResponse();
+    double cut = A - std::exp(-Pt() / B) * C;
+    if (mva_resp < cut)return true;
+    return false;
+  }
+
+  inline double MVANoIsoResponse() const {
+    
+    if (j_mvanoiso == 1.) return 8;
+
+    if(MVANoIsoResponseRaw() > 8) return 8;
+    if(MVANoIsoResponseRaw() < -8) return -8;
+    return MVANoIsoResponseRaw();
+  }
+
+  inline double MVAIsoResponse() const {
+
+    if (j_mvaiso == 1.) return 8;
+
+    if(MVAIsoResponseRaw() > 8) return 8;
+    if(MVAIsoResponseRaw() < -8) return -8;
+    return MVAIsoResponseRaw();
+  }
+    
+
+  inline double MVAIsoResponseRaw() const {
+
+    return -1.0 * std::log( (2./ (j_mvaiso + 1.)) -1.)/2.;
+
+  }
+  
+  inline double MVANoIsoResponseRaw() const {
+    //https://github.com/cms-sw/cmssw/blob/master/CondFormats/GBRForest/interface/GBRForest.h
+    //  return 2.0 / (1.0 + std::exp(-2.0 * response)) - 1;  //MVA output between -1 and 1
+    
+    
+    return -1.0 * std::log( (2./ (j_mvanoiso + 1.)) -1.)/2.;
+
+  }
+
+  inline bool PassIP(double A , double B) const{
+    double cut = A   +  ((B-A) * ( Pt()-10)) / 50;
+    if  (Pt() > 59) cut = B;
+
+    if(fabs(IP3D()/IP3Derr()) < cut) return true;
+    return false;
+  }
 
   void SetUncorrE(double une);
   inline double UncorrE() const { return j_EnergyUnCorr; }
   inline double UncorrPt() const { return Pt() * j_EnergyUnCorr/E(); }
 
+  double StringToDouble(TString st,TString subSt) const;
 
+  bool PassMVA_UL_BB(double mva1, double mva2, double mva3) const ;
+  bool PassMVA_UL_EB(double mva1, double mva2, double mva3) const ;
+  bool PassMVA_UL_EE(double mva1, double mva2, double mva3) const ;
   bool PassMVA(double mva1, double mva2, double mva3) const;
   bool PassHNID()const ;
+  int PassHNOpt()const ;
   void SetPassConversionVeto(bool b);
   inline int PassConversionVeto() const { return j_passConversionVeto; }
   void SetNMissingHits(int n);
   inline int NMissingHits() const { return j_NMissingHits; };
 
-  enum EtaRegion{
-    IB, OB, GAP, EC
-  };
-  inline EtaRegion etaRegion() const {
-    double sceta = fabs(scEta());
-    if( sceta < 0.8 ) return IB;
-    else if( sceta < 1.444 ) return OB;
-    else if( sceta < 1.566 ) return GAP;
-    else return EC;
-  }
+
+  void SetEtaWidth(double d);
+  void SetPhiWidth(double d);
+  void SetDetaIn(double d);
+  void SetSigmaIEtaIE(double d);
+  void SetE15(double d);
+  void SetE25(double d);
+  void SetE55(double d);
+
   
   void SetCutBasedIDVariables(
     double Full5x5_sigmaIetaIeta,
@@ -73,12 +136,20 @@ public:
     int ecalDriven
   );
   inline double Full5x5_sigmaIetaIeta() const { return j_Full5x5_sigmaIetaIeta; }
+  inline double sigmaIetaIeta() const { return j_sigmaIetaIeta; }
+
   inline double dEtaSeed() const { return j_dEtaSeed; }
   inline double dPhiIn() const { return j_dPhiIn; }
+  inline double dEtaIn() const { return j_dEtaIn; }
+  inline double EtaWidth() const { return j_EtaWidth; }
+  inline double PhiWidth() const { return j_PhiWidth; }
   inline double HoverE() const { return j_HoverE; }
   inline double InvEminusInvP() const { return j_InvEminusInvP; }
   inline double e2x5OverE5x5() const { return j_e2x5OverE5x5; }
   inline double e1x5OverE5x5() const { return j_e1x5OverE5x5; }
+  inline double e15() const { return j_e15; }
+  inline double e25() const { return j_e25; }
+  inline double e55() const { return j_e55; }
   inline double TrkIso() const {return j_trkiso; }
   inline double dr03EcalRecHitSumEt() const { return j_dr03EcalRecHitSumEt; }
   inline double dr03HcalDepth1TowerSumEt() const { return j_dr03HcalDepth1TowerSumEt; }
@@ -173,6 +244,7 @@ public:
   bool Pass_HNLoose2016MVAISO( double dxyCut, double dzCut, double sipCut) const;
   bool Pass_HNLoose2016MVANonIso( double relisoCut,double dxyCut, double dzCut, double sipCut) const;
   bool Pass_HNTight2016() const;
+  bool Pass_HNTightUL() const;
 
   bool Pass_HNVeto(double relisoCut) const;
   bool Pass_HNLoose(double relisoCut, double dxyCut, double dzCut) const;
@@ -192,7 +264,9 @@ public:
 
   int  PassLooseIDOpt(TString  trigger, TString dxy_method, TString sel_methodB,TString sel_methodEC, TString conv_method, TString chg_method, TString iso_methodB,TString iso_methodEC ) const;
 
-  int  PassIDOptMulti(TString  trigger, TString dxy_method, TString mva_methodB, TString mva_methodEC, TString conv_method, TString chg_method, TString iso_methodB, TString iso_methodEC) const;
+  int  PassIDOptMulti(TString  trigger, TString dxy_method, TString sel_methodBB,TString sel_methodEB, TString sel_methodEE,TString conv_method, TString chg_method, TString iso_methodB,TString iso_methodEC ) const ;
+
+
   bool passIDHN(int ID, double dxy_b, double dxy_e, double dz_b,double dz_e, double sip_b, double sip_e, double iso_b,double iso_e, double miso_b, double miso_e) const;
   bool PassIDOpt(TString ID, bool cc, double dx_b ,double dx_e,double dz_b,double dz_e, double iso_b, double iso_e) const;
   //==== ID
@@ -213,8 +287,10 @@ public:
   bool Pass_CutBasedVeto() const;
   void SetRho(double r);
   inline double Rho() const { return j_Rho; }
-  void SetIsGsfCtfScPixChargeConsistent(bool b);
+  void SetIsGsfCtfScPixChargeConsistent(bool b, bool c, bool d);
   inline bool IsGsfCtfScPixChargeConsistent() const { return j_isGsfCtfScPixChargeConsistent; }
+  inline bool IsGsfScPixChargeConsistent() const { return j_isGsfScPixChargeConsistent; }
+  inline bool IsGsfCtfChargeConsistent() const { return j_isGsfCtfChargeConsistent; }
 
   inline void SetR9(double r9) { j_r9=r9; }
   inline double R9() const { return j_r9; }
@@ -239,7 +315,7 @@ private:
   double j_EnergyUnCorr;
   bool j_passConversionVeto;
   int j_NMissingHits;
-  double j_Full5x5_sigmaIetaIeta, j_dEtaSeed, j_dPhiIn, j_HoverE, j_InvEminusInvP, j_e2x5OverE5x5, j_e1x5OverE5x5, j_trkiso, j_dr03EcalRecHitSumEt, j_dr03HcalDepth1TowerSumEt;
+  double j_Full5x5_sigmaIetaIeta, j_sigmaIetaIeta,j_dEtaSeed, j_dPhiIn,j_dEtaIn,j_PhiWidth, j_EtaWidth, j_HoverE, j_InvEminusInvP, j_e2x5OverE5x5, j_e1x5OverE5x5, j_trkiso, j_dr03EcalRecHitSumEt, j_dr03HcalDepth1TowerSumEt, j_e15, j_e25, j_e55;
   double j_dr03HcalTowerSumEt, j_dr03TkSumPt, j_ecalPFClusterIso, j_hcalPFClusterIso;
   bool j_isEcalDriven;
   double j_L1Et; 
@@ -248,7 +324,7 @@ private:
   double j_RelPFIso_Rho;
 
   double j_Rho;
-  int j_isGsfCtfScPixChargeConsistent;
+  int j_isGsfCtfScPixChargeConsistent,j_isGsfScPixChargeConsistent,j_isGsfCtfChargeConsistent;
   double j_r9;
 
   ULong64_t j_filterbits;

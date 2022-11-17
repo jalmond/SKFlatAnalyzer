@@ -18,6 +18,7 @@ parser.add_argument('-m', dest='Mass', default=100)
 parser.add_argument('-bm', dest='NbMode', default=0, type=int)
 parser.add_argument('-mm', dest='MetMode', default=0, type=int)
 parser.add_argument('-jm', dest='JetMode', default=0, type=int)
+parser.add_argument('-nt', dest='NTree', default=850, type=int)
 parser.add_argument('--IsVBF', action='store_true')
 parser.add_argument('-t', dest='Tag', default="Default")
 parser.add_argument('-o', dest='Outputdir', default="")
@@ -160,7 +161,7 @@ for TMVADir in TMVADirs:
   if args.IsVBF:
     isvbf_C= "true"
 
-  submitMacro = args.Analyzer+".C(\""+str(args.Channel)+"\","+args.Mass+",\""+args.Era+"\","+isvbf_C+"," +str( args.MetMode) + " ,"+ str(args.NbMode)+","+ str(args.JetMode) + " )"
+  submitMacro = args.Analyzer+".C(\""+str(args.Channel)+"\","+args.Mass+",\""+args.Era+"\","+isvbf_C+","+str(args.MetMode)+","+str(args.NbMode)+","+str(args.JetMode)+","+str(args.NTree)+" )"
   
   os.system('cp ' + TMVADir + '/'+ macroname+' ' + base_rundir)
 
@@ -171,7 +172,7 @@ for TMVADir in TMVADirs:
   if args.IsVBF and args.Mass==500:
     signalName = "DYVBF"
 
-  outName = 'output_'+signalName+'_'+args.Channel+'_M'+str(args.Mass)+'_Mode'+str(args.MetMode)+str(args.NbMode)+str(args.JetMode)+'__BDT'
+  outName = 'output_'+signalName+'_'+args.Channel+'_M'+str(args.Mass)+'_Mode'+str(args.MetMode)+str(args.NbMode)+str(args.JetMode)+'_NTree'+str(args.NTree)+'__BDT'
   print>>run_commands,'''#!/bin/bash
 SECTION=`printf $1`
 WORKDIR=`pwd`
@@ -282,6 +283,7 @@ print '-'*40
 print '- RunModes [MET] = '+str(args.MetMode)
 print '- RunModes [Nb] = '+str(args.NbMode)
 print '- RunModes [Jet] = '+str(args.JetMode)
+print '- NTrees = '+str(args.NTree)
 
 print '- output will be send to : '+FinalOutputPath
 

@@ -119,12 +119,16 @@ class HNL_LeptonCore : public AnalyzerCore {
   AnalyzerParameter InitialiseHNLParameters( TString analysis_tag, vector<vector<TString> >  param_vec);
   AnalyzerParameter InitialiseHNLParameter(TString s_setup, TString tag);  
 
+  void OutCutFlow(TString lab, double w);
 
   // MET corr
   std::pair<double,double> METXYCorr_Met_MetPhi(double uncormet, double uncormet_phi, int runnb, TString year, bool isMC, int npv, bool isUL =false,bool ispuppi=false);
 
+  std::map<TString, double> cfmap;
 
   //===== TRIGGER
+
+  TString Category(Electron el);
 
   vector<AnalyzerParameter::Syst> GetSystList(TString SystType);
   double HNLZvtxSF(HNL_LeptonCore::Channel ch);
@@ -150,6 +154,7 @@ class HNL_LeptonCore : public AnalyzerCore {
   TString  SingleElectronPD();
   TString  MuonEGPD();
   TString  DoubleMuonPD();
+  TString DoubleToString(double d);
   bool HasLowMassMeson(std::vector<Lepton *> leps);
 
   ///=============== GET/SELECT OBJECT

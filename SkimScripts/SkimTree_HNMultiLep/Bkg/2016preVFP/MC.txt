@@ -56,9 +56,7 @@ WZTo3LNu_amcatnlo
 WZTo3LNu_mllmin0p1_powheg
 WZTo3LNu_mllmin4p0_powheg
 ZZ_pythia
-ZZTo2L2Nu_powheg
 ZZTo4L_m_1toInf_powheg
-ZZTo4L_powheg
 QCD_Pt-120to170_EMEnriched
 QCD_Pt-170to300_EMEnriched
 QCD_Pt-300toInf_EMEnriched

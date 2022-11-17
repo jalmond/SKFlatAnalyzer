@@ -15,6 +15,13 @@ Lepton::Lepton() : Particle() {
   j_lep_jetptrel=-999.;
   j_lep_jetptratio=-999.;
   j_LeptonFlavour = NONE;
+  j_MiniIso_ChHad = -999.;
+  j_MiniIso_NHad = -999.;
+  j_MiniIso_PhHad = -999.;
+  j_Iso_ChHad = -999.;
+  j_Iso_NHad = -999.;
+  j_Iso_PhHad = -999.;
+
   j_LeptonType = -999;
   j_passID = false;
   j_IDSet= false;
@@ -66,7 +73,21 @@ void Lepton::SetMiniIso(double ch, double nh, double ph, double pu, double rho, 
   double correctedIso = ch + std::max(0.0, nh + ph - correction);
   j_MiniRelIso = correctedIso/this->Pt();
 
+  j_MiniIso_ChHad =ch;
+  j_MiniIso_NHad =nh;
+  j_MiniIso_PhHad =ph;
+
+
 }
+
+void Lepton::SetLepIso(double ch, double nh, double ph){
+
+  j_Iso_ChHad =ch;
+  j_Iso_NHad =nh;
+  j_Iso_PhHad =ph;
+
+}
+
 
 void Lepton::SetLeptonFlavour(Flavour f){
   j_LeptonFlavour = f;

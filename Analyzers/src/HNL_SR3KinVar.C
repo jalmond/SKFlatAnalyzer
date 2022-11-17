@@ -10,6 +10,7 @@ void HNL_SR3KinVar::initializeAnalyzer(){
   tree_mm->Branch("Nvbfj", &Nvbfj, "Nvbfj/I");                     tree_ee->Branch("Nvbfj", &Nvbfj, "Nvbfj/I");                     tree_em->Branch("Nvbfj", &Nvbfj, "Nvbfj/I");
   tree_mm->Branch("Nb", &Nb, "Nb/I");                              tree_ee->Branch("Nb", &Nb, "Nb/I");                              tree_em->Branch("Nb", &Nb, "Nb/I");
 
+  tree_mm->Branch("LQ", &LQ, "LQ/I");                              tree_ee->Branch("LQ", &LQ, "LQ/I");                              tree_em->Branch("LQ", &LQ, "LQ/I");
   tree_mm->Branch("Ptl1", &Ptl1, "Ptl1/F");                        tree_ee->Branch("Ptl1", &Ptl1, "Ptl1/F");                        tree_em->Branch("Ptl1", &Ptl1, "Ptl1/F");
   tree_mm->Branch("Ptl2", &Ptl2, "Ptl2/F");                        tree_ee->Branch("Ptl2", &Ptl2, "Ptl2/F");                        tree_em->Branch("Ptl2", &Ptl2, "Ptl2/F");
   tree_mm->Branch("Ptj1", &Ptj1, "Ptj1/F");                        tree_ee->Branch("Ptj1", &Ptj1, "Ptj1/F");                        tree_em->Branch("Ptj1", &Ptj1, "Ptj1/F");
@@ -107,13 +108,13 @@ void HNL_SR3KinVar::initializeAnalyzer(){
   tree_mm->Branch("Mjj23", &Mjj23, "Mjj23/F");                     tree_ee->Branch("Mjj23", &Mjj23, "Mjj23/F");                     tree_em->Branch("Mjj23", &Mjj23, "Mjj23/F");
   tree_mm->Branch("Mjj24", &Mjj24, "Mjj24/F");                     tree_ee->Branch("Mjj24", &Mjj24, "Mjj24/F");                     tree_em->Branch("Mjj24", &Mjj24, "Mjj24/F");
   tree_mm->Branch("Mjj34", &Mjj34, "Mjj34/F");                     tree_ee->Branch("Mjj34", &Mjj34, "Mjj34/F");                     tree_em->Branch("Mjj34", &Mjj34, "Mjj34/F");
-  tree_mm->Branch("M_W2_jj", &M_W2_jj, "M_W2_jj/F");               tree_ee->Branch("M_W2_jj", &M_W2_jj, "M_W2_jj/F");               tree_em->Branch("M_W2_jj", &M_W2_jj, "M_W2_jj/F");    
 
   tree_mm->Branch("PtWj1", &PtWj1, "PtWj1/F");                     tree_ee->Branch("PtWj1", &PtWj1, "PtWj1/F");                     tree_em->Branch("PtWj1", &PtWj1, "PtWj1/F");
   tree_mm->Branch("PtWj2", &PtWj2, "PtWj2/F");                     tree_ee->Branch("PtWj2", &PtWj2, "PtWj2/F");                     tree_em->Branch("PtWj2", &PtWj2, "PtWj2/F");
-  tree_mm->Branch("dRWjj", &dRWjj, "dRlW22/F");                    tree_ee->Branch("dRWjj", &dRWjj, "dRlW22/F");                    tree_em->Branch("dRWjj", &dRWjj, "dRlW22/F");
+  tree_mm->Branch("dRWjj", &dRWjj, "dRWjj/F");                     tree_ee->Branch("dRWjj", &dRWjj, "dRWjj/F");                     tree_em->Branch("dRWjj", &dRWjj, "dRWjj/F");
   tree_mm->Branch("dRlW12", &dRlW12, "dRlW12/F");                  tree_ee->Branch("dRlW12", &dRlW12, "dRlW12/F");                  tree_em->Branch("dRlW12", &dRlW12, "dRlW12/F");
   tree_mm->Branch("dRlW22", &dRlW22, "dRlW22/F");                  tree_ee->Branch("dRlW22", &dRlW22, "dRlW22/F");                  tree_em->Branch("dRlW22", &dRlW22, "dRlW22/F");
+  tree_mm->Branch("M_W2_jj", &M_W2_jj, "M_W2_jj/F");               tree_ee->Branch("M_W2_jj", &M_W2_jj, "M_W2_jj/F");               tree_em->Branch("M_W2_jj", &M_W2_jj, "M_W2_jj/F");
   tree_mm->Branch("M_W1_lljj", &M_W1_lljj, "M_W1_lljj/F");         tree_ee->Branch("M_W1_lljj", &M_W1_lljj, "M_W1_lljj/F");         tree_em->Branch("M_W1_lljj", &M_W1_lljj, "M_W1_lljj/F");
   tree_mm->Branch("M_N1_l1jj", &M_N1_l1jj, "M_N1_l1jj/F");         tree_ee->Branch("M_N1_l1jj", &M_N1_l1jj, "M_N1_l1jj/F");         tree_em->Branch("M_N1_l1jj", &M_N1_l1jj, "M_N1_l1jj/F");
   tree_mm->Branch("M_N2_l2jj", &M_N2_l2jj, "M_N2_l2jj/F");         tree_ee->Branch("M_N2_l2jj", &M_N2_l2jj, "M_N2_l2jj/F");         tree_em->Branch("M_N2_l2jj", &M_N2_l2jj, "M_N2_l2jj/F");
@@ -232,6 +233,7 @@ void HNL_SR3KinVar::MakeTreeSS2L(HNL_LeptonCore::Channel lep_channel,vector<Lept
   Nvbfj   = JetVBFColl.size();
   Nb      = JetBTagColl.size();
 
+  LQ      = LepTColl[0]->Charge();
   Ptl1    = LepTColl[0]->Pt();
   Ptl2    = LepTColl.at(1)->Pt();
   LT      = GetLT(LepTColl);
@@ -239,8 +241,9 @@ void HNL_SR3KinVar::MakeTreeSS2L(HNL_LeptonCore::Channel lep_channel,vector<Lept
   Ptj2    = JetColl.size()<2? -1.:JetColl.at(1).Pt();
   Ptj3    = JetColl.size()<3? -1.:JetColl.at(2).Pt();
   MET     = vMET.Pt();
-  Etal1   = LepTColl.at(0)->Eta();
-  Etal2   = LepTColl.at(1)->Eta();
+  Etal1   = fabs(LepTColl.at(0)->Eta());
+  Etal2   = fabs(LepTColl.at(1)->Eta());
+
  
   dEtall  = abs(LepTColl.at(0)->Eta()-LepTColl.at(1)->Eta());
   dRll    = LepTColl.at(0)->DeltaR(*LepTColl.at(1));
@@ -456,7 +459,7 @@ void HNL_SR3KinVar::executeEventFromParameter(AnalyzerParameter param){
 
 void HNL_SR3KinVar::InitializeTreeVars(){
 
-  Nj=-1, Nvbfj=-1, Nb=-1;
+  Nj=-1, Nvbfj=-1, Nb=-1, LQ=-999;
   Ptl1=-1, Ptl2=-1, Ptj1=-1, Ptj2=-1, Ptj3=-1, MET=-1, HTLT=-1, HTLT1=-1, HTLT2=-1, LT=-1,  HT=-1, MET2HT=-1, MET2ST=-1, Etal1=-1, Etal2=-1;
   PtRatiol1=-1, PtRatiol2=-1, PtRatioAJl1=-1, PtRatioAJl2=-1, PtRelv0l1=-1, PtRelv1l1=-1, PtRelv0l2=-1, PtRelv1l2=-1;
   CEMFracAJl1=-1, CEMFracAJl2=-1, NEMFracAJl1=-1, NEMFracAJl2=-1, CHFracAJl1=-1, CHFracAJl2=-1, NHFracAJl1=-1, NHFracAJl2=-1, MuFracAJl1=-1, MuFracAJl2=-1, JetDiscAJl1=-1, JetDiscAJl2=-1;

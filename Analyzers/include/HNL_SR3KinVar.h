@@ -29,7 +29,7 @@ class HNL_SR3KinVar : public HNL_RegionDefinitions {
   void WriteHist();
   void InitializeTreeVars();
 
-  Int_t Nj, Nvbfj, Nb;
+  Int_t Nj, Nvbfj, Nb, LQ;
   Float_t Ptl1, Ptl2, Ptj1, Ptj2, Ptj3, MET, MET2ST, HT, HTLT, HTLT1, HTLT2, LT, MET2HT, Etal1, Etal2;
   Float_t PtRatiol1, PtRatiol2, PtRatioAJl1, PtRatioAJl2, PtRelv0l1, PtRelv1l1, PtRelv0l2, PtRelv1l2;
   Float_t CEMFracAJl1, CEMFracAJl2, NEMFracAJl1, NEMFracAJl2, CHFracAJl1, CHFracAJl2, NHFracAJl1, NHFracAJl2, MuFracAJl1, MuFracAJl2, JetDiscAJl1, JetDiscAJl2;

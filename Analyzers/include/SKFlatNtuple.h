@@ -38,6 +38,7 @@ public :
    bool IsDATA;
    TString DataStream;
    TString MCSample;
+   TString Analyzer;
    bool IsFastSim;
    int DataYear;
    TString DataEra;

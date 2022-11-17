@@ -10,6 +10,7 @@ class Particle: public TLorentzVector{
 
 public:
 
+
   //==== Default Constructor with p4
   Particle();
   //==== TLorentzVector copy constructor.
@@ -29,6 +30,8 @@ public:
 
   void SetCharge(double q);
   inline double Charge() const {return j_Charge;}
+
+
 
   //==== Print four vector
   virtual void Print();

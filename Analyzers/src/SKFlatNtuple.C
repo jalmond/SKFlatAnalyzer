@@ -20,6 +20,7 @@ void SKFlatNtuple::Loop(){
   cout << "[SKFlatNtuple::Loop] LogEvery = " << LogEvery << endl;
   cout << "[SKFlatNtuple::Loop] IsDATA = " << IsDATA << endl;
   cout << "[SKFlatNtuple::Loop] DataStream = " << DataStream << endl;
+  cout << "[SKFlatNtuple::Loop] Analyzer = " << Analyzer << endl;
   cout << "[SKFlatNtuple::Loop] MCSample = " << MCSample << endl;
   cout << "[SKFlatNtuple::Loop] IsFastSim = " << IsFastSim << endl;
   cout << "[SKFlatNtuple::Loop] Era = " << GetEra() << endl;
@@ -265,6 +266,7 @@ SKFlatNtuple::SKFlatNtuple(){
   IsDATA = false;
   DataStream = "";
   MCSample = "";
+  Analyzer = "";
   IsFastSim = false;
   SetEra("2017");
   xsec = 1.;

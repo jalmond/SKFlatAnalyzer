@@ -652,7 +652,7 @@ should_transfer_files = YES
 when_to_transfer_output = ON_EXIT
 output = job_$(Process).log
 error = job_$(Process).err
-request_memory = 12000
+request_memory = 24000
 accounting_group=group_cms
 +SingularityImage = "/cvmfs/singularity.opensciencegrid.org/opensciencegrid/osgvo-el6:latest"
 +SingularityBind = "/cvmfs, /cms, /share"
@@ -727,6 +727,7 @@ void {2}(){{
         out.write('  m.timestamp = "'+timestamp+'";\n')
 
     else:
+      out.write('  m.Analyzer = "'+args.Analyzer+'";\n');
       out.write('  m.MCSample = "'+InputSample+'";\n');
       out.write('  m.IsDATA = false;\n')
       out.write('  m.xsec = '+str(this_xsec)+';\n')

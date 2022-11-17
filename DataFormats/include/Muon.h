@@ -145,6 +145,8 @@ public:
   void SetTrackerLayers(int n);
   inline int TrackerLayers() const { return j_trackerLayers; }
 
+  double StringToDouble(TString st,TString subSt) const;
+
   //==== HN ID
   bool Pass_HNVeto2016() const;
   bool Pass_HNLoose2016(double relisoCut, double dxyCut, double dzCut, double sipCut) const;

@@ -18,50 +18,160 @@ void HNL_SignalRegionOpt::executeEvent(){
   
   if(!IsData)  gens = GetGens();
 
-  AnalyzerParameter param_signal = HNL_LeptonCore::InitialiseHNLParameter("HNL","_UL");
+  AnalyzerParameter param_signal = HNL_LeptonCore::InitialiseHNLParameter("HNLOpt","_UL");
   
+  
+  //cout << "########################################################" << endl;
   bool opt_IDEl=true;
   if(opt_IDEl){
 
     vector<TString> vTrig = {"LooseTrig_"};//,"TightTrig_"};
-    vector<TString> vConv = {"","ConvBEC_"};
-    vector<TString> vCC = {"CCBEC_"};
-    vector<TString> vMVAB;
-    vector<TString> vMVAEC;
-    for(unsigned int imva=0 ; imva < 70 ; imva++){
-      double mva_d= -0.5 + double(imva)*0.02;
-      std::string mvaS= std::to_string(mva_d);
-      vMVAB.push_back("MVAB"+mvaS+"_");
+    vector<TString> vConv = {"ConvBConvEC_"};//,"ConvBConvEC_","ConvEC_"};
+    vector<TString> vCC = {"CCBCCEC_"};//,"CCEC_",""};
+    vector<TString> vMVABB;
+    vector<TString> vMVAEB;
+    vector<TString> vMVAEE;
+    int nMVA=0;
+    for(unsigned int imva=0 ; imva < nMVA ; imva++){
+      double mva_d=  -4. + double(imva)*3.;
+      TString mvaTS= DoubleToString(mva_d);
+      vMVABB.push_back("MVABBX"+mvaTS+"_");
     }
-    for(unsigned int imva=0 ; imva < 85 ; imva++){
-      double mva_d= -0.8 + imva*0.02;
-      std::string mvaS= std::to_string(mva_d);
-      vMVAEC.push_back("MVAEC"+mvaS+"_");
+    for(unsigned int imva=0 ; imva < nMVA ; imva++){
+      double mva_d=  -4 + double(imva)*3;
+      TString mvaTS= DoubleToString(mva_d);
+      vMVAEB.push_back("MVAEBX"+mvaTS+"_");
     }
 
-    //Fake_TightMuMu_Mu_MVAB-0.400000_MVAEC-0.7_ISOB0.15_ISOEC0.15_DXYB1EC1_MuMu_40 ptcone_eta                                                                                               
+    for(unsigned int imva=0 ; imva < nMVA ; imva++){
+      double mva_d=  -4 + double(imva)*3;
+      TString mvaTS= DoubleToString(mva_d);
+      vMVAEE.push_back("MVAEEX"+mvaTS+"_");
+    }
+
+
+    for(unsigned int imva=0 ; imva < nMVA ; imva++){
+      double mva_d=  12. + double(imva)*1;
+      TString mvaTS= DoubleToString(mva_d);
+      vMVABB.push_back("MVABBY"+mvaTS+"_");
+    }
+    for(unsigned int imva=0 ; imva < nMVA ; imva++){
+      double mva_d=  12 + double(imva)*1;
+      TString mvaTS= DoubleToString(mva_d);
+      vMVAEB.push_back("MVAEBY"+mvaTS+"_");
+    }
+
+    for(unsigned int imva=0 ; imva < nMVA ; imva++){
+      double mva_d=  12 + double(imva)*1;
+      TString mvaTS= DoubleToString(mva_d);
+      vMVAEE.push_back("MVAEEY"+mvaTS+"_");
+    }
+
+    for(unsigned int imva=0 ; imva < nMVA ; imva++){
+      double mva_d=  5. + double(imva)*2.5;
+      TString mvaTS= DoubleToString(mva_d);
+      vMVABB.push_back("MVABBZ"+mvaTS+"_");
+    }
+    for(unsigned int imva=0 ; imva < nMVA ; imva++){
+      double mva_d=  5 + double(imva)*2.5;
+      TString mvaTS= DoubleToString(mva_d);
+      vMVAEB.push_back("MVAEBZ"+mvaTS+"_");
+    }
+
+    for(unsigned int imva=0 ; imva < nMVA ; imva++){
+      double mva_d=  5 + double(imva)*2.5;
+      TString mvaTS= DoubleToString(mva_d);
+      vMVAEE.push_back("MVAEEZ"+mvaTS+"_");
+    }
+
+
+
+    vector<TString> vIsoB = {"ISOB0p05","ISOB0p06","ISOB0p07","ISOB0p08","ISOB0p09","ISOB0p1","ISOB0p11","ISOB0p12","ISOB0p15"};
+    vector<TString> vIsoEC = {"ISOEC0p05","ISOEC0p06","ISOEC0p07","ISOEC0p08","ISOEC0p09","ISOEC0p1","ISOEC0p11","ISOEC0p12","ISOEC0p15"};
+
+    //Fake_TightMuMu_Mu_MVAB-0p400000_MVAEC-0p7_ISOB0p15_ISOEC0.15_DXYB1EC1_MuMu_40 ptcone_eta                                                                                               
     vector<TString> ElectronsIDs;
     for(auto iTrig : vTrig){
       for(auto iConv : vConv){
         for(auto iCC : vCC){
-          for(auto iMVAB : vMVAB) ElectronsIDs.push_back(iTrig+iConv+iCC+iMVAB+"MVAEC-0.8_ISOB0.15_ISOEC0.15_DXYB1EC1");
-          for(auto iMVAEC : vMVAEC) ElectronsIDs.push_back(iTrig+iConv+iCC+iMVAEC+"MVAB-0.5_ISOB0.15_ISOEC0.15_DXYB1EC1");
-          ElectronsIDs.push_back(iTrig+iConv+iCC+"POGT_ISOB0.15_ISOEC0.15_DXYB1EC1");
-          ElectronsIDs.push_back(iTrig+iConv+iCC+"POGM_ISOB0.15_ISOEC0.15_DXYB1EC1");
-          ElectronsIDs.push_back(iTrig+iConv+iCC+"POGTNoIso_ISOB0.15_ISOEC0.15_DXYB1EC1");
-          ElectronsIDs.push_back(iTrig+iConv+iCC+"POGMNoIso_ISOB0.15_ISOEC0.15_DXYB1EC1");
+	  if(iTrig=="LooseTrig_" && iConv == "ConvBConvEC_" && iCC == "CCBCCEC_"){
+	    for(auto iMVABB : vMVABB) {
+	      ElectronsIDs.push_back(iTrig+iConv+iCC+iMVABB+"ISOB0p1_ISOEC0p1_DXYB1EC1");
+	    }
+            for(auto iMVAEB : vMVAEB) {
+              ElectronsIDs.push_back(iTrig+iConv+iCC+iMVAEB+"ISOB0p1_ISOEC0p1_DXYB1EC1");
+            }
+            for(auto iMVAEE : vMVAEE) {
+              ElectronsIDs.push_back(iTrig+iConv+iCC+iMVAEE+"ISOB0p1_ISOEC0p1_DXYB1EC1");
+            }
+
+	    ElectronsIDs.push_back(iTrig+iConv+iCC+"_DXYB1EC1");
+  
+	    
+	    ElectronsIDs.push_back(iTrig+iConv+iCC+"POGT_DXYB1EC1");
+	    ElectronsIDs.push_back(iTrig+iConv+iCC+"POGM_DXYB1EC1");
+	    ElectronsIDs.push_back(iTrig+iConv+iCC+"MVABWP90_MVAECWP90_ISOB0p1_ISOEC0p1_DXYB1EC1");                                                                                                                        
+	    
+	    ElectronsIDs.push_back(iTrig+iConv+iCC+"MVABWP90_MVAECWP80_ISOB0p1_ISOEC0p1_DXYB1EC1");                                                                                                                        
+	    ElectronsIDs.push_back(iTrig+iConv+iCC+"MVABWP80_MVAECWP80_ISOB0p1_ISOEC0p1_DXYB1EC1");                                                                                                                        
+	    ElectronsIDs.push_back(iTrig+iConv+iCC+"POGTNoIso_ISOB0p1_ISOEC0p1_DXYB1EC1");
+            ElectronsIDs.push_back(iTrig+iConv+iCC+"POGMNoIso_ISOB0p1_ISOEC0p1_DXYB1EC1");
+
+	    
+	    /*for(unsigned int ib = 0 ; ib < vIsoB.size(); ib++){
+	      for(unsigned int ie = 0 ; ie < vIsoEC.size(); ie++){
+		if(ie  > ib) continue;
+		TString iISOB = vIsoB[ib];
+		TString iISOEC = vIsoEC[ie];
+		ElectronsIDs.push_back(iTrig+iConv+iCC+"MVAB0p7_MVAEC0p7_"+iISOB+"_"+iISOEC+"_DXYB1EC1");
+		ElectronsIDs.push_back(iTrig+iConv+iCC+"MVABWP90_MVAECWP90_"+iISOB+"_"+iISOEC+"_DXYB1EC1");
+		ElectronsIDs.push_back(iTrig+iConv+iCC+"MVABWP90_MVAECWP80_"+iISOB+"_"+iISOEC+"_DXYB1EC1");
+		ElectronsIDs.push_back(iTrig+iConv+iCC+"MVABWP80_MVAECWP80_"+iISOB+"_"+iISOEC+"_DXYB1EC1");
+		ElectronsIDs.push_back(iTrig+iConv+iCC+"POGTNoIso_"+iISOB+"_"+iISOEC+"_DXYB1EC1");
+		ElectronsIDs.push_back(iTrig+iConv+iCC+"POGMNoIso_"+iISOB+"_"+iISOEC+"_DXYB1EC1");
+	      }
+	    }
+	    */
+	  }
+	  else{
+	    ElectronsIDs.push_back("Full_"+iTrig+iConv+iCC+"POGT_DXYB1EC1");
+            ElectronsIDs.push_back("Full_"+iTrig+iConv+iCC+"POGM_DXYB1EC1");
+	    ElectronsIDs.push_back("Full_"+iTrig+iConv+iCC+"MVAB0p6_MVAEC0p8_ISOB0p1_ISOEC0p1_DXYB1EC1");
+	    ElectronsIDs.push_back("Full_"+iTrig+iConv+iCC+"MVABWP90_MVAECWP90_ISOB0p1_ISOEC0p1_DXYB1EC1");
+	    ElectronsIDs.push_back("Full_"+iTrig+iConv+iCC+"MVABWP90_MVAECWP80_ISOB0p1_ISOEC0p1_DXYB1EC1");
+	    ElectronsIDs.push_back("Full_"+iTrig+iConv+iCC+"MVABWP80_MVAECWP80_ISOB0p1_ISOEC0p1_DXYB1EC1");
+	    ElectronsIDs.push_back("Full_"+iTrig+iConv+iCC+"POGTNoIso_ISOB0p1_ISOEC0p1_DXYB1EC1");
+	    ElectronsIDs.push_back("Full_"+iTrig+iConv+iCC+"POGMNoIso_ISOB0p1_ISOEC0p1_DXYB1EC1");
+	  }
         }
       }
     }
     
+    //ElectronsIDs.push_back("HNTight_17028");
+    //ElectronsIDs.push_back("HNTightV2");
+    ElectronsIDs.push_back("HNOpt");
+
     for(auto id : ElectronsIDs){
 
-      param_signal.Name = param_signal.DefName + "_ElOpt_"+ id;
-      param_signal.SRConfig  = "";
-      
-      param_signal.Electron_Tight_ID="ElOpt_"+id;
-      param_signal.Electron_FR_ID = "ElOptLoose_"+id;
+      if (!id.Contains("DXYB1EC1")){
 
+	if(SameCharge(GetElectrons(id, 10., 2.5)))FillAllElectronPlots("Bkg", "ElOpt_"+id  , GetElectrons(id, 10., 2.5), 1.);
+	param_signal.Name = param_signal.DefName + "_"+ id;
+	param_signal.SRConfig  = "";
+	
+	param_signal.Electron_Tight_ID=id;
+	param_signal.Electron_FR_ID = id;
+      }
+      else{
+	//	if(SameCharge(GetElectrons("ElOpt_"+id, 10., 2.5)))FillAllElectronPlots("Bkg", "ElOpt_"+id  , GetElectrons("ElOpt_"+id, 10., 2.5), 1.);
+
+	param_signal.Name = param_signal.DefName + "_ElOpt_"+ id;
+        param_signal.SRConfig  = "";
+	
+        param_signal.Electron_Tight_ID="ElOpt_"+id;
+        param_signal.Electron_FR_ID = "ElOptLoose_"+id;
+
+      }
       param_signal.Muon_Tight_ID = "HNTightV2";
       param_signal.Muon_FR_ID = "HNLooseV1";
       
@@ -71,28 +181,68 @@ void HNL_SignalRegionOpt::executeEvent(){
       param_signal.SRConfig  = "";
     }
   }
-  bool opt_IDMu=true;
+
+  
+
+  bool opt_IDMu=false;
   if(opt_IDMu){
     vector<TString> vMVAB;
     vector<TString> vMVAEC;
-    for(unsigned int imva=0 ; imva < 65 ; imva++){
-      double mva_d= -0.4 + double(imva)*0.02;
-      std::string mvaS= std::to_string(mva_d);
-      vMVAB.push_back("MVAB"+mvaS+"_");
+
+    for(unsigned int imva=0 ; imva < 2 ; imva++){
+      double mva_d= 0.6 + double(imva)*0.2;
+      TString mvaTS= DoubleToString(mva_d);
+      vMVAB.push_back("MVAB"+mvaTS+"_");
+      vMVAB.push_back("MVAB2"+mvaTS+"_");
+      vMVAB.push_back("MVAB3"+mvaTS+"_");
+      vMVAB.push_back("MVAB4"+mvaTS+"_");
+      vMVAB.push_back("MVAB5"+mvaTS+"_");
+      vMVAB.push_back("MVAB6"+mvaTS+"_");
+
     }
-    for(unsigned int imva=0 ; imva < 80 ; imva++){
-      double mva_d= -0.7 + imva*0.02;
-      std::string mvaS= std::to_string(mva_d);
-      vMVAEC.push_back("MVAEC"+mvaS+"_");
+    for(unsigned int imva=0 ; imva < 2; imva++){
+      double mva_d= 0.6 + imva*0.2;
+      TString mvaTS= DoubleToString(mva_d);
+      vMVAEC.push_back("MVAEC"+mvaTS+"_");
+      vMVAEC.push_back("MVAEC2"+mvaTS+"_");
+      vMVAEC.push_back("MVAEC3"+mvaTS+"_");
+      vMVAEC.push_back("MVAEC4"+mvaTS+"_");
+      vMVAEC.push_back("MVAEC5"+mvaTS+"_");
+      vMVAEC.push_back("MVAEC6"+mvaTS+"_");
     }
+
+
     
-    
+    vector<TString> vIsoB = {"ISOB0p05","ISOB0p06","ISOB0p07","ISOB0p08","ISOB0p09","ISOB0p1","ISOB0p11","ISOB0p12","ISOB0p15"};
+    vector<TString> vIsoEC = {"ISOEC0p05","ISOEC0p06","ISOEC0p07","ISOEC0p08","ISOEC0p09","ISOEC0p1","ISOEC0p11","ISOEC0p12","ISOEC0p15"};
+
+
     vector<TString> MuonsIDs;
-    for(auto iMVAB : vMVAB) MuonsIDs.push_back(iMVAB+"MVAEC-0.7_ISOB0.15_ISOEC0.15_DXYB1EC1");
-    for(auto iMVAEC : vMVAEC) MuonsIDs.push_back(iMVAEC+"MVAB-0.4_ISOB0.15_ISOEC0.15_DXYB1EC1");
-    MuonsIDs.push_back("POGT_ISOB0.15_ISOEC0.15_DXYB1EC1");
-    MuonsIDs.push_back("POGM_ISOB0.15_ISOEC0.15_DXYB1EC1");
-    
+    for(auto iMVAB : vMVAB){
+      for(auto iMVAEC : vMVAEC){
+	MuonsIDs.push_back(iMVAB+iMVAEC+"ISOB0p15_ISOEC0p1_DXYB1EC1");
+	MuonsIDs.push_back(iMVAB+iMVAEC+"ISOB0p1_ISOEC0p1_DXYB1EC1");
+	MuonsIDs.push_back(iMVAB+iMVAEC+"ISOB0p08_ISOEC0p08_DXYB1EC1");
+      }
+    }
+
+ 
+
+    /*for(unsigned int ib = 0 ; ib < vIsoB.size(); ib++){
+      for(unsigned int ie = 0 ; ie < vIsoEC.size(); ie++){
+	if(ie  > ib) continue;
+	TString iISOB = vIsoB[ib];
+	TString iISOEC = vIsoEC[ie];
+
+	MuonsIDs.push_back("MVAB0p7_MVAEC0p7_"+iISOB+"_"+iISOEC+"_DXYB1EC1");
+	MuonsIDs.push_back("POGT_"+iISOB+"_"+iISOEC+"_DXYB1EC1");
+	MuonsIDs.push_back("POGM_"+iISOB+"_"+iISOEC+"_DXYB1EC1");
+      }
+      }
+    */
+    MuonsIDs.push_back("HNTight_17028");
+    MuonsIDs.push_back("HNTightV2");
+
     for(auto id : MuonsIDs){
       
       param_signal.Name = param_signal.DefName  + "_MuOpt_"+ id;
@@ -146,9 +296,6 @@ void HNL_SignalRegionOpt::RunULAnalysis(AnalyzerParameter param){
   TString el_ID = (RunFake) ?  param.Electron_FR_ID : param.Electron_Tight_ID ;
   TString mu_ID = (RunFake) ?  param.Muon_FR_ID :  param.Muon_Tight_ID ;
 
-  el_ID = param.Electron_Veto_ID;
-  mu_ID = param.Muon_Veto_ID;
-
   double Min_Muon_Pt     = (RunFake) ? 3. : 5.;
   double Min_Electron_Pt = (RunFake) ? 7. : 10.;
 
@@ -157,7 +304,12 @@ void HNL_SignalRegionOpt::RunULAnalysis(AnalyzerParameter param){
 
   std::vector<Muon>       MuonCollT     = GetLepCollByRunType    ( MuonCollTInit,gens,param);
   std::vector<Electron>   ElectronCollT  =  GetLepCollByRunType   ( ElectronCollTInit,gens,param);
-
+  
+  //cout << "---------------------- " << endl;
+  //cout << "ElectronCollT " << ElectronCollT.size() << " ID = " << el_ID << endl;
+  //cout << "MuonCollT " << MuonCollT.size() << " ID = " << mu_ID << endl;
+  
+  
   std::vector<Lepton *> leps_veto  = MakeLeptonPointerVector(MuonCollV,ElectronCollV);
 
   std::vector<Tau>        TauColl        = GetTaus     (leps_veto,param.Tau_Veto_ID,20., 2.3);
@@ -359,9 +511,14 @@ void HNL_SignalRegionOpt::RunULAnalysis(AnalyzerParameter param){
     
     if(!IsData )weight = weight*sf_btagM_NLV;
     
-    RunAllSignalRegions(Inclusive, ElectronCollT,ElectronCollV,MuonCollT,MuonCollV, TauColl, JetCollLoose, JetColl, VBF_JetColl,FatjetColl , BJetColl, ev,METv, param,weight);
+    if (MCSample.Contains("Type1")) {
+      weight*=1/xsec;
+    }
     
+    RunAllSignalRegions(Inclusive, ElectronCollT,ElectronCollV,MuonCollT,MuonCollV, TauColl, JetCollLoose, JetColl, VBF_JetColl,FatjetColl , BJetColl, ev,METv, param,weight);
+    return;
   }
+
   
   
   bool opt_trig=false;

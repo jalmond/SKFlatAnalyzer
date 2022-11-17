@@ -14,7 +14,7 @@ if [[ $1 == "VBF1500" ]]; then
 
     for i in "${era_list[@]}"
     do
-        SKFlat.py -a $analyzer  -i VBFTypeI_SF_ll_M1500  -n 1  --nmax ${nmax}   -e ${i} &
+        SKFlat.py -a $analyzer  -i VBFTypeI_SF_ll_M1500  -n 1  --nmax 1000   -e ${i} &
     done
 
 fi
@@ -82,7 +82,7 @@ if [[ $1 == "MC" ]]; then
 
     for i in "${era_list[@]}"
     do
-        SKFlat.py -a $analyzer  -i TTLJ_powheg   -n 250  --nmax 400   -e ${i} --skim SkimTree_HNMultiLep &
+        SKFlat.py -a $analyzer  -i TTLJ_powheg   -n 400  --nmax 400   -e ${i}  &
     done
     
 fi

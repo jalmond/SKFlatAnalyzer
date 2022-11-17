@@ -33,6 +33,9 @@ elif [[ $HOSTNAME == *"tamsa1"* ]]; then
   export SKFlatOutputDir="/data6/Users/$USER/SKFlatOutput/"
   export BDTRunlogDir="/data6/Users/$USER/BDTRunlog/"
   export BDTOutputDir="/data6/Users/$USER/BDTOutput/"
+  export MVARunlogDir="/data6/Users/$USER/MVARunlog/"
+  export MVAOutputDir="/data6/Users/$USER/MVAOutput/"
+
   export SKFlatEvCompDir="/data6/Users/$USER/SKFlatOutput/EventComparisons/"
     
 elif [[ $HOSTNAME == *"tamsa2"* ]]; then
@@ -40,6 +43,8 @@ elif [[ $HOSTNAME == *"tamsa2"* ]]; then
   echo "@@@@ Working on tamsa2"
   export SKFlatRunlogDir="/data6/Users/$USER/SKFlatRunlog/"
   export SKFlatOutputDir="/data6/Users/$USER/SKFlatOutput/"
+  export BDTRunlogDir="/data6/Users/$USER/BDTRunlog/"
+  export BDTOutputDir="/data6/Users/$USER/BDTOutput/"
   export SKFlatEvCompDir="/data6/Users/$USER/SKFlatOutput/EventComparisons/"
   
 
@@ -79,4 +84,4 @@ printf "> Current SKFlatAnalyzer branch : "${BRed}$CurrentGitBranch${Color_Off}"
 echo "-----------------------------------------------------------------"
 ## Log Dir ##
 echo "* Your Log Directory Usage (ctrl+c to skip)"
-du -sh $SKFlatRunlogDir
+#du -sh $SKFlatRunlogDir

@@ -24,10 +24,7 @@ void test(TString era, bool isdata, TString sample, TString flag){ //test("2017"
     m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/DATA_SkimTree_HNMultiLep/DoubleEG/periodE/2022_08_23_004058/SKFlatNtuple_2017_DATA_3.root");
   }
   else if(era=="2017" && !isdata && sample=="DYJets"){
-    m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_HNMultiLep/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/2022_08_23_045258/SKFlatNtuple_2017_MC_6.root");
-  }
-  else if(era=="2017" && !isdata && sample=="WJets_Sherpa"){
-    m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_HNMultiLep/WJetsToLNu_012JetsNLO_34JetsLO_EWNLOcorr_13TeV-sherpa/2022_09_06_223917/SKFlatNtuple_2017_MC_8.root");
+    m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_HNMultiLep/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/2022_10_09_041952/SKFlatNtuple_2017_MC_6.root");
   }
   m.SetOutfilePath("hists.root");
   m.Init();

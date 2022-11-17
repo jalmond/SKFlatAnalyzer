@@ -33,7 +33,7 @@ Jet::Jet() : Particle() {
   j_bJetNN_res=-999.;
   j_cJetNN_corr=1.;
   j_cJetNN_res=-999.;
-  
+  j_nvtx_tracks=-999;  
   j_tightJetID=false;
   j_tightLepVetoJetID=false;
 }
@@ -75,6 +75,11 @@ void Jet::SetMultiplicities(double cM, double nM){
 void Jet::SetPileupJetId(double v){
   j_PileupJetId = v;
 }
+
+void Jet::SetNTracks(double d){
+  j_nvtx_tracks = d;
+}
+
 
 void Jet::SetEnShift(double en_up, double en_down){
   j_En_up = en_up;
@@ -154,7 +159,7 @@ double Jet::GetTaggerResult(JetTagging::Tagger tg) const {
 
 bool Jet::PassPileupMVA(TString WP, TString Era) const {
 
-  //https://twiki.cern.ch/twiki/bin/view/CMS/PileupJetIDUL                                                                                                                                                                                                                                                                                    
+  //https://twiki.cern.ch/twiki/bin/view/CMS/PileupJetIDUL                                                                                                                                                                                                                                                                                   
 
   bool pass=false;
 

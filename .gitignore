@@ -1,9 +1,11 @@
 *~
+TMVA/LepID
 *.pyc
 *.pcm
 *.d
 *.so
 *_Dict.cxx
+TMVA/*/*.root
 lib/*.tar.gz
 lib/*.rootmap
 */obj

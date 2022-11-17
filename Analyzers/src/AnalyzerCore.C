@@ -1,16 +1,32 @@
-
 #include "AnalyzerCore.h"
 
 AnalyzerCore::AnalyzerCore(){
 
   outfile = NULL;
+
+  
   mcCorr = new MCCorrection();
   puppiCorr = new PuppiSoftdropMassCorr();
-  fakeEst = new FakeBackgroundEstimator();
-  cfEst = new CFBackgroundEstimator();
-  pdfReweight = new PDFReweight();
+  if(Analyzer == "HNL_SignalRegionPlotter"){
+    fakeEst = new FakeBackgroundEstimator();
+    cfEst = new CFBackgroundEstimator();
+    pdfReweight = new PDFReweight();
+  }
   muonGE = new GeneralizedEndpoint();
   muonGEScaleSyst = new GEScaleSyst();
+
+  JECSources = {"AbsoluteStat","AbsoluteScale","AbsoluteFlavMap","AbsoluteMPFBias","Fragmentation","SinglePionECAL","SinglePionHCAL","FlavorQCD","TimePtEta","RelativeJEREC1","RelativeJEREC2","RelativeJERHF","RelativePtBB","RelativePtEC1","RelativePtEC2","RelativePtHF","RelativeBal","RelativeSample","RelativeFSR","RelativeStatFSR","RelativeStatEC","RelativeStatHF","PileUpDataMC","PileUpPtRef","PileUpPtBB","PileUpPtEC1","PileUpPtEC2","PileUpPtHF","FlavorZJet","FlavorPhotonJet","FlavorPureGluon","FlavorPureQuark","FlavorPureCharm","FlavorPureBottom","Total"};
+
+  /*
+    
+    // In your analyser code add this line to constructor to fill map with JEC source values.
+    for(auto jec_source : JECSources)   SetupJECUncertainty(jec_source);
+  }
+    // Then you can get vector of jets with shift calling 
+    std::vector<Jet> AnalyzerCore::ScaleJetsIndividualSource(const std::vector<Jet>& jets, int sys, TString source);
+    vector<Jet> jets_AbsoluteStatUp = ScaleJetsIndividualSource(jets, 1, "AbsoluteStat");
+  */
+  
 
 }
 
@@ -24,6 +40,8 @@ AnalyzerCore::~AnalyzerCore(){
   maphist_TH1D.clear();
 
   for(std::map< TString, TH2D* >::iterator mapit = maphist_TH2D.begin(); mapit!=maphist_TH2D.end(); mapit++){
+
+    //cout << "Deleting TH2D " << mapit->first << endl;
     delete mapit->second;
   }
   maphist_TH2D.clear();
@@ -44,11 +62,16 @@ AnalyzerCore::~AnalyzerCore(){
 
   if(mcCorr) delete mcCorr;
   if(puppiCorr) delete puppiCorr;
-  if(fakeEst) delete fakeEst;
-  if(cfEst) delete cfEst;
-  if(pdfReweight) delete pdfReweight;
+  if(Analyzer == "HNL_SignalRegionPlotter"){
+    if(fakeEst) delete fakeEst;
+    if(cfEst) delete cfEst;
+    if(pdfReweight) delete pdfReweight;
+  }
   if(muonGE) delete muonGE;
   if(muonGEScaleSyst) delete muonGEScaleSyst;
+
+  JECUncMap.clear();
+  
 
 }
 
@@ -115,6 +138,119 @@ Event AnalyzerCore::GetEvent(){
 
 }
 
+float AnalyzerCore::GetJECUncertainty(TString type, float eta, float pt, int sys){
+
+  std::map<TString, std::vector<std::map<float, std::vector<float> > > >::iterator mapit;
+  mapit = JECUncMap.find(type);
+  if(mapit == JECUncMap.end()) {cout<< "ERROR, " << type  << " not found in JEC Uncertainty MAP" << endl; return -999.;}
+
+  
+  float bin_boundary(-999.);
+
+  std::map<float, std::vector<float> > ptmap = mapit->second.at(0);
+
+  std::vector<float> etabins;  
+  for(std::map<float, std::vector<float> >::iterator it = ptmap.begin(); it!= ptmap.end(); it++){
+    etabins.push_back(it->first);
+  }
+  /// Add last bin by hand
+  etabins.push_back(5.4);
+  
+  for(unsigned int i=0; i < etabins.size()-1 ; i++){
+    if(eta >= etabins.at(i) && eta < etabins.at(i+1)){  bin_boundary = float(etabins.at(i)) ; break;}
+  }
+  
+  std::vector<float> ptbins;
+  
+
+  for(std::map<float, std::vector<float> >::iterator pit = ptmap.begin();  pit != ptmap.end(); pit++){
+    if(float(pit->first) == float(bin_boundary)) {ptbins = pit->second; }
+  }
+  
+  int ptbin(-999);
+  if(pt >= ptbins.at(ptbins.size() - 1)) ptbin = ptbins.size() - 1;
+  for(unsigned int j = 0 ; j < ptbins.size()-1; j++){
+    if( pt >= ptbins.at(j)  && pt < ptbins.at(j+1)) {ptbin=j; break;}
+  }
+  
+
+  std::map<float, std::vector<float> > upmap = mapit->second.at(1); 
+  std::map<float, std::vector<float> > downmap = mapit->second.at(2); 
+  
+  std::map<float, std::vector<float> >::iterator mapit_unc;
+  if(sys> 0) mapit_unc =  mapit->second.at(1).find(bin_boundary);
+  else mapit_unc =  mapit->second.at(2).find(bin_boundary);
+  
+  float unc = (sys> 0) ?   1+ mapit_unc->second.at(ptbin) : 1 - mapit_unc->second.at(ptbin);
+
+  return unc;
+}
+
+void AnalyzerCore::SetupJECUncertainty(TString type){
+  
+  string analysisdir = getenv("DATA_DIR");
+  
+  string file = analysisdir + "/"+string(GetEra()) + "/JEC/Summer19UL16APV_V7_MC_UncertaintySources_AK4PFchs.txt";                                                                                                                
+  if(GetEra() == "2016postVFP") file = analysisdir + "/"+ string(GetEra())+ "/JEC/Summer19UL16_V7_MC_UncertaintySources_AK4PFchs.txt";
+  if(GetEra() == "2017") file = analysisdir + "/"+ string(GetEra())+ "/JEC/Summer19UL17_V5_MC_UncertaintySources_AK4PFchs.txt";
+  if(GetEra() == "2018") file = analysisdir + "/"+ string(GetEra())+ "/JEC/Summer19UL18_V5_MC_UncertaintySources_AK4PFchs.txt";
+
+  
+  ifstream jec_file(file.c_str());
+  
+  bool found_unc(false);
+  int nline(0);
+  std::map<float, std::vector<float> > etaptmap, eta_uncupmap, eta_uncdownmap;
+
+  string sline;
+  
+  cout << "Setting up JEC uncertainty vector for source ["<<type<< "]." << file << endl;
+
+  while(getline(jec_file,sline) ){
+    
+    std::istringstream is( sline );
+
+    if(found_unc && nline==0){nline++; continue;}
+    if(found_unc && nline==1){
+      float eta_min, eta_max, test;
+      is >> eta_min;
+      is >> eta_max;
+      is >> test;
+      if(eta_min==5.0) found_unc=false;
+
+      std::vector<float> ptbin, unc_up, unc_down;
+      bool finalbin(false);
+
+      for(int i=0; i < 150; i++){
+	float tmp;
+	is >> tmp;
+	if((i %3) == 0) {ptbin.push_back(tmp);  if(tmp==6538.0) finalbin=true;}
+	if((i %3) == 1) {unc_up.push_back(tmp);}
+	if((i %3) == 2) {unc_down.push_back(tmp);}
+	if((i %3) == 2 && finalbin)  break;
+      }
+      
+      etaptmap[eta_min] = ptbin;
+      eta_uncupmap[eta_min] =  unc_up;
+      eta_uncdownmap[eta_min] = unc_down;
+      continue;
+    }
+        
+    if(sline.find(type)!=string::npos) {  found_unc=true;continue;}
+    if(sline=="END") break;
+    if(sline.find("CorrelationGroupUncorrelated")!=string::npos) break;
+    
+  }
+  std::vector<std::map<float, std::vector<float> > > vec_unc;
+  vec_unc.push_back(etaptmap);
+  vec_unc.push_back(eta_uncupmap);
+  vec_unc.push_back(eta_uncdownmap);
+
+  JECUncMap[type] = vec_unc;
+  return;
+  
+}
+
 std::vector<Muon> AnalyzerCore::GetAllMuons(){
 
   std::vector<Muon> out;
@@ -155,6 +291,8 @@ std::vector<Muon> AnalyzerCore::GetAllMuons(){
     mu.SetPOGMediumHIP(muon_ismedium_hip->at(i),muon_ismedium_nohip->at(i));
     mu.SetChi2(muon_normchi->at(i));
     mu.SetIso(muon_PfChargedHadronIsoR04->at(i),muon_PfNeutralHadronIsoR04->at(i),muon_PfGammaIsoR04->at(i),muon_PFSumPUIsoR04->at(i),muon_trkiso->at(i));
+    mu.SetLepIso(muon_PfChargedHadronIsoR04->at(i),muon_PfNeutralHadronIsoR04->at(i),muon_PfGammaIsoR04->at(i));
+    
     mu.SetTrackerLayers(muon_trackerLayers->at(i));
 
     mu.SetMatchedStations(muon_matchedstations->at(i));
@@ -170,6 +308,7 @@ std::vector<Muon> AnalyzerCore::GetAllMuons(){
       Rho,
       mu.EA()
     );
+    
 
     mu.SetFilterBits(muon_filterbits->at(i));
     mu.SetPathBits(muon_pathbits->at(i));
@@ -277,7 +416,8 @@ std::vector<Electron> AnalyzerCore::GetAllElectrons(){
     el.SetPassConversionVeto(electron_passConversionVeto->at(i));
     el.SetNMissingHits(electron_mHits->at(i));
     el.SetRho(Rho);
-    el.SetIsGsfCtfScPixChargeConsistent(electron_isGsfCtfScPixChargeConsistent->at(i));
+    el.SetIsGsfCtfScPixChargeConsistent(electron_isGsfCtfScPixChargeConsistent->at(i),   electron_isGsfScPixChargeConsistent->at(i),electron_isGsfCtfChargeConsistent->at(i));
+
     el.SetR9(electron_r9->at(i));
     el.SetL1Et(electron_l1et->at(i));
 
@@ -316,6 +456,16 @@ std::vector<Electron> AnalyzerCore::GetAllElectrons(){
       Rho,
       el.EA()
     );
+    el.SetEtaWidth(electron_etaWidth->at(i));
+    el.SetPhiWidth(electron_phiWidth->at(i));
+    el.SetDetaIn(electron_dEtaIn->at(i));
+    el.SetSigmaIEtaIE(electron_sigmaIEtaIEta->at(i));
+    el.SetLepIso(electron_chIso03->at(i),electron_nhIso03->at(i),electron_phIso03->at(i));
+    
+    el.SetE15(electron_E15->at(i));
+    el.SetE25(electron_E25->at(i));
+    el.SetE55(electron_E55->at(i));
+
 
     el.SetFilterBits(electron_filterbits->at(i));
     el.SetPathBits(electron_pathbits->at(i));
@@ -490,6 +640,7 @@ double AnalyzerCore::GetIsoFromID(TString  lep_type, TString id, double eta, dou
       }
       TString iso_cut = iso_string.ReplaceAll("ISOB","");
       iso_cut = iso_cut.ReplaceAll("ISOEC","");
+      iso_cut = iso_cut.ReplaceAll("p",".");
 
       std::string iso_s = std::string(iso_cut);
       std::string::size_type sz;  
@@ -549,6 +700,7 @@ double AnalyzerCore::GetIsoFromID(TString  lep_type, TString id, double eta, dou
       } 
       TString iso_cut = iso_string.ReplaceAll("ISOB","");
       iso_cut = iso_cut.ReplaceAll("ISOEC","");
+      iso_cut = iso_cut.ReplaceAll("p",".");
 
       std::string iso_s = std::string(iso_cut);
       std::string::size_type sz;  
@@ -892,7 +1044,7 @@ std::vector<Jet> AnalyzerCore::GetAllJets(){
     jet.SetPxUnSmeared(jet.Px());
     jet.SetPyUnSmeared(jet.Py());
 
-
+    //jet.SetNTracks(jet_vtxNtracks->at(i));
     //==== Jet energy up and down are 1.xx or 0.99, not energy
     jet.SetEnShift( jet_shiftedEnUp->at(i), jet_shiftedEnDown->at(i) );
     if(!IsDATA){
@@ -1468,6 +1620,7 @@ pair<int,double> AnalyzerCore::GetNBJets(vector<Jet> jets, TString WP, TString m
   return make_pair(NBJets_NoSF,-9999.);
 }
 
+
 int AnalyzerCore::GetNBJets2a(TString ID, TString WP){
 
   vector<Jet> this_AllJets = GetAllJets();
@@ -1912,6 +2065,32 @@ std::vector<Jet> AnalyzerCore::ScaleJets(const std::vector<Jet>& jets, int sys){
   return out;
 
 }
+
+
+std::vector<Jet> AnalyzerCore::ScaleJetsIndividualSource(const std::vector<Jet>& jets, int sys, TString source){
+
+  if(!std::count(JECSources.begin(),JECSources.end(), source)) {
+    cout << "[AnalyzerCore::ScaleJetsIndividualSource] source " << source << " was not found" << endl;
+    exit(EXIT_FAILURE);
+  }
+
+  std::vector<Jet> out;
+  for(unsigned int i=0; i<jets.size(); i++){
+
+    Jet this_jet = jets.at(i);
+
+    double get_shift = GetJECUncertainty(source , this_jet.Eta(),this_jet.Pt(), sys);
+    this_jet *= get_shift;
+
+    out.push_back( this_jet );
+  }
+
+  return out;
+
+}
+
+
+
 std::vector<Jet> AnalyzerCore::SmearJets(const std::vector<Jet>& jets, int sys){
 
   std::vector<Jet> out;
@@ -2567,13 +2746,15 @@ void AnalyzerCore::initializeAnalyzerTools(){
   puppiCorr->ReadHistograms();
 
   //==== FakeBackgroundEstimator
-  fakeEst->SetEra(GetEra());
-  fakeEst->ReadHistograms();
-
+  if(Analyzer == "HNL_SignalRegionPlotter"){
+    fakeEst->SetEra(GetEra());
+    fakeEst->ReadHistograms();
+  }
   //==== CFBackgroundEstimator
-  cfEst->SetEra(GetEra());
-  cfEst->ReadHistograms();
-
+  if(Analyzer == "HNL_SignalRegionPlotter"){
+    cfEst->SetEra(GetEra());
+    cfEst->ReadHistograms();
+  }
 }
 
 
@@ -3494,14 +3675,14 @@ bool AnalyzerCore::ConversionSplitting(std::vector<Lepton *> leps,const std::vec
   //  else return false;
   //}
   
-  if(MCSample.Contains("ZGTo")){
-    if(nlep_pt15 ==3) return true;
-    else return false;
-  }
-  else if(MCSample.Contains("DYJet")) {
-    if(nlep_pt15 !=3) return true;
-    else return false;
-  }
+  //if(MCSample.Contains("ZGTo")){
+  //  if(nlep_pt15 ==3) return true;
+  //  else return false;
+  //}
+  //else if(MCSample.Contains("DYJet")) {
+  //  if(nlep_pt15 !=3) return true;
+  //  else return false;
+  //}
 
   return true;
  
@@ -3555,17 +3736,17 @@ bool AnalyzerCore::ConversionVeto_Backup(std::vector<Lepton *> leps,const std::v
   //  return !GENTMatched;
   //}
 
-  if(MCSample.Contains("ZGTo") )   {
-    if(!photon_found) return true;
-    if(!GENTMatched)cout << "GHENT Conv event removed in " << MCSample << endl;
-    cout << "Matched photon pt = " << ph_pt << endl;
-    return GENTMatched;
-  }
-  else if(MCSample.Contains("DYJet")){
-    if(!photon_found) return true;
-    cout << "Matched photon pt = " << ph_pt << endl;
-    return !GENTMatched;
-  }
+  //if(MCSample.Contains("ZGTo") )   {
+  //  if(!photon_found) return true;
+  //  if(!GENTMatched)cout << "GHENT Conv event removed in " << MCSample << endl;
+  //  cout << "Matched photon pt = " << ph_pt << endl;
+  //  return GENTMatched;
+  //}
+  //else if(MCSample.Contains("DYJet")){
+  //  if(!photon_found) return true;
+  //  cout << "Matched photon pt = " << ph_pt << endl;
+  //  return !GENTMatched;
+  //}
 
   return true;
 }
@@ -3617,14 +3798,14 @@ bool AnalyzerCore::ConversionVeto(std::vector<Lepton *> leps,const std::vector<G
 	//	else return !GENTMatched;
   //}
 
-  if(MCSample.Contains("ZGTo") )   {
-    if(leps.back()->Pt()>15.) return true;
-    else return GENTMatched;
-  }
-  else if(MCSample.Contains("DYJet")){
-    if(leps.back()->Pt()>15.) return false;
-		else return !GENTMatched;
-  }
+  //if(MCSample.Contains("ZGTo") )   {
+  //  if(leps.back()->Pt()>15.) return true;
+  //  else return GENTMatched;
+  //}
+  //else if(MCSample.Contains("DYJet")){
+  //  if(leps.back()->Pt()>15.) return false;
+	//	else return !GENTMatched;
+  //}
 
   return true;
 }
@@ -4036,6 +4217,7 @@ void AnalyzerCore::FillHist(TString histname,
     this_hist = new TH2D(histname, "", n_binx, xbins, n_biny, ybins);
     this_hist->SetDirectory(NULL);
     maphist_TH2D[histname] = this_hist;
+    //cout << "CReating TH2D " <<  histname << endl;
   }
 
   this_hist->Fill(value_x, value_y, weight);
@@ -4189,9 +4371,11 @@ void AnalyzerCore::WriteHist(){
     TString this_suffix=this_fullname(0,this_fullname.Last('/'));
     TDirectory *dir = outfile->GetDirectory(this_suffix);
     if(!dir){
+      cout << "Making outdir  " << this_suffix << endl;
       outfile->mkdir(this_suffix);
     }
     outfile->cd(this_suffix);
+    cout << "Writing " << this_name << endl;
     mapit->second->Write(this_name);
     outfile->cd();
   }

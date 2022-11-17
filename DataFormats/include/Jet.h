@@ -26,6 +26,10 @@ public:
   inline double NeutralHadEnergyFraction() const { return j_neutralHadronEnergyFraction;}
   inline double MuonEnergyFraction() const { return j_muonEnergyFraction;}
 
+  inline double NVtxTracks() const { return j_nvtx_tracks;}
+  void SetNTracks(double v);
+
+
   void SetMultiplicities(double cM, double nM);
   void SetPileupJetId(double v);
   inline double PileupJetId() const { return j_PileupJetId; }
@@ -103,6 +107,7 @@ private:
   double j_cJetNN_corr;
   double j_cJetNN_res;
   bool j_tightJetID, j_tightLepVetoJetID;
+  double j_nvtx_tracks;
 
   ClassDef(Jet,1)
 };

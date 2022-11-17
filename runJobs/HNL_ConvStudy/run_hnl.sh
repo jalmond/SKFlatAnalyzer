@@ -12,12 +12,12 @@ declare  -a era_list=("2016postVFP" "2016preVFP" "2017" "2018")
 declare  -a era_list=("2018")
 
 
-if [[ $1 == "MC" ]]; then
+if [[ $1 == "WG" ]]; then
     
 
     for i in "${era_list[@]}"
     do
-        SKFlat.py -a $analyzer  -l  $mcpath/MC.txt  -n 100  --nmax 200   -e ${i}  --skim SkimTree_HNMultiLep &
+        SKFlat.py -a $analyzer  -l  $mcpath/WG.txt  -n 20  --nmax 10   -e ${i}  --skim SkimTree_HNMultiLep &
 
     done
 

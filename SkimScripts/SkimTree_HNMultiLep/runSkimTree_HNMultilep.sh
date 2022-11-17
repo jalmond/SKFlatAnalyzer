@@ -2,11 +2,13 @@ analyzer=SkimTree_HNMultiLep
 rundir=runSkims
 mcpath=${SKFlat_WD}/SkimScripts/${analyzer}/Bkg/
 datapath=${SKFlat_WD}/SkimScripts/${analyzer}/data_lists_multilep/
-njobs=100
+sigpath=${SKFlat_WD}/SkimScripts/${analyzer}/Signals/
+njobs=400
 njobs_data=100
-nmax=100
+nmax=250
 skim=' '
 declare  -a era_list=("2016postVFP" "2016preVFP" "2017" "2018")
+declare  -a era_list=("2017")
 
 if [[ $1 == "DATA" ]]; then
     for i in "${era_list[@]}"
@@ -29,30 +31,8 @@ if [[ $1 == "MC" ]]; then
     for i in "${era_list[@]}"
     do
         SKFlat.py -a $analyzer  -l $mcpath/${i}/MC.txt  -n ${njobs}  --nmax ${nmax}   -e ${i} &
-    done
-
-fi
-
-if [[ $1 == "Top" ]]; then
-    for i in "${era_list[@]}"
-    do
-        SKFlat.py -a $analyzer  -i TTLJ_powheg  -n 200  --nmax ${nmax}   -e ${i} &
-    done
-
-fi
-
-if [[ $1 == "TTLL" ]]; then
-    for i in "${era_list[@]}"
-    do
-        SKFlat.py -a $analyzer  -i TTLL_powheg  -n 1000  --nmax ${nmax}   -e ${i} &
-    done
-
-fi
-
-if [[ $1 == "ZZ" ]]; then
-    for i in "${era_list[@]}"
-    do
-        SKFlat.py -a $analyzer  -i ZZTo4L_powheg  -n 1000  --nmax ${nmax}   -e ${i} &
+	SKFlat.py -a $analyzer  -l $mcpath/WJet.txt  -n 1000  --nmax ${nmax}   -e ${i} &
+		
     done
 
 fi
