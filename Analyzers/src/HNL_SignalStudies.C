@@ -861,15 +861,6 @@ void HNL_SignalStudies::executeEvent(){
     std::vector<Jet> JetCollLoose                        = GetAK4Jets(jets_tmp,     15., 4.7, true,  0.4,0.8,"",   ElectronCollV,MuonCollV, FatjetColl);
     
 
-    for(auto ij : JetColl) {
-      cout << "Jet pt = " << ij.Pt() << " " << ij.Eta() << endl;
-      for (auto isource : JECSources){
-	cout << isource  << " unc = " <<  GetJECUncertainty(isource , ij.Eta(),ij.Pt(), true);
-      }
-    }
-
-    continue;
-
     std::vector<Lepton *> leps_veto  = MakeLeptonPointerVector(MuonCollV,ElectronCollV);
 
     std::vector<Tau>        TauColl        = GetTaus     (leps_veto,param.Tau_Veto_ID,20., 2.3);

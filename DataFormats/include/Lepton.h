@@ -49,15 +49,18 @@ public:
   void SetJetPtRatio(double ptr);
   inline double lep_jet_ptratio() const {return j_lep_jetptratio;}
 
-
+  
 
   void SetdZ(double dZ, double dZerr);
   inline double dZ() const {return j_dZ;}
   inline double dZerr() const {return j_dZerr;}
 
   void SetIP3D(double IP3D, double IP3Derr);
+
+  inline double SIP() const {return j_IP3Derr>0?fabs(j_IP3D/j_IP3Derr):0.0;}
   inline double IP3D() const {return j_IP3D;}
   inline double IP3Derr() const {return j_IP3Derr;}
+
 
   //==== AbsIso will be set in Muon/Electron,
   //==== and use SetRelIso to save calculated RelIso
@@ -71,11 +74,15 @@ public:
   inline double IsoNHad() const {return j_Iso_NHad;}
   inline double IsoPhHad() const {return j_Iso_PhHad;}
 
+  
 
   //==== SUSY mini Iso has same formula for Muon and Electron
   void SetMiniIso(double ch, double nh, double ph, double pu, double rho, double EA);
   inline double MiniRelIso() const {return j_MiniRelIso;}
 
+  inline double MiniRelIsoCharged() const {return j_MiniIso_ChHad/this->Pt();}
+  inline double MiniRelIsoNeutral() const {return (j_MiniRelIso*this->Pt() - j_MiniIso_ChHad)/this->Pt();}
+  
   void SetLepIso(double ch, double nh, double ph);
 
 

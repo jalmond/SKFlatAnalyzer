@@ -319,8 +319,8 @@ public:
   bool FindHEMElectron(Electron electron);
 
   //============ JEC Uncertainty
-  float GetJECUncertainty(TString type, float eta, float pt, int sys);
-  void  SetupJECUncertainty(TString type);
+  float GetJECUncertainty(TString source, TString JetType,  float eta, float pt, int sys);
+  void  SetupJECUncertainty(TString source , TString JetType="AK4PFchs");
 
   //==== Plotting
 
@@ -329,7 +329,11 @@ public:
   std::map< TString, TH3D* > maphist_TH3D;
 
   // Maps for JEC
-  std::map<TString, std::vector<std::map<float, std::vector<float> > > > JECUncMap;
+  std::map<TString, std::vector<std::map<float, std::vector<float> > > > AK4CHSJECUncMap;
+  std::map<TString, std::vector<std::map<float, std::vector<float> > > > AK4PUPPIJECUncMap;
+  std::map<TString, std::vector<std::map<float, std::vector<float> > > > AK8CHSJECUncMap;
+  std::map<TString, std::vector<std::map<float, std::vector<float> > > > AK8PUPPIJECUncMap;
+
   vector<TString> JECSources;
 
 
