@@ -4,7 +4,8 @@ R__LOAD_LIBRARY(/cvmfs/cms.cern.ch/slc7_amd64_gcc900/cms/cmssw/CMSSW_11_3_0/exte
 
 void test(TString era, bool isdata, TString sample, TString flag){ //test("2017",false,"DYJets","DEBUG")
 
-  HNL_ControlRegionPlotter m;
+  //HNL_ControlRegionPlotter m;
+  HNL_SignalRegionPlotter m;
 
   m.SetTreeName("recoTree/SKFlat");
 
@@ -25,6 +26,9 @@ void test(TString era, bool isdata, TString sample, TString flag){ //test("2017"
   }
   else if(era=="2017" && !isdata && sample=="DYJets"){
     m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_HNMultiLep/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/2022_10_09_041952/SKFlatNtuple_2017_MC_6.root");
+  }
+  else if(era=="2017" && !isdata && sample=="DYTypeI"){
+    m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC/DYTypeIHeavyN-DFmix_Dilepton_MN500_TuneCP5_13TeV-amcatnlo-pythia8/220801_130040/0000/SKFlatNtuple_2017_MC_1.root");
   }
   m.SetOutfilePath("hists.root");
   m.Init();
