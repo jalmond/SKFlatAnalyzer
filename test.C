@@ -20,7 +20,8 @@ void test(TString era, bool isdata, TString sample, TString flag){ //test("2017"
     m.IsFastSim = false;
   }
   m.SetEra(era);
-  m.Userflags = {flag};
+  TObjArray* flags = flag.Tokenize(",");
+  for(int i=0; i<flags->GetEntries(); i++) m.Userflags.push_back(((TObjString*)flags->At(i))->String()); //JH : https://root-forum.cern.ch/t/split-tstring-by-delimeter-in-root-c/18228
   if(era=="2017" && isdata && sample=="DoubleEG"){
     m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/DATA_SkimTree_HNMultiLep/DoubleEG/periodE/2022_08_23_004058/SKFlatNtuple_2017_DATA_3.root");
   }
@@ -34,7 +35,9 @@ void test(TString era, bool isdata, TString sample, TString flag){ //test("2017"
   m.Init();
   m.initializeAnalyzer();
   m.initializeAnalyzerTools();
+  cout << "initializeAnalyzerTools();" << endl;
   m.SwitchToTempDir();
+  cout << "SwitchToTempDir();" << endl;
   m.Loop();
 
   m.WriteHist();

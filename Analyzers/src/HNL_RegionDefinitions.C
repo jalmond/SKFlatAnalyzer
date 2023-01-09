@@ -82,7 +82,6 @@ void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq, s
     
     if(leps.size() ==2)  FillEventCutflow(HNL_LeptonCore::ChannelDepDilep, weight_channel, GetChannelString(dilep_channel) +"_Dilep", "ChannelCutFlow/"+param.DefName,param.WriteOutVerbose);
     
-
     if(RunCF){
       if(dilep_channel == MuMu) continue;
 
@@ -344,7 +343,7 @@ TString HNL_RegionDefinitions::RunSignalRegionAK8String(HNL_LeptonCore::Channel 
     dijetmass = dijetmass_tmp;
     m = emme;
         }
-      }
+      } //JH : not using dijetmass for now
       
       Particle N1cand = AK8_JetColl[m] + *leps[0];
       
@@ -354,7 +353,7 @@ TString HNL_RegionDefinitions::RunSignalRegionAK8String(HNL_LeptonCore::Channel 
       
       double MN1 = (N1cand.M() > 2000.) ? 1999. : N1cand.M();
       
-      if(MN1 > 600 && leps[0]->Pt() < 140)   return "false";
+      if(MN1 > 600 && leps[0]->Pt() < 140)   return "false"; //JH : if N1 mass > 600 GeV, then l1pt also should be > 140 GeV
       
       FillHist( "LimitSR1/"+param.Name+"/N1Mass_Central",  MN1,  w, 7, ml1jbins, "Reco M_{l1jj}");
       FillHist( "LimitSR1/"+param.Name+"/Q_N1Mass_Central",  leps[0]->Charge()*MN1,  w, 12, Qml1jbins, "Reco M_{l1jj}");
@@ -367,7 +366,7 @@ TString HNL_RegionDefinitions::RunSignalRegionAK8String(HNL_LeptonCore::Channel 
         if(MN1 < ml1jbins[ibin]) return "SR1_bin"+to_string(ibin);
       }
       
-      return "true";
+      return "false"; //JH : it was originally "true" but then I think it confuses the labels FIXME how to include MN above 2000 GeV?
     }
   }
       }
@@ -409,11 +408,11 @@ TString HNL_RegionDefinitions::RunSignalRegionWWString(HNL_LeptonCore::Channel c
 
   bool use_leadjets=true;
   double ll_dphi = fabs(TVector2::Phi_mpi_pi( ( (*leps[0]).Phi() - (*leps[1]).Phi() )) );
-  if(ll_dphi < 2.) return false;
+  if(ll_dphi < 2.) return "false";
   FillEventCutflow(HNL_LeptonCore::SR2, w, "SR2_DPhi",param.Name,param.WriteOutVerbose);
   
-  if( ( (*leps[0]) + (*leps[1]) ).M() < 20.) return false;
-  if(JetColl.size() < 2) return false;
+  if( ( (*leps[0]) + (*leps[1]) ).M() < 20.) return "false";
+  if(JetColl.size() < 2) return "false";
   FillEventCutflow(HNL_LeptonCore::SR2, w, "SR2_DiJet",param.Name,param.WriteOutVerbose);
 
   double maxDiJetDeta=0.;
@@ -431,17 +430,17 @@ TString HNL_RegionDefinitions::RunSignalRegionWWString(HNL_LeptonCore::Channel c
   }
   if(use_leadjets){ijet1=0;ijet2=1;}
 
-  if(maxDiJetDeta < 2.5) return false;
+  if(maxDiJetDeta < 2.5) return "false";
   FillEventCutflow(HNL_LeptonCore::SR2, w, "SR2_DiJetEta",param.Name,param.WriteOutVerbose);
 
   Particle JJ = JetColl[ijet1] + JetColl[ijet2];
   FillEventCutflow(HNL_LeptonCore::SR2, w, "SR2_DiJetMass",param.Name,param.WriteOutVerbose);
-  if(JJ.M() < 750) return false;
+  if(JJ.M() < 750) return "false";
 
   double Av_JetEta= 0.5*(JetColl[ijet1].Eta()+ JetColl[ijet2].Eta());
   double zeppenfeld = TMath::Max((*leps[0]).Eta()  - Av_JetEta , (*leps[1]).Eta()  - Av_JetEta ) /maxDiJetDeta;
 
-  if(zeppenfeld > 0.75) return false;
+  if(zeppenfeld > 0.75) return "false";
 
 
   if(!PassVBF(JetColl,leps,750., true)) return "false";
@@ -477,7 +476,7 @@ TString HNL_RegionDefinitions::RunSignalRegionWWString(HNL_LeptonCore::Channel c
 
 
       if (HT/leps[0]->Pt() < 1)      return "SR2_bin1";
-      return "SR2_bin2";
+			else return "SR2_bin2";
     }
   }
 

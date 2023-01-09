@@ -426,7 +426,7 @@ if len(EventLists) > 0 and args.Analyzer == 'SkimTree_EventSkim':
 
 
 
-for InputSample in InputSamples:
+for InputSample in InputSamples[:]: #JH
 
   IsDATA = False
   DataPeriod = ""
@@ -439,11 +439,13 @@ for InputSample in InputSamples:
   tmpfilepath = SAMPLE_DATA_DIR+'/For'+SampleHOSTNAME+'/'+SkimString+InputSample+'.txt'
   if IsDATA:
     tmpfilepath = SAMPLE_DATA_DIR+'/For'+SampleHOSTNAME+'/'+SkimString+InputSample+'_'+DataPeriod+'.txt'
+    #print tmpfilepath
 
   if not os.path.exists(tmpfilepath):
     print (tmpfilepath + ' is missing: ==> skipping ')
-    print('removing' + InputSample+ ' from list')
-    InputSamples.remove(InputSample)
+    print('removing ' + InputSample+ ' from list')
+    if IsDATA: InputSamples.remove(tmp) #JH
+    else: InputSamples.remove(InputSample) #JH removing and interating with list is problematic; e.g. MuonEG:B is deleted, then it starts from MuonEG:D. MuonEG:C remains. This invokes another error.
 
 if len(InputSamples) == 0:
   sys.exit()

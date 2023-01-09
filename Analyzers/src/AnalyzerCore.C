@@ -7,11 +7,9 @@ AnalyzerCore::AnalyzerCore(){
   
   mcCorr = new MCCorrection();
   puppiCorr = new PuppiSoftdropMassCorr();
-  if(Analyzer == "HNL_SignalRegionPlotter"){
-    fakeEst = new FakeBackgroundEstimator();
-    cfEst = new CFBackgroundEstimator();
-    pdfReweight = new PDFReweight();
-  }
+  fakeEst = new FakeBackgroundEstimator();
+  cfEst = new CFBackgroundEstimator();
+  pdfReweight = new PDFReweight();
   muonGE = new GeneralizedEndpoint();
   muonGEScaleSyst = new GEScaleSyst();
 
@@ -63,11 +61,9 @@ AnalyzerCore::~AnalyzerCore(){
 
   if(mcCorr) delete mcCorr;
   if(puppiCorr) delete puppiCorr;
-  if(Analyzer == "HNL_SignalRegionPlotter"){
-    if(fakeEst) delete fakeEst;
-    if(cfEst) delete cfEst;
-    if(pdfReweight) delete pdfReweight;
-  }
+  if(fakeEst) delete fakeEst;
+  if(cfEst) delete cfEst;
+  if(pdfReweight) delete pdfReweight;
   if(muonGE) delete muonGE;
   if(muonGEScaleSyst) delete muonGEScaleSyst;
 
@@ -2538,7 +2534,6 @@ double AnalyzerCore::GetFakeWeight(std::vector<Lepton *> leps, AnalyzerParameter
     TString ID1 =  (leps[0]->LeptonFlavour() == Lepton::ELECTRON) ?  _param.Electron_Tight_ID : _param.Muon_Tight_ID;
     TString ID2 =  (leps[1]->LeptonFlavour() == Lepton::ELECTRON) ?  _param.Electron_Tight_ID : _param.Muon_Tight_ID;
 
-
     // TMP FIX TO PT 
     //if (leps[1]->LeptonFlavour() == Lepton::ELECTRON && leps[1]->Pt() < 20) this_fr2*= 1.2;
     if (leps[1]->LeptonFlavour() == Lepton::MUON && leps[1]->Pt() < 20) this_fr2*= 1.1; //JH : optimize this value
@@ -2806,15 +2801,11 @@ void AnalyzerCore::initializeAnalyzerTools(){
   puppiCorr->ReadHistograms();
 
   //==== FakeBackgroundEstimator
-  if(Analyzer == "HNL_SignalRegionPlotter"){
-    fakeEst->SetEra(GetEra());
-    fakeEst->ReadHistograms();
-  }
+  fakeEst->SetEra(GetEra());
+  fakeEst->ReadHistograms();
   //==== CFBackgroundEstimator
-  if(Analyzer == "HNL_SignalRegionPlotter"){
-    cfEst->SetEra(GetEra());
-    cfEst->ReadHistograms();
-  }
+  cfEst->SetEra(GetEra());
+  cfEst->ReadHistograms();
 }
 
 
