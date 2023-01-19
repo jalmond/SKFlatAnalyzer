@@ -74,7 +74,6 @@ void HNL_ObjectStudies::executeEvent(){
     
     vector<Gen> gen_lep= GetGenLepronsSignal();
         
-    
     std::vector<Electron>   ElectronCollV = GetElectrons(param.Electron_Veto_ID, 10., 2.5);
     std::vector<Muon>       MuonCollV     = GetMuons    (param.Muon_Veto_ID, 5., 2.4);
 
@@ -83,8 +82,8 @@ void HNL_ObjectStudies::executeEvent(){
 
     std::vector<Lepton *> leps_veto  = MakeLeptonPointerVector(MuonCollV,ElectronCollV);
 
-    if(SameCharge(leps_veto))    FillHist ("DiLepton_Veto_"+channel, 1, weight, 2, 0., 2.,"");
-    else continue;
+    if(leps_veto.size()==2)    FillHist ("DiLepton_Veto_"+channel, 1, weight, 2, 0., 2.,"");
+
 
     std::vector<Electron>   ElectronCollAll = GetElectrons( "MVAID", 10., 2.5);
     std::vector<Muon>       MuonCollAll     = GetMuons    (  "MVAID", 10., 2.4);
@@ -137,159 +136,366 @@ void HNL_ObjectStudies::executeEvent(){
     std::vector<Electron>   ElectronCollPrompt;
     std::vector<Muon>       MuonCollPrompt;
 
-
-    if(!IsData){
-      if (!MCSample.Contains("Type")){
-	
-	ElectronCollFake = SkimLepColl(ElectronColl, gens, param, "HFake");
-	ElectronCollConv = SkimLepColl(ElectronColl, gens, param, "NHConv");
-	ElectronCollCF = SkimLepColl(ElectronColl, gens, param, "CF");
-	ElectronCollPrompt = SkimLepColl(ElectronColl, gens, param, "PromptNoCF");
-	
-	FillAllElectronPlots("Prompt", "Electrons"  , ElectronCollPrompt , weight);
-	FillAllElectronPlots("Fake", "Electrons"  , ElectronCollFake , weight);
-	FillAllElectronPlots("Conv", "Electrons"  , ElectronCollConv , weight);
-	FillAllElectronPlots("CF", "Electrons"  , ElectronCollCF , weight);
-	
-	MuonCollFake = SkimLepColl(MuonColl, gens, param, "HFake");
-	MuonCollConv = SkimLepColl(MuonColl, gens, param, "NHConv");
-	MuonCollPrompt = SkimLepColl(MuonColl, gens, param, "Prompt");
-	FillAllMuonPlots("Prompt", "Muons"  , MuonCollPrompt , weight);
-	FillAllMuonPlots("Fake", "Muons"  , MuonCollFake , weight);
-	FillAllMuonPlots("Conv", "Muons"  , MuonCollConv , weight);
-	
+    if(HasFlag("LeptonTypes")){
+      if(!IsData){
+	if (!MCSample.Contains("Type")){
+	  
+	  ElectronCollFake = SkimLepColl(ElectronColl, gens, param, "HFake");
+	  ElectronCollConv = SkimLepColl(ElectronColl, gens, param, "NHConv");
+	  ElectronCollCF = SkimLepColl(ElectronColl, gens, param, "CF");
+	  ElectronCollPrompt = SkimLepColl(ElectronColl, gens, param, "PromptNoCF");
+	  
+	  FillAllElectronPlots("Prompt", "Electrons"  , ElectronCollPrompt , weight);
+	  FillAllElectronPlots("Fake", "Electrons"  , ElectronCollFake , weight);
+	  FillAllElectronPlots("Conv", "Electrons"  , ElectronCollConv , weight);
+	  FillAllElectronPlots("CF", "Electrons"  , ElectronCollCF , weight);
+	  
+	  MuonCollFake = SkimLepColl(MuonColl, gens, param, "HFake");
+	  MuonCollConv = SkimLepColl(MuonColl, gens, param, "NHConv");
+	  MuonCollPrompt = SkimLepColl(MuonColl, gens, param, "Prompt");
+	  FillAllMuonPlots("Prompt", "Muons"  , MuonCollPrompt , weight);
+	  FillAllMuonPlots("Fake", "Muons"  , MuonCollFake , weight);
+	  FillAllMuonPlots("Conv", "Muons"  , MuonCollConv , weight);
+	  
+	}
+	else{
+	  FillAllMuonPlots("Signal", "Muons"  , MuonColl , weight);
+	  FillAllElectronPlots("Signal", "Electrons"  , ElectronColl , weight);
+	}      
       }
-      else{
-	FillAllMuonPlots("Signal", "Muons"  , MuonColl , weight);
-	FillAllElectronPlots("Signal", "Electrons"  , ElectronColl , weight);
-      }      
+      continue;
     }
-
-
-    continue;
+    
     std::vector<Lepton *> LepsAll  = (dilep_channel==EE) ? MakeLeptonPointerVector(ElectronColl) : MakeLeptonPointerVector(MuonColl);
 
-    if(LepsMVAID.size() == 2)     FillHist ("DiLepton_MVA2_"+channel, 1, weight, 2, 0., 2.,"");
-    
+    if(!CheckLeptonFlavourForChannel(dilep_channel, LepsAll)) continue;
 
     if (PassTriggerSelection(dilep_channel, ev, LepsAll,"Full",false) && SameCharge(LepsAll)) {
-            
 
+      if(!PassMETFilter()) continue;
+
+      std::vector<Jet> jets_tmp     = GetJets   ( param, param.Jet_ID, 10., 5.);
+
+      std::vector<FatJet> fatjets_tmp                 = GetFatJets(param, param.FatJet_ID, 200., 5.);
+      std::vector<FatJet> AK8_JetColl                  = SelectAK8Jets(fatjets_tmp, 200., 5., true,  1., false, -999, false, 0., 20000., ElectronCollV, MuonCollV);
+      std::vector<Jet> JetCollLoose                    = SelectAK4Jets(jets_tmp,     15., 4.7, true,  0.4,0.8, "",   ElectronCollV,MuonCollV, AK8_JetColl);
+      
+      TString PUIDWP="";
+      std::vector<Jet> JetColl                           = SelectAK4Jets(jets_tmp,     20., 2.7, true,  0.4,0.8, PUIDWP,   ElectronCollV,MuonCollV, AK8_JetColl);
+      std::vector<Jet> VBF_JetColl                       = SelectAK4Jets(jets_tmp,     30., 4.7, true,  0.4,0.8, PUIDWP,  ElectronCollV,MuonCollV, AK8_JetColl);  
+      
+      std::vector<Jet> BJetColltmp                       = SelectAK4Jets(jets_tmp,     20., 2.4, true,  0.4,0.8, "",   ElectronCollV,MuonCollV, AK8_JetColl);
+
+      //if((JetColl.size() + AK8_JetColl.size() ) == 0 ) continue;
+
+      JetTagging::Parameters param_jets = JetTagging::Parameters(JetTagging::DeepJet, JetTagging::Medium, JetTagging::incl, JetTagging::mujets);
+      
+      // Get BJets  and EV weight to corr BTag Eff                                                                                                                              
+      std::vector<Jet> BJetColl    = SelectBJets(param, BJetColltmp, param_jets);
+      double sf_btag               = GetBJetSF(param, BJetColltmp, param_jets);
+      weight*= sf_btag;
+      
       FillHist ("Trigger_"+GetChannelString(dilep_channel), 1, weight, 2, 0., 2.,"");
 
       Particle ll =  (*LepsAll[0]) + (*LepsAll[1]);
       if(ll.M() < 10) continue;
       FillHist ("LowMassCut_"+GetChannelString(dilep_channel), 1, weight, 2, 0., 2.,"");
 
-      if (SameCharge(MuonColl)) {
-	
-	FillHist ("SameSignDilep_"+GetChannelString(dilep_channel), 1, weight, 2, 0., 2.,"");
+      vector<Muon> MuonTopColl;
+      vector<Muon> MuonHNLColl;
+      vector<Muon> MuonV2Coll;
 
-	vector<Muon> MuonFakePass;
-	FillAllMuonPlots("SS", "Muons"  , MuonColl , weight);
-	vector<double> mva_cut = {-1, -0.5, 0., 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.95};
+      int nFakeMu(0);
+      for(auto imu: MuonColl) {
 	
-	for(int i=0 ; i < mva_cut.size(); i++){
-	  if(MuonColl[0].MVA() > mva_cut[i] && MuonColl[1].MVA() > mva_cut[i])    FillHist( "Vec/FakeMVAMuonColl", i+1,  weight,15, 0., 15,"HNTight");
-	  if(MuonColl[0].MVA() > 0.65 && MuonColl[1].MVA() > 0.65)    {
-	    if(MuonColl[0].hnl_mva_conv()  > mva_cut[i] && MuonColl[1].hnl_mva_conv()  )   FillHist( "Vec/ConvMVAMuonColl", i+1,  weight,15, 0., 15,"HNTight");
-
-	  }
-	}
-
-	if( MuonColl[0].PassFakeMVA(0.4,0.8,0.4,0.8) && MuonColl[1].PassFakeMVA(0.4,0.8,0.4,0.8))    {
-	  
-	  FillAllMuonPlots("PassFake", "Muons"  , MuonColl , weight);
-
-	  if(MuonColl[0].hnl_mva_conv() > -0.8 && MuonColl[1].hnl_mva_conv() > -0.8) FillHist( "Vec/TightMuonColl", 2,  weight,5, 0., 5,"HNTight");
-	}
+	// Fill vector with tighter IDs
+	if(imu.PassID("HNL_TopMVA_MM")) MuonTopColl.push_back(imu);                                                                     
+	if(imu.PassID("HNL_ULID_"+GetYearString())) MuonHNLColl.push_back(imu);                                                                     
+	if(imu.PassID("HNTightV2")) MuonV2Coll.push_back(imu);
 	
-	if(MuonColl[0].PassID("HNTightV2") && MuonColl[1].PassID("HNTightV2"))   FillHist( "Vec/TightMuonColl", 1,  weight,5, 0., 5,"HNTight");
-      
-	
+        int MulepType = GetLeptonType_JH(imu, gens);
+        if(imu.IsFake( MulepType)) nFakeMu++;
+
       }
       
+      if (nFakeMu==0 && dilep_channel == MuMu) continue;
+      
+      for(auto imu: MuonColl){
+
+	int MulepType = GetLeptonType_JH(imu, gens);
+	FillHist("LepType/AllMuon", MulepType,   weight,12, -6., 6.);
+	
+	TString JetFlavour = imu.CloseJet_Flavour();
+
+	FillHist("JetType/AllMuon", imu.CloseJet_FlavourInt(),   weight,6, 0., 6.);
+
+        if(imu.IsFake( GetLeptonType_JH(imu, gens))) {
+  
+	  FillHist("JetType/FakeMuon", imu.CloseJet_FlavourInt(),   weight,6, 0., 6.);
+	  
+	  FillHist("TypeVsFlavour/FakeMuon", MulepType,   weight,10, -5., 5.);
+          if(JetFlavour == "LF")       FillHist("TypeVsFlavour/FakeMuonLF", MulepType,   weight,10, -5., 5.);
+          else  if(JetFlavour == "HF") FillHist("TypeVsFlavour/FakeMuonHF", MulepType,   weight,10, -5., 5.);
+
+          if(SameCharge(MuonColl)) {
+	    FillHist("TypeVsFlavour/AllSSFakeMuon", MulepType,   weight,10, -5., 5.);
+            if(JetFlavour == "LF")       FillHist("TypeVsFlavour/SSFakeMuonLF", MulepType,   weight,10, -5., 5.);
+            else  if(JetFlavour == "HF") FillHist("TypeVsFlavour/SSFakeMuonHF", MulepType,   weight,10, -5., 5.);
+	  }
+	}
+      } /// Loop over MVA Loose Muon coll
+      
+      
+      if (SameCharge(MuonColl))  {
+
+	FillHist ("SameSignDilep_"+GetChannelString(dilep_channel), 0, weight, 5, 0., 5.,"");
+	if (SameCharge(MuonTopColl))  FillHist ("SameSignDilep_"+GetChannelString(dilep_channel), 1, weight, 5, 0., 5.,"");
+	if (SameCharge(MuonHNLColl))  FillHist ("SameSignDilep_"+GetChannelString(dilep_channel), 2, weight, 5, 0., 5.,"");
+	if (SameCharge(MuonV2Coll)) FillHist ("SameSignDilep_"+GetChannelString(dilep_channel), 3, weight, 5, 0., 5.,"");
+	
+	TString Jet1Flavour = MuonColl[0].CloseJet_Flavour();
+	TString Jet2Flavour = MuonColl[1].CloseJet_Flavour();
+	
+	if(MuonColl[0].IsFake( GetLeptonType_JH(MuonColl[0], gens)) && MuonColl[1].IsPrompt( GetLeptonType_JH(MuonColl[1], gens)) ) {
+	  
+	  FillHist("TypeVsFlavour/Muon", GetLeptonType_JH(MuonColl[0], gens),   weight, 10, -5., 5.);
+	  if(Jet1Flavour == "LF")      FillHist("TypeVsFlavour/MuonLF", GetLeptonType_JH(MuonColl[0], gens),   weight, 10, -5., 5.);
+	  else if(Jet1Flavour == "HF") FillHist("TypeVsFlavour/MuonHF", GetLeptonType_JH(MuonColl[0], gens),   weight,10, -5., 5.);
+	  
+	  FillHist ("SameSignDilep_"+GetChannelString(dilep_channel)+"_"+Jet1Flavour+"_Fake", 0, weight, 5, 0., 5.,"");
+	  if (SameCharge(MuonTopColl))  FillHist ("SameSignDilep_"+GetChannelString(dilep_channel)+"_"+Jet1Flavour+"_Fake", 1, weight, 5, 0., 5.,"");
+	  if (SameCharge(MuonHNLColl))  FillHist ("SameSignDilep_"+GetChannelString(dilep_channel)+"_"+Jet1Flavour+"_Fake", 2, weight, 5, 0., 5.,"");
+	  if (SameCharge(MuonV2Coll)) FillHist ("SameSignDilep_"+GetChannelString(dilep_channel)+"_"+Jet1Flavour+"_Fake", 3, weight, 5, 0., 5.,"");
+	}
+	if(MuonColl[1].IsFake( GetLeptonType_JH(MuonColl[1], gens)) && MuonColl[0].IsPrompt( GetLeptonType_JH(MuonColl[0], gens)) ) {
+
+	  FillHist("TypeVsFlavour/Muon", GetLeptonType_JH(MuonColl[1], gens),   weight,10, -5., 5.);
+          if(Jet2Flavour == "LF")      FillHist("TypeVsFlavour/MuonLF", GetLeptonType_JH(MuonColl[1], gens),   weight,10, -5., 5.);
+          else if(Jet2Flavour == "HF") FillHist("TypeVsFlavour/MuonHF", GetLeptonType_JH(MuonColl[1], gens),   weight,10, -5., 5.);
+	  
+	  FillHist ("SameSignDilep_"+GetChannelString(dilep_channel) +"_"+Jet2Flavour+"_Fake", 0, weight, 5, 0., 5.,"");
+	  if (SameCharge(MuonTopColl))  FillHist ("SameSignDilep_"+GetChannelString(dilep_channel) +"_"+Jet2Flavour+"_Fake", 1, weight, 5, 0., 5.,"");
+	  if (SameCharge(MuonHNLColl))  FillHist ("SameSignDilep_"+GetChannelString(dilep_channel) +"_"+Jet2Flavour+"_Fake", 2, weight, 5, 0., 5.,"");
+	  if (SameCharge(MuonV2Coll)) FillHist ("SameSignDilep_"+GetChannelString(dilep_channel) +"_"+Jet2Flavour+"_Fake", 3, weight, 5, 0., 5.,"");
+	}
+	
+        if(MuonColl[0].IsFake( GetLeptonType_JH(MuonColl[0], gens)) && MuonColl[1].IsFake( GetLeptonType_JH(MuonColl[1], gens))){
+
+	  FillHist("TypeVsFlavour/MuonFF", GetLeptonType_JH(MuonColl[0], gens),   weight,10, -5., 5.);
+	  FillHist("TypeVsFlavour/MuonFF", GetLeptonType_JH(MuonColl[1], gens),   weight,10, -5., 5.);
+          if(Jet1Flavour == "LF")      FillHist("TypeVsFlavour/MuonFF_LF", GetLeptonType_JH(MuonColl[0], gens),   weight,10, -5., 5.);
+          else if(Jet1Flavour == "HF") FillHist("TypeVsFlavour/MuonFF_HF", GetLeptonType_JH(MuonColl[0], gens),   weight,10, -5., 5.);
+	  
+          if(Jet2Flavour == "LF")      FillHist("TypeVsFlavour/MuonFF_LF", GetLeptonType_JH(MuonColl[1], gens),   weight,10, -5., 5.);
+          else if(Jet2Flavour == "HF") FillHist("TypeVsFlavour/MuonFF_HF", GetLeptonType_JH(MuonColl[1], gens),   weight,10, -5., 5.);
+
+	  FillHist ("SameSignDilep_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_"+Jet2Flavour+"_Fake", 0, weight, 5, 0., 5.,"");
+	  if (SameCharge(MuonTopColl))  FillHist ("SameSignDilep_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_"+Jet2Flavour+"_Fake", 1, weight, 5, 0., 5.,"");
+          if (SameCharge(MuonHNLColl))  FillHist ("SameSignDilep_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_"+Jet2Flavour+"_Fake", 2, weight, 5, 0., 5.,"");
+          if (SameCharge(MuonV2Coll)) FillHist ("SameSignDilep_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_"+Jet2Flavour+"_Fake", 3, weight, 5, 0., 5.,"");
+        }
+
+
+	if(BJetColl.size() == 0) {
+	  FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel), 0, weight, 5, 0., 5.,"");
+	  if (SameCharge(MuonTopColl))  FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel), 1, weight, 5, 0., 5.,"");
+	  if (SameCharge(MuonHNLColl))  FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel), 2, weight, 5, 0., 5.,"");
+	  if (SameCharge(MuonV2Coll)) FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel), 3, weight, 5, 0., 5.,"");
+	  
+	  
+	  if(MuonColl[0].IsFake( GetLeptonType_JH(MuonColl[0], gens)) && MuonColl[1].IsPrompt( GetLeptonType_JH(MuonColl[1], gens)) ) {
+	    if (SameCharge(MuonTopColl))  FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_Fake", 1, weight, 5, 0., 5.,"");
+	    if (SameCharge(MuonHNLColl))  FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_Fake", 2, weight, 5, 0., 5.,"");
+	    if (SameCharge(MuonV2Coll)) FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_Fake", 3, weight, 5, 0., 5.,"");
+	  }
+	  if(MuonColl[1].IsFake( GetLeptonType_JH(MuonColl[1], gens)) && MuonColl[0].IsPrompt( GetLeptonType_JH(MuonColl[0], gens)) ) {
+	    if (SameCharge(MuonTopColl))  FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel) +"_"+Jet2Flavour+"_Fake", 1, weight, 5, 0., 5.,"");
+	    if (SameCharge(MuonHNLColl))  FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel) +"_"+Jet2Flavour+"_Fake", 2, weight, 5, 0., 5.,"");
+	    if (SameCharge(MuonV2Coll)) FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel) +"_"+Jet2Flavour+"_Fake", 3, weight, 5, 0., 5.,"");
+	  }
+	  if(MuonColl[0].IsFake( GetLeptonType_JH(MuonColl[0], gens)) &&MuonColl[1].IsFake( GetLeptonType_JH(MuonColl[1], gens)) ){
+	    if (SameCharge(MuonTopColl))  FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_"+Jet2Flavour+"_Fake", 1, weight, 5, 0., 5.,"");
+            if (SameCharge(MuonHNLColl))  FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_"+Jet2Flavour+"_Fake", 2, weight, 5, 0., 5.,"");
+            if (SameCharge(MuonV2Coll)) FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_"+Jet2Flavour+"_Fake", 3, weight, 5, 0., 5.,"");
+	  }
+	}
+      }
+      
+      
+      vector<Electron> ElectronHNLColl;
+      vector<Electron> ElectronHNLN1Coll;
+      vector<Electron> ElectronHNLN2Coll;
+      vector<Electron> ElectronHNLN3Coll;
+      vector<Electron> ElectronHNLN4Coll;
+      vector<Electron> ElectronHNLN5Coll;
+      vector<Electron> ElectronHNLN6Coll;
+      vector<Electron> ElectronV2Coll;
+
+      int nFakeEl(0);
+      for(auto iel: ElectronColl){
+	if(iel.PassID("HNTightV2")) ElectronV2Coll.push_back(iel);                                                                              
+	if(iel.PassID("HNL_ULID_"+GetYearString()))  ElectronHNLColl.push_back(iel);                                                                              
+	if(iel.PassID("HNL_ULID_N1_"+GetYearString()))  ElectronHNLN1Coll.push_back(iel);                                                                              
+	if(iel.PassID("HNL_ULID_N2_"+GetYearString()))  ElectronHNLN2Coll.push_back(iel);                                                                              
+	if(iel.PassID("HNL_ULID_N3_"+GetYearString()))  ElectronHNLN3Coll.push_back(iel);                                                                              
+	if(iel.PassID("HNL_ULID_N4_"+GetYearString()))  ElectronHNLN4Coll.push_back(iel);                                                                              
+	if(iel.PassID("HNL_ULID_N5_"+GetYearString()))  ElectronHNLN5Coll.push_back(iel);                                                                              
+	if(iel.PassID("HNL_ULID_N6_"+GetYearString()))  ElectronHNLN6Coll.push_back(iel);                                                                              
+
+	int EllepType = GetLeptonType_JH(iel, gens);
+        if(iel.IsFake(EllepType)) nFakeEl++;
+
+      }
+
+      
+      if (nFakeEl==0 && dilep_channel == EE) continue;
+
+      for(auto iel: ElectronColl){
+	int El_lepType = GetLeptonType_JH(iel, gens);
+	FillHist("LepType/AllElectron", El_lepType,   weight,12, -6.,6.);
+
+        TString JetFlavour = iel.CloseJet_Flavour();
+
+        FillHist("JetType/AllElectron", iel.CloseJet_FlavourInt(),   weight,6, 0., 6.);
+
+	if(iel.IsFake( GetLeptonType_JH(iel, gens))) {
+	  
+	  FillHist("JetType/FakeElectron", iel.CloseJet_FlavourInt(),   weight,6, 0., 6.);
+
+	  if(JetFlavour == "LF")      FillHist("TypeVsFlavour/FakeElectronLF", El_lepType,   weight,10, -5., 5.);
+	  else if(JetFlavour == "HF") FillHist("TypeVsFlavour/FakeElectronHF", El_lepType,   weight,10, -5., 5.);
+
+	  if(SameCharge(ElectronColl)) {
+	    if(JetFlavour == "LF")      FillHist("TypeVsFlavour/SSFakeElectronLF", El_lepType,   weight,10, -5., 5.);
+	    else if(JetFlavour == "HF") FillHist("TypeVsFlavour/SSFakeElectronHF", El_lepType,   weight,10, -5., 5.);
+	  }
+	}
+      }
+      
+
       if (SameCharge(ElectronColl)) {
 
         Particle ll =  (ElectronColl[0]) + (ElectronColl[1]);
-
-
-	double bdt_l1_fake = ElectronColl[0].hnl_mva_fake();
-	double bdt_l2_fake = ElectronColl[1].hnl_mva_fake();
-	
-	double bdt_l1_cf = ElectronColl[0].hnl_mva_cf();
-	double bdt_l2_cf = ElectronColl[1].hnl_mva_cf();
-
-	double bdt_l1_conv = ElectronColl[0].hnl_mva_conv();
-	double bdt_l2_conv = ElectronColl[1].hnl_mva_conv();
-
-
-	
-        // VETO Z PEAK IN EE CHANNEL                                                                                                                                           
 	
         if (! (fabs(ll.M()-90.) < 15)) {
+	  
+	  FillHist ("SameSignDilep_"+GetChannelString(dilep_channel), 0, weight, 10, 0., 10.,"");
+	  if(SameCharge(ElectronV2Coll))                     FillHist ("SameSignDilep_"+GetChannelString(dilep_channel), 1, weight, 10, 0., 10.,"");
+	  if(SameCharge(ElectronHNLColl))                    FillHist ("SameSignDilep_"+GetChannelString(dilep_channel), 2, weight, 10, 0., 10.,"");
+	  if(SameCharge(ElectronHNLN1Coll))                    FillHist ("SameSignDilep_"+GetChannelString(dilep_channel), 3, weight, 10, 0., 10.,"");
+	  if(SameCharge(ElectronHNLN2Coll))                    FillHist ("SameSignDilep_"+GetChannelString(dilep_channel), 4, weight, 10, 0., 10.,"");
+	  if(SameCharge(ElectronHNLN3Coll))                    FillHist ("SameSignDilep_"+GetChannelString(dilep_channel), 5, weight, 10, 0., 10.,"");
+	  if(SameCharge(ElectronHNLN4Coll))                    FillHist ("SameSignDilep_"+GetChannelString(dilep_channel), 6, weight, 10, 0., 10.,"");
+	  if(SameCharge(ElectronHNLN5Coll))                    FillHist ("SameSignDilep_"+GetChannelString(dilep_channel), 7, weight, 10, 0., 10.,"");
+	  if(SameCharge(ElectronHNLN6Coll))                    FillHist ("SameSignDilep_"+GetChannelString(dilep_channel), 8, weight, 10, 0., 10.,"");
 
-	  FillHist ("SameSignDilep_"+GetChannelString(dilep_channel), 1, weight, 2, 0., 2.,"");
 	  
-	  FillAllElectronPlots("SS", "Electrons"  , ElectronColl , weight);
+	  TString Jet1Flavour = CloseJetFlavour(jets_tmp, ElectronColl[0]) ;
+	  TString Jet2Flavour = CloseJetFlavour(jets_tmp, ElectronColl[1]) ;
 	  
-	  if(ElectronColl[0].PassID("HNTightV2") && ElectronColl[1].PassID("HNTightV2"))  FillHist( "Vec/TightElectronColl", 1,  weight,5, 0., 5,"HNTight");
-	  
-	  
-	  vector<double> mva_cut = {-1, -0.5, 0., 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.95};
-	  
-	  if(ElectronColl[0].PassID("HNTightV2") && ElectronColl[1].PassID("HNTightV2")) {
-	    
-	    FillHist( "Vec/FakeMVAElectronColl", 0,  weight,15, 0., 15,"HNTight");
-	    FillHist( "Vec/ConvMVAElectronColl", 0,  weight,15, 0., 15,"HNTight");
-	    FillHist( "Vec/CFMVAElectronColl", 0,  weight,15, 0., 15,"HNTight");
+	  if(ElectronColl[0].IsFake( GetLeptonType_JH(ElectronColl[0], gens))  && ElectronColl[1].IsPrompt( GetLeptonType_JH(ElectronColl[1], gens)) ) {
 
-	    FillAllElectronPlots("SSTight", "Electrons"  , ElectronColl , weight);
+	    if(Jet1Flavour == "LF")       FillHist("TypeVsFlavour/ElectronLF", GetLeptonType_JH(ElectronColl[0], gens),   weight,10, -5., 5.);
+	    else  if(Jet1Flavour == "HF") FillHist("TypeVsFlavour/ElectronHF", GetLeptonType_JH(ElectronColl[0], gens),   weight,10, -5., 5.);
 	    
+
+	    FillHist ("SameSignDilep_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_Fake", 0, weight, 10, 0., 10.,"");
+	    if(SameCharge(ElectronV2Coll))                     FillHist ("SameSignDilep_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_Fake", 1, weight, 10, 0., 10.,"");
+	    if(SameCharge(ElectronHNLColl))                    FillHist ("SameSignDilep_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_Fake", 2, weight, 10, 0., 10.,"");
+	    if(SameCharge(ElectronHNLN1Coll))                    FillHist ("SameSignDilep_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_Fake", 3, weight, 10, 0., 10.,"");
+	    if(SameCharge(ElectronHNLN2Coll))                    FillHist ("SameSignDilep_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_Fake", 4, weight, 10, 0., 10.,"");
+	    if(SameCharge(ElectronHNLN3Coll))                    FillHist ("SameSignDilep_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_Fake", 5, weight, 10, 0., 10.,"");
+	    if(SameCharge(ElectronHNLN4Coll))                    FillHist ("SameSignDilep_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_Fake", 6, weight, 10, 0., 10.,"");
+	    if(SameCharge(ElectronHNLN5Coll))                    FillHist ("SameSignDilep_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_Fake", 7, weight, 10, 0., 10.,"");
+	    if(SameCharge(ElectronHNLN6Coll))                    FillHist ("SameSignDilep_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_Fake", 8, weight, 10, 0., 10.,"");
 	  }
+	  if(ElectronColl[1].IsFake( GetLeptonType_JH(ElectronColl[1], gens)) && ElectronColl[0].IsPrompt( GetLeptonType_JH(ElectronColl[0], gens))) {
 
-	  
-	  for(int i=0 ; i< mva_cut.size(); i++){
-	    
-	    double mva_cut1 = mva_cut[i] ;
-	    
-	    
-	    if(bdt_l1_fake  > mva_cut[i] && bdt_l2_fake > mva_cut[i])    FillHist( "Vec/FakeMVAElectronColl", i+1,  weight,15, 0., 15,"HNTight");
+            if(Jet2Flavour == "LF")      FillHist("TypeVsFlavour/ElectronLF", GetLeptonType_JH(ElectronColl[1], gens),   weight,10, -5., 5.);
+            else if(Jet2Flavour == "HF") FillHist("TypeVsFlavour/ElectronHF", GetLeptonType_JH(ElectronColl[1], gens),   weight,10, -5., 5.);
 
-	    if(bdt_l1_conv > mva_cut[i] && bdt_l2_conv > mva_cut[i])    FillHist( "Vec/ConvMVAElectronColl", i+1,  weight,15, 0., 15,"HNTight");
-
-	    if(ElectronColl[0].PassCFMVA(bdt_l1_cf, mva_cut1,mva_cut1) && ElectronColl[1].PassCFMVA(bdt_l2_cf, mva_cut1,mva_cut1))      FillHist( "Vec/CFMVAElectronColl", i+1,  weight,15, 0., 15,"HNTight");
-	    
-	    
-	    if(ElectronColl[0].PassCFMVA(bdt_l1_cf, mva_cut1,0.) && ElectronColl[1].PassCFMVA(bdt_l2_cf, mva_cut1,0.))      FillHist( "Vec/CFMVAElectronColl_BB", i+1,  weight,15, 0., 15,"HNTight");
-	    if(ElectronColl[0].PassCFMVA(bdt_l1_cf, 0.,mva_cut1) && ElectronColl[1].PassCFMVA(bdt_l2_cf, 0, mva_cut1))      FillHist( "Vec/CFMVAElectronColl_EC", i+1,  weight,15, 0., 15,"HNTight");
-	    
-	    if(ElectronColl[0].PassFakeMVA(bdt_l1_fake, mva_cut1,0.) && ElectronColl[1].PassFakeMVA(bdt_l2_fake,mva_cut1,0.))  FillHist( "Vec/FakeMVAElectronColl_BB", i+1,  weight,15, 0., 15,"HNTight");
-	    if(ElectronColl[0].PassFakeMVA(bdt_l1_fake, 0., mva_cut1) && ElectronColl[1].PassFakeMVA(bdt_l2_fake,0., mva_cut1))  FillHist( "Vec/FakeMVAElectronColl_EC", i+1,  weight,15, 0., 15,"HNTight");
-	    
-	    if(ElectronColl[0].PassConvMVA(bdt_l1_conv, mva_cut1,0.) && ElectronColl[1].PassConvMVA(bdt_l2_conv, mva_cut1,0.) )  FillHist( "Vec/ConvMVAElectronColl_BB", i+1,  weight,15, 0., 15,"HNTight");
-	    if(ElectronColl[0].PassConvMVA(bdt_l1_conv, 0., mva_cut1) && ElectronColl[1].PassConvMVA(bdt_l2_conv, 0., mva_cut1) )  FillHist( "Vec/ConvMVAElectronColl_EC", i+1,  weight,15, 0., 15,"HNTight");
-	    
-	    
+	    FillHist ("SameSignDilep_"+GetChannelString(dilep_channel) +"_"+Jet2Flavour+"_Fake", 0, weight, 10, 0., 10.,"");
+	    if(SameCharge(ElectronV2Coll))                     FillHist ("SameSignDilep_"+GetChannelString(dilep_channel) +"_"+Jet2Flavour+"_Fake", 1, weight, 10, 0., 10.,"");
+	    if(SameCharge(ElectronHNLColl))                    FillHist ("SameSignDilep_"+GetChannelString(dilep_channel) +"_"+Jet2Flavour+"_Fake", 2, weight, 10, 0., 10.,"");
+	    if(SameCharge(ElectronHNLN1Coll))                    FillHist ("SameSignDilep_"+GetChannelString(dilep_channel) +"_"+Jet2Flavour+"_Fake", 3, weight, 10, 0., 10.,"");
+	    if(SameCharge(ElectronHNLN2Coll))                    FillHist ("SameSignDilep_"+GetChannelString(dilep_channel) +"_"+Jet2Flavour+"_Fake", 4, weight, 10, 0., 10.,"");
+	    if(SameCharge(ElectronHNLN3Coll))                    FillHist ("SameSignDilep_"+GetChannelString(dilep_channel) +"_"+Jet2Flavour+"_Fake", 5, weight, 10, 0., 10.,"");
+	    if(SameCharge(ElectronHNLN4Coll))                    FillHist ("SameSignDilep_"+GetChannelString(dilep_channel) +"_"+Jet2Flavour+"_Fake", 6, weight, 10, 0., 10.,"");
+	    if(SameCharge(ElectronHNLN5Coll))                    FillHist ("SameSignDilep_"+GetChannelString(dilep_channel) +"_"+Jet2Flavour+"_Fake", 7, weight, 10, 0., 10.,"");
+	    if(SameCharge(ElectronHNLN6Coll))                    FillHist ("SameSignDilep_"+GetChannelString(dilep_channel) +"_"+Jet2Flavour+"_Fake", 8, weight, 10, 0., 10.,"");
 	  }
-	  
-	  if(ElectronColl[0].PassFakeMVA(bdt_l1_fake, 0.6, 0.7) && ElectronColl[1].PassFakeMVA(bdt_l2_fake, 0.6, 0.7 ))   {
+	  if(ElectronColl[0].IsFake( GetLeptonType_JH(ElectronColl[0], gens))  &&  ElectronColl[1].IsFake( GetLeptonType_JH(ElectronColl[1], gens))){
 	    
-	    FillAllElectronPlots("PassFake", "Electrons"  , ElectronColl , weight);
+            if(Jet1Flavour == "LF")      FillHist("TypeVsFlavour/ElectronFF_LF", GetLeptonType_JH(ElectronColl[0], gens),   weight,10, -5., 5.);
+            else if(Jet1Flavour == "HF") FillHist("TypeVsFlavour/ElectronFF_HF", GetLeptonType_JH(ElectronColl[1], gens),   weight,10, -5., 5.);
 	    
-	    if(ElectronColl[0].PassCFMVA(bdt_l1_cf,0. ,0.5) && ElectronColl[1].PassCFMVA(bdt_l2_cf,0. ,0.5) ){
+	    if(Jet2Flavour == "LF")      FillHist("TypeVsFlavour/ElectronFF_LF", GetLeptonType_JH(ElectronColl[1], gens),   weight,10, -5., 5.);
+            else if(Jet2Flavour == "HF") FillHist("TypeVsFlavour/ElectronFF_HF", GetLeptonType_JH(ElectronColl[1], gens),   weight,10, -5., 5.);
 
-	      FillAllElectronPlots("PassFakeCF", "Electrons"  , ElectronColl , weight);
+            FillHist ("SameSignDilep_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_"+Jet2Flavour+"_Fake", 0, weight, 10, 0., 10.,"");
+            if(SameCharge(ElectronV2Coll))                     FillHist ("SameSignDilep_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_"+Jet2Flavour+"_Fake", 1, weight, 10, 0., 10.,"");
+            if(SameCharge(ElectronHNLColl))                    FillHist ("SameSignDilep_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_"+Jet2Flavour+"_Fake", 2, weight, 10, 0., 10.,"");
+            if(SameCharge(ElectronHNLN1Coll))                    FillHist ("SameSignDilep_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_"+Jet2Flavour+"_Fake", 3, weight, 10, 0., 10.,"");
+            if(SameCharge(ElectronHNLN2Coll))                    FillHist ("SameSignDilep_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_"+Jet2Flavour+"_Fake", 4, weight, 10, 0., 10.,"");
+            if(SameCharge(ElectronHNLN3Coll))                    FillHist ("SameSignDilep_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_"+Jet2Flavour+"_Fake", 5, weight, 10, 0., 10.,"");
+            if(SameCharge(ElectronHNLN4Coll))                    FillHist ("SameSignDilep_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_"+Jet2Flavour+"_Fake", 6, weight, 10, 0., 10.,"");
+            if(SameCharge(ElectronHNLN5Coll))                    FillHist ("SameSignDilep_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_"+Jet2Flavour+"_Fake", 7, weight, 10, 0., 10.,"");
+            if(SameCharge(ElectronHNLN6Coll))                    FillHist ("SameSignDilep_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_"+Jet2Flavour+"_Fake", 8, weight, 10, 0., 10.,"");
 
-	      if(bdt_l1_conv  > -0.9 && bdt_l2_conv > -0.9)   {
-		FillHist( "Vec/TightElectronColl", 2,  weight,5, 0., 5,"HNTight");
-		
-	      }
+	  }
+	  if(BJetColl.size() == 0) {
+	    FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel), 0, weight, 10, 0., 10.,"");
+	    if(SameCharge(ElectronV2Coll))                     FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel), 1, weight, 10, 0., 10.,"");
+	    if(SameCharge(ElectronHNLColl))                    FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel), 2, weight, 10, 0., 10.,"");
+	    if(SameCharge(ElectronHNLN1Coll))                    FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel), 3, weight, 10, 0., 10.,"");
+	    if(SameCharge(ElectronHNLN2Coll))                    FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel), 4, weight, 10, 0., 10.,"");
+	    if(SameCharge(ElectronHNLN3Coll))                    FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel), 5, weight, 10, 0., 10.,"");
+	    if(SameCharge(ElectronHNLN4Coll))                    FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel), 6, weight, 10, 0., 10.,"");
+	    if(SameCharge(ElectronHNLN5Coll))                    FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel), 7, weight, 10, 0., 10.,"");
+	    if(SameCharge(ElectronHNLN6Coll))                    FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel), 8, weight, 10, 0., 10.,"");
+	    
+	    if(ElectronColl[0].IsFake( GetLeptonType_JH(ElectronColl[0], gens))  && ElectronColl[1].IsPrompt( GetLeptonType_JH(ElectronColl[1], gens)) ) {
+	      FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_Fake", 0, weight, 10, 0., 10.,"");
+	      if(SameCharge(ElectronV2Coll))                     FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_Fake", 1, weight, 10, 0., 10.,"");
+	      if(SameCharge(ElectronHNLColl))                    FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_Fake", 2, weight, 10, 0., 10.,"");
+
+	      if(SameCharge(ElectronHNLN1Coll))                    FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_Fake", 3, weight, 10, 0., 10.,"");
+	      if(SameCharge(ElectronHNLN2Coll))                    FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_Fake", 4, weight, 10, 0., 10.,"");
+	      if(SameCharge(ElectronHNLN3Coll))                    FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_Fake", 5, weight, 10, 0., 10.,"");
+	      if(SameCharge(ElectronHNLN4Coll))                    FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_Fake", 6, weight, 10, 0., 10.,"");
+	      if(SameCharge(ElectronHNLN5Coll))                    FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_Fake", 7, weight, 10, 0., 10.,"");
+	      if(SameCharge(ElectronHNLN6Coll))                    FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_Fake", 8, weight, 10, 0., 10.,"");
 	    }
+	    if(ElectronColl[1].IsFake( GetLeptonType_JH(ElectronColl[1], gens)) && ElectronColl[0].IsPrompt( GetLeptonType_JH(ElectronColl[0], gens))) {
+              FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel) +"_"+Jet2Flavour+"_Fake", 0, weight, 10, 0., 10.,"");
+              if(SameCharge(ElectronV2Coll))                     FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel) +"_"+Jet2Flavour+"_Fake", 1, weight, 10, 0., 10.,"");
+              if(SameCharge(ElectronHNLColl))                    FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel) +"_"+Jet2Flavour+"_Fake", 2, weight, 10, 0., 10.,"");
+
+              if(SameCharge(ElectronHNLN1Coll))                    FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel) +"_"+Jet2Flavour+"_Fake", 3, weight, 10, 0., 10.,"");
+              if(SameCharge(ElectronHNLN2Coll))                    FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel) +"_"+Jet2Flavour+"_Fake", 4, weight, 10, 0., 10.,"");
+              if(SameCharge(ElectronHNLN3Coll))                    FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel) +"_"+Jet2Flavour+"_Fake", 5, weight, 10, 0., 10.,"");
+              if(SameCharge(ElectronHNLN4Coll))                    FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel) +"_"+Jet2Flavour+"_Fake", 6, weight, 10, 0., 10.,"");
+              if(SameCharge(ElectronHNLN5Coll))                    FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel) +"_"+Jet2Flavour+"_Fake", 7, weight, 10, 0., 10.,"");
+              if(SameCharge(ElectronHNLN6Coll))                    FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel) +"_"+Jet2Flavour+"_Fake", 8, weight, 10, 0., 10.,"");
+            }
+
+	    if(ElectronColl[0].IsFake( GetLeptonType_JH(ElectronColl[0], gens))  &&  ElectronColl[1].IsFake( GetLeptonType_JH(ElectronColl[1], gens)) ){
+	      FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_"+Jet2Flavour+"_Fake", 0, weight, 10, 0., 10.,"");
+              if(SameCharge(ElectronV2Coll))                     FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_"+Jet2Flavour+"_Fake", 1, weight, 10, 0., 10.,"");
+              if(SameCharge(ElectronHNLColl))                    FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_"+Jet2Flavour+"_Fake", 2, weight, 10, 0., 10.,"");
+	      
+	      if(SameCharge(ElectronHNLN1Coll))                    FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_"+Jet2Flavour+"_Fake", 3, weight, 10, 0., 10.,"");
+              if(SameCharge(ElectronHNLN2Coll))                    FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_"+Jet2Flavour+"_Fake", 4, weight, 10, 0., 10.,"");
+              if(SameCharge(ElectronHNLN3Coll))                    FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_"+Jet2Flavour+"_Fake", 5, weight, 10, 0., 10.,"");
+              if(SameCharge(ElectronHNLN4Coll))                    FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_"+Jet2Flavour+"_Fake", 6, weight, 10, 0., 10.,"");
+              if(SameCharge(ElectronHNLN5Coll))                    FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_"+Jet2Flavour+"_Fake", 7, weight, 10, 0., 10.,"");
+              if(SameCharge(ElectronHNLN6Coll))                    FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_"+Jet2Flavour+"_Fake", 8, weight, 10, 0., 10.,"");
+	      
+	    }
+
 	  }
 	} 
       }
-      
     }
     
     continue;

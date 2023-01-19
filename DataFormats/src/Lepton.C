@@ -13,9 +13,9 @@ Lepton::Lepton() : Particle() {
   j_MiniRelIso = -999.;
   j_ptcone = -999.;
   j_lep_jetptrel=-999.;
-  j_lep_jetptrelDef=-999.;
   j_lep_jetptratio=-999.;
-  j_lep_jetptratioDef=-999.;
+  j_lep_jetbscore=-999.;
+  j_lep_jetflavour=-999;
   j_LeptonFlavour = NONE;
   j_MiniIso_ChHad = -999.;
   j_MiniIso_NHad = -999.;
@@ -47,9 +47,7 @@ void Lepton::PrintObject(TString label){
   cout << "j_MiniRelIso =" << j_MiniRelIso << endl;
   cout << "j_ptcone = " << j_ptcone  << endl;
   cout << "j_lep_jetptrel=" << j_lep_jetptrel << endl;
-  cout << "j_lep_jetptrelDef=" << j_lep_jetptrelDef << endl;
   cout << "j_lep_jetptratio=" << j_lep_jetptratio << endl;
-  cout << "j_lep_jetptratioDef=" << j_lep_jetptratioDef << endl;
   cout << "j_MiniIso_ChHad =" << j_MiniIso_ChHad   << endl;
   cout << "j_MiniIso_NHad =" << j_MiniIso_NHad  << endl;
   cout << "j_MiniIso_PhHad =" << j_MiniIso_PhHad  << endl;
@@ -129,16 +127,15 @@ void Lepton::SetJetPtRatio(double ptr){
 }
 
 
-void Lepton::SetJetPtRelDef(double ptrel){
+void Lepton::SetCloseJetBScore(double bscore){
 
-  j_lep_jetptrelDef = ptrel;
+  j_lep_jetbscore = bscore;
 }
 
-void Lepton::SetJetPtRatioDef(double ptr){
+void Lepton::SetCloseJetFlavour(int flav){
 
-  j_lep_jetptratioDef = ptr;
+  j_lep_jetflavour = flav;
 }
-
 
 
 void Lepton::SetLepMVA(double MVA){

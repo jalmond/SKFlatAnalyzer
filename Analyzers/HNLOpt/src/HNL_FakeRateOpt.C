@@ -1276,8 +1276,8 @@ void HNL_FakeRateOpt::FillRegionPlots( TString plot_dir, TString region,  std::v
   FillHist( plot_dir +  "/RegionPlots_"+ region+ "/Lep1_binned_pt", lep1.Pt()  , w, nbin_pt, ptbins,"p_{T} GeV");
   FillHist( plot_dir +  "/RegionPlots_"+ region+ "/Lep1_pt", lep1.Pt()  , w, 400, 0., 2000.,"p_{T} GeV");
   FillHist( plot_dir +  "/RegionPlots_"+ region+ "/Lep1_eta", lep1.Eta()  , w, 30, -3., 3,"#eta");
-  FillHist( plot_dir +  "/RegionPlots_"+ region+ "/Lep1_lep_jet_ptrel", lep1.lep_jet_ptrel(), w, 50., 0., 2.,"PtRel");
-  FillHist( plot_dir +  "/RegionPlots_"+ region+ "/Lep1_lep_jet_ptratio", lep1.lep_jet_ptratio(), w, 50., 0., 2.,"PtRel");
+  FillHist( plot_dir +  "/RegionPlots_"+ region+ "/Lep1_CloseJet_Ptrel", lep1.CloseJet_Ptrel(), w, 50., 0., 2.,"PtRel");
+  FillHist( plot_dir +  "/RegionPlots_"+ region+ "/Lep1_CloseJet_Ptratio", lep1.CloseJet_Ptratio(), w, 50., 0., 2.,"PtRel");
 
   FillHist( plot_dir +  "/RegionPlots_"+ region+ "/Met", met.Pt()  , w, 200, 0., 400.,"MET GeV");
   FillHist( plot_dir +  "/RegionPlots_"+ region+ "/MetPhi", met.Phi()  , w, 100, -5, 5,"MET GeV");

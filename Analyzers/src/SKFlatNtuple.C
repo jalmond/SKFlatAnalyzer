@@ -487,7 +487,7 @@ void SKFlatNtuple::Init()
   electron_jetPtRatio = 0;
   electron_jetPtRel = 0;
   electron_jetNTracks = 0;
-  electron_jetNTracksMVA = 0;
+  //  electron_jetNTracksMVA = 0;
   electron_ptrel = 0;
   electron_ptratio = 0;
   electron_cj_bjetdisc=0;
@@ -583,10 +583,8 @@ void SKFlatNtuple::Init()
   muon_softMVA = 0;
   muon_jetPtRatio = 0;
   muon_jetPtRel = 0;
-  muon_jetPtRatioDef = 0;
-  muon_jetPtRelDef = 0;
   muon_jetNTracks = 0;
-  muon_jetNTracksMVA = 0;
+  //  muon_jetNTracksMVA = 0;
   muon_ptrel = 0;
   muon_ptratio = 0;
   muon_cj_bjetdisc=0;
@@ -794,25 +792,7 @@ void SKFlatNtuple::Init()
   fChain->SetBranchAddress("fatjet_LSFlep_Eta", &fatjet_LSFlep_Eta, &b_fatjet_LSFlep_Eta);
   fChain->SetBranchAddress("fatjet_LSFlep_Phi", &fatjet_LSFlep_Phi, &b_fatjet_LSFlep_Phi);
 
-  if(fChain->GetBranch("electron_jetPtRatio")){
-    fChain->SetBranchAddress("electron_jetPtRatio", &electron_jetPtRatio, &b_electron_jetPtRatio);
-    fChain->SetBranchAddress("electron_jetPtRel", &electron_jetPtRel, &b_electron_jetPtRel);
-    fChain->SetBranchAddress("electron_jetNTracks", &electron_jetNTracks, &b_electron_jetNTracks);
-    fChain->SetBranchAddress("electron_jetNTracksMVA", &electron_jetNTracksMVA, &b_electron_jetNTracksMVA);
-  }
-  
-  if(fChain->GetBranch("electron_conv_ntracks")){
-    fChain->SetBranchAddress("electron_conv_ntracks",&electron_conv_ntracks, &b_electron_conv_ntracks);
-    fChain->SetBranchAddress("electron_conv_fitprob",&electron_conv_fitprob, &b_electron_conv_fitprob);
-    fChain->SetBranchAddress("electron_conv_lxy",&electron_conv_lxy, &b_electron_conv_lxy);
-    fChain->SetBranchAddress("electron_conv_nHitsBeforeVtxMax",&electron_conv_nHitsBeforeVtxMax, &b_electron_conv_nHitsBeforeVtxMax);
-    fChain->SetBranchAddress("electron_conv_log_e_over_p",&electron_conv_log_e_over_p, &b_electron_conv_log_e_over_p);
-    fChain->SetBranchAddress("electron_conv_log_abs_cot_theta",&electron_conv_log_abs_cot_theta, &b_electron_conv_log_abs_cot_theta);
-    fChain->SetBranchAddress("electron_conv_pairMass",&electron_conv_pairMass, &b_electron_conv_pairMass);
-    fChain->SetBranchAddress("electron_conv_log_abs_delta_phi",&electron_conv_log_abs_delta_phi, &b_electron_conv_log_abs_delta_phi);
-    fChain->SetBranchAddress("electron_conv_log_chi2_max_pt",&electron_conv_log_chi2_max_pt, &b_electron_conv_log_chi2_max_pt);
-    fChain->SetBranchAddress("electron_conv_log_chi2_min_pt",&electron_conv_log_chi2_min_pt, &b_electron_conv_log_chi2_min_pt);
-  }
+
   fChain->SetBranchAddress("electron_MVAIso", &electron_MVAIso, &b_electron_MVAIso);
   fChain->SetBranchAddress("electron_MVANoIso", &electron_MVANoIso, &b_electron_MVANoIso);
   fChain->SetBranchAddress("electron_Energy", &electron_Energy, &b_electron_Energy);
@@ -930,7 +910,6 @@ void SKFlatNtuple::Init()
   fChain->SetBranchAddress("muon_matchedstations", &muon_matchedstations, &b_muon_matchedstations);
   fChain->SetBranchAddress("muon_stationMask", &muon_stationMask, &b_muon_stationMask);
   fChain->SetBranchAddress("muon_nSegments", &muon_nSegments, &b_muon_nSegments);
-  if(fChain->GetBranch("muon_segmentCompatibility")) fChain->SetBranchAddress("muon_segmentCompatibility", &muon_segmentCompatibility, &b_muon_segmentCompatibility);
   fChain->SetBranchAddress("muon_normchi", &muon_normchi, &b_muon_normchi);
   fChain->SetBranchAddress("muon_validhits", &muon_validhits, &b_muon_validhits);
   fChain->SetBranchAddress("muon_trackerHits", &muon_trackerHits, &b_muon_trackerHits);
@@ -987,8 +966,8 @@ void SKFlatNtuple::Init()
   fChain->SetBranchAddress("muon_MVA", &muon_MVA, &b_muon_MVA);
   fChain->SetBranchAddress("muon_lowptMVA", &muon_lowptMVA, &b_muon_lowptMVA);
   fChain->SetBranchAddress("muon_softMVA", &muon_softMVA, &b_muon_softMVA);
-  fChain->SetBranchAddress("muon_jetPtRatio", &muon_jetPtRatio, &b_muon_jetPtRatio);
-  fChain->SetBranchAddress("muon_jetPtRel", &muon_jetPtRel, &b_muon_jetPtRel);
+  //fChain->SetBranchAddress("muon_jetPtRatio", &muon_jetPtRatio, &b_muon_jetPtRatio);
+  //fChain->SetBranchAddress("muon_jetPtRel", &muon_jetPtRel, &b_muon_jetPtRel);
   
   if(fChain->GetBranch("muon_ptrel")){
     fChain->SetBranchAddress("muon_ptrel",&muon_ptrel,&b_muon_ptrel);

@@ -18,7 +18,7 @@ void HNL_LeptonIDSF::executeEvent(){
   
   if(!IsData)  gens = GetGens();
 
-  vector<TString> IDs = {"EXO17028","POGTight","HNL"};
+  vector<TString> IDs = {"MVAUL"};
   for(auto id : IDs){
     MeasureElectronIDSF(HNL_LeptonCore::InitialiseHNLParameter(id,""));
     MeasureMuonIDSF(HNL_LeptonCore::InitialiseHNLParameter(id ,""));

@@ -1,8 +1,10 @@
 analyzer=HNL_SignalRegionPlotter
 rundir=HNL_SignalRegionPlotter
-sigpath=${SKFlat_WD}/runJobs/${analyzer}/Signals/
-mcpath=${SKFlat_WD}/runJobs/${analyzer}/Bkg/
-datapath=${SKFlat_WD}/runJobs/${analyzer}/DATA/
+runPATH=${SKFlat_WD}/runJobs/HNL/${rundir}/
+sigpath=${SKFlat_WD}/runJobs/SampleLists/Signals/
+mcpath=${SKFlat_WD}/runJobs/SampleLists/Bkg/
+datapath=${SKFlat_WD}/runJobs/SampleLists/DATA/
+
 njobs=30
 njobs_sig=2
 njobs_data=100
@@ -60,12 +62,14 @@ if [[ $1 == "FAKE" ]]; then
 fi
 
 
-if [[ $1 == "WJet" ]]; then
+if [[ $1 == "Merge" ]]; then
     
 
     for i in "${era_list[@]}"
     do
-	SKFlat.py -a $analyzer  -i WJets_MG   -n $njobs  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLep --userflags RunConv&
+        SKFlat.py -a $analyzer  -l $mcpath/CFDY.txt  -n $njobs  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLep  --userflags RunCF &
+	SKFlat.py -a $analyzer  -l $mcpath/MCMerge.txt  -n 20  --nmax ${nmax}   -e ${i}   --skim SkimTree_HNMultiLep &
+
 
     done
 
@@ -76,15 +80,16 @@ if [[ $1 == "" ]]; then
 
     for i in "${era_list[@]}"
     do
+
+	SKFlat.py -a $analyzer  -l $mcpath/MCOpt.txt  -n 20  --nmax ${nmax}   -e ${i}   --skim SkimTree_HNMultiLep &
+	SKFlat.py -a $analyzer  -l $mcpath/MCOptLarge.txt  -n 50  --nmax ${nmax}   -e ${i}  --skim SkimTree_HNMultiLep &
+	SKFlat.py -a $analyzer  -l $sigpath/SSWW.txt  -n $njobs_sig  --nmax ${nmax}  -e ${i}    &
+	SKFlat.py -a $analyzer  -l $sigpath/DY.txt    -n $njobs_sig  --nmax ${nmax}   -e ${i}  &
+	SKFlat.py -a $analyzer  -l $sigpath/VBF.txt   -n $njobs_sig  --nmax ${nmax}   -e ${i}  &
+	SKFlat.py -a $analyzer  -l $mcpath/Conv.txt  -n 10  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLep  --userflags RunConv &
 	
-	SKFlat.py -a $analyzer  -l $sigpath/SSWW.txt  -n $njobs_sig  --nmax ${nmax}   -e ${i} &
-	SKFlat.py -a $analyzer  -l $sigpath/DY.txt  -n $njobs_sig  --nmax ${nmax}   -e ${i} &
-        SKFlat.py -a $analyzer  -l $sigpath/VBF.txt  -n $njobs_sig  --nmax ${nmax}   -e ${i}  &
-        SKFlat.py -a $analyzer  -l $mcpath/MC.txt  -n $njobs  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLep &
-        #SKFlat.py -a $analyzer  -l $mcpath/CF.txt  -n $njobs  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLep --userflags RunCF &
-        SKFlat.py -a $analyzer  -l $datapath/DATA_${i}.txt  -n ${njobs_data}  --nmax ${nmax}   -e ${i}  --skim SkimTree_HNMultiLep --userflags RunFake  &
-	SKFlat.py -a $analyzer  -l $datapath/DATA_${i}.txt  -n ${njobs_data}  --nmax ${nmax}   -e ${i}  --userflags RunCF --skim SkimTree_Dilepton &
-        SKFlat.py -a $analyzer  -l $mcpath/Conv.txt  -n $njobs  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLep --userflags RunConv
+	SKFlat.py -a $analyzer  -l $mcpath/CF.txt  -n $njobs  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLep  --userflags RunCF &
+
 
 	
     done

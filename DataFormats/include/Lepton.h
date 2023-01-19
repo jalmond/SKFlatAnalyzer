@@ -11,8 +11,31 @@ public:
 
   void  PrintObject(TString label);
 
+  //// Function to Check Nature of lepton
 
-  //  Lepton(const Lepton& lep) ;
+  inline bool IsPrompt(int LepType) const {
+    if((LepType==1 || LepType==2)) return true;
+    else return false;
+  }
+
+  inline bool IsFake(int LepType) const {
+    if( (LepType<0 && LepType>=-4)) return true;
+    else return false;
+  }
+  inline bool IsEWtau(int LepType) const {
+    if(LepType==3) return true;
+    else return false;
+  }
+
+  inline bool IsConv(int LepType) const {
+    if((LepType>=4 || LepType<-4 )) return true;
+    else return false;
+  }
+
+
+  enum Flavour{
+    NONE, ELECTRON, MUON, TAU
+  };
 
   enum EtaRegion{
     IB, OB, GAP, EC
@@ -46,8 +69,21 @@ public:
   inline bool IsEC() const { return (Region() == 3); }
   inline bool IsBB() const { return (Region() < 3); }
 
-
-
+  //// HNL UL Funtions
+  inline bool MaxPt() const { return (this->Pt() > 2000) ? 1999 : this->Pt(); }
+  inline double PtCorrected(double Corr, bool passMVA){
+    if (passMVA)  return this->Pt();
+    return ( j_lep_jetptratio ) * Corr;
+  }
+  
+  /// TEMP Variables to test MVA Top 
+  inline double JetNTracksMVA() const { return j_jetntracks_mva;}
+  inline double JetNTracks() const { return j_jetntracks;}
+  void SetJetNTracks(double d);
+  void SetJetNTracksMVA(double d);
+    
+  
+  /// Standard Functions
   void SetdXY(double dXY, double dXYerr);
   inline double fdXY() const {return fabs(j_dXY);}
   inline double dXY() const {return j_dXY;}
@@ -58,29 +94,32 @@ public:
   inline double LogdXYSig() const {return std::log(fabs(j_dXY/j_dXYerr));}
   inline double LogdZSig() const {return std::log(fabs(j_dZ/j_dZerr));}
 
-
   void SetLepMVA(double mva);
   inline double lep_mva() const {return j_lep_mva;}
 
+  //// BDT  Functions
   void SetHNL_LepMVA(double mvaf, double mvacf, double mvaconv);
-  inline double hnl_mva_fake() const {return j_lep_mva_hnl_fake;}
-  inline double hnl_mva_conv() const {return j_lep_mva_hnl_conv;}
-  inline double hnl_mva_cf() const {return j_lep_mva_hnl_cf;}
+  inline double HNL_MVA_Fake() const {return j_lep_mva_hnl_fake;}
+  inline double HNL_MVA_Conv() const {return j_lep_mva_hnl_conv;}
+  inline double HNL_MVA_CF()   const {return j_lep_mva_hnl_cf;}
 
 
-
+  //// Close jet functionality  NOT IN SKFLAT ADDED in ANALYZERCORE OR IN BDT SKIM
   void SetJetPtRel(double ptrel);
-  inline double lep_jet_ptrel() const {return j_lep_jetptrel;}
   void SetJetPtRatio(double ptr);
-  inline double lep_jet_ptratio() const {return j_lep_jetptratio;}
+  void SetCloseJetBScore(double bjscore);
+  void SetCloseJetFlavour(int flav);
+  inline double CloseJet_Ptrel()   const {return j_lep_jetptrel;}
+  inline double CloseJet_Ptratio() const {return j_lep_jetptratio;}
+  inline double CloseJet_BScore()  const {return j_lep_jetbscore;}
+  inline int CloseJet_FlavourInt()  const {return j_lep_jetflavour;}
+  inline TString CloseJet_Flavour()  const {
+    if(j_lep_jetflavour == 5) return "HF";
+    if(j_lep_jetflavour == 4) return "HF";
+    if(j_lep_jetflavour == 0) return "LF";
+    return "NULL";
+  }
 
-  void SetJetPtRelDef(double ptrel);
-  inline double lep_jet_ptrelDef() const {return j_lep_jetptrelDef;}
-  void SetJetPtRatioDef(double ptr);
-  inline double lep_jet_ptratioDef() const {return j_lep_jetptratioDef;}
-
-
-  
 
   void SetdZ(double dZ, double dZerr);
   inline double fdZ() const {return fabs(j_dZ);}
@@ -88,8 +127,6 @@ public:
   inline double dZerr() const {return j_dZerr;}
 
   void SetIP3D(double IP3D, double IP3Derr);
-
-
   inline double SIP3D() const {return j_IP3Derr>0?fabs(j_IP3D/j_IP3Derr):0.0;};
   inline double IP3D() const {return j_IP3D;}
   inline double IP3Derr() const {return j_IP3Derr;}
@@ -120,23 +157,12 @@ public:
 
   inline double fEta() const {return fabs(this->Eta());}
 
-  inline double JetNTracksMVA() const { return j_jetntracks_mva;}
-  inline double JetNTracks() const { return j_jetntracks;}
-
-  void SetJetNTracks(double d);
-  void SetJetNTracksMVA(double d);
-
-  enum Flavour{
-    NONE, ELECTRON, MUON, TAU
-  };
-
   inline bool PassLepID()  const {return j_passID;}
   inline bool LepIDSet()  const {return j_IDSet;}
 
 
   inline int LeptonType() const {return j_LeptonType;}
   void SetLeptonType(int t);
-
 
   inline Flavour LeptonFlavour() const {return j_LeptonFlavour;}
   void SetLeptonFlavour(Flavour f);
@@ -196,8 +222,9 @@ private:
   double j_MiniIso_ChHad,j_MiniIso_NHad,j_MiniIso_PhHad;
   double j_Iso_ChHad,j_Iso_NHad,j_Iso_PhHad;
   double j_ptcone;
-  double j_lep_jetptrel,j_lep_jetptratio;
-  double j_lep_jetptrelDef,j_lep_jetptratioDef;
+  double j_lep_jetptrel,j_lep_jetptratio,j_lep_jetbscore;
+  int j_lep_jetflavour;
+
   Flavour j_LeptonFlavour;
 
   int j_LeptonType;

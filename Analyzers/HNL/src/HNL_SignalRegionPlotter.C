@@ -19,7 +19,7 @@ void HNL_SignalRegionPlotter::executeEvent(){
   
   if(!IsData)  gens = GetGens();
 
-  AnalyzerParameter param_signal = HNL_LeptonCore::InitialiseHNLParameter("HNL","_UL");
+  AnalyzerParameter param_signal = HNL_LeptonCore::InitialiseHNLParameter("MVAUL","_UL");
   RunULAnalysis(param_signal);
 
   if(!IsData) RunSyst=true;
@@ -47,6 +47,22 @@ void HNL_SignalRegionPlotter::RunULAnalysis(AnalyzerParameter param){
   Event ev = GetEvent();
   double weight =SetupWeight(ev,param);
 
+
+  /// MERGE WJet samples for more stats                                                                                                                                      
+  if(MCSample.Contains("WJet")){
+    vector<TString> vec = {"WJet"};
+    double merge_weight = MergeMultiMC( vec, "" );
+    weight*= merge_weight;
+  }
+
+  /// Merge DY samples for more stats                                                                                                                                        
+  if(MCSample.Contains("DYJets_MG")){
+    vector<TString> vec = {"DYMG"};
+    double merge_weight = MergeMultiMC( vec, "" );
+    weight*= merge_weight;
+  }
+
+
   
   // HL ID
   std::vector<Electron>   ElectronCollV = GetElectrons(param.Electron_Veto_ID, 10., 2.5); 
@@ -58,8 +74,8 @@ void HNL_SignalRegionPlotter::RunULAnalysis(AnalyzerParameter param){
   double Min_Muon_Pt     = (RunFake) ? 3. : 5.;
   double Min_Electron_Pt = (RunFake) ? 7. : 10.;
 
-  std::vector<Muon>       MuonCollTInit = GetMuons    ( param,mu_ID, Min_Muon_Pt, 2.4, RunFake);
-  std::vector<Electron>   ElectronCollTInit = GetElectrons( param,el_ID, Min_Electron_Pt, 2.5, RunFake)  ;
+  std::vector<Muon>       MuonCollTInit = GetMuons    ( param,mu_ID, Min_Muon_Pt, 2.4, false);
+  std::vector<Electron>   ElectronCollTInit = GetElectrons( param,el_ID, Min_Electron_Pt, 2.5, false)  ;
 
   std::vector<Muon>       MuonCollT     = GetLepCollByRunType    ( MuonCollTInit,gens,param);
   std::vector<Electron>   ElectronCollT  =  GetLepCollByRunType   ( ElectronCollTInit,gens,param);
@@ -99,8 +115,19 @@ void HNL_SignalRegionPlotter::RunULAnalysis(AnalyzerParameter param){
   // Get BJets  and EV weight to corr BTag Eff                                                                                                                       
   std::vector<Jet> BJetColl    = SelectBJets(param, BJetColltmp, param_jets);
   double sf_btag               = GetBJetSF(param, BJetColltmp, param_jets);
-  if(!IsData )weight*= sf_btag;
-  RunAllSignalRegions(Inclusive, ElectronCollT,ElectronCollV,MuonCollT,MuonCollV,  TauColl,JetCollLoose, JetColl,VBF_JetColl,AK8_JetColl, BJetColl, ev,METv, param, weight);
+
+  //if(!IsData )weight*= sf_btag;
+
+  JetTagging::Parameters param_jetsT = JetTagging::Parameters(JetTagging::DeepJet, JetTagging::Tight, JetTagging::incl, JetTagging::mujets);
+  std::vector<Jet> BJetCollSR1    = SelectBJets(param,  BJetColltmp, param_jetsT);
+  double sf_btagSR1               = GetBJetSF(param, BJetColltmp, param_jetsT);
+
+  if(!IsData && AK8_JetColl.size()==0)weight = weight*sf_btag;
+  if(!IsData && AK8_JetColl.size()>0)weight = weight*sf_btagSR1;
+
+
+
+  RunAllSignalRegions(Inclusive, ElectronCollT,ElectronCollV,MuonCollT,MuonCollV,  TauColl,JetCollLoose, JetColl,VBF_JetColl,AK8_JetColl, BJetColl,BJetCollSR1, ev,METv, param, weight);
   
 
 

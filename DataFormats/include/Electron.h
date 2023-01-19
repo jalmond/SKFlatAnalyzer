@@ -306,7 +306,7 @@ public:
   bool Pass_TriggerEmulationLoose() const;
   bool Pass_TriggerEmulationN(int cut) const;
 
-  bool Pass_HNVeto2016() const;
+  bool Pass_HNVetoMVA() const;
   bool Pass_HNLoose2016(double relisoCut, double dxyCut, double dzCut, double sipCut) const;
 
   bool Pass_HNLoose2016MVAISO( double dxyCut, double dzCut, double sipCut) const;
@@ -314,7 +314,7 @@ public:
   bool Pass_HNTight2016() const;
   bool Pass_HNTightUL() const;
 
-  bool Pass_HNVeto(double relisoCut) const;
+  bool Pass_HNVetoCutBased(double relisoCut) const;
   bool Pass_HNLoose(double relisoCut, double dxyCut, double dzCut) const;
   bool Pass_HNLooseID(double relisoCut, double dxyCut, double dzCut, double sipCut) const;
   bool Pass_HNLoosest() const;

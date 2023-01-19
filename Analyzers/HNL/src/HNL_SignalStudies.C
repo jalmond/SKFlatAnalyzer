@@ -187,7 +187,7 @@ void HNL_SignalStudies::executeEvent(){
 	for(int i=0 ; i < mva_cut.size(); i++){
 	  if(MuonColl[0].MVA() > mva_cut[i] && MuonColl[1].MVA() > mva_cut[i])    FillHist( "Vec/FakeMVAMuonColl", i+1,  weight,15, 0., 15,"HNTight");
 	  if(MuonColl[0].MVA() > 0.65 && MuonColl[1].MVA() > 0.65)    {
-	    if(MuonColl[0].hnl_mva_conv()  > mva_cut[i] && MuonColl[1].hnl_mva_conv()  )   FillHist( "Vec/ConvMVAMuonColl", i+1,  weight,15, 0., 15,"HNTight");
+	    if(MuonColl[0].HNL_MVA_Conv()  > mva_cut[i] && MuonColl[1].HNL_MVA_Conv()  )   FillHist( "Vec/ConvMVAMuonColl", i+1,  weight,15, 0., 15,"HNTight");
 
 	  }
 	}
@@ -196,7 +196,7 @@ void HNL_SignalStudies::executeEvent(){
 	  
 	  FillAllMuonPlots("PassFake", "Muons"  , MuonColl , weight);
 
-	  if(MuonColl[0].hnl_mva_conv() > -0.8 && MuonColl[1].hnl_mva_conv() > -0.8) FillHist( "Vec/TightMuonColl", 2,  weight,5, 0., 5,"HNTight");
+	  if(MuonColl[0].HNL_MVA_Conv() > -0.8 && MuonColl[1].HNL_MVA_Conv() > -0.8) FillHist( "Vec/TightMuonColl", 2,  weight,5, 0., 5,"HNTight");
 	}
 	
 	if(MuonColl[0].PassID("HNTightV2") && MuonColl[1].PassID("HNTightV2"))   FillHist( "Vec/TightMuonColl", 1,  weight,5, 0., 5,"HNTight");
@@ -209,14 +209,14 @@ void HNL_SignalStudies::executeEvent(){
         Particle ll =  (ElectronColl[0]) + (ElectronColl[1]);
 
 
-	double bdt_l1_fake = ElectronColl[0].hnl_mva_fake();
-	double bdt_l2_fake = ElectronColl[1].hnl_mva_fake();
+	double bdt_l1_fake = ElectronColl[0].HNL_MVA_Fake();
+	double bdt_l2_fake = ElectronColl[1].HNL_MVA_Fake();
 	
-	double bdt_l1_cf = ElectronColl[0].hnl_mva_cf();
-	double bdt_l2_cf = ElectronColl[1].hnl_mva_cf();
+	double bdt_l1_cf = ElectronColl[0].HNL_MVA_CF();
+	double bdt_l2_cf = ElectronColl[1].HNL_MVA_CF();
 
-	double bdt_l1_conv = ElectronColl[0].hnl_mva_conv();
-	double bdt_l2_conv = ElectronColl[1].hnl_mva_conv();
+	double bdt_l1_conv = ElectronColl[0].HNL_MVA_Conv();
+	double bdt_l2_conv = ElectronColl[1].HNL_MVA_Conv();
 
 
 	

@@ -1016,7 +1016,6 @@ void HNL_SignalLeptonOpt::RunULAnalysis(AnalyzerParameter param, vector<Electron
   //if(param.Name.Contains("HNTightV2"))  param.WriteOutVerbose=0;
 
   
-  if(!IsData )weight = weight*sf_btagM_NLV;
   if(!IsData && FatjetColl.size()==0)weight = weight*sf_btagM_NLV;
   if(!IsData && FatjetColl.size()>0)weight = weight*sf_btagSR1_NLV;
 

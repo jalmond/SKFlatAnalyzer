@@ -21,16 +21,16 @@ nmax=300
 
 if [[ $1 == "NP_ELECTRON_CF_HighPt" ]]; then
 
-    declare  -a era_list=("2016postVFP" "2016preVFP" "2017" "2018")
+    declare  -a era_list=("2017" )
 
     for i in "${era_list[@]}"
     do
 
-        Flag='RunEE,ELID_CF,HighPt,BB'
-	source ${runPATH}/run_hnl.sh Electron ${Flag} ${i}
+        #Flag='RunEE,ELID_CF,HighPt,BB'
+	#source ${runPATH}/run_hnl.sh Electron ${Flag} ${i}
 
-        Flag2='RunEE,ELID_CF,HighPt,EC'
-	source ${runPATH}/run_hnl.sh Electron ${Flag2} ${i}
+        #Flag2='RunEE,ELID_CF,HighPt,EC'
+	#source ${runPATH}/run_hnl.sh Electron ${Flag2} ${i}
 
 	Flag3='RunEE,ELID_CF,HighPt,FullEta'
         source ${runPATH}/run_hnl.sh Electron ${Flag3} ${i}
@@ -282,12 +282,12 @@ if [[ $1 == "Electron" ]]; then
 
     # If no inut then this is ran                                                                                                                        
     source ${runPATH}/run_hnl.sh Signals ${3} ${2} 
-    source ${runPATH}/run_hnl.sh MC  ${3} ${2}
+    #source ${runPATH}/run_hnl.sh MC  ${3} ${2}
     
     CFFlag=${2}',RunCF'
-    source ${runPATH}/run_hnl.sh CF ${3} ${CFFlag}
+    #source ${runPATH}/run_hnl.sh CF ${3} ${CFFlag}
     ConvFlag=${2}',RunConv'
-    source ${runPATH}/run_hnl.sh Conv ${3} ${ConvFlag}
+    #source ${runPATH}/run_hnl.sh Conv ${3} ${ConvFlag}
     
 
 fi
@@ -303,9 +303,9 @@ fi
 
 if [[ $1 == "Signals" ]]; then
 
-    SKFlat.py -a $analyzer  -l $sigpath/SSWWOpt.txt  -n $njobs_sig  --nmax ${nmax}  -e ${2}  --userflags ${3}  &
-    SKFlat.py -a $analyzer  -l $sigpath/DYOpt.txt    -n $njobs_sig  --nmax ${nmax}   -e ${2}  --userflags ${3} &
-    SKFlat.py -a $analyzer  -l $sigpath/VBFOpt.txt   -n $njobs_sig  --nmax ${nmax}   -e ${2}  --userflags ${3} &
+    SKFlat.py -a $analyzer  -l $sigpath/SSWW.txt  -n $njobs_sig  --nmax ${nmax}  -e ${2}  --userflags ${3}  &
+    SKFlat.py -a $analyzer  -l $sigpath/DY.txt    -n $njobs_sig  --nmax ${nmax}   -e ${2}  --userflags ${3} &
+    SKFlat.py -a $analyzer  -l $sigpath/VBF.txt   -n $njobs_sig  --nmax ${nmax}   -e ${2}  --userflags ${3} &
 
 fi
 

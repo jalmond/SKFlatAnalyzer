@@ -114,61 +114,77 @@ class HNL_LeptonCore : public AnalyzerCore {
 
   //========== MAIN ANALYZER FUNCTIONS
 
-  void initializeAnalyzer();
-  void SetupMVAReader();
 
+  // ----- SETUP ANALYZER
   AnalyzerParameter InitialiseHNLParameters( TString analysis_tag, vector<vector<TString> >  param_vec);
   AnalyzerParameter InitialiseHNLParameter(TString s_setup, TString tag);  
 
-  double MergeMultiMC(vector<TString> vec, TString Method);
-  double ScaleLepToSS(TString bkg, bool isMuon, int lepttype);
+  
+  // ------ Analysis Obj
 
-  bool IsSignal();
-
-  void OutCutFlow(TString lab, double w);
-
-  // MET corr
   std::pair<double,double> METXYCorr_Met_MetPhi(double uncormet, double uncormet_phi, int runnb, TString year, bool isMC, int npv, bool isUL =false,bool ispuppi=false);
-
   std::map<TString, double> cfmap;
 
 
-  double GetHNLMVAMuon(Muon mu ,BkgType bkg);
-  double GetHNLMVAElectron(Electron mu ,BkgType bkg);
+
+
+  /// Jet Functions                                                                                                                                                                                                 
+  TString CloseJetFlavour(std::vector<Jet> jetColl, Lepton* lep);
+  TString CloseJetFlavour(std::vector<Jet> jetColl, Muon mu);
+  TString CloseJetFlavour(std::vector<Jet> jetColl, Electron el);
+  TString CloseJetFlavourInt(std::vector<Jet> jetColl, Lepton* lep);
+  TString CloseJetFlavourInt(std::vector<Jet> jetColl, Muon mu);
+  TString CloseJetFlavourInt(std::vector<Jet> jetColl, Electron el);
 
 
   
 
-  //===== TRIGGER
+  //---- BDT Related                                                                                                                                                                                                
+  void initializeAnalyzer();
+  void SetupMVAReader();
 
-  TString Category(Electron el);
+  double MergeMultiMC(vector<TString> vec, TString Method);
+  double ScaleLepToSS(TString bkg, bool isMuon, int lepttype);
 
-  vector<AnalyzerParameter::Syst> GetSystList(TString SystType);
-  double HNLZvtxSF(HNL_LeptonCore::Channel ch);
-  bool PassHEMVeto(HNL_LeptonCore::Channel channel, std::vector<Lepton *> leps);
+  double GetHNLMVAMuon(Muon mu ,BkgType bkg);
+  double GetHNLMVAElectron(Electron mu ,BkgType bkg);
 
-  bool PassPtTrigger(Event ev, vector<TString> triglist,std::vector<Lepton *> leps, bool check_pd=true);
-  void TriggerPrintOut(Event ev);
-  bool PassTriggerSelection(HNL_LeptonCore::Channel channel,Event ev, std::vector<Lepton *> leps, TString selection, bool check_pd=true);
-  bool PassMultiTriggerSelection(HNL_LeptonCore::Channel channel,Event ev, std::vector<Lepton *> leps, TString selectionMain, TString selectionOR);
-  // ============= HELPER FUNCTIONS
-  void PrintParam(AnalyzerParameter param);
+  
+  // ------ General 
+  bool IsSignal(); //// checks if sample is Signal
+  void PrintParam(AnalyzerParameter param); 
+  void OutCutFlow(TString lab, double w);
   TString QToString(HNL_LeptonCore::ChargeType q);
- 
   bool CheckLeptonFlavourForChannel(HNL_LeptonCore::Channel channel, std::vector<Lepton *> leps);
-
   double PassEventTypeFilter(vector<Lepton *> leps , vector<Gen> gens);
+  bool HasLowMassMeson(std::vector<Lepton *> leps);
 
   double SetupWeight(Event ev, AnalyzerParameter param);
   double GetPtCutTrigger(TString trigname, int nlep, TString flavour);
   bool CheckSRStream(Event ev,HNL_LeptonCore::Channel channel_ID);
+  
+  /// ------ SYSTEMATICS
+  vector<AnalyzerParameter::Syst> GetSystList(TString SystType);
+
+  /// ------ Corrections
+  double HNLZvtxSF(HNL_LeptonCore::Channel ch);
+  bool PassHEMVeto(HNL_LeptonCore::Channel channel, std::vector<Lepton *> leps);
+
+
+  /// ---- TRIGGER
+  TString Category(Electron el);
+  bool PassPtTrigger(Event ev, vector<TString> triglist,std::vector<Lepton *> leps, bool check_pd=true);
+  void TriggerPrintOut(Event ev);
+  bool PassTriggerSelection(HNL_LeptonCore::Channel channel,Event ev, std::vector<Lepton *> leps, TString selection, bool check_pd=true);
+  bool PassMultiTriggerSelection(HNL_LeptonCore::Channel channel,Event ev, std::vector<Lepton *> leps, TString selectionMain, TString selectionOR);
   bool PassTriggerAndCheckStream(bool apply_ptcut,vector<Lepton*> leps, Event ev, vector<TString> triglist, bool check_pd=true);
+
   TString  DoubleElectronPD();
   TString  SingleElectronPD();
   TString  MuonEGPD();
   TString  DoubleMuonPD();
   TString DoubleToString(double d);
-  bool HasLowMassMeson(std::vector<Lepton *> leps);
+
 
   ///=============== GET/SELECT OBJECT
   vector<Gen> GetGenLepronsSignal();
@@ -180,13 +196,8 @@ class HNL_LeptonCore : public AnalyzerCore {
   Particle GetvMET(TString METType);
   Particle GetSignalObject(TString obj, TString Sig);
 
-
-  // JA Added functions                                                                                                                                                                                                                     
-
-
   vector<Muon> GetSignalLeptons(const std::vector<Muon>& MuColl, vector<Gen>& TruthColl);
   vector<Electron> GetSignalLeptons(const std::vector<Electron>& ElColl, vector<Gen>& TruthColl);
-
   vector<Muon> GetLepCollByRunType(const vector<Muon>& MuColl, vector<Gen>& TruthColl, AnalyzerParameter param, TString Option="NoSel");
   vector<Electron> GetLepCollByRunType(const vector<Electron>& ElColl, vector<Gen>& TruthColl, AnalyzerParameter param, TString Option="NoSel");
 
@@ -203,7 +214,6 @@ class HNL_LeptonCore : public AnalyzerCore {
   bool  ZmasslllWindowCheck(std::vector<Lepton *> leps);
   bool  ZmassOSWindowCheck(std::vector<Lepton *> leps);
   bool  ZmassOSSFWindowCheck(std::vector<Lepton *> leps, double mass_diff);
-
 
   double GetMassMinOSSF(std::vector<Lepton *> leps);
   double GetMassMinSSSF(std::vector<Lepton *> leps);
@@ -301,6 +311,8 @@ class HNL_LeptonCore : public AnalyzerCore {
 
   void FillAllMuonPlots(TString label , TString cut,  Muon mu, double w);
   void FillAllMuonPlots(TString label , TString cut,  std::vector<Muon> muons, double w);
+  void FillMuonPlots(TString label , TString cut,  std::vector<Muon> muons, double w);
+  void FillElectronPlots(TString label , TString cut,  std::vector<Electron> els, double w);
   void FillAllElectronPlots(TString label , TString cut,  std::vector<Electron> els, double w);
   void FillAllElectronPlots(TString label , TString cut,  Electron el, double w);
 

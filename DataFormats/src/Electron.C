@@ -11,7 +11,6 @@ Electron::Electron(){
   j_En_down=1.;;
   j_Res_up = 1.;
   j_Res_down = 1.;
-
   j_scEta = -999.;
   j_scPhi = -999.;
   j_scE = -999.;
@@ -306,12 +305,13 @@ bool Electron::PassID(TString ID) const{
 
   // === list of IDs for analyis
   if(ID=="NoCut") return true;
+  if(ID=="NOCUT") return true;
 
   //==== XXX veto Gap Always
   if(etaRegion()==GAP) return false;
 
   //==== Customized
-  if(ID=="NOCUT") return true;
+
   if(ID=="TEST") return Pass_TESTID();
 
   /// PassStandardIDs contains POG + HNL confirmed IDs
@@ -320,8 +320,8 @@ bool Electron::PassID(TString ID) const{
   if(ID=="passVetoID") return passVetoID(); // --- VETO POG                                                    
 
   /// HNL   //==== VETO IDS                                                                                   
-  if(ID=="HNVetoMVA") return Pass_HNVeto2016(); // --- veto POG MVA (95%) + VVLoose ISO/IP                    
-  if(ID=="HNVeto")    return Pass_HNVeto(0.6); // -- VETO POG + VVLoose ISO/IP                                
+  if(ID=="HNVetoMVA") return Pass_HNVetoMVA(); // --- veto POG MVA (95%) + VVLoose ISO/IP                    
+  if(ID=="HNVeto")    return Pass_HNVetoCutBased(0.6); // -- VETO POG + VVLoose ISO/IP                                
   if(ID=="HNLoosest") return Pass_HNLoosest(); // OR of VETO IDs  LOOSEST                                     
 
   if(PassIDLoose(ID)   >=0) return (PassIDLoose(ID)==1) ? true : false;
@@ -346,8 +346,8 @@ bool Electron::PassStandardIDs(TString ID) const{
 
   /// HNL   //==== VETO IDS
 
-  if(ID=="HNVetoMVA") return Pass_HNVeto2016(); // --- veto POG MVA (95%) + VVLoose ISO/IP
-  if(ID=="HNVeto")    return Pass_HNVeto(0.6); // -- VETO POG + VVLoose ISO/IP        
+  if(ID=="HNVetoMVA") return Pass_HNVetoMVA(); // --- veto POG MVA (95%) + VVLoose ISO/IP
+  if(ID=="HNVeto")    return Pass_HNVetoCutBased(0.6); // -- VETO POG + VVLoose ISO/IP        
   if(ID=="HNLoosest") return Pass_HNLoosest(); // OR of VETO IDs  LOOSEST
 
   if(PassIDLoose(ID)   >=0) return (PassIDLoose(ID)==1) ? true : false;
@@ -396,8 +396,7 @@ bool Electron::Pass_LepMVATopID() const {
 
 
 bool Electron::Pass_CB_Opt(TString ID) const {
-  
-  
+    
   if (ID.Contains("HNL2016") && !PassID("HNL_ULID_2016")) return false;
   if (ID.Contains("HNL2017") && !PassID("HNL_ULID_2017")) return false;
   if (ID.Contains("HNL2018") && !PassID("HNL_ULID_2018")) return false;
@@ -743,89 +742,244 @@ int  Electron::PassIDOptMulti(TString np_mva_Pt, TString np_mva_BB1, TString np_
 
 }
 
+
 int  Electron::PassIDTight(TString ID) const{
 
-  // same ID used by Haneol expassTightID_NoCCcpet with conv                                                                                
+  /// Loose MVA used to train
+  if(ID=="MVALoose") return Pass_LepMVAID();
 
-  if(ID=="HNL_ULID_2016") {
+
+  // breakdown of 2016 ID for checking Eff.
+  if(ID=="HNL_ULID_2016_Trigger"){
+    if(!(Pass_TriggerEmulationLoose()))   return false;
+    if(!Pass_LepMVAID()) return false;
+    return true;
+  }
+
+  // breakdown of 2016 ID for checking Eff.                                                                                                                                                                                                  
+  if(ID=="HNL_ULID_2016_CF"){
+    if(!Pass_LepMVAID()) return false;
+    
+    if( IsIB()){
+      if(j_lep_mva_hnl_cf < 0.7) return false;
+    }
+    else   if( IsOB()){
+      if(j_lep_mva_hnl_cf < 0.7) return false;
+
+    }
+    else{
+      if(j_lep_mva_hnl_cf < 0.84) return false;
+    }
+
+    return true;
+  }
+
+  // breakdown of 2016 ID for checking Eff.                                                                                                                                                                                                  
+
+  if(ID=="HNL_ULID_2016_Fake"){
+    if(!Pass_LepMVAID()) return false;
+
+    if( IsIB()){
+      if(j_lep_mva_hnl_fake < 0.15) return false;
+    }
+    else   if( IsOB()){
+      if(j_lep_mva_hnl_fake < 0.15) return false;
+    }
+    else{
+      if(j_lep_mva_hnl_fake < 0.2) return false;
+    }
+    
+    return true;
+  }
+
+  // breakdown of 2016 ID for checking Eff.                                                                                                                                                                                                  
+  if(ID=="HNL_ULID_2016_Conv"){
+    if(!Pass_LepMVAID()) return false;
+
+    if(j_lep_mva_hnl_conv < -0.7) return false;
+
+
+    return true;
+  }
+
+
+  // 2016/2017 ID HNL
+
+  if(ID=="HNL_ULID_2016" || ID=="HNL_ULID_2017") {
 
     if(! PassConversionVeto() ) return false;
-
-    //if (!PassID("HNLIPv1")) return false;
     if(!(Pass_TriggerEmulationLoose()))   return false;
     if(!Pass_LepMVAID()) return false;
 
-    if( IsIB()){
+    if( IsIB() || IsOB()){
       if(j_lep_mva_hnl_cf < 0.7) return false;
       if(j_lep_mva_hnl_fake < 0.15) return false;
-    }
-    else   if( IsOB()){
-      if(j_lep_mva_hnl_cf < 0.7) return false;
-      if(j_lep_mva_hnl_fake < 0.15) return false;
-
     }
     else{
       if(j_lep_mva_hnl_cf < 0.84) return false;
       if(j_lep_mva_hnl_fake < 0.2) return false;
-
     }
-
     if(j_lep_mva_hnl_conv < -0.7) return false;
-
-
     return true;
-
   }
-                                                                                            
 
-  if(ID=="HNL_ULID_2017") {
-    //if (!PassID("HNLIPv1")) return false;
-    if(! (Pass_TriggerEmulationLoose()))   return false;
-    if(!Pass_LepMVAID()) return false;
+  if(ID=="HNL_ULID_N1_2016" || ID=="HNL_ULID_N1_2017") {
 
     if(! PassConversionVeto() ) return false;
+    if(!(Pass_TriggerEmulationLoose()))   return false;
+    if(!Pass_LepMVAID()) return false;
 
-    if( IsIB()){
-      if(j_lep_mva_hnl_cf < 0.7) return false;
+    if( IsIB() || IsOB()){
       if(j_lep_mva_hnl_fake < 0.15) return false;
     }
-    else   if( IsOB()){
+    else{
+      if(j_lep_mva_hnl_fake < 0.2) return false;
+    }
+    if(j_lep_mva_hnl_conv < -0.7) return false;
+    return true;
+
+  }
+  if(ID=="HNL_ULID_N2_2016" || ID=="HNL_ULID_N2_2017") {
+
+    if(! PassConversionVeto() ) return false;
+    if(!(Pass_TriggerEmulationLoose()))   return false;
+    if(!Pass_LepMVAID()) return false;
+
+    if( IsIB() || IsOB()){
+      if(j_lep_mva_hnl_cf < 0.7) return false;
+    }
+    else{
+      if(j_lep_mva_hnl_cf < 0.84) return false;
+    }
+    if(j_lep_mva_hnl_conv < -0.7) return false;
+    return true;
+
+  }
+
+  if(ID=="HNL_ULID_N3_2016" || ID=="HNL_ULID_N3_2017") {
+
+    if(! PassConversionVeto() ) return false;
+    if(!(Pass_TriggerEmulationLoose()))   return false;
+    if(!Pass_LepMVAID()) return false;
+
+    if( IsIB() || IsOB()){
       if(j_lep_mva_hnl_cf < 0.7) return false;
       if(j_lep_mva_hnl_fake < 0.15) return false;
-
     }
     else{
       if(j_lep_mva_hnl_cf < 0.84) return false;
       if(j_lep_mva_hnl_fake < 0.2) return false;
-
     }
+    return true;
+  }
 
-    if(j_lep_mva_hnl_conv < -0.7) return false;
+
+  if(ID=="HNL_ULID_N4_2016" || ID=="HNL_ULID_N4_2017") {
+
+    if(! PassConversionVeto() ) return false;
+    if(!(Pass_TriggerEmulationLoose()))   return false;
+    if(!Pass_LepMVAID()) return false;
 
     return true;
   }
+
+  if(ID=="HNL_ULID_N5_2016" || ID=="HNL_ULID_N5_2017") {
+
+    if(! PassConversionVeto() ) return false;
+    if(!(Pass_TriggerEmulationLoose()))   return false;
+    if(!Pass_LepMVAID()) return false;
+
+    if( IsIB() || IsOB()){
+      if(j_lep_mva_hnl_cf < 0.7) return false;
+    }
+    else{
+      if(j_lep_mva_hnl_cf < 0.84) return false;
+    }
+    return true;
+  }
+
+  if(ID=="HNL_ULID_N6_2016" || ID=="HNL_ULID_N6_2017") {
+
+    if(! PassConversionVeto() ) return false;
+    if(!(Pass_TriggerEmulationLoose()))   return false;
+    if(!Pass_LepMVAID()) return false;
+
+    if( IsIB() || IsOB()){
+      if(j_lep_mva_hnl_fake < 0.15) return false;
+    }
+    else{
+      if(j_lep_mva_hnl_fake < 0.2) return false;
+    }
+    return true;
+  }
+
+                                                                                            
+  if(ID=="HNL_FO_ULID_2016" || ID=="HNL_FO_ULID_2017") {
+
+    if(! PassConversionVeto() ) return false;
+    if(!(Pass_TriggerEmulationLoose()))   return false;
+    if(!Pass_LepMVAID()) return false;
+
+    if( IsIB() || IsOB()){
+      if(j_lep_mva_hnl_cf < 0.7) return false;
+      if(j_lep_mva_hnl_fake < 0.15) {
+        if(CloseJet_Ptratio() < 0.4) return false;
+        if(CloseJet_BScore() > 0.1) return false;
+      }
+    }
+    else{
+      if(j_lep_mva_hnl_cf < 0.84) return false;
+      if(j_lep_mva_hnl_fake < 0.2){
+        if(CloseJet_Ptratio() < 0.4) return false;
+        if(CloseJet_BScore() > 0.1) return false;
+      }
+    }
+    if(j_lep_mva_hnl_conv < -0.7) return false;
+    return true;
+
+  }
+
+
+
   if(ID=="HNL_ULID_2018") {
 
     if(! PassConversionVeto() ) return false;
-
-    //if(!PassID("HNLIPv1")) return false;
     if(! (Pass_TriggerEmulationLoose()))   return false;
     if(!Pass_LepMVAID()) return false;
 
-    if(IsIB()){
+    if( IsIB() || IsOB()){
       if(j_lep_mva_hnl_cf < 0.7) return false;
       if(j_lep_mva_hnl_fake < 0.4) return false;
-    }
-    else  if( IsOB()){
-
-      if(j_lep_mva_hnl_cf < 0.7) return false;
-      if(j_lep_mva_hnl_fake < 0.4) return false;
-
     }
     else{
       if(j_lep_mva_hnl_cf < 0.84) return false;
       if(j_lep_mva_hnl_fake < 0.2) return false;
+    }
+    if(j_lep_mva_hnl_conv < -0.7) return false;
 
+    return true;
+
+  }
+
+  if(ID=="HNL_FO_ULID_2018") {
+
+    if(! PassConversionVeto() ) return false;
+    if(! (Pass_TriggerEmulationLoose()))   return false;
+    if(!Pass_LepMVAID()) return false;
+
+    if( IsIB() || IsOB()){
+      if(j_lep_mva_hnl_cf < 0.7) return false;
+      if(j_lep_mva_hnl_fake < 0.4) {
+	if(CloseJet_Ptratio() < 0.5) return false;
+	if(CloseJet_BScore() > 0.1) return false;
+      }
+    }
+    else{
+      if(j_lep_mva_hnl_cf < 0.84) return false;
+      if(j_lep_mva_hnl_fake < 0.2) {
+	if(CloseJet_Ptratio() < 0.5) return false;
+        if(CloseJet_BScore() > 0.1) return false;
+      }
     }
 
     if(j_lep_mva_hnl_conv < -0.7) return false;
@@ -834,9 +988,7 @@ int  Electron::PassIDTight(TString ID) const{
 
   }
 
-
-
-             
+            
   if(ID=="HNL_Peking_2016") {
     if(! (passTightID()) ) return false;
     if( IsBB()){
@@ -877,7 +1029,7 @@ int  Electron::PassIDTight(TString ID) const{
   if(ID=="HNTightV2")  return passTightID_NoCC() &&PassHNID()  &&(fabs(IP3D()/IP3Derr())<4.)? 1 : 0 ;
   if(ID=="HNTightV3")  return (PassHNOpt()==1)  ? 1 : 0 ;
   if(ID=="HNTight_17028") return Pass_HNTight2016()? 1 : 0 ;  // EXO-17-028             
-  if(ID=="HNTight_ULInProgress") return Pass_HNTightUL()? 1 : 0 ;  
+  //if(ID=="HNTight_ULInProgress") return Pass_HNTightUL()? 1 : 0 ;  
 
   // No Isoc
   if(ID=="CutBasedLooseNoIso") return Pass_CutBasedLooseNoIso();
@@ -1124,45 +1276,6 @@ int Electron::PassIDOpt(TString ID) const{
 
   // updated 2016 analysis ID with looser dxy
   if(ID=="HNTight2016Update") return passIDHN(4,0.02, 0.02, 0.05,0.04, 4.9,4.9, -999., -999., 0.089, 0.05) && PassMVA(0.8,0.8,0.775)? 1 : 0 ;  // EXO-17-028                                                  
-
-
-  
-  if(ID.Contains("HNTight_Opt")){
-    
-    if(! (PassConversionVeto()) ) return 0;
-    if(ID.Contains("_CC")){
-      if(! IsGsfCtfScPixChargeConsistent())  return 0;
-    }
-    if(ID.Contains("_ECCC")){
-      if(IsEC()){
-	if(! IsGsfCtfScPixChargeConsistent())  return 0;
-      }
-    }
-    if(! (Pass_TriggerEmulation()) ) return 0;
-    if(!isEcalDriven()) return 0;
-    if(ID.Contains("Iso1"))  return passIDHN(1,0.02, 0.02, 0.05,0.05, 5.,5., 0.08, 0.08, -999., -999.) ? 1 : 0 ;
-    if(ID.Contains("Iso2"))  return passIDHN(1,0.02, 0.02, 0.05,0.05, 5.,5., 0.09, 0.08, -999., -999.) ? 1 : 0 ;
-    if(ID.Contains("Iso3"))  return passIDHN(1,0.02, 0.02, 0.05,0.05, 5.,5., 0.1, 0.08, -999., -999.) ? 1 : 0 ;
-    if(ID.Contains("Iso4"))  return passIDHN(1,0.02, 0.02, 0.05,0.05, 5.,5., 0.12, 0.08, -999., -999.) ? 1 : 0 ;
-    if(ID.Contains("Iso5"))  return passIDHN(1,0.02, 0.02, 0.05,0.05, 5.,5., 0.09, 0.09, -999., -999.) ? 1 : 0 ;
-    if(ID.Contains("Iso6"))  return passIDHN(1,0.02, 0.02, 0.05,0.05, 5.,5., 0.1, 0.1, -999., -999.) ? 1 : 0 ;
-    if(ID.Contains("Iso7"))  return passIDHN(1,0.02, 0.02, 0.05,0.05, 5.,5., 0.12, 0.12, -999., -999.) ? 1 : 0 ;
-
-    if(ID.Contains("dxy1"))  return passIDHN(1,0.01, 0.01, 0.05,0.05, 5.,5., 0.08, 0.08, -999., -999.) ? 1 : 0 ;
-    if(ID.Contains("dxy2"))  return passIDHN(1,0.015, 0.015, 0.05,0.05, 5.,5., 0.08, 0.08, -999., -999.) ? 1 : 0 ;
-    if(ID.Contains("dxy3"))  return passIDHN(1,0.02, 0.02, 0.05,0.05, 5.,5., 0.08, 0.08, -999., -999.) ? 1 : 0 ;
-    if(ID.Contains("dxy4"))  return passIDHN(1,0.03, 0.03, 0.05,0.05, 5.,5., 0.08, 0.08, -999., -999.) ? 1 : 0 ;
-    if(ID.Contains("dxy5"))  return passIDHN(1,0.04, 0.04, 0.05,0.05, 5.,5., 0.08, 0.08, -999., -999.) ? 1 : 0 ;
-    if(ID.Contains("dxy6"))  return passIDHN(1,0.05, 0.05, 0.05,0.05, 5.,5., 0.08, 0.08, -999., -999.) ? 1 : 0 ;
-    
-    if(ID.Contains("dz1"))  return passIDHN(1,0.02, 0.02, 0.02,0.02, 5.,5., 0.08, 0.08, -999., -999.) ? 1 : 0 ;
-    if(ID.Contains("dz2"))  return passIDHN(1,0.02, 0.02, 0.03,0.03, 5.,5., 0.08, 0.08, -999., -999.) ? 1 : 0 ;
-    if(ID.Contains("dz3"))  return passIDHN(1,0.02, 0.02, 0.04,0.04, 5.,5., 0.08, 0.08, -999., -999.) ? 1 : 0 ;
-    if(ID.Contains("dz4"))  return passIDHN(1,0.02, 0.02, 0.05,0.05, 5.,5., 0.08, 0.08, -999., -999.) ? 1 : 0 ;
-
-
-
-  }
 
 
   // POG ID with relaxed cuts
@@ -1551,7 +1664,7 @@ bool Electron::Pass_TriggerEmulationN(int cut) const{
   return true;
 }
 
-bool Electron::Pass_HNVeto2016() const{
+bool Electron::Pass_HNVetoMVA() const{
 
   if(!passMVAID_noiso_WPLoose()) return false;
 
@@ -2138,67 +2251,7 @@ bool Electron::PassMVA(double mva1, double mva2, double mva3) const {
 }
 
 
-bool Electron::Pass_HNTightUL() const{
 
-  if(! (Pass_TriggerEmulationLoose()) ) return false;
-
-  if( fabs(scEta())<= 0.8 ){
-
-    double dxy_cut = 0.02 ;
-    if(this->Pt() > 15 && this->Pt()  < 60.) dxy_cut -= (this->Pt() - 15.) * 0.01/ 45.;
-    if(this->Pt()  > 60.) dxy_cut = 0.01;
-
-    if(fabs(dXY()) >  dxy_cut)   return false;
-    if(fabs(dZ()) >  0.07)   return false;
-    if(fabs(IP3D()/IP3Derr())> 7.)  return false;
-    if(! (RelIso()<0.07) ) return false;
-
-    //if(!PassMVA_UL_BB(-999,-999, -999)) return false;
-    
-    if(!passMVAID_noIso_WP90()) return false;
-
-    return true;
-  }
-  else if( fabs(scEta())<= 0.8 ){
-
-    double dxy_cut = 0.02 ;
-    if(this->Pt() > 15 && this->Pt()  < 60.) dxy_cut -= (this->Pt() - 15.) * 0.01/ 45.;
-    if(this->Pt()  > 60.) dxy_cut = 0.01;
-
-    if(fabs(dXY()) >  dxy_cut)   return false;
-    if(fabs(dZ()) >  0.07)   return false;
-    if(fabs(IP3D()/IP3Derr())> 7.)  return false;
-
-    if(! (RelIso()<0.1) ) return false;
-
-    //if(!PassMVA_UL_EB(-999,-999, -999)) return false;
-    if(!passMVAID_noIso_WP90()) return false;
-
-    return true;
-
-  }
-
-  else{
-    double dxy_cut = 0.04 ;
-    if(this->Pt() > 15 && this->Pt()< 60.) dxy_cut -= (this->Pt()- 15.) * 0.02/ 45.;
-    if(this->Pt()  > 60.) dxy_cut = 0.02;
-
-    if(fabs(dXY()) >  dxy_cut)   return false;
-    if(fabs(dZ()) >  0.07)   return false;
-    if(fabs(IP3D()/IP3Derr())> 10)  return false;
-    if(! (RelIso()<0.2) ) return false;
-
-    //if(!PassMVA_UL_EE(-999,-999,)) return false;
-    if(!passMVAID_noIso_WP80()) return false;  
-    return true;
-
-  }
-
-  return true;
-
-
-
-}
 bool Electron::Pass_HNTight2016() const{
 
 
@@ -2218,7 +2271,7 @@ bool Electron::Pass_HNTight2016() const{
 //==== Run2 ID
 //===============================================
 
-bool Electron::Pass_HNVeto(double relisoCut) const{
+bool Electron::Pass_HNVetoCutBased(double relisoCut) const{
 
   if(! (Pass_CutBasedVetoNoIso()) ) return false;
   if(! (RelIso()<relisoCut) ) return false;
