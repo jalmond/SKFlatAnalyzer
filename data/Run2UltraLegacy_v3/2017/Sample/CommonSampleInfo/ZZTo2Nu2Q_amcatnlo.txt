@@ -1,0 +1,2 @@
+# alias PD xsec nmc sumsign sumw
+ZZTo2Nu2Q_amcatnlo	ZZTo2Nu2Q_5f_TuneCP5_13TeV-amcatnloFXFX-pythia8	1	4640640	2745686.0	35232605.4856 

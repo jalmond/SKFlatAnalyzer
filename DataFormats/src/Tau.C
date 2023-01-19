@@ -11,6 +11,10 @@ Tau::Tau(){
   this->SetLeptonFlavour(TAU);
 }
 
+void Tau::PrintObject(TString label){
+
+}
+
 Tau::~Tau(){
 
 }

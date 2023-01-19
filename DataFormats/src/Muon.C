@@ -24,10 +24,43 @@ Muon::Muon() : Lepton() {
   j_matchedstations = 0;
   j_pixelHits = 0;
   j_trackerLayers = 0;
+  j_museg_comp=0;
+}
+
+void Muon::PrintObject(TString label){
+  
+  cout << "PrintObject " << label << endl;
+  Lepton::PrintObject(label);
+  
+  cout << "Muon ------ " << endl;
+  cout << "Chi2 " << j_chi2  << endl;
+  cout << "PFCH04 " << j_PFCH04 << endl;
+  cout << "PFNH04 " << j_PFNH04 << endl;
+  cout << "PFPH04 " << j_PFPH04 << endl;
+  cout << "PU04 " << j_PU04  << endl;
+  cout << "TrikIso " << j_trkiso << endl;
+  cout << "MiniAODPt " << j_MiniAODPt << endl;
+  cout << "MomentumScaleUp " << j_MomentumScaleUp << endl;
+  cout << "MomentumScaleDown " << j_MomentumScaleDown << endl;
+  cout << "TunePPtError " << j_TunePPtError << endl;
+  cout << "MVA " << j_MVA << endl;
+  cout << "lowptMVA " << j_lowptMVA << endl;
+  cout << "softMVA " << j_softMVA << endl;
+  cout << "validmuonhits " << j_validmuonhits << endl;
+  cout << "matchedstations " << j_matchedstations << endl;
+  cout << "pixelHits " << j_pixelHits << endl;
+  cout << "trackerLayers " << j_trackerLayers << endl;
+  cout << "museg_comp " << j_museg_comp<< endl;
+
 }
 
 Muon::~Muon(){
 }
+
+void Muon::SetMuonSegmentCompatibility(double segcomp){
+  j_museg_comp = segcomp;
+}
+
 
 void Muon::SetTypeBit(unsigned int typebit){
   j_TypeBit = typebit;
@@ -121,6 +154,7 @@ bool Muon::PassID(TString ID) const {
   if(ID=="POGMedium") return isPOGMedium();
   if(ID=="POGLoose") return isPOGLoose();
 
+  
 
   if(ID=="POGTightWithTightIso") return Pass_POGTightWithTightIso();
   if(ID=="POGHighPtWithLooseTrkIso") return Pass_POGHighPtWithLooseTrkIso();
@@ -131,7 +165,6 @@ bool Muon::PassID(TString ID) const {
 
   if(ID=="POGHighPtMixTight") return  Pass_POGHighPtTightOR();
   if(ID=="POGHighPtMixLoose") return  Pass_POGHighPtLooseOR();
-
 
   if(ID=="HNVeto2016") return Pass_HNVeto2016();
   if(ID=="HNLoosest") return Pass_HNVeto2016();
@@ -146,111 +179,344 @@ bool Muon::PassID(TString ID) const {
   if(ID=="HNLoosePOG") return Pass_HNLoose(0.4,  0.2, 0.5,99999.);
 
 
-  if(ID.Contains("MuOpt")){
+  if(ID=="HNL_HN3L") {
     
-    TString ID_sub = ID;
-    ID_sub = ID_sub.ReplaceAll("_"," ");
-    string sID_sub = string(ID_sub);
+    if(!Pass_LepMVAID()) return false;
+    if(!isPOGMedium()) return false;
 
-    vector<TString> subStrings;
-    istringstream ID_subs(sID_sub);
-    do {
-      string subs;
-      ID_subs >> subs;
-      subStrings.push_back(TString(subs));
-    } while (ID_subs);
+    if(MVA() < 0.64)  return false;
 
+    return true;
+  }
+  if(ID=="HNL_Top1") {
 
-    TString dxy_method = "";
-    TString iso_methodB="";
-    TString iso_methodEC="";
-    TString pog_methodB="";
-    TString pog_methodEC="";
+    if(!Pass_LepMVAID()) return false;
+    if(!isPOGMedium()) return false;
 
-    for(unsigned int i=0; i < subStrings.size(); i++){
-      if (subStrings[i].Contains("DXY")) dxy_method=subStrings[i];
-      if (subStrings[i].Contains("MVAB")) pog_methodB=subStrings[i];
-      if (subStrings[i].Contains("MVAEC")) pog_methodEC=subStrings[i];
+    if(MVA() < 0.81)  return false;
 
-      if (subStrings[i].Contains("POG")) pog_methodB=subStrings[i];
-      if (subStrings[i].Contains("POG")) pog_methodEC=subStrings[i];
-
-      if (subStrings[i].Contains("ISOB")) iso_methodB=subStrings[i];
-      if (subStrings[i].Contains("ISOEC")) iso_methodEC=subStrings[i];
-    }
-
-    if(ID.Contains("MuOptLoose")) return PassLooseIDOpt();
-    
-    //cout << "ID " << ID << " pass = " << PassIDOptMulti(dxy_method, pog_methodB,pog_methodEC, iso_methodB,iso_methodEC)  << endl;
-    return   PassIDOptMulti(dxy_method, pog_methodB,pog_methodEC, iso_methodB,iso_methodEC);
-
+    return true;
   }
 
+  if(ID=="HNL_Top2") {
 
-
-
-  if(ID.Contains("HNMVA_")){
-    TString mva_st = ID.ReplaceAll("HNMVA_","");
-    std::string mva_s = std::string(mva_st);
-    std::string::size_type sz;     // alias of size_t
+    if(!Pass_LepMVAID()) return false;
+    if(!isPOGMedium()) return false;
     
-    double mva_d = std::stod (mva_s,&sz);
-    return PassMVA(mva_d,mva_d,mva_d);
+    if( fabs(this->Eta()) <= 1.479 ){
+      if(MVA() < 0.64)  return false;
+    }
+    else if(MVA() < 0.81)  return false;
 
+    return true;
   }
 
-  if(ID=="HNTightMVAVL")  return PassMVA(0.,0.,0.);
-  if(ID=="HNTightMVAL")  return PassMVA(0.15,0.15,0.15);
-  if(ID=="HNTightMVAM")  return PassMVA(0.45,0.45,0.45);
-  if(ID=="HNTightMVAT")  return PassMVA(0.65,0.65,0.65);
-  if(ID=="HNTightMVAVT")  return PassMVA(0.8,0.8,0.8);
-  if(ID=="HNTightMVAVVT")  return PassMVA(0.9,0.9,0.9);
+  if(ID=="HNL_Top3") {
 
-  if(ID=="HNTightV1") return Pass_HNTight(0.07, 0.02, 0.05, 3.);
-  if(ID=="HNTightV2") return Pass_HNTight(0.07, 0.05, 0.1, 3.);
+    if(!Pass_LepMVAID()) return false;
+    if(!isPOGMedium()) return false;
 
-
-  if(ID=="HNOpt")                 {
-
-    if( fabs(this->Eta())<= 1.479 ){
-
-      double dxy_cut = 0.01 ;
-      if(this->Pt() > 10 && this->Pt()  < 60.) dxy_cut -= (this->Pt() - 10.) * 0.005/ 50.;
-      if(this->Pt() > 60.) dxy_cut = 0.005;
-      if(fabs(dXY()) >  dxy_cut)   return false;
-      if(fabs(dZ()) >  0.05)   return false;
-      if(RelIso() > 0.2) return false;
-      //if(fabs(IP3D()/IP3Derr())> 5.)  return false;
-
-      //double mva_cut_B = -0.4 ;
-      //if(this->Pt() > 10 && this->Pt()  < 60.) mva_cut_B -= (this->Pt() -10.) * 1.2/ 50.;
-      //if(this->Pt() > 60.) mva_cut_B = 0.8;
-      //if(! (MVA()> mva_cut_B) ) return false;
-
+    if( fabs(this->Eta()) <= 1.479 ){
+      if(MVA() < 0.81)  return false;
     }
-    else{
+    else if(MVA() < 0.64)  return false;
 
-      double dxy_cut = 0.01 ;
-      if(this->Pt() > 10 && this->Pt()< 60.) dxy_cut -= (this->Pt() - 10.) * 0.005/ 50.;
-      if(this->Pt() > 60.) dxy_cut = 0.005;
-
-      if(fabs(dXY()) >  dxy_cut)   return false;
-      if(fabs(dZ()) >  0.05)   return false;
-      if(RelIso() > 0.2) return false;
-
-      // if(fabs(IP3D()/IP3Derr())> 7.5)  return false;
-      //double mva_cut_EC = -0.5 ;
-      //if(this->Pt() > 10 && this->Pt()  < 60.) mva_cut_EC -= ( this->Pt()-10.) * 1.1/ 50.;
-      //if(this->Pt() > 60.) mva_cut_EC = 0.6;
-
-      //if(! (MVA()> mva_cut_EC) ) return false;
-      
-
-    }
     return true;
   }
 
 
+  
+
+  if(ID=="HNL_Peking") {
+
+    if(!isPOGTight()) return false;
+    if(!( RelIso()<0.15 ))  return false;
+    double dxy_cut = (this->Pt() < 20) ? 0.01 : 0.02 ;
+    if(fabs(dXY()) >  dxy_cut)   return false;
+    if(fabs(dZ()) >  0.1)   return false;
+
+    return true;
+  }
+
+
+
+  /// Loose ID used for MVA
+  if(ID=="MVAID") return Pass_LepMVAID();
+
+  if(ID.Contains("MuOpt")) return Pass_CB_Opt(ID);
+
+  
+  if(ID.Contains("HNL_ULID_v1_2016"))  {
+    if(!Pass_LepMVAID()) return false;
+    if(!isPOGMedium()) return false;
+
+    if( fabs(this->Eta()) <= 1.479 ){
+      if(MVA() < 0.77)  return false;
+    }
+    else{
+      if(MVA() < 0.6)  return false;
+    }
+
+    double dxy_cut = 0.02 ;
+    if(fabs(dXY()) >  dxy_cut)   return false;
+    if(fabs(dZ()) >  0.05)   return false;
+    if(fabs(IP3D()/IP3Derr()) >5.) return false;
+    return true;
+  }
+  if(ID.Contains("HNL_ULID_v2_2016"))  {
+    if(!Pass_LepMVAID()) return false;
+    if(!isPOGMedium()) return false;
+
+    if( fabs(this->Eta()) <= 1.479 ){
+      if(MVA() < 0.77)  return false;
+    }
+    else{
+      if(MVA() < 0.6)  return false;
+    }
+
+    return true;
+  }
+
+
+
+
+  if(ID.Contains("HNL_ULID_2016"))  {
+    if(!Pass_LepMVAID()) return false;
+    if(!isPOGMedium()) return false;
+
+    if( fabs(this->Eta()) <= 1.479 ){
+      if(!PassMVA_UL_Slope("NPMVABB10p05", "NPMVABB20p77", "NPMVAPt20"))  return false;
+    }
+    else{
+      if(MVA() < 0.6)  return false;
+    }
+
+
+    double dxy_cut = 0.02 ;
+    if(fabs(dXY()) >  dxy_cut)   return false;
+    if(fabs(dZ()) >  0.05)   return false;
+    if(fabs(IP3D()/IP3Derr()) >5.) return false;
+    return true;
+
+    
+  }
+
+  if(ID.Contains("HNL_ULID_FO_2016"))  {
+
+    if(!Pass_LepMVAID()) return false;
+    if(!isPOGMedium()) return false;
+
+    if( fabs(this->Eta()) <= 1.479 ){
+      if(!PassMVA_UL_Slope("NPMVABB10p6", "NPMVABB20p77", "NPMVAPt20"))  {
+	
+      }
+    }
+    else{
+      if(MVA() < 0.6) {
+
+      }
+    }
+
+    return true;
+
+  }
+
+
+
+
+  if(ID.Contains("HNL_ULID_2017"))  {
+
+    if(!Pass_LepMVAID()) return false;
+    if(!isPOGMedium()) return false;
+
+    if( fabs(this->Eta()) <= 1.479 ){
+      if(!PassMVA_UL_Slope("NPMVABB10p27", "NPMVABB20p77", "NPMVAPt20"))  return false;
+    }
+    else{
+      if(MVA() < 0.6)  return false;
+    }
+
+    double dxy_cut = 0.02 ;
+    if(fabs(dXY()) >  dxy_cut)   return false;
+    if(fabs(dZ()) >  0.05)   return false;
+    if(fabs(IP3D()/IP3Derr()) >6.) return false;
+    return true;
+
+  }
+
+  if(ID.Contains("HNL_ULID_v1_2017"))  {
+
+    if(!Pass_LepMVAID()) return false;
+    if(!isPOGMedium()) return false;
+
+    if( fabs(this->Eta()) <= 1.479 ){
+      if(MVA() < 0.77)  return false;
+    }
+    else{
+      if(MVA() < 0.6)  return false;
+    }
+
+    double dxy_cut = 0.02 ;
+    if(fabs(dXY()) >  dxy_cut)   return false;
+    if(fabs(dZ()) >  0.05)   return false;
+    if(fabs(IP3D()/IP3Derr()) >6.) return false;
+    return true;
+
+  }
+
+  if(ID.Contains("HNL_ULID_v2_2017"))  {
+
+    if(!Pass_LepMVAID()) return false;
+    if(!isPOGMedium()) return false;
+
+    if( fabs(this->Eta()) <= 1.479 ){
+      if(MVA() < 0.77)  return false;
+    }
+    else{
+      if(MVA() < 0.6)  return false;
+    }
+
+    return true;
+
+  }
+
+
+
+  if(ID.Contains("HNL_ULID_2018"))  {
+
+    if(!Pass_LepMVAID()) return false;
+    if(!isPOGMedium()) return false;
+
+    if( fabs(this->Eta()) <= 1.479 ){
+      if(MVA() < 0.71)  return false;
+    }
+    else{
+      if(MVA() < 0.65)  return false;
+    }
+
+    double dxy_cut = 0.02 ;
+    if(fabs(dXY()) >  dxy_cut)   return false;
+    if(fabs(dZ()) >  0.05)   return false;
+    if(fabs(IP3D()/IP3Derr()) >5.) return false;
+    return true;
+    
+    
+  }
+  
+  if(ID.Contains("HNL_ULID_v1_2018"))  {
+
+    if(!Pass_LepMVAID()) return false;
+    if(!isPOGMedium()) return false;
+
+    if( fabs(this->Eta()) <= 1.479 ){
+      if(MVA() < 0.71)  return false;
+    }
+    else{
+      if(MVA() < 0.65)  return false;
+    }
+
+    return true;
+  }
+
+
+
+  if(ID=="HNTightV1") return Pass_HNTight(0.07, 0.02, 0.05, 3.);
+  if(ID=="HNTightV2") return Pass_HNTight(0.07, 0.05, 0.1, 3.);
+  if(ID=="HNTightV3") { 
+   
+    if(!Pass_LepMVAID()) return false;
+    if(!isPOGMedium()) return false;
+
+    if( fabs(this->Eta()) <= 1.479 ){
+      if(MVA() < 0.7)  return false;
+    }
+    else{
+      if(MVA() < 0.65)  return false;
+    }
+    
+    
+    double dxy_cut = 0.01 ;
+    if(this->Pt() > 10 && this->Pt()  < 60.) dxy_cut -= (this->Pt() - 10.) * 0.005/ 50.;
+    if(this->Pt() > 60.) dxy_cut = 0.005;
+    if(fabs(dXY()) >  dxy_cut)   return false;
+    if(fabs(dZ()) >  0.05)   return false;
+    return true;
+   
+  }
+
+  if(ID=="HNLIPv1") {
+    double dxy_cut = 0.01 ;
+    if(this->Pt() > 10 && this->Pt()  < 60.) dxy_cut -= (this->Pt() - 10.) * 0.005/ 50.;
+    if(this->Pt() > 60.) dxy_cut = 0.005;
+    if(fabs(dXY()) >  dxy_cut)   return false;
+    if(fabs(dZ()) >  0.05)   return false;
+    return true;
+  }
+
+  if(ID=="HNLIPv2") {
+    double dxy_cut = 0.01 ;
+    if(fabs(dXY()) >  dxy_cut)   return false;
+    if(fabs(dZ()) >  0.05)   return false;
+    return true;
+  }
+  if(ID=="HNLIPv3") {
+    double dxy_cut = 0.02 ;
+    if(fabs(dXY()) >  dxy_cut)   return false;
+    if(fabs(dZ()) >  0.05)   return false;
+    return true;
+  }
+  if(ID=="HNLIPv4") {
+    double dxy_cut = 0.01 ;
+    if(fabs(dXY()) >  dxy_cut)   return false;
+    if(fabs(dZ()) >  0.05)   return false;
+    if(fabs(IP3D()/IP3Derr()) > 3.) return false;
+    return true;
+  }
+  if(ID=="HNLIPv5") {
+    double dxy_cut = 0.02 ;
+    if(fabs(dXY()) >  dxy_cut)   return false;
+    if(fabs(dZ()) >  0.05)   return false;
+    if(fabs(IP3D()/IP3Derr()) >3.) return false;
+    return true;
+  }
+  
+  if(ID=="HNLIPv6") {
+    double dxy_cut = 0.02 ;
+    if(fabs(dXY()) >  dxy_cut)   return false;
+    if(fabs(dZ()) >  0.05)   return false;
+    if(fabs(IP3D()/IP3Derr()) >4.) return false;
+    return true;
+  }
+
+
+  if(ID=="HNLIPv7") {
+    double dxy_cut = 0.02 ;
+    if(fabs(dXY()) >  dxy_cut)   return false;
+    if(fabs(dZ()) >  0.05)   return false;
+    if(fabs(IP3D()/IP3Derr()) >5.) return false;
+    return true;
+  }
+
+
+  if(ID=="HNLIPv8") {
+    double dxy_cut = 0.02 ;
+    if(fabs(dXY()) >  dxy_cut)   return false;
+    if(fabs(dZ()) >  0.05)   return false;
+    if(fabs(IP3D()/IP3Derr()) >6.) return false;
+    return true;
+  }
+
+
+  if(ID=="HNLIPv9") {
+    double dxy_cut = 0.01 ;
+    if(fabs(dXY()) >  dxy_cut)   return false;
+    if(fabs(dZ()) >  0.05)   return false;
+    if(fabs(IP3D()/IP3Derr()) >4.) return false;
+    return true;
+  }
+
+  
+  ///. Simple ISO/IP sels
 
   if(ID=="HNTight_Iso05_dxy_01_ip_3") return Pass_HNTight(0.05,0.01,0.05,3.);
   if(ID=="HNTight_Iso05_dxy_01_ip_4") return Pass_HNTight(0.05,0.01,0.05,4.);
@@ -344,7 +610,130 @@ bool Muon::PassID(TString ID) const {
 
 }
 
+bool Muon::Pass_CB_Opt(TString ID) const {
+  
+  //
+  //cout << "ID = " << ID << "  " << this->Pt() << " " << this->Eta()<< endl;
 
+  if (ID.Contains("HNL2016") && !PassID("HNL_ULID_2016")) return false;
+  if (ID.Contains("HNL2017") && !PassID("HNL_ULID_2017")) return false;
+  if (ID.Contains("HNL2018") && !PassID("HNL_ULID_2018")) return false;
+
+ 
+  TString ID_sub = ID;
+  ID_sub = ID_sub.ReplaceAll("_"," ");
+  string sID_sub = string(ID_sub);
+
+  vector<TString> subStrings;
+  istringstream ID_subs(sID_sub);
+  do {
+    string subs;
+    ID_subs >> subs;
+    subStrings.push_back(TString(subs));
+  } while (ID_subs);
+
+
+  TString dxy_method = "";
+  TString iso_methodB="";
+  TString iso_methodEC="";
+  TString pog_methodB="";
+  TString pog_methodEC="";
+  
+  // Step/slope
+  TString mva_methodBB1="";
+  TString mva_methodBB2="";
+  TString mva_methodEC1="";
+  TString mva_methodEC2="";
+  TString mva_methodPt="";
+
+  // Exp
+  TString mva_methodBBC ="";
+  TString mva_methodBBTau ="";
+  TString mva_methodBBA ="";
+  TString mva_methodECC ="";
+  TString mva_methodECTau ="";
+  TString mva_methodECA ="";
+
+  TString mva_methodConv ="";
+
+
+  // If MVA ID then need Loose MVA and pog medium
+  if(ID.Contains("MVA")&& !Pass_LepMVAID()) return false;
+
+  /// Apply pog medium as loose sel
+  if(!isPOGMedium()) return false;
+
+  for(unsigned int i=0; i < subStrings.size(); i++){
+    //MuOpt_HNLUL_vMVANPBB1neg1_vMVANPBB2neg1_vMVANPBB3neg1_NPMVABB40p72_vMVANPEC1neg1_vMVANPEC2neg1_vMVANPEC3neg1_NPMVAEC40p64_
+    //MuOpt_HNLUL_HNL2017_MVAConvneg1_
+    //HNLOpt_UL_MuOpt_HNLUL_MVABBC0p75_MVABBTAU4p5_MVABBA3p5_MVAECC0p65_MVAECTAU0_MVAECA0_DXYv1
+    // MuOpt_HNLUL_MVABBC0p7_MVABBTAU3p5_MVABBA3p5_MVAECC0p65_MVAECTAU0_MVAECA0_DXYv1
+    if (subStrings[i].Contains("MVAConv")) mva_methodConv=subStrings[i];
+
+    if (subStrings[i].Contains("MVABB1")) mva_methodBB1=subStrings[i];
+    if (subStrings[i].Contains("MVABB2")) mva_methodBB2=subStrings[i];
+    if (subStrings[i].Contains("MVAEC1")) mva_methodEC1=subStrings[i];
+    if (subStrings[i].Contains("MVAEC2")) mva_methodEC2=subStrings[i];
+    if (subStrings[i].Contains("MVAPt")) mva_methodPt=subStrings[i];
+
+    
+    if (subStrings[i].Contains("MVABBC"))  mva_methodBBC=subStrings[i];
+    if (subStrings[i].Contains("MVABBTau"))  mva_methodBBTau= subStrings[i];
+    if (subStrings[i].Contains("MVABBA"))  mva_methodBBA=subStrings[i];
+    if (subStrings[i].Contains("MVAECC"))  mva_methodECC=subStrings[i];
+    if (subStrings[i].Contains("MVAECTau"))  mva_methodECTau=subStrings[i];
+    if (subStrings[i].Contains("MVAECA"))  mva_methodECA=subStrings[i];
+
+    if (subStrings[i].Contains("POGB")) pog_methodB=subStrings[i];
+    if (subStrings[i].Contains("POGEC")) pog_methodEC=subStrings[i];
+
+    if (subStrings[i].Contains("ISOB")) iso_methodB=subStrings[i];
+    if (subStrings[i].Contains("ISOEC")) iso_methodEC=subStrings[i];
+    
+    if (subStrings[i].Contains("DXY")) dxy_method=subStrings[i];
+
+  }
+
+  
+  
+  /*cout << "mva_methodBB1 = " << mva_methodBB1 << endl;
+  cout << "mva_methodBB2 = " << mva_methodBB2 << endl;
+						
+  cout << "mva_methodEC1 = " << mva_methodEC1 << endl;
+  cout << "mva_methodEC2 = " << mva_methodEC2 << endl;
+  cout << "mva_methodPt = " << mva_methodECPt << endl;
+
+  cout << "mva_methodBBC = " << mva_methodBBC << endl;
+  cout << "mva_methodBBTau = " << mva_methodBBTau << endl;
+  cout << "mva_methodBBA = " << mva_methodBBA << endl;
+  cout << "mva_methodECC = " << mva_methodECC << endl;
+  cout << "mva_methodECTau = " << mva_methodECTau << endl;
+  cout << "mva_methodECA = " << mva_methodECA << endl;
+  */
+
+  //cout << "mva_methodConv " << mva_methodConv << endl;  
+  if( mva_methodConv != "") {
+
+    double mva_cut = StringToDouble(mva_methodConv,"MVAConv");
+
+    if (j_lep_mva_hnl_conv < mva_cut) return false;
+  }  
+
+  if(dxy_method.Contains("DXYv")){
+    
+    if(!PassID(dxy_method.ReplaceAll("DXY","HNLIP"))) return false;
+    
+  }  
+  else  if(dxy_method.Contains("DXY")){
+    double dxy_cut = StringToDouble(dxy_method,"DXY");
+    if(fabs(dXY())  > dxy_cut)  return false; 
+  }
+  if(ID.Contains("MuOptLoose")) return PassLooseIDOpt();
+
+
+  return   PassIDOptMulti(pog_methodB,pog_methodEC,mva_methodBB1,mva_methodBB2,mva_methodPt ,mva_methodEC1,mva_methodEC2,mva_methodPt,mva_methodBBC, mva_methodBBTau,mva_methodBBA,mva_methodECC, mva_methodECTau,mva_methodECA, iso_methodB,iso_methodEC);
+  
+}
 bool Muon::passIDHN(int ID, double dxy_b, double dxy_e, double dz_b,double dz_e, double sip_b, double sip_e, double iso_b,double iso_e, double miso_b, double miso_e) const{
 
   if( fabs(this->Eta())<= 1.479 ){
@@ -410,61 +799,21 @@ bool Muon::passIDHN(int ID, double dxy_b, double dxy_e, double dz_b,double dz_e,
 }
 
 
-bool Muon::PassMVA(double mva1, double mva2) const {
 
-  //https://github.com/cms-sw/cmssw/blob/master/PhysicsTools/PatAlgos/plugins/PATMuonProducer.cc 
-  // apply loose selection 
 
-  //      if (muon.pt() > 5 and muon.isLooseMuon() and muon.passed(reco::Muon::MiniIsoLoose) and sip3D < 8.0 and
-  //dB2D < 0.05 and dz < 0.1) {
+bool Muon::Pass_LepMVAID() const {
 
-  if (this->Pt() < 5) return false;
+  if(this->Pt() < 10) return false;
+  if(this->fEta() > 2.4) return false;
+  if(MiniRelIso() > 0.4) return false;
+  if(SIP3D() > 8) return false;
+  if(this->fdXY() > 0.05) return false;
+  if(this->fdZ() > 0.1) return false;
   if(!( isPOGLoose() )) return false;
-  if(RelIso() > 0.1)  return false;
-  if(!( fabs(dXY())< 0.05 && fabs(dZ())< 0.1 && fabs(IP3D()/IP3Derr())< 5.) ) return false;
-  
-  if( fabs(this->Eta()) <= 0.8 ){
-    if(! (MVA()>mva1) ) return false;
-  }
-  else if( fabs(this->Eta()) > 0.8 && fabs(this->Eta()) <= 1.479 ){
-    if(! (MVA()>mva1) ) return false;
-  }
-  else{
-    if(! (MVA()>mva2) ) return false;
-  }
 
   return true;
+
 }
-
-bool Muon::PassMVA(double mva1, double mva2, double mva3) const {
-
-  //https://github.com/cms-sw/cmssw/blob/master/PhysicsTools/PatAlgos/plugins/PATMuonProducer.cc                                                                                                   
-  // apply loose selection                                                                                                                                                                         
-
-  //      if (muon.pt() > 5 and muon.isLooseMuon() and muon.passed(reco::Muon::MiniIsoLoose) and sip3D < 8.0 and                                                                                   
-  //dB2D < 0.05 and dz < 0.1) {                                                                                                                                                                    
-
-  //if (this->Pt() < 5) return false;
-  //if(!( isPOGLoose() )) return false;
-  //if(RelIso() > 0.1)  return false;
-  //if(!( fabs(dXY())< 0.02 && fabs(dZ())< 0.1 && fabs(IP3D()/IP3Derr())< 5.) ) return false;
-
-  if( fabs(this->Eta()) <= 0.8 ){
-    if(! (MVA()>mva1) ) return false;
-  }
-  else if( fabs(this->Eta()) > 0.8 && fabs(this->Eta()) <= 1.479 ){
-    if(! (MVA()>mva2) ) return false;
-  }
-  else{
-    if(! (MVA()>mva3) ) return false;
-  }
-
-  return true;
-}
-
-
-
-
 
 bool Muon::PassSoftMVA(double mva1, double mva2, double mva3) const {
 
@@ -492,75 +841,29 @@ int  Muon::PassLooseIDOpt( ) const{
 
 }
 
-int  Muon::PassIDOptMulti(TString dxy_method, TString sel_methodB,TString sel_methodEC,  TString iso_methodB,TString iso_methodEC ) const{
+int  Muon::PassIDOptMulti(TString sel_methodB,TString sel_methodEC,  TString mva_methodBB1, TString mva_methodBB2,TString mva_methodBBPt,TString mva_methodEC1, TString mva_methodEC2,TString mva_methodECPt,  TString mva_methodBBC,  TString mva_methodBBTau, TString mva_methodBBA, TString mva_methodECC, TString mva_methodECTau,  TString mva_methodECA, TString iso_methodB,TString iso_methodEC ) const{
 
   bool DEBUG=false;
 
+  //  ///NPMVABB1neg1 NPMVABB2neg1 NPMVABB3neg1 NPMVABB40p73POGECT ISOEC0p15 DXYv1/FillEventCutflow/MuonSR 3.28117668762                                                                                                                                         
+  //cout << "PassIDOptMulti " << endl;
   if( fabs(this->Eta())<= 1.479 ){
+    
+    if(mva_methodBB1.Contains("MVA") && !PassMVA_UL_Slope(mva_methodBB1,mva_methodBB2, mva_methodBBPt)  ) return 0;   
+    
+    if(mva_methodBBTau.Contains("MVA")){
+      if(!PassMVA_UL_Exp(mva_methodBBC, mva_methodBBTau,mva_methodBBA)) return 0;
+    }
 
-    double dxy_cut = 0.01 ;
-    if(dxy_method.Contains("B1")) {
-      if(this->Pt() > 10 && this->Pt()  < 60.) dxy_cut -= (this->Pt() - 10.) * 0.005/ 50.;
-      if(this->Pt() > 60.) dxy_cut = 0.005;
-      if(fabs(dXY()) >  dxy_cut)   {
-        if(DEBUG) cout << " DXY  FAIL" << endl;
-        return 0;
-      }
+    if(sel_methodB == "POGBT"){
+      if(! (isPOGTight()) ) return 0;
+    }
+    if(sel_methodB == "POGBM"){
+      if(! (isPOGMedium()) ) return 0;
     }
     
-    if(fabs(dZ()) >  0.05)   return 0;
-
-    if(fabs(IP3D()/IP3Derr())> 5.)  return 0;
-
-    if(DEBUG) cout << " sel_methodB = " << sel_methodB << endl;
-    
-    if(sel_methodB.Contains("MVA")){
-      
-      double high_pt_cut = 0.9;
-      TString mva_st = "MVAB";
-      if(sel_methodB.Contains("MVAB2")){
-	mva_st = "MVAB2";
-	high_pt_cut = 0.925;
-      }
-      if(sel_methodB.Contains("MVAB3")){
-        mva_st = "MVAB3";
-	high_pt_cut = 0.95;
-      }
-      if(sel_methodB.Contains("MVAB4")){
-	mva_st = "MVAB4";
-        high_pt_cut = 0.96;
-      }
-      if(sel_methodB.Contains("MVAB5")){
-	mva_st = "MVAB5";
-        high_pt_cut = 0.97;
-      }
-      if(sel_methodB.Contains("MVAB6")){
-	mva_st = "MVAB6";
-        high_pt_cut = 0.98;
-      }
-
-      
-      double  mva_cut_B = StringToDouble(sel_methodB,mva_st);
-      
-      if(this->Pt() > 10 && this->Pt()  < 60.) mva_cut_B += (this->Pt() - 10.) * (high_pt_cut - mva_cut_B)/ 50.;
-      if(this->Pt()  > 60.)  mva_cut_B =high_pt_cut;
-
-      if(DEBUG) cout << "pt = " <<  this->Pt()  << " mva = " << MVA() << " cut =" << mva_cut_B << endl;
-
-
-      if(! (MVA()> mva_cut_B) ) return 0;
-    }
-    else{
-      if(sel_methodB == "POGT"){
-        if(! (isPOGTight()) ) return 0;
-      }
-      if(sel_methodB == "POGM"){
-        if(! (isPOGMedium()) ) return 0;
-      }
-    }
     if(iso_methodB != ""){
-
-
+      
       double  iso_cut_B = StringToDouble(iso_methodB,"ISOB");
 
       if(DEBUG) cout << "RelIso " << iso_cut_B << " val= " <<  RelIso() << endl;
@@ -571,20 +874,11 @@ int  Muon::PassIDOptMulti(TString dxy_method, TString sel_methodB,TString sel_me
     if(DEBUG) cout << "PassIDOpt ENDCAP " << endl;
 
 
-    if(dxy_method.Contains("EC1")) {
+    if(mva_methodEC1.Contains("MVA") && !PassMVA_UL_Slope(mva_methodEC1,mva_methodEC2, mva_methodECPt)  ) return 0;
 
-      double dxy_cut = 0.01 ;
-      if(this->Pt() > 10 && this->Pt()< 60.) dxy_cut -= (this->Pt()- 10.) * 0.005/ 50.;
-      if(this->Pt()  > 60.) dxy_cut = 0.005;
-
-      if(DEBUG) cout << "pt = " << this->Pt() << " DXY cut = " << dxy_cut << " value = " << fabs(dXY()) <<  endl;
-      if(fabs(dXY()) >  dxy_cut)   {
-        if(DEBUG) cout << " DXY  FAIL" << endl;
-        return 0;
-      }
-    }
-    if(fabs(dZ()) >  0.07)   return 0;
-    if(fabs(IP3D()/IP3Derr())> 7.5)  return 0;
+    if(mva_methodECTau.Contains("MVA")){
+      if(!PassMVA_UL_Exp(mva_methodECC, mva_methodECTau,mva_methodECA)) return 0;
+    }   
 
     if(iso_methodEC != ""){
 
@@ -595,51 +889,11 @@ int  Muon::PassIDOptMulti(TString dxy_method, TString sel_methodB,TString sel_me
       if(! (RelIso()<iso_cut_EC) ) return 0;
     }
 
-    if(sel_methodEC.Contains("MVA")){
-
-
-      double high_pt_cut = 0.9;
-      TString mva_st = "MVAEC";
-      if(sel_methodEC.Contains("MVAEC2")){
-        mva_st = "MVAEC2";
-	high_pt_cut = 0.925;
-      }
-      if(sel_methodEC.Contains("MVAEC3")){
-	mva_st = "MVAEC3";
-	high_pt_cut = 0.95;
-      }
-      if(sel_methodB.Contains("MVAEC4")){
-	mva_st = "MVAEC4";
-        high_pt_cut = 0.96;
-      }
-      if(sel_methodB.Contains("MVAEC5")){
-	mva_st = "MVAEC5";
-        high_pt_cut = 0.97;
-      }
-      if(sel_methodB.Contains("MVAEC6")){
-	mva_st = "MVAEC6";
-        high_pt_cut = 0.98;
-      }
-
-
-      double  mva_cut_EC = StringToDouble(sel_methodEC, mva_st);
-
-      if(this->Pt() > 10 && this->Pt()  < 60.) mva_cut_EC += (this->Pt() - 10.) * (high_pt_cut - mva_cut_EC)/ 50.;
-      if(this->Pt()  > 60.)  mva_cut_EC = high_pt_cut;
-
-      if(DEBUG) cout << "pt = " <<  this->Pt() << " mva = " <<MVA() << " cut =" << mva_cut_EC << endl;
-
-
-      if(! (MVA()> mva_cut_EC) ) return 0;
+    if(sel_methodEC == "POGECT"){
+      if(! (isPOGTight()) ) return 0;
     }
-    else{
-      if(sel_methodEC == "POGT"){
-        if(! (isPOGTight()) ) return 0;
-      }
-      if(sel_methodEC == "POGM"){
-        if(! (isPOGMedium()) ) return 0;
-      }
-
+    if(sel_methodEC == "POGECM"){
+      if(! (isPOGMedium()) ) return 0;
     }
   }
 
@@ -882,6 +1136,82 @@ void Muon::SetTrackerLayers(int n){
   j_trackerLayers = n;
 }
 
+double Muon::PassMultiStepCut(double Val1, double Val2, double PtBoundary ) const{
+  
+  //// Apply slope cuts for 5-20-40-60 - inf
+  
+  //cout << "PassMultiStepCut = " << Val1 << " " << Val2 << " " << PtBoundary << endl;
+  double pt1 = 5.;
+  double mva_cut = -999;
+
+  if(this->Pt() > PtBoundary) mva_cut = Val2;
+  else   if(this->Pt() > pt1) mva_cut = Val1 +  (this->Pt() -pt1) * (Val2 - Val1)/ (PtBoundary-pt1);
+  else mva_cut = Val1;
+
+  
+  return mva_cut;
+
+}
+
+double Muon::PassStepCut(double val1, double val2, double pt1, double pt2) const{
+
+  double mva_cut = -999;
+
+  if(this->Pt() > pt2) mva_cut = val2;
+  else if(this->Pt() > 10) mva_cut = val1 +  (this->Pt() -pt1) * (val2 - val1)/ (pt2-pt1);
+  else mva_cut = val1;
+
+  return mva_cut;
+
+}
+
+bool Muon::PassMVA_UL_Exp(TString  c, TString tau, TString A) const {
+  
+
+  double MVACut = 1.;
+  if( fabs(this->Eta()) <= 1.479 ) MVACut =  StringToDouble(c,"MVABBC") - exp(- (this->Pt() / StringToDouble(tau,"MVABBTau"))) * StringToDouble(A,"MVABBA");
+  else MVACut =  StringToDouble(c,"MVAECC") - exp(- (this->Pt() / StringToDouble(tau,"MVAECTau"))) * StringToDouble(A,"MVAECA");
+
+  
+  /*if( fabs(this->Eta()) <= 1.479 ) cout << "PassMVA_ULBB " << StringToDouble(c,"MVABBC") << " " <<  StringToDouble(tau,"MVABBTau") << " " << StringToDouble(A,"MVABBA") << endl;
+  else cout << "PassMVA_ULEC " << StringToDouble(c,"MVAECC") << " " <<  StringToDouble(tau,"MVAECTau") << " " << StringToDouble(A,"MVAECA") << endl;
+  cout << MVACut << endl;
+  */
+
+  if(! (MVA()> MVACut ))  return false;
+  return true;
+
+}
+
+bool Muon::PassMVA_UL_Slope(TString val1, TString val2, TString ptboundary) const {
+
+  double mva_cut = -999;
+    
+  
+  if( fabs(this->Eta()) <= 1.479 ) {
+    double pt_b = (ptboundary == "") ?  20. : StringToDouble(ptboundary,"NPMVAPt");
+
+    mva_cut = PassMultiStepCut(StringToDouble(val1,"NPMVABB1"),StringToDouble(val2,"NPMVABB2"), pt_b);
+
+  }
+  
+  else {
+    double pt_ec = (ptboundary == "") ?  20. : StringToDouble(ptboundary,"NPMVAPt");
+    mva_cut = PassMultiStepCut(StringToDouble(val1,"NPMVAEC1"),StringToDouble(val2,"NPMVAEC2"), pt_ec);
+  }
+  
+  //cout << val1 << " " << val2 << " ptboundary=" << ptboundary << endl;
+  // cout << "MVA() = " << MVA() << " mva_cut = " << mva_cut << endl;
+
+  if( MVA() < mva_cut) return false;
+  else return true;
+
+}
+
+
+
+
+
 bool Muon::PassFilter(TString filter) const{
   if( filter=="hltDiMu9Ele9CaloIdLTrackIdLMuonlegL3Filtered9" ) return j_filterbits&(ULong64_t(1)<<0);
   else if( filter=="hltDiMuon178Mass3p8Filtered" ) return j_filterbits&(ULong64_t(1)<<1);
@@ -983,13 +1313,14 @@ bool Muon::PassPath(TString path) const{
 
 double  Muon::StringToDouble(TString st,TString subSt) const{
 
+  //cout << st << " " << subSt << endl;
   st = st.ReplaceAll(subSt,"");
   st = st.ReplaceAll("p",".");
   st = st.ReplaceAll("neg","-");
 
   std::string _str = std::string(st);
-  std::string::size_type sz;     // alias of size_t                                                                                                                                 \
-                                                                                                                                                                                     
+  std::string::size_type sz;                                                                                                                                                                                         
+  //cout << _str << " " << std::stod (_str,&sz) << endl;
   double _d = std::stod (_str,&sz);
 
   return _d;

@@ -9,6 +9,10 @@ public:
   Lepton();
   ~Lepton();
 
+  void  PrintObject(TString label);
+
+
+  //  Lepton(const Lepton& lep) ;
 
   enum EtaRegion{
     IB, OB, GAP, EC
@@ -29,8 +33,23 @@ public:
   }
 
 
+  // Use Eta binning from EXO17028
+  inline int Region() const {
+    double eta = fabs(this->Eta());
+    if( eta < 0.8 ) return 1;
+    else if( eta < 1.479 ) return 2;
+    else return 3;
+  }
+
+  inline bool IsIB() const { return (Region() == 1); }
+  inline bool IsOB() const { return (Region() == 2); }
+  inline bool IsEC() const { return (Region() == 3); }
+  inline bool IsBB() const { return (Region() < 3); }
+
+
 
   void SetdXY(double dXY, double dXYerr);
+  inline double fdXY() const {return fabs(j_dXY);}
   inline double dXY() const {return j_dXY;}
   inline double dXYerr() const {return j_dXYerr;}
 
@@ -43,21 +62,35 @@ public:
   void SetLepMVA(double mva);
   inline double lep_mva() const {return j_lep_mva;}
 
+  void SetHNL_LepMVA(double mvaf, double mvacf, double mvaconv);
+  inline double hnl_mva_fake() const {return j_lep_mva_hnl_fake;}
+  inline double hnl_mva_conv() const {return j_lep_mva_hnl_conv;}
+  inline double hnl_mva_cf() const {return j_lep_mva_hnl_cf;}
+
+
 
   void SetJetPtRel(double ptrel);
   inline double lep_jet_ptrel() const {return j_lep_jetptrel;}
   void SetJetPtRatio(double ptr);
   inline double lep_jet_ptratio() const {return j_lep_jetptratio;}
 
+  void SetJetPtRelDef(double ptrel);
+  inline double lep_jet_ptrelDef() const {return j_lep_jetptrelDef;}
+  void SetJetPtRatioDef(double ptr);
+  inline double lep_jet_ptratioDef() const {return j_lep_jetptratioDef;}
+
+
   
 
   void SetdZ(double dZ, double dZerr);
+  inline double fdZ() const {return fabs(j_dZ);}
   inline double dZ() const {return j_dZ;}
   inline double dZerr() const {return j_dZerr;}
 
   void SetIP3D(double IP3D, double IP3Derr);
 
-  inline double SIP() const {return j_IP3Derr>0?fabs(j_IP3D/j_IP3Derr):0.0;}
+
+  inline double SIP3D() const {return j_IP3Derr>0?fabs(j_IP3D/j_IP3Derr):0.0;};
   inline double IP3D() const {return j_IP3D;}
   inline double IP3Derr() const {return j_IP3Derr;}
 
@@ -85,6 +118,13 @@ public:
   
   void SetLepIso(double ch, double nh, double ph);
 
+  inline double fEta() const {return fabs(this->Eta());}
+
+  inline double JetNTracksMVA() const { return j_jetntracks_mva;}
+  inline double JetNTracks() const { return j_jetntracks;}
+
+  void SetJetNTracks(double d);
+  void SetJetNTracksMVA(double d);
 
   enum Flavour{
     NONE, ELECTRON, MUON, TAU
@@ -143,17 +183,21 @@ public:
 
   virtual void Print();
 
+  double j_lep_mva_hnl_fake,j_lep_mva_hnl_conv,j_lep_mva_hnl_cf;
+
 private:
   double j_dXY, j_dXYerr;
   double j_lep_mva;
   double j_dZ, j_dZerr;
   double j_IP3D, j_IP3Derr;
 
+  double j_jetntracks,j_jetntracks_mva;
   double j_RelIso, j_MiniRelIso;
   double j_MiniIso_ChHad,j_MiniIso_NHad,j_MiniIso_PhHad;
   double j_Iso_ChHad,j_Iso_NHad,j_Iso_PhHad;
   double j_ptcone;
   double j_lep_jetptrel,j_lep_jetptratio;
+  double j_lep_jetptrelDef,j_lep_jetptratioDef;
   Flavour j_LeptonFlavour;
 
   int j_LeptonType;
@@ -161,6 +205,8 @@ private:
   bool j_passID;
   
   bool j_IDSet;
+
+
 
   ClassDef(Lepton,1)
 

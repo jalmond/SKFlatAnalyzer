@@ -4,7 +4,7 @@ include $(ARCH_LOC)
 MAKEFLAGS = --no-print-directory -r -s
 
 VPATH    += $(OBJDIR) $(SRCDIR)
-INCLUDES += -Iinclude -I./
+INCLUDES += -Iinclude -I./ 
 INCLUDES += -I/cvmfs/cms.cern.ch/slc6_amd64_gcc630/external/lhapdf/6.2.1-fmblme/include/
 
 CXXFLAGS += -Wall -Wextra -Wno-overloaded-virtual -Wno-ignored-qualifiers -Wno-unused-parameter

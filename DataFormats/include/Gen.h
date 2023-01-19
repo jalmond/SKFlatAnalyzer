@@ -9,6 +9,9 @@ public:
   Gen();
   ~Gen();
 
+  void  PrintObject(TString label);
+
+
   //==== For empty Gen
   void SetIsEmpty(bool b);
   inline bool IsEmpty() const { return j_IsEmpty; }

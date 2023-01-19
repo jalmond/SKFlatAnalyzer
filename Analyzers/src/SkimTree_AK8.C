@@ -22,9 +22,9 @@ void SkimTree_AK8::executeEvent(){
   std::sort(muonPreColl.begin(), muonPreColl.end(), PtComparing);
   std::sort(electronPreColl.begin(), electronPreColl.end(), PtComparing);
   
-  int NEl  = electronPreColl.size();
-  int NMu  = muonPreColl.size();
-  int NLep = NEl+NMu;
+  //int NEl  = electronPreColl.size();
+  //int NMu  = muonPreColl.size();
+  //int NLep = NEl+NMu;
   
   vector<FatJet> allfatjets = puppiCorr->Correct( GetFatJets("tight", 180., 5.) );
   

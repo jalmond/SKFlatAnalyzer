@@ -24,6 +24,10 @@ Gen::Gen() : Particle() {
   j_isMostlyLikePythia6Status3 = false;
 }
 
+void Gen::PrintObject(TString label){
+
+}
+
 Gen::~Gen(){
 }
 

@@ -725,6 +725,8 @@ void {2}(){{
     if IsDATA:
       out.write('  m.IsDATA = true;\n')
       out.write('  m.DataStream = "'+InputSample+'";\n')
+      out.write('  m.Analyzer = "'+args.Analyzer+'";\n');
+
       if args.EventComparison:
         out.write('  m.timestamp = "'+timestamp+'";\n')
 

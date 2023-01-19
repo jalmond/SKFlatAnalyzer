@@ -54,6 +54,17 @@ public:
 
   };
 
+  enum BkgType
+  {
+    Fake=0,
+    Conv=1,
+    CF=2,
+  };
+
+
+
+
+
   //==================
   //==== Get objects
   //==================
@@ -106,9 +117,51 @@ public:
   std::vector<Photon> GetPhotons(TString id, double ptmin, double fetamax);
 
 
-  double GetIsoFromID(TString type_lep, TString id, double eta, double pt);
 
-  bool PassID(std::vector<Electron> electrons, TString ID);
+  TMVA::Reader *MuonIDConvMVAReader;
+  TMVA::Reader *MuonIDNoPtEtaConvMVAReader;
+  TMVA::Reader *MuonIDNoPtConvMVAReader;
+
+  TMVA::Reader *ElectronIDFakeMVAReader;
+  TMVA::Reader *ElectronIDCFMVAReader;
+  TMVA::Reader *ElectronIDConvMVAReader;
+  TMVA::Reader *ElectronIDNoPtEtaConvMVAReader;
+  TMVA::Reader *ElectronIDNoPtConvMVAReader;
+
+  // ID MVA                                                                                            
+  void InitializeMuonIDTreeVars();
+  void InitializeElectronIDTreeVars();
+
+
+  void SetBDTIDVar(Lepton*  lep);
+  void SetupIDMVAReader(bool isMuon);
+
+
+  Float_t Pt,  Eta;
+  Float_t PtRatio,PtRatioNoLep, PtRatioAJ, PtRel, PtRelWithLep,PtRatioCorr,PtRelCorr;
+  Float_t CEMFracAJ, NEMFracAJ, CHFracAJ, NHFracAJ,MuFracAJ, JetDiscAJ;
+  Float_t CEMFracCJ, NEMFracCJ, CHFracCJ, NHFracCJ, MuFracCJ, JetDiscCJ;
+  Float_t Dxy,Dz,DxySig, DzSig, RelIso,IP3D,MVA,MVAIso,Chi2, Minireliso;
+  Float_t Full5x5_sigmaIetaIeta,dEtaSeed,dPhiIn,HoverE,Rho,TrkIso,InvEminusInvP,ecalPFClusterIso,hcalPFClusterIso;
+  Float_t RelDxy,RelDz,RelIP3D,RelMVA,RelMVAIso,PileUp;
+  Float_t R9,dr03TkSumPt,dr03HcalTowerSumEt,dr03HcalDepth1TowerSumEt,dr03EcalRecHitSumEt, e2x5OverE5x5,e1x5OverE5x5;
+  Float_t e15,e25,e55,EtaWidth,PhiWidth,dEtaIn,sigmaIetaIeta, MiniIsoChHad,MiniIsoNHad,MiniIsoPhHad,IsoChHad,IsoNHad,IsoPhHad;
+  Float_t RelMiniIsoCh,RelMiniIsoN,EoverP,FBrem;;
+  Float_t isEcalDriven,Pixel_hits,  Validhits,Matched_stations,Tracker_layers,MissingHits;
+  Float_t PassConversionVeto,IsGsfCtfScPixChargeConsistent, IsGsfScPixChargeConsistent, IsGsfCtfChargeConsistent;
+
+  Float_t w_id_tot;
+  Float_t w_tot;
+
+
+
+
+  double GetBDTScoreEl(Electron el ,BkgType bkg,TString bdttag="BDTA");
+  double GetBDTScoreMuon(Muon mu ,BkgType bkg, TString bdttag="BDTA");
+
+
+
+  double GetIsoFromID(TString type_lep, TString id, double eta, double pt);
 
   //==== If TightIso is set, it calculate ptcone
   //==== If UseMini is true, Lepton::RelIso() returns MiniRelIso
@@ -118,7 +171,7 @@ public:
   std::vector<Lepton *> MakeLeptonPointerVector(const std::vector<Muon>& muons, double TightIso=-999, bool UseMini=false);
   std::vector<Lepton *> MakeLeptonPointerVector(const std::vector<Electron>& electrons, double TightIso=-999, bool UseMini=false);
 
-  std::vector<Jet> GetAllJets();
+  std::vector<Jet> GetAllJets(bool applyCorr=true);
   std::vector<Jet> GetJets(AnalyzerParameter param);
   std::vector<Jet> GetJets(AnalyzerParameter param,TString ID, double ptmin, double fetamax);
   std::vector<Jet> GetJets(TString ID, double ptmin, double fetamax);
@@ -132,6 +185,21 @@ public:
 
   std::vector<Gen> GetGens();
   std::vector<LHE> GetLHEs();
+
+  Jet GetCorrectedJetCloseToLepton(Lepton* lep, Jet jet);
+  Jet GetCorrectedJetCloseToLepton(Muon lep, Jet jet);
+  Jet GetCorrectedJetCloseToLepton(Electron lep, Jet jet);
+
+  double  JetLeptonMassDropLepAware(  Muon lep, bool removeLep,bool ApplyCorr=false);
+  double  JetLeptonMassDropLepAware(  Electron lep, bool removeLep,bool ApplyCorr=false);
+
+
+  double  JetLeptonPtRelLepAware(  Muon lep, bool removeLep,bool ApplyCorr=false);
+  double  JetLeptonPtRelLepAware(  Electron lep, bool removeLep,bool ApplyCorr=false);
+
+  double  JetLeptonPtRatioLepAware( Muon lep, bool removeLep,bool ApplyCorr=false);
+  double  JetLeptonPtRatioLepAware( Electron lep, bool removeLep,bool ApplyCorr=false);
+
 
   bool ConversionSplitting(std::vector<Lepton *> leps,const std::vector<Gen>& gens);
   bool ConversionVeto(std::vector<Lepton *> leps,const std::vector<Gen>& gens);
@@ -159,13 +227,13 @@ public:
   std::vector<FatJet> SelectFatJets(const std::vector<FatJet>& jets, TString id, double ptmin, double fetamax);
 
   //==== BJets                                                                                                                                   
-  pair<int,double> GetNBJets(vector<Jet>       jets,  TString WP="Medium", TString method="2a");
-  pair<int,double> GetNBJets(vector<Jet>       jets,  AnalyzerParameter param, TString WP="Medium");
+  //pair<int,double> GetNBJets(vector<Jet>       jets,  TString WP="Medium", TString method="2a");
+  //pair<int,double> GetNBJets(vector<Jet>       jets,  AnalyzerParameter param, TString WP="Medium");
   //pair<int,double> GetNBJets(TString ID,              TString WP="Medium", TString method="2a");
   //pair<int,double> GetNBJets(AnalyzerParameter param, TString WP="Medium");
-  int GetNBJets2a(TString ID, TString WP="Medium");
-  int GetNBJets2a( vector<Jet> jets, TString WP="Medium");
-  int GetNBJets2a( vector<Jet> jets, AnalyzerParameter param,TString WP="Medium");
+  // int GetNBJets2a(TString ID, TString WP="Medium");
+  //int GetNBJets2a( vector<Jet> jets, TString WP="Medium");
+  //int GetNBJets2a( vector<Jet> jets, AnalyzerParameter param,TString WP="Medium");
 
   //===== AK8 Jet Syst + weights                                                                                                                 
 
@@ -174,18 +242,18 @@ public:
 
 
   //===== Detailed jet selection                                                                                                                 
-  vector<Jet>   GetAK4Jets(vector<Jet> jets, double pt_cut ,  double eta_cut, bool lepton_cleaning  , double dr_lep_clean, double dr_ak8_clean,   TString pu_tag,std::vector<Lepton *> leps_veto,  vector<FatJet> fatjets);
+  vector<Jet>   SelectAK4Jets(vector<Jet> jets, double pt_cut ,  double eta_cut, bool lepton_cleaning  , double dr_lep_clean, double dr_ak8_clean,   TString pu_tag,std::vector<Lepton *> leps_veto,  vector<FatJet> fatjets);
 
   double  GetBJetSF(AnalyzerParameter param,vector<Jet> jets, JetTagging::Parameters jtp);
-  vector<Jet>   GetBJets(AnalyzerParameter param, vector<Jet> jets, JetTagging::Parameters jtp);
-  vector<Jet>   GetLJets(AnalyzerParameter param, vector<Jet> jets, JetTagging::Parameters jtp);
+  vector<Jet>   SelectBJets(AnalyzerParameter param, vector<Jet> jets, JetTagging::Parameters jtp);
+  vector<Jet>   SelectLJets(AnalyzerParameter param, vector<Jet> jets, JetTagging::Parameters jtp);
 
 
-  vector<Jet>  GetAK4Jets(vector<Jet> jets, double pt_cut ,  double eta_cut, bool lepton_cleaning  , double dr_lep_clean, double dr_ak8_clean, TString pu_tag, vector<Electron>  veto_electrons, vector<Muon>  veto_muons, vector<FatJet> fatjets);
+  vector<Jet>  SelectAK4Jets(vector<Jet> jets, double pt_cut ,  double eta_cut, bool lepton_cleaning  , double dr_lep_clean, double dr_ak8_clean, TString pu_tag, vector<Electron>  veto_electrons, vector<Muon>  veto_muons, vector<FatJet> fatjets);
   
-  vector<FatJet> GetAK8Jetsv2(vector<FatJet> fatjets, double pt_cut ,  double eta_cut, bool lepton_cleaning  , double dr_lep_clean , bool apply_tau21, double tau21_cut , bool apply_masscut, double sdmass_lower_cut,  double sdmass_upper_cut,double WQCDTagger,  vector<Electron>  veto_electrons, vector<Muon>  veto_muons);
+  vector<FatJet> SelectAK8Jetsv2(vector<FatJet> fatjets, double pt_cut ,  double eta_cut, bool lepton_cleaning  , double dr_lep_clean , bool apply_tau21, double tau21_cut , bool apply_masscut, double sdmass_lower_cut,  double sdmass_upper_cut,double WQCDTagger,  vector<Electron>  veto_electrons, vector<Muon>  veto_muons);
 
-  vector<FatJet> GetAK8Jets(vector<FatJet> fatjets, double pt_cut ,  double eta_cut, bool lepton_cleaning  , double dr_lep_clean , bool apply_tau21, double tau21_cut , bool apply_masscut, double sdmass_lower_cut,  double sdmass_upper_cut,   vector<Electron>  veto_electrons, vector<Muon>  veto_muons);
+  vector<FatJet> SelectAK8Jets(vector<FatJet> fatjets, double pt_cut ,  double eta_cut, bool lepton_cleaning  , double dr_lep_clean , bool apply_tau21, double tau21_cut , bool apply_masscut, double sdmass_lower_cut,  double sdmass_upper_cut,   vector<Electron>  veto_electrons, vector<Muon>  veto_muons);
 
   //==================
   //==== Systematics
@@ -227,7 +295,7 @@ public:
   double MCweight(bool usesign=true, bool norm_1invpb=true) const;
 
   //==== Kfactors
-  float GetKFactor();
+  double GetKFactor();
 
 
   //==== Prefire
@@ -258,6 +326,7 @@ public:
   double projectedMET(TLorentzVector a, TLorentzVector b, Particle METv);
   bool HasFlag(TString flag);
 
+  bool AnalyserRunsFullBkg();
   
 
   std::vector<Muon> MuonWithoutGap(const std::vector<Muon>& muons);
@@ -319,7 +388,7 @@ public:
   bool FindHEMElectron(Electron electron);
 
   //============ JEC Uncertainty
-  float GetJECUncertainty(TString source, TString JetType,  float eta, float pt, int sys);
+  double GetJECUncertainty(TString source, TString JetType,  double eta, double pt, int sys);
   void  SetupJECUncertainty(TString source , TString JetType="AK4PFchs");
 
   //==== Plotting
@@ -329,10 +398,10 @@ public:
   std::map< TString, TH3D* > maphist_TH3D;
 
   // Maps for JEC
-  std::map<TString, std::vector<std::map<float, std::vector<float> > > > AK4CHSJECUncMap;
-  std::map<TString, std::vector<std::map<float, std::vector<float> > > > AK4PUPPIJECUncMap;
-  std::map<TString, std::vector<std::map<float, std::vector<float> > > > AK8CHSJECUncMap;
-  std::map<TString, std::vector<std::map<float, std::vector<float> > > > AK8PUPPIJECUncMap;
+  std::map<TString, std::vector<std::map<double, std::vector<double> > > > AK4CHSJECUncMap;
+  std::map<TString, std::vector<std::map<double, std::vector<double> > > > AK4PUPPIJECUncMap;
+  std::map<TString, std::vector<std::map<double, std::vector<double> > > > AK8CHSJECUncMap;
+  std::map<TString, std::vector<std::map<double, std::vector<double> > > > AK8PUPPIJECUncMap;
 
   vector<TString> JECSources;
 

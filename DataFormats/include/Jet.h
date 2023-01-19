@@ -9,6 +9,8 @@ public:
 
   Jet();
   ~Jet();
+  void  PrintObject(TString label);
+
 
   void SetArea(double area);
   void SetGenFlavours(int pf, int hf);
@@ -29,6 +31,9 @@ public:
   inline double NVtxTracks() const { return j_nvtx_tracks;}
   void SetNTracks(double v);
 
+  void SetJEC(double l1, double full);
+  inline double JEC_L1() const {return j_jec_l1;}
+  inline double JEC_Full() const {return j_jec_full;}
 
   void SetMultiplicities(double cM, double nM);
   void SetPileupJetId(double v);
@@ -108,6 +113,9 @@ private:
   double j_cJetNN_res;
   bool j_tightJetID, j_tightLepVetoJetID;
   double j_nvtx_tracks;
+  double j_jec_l1;
+  double j_jec_full;
+
 
   ClassDef(Jet,1)
 };

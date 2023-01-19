@@ -540,7 +540,7 @@ def check_processed_status(_dsnlist,_era):
             Incorrect=True
     for x in arr_notgoogledoc_dsn:
         if x in _dsnlist:
-            print "check_processed_status: ["+_era+"]   " + x + " googledoc status incorrect"
+            print "check_processed_status2: ["+_era+"]   " + x + " googledoc status incorrect"
             Incorrect=True
 
     

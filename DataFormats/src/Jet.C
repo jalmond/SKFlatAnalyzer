@@ -24,6 +24,8 @@ Jet::Jet() : Particle() {
   j_chargedMultiplicity=-999;
   j_neutralMultiplicity=-999;
   j_PileupJetId=-999.;
+  j_jec_l1=1;
+  j_jec_full=1;
   j_En_up=1.;
   j_En_down=1.;;
   j_Res  = 1.;
@@ -38,12 +40,55 @@ Jet::Jet() : Particle() {
   j_tightLepVetoJetID=false;
 }
 
+void Jet::PrintObject(TString label){
+  
+  cout << "Jet::PrintObject  " << label << endl;
+  cout << "j_area " << j_area << endl;
+  cout << "j_partonFlavour " <<  j_partonFlavour << endl;
+  cout << "j_hadronFlavour " << j_hadronFlavour <<  endl;
+  cout << "j_GenHFHadronMatcher_flavour " << j_GenHFHadronMatcher_flavour << endl;
+  cout << "j_GenHFHadronMatcher_origin " <<  j_GenHFHadronMatcher_origin << endl;
+  cout << "j_PxUnSmeared " << j_PxUnSmeared  << endl;
+  cout << " j_PyUnSmeared " << j_PyUnSmeared << endl;
+  cout << "j_DeepCSV " << j_DeepCSV << endl;
+  cout << "j_DeepCSV_CvsL " << j_DeepCSV_CvsL<< endl;
+  cout << "j_DeepCSV_CvsB " << j_DeepCSV_CvsB<< endl;
+  cout << "j_DeepJet " << j_DeepJet<< endl;
+  cout << "j_DeepJet_CvsL " << j_DeepJet_CvsL<< endl;
+  cout << "j_DeepJet_CvsB " << j_DeepJet_CvsB<< endl;
+  cout << "j_chargedHadronEnergyFraction " << j_chargedHadronEnergyFraction<< endl;
+  cout << "j_neutralHadronEnergyFraction " << j_neutralHadronEnergyFraction<< endl;
+  cout << "j_neutralEmEnergyFraction " << j_neutralEmEnergyFraction<< endl;
+  cout << "j_chargedEmEnergyFraction " << j_chargedEmEnergyFraction<< endl;
+  cout << "j_muonEnergyFraction " << j_muonEnergyFraction<< endl;
+  cout << "j_chargedMultiplicity " << j_chargedMultiplicity<< endl;
+  cout << "j_neutralMultiplicity " << j_neutralMultiplicity<< endl;
+  cout << "j_PileupJetId " << j_PileupJetId<< endl;
+  cout << "j_jec_l1 " << j_jec_l1<< endl;
+  cout << "j_jec_full " << j_jec_full<< endl;
+  cout << "j_En_up " << j_En_up<< endl;
+  cout << "j_En_down " << j_En_down<< endl;
+  cout << "j_Res " << j_Res  << endl;
+  cout << "j_Res_up " << j_Res_up << endl;
+  cout << "j_Res_down " << j_Res_down << endl;
+  cout << "j_bJetNN_corr " << j_bJetNN_corr<< endl;
+  cout << "j_bJetNN_res " << j_bJetNN_res<< endl;
+  cout << "j_cJetNN_corr " << j_cJetNN_corr<< endl;
+  cout << "j_cJetNN_res " << j_cJetNN_res<< endl;
+  cout << "j_nvtx_tracks " << j_nvtx_tracks<< endl;
+}
+
 Jet::~Jet(){
 
 }
 
 void Jet::SetArea(double area){
   j_area = area;
+}
+
+void Jet::SetJEC(double l1, double full){
+  j_jec_l1 = l1;
+  j_jec_full = full;
 }
 void Jet::SetGenFlavours(int pf, int hf){
   j_partonFlavour = pf;

@@ -15,6 +15,24 @@ AnalyzerCore::AnalyzerCore(){
 
   JECSources = {"AbsoluteStat","AbsoluteScale","AbsoluteFlavMap","AbsoluteMPFBias","Fragmentation","SinglePionECAL","SinglePionHCAL","FlavorQCD","TimePtEta","RelativeJEREC1","RelativeJEREC2","RelativeJERHF","RelativePtBB","RelativePtEC1","RelativePtEC2","RelativePtHF","RelativeBal","RelativeSample","RelativeFSR","RelativeStatFSR","RelativeStatEC","RelativeStatHF","PileUpDataMC","PileUpPtRef","PileUpPtBB","PileUpPtEC1","PileUpPtEC2","PileUpPtHF","FlavorZJet","FlavorPhotonJet","FlavorPureGluon","FlavorPureQuark","FlavorPureCharm","FlavorPureBottom","Total"};
 
+
+  TMVA::Tools::Instance();
+  ElectronIDFakeMVAReader = new TMVA::Reader();
+  ElectronIDCFMVAReader = new TMVA::Reader();
+
+  ElectronIDConvMVAReader = new TMVA::Reader();
+  ElectronIDNoPtEtaConvMVAReader = new TMVA::Reader();
+  ElectronIDNoPtConvMVAReader = new TMVA::Reader();
+  MuonIDConvMVAReader = new TMVA::Reader();
+  MuonIDNoPtEtaConvMVAReader = new TMVA::Reader();
+  MuonIDNoPtConvMVAReader = new TMVA::Reader();
+
+
+
+  SetupIDMVAReader(false);
+  SetupIDMVAReader(true);
+
+  
   /*
     
     // In your analyser code add this line to constructor to fill map with JEC source values.
@@ -72,9 +90,31 @@ AnalyzerCore::~AnalyzerCore(){
   AK8CHSJECUncMap.clear();
   AK8PUPPIJECUncMap.clear();
 
+  delete ElectronIDFakeMVAReader;
+  delete ElectronIDCFMVAReader;
+
+  delete ElectronIDConvMVAReader;
+  delete ElectronIDNoPtConvMVAReader;
+  delete ElectronIDNoPtEtaConvMVAReader;
+  delete MuonIDConvMVAReader;
+  delete MuonIDNoPtConvMVAReader;
+  delete MuonIDNoPtEtaConvMVAReader;
+
   
 
 }
+
+bool AnalyzerCore::AnalyserRunsFullBkg(){
+
+  // Flag to setup fakeEst/cfEst/pdfReweight
+  vector<TString> AnalyserList = {"HNL_SignalRegionPlotter","HNL_ControlRegionPlotter","HNL_SignalRegionPlotter17028","HNL_SignalRegionPlotter21003","HNL_SignalLeptonOpt", "HNL_SignalRegionOpt", "HNL_SignalStudies","HNL_ObjectStudies"};
+
+  if(std::find(AnalyserList.begin(), AnalyserList.end(), Analyzer) != AnalyserList.end()) {
+    return true;
+  }
+  return false;
+}
+
 
 void AnalyzerCore::FillEventComparisonFile(AnalyzerParameter param,TString label,string date, double w){
 
@@ -111,7 +151,7 @@ void AnalyzerCore::SwitchToTempDir(){
   while (!tempDir) {
     //==== First, let's find a directory name that doesn't exist yet
     std::stringstream dirname;
-    dirname << "AnalyzerCore" << counter;
+    dirname << "Analyzer4Core" << counter;
     if (gROOT->GetDirectory((dirname.str()).c_str())) {
       ++counter;
       continue;
@@ -139,10 +179,9 @@ Event AnalyzerCore::GetEvent(){
 
 }
 
-float AnalyzerCore::GetJECUncertainty(TString source, TString JetType, float eta, float pt, int sys){
+double AnalyzerCore::GetJECUncertainty(TString source, TString JetType, double eta, double pt, int sys){
 
-
-  std::map<TString, std::vector<std::map<float, std::vector<float> > > >::iterator mapit;
+  std::map<TString, std::vector<std::map<double, std::vector<double> > > >::iterator mapit;
   bool NotFound=false;
   if(JetType=="AK4PFchs") {
     mapit = AK4CHSJECUncMap.find(source); 
@@ -163,27 +202,27 @@ float AnalyzerCore::GetJECUncertainty(TString source, TString JetType, float eta
   if(NotFound) {cout<< "ERROR, " << source  << " not found in JEC Uncertainty MAP for " << JetType << endl; return -999.;}
 
   
-  float bin_boundary(-999.);
+  double bin_boundary(-999.);
 
-  std::map<float, std::vector<float> > ptmap = mapit->second.at(0);
+  std::map<double, std::vector<double> > ptmap = mapit->second.at(0);
 
-  std::vector<float> etabins;  
-  for(std::map<float, std::vector<float> >::iterator it = ptmap.begin(); it!= ptmap.end(); it++){
+  std::vector<double> etabins;  
+  for(std::map<double, std::vector<double> >::iterator it = ptmap.begin(); it!= ptmap.end(); it++){
     etabins.push_back(it->first);
   }
 
   
   for(unsigned int i=0; i < etabins.size()-1 ; i++){
-    if(eta >= etabins.at(i) && eta < etabins.at(i+1)){  bin_boundary = float(etabins.at(i)) ; break;}
+    if(eta >= etabins.at(i) && eta < etabins.at(i+1)){  bin_boundary = double(etabins.at(i)) ; break;}
   }
 
   if(bin_boundary == -999) return 1.;
   
-  std::vector<float> ptbins;
+  std::vector<double> ptbins;
   
 
-  for(std::map<float, std::vector<float> >::iterator pit = ptmap.begin();  pit != ptmap.end(); pit++){
-    if(float(pit->first) == float(bin_boundary)) {ptbins = pit->second; }
+  for(std::map<double, std::vector<double> >::iterator pit = ptmap.begin();  pit != ptmap.end(); pit++){
+    if(double(pit->first) == double(bin_boundary)) {ptbins = pit->second; }
   }
   
   int ptbin(-999);
@@ -195,14 +234,14 @@ float AnalyzerCore::GetJECUncertainty(TString source, TString JetType, float eta
   if(ptbin == -999) return 1.;
 
 
-  std::map<float, std::vector<float> > upmap = mapit->second.at(1); 
-  std::map<float, std::vector<float> > downmap = mapit->second.at(2); 
+  std::map<double, std::vector<double> > upmap = mapit->second.at(1); 
+  std::map<double, std::vector<double> > downmap = mapit->second.at(2); 
   
-  std::map<float, std::vector<float> >::iterator mapit_unc;
+  std::map<double, std::vector<double> >::iterator mapit_unc;
   if(sys> 0) mapit_unc =  mapit->second.at(1).find(bin_boundary);
   else mapit_unc =  mapit->second.at(2).find(bin_boundary);
   
-  float unc = (sys> 0) ?   1+ mapit_unc->second.at(ptbin) : 1 - mapit_unc->second.at(ptbin);
+  double unc = (sys> 0) ?   1+ mapit_unc->second.at(ptbin) : 1 - mapit_unc->second.at(ptbin);
 
   return unc;
 }
@@ -236,7 +275,7 @@ void AnalyzerCore::SetupJECUncertainty(TString source , TString JetType){
 
   cout << "Setting up JEC uncertainty vector for source ["<<source<< "]." << file << endl;
 
-  std::map<float, std::vector<float> > etaptmap, eta_uncupmap, eta_uncdownmap;
+  std::map<double, std::vector<double> > etaptmap, eta_uncupmap, eta_uncdownmap;
   for(unsigned int ilines =0; ilines <  SourceLines.size(); ilines++){
 
     string line = SourceLines[ilines];
@@ -260,7 +299,7 @@ void AnalyzerCore::SetupJECUncertainty(TString source , TString JetType){
       cout << "[AnalyzerCore::SetupJECUncertainty] Eta bin set incorrectly ..." << endl;
       exit(EXIT_FAILURE);      
     }
-    std::vector<float> ptbin, unc_up, unc_down;
+    std::vector<double> ptbin, unc_up, unc_down;
     bool finalbin(false);
 
     for(int i=0; i < nBins; i++){
@@ -285,14 +324,14 @@ void AnalyzerCore::SetupJECUncertainty(TString source , TString JetType){
     eta_uncupmap[eta_min] =  unc_up;
     eta_uncdownmap[eta_min] = unc_down;
 
-    std::vector<float> NULLBin;
+    std::vector<double> NULLBin;
     if(ilines ==  SourceLines.size() -1) etaptmap[eta_max] = NULLBin;
         
   }
   
   jec_file.close();
 
-  std::vector<std::map<float, std::vector<float> > > vec_unc;
+  std::vector<std::map<double, std::vector<double> > > vec_unc;
   vec_unc.push_back(etaptmap);
   vec_unc.push_back(eta_uncupmap);
   vec_unc.push_back(eta_uncdownmap);
@@ -305,6 +344,8 @@ void AnalyzerCore::SetupJECUncertainty(TString source , TString JetType){
   return;
   
 }
+
+
 
 std::vector<Muon> AnalyzerCore::GetAllMuons(){
 
@@ -320,6 +361,11 @@ std::vector<Muon> AnalyzerCore::GetAllMuons(){
 
     mu.SetJetPtRel(muon_jetPtRel->at(i));
     mu.SetJetPtRatio(muon_jetPtRatio->at(i));
+    if(muon_jetPtRelDef)mu.SetJetPtRelDef(muon_jetPtRelDef->at(i));
+    if(muon_jetPtRatioDef)mu.SetJetPtRatioDef(muon_jetPtRatioDef->at(i));
+
+    if(muon_jetNTracks)mu.SetJetNTracks(muon_jetNTracks->at(i));
+    if(muon_jetNTracksMVA)mu.SetJetNTracksMVA(muon_jetNTracksMVA->at(i));
 
 
     double rc = muon_roch_sf->at(i);
@@ -335,8 +381,8 @@ std::vector<Muon> AnalyzerCore::GetAllMuons(){
     mu.SetSoftMVA(muon_softMVA->at(i));
     mu.SetMVA(muon_MVA->at(i));
     mu.SetLepMVA( muon_MVA->at(i));
-
-
+    
+    if(muon_segmentCompatibility) mu.SetMuonSegmentCompatibility(muon_segmentCompatibility->at(i));
     mu.SetdXY(muon_dxyVTX->at(i), muon_dxyerrVTX->at(i));
     mu.SetdZ(muon_dzVTX->at(i), muon_dzerrVTX->at(i));
     mu.SetIP3D(muon_3DIPVTX->at(i), muon_3DIPerrVTX->at(i));
@@ -347,7 +393,7 @@ std::vector<Muon> AnalyzerCore::GetAllMuons(){
     mu.SetChi2(muon_normchi->at(i));
     mu.SetIso(muon_PfChargedHadronIsoR04->at(i),muon_PfNeutralHadronIsoR04->at(i),muon_PfGammaIsoR04->at(i),muon_PFSumPUIsoR04->at(i),muon_trkiso->at(i));
     mu.SetLepIso(muon_PfChargedHadronIsoR04->at(i),muon_PfNeutralHadronIsoR04->at(i),muon_PfGammaIsoR04->at(i));
-    
+   
     mu.SetTrackerLayers(muon_trackerLayers->at(i));
 
     mu.SetMatchedStations(muon_matchedstations->at(i));
@@ -355,6 +401,7 @@ std::vector<Muon> AnalyzerCore::GetAllMuons(){
     mu.SetValidMuonHits(muon_validmuonhits->at(i));
 
     //==== Should be set after Eta is set
+
     mu.SetMiniIso(
       muon_PfChargedHadronMiniIso->at(i), 
       muon_PfNeutralHadronMiniIso->at(i), 
@@ -363,15 +410,706 @@ std::vector<Muon> AnalyzerCore::GetAllMuons(){
       Rho,
       mu.EA()
     );
-    
 
     mu.SetFilterBits(muon_filterbits->at(i));
     mu.SetPathBits(muon_pathbits->at(i));
 
+    if(muon_mva_conv)mu.SetHNL_LepMVA(-999.,muon_mva_conv->at(i),-999); 
+    else mu.SetHNL_LepMVA(-999.,GetBDTScoreMuon(mu,AnalyzerCore::Conv,  "BDTG"),-999);
+    
     out.push_back(mu);
 
   }
   return out;
+
+}
+
+void AnalyzerCore::InitializeMuonIDTreeVars(){
+
+  Pt=-1,       Eta=-1;
+  PtRatio=-1,  PtRel=-1 ;
+  CEMFracCJ=-1, NEMFracCJ=-1, CHFracCJ=-1, NHFracCJ=-1, MuFracCJ=-1, JetDiscCJ=-1;
+
+  Dxy=-1,Dz=-1,DxySig=-1, DzSig=-1, RelIso=-1,IP3D=-1,MVA=-1,Chi2=-1, Minireliso=-1;
+
+  RelDxy=-1,RelDz=-1,RelIP3D=-1,RelMVA=-1,RelMVAIso=-1,PileUp=-1;
+
+  MiniIsoChHad=-1,MiniIsoNHad=-1,MiniIsoPhHad=-1,IsoChHad=-1,IsoNHad=-1,IsoPhHad=-1;
+  RelMiniIsoCh=-1,RelMiniIsoN=-1;
+  Pixel_hits=-1,  Validhits=-1,Matched_stations=-1,Tracker_layers=-1;
+
+}
+void AnalyzerCore::InitializeElectronIDTreeVars(){
+
+
+  Pt=-1;
+  Eta=-1;
+  MiniIsoChHad=-1;
+  MiniIsoNHad=-1;
+  MiniIsoPhHad=-1;
+  IsoChHad=-1;
+  IsoNHad=-1 ;
+  IsoPhHad=-1;
+  RelMiniIsoCh=-1;
+  RelMiniIsoN=-1;
+  Dxy=-1;
+  Dz=-1;
+  DxySig=-1;
+  DzSig=-1;
+  RelDxy=-1;
+  RelDz=-1;
+  RelIso=-1;
+  IP3D=-1;
+  RelIP3D=-1;
+  PtRatio=-1;
+  PtRel=-1;
+  CEMFracCJ=-1;
+  NEMFracCJ=-1;
+  CHFracCJ=-1;
+  NHFracCJ=-1;
+  MuFracCJ=-1;
+  JetDiscCJ=-1;
+  MVA=-1;
+  RelMVA=-1;
+  RelMVAIso=-1;
+  MVAIso=-1;
+  Full5x5_sigmaIetaIeta=-1;
+  dEtaSeed=-1;
+  dPhiIn=-1;
+  HoverE=-1;
+  EoverP=-1;
+  FBrem=-1;
+  R9=-1;
+  TrkIso=-1;   //InvEminusInvP=-1;                                                                    
+  dr03TkSumPt=-1;
+  dr03HcalTowerSumEt=-1;
+  dr03HcalDepth1TowerSumEt=-1;
+  dr03EcalRecHitSumEt=-1;
+  e15=-1;
+  e25=-1;
+  e55=-1;
+  e2x5OverE5x5=-1;
+  e1x5OverE5x5=-1;
+  EtaWidth=-1;
+  PhiWidth=-1;
+  ecalPFClusterIso=-1;
+  hcalPFClusterIso=-1;
+  MissingHits=-1;
+  isEcalDriven=-1;
+  PassConversionVeto=-1;
+  IsGsfCtfScPixChargeConsistent=-1;
+  IsGsfScPixChargeConsistent=-1 ;
+  IsGsfCtfChargeConsistent=-1;
+
+}
+
+
+
+double AnalyzerCore::GetBDTScoreMuon(Muon mu ,BkgType bkg, TString BDTTag){
+
+  if(bkg != BkgType::Conv) return -999;
+
+  InitializeMuonIDTreeVars();
+
+  std::vector<Jet>   JetAllColl = GetJets("NoID", 10., 5.0);
+
+  Lepton *lep = (Lepton *)(&mu);
+  SetBDTIDVar(lep);
+  MVA = mu.MVA();
+
+  int IdxMatchJet=-1;
+  float mindR1=999.;
+
+  for(unsigned int ij=0; ij<JetAllColl.size(); ij++){
+    float dR1=lep->DeltaR(JetAllColl.at(ij));
+    if(dR1>0.4) continue;
+    if(dR1<mindR1){ mindR1=dR1; IdxMatchJet=ij; }
+  }
+
+  if(IdxMatchJet!=-1){
+    PtRatio=JetLeptonPtRatioLepAware(mu,false);
+    PtRel=JetLeptonPtRelLepAware(mu,true);
+  }
+
+  else{
+    PtRatio = min(1/(1.+lep->RelIso()), 1.5);
+    PtRel=0, PtRelWithLep=0, PtRelCorr=0;
+  }
+
+  Chi2 = mu.Chi2();
+  Validhits = mu.ValidMuonHits();
+  Matched_stations = mu.MatchedStations();
+  Pixel_hits  = mu.PixelHits();
+  Tracker_layers = mu.TrackerLayers();
+
+  TString EtaRegion = "_EC";
+  if(fabs(mu.Eta()) < 0.8) EtaRegion = "_IB";
+  else   if(fabs(mu.Eta()) < 1.5) EtaRegion = "_OB";
+
+
+  TString MVATagStr = BDTTag;
+  if (bkg == BkgType::Fake) MVATagStr += "_Fake";
+  if (bkg == BkgType::Conv) MVATagStr += "_Conv";
+
+
+
+  if(BDTTag.Contains("_NoPtEta"))  return  MuonIDNoPtEtaConvMVAReader->EvaluateMVA(MVATagStr);
+  else    if(BDTTag.Contains("_NoPt") || BDTTag.Contains("_LowPt"))  return  MuonIDNoPtConvMVAReader->EvaluateMVA(MVATagStr);
+  else  return  MuonIDConvMVAReader->EvaluateMVA(MVATagStr);
+
+
+}
+
+void AnalyzerCore::SetBDTIDVar(Lepton*  lep){
+
+
+  Pt    = (lep->Pt() > 500)  ? 499 : lep->Pt();
+  Eta   = fabs(lep->Eta());
+  MiniIsoChHad = lep->MiniIsoChHad();
+  MiniIsoNHad = lep->MiniIsoNHad();
+  MiniIsoPhHad = lep->MiniIsoPhHad();
+  IsoChHad = lep->IsoChHad();
+  IsoNHad = lep->IsoNHad();
+  IsoPhHad = lep->IsoPhHad();
+  Dxy   = lep->LogdXY();
+  RelDxy   = lep->LogdXY()/lep->Pt();
+  DxySig   = lep->LogdXYSig();
+  Dz   = lep->LogdZ();
+  RelDz   = lep->LogdZ()/lep->Pt();
+  DzSig   = lep->LogdZSig();
+  IP3D    = lep->SIP3D();
+  RelIP3D    = lep->SIP3D()/lep->Pt();
+  RelIso    =  lep->RelIso();
+  Minireliso   = lep->MiniRelIso();
+  RelMiniIsoCh = lep->MiniRelIsoCharged();
+  RelMiniIsoN = lep->MiniRelIsoNeutral();
+
+  //==== Vars for non-prompt lepton bkg                                                               
+
+                                                                                                  
+  int IdxMatchJet=-1;
+  float mindR1=999.;
+  std::vector<Jet>   JetAllColl = GetJets("NoID", 10., 5.0);
+
+  for(unsigned int ij=0; ij<JetAllColl.size(); ij++){
+    float dR1=lep->DeltaR(JetAllColl.at(ij));
+    if(dR1>0.4) continue;
+    if(dR1<mindR1){ mindR1=dR1; IdxMatchJet=ij; }
+  }
+
+  if(IdxMatchJet!=-1){
+
+    CEMFracCJ = JetAllColl.at(IdxMatchJet).ChargedEmEnergyFraction();
+    NEMFracCJ = JetAllColl.at(IdxMatchJet).NeutralEmEnergyFraction();
+    CHFracCJ  = JetAllColl.at(IdxMatchJet).ChargedHadEnergyFraction();
+    NHFracCJ  = JetAllColl.at(IdxMatchJet).NeutralHadEnergyFraction();
+    MuFracCJ  = JetAllColl.at(IdxMatchJet).MuonEnergyFraction();
+    JetDiscCJ = JetAllColl.at(IdxMatchJet).GetTaggerResult(JetTagging::DeepJet);
+  }
+
+  else{
+    CEMFracCJ=0, NEMFracCJ=0., CHFracCJ=0., NHFracCJ=0., MuFracCJ=0., JetDiscCJ=0.;
+  }
+
+  return;
+}
+						\
+
+
+
+void AnalyzerCore::SetupIDMVAReader(bool isMuon){
+
+  if(isMuon) {
+
+    cout << "################ SETUP MUON ID MVA " << endl;
+    InitializeMuonIDTreeVars();
+
+    // Fake                                                                                            
+    // Fake                                                                                            
+    MuonIDConvMVAReader->AddVariable("Pt", &Pt);
+    MuonIDConvMVAReader->AddVariable("Eta", &Eta);
+    MuonIDConvMVAReader->AddVariable("MiniIsoChHad", &MiniIsoChHad);
+    MuonIDConvMVAReader->AddVariable("RelMiniIsoCh", &RelMiniIsoCh);
+    MuonIDConvMVAReader->AddVariable("IsoChHad", &IsoChHad);
+    MuonIDConvMVAReader->AddVariable("IsoNHad", &IsoNHad);
+    MuonIDConvMVAReader->AddVariable("IsoPhHad", &IsoPhHad);
+    MuonIDConvMVAReader->AddVariable("Dxy",  &Dxy);
+    MuonIDConvMVAReader->AddVariable("DxySig",  &DxySig);
+    MuonIDConvMVAReader->AddVariable("Dz",  &Dz);
+    MuonIDConvMVAReader->AddVariable("DzSig",  &DzSig);
+    MuonIDConvMVAReader->AddVariable("RelIso", &RelIso);
+    MuonIDConvMVAReader->AddVariable("IP3D", &IP3D);
+    MuonIDConvMVAReader->AddVariable("PtRatio",  &PtRatio);
+    MuonIDConvMVAReader->AddVariable("PtRel",  &PtRel);
+    MuonIDConvMVAReader->AddVariable("CEMFracCJ",&CEMFracCJ);
+    MuonIDConvMVAReader->AddVariable("NEMFracCJ",&NEMFracCJ);
+    MuonIDConvMVAReader->AddVariable("CHFracCJ",&CHFracCJ);
+    MuonIDConvMVAReader->AddVariable("JetDiscCJ",&JetDiscCJ);
+    MuonIDConvMVAReader->AddVariable("NHFracCJ",&NHFracCJ);
+    MuonIDConvMVAReader->AddVariable("MVA",  &MVA);
+    MuonIDConvMVAReader->AddVariable("MuFracCJ",&MuFracCJ);
+    MuonIDConvMVAReader->AddVariable("Chi2", &Chi2);
+    MuonIDConvMVAReader->AddVariable("Validhits", &Validhits);
+    MuonIDConvMVAReader->AddVariable("Matched_stations", &Matched_stations);
+    MuonIDConvMVAReader->AddVariable("Pixel_hits",  &Pixel_hits);
+    MuonIDConvMVAReader->AddVariable("Minireliso",  &Minireliso);
+    MuonIDConvMVAReader->AddVariable("Tracker_layers",  &Tracker_layers);
+    MuonIDConvMVAReader->AddSpectator("w_tot", &w_tot);
+
+
+
+    MuonIDNoPtEtaConvMVAReader->AddVariable("MiniIsoChHad", &MiniIsoChHad);
+    MuonIDNoPtEtaConvMVAReader->AddVariable("RelMiniIsoCh", &RelMiniIsoCh);
+    MuonIDNoPtEtaConvMVAReader->AddVariable("IsoChHad", &IsoChHad);
+    MuonIDNoPtEtaConvMVAReader->AddVariable("IsoNHad", &IsoNHad);
+    MuonIDNoPtEtaConvMVAReader->AddVariable("IsoPhHad", &IsoPhHad);
+    MuonIDNoPtEtaConvMVAReader->AddVariable("Dxy",  &Dxy);
+    MuonIDNoPtEtaConvMVAReader->AddVariable("DxySig",  &DxySig);
+    MuonIDNoPtEtaConvMVAReader->AddVariable("Dz",  &Dz);
+    MuonIDNoPtEtaConvMVAReader->AddVariable("DzSig",  &DzSig);
+    MuonIDNoPtEtaConvMVAReader->AddVariable("RelIso", &RelIso);
+    MuonIDNoPtEtaConvMVAReader->AddVariable("IP3D", &IP3D);
+    MuonIDNoPtEtaConvMVAReader->AddVariable("PtRatio",  &PtRatio);
+    MuonIDNoPtEtaConvMVAReader->AddVariable("PtRel",  &PtRel);
+    MuonIDNoPtEtaConvMVAReader->AddVariable("CEMFracCJ",&CEMFracCJ);
+    MuonIDNoPtEtaConvMVAReader->AddVariable("NEMFracCJ",&NEMFracCJ);
+    MuonIDNoPtEtaConvMVAReader->AddVariable("CHFracCJ",&CHFracCJ);
+    MuonIDNoPtEtaConvMVAReader->AddVariable("JetDiscCJ",&JetDiscCJ);
+    MuonIDNoPtEtaConvMVAReader->AddVariable("NHFracCJ",&NHFracCJ);
+    MuonIDNoPtEtaConvMVAReader->AddVariable("MVA",  &MVA);
+    MuonIDNoPtEtaConvMVAReader->AddVariable("MuFracCJ",&MuFracCJ);
+    MuonIDNoPtEtaConvMVAReader->AddVariable("Chi2", &Chi2);
+    MuonIDNoPtEtaConvMVAReader->AddVariable("Validhits", &Validhits);
+    MuonIDNoPtEtaConvMVAReader->AddVariable("Matched_stations", &Matched_stations);
+    MuonIDNoPtEtaConvMVAReader->AddVariable("Pixel_hits",  &Pixel_hits);
+    MuonIDNoPtEtaConvMVAReader->AddVariable("Minireliso",  &Minireliso);
+    MuonIDNoPtEtaConvMVAReader->AddVariable("Tracker_layers",  &Tracker_layers);
+    MuonIDNoPtEtaConvMVAReader->AddSpectator("w_tot", &w_tot);
+
+
+
+    MuonIDNoPtConvMVAReader->AddVariable("Eta", &Eta);
+    MuonIDNoPtConvMVAReader->AddVariable("MiniIsoChHad", &MiniIsoChHad);
+    MuonIDNoPtConvMVAReader->AddVariable("RelMiniIsoCh", &RelMiniIsoCh);
+    MuonIDNoPtConvMVAReader->AddVariable("IsoChHad", &IsoChHad);
+    MuonIDNoPtConvMVAReader->AddVariable("IsoNHad", &IsoNHad);
+    MuonIDNoPtConvMVAReader->AddVariable("IsoPhHad", &IsoPhHad);
+    MuonIDNoPtConvMVAReader->AddVariable("Dxy",  &Dxy);
+    MuonIDNoPtConvMVAReader->AddVariable("DxySig",  &DxySig);
+    MuonIDNoPtConvMVAReader->AddVariable("Dz",  &Dz);
+    MuonIDNoPtConvMVAReader->AddVariable("DzSig",  &DzSig);
+    MuonIDNoPtConvMVAReader->AddVariable("RelIso", &RelIso);
+    MuonIDNoPtConvMVAReader->AddVariable("IP3D", &IP3D);
+    MuonIDNoPtConvMVAReader->AddVariable("PtRatio",  &PtRatio);
+    MuonIDNoPtConvMVAReader->AddVariable("PtRel",  &PtRel);
+    MuonIDNoPtConvMVAReader->AddVariable("CEMFracCJ",&CEMFracCJ);
+    MuonIDNoPtConvMVAReader->AddVariable("NEMFracCJ",&NEMFracCJ);
+    MuonIDNoPtConvMVAReader->AddVariable("CHFracCJ",&CHFracCJ);
+    MuonIDNoPtConvMVAReader->AddVariable("JetDiscCJ",&JetDiscCJ);
+    MuonIDNoPtConvMVAReader->AddVariable("NHFracCJ",&NHFracCJ);
+    MuonIDNoPtConvMVAReader->AddVariable("MVA",  &MVA);
+    MuonIDNoPtConvMVAReader->AddVariable("MuFracCJ",&MuFracCJ);
+    MuonIDNoPtConvMVAReader->AddVariable("Chi2", &Chi2);
+    MuonIDNoPtConvMVAReader->AddVariable("Validhits", &Validhits);
+    MuonIDNoPtConvMVAReader->AddVariable("Matched_stations", &Matched_stations);
+    MuonIDNoPtConvMVAReader->AddVariable("Pixel_hits",  &Pixel_hits);
+    MuonIDNoPtConvMVAReader->AddVariable("Minireliso",  &Minireliso);
+    MuonIDNoPtConvMVAReader->AddVariable("Tracker_layers",  &Tracker_layers);
+    MuonIDNoPtConvMVAReader->AddSpectator("w_tot", &w_tot);
+
+
+
+  }
+
+  else{
+
+    InitializeElectronIDTreeVars();
+
+    ElectronIDConvMVAReader->AddVariable("Pt", &Pt);
+    ElectronIDConvMVAReader->AddVariable("Eta", &Eta);
+    ElectronIDConvMVAReader->AddVariable("MiniIsoChHad", &MiniIsoChHad);
+    ElectronIDConvMVAReader->AddVariable("RelMiniIsoCh", &RelMiniIsoCh);
+    ElectronIDConvMVAReader->AddVariable("IsoChHad", &IsoChHad);
+    ElectronIDConvMVAReader->AddVariable("IsoNHad", &IsoNHad);
+    ElectronIDConvMVAReader->AddVariable("IsoPhHad", &IsoPhHad);
+    ElectronIDConvMVAReader->AddVariable("Dxy",  &Dxy);
+    ElectronIDConvMVAReader->AddVariable("DxySig",  &DxySig);
+    ElectronIDConvMVAReader->AddVariable("Dz",  &Dz);
+    ElectronIDConvMVAReader->AddVariable("DzSig",  &DzSig);
+    ElectronIDConvMVAReader->AddVariable("RelIso", &RelIso);
+    ElectronIDConvMVAReader->AddVariable("IP3D", &IP3D);
+    ElectronIDConvMVAReader->AddVariable("PtRatio",  &PtRatio);
+    ElectronIDConvMVAReader->AddVariable("PtRel",  &PtRel);
+    ElectronIDConvMVAReader->AddVariable("CEMFracCJ",&CEMFracCJ);
+    ElectronIDConvMVAReader->AddVariable("NEMFracCJ",&NEMFracCJ);
+    ElectronIDConvMVAReader->AddVariable("CHFracCJ",&CHFracCJ);
+    ElectronIDConvMVAReader->AddVariable("JetDiscCJ",&JetDiscCJ);
+    ElectronIDConvMVAReader->AddVariable("NHFracCJ",&NHFracCJ);
+    ElectronIDConvMVAReader->AddVariable("MVA",  &MVA);
+    ElectronIDConvMVAReader->AddVariable("MVAIso",  &MVAIso);
+    ElectronIDConvMVAReader->AddVariable("Full5x5_sigmaIetaIeta",  &Full5x5_sigmaIetaIeta);
+    ElectronIDConvMVAReader->AddVariable("dEtaSeed",  &dEtaSeed);
+    ElectronIDConvMVAReader->AddVariable("dPhiIn",  &dPhiIn);
+    ElectronIDConvMVAReader->AddVariable("EoverP",  &EoverP);
+    ElectronIDConvMVAReader->AddVariable("FBrem",  &FBrem);
+    ElectronIDConvMVAReader->AddVariable("R9",  &R9);
+    ElectronIDConvMVAReader->AddVariable("TrkIso",  &TrkIso);
+    ElectronIDConvMVAReader->AddVariable("dr03TkSumPt",  &dr03TkSumPt);
+    ElectronIDConvMVAReader->AddVariable("dr03HcalTowerSumEt",  &dr03HcalTowerSumEt);
+    ElectronIDConvMVAReader->AddVariable("EtaWidth",  &EtaWidth);
+    ElectronIDConvMVAReader->AddVariable("PhiWidth",  &PhiWidth);
+    ElectronIDConvMVAReader->AddVariable("InvEminusInvP", &InvEminusInvP);
+    ElectronIDConvMVAReader->AddVariable("ecalPFClusterIso",  &ecalPFClusterIso);
+    ElectronIDConvMVAReader->AddVariable("MissingHits",  &MissingHits);
+    ElectronIDConvMVAReader->AddVariable("isEcalDriven", &isEcalDriven);
+    ElectronIDConvMVAReader->AddVariable("PassConversionVeto",  &PassConversionVeto);
+
+    ElectronIDConvMVAReader->AddVariable("IsGsfCtfScPixChargeConsistent",  &IsGsfCtfScPixChargeConsistent);
+    ElectronIDConvMVAReader->AddVariable("IsGsfScPixChargeConsistent",  &IsGsfScPixChargeConsistent);
+    ElectronIDConvMVAReader->AddVariable("IsGsfCtfChargeConsistent",  &IsGsfCtfChargeConsistent);
+    ElectronIDConvMVAReader->AddSpectator("w_tot", &w_tot);
+
+    
+    
+    ElectronIDNoPtEtaConvMVAReader->AddVariable("MiniIsoChHad", &MiniIsoChHad);
+    ElectronIDNoPtEtaConvMVAReader->AddVariable("RelMiniIsoCh", &RelMiniIsoCh);
+    ElectronIDNoPtEtaConvMVAReader->AddVariable("IsoChHad", &IsoChHad);
+    ElectronIDNoPtEtaConvMVAReader->AddVariable("IsoNHad", &IsoNHad);
+    ElectronIDNoPtEtaConvMVAReader->AddVariable("IsoPhHad", &IsoPhHad);
+    ElectronIDNoPtEtaConvMVAReader->AddVariable("Dxy",  &Dxy);
+    ElectronIDNoPtEtaConvMVAReader->AddVariable("DxySig",  &DxySig);
+    ElectronIDNoPtEtaConvMVAReader->AddVariable("Dz",  &Dz);
+    ElectronIDNoPtEtaConvMVAReader->AddVariable("DzSig",  &DzSig);
+    ElectronIDNoPtEtaConvMVAReader->AddVariable("RelIso", &RelIso);
+    ElectronIDNoPtEtaConvMVAReader->AddVariable("IP3D", &IP3D);
+    ElectronIDNoPtEtaConvMVAReader->AddVariable("PtRatio",  &PtRatio);
+    ElectronIDNoPtEtaConvMVAReader->AddVariable("PtRel",  &PtRel);
+    ElectronIDNoPtEtaConvMVAReader->AddVariable("CEMFracCJ",&CEMFracCJ);
+    ElectronIDNoPtEtaConvMVAReader->AddVariable("NEMFracCJ",&NEMFracCJ);
+    ElectronIDNoPtEtaConvMVAReader->AddVariable("CHFracCJ",&CHFracCJ);
+    ElectronIDNoPtEtaConvMVAReader->AddVariable("JetDiscCJ",&JetDiscCJ);
+    ElectronIDNoPtEtaConvMVAReader->AddVariable("NHFracCJ",&NHFracCJ);
+    ElectronIDNoPtEtaConvMVAReader->AddVariable("MVA",  &MVA);
+    ElectronIDNoPtEtaConvMVAReader->AddVariable("MVAIso",  &MVAIso);
+    ElectronIDNoPtEtaConvMVAReader->AddVariable("Full5x5_sigmaIetaIeta",  &Full5x5_sigmaIetaIeta);
+    ElectronIDNoPtEtaConvMVAReader->AddVariable("dEtaSeed",  &dEtaSeed);
+    ElectronIDNoPtEtaConvMVAReader->AddVariable("dPhiIn",  &dPhiIn);
+    ElectronIDNoPtEtaConvMVAReader->AddVariable("EoverP",  &EoverP);
+    ElectronIDNoPtEtaConvMVAReader->AddVariable("FBrem",  &FBrem);
+    ElectronIDNoPtEtaConvMVAReader->AddVariable("R9",  &R9);
+    ElectronIDNoPtEtaConvMVAReader->AddVariable("TrkIso",  &TrkIso);
+    ElectronIDNoPtEtaConvMVAReader->AddVariable("dr03TkSumPt",  &dr03TkSumPt);
+    ElectronIDNoPtEtaConvMVAReader->AddVariable("dr03HcalTowerSumEt",  &dr03HcalTowerSumEt);
+    ElectronIDNoPtEtaConvMVAReader->AddVariable("EtaWidth",  &EtaWidth);
+    ElectronIDNoPtEtaConvMVAReader->AddVariable("PhiWidth",  &PhiWidth);
+    ElectronIDNoPtEtaConvMVAReader->AddVariable("InvEminusInvP", &InvEminusInvP);
+    ElectronIDNoPtEtaConvMVAReader->AddVariable("ecalPFClusterIso",  &ecalPFClusterIso);
+    ElectronIDNoPtEtaConvMVAReader->AddVariable("MissingHits",  &MissingHits);
+    ElectronIDNoPtEtaConvMVAReader->AddVariable("isEcalDriven", &isEcalDriven);
+    ElectronIDNoPtEtaConvMVAReader->AddVariable("PassConversionVeto",  &PassConversionVeto);
+    ElectronIDNoPtEtaConvMVAReader->AddVariable("IsGsfCtfScPixChargeConsistent",  &IsGsfCtfScPixChargeConsistent);
+    ElectronIDNoPtEtaConvMVAReader->AddVariable("IsGsfScPixChargeConsistent",  &IsGsfScPixChargeConsistent);
+    ElectronIDNoPtEtaConvMVAReader->AddVariable("IsGsfCtfChargeConsistent",  &IsGsfCtfChargeConsistent);
+    ElectronIDNoPtEtaConvMVAReader->AddSpectator("w_tot", &w_tot);
+
+    
+    
+    ElectronIDNoPtConvMVAReader->AddVariable("Eta", &Eta);
+    ElectronIDNoPtConvMVAReader->AddVariable("MiniIsoChHad", &MiniIsoChHad);
+    ElectronIDNoPtConvMVAReader->AddVariable("RelMiniIsoCh", &RelMiniIsoCh);
+    ElectronIDNoPtConvMVAReader->AddVariable("IsoChHad", &IsoChHad);
+    ElectronIDNoPtConvMVAReader->AddVariable("IsoNHad", &IsoNHad);
+    ElectronIDNoPtConvMVAReader->AddVariable("IsoPhHad", &IsoPhHad);
+    ElectronIDNoPtConvMVAReader->AddVariable("Dxy",  &Dxy);
+    ElectronIDNoPtConvMVAReader->AddVariable("DxySig",  &DxySig);
+    ElectronIDNoPtConvMVAReader->AddVariable("Dz",  &Dz);
+    ElectronIDNoPtConvMVAReader->AddVariable("DzSig",  &DzSig);
+    ElectronIDNoPtConvMVAReader->AddVariable("RelIso", &RelIso);
+    ElectronIDNoPtConvMVAReader->AddVariable("IP3D", &IP3D);
+    ElectronIDNoPtConvMVAReader->AddVariable("PtRatio",  &PtRatio);
+    ElectronIDNoPtConvMVAReader->AddVariable("PtRel",  &PtRel);
+    ElectronIDNoPtConvMVAReader->AddVariable("CEMFracCJ",&CEMFracCJ);
+    ElectronIDNoPtConvMVAReader->AddVariable("NEMFracCJ",&NEMFracCJ);
+    ElectronIDNoPtConvMVAReader->AddVariable("CHFracCJ",&CHFracCJ);
+    ElectronIDNoPtConvMVAReader->AddVariable("JetDiscCJ",&JetDiscCJ);
+    ElectronIDNoPtConvMVAReader->AddVariable("NHFracCJ",&NHFracCJ);
+    ElectronIDNoPtConvMVAReader->AddVariable("MVA",  &MVA);
+    ElectronIDNoPtConvMVAReader->AddVariable("MVAIso",  &MVAIso);
+    ElectronIDNoPtConvMVAReader->AddVariable("Full5x5_sigmaIetaIeta",  &Full5x5_sigmaIetaIeta);
+    ElectronIDNoPtConvMVAReader->AddVariable("dEtaSeed",  &dEtaSeed);
+    ElectronIDNoPtConvMVAReader->AddVariable("dPhiIn",  &dPhiIn);
+    ElectronIDNoPtConvMVAReader->AddVariable("EoverP",  &EoverP);
+    ElectronIDNoPtConvMVAReader->AddVariable("FBrem",  &FBrem);
+    ElectronIDNoPtConvMVAReader->AddVariable("R9",  &R9);
+    ElectronIDNoPtConvMVAReader->AddVariable("TrkIso",  &TrkIso);
+    ElectronIDNoPtConvMVAReader->AddVariable("dr03TkSumPt",  &dr03TkSumPt);
+    ElectronIDNoPtConvMVAReader->AddVariable("dr03HcalTowerSumEt",  &dr03HcalTowerSumEt);
+    ElectronIDNoPtConvMVAReader->AddVariable("EtaWidth",  &EtaWidth);
+    ElectronIDNoPtConvMVAReader->AddVariable("PhiWidth",  &PhiWidth);
+    ElectronIDNoPtConvMVAReader->AddVariable("InvEminusInvP", &InvEminusInvP);
+    ElectronIDNoPtConvMVAReader->AddVariable("ecalPFClusterIso",  &ecalPFClusterIso);
+    ElectronIDNoPtConvMVAReader->AddVariable("MissingHits",  &MissingHits);
+    ElectronIDNoPtConvMVAReader->AddVariable("isEcalDriven", &isEcalDriven);
+    ElectronIDNoPtConvMVAReader->AddVariable("PassConversionVeto",  &PassConversionVeto);
+    ElectronIDNoPtConvMVAReader->AddVariable("IsGsfCtfScPixChargeConsistent",  &IsGsfCtfScPixChargeConsistent);
+    ElectronIDNoPtConvMVAReader->AddVariable("IsGsfScPixChargeConsistent",  &IsGsfScPixChargeConsistent);
+    ElectronIDNoPtConvMVAReader->AddVariable("IsGsfCtfChargeConsistent",  &IsGsfCtfChargeConsistent);
+    ElectronIDNoPtConvMVAReader->AddSpectator("w_tot", &w_tot);
+
+
+    ElectronIDCFMVAReader->AddVariable("Pt", &Pt);
+    ElectronIDCFMVAReader->AddVariable("Eta", &Eta);
+    ElectronIDCFMVAReader->AddVariable("Dxy",  &Dxy);
+    ElectronIDCFMVAReader->AddVariable("DxySig",  &DxySig);
+    ElectronIDCFMVAReader->AddVariable("Dz",  &Dz);
+    ElectronIDCFMVAReader->AddVariable("DzSig",  &DzSig);
+    ElectronIDCFMVAReader->AddVariable("IP3D", &IP3D);
+    ElectronIDCFMVAReader->AddVariable("JetDiscCJ",&JetDiscCJ);
+    ElectronIDCFMVAReader->AddVariable("MVA",  &MVA);
+    ElectronIDCFMVAReader->AddVariable("Full5x5_sigmaIetaIeta",  &Full5x5_sigmaIetaIeta);
+    ElectronIDCFMVAReader->AddVariable("dPhiIn",  &dPhiIn);
+    ElectronIDCFMVAReader->AddVariable("EoverP",  &EoverP);
+    ElectronIDCFMVAReader->AddVariable("FBrem",  &FBrem);
+    ElectronIDCFMVAReader->AddVariable("R9",  &R9);
+    ElectronIDCFMVAReader->AddVariable("dr03TkSumPt",  &dr03TkSumPt);
+    ElectronIDCFMVAReader->AddVariable("e55",  &e55);
+    ElectronIDCFMVAReader->AddVariable("e2x5OverE5x5",  &e2x5OverE5x5);
+    ElectronIDCFMVAReader->AddVariable("EtaWidth",  &EtaWidth);
+    ElectronIDCFMVAReader->AddVariable("PhiWidth",  &PhiWidth);
+    ElectronIDCFMVAReader->AddVariable("ecalPFClusterIso",  &ecalPFClusterIso);
+    ElectronIDCFMVAReader->AddVariable("PassConversionVeto",  &PassConversionVeto);
+    ElectronIDCFMVAReader->AddVariable("IsGsfCtfScPixChargeConsistent",  &IsGsfCtfScPixChargeConsistent);
+    ElectronIDCFMVAReader->AddVariable("IsGsfScPixChargeConsistent",  &IsGsfScPixChargeConsistent);
+    ElectronIDCFMVAReader->AddVariable("IsGsfCtfChargeConsistent",  &IsGsfCtfChargeConsistent);
+
+    ElectronIDCFMVAReader->AddSpectator("w_tot", &w_tot);
+
+
+    ElectronIDFakeMVAReader->AddVariable("Pt", &Pt);
+    ElectronIDFakeMVAReader->AddVariable("Eta", &Eta);
+    ElectronIDFakeMVAReader->AddVariable("MiniIsoChHad", &MiniIsoChHad);
+    ElectronIDFakeMVAReader->AddVariable("MiniIsoPhHad", &MiniIsoPhHad);
+    ElectronIDFakeMVAReader->AddVariable("MiniIsoNHad", &MiniIsoNHad);
+    ElectronIDFakeMVAReader->AddVariable("RelMiniIsoCh", &RelMiniIsoCh);
+    ElectronIDFakeMVAReader->AddVariable("RelMiniIsoN", &RelMiniIsoN);
+    ElectronIDFakeMVAReader->AddVariable("Dxy",  &Dxy);
+    ElectronIDFakeMVAReader->AddVariable("Dz",  &Dz);
+    ElectronIDFakeMVAReader->AddVariable("RelIso", &RelIso);
+    ElectronIDFakeMVAReader->AddVariable("IP3D", &IP3D);
+    ElectronIDFakeMVAReader->AddVariable("PtRatio",  &PtRatio);
+    ElectronIDFakeMVAReader->AddVariable("PtRel",  &PtRel);
+    ElectronIDFakeMVAReader->AddVariable("NEMFracCJ",&NEMFracCJ);
+    ElectronIDFakeMVAReader->AddVariable("CHFracCJ",&CHFracCJ);
+    ElectronIDFakeMVAReader->AddVariable("JetDiscCJ",&JetDiscCJ);
+    ElectronIDFakeMVAReader->AddVariable("NHFracCJ",&NHFracCJ);
+    ElectronIDFakeMVAReader->AddVariable("CEMFracCJ",&CEMFracCJ);
+    ElectronIDFakeMVAReader->AddVariable("MVA",  &MVA);
+    ElectronIDFakeMVAReader->AddVariable("MVAIso",  &MVAIso);
+    ElectronIDFakeMVAReader->AddSpectator("w_tot", &w_tot);
+
+  }
+
+  TString AnalyzerPath=std::getenv("SKFlat_WD");
+  TString MVAPathFake="/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeIV2/Default/"+GetYearString()+"/dataset/weights/";
+  TString MVAPathConv="/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeIConv/Default/"+GetYearString()+"/dataset/weights/";
+  TString MVAPathCF="/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Default/"+GetYearString()+"/dataset/weights/";
+
+  if(isMuon){
+    
+    /// XML file picked with BEST AUC && GOF > 0.1
+    TString BDTG_Conv = "";
+    if(GetYear() == 2016) BDTG_Conv = "BDTG_ConvSignalConvTypeI_MuMu_SignalConv_2016_NTrees1500_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT";
+    if(GetYear() == 2017) BDTG_Conv = "BDTG_ConvSignalConvTypeI_MuMu_SignalConv_2017_NTrees1500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT";
+    if(GetYear() == 2018) BDTG_Conv = "BDTG_ConvSignalConvTypeI_MuMu_SignalConv_2018_NTrees1500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT";
+    
+    
+    vector<pair<TString,TString> > BDTInput =     {
+      make_pair("BDTG_Conv", BDTG_Conv)      
+    };
+    
+    for (auto ibdt : BDTInput)   MuonIDConvMVAReader->BookMVA(ibdt.first,MVAPathConv+ibdt.second+"_TMVAClassification_BDTG.weights.xml");
+
+  }
+  else{
+    
+
+    TString BDTG_Fake = "";
+    if(GetYear() == 2016) BDTG_Fake = "BDTG_FakeSignalTypeI_EE_Signal_2016_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT";
+    if(GetYear() == 2017) BDTG_Fake = "BDTG_FakeSignalTypeI_EE_Signal_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_4_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT";
+    if(GetYear() == 2018) BDTG_Fake = "BDTG_FakeSignalTypeI_EE_Signal_2018_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT";
+
+    TString BDTG_BB_Fake = "";
+    if(GetYear() == 2016) BDTG_BB_Fake = "BDTG_FakeSignalHNLTopTypeI_EE_SignalHNLTop_2016_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT";
+    if(GetYear() == 2017) BDTG_BB_Fake = "BDTG_FakeSignalHNLTopTypeI_EE_SignalHNLTop_2017_NTrees2100_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_3_nCuts_301_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT";
+    if(GetYear() == 2018) BDTG_BB_Fake = "BDTG_FakeSignalHNLTopTypeI_EE_SignalHNLTop_2018_NTrees1100_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_5_nCuts_500_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT";
+    
+
+    TString BDTG_EC_Fake = "";
+    if(GetYear() == 2016) BDTG_EC_Fake = "BDTG_FakeSignalHNLTopECTypeI_EE_SignalHNLTopEC_2016_NTrees2100_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT";
+    if(GetYear() == 2017) BDTG_EC_Fake = "BDTG_FakeSignalHNLTopECTypeI_EE_SignalHNLTopEC_2017_NTrees2100_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT";
+    if(GetYear() == 2018) BDTG_EC_Fake = "BDTG_FakeSignalHNLTopECTypeI_EE_SignalHNLTopEC_2018_NTrees2100_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT";
+
+    
+
+    TString BDTG_Conv = "";
+    if(GetYear() == 2016) BDTG_Conv = "BDTG_ConvSignalConvTypeI_EE_SignalConv_2016_NTrees1500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT";
+    if(GetYear() == 2017) BDTG_Conv = "BDTG_ConvSignalConvTypeI_EE_SignalConv_2017_NTrees1500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT";
+    if(GetYear() == 2018) BDTG_Conv = "BDTG_ConvSignalConvTypeI_EE_SignalConv_2018_NTrees1500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT";
+
+    TString BDTG_BB_Conv = "";
+    if(GetYear() == 2016) BDTG_BB_Conv = "BDTG_ConvSignalHNLTopConv_BBTypeI_EE_SignalHNLTopConv_BB_2016_NTrees1500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT";
+    if(GetYear() == 2017) BDTG_BB_Conv = "BDTG_ConvSignalHNLTopConv_BBTypeI_EE_SignalHNLTopConv_BB_2017_NTrees1500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT";
+    if(GetYear() == 2018) BDTG_BB_Conv = "BDTG_ConvSignalHNLTopConv_BBTypeI_EE_SignalHNLTopConv_BB_2018_NTrees1500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT";
+
+
+    TString BDTG_EC_Conv = "";
+    if(GetYear() == 2016) BDTG_EC_Conv = "BDTG_ConvSignalHNLTopConv_ECTypeI_EE_SignalHNLTopConv_EC_2016_NTrees1500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT";
+    if(GetYear() == 2017) BDTG_EC_Conv = "BDTG_ConvSignalHNLTopConv_ECTypeI_EE_SignalHNLTopConv_EC_2017_NTrees1500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT";
+    if(GetYear() == 2018) BDTG_EC_Conv = "BDTG_ConvSignalHNLTopConv_ECTypeI_EE_SignalHNLTopConv_EC_2018_NTrees1500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT";
+
+
+    TString BDTG_BB_CF= "";
+    if(GetYear() == 2016) BDTG_BB_CF= "BDTG_CFSignalCFTypeI_EE_SignalCF_2016_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT";
+    if(GetYear() == 2017) BDTG_BB_CF= "BDTG_CFSignalCFTypeI_EE_SignalCF_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT";
+    if(GetYear() == 2018) BDTG_BB_CF= "BDTG_CFSignalCFTypeI_EE_SignalCF_2018_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT";
+    
+    TString BDTG_EC_CF= "";
+    if(GetYear() == 2016) BDTG_EC_CF= "BDTG_CFSignalCFECTypeI_EE_SignalCFEC_2016_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT";
+    if(GetYear() == 2017) BDTG_EC_CF= "BDTG_CFSignalCFECTypeI_EE_SignalCFEC_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT";
+    if(GetYear() == 2018) BDTG_EC_CF= "BDTG_CFSignalCFECTypeI_EE_SignalCFEC_2018_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT";
+
+
+    vector<pair<TString,TString> > BDTInput =     {
+
+      make_pair("BDTG_Fake", BDTG_Fake),
+      make_pair("BDTG_BB_Fake", BDTG_BB_Fake),
+      make_pair("BDTG_EC_Fake", BDTG_EC_Fake),
+      make_pair("BDTG_BB_CF",BDTG_BB_CF),
+      make_pair("BDTG_EC_CF",BDTG_EC_CF),
+      make_pair("BDTG_Conv",BDTG_Conv),
+      make_pair("BDTG_BB_Conv",BDTG_BB_Conv),
+      make_pair("BDTG_EC_Conv",BDTG_EC_Conv),
+
+    };
+
+    for (auto ibdt : BDTInput)  {
+      cout <<  ibdt.first << " " << ibdt.second << endl;
+      if(ibdt.first.Contains("_CF"))    ElectronIDCFMVAReader->BookMVA(ibdt.first,MVAPathCF+ibdt.second+"_TMVAClassification_BDTG.weights.xml");
+      
+      else if(ibdt.first.Contains("_Conv")) ElectronIDConvMVAReader->BookMVA(ibdt.first,MVAPathConv+ibdt.second+"_TMVAClassification_BDTG.weights.xml");
+      else  ElectronIDFakeMVAReader->BookMVA(ibdt.first,MVAPathFake+ibdt.second+"_TMVAClassification_BDTG.weights.xml");
+    }
+
+  }
+
+
+  return;
+
+
+}
+
+
+
+
+
+
+
+
+
+double AnalyzerCore::GetBDTScoreEl(Electron el ,BkgType bkg, TString BDTTag){
+
+  InitializeElectronIDTreeVars();
+
+  std::vector<Jet>   JetAllColl = GetJets("NoID", 10., 5.0);
+
+  Lepton *lep = (Lepton *)(&el);
+  SetBDTIDVar(lep);
+
+  MVA    = el.MVANoIsoResponse();
+  MVAIso    = el.MVAIsoResponse();
+  RelMVA    = el.MVANoIsoResponse()/lep->Pt();
+  RelMVAIso    = el.MVAIsoResponse()/lep->Pt();
+  MissingHits = el.NMissingHits();
+  Full5x5_sigmaIetaIeta  = el.Full5x5_sigmaIetaIeta();  //sigmaIetaIeta  = el.sigmaIetaIeta();                                                                                                                                                
+  dEtaSeed  = el.dEtaSeed();
+  dPhiIn  = el.dPhiIn();//  dEtaIn  = el.dEtaIn();                                                                                                                                                                                            
+  EtaWidth = el.EtaWidth();
+  PhiWidth = el.PhiWidth();
+  e2x5OverE5x5 = el.e2x5OverE5x5();
+  e1x5OverE5x5= el.e1x5OverE5x5();
+  e15= el.e15();
+  e25= el.e25();
+  e55= el.e55();
+  dr03EcalRecHitSumEt= el.dr03EcalRecHitSumEt()/el.UncorrPt();
+  dr03HcalDepth1TowerSumEt= el.dr03HcalDepth1TowerSumEt()/el.UncorrPt();
+  dr03HcalTowerSumEt= el.dr03HcalTowerSumEt()/el.UncorrPt();
+  dr03TkSumPt= el.dr03TkSumPt()/el.UncorrPt();
+  R9= el.R9();
+  HoverE  = el.HoverE();
+  TrkIso  = el.TrkIso()/el.UncorrPt();  //InvEminusInvP = fabs(el.InvEminusInvP());                                                                                                                                                           
+  ecalPFClusterIso = el.ecalPFClusterIso()/el.UncorrPt();
+  hcalPFClusterIso = el.hcalPFClusterIso()/el.UncorrPt();
+  isEcalDriven = el.isEcalDriven();
+  EoverP = log(el.EOverP());
+  FBrem = el.FBrem();
+  PassConversionVeto  = (el.PassConversionVeto()) ? 1 : 0;
+  IsGsfCtfScPixChargeConsistent  = (el.IsGsfCtfScPixChargeConsistent()) ? 1 : 0;
+  IsGsfScPixChargeConsistent  = (el.IsGsfScPixChargeConsistent()) ? 1 : 0;
+  IsGsfCtfChargeConsistent  = (el.IsGsfCtfChargeConsistent()) ? 1 : 0;
+
+
+  //==== Vars for non-prompt lepton bkg                                                                                                                                                                                                       
+  int IdxMatchJet=-1;
+  float mindR1=999.;
+
+  for(unsigned int ij=0; ij<JetAllColl.size(); ij++){
+    float dR1=lep->DeltaR(JetAllColl.at(ij));
+    if(dR1>0.4) continue;
+    if(dR1<mindR1){ mindR1=dR1; IdxMatchJet=ij; }
+  }
+
+
+
+  if(IdxMatchJet!=-1){
+    PtRatio=JetLeptonPtRatioLepAware(el,false);
+    PtRel=JetLeptonPtRelLepAware(el,true);
+  }
+
+  else{
+    PtRatio = min(1/(1.+lep->RelIso()), 1.5);
+    PtRel=0, PtRelWithLep=0, PtRelCorr=0;
+  }
+
+  TString MVATagStr="";
+  if(BDTTag.Contains("v2")){
+
+    MVATagStr = BDTTag;
+    MVATagStr=MVATagStr.ReplaceAll("v2","");
+    
+    if(fabs(el.Eta()) < 1.5)    MVATagStr += "_BB";
+    else  MVATagStr += "_EC";
+
+    if (bkg == BkgType::Fake) MVATagStr += "_Fake";
+    if (bkg == BkgType::Conv) MVATagStr += "_Conv";
+
+  }
+  else{
+    MVATagStr = BDTTag;
+    if (bkg == BkgType::Fake) MVATagStr += "_Fake";
+    if (bkg == BkgType::Conv) MVATagStr += "_Conv";
+    if (bkg == BkgType::CF){
+      if(fabs(el.Eta()) < 1.5)    MVATagStr += "_BB";
+      else     MVATagStr += "_EC";
+      MVATagStr += "_CF";
+    }
+  }
+
+
+  if(MVATagStr.Contains("CF"))     return  ElectronIDCFMVAReader->EvaluateMVA(MVATagStr);
+  
+  if(MVATagStr.Contains("Conv"))   return  ElectronIDConvMVAReader->EvaluateMVA(MVATagStr);
+
+  return  ElectronIDFakeMVAReader->EvaluateMVA(MVATagStr);
 
 }
 
@@ -473,6 +1211,24 @@ std::vector<Electron> AnalyzerCore::GetAllElectrons(){
     el.SetRho(Rho);
     el.SetIsGsfCtfScPixChargeConsistent(electron_isGsfCtfScPixChargeConsistent->at(i),   electron_isGsfScPixChargeConsistent->at(i),electron_isGsfCtfChargeConsistent->at(i));
 
+    if(electron_jetPtRel)el.SetJetPtRel(electron_jetPtRel->at(i));
+    if(electron_jetPtRatio)el.SetJetPtRatio(electron_jetPtRatio->at(i));
+    if(electron_jetNTracks)el.SetJetNTracks(electron_jetNTracks->at(i));
+    if(electron_jetNTracksMVA)el.SetJetNTracksMVA(electron_jetNTracksMVA->at(i));
+
+    if(electron_conv_ntracks) el.SetConvNTracks(electron_conv_ntracks->at(i));
+    if(electron_conv_fitprob)	el.SetConvFitProb(electron_conv_fitprob->at(i));
+    if(electron_conv_lxy)	el.SetConvLxy(electron_conv_lxy->at(i));
+    if(electron_conv_nHitsBeforeVtxMax)	el.SetConvNHits(electron_conv_nHitsBeforeVtxMax->at(i));
+    if(electron_conv_log_e_over_p)	el.SetLogEoverP(electron_conv_log_e_over_p->at(i));
+    if(electron_conv_log_abs_cot_theta)	el.SetLogCotTheta(electron_conv_log_abs_cot_theta->at(i));
+    if(electron_conv_pairMass)	el.SetPairMass(electron_conv_pairMass->at(i));
+    if(electron_conv_log_abs_delta_phi)	el.SetLogDphi(electron_conv_log_abs_delta_phi->at(i));
+    if(electron_conv_log_chi2_max_pt)	el.SetLogChi2Max(electron_conv_log_chi2_max_pt->at(i));
+    if(electron_conv_log_chi2_min_pt)	el.SetLogChi2Min(electron_conv_log_chi2_min_pt->at(i));
+
+
+
     el.SetR9(electron_r9->at(i));
     el.SetL1Et(electron_l1et->at(i));
 
@@ -513,6 +1269,8 @@ std::vector<Electron> AnalyzerCore::GetAllElectrons(){
     );
     el.SetEtaWidth(electron_etaWidth->at(i));
     el.SetPhiWidth(electron_phiWidth->at(i));
+    el.SetFBrem(electron_fbrem->at(i));
+    el.SetEOverP(electron_eOverP->at(i));
     el.SetDetaIn(electron_dEtaIn->at(i));
     el.SetSigmaIEtaIE(electron_sigmaIEtaIEta->at(i));
     el.SetLepIso(electron_chIso03->at(i),electron_nhIso03->at(i),electron_phIso03->at(i));
@@ -524,6 +1282,16 @@ std::vector<Electron> AnalyzerCore::GetAllElectrons(){
 
     el.SetFilterBits(electron_filterbits->at(i));
     el.SetPathBits(electron_pathbits->at(i));
+
+
+    //if(electron_mva_conv) el.SetHNL_LepMVA(electron_mva_fake->at(i),electron_mva_conv->at(i),electron_mva_cf->at(i));
+    //cout << "GetBDTScoreEl(el,AnalyzerCore::Fake,  BDTG) " <<  GetBDTScoreEl(el,AnalyzerCore::Fake,  "BDTG") << " " << electron_mva_fake->at(i)<< endl;
+    //cout << "GetBDTScoreEl(el,AnalyzerCore::Conv,  BDTG) " <<  GetBDTScoreEl(el,AnalyzerCore::Conv,  "BDTG") << " " << electron_mva_conv->at(i)<< endl;
+    //cout << "GetBDTScoreEl(el,AnalyzerCore::CF,  BDTG) " <<  GetBDTScoreEl(el,AnalyzerCore::CF,  "BDTG") << electron_mva_cf->at(i) << endl;
+
+    //if(AnalyserRunsFullBkg()) el.SetHNL_LepMVA(GetBDTScoreEl(el,AnalyzerCore::Fake,  "BDTG"),GetBDTScoreEl(el,AnalyzerCore::Conv,  "BDTG"),GetBDTScoreEl(el,AnalyzerCore::CF,  "BDTG"));
+    if(electron_mva_fake)el.SetHNL_LepMVA(electron_mva_fake->at(i), electron_mva_conv->at(i), electron_mva_cf->at(i));
+    else el.SetHNL_LepMVA(GetBDTScoreEl(el,AnalyzerCore::Fake,  "BDTG"),GetBDTScoreEl(el,AnalyzerCore::Conv,  "BDTG"),GetBDTScoreEl(el,AnalyzerCore::CF,  "BDTG"));    
 
     out.push_back(el);
 
@@ -557,6 +1325,7 @@ std::vector<Electron> AnalyzerCore::GetElectrons(AnalyzerParameter param, TStrin
       continue;
     }
     if(!( electrons.at(i).PassID(id) )){
+      //cout << "Fail " << id << endl;
       continue;
     }
     if(vetoHEM){
@@ -566,18 +1335,14 @@ std::vector<Electron> AnalyzerCore::GetElectrons(AnalyzerParameter param, TStrin
       }
     }
 
-
     if(run_fake){
-      
+     
       double isocut_el = GetIsoFromID("Electron",param.Electron_Tight_ID,electrons.at(i).Eta(), electrons.at(i).Pt());   
       Electron this_electron = electrons.at(i);
       this_electron.SetPtEtaPhiM( electrons.at(i).CalcPtCone(electrons.at(i).RelIso(), isocut_el), electrons.at(i).Eta(), electrons.at(i).Phi(), electrons.at(i).M() );
-
       out.push_back( this_electron);
-      
     }
     else   out.push_back( electrons.at(i) );
-    
   }
   
   return out;
@@ -643,7 +1408,6 @@ std::vector<Tau> AnalyzerCore::GetTaus(std::vector<Lepton* > leps,TString id, do
     for(auto lep : leps){
       if(lep->DeltaR(tau) > 0.4)  out.push_back(tau);
     }
-
   }
   std::sort(out.begin(),       out.end(),        PtComparing);
 
@@ -670,6 +1434,7 @@ std::vector<Tau> AnalyzerCore::GetTaus(TString id, double ptmin, double fetamax)
   return out;
 
 }
+
 
 double AnalyzerCore::GetIsoFromID(TString  lep_type, TString id, double eta, double pt){
 
@@ -870,23 +1635,11 @@ double AnalyzerCore::GetIsoFromID(TString  lep_type, TString id, double eta, dou
 
 
   }
-  cout << "[HNL_LeptonCore::GetIsoFromID ] ID not found.." << id<< endl;
+  cout << "[AnalyzerCore::GetIsoFromID ] ID not found.." << id<< endl;
   exit(EXIT_FAILURE);
 
   return -999999999.;
 
-}
-
-bool AnalyzerCore::PassID(std::vector<Electron> electrons, TString ID){
-
-  int nel(0);
-  for(auto el : electrons){
-
-    if( el.PassID(ID) ) nel++;
-
-  }
-  if (nel ==2) return true;
-  return false;
 }
 
 
@@ -1089,7 +1842,7 @@ std::vector<Photon> AnalyzerCore::GetPhotons(TString id, double ptmin, double fe
 
 
 
-std::vector<Jet> AnalyzerCore::GetAllJets(){
+std::vector<Jet> AnalyzerCore::GetAllJets(bool applyCorr){
 
   std::vector<Jet> out;
   for(unsigned int i=0; i<jet_pt->size(); i++){
@@ -1099,11 +1852,14 @@ std::vector<Jet> AnalyzerCore::GetAllJets(){
     jet.SetPxUnSmeared(jet.Px());
     jet.SetPyUnSmeared(jet.Py());
 
+    jet.SetJEC(jet_JECL1FastJet->at(i), jet_JECFull->at(i));
     //jet.SetNTracks(jet_vtxNtracks->at(i));
     //==== Jet energy up and down are 1.xx or 0.99, not energy
     jet.SetEnShift( jet_shiftedEnUp->at(i), jet_shiftedEnDown->at(i) );
     if(!IsDATA){
-      jet *= jet_smearedRes->at(i);
+      if(applyCorr){
+	jet *= jet_smearedRes->at(i);
+      }
       jet.SetResShift( jet_smearedResUp->at(i)/jet_smearedRes->at(i), jet_smearedResDown->at(i)/jet_smearedRes->at(i) );
       jet.SetRes(jet_smearedRes->at(i));
       jet.SetGenFlavours(jet_partonFlavour->at(i), jet_hadronFlavour->at(i));
@@ -1447,6 +2203,7 @@ std::vector<Muon> AnalyzerCore::UseTunePMuon(const std::vector<Muon>& muons){
     this_muon.SetCharge( this_tunep4.Charge() );
     this_muon.SetMiniAODPt( this_muon.MiniAODTunePPt() );
 
+
 /*
     cout << "@@@@ TuneP @@@@" << endl;
     cout << "this_muon.Pt() = " << this_muon.Pt() << endl;
@@ -1592,171 +2349,6 @@ std::vector<FatJet> AnalyzerCore::SelectFatJets(const std::vector<FatJet>& jets,
 }
 
 
-
-pair<int,double> AnalyzerCore::GetNBJets(vector<Jet> jets, AnalyzerParameter param,TString WP){
-
-  int NBJets_NoSF(0);
-  JetTagging::WP             jwp = JetTagging::Medium;
-  if  (WP == "Loose")        jwp = JetTagging::Loose;
-  else if  (WP == "Medium")  jwp = JetTagging::Medium;
-  else  if  (WP == "Tight")  jwp = JetTagging::Tight;
-  else return make_pair(-1,1.);
-
-  JetTagging::Tagger    tagger = JetTagging::DeepCSV;
-  if  (WP.Contains("DeepJet")) tagger = JetTagging::DeepJet;
-
-  JetTagging::MeasurmentType type = JetTagging::comb;
-  if  (WP.Contains("DeepJet")) type =  JetTagging::mujets;
-
-
-
-  JetTagging::Parameters jtp = JetTagging::Parameters(tagger,
-							      jwp,
-							      JetTagging::incl, type);
-
-
-  double btagWeight_1a = mcCorr->GetBTaggingReweight_1a(jets, jtp);
-  double btagWeight_1d = 1.;//mcCorr->GetBTaggingReweight_1d(jets, jtp_DeepCSV_Reshape);                                                         
-
-
-  for(auto ij : jets)  {
-    double this_discr = ij.GetTaggerResult(tagger);
-    if( this_discr > mcCorr->GetJetTaggingCutValue(tagger, jwp) ) NBJets_NoSF++;
-  }
-
-  if(param.BJet_Method=="1a") return make_pair(NBJets_NoSF,btagWeight_1a);
-  if(param.BJet_Method=="1d") return make_pair(NBJets_NoSF,btagWeight_1d);
-  if(param.BJet_Method=="2a") return make_pair(GetNBJets2a(jets,param, WP),1.);
-
-  cout << "[AnalyzerCore::GettNBjet] wtf" << endl;
-  exit(EXIT_FAILURE);
-
-  return make_pair(NBJets_NoSF,-9999.);
-
-}
-
-pair<int,double> AnalyzerCore::GetNBJets(vector<Jet> jets, TString WP, TString method){
-
-  int NBJets_NoSF(0);
-  JetTagging::WP jwp = JetTagging::Medium;
-  if  (WP == "Loose")  jwp = JetTagging::Loose;
-  else if  (WP == "Medium")  jwp = JetTagging::Medium;
-  else  if  (WP == "Tight")  jwp = JetTagging::Tight;
-  else return make_pair(-1,1.);
-
-  JetTagging::Tagger    tagger = JetTagging::DeepCSV;
-  if  (WP.Contains("DeepJet")) tagger = JetTagging::DeepJet;
-
-  JetTagging::MeasurmentType type = JetTagging::comb;
-  if  (WP.Contains("DeepJet")) type =  JetTagging::mujets;
-
-
-  JetTagging::Parameters jtp= JetTagging::Parameters(tagger,
-							      jwp,
-							      JetTagging::incl, type);
-
-  double btagWeight_1a = mcCorr->GetBTaggingReweight_1a(jets, jtp);
-  double btagWeight_1d = 1.;//mcCorr->GetBTaggingReweight_1d(jets, jtp_DeepCSV_Reshape);                                                         
-
-
-  for(auto ij : jets)  {
-    double this_discr = ij.GetTaggerResult(tagger);
-    if( this_discr > mcCorr->GetJetTaggingCutValue(tagger, jwp) ) NBJets_NoSF++;
-  }
-
-  if(method=="1a") return make_pair(NBJets_NoSF,btagWeight_1a);
-  if(method=="1d") return make_pair(NBJets_NoSF,btagWeight_1d);
-  if(method=="2a") return make_pair(GetNBJets2a(jets, WP),1.);
-
-
-  cout << "[AnalyzerCore::GetNBJet] wtf" << endl;
-  exit(EXIT_FAILURE);
-
-  return make_pair(NBJets_NoSF,-9999.);
-}
-
-
-int AnalyzerCore::GetNBJets2a(TString ID, TString WP){
-
-  vector<Jet> this_AllJets = GetAllJets();
-  vector<Jet>       jets   = SelectJets(this_AllJets,ID, 20., 2.4);
-
-  int NBJets_WithSF_2a(0);
-  //  JetTagging::Parameters param_jets = JetTagging::Parameters(JetTagging::DeepJet, JetTagging::Medium, JetTagging::incl, JetTagging::mujets);
-
-  JetTagging::WP             jwp = JetTagging::Medium;
-  if  (WP.Contains("Loose"))        jwp = JetTagging::Loose;
-  else if  (WP.Contains("Medium"))  jwp = JetTagging::Medium;
-  else  if  (WP.Contains("Tight"))  jwp = JetTagging::Tight;
-  else return -1;
-
-  JetTagging::Tagger    tagger = JetTagging::DeepCSV;
-  if  (WP.Contains("DeepJet")) tagger = JetTagging::DeepJet;
-
-  JetTagging::MeasurmentType type = JetTagging::comb;
-  if  (WP.Contains("DeepJet")) type =  JetTagging::mujets;
-  for( auto i  :  jets)
-    if( mcCorr->IsBTagged_2a(JetTagging::Parameters(tagger,       jwp, JetTagging::incl,type), i) ) NBJets_WithSF_2a++;
-
-
-  return NBJets_WithSF_2a;
-}
-
-
-
-int AnalyzerCore::GetNBJets2a( vector<Jet> jets, AnalyzerParameter param, TString WP){
-
-  int NBJets_WithSF_2a(0);
-
-  JetTagging::WP             jwp = JetTagging::Medium;
-  if  (WP == "Loose")        jwp = JetTagging::Loose;
-  else if  (WP == "Medium")  jwp = JetTagging::Medium;
-  else  if  (WP == "Tight")  jwp = JetTagging::Tight;
-  else return -1;
-
-
-  JetTagging::Tagger    tagger = JetTagging::DeepCSV;
-  if  (WP.Contains("DeepJet")) tagger = JetTagging::DeepJet;
-
-  JetTagging::MeasurmentType type = JetTagging::comb;
-  if  (WP.Contains("DeepJet")) type =  JetTagging::mujets;
-
-  for( auto i  :  jets){
-    if(fabs(i.Eta()) >2.4) continue;
-    if( mcCorr->IsBTagged_2a(JetTagging::Parameters(tagger,       jwp, JetTagging::incl, type), i,param.SystDir_BTag)	) NBJets_WithSF_2a++;
-  }
-  
-  return NBJets_WithSF_2a;
-}
-
-
-int AnalyzerCore::GetNBJets2a( vector<Jet> jets, TString WP){
-
-  int NBJets_WithSF_2a(0);
-
-  JetTagging::WP             jwp = JetTagging::Medium;
-  if  (WP == "Loose")        jwp = JetTagging::Loose;
-  else if  (WP == "Medium")  jwp = JetTagging::Medium;
-  else  if  (WP == "Tight")  jwp = JetTagging::Tight;
-  else return -1;
-
-
-  JetTagging::Tagger    tagger = JetTagging::DeepCSV;
-  if  (WP.Contains("DeepJet")) tagger = JetTagging::DeepJet;
-
-  JetTagging::MeasurmentType type = JetTagging::comb;
-  if  (WP.Contains("DeepJet")) type =  JetTagging::mujets;
-
-
-  for(unsigned int i=0; i<jets.size(); i++)
-    if( mcCorr->IsBTagged_2a(JetTagging::Parameters(tagger,       jwp, JetTagging::incl, type), jets.at(i)) ) NBJets_WithSF_2a++;
-
-
-  return NBJets_WithSF_2a;
-}
-
-
-
 double AnalyzerCore::GetEventFatJetSF(vector<FatJet> fatjets, TString label, int dir){
 
   double FatJetTau21_SF(1);
@@ -1770,7 +2362,7 @@ double AnalyzerCore::GetEventFatJetSF(vector<FatJet> fatjets, TString label, int
 double AnalyzerCore::GetFatJetSF(FatJet fatjet, TString tag,  int dir){
 
   if(IsDATA) return 1.;
-  float fsys = -1;
+  double fsys = -1;
   if(dir > 0) fsys =1;
   if(dir==0) fsys=0.;
 
@@ -1814,7 +2406,7 @@ double  AnalyzerCore::GetBJetSF(AnalyzerParameter param,vector<Jet> jets, JetTag
   return mcCorr->GetBTaggingReweight_1a(jets, jtp, syst);
 }
 
-vector<Jet>   AnalyzerCore::GetBJets(AnalyzerParameter param,vector<Jet> jetColl, JetTagging::Parameters jtp){
+vector<Jet>   AnalyzerCore::SelectBJets(AnalyzerParameter param,vector<Jet> jetColl, JetTagging::Parameters jtp){
 
   vector<Jet> output_jets;
 
@@ -1827,7 +2419,7 @@ vector<Jet>   AnalyzerCore::GetBJets(AnalyzerParameter param,vector<Jet> jetColl
 
 }
 
-vector<Jet>   AnalyzerCore::GetLJets(AnalyzerParameter param,vector<Jet> jetColl, JetTagging::Parameters jtp){
+vector<Jet>   AnalyzerCore::SelectLJets(AnalyzerParameter param,vector<Jet> jetColl, JetTagging::Parameters jtp){
 
   vector<Jet> output_jets;
 
@@ -1842,7 +2434,7 @@ vector<Jet>   AnalyzerCore::GetLJets(AnalyzerParameter param,vector<Jet> jetColl
 
 
 
-vector<Jet>   AnalyzerCore::GetAK4Jets(vector<Jet> jets, double pt_cut ,  double eta_cut, bool lepton_cleaning  , double dr_lep_clean, double dr_ak8_clean, TString pu_tag,std::vector<Lepton *> leps_veto,  vector<FatJet> fatjets){
+vector<Jet>   AnalyzerCore::SelectAK4Jets(vector<Jet> jets, double pt_cut ,  double eta_cut, bool lepton_cleaning  , double dr_lep_clean, double dr_ak8_clean, TString pu_tag,std::vector<Lepton *> leps_veto,  vector<FatJet> fatjets){
 
   vector<Jet> output_jets;
   for(unsigned int ijet =0; ijet < jets.size(); ijet++){
@@ -1874,7 +2466,7 @@ vector<Jet>   AnalyzerCore::GetAK4Jets(vector<Jet> jets, double pt_cut ,  double
 
 
 
-vector<Jet>   AnalyzerCore::GetAK4Jets(vector<Jet> jets, double pt_cut ,  double eta_cut, bool lepton_cleaning  , double dr_lep_clean, double dr_ak8_clean, TString pu_tag, vector<Electron>  veto_electrons, vector<Muon>  veto_muons, vector<FatJet> fatjets){
+vector<Jet>   AnalyzerCore::SelectAK4Jets(vector<Jet> jets, double pt_cut ,  double eta_cut, bool lepton_cleaning  , double dr_lep_clean, double dr_ak8_clean, TString pu_tag, vector<Electron>  veto_electrons, vector<Muon>  veto_muons, vector<FatJet> fatjets){
 
   vector<Jet> output_jets;
   for(unsigned int ijet =0; ijet < jets.size(); ijet++){
@@ -1921,13 +2513,13 @@ double AnalyzerCore::GetJetPileupIDSF(vector<Jet> jets , TString WP, AnalyzerPar
 
 
 
-vector<FatJet>  AnalyzerCore::GetAK8Jets(vector<FatJet> fatjets, double pt_cut ,  double eta_cut, bool lepton_cleaning  , double dr_lep_clean , bool apply_tau21, double tau21_cut , bool apply_masscut, double sdmass_lower_cut,  double sdmass_upper_cut, vector<Electron>  veto_electrons, vector<Muon>  veto_muons){
+vector<FatJet>  AnalyzerCore::SelectAK8Jets(vector<FatJet> fatjets, double pt_cut ,  double eta_cut, bool lepton_cleaning  , double dr_lep_clean , bool apply_tau21, double tau21_cut , bool apply_masscut, double sdmass_lower_cut,  double sdmass_upper_cut, vector<Electron>  veto_electrons, vector<Muon>  veto_muons){
 
 
-  return GetAK8Jetsv2(fatjets,pt_cut,eta_cut, lepton_cleaning, dr_lep_clean,apply_tau21, tau21_cut,apply_masscut,sdmass_lower_cut,sdmass_upper_cut, -999., veto_electrons,veto_muons);
+  return SelectAK8Jetsv2(fatjets,pt_cut,eta_cut, lepton_cleaning, dr_lep_clean,apply_tau21, tau21_cut,apply_masscut,sdmass_lower_cut,sdmass_upper_cut, -999., veto_electrons,veto_muons);
 }
 
-vector<FatJet>  AnalyzerCore::GetAK8Jetsv2(vector<FatJet> fatjets, double pt_cut ,  double eta_cut, bool lepton_cleaning  , double dr_lep_clean , bool apply_tau21, double tau21_cut , bool apply_masscut, double sdmass_lower_cut,  double sdmass_upper_cut, double WQCDTagger, vector<Electron>  veto_electrons, vector<Muon>  veto_muons){
+vector<FatJet>  AnalyzerCore::SelectAK8Jetsv2(vector<FatJet> fatjets, double pt_cut ,  double eta_cut, bool lepton_cleaning  , double dr_lep_clean , bool apply_tau21, double tau21_cut , bool apply_masscut, double sdmass_lower_cut,  double sdmass_upper_cut, double WQCDTagger, vector<Electron>  veto_electrons, vector<Muon>  veto_muons){
 
 
   vector<FatJet> output_fatjets;
@@ -2046,7 +2638,7 @@ bool AnalyzerCore::IsHEMIssueRun(){
 bool AnalyzerCore::IsHEMIssueReg(Particle& Particle){
 
   bool IstheRegion=false;
-  float eta=Particle.Eta(), phi=Particle.Phi();
+  double eta=Particle.Eta(), phi=Particle.Phi();
 
   if(eta>-3. && eta<-1.3 && phi>-1.57 && phi<-0.87) IstheRegion=true;
 
@@ -2058,7 +2650,7 @@ bool AnalyzerCore::IsHEMIssueReg(Particle& Particle){
 bool AnalyzerCore::IsHEMCRReg(Particle& Particle, TString Option){
 
   bool IstheRegion=false;
-  float eta=Particle.Eta(), phi=Particle.Phi();
+  double eta=Particle.Eta(), phi=Particle.Phi();
   bool SameEta = Option.Contains("SameEta");
   bool SamePhi = Option.Contains("SamePhi");
 
@@ -2449,9 +3041,11 @@ double AnalyzerCore::GetElectronSFEventWeight(std::vector<Electron> electrons, A
       double this_idsf    = mcCorr->ElectronID_SF(param.Electron_ID_SF_Key, el.scEta(), el.Pt(), SystDir_ElectronIDSF);
 
       this_weight *= this_recosf*this_idsf;
-      FillWeightHist(param.Name+"/el_reco_sf_"+param.Name, this_recosf);
-      FillWeightHist(param.Name+"/el_id_sf_"+param.Name, this_idsf);
-
+      
+      if(param.WriteOutVerbose == 0){
+	FillWeightHist(param.Name+"/el_reco_sf_"+param.Name, this_recosf);
+	FillWeightHist(param.Name+"/el_id_sf_"+param.Name, this_idsf);
+      }
     }
     double this_trigsf = mcCorr->ElectronTrigger_SF(param.Electron_Trigger_SF_Key, param.Electron_Trigger_NameForSF, electrons,SystDir_ElectronTriggerSF);
 
@@ -2801,19 +3395,21 @@ void AnalyzerCore::initializeAnalyzerTools(){
   puppiCorr->ReadHistograms();
 
   //==== FakeBackgroundEstimator
-  fakeEst->SetEra(GetEra());
-  fakeEst->ReadHistograms();
+  if(AnalyserRunsFullBkg()){
+    fakeEst->SetEra(GetEra());
+    fakeEst->ReadHistograms();
   //==== CFBackgroundEstimator
-  cfEst->SetEra(GetEra());
-  cfEst->ReadHistograms();
+    cfEst->SetEra(GetEra());
+    cfEst->ReadHistograms();
+  }
 }
 
 
-float AnalyzerCore::GetKFactor(){
+double AnalyzerCore::GetKFactor(){
 
   if(IsDATA) return 1.;
 
-  float weight = 1.;
+  double weight = 1.;
 
   if(MCSample.Contains("WZTo3LNu_powheg") or MCSample.Contains("WZTo2L2Q")){
     //Physics Letters B 761 (2016) 197 
@@ -2854,7 +3450,7 @@ double AnalyzerCore::MCweight(bool usesign, bool norm_1invpb) const {
 
   if(IsDATA) return 1.;
   double weight=gen_weight;
-
+  
   //MiNNLO sample has some events with unphysically large weight
   if(MCSample.Contains("DYJets")&&MCSample.Contains("MiNNLO")){
     double maxweight=2358.0700*5.;
@@ -3031,6 +3627,7 @@ vector<Muon> AnalyzerCore::SkimLepColl(const vector<Muon>& MuColl, vector<Gen>& 
 vector<Electron> AnalyzerCore::SkimLepColl(const vector<Electron>& ElColl, vector<Gen>& TruthColl, AnalyzerParameter param,TString Option){
 
   bool GetPrompt=false, GetHadFake=false, GetEWtau=false, GetNHIntConv=false, GetNHExtConv=false, GetCF=false;
+  //CFHFakeNHConv
   if(Option.Contains("Prompt"))          GetPrompt    =true;
   if(Option.Contains("CF"))              GetCF        =true;
   if(Option.Contains("HFake"))           GetHadFake   =true;
@@ -3053,7 +3650,7 @@ vector<Electron> AnalyzerCore::SkimLepColl(const vector<Electron>& ElColl, vecto
       if( GetNHIntConv &&         LepType>=4         ) PassSel=true;
       if( GetNHExtConv &&         LepType<-4         ) PassSel=true;
       if( GetCF        &&         IsCF(ElColl.at(i), TruthColl) ) PassSel=true;
-      
+      if( Option.Contains("NoCF") && IsCF(ElColl.at(i), TruthColl) ) PassSel=false;
       if( PassSel ) ReturnVec.push_back(ElColl.at(i));
     }
   }
@@ -3067,14 +3664,13 @@ vector<Electron> AnalyzerCore::SkimLepColl(const vector<Electron>& ElColl, TStri
   
   vector<Electron> ReturnColl;
 
-  bool Barrel1=false, Barrel2=false, Endcap=false, PtCut=false;
+  bool Barrel1=false, Barrel2=false, Endcap=false;
   if(Option.Contains("B1")) Barrel1=true;
   if(Option.Contains("B2")) Barrel2=true;
   if(Option.Contains("E"))  Endcap =true;
-  if(Option.Contains("Pt")) PtCut  =true;
 
   for(unsigned int i=0; i<ElColl.size(); i++){
-    bool PassSel=false; float fEta=fabs(ElColl.at(i).Eta());
+    bool PassSel=false; double fEta=fabs(ElColl.at(i).Eta());
     if( Barrel1 && fEta <0.8               ) PassSel=true;
     if( Barrel2 && fEta>=0.8 && fEta<1.479 ) PassSel=true;
     if( Endcap  && fEta>=1.479 && fEta<2.5 ) PassSel=true;
@@ -3088,14 +3684,13 @@ vector<Electron> AnalyzerCore::SkimLepColl(const vector<Electron>& ElColl, TStri
 vector<Muon> AnalyzerCore::SkimLepColl(const vector<Muon>& MuColl,  TString Option){
   
   vector<Muon> ReturnColl;
-  bool Barrel=false, Overlap=false, Endcap=false, PtCut=false;
+  bool Barrel=false, Overlap=false, Endcap=false;
   if(Option.Contains("MB")) Barrel =true;
   if(Option.Contains("MO")) Overlap=true;
   if(Option.Contains("ME")) Endcap =true;
-  if(Option.Contains("Pt")) PtCut  =true;
 
   for(unsigned int i=0; i<MuColl.size(); i++){
-    bool PassSel=false; float fEta=fabs(MuColl.at(i).Eta());
+    bool PassSel=false; double fEta=fabs(MuColl.at(i).Eta());
     if( Barrel  && fEta <0.9               ) PassSel=true;
     if( Overlap && fEta>=0.9 && fEta<1.6   ) PassSel=true;
     if( Endcap  && fEta>=1.6 && fEta<2.4   ) PassSel=true;
@@ -3218,8 +3813,8 @@ Muon AnalyzerCore::MuonUsePtCone(const Muon& muon){
 
 Particle AnalyzerCore::UpdateMET(const Particle& METv, const std::vector<Muon>& muons){
 
-  float met_x = METv.Px();
-  float met_y = METv.Py();
+  double met_x = METv.Px();
+  double met_y = METv.Py();
 
   double px_orig(0.), py_orig(0.),px_corrected(0.), py_corrected(0.);
   for(unsigned int i=0; i<muons.size(); i++){
@@ -3243,8 +3838,8 @@ Particle AnalyzerCore::UpdateMET(const Particle& METv, const std::vector<Muon>& 
 
 Particle AnalyzerCore::UpdateMETSmearedJet(const Particle& METv, const std::vector<Jet>& jets){
 
-  float met_x = METv.Px();
-  float met_y = METv.Py();
+  double met_x = METv.Px();
+  double met_y = METv.Py();
 
   double px_orig(0.), py_orig(0.),px_corrected(0.), py_corrected(0.);
   for(auto jet : jets){
@@ -3384,6 +3979,264 @@ std::vector<Jet> AnalyzerCore::JetsAwayFromFatJet(const std::vector<Jet>& jets, 
   return out;
 
 }
+
+
+Jet AnalyzerCore::GetCorrectedJetCloseToLepton(Muon lep, Jet jet){
+
+  //jet_LepAwareJECv2 = (raw_jet * L1 - lepton) * L2L3Res + lepton                                                        
+
+  Particle  rawJet = jet * (1./ jet.JEC_Full());
+
+  Particle  lepp4 = lep;
+  double l1corrFactor = jet.JEC_L1();
+  Particle jetp4 = (rawJet - lepp4 * (1.0 / l1corrFactor)) * (jet.Pt() / rawJet.Pt()) + lepp4;
+
+
+  //cout << "Corr Eta : " << jetp4.Eta() << " " << jet.Eta() << endl;
+  // cout << "Corr Phi : " << jetp4.Phi() << " " << jet.Phi() << endl;
+
+  Jet jet_corr = jet;
+
+  jet_corr.SetPtEtaPhiE(jetp4.Pt(), jetp4.Eta(), jetp4.Phi(),jetp4.E());
+
+  return jet_corr;
+}
+
+Jet AnalyzerCore::GetCorrectedJetCloseToLepton(Electron lep, Jet jet){
+
+  //jet_LepAwareJECv2 = (raw_jet * L1 - lepton) * L2L3Res + lepton
+  
+  Particle  rawJet = jet * (1./ jet.JEC_Full());
+  Particle  lepp4 = lep;
+  double l1corrFactor = jet.JEC_L1();
+  Particle jetp4 = (rawJet - lepp4 * (1.0 / l1corrFactor)) * (jet.Pt() / rawJet.Pt()) + lepp4;
+  
+  Jet jet_corr = jet;
+  jet_corr.SetPtEtaPhiE(jetp4.Pt(), jetp4.Eta(), jetp4.Phi(),jetp4.E());
+
+  return jet_corr;
+}
+
+Jet AnalyzerCore::GetCorrectedJetCloseToLepton(Lepton* lep, Jet jet){
+
+  //jet_LepAwareJECv2 = (raw_jet * L1 - lepton) * L2L3Res + lepton                                                                                                                                                                                                      
+
+  Particle  rawJet = jet * (1./ jet.JEC_Full());
+  Particle  lepp4 = *lep;
+  double l1corrFactor = jet.JEC_L1();
+  Particle jetp4 = (rawJet - lepp4 * (1.0 / l1corrFactor)) * (jet.Pt() / rawJet.Pt()) + lepp4;
+
+  Jet jet_corr = jet;
+  jet_corr.SetPtEtaPhiE(jetp4.Pt(), jetp4.Eta(), jetp4.Phi(),jetp4.E());
+
+  return jet_corr;
+}
+
+
+double  AnalyzerCore::JetLeptonMassDropLepAware( Muon lep, bool removeLep, bool ApplyCorr){
+
+
+  // ApplyCorr def is false, this is same as Mini/NanoAOD value stored                                                                                                                                              
+  // if ApplyCorr is true then Jet smearing and lepton smearing is applied and values are corrected                                                                                                                 
+
+  std::vector<Jet> jets = GetAllJets(ApplyCorr);
+
+  double mindR=0.4;
+  if(!ApplyCorr)lep.SetPtEtaPhiE(lep.MiniAODPt(), lep.Eta(), lep.Phi(), lep.E());
+
+  Jet closejet;
+  for(auto jet : jets){
+    if (lep.DeltaR(jet) < mindR) closejet = GetCorrectedJetCloseToLepton(lep,jet);
+  }
+
+  TLorentzVector lepp4 = lep;
+  TLorentzVector jetp4 = closejet;
+
+
+  if(removeLep)   jetp4 = jetp4 - lep;
+
+  TLorentzVector LJ =  jetp4 + lep;
+  
+  return (LJ.M() - jetp4.M());
+
+}
+
+
+double  AnalyzerCore::JetLeptonMassDropLepAware( Electron lep, bool removeLep, bool ApplyCorr){
+
+
+  std::vector<Jet> jets = GetAllJets(ApplyCorr);
+
+  double mindR=0.4;
+
+  Jet closejet;
+  for(auto jet : jets){
+    if (lep.DeltaR(jet) < mindR) closejet = GetCorrectedJetCloseToLepton(lep,jet);
+  }
+
+  TLorentzVector lepp4 = lep;
+  TLorentzVector jetp4 = closejet;
+
+
+  if(removeLep)   jetp4 = jetp4 - lep;
+
+  TLorentzVector LJ =  jetp4 + lep;
+
+  return (LJ.M() - jetp4.M());
+
+
+}
+
+
+
+double  AnalyzerCore::JetLeptonPtRelLepAware( Muon lep, bool removeLep, bool ApplyCorr){
+
+
+  // ApplyCorr def is false, this is same as Mini/NanoAOD value stored
+  // if ApplyCorr is true then Jet smearing and lepton smearing is applied and values are corrected
+
+  std::vector<Jet> jets = GetAllJets(ApplyCorr);
+
+  double mindR=0.4;
+  if(!ApplyCorr)lep.SetPtEtaPhiE(lep.MiniAODPt(), lep.Eta(), lep.Phi(), lep.E());
+
+  Jet closejet;
+  for(auto jet : jets){
+    if (lep.DeltaR(jet) < mindR) closejet = GetCorrectedJetCloseToLepton(lep,jet);
+  }
+  
+  TLorentzVector lepp4 = lep;
+  TLorentzVector jetp4 = closejet;
+  
+  double PtRel = lepp4.Perp((closejet-lepp4).Vect()); // Default
+  //double PtRel2 = lepp4.Vect().Cross((jetp4 - lepp4).Vect().Unit()).Mag();
+  if(!removeLep) PtRel = lepp4.Perp((closejet).Vect());
+
+
+  return PtRel;
+
+}
+
+double  AnalyzerCore::JetLeptonPtRelLepAware( Electron lep, bool removeLep, bool ApplyCorr){
+
+  // ApplyCorr def is false, this is same as Mini/NanoAOD value stored                                                                                     
+  // if ApplyCorr is true then Jet smearing and lepton smearing is applied and values are corrected                                                       
+
+  std::vector<Jet> jets = GetAllJets(ApplyCorr);
+
+  double mindR=0.4;
+  //if(!ApplyCorr)lep.SetPtEtaPhiE(lep.MiniAODPt(), lep.Eta(), lep.Phi(), lep.E());
+
+  Jet closejet;
+  for(auto jet : jets){
+    if (lep.DeltaR(jet) < mindR) closejet = GetCorrectedJetCloseToLepton(lep,jet);
+  }
+
+  TLorentzVector lepp4 = lep;
+  TLorentzVector jetp4 = closejet;
+
+  double PtRel = lepp4.Perp((closejet-lepp4).Vect());
+  if(!removeLep) PtRel = lepp4.Perp((closejet).Vect());
+
+  //  double PtRel2 = lepp4.Vect().Cross((jetp4 - lepp4).Vect().Unit()).Mag();
+
+  //cout << "JetLeptonPtRelLepAware " <<  PtRel << " vs  " << PtRel2 << " vs  "  << lep.lep_jet_ptrel() << " vs " << lep.lep_jet_ptrelDef() << endl;                                                                                          
+
+  return PtRel;
+
+}
+
+
+double  AnalyzerCore::JetLeptonPtRatioLepAware(Muon lep, bool removeLep, bool ApplyCorr){
+
+  std::vector<Jet> jets = GetAllJets(ApplyCorr);
+
+  double  mindR=0.4;
+  
+  if(!ApplyCorr)lep.SetPtEtaPhiE(lep.MiniAODPt(), lep.Eta(), lep.Phi(), lep.E());
+
+  Jet closejet;
+  for(auto jet : jets){
+    if (lep.DeltaR(jet) < mindR) {
+      closejet = GetCorrectedJetCloseToLepton(lep,jet);
+      mindR = lep.DeltaR(jet);
+    }
+  }
+
+  Particle lepp4 = lep;
+  
+  if (mindR == 0.4) {
+    
+    return std::min(1./ (1. + lep.RelIso()), 1.5);
+  }
+
+  
+  if(closejet.Pt() == 0.) {
+    cout << "mindR = " << mindR << endl;
+    cout << "[JetLeptonPtRatioLepAware( Muon lep,  bool removeLep, bool ApplyCorr] 0 Jet pt" <<  endl;
+    cout << "Number of jets = " << jets.size() << endl;
+    for(auto jet : jets){
+      cout << "Jet pt = " << jet.Pt() << " dR = " << lep.DeltaR(jet) << endl;
+      Jet closejet2 = GetCorrectedJetCloseToLepton(lep,jet);
+      cout << "GetCorrectedJetCloseToLepton(lep,jet) pt = " << closejet2.Pt() << endl;
+    }
+
+    exit(EXIT_FAILURE);
+  }
+
+
+  //cout << "JetLeptonPtRatioLepAware " <<  (lepp4.Pt() / closejet.Pt()) << " vs  " << lep.lep_jet_ptratio() << " vs " << lep.lep_jet_ptratioDef() << endl;
+  //cout << "Jet pt must be " << lepp4.Pt()/lep.lep_jet_ptratio() << endl;
+  //for(auto ijet : jets) cout << "Jet pt = " << GetCorrectedJetCloseToLepton(lep,ijet).Pt() <<  " dR lep " << lep.DeltaR(ijet) <<endl;
+  if(removeLep)   return std::min(lepp4.Pt() / (closejet-lepp4).Pt(),1.5);
+
+  return std::min(lepp4.Pt() / closejet.Pt(),1.5); 
+
+}
+
+
+double  AnalyzerCore::JetLeptonPtRatioLepAware( Electron lep,  bool removeLep, bool ApplyCorr){
+
+  std::vector<Jet> jets = GetAllJets(ApplyCorr);
+
+  double  mindR=0.4;
+
+  Jet closejet;
+  for(auto jet : jets){
+    if (lep.DeltaR(jet) < mindR) {
+      closejet = GetCorrectedJetCloseToLepton(lep,jet);
+      mindR = lep.DeltaR(jet);
+    }
+  }
+
+  Particle lepp4 = lep;
+
+  if (mindR == 0.4)    return std::min(1./ (1. + lep.RelIso()), 1.5);
+
+
+
+  if(removeLep)   return std::min(lepp4.Pt() / (closejet-lepp4).Pt(),  1.5);
+
+  if(closejet.Pt() == 0.) {
+    cout << "mindR = " << mindR<< endl;
+
+    cout << "[JetLeptonPtRatioLepAware( Electron lep,  bool removeLep, bool ApplyCorr] 0 Jet pt" <<  endl;
+    cout << "Number of jets = " << jets.size() << endl;
+    for(auto jet : jets){
+      cout << "Jet pt = " << jet.Pt() << " dR = " << lep.DeltaR(jet) << endl;
+      Jet closejet2 = GetCorrectedJetCloseToLepton(lep,jet);
+      cout << "GetCorrectedJetCloseToLepton(lep,jet) pt = " << closejet2.Pt() << endl;
+    }
+
+
+    exit(EXIT_FAILURE);
+  }
+
+  return std::min(lepp4.Pt() / closejet.Pt(), 1.5);
+
+}
+
+
 
 std::vector<Jet> AnalyzerCore::JetsVetoLeptonInside(const std::vector<Jet>& jets, const std::vector<Electron>& els, const std::vector<Muon>& mus, double dR){
 
@@ -3879,7 +4732,7 @@ int AnalyzerCore::GetPrElType_InSameSCRange_Public(int TruthIdx, const std::vect
   if(abs(TruthColl.at(TruthIdx).PID())!=11) return false;
   if(TruthColl.at(TruthIdx).Status()!=1) return false;
 
-  float dPhiMax=0.3, dEtaMax=0.1;
+  double dPhiMax=0.3, dEtaMax=0.1;
   int NearbyElType=-1;
 
   for(unsigned int it_gen=2; it_gen<TruthColl.size(); it_gen++){
@@ -4552,7 +5405,6 @@ void AnalyzerCore::FillJetPlots(std::vector<Jet> jets, std::vector<FatJet> fatje
 
 
 
-
 int AnalyzerCore::GetFakeLepSrcType(const Lepton& Lep, vector<Jet>& JetColl){
   //Type: -1: Unmatched, 1:L, 2:C, 3:B
   int SrcType=-1;
@@ -4619,7 +5471,7 @@ int AnalyzerCore::GetPrElType_InSameSCRange(int TruthIdx, std::vector<Gen>& Trut
   if(abs(TruthColl.at(TruthIdx).PID())!=11) return 0;
   if(TruthColl.at(TruthIdx).Status()!=1) return 0;
 
-  float dPhiMax=0.3, dEtaMax=0.1;
+  double dPhiMax=0.3, dEtaMax=0.1;
   int NearbyElType=-1, NearbyPrElIdx=-1;
 
   for(unsigned int it_gen=2; it_gen<TruthColl.size(); it_gen++){
@@ -4833,7 +5685,7 @@ int AnalyzerCore::GenMatchedIdx(const Lepton& Lep, std::vector<Gen>& truthColl){
   //Seed from RecoLepton
 
   int MatchedIdx=-1, PIDLep=0;
-  float dR=999., dRmax=0.1;
+  double dR=999., dRmax=0.1;
 
   if(Lep.LeptonFlavour()==Lepton::ELECTRON) PIDLep = 11;
   else if(Lep.LeptonFlavour()==Lepton::MUON) PIDLep = 13;
@@ -4859,9 +5711,9 @@ int AnalyzerCore::GetNearPhotonIdx(const Lepton& Lep, std::vector<Gen>& TruthCol
   // Return gen-photon index, which are candidate for source of external conversion. 1)
 
   int NearPhotonIdx=-1;
-  float PTthreshold=10., dPtRelmax=0.5;//2)
-  float dRmax=0.2;//3)
-  float dRmin=999.;
+  double PTthreshold=10., dPtRelmax=0.5;//2)
+  double dRmax=0.2;//3)
+  double dRmin=999.;
   for(unsigned int i=2; i<TruthColl.size(); i++){
     if( TruthColl.at(i).MotherIndex()<0   ) continue;
     if( !(TruthColl.at(i).PID()==22 && (TruthColl.at(i).Status()==1 || TruthColl.at(i).Status()==23)) ) continue;

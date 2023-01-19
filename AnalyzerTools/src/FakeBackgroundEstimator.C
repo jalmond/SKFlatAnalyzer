@@ -270,7 +270,6 @@ double FakeBackgroundEstimator::GetWeight(vector<Lepton *> lepptrs, AnalyzerPara
 
 double FakeBackgroundEstimator::GetFullWeight(vector<Lepton *> lepptrs, AnalyzerParameter param, int sys){
 
-  double this_weight = -1.;
   vector<double> FRs;
   vector<double> PRs;
   vector<bool>  isT;
@@ -310,6 +309,8 @@ double FakeBackgroundEstimator::GetFullWeight(vector<Lepton *> lepptrs, Analyzer
   if(lepptrs.size() == 2) return CalculateDilepWeight(PRs[0],FRs[0],PRs[1],FRs[1], isT[0],isT[1], 0);
   
   if(lepptrs.size() == 1) return CalculateLepWeight(PRs[0],FRs[0], isT[0]);
+
+  return 1.;
 }
 
 

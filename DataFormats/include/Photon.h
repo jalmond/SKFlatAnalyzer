@@ -8,6 +8,9 @@ public:
 
   Photon();
   ~Photon();
+
+  void  PrintObject(TString label);
+
   
   void SetSC(double sceta, double scphi);
   inline double scEta() const { return j_scEta; }

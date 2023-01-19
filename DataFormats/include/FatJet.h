@@ -10,6 +10,9 @@ public:
   FatJet();
   ~FatJet();
 
+
+  void  PrintObject(TString label);
+
   void SetArea(double area);
   void SetGenFlavours(double pf, double hf);
   void SetTaggerResults(std::vector<double> ds);

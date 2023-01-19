@@ -10,6 +10,7 @@ public:
 
   Event();
   ~Event();
+  void  PrintObject(TString label);
 
 
   void SetnPV(double n);

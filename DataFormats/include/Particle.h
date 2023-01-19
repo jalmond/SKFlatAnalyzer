@@ -10,6 +10,8 @@ class Particle: public TLorentzVector{
 
 public:
 
+  void  PrintObject(TString label);
+
 
   //==== Default Constructor with p4
   Particle();

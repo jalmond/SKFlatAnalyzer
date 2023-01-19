@@ -116,8 +116,14 @@ class HNL_LeptonCore : public AnalyzerCore {
 
   void initializeAnalyzer();
   void SetupMVAReader();
+
   AnalyzerParameter InitialiseHNLParameters( TString analysis_tag, vector<vector<TString> >  param_vec);
   AnalyzerParameter InitialiseHNLParameter(TString s_setup, TString tag);  
+
+  double MergeMultiMC(vector<TString> vec, TString Method);
+  double ScaleLepToSS(TString bkg, bool isMuon, int lepttype);
+
+  bool IsSignal();
 
   void OutCutFlow(TString lab, double w);
 
@@ -125,6 +131,13 @@ class HNL_LeptonCore : public AnalyzerCore {
   std::pair<double,double> METXYCorr_Met_MetPhi(double uncormet, double uncormet_phi, int runnb, TString year, bool isMC, int npv, bool isUL =false,bool ispuppi=false);
 
   std::map<TString, double> cfmap;
+
+
+  double GetHNLMVAMuon(Muon mu ,BkgType bkg);
+  double GetHNLMVAElectron(Electron mu ,BkgType bkg);
+
+
+  
 
   //===== TRIGGER
 
@@ -180,7 +193,7 @@ class HNL_LeptonCore : public AnalyzerCore {
 
   //================== KINEMATIC HELPER
   double M_T(Particle a, Particle b);
-  float GetLT(std::vector<Lepton *> leps);
+  double GetLT(std::vector<Lepton *> leps);
   double GetHT( std::vector<Jet> jets, std::vector<FatJet> fatjets);
   double GetST( std::vector<Electron> electrons, std::vector<Muon> muons, std::vector<Jet> jets, std::vector<FatJet> fatjets,  Event ev);
   double GetST( std::vector<Electron> electrons, std::vector<Muon> muons, std::vector<Jet> jets, std::vector<FatJet> fatjets, Particle met);
@@ -192,17 +205,17 @@ class HNL_LeptonCore : public AnalyzerCore {
   bool  ZmassOSSFWindowCheck(std::vector<Lepton *> leps, double mass_diff);
 
 
-  float GetMassMinOSSF(std::vector<Lepton *> leps);
-  float GetMassMinSSSF(std::vector<Lepton *> leps);
+  double GetMassMinOSSF(std::vector<Lepton *> leps);
+  double GetMassMinSSSF(std::vector<Lepton *> leps);
   int GetIndexNonMinOSSF(std::vector<Lepton *> leps);
   int GetIndexNonMinSSSF(std::vector<Lepton *> leps);
   int GetIndexNonBestZ(std::vector<Lepton *> leps,double mass_diff);
 
-  float GetLLMass(std::vector<Lepton *> leps);
-  float GetLLMass(std::vector<Muon> leps);
-  float GetLLMass(std::vector<Electron> leps);
+  double GetLLMass(std::vector<Lepton *> leps);
+  double GetLLMass(std::vector<Muon> leps);
+  double GetLLMass(std::vector<Electron> leps);
 
-  float GetMassBestZ(std::vector<Lepton *> leps,  bool bestZ);
+  double GetMassBestZ(std::vector<Lepton *> leps,  bool bestZ);
   double  GetMass(TString type , std::vector<Jet> jets, std::vector<FatJet> fatjets, vector<Lepton*> leps);
 
   //================                                                                                                                                                                                        
@@ -286,10 +299,10 @@ class HNL_LeptonCore : public AnalyzerCore {
 
   // PLEP LOTS
 
-  void FillAllMuonPlots(TString label , TString cut,  Muon mu, float w);
-  void FillAllMuonPlots(TString label , TString cut,  std::vector<Muon> muons, float w);
-  void FillAllElectronPlots(TString label , TString cut,  std::vector<Electron> els, float w);
-  void FillAllElectronPlots(TString label , TString cut,  Electron el, float w);
+  void FillAllMuonPlots(TString label , TString cut,  Muon mu, double w);
+  void FillAllMuonPlots(TString label , TString cut,  std::vector<Muon> muons, double w);
+  void FillAllElectronPlots(TString label , TString cut,  std::vector<Electron> els, double w);
+  void FillAllElectronPlots(TString label , TString cut,  Electron el, double w);
 
 
   // === Cut flow                                                                                                                                                                                      
@@ -302,9 +315,9 @@ class HNL_LeptonCore : public AnalyzerCore {
 
 
   void FillCutFlow(bool IsCentral, TString suffix, TString histname, double weight);
-  void FillEventCutflow(HNL_LeptonCore::SearchRegion sr,float wt,TString cut,    TString label, int verbose_level=0);
-  void FillEventCutflowSR(TString analysis_dir_name,HNL_LeptonCore::SearchRegion sr, float event_weight, TString label);
-  void FillEventCutflowPerMass(TString dirname,HNL_LeptonCore::SearchRegion sr, float event_weight, TString region_name,   TString label);
+  void FillEventCutflow(HNL_LeptonCore::SearchRegion sr,double wt,TString cut,    TString label, int verbose_level=0);
+  void FillEventCutflowSR(TString analysis_dir_name,HNL_LeptonCore::SearchRegion sr, double event_weight, TString label);
+  void FillEventCutflowPerMass(TString dirname,HNL_LeptonCore::SearchRegion sr, double event_weight, TString region_name,   TString label);
 
 
 
@@ -360,7 +373,7 @@ class HNL_LeptonCore : public AnalyzerCore {
   TMVA::Reader *MVAReader;
 
   void InitializeTreeVars();
-
+  
   Float_t Nj, Nvbfj;
   Float_t Ptl1, Ptl2, Ptj1, Ptj2, Ptj3, MET,MET2ST, HT,HTLT,HTLT1,HTLT2, LT,  MET2HT;
   Float_t dEtall, dRll, dRjj12, dRjj23, dRjj13;
@@ -376,7 +389,8 @@ class HNL_LeptonCore : public AnalyzerCore {
   Float_t PtWj1, PtWj2;
   Float_t dRWjj, dRlW12, dRlW22;
   Float_t M_W2_jj, M_N1_l1jj, M_N2_l2jj,M_W1_lljj;
-  Float_t w_tot;
+
+
 
 
 

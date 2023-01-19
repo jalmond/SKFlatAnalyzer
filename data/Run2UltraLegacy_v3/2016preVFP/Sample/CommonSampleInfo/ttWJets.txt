@@ -1,0 +1,2 @@
+# alias PD xsec nmc sumsign sumw
+ttWJets	ttWJets_TuneCP5_13TeV_madgraphMLM_pythia8	0.61	13369086	13369086.0	13369086.0 

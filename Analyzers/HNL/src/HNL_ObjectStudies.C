@@ -1,0 +1,1406 @@
+#include "HNL_ObjectStudies.h"
+
+void HNL_ObjectStudies::initializeAnalyzer(){
+
+  HNL_LeptonCore::initializeAnalyzer();
+  
+  // Overwite JECSources in AnalyserCore
+  JECSources = {"AbsoluteStat"};
+  
+  for(auto jec_source : JECSources){
+    SetupJECUncertainty(jec_source);
+  }
+  
+  //SetupIDMVAReader(false);
+  // SetupIDMVAReader(true);
+
+}
+
+
+void HNL_ObjectStudies::executeEvent(){
+
+  
+ 
+  //==== Gen for genmatching
+  AnalyzerParameter param  = InitialiseHNLParameter("SignalStudy","UL");
+  Event ev = GetEvent();
+  double weight =SetupWeight(ev,param);
+
+  FillHist ("NoCut", 1, weight, 2, 0., 2.,"");
+
+  TString process="";
+  if(!IsData){
+    gens = GetGens();
+    
+    process = GetProcess();
+
+    vector<TString> labels ={"Inclusive","OS_ElEl", "SS_El-El-", "SS_El+El+","OS_MuMu", "SS_Mu-Mu-" , "SS_Mu+Mu+","OS_ElMu","SS_El-Mu-" ,"SS_El+Mu+", "OS_MuEl","SS_Mu-El-","SS_Mu+El+"};
+
+    HNL_LeptonCore::FillEventCutflowAll("SignalProcess","SplitChannel",weight, labels, process);
+    HNL_LeptonCore::FillEventCutflowAll("SignalProcess","SplitChannel",weight, labels, "Inclusive");
+
+
+    if(_jentry% 10000==0){
+      cout << "process = " << process << endl;
+      
+      PrintGen(gens);
+    }
+
+
+  }
+  if(process.Contains("OS")) return;
+
+  
+  vector<HNL_LeptonCore::Channel> channels = {EE,MuMu};
+
+  for(auto dilep_channel : channels){
+
+    if(MCSample.Contains("Type")){
+      if (!SelectChannel(dilep_channel)) continue;
+    }
+
+    TString channel = GetChannelString(dilep_channel) ;
+
+    double ptbins[11] = { 0., 10.,15., 20., 30., 40.,50., 100.,500. ,1000., 2000.};
+
+    std::vector<Jet>      jetsTmp     = GetJets   ( "NoID",    10., 5.);
+    //for(auto ijet : jetsTmp ) ijet.PrintObject("Jet ");
+
+    FillHist ("NoCut_"+channel, 1, weight, 2, 0., 2.,"");
+    
+    if(MCSample.Contains("DYType") && MCSample.Contains("private"))  MakeType1SignalPlots(channel, false);
+    if(MCSample.Contains("VBFType") && MCSample.Contains("private"))  MakeType1VBFSignalPlots(channel, false);
+    if(MCSample.Contains("SSWWType") && MCSample.Contains("private"))  MakeType1SSWWSignalPlots(channel, false);
+    
+    vector<Gen> gen_lep= GetGenLepronsSignal();
+        
+    
+    std::vector<Electron>   ElectronCollV = GetElectrons(param.Electron_Veto_ID, 10., 2.5);
+    std::vector<Muon>       MuonCollV     = GetMuons    (param.Muon_Veto_ID, 5., 2.4);
+
+    FillHist ("NVetoMuon_"+channel, MuonCollV.size(), weight, 4, 0., 4.,"");
+    FillHist ("NVetoElectron_"+channel, ElectronCollV.size(), weight, 4, 0., 4.,"");
+
+    std::vector<Lepton *> leps_veto  = MakeLeptonPointerVector(MuonCollV,ElectronCollV);
+
+    if(SameCharge(leps_veto))    FillHist ("DiLepton_Veto_"+channel, 1, weight, 2, 0., 2.,"");
+    else continue;
+
+    std::vector<Electron>   ElectronCollAll = GetElectrons( "MVAID", 10., 2.5);
+    std::vector<Muon>       MuonCollAll     = GetMuons    (  "MVAID", 10., 2.4);
+    
+    std::vector<Lepton *> LepsMVAID  = (dilep_channel==EE) ? MakeLeptonPointerVector(ElectronCollAll) : MakeLeptonPointerVector(MuonCollAll);
+
+    if(LepsMVAID.size() == 2)     FillHist ("DiLepton_MVA_"+channel, 1, weight, 2, 0., 2.,"");
+    
+    std::vector<Electron>   ElectronColl;
+    std::vector<Muon>       MuonColl;
+
+    
+    if(MCSample.Contains("Type")){
+      
+      for(auto iel: ElectronCollAll){ 
+	bool matched_lep=false;
+	for(auto igen : gen_lep){
+	  if(iel.DeltaR(igen) < 0.2) matched_lep=true;
+	}
+	if(iel.PassID("HNTightV3")&& matched_lep) ElectronColl.push_back(iel);
+	
+      }
+      
+      for(auto iel: MuonCollAll){
+	bool matched_lep=false;
+	for(auto igen :gen_lep){
+	  if(iel.DeltaR(igen) <0.2) matched_lep=true;
+	}
+	if(iel.PassID("HNL_ULID_"+GetYearString()) && matched_lep)MuonColl.push_back(iel);
+      } 
+      
+    }
+    else{
+
+      //for(auto iel: ElectronCollAll)if(iel.PassID("HNTightV3")) ElectronColl.push_back(iel);
+      //for(auto iel: MuonCollAll) if(iel.PassID("HNL_ULID_"+GetYearString())) MuonColl.push_back(iel);
+
+      for(auto iel: ElectronCollAll) ElectronColl.push_back(iel);                                                                                                                    
+      for(auto iel: MuonCollAll) MuonColl.push_back(iel);                                                                                                           
+    }
+
+    if(dilep_channel==EE) MuonColl.clear();
+    else ElectronColl.clear();
+
+    std::vector<Electron>   ElectronCollFake;
+    std::vector<Muon>       MuonCollFake;
+    std::vector<Electron>   ElectronCollConv;
+    std::vector<Electron>   ElectronCollCF;
+    std::vector<Muon>       MuonCollConv;
+    std::vector<Electron>   ElectronCollPrompt;
+    std::vector<Muon>       MuonCollPrompt;
+
+
+    if(!IsData){
+      if (!MCSample.Contains("Type")){
+	
+	ElectronCollFake = SkimLepColl(ElectronColl, gens, param, "HFake");
+	ElectronCollConv = SkimLepColl(ElectronColl, gens, param, "NHConv");
+	ElectronCollCF = SkimLepColl(ElectronColl, gens, param, "CF");
+	ElectronCollPrompt = SkimLepColl(ElectronColl, gens, param, "PromptNoCF");
+	
+	FillAllElectronPlots("Prompt", "Electrons"  , ElectronCollPrompt , weight);
+	FillAllElectronPlots("Fake", "Electrons"  , ElectronCollFake , weight);
+	FillAllElectronPlots("Conv", "Electrons"  , ElectronCollConv , weight);
+	FillAllElectronPlots("CF", "Electrons"  , ElectronCollCF , weight);
+	
+	MuonCollFake = SkimLepColl(MuonColl, gens, param, "HFake");
+	MuonCollConv = SkimLepColl(MuonColl, gens, param, "NHConv");
+	MuonCollPrompt = SkimLepColl(MuonColl, gens, param, "Prompt");
+	FillAllMuonPlots("Prompt", "Muons"  , MuonCollPrompt , weight);
+	FillAllMuonPlots("Fake", "Muons"  , MuonCollFake , weight);
+	FillAllMuonPlots("Conv", "Muons"  , MuonCollConv , weight);
+	
+      }
+      else{
+	FillAllMuonPlots("Signal", "Muons"  , MuonColl , weight);
+	FillAllElectronPlots("Signal", "Electrons"  , ElectronColl , weight);
+      }      
+    }
+
+
+    continue;
+    std::vector<Lepton *> LepsAll  = (dilep_channel==EE) ? MakeLeptonPointerVector(ElectronColl) : MakeLeptonPointerVector(MuonColl);
+
+    if(LepsMVAID.size() == 2)     FillHist ("DiLepton_MVA2_"+channel, 1, weight, 2, 0., 2.,"");
+    
+
+    if (PassTriggerSelection(dilep_channel, ev, LepsAll,"Full",false) && SameCharge(LepsAll)) {
+            
+
+      FillHist ("Trigger_"+GetChannelString(dilep_channel), 1, weight, 2, 0., 2.,"");
+
+      Particle ll =  (*LepsAll[0]) + (*LepsAll[1]);
+      if(ll.M() < 10) continue;
+      FillHist ("LowMassCut_"+GetChannelString(dilep_channel), 1, weight, 2, 0., 2.,"");
+
+      if (SameCharge(MuonColl)) {
+	
+	FillHist ("SameSignDilep_"+GetChannelString(dilep_channel), 1, weight, 2, 0., 2.,"");
+
+	vector<Muon> MuonFakePass;
+	FillAllMuonPlots("SS", "Muons"  , MuonColl , weight);
+	vector<double> mva_cut = {-1, -0.5, 0., 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.95};
+	
+	for(int i=0 ; i < mva_cut.size(); i++){
+	  if(MuonColl[0].MVA() > mva_cut[i] && MuonColl[1].MVA() > mva_cut[i])    FillHist( "Vec/FakeMVAMuonColl", i+1,  weight,15, 0., 15,"HNTight");
+	  if(MuonColl[0].MVA() > 0.65 && MuonColl[1].MVA() > 0.65)    {
+	    if(MuonColl[0].hnl_mva_conv()  > mva_cut[i] && MuonColl[1].hnl_mva_conv()  )   FillHist( "Vec/ConvMVAMuonColl", i+1,  weight,15, 0., 15,"HNTight");
+
+	  }
+	}
+
+	if( MuonColl[0].PassFakeMVA(0.4,0.8,0.4,0.8) && MuonColl[1].PassFakeMVA(0.4,0.8,0.4,0.8))    {
+	  
+	  FillAllMuonPlots("PassFake", "Muons"  , MuonColl , weight);
+
+	  if(MuonColl[0].hnl_mva_conv() > -0.8 && MuonColl[1].hnl_mva_conv() > -0.8) FillHist( "Vec/TightMuonColl", 2,  weight,5, 0., 5,"HNTight");
+	}
+	
+	if(MuonColl[0].PassID("HNTightV2") && MuonColl[1].PassID("HNTightV2"))   FillHist( "Vec/TightMuonColl", 1,  weight,5, 0., 5,"HNTight");
+      
+	
+      }
+      
+      if (SameCharge(ElectronColl)) {
+
+        Particle ll =  (ElectronColl[0]) + (ElectronColl[1]);
+
+
+	double bdt_l1_fake = ElectronColl[0].hnl_mva_fake();
+	double bdt_l2_fake = ElectronColl[1].hnl_mva_fake();
+	
+	double bdt_l1_cf = ElectronColl[0].hnl_mva_cf();
+	double bdt_l2_cf = ElectronColl[1].hnl_mva_cf();
+
+	double bdt_l1_conv = ElectronColl[0].hnl_mva_conv();
+	double bdt_l2_conv = ElectronColl[1].hnl_mva_conv();
+
+
+	
+        // VETO Z PEAK IN EE CHANNEL                                                                                                                                           
+	
+        if (! (fabs(ll.M()-90.) < 15)) {
+
+	  FillHist ("SameSignDilep_"+GetChannelString(dilep_channel), 1, weight, 2, 0., 2.,"");
+	  
+	  FillAllElectronPlots("SS", "Electrons"  , ElectronColl , weight);
+	  
+	  if(ElectronColl[0].PassID("HNTightV2") && ElectronColl[1].PassID("HNTightV2"))  FillHist( "Vec/TightElectronColl", 1,  weight,5, 0., 5,"HNTight");
+	  
+	  
+	  vector<double> mva_cut = {-1, -0.5, 0., 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.95};
+	  
+	  if(ElectronColl[0].PassID("HNTightV2") && ElectronColl[1].PassID("HNTightV2")) {
+	    
+	    FillHist( "Vec/FakeMVAElectronColl", 0,  weight,15, 0., 15,"HNTight");
+	    FillHist( "Vec/ConvMVAElectronColl", 0,  weight,15, 0., 15,"HNTight");
+	    FillHist( "Vec/CFMVAElectronColl", 0,  weight,15, 0., 15,"HNTight");
+
+	    FillAllElectronPlots("SSTight", "Electrons"  , ElectronColl , weight);
+	    
+	  }
+
+	  
+	  for(int i=0 ; i< mva_cut.size(); i++){
+	    
+	    double mva_cut1 = mva_cut[i] ;
+	    
+	    
+	    if(bdt_l1_fake  > mva_cut[i] && bdt_l2_fake > mva_cut[i])    FillHist( "Vec/FakeMVAElectronColl", i+1,  weight,15, 0., 15,"HNTight");
+
+	    if(bdt_l1_conv > mva_cut[i] && bdt_l2_conv > mva_cut[i])    FillHist( "Vec/ConvMVAElectronColl", i+1,  weight,15, 0., 15,"HNTight");
+
+	    if(ElectronColl[0].PassCFMVA(bdt_l1_cf, mva_cut1,mva_cut1) && ElectronColl[1].PassCFMVA(bdt_l2_cf, mva_cut1,mva_cut1))      FillHist( "Vec/CFMVAElectronColl", i+1,  weight,15, 0., 15,"HNTight");
+	    
+	    
+	    if(ElectronColl[0].PassCFMVA(bdt_l1_cf, mva_cut1,0.) && ElectronColl[1].PassCFMVA(bdt_l2_cf, mva_cut1,0.))      FillHist( "Vec/CFMVAElectronColl_BB", i+1,  weight,15, 0., 15,"HNTight");
+	    if(ElectronColl[0].PassCFMVA(bdt_l1_cf, 0.,mva_cut1) && ElectronColl[1].PassCFMVA(bdt_l2_cf, 0, mva_cut1))      FillHist( "Vec/CFMVAElectronColl_EC", i+1,  weight,15, 0., 15,"HNTight");
+	    
+	    if(ElectronColl[0].PassFakeMVA(bdt_l1_fake, mva_cut1,0.) && ElectronColl[1].PassFakeMVA(bdt_l2_fake,mva_cut1,0.))  FillHist( "Vec/FakeMVAElectronColl_BB", i+1,  weight,15, 0., 15,"HNTight");
+	    if(ElectronColl[0].PassFakeMVA(bdt_l1_fake, 0., mva_cut1) && ElectronColl[1].PassFakeMVA(bdt_l2_fake,0., mva_cut1))  FillHist( "Vec/FakeMVAElectronColl_EC", i+1,  weight,15, 0., 15,"HNTight");
+	    
+	    if(ElectronColl[0].PassConvMVA(bdt_l1_conv, mva_cut1,0.) && ElectronColl[1].PassConvMVA(bdt_l2_conv, mva_cut1,0.) )  FillHist( "Vec/ConvMVAElectronColl_BB", i+1,  weight,15, 0., 15,"HNTight");
+	    if(ElectronColl[0].PassConvMVA(bdt_l1_conv, 0., mva_cut1) && ElectronColl[1].PassConvMVA(bdt_l2_conv, 0., mva_cut1) )  FillHist( "Vec/ConvMVAElectronColl_EC", i+1,  weight,15, 0., 15,"HNTight");
+	    
+	    
+	  }
+	  
+	  if(ElectronColl[0].PassFakeMVA(bdt_l1_fake, 0.6, 0.7) && ElectronColl[1].PassFakeMVA(bdt_l2_fake, 0.6, 0.7 ))   {
+	    
+	    FillAllElectronPlots("PassFake", "Electrons"  , ElectronColl , weight);
+	    
+	    if(ElectronColl[0].PassCFMVA(bdt_l1_cf,0. ,0.5) && ElectronColl[1].PassCFMVA(bdt_l2_cf,0. ,0.5) ){
+
+	      FillAllElectronPlots("PassFakeCF", "Electrons"  , ElectronColl , weight);
+
+	      if(bdt_l1_conv  > -0.9 && bdt_l2_conv > -0.9)   {
+		FillHist( "Vec/TightElectronColl", 2,  weight,5, 0., 5,"HNTight");
+		
+	      }
+	    }
+	  }
+	} 
+      }
+      
+    }
+    
+    continue;
+  
+    
+    if(SameCharge(LepsAll)) {
+
+      
+      FillAllMuonPlots("SS", "Muons"  , MuonColl , weight);                                                                                                                                                  
+      FillAllElectronPlots("SS", "Electrons"  , ElectronColl , weight);                                                                                                                                 
+
+
+      for(auto ilep : LepsAll){
+        int  lepType = GetLeptonType_JH(*ilep, gens);
+
+        if(ilep->LeptonFlavour() == Lepton::ELECTRON)       FillHist( "LepType/SSElectron", lepType ,weight, 14., -7., 7);
+        else  FillHist( "LepType/SSMuon", lepType, weight, 14., -7., 7);
+      }
+    }
+
+
+    std::vector<Muon> MuonCollMVALoose;
+    std::vector<Muon> MuonCollMVAMedium;
+    std::vector<Muon> MuonCollMVATight;
+    std::vector<Muon> MuonCollHNL;
+    std::vector<Muon> MuonCollMVAVeryTight;
+    std::vector<Muon> MuonCollMVALooseT;
+    std::vector<Muon> MuonCollMVAMediumT;
+    std::vector<Muon> MuonCollMVATightT;
+    std::vector<Muon> MuonCollHNTL;
+    std::vector<Muon> MuonCollMVAVeryTightT;
+    std::vector<Muon> MuonCollPOGTight;
+
+    std::vector<Muon> MuonCollPOGMVA;
+    std::vector<Muon> MuonCollPOGMVAT;
+
+    std::vector<Electron> ElectronCollHNL;
+    std::vector<Electron> ElectronCollMVALoose;
+    std::vector<Electron> ElectronCollMVAMedium;
+    std::vector<Electron> ElectronCollMVATight;
+    std::vector<Electron> ElectronCollMVAVeryTight;
+    std::vector<Electron> ElectronCollMVALooseT;
+    std::vector<Electron> ElectronCollMVAMediumT;
+    std::vector<Electron> ElectronCollMVATightT;
+    std::vector<Electron> ElectronCollMVAVeryTightT;
+
+    std::vector<Electron> ElectronCollPOGTight;
+    std::vector<Electron> ElectronCollHNTight;
+
+    std::vector<Muon> MuonCollMVAMaxLoose;
+    std::vector<Muon> MuonCollMVAMaxMedium;
+    std::vector<Muon> MuonCollMVAMaxTight;
+
+
+    std::vector<Muon> MuonCollTypeM6;
+    std::vector<Muon> MuonCollTypeM5;
+    std::vector<Muon> MuonCollTypeM4;
+    std::vector<Muon> MuonCollTypeM3;
+    std::vector<Muon> MuonCollTypeM2;
+    std::vector<Muon> MuonCollTypeM1;
+    std::vector<Muon> MuonCollType0;
+    std::vector<Muon> MuonCollType1;
+    std::vector<Muon> MuonCollType2;
+    std::vector<Muon> MuonCollType3;
+    std::vector<Muon> MuonCollType4;
+    std::vector<Muon> MuonCollType5;
+    std::vector<Muon> MuonCollType6;
+
+    for(auto iel :  MuonColl ) {
+
+      int  lepType = GetLeptonType_JH(iel, gens);
+    
+      if(lepType == -6) MuonCollTypeM6.push_back(iel);
+      if(lepType == -5) MuonCollTypeM5.push_back(iel);
+      if(lepType == -4) MuonCollTypeM4.push_back(iel);
+      if(lepType == -3) MuonCollTypeM3.push_back(iel);
+      if(lepType == -2) MuonCollTypeM2.push_back(iel);
+      if(lepType == -1) MuonCollTypeM1.push_back(iel);
+      if(lepType == 0) MuonCollType0.push_back(iel);
+      if(lepType == 1) MuonCollType1.push_back(iel);
+      if(lepType == 2) MuonCollType2.push_back(iel);
+      if(lepType == 3) MuonCollType3.push_back(iel);
+      if(lepType == 4) MuonCollType4.push_back(iel);
+      if(lepType == 5) MuonCollType5.push_back(iel);
+      if(lepType == 6) MuonCollType6.push_back(iel);
+      if(iel.PassID("HNL_ULID_v1"))   {
+	MuonCollHNL.push_back(iel);
+
+ 	if(iel.MVA() > 0.5)  MuonCollPOGMVAT.push_back(iel);   
+      }
+
+      if(iel.MVA() > 0.5)  MuonCollPOGMVA.push_back(iel);
+
+      if(iel.PassID("HNTightV2"))     MuonCollPOGTight.push_back(iel);                                                                                                                                                                                                                        
+
+    }
+
+
+    std::vector<Electron> ElectronCollTypeM6;
+    std::vector<Electron> ElectronCollTypeM5;
+    std::vector<Electron> ElectronCollTypeM4;
+    std::vector<Electron> ElectronCollTypeM3;
+    std::vector<Electron> ElectronCollTypeM2;
+    std::vector<Electron> ElectronCollTypeM1;
+    std::vector<Electron> ElectronCollType0;
+    std::vector<Electron> ElectronCollType1;
+    std::vector<Electron> ElectronCollType2;
+    std::vector<Electron> ElectronCollType3;
+    std::vector<Electron> ElectronCollType4;
+    std::vector<Electron> ElectronCollType5;
+    std::vector<Electron> ElectronCollType6;
+
+    for(auto iel :  ElectronColl ) {
+
+      int  lepType = GetLeptonType_JH(iel, gens);
+
+      if(lepType == -6) ElectronCollTypeM6.push_back(iel);
+      if(lepType == -5) ElectronCollTypeM5.push_back(iel);
+      if(lepType == -4) ElectronCollTypeM4.push_back(iel);
+      if(lepType == -3) ElectronCollTypeM3.push_back(iel);
+      if(lepType == -2) ElectronCollTypeM2.push_back(iel);
+      if(lepType == -1) ElectronCollTypeM1.push_back(iel);
+      if(lepType == 0) ElectronCollType0.push_back(iel);
+      if(lepType == 1) ElectronCollType1.push_back(iel);
+      if(lepType == 2) ElectronCollType2.push_back(iel);
+      if(lepType == 3) ElectronCollType3.push_back(iel);
+      if(lepType == 4) ElectronCollType4.push_back(iel);
+      if(lepType == 5) ElectronCollType5.push_back(iel);
+      if(lepType == 6) ElectronCollType6.push_back(iel);
+
+      if(iel.PassID("HNTightV3")) {
+	ElectronCollHNL.push_back(iel);
+	if(GetHNLMVAElectron(iel,BkgType::Fake) > 0.)  ElectronCollMVALooseT.push_back(iel);
+	if(GetHNLMVAElectron(iel,BkgType::Fake) > 0.25)  ElectronCollMVAMediumT.push_back(iel);
+	if(GetHNLMVAElectron(iel,BkgType::Fake) > 0.5)  ElectronCollMVATightT.push_back(iel);
+	if(GetHNLMVAElectron(iel,BkgType::Fake) > 0.7)  ElectronCollMVAVeryTightT.push_back(iel);
+      }
+      if(GetHNLMVAElectron(iel,BkgType::Fake) > 0.)    ElectronCollMVALoose.push_back(iel);
+      if(GetHNLMVAElectron(iel,BkgType::Fake) > 0.25)  ElectronCollMVAMedium.push_back(iel);
+      if(GetHNLMVAElectron(iel,BkgType::Fake) > 0.5)   ElectronCollMVATight.push_back(iel);
+      if(GetHNLMVAElectron(iel,BkgType::Fake) > 0.7)   ElectronCollMVAVeryTight.push_back(iel);
+
+      
+
+      if(iel.PassID("HNTightV2"))     ElectronCollPOGTight.push_back(iel);                                                                                                                                                                                                                       
+    }
+    
+
+    
+    if(!IsData){
+      
+      FillAllMuonPlots("TypeM6", "Muons"  , MuonCollTypeM6 , weight);
+      FillAllMuonPlots("TypeM5", "Muons"  , MuonCollTypeM5 , weight);
+      FillAllMuonPlots("TypeM4", "Muons"  , MuonCollTypeM4 , weight);
+      FillAllMuonPlots("TypeM3", "Muons"  , MuonCollTypeM3 , weight);
+      FillAllMuonPlots("TypeM2", "Muons"  , MuonCollTypeM2 , weight);
+      FillAllMuonPlots("TypeM1", "Muons"  , MuonCollTypeM1 , weight);
+      FillAllMuonPlots("Type0", "Muons"  , MuonCollType0 , weight);
+      FillAllMuonPlots("Type1", "Muons"  , MuonCollType1 , weight);
+      FillAllMuonPlots("Type2", "Muons"  , MuonCollType2 , weight);
+      FillAllMuonPlots("Type3", "Muons"  , MuonCollType3 , weight);
+      FillAllMuonPlots("Type4", "Muons"  , MuonCollType4 , weight);
+      FillAllMuonPlots("Type5", "Muons"  , MuonCollType5 , weight);
+      FillAllMuonPlots("Type6", "Muons"  , MuonCollType6 , weight);
+      FillAllElectronPlots("TypeM6", "Electrons"  , ElectronCollTypeM6 , weight);
+      FillAllElectronPlots("TypeM5", "Electrons"  , ElectronCollTypeM5 , weight);
+      FillAllElectronPlots("TypeM4", "Electrons"  , ElectronCollTypeM4 , weight);
+      FillAllElectronPlots("TypeM3", "Electrons"  , ElectronCollTypeM3 , weight);
+      FillAllElectronPlots("TypeM2", "Electrons"  , ElectronCollTypeM2 , weight);
+      FillAllElectronPlots("TypeM1", "Electrons"  , ElectronCollTypeM1 , weight);
+      FillAllElectronPlots("Type0", "Electrons"  , ElectronCollType0 , weight);
+      FillAllElectronPlots("Type1", "Electrons"  , ElectronCollType1 , weight);
+      FillAllElectronPlots("Type2", "Electrons"  , ElectronCollType2 , weight);
+      FillAllElectronPlots("Type3", "Electrons"  , ElectronCollType3 , weight);
+      FillAllElectronPlots("Type4", "Electrons"  , ElectronCollType4 , weight);
+      FillAllElectronPlots("Type5", "Electrons"  , ElectronCollType5 , weight);
+      FillAllElectronPlots("Type6", "Electrons"  , ElectronCollType6 , weight);
+    }
+    if(SameCharge(ElectronCollHNL))FillAllElectronPlots("HNL", "Electrons"  , ElectronCollHNL , weight);
+    
+    map<double , std::vector<Muon> > MuonVecMap;
+    MuonVecMap[0.] = MuonColl;
+    MuonVecMap[1.] = MuonCollHNL;
+    MuonVecMap[2.] = MuonCollMVALoose;
+    MuonVecMap[3.] = MuonCollMVAMedium;
+    MuonVecMap[4.] = MuonCollMVATight;
+    MuonVecMap[5.] = MuonCollMVAVeryTight;
+    MuonVecMap[6.] = MuonCollPOGMVA;
+    MuonVecMap[7.] = MuonCollPOGTight;
+    MuonVecMap[8.] = MuonCollMVALooseT;
+    MuonVecMap[9.] = MuonCollMVAMediumT;
+    MuonVecMap[10.] = MuonCollMVATightT;
+    MuonVecMap[11.] = MuonCollMVAVeryTightT;
+    MuonVecMap[12.] = MuonCollPOGMVAT;
+
+
+
+    for(auto imap : MuonVecMap)   {
+      if(SameCharge(imap.second))FillHist( "Vec/MuonColl", imap.first,  weight,15, 0., 15,"HNTight");
+    }
+    
+
+    map<double , std::vector<Electron> > ElectronVecMap;
+    ElectronVecMap[0.] = ElectronColl;
+    ElectronVecMap[1.] = ElectronCollHNL;
+    ElectronVecMap[2.] = ElectronCollMVALoose;
+    ElectronVecMap[3.] = ElectronCollMVAMedium;
+    ElectronVecMap[4.] = ElectronCollMVATight;
+    ElectronVecMap[5.] = ElectronCollMVAVeryTight;
+    ElectronVecMap[6.] = ElectronCollMVALooseT;
+    ElectronVecMap[7.] = ElectronCollMVAMediumT;
+    ElectronVecMap[8.] = ElectronCollMVATightT;
+    ElectronVecMap[9.] = ElectronCollMVAVeryTightT;
+    ElectronVecMap[10.] = ElectronCollPOGTight;
+
+
+    for(auto imap : ElectronVecMap)   {
+      if(SameCharge(imap.second))FillHist( "Vec/ElectronColl", imap.first,  weight,15, 0., 15,"HNTight");
+    }
+
+
+    continue;
+
+
+
+    return;
+
+
+
+
+    if(dilep_channel==MuMu){
+      
+      vector<Muon> LMuons;
+      vector<Muon> HMuons;
+      
+      for(auto imuon : MuonColl){
+	Lepton *l = (Lepton *)(&imuon);
+	
+	int lepSrc = GetFakeLepSrcType(*l, jetsTmp);
+	if(lepSrc == 1)   LMuons.push_back(imuon);
+	if(lepSrc == 2 || lepSrc == 3)  HMuons.push_back(imuon);
+      }
+
+      
+      FillAllMuonPlots("LightFlavour", "Muons"  , LMuons , weight);
+      FillAllMuonPlots("HeavyFlavour", "Muons"  , HMuons , weight);
+      
+    }
+    else{
+
+      vector<Electron> LElectrons;
+      vector<Electron> HElectrons;
+
+      for(auto iel : ElectronColl){
+        Lepton *l = (Lepton *)(&iel);
+
+        int lepSrc = GetFakeLepSrcType(*l, jetsTmp);
+        if(lepSrc == 1)   LElectrons.push_back(iel);
+        if(lepSrc == 2 || lepSrc == 3)  HElectrons.push_back(iel);
+      }
+
+
+      FillAllElectronPlots("LightFlavour", "Electrons"  , LElectrons , weight);
+      FillAllElectronPlots("HeavyFlavour", "Electrons"  , HElectrons , weight);
+
+
+      
+    }
+    continue;
+
+  }
+}
+
+void HNL_ObjectStudies::RunLeptonChannel(HNL_LeptonCore::Channel channel_ID, std::vector<Lepton *> LepsT,std::vector<Lepton *> LepsV, std::vector<Tau> TauColl,  std::vector<Jet> JetCollLoose, std::vector<Jet> JetColl, std::vector<Jet> VBFJetColl,  std::vector<FatJet> FatjetColl,std::vector<Jet> BJetColl,   Event Ev, AnalyzerParameter param,  float _weight)   {
+  
+
+  FillHist (GetChannelString(channel_ID)+"_NoCut", 1, _weight, 2, 0., 2.,"");
+
+  HNL_LeptonCore::SearchRegion Region1 = sigmm;
+  HNL_LeptonCore::SearchRegion Region2 = sigmm_17028;
+
+  if(channel_ID == EE) {  Region1 = sigee;   Region2 = sigee_17028;}
+  if(channel_ID == EMu){ Region1 = sigem; Region2 = sigem_17028;}
+  
+  Particle METv =GetvMET("PuppiT1xyULCorr");
+
+  //CheckHEMIssue(channel_ID, LepsT, LepsV,  JetColl, METv, _weight, param.Name, "");
+
+
+  int njets_old =  (JetColl.size() + FatjetColl.size()) ;
+  int njets_vbf = (VBFJetColl.size() + FatjetColl.size());
+  int njets = ( njets_vbf > njets_old) ? njets_vbf : njets_old ;
+
+  bool dijet = (FatjetColl.size() > 0) || (JetColl.size() > 1);
+  //bool PassBJetMVeto = (BJetColl.size()==0);
+  int NBJetLV = 0;
+  for(auto ib : BJetColl){
+    bool hasCloseLep=false;
+    for(auto il : LepsV) {
+      if(il->DeltaR(ib) < 0.4) hasCloseLep=true;
+    }
+    if(!hasCloseLep) NBJetLV++;
+  }
+  
+  bool PassBJetMVetoSR1 = (NBJetLV==0);
+
+  
+
+  // Update NAME for Muon channel                                                                                               
+
+  TString region1 = GetChannelString(channel_ID)+"_"+param.Name;                                                       
+  
+  FillEventCutflow(Region1,_weight, "SSNoCut",region1);
+
+  // UL ANALYSIS                                                                                                                
+  
+  Fill_RegionPlots(channel_ID, 0, param.Name,"SSInclusive" ,  VBFJetColl, FatjetColl, LepsT,  METv, nPV, _weight);
+
+
+  // UL ANALYSIS
+  
+  if(MCSample.Contains("Type") || MCSample.Contains("private")){
+    
+    vector<Gen> gen_lep= GetGenLepronsSignal();
+    std::sort(gen_lep.begin(),   gen_lep.end(),        PtComparing);
+
+    
+    if(gen_lep.size() == 2){
+      
+      if(fabs(gen_lep[0].PID()) == 11 && fabs(gen_lep[1].PID()) ==11 ){
+	
+	if( (fabs(gen_lep[0].Eta()) < 2.5 && gen_lep[0].Pt() > 25) &&
+	    (fabs(gen_lep[1].Eta()) < 2.5 && gen_lep[1].Pt() > 15)){
+	  FillEventCutflow(Region1,_weight, "SSGen",  region1);
+	  FillEventCutflow(Region1,_weight, "SSGen2", region1);
+	  
+	}
+	else       if( (fabs(gen_lep[0].Eta()) < 2.5 && gen_lep[0].Pt() > 30) &&
+		       (fabs(gen_lep[1].Eta()) < 2.5 && gen_lep[1].Pt() > 10)){
+	  FillEventCutflow(Region1,_weight, "SSGen",  region1);
+	}
+	
+	else return;
+      }
+      
+      else       if(fabs(gen_lep[0].PID()) == 13 && fabs(gen_lep[1].PID()) ==13 ){
+
+        if( (fabs(gen_lep[0].Eta()) < 2.4 && gen_lep[0].Pt() > 20) &&
+            (fabs(gen_lep[1].Eta()) < 2.4 && gen_lep[1].Pt() > 10)){
+          FillEventCutflow(Region1,_weight, "SSGen", region1);
+          FillEventCutflow(Region1,_weight, "SSGen2", region1);
+
+        }
+        else       if( (fabs(gen_lep[0].Eta()) < 2.4 && gen_lep[0].Pt() > 30) &&
+                       (fabs(gen_lep[1].Eta()) < 2.4 && gen_lep[1].Pt() > 5)){
+          FillEventCutflow(Region1,_weight, "SSGen", region1);
+        }
+
+        else return;
+      }
+      else       if(fabs(gen_lep[0].PID()) == 13 && fabs(gen_lep[1].PID()) ==11 ){
+
+        if( (fabs(gen_lep[0].Eta()) < 2.4 && gen_lep[0].Pt() > 25) &&
+            (fabs(gen_lep[1].Eta()) < 2.5 && gen_lep[1].Pt() > 15)){
+          FillEventCutflow(Region1,_weight, "SSGen", region1);
+          FillEventCutflow(Region1,_weight, "SSGen2", region1);
+
+        }
+        else       if( (fabs(gen_lep[0].Eta()) < 2.4 && gen_lep[0].Pt() > 30) &&
+                       (fabs(gen_lep[1].Eta()) < 2.5 && gen_lep[1].Pt() > 10)){
+          FillEventCutflow(Region1,_weight, "SSGen", region1);
+
+        }
+
+        else return;
+      }
+
+      else       if(fabs(gen_lep[0].PID()) == 11 && fabs(gen_lep[1].PID()) ==13 ){
+
+        if( (fabs(gen_lep[0].Eta()) < 2.5 && gen_lep[0].Pt() > 25) &&
+            (fabs(gen_lep[1].Eta()) < 2.4 && gen_lep[1].Pt() > 15)){
+          FillEventCutflow(Region1,_weight, "SSGen", region1);
+          FillEventCutflow(Region1,_weight, "SSGen2", region1);
+
+        }
+        else       if( (fabs(gen_lep[0].Eta()) < 2.5 && gen_lep[0].Pt() > 30) &&
+                       (fabs(gen_lep[1].Eta()) < 2.4 && gen_lep[1].Pt() > 5)){
+          FillEventCutflow(Region1,_weight, "SSGen", region1);
+
+	}
+
+	else return;
+      }
+    }      
+  }
+  
+  
+  if (!PassTriggerSelection(channel_ID, Ev, LepsT,"Full",false)) return;
+
+
+  FillEventCutflow(Region1,_weight, "SS"+GetChannelString(channel_ID)+"Trig",region1);
+
+  if (!(PassTriggerSelection(channel_ID, Ev, LepsT,"Dilep",false) || PassTriggerSelection(channel_ID, Ev, LepsT,"HighPt",false) || PassTriggerSelection(channel_ID, Ev, LepsT,"Lep",false))) return;
+
+  FillEventCutflow(Region1,_weight, "SS"+GetChannelString(channel_ID)+"Trig2",region1);
+
+  if (LepsT.size() != 2) return;
+
+  if(!SameCharge(LepsT)) return;
+
+  FillEventCutflow(Region1,_weight, "SS"+GetChannelString(channel_ID),region1);
+
+  // PASS DIMUON TRIGGER                                                                                                                                             
+  if (!PassTriggerSelection(channel_ID, Ev, LepsT,"Dilep",false)) return;
+  FillEventCutflow(Region1,_weight, "SS"+GetChannelString(channel_ID)+"Trig2L",region1);
+
+
+  if (!CheckLeptonFlavourForChannel(channel_ID, LepsV)) return;
+
+  FillEventCutflow(Region1,_weight, "SS"+GetChannelString(channel_ID)+"_Pt",region1);
+
+  if (LepsV.size() != 2) return;
+  FillEventCutflow(Region1,_weight, "SS"+GetChannelString(channel_ID)+"_LepVeto",region1);
+  
+  if(!PassHEMVeto(channel_ID, LepsT)) return;
+  FillEventCutflow(Region1,_weight, "SS"+GetChannelString(channel_ID)+"_HEMVeto",region1);
+  
+
+  if (channel_ID==EE  && (fabs(GetLLMass(LepsT)-90.) < 15)) return;
+
+  if(GetLLMass(LepsT) > 10.) {
+    
+    param.Name = GetChannelString(channel_ID)+"_"+param.DefName;
+    
+    FillEventCutflow(Region1,_weight, "SS"+GetChannelString(channel_ID)+"_LLMass",region1);
+
+    if(njets > 0 ){
+      FillEventCutflow(Region1,_weight, "SS"+GetChannelString(channel_ID)+"_Jet",region1);
+      
+      if(PassBJetMVetoSR1) {
+	FillEventCutflow(Region1,_weight, "SS"+GetChannelString(channel_ID)+"_BJet",region1);
+	if(dijet)        FillEventCutflow(Region1,_weight, "SS"+GetChannelString(channel_ID)+"_DiJet",region1);
+	
+	
+	if(FatjetColl.size() > 0){
+	  
+	  if(RunSignalRegionAK8( channel_ID, Inclusive, LepsT, LepsV, TauColl,JetColl, FatjetColl, BJetColl, Ev, METv, param,  "", _weight ))  
+	    {
+	      FillEventCutflow(Region1,_weight, "SS"+GetChannelString(channel_ID)+"_SR1",region1);
+	      
+	    }
+	  
+	  else FillEventCutflow(Region1,_weight, "SS"+GetChannelString(channel_ID)+"_SR1Fail",region1);
+	}
+	else{
+	  
+	  if(PassVBFInitial(VBFJetColl)&&RunSignalRegionWW(channel_ID, Inclusive, LepsT, LepsV, TauColl,  JetCollLoose, VBFJetColl, FatjetColl, BJetColl, Ev,  METv, param,  "", _weight )){
+	    FillEventCutflow(Region1,_weight, "SS"+GetChannelString(channel_ID)+"_SR2",region1);
+	    
+	    
+	  }
+	  else{
+	    
+	    if(RunSignalRegionAK4(channel_ID, Inclusive, LepsT, LepsV ,TauColl, JetColl, FatjetColl, BJetColl, Ev, METv, param, "", _weight ))             FillEventCutflow(Region1,_weight, "SS"+GetChannelString(channel_ID)+"_SR3",region1);
+	    
+	    
+	    else if(JetColl.size() < 2 && LepsT[1]->Pt() >80.)             FillEventCutflow(Region1,_weight, "SS"+GetChannelString(channel_ID)+"_SR4",region1);
+	    
+	    else  FillEventCutflow(Region1,_weight, "SS"+GetChannelString(channel_ID)+"_SR3Fail",region1);
+	    
+	  } // FAIL SR2                                                                                                       
+	}// Fail SR1                                                                                                          
+      }// Fail Tau                                                                                                            
+      }// NJET                                                                                                                  
+    else if (LepsT[1]->Pt() >80.)   FillEventCutflow(Region1,_weight, "SS"+GetChannelString(channel_ID)+"_SR5",region1);
+  } // LLMASS      
+  
+  
+  return;
+
+  
+}
+
+
+  
+
+
+HNL_ObjectStudies::HNL_ObjectStudies(){
+
+
+}
+ 
+HNL_ObjectStudies::~HNL_ObjectStudies(){
+  
+
+  
+
+}
+
+
+void HNL_ObjectStudies::MakeType1SSWWSignalPlots(TString process, bool apply_reco_cut){
+
+  if(apply_reco_cut) process=process+"_PtEtaReq";
+
+  for(unsigned int i=2; i<gens.size(); i++){
+    Gen gen = gens.at(i);
+    
+    if(apply_reco_cut){
+      if( (fabs(gen.PID()) == 13 )|| (fabs(gen.PID()) == 11 )){
+	if(gen.Pt() < 10. || fabs(gen.Eta()) > 2.4) return;
+	
+      }
+    }																													
+  }
+  
+
+  /////////////
+
+  Gen Lep1;
+  Gen Lep2;
+  Gen j1,j2;
+  bool j1IsSet(false);
+  bool l1IsSet(false);
+
+  TString LepFl_l1, LepFl_l2;
+  int Lep_Mother_ind(-1);
+
+  for(unsigned int i=2; i<gens.size(); i++){
+    Gen gen = gens.at(i);
+    if( ! ( ( fabs(gen.PID()) == 13)  || (fabs(gen.PID()) == 11) )) continue;
+    if (gen.Status() == 23){
+      TString LepFl = (fabs(gen.PID()) == 13) ? "Mu" : "El";
+
+      if(!l1IsSet) {  Lep1= gen; l1IsSet=true;LepFl_l1= LepFl;}
+      else { Lep2 = gen; LepFl_l2= LepFl;}
+      Lep_Mother_ind = gen.MotherIndex();
+    }
+  }
+
+  for(unsigned int i=2; i<gens.size(); i++){
+    Gen gen = gens.at(i);
+
+    if (gen.MotherIndex() == Lep_Mother_ind){
+      if(fabs(gen.PID()) > 6) continue;
+      if(!j1IsSet) {  j1= gen; j1IsSet=true;}
+      else j2 = gen;
+    }
+  }
+  double ZeroCheck = Lep1.Pt() * Lep2.Pt()*j1.Pt() *j2.Pt() ;
+  if(ZeroCheck == 0.){
+    cout << "Lep1 " << Lep1.Pt() << endl;
+    cout << "Lep2 " << Lep2.Pt() << endl;
+    cout <<  "j1 " << j1.Pt() << endl;
+    cout <<  "j2 " << j2.Pt() << endl;
+    PrintGen(gens);
+    exit(EXIT_FAILURE);
+  }
+  
+  FillHist( "SignalGen"+process+"/Jet1_eta", j1.Eta(),  1.,100, -5., 5,"#eta");
+  FillHist( "SignalGen"+process+"/Jet2_eta", j2.Eta(),  1.,100, -5., 5,"#eta");
+  FillHist( "SignalGen"+process+"/Jet_pt",  j1.Pt(), 1., 200, 0., 1000.,"pt (GeV)");
+  FillHist( "SignalGen"+process+"/Jet_pt",  j2.Pt(), 1., 200, 0., 1000.,"pt (GeV)");
+  FillHist( "SignalGen"+process+"/Dijet_mass",  (j1+j2).M(),  1., 50, 0., 2000.,"m(jj) GeV");
+
+
+  FillHist( "SignalGen"+process+"/Lep_"+LepFl_l1+"_pt",  Lep1.Pt(), 1., 200, 0., 1000.,"pt (GeV)");
+  FillHist( "SignalGen"+process+"/Lep_"+LepFl_l1+"_eta", Lep1.Eta(),  1.,100, -5., 5,"#eta");
+  FillHist( "SignalGen"+process+"/Lep_DeltaR_JJ", (j1+j2).DeltaR(Lep1), 1., 100, 0., 10.,"#DeltaR (jj,l1)");
+  FillHist( "SignalGen"+process+"/Lep_DeltaR_JJ", (j1+j2).DeltaR(Lep2), 1., 100, 0., 10.,"#DeltaR (jj,l2)");
+  FillHist( "SignalGen"+process+"/Mass_lep1_JJ", (j1+j2 + Lep1).M(), 1., 100, 0., 5000.,"M(l1jj) GeV");
+  FillHist( "SignalGen"+process+"/Mass_lep2_JJ", (j1+j2 + Lep2).M(), 1., 100, 0., 5000.,"M(l2jj) GeV");
+  FillHist( "SignalGen"+process+"/Mass_llJJ", (j1+j2 +Lep1+ Lep2).M(), 1., 100, 0., 5000.,"M(lljj) GeV ");
+
+  FillHist("SignalGen"+process+"/DeltaPhi_Lep1_J1",  fabs(TVector2::Phi_mpi_pi( ( (j1.Phi() - Lep1.Phi() )))),  1., 200, 0., 5.,"#Delta#phi (l1,j1)");
+  FillHist("SignalGen"+process+"/DeltaPhi_Lep2_J1",  fabs(TVector2::Phi_mpi_pi( ( (j1.Phi() - Lep2.Phi() )))),  1., 200, 0., 5.,"#Delta#phi (l2,j1)");
+  FillHist("SignalGen"+process+"/DeltaPhi_Lep1_J2",  fabs(TVector2::Phi_mpi_pi( ( (j2.Phi() - Lep1.Phi() )))),  1., 200, 0., 5.,"#Delta#phi (l1,j2)");
+  FillHist("SignalGen"+process+"/DeltaPhi_Lep2_J2",  fabs(TVector2::Phi_mpi_pi( ( (j2.Phi() - Lep2.Phi() )))),  1., 200, 0., 5.,"#Delta#phi (l2,j2)");
+  FillHist("SignalGen"+process+"/DeltaPhi_Lep1_Lep2",  fabs(TVector2::Phi_mpi_pi( ( (Lep1.Phi() - Lep2.Phi() )))),  1., 200, 0., 5.,"#Delta#phi (l,l)");
+  FillHist("SignalGen"+process+"/DeltaPhi_J1_J2",  fabs(TVector2::Phi_mpi_pi( ( (j1.Phi() - j2.Phi() )))),  1., 200, 0., 5.,"#Delta#phi (j,j)");
+
+  double max_dpiphi = fabs(TVector2::Phi_mpi_pi( ( (j1.Phi() - Lep1.Phi() ))));
+  if (fabs(TVector2::Phi_mpi_pi( ( (j1.Phi() - Lep2.Phi() )))) > max_dpiphi)  max_dpiphi = fabs(TVector2::Phi_mpi_pi( ( (j1.Phi() - Lep2.Phi() ))));
+  if (fabs(TVector2::Phi_mpi_pi( ( (j2.Phi() - Lep1.Phi() )))) > max_dpiphi)  max_dpiphi = fabs(TVector2::Phi_mpi_pi( ( (j2.Phi() - Lep1.Phi() ))));
+  if (fabs(TVector2::Phi_mpi_pi( ( (j2.Phi() - Lep2.Phi() )))) > max_dpiphi)  max_dpiphi = fabs(TVector2::Phi_mpi_pi( ( (j2.Phi() - Lep2.Phi() ))));
+  FillHist("SignalGen"+process+"/DeltaPhi_Lep_J_Max",  max_dpiphi,  1., 200, 0., 10.,"#Delta#phi max(l,j)");
+
+  double min_dpiphi = fabs(TVector2::Phi_mpi_pi( ( (j1.Phi() - Lep1.Phi() ))));
+  if (fabs(TVector2::Phi_mpi_pi( ( (j1.Phi() - Lep2.Phi() )))) < min_dpiphi)  min_dpiphi = fabs(TVector2::Phi_mpi_pi( ( (j1.Phi() - Lep2.Phi() ))));
+  if (fabs(TVector2::Phi_mpi_pi( ( (j2.Phi() - Lep1.Phi() )))) < min_dpiphi)  min_dpiphi = fabs(TVector2::Phi_mpi_pi( ( (j2.Phi() - Lep1.Phi() ))));
+  if (fabs(TVector2::Phi_mpi_pi( ( (j2.Phi() - Lep2.Phi() )))) < min_dpiphi)  min_dpiphi = fabs(TVector2::Phi_mpi_pi( ( (j2.Phi() - Lep2.Phi() ))));
+  FillHist("SignalGen"+process+"/DeltaPhi_Lep_J_Min",  min_dpiphi,  1., 200, 0., 5.,"#Delta#phi min(l,j)");
+
+
+  FillHist("SignalGen"+process+"/DeltaR_Lep1_J1",  j1.DeltaR(Lep1), 1., 100, 0., 10.,"#DeltaR (j1,l1)");
+  FillHist("SignalGen"+process+"/DeltaR_Lep2_J1",   j1.DeltaR(Lep2), 1., 100, 0., 10.,"#DeltaR (j1,l2)");
+  FillHist("SignalGen"+process+"/DeltaR_Lep1_J2", j2.DeltaR(Lep1), 1., 100, 0., 10.,"#DeltaR (j2,l1)"); 
+  FillHist("SignalGen"+process+"/DeltaR_Lep2_J2",  j2.DeltaR(Lep2), 1., 100, 0., 10.,"#DeltaR (j2,l2)");
+  FillHist("SignalGen"+process+"/DeltaR_Lep1_Lep2",Lep2.DeltaR(Lep1), 1., 100, 0., 10.,"#DeltaR (l,l)");
+  FillHist("SignalGen"+process+"/DeltaR_J1_J2",  j1.DeltaR(j2), 1., 100, 0., 10.,"#DeltaR (j1,j2)");
+
+  double max_dpiR = j1.DeltaR(Lep1);
+  if (j1.DeltaR(Lep2) > max_dpiR) max_dpiR = j1.DeltaR(Lep2);
+  if (j2.DeltaR(Lep1) > max_dpiR) max_dpiR = j2.DeltaR(Lep1);
+  if (j2.DeltaR(Lep2) > max_dpiR) max_dpiR = j2.DeltaR(Lep2);
+
+  FillHist("SignalGen"+process+"/DeltaR_Lep_J_Max",  max_dpiR,  1., 200, 0., 5.,"#DeltaR max(L,J");
+
+  double min_dpiR = j1.DeltaR(Lep1);
+  if (j1.DeltaR(Lep2) < min_dpiR) min_dpiR = j1.DeltaR(Lep2);
+  if (j2.DeltaR(Lep1) < min_dpiR) min_dpiR = j2.DeltaR(Lep1);
+  if (j2.DeltaR(Lep2) < min_dpiR) min_dpiR = j2.DeltaR(Lep2);
+
+  FillHist("SignalGen"+process+"/DeltaR_Lep_J_Min",  min_dpiR,  1., 200, 0., 5.,"#DeltaR min(L,J)");
+
+
+
+  Particle JJMEta = j1+j2;
+
+  FillHist("SignalGen"+process+"/MaxDEtaVBF_Jets_MJJ",JJMEta.M()   , 1, 100, 0., 4000., "MaxDEta MJJ");
+  
+  double maxDiJetDeta=fabs(j1.Eta() - j2.Eta());
+  double Av_JetEta= 0.5*(j1.Eta()+ j2.Eta());
+  double zeppenfeld = TMath::Max(Lep1.Eta()  - Av_JetEta , Lep2.Eta()  - Av_JetEta ) /maxDiJetDeta;
+  FillHist( "SignalGen"+process+"/MaxDEtaVBF_Jets_zeppenfeld", zeppenfeld  , 1, 200, 0., 2., "zeppenfeld");
+
+
+
+
+  
+  return ;
+}
+
+
+
+
+void HNL_ObjectStudies::MakeType1VBFSignalPlots(TString process, bool apply_reco_cut){
+
+  int N_Mother_ind(-1); // Index of N                                                                                                                                                                             
+  int W2_ind(0); // Index of W2 : i.e W from N decay                                                                                                                                                     
+  
+  TString  mu_ch="";
+  
+  gens = GetGens();
+  
+  if(apply_reco_cut) process=process+"_PtEtaReq";
+
+
+  // First loop over gen collection to get index of W/N and apply pt/eta cuts if needed                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+  for(unsigned int i=2; i<gens.size(); i++){
+    Gen gen = gens.at(i);
+
+    if(gens.at(gen.MotherIndex()).PID() == 9900012 || gens.at(gen.MotherIndex()).PID() == 9900014){
+
+      if(apply_reco_cut){
+        if( (fabs(gen.PID()) == 13 )|| (fabs(gen.PID()) == 11 )){
+          if(gen.Pt() < 10. || fabs(gen.Eta()) > 2.4) return;
+        }
+      }
+    }
+
+
+    if(fabs(gen.PID()) == 24 && (gens.at(gen.MotherIndex()).PID() == 9900012 || gens.at(gen.MotherIndex()).PID() == 9900014)){
+      W2_ind= i;
+      // If W decays to W in gen then get daughter                                                                                                                                                                                                                                                                                                                                                                                    
+      for(unsigned int i2=2; i2<gens.size(); i2++){
+        Gen gen2 = gens.at(i2);
+        if(gen2.MotherIndex() == W2_ind){
+          if (fabs(gen2.PID()) == 24 ) W2_ind = i2;
+        }
+      }
+    }
+
+    if((gen.PID() == 9900012 || gen.PID() == 9900014) &&  gen.Status() == 22) {
+      N_Mother_ind= gen.MotherIndex();
+    }
+  }
+
+  // Loop over again to cut on Lep from W1                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+  for(unsigned int i=2; i<gens.size(); i++){
+    Gen gen = gens.at(i);
+
+    if(gen.MotherIndex() == N_Mother_ind){
+      if(apply_reco_cut){
+        if( (fabs(gen.PID()) == 13 )|| (fabs(gen.PID()) == 11 )){
+          if(gen.Pt() < 10. || fabs(gen.Eta()) > 2.4) return;
+        }
+      }
+    }
+  }
+
+
+  Gen LepFromN;
+  Gen LepFromW;
+  Gen N;
+  Gen W2;
+  Gen J, j1,j2;
+  bool j1IsSet(false);
+
+  TString LepFl_l1, LepFl_l2;
+
+  // Loop over Gen collection and Natch N/W/l/j objects                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+  for(unsigned int i=2; i<gens.size(); i++){
+    Gen gen = gens.at(i);
+
+    if(int(gen.MotherIndex()) == W2_ind && gen.Status() == 23) {
+      W2 = gens.at(gen.MotherIndex());
+      if(!j1IsSet) {  j1= gen; j1IsSet=true;}
+      else j2 = gen;
+    }
+    if(gen.PID() == 9900012 || gen.PID() == 9900014){
+      N= gens.at(i);
+    }
+
+    if( fabs(gen.PID()) < 7 && gen.Status() == 23){
+      if(gen.MotherIndex() == N_Mother_ind) J=gen;
+    }
+    
+    if( ! ( ( fabs(gen.PID()) == 13)  || (fabs(gen.PID()) == 11) )) continue;
+
+    TString LepFl = (fabs(gen.PID()) == 13) ? "Mu" : "El";
+
+    if(gens.at(gen.MotherIndex()).PID() == 9900012|| gens.at(gen.MotherIndex()).PID() == 9900014) {
+      LepFromN = gen;
+      LepFl_l1=LepFl;
+    }
+    else if(gen.MotherIndex() == N_Mother_ind){
+      LepFromW=gen;
+      LepFl_l2=LepFl;
+    }
+  }
+  
+  
+  FillHist( "SignalGen"+process+"/Jet_FromW_eta", j1.Eta(),  1.,100, -5., 5,"J #eta");
+  FillHist( "SignalGen"+process+"/Jet_FromW_eta", j2.Eta(),  1.,100, -5., 5,"J #eta");
+  FillHist( "SignalGen"+process+"/Jet_FromW_pt",  j1.Pt(), 1., 200, 0., 400.,"J p_{T} (GeV)");
+  FillHist( "SignalGen"+process+"/Jet_FromW_pt",  j2.Pt(), 1., 200, 0., 400.,"J p_{T} (GeV)");
+  FillHist( "SignalGen"+process+"/W_Dijet_mass",  W2.M(),  1., 200, 0., 200.,"W(jj) Mass (GeV)");
+
+  FillHist( "SignalGen"+process+"/InitialQ_Jet_eta", J.Eta(),  1.,100, -5., 5,"VBF_J #eta");
+  FillHist( "SignalGen"+process+"/InitialQ_Jet_pt",  J.Pt(), 1., 200, 0., 400.,"VBF_J p_{T} (GeV)");
+
+  FillHist( "SignalGen"+process+"/Neutrino_pt", N.Pt(), 1., 200, 0., 400.,"N p_{T} (GeV)");
+  FillHist( "SignalGen"+process+"/Neutrino_mass", N.M(), 1., 200, 0., 2000.,"m_N (GeV)");
+  FillHist( "SignalGen"+process+"/Neutrino_eta", N.Eta(), 1.,100, -5., 5,"N #eta");
+
+  FillHist( "SignalGen"+process+"/Lep_"+LepFl_l1+"_From_Neutrino_pt",  LepFromN.Pt(), 1., 200, 0., 400.,"#ell_N p_{T} (GeV)");
+  FillHist( "SignalGen"+process+"/Lep_"+LepFl_l1+"_From_Neutrino_eta", LepFromN.Eta(),  1.,100, -5., 5,"#ell_N #eta");
+  FillHist( "SignalGen"+process+"/Lep_"+LepFl_l1+"_From_Neutrino_DeltaR_W_From_Neutrino", W2.DeltaR(LepFromN), 1., 100, 0., 10.,"#Delta R(ln,W2)");
+  FillHist( "SignalGen"+process+"/Mass_"+LepFl_l1+"_From_Neutrino_AND_W_FromNeutrino", (W2 + LepFromN).M(), 1., 150, 0., 1500.,"M(ln+W2) GeV");
+
+  if (LepFromN.PID() < 0){
+
+    FillHist( "SignalGenPlusQ"+process+"/Jet_FromW_eta", j1.Eta(),  1.,100, -5., 5,"J #eta");
+    FillHist( "SignalGenPlusQ"+process+"/Jet_FromW_eta", j2.Eta(),  1.,100, -5., 5,"J #eta");
+    FillHist( "SignalGenPlusQ"+process+"/Jet_FromW_pt",  j1.Pt(), 1., 200, 0., 400.,"J p_{T} (GeV)");
+    FillHist( "SignalGenPlusQ"+process+"/Jet_FromW_pt",  j2.Pt(), 1., 200, 0., 400.,"J p_{T} (GeV)");
+    FillHist( "SignalGenPlusQ"+process+"/W_Dijet_mass",  W2.M(),  1., 200, 0., 200.,"W(jj) Mass (GeV)");
+
+    FillHist( "SignalGenPlusQ"+process+"/InitialQ_Jet_eta", J.Eta(),  1.,100, -5., 5,"VBF_J #eta");
+    FillHist( "SignalGenPlusQ"+process+"/InitialQ_Jet_pt",  J.Pt(), 1., 200, 0., 400.,"VBF_J p_{T} (GeV)");
+
+    FillHist( "SignalGenPlusQ"+process+"/Neutrino_pt", N.Pt(), 1., 200, 0., 400.,"N p_{T} (GeV)");
+    FillHist( "SignalGenPlusQ"+process+"/Neutrino_mass", N.M(), 1., 200, 0., 2000.,"m_N (GeV)");
+    FillHist( "SignalGenPlusQ"+process+"/Neutrino_eta", N.Eta(), 1.,100, -5., 5,"N #eta");
+
+    FillHist( "SignalGenPlusQ"+process+"/Lep_"+LepFl_l1+"_From_Neutrino_pt",  LepFromN.Pt(), 1., 200, 0., 400.,"#ell_N p_{T} (GeV)");
+    FillHist( "SignalGenPlusQ"+process+"/Lep_"+LepFl_l1+"_From_Neutrino_eta", LepFromN.Eta(),  1.,100, -5., 5,"#ell_N #eta");
+    FillHist( "SignalGenPlusQ"+process+"/Lep_"+LepFl_l1+"_From_Neutrino_DelaR_W_From_Neutrino", W2.DeltaR(LepFromN), 1., 100, 0., 10.,"#Delta R(ln,W)");
+    FillHist( "SignalGenPlusQ"+process+"/Mass_"+LepFl_l1+"_From_Neutrino_AND_W_FromNeutrino", (W2 + LepFromN).M(), 1., 150, 0., 1500.,"M(ln+W2) GeV");
+   
+  }
+  else{
+    FillHist( "SignalGenMinusQ"+process+"/Jet_FromW_eta", j1.Eta(),  1.,100, -5., 5,"J #eta");
+    FillHist( "SignalGenMinusQ"+process+"/Jet_FromW_eta", j2.Eta(),  1.,100, -5., 5,"J #eta");
+    FillHist( "SignalGenMinusQ"+process+"/Jet_FromW_pt",  j1.Pt(), 1., 200, 0., 400.,"J p_{T} (GeV)");
+    FillHist( "SignalGenMinusQ"+process+"/Jet_FromW_pt",  j2.Pt(), 1., 200, 0., 400.,"J p_{T} (GeV)");
+    FillHist( "SignalGenMinusQ"+process+"/W_Dijet_mass",  W2.M(),  1., 200, 0., 200.,"W(jj) Mass (GeV)");
+
+    FillHist( "SignalGenMinusQ"+process+"/InitialQ_Jet_eta", J.Eta(),  1.,100, -5., 5,"VBF_J #eta");
+    FillHist( "SignalGenMinusQ"+process+"/InitialQ_Jet_pt",  J.Pt(), 1., 200, 0., 400.,"VBF_J p_{T} (GeV)");
+
+    FillHist( "SignalGenMinusQ"+process+"/Neutrino_pt", N.Pt(), 1., 200, 0., 400.,"N p_{T} (GeV)");
+    FillHist( "SignalGenMinusQ"+process+"/Neutrino_mass", N.M(), 1., 200, 0., 2000.,"m_N (GeV)");
+    FillHist( "SignalGenMinusQ"+process+"/Neutrino_eta", N.Eta(), 1.,100, -5., 5,"N #eta");
+
+    FillHist( "SignalGenMinusQ"+process+"/Lep_"+LepFl_l1+"_From_Neutrino_pt",  LepFromN.Pt(), 1., 200, 0., 1000.,"#ell_N p_{T} (GeV)");
+    FillHist( "SignalGenMinusQ"+process+"/Lep_"+LepFl_l1+"_From_Neutrino_eta", LepFromN.Eta(),  1.,100, -5., 5,"#ell_N #eta");
+    FillHist( "SignalGenMinusQ"+process+"/Lep_"+LepFl_l1+"_From_Neutrino_DelaR_W_From_Neutrino", W2.DeltaR(LepFromN), 1., 100, 0., 10.,"#Delta R(ln,W)");
+    FillHist( "SignalGenMinusQ"+process+"/Mass_"+LepFl_l1+"_From_Neutrino_AND_W_FromNeutrino", (W2 + LepFromN).M(), 1., 150, 0., 1500.,"M(ln+W2) GeV");
+  }
+
+  FillHist( "SignalGen"+process+"/" + mu_ch+"Lep_"+LepFl_l2+"_FromW_pt", LepFromW.Pt(), 1., 200, 0., 400.,"#ell_w p_{T} (GeV)");
+  FillHist( "SignalGen"+process+"/" + mu_ch+"Lep_"+LepFl_l2+"_FromW_eta", LepFromW.Eta(),  1.,100, -5., 5,"#ell_w #eta");
+
+  FillHist("SignalGen"+process+"/Nlep_Wlep_pt", LepFromN.Pt(), LepFromW.Pt(), 1., 500,0., 2000.,500, 0.,2000.);
+
+  FillHist("SignalGen"+process+"/DeltaR_Lep_FromN_N",  N.DeltaR(LepFromN), 1., 200, 0., 5.,"#DeltaR(N,ln)");
+  FillHist("SignalGen"+process+"/DeltaR_Lep_FromN_W",  W2.DeltaR(LepFromN), 1., 200, 0., 5.,"#DeltaR(W2,ln)");
+  FillHist("SignalGen"+process+"/DeltaR_Lep_FromW_N",  N.DeltaR(LepFromW), 1., 200, 0., 5.,"#DeltaR(N,lw)");
+  FillHist("SignalGen"+process+"/DeltaR_Lep_FromW_W",  W2.DeltaR(LepFromW), 1., 200, 0., 5.,"#DeltaR(W2,lw)");
+  FillHist("SignalGen"+process+"/DeltaR_Lep_FromN_J1",  j1.DeltaR(LepFromN), 1., 200, 0., 5.,"#DeltaR(j1,ln)");
+  FillHist("SignalGen"+process+"/DeltaR_Lep_FromN_J2",  j2.DeltaR(LepFromN), 1., 200, 0., 5.,"#DeltaR(j2,ln)");
+  FillHist("SignalGen"+process+"/DeltaR_Lep_FromW_LepFromN",  LepFromW.DeltaR(LepFromN), 1., 200, 0., 5.,"#DeltaR(lw,ln)");
+  FillHist("SignalGen"+process+"/DeltaR_W_N",  W2.DeltaR(N), 1., 200, 0., 5.,"#DeltaR(N,W2)");
+
+
+  FillHist("SignalGen"+process+"/DeltaPhi_Lep_FromN_N",  fabs(TVector2::Phi_mpi_pi( ( (N.Phi() - LepFromN.Phi() )))),  1., 200, 0., 5.,"#Delta#phi(N,ln)");
+  FillHist("SignalGen"+process+"/DeltaPhi_Lep_FromN_W",  fabs(TVector2::Phi_mpi_pi( ( (W2.Phi() - LepFromN.Phi() )))),  1., 200, 0., 5.,"#Delta#phi(W2,ln)");
+  FillHist("SignalGen"+process+"/DeltaPhi_Lep_FromW_N",  fabs(TVector2::Phi_mpi_pi( ( (N.Phi() - LepFromW.Phi() )))),  1., 200, 0., 5.,"#Delta#phi(N,lw)");
+  FillHist("SignalGen"+process+"/DeltaPhi_Lep_FromW_W",  fabs(TVector2::Phi_mpi_pi( ( (W2.Phi() - LepFromW.Phi() )))),  1., 200, 0., 5.,"#Delta#phi(W2,lw)");
+  FillHist("SignalGen"+process+"/DeltaPhi_Lep_FromW_LepFromN",  fabs(TVector2::Phi_mpi_pi( ( (LepFromN.Phi() - LepFromW.Phi() )))),  1., 200, 0., 5.,"#Delta#phi(lw,ln)");
+  FillHist("SignalGen"+process+"/DeltaPhi_W_N",  fabs(TVector2::Phi_mpi_pi( ( (W2.Phi() - N.Phi() )))),  1., 200, 0., 5.,"#Delta#phi(N,W2)");
+
+  Particle WrongN = LepFromW + j1+j2;
+  FillHist("SignalGen"+process+"/DeltaPhiWr_Lep_FromN_N",  fabs(TVector2::Phi_mpi_pi( ( (WrongN.Phi() - LepFromN.Phi() )))),  1., 200, 0., 5.,"#Delta#phi(wN,ln)");
+  FillHist("SignalGen"+process+"/DeltaPhiWr_Lep_FromW_N",  fabs(TVector2::Phi_mpi_pi( ( (WrongN.Phi() - LepFromW.Phi() )))),  1., 200, 0., 5.,"#Delta#phi(wN,lw)");
+
+  Particle W1 = (N+LepFromW);
+  FillHist("SignalGen"+process+"/DeltaPhi_W1_Lep_FromN",  fabs(TVector2::Phi_mpi_pi( ( (W1.Phi() - LepFromN.Phi() )))),  1., 200, 0., 5.,"#Delta#phi(W1,ln)");
+  FillHist("SignalGen"+process+"/DeltaPhi_W1_Lep_FromW",  fabs(TVector2::Phi_mpi_pi( ( (W1.Phi() - LepFromW.Phi() )))),  1., 200, 0., 5.,"#Delta#phi(W1,ln)");
+  FillHist("SignalGen"+process+"/DeltaPhi_W1_N",  fabs(TVector2::Phi_mpi_pi( ( (W1.Phi() - N.Phi() )))),  1., 200, 0., 5.,"#Delta#phi(N,W1)");
+  FillHist("SignalGen"+process+"/DeltaPhi_W1_W2",  fabs(TVector2::Phi_mpi_pi( ( (W1.Phi() - W2.Phi() )))),  1., 200, 0., 5.,"#Delta#phi(W1,W2)");
+  FillHist("SignalGen"+process+"/Mass_NpWl",  (N+LepFromW).M(), 1., 200, 0., 2000.,"M(N,Wl) GeV");
+
+
+  
+  vector<Particle> JetsColl = {J,j1,j2};
+  double maxDiJetDeta=0.;
+  int ijet1(-1), ijet2(-1);
+  for(unsigned int ij = 0; ij < JetsColl.size()-1; ij++){
+    for(unsigned int ij2 = ij+1; ij2 < JetsColl.size(); ij2++){
+
+      double deta = fabs(JetsColl[ij].Eta() - JetsColl[ij2].Eta());
+      if(deta > maxDiJetDeta) {
+        maxDiJetDeta=deta;
+        ijet1=ij;
+        ijet2=ij2;
+      }
+    }
+  }
+  
+
+  Particle JJMEta = JetsColl[ijet1] + JetsColl[ijet2];
+
+  FillHist("SignalGen"+process+"/MaxDEtaVBF_Jets_MJJ",JJMEta.M()   , 1, 100, 0., 4000., "MaxDEta MJJ (GeV)");
+
+  double Av_JetEta= 0.5*(JetsColl[ijet1].Eta()+ JetsColl[ijet2].Eta());
+  double zeppenfeld = TMath::Max(LepFromW.Eta()  - Av_JetEta , LepFromN.Eta()  - Av_JetEta ) /maxDiJetDeta;
+  FillHist( "SignalGen"+process+"/MaxDEtaVBF_Jets_zeppenfeld", zeppenfeld  , 1, 200, 0., 2., "zeppenfeld");
+
+
+  double ZeroCheck = LepFromN.Pt()*LepFromW.Pt()*N.Pt()*W2.Pt()*J.Pt() * j1.Pt()*j1.Pt();
+  if(ZeroCheck == 0.){
+    cout << "LepFromN.Pt()  " << LepFromN.Pt() << endl;
+    cout << "LepFromW.Pt()  " << LepFromW.Pt() << endl;
+    cout << "N.Pt()  " << N.Pt() << endl;
+    cout << "W2.Pt()  " << W2.Pt() << endl;
+    cout << "Init Q Pt()  " << J.Pt() << endl;
+    cout << "j1.Pt()  " << j1.Pt() << endl;
+    cout << "j2.Pt()  " << j2.Pt() << endl;
+    
+    PrintGen(gens);
+    exit(EXIT_FAILURE);
+  }
+  if(LepFromN.Pt() == 0 || LepFromW.Pt() == 0.) {
+    cout << "LepFromN pt = " << LepFromN.Pt() << "  LepFromW pt = " << LepFromW.Pt() << endl;
+    PrintGen(gens);
+    exit(EXIT_FAILURE);
+  }
+
+  return ;
+}
+
+
+
+void HNL_ObjectStudies::MakeType1SignalPlots(TString process, bool apply_reco_cut){
+  
+  int N_Mother_ind(-1); // Index of N
+  int W2_ind(0); // Index of W2 : i.e W from N decay 
+  TString  mu_ch="";
+
+  gens = GetGens();
+  
+  if(apply_reco_cut) process=process+"_PtEtaReq";
+  
+
+  // First loop over gen collection to get index of W/N and apply pt/eta cuts if needed
+  for(unsigned int i=2; i<gens.size(); i++){
+    Gen gen = gens.at(i);
+    
+    if(gens.at(gen.MotherIndex()).PID() == 9900012 || gens.at(gen.MotherIndex()).PID() == 9900014){
+
+      if(apply_reco_cut){
+	if( (fabs(gen.PID()) == 13 )|| (fabs(gen.PID()) == 11 )){
+	  if(gen.Pt() < 10. || fabs(gen.Eta()) > 2.4) return;
+	}
+      }
+    }
+   
+    
+    if(fabs(gen.PID()) == 24 && (gens.at(gen.MotherIndex()).PID() == 9900012 || gens.at(gen.MotherIndex()).PID() == 9900014)){
+      W2_ind= i;
+      // If W decays to W in gen then get daughter
+      
+      for(unsigned int i2=2; i2<gens.size(); i2++){
+	Gen gen2 = gens.at(i2);
+	if(gen2.MotherIndex() == W2_ind){
+	  if (fabs(gen2.PID()) == 24 ) W2_ind = i2;
+	}
+      }
+    }
+    
+    if((gen.PID() == 9900012 || gen.PID() == 9900014) &&  gen.Status() == 22) {
+      N_Mother_ind= gen.MotherIndex();
+    }
+  }
+
+  // Loop over again to cut on Lep from W1
+  for(unsigned int i=2; i<gens.size(); i++){
+    Gen gen = gens.at(i);
+    
+    if(gen.MotherIndex() == N_Mother_ind){
+      if(apply_reco_cut){
+        if( (fabs(gen.PID()) == 13 )|| (fabs(gen.PID()) == 11 )){
+          if(gen.Pt() < 10. || fabs(gen.Eta()) > 2.4) return;
+        }
+      }
+    }
+  }
+
+  
+  Gen LepFromN;
+  Gen LepFromW;
+  Gen N;
+  Gen W2;
+  Gen j1,j2;
+  bool j1IsSet(false);
+
+  TString LepFl_l1, LepFl_l2;
+  
+  // Loop over Gen collection and Natch N/W/l/j objects
+  for(unsigned int i=2; i<gens.size(); i++){
+    Gen gen = gens.at(i);
+    
+    if(int(gen.MotherIndex()) == W2_ind && gen.Status() == 23) {
+      W2 = gens.at(gen.MotherIndex());
+      if(!j1IsSet) {  j1= gen; j1IsSet=true;}
+      else j2 = gen;
+    }
+    if(gen.PID() == 9900012 || gen.PID() == 9900014){
+      N= gens.at(i);
+    }
+    
+    if( ! ( ( fabs(gen.PID()) == 13)  || (fabs(gen.PID()) == 11) )) continue;
+    
+    TString LepFl = (fabs(gen.PID()) == 13) ? "Mu" : "El";
+
+    if(gens.at(gen.MotherIndex()).PID() == 9900012|| gens.at(gen.MotherIndex()).PID() == 9900014) {
+      LepFromN = gen;
+      LepFl_l1=LepFl;
+    }
+    else if(gen.MotherIndex() == N_Mother_ind){
+      LepFromW=gen;
+      LepFl_l2=LepFl;
+    }
+  }
+  
+  if(LepFromN.Pt() == 0 || LepFromW.Pt() == 0.) {
+    cout << "LepFromN pt = " << LepFromN.Pt() << "  LepFromW pt = " << LepFromW.Pt() << endl;
+    PrintGen(gens);
+    exit(EXIT_FAILURE);
+  }
+  
+
+  
+  // PLOTS
+
+
+  FillHist( "SignalGen"+process+"/Jet_FromW_eta", j1.Eta(),  1.,100, -5., 5,"J #eta");
+  FillHist( "SignalGen"+process+"/Jet_FromW_eta", j2.Eta(),  1.,100, -5., 5,"J #eta");
+  FillHist( "SignalGen"+process+"/Jet_FromW_pt",  j1.Pt(), 1., 200, 0., 400.,"J p_{T} (GeV)");
+  FillHist( "SignalGen"+process+"/Jet_FromW_pt",  j2.Pt(), 1., 200, 0., 400.,"J p_{T} (GeV)");
+  FillHist( "SignalGen"+process+"/W_Dijet_mass",  W2.M(),  1., 200, 0., 200.,"W(jj) Mass (GeV)");
+
+
+  FillHist( "SignalGen"+process+"/Neutrino_pt", N.Pt(), 1., 200, 0., 400.,"N p_{T} (GeV)");
+  FillHist( "SignalGen"+process+"/Neutrino_mass", N.M(), 1., 200, 0., 2000.,"m_N (GeV)");
+  FillHist( "SignalGen"+process+"/Neutrino_eta", N.Eta(), 1.,100, -5., 5,"N #eta");
+
+  FillHist( "SignalGen"+process+"/Lep_"+LepFl_l1+"_From_Neutrino_pt",  LepFromN.Pt(), 1., 200, 0., 400.,"#ell_N p_{T} (GeV)");
+  FillHist( "SignalGen"+process+"/Lep_"+LepFl_l1+"_From_Neutrino_eta", LepFromN.Eta(),  1.,100, -5., 5,"#ell_N #eta");
+  FillHist( "SignalGen"+process+"/Lep_"+LepFl_l1+"_From_Neutrino_DeltaR_W_From_Neutrino", W2.DeltaR(LepFromN), 1., 100, 0., 10.,"#Delta R(ln,W2)");
+  FillHist( "SignalGen"+process+"/Mass_"+LepFl_l1+"_From_Neutrino_AND_W_FromNeutrino", (W2 + LepFromN).M(), 1., 150, 0., 1500.,"M(ln+W2) GeV");
+
+  
+  FillHist( "SignalGen"+process+"/Lep_"+LepFl_l2+"_FromW_pt", LepFromW.Pt(), 1., 200, 0., 400.,"#ell_w p_{T} (GeV)");
+  FillHist( "SignalGen"+process+"/Lep_"+LepFl_l2+"_FromW_eta", LepFromW.Eta(),  1.,100, -5., 5,"#ell_w #eta ");
+  
+  
+  FillHist("SignalGen"+process+"/Nlep_Wlep_pt", LepFromN.Pt(), LepFromW.Pt(), 1., 500,0., 2000.,500, 0.,2000.);
+
+  if( (LepFromN.Pt() < 50) || ( LepFromW.Pt() < 50)){
+    if(LepFromN.Pt() < LepFromW.Pt()) FillHist("SignalGen"+process+"/Pt_LT50_NOrderPt", 1, 1, 2, 0, 2);
+    else FillHist("SignalGen"+process+"/Pt_LT50_NOrderPt",0, 1, 2, 0, 2);
+  }
+  if( (LepFromN.Pt() < 100) || ( LepFromW.Pt() <100)){
+    if(LepFromN.Pt() < LepFromW.Pt()) FillHist("SignalGen"+process+"/Pt_LT100_NOrderPt",1, 1, 2, 0, 2);
+    else FillHist("SignalGen"+process+"/Pt_LT100_NOrderPt",0, 1, 2, 0, 2);
+  }
+  
+  if(LepFromN.Pt() < LepFromW.Pt()) FillHist("SignalGen"+process+"/Pt_NOrderPt",1, 1, 2, 0, 2);
+  else FillHist("SignalGen"+process+"/Pt_NOrderPt",0, 1, 2, 0, 2);
+  
+  if(j1.Pt() == 0  || j2.Pt() == 0.)      {
+    cout << "J1 pt = " << j1.Pt() << " J2 pt = " << j2.Pt() << endl;   
+    PrintGen(gens);
+    exit(EXIT_FAILURE);
+  }
+
+
+  //cout << "LepFromN pt = " << LepFromN.Pt() << "  LepFromW pt = " << LepFromW.Pt() << endl;
+
+  double dphi1 = fabs(TVector2::Phi_mpi_pi( ( ((LepFromN + j1+j2).Phi() - LepFromW.Phi() ))));
+  double dphi2 = fabs(TVector2::Phi_mpi_pi( ( ((LepFromW + j1+j2).Phi() - LepFromN.Phi() ))));
+  //double Nphi1 =  N.Phi();
+  //double Nphi2 =  (LepFromN + j1+j2).Phi(); 
+  
+  // if( Nphi1 !=  Nphi2) {
+  //  
+  //  cout << Nphi1 << " " << Nphi2 << endl;
+  //  cout << (LepFromN + j1+j2).Phi() << " " << N.Phi() << endl;
+  //  cout << (LepFromN + j1+j2).M() << " " << N.M() << endl;
+  //  cout << (j1+j2).M() << " " << W2.M() << endl;
+  //  PrintGen(gens);
+  //  exit(EXIT_FAILURE);
+  // }
+
+
+  if(dphi1 > dphi2) FillHist("SignalGen"+process+"/DPhi_NOrder_",1, 1, 2, 0, 2);
+  else FillHist("SignalGen"+process+"/DPhi_NOrder_",0, 1, 2, 0, 2);
+  
+  if(W2.DeltaR(LepFromW) > W2.DeltaR(LepFromN)) FillHist("SignalGen"+process+"/DPhiW_NOrder_",1, 1, 2, 0, 2);
+  else FillHist("SignalGen"+process+"/DPhiW_NOrder_",0, 1, 2, 0, 2);
+
+  
+
+
+  FillHist("SignalGen"+process+"/DeltaR_Lep_FromN_N",  N.DeltaR(LepFromN), 1., 200, 0., 5.,"#DeltaR(N,ln)");
+  FillHist("SignalGen"+process+"/DeltaR_Lep_FromN_W",  W2.DeltaR(LepFromN), 1., 200, 0., 5.,"#DeltaR(W2,ln)");
+  FillHist("SignalGen"+process+"/DeltaR_Lep_FromW_N",  N.DeltaR(LepFromW), 1., 200, 0., 5.,"#DeltaR(N,lw)");
+  FillHist("SignalGen"+process+"/DeltaR_Lep_FromW_W",  W2.DeltaR(LepFromW), 1., 200, 0., 5.,"#DeltaR(W2,lw)");
+  FillHist("SignalGen"+process+"/DeltaR_Lep_FromN_J1",  j1.DeltaR(LepFromN), 1., 200, 0., 5.,"#DeltaR(j1,ln)");
+  FillHist("SignalGen"+process+"/DeltaR_Lep_FromN_J2",  j2.DeltaR(LepFromN), 1., 200, 0., 5.,"#DeltaR(j2,ln)");
+  FillHist("SignalGen"+process+"/DeltaR_Lep_FromW_LepFromN",  LepFromW.DeltaR(LepFromN), 1., 200, 0., 5.,"#DeltaR(lw,ln)");
+  FillHist("SignalGen"+process+"/DeltaR_W_N",  W2.DeltaR(N), 1., 200, 0., 5.,"#DeltaR(N,W2)");
+
+
+  FillHist("SignalGen"+process+"/DeltaPhi_Lep_FromN_N",  fabs(TVector2::Phi_mpi_pi( ( (N.Phi() - LepFromN.Phi() )))),  1., 200, 0., 5.,"#Delta#phi(N,ln)");
+  FillHist("SignalGen"+process+"/DeltaPhi_Lep_FromN_W",  fabs(TVector2::Phi_mpi_pi( ( (W2.Phi() - LepFromN.Phi() )))),  1., 200, 0., 5.,"#Delta#phi(W2,ln)");
+  FillHist("SignalGen"+process+"/DeltaPhi_Lep_FromW_N",  fabs(TVector2::Phi_mpi_pi( ( (N.Phi() - LepFromW.Phi() )))),  1., 200, 0., 5.,"#Delta#phi(N,lw)");
+  FillHist("SignalGen"+process+"/DeltaPhi_Lep_FromW_W",  fabs(TVector2::Phi_mpi_pi( ( (W2.Phi() - LepFromW.Phi() )))),  1., 200, 0., 5.,"#Delta#phi(W2,lw)");
+  FillHist("SignalGen"+process+"/DeltaPhi_Lep_FromW_LepFromN",  fabs(TVector2::Phi_mpi_pi( ( (LepFromN.Phi() - LepFromW.Phi() )))),  1., 200, 0., 5.,"#Delta#phi(lw,ln)");
+  FillHist("SignalGen"+process+"/DeltaPhi_W_N",  fabs(TVector2::Phi_mpi_pi( ( (W2.Phi() - N.Phi() )))),  1., 200, 0., 5.,"#Delta#phi(N,W2)");
+
+  Particle WrongN = LepFromW + j1+j2;
+  FillHist("SignalGen"+process+"/DeltaPhiWr_Lep_FromN_N",  fabs(TVector2::Phi_mpi_pi( ( (WrongN.Phi() - LepFromN.Phi() )))),  1., 200, 0., 5.,"#Delta#phi(wN,ln)");
+  FillHist("SignalGen"+process+"/DeltaPhiWr_Lep_FromW_N",  fabs(TVector2::Phi_mpi_pi( ( (WrongN.Phi() - LepFromW.Phi() )))),  1., 200, 0., 5.,"#Delta#phi(wN,lw)");
+
+  Particle W1 = (N+LepFromW);
+  FillHist("SignalGen"+process+"/DeltaPhi_W1_Lep_FromN",  fabs(TVector2::Phi_mpi_pi( ( (W1.Phi() - LepFromN.Phi() )))),  1., 200, 0., 5.,"#Delta#phi(W1,ln)");
+  FillHist("SignalGen"+process+"/DeltaPhi_W1_Lep_FromW",  fabs(TVector2::Phi_mpi_pi( ( (W1.Phi() - LepFromW.Phi() )))),  1., 200, 0., 5.,"#Delta#phi(W1,ln)");
+  FillHist("SignalGen"+process+"/DeltaPhi_W1_N",  fabs(TVector2::Phi_mpi_pi( ( (W1.Phi() - N.Phi() )))),  1., 200, 0., 5.,"#Delta#phi(N,W1)");
+  FillHist("SignalGen"+process+"/DeltaPhi_W1_W2",  fabs(TVector2::Phi_mpi_pi( ( (W1.Phi() - W2.Phi() )))),  1., 200, 0., 5.,"#Delta#phi(W1,W2)");
+  FillHist("SignalGen"+process+"/Mass_NpWl",  (N+LepFromW).M(), 1., 200, 0., 2000.,"M(N,Wl) GeV");
+
+
+  if(fabs(TVector2::Phi_mpi_pi( ( (WrongN.Phi() - LepFromN.Phi() ))))  >  N.DeltaR(LepFromN) ) FillHist("SignalGen"+process+"/DPhiWrN_NOrder_",1, 1, 2, 0, 2);
+  else FillHist("SignalGen"+process+"/DPhiWrN_NOrder_",0, 1, 2, 0, 2);
+
+  return;
+
+}
+
+
+void HNL_ObjectStudies::CheckHEMIssue(HNL_LeptonCore::Channel channel,std::vector<Lepton *> LepsT,std::vector<Lepton *> LepsV,       vector<Jet>& JetColl, Particle& vMET, float weight, TString Label, TString Option)
+{
+
+  if(DataYear!=2018) return;
+
+  if( !(LepsT.size()==2)) return;
+  if( !(LepsV.size()==2)) return;
+  
+  /* 
+     FIX
+  if( DataYear==2016 or DataYear==2018 ){ if(LepsT.at(0).Pt()<26) return; }
+  else{                                   if(LepsT.at(0).Pt()<29) return; }
+  
+  const int NEtaEdges=5, NPhiEdges=9;
+  double EtaEdges_p[NEtaEdges]={0., 0.6, 1.3, 1.9, 2.5};
+  double PhiEdges[NPhiEdges]={-3.15, -2.4, -1.6, -0.8, 0., 0.8, 1.6, 2.4, 3.15};
+  float mu2_feta=fabs(LepsT.at(1).Eta()), mu2_phi = LepsT.at(1).Phi();
+  
+  if(mu2_feta>0){ FillHist(LepsT[1]->GetFlavour()+"2_fEtaPhi_p"+Label, mu2_feta, mu2_phi, weight, NEtaEdges-1, EtaEdges_p, NPhiEdges-1, PhiEdges); }
+  else{           FillHist(LepsT[1]->GetFlavour()"2_fEtaPhi_m"+Label, mu2_feta, mu2_phi, weight, NEtaEdges-1, EtaEdges_p, NPhiEdges-1, PhiEdges); }
+  
+  if(IsDATA && IsHEMIssueRun()){
+    if(mu2_feta>0){ FillHist(LepsT[1]->GetFlavour()"2_fEtaPhi_p_HEMRun"+Label, mu2_feta, mu2_phi, weight, NEtaEdges-1, EtaEdges_p, NPhiEdges-1, PhiEdges); }
+    else{           FillHist(LepsT[1]->GetFlavour()"2_fEtaPhi_m_HEMRun"+Label, mu2_feta, mu2_phi, weight, NEtaEdges-1, EtaEdges_p, NPhiEdges-1, PhiEdges); }
+  }
+  
+  */
+  return;
+
+}

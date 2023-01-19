@@ -11,6 +11,8 @@ public:
   Muon();
   ~Muon();
 
+  void  PrintObject(TString label);
+
   void SetTypeBit(unsigned int typebit);
   void SetIDBit(unsigned int idbit);
 
@@ -77,6 +79,14 @@ public:
 
   inline bool isMvaTight() const {return PassSelector(MvaTight);}
 
+  double PassStepCut(double val1, double val2, double pt1, double pt2) const ;
+  double PassMultiStepCut(double Val1, double Val2, double PtBoundary ) const;
+
+  bool PassMVA_UL_Slope(TString bb1, TString bb2, TString ptboundary) const;
+
+  bool PassMVA_UL_Exp(TString c, TString tau, TString A) const;
+
+
   void SetIso(double ch04, double nh04, double ph04, double pu04, double trkiso);
   void CalcPFRelIso(bool use_corrected_pt=true);
   inline double TrkIso() const {return j_trkiso;}
@@ -109,7 +119,8 @@ public:
   inline double softMVA() const { return j_softMVA; }
 
 
-
+  inline double MuonSetSegmentCompatibility() const { return j_museg_comp;}
+  void SetMuonSegmentCompatibility(double d);
   //==== ID
   bool PassID(TString ID) const;
   bool Pass_POGTightWithTightIso() const;
@@ -119,16 +130,34 @@ public:
   bool Pass_POGHighPtLoose() const;
   bool Pass_POGHighPtLooseOR() const;
   bool Pass_TESTID() const;
+  bool Pass_LepMVAID() const ;
+
 
   bool passIDHN(int ID, double dxy_b, double dxy_e, double dz_b,double dz_e, double sip_b, double sip_e, double iso_b,double iso_e, double miso_b, double miso_e) const;
 
+  bool Pass_CB_Opt(TString ID) const;
+
   int  PassLooseIDOpt( ) const;
-  int PassIDOptMulti(TString dxy_method, TString sel_methodB,TString sel_methodEC,  TString iso_methodB,TString iso_methodEC ) const;
+  int PassIDOptMulti(TString sel_methodB,TString sel_methodEC,TString mva_methodBB1, TString mva_methodBB2,TString mva_methodBBPt,  TString mva_methodEC1, TString mva_methodEC2, TString mva_methodECPt, TString mva_methodBBC,  TString mva_methodBBTau, TString mva_methodBBA, TString mva_methodECC,  TString mva_methodECTau,  TString mva_methodECA, TString iso_methodB,TString iso_methodEC ) const;
 			    
     
 
   bool PassMVA(double mva1, double mva2, double mva3) const;
   bool PassMVA(double mva1, double mva2) const;
+
+  inline bool PassFakeMVA(double mva1, double mva2, double mva3, double mva4) {
+    if(fabs(this->Eta()) < 1.5){
+      if(this->Pt() < 20 && j_MVA > mva1) return true;
+      if(this->Pt() >= 20 && j_MVA > mva2) return true;
+    }
+    else{
+      if(this->Pt() < 20 && j_MVA > mva3) return true;
+      if(this->Pt() >= 20 && j_MVA > mva4) return true;
+
+    }
+    return false;
+    
+  }
 
   bool PassSoftMVA(double mva1, double mva2, double mva3) const;
 
@@ -194,7 +223,7 @@ private:
   double j_TunePPtError;
   double j_MVA, j_lowptMVA, j_softMVA;
   int j_validmuonhits, j_matchedstations, j_pixelHits, j_trackerLayers;
-
+  double j_museg_comp;
 
   ULong64_t j_filterbits;
   ULong64_t j_pathbits;

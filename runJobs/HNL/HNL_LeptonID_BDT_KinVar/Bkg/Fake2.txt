@@ -1,0 +1,4 @@
+WJets_MG
+WJets_amcatnlo
+DYJets_MG
+DYJets10to50_MG

@@ -4,13 +4,14 @@
 #include "Lepton.h"
 #include "TString.h"
 
-class Tau: public Lepton{
+class Tau: public Lepton {
 
 public:
 
   Tau();
   ~Tau();
 
+  void  PrintObject(TString label);
 
 
   //  inline double dr03TkSumPt() const { return j_dr03TkSumPt; }

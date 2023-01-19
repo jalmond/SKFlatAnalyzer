@@ -89,10 +89,10 @@ while read line <&3; do
     fi
     echo "find $SOURCE -type f|sort -V > $TARGET"
     if [ "$DRY" != "true" ]; then
-	read -p "exec? (y/n): " YES
-	if [ "$YES" = "y" ];then
-	    find $SOURCE -type f|sort -V > $TARGET
-	fi
+	#read -p "exec? (y/n): " YES
+	#if [ "$YES" = "y" ];then
+	find $SOURCE -type f|sort -V > $TARGET
+	#fi
     fi
 done 3< <(find $SEARCHDIR -type d|grep $SKFlatV|sort -V)
 #done 3< <(find $SEARCHDIR -type d|grep $SKFlatV|sort -V|egrep -v "TypeI|private|sherpa")

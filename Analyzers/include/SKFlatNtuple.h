@@ -43,6 +43,7 @@ public :
    int DataYear;
    TString DataEra;
    double xsec, sumW, sumSign;
+   float SKWeight;
    vector<TString> Userflags;
    vector<TString> EventList;
 
@@ -59,7 +60,9 @@ public :
    }
    virtual TString GetEra() const { return DataEra; }
    virtual TString GetEraShort() const;
+
    virtual int GetYear() const { return DataYear; }
+   virtual TString GetYearString() const {  return TString(std::to_string(DataYear));  }
 
    std::string AddZeroToTime(int twodigit){
      if(twodigit<10){
@@ -207,6 +210,26 @@ public :
    vector<float>   *fatjet_LSFlep_Pt;
    vector<float>   *fatjet_LSFlep_Eta;
    vector<float>   *fatjet_LSFlep_Phi;
+
+   vector<float>   *electron_ptrel;
+   vector<float>   *electron_ptratio;
+   vector<float>   *electron_cj_bjetdisc;
+   vector<float>   *electron_mva_cf;
+   vector<float>   *electron_mva_conv;
+   vector<float>   *electron_mva_fake;
+
+
+   vector<float>   *electron_conv_ntracks;
+   vector<float>   *electron_conv_fitprob;
+   vector<float>   *electron_conv_lxy;
+   vector<float>   *electron_conv_nHitsBeforeVtxMax;
+   vector<float>   *electron_conv_log_e_over_p;
+   vector<float>   *electron_conv_log_abs_cot_theta;
+   vector<float>   *electron_conv_pairMass;
+   vector<float>   *electron_conv_log_abs_delta_phi;
+   vector<float>   *electron_conv_log_chi2_max_pt;
+   vector<float>   *electron_conv_log_chi2_min_pt;
+   
    vector<float>   *electron_MVAIso;
    vector<float>   *electron_MVANoIso;
    vector<float>   *electron_Energy;
@@ -284,6 +307,16 @@ public :
    vector<float>   *electron_hcalPFClusterIso;
    vector<ULong64_t> *electron_pathbits;
    vector<ULong64_t> *electron_filterbits;
+   vector<float>   *electron_jetPtRatio;
+   vector<float>   *electron_jetPtRel;
+   vector<float>   *electron_jetNTracks;
+   vector<float>   *electron_jetNTracksMVA;
+
+   vector<float>   *muon_ptrel;
+   vector<float>   *muon_ptratio;
+   vector<float>   *muon_cj_bjetdisc;
+   vector<float>   *muon_mva_conv;
+
    vector<float>   *muon_PfChargedHadronIsoR04;
    vector<float>   *muon_PfNeutralHadronIsoR04;
    vector<float>   *muon_PfGammaIsoR04;
@@ -314,6 +347,7 @@ public :
    vector<int>     *muon_stationMask;
    vector<int>     *muon_nSegments;
    vector<float>   *muon_normchi;
+   vector<float>   *muon_segmentCompatibility;
    vector<int>     *muon_validhits;
    vector<int>     *muon_trackerHits;
    vector<int>     *muon_pixelHits;
@@ -370,7 +404,12 @@ public :
    vector<float>   *muon_lowptMVA;
    vector<float>   *muon_softMVA;
    vector<float>   *muon_jetPtRatio;
+   vector<float>   *muon_jetPtRatioDef;
    vector<float>   *muon_jetPtRel;
+   vector<float>   *muon_jetPtRelDef;
+   vector<float>   *muon_jetNTracks;
+   vector<float>   *muon_jetNTracksMVA;
+
    vector<int>     *muon_simType;
    vector<int>     *muon_simExtType;
    vector<int>     *muon_simFlavour;
@@ -493,6 +532,7 @@ public :
    TBranch        *b_Rho;   //!
    TBranch        *b_RhoNC;   //!
    TBranch        *b_nPV;   //!
+   TBranch        *b_SKWeight;   //!
    TBranch        *b_L1PrefireReweight_Central;   //!
    TBranch        *b_L1PrefireReweight_Up;   //!
    TBranch        *b_L1PrefireReweight_Down;   //!
@@ -603,6 +643,25 @@ public :
    TBranch        *b_fatjet_LSFlep_Pt;   //!
    TBranch        *b_fatjet_LSFlep_Eta;   //!
    TBranch        *b_fatjet_LSFlep_Phi;   //!
+
+   TBranch        *b_electron_conv_ntracks;
+   TBranch        *b_electron_conv_fitprob;
+   TBranch        *b_electron_conv_lxy;
+   TBranch        *b_electron_conv_nHitsBeforeVtxMax;
+   TBranch        *b_electron_conv_log_e_over_p;
+   TBranch        *b_electron_conv_log_abs_cot_theta;
+   TBranch        *b_electron_conv_pairMass;
+   TBranch        *b_electron_conv_log_abs_delta_phi;
+   TBranch        *b_electron_conv_log_chi2_max_pt;
+   TBranch        *b_electron_conv_log_chi2_min_pt;
+
+
+   TBranch        *b_electron_ptrel;
+   TBranch        *b_electron_ptratio;
+   TBranch        *b_electron_cj_bjetdisc;
+   TBranch        *b_electron_mva_cf;
+   TBranch        *b_electron_mva_conv;
+   TBranch        *b_electron_mva_fake;
    TBranch        *b_electron_MVAIso;   //!
    TBranch        *b_electron_MVANoIso;   //!
    TBranch        *b_electron_Energy;   //!
@@ -680,6 +739,16 @@ public :
    TBranch        *b_electron_hcalPFClusterIso;   //!
    TBranch        *b_electron_pathbits;   //!
    TBranch        *b_electron_filterbits;   //!
+   TBranch        *b_electron_jetPtRatio;   //!                                                                                                                                                                                                                                   
+   TBranch        *b_electron_jetPtRel;   //!                                                                                                                                                                                                                                     
+   TBranch        *b_electron_jetNTracks; //!                                                                                                                                                                                                                                     
+   TBranch        *b_electron_jetNTracksMVA; //!                                                                                                                                                                    
+
+   TBranch        *b_muon_ptrel;
+   TBranch        *b_muon_ptratio;
+   TBranch        *b_muon_cj_bjetdisc;
+   TBranch        *b_muon_mva_conv;
+                                                              
    TBranch        *b_muon_PfChargedHadronIsoR04;   //!
    TBranch        *b_muon_PfNeutralHadronIsoR04;   //!
    TBranch        *b_muon_PfGammaIsoR04;   //!
@@ -709,6 +778,7 @@ public :
    TBranch        *b_muon_matchedstations;   //!
    TBranch        *b_muon_stationMask;   //!
    TBranch        *b_muon_nSegments;   //!
+   TBranch        *b_muon_segmentCompatibility;   //!
    TBranch        *b_muon_normchi;   //!
    TBranch        *b_muon_validhits;   //!
    TBranch        *b_muon_trackerHits;   //!
@@ -766,7 +836,11 @@ public :
    TBranch        *b_muon_lowptMVA;   //!
    TBranch        *b_muon_softMVA;   //!
    TBranch        *b_muon_jetPtRatio;   //!
+   TBranch        *b_muon_jetPtRatioDef;   //!
    TBranch        *b_muon_jetPtRel;   //!
+   TBranch        *b_muon_jetPtRelDef;   //!
+   TBranch        *b_muon_jetNTracks; //!  
+   TBranch        *b_muon_jetNTracksMVA; //!  
    TBranch        *b_muon_simType;   //!
    TBranch        *b_muon_simExtType;   //!
    TBranch        *b_muon_simFlavour;   //!

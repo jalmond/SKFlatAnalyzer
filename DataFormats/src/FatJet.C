@@ -42,6 +42,9 @@ FatJet::FatJet() : Particle() {
   j_SDMass = -999.;
 }
 
+void FatJet::PrintObject(TString label){
+
+}
 FatJet::~FatJet(){
 
 }

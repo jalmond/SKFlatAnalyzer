@@ -64,7 +64,7 @@ void SkimTree_HNElectronOpt::executeEvent(){
   
   std::vector<FatJet> fatjets_tmp                 = GetFatJets(param, param.FatJet_ID, 200., 2.7);
 
-  std::vector<FatJet> AK8_JetColl                  = GetAK8Jets(fatjets_tmp, 200., 2.7, true,  1., false, -999, true, 0., 20000., ElectronColl, MuonColl);
+  std::vector<FatJet> AK8_JetColl                  = SelectAK8Jets(fatjets_tmp, 200., 2.7, true,  1., false, -999, true, 0., 20000., ElectronColl, MuonColl);
 
 
   if(AK8_JetColl.size() > 0 && ElectronColl[0].Pt() < 100) return;
@@ -72,14 +72,14 @@ void SkimTree_HNElectronOpt::executeEvent(){
 
   std::vector<Jet> jets_tmp     = GetJets   ( param, param.Jet_ID, 20., 5.);
 
-  std::vector<Jet> JetColl                    = GetAK4Jets(jets_tmp,     20., 4.7, true,  0.4,0.8, "",   ElectronColl,MuonColl, AK8_JetColl);
-  std::vector<Jet> BJetColltmp                = GetAK4Jets(jets_tmp,     20., 2.4, true,  0.4,0.8, "",   ElectronColl,MuonColl, AK8_JetColl);
+  std::vector<Jet> JetColl                    = SelectAK4Jets(jets_tmp,     20., 4.7, true,  0.4,0.8, "",   ElectronColl,MuonColl, AK8_JetColl);
+  std::vector<Jet> BJetColltmp                = SelectAK4Jets(jets_tmp,     20., 2.4, true,  0.4,0.8, "",   ElectronColl,MuonColl, AK8_JetColl);
   
   if(JetColl.size() < 2  && ElectronColl[0].Pt() < 80) return;
 
   JetTagging::Parameters param_jets = JetTagging::Parameters(JetTagging::DeepJet, JetTagging::Medium, JetTagging::incl, JetTagging::mujets);
 
-  std::vector<Jet> BJetColl    = GetBJets(param, BJetColltmp, param_jets);
+  std::vector<Jet> BJetColl    = SelectBJets(param, BJetColltmp, param_jets);
 
   if(BJetColl.size() > 0) return;
   
