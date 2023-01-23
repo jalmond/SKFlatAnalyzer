@@ -1161,7 +1161,7 @@ double HNL_LeptonCore::MergeMultiMC(vector<TString> vec, TString Method){
 
 
 
-
+/*
 void HNL_LeptonCore::SetupMVAReader(){
 
   InitializeTreeVars();
@@ -1214,8 +1214,159 @@ void HNL_LeptonCore::SetupMVAReader(){
 
   return;
 }
+*/
 
+void HNL_LeptonCore::SetupMVAReader(){
 
+  InitializeTreeVars();
+
+  TString AnalyzerPath=std::getenv("SKFlat_WD");
+  TString MVAPath = "/data/Run2UltraLegacy_v3/Run2/BDTClassifier/results_xml/";
+  MNStrList = {"90", "100", "150", "200", "300", "400"};
+  NCutList  = {"100", "300", "1000"};
+  NTreeList = {"850"};
+
+  MVAReaderMM->AddVariable("Nvbfj", &Nvbfj);
+  MVAReaderMM->AddVariable("Ptl1", &Ptl1);
+  MVAReaderMM->AddVariable("Ptl2", &Ptl2);
+  MVAReaderMM->AddVariable("Ptj1", &Ptj1);
+  MVAReaderMM->AddVariable("Ptj2", &Ptj2);
+  MVAReaderMM->AddVariable("MET2ST", &MET2ST);
+  MVAReaderMM->AddVariable("HTLT1", &HTLT1);
+  MVAReaderMM->AddVariable("HTLT2", &HTLT2);
+  MVAReaderMM->AddVariable("Etal1", &Etal1);
+  MVAReaderMM->AddVariable("Etal2", &Etal2);
+  MVAReaderMM->AddVariable("PtRatioAJl1", &PtRatioAJl1);
+  MVAReaderMM->AddVariable("PtRatioAJl2", &PtRatioAJl2);
+  MVAReaderMM->AddVariable("NEMFracAJl1", &NEMFracAJl1);
+  MVAReaderMM->AddVariable("NEMFracAJl2", &NEMFracAJl2);
+  MVAReaderMM->AddVariable("CHFracAJl1", &CHFracAJl1);
+  MVAReaderMM->AddVariable("CHFracAJl2", &CHFracAJl2);
+  MVAReaderMM->AddVariable("NHFracAJl1", &NHFracAJl1);
+  MVAReaderMM->AddVariable("NHFracAJl2", &NHFracAJl2);
+  MVAReaderMM->AddVariable("JetDiscAJl1", &JetDiscAJl1);
+  MVAReaderMM->AddVariable("JetDiscAJl2", &JetDiscAJl2);
+  MVAReaderMM->AddVariable("dRll", &dRll);
+  MVAReaderMM->AddVariable("dRlj11", &dRlj11);
+  MVAReaderMM->AddVariable("dRlj21", &dRlj21);
+  MVAReaderMM->AddVariable("MSSSF", &MSSSF);
+  MVAReaderMM->AddVariable("Mlj11", &Mlj11);
+  MVAReaderMM->AddVariable("Mlj21", &Mlj21);
+  MVAReaderMM->AddVariable("Mlj22", &Mlj22);
+  MVAReaderMM->AddVariable("MTvl1", &MTvl1);
+  MVAReaderMM->AddVariable("MTvl2", &MTvl2);
+  MVAReaderMM->AddVariable("Mllj1", &Mllj1);
+  MVAReaderMM->AddVariable("dRWjj", &dRWjj);
+  MVAReaderMM->AddVariable("M_W2_jj", &M_W2_jj);
+  MVAReaderMM->AddVariable("M_N2_l2jj", &M_N2_l2jj);
+  MVAReaderMM->AddVariable("Nb", &Nb);
+  MVAReaderMM->AddVariable("MuFracAJl1", &MuFracAJl1);
+  MVAReaderMM->AddVariable("M_N1_l1jj", &M_N1_l1jj);
+
+  MVAReaderMM->AddSpectator("w_tot", &w_tot);
+
+  MVAReaderEE->AddVariable("Nvbfj", &Nvbfj);
+  MVAReaderEE->AddVariable("Ptl1", &Ptl1);
+  MVAReaderEE->AddVariable("Ptl2", &Ptl2);
+  MVAReaderEE->AddVariable("Ptj1", &Ptj1);
+  MVAReaderEE->AddVariable("Ptj2", &Ptj2);
+  MVAReaderEE->AddVariable("MET2ST", &MET2ST);
+  MVAReaderEE->AddVariable("HTLT1", &HTLT1);
+  MVAReaderEE->AddVariable("HTLT2", &HTLT2);
+  MVAReaderEE->AddVariable("Etal1", &Etal1);
+  MVAReaderEE->AddVariable("Etal2", &Etal2);
+  MVAReaderEE->AddVariable("PtRatioAJl1", &PtRatioAJl1);
+  MVAReaderEE->AddVariable("PtRatioAJl2", &PtRatioAJl2);
+  MVAReaderEE->AddVariable("NEMFracAJl1", &NEMFracAJl1);
+  MVAReaderEE->AddVariable("NEMFracAJl2", &NEMFracAJl2);
+  MVAReaderEE->AddVariable("CHFracAJl1", &CHFracAJl1);
+  MVAReaderEE->AddVariable("CHFracAJl2", &CHFracAJl2);
+  MVAReaderEE->AddVariable("NHFracAJl1", &NHFracAJl1);
+  MVAReaderEE->AddVariable("NHFracAJl2", &NHFracAJl2);
+  MVAReaderEE->AddVariable("JetDiscAJl1", &JetDiscAJl1);
+  MVAReaderEE->AddVariable("JetDiscAJl2", &JetDiscAJl2);
+  MVAReaderEE->AddVariable("dRll", &dRll);
+  MVAReaderEE->AddVariable("dRlj11", &dRlj11);
+  MVAReaderEE->AddVariable("dRlj21", &dRlj21);
+  MVAReaderEE->AddVariable("MSSSF", &MSSSF);
+  MVAReaderEE->AddVariable("Mlj11", &Mlj11);
+  MVAReaderEE->AddVariable("Mlj21", &Mlj21);
+  MVAReaderEE->AddVariable("Mlj22", &Mlj22);
+  MVAReaderEE->AddVariable("MTvl1", &MTvl1);
+  MVAReaderEE->AddVariable("MTvl2", &MTvl2);
+  MVAReaderEE->AddVariable("Mllj1", &Mllj1);
+  MVAReaderEE->AddVariable("dRWjj", &dRWjj);
+  MVAReaderEE->AddVariable("M_W2_jj", &M_W2_jj);
+  MVAReaderEE->AddVariable("M_N2_l2jj", &M_N2_l2jj);
+  MVAReaderEE->AddVariable("dRlj12", &dRlj12);
+  MVAReaderEE->AddVariable("dRlj22", &dRlj22);
+  MVAReaderEE->AddVariable("Mllj2", &Mllj2);
+
+  MVAReaderEE->AddSpectator("w_tot", &w_tot);
+
+  MVAReaderEM->AddVariable("Nvbfj", &Nvbfj);
+  MVAReaderEM->AddVariable("Ptl1", &Ptl1);
+  MVAReaderEM->AddVariable("Ptl2", &Ptl2);
+  MVAReaderEM->AddVariable("Ptj1", &Ptj1);
+  MVAReaderEM->AddVariable("Ptj2", &Ptj2);
+  MVAReaderEM->AddVariable("MET2ST", &MET2ST);
+  MVAReaderEM->AddVariable("HTLT1", &HTLT1);
+  MVAReaderEM->AddVariable("HTLT2", &HTLT2);
+  MVAReaderEM->AddVariable("Etal1", &Etal1);
+  MVAReaderEM->AddVariable("Etal2", &Etal2);
+  MVAReaderEM->AddVariable("PtRatioAJl1", &PtRatioAJl1);
+  MVAReaderEM->AddVariable("PtRatioAJl2", &PtRatioAJl2);
+  MVAReaderEM->AddVariable("NEMFracAJl1", &NEMFracAJl1);
+  MVAReaderEM->AddVariable("NEMFracAJl2", &NEMFracAJl2);
+  MVAReaderEM->AddVariable("CHFracAJl1", &CHFracAJl1);
+  MVAReaderEM->AddVariable("CHFracAJl2", &CHFracAJl2);
+  MVAReaderEM->AddVariable("NHFracAJl1", &NHFracAJl1);
+  MVAReaderEM->AddVariable("NHFracAJl2", &NHFracAJl2);
+  MVAReaderEM->AddVariable("JetDiscAJl1", &JetDiscAJl1);
+  MVAReaderEM->AddVariable("JetDiscAJl2", &JetDiscAJl2);
+  MVAReaderEM->AddVariable("dRll", &dRll);
+  MVAReaderEM->AddVariable("dRlj11", &dRlj11);
+  MVAReaderEM->AddVariable("dRlj21", &dRlj21);
+  MVAReaderEM->AddVariable("MSSSF", &MSSSF);
+  MVAReaderEM->AddVariable("Mlj11", &Mlj11);
+  MVAReaderEM->AddVariable("Mlj21", &Mlj21);
+  MVAReaderEM->AddVariable("Mlj22", &Mlj22);
+  MVAReaderEM->AddVariable("MTvl1", &MTvl1);
+  MVAReaderEM->AddVariable("MTvl2", &MTvl2);
+  MVAReaderEM->AddVariable("Mllj1", &Mllj1);
+  MVAReaderEM->AddVariable("dRWjj", &dRWjj);
+  MVAReaderEM->AddVariable("M_W2_jj", &M_W2_jj);
+  MVAReaderEM->AddVariable("M_N2_l2jj", &M_N2_l2jj);
+  MVAReaderEM->AddVariable("Nb", &Nb);
+  MVAReaderEM->AddVariable("dRlj12", &dRlj12);
+  MVAReaderEM->AddVariable("M_N1_l1jj", &M_N1_l1jj);
+
+  MVAReaderEM->AddSpectator("w_tot", &w_tot);
+
+  for(unsigned int im=0; im<MNStrList.size(); im++){
+    for(unsigned int ic=0; ic<NCutList.size(); ic++){
+      for(unsigned int it=0; it<NTreeList.size(); it++){
+
+        TString FileNameMM  = "output_DY_MuMu_M"+MNStrList.at(im)+"_Mode100_NTree"+NTreeList.at(it)+"_Run2_BDT.weights.xml";
+        TString MVATagStrMM = "BDT_M"+MNStrList.at(im)+"_NCut"+NCutList.at(ic)+"_NTree"+NTreeList.at(it)+"_MuMu";
+
+        MVAReaderMM->BookMVA(MVATagStrMM, AnalyzerPath+MVAPath+"NCuts"+NCutList.at(ic)+"/"+FileNameMM);
+
+        TString FileNameEE  = "output_DY_EE_M"+MNStrList.at(im)+"_Mode100_NTree"+NTreeList.at(it)+"_Run2_BDT.weights.xml";
+        TString MVATagStrEE = "BDT_M"+MNStrList.at(im)+"_NCut"+NCutList.at(ic)+"_NTree"+NTreeList.at(it)+"_EE";
+
+        MVAReaderEE->BookMVA(MVATagStrEE, AnalyzerPath+MVAPath+"NCuts"+NCutList.at(ic)+"/"+FileNameEE);
+
+        TString FileNameEM  = "output_DY_EMu_M"+MNStrList.at(im)+"_Mode100_NTree"+NTreeList.at(it)+"_Run2_BDT.weights.xml";
+        TString MVATagStrEM = "BDT_M"+MNStrList.at(im)+"_NCut"+NCutList.at(ic)+"_NTree"+NTreeList.at(it)+"_EMu";
+
+        MVAReaderEM->BookMVA(MVATagStrEM, AnalyzerPath+MVAPath+"NCuts"+NCutList.at(ic)+"/"+FileNameEM);
+
+      }
+    }
+  }
+
+}
 
 
 
@@ -1239,7 +1390,7 @@ double HNL_LeptonCore::GetHNLMVAElectron(Electron el ,BkgType bkg){
 
 void HNL_LeptonCore::InitializeTreeVars(){
 
-  Nj=-1, Nvbfj=-1;
+  /*Nj=-1, Nvbfj=-1;
   Ptl1=-1, Ptl2=-1, Ptj1=-1, Ptj2=-1, Ptj3=-1, MET=-1, HTLT=-1, HTLT1=-1,HTLT2=-1,LT=-1,  HT=-1, MET2HT=-1, MET2ST=-1;
   dEtall=-1, dRll=-1, dRjj12=-1, dRjj23=-1, dRjj13=-1;
   dRlj11=-1, dRlj12=-1, dRlj13=-1, dRlj21=-1, dRlj22=-1, dRlj23=-1;
@@ -1248,7 +1399,15 @@ void HNL_LeptonCore::InitializeTreeVars(){
   Mlljj12=-1, Mlljj13=-1, Mlljj14=-1, Mlljj23=-1, Mlljj24=-1, Mlljj34=-1;
   Mljj112=-1, Mljj113=-1, Mljj114=-1, Mljj123=-1, Mljj124=-1, Mljj134=-1;
   Mljj212=-1, Mljj213=-1, Mljj214=-1, Mljj223=-1, Mljj224=-1, Mljj234=-1;
-  Mjj12=-1, Mjj13=-1, Mjj14=-1, Mjj23=-1, Mjj24=-1, Mjj34=-1;
+  Mjj12=-1, Mjj13=-1, Mjj14=-1, Mjj23=-1, Mjj24=-1, Mjj34=-1;*/
+
+  Nvbfj=-1, Nb=-1;
+  Ptl1=-1, Ptl2=-1, Ptj1=-1, Ptj2=-1, HTLT1=-1, HTLT2=-1, MET2ST=-1, Etal1=-1, Etal2=-1;
+  PtRatioAJl1=-1, PtRatioAJl2=-1;
+  CEMFracAJl1=-1, CEMFracAJl2=-1, NEMFracAJl1=-1, NEMFracAJl2=-1, CHFracAJl1=-1, CHFracAJl2=-1, NHFracAJl1=-1, NHFracAJl2=-1, MuFracAJl1=-1, MuFracAJl2=-1, JetDiscAJl1=-1, JetDiscAJl2=-1;
+  dRll=-1, dRlj11=-1, dRlj12=-1, dRlj21=-1, dRlj22=-1;
+  MSSSF=-1, Mlj11=-1, Mlj12=-1, Mlj21=-1, Mlj22=-1;
+  MTvl1=-1, MTvl2=-1, Mllj1=-1, Mllj2=-1; 
 
   PtWj1=-1, PtWj2=-1;
   dRWjj=-1, dRlW12=-1, dRlW22=-1;

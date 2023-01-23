@@ -27,7 +27,7 @@
 
 
 
-void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq, std::vector<Electron> electrons, std::vector<Electron> electrons_veto, std::vector<Muon> muons, std::vector<Muon> muons_veto, std::vector<Tau> TauColl, std::vector<Jet> JetCollLoose,std::vector<Jet> JetColl, std::vector<Jet> VBF_JetColl,std::vector<FatJet>  AK8_JetColl, std::vector<Jet> B_JetColl,std::vector<Jet> B_JetCollSR1, Event ev,   Particle METv, AnalyzerParameter param,   float weight_ll){
+void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq, std::vector<Electron> electrons, std::vector<Electron> electrons_veto, std::vector<Muon> muons, std::vector<Muon> muons_veto, std::vector<Tau> TauColl, std::vector<Jet> JetCollLoose, std::vector<Jet> JetAllColl, std::vector<Jet> JetColl, std::vector<Jet> VBF_JetColl,std::vector<FatJet>  AK8_JetColl, std::vector<Jet> B_JetColl,std::vector<Jet> B_JetCollSR1, Event ev,   Particle METv, AnalyzerParameter param,   float weight_ll){
 
   vector<HNL_LeptonCore::Channel> channels = {EE,MuMu, EMu};
 
@@ -148,15 +148,24 @@ void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq, s
 	FillEventCutflow(LimitRegionsQ, weight_channel, lep_charge+SRbin,"LimitInput/"+param.Name);
 
 	for(unsigned int im=0; im<MNStrList.size(); im++){
-	  if(SRbin != "false") FillEventCutflow(LimitRegionsBDT, weight_channel, SRbin,"LimitInputBDT/"+param.Name+"/"+MNStrList[im]);
+	  if(SRbin != "false") FillEventCutflow(LimitRegionsBDT, weight_channel, SRbin,"LimitInputBDT/"+param.Name+"/M"+MNStrList[im]);
 	}
-	
+
       }
       else{
 
-	for(unsigned int im=0; im<MNStrList.size(); im++){
+	/*for(unsigned int im=0; im<MNStrList.size(); im++){
 	  TString SRBDT = RunSignalRegionAK4StringBDT(MNStrList[im], dilep_channel,qq, leps, leps_veto, TauColl, JetColl, VBF_JetColl, B_JetColl, ev, METv ,param_channel,"", weight_channel);
           if(SRBDT != "false") FillEventCutflow(LimitRegionsBDT, weight_channel, SRBDT,"LimitInputBDT/"+param.Name+"/"+MNStrList[im]);
+        }*/
+
+        for(unsigned int im=0; im<MNStrList.size(); im++){
+          for(unsigned int ic=0; ic<NCutList.size(); ic++){
+            for(unsigned int it=0; it<NTreeList.size(); it++){
+              TString SRBDT = RunSignalRegionAK4StringBDT(MNStrList[im], NCutList[ic], NTreeList[it], dilep_channel,qq, leps, leps_veto, TauColl, JetAllColl, JetColl, VBF_JetColl, B_JetColl, ev, METv ,param_channel,"", weight_channel);
+              if(SRBDT != "false") FillEventCutflow(LimitRegionsBDT, weight_channel, SRBDT,"LimitInputBDT/"+param.Name+"/M"+MNStrList.at(im)+"_NCut"+NCutList.at(ic)+"_NTree"+NTreeList.at(it));
+            }
+          }
         }
 
 	SRbin  = RunSignalRegionAK4String (dilep_channel,qq, leps, leps_veto, TauColl, JetColl, AK8_JetColl, B_JetColl, ev, METv ,param_channel,"", weight_channel);
@@ -545,7 +554,7 @@ bool  HNL_RegionDefinitions::RunSignalRegionAK4(HNL_LeptonCore::Channel channel,
 
 
 
-TString HNL_RegionDefinitions::RunSignalRegionAK4StringBDT(TString mN, HNL_LeptonCore::Channel channel, HNL_LeptonCore::ChargeType qq ,std::vector<Lepton *> LepTColl,   std::vector<Lepton *> leps_veto, std::vector<Tau> TauColl,std::vector<Jet> JetColl, std::vector<Jet> JetVBFColl, std::vector<Jet> B_JetColl, Event ev, Particle METv, AnalyzerParameter param, TString PostLabel ,  float w){
+TString HNL_RegionDefinitions::RunSignalRegionAK4StringBDT(TString mN, TString NCut, TString NTree, HNL_LeptonCore::Channel channel, HNL_LeptonCore::ChargeType qq ,std::vector<Lepton *> LepTColl,   std::vector<Lepton *> leps_veto, std::vector<Tau> TauColl, std::vector<Jet> JetAllColl, std::vector<Jet> JetColl, std::vector<Jet> JetVBFColl, std::vector<Jet> B_JetColl, Event ev, Particle METv, AnalyzerParameter param, TString PostLabel ,  float w){
  
 
 
@@ -567,66 +576,119 @@ TString HNL_RegionDefinitions::RunSignalRegionAK4StringBDT(TString mN, HNL_Lepto
 
   Nj      = JetColl.size();
   Nvbfj   = JetVBFColl.size();
+  Nb      = B_JetColl.size();
   Ptl1    = LepTColl[0]->Pt();
   Ptl2    = LepTColl.at(1)->Pt();
   LT      = GetLT(LepTColl);
-  Ptj1    =  JetColl.size()<1? -1.: JetColl.at(0).Pt();
-  Ptj2    =  JetColl.size()<2? -1.:JetColl.at(1).Pt();
-  Ptj3    =  JetColl.size()<3? -1.:JetColl.at(2).Pt();
+  Ptj1    = JetColl.size()<1? -1.: JetColl.at(0).Pt();
+  Ptj2    = JetColl.size()<2? -1.:JetColl.at(1).Pt();
+  Ptj3    = JetColl.size()<3? -1.:JetColl.at(2).Pt();
   MET     = METv.Pt();
   
   dEtall  = abs(LepTColl.at(0)->Eta()-LepTColl.at(1)->Eta());
   dRll    = LepTColl.at(0)->DeltaR(*LepTColl.at(1));
-  dRjj12  =  JetColl.size()<2? -1.:JetColl.at(0).DeltaR(JetColl.at(1));
-  dRjj23  =  JetColl.size()<3? -1.:JetColl.at(1).DeltaR(JetColl.at(2));
-  dRjj13  =  JetColl.size()<3? -1.:JetColl.at(0).DeltaR(JetColl.at(2));
-  dRlj11  =  JetColl.size()<1? -1.:LepTColl.at(0)->DeltaR(JetColl.at(0));
-  dRlj12  =  JetColl.size()<2? -1.:LepTColl.at(0)->DeltaR(JetColl.at(1));
-  dRlj13  =  JetColl.size()<3? -1.:LepTColl.at(0)->DeltaR(JetColl.at(2));
-  dRlj21  =  JetColl.size()<1? -1.:LepTColl.at(1)->DeltaR(JetColl.at(0));
-  dRlj22  =  JetColl.size()<2? -1.:LepTColl.at(1)->DeltaR(JetColl.at(1));
-  dRlj23  =  JetColl.size()<3? -1.:LepTColl.at(1)->DeltaR(JetColl.at(2));
+  dRjj12  = JetColl.size()<2? -1.:JetColl.at(0).DeltaR(JetColl.at(1));
+  dRjj23  = JetColl.size()<3? -1.:JetColl.at(1).DeltaR(JetColl.at(2));
+  dRjj13  = JetColl.size()<3? -1.:JetColl.at(0).DeltaR(JetColl.at(2));
+  dRlj11  = JetColl.size()<1? -1.:LepTColl.at(0)->DeltaR(JetColl.at(0));
+  dRlj12  = JetColl.size()<2? -1.:LepTColl.at(0)->DeltaR(JetColl.at(1));
+  dRlj13  = JetColl.size()<3? -1.:LepTColl.at(0)->DeltaR(JetColl.at(2));
+  dRlj21  = JetColl.size()<1? -1.:LepTColl.at(1)->DeltaR(JetColl.at(0));
+  dRlj22  = JetColl.size()<2? -1.:LepTColl.at(1)->DeltaR(JetColl.at(1));
+  dRlj23  = JetColl.size()<3? -1.:LepTColl.at(1)->DeltaR(JetColl.at(2));
   
   MSSSF   = Mll;
-  Mlj11   =  JetColl.size()<1? -1.:(*LepTColl.at(0)+JetColl.at(0)).M();
-  Mlj12   =  JetColl.size()<2? -1.:(*LepTColl.at(0)+JetColl.at(1)).M();
-  Mlj13   =  JetColl.size()<3? -1.:(*LepTColl.at(0)+JetColl.at(2)).M();
-  Mlj21   =  JetColl.size()<1? -1.:(*LepTColl.at(1)+JetColl.at(0)).M();
-  Mlj22   =  JetColl.size()<2? -1.:(*LepTColl.at(1)+JetColl.at(1)).M();
-  Mlj23   =  JetColl.size()<3? -1.:(*LepTColl.at(1)+JetColl.at(2)).M();
+  Mlj11   = JetColl.size()<1? -1.:(*LepTColl.at(0)+JetColl.at(0)).M();
+  Mlj12   = JetColl.size()<2? -1.:(*LepTColl.at(0)+JetColl.at(1)).M();
+  Mlj13   = JetColl.size()<3? -1.:(*LepTColl.at(0)+JetColl.at(2)).M();
+  Mlj21   = JetColl.size()<1? -1.:(*LepTColl.at(1)+JetColl.at(0)).M();
+  Mlj22   = JetColl.size()<2? -1.:(*LepTColl.at(1)+JetColl.at(1)).M();
+  Mlj23   = JetColl.size()<3? -1.:(*LepTColl.at(1)+JetColl.at(2)).M();
   MTvl1   = MT(*LepTColl.at(0),METv);
   MTvl2   = MT(*LepTColl.at(1),METv);
-  Mllj1   =  JetColl.size()<1? -1.:(*LepTColl.at(0)+*LepTColl.at(1)+JetColl.at(0)).M();
-  Mllj2   =  JetColl.size()<2? -1.:(*LepTColl.at(0)+*LepTColl.at(1)+JetColl.at(1)).M();
-  Mllj3   =  JetColl.size()<3? -1.:(*LepTColl.at(0)+*LepTColl.at(1)+JetColl.at(2)).M();
+  Mllj1   = JetColl.size()<1? -1.:(*LepTColl.at(0)+*LepTColl.at(1)+JetColl.at(0)).M();
+  Mllj2   = JetColl.size()<2? -1.:(*LepTColl.at(0)+*LepTColl.at(1)+JetColl.at(1)).M();
+  Mllj3   = JetColl.size()<3? -1.:(*LepTColl.at(0)+*LepTColl.at(1)+JetColl.at(2)).M();
   Mllj4   = JetColl.size()<4? -1.:(*LepTColl.at(0)+*LepTColl.at(1)+JetColl.at(3)).M();
-  Mlljj12 =  JetColl.size()<2? -1.:(*LepTColl.at(0)+*LepTColl.at(1)+JetColl.at(0)+JetColl.at(1)).M();
-  Mlljj13 =  JetColl.size()<3? -1.:(*LepTColl.at(0)+*LepTColl.at(1)+JetColl.at(0)+JetColl.at(2)).M();
+  Mlljj12 = JetColl.size()<2? -1.:(*LepTColl.at(0)+*LepTColl.at(1)+JetColl.at(0)+JetColl.at(1)).M();
+  Mlljj13 = JetColl.size()<3? -1.:(*LepTColl.at(0)+*LepTColl.at(1)+JetColl.at(0)+JetColl.at(2)).M();
   Mlljj14 = JetColl.size()<4? -1.:(*LepTColl.at(0)+*LepTColl.at(1)+JetColl.at(0)+JetColl.at(3)).M();
-  Mlljj23 =  JetColl.size()<3? -1.:(*LepTColl.at(0)+*LepTColl.at(1)+JetColl.at(1)+JetColl.at(2)).M();
+  Mlljj23 = JetColl.size()<3? -1.:(*LepTColl.at(0)+*LepTColl.at(1)+JetColl.at(1)+JetColl.at(2)).M();
   Mlljj24 = JetColl.size()<4? -1.:(*LepTColl.at(0)+*LepTColl.at(1)+JetColl.at(1)+JetColl.at(3)).M();
   Mlljj34 = JetColl.size()<4? -1.:(*LepTColl.at(0)+*LepTColl.at(1)+JetColl.at(2)+JetColl.at(3)).M();
-  Mljj112 =  JetColl.size()<2? -1.:(*LepTColl.at(0)+JetColl.at(0)+JetColl.at(1)).M();
-  Mljj113 =  JetColl.size()<3? -1.:(*LepTColl.at(0)+JetColl.at(0)+JetColl.at(2)).M();
+  Mljj112 = JetColl.size()<2? -1.:(*LepTColl.at(0)+JetColl.at(0)+JetColl.at(1)).M();
+  Mljj113 = JetColl.size()<3? -1.:(*LepTColl.at(0)+JetColl.at(0)+JetColl.at(2)).M();
   Mljj114 = JetColl.size()<4? -1.:(*LepTColl.at(0)+JetColl.at(0)+JetColl.at(3)).M();
   //return;
-  Mljj123 =  JetColl.size()<3? -1.:(*LepTColl.at(0)+JetColl.at(1)+JetColl.at(2)).M();
+  Mljj123 = JetColl.size()<3? -1.:(*LepTColl.at(0)+JetColl.at(1)+JetColl.at(2)).M();
   Mljj124 = JetColl.size()<4? -1.:(*LepTColl.at(0)+JetColl.at(1)+JetColl.at(3)).M();
   Mljj134 = JetColl.size()<4? -1.:(*LepTColl.at(0)+JetColl.at(2)+JetColl.at(3)).M();
-  Mljj212 =  JetColl.size()<2? -1.:(*LepTColl.at(1)+JetColl.at(0)+JetColl.at(1)).M();
-  Mljj213 =  JetColl.size()<3? -1.:(*LepTColl.at(1)+JetColl.at(0)+JetColl.at(2)).M();
+  Mljj212 = JetColl.size()<2? -1.:(*LepTColl.at(1)+JetColl.at(0)+JetColl.at(1)).M();
+  Mljj213 = JetColl.size()<3? -1.:(*LepTColl.at(1)+JetColl.at(0)+JetColl.at(2)).M();
   Mljj214 = JetColl.size()<4? -1.:(*LepTColl.at(1)+JetColl.at(0)+JetColl.at(3)).M();
-  Mljj223 =  JetColl.size()<3? -1.:(*LepTColl.at(1)+JetColl.at(1)+JetColl.at(2)).M();
+  Mljj223 = JetColl.size()<3? -1.:(*LepTColl.at(1)+JetColl.at(1)+JetColl.at(2)).M();
   Mljj224 = JetColl.size()<4? -1.:(*LepTColl.at(1)+JetColl.at(1)+JetColl.at(3)).M();
   Mljj234 = JetColl.size()<4? -1.:(*LepTColl.at(1)+JetColl.at(2)+JetColl.at(3)).M();
-  Mjj12   =  JetColl.size()<2? -1.:(JetColl.at(0)+JetColl.at(1)).M();
-  Mjj13   =  JetColl.size()<3? -1.:(JetColl.at(0)+JetColl.at(2)).M();
+  Mjj12   = JetColl.size()<2? -1.:(JetColl.at(0)+JetColl.at(1)).M();
+  Mjj13   = JetColl.size()<3? -1.:(JetColl.at(0)+JetColl.at(2)).M();
   Mjj14   = JetColl.size()<4? -1.:(JetColl.at(0)+JetColl.at(3)).M();
-  Mjj23   =  JetColl.size()<3? -1.:(JetColl.at(1)+JetColl.at(2)).M();
+  Mjj23   = JetColl.size()<3? -1.:(JetColl.at(1)+JetColl.at(2)).M();
   Mjj24   = JetColl.size()<4? -1.:(JetColl.at(1)+JetColl.at(3)).M();
   Mjj34   = JetColl.size()<4? -1.:(JetColl.at(2)+JetColl.at(3)).M();
-  
-  //Vars requiring complex algo.
+
+  //==== Vars for non-prompt lepton bkg
+  int IdxMatchAwayJetl1=-1, IdxMatchAwayJetl2=-1;
+  float maxdPhi1=-999., maxdPhi2=-999.;
+
+  for(unsigned int ij=0; ij<JetAllColl.size(); ij++){
+
+    float dPhi1 = fabs(TVector2::Phi_mpi_pi(LepTColl.at(0)->Phi() - JetAllColl.at(ij).Phi()));
+    if(dPhi1>maxdPhi1){ maxdPhi1=dPhi1; IdxMatchAwayJetl1=ij; }
+
+  }
+
+  for(unsigned int ij=0; ij<JetAllColl.size(); ij++){
+
+    float dPhi2 = fabs(TVector2::Phi_mpi_pi(LepTColl.at(1)->Phi() - JetAllColl.at(ij).Phi()));
+    if(dPhi2>maxdPhi2){ maxdPhi2=dPhi2; IdxMatchAwayJetl2=ij; }
+
+  }
+
+  if(IdxMatchAwayJetl1!=-1){
+
+    PtRatioAJl1 = JetAllColl.at(IdxMatchAwayJetl1).Pt()/LepTColl.at(0)->Pt();
+    CEMFracAJl1 = JetAllColl.at(IdxMatchAwayJetl1).ChargedEmEnergyFraction();
+    NEMFracAJl1 = JetAllColl.at(IdxMatchAwayJetl1).NeutralEmEnergyFraction();
+    CHFracAJl1  = JetAllColl.at(IdxMatchAwayJetl1).ChargedHadEnergyFraction();
+    NHFracAJl1  = JetAllColl.at(IdxMatchAwayJetl1).NeutralHadEnergyFraction();
+    MuFracAJl1  = JetAllColl.at(IdxMatchAwayJetl1).MuonEnergyFraction();
+    JetDiscAJl1 = JetAllColl.at(IdxMatchAwayJetl1).GetTaggerResult(JetTagging::DeepJet);
+
+  }
+  else{
+
+    PtRatioAJl1=-1., CEMFracAJl1=-1., NEMFracAJl1=-1., CHFracAJl1=-1., NHFracAJl1=-1., MuFracAJl1=-1., JetDiscAJl1=-1.;
+
+  }
+
+  if(IdxMatchAwayJetl2!=-1){
+
+    PtRatioAJl2 = JetAllColl.at(IdxMatchAwayJetl2).Pt()/LepTColl.at(1)->Pt();
+    CEMFracAJl2 = JetAllColl.at(IdxMatchAwayJetl2).ChargedEmEnergyFraction();
+    NEMFracAJl2 = JetAllColl.at(IdxMatchAwayJetl2).NeutralEmEnergyFraction();
+    CHFracAJl2  = JetAllColl.at(IdxMatchAwayJetl2).ChargedHadEnergyFraction();
+    NHFracAJl2  = JetAllColl.at(IdxMatchAwayJetl2).NeutralHadEnergyFraction();
+    MuFracAJl2  = JetAllColl.at(IdxMatchAwayJetl2).MuonEnergyFraction();
+    JetDiscAJl2 = JetAllColl.at(IdxMatchAwayJetl2).GetTaggerResult(JetTagging::DeepJet);
+
+  }
+  else{
+
+    PtRatioAJl2=-1., CEMFracAJl2=-1., NEMFracAJl2=-1., CHFracAJl2=-1., NHFracAJl2=-1., MuFracAJl2=-1., JetDiscAJl2=-1.;
+
+  }
+
+  //==== Vars requiring complex algo.
   HT      = 0;
   for(unsigned int itj=0; itj<JetColl.size(); itj++){ HT+=JetColl.at(itj).Pt(); }
   
@@ -674,22 +736,25 @@ TString HNL_RegionDefinitions::RunSignalRegionAK4StringBDT(TString mN, HNL_Lepto
   
   //for(unsigned int im=0; im<MNStrList.size(); im++){
     
-  TString FileName ="DYTypeI_"+GetChannelString(channel)+  "_M"+mN+"_Mode0_Run2_BDT.weights.xml";
-  TString MVATagStr = "BDTG_M"+mN+"_"+GetChannelString(channel);
-  
-  float MVAvalue = MVAReader->EvaluateMVA(MVATagStr);
-  
-  FillHist("LimitSR3BDT/"+param.Name+"/SignalBins_M"+mN, MVAvalue, w, 40, -1., 1.);
+  //TString FileName ="DYTypeI_"+GetChannelString(channel)+  "_M"+mN+"_Mode0_Run2_BDT.weights.xml";
+  //TString MVATagStr = "BDTG_M"+mN+"_"+GetChannelString(channel);
+  TString FileName  = "output_DY_"+GetChannelString(channel)+"_M"+mN+"_Mode100_NTree"+NTree+"_Run2_BDT.weights.xml";
+  TString MVATagStr = "BDT_M"+mN+"_NCut"+NCut+"_NTree"+NTree+"_"+GetChannelString(channel);
 
-  int  NB_JetColl      =  B_JetColl.size();
+  //float MVAvalue = MVAReader->EvaluateMVA(MVATagStr);
+  float MVAvalue = 0.;
+  if(GetChannelString(channel) == "MuMu") MVAvalue = MVAReaderMM->EvaluateMVA(MVATagStr);
+  if(GetChannelString(channel) == "EE")   MVAvalue = MVAReaderEE->EvaluateMVA(MVATagStr);
+  if(GetChannelString(channel) == "EMu")  MVAvalue = MVAReaderEM->EvaluateMVA(MVATagStr);
 
+  FillHist("LimitSR3BDT/"+param.Name+"/SignalBins_M"+mN+"_NCut"+NCut+"_NTree"+NTree, MVAvalue, w, 40, -1., 1.);
 
   double met2_st = pow(METv.Pt(),2.)/ ST;
   bool PassHMMet    = (met2_st < 15);
 
   if(!PassHMMet) return "SR3_bin1";
-  if(NB_JetColl>  0)  return "SR3_bin1";
-  
+  if(Nb > 0)  return "SR3_bin1";
+
   if(MVAvalue < -0.5) return "SR3_bin2";
   else if(MVAvalue< -0.45) return "SR3_bin2";
   else if(MVAvalue< -0.4) return "SR3_bin3";
