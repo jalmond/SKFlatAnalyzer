@@ -119,6 +119,7 @@ public:
 
 
   TMVA::Reader *MuonIDFakeMVAReader;
+  TMVA::Reader *MuonIDFakeNoPtMVAReader;
 
   TMVA::Reader *ElectronIDFakeMVAReader;
   TMVA::Reader *ElectronIDCFMVAReader;

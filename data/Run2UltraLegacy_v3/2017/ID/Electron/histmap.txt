@@ -13,3 +13,4 @@ RECO	SF	ptlt20	egammaEffi_ptBelow20.txt_EGM2D_UL2017.root	EGamma_SF2D	TH2F
 ID      SF      TmpHNTightV2 HNL_IDSFTmp_el_2017.root                       Data_MC_SF_HNTightV2     TH2F
 ID      SF      TmpHNTight_17028 HNL_IDSFTmp_el_2017.root                   Data_MC_SF_HNTight_17028     TH2F
 ID      SF      TmppassPOGTight HNL_IDSFTmp_el_2017.root                    Data_MC_SF_passPOGTight     TH2F
+ID      SF      TmpHNL_ULID_2017                        HNL_LeptonIDSF_El_2017.root                      Data_MC_SF_HNL_ULID_2017 TH2F

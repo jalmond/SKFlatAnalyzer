@@ -57,7 +57,7 @@ fi
 
 if [[ $1 == "" ]]; then
 
-    declare  -a era_list=("2017")
+    declare  -a era_list=("2016preVFP")
 
     for i in "${era_list[@]}"
     do
@@ -71,8 +71,8 @@ if [[ $1 == "" ]]; then
 	
 	#SKFlat.py -a $analyzer  -i  WWW   -n 2  --nmax 2   -e ${i}   --skim SkimTree_HNMultiLepBDT &
 	#SKFlat.py -a $analyzer  -i  WWW   -n 2  --nmax 2   -e ${i}   --skim SkimTree_HNMultiLep &
-	SKFlat.py -a $analyzer  -i WJets_MG   -n 200  --nmax 800   -e ${i}   --userflags LeptonTypes &
-	#SKFlat.py -a $analyzer  -l runJobs/SampleLists/Bkg/Fake.txt   -n 4000  --nmax 600   -e ${i}  &
+	SKFlat.py -a $analyzer  -l ${bkgpath}/Fake.txt   -n 400  --nmax 600   -e ${i}  --userflags FakeLepton &
+	#SKFlat.py -a $analyzer  -i WJets_MG   -n 50  --nmax 600   -e ${i}  --userflags LeptonTypes &
 	
     done
 fi

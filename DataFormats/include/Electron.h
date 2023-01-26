@@ -111,6 +111,8 @@ public:
 
   }
 
+  bool PassMVABaseLine() const;
+  bool PassHNLMVA(double fake_cut,double cf_cut, double conv_cut) const;
 
   double PassMultiStepCut(double Val1, double Val2, double PtBoundary ) const;
 

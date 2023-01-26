@@ -22,6 +22,7 @@ AnalyzerCore::AnalyzerCore(){
   ElectronIDCFMVAReader = new TMVA::Reader();
   ElectronIDConvMVAReader = new TMVA::Reader();
   MuonIDFakeMVAReader = new TMVA::Reader();
+  //  MuonIDFakeNoPtMVAReader = new TMVA::Reader();
 
   // Call SetupIDMVAReader to Initialise BDTReader's
   SetupIDMVAReader(false);
@@ -90,6 +91,7 @@ AnalyzerCore::~AnalyzerCore(){
 
   delete ElectronIDConvMVAReader;
   delete MuonIDFakeMVAReader;
+  //  delete MuonIDFakeNoPtMVAReader;
 
   
 
@@ -350,11 +352,6 @@ std::vector<Muon> AnalyzerCore::GetAllMuons(){
     mu.SetMiniAODPt(muon_pt->at(i));
     mu.SetMiniAODTunePPt(muon_TuneP_pt->at(i));
 
-    if(muon_ptrel)mu.SetJetPtRel(muon_ptrel->at(i));
-    if(muon_ptratio)mu.SetJetPtRatio(muon_ptratio->at(i));
-    if(muon_cj_bjetdisc)mu.SetCloseJetBScore(muon_cj_bjetdisc->at(i));
-    
-
     double rc = muon_roch_sf->at(i);
     double rc_err = muon_roch_sf_up->at(i)-rc;
     //==== For the Rochester corection, up and down err are the same
@@ -400,11 +397,14 @@ std::vector<Muon> AnalyzerCore::GetAllMuons(){
     mu.SetFilterBits(muon_filterbits->at(i));
     mu.SetPathBits(muon_pathbits->at(i));
 
-    //if(fChain->GetBranch("muon_mva_fake"))mu.SetHNL_LepMVA(-999.,muon_mva_conv->at(i),-999); 
-    //else {
-    mu.SetHNL_LepMVA(GetBDTScoreMuon(mu,AnalyzerCore::Fake,  "BDTG"),-999,-999);
+    ///// Load branch if running BDT skim  
+    if(fChain->GetBranch("muon_mva_fake"))   mu.SetHNL_LepMVA(muon_mva_fake->at(i),-999,-999); 
+    if(fChain->GetBranch("muon_ptrel"))      mu.SetJetPtRel(muon_ptrel->at(i));
+    if(fChain->GetBranch("muon_ptratio"))    mu.SetJetPtRatio(muon_ptratio->at(i));
+    if(fChain->GetBranch("muon_cj_bjetdisc"))mu.SetCloseJetBScore(muon_cj_bjetdisc->at(i));
+    if(fChain->GetBranch("muon_cj_flavour")) mu.SetCloseJetFlavour(muon_cj_flavour->at(i));
     
-    bool FillCloseJetVar=true;
+    bool FillCloseJetVar=!fChain->GetBranch("muon_cj_flavour");
     if(FillCloseJetVar){
       
       std::vector<Jet>    AK4_JetAllColl = GetJets("NoID", 10., 5.0);
@@ -524,8 +524,6 @@ void AnalyzerCore::InitializeElectronIDTreeVars(){
 
 double AnalyzerCore::GetBDTScoreMuon(Muon mu ,BkgType bkg, TString BDTTag){
 
-  if(bkg != BkgType::Conv) return -999;
-
   InitializeMuonIDTreeVars();
 
   std::vector<Jet>   JetAllColl = GetJets("NoID", 10., 5.0);
@@ -559,20 +557,18 @@ double AnalyzerCore::GetBDTScoreMuon(Muon mu ,BkgType bkg, TString BDTTag){
   Pixel_hits  = mu.PixelHits();
   Tracker_layers = mu.TrackerLayers();
 
-  //TString EtaRegion = "_EC";
-  //if(fabs(mu.Eta()) < 0.8) EtaRegion = "_IB";
-  //else   if(fabs(mu.Eta()) < 1.5) EtaRegion = "_OB";
-
   TString MVATagStr = BDTTag;
   if (bkg == BkgType::Fake) MVATagStr += "_Fake";
-  //  if (bkg == BkgType::Conv) MVATagStr += "_Conv";
 
 
 
-  //if(BDTTag.Contains("_NoPtEta"))  return  MuonIDNoPtEtaConvMVAReader->EvaluateMVA(MVATagStr);
-  //else    if(BDTTag.Contains("_NoPt") || BDTTag.Contains("_LowPt"))  return  MuonIDNoPtConvMVAReader->EvaluateMVA(MVATagStr);
-  
-  return  MuonIDFakeMVAReader->EvaluateMVA(MVATagStr);
+  //if(BDTTag.Contains("Split")) {
+  //  MVATagStr = "BDTG";
+  //  if(mu.Pt() < 30.) MVATagStr += "_FakeLowPt";
+  //  else MVATagStr += "_FakeHighPt";
+  return MuonIDFakeMVAReader->EvaluateMVA(MVATagStr);
+    
+  //  return  MuonIDFakeNoPtMVAReader->EvaluateMVA(MVATagStr);
 
 
 }
@@ -662,6 +658,8 @@ void AnalyzerCore::SetupIDMVAReader(bool isMuon){
     MuonIDFakeMVAReader->AddVariable("MVA",  &MVA);
     MuonIDFakeMVAReader->AddVariable("MuFracCJ",&MuFracCJ);
     MuonIDFakeMVAReader->AddSpectator("w_tot", &w_tot);
+
+
 
 
   }
@@ -786,16 +784,30 @@ void AnalyzerCore::SetupIDMVAReader(bool isMuon){
     
     TString BDTG_Fake = "";
     if(GetYear() == 2016) BDTG_Fake = "BDTG_FakeSignalTypeI_MuMu_Signal_2016_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT";
+    //if(GetYear() == 2016) BDTG_Fake = "BDTG_FakeSignalNoLepPtTypeI_MuMu_SignalNoLepPt_2016_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT";
+    //if(GetYear() == 2017) BDTG_Fake = "BDTG_FakeSignalNoLepPtTypeI_MuMu_SignalNoLepPt_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT";
+    //if(GetYear() == 2018) BDTG_Fake = "BDTG_FakeSignalNoLepPtTypeI_MuMu_SignalNoLepPt_2018_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT";
     if(GetYear() == 2017) BDTG_Fake = "BDTG_FakeSignalTypeI_MuMu_Signal_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT";
     if(GetYear() == 2018) BDTG_Fake = "BDTG_FakeSignalTypeI_MuMu_Signal_2018_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT";
 
+    TString BDTG_FakeLowPt = "";
+    if(GetYear() == 2016) BDTG_FakeLowPt = "BDTG_FakeSignalLowLepPtTypeI_MuMu_SignalLowLepPt_2016_NTrees500_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT";
+    if(GetYear() == 2017) BDTG_FakeLowPt = "BDTG_FakeSignalLowLepPtTypeI_MuMu_SignalLowLepPt_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT";
+    if(GetYear() == 2018) BDTG_FakeLowPt = "BDTG_FakeSignalLowLepPtTypeI_MuMu_SignalLowLepPt_2018_NTrees500_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_4_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT";
+    
+    TString BDTG_FakeHighPt = "";
+    if(GetYear() == 2016) BDTG_FakeHighPt = "BDTG_FakeSignalHighLepPtTypeI_MuMu_SignalHighLepPt_2016_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT";
+    if(GetYear() == 2017) BDTG_FakeHighPt = "BDTG_FakeSignalHighLepPtTypeI_MuMu_SignalHighLepPt_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT";
+    if(GetYear() == 2018) BDTG_FakeHighPt = "BDTG_FakeSignalHighLepPtTypeI_MuMu_SignalHighLepPt_2018_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT";
+
     vector<pair<TString,TString> > BDTInput =     {
-      make_pair("BDTG_Fake", BDTG_Fake)
-      // make_pair("BDTG_Conv", BDTG_Conv)      
+      make_pair("BDTG_Fake", BDTG_Fake),
+      make_pair("BDTG_FakeLowPt", BDTG_FakeLowPt),
+      make_pair("BDTG_FakeHighPt", BDTG_FakeHighPt),
     };
     
     for (auto ibdt : BDTInput)   MuonIDFakeMVAReader->BookMVA(ibdt.first,MVAPathMuonFake+ibdt.second+"_TMVAClassification_BDTG.weights.xml");
-
+    
     
   }
   else{
@@ -1133,10 +1145,10 @@ std::vector<Electron> AnalyzerCore::GetAllElectrons(){
     el.SetFilterBits(electron_filterbits->at(i));
     el.SetPathBits(electron_pathbits->at(i));
 
-
-    //if(fChain->GetBranch("electron_ptrel")) el.SetJetPtRel(electron_ptrel->at(i));
-    //if(fChain->GetBranch("electron_ptratio")) el.SetJetPtRatio(electron_ptratio->at(i));
-    //if(fChain->GetBranch("electron_cj_bjetdisc")) el.SetCloseJetBScore(electron_cj_bjetdisc->at(i));
+    if(fChain->GetBranch("electron_cj_flavour"))el.SetCloseJetFlavour(electron_cj_flavour->at(i));
+    if(fChain->GetBranch("electron_ptrel")) el.SetJetPtRel(electron_ptrel->at(i));
+    if(fChain->GetBranch("electron_ptratio")) el.SetJetPtRatio(electron_ptratio->at(i));
+    if(fChain->GetBranch("electron_cj_bjetdisc")) el.SetCloseJetBScore(electron_cj_bjetdisc->at(i));
     
     if(fChain->GetBranch("electron_mva_fake")) el.SetHNL_LepMVA(electron_mva_fake->at(i), electron_mva_conv->at(i), electron_mva_cf->at(i));
     else {
@@ -1144,7 +1156,7 @@ std::vector<Electron> AnalyzerCore::GetAllElectrons(){
       el.SetHNL_LepMVA(GetBDTScoreEl(el,AnalyzerCore::Fake,  "BDTG"),GetBDTScoreEl(el,AnalyzerCore::Conv,  "BDTG"),GetBDTScoreEl(el,AnalyzerCore::CF,  "BDTG"));    
     }  
     
-    bool FillCloseJetVar=true;
+    bool FillCloseJetVar=!fChain->GetBranch("electron_cj_flavour");
     if(FillCloseJetVar){
       
       std::vector<Jet>    AK4_JetAllColl = GetJets("NoID", 10., 5.0);
@@ -2747,29 +2759,33 @@ double AnalyzerCore::GetMuonSFEventWeight(std::vector<Muon> muons,AnalyzerParame
   if(!IsDATA){
 
     mcCorr->IgnoreNoHist = param.MCCorrrectionIgnoreNoHist;
+    
+    double SystDir_MuonTriggerSF(0);
+    if(param.syst_ == AnalyzerParameter::MuonTriggerSFUp)SystDir_MuonTriggerSF = +1;
+    else if(param.syst_ == AnalyzerParameter::MuonTriggerSFDown)SystDir_MuonTriggerSF = -1;
 
+    double this_trigsf = mcCorr->MuonTrigger_SF(param.Muon_Trigger_SF_Key, param.Muon_Trigger_NameForSF, muons,SystDir_MuonTriggerSF);
+    this_weight*=this_trigsf;
     for (auto mu: muons){
       double MiniAODP = sqrt( mu.MiniAODPt() * mu.MiniAODPt() + mu.Pz() * mu.Pz() );
       double this_pt  = mu.MiniAODPt();
       double this_eta = mu.Eta();
 
-      int SystDir_MuonIDSF(0), SystDir_MuonISOSF(0), SystDir_MuonRecoSF (0), SystDir_MuonTriggerSF(0);
+      int SystDir_MuonIDSF(0), SystDir_MuonISOSF(0), SystDir_MuonRecoSF (0);
       if(param.syst_ == AnalyzerParameter::MuonRecoSFUp)SystDir_MuonRecoSF = +1;
       else if(param.syst_ == AnalyzerParameter::MuonRecoSFDown)SystDir_MuonRecoSF = -1;
       else if(param.syst_ == AnalyzerParameter::MuonIDSFUp)  SystDir_MuonIDSF = +1;
       else if(param.syst_ == AnalyzerParameter::MuonIDSFDown)  SystDir_MuonIDSF = -1;
       else if(param.syst_ == AnalyzerParameter::MuonISOSFUp) SystDir_MuonISOSF  = +1;
       else if(param.syst_ == AnalyzerParameter::MuonISOSFDown) SystDir_MuonISOSF  = -1;
-      else if(param.syst_ == AnalyzerParameter::MuonTriggerSFUp)SystDir_MuonTriggerSF = +1;
-      else if(param.syst_ == AnalyzerParameter::MuonTriggerSFDown)SystDir_MuonTriggerSF = -1;
       
 
 
       double this_idsf   = mcCorr->MuonID_SF (param.Muon_ID_SF_Key,  this_eta, this_pt,SystDir_MuonIDSF);
       double this_isosf  = mcCorr->MuonISO_SF(param.Muon_ISO_SF_Key, this_eta, this_pt,SystDir_MuonISOSF);
-      double this_trigsf = mcCorr->MuonTrigger_SF(param.Muon_Trigger_SF_Key, param.Muon_Trigger_NameForSF, muons,SystDir_MuonTriggerSF);
 
-      this_weight *= this_idsf*this_isosf*this_trigsf;
+
+      this_weight *= this_idsf*this_isosf;
       if(param.DEBUG) cout << "GetMuonSFEventWeight this_idsf=" << this_idsf << " this_isosf=" << this_isosf << " this_trigsf=" << this_trigsf << endl;
 
       double reco_pt = (param.Muon_RECO_SF_Key  == "HighPtMuonRecoSF") ?  MiniAODP : this_pt;

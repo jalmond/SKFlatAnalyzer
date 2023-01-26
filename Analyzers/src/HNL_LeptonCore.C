@@ -1223,7 +1223,7 @@ void HNL_LeptonCore::SetupMVAReader(){
   TString AnalyzerPath=std::getenv("SKFlat_WD");
   TString MVAPath = "/data/Run2UltraLegacy_v3/Run2/BDTClassifier/results_xml/";
   MNStrList = {"90", "100", "150", "200", "300", "400"};
-  NCutList  = {"100", "300", "1000"};
+  NCutList  = {"300"};
   NTreeList = {"850"};
 
   MVAReaderMM->AddVariable("Nvbfj", &Nvbfj);
@@ -1343,7 +1343,13 @@ void HNL_LeptonCore::SetupMVAReader(){
 
   MVAReaderEM->AddSpectator("w_tot", &w_tot);
 
+
   for(unsigned int im=0; im<MNStrList.size(); im++){
+
+    //// This can be changed after checking Hyper paramters
+    //FinalBDTHyperParamMap settings are whats used in limit for SR/CR
+    FinalBDTHyperParamMap[MNStrList.at(im)] = make_pair("300","850");
+
     for(unsigned int ic=0; ic<NCutList.size(); ic++){
       for(unsigned int it=0; it<NTreeList.size(); it++){
 
@@ -1381,7 +1387,8 @@ double HNL_LeptonCore::GetHNLMVAMuon(Muon mu ,BkgType bkg){
 double HNL_LeptonCore::GetHNLMVAElectron(Electron el ,BkgType bkg){
 
   //if(el.Pt() < 20) return GetBDTScoreEl(el, bkg, "BDTG_Bin1");
-  return GetBDTScoreEl(el, bkg, "BDTG");
+  //return GetBDTScoreEl(el, bkg, "BDTG");
+  return -999;
 
 }
 
@@ -1715,10 +1722,10 @@ AnalyzerParameter HNL_LeptonCore::InitialiseHNLParameter(TString s_setup, TStrin
 
   param.Tau_Veto_ID = "JetVLElVLMuVL";
 
-  param.Muon_FR_Key  ="ptcone_eta_AwayJetPt40";
+  param.Muon_FR_Key  ="pt_eta_AwayJetPt40";
   param.Muon_PR_Key  ="ptcone_eta_central";
 
-  param.Electron_FR_Key  = "ptcone_eta_AwayJetPt40";
+  param.Electron_FR_Key  = "pt_eta_AwayJetPt40";
   param.Electron_PR_Key  ="ptcone_eta_central";
 
   param.Muon_RECO_SF_Key = "MuonRecoSF";
@@ -1846,19 +1853,19 @@ AnalyzerParameter HNL_LeptonCore::InitialiseHNLParameter(TString s_setup, TStrin
 
   else if (s_setup=="MVAUL"){
 
-    param.MuFakeMethod = "MC";
-    param.ElFakeMethod = "MC";
+    param.MuFakeMethod = "DATA";
+    param.ElFakeMethod = "DATA";
     param.CFMethod   = "MC";
     param.ConvMethod = "MC";
 
-    param.Muon_Tight_ID = "HNL_TopMVA_MM";
+    param.Muon_Tight_ID = "HNL_ULID_"+GetYearString();
     param.Electron_Tight_ID = "HNL_ULID_"+GetYearString();
 
-    param.Electron_ID_SF_Key = "TmpHNL_TopMVA_MM";
+    param.Electron_ID_SF_Key = "TmpHNL_ULID_"+GetYearString();
     param.Muon_ID_SF_Key = "TmpHNL_ULID_"+GetYearString();
 
-    param.Muon_FR_ID = "HNL_FO_TopMVA_MM";
-    param.Electron_FR_ID = "HNL_FO_ULID_"+GetYearString();
+    param.Muon_FR_ID = "HNL_ULID_FO_"+GetYearString();
+    param.Electron_FR_ID = "HNL_ULID_FO_"+GetYearString();
 
     param.Muon_RECO_SF_Key = "MuonRecoSF";
 
@@ -1866,13 +1873,18 @@ AnalyzerParameter HNL_LeptonCore::InitialiseHNLParameter(TString s_setup, TStrin
 
   }
 
-  else if (s_setup=="MVAUL17"){
+  else if (s_setup.Contains("MVAULN")){
 
     param.CFMethod   = "MC";
     param.ConvMethod = "MC";
 
-    param.Muon_Tight_ID = "HNL_ULID_2017";
-    param.Electron_Tight_ID = "HNL_ULID_2017";
+    param.Muon_Tight_ID = "HNL_ULID_"+GetYearString();
+
+    if (s_setup=="MVAULN1")  param.Electron_Tight_ID = "HNL_ULID_Baseline";
+    if (s_setup=="MVAULN2")  param.Electron_Tight_ID = "HNL_ULID_CF";
+    if (s_setup=="MVAULN3")  param.Electron_Tight_ID = "HNL_ULID_Fake";
+    if (s_setup=="MVAULN4")  param.Electron_Tight_ID = "HNL_ULID_Conv";
+
 
     param.Electron_ID_SF_Key = "TmpHNTightV2";
     param.Muon_ID_SF_Key = "TmpHNTightV2";
@@ -1886,25 +1898,6 @@ AnalyzerParameter HNL_LeptonCore::InitialiseHNLParameter(TString s_setup, TStrin
 
   }
 
-  else if (s_setup=="MVAUL18"){
-
-    param.CFMethod   = "MC";
-    param.ConvMethod = "MC";
-
-    param.Muon_Tight_ID = "HNL_ULID_2018";
-    param.Electron_Tight_ID = "HNL_ULID_2018";
-
-    param.Electron_ID_SF_Key = "TmpHNTightV2";
-    param.Muon_ID_SF_Key = "TmpHNTightV2";
-
-    param.Muon_FR_ID = "HNLooseV1";
-    param.Electron_FR_ID = "HNLooseV4";
-
-    param.Muon_RECO_SF_Key = "MuonRecoSF";
-
-    return param;
-
-  }
 
 
 
@@ -3928,6 +3921,17 @@ double HNL_LeptonCore::GetST( std::vector<Lepton *> leps, std::vector<Jet> jets,
 
   return _st;
 }
+double HNL_LeptonCore::GetST( std::vector<Lepton *> leps, std::vector<Jet> jets, std::vector<FatJet> fatjets,  Particle met){
+
+
+  double _st(0.);
+  for(unsigned int i=0; i<jets.size(); i++)_st += jets.at(i).Pt();
+  for(unsigned int i=0; i<fatjets.size(); i++)_st += fatjets.at(i).Pt();
+  for(auto ilep : leps) _st +=  ilep->Pt();
+  _st += met.Pt();
+  return _st;
+
+}
 
 
 
@@ -5106,6 +5110,23 @@ void HNL_LeptonCore::FillCutFlow(bool IsCentral, TString suffix, TString histnam
 }
 
 
+
+TString HNL_LeptonCore::GetPtBin(bool muon, double pt){
+  TString pt_label="";
+  if(muon){
+    if(pt< 20) pt_label = "_ptbin1";                                                                                                                                                         
+    else if(pt < 30) pt_label = "_ptbin2";                                                                                                                                                   
+    else if(pt < 40) pt_label = "_ptbin3";                                                                                                                                                   
+    else if(pt < 50) pt_label = "_ptbin4";                                                                                                                                                  
+    else if(pt < 60) pt_label = "_ptbin5";                                                                                                                                                   
+    else if(pt < 100) pt_label = "_ptbin6";                                                                                                                                                  
+    else if(pt < 300) pt_label = "_ptbin7";                                                                                                                                                  
+    else pt_label = "_ptbin8";                                                                                                                                                                             
+  }
+  return pt_label;
+
+}
+
 void HNL_LeptonCore::FillMuonPlots(TString label , TString cut,  std::vector<Muon> muons, double w){
 
   for(unsigned int i=0; i <  muons.size(); i++){
@@ -5127,18 +5148,18 @@ void HNL_LeptonCore::FillAllMuonPlots(TString label , TString cut,  std::vector<
     else eta_label = "_endcap";
     
     TString pt_label="";
-    if(muons.at(i).Pt()< 20) pt_label = "_ptbin1";
-    else if(muons.at(i).Pt() < 30) pt_label = "_ptbin2";
-    else if(muons.at(i).Pt() < 40) pt_label = "_ptbin3";
-    else if(muons.at(i).Pt() < 50) pt_label = "_ptbin4";
-    else if(muons.at(i).Pt() < 60) pt_label = "_ptbin5";
-    else if(muons.at(i).Pt() < 100) pt_label = "_ptbin6";
-    else if(muons.at(i).Pt() < 300) pt_label = "_ptbin7";
-    else pt_label = "_ptbin8";
+    //if(muons.at(i).Pt()< 20) pt_label = "_ptbin1";
+    //else if(muons.at(i).Pt() < 30) pt_label = "_ptbin2";
+    //else if(muons.at(i).Pt() < 40) pt_label = "_ptbin3";
+    ///else if(muons.at(i).Pt() < 50) pt_label = "_ptbin4";
+    //else if(muons.at(i).Pt() < 60) pt_label = "_ptbin5";
+    //else if(muons.at(i).Pt() < 100) pt_label = "_ptbin6";
+    //else if(muons.at(i).Pt() < 300) pt_label = "_ptbin7";
+    //else pt_label = "_ptbin8";
 
     FillAllMuonPlots("muon"+label, cut, muons.at(i), w);
     FillAllMuonPlots("muon"+label+eta_label, cut, muons.at(i), w);
-    FillAllMuonPlots("muon"+label+eta_label+pt_label, cut, muons.at(i), w);
+    // FillAllMuonPlots("muon"+label+eta_label+pt_label, cut, muons.at(i), w);
 
     //FillAllMuonPlots("muon"+label+pt_label, cut, muons.at(i), w);
 
@@ -5209,6 +5230,8 @@ void HNL_LeptonCore::FillAllMuonPlots(TString label , TString cut,  Muon mu, dou
   FillHist( cut+ "/Mva_"+label  , mu.MVA(), w, 600, -1., 1., "MVA");
   FillHist( cut+ "/Mva_FakeW_"+label  , mu.HNL_MVA_Fake(), w, 600, -1., 1., "MVA");
 
+  //FillHist( cut+ "/Mva_FakeW_split_"+label  , GetBDTScoreMuon(mu,AnalyzerCore::Fake,  "BDTGSplit"), w, 600, -1., 1., "MVA");
+
   vector<TString> IDs ={"HNTightV2"};
   for (auto ID : IDs){
     if(mu.PassID(ID)) FillHist( cut+ "/Pass_"+ID+label  , 1, w, 4, 0., 4., "Pass " + ID);
@@ -5263,19 +5286,19 @@ void HNL_LeptonCore::FillAllElectronPlots(TString label , TString cut,  std::vec
     else eta_label = "_endcap";
 
     TString pt_label="";
-    if(els.at(i).Pt()< 20) pt_label = "_ptbin1";
-    else if(els.at(i).Pt()< 30) pt_label = "_ptbin2";
-    else if(els.at(i).Pt()< 40) pt_label = "_ptbin3";
-    else if(els.at(i).Pt()< 50) pt_label = "_ptbin4";
-    else if(els.at(i).Pt() < 60) pt_label = "_ptbin5";
-    else if(els.at(i).Pt() < 100) pt_label = "_ptbin6";
-    else if(els.at(i).Pt() < 400) pt_label = "_ptbin7";
-    else pt_label = "_ptbin8";
+    //if(els.at(i).Pt()< 20) pt_label = "_ptbin1";
+    //else if(els.at(i).Pt()< 30) pt_label = "_ptbin2";
+    //else if(els.at(i).Pt()< 40) pt_label = "_ptbin3";
+    //else if(els.at(i).Pt()< 50) pt_label = "_ptbin4";
+    //else if(els.at(i).Pt() < 60) pt_label = "_ptbin5";
+    //else if(els.at(i).Pt() < 100) pt_label = "_ptbin6";
+    //else if(els.at(i).Pt() < 400) pt_label = "_ptbin7";
+    //else pt_label = "_ptbin8";
 
     FillAllElectronPlots("Electron_"+label, cut, els[i], w); 
     FillAllElectronPlots("Electron_"+eta_label+label, cut, els[i], w); 
     //FillAllElectronPlots("Electron_"+pt_label+label, cut, els[i], w); 
-    FillAllElectronPlots("Electron_"+eta_label+pt_label+label, cut, els[i], w);
+    //    FillAllElectronPlots("Electron_"+eta_label+pt_label+label, cut, els[i], w);
 
     
   }
@@ -5350,13 +5373,13 @@ void HNL_LeptonCore::FillAllElectronPlots(TString label , TString cut,  Electron
 
 
   FillHist( cut+ "/Fake_Mva_"+label  , el.HNL_MVA_Fake(), w, 100, -1., 2., "MVA");
-  FillHist( cut+ "/Fake_Mva_v2_"+label  , GetBDTScoreEl(el,AnalyzerCore::Fake, "BDTGv2"), w, 100, -1., 2., "MVA");
+  //  FillHist( cut+ "/Fake_Mva_v2_"+label  , GetBDTScoreEl(el,AnalyzerCore::Fake, "BDTGv2"), w, 100, -1., 2., "MVA");
   //GetBDTScoreEl(el, bkg, "BDTG");
 
   FillHist( cut+ "/CF_Mva_"+label  , el.HNL_MVA_CF(), w, 100, -1., 2., "MVA");
 
   FillHist( cut+ "/Conv_Mva_"+label  , el.HNL_MVA_Conv(), w, 100, -1., 2., "MVA");
-  FillHist( cut+ "/Conv_Mva_v2_"+label  , GetBDTScoreEl(el,AnalyzerCore::Conv, "BDTGv2"), w, 100, -1., 2., "MVA");
+  //FillHist( cut+ "/Conv_Mva_v2_"+label  , GetBDTScoreEl(el,AnalyzerCore::Conv, "BDTGv2"), w, 100, -1., 2., "MVA");
 
 
   

@@ -51,7 +51,7 @@ public:
   inline TString  etaRegionString() const {
     double sceta = fabs(this->Eta());
     if( sceta < 0.8 ) return "IB";
-    else if( sceta < 1.566 ) return "OB";
+    else if( sceta < 1.479 ) return "OB";
     else return "EE";
   }
 

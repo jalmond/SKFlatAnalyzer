@@ -491,6 +491,7 @@ void SKFlatNtuple::Init()
   electron_ptrel = 0;
   electron_ptratio = 0;
   electron_cj_bjetdisc=0;
+  electron_cj_flavour=0;
   electron_mva_cf=0;
   electron_mva_fake=0;
   electron_mva_conv=0;
@@ -588,7 +589,8 @@ void SKFlatNtuple::Init()
   muon_ptrel = 0;
   muon_ptratio = 0;
   muon_cj_bjetdisc=0;
-  muon_mva_conv=0;
+  muon_cj_flavour=0;
+  muon_mva_fake=0;
   muon_simType = 0;
   muon_simExtType = 0;
   muon_simFlavour = 0;
@@ -874,6 +876,7 @@ void SKFlatNtuple::Init()
     fChain->SetBranchAddress("electron_ptrel",&electron_ptrel,&b_electron_ptrel);
     fChain->SetBranchAddress("electron_ptratio",&electron_ptratio,&b_electron_ptratio);
     fChain->SetBranchAddress("electron_cj_bjetdisc",&electron_cj_bjetdisc,&b_electron_cj_bjetdisc);
+    fChain->SetBranchAddress("electron_cj_flavour",&electron_cj_flavour,&b_electron_cj_flavour);
     fChain->SetBranchAddress("electron_mva_cf",&electron_mva_cf,&b_electron_mva_cf);
     fChain->SetBranchAddress("electron_mva_conv",&electron_mva_conv,&b_electron_mva_conv);
     fChain->SetBranchAddress("electron_mva_fake",&electron_mva_fake,&b_electron_mva_fake);
@@ -973,7 +976,8 @@ void SKFlatNtuple::Init()
     fChain->SetBranchAddress("muon_ptrel",&muon_ptrel,&b_muon_ptrel);
     fChain->SetBranchAddress("muon_ptratio",&muon_ptratio,&b_muon_ptratio);
     fChain->SetBranchAddress("muon_cj_bjetdisc",&muon_cj_bjetdisc,&b_muon_cj_bjetdisc);
-    fChain->SetBranchAddress("muon_mva_conv",&muon_mva_conv,&b_muon_mva_conv);
+    fChain->SetBranchAddress("muon_cj_flavour",&muon_cj_flavour,&b_muon_cj_flavour);
+    fChain->SetBranchAddress("muon_mva_fake",&muon_mva_fake,&b_muon_mva_fake);
   }
   
   fChain->SetBranchAddress("muon_simType", &muon_simType, &b_muon_simType);

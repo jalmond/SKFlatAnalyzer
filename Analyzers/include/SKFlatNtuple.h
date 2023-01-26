@@ -214,6 +214,7 @@ public :
    vector<float>   *electron_ptrel;
    vector<float>   *electron_ptratio;
    vector<float>   *electron_cj_bjetdisc;
+   vector<float>   *electron_cj_flavour;
    vector<float>   *electron_mva_cf;
    vector<float>   *electron_mva_conv;
    vector<float>   *electron_mva_fake;
@@ -315,7 +316,8 @@ public :
    vector<float>   *muon_ptrel;
    vector<float>   *muon_ptratio;
    vector<float>   *muon_cj_bjetdisc;
-   vector<float>   *muon_mva_conv;
+   vector<float>   *muon_cj_flavour;
+   vector<float>   *muon_mva_fake;
 
    vector<float>   *muon_PfChargedHadronIsoR04;
    vector<float>   *muon_PfNeutralHadronIsoR04;
@@ -659,6 +661,7 @@ public :
    TBranch        *b_electron_ptrel;
    TBranch        *b_electron_ptratio;
    TBranch        *b_electron_cj_bjetdisc;
+   TBranch        *b_electron_cj_flavour;
    TBranch        *b_electron_mva_cf;
    TBranch        *b_electron_mva_conv;
    TBranch        *b_electron_mva_fake;
@@ -747,7 +750,8 @@ public :
    TBranch        *b_muon_ptrel;
    TBranch        *b_muon_ptratio;
    TBranch        *b_muon_cj_bjetdisc;
-   TBranch        *b_muon_mva_conv;
+   TBranch        *b_muon_cj_flavour;
+   TBranch        *b_muon_mva_fake;
                                                               
    TBranch        *b_muon_PfChargedHadronIsoR04;   //!
    TBranch        *b_muon_PfNeutralHadronIsoR04;   //!

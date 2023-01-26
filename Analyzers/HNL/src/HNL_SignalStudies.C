@@ -61,7 +61,7 @@ void HNL_SignalStudies::executeEvent(){
 
     TString channel = GetChannelString(dilep_channel) ;
 
-    double ptbins[11] = { 0., 10.,15., 20., 30., 40.,50., 100.,500. ,1000., 2000.};
+    //double ptbins[11] = { 0., 10.,15., 20., 30., 40.,50., 100.,500. ,1000., 2000.};
 
     std::vector<Jet>      jetsTmp     = GetJets   ( "NoID",    10., 5.);
     //for(auto ijet : jetsTmp ) ijet.PrintObject("Jet ");
@@ -184,7 +184,7 @@ void HNL_SignalStudies::executeEvent(){
 	FillAllMuonPlots("SS", "Muons"  , MuonColl , weight);
 	vector<double> mva_cut = {-1, -0.5, 0., 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.95};
 	
-	for(int i=0 ; i < mva_cut.size(); i++){
+	for(unsigned int i=0 ; i < mva_cut.size(); i++){
 	  if(MuonColl[0].MVA() > mva_cut[i] && MuonColl[1].MVA() > mva_cut[i])    FillHist( "Vec/FakeMVAMuonColl", i+1,  weight,15, 0., 15,"HNTight");
 	  if(MuonColl[0].MVA() > 0.65 && MuonColl[1].MVA() > 0.65)    {
 	    if(MuonColl[0].HNL_MVA_Conv()  > mva_cut[i] && MuonColl[1].HNL_MVA_Conv()  )   FillHist( "Vec/ConvMVAMuonColl", i+1,  weight,15, 0., 15,"HNTight");
@@ -244,7 +244,7 @@ void HNL_SignalStudies::executeEvent(){
 	  }
 
 	  
-	  for(int i=0 ; i< mva_cut.size(); i++){
+	  for(unsigned int i=0 ; i< mva_cut.size(); i++){
 	    
 	    double mva_cut1 = mva_cut[i] ;
 	    

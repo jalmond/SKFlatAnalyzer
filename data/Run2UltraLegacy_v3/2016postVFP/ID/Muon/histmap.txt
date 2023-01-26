@@ -13,3 +13,4 @@ Trigger  Eff_MC    Mu50_POGHighPtLooseTrkIso               Efficiencies_muon_gen
 ID      SF         TmpHNTightV2                               HNL_IDSFTmp_mu_2016postVFP.root                                    Data_MC_SF_HNTightV2
 ID      SF         TmpHNTight_17028                           HNL_IDSFTmp_mu_2016postVFP.root                                              Data_MC_SF_HNTight_17028 
 ID      SF         TmpPOGTightWithTightIso                    HNL_IDSFTmp_mu_2016postVFP.root                                              Data_MC_SF_POGTightWithTightIso 
+ID      SF         TmpHNL_ULID_2016                        HNL_LeptonIDSF_Mu_2016postVFP.root                                           Data_MC_SF_HNL_ULID_2016

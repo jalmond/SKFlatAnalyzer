@@ -212,7 +212,7 @@ bool Muon::PassID(TString ID) const {
     if(MVA() < 0.64)  return false;
     return true;
   }
-  if(ID=="HNL_FO_TopMVA_MM") {
+  if(ID=="HNL_TopMVA_FO_MM") {
 
     if(!PassID("MVALoose")) return false;
 
@@ -258,7 +258,7 @@ bool Muon::PassID(TString ID) const {
     return true;
   }
 
-  if(ID=="HNL_FO_TopMVA_TM") {
+  if(ID=="HNL_TopMVA_FO_TM") {
 
     if(!PassID("MVALoose")) return false;
 
@@ -394,19 +394,49 @@ bool Muon::PassID(TString ID) const {
     
   }
 
-  if(ID.Contains("HNL_ULID_FO_2016"))  {
+  if(ID == "HNL_ULID_FO_2016" || ID == "HNL_ULID_FO_2017" )  {
 
     if(!PassID("MVALoose")) return false;
     
-    if (!PassID("HNL_ULID_2016")){
-      if(CloseJet_Ptratio() < 0.45) return false;
-      if(CloseJet_BScore() > 0.025) return false;
-      
+    if( fabs(this->Eta()) <= 1.479 ){
+      if(MVA() < 0.77)  {
+	if(CloseJet_Ptratio() < 0.45) return false;
+	//if(CloseJet_BScore() > 0.025) return false;
+      }
+    }
+    else{
+      if(MVA() < 0.6) {
+	if(CloseJet_Ptratio() < 0.45) return false;
+	//if(CloseJet_BScore() > 0.025) return false;
+
+      }
     }
 
     return true;
 
   }
+
+  if(ID.Contains("HNL_ULID_FO_2018"))  {
+
+    if(!PassID("MVALoose")) return false;
+
+    if( fabs(this->Eta()) <= 1.479 ){
+      if(MVA() < 0.71)  {
+	if(CloseJet_Ptratio() < 0.45) return false;
+        //if(CloseJet_BScore() > 0.025) return false;
+      }
+    }
+    else{
+      if(MVA() < 0.65) {
+	if(CloseJet_Ptratio() < 0.45) return false;
+        //if(CloseJet_BScore() > 0.025) return false;
+      }
+    }
+
+    return true;
+
+  }
+
 
 
   if(ID.Contains("HNL_ULID_2017v0"))  {

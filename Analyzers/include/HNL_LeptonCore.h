@@ -163,6 +163,9 @@ class HNL_LeptonCore : public AnalyzerCore {
   double GetPtCutTrigger(TString trigname, int nlep, TString flavour);
   bool CheckSRStream(Event ev,HNL_LeptonCore::Channel channel_ID);
   
+  TString GetPtBin(bool mu, double pt);
+  
+
   /// ------ SYSTEMATICS
   vector<AnalyzerParameter::Syst> GetSystList(TString SystType);
 
@@ -382,6 +385,7 @@ class HNL_LeptonCore : public AnalyzerCore {
 
 
   vector<TString> MNStrList, NCutList, NTreeList;
+  map<TString, std::pair<TString,TString> > FinalBDTHyperParamMap;
   TMVA::Reader *MVAReader;
   TMVA::Reader *MVAReaderMM, *MVAReaderEE, *MVAReaderEM;
 

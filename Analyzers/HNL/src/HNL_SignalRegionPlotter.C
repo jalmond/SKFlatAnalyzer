@@ -48,19 +48,19 @@ void HNL_SignalRegionPlotter::RunULAnalysis(AnalyzerParameter param){
   double weight =SetupWeight(ev,param);
 
 
-  /// MERGE WJet samples for more stats                                                                                                                                      
-  if(MCSample.Contains("WJet")){
-    vector<TString> vec = {"WJet"};
-    double merge_weight = MergeMultiMC( vec, "" );
-    weight*= merge_weight;
-  }
+  ///// MERGE WJet samples for more stats                                                                                                                                      
+  //if(MCSample.Contains("WJet")){
+  //  vector<TString> vec = {"WJet"};
+  //  double merge_weight = MergeMultiMC( vec, "" );
+  //  weight*= merge_weight;
+  // }
 
   /// Merge DY samples for more stats                                                                                                                                        
-  if(MCSample.Contains("DYJets_MG")){
-    vector<TString> vec = {"DYMG"};
-    double merge_weight = MergeMultiMC( vec, "" );
-    weight*= merge_weight;
-  }
+  //if(MCSample.Contains("DYJets_MG")){
+  //  vector<TString> vec = {"DYMG"};
+  //  double merge_weight = MergeMultiMC( vec, "" );
+  //  weight*= merge_weight;
+  // }
 
 
   

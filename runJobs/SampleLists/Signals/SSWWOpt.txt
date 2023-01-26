@@ -1,2 +1,1 @@
-SSWWTypeI_SF_M2000_private
-SSWWTypeI_SF_M500_private
+SSWWTypeI_SF_M1000_private

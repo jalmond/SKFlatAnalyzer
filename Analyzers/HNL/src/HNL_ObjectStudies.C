@@ -137,6 +137,8 @@ void HNL_ObjectStudies::executeEvent(){
     std::vector<Muon>       MuonCollPrompt;
 
     if(HasFlag("LeptonTypes")){
+      // This function splits leptons into Fake/Conv/CF/Prompt and plots ALl plots splitting pt/eta
+
       if(!IsData){
 	if (!MCSample.Contains("Type")){
 	  
@@ -165,42 +167,44 @@ void HNL_ObjectStudies::executeEvent(){
       }
       continue;
     }
+
+    
     
     std::vector<Lepton *> LepsAll  = (dilep_channel==EE) ? MakeLeptonPointerVector(ElectronColl) : MakeLeptonPointerVector(MuonColl);
 
-    if(!CheckLeptonFlavourForChannel(dilep_channel, LepsAll)) continue;
+    /// Collect All jets 
+    std::vector<Jet>    AllAK4Jets       = GetJets   ( param, param.Jet_ID, 10., 5.);
 
-    if (PassTriggerSelection(dilep_channel, ev, LepsAll,"Full",false) && SameCharge(LepsAll)) {
+    std::vector<FatJet> AllAK8Jets       = GetFatJets(param, param.FatJet_ID, 200., 5.);
+    std::vector<FatJet> AK8_JetColl      = SelectAK8Jets(AllAK8Jets, 200., 5., true,  1., false, -999, false, 0., 20000., ElectronCollV, MuonCollV);
+    std::vector<Jet>    JetCollLoose     = SelectAK4Jets(AllAK4Jets,     15., 4.7, true,  0.4,0.8, "",   ElectronCollV,MuonCollV, AK8_JetColl);
 
-      if(!PassMETFilter()) continue;
+    TString PUIDWP="";
+    std::vector<Jet> JetColl             = SelectAK4Jets(AllAK4Jets,     20., 2.7, true,  0.4,0.8, PUIDWP,   ElectronCollV,MuonCollV, AK8_JetColl);
+    std::vector<Jet> VBF_JetColl         = SelectAK4Jets(AllAK4Jets,     30., 4.7, true,  0.4,0.8, PUIDWP,  ElectronCollV,MuonCollV, AK8_JetColl);
+    std::vector<Jet> B_JetColl           = SelectAK4Jets(AllAK4Jets,     20., 2.4, true,  0.4,0.8, "",   ElectronCollV,MuonCollV, AK8_JetColl);
+    JetTagging::Parameters param_jets = JetTagging::Parameters(JetTagging::DeepJet, JetTagging::Medium, JetTagging::incl, JetTagging::mujets);
 
-      std::vector<Jet> jets_tmp     = GetJets   ( param, param.Jet_ID, 10., 5.);
 
-      std::vector<FatJet> fatjets_tmp                 = GetFatJets(param, param.FatJet_ID, 200., 5.);
-      std::vector<FatJet> AK8_JetColl                  = SelectAK8Jets(fatjets_tmp, 200., 5., true,  1., false, -999, false, 0., 20000., ElectronCollV, MuonCollV);
-      std::vector<Jet> JetCollLoose                    = SelectAK4Jets(jets_tmp,     15., 4.7, true,  0.4,0.8, "",   ElectronCollV,MuonCollV, AK8_JetColl);
+    // Get BJets  and EV weight to corr BTag Eff                                                                                                                                                                                                                       
+    std::vector<Jet> BJetColl    = SelectBJets(param, BJetColl, param_jets);
+    double sf_btag               = GetBJetSF(param, BJetColl, param_jets);
+    weight*= sf_btag;
+
+
+    if(HasFlag("SR")){
       
-      TString PUIDWP="";
-      std::vector<Jet> JetColl                           = SelectAK4Jets(jets_tmp,     20., 2.7, true,  0.4,0.8, PUIDWP,   ElectronCollV,MuonCollV, AK8_JetColl);
-      std::vector<Jet> VBF_JetColl                       = SelectAK4Jets(jets_tmp,     30., 4.7, true,  0.4,0.8, PUIDWP,  ElectronCollV,MuonCollV, AK8_JetColl);  
-      
-      std::vector<Jet> BJetColltmp                       = SelectAK4Jets(jets_tmp,     20., 2.4, true,  0.4,0.8, "",   ElectronCollV,MuonCollV, AK8_JetColl);
+      if (PassTriggerSelection(dilep_channel, ev, LepsAll,"Full",false)) {
+	if(!PassMETFilter()) continue;
+      }
 
-      //if((JetColl.size() + AK8_JetColl.size() ) == 0 ) continue;
-
-      JetTagging::Parameters param_jets = JetTagging::Parameters(JetTagging::DeepJet, JetTagging::Medium, JetTagging::incl, JetTagging::mujets);
-      
-      // Get BJets  and EV weight to corr BTag Eff                                                                                                                              
-      std::vector<Jet> BJetColl    = SelectBJets(param, BJetColltmp, param_jets);
-      double sf_btag               = GetBJetSF(param, BJetColltmp, param_jets);
-      weight*= sf_btag;
-      
       FillHist ("Trigger_"+GetChannelString(dilep_channel), 1, weight, 2, 0., 2.,"");
 
-      Particle ll =  (*LepsAll[0]) + (*LepsAll[1]);
-      if(ll.M() < 10) continue;
       FillHist ("LowMassCut_"+GetChannelString(dilep_channel), 1, weight, 2, 0., 2.,"");
-
+    }
+    
+    if(HasFlag("FakeLepton")){
+    
       vector<Muon> MuonTopColl;
       vector<Muon> MuonHNLColl;
       vector<Muon> MuonV2Coll;
@@ -230,14 +234,42 @@ void HNL_ObjectStudies::executeEvent(){
 	FillHist("JetType/AllMuon", imu.CloseJet_FlavourInt(),   weight,6, 0., 6.);
 
         if(imu.IsFake( GetLeptonType_JH(imu, gens))) {
-  
+
+	  if (imu.Pt() < 500.)  FillHist("FakeMuon/Pt", imu.Pt(),   weight,100, 0., 500.);
+	  else  FillHist("FakeMuon/Pt", 499.,   weight,100, 0., 500.);
+
+
+	  if(JetFlavour == "LF")  {
+            if (imu.Pt() < 500.)  FillHist("FakeMuon/LF_Pt", imu.Pt(),   weight,100, 0., 500.);
+            else FillHist("FakeMuon/LF_Pt", 499.,   weight,100, 0., 500.);
+          }
+          if(JetFlavour == "HF")  {
+            if (imu.Pt() < 500.)  FillHist("FakeMuon/HF_Pt", imu.Pt(),   weight,100, 0., 500.);
+            else FillHist("FakeMuon/HF_Pt", 499.,   weight,100, 0., 500.);
+          }
+
+
 	  FillHist("JetType/FakeMuon", imu.CloseJet_FlavourInt(),   weight,6, 0., 6.);
-	  
 	  FillHist("TypeVsFlavour/FakeMuon", MulepType,   weight,10, -5., 5.);
           if(JetFlavour == "LF")       FillHist("TypeVsFlavour/FakeMuonLF", MulepType,   weight,10, -5., 5.);
           else  if(JetFlavour == "HF") FillHist("TypeVsFlavour/FakeMuonHF", MulepType,   weight,10, -5., 5.);
 
           if(SameCharge(MuonColl)) {
+
+	    if (imu.Pt() < 500.)  FillHist("FakeMuon/SSPt", imu.Pt(),   weight,100, 0., 500.);
+	    else FillHist("FakeMuon/SSPt", 499.,   weight,100, 0., 500.);
+
+	    if(JetFlavour == "LF")  {
+	      if (imu.Pt() < 500.)  FillHist("FakeMuon/SSLF_Pt", imu.Pt(),   weight,100, 0., 500.);
+	      else FillHist("FakeMuon/SSLF_Pt", 499.,   weight,100, 0., 500.);
+	    }
+	    if(JetFlavour == "HF")  {
+	      if (imu.Pt() < 500.)  FillHist("FakeMuon/SSHF_Pt", imu.Pt(),   weight,100, 0., 500.);
+	      else FillHist("FakeMuon/SSHF_Pt", 499.,   weight,100, 0., 500.);
+	    }
+
+
+
 	    FillHist("TypeVsFlavour/AllSSFakeMuon", MulepType,   weight,10, -5., 5.);
             if(JetFlavour == "LF")       FillHist("TypeVsFlavour/SSFakeMuonLF", MulepType,   weight,10, -5., 5.);
             else  if(JetFlavour == "HF") FillHist("TypeVsFlavour/SSFakeMuonHF", MulepType,   weight,10, -5., 5.);
@@ -360,12 +392,37 @@ void HNL_ObjectStudies::executeEvent(){
 
 	if(iel.IsFake( GetLeptonType_JH(iel, gens))) {
 	  
+	  if (iel.Pt() < 500.)  FillHist("FakeEl/Pt", iel.Pt(),   weight,100, 0., 500.);
+	  else FillHist("FakeEl/Pt", 499.,   weight,100, 0., 500.);
+
+	  if(JetFlavour == "LF")  {
+	    if (iel.Pt() < 500.)  FillHist("FakeEl/LF_Pt", iel.Pt(),   weight,100, 0., 500.);
+	    else FillHist("FakeEl/LF_Pt", 499.,   weight,100, 0., 500.);
+	  }
+	  if(JetFlavour == "HF")  {
+            if (iel.Pt() < 500.)  FillHist("FakeEl/HF_Pt", iel.Pt(),   weight,100, 0., 500.);
+            else FillHist("FakeEl/HF_Pt", 499.,   weight,100, 0., 500.);
+          }
+
 	  FillHist("JetType/FakeElectron", iel.CloseJet_FlavourInt(),   weight,6, 0., 6.);
 
 	  if(JetFlavour == "LF")      FillHist("TypeVsFlavour/FakeElectronLF", El_lepType,   weight,10, -5., 5.);
 	  else if(JetFlavour == "HF") FillHist("TypeVsFlavour/FakeElectronHF", El_lepType,   weight,10, -5., 5.);
 
 	  if(SameCharge(ElectronColl)) {
+	    if (iel.Pt() < 500.)  FillHist("FakeEl/SSPt", iel.Pt(),   weight,100, 0., 500.);
+	    else FillHist("FakeEl/SSPt", 499.,   weight,100, 0., 500.);
+
+
+	    if(JetFlavour == "LF")  {
+	      if (iel.Pt() < 500.)  FillHist("FakeEl/SSLF_Pt", iel.Pt(),   weight,100, 0., 500.);
+	      else FillHist("FakeEl/SSLF_Pt", 499.,   weight,100, 0., 500.);
+	    }
+	    if(JetFlavour == "HF")  {
+	      if (iel.Pt() < 500.)  FillHist("FakeEl/SSHF_Pt", iel.Pt(),   weight,100, 0., 500.);
+	      else FillHist("FakeEl/SSHF_Pt", 499.,   weight,100, 0., 500.);
+	    }
+
 	    if(JetFlavour == "LF")      FillHist("TypeVsFlavour/SSFakeElectronLF", El_lepType,   weight,10, -5., 5.);
 	    else if(JetFlavour == "HF") FillHist("TypeVsFlavour/SSFakeElectronHF", El_lepType,   weight,10, -5., 5.);
 	  }
@@ -390,8 +447,8 @@ void HNL_ObjectStudies::executeEvent(){
 	  if(SameCharge(ElectronHNLN6Coll))                    FillHist ("SameSignDilep_"+GetChannelString(dilep_channel), 8, weight, 10, 0., 10.,"");
 
 	  
-	  TString Jet1Flavour = CloseJetFlavour(jets_tmp, ElectronColl[0]) ;
-	  TString Jet2Flavour = CloseJetFlavour(jets_tmp, ElectronColl[1]) ;
+	  TString Jet1Flavour = CloseJetFlavour(AllAK4Jets, ElectronColl[0]) ;
+	  TString Jet2Flavour = CloseJetFlavour(AllAK4Jets, ElectronColl[1]) ;
 	  
 	  if(ElectronColl[0].IsFake( GetLeptonType_JH(ElectronColl[0], gens))  && ElectronColl[1].IsPrompt( GetLeptonType_JH(ElectronColl[1], gens)) ) {
 
@@ -496,8 +553,9 @@ void HNL_ObjectStudies::executeEvent(){
 	  }
 	} 
       }
+      continue;
     }
-    
+      
     continue;
   
     

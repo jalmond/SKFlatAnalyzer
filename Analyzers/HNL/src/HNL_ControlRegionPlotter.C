@@ -17,7 +17,7 @@ void HNL_ControlRegionPlotter::executeEvent(){
 
   if(!IsData)  gens = GetGens();
 
-  AnalyzerParameter param_signal = HNL_LeptonCore::InitialiseHNLParameter("POGCR","_UL");
+  AnalyzerParameter param_signal = HNL_LeptonCore::InitialiseHNLParameter("MVAUL","_UL");
 
   RunControlRegions(param_signal);
 
@@ -82,8 +82,8 @@ void HNL_ControlRegionPlotter::RunControlRegions(AnalyzerParameter param){
   // std::vector<Muon>       MuonCollT     = GetLepCollByRunType    ( GetMuons    ( param,mu_ID, Min_Muon_Pt, 2.4, RunFake)      ,gens,param,"");
   //std::vector<Electron>   ElectronCollT = GetLepCollByRunType    ( GetElectrons( param,el_ID, Min_Electron_Pt, 2.5, RunFake)  ,gens,param,"");
 
-  std::vector<Muon>       MuonCollTInit = GetMuons    ( param,mu_ID, Min_Muon_Pt, 2.4, RunFake);
-  std::vector<Electron>   ElectronCollTInit = GetElectrons( param,el_ID, Min_Electron_Pt, 2.5, RunFake)  ;
+  std::vector<Muon>       MuonCollTInit = GetMuons    ( param,mu_ID, Min_Muon_Pt, 2.4, false);
+  std::vector<Electron>   ElectronCollTInit = GetElectrons( param,el_ID, Min_Electron_Pt, 2.5, false)  ;
 
   //cout << "MuonCollTInit size = " << MuonCollTInit.size() << endl;
   //cout << "ElectronCollTInit size = " << ElectronCollTInit.size() << endl;
@@ -111,6 +111,7 @@ void HNL_ControlRegionPlotter::RunControlRegions(AnalyzerParameter param){
   // Make selection on AK8
   std::vector<FatJet> AK8_JetColl                  = SelectAK8Jets(fatjets_tmp, 200., 5., true,  1., false, -999, false, 0., 20000., ElectronCollV, MuonCollV);
 
+  std::vector<Jet> All_JetColl = GetJets   ( param, param.Jet_ID, 10., 5.);
   std::vector<Jet> jets_tmp     = GetJets   ( param, param.Jet_ID, 20., 5.);
 
 
@@ -131,7 +132,7 @@ void HNL_ControlRegionPlotter::RunControlRegions(AnalyzerParameter param){
   double sf_btag               = GetBJetSF(param, bjets_tmp, param_jets);
   if(!IsData )weight*= sf_btag;
   
-  RunAllControlRegions(ElectronCollT,ElectronCollV,MuonCollT,MuonCollV,  AK4_JetColl,VBF_JetColl,AK8_JetColl, BJetColl, ev,METv, param, weight);
+  RunAllControlRegions(ElectronCollT,ElectronCollV,MuonCollT,MuonCollV, All_JetColl, AK4_JetColl,VBF_JetColl,AK8_JetColl, BJetColl, ev,METv, param, weight);
 
   
 
