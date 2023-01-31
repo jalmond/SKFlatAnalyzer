@@ -1222,7 +1222,7 @@ void HNL_LeptonCore::SetupMVAReader(){
 
   TString AnalyzerPath=std::getenv("SKFlat_WD");
   TString MVAPath = "/data/Run2UltraLegacy_v3/Run2/BDTClassifier/results_xml/";
-  MNStrList = {"90", "100", "150", "200", "300", "400"};
+  MNStrList = {"90", "100", "150", "200", "300", "400", "500"};
   NCutList  = {"300"};
   NTreeList = {"850"};
 

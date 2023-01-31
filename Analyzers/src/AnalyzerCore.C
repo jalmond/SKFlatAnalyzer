@@ -769,7 +769,7 @@ void AnalyzerCore::SetupIDMVAReader(bool isMuon){
 
   TString AnalyzerPath=std::getenv("SKFlat_WD");
   TString MVAPathFake="/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeIV2/Default/"+GetYearString()+"/dataset/weights/";
-  TString MVAPathMuonFake="/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeIWFake/Default/"+GetYearString()+"/dataset/weights/";
+  TString MVAPathMuonFake="/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeIMuonFake/Default/"+GetYearString()+"/dataset/weights/";
   TString MVAPathConv="/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeIConv/Default/"+GetYearString()+"/dataset/weights/";
   TString MVAPathCF="/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Default/"+GetYearString()+"/dataset/weights/";
 
