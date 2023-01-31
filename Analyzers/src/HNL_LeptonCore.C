@@ -135,7 +135,7 @@ void HNL_LeptonCore::initializeAnalyzer(){
 			"HLT_Ele50_CaloIdVT_GsfTrkIdT_PFJet165_v",
 			"HLT_Photon200_v",
 			"HLT_DoubleEle33_CaloIdL_MW_v"};
-    TrigList_POG_EG = {"HLT_Ele35_WPTight_Gsf_v","HLT_Ele32_WPTight_Gsf_v", "HLT_Ele32_WPTight_Gsf_L1DoubleEG_v"};
+    TrigList_POG_EG = {"HLT_Ele32_WPTight_Gsf_v", "HLT_Ele32_WPTight_Gsf_L1DoubleEG_v"};
     TrigList_HNL_HighPtEG = {"HLT_Photon200_v","HLT_DoublePhoton70_v"};
 
     TrigList_HNL_MuEG  = {"HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v", "HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v"};
@@ -1095,6 +1095,13 @@ double HNL_LeptonCore::MergeMultiMC(vector<TString> vec, TString Method){
     }
   }
 
+  if (std::count(vec.begin(), vec.end(), "DY")) {
+    if (MCSample.Contains("DYJets")){
+      return 0.25;
+    }
+  }
+
+
   if (std::count(vec.begin(), vec.end(), "DYMG")) {
     if (MCSample.Contains("DYJets_MG")){
       return 0.5;
@@ -1884,6 +1891,9 @@ AnalyzerParameter HNL_LeptonCore::InitialiseHNLParameter(TString s_setup, TStrin
     if (s_setup=="MVAULN2")  param.Electron_Tight_ID = "HNL_ULID_CF";
     if (s_setup=="MVAULN3")  param.Electron_Tight_ID = "HNL_ULID_Fake";
     if (s_setup=="MVAULN4")  param.Electron_Tight_ID = "HNL_ULID_Conv";
+    if (s_setup=="MVAULN5")  param.Electron_Tight_ID = "HNL_ULID_CFL";
+    if (s_setup=="MVAULN6")  param.Electron_Tight_ID = "HNL_ULID_CFVL";
+    if (s_setup=="MVAULN7")  param.Electron_Tight_ID = "HNL_ULID_CFVVL";
 
 
     param.Electron_ID_SF_Key = "TmpHNTightV2";
@@ -2940,6 +2950,53 @@ TString HNL_LeptonCore::QToString(HNL_LeptonCore::ChargeType q){
 
 }
 
+std::vector<FatJet> HNL_LeptonCore::GetHNLAK8Jets(TString JetType, AnalyzerParameter param){
+
+  std::vector<Electron>   ElectronCollV = GetElectrons(param.Electron_Veto_ID, 10., 2.5);
+  std::vector<Muon>       MuonCollV     = GetMuons    (param.Muon_Veto_ID,     5.,  2.4);
+  
+  std::vector<FatJet>   FatjetColl  = GetFatJets(param, "tight", 200., 5.);
+  if(JetType=="Loose") return FatjetColl;
+
+  std::vector<FatJet> AK8_JetColl                  = SelectAK8Jets(FatjetColl, 200., 5., true,  1., false, -999, false, 0., 20000., ElectronCollV, MuonCollV);
+
+  return AK8_JetColl;
+}
+
+std::vector<Jet> HNL_LeptonCore::GetHNLJets(TString JetType, AnalyzerParameter param){
+
+  /// Lepotns for cleaninh 
+  std::vector<Electron>   ElectronCollV = GetElectrons(param.Electron_Veto_ID, 10., 2.5);
+  std::vector<Muon>       MuonCollV     = GetMuons    (param.Muon_Veto_ID,     5.,  2.4);
+
+  /// AK4 
+  std::vector<Jet> AK4_Loose     = GetJets   ( param, param.Jet_ID, 10., 5.);
+  std::vector<Jet> AK4_All       = GetJets   ( param, "NoID",      0.,  5.);
+
+  // AK8
+  std::vector<FatJet> AK8_JetCollLoose             = GetHNLAK8Jets("Loose", param);
+
+  /// BJET
+  std::vector<Jet> BJetCollLoose                   = SelectAK4Jets(AK4_Loose,  15., 2.4, true,  0.4,0.8, "",   ElectronCollV,MuonCollV,  AK8_JetCollLoose);
+  std::vector<Jet> BJetCollNoLepClean              = SelectAK4Jets(AK4_Loose,  20., 2.4, false,  0.4,0.8, "",   ElectronCollV,MuonCollV,  AK8_JetCollLoose);
+  
+  if(JetType=="All")   return AK4_Loose;
+
+  if(JetType=="Loose")    return SelectAK4Jets(AK4_Loose,     15., 4.7, true,  0.4,0.8, "",   ElectronCollV,MuonCollV, AK8_JetCollLoose);
+  if(JetType=="Tight")    return SelectAK4Jets(AK4_Loose,     20., 2.7, true,  0.4,0.8, "",   ElectronCollV,MuonCollV, AK8_JetCollLoose);
+  if(JetType=="VBFTight") return SelectAK4Jets(AK4_Loose,     20., 4.7, true,  0.4,0.8, "",   ElectronCollV,MuonCollV, AK8_JetCollLoose);
+
+  JetTagging::Parameters param_jets = JetTagging::Parameters(JetTagging::DeepJet, JetTagging::Medium, JetTagging::incl, JetTagging::mujets);
+  JetTagging::Parameters param_jetsT = JetTagging::Parameters(JetTagging::DeepJet, JetTagging::Tight, JetTagging::incl, JetTagging::mujets);
+  if(JetType=="BJetM")     return SelectBJets(param, BJetCollLoose, param_jets);
+  if(JetType=="BJetT")     return SelectBJets(param, BJetCollLoose, param_jetsT);
+  if(JetType=="BJetM_NoLC")     return SelectBJets(param, BJetCollLoose, param_jets);
+  if(JetType=="BJetT_NoLC")     return SelectBJets(param, BJetCollLoose, param_jetsT);
+
+  // Else just return Standard Jet coll for HNL
+  return SelectAK4Jets(AK4_Loose,     20., 2.7, true,  0.4,0.8, "",   ElectronCollV,MuonCollV, AK8_JetCollLoose);
+
+}
 
 
 vector<Gen> HNL_LeptonCore::GetGenLepronsSignal(){
@@ -5113,320 +5170,250 @@ void HNL_LeptonCore::FillCutFlow(bool IsCentral, TString suffix, TString histnam
 
 TString HNL_LeptonCore::GetPtBin(bool muon, double pt){
   TString pt_label="";
-  if(muon){
-    if(pt< 20) pt_label = "_ptbin1";                                                                                                                                                         
-    else if(pt < 30) pt_label = "_ptbin2";                                                                                                                                                   
-    else if(pt < 40) pt_label = "_ptbin3";                                                                                                                                                   
-    else if(pt < 50) pt_label = "_ptbin4";                                                                                                                                                  
-    else if(pt < 60) pt_label = "_ptbin5";                                                                                                                                                   
-    else if(pt < 100) pt_label = "_ptbin6";                                                                                                                                                  
-    else if(pt < 300) pt_label = "_ptbin7";                                                                                                                                                  
-    else pt_label = "_ptbin8";                                                                                                                                                                             
-  }
+  
+  if(pt< 20) pt_label = "_ptbin1"; 
+  else if(pt < 50) pt_label = "_ptbin2"; 
+  else if(pt < 100) pt_label = "_ptbin3";
+  else pt_label = "_ptbin4";                                                               
+
   return pt_label;
 
 }
 
+/// FillMuonPlots Fills all kinamatics
 void HNL_LeptonCore::FillMuonPlots(TString label , TString cut,  std::vector<Muon> muons, double w){
 
-  for(unsigned int i=0; i <  muons.size(); i++){
-    FillAllMuonPlots("muon"+label, cut, muons.at(i), w);
-  }
-
+  for(auto imu: muons)   FillMuonKinematicPlots("muon"+label, cut, imu, w);
+  
+  return;
 }
+
+/// FillAllMuonPlots Fills all kinamatics in pt/eta bins                                                                                                      
 
 void HNL_LeptonCore::FillAllMuonPlots(TString label , TString cut,  std::vector<Muon> muons, double w){
 
   for(unsigned int i=0; i <  muons.size(); i++){
-
-    TString mu_lab="muon1";
-    if(i==1) mu_lab="muon2";
-    if(i==2) mu_lab="muon3";
-
     TString eta_label="";
-    if(fabs(muons.at(i).Eta()) < 1.5) eta_label = "_barrel";
-    else eta_label = "_endcap";
+    if(fabs(muons.at(i).Eta()) < 1.5) eta_label = "_BB";
+    else eta_label = "_EC";
     
-    TString pt_label="";
-    //if(muons.at(i).Pt()< 20) pt_label = "_ptbin1";
-    //else if(muons.at(i).Pt() < 30) pt_label = "_ptbin2";
-    //else if(muons.at(i).Pt() < 40) pt_label = "_ptbin3";
-    ///else if(muons.at(i).Pt() < 50) pt_label = "_ptbin4";
-    //else if(muons.at(i).Pt() < 60) pt_label = "_ptbin5";
-    //else if(muons.at(i).Pt() < 100) pt_label = "_ptbin6";
-    //else if(muons.at(i).Pt() < 300) pt_label = "_ptbin7";
-    //else pt_label = "_ptbin8";
-
-    FillAllMuonPlots("muon"+label, cut, muons.at(i), w);
-    FillAllMuonPlots("muon"+label+eta_label, cut, muons.at(i), w);
-    // FillAllMuonPlots("muon"+label+eta_label+pt_label, cut, muons.at(i), w);
-
-    //FillAllMuonPlots("muon"+label+pt_label, cut, muons.at(i), w);
-
-
+    TString pt_label=GetPtBin(true,muons.at(i).Pt());
+    FillMuonKinematicPlots("muon"+label+"_"+pt_label, cut, muons.at(i), w);
+    FillMuonKinematicPlots("muon"+label+eta_label, cut, muons.at(i), w);
+    
   }
 
   return;
 }
 
 
-void HNL_LeptonCore::FillAllMuonPlots(TString label , TString cut,  Muon mu, double w){
+void HNL_LeptonCore::FillLeptonKinematicPlots(TString label , TString cut,  Lepton lep, double w){
 
-  vector<Jet> JetAllColl = GetJets("NoID", 10., 5.0);
+  vector<Jet> JetAllColl = GetAllJets();
 
   int IdxMatchJet=-1;
   int IdxMatchAwayJet=-1;
 
   double mindR(999.);
   double maxDphi=-999;
-  double PtRatio(-999.);
   double PtRatioAwayJet(-999.);
-  double jet_disc(-1);
-  
+  double Jet_Disc(-1);
+
   for(unsigned int ij=0; ij<JetAllColl.size(); ij++){
-    double dR=mu.DeltaR(JetAllColl.at(ij));
-    if(dR>0.4) continue;
+    double dR=lep.DeltaR(JetAllColl.at(ij));
     if(dR<mindR){ mindR=dR; IdxMatchJet=ij; }
-    double dphi =fabs(TVector2::Phi_mpi_pi(mu.Phi()- JetAllColl.at(ij).Phi()));
+    double dphi =fabs(TVector2::Phi_mpi_pi(lep.Phi()- JetAllColl.at(ij).Phi()));
     if(dphi > maxDphi) {maxDphi= dphi; IdxMatchAwayJet=ij;}
   }
-  if(IdxMatchJet!=-1){
-    PtRatio = mu.Pt()/JetAllColl.at(IdxMatchJet).Pt();
-    TLorentzVector JetNoLep(JetAllColl.at(IdxMatchJet));
-    JetNoLep -= mu;
-    jet_disc = JetAllColl.at(IdxMatchJet).GetTaggerResult(JetTagging::DeepJet);
+  if(IdxMatchJet!=-1)     Jet_Disc       = JetAllColl.at(IdxMatchJet).GetTaggerResult(JetTagging::DeepJet);
+  if(IdxMatchAwayJet!=-1) PtRatioAwayJet = JetAllColl.at(IdxMatchAwayJet).Pt()/ lep.Pt();
+
+  TString label_lep = (lep.LeptonFlavour()==Lepton::ELECTRON) ? "Electron": "Muon";
+  double Pt_Lep = (lep.Pt() > 2000) ? 1999 : lep.Pt();
+ 
+  /// Kinematics
+  FillHist( cut+ "/Lepton_Pt_"+label   , lep.Pt() , w, 5000, 0., 10000., label_lep+"p_{T} GeV");
+  FillHist( cut+ "/Lepton_UncorrectedPt_"+label   , lep.UncorrectedPt() , w, 5000, 0., 10000., label_lep+"p_{T} GeV");
+  FillHist( cut+ "/Lepton_Eta_"+label  , lep.Eta() , w, 60, -3., 3.,label_lep+"#eta");
+  FillHist( cut+ "/Lepton_Phi_"+label  , lep.Phi() , w, 60, -3., 3.,label_lep+"#phi");
+  double ptbins[11] = { 0., 10.,15., 20., 30., 40.,50., 100.,500. ,1000.,2000.};
+  FillHist( cut+ "/Lepton_PtBinned_"+label   , Pt_Lep, w, 10, ptbins);
+
+  // IP
+  FillHist( cut+ "/Lepton_Dxy_"+label           , lep.fdXY() , w, 250,  0, 0.2, "dXY");
+  FillHist( cut+ "/Lepton_Dz_"+label            , lep.fdZ() , w, 250, 0, 0.5, "dZ");
+  FillHist( cut+ "/Lepton_LogDxy_"+label        , lep.LogdXY() , w, 300, -20,  10, "dXY");
+
+  double corr1 = (IsData) ? 1. : 0.98;
+  double corr2 = (IsData) ? 1. : 0.97;
+  double corr3 = (IsData) ? 1. : 0.96;
+  double corr4 = (IsData) ? 1. : 0.95;
+  FillHist( cut+ "/Lepton_LogDxy2_"+label        , lep.LogdXY()*corr1 , w, 300, -20,  10, "dXY");
+  FillHist( cut+ "/Lepton_LogDxy3_"+label        , lep.LogdXY()*corr2 , w, 300, -20,  10, "dXY");
+  FillHist( cut+ "/Lepton_LogDxy4_"+label        , lep.LogdXY()*corr3 , w, 300, -20,  10, "dXY");
+  FillHist( cut+ "/Lepton_LogDxy5_"+label        , lep.LogdXY()*corr4 , w, 300, -20,  10, "dXY");
+  FillHist( cut+ "/Lepton_LogDz_"+label         , lep.LogdZ() , w, 300, -20, 10, "dZ");
+  FillHist( cut+ "/Lepton_dXYSig_"+ label       , lep.LogdXYSig(), w, 100, -10,10);
+  FillHist( cut+ "/Lepton_dZSig_"+ label        , lep.LogdZSig(),w, 100,-10,10);
+  FillHist( cut+ "/Lepton_SIP3D_"+ label        , lep.SIP3D(),w, 100,0,10);
+  FillHist( cut+ "/Lepton_SIP3D2_"+ label        , lep.SIP3D()*corr1,w, 100,0,10);
+  FillHist( cut+ "/Lepton_SIP3D3_"+ label        , lep.SIP3D()*corr2,w, 100,0,10);
+  FillHist( cut+ "/Lepton_IP3D_"+ label        , lep.IP3D(),w, 100,0,1);
+ 
+
+  // Lep/Jet
+  FillHist( cut+ "/Lepton_PtRatio_v2_"+label    , lep.CloseJet_Ptratio(), w, 500, 0., 2., "");
+  FillHist( cut+ "/Lepton_PtRel_v2_"+label      , lep.CloseJet_Ptrel(), w, 200, 0., 50., "");
+
+  FillHist( cut+ "/Lepton_PtRel_"+label         , JetLeptonPtRelLepAware( lep,true), w, 500, 0., 100., "");
+  FillHist( cut+ "/Lepton_PtRelCorr_"+label         , JetLeptonPtRelLepAware( lep,true,true), w, 500, 0., 100., "");
+
+  FillHist( cut+ "/Lepton_PtRatio_"+label       , JetLeptonPtRatioLepAware(lep,false), w, 500, 0., 2., "");
+  FillHist( cut+ "/Lepton_PtRatioCorr_"+label       , JetLeptonPtRatioLepAware(lep,false,true), w, 500, 0., 2., "");
+
+  if(IdxMatchJet != -1 ){
+    FillHist( cut+ "/Lepton_CHFracCJ_"+label      , JetAllColl.at(IdxMatchJet).ChargedHadEnergyFraction(), w, 100, 0., 1., "");
+    FillHist( cut+ "/Lepton_NEMFracCJ_"+label     , JetAllColl.at(IdxMatchJet).NeutralEmEnergyFraction(), w, 100, 0., 1., "");
+    FillHist( cut+ "/Lepton_CEMFracCJ_"+label     , JetAllColl.at(IdxMatchJet).ChargedEmEnergyFraction(), w, 100, 0., 1., "");
+    FillHist( cut+ "/Lepton_NFracCJ_"+label       , JetAllColl.at(IdxMatchJet).NeutralHadEnergyFraction(), w, 100, 0., 1., "");
+    FillHist( cut+ "/Lepton_JetDiscCJ_"+label     , Jet_Disc , w, 400, -2., 2., "");
+    FillHist( cut+ "/Lepton_PtRatioAwayJet_"+label, PtRatioAwayJet , w, 100, 0., 5., "");
   }
-  if(IdxMatchAwayJet!=-1){
-    PtRatioAwayJet = JetAllColl.at(IdxMatchJet).Pt()/ mu.Pt();
+
+
+  if(lep.LeptonFlavour()==Lepton::ELECTRON){
+    FillHist( cut+ "/Lepton_Conv_Mva_"+label  , lep.HNL_MVA_Conv(), w, 100, -1., 2., "MVA");
+    FillHist( cut+ "/Lepton_Fake_Mva_"+label  , lep.HNL_MVA_Fake(), w, 100, -1., 2., "MVA");
+    FillHist( cut+ "/Lepton_CF_Mva_"+label  , lep.HNL_MVA_CF(), w, 100, -1., 2., "MVA");
   }
+
 
   
-  FillHist( cut+ "/PtRel_v2_"+label,    mu.CloseJet_Ptrel(), w, 200, 0., 50., "");
-  FillHist( cut+ "/PtRel_v1WithLep_"+label, JetLeptonPtRelLepAware( mu,false,false), w, 500, 0., 100., "");
-  FillHist( cut+ "/PtRel_v1_"+label, JetLeptonPtRelLepAware( mu,true,false), w, 500, 0., 100., "");
-  FillHist( cut+ "/PtRelCorr_v1WithLep_"+label, JetLeptonPtRelLepAware( mu,false,true), w, 500, 0., 100., "");
-  FillHist( cut+ "/PtRelCorr_v1_"+label, JetLeptonPtRelLepAware( mu,true,true), w, 500, 0., 100., "");
+  // Isolation 
 
-  FillHist( cut+ "/PtRatio_v1NoLep_"+label, JetLeptonPtRatioLepAware(mu,true,false), w, 500, 0., 2., "");
-  FillHist( cut+ "/PtRatio_v1_"+label, JetLeptonPtRatioLepAware(mu,false,false), w, 500, 0., 2., "");
-  FillHist( cut+ "/PtRatioCorr_v1NoLep_"+label, JetLeptonPtRatioLepAware(mu,true,true), w, 500, 0., 2., "");
-  FillHist( cut+ "/PtRatioCorr_v1_"+label, JetLeptonPtRatioLepAware(mu,false,true), w, 500, 0., 2., "");
+  FillHist( cut+ "/Lepton_MiniReliso_"+label , lep.MiniRelIso() , w, 50, 0., 5., "R_{ISO} GeV");
+  FillHist( cut+ "/Lepton_MiniReliso_ch_"+label , lep.MiniRelIsoCharged() , w, 50, 0., 1., "R_{ISO} GeV");
+  FillHist( cut+ "/Lepton_MiniReliso_neu_"+label ,lep.MiniRelIsoNeutral() , w, 50, 0., 1., "R_{ISO} GeV");
+  FillHist( cut+ "/Lepton_Reliso_el_"+label , lep.RelIso() , w, 50, 0., 0.4, "R_{ISO} GeV");
+  FillHist( cut+ "/Lepton_MiniIsoChHad_"+label  , lep.MiniIsoChHad(), w , 100, 0., 20.);
+  FillHist( cut+ "/Lepton_MiniIsoNhHad_"+label  , lep.MiniIsoNHad(), w , 100, 0., 20.);
+  FillHist( cut+ "/Lepton_MiniIsoPhHad_"+label  , lep.MiniIsoPhHad(), w , 100, 0., 20.);
+  FillHist( cut+ "/Lepton_RelMiniIsoCh_"+label  , lep.MiniRelIsoCharged(), w , 100, 0., 5);
+  FillHist( cut+ "/Lepton_RelMiniIsoN_"+label  , lep.MiniRelIsoNeutral(), w , 100, 0., 10);
 
-  FillHist( cut+ "/PtRatio_v2_"+label, mu.CloseJet_Ptratio(), w, 500, 0., 2., "");
 
-  FillHist( cut+ "/Jet_disc_"+label , jet_disc , w, 400, -2., 2., "");
-  FillHist( cut+ "/PtRatioAwayJet_"+label , PtRatioAwayJet , w, 100, 0., 5., "");
+}
 
-  FillHist( cut+ "/Pt_mu_"+label , mu.Pt() , w, 500, 0., 1000., "muon p_{T} GeV");
-  FillHist( cut+ "/Dxy_mu_"+label , mu.fdXY() , w, 250,  0, 0.2, "dXY");
-  FillHist( cut+ "/Dz_mu_"+label , mu.fdZ() , w, 250, 0, 0.5, "dZ");
-  FillHist( cut+ "/LogDxy_mu_"+label , mu.LogdXY() , w, 300, -20,  10, "dXY");
-  FillHist( cut+ "/LogDz_mu_"+label , mu.LogdZ() , w, 300, -20, 10, "dZ");
+void HNL_LeptonCore::FillMuonKinematicPlots(TString label , TString cut,  Muon lep, double w){
 
-  FillHist( cut+ "/Reliso_mu_"+label , mu.RelIso() , w, 50, 0., 1., "R_{ISO} GeV");
-  FillHist( cut+ "/Eta_"+label  , mu.Eta() , w, 60, -3., 3.,"muon #eta");
-  FillHist( cut+ "/IP3D_"+label  , mu.SIP3D(), w, 400, 0., 20., "IP3D");
-  
-  FillHist( cut+ "/Mva_"+label  , mu.MVA(), w, 600, -1., 1., "MVA");
-  FillHist( cut+ "/Mva_FakeW_"+label  , mu.HNL_MVA_Fake(), w, 600, -1., 1., "MVA");
+  FillLeptonKinematicPlots(label, cut, Lepton(lep),w);
 
-  //FillHist( cut+ "/Mva_FakeW_split_"+label  , GetBDTScoreMuon(mu,AnalyzerCore::Fake,  "BDTGSplit"), w, 600, -1., 1., "MVA");
+  FillHist( cut+ "/Muon_Mva_"+label  , lep.MVA(), w, 600, -1., 1., "MVA");
+  FillHist( cut+ "/Muon_Pt_mva_"+label , lep.Pt() , lep.MVA(), fabs(w), 200, 0., 1000., 600, -1., 2.);
+  FillHist( cut+ "/Muon_Chi2_"+label  , lep.Chi2(), w, 200,0., 20., "chi2");
+  FillHist( cut+ "/Muon_Validhits_"+label  , lep.ValidMuonHits(), w, 100,0., 100., "");
+  FillHist( cut+ "/Muon_Matched_stations_"+label  , lep.MatchedStations(), w, 10,0., 10., "");
+  FillHist( cut+ "/Muon_Pixel_hits_"+label  , lep.PixelHits(), w, 10,0., 10., "");
+  FillHist( cut+ "/Muon_Tracker_layers_"+label  , lep.TrackerLayers(), w, 50,0., 50., "");
 
   vector<TString> IDs ={"HNTightV2"};
   for (auto ID : IDs){
-    if(mu.PassID(ID)) FillHist( cut+ "/Pass_"+ID+label  , 1, w, 4, 0., 4., "Pass " + ID);
-    else FillHist( cut+ "/Pass_"+ID+label  , 0, w, 4, 0., 4., "Pass " + ID);
+    if(lep.PassID(ID)) FillHist( cut+ "/Muon_Pass_"+ID+label  , 1, w, 4, 0., 4., "Pass " + ID);
+    else FillHist( cut+ "/Muon_Pass_"+ID+label  , 0, w, 4, 0., 4., "Pass " + ID);
   }
-
-  FillHist( cut+ "/Conv_Mva_"+label  , mu.HNL_MVA_Conv(), w, 100, -1., 2., "MVA");
-
-  if(mu.PassID("HNTightV2"))   FillHist( cut+ "/PassTight_"+label  , 1, w, 5,0., 5., "");
-  else FillHist( cut+ "/PassTight_"+label  , 0, w, 5,0., 5., "");
-
-  
-  FillHist( cut+ "/Pt_mva_"+label , mu.Pt() , mu.MVA(), fabs(w), 200, 0., 1000., 600, -1., 2.);
-
-  FillHist( cut+ "/Chi2_"+label  , mu.Chi2(), w, 200,0., 20., "chi2");
-  FillHist( cut+ "/Validhits_"+label  , mu.ValidMuonHits(), w, 100,0., 100., "");
-  FillHist( cut+ "/Matched_stations_"+label  , mu.MatchedStations(), w, 10,0., 10., "");
-  FillHist( cut+ "/Pixel_hits_"+label  , mu.PixelHits(), w, 10,0., 10., "");
-  FillHist( cut+ "/MiniReliso_mu_"+label , mu.MiniRelIso() , w, 50, 0., 1., "R_{ISO} GeV");
-  FillHist( cut+ "/MiniReliso_mu_ch_"+label , mu.MiniRelIsoCharged() , w, 50, 0., 1., "R_{ISO} GeV");
-  FillHist( cut+ "/MiniReliso_mu_neu_"+label ,mu.MiniRelIsoNeutral() , w, 50, 0., 1., "R_{ISO} GeV");
-
-  FillHist( cut+ "/Tracker_layers_"+label  , mu.TrackerLayers(), w, 50,0., 50., "");
-
-  FillHist( cut+ "/JetTracksMVA_"+label  , mu.JetNTracksMVA(),  w, 10, 0., 10);
-  FillHist( cut+ "/JetTracks_"+label  , mu.JetNTracks(),  w, 10, 0., 10);
   
   return;
 }
 
 
 
-void HNL_LeptonCore::FillElectronPlots(TString label , TString cut,  std::vector<Electron> els, double w){
+void HNL_LeptonCore::FillElectronPlots(TString label , TString cut,  std::vector<Electron> ElectronColl, double w){
 
-  for(unsigned int i=0; i < els.size(); i++){
-    FillAllElectronPlots("Electron_"+label, cut, els[i], w);
-  }
+  for(auto iel : ElectronColl)   FillElectronKinematicPlots("Electron_"+label, cut, iel, w);
+  
   return;
 }
 
-void HNL_LeptonCore::FillAllElectronPlots(TString label , TString cut,  std::vector<Electron> els, double w){
+void HNL_LeptonCore::FillAllElectronPlots(TString label , TString cut,  std::vector<Electron> ElectronColl, double w){
 
   if(MCSample.Contains("Type")) w=1;
 
-  FillHist( cut+ "/nelectrons"+label , size(els) , w, 5, 0., 5., "n_{el}");
+  FillHist( cut+ "/nelectrons"+label , size(ElectronColl) , w, 5, 0., 5., "n_{el}");
 
-  for(unsigned int i=0; i < els.size(); i++){
+  for(unsigned int i=0; i < ElectronColl.size(); i++){
 
     TString eta_label="";
-    if(fabs(els.at(i).Eta()) < 1.5) eta_label = "_barrel";
-    //else if(fabs(els.at(i).Eta()) < 1.5) eta_label = "_barrel2";
-    else eta_label = "_endcap";
+    if(fabs(ElectronColl.at(i).Eta()) < 1.5) eta_label = "_BB";
+    else eta_label = "_EC";
 
-    TString pt_label="";
-    //if(els.at(i).Pt()< 20) pt_label = "_ptbin1";
-    //else if(els.at(i).Pt()< 30) pt_label = "_ptbin2";
-    //else if(els.at(i).Pt()< 40) pt_label = "_ptbin3";
-    //else if(els.at(i).Pt()< 50) pt_label = "_ptbin4";
-    //else if(els.at(i).Pt() < 60) pt_label = "_ptbin5";
-    //else if(els.at(i).Pt() < 100) pt_label = "_ptbin6";
-    //else if(els.at(i).Pt() < 400) pt_label = "_ptbin7";
-    //else pt_label = "_ptbin8";
+    TString pt_label=GetPtBin(false,ElectronColl.at(i).Pt());
 
-    FillAllElectronPlots("Electron_"+label, cut, els[i], w); 
-    FillAllElectronPlots("Electron_"+eta_label+label, cut, els[i], w); 
-    //FillAllElectronPlots("Electron_"+pt_label+label, cut, els[i], w); 
-    //    FillAllElectronPlots("Electron_"+eta_label+pt_label+label, cut, els[i], w);
-
+    FillElectronKinematicPlots("Electron_"+label, cut, ElectronColl[i], w); 
+    FillElectronKinematicPlots("Electron_"+eta_label+"_"+pt_label+"_"+label, cut, ElectronColl[i], w); 
     
   }
   return;
-
 }
 
-void HNL_LeptonCore::FillAllElectronPlots(TString label , TString cut,  Electron el, double w){
+void HNL_LeptonCore::FillElectronKinematicPlots(TString label , TString cut,  Electron lep, double w){
 
-  vector<Jet> JetAllColl = GetJets("NoID", 10., 5.0);
+  FillLeptonKinematicPlots(label, cut, Lepton(lep),w);
 
-  int IdxMatchJet=-1;
-  int IdxMatchAwayJet=-1;
+  FillHist( cut+ "/Electron_SCEta_"+label  , lep.scEta() , w, 60, -3., 3.,"electron #eta");
+  FillHist( cut+ "/Electron_SCPhi_"+label  , lep.scPhi() , w, 70, -3.5, 3.5,"electron #phi");
 
-  double mindR(999.);
-  double maxDphi=-999;
-  double PtRatio(-999.);
-  double PtRatioAwayJet(-999.);
-  double jet_disc(-1);
+  /// POG MVA
+  FillHist( cut+ "/Electron_NoIsoMva_"+label  , lep.MVANoIso(), w, 600, -1., 1., "MVA");
+  FillHist( cut+ "/Electron_RelNoIsoMvaResponse_"+label  , lep.MVANoIsoResponse()/lep.Pt(), w, 160, -1.,1., "MVA");
+  FillHist( cut+ "/Electron_NoIsoMvaResponse_"+label  , lep.MVANoIsoResponse(), w, 160, -8.,8., "MVA");
+  FillHist( cut+ "/Electron_MvaIso_"+label  , lep.MVAIso(), w, 600, -1., 1., "MVA");
+  FillHist( cut+ "/Electron_RelMvaIsoResponse_"+label  , lep.MVAIsoResponse()/lep.Pt(), w, 600, -1., 1., "MVA");
+  FillHist( cut+ "/Electron_MvaIsoResponse_"+label  , lep.MVAIsoResponse(), w, 600, -8., 8., "MVA");
 
-  for(unsigned int ij=0; ij<JetAllColl.size(); ij++){
-    double dR=el.DeltaR(JetAllColl.at(ij));
-    if(dR>0.4) continue;
-    if(dR<mindR){ mindR=dR; IdxMatchJet=ij; }
-    double dphi =fabs(TVector2::Phi_mpi_pi(el.Phi()- JetAllColl.at(ij).Phi()));
-    if(dphi > maxDphi) {maxDphi= dphi; IdxMatchAwayJet=ij;}
-
-  }
-
-  if(IdxMatchJet!=-1){
-    PtRatio = el.Pt()/JetAllColl.at(IdxMatchJet).Pt();
-    TLorentzVector JetNoLep(JetAllColl.at(IdxMatchJet));
-    JetNoLep -= el;
-    jet_disc = JetAllColl.at(IdxMatchJet).GetTaggerResult(JetTagging::DeepJet);
-
-  }
-  if(IdxMatchAwayJet!=-1){
-    PtRatioAwayJet = JetAllColl.at(IdxMatchJet).Pt()/ el.Pt();
-  }
-
+  /// CF MVA
+  FillHist( cut+ "/Electron_EoverP_"+label  , lep.EOverP() , w, 400, -10, 100);
+  FillHist( cut+ "/Electron_LogEoverP_"+label  , log(lep.EOverP()) , w, 400, -1, 10);
   
-  FillHist( cut+ "/PtRatioAwayJet_"+label , PtRatioAwayJet , w, 100, 0., 5., "");
-  FillHist( cut+ "/PtRel_v2_"+label,    el.CloseJet_Ptrel(), w, 500, 0., 200., "");
+  FillHist( cut+ "/Electron_FBrem_"+label  , std::max(lep.FBrem(),-2.),  w, 200, -1., 1);
+  FillHist( cut+ "/Electron_R9_"+label  , lep.R9(), w, 100, 0., 1);
+  FillHist( cut+ "/Electron_dr03TkSumPt_"+label  , lep.dr03TkSumPt()/lep.UncorrPt(), w, 200, 0., 0.5, "");
+  FillHist( cut+ "/Electron_E15_"+label  , lep.e15(), w, 1000, 0., 1000);
+  FillHist( cut+ "/Electron_E25_"+label  , lep.e25(), w, 1000, 0., 1000);
+  FillHist( cut+ "/Electron_E55_"+label  , lep.e55(), w, 1000, 0., 1000);
+  FillHist( cut+ "/Electron_e2x5OverE5x5_"+label  , lep.e2x5OverE5x5(), w, 100, 0., 1);
+  FillHist( cut+ "/Electron_e1x5OverE5x5_"+label  , lep.e1x5OverE5x5(), w, 100, 0., 1);
+  FillHist( cut+ "/Electron_EtaWidth_"+label  , lep.EtaWidth(), w, 100, 0., 0.2);
+  FillHist( cut+ "/Electron_PhiWidth_"+label  , lep.PhiWidth(), w, 200, 0., 0.2);
 
-  FillHist( cut+ "/PtRel_v1_"+label, JetLeptonPtRelLepAware( el,false), w, 500, 0., 200., "");
-  FillHist( cut+ "/PtRel_v1Corr_"+label, JetLeptonPtRelLepAware( el,true), w, 500, 0., 200., "");
+  FillHist( cut+ "/Electron_MissingHits_"+label  , lep.NMissingHits(), w, 8, 0., 8., "Missing Hits");
+  FillHist( cut+ "/Electron_Full5x5_sigmaIetaIeta_"+label  , lep.Full5x5_sigmaIetaIeta(), w, 200, 0., 0.05, "");
+  FillHist( cut+ "/Electron_PassConversionVeto_"+label  , lep.PassConversionVeto(), w, 2, 0., 2., "");
+  FillHist( cut+ "/Electron_IsGsfCtfScPixChargeConsistent_"+label  , lep.IsGsfCtfScPixChargeConsistent(), w, 2, 0., 2., "");
+  FillHist( cut+ "/Electron_IsGsfScPixChargeConsistent_"+label  , lep.IsGsfScPixChargeConsistent(), w, 2, 0., 2., "");
+  FillHist( cut+ "/Electron_IsGsfCtfChargeConsistent_"+label  , lep.IsGsfCtfChargeConsistent(), w, 2, 0., 2., "");
+  FillHist( cut+ "/Electron_dEtaSeed_"+label  , lep.dEtaSeed(), w, 200, -0.1, 0.1, "");
+  FillHist( cut+ "/Electron_dPhiIn_"+label  , lep.dPhiIn(), w, 400, -0.5, 0.5, "");
+  FillHist( cut+ "/Electron_dEtaIn_"+label  , lep.dEtaIn(), w, 400, -0.2, 0.2, "");
+  FillHist( cut+ "/Electron_HoverE_"+label  , lep.HoverE(), w, 500, 0., 1., "");
+  FillHist( cut+ "/Electron_TrkIso_"+label  , lep.TrkIso(), w, 1000, 0., 100, "");
+  FillHist( cut+ "/Electron_isEcalDriven_"+label  , lep.isEcalDriven(), w, 2, 0., 2., "");
+  FillHist( cut+ "/Electron_InvEminusInvP_"+label  , fabs(lep.InvEminusInvP()), w, 100., 0., 0.2);
 
-  FillHist( cut+ "/PtRelCorr_v1_"+label, JetLeptonPtRelLepAware( el,false,true), w, 500, 0., 200., "");
-  FillHist( cut+ "/PtRelCorr_v1Corr_"+label, JetLeptonPtRelLepAware( el,true,true), w, 500, 0., 200., "");
 
-
-  FillHist( cut+ "/JHPtRatio_v0_"+label , PtRatio , w, 500, 0., 2., "");
-  FillHist( cut+ "/PtRatio_v1Corr_"+label, JetLeptonPtRatioLepAware(el,true), w, 500, 0., 2., "");
-  FillHist( cut+ "/PtRatio_v1_"+label, JetLeptonPtRatioLepAware(el,false), w, 500, 0., 2., "");
-  FillHist( cut+ "/PtRatioCorr_v1Corr_"+label, JetLeptonPtRatioLepAware(el,true,true), w, 500, 0., 2., "");
-  FillHist( cut+ "/PtRatioCorr_v1_"+label, JetLeptonPtRatioLepAware(el,false,true), w, 500, 0., 2., "");
-
-  FillHist( cut+ "/PtRatio_v2_"+label, el.CloseJet_Ptratio(), w, 500, 0., 2., "");
-
-  
-  vector<TString> IDs = {"HNTightV2","HNTightV3"};
+  // COnv MVA
+  FillHist( cut+ "/Electron_dr03HcalTowerSumEt_"+label  , lep.dr03HcalTowerSumEt(), w, 200, 0., 10., "");
+  /// Extra
+  FillHist( cut+ "/Electron_dr03EcalRecHitSumEt_"+label  , lep.dr03EcalRecHitSumEt(), w, 2000, 0., 100., "");
+  FillHist( cut+ "/Electron_dr03HcalDepth1TowerSumEt_"+label  , lep.dr03HcalDepth1TowerSumEt(), w, 200, 0., 10., "");
+  FillHist( cut+ "/Electron_ecalPFClusterIso_"+label  , lep.ecalPFClusterIso()/lep.UncorrPt(), w, 100, 0., 1., "");
+  FillHist( cut+ "/Electron_hcalPFClusterIso_"+label  , lep.hcalPFClusterIso()/lep.UncorrPt(), w, 100, 0., 1., "");
+ 
+  vector<TString> IDs ={"HNTightV2"};
   for (auto ID : IDs){
-    if(el.PassID(ID)) FillHist( cut+ "/Pass_"+ID+label  , 1, w, 4, 0., 4., "Pass " + ID);
-    else FillHist( cut+ "/Pass_"+ID+label  , 0, w, 4, 0., 4., "Pass " + ID);
+    if(lep.PassID(ID)) FillHist( cut+ "/Electron_Pass_"+ID+label  , 1, w, 4, 0., 4., "Pass " + ID);
+    else FillHist( cut+ "/Electron_Pass_"+ID+label  , 0, w, 4, 0., 4., "Pass " + ID);
   }
-
-  FillHist( cut+ "/CF_BDT_"+label  , el.HNL_MVA_CF(), w, 100, -1., 2., "MVA");
-  double pt_el = (el.Pt() > 500) ? 499 : el.Pt();
-
-  FillHist( cut+ "/CF_BDT_pt_"+label  , pt_el, el.HNL_MVA_CF(), w, 100, 0., 500., 100, -1., 1.);
-  FillHist( cut+ "/CF_BDT_eta_"+label  , fabs(el.Eta()) , el.HNL_MVA_CF(), w, 100, 0., 2.5, 100, -1., 1.);
-
-
-  FillHist( cut+ "/Fake_Mva_"+label  , el.HNL_MVA_Fake(), w, 100, -1., 2., "MVA");
-  //  FillHist( cut+ "/Fake_Mva_v2_"+label  , GetBDTScoreEl(el,AnalyzerCore::Fake, "BDTGv2"), w, 100, -1., 2., "MVA");
-  //GetBDTScoreEl(el, bkg, "BDTG");
-
-  FillHist( cut+ "/CF_Mva_"+label  , el.HNL_MVA_CF(), w, 100, -1., 2., "MVA");
-
-  FillHist( cut+ "/Conv_Mva_"+label  , el.HNL_MVA_Conv(), w, 100, -1., 2., "MVA");
-  //FillHist( cut+ "/Conv_Mva_v2_"+label  , GetBDTScoreEl(el,AnalyzerCore::Conv, "BDTGv2"), w, 100, -1., 2., "MVA");
-
-
-  
-
-  FillHist( cut+ "/Jet_disc_"+label , jet_disc , w, 400, 0., 2., "");
-  FillHist( cut+ "/Pt_el_"+label , el.Pt() , w, 500, 0., 1000., "electron p_{T} GeV");
-  FillHist( cut+ "/Dxy_el_"+label , el.fdXY() , w, 500, 0., 0.2, "dXY");
-  FillHist( cut+ "/Dz_el_"+label , el.fdZ() , w, 500, 0, 0.5, "dZ");
-  FillHist( cut+ "/Reliso_el_"+label , el.RelIso() , w, 50, 0., 1., "R_{ISO} GeV");
-  FillHist( cut+ "/MiniReliso_el_"+label , el.MiniRelIso() , w, 50, 0., 1., "R_{ISO} GeV");
-  FillHist( cut+ "/MiniReliso_el_ch_"+label , el.MiniRelIsoCharged() , w, 50, 0., 1., "R_{ISO} GeV");
-  FillHist( cut+ "/MiniReliso_el_neu_"+label , el.MiniRelIsoNeutral() , w, 50, 0., 1., "R_{ISO} GeV");
-  FillHist( cut+ "/SCEta_"+label  , el.scEta() , w, 60, -3., 3.,"electron #eta");
-  FillHist( cut+ "/SCPhi_"+label  , el.scPhi() , w, 70, -3.5, 3.5,"electron #phi");
-  FillHist( cut+ "/IP3D_"+label  , el.SIP3D(), w, 400, 0., 20., "IP3D");
-
-  FillHist( cut+ "/JetTracksMVA_"+label  , el.JetNTracksMVA(),  w, 10, 0., 10);
-  FillHist( cut+ "/JetTracks_"+label  , el.JetNTracks(),  w, 10, 0., 10);
-
-  FillHist( cut+ "/Mva_"+label  , el.MVANoIso(), w, 600, -1., 2., "MVA");
-  FillHist( cut+ "/MvaResponse_"+label  , el.MVANoIsoResponse(), w, 160, -8.,8., "MVA");
-
-  FillHist( cut+ "/MvaIso_"+label  , el.MVAIso(), w, 600, -1., 2., "MVA");
-  FillHist( cut+ "/Pt_mva_"+label , el.Pt() , el.MVANoIso(), fabs(w), 200, 0., 1000., 600, -1., 2.);
-
-  FillHist( cut+ "/Pt_mvaresponse_"+label , el.Pt() , el.MVANoIsoResponse(), fabs(w), 200, 0., 1000.,160, -8., 8.);
-
-  FillHist( cut+ "/MissingHits_"+label  , el.NMissingHits(), w, 8, 0., 8., "Missing Hits");
-  FillHist( cut+ "/Full5x5_sigmaIetaIeta_"+label  , el.Full5x5_sigmaIetaIeta(), w, 200, 0., 0.05, "");
-  FillHist( cut+ "/dEtaSeed_"+label  , el.dEtaSeed(), w, 200, 0., 0.05, "");
-  FillHist( cut+ "/dPhiIn_"+label  , el.dPhiIn(), w, 200, 0., 0.2, "");
-  FillHist( cut+ "/HoverE_"+label  , el.HoverE(), w, 200, 0., 0.5, "");
-  FillHist( cut+ "/TrkIso_"+label  , el.TrkIso(), w, 100, 0., 1., "");
-  FillHist( cut+ "/isEcalDriven_"+label  , el.isEcalDriven(), w, 2, 0., 2., "");
-  FillHist( cut+ "/InvEminusInvP_"+label  , fabs(el.InvEminusInvP()), w, 100., 0., 0.2);
-
-  FillHist( cut+ "/PassConversionVeto_"+label  , el.PassConversionVeto(), w, 2, 0., 2., "");
-  //FillHist( cut+ "/e2x5OverE5x5Overe2x5OverE5x5Over__"+label  , el.e2x5OverE5x5()/el.1e1x5OverE5x5(), w, 200, 0., 2., "");
-  FillHist( cut+ "/TrkIso_"+label  , el.TrkIso(), w, 200, 0., 20., "");
-  FillHist( cut+ "/dr03EcalRecHitSumEt_"+label  , el.dr03EcalRecHitSumEt(), w, 200, 0., 1., "");
-  FillHist( cut+ "/dr03HcalDepth1TowerSumEt_"+label  , el.dr03HcalDepth1TowerSumEt(), w, 200, 0., 1., "");
-  FillHist( cut+ "/dr03HcalTowerSumEt_"+label  , el.dr03HcalTowerSumEt(), w, 200, 0., 2., "");
-  FillHist( cut+ "/dr03TkSumPt_"+label  , el.dr03TkSumPt()/el.UncorrPt(), w, 200, 0., 2., "");
-  FillHist( cut+ "/ecalPFClusterIso_"+label  , el.ecalPFClusterIso()/el.UncorrPt(), w, 100, 0., 2., "");
-  FillHist( cut+ "/hcalPFClusterIso_"+label  , el.hcalPFClusterIso()/el.UncorrPt(), w, 100, 0., 2., "");
-  FillHist( cut+ "/IsGsfCtfScPixChargeConsistent_"+label  , el.IsGsfCtfScPixChargeConsistent(), w, 2, 0., 2., "");
-  
+ 
   return;
 
 

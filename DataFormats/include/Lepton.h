@@ -52,7 +52,7 @@ public:
     double sceta = fabs(this->Eta());
     if( sceta < 0.8 ) return "IB";
     else if( sceta < 1.479 ) return "OB";
-    else return "EE";
+    else return "EC";
   }
 
 
@@ -71,7 +71,7 @@ public:
 
   //// HNL UL Funtions
   inline bool MaxPt() const { return (this->Pt() > 2000) ? 1999 : this->Pt(); }
-  inline double PtCorrected(double Corr, bool passMVA){
+  inline double PtConeCorrected(double Corr, bool passMVA){
     if (passMVA)  return this->Pt();
     return ( j_lep_jetptratio ) * Corr;
   }
@@ -82,6 +82,11 @@ public:
   void SetJetNTracks(double d);
   void SetJetNTracksMVA(double d);
     
+  /// UncorrectedPt used for Lepton class fuctions
+  inline double UncorrectedPt() const { return j_unCorrPt;}
+  void SetUncorrectedPt(double d);
+
+
   
   /// Standard Functions
   void SetdXY(double dXY, double dXYerr);
@@ -117,7 +122,7 @@ public:
     if(j_lep_jetflavour == 5) return "HF";
     if(j_lep_jetflavour == 4) return "HF";
     if(j_lep_jetflavour == 0) return "LF";
-    return "NULL";
+    return "Pileup";
   }
 
 
@@ -127,7 +132,7 @@ public:
   inline double dZerr() const {return j_dZerr;}
 
   void SetIP3D(double IP3D, double IP3Derr);
-  inline double SIP3D() const {return j_IP3Derr>0?fabs(j_IP3D/j_IP3Derr):0.0;};
+  inline double SIP3D() const {return (j_IP3Derr >0) ? fabs(j_IP3D/j_IP3Derr):0.0;};
   inline double IP3D() const {return j_IP3D;}
   inline double IP3Derr() const {return j_IP3Derr;}
 
@@ -216,7 +221,7 @@ private:
   double j_lep_mva;
   double j_dZ, j_dZerr;
   double j_IP3D, j_IP3Derr;
-
+  double j_unCorrPt;
   double j_jetntracks,j_jetntracks_mva;
   double j_RelIso, j_MiniRelIso;
   double j_MiniIso_ChHad,j_MiniIso_NHad,j_MiniIso_PhHad;

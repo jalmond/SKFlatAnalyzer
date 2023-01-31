@@ -79,19 +79,19 @@ public:
 
   inline double MVANoIsoResponse() const {
     
-    if (j_mvanoiso == 1.) return 8;
+    if (j_mvanoiso == 1.) return 7;
 
-    if(MVANoIsoResponseRaw() > 8) return 8;
-    if(MVANoIsoResponseRaw() < -8) return -8;
+    if(MVANoIsoResponseRaw() > 7) return 7;
+    if(MVANoIsoResponseRaw() < -7) return -7;
     return MVANoIsoResponseRaw();
   }
 
   inline double MVAIsoResponse() const {
 
-    if (j_mvaiso == 1.) return 8;
+    if (j_mvaiso == 1.) return 7;
 
-    if(MVAIsoResponseRaw() > 8) return 8;
-    if(MVAIsoResponseRaw() < -8) return -8;
+    if(MVAIsoResponseRaw() > 7) return 7;
+    if(MVAIsoResponseRaw() < -7) return -7;
     return MVAIsoResponseRaw();
   }
     
@@ -147,27 +147,6 @@ public:
   void SetNMissingHits(int n);
   inline int NMissingHits() const { return j_NMissingHits; }
 
-  void SetConvNTracks(int i);
-  void SetConvFitProb(double d);
-  void SetConvLxy(double d);
-  void SetConvNHits(int i);
-  void SetLogEoverP(double d);
-  void SetLogCotTheta(double d);
-  void SetPairMass(double d);
-  void SetLogDphi(double d);
-  void SetLogChi2Max(double d);
-  void SetLogChi2Min(double d);
-  
-  inline int ConvNTracks() const { return j_ConvNTracks;}
-  inline double ConvFitProb()  const { return j_ConvFitProb;}
-  inline double ConvLxy() const { return j_ConvLxy;}
-  inline int ConvNHits() const { return j_ConvNHits;}
-  inline double ConvLogEoverP() const { return j_LogEoverP;}
-  inline double ConvLogCotTheta() const { return j_LogCotTheta;}
-  inline double ConvPairMass() const { return j_PairMass;}
-  inline double ConvLogDphi() const { return j_LogDphi;}
-  inline double ConvLogChi2Max() const { return j_LogChi2Max;}
-  inline double ConvLogChi2Min() const { return j_LogChi2Min;}
 
 
 
@@ -387,7 +366,7 @@ private:
   double j_mvaiso, j_mvanoiso;
   double j_EnergyUnCorr;
   bool j_passConversionVeto;
-  int j_NMissingHits;
+
   double j_Full5x5_sigmaIetaIeta, j_sigmaIetaIeta,j_dEtaSeed, j_dPhiIn,j_dEtaIn,j_PhiWidth, j_EtaWidth, j_HoverE, j_InvEminusInvP, j_e2x5OverE5x5, j_e1x5OverE5x5, j_trkiso, j_dr03EcalRecHitSumEt, j_dr03HcalDepth1TowerSumEt, j_e15, j_e25, j_e55,j_fbrem,j_eoverp;
   double j_dr03HcalTowerSumEt, j_dr03TkSumPt, j_ecalPFClusterIso, j_hcalPFClusterIso;
   bool j_isEcalDriven;
@@ -396,13 +375,11 @@ private:
   vector<int> j_IDCutBit;
   double j_RelPFIso_Rho;
 
-  double j_Rho;
-  int j_isGsfCtfScPixChargeConsistent,j_isGsfScPixChargeConsistent,j_isGsfCtfChargeConsistent;
-  double j_r9;
+  double j_Rho ,j_r9;
   
-  double j_ConvFitProb, j_ConvLxy, j_LogEoverP,j_LogCotTheta,j_PairMass,j_LogDphi,j_LogChi2Max,j_LogChi2Min;
-  int j_ConvNTracks , j_ConvNHits;
 
+  int j_isGsfCtfScPixChargeConsistent,j_isGsfScPixChargeConsistent,j_isGsfCtfChargeConsistent;
+  int j_NMissingHits;
 
   ULong64_t j_filterbits;
   ULong64_t j_pathbits;

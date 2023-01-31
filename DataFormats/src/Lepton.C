@@ -9,6 +9,7 @@ Lepton::Lepton() : Particle() {
   j_dZerr = -999.;
   j_IP3D = -999.;
   j_IP3Derr = -999.;
+  j_unCorrPt = -999;
   j_RelIso = -999.;
   j_MiniRelIso = -999.;
   j_ptcone = -999.;
@@ -142,6 +143,9 @@ void Lepton::SetLepMVA(double MVA){
   j_lep_mva = MVA;
 }
 
+void Lepton::SetUncorrectedPt(double uncorrPt){
+  j_unCorrPt = uncorrPt;
+}
 
 void Lepton::SetdXY(double dXY, double dXYerr){
   j_dXY = dXY;
@@ -168,7 +172,7 @@ void Lepton::SetMiniIso(double ch, double nh, double ph, double pu, double rho, 
 
   double correction = rho * EA * (r_mini/0.3) * (r_mini/0.3);
   double correctedIso = ch + std::max(0.0, nh + ph - correction);
-
+  
   j_MiniRelIso = correctedIso/this->Pt();
 
   j_MiniIso_ChHad =ch;

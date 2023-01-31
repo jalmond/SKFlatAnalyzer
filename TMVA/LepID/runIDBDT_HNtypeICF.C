@@ -84,8 +84,6 @@ void runIDBDT_HNtypeICF(TString Classifier ="BDTG" ,TString BkgType = "CF", TStr
   data_loader->AddVariable("IsGsfCtfScPixChargeConsistent",  "IsGsfCtfScPixChargeConsistent", "units", 'I');
   data_loader->AddVariable("IsGsfScPixChargeConsistent",  "IsGsfScPixChargeConsistent", "units", 'I');
   data_loader->AddVariable("IsGsfCtfChargeConsistent",  "IsGsfCtfChargeConsistent", "units", 'I');
-  
-
   data_loader->AddSpectator("w_tot", "w_tot", "units", 'F');          
 
   data_loader->AddSignalTree(tree_signal, 1.0);

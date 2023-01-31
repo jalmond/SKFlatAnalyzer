@@ -969,8 +969,8 @@ void SKFlatNtuple::Init()
   fChain->SetBranchAddress("muon_MVA", &muon_MVA, &b_muon_MVA);
   fChain->SetBranchAddress("muon_lowptMVA", &muon_lowptMVA, &b_muon_lowptMVA);
   fChain->SetBranchAddress("muon_softMVA", &muon_softMVA, &b_muon_softMVA);
-  //fChain->SetBranchAddress("muon_jetPtRatio", &muon_jetPtRatio, &b_muon_jetPtRatio);
-  //fChain->SetBranchAddress("muon_jetPtRel", &muon_jetPtRel, &b_muon_jetPtRel);
+  fChain->SetBranchAddress("muon_jetPtRatio", &muon_jetPtRatio, &b_muon_jetPtRatio);
+  fChain->SetBranchAddress("muon_jetPtRel", &muon_jetPtRel, &b_muon_jetPtRel);
   
   if(fChain->GetBranch("muon_ptrel")){
     fChain->SetBranchAddress("muon_ptrel",&muon_ptrel,&b_muon_ptrel);

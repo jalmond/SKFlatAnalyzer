@@ -128,29 +128,35 @@ public:
   TMVA::Reader *ElectronIDNoPtConvMVAReader;
 
   // ID MVA                                                                                            
-  void InitializeMuonIDTreeVars();
-  void InitializeElectronIDTreeVars();
+  void InitializeIDTreeVars();
 
 
   void SetBDTIDVar(Lepton*  lep);
+  void SetBDTIDVariablesElectron(Electron el);
+  void SetBDTIDVariablesMuon(Muon mu);
   void SetupIDMVAReader(bool isMuon);
 
-
-  Float_t Pt,  Eta;
-  Float_t PtRatio,PtRatioNoLep, PtRatioAJ, PtRel, PtRelWithLep,PtRatioCorr,PtRelCorr;
-  Float_t CEMFracAJ, NEMFracAJ, CHFracAJ, NHFracAJ,MuFracAJ, JetDiscAJ;
-  Float_t CEMFracCJ, NEMFracCJ, CHFracCJ, NHFracCJ, MuFracCJ, JetDiscCJ;
-  Float_t Dxy,Dz,DxySig, DzSig, RelIso,IP3D,MVA,MVAIso,Chi2, Minireliso;
-  Float_t Full5x5_sigmaIetaIeta,dEtaSeed,dPhiIn,HoverE,Rho,TrkIso,InvEminusInvP,ecalPFClusterIso,hcalPFClusterIso;
-  Float_t RelDxy,RelDz,RelIP3D,RelMVA,RelMVAIso,PileUp;
-  Float_t R9,dr03TkSumPt,dr03HcalTowerSumEt,dr03HcalDepth1TowerSumEt,dr03EcalRecHitSumEt, e2x5OverE5x5,e1x5OverE5x5;
-  Float_t e15,e25,e55,EtaWidth,PhiWidth,dEtaIn,sigmaIetaIeta, MiniIsoChHad,MiniIsoNHad,MiniIsoPhHad,IsoChHad,IsoNHad,IsoPhHad;
-  Float_t RelMiniIsoCh,RelMiniIsoN,EoverP,FBrem;;
-  Float_t isEcalDriven,Pixel_hits,  Validhits,Matched_stations,Tracker_layers,MissingHits;
-  Float_t PassConversionVeto,IsGsfCtfScPixChargeConsistent, IsGsfScPixChargeConsistent, IsGsfCtfChargeConsistent;
-
+  /// Var for ID BDTs
+  Float_t Pt,  Eta, PtBinned; //3
+  Float_t PtRatio,  PtRel,MassDrop; //3
+  Float_t CEMFracCJ, NEMFracCJ, CHFracCJ, NHFracCJ, MuFracCJ, JetDiscCJ; //6
+  Float_t Dxy,Dz,DxySig, DzSig, RelIso,IP3D,MVA,MVAIso,Chi2, Minireliso; //10
+  Float_t Full5x5_sigmaIetaIeta,dEtaSeed,dPhiIn,HoverE,Rho,TrkIso,InvEminusInvP,ecalPFClusterIso,hcalPFClusterIso; //9
+  Float_t RelDxy,RelDz,RelIP3D,RelMVA,RelMVAIso,PileUp;//6
+  Float_t R9,dr03TkSumPt,dr03HcalTowerSumEt,dr03HcalDepth1TowerSumEt,dr03EcalRecHitSumEt, e2x5OverE5x5,e1x5OverE5x5;//7
+  Float_t e15,e25,e55,EtaWidth,PhiWidth,dEtaIn, MiniIsoChHad,MiniIsoNHad,MiniIsoPhHad,IsoChHad,IsoNHad,IsoPhHad;//12
+  Float_t RelMiniIsoCh,RelMiniIsoN,EoverP,FBrem;//4
+  //Float_t fIsEcalDriven,Pixel_hits,  fValidhits,fMatched_stations,fTracker_layers,fMissingHits;//6
+  //Float_t fPassConversionVeto,fIsGsfCtfScPixChargeConsistent, fIsGsfScPixChargeConsistent, fIsGsfCtfChargeConsistent;//4
+  //Float_t fPOGTight, fPOGMedium,fHNTightID;
   Float_t w_id_tot;
-  Float_t w_tot;
+
+  
+  Float_t POGTight, POGMedium,HNTightID;
+  Float_t isEcalDriven,Pixel_hits,  Validhits,Matched_stations,Tracker_layers,MissingHits;//6                                                                                                                                                                                  
+  Float_t PassConversionVeto,IsGsfCtfScPixChargeConsistent, IsGsfScPixChargeConsistent, IsGsfCtfChargeConsistent;//4                                                                                                                                                          
+
+
 
 
 
@@ -185,7 +191,7 @@ public:
   std::vector<Gen> GetGens();
   std::vector<LHE> GetLHEs();
 
-  Jet GetCorrectedJetCloseToLepton(Lepton* lep, Jet jet);
+  Jet GetCorrectedJetCloseToLepton(Lepton lep, Jet jet);
   Jet GetCorrectedJetCloseToLepton(Muon lep, Jet jet);
   Jet GetCorrectedJetCloseToLepton(Electron lep, Jet jet);
 
@@ -193,9 +199,11 @@ public:
   double  JetLeptonMassDropLepAware(  Electron lep, bool removeLep,bool ApplyCorr=false);
 
 
+  double  JetLeptonPtRelLepAware(  Lepton lep, bool removeLep,bool ApplyCorr=false);
   double  JetLeptonPtRelLepAware(  Muon lep, bool removeLep,bool ApplyCorr=false);
   double  JetLeptonPtRelLepAware(  Electron lep, bool removeLep,bool ApplyCorr=false);
 
+  double  JetLeptonPtRatioLepAware( Lepton lep, bool removeLep,bool ApplyCorr=false);
   double  JetLeptonPtRatioLepAware( Muon lep, bool removeLep,bool ApplyCorr=false);
   double  JetLeptonPtRatioLepAware( Electron lep, bool removeLep,bool ApplyCorr=false);
 

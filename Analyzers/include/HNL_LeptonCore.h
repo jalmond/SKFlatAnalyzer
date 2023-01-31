@@ -149,6 +149,10 @@ class HNL_LeptonCore : public AnalyzerCore {
   double GetHNLMVAMuon(Muon mu ,BkgType bkg);
   double GetHNLMVAElectron(Electron mu ,BkgType bkg);
 
+
+  // JETS
+  std::vector<Jet> GetHNLJets(TString JetType, AnalyzerParameter param);
+  std::vector<FatJet> GetHNLAK8Jets(TString JetType, AnalyzerParameter param);
   
   // ------ General 
   bool IsSignal(); //// checks if sample is Signal
@@ -310,14 +314,20 @@ class HNL_LeptonCore : public AnalyzerCore {
 
   //==== My tool 
 
-  // PLEP LOTS
+  // LEP PLOTS
 
-  void FillAllMuonPlots(TString label , TString cut,  Muon mu, double w);
   void FillAllMuonPlots(TString label , TString cut,  std::vector<Muon> muons, double w);
   void FillMuonPlots(TString label , TString cut,  std::vector<Muon> muons, double w);
-  void FillElectronPlots(TString label , TString cut,  std::vector<Electron> els, double w);
+  void FillMuonKinematicPlots(TString label , TString cut,  Muon mu, double w);
+
+
   void FillAllElectronPlots(TString label , TString cut,  std::vector<Electron> els, double w);
-  void FillAllElectronPlots(TString label , TString cut,  Electron el, double w);
+  void FillElectronPlots(TString label , TString cut,  std::vector<Electron> els, double w);
+
+  void FillElectronKinematicPlots(TString label , TString cut,  Electron el, double w);
+
+  void FillLeptonKinematicPlots(TString label , TString cut,  Lepton lep, double w);
+
 
 
   // === Cut flow                                                                                                                                                                                      
@@ -389,6 +399,7 @@ class HNL_LeptonCore : public AnalyzerCore {
   TMVA::Reader *MVAReader;
   TMVA::Reader *MVAReaderMM, *MVAReaderEE, *MVAReaderEM;
 
+  /// Event BDT var
   void InitializeTreeVars();
   
   /*Float_t Nj, Nvbfj;

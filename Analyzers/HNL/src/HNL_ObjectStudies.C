@@ -27,7 +27,7 @@ void HNL_ObjectStudies::executeEvent(){
   double weight =SetupWeight(ev,param);
 
   FillHist ("NoCut", 1, weight, 2, 0., 2.,"");
-
+  FillHist ("nPV" , nPV, weight, 100., 0., 100.,"");
   TString process="";
   if(!IsData){
     gens = GetGens();
@@ -45,11 +45,13 @@ void HNL_ObjectStudies::executeEvent(){
       
       PrintGen(gens);
     }
-
-
   }
   if(process.Contains("OS")) return;
 
+
+  FillHist ("nPV_"+process , nPV, weight, 100., 0., 100.,"");
+
+  return;
   
   vector<HNL_LeptonCore::Channel> channels = {EE,MuMu};
 

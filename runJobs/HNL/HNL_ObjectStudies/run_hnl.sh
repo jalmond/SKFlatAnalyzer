@@ -71,8 +71,8 @@ if [[ $1 == "" ]]; then
 	
 	#SKFlat.py -a $analyzer  -i  WWW   -n 2  --nmax 2   -e ${i}   --skim SkimTree_HNMultiLepBDT &
 	#SKFlat.py -a $analyzer  -i  WWW   -n 2  --nmax 2   -e ${i}   --skim SkimTree_HNMultiLep &
-	SKFlat.py -a $analyzer  -l ${bkgpath}/Fake.txt   -n 400  --nmax 600   -e ${i}  --userflags FakeLepton &
-	#SKFlat.py -a $analyzer  -i WJets_MG   -n 50  --nmax 600   -e ${i}  --userflags LeptonTypes &
+	#SKFlat.py -a $analyzer  -l ${bkgpath}/Fake.txt   -n 400  --nmax 600   -e ${i}  --userflags FakeLepton &
+	SKFlat.py -a $analyzer  -i WJets_MG   -n 50  --nmax 600   -e ${i}  --userflags LeptonTypes &
 	
     done
 fi

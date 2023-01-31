@@ -245,8 +245,8 @@ void SkimTree_HNFake::executeEvent(){
       JetFlavourCJ = AK4_JetAllColl.at(IdxMatchJet).hadronFlavour();
     }
     else {
-      JetDiscCJ=0.;
-      JetFlavourCJ=-999;
+      JetDiscCJ=1.5;
+      JetFlavourCJ=0;
     }
     vmuon_cj_bjetdisc->push_back(JetDiscCJ);
     vmuon_cj_flavour->push_back(JetFlavourCJ);
@@ -276,8 +276,8 @@ void SkimTree_HNFake::executeEvent(){
 
     }
     else {
-      JetDiscCJ=0.;
-      JetDiscCJ=-999;
+      JetDiscCJ=1.5;
+      JetDiscCJ=0;
       
     }
     velectron_cj_bjetdisc->push_back(JetDiscCJ);

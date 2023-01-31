@@ -52,16 +52,6 @@ Electron::Electron(){
   j_isGsfCtfChargeConsistent = false;
   this->SetLeptonFlavour(ELECTRON);
 
-  j_ConvFitProb = -999.; 
-  j_ConvLxy = -999.; 
-  j_LogEoverP = -999.;
-  j_LogCotTheta = -999.;
-  j_PairMass = -999.;
-  j_LogDphi = -999.;
-  j_LogChi2Max = -999.;
-  j_LogChi2Min = -999.;
-  j_ConvNTracks = -999;
-  j_ConvNHits = -999;
 
 }
 
@@ -121,44 +111,6 @@ Electron::~Electron(){
 
 }
 
-void Electron::SetConvNTracks(int i){
-  j_ConvNTracks= i;
-}
-
-void Electron::SetConvNHits(int i){
-  j_ConvNHits= i;
-}
-
-void Electron::SetConvFitProb(double d){
-  j_ConvFitProb= d;
-}
-void Electron::SetConvLxy(double d){
-  j_ConvLxy= d;
-}
-
-void Electron::SetLogEoverP(double d){
-  j_LogEoverP= d;
-}
-
-void Electron::SetLogCotTheta(double d){
-  j_LogCotTheta= d;
-}
-
-void Electron::SetPairMass(double d){
-  j_PairMass= d;
-}
-
-void Electron::SetLogDphi(double d){
-  j_LogDphi= d;
-}
-
-void Electron::SetLogChi2Max(double d){
-  j_LogChi2Max = d;
-}
-
-void Electron::SetLogChi2Min(double d){
-  j_LogChi2Min= d;
-}
 
 
 void Electron::SetEnShift(double en_up, double en_down){
@@ -306,7 +258,7 @@ bool Electron::PassID(TString ID) const{
   // === list of IDs for analyis
   if(ID=="NoCut") return true;
   if(ID=="NOCUT") return true;
-
+  
   //==== XXX veto Gap Always
   if(etaRegion()==GAP) return false;
 
@@ -762,19 +714,46 @@ int  Electron::PassIDTight(TString ID) const{
 
     if(!Pass_LepMVAID()) return false;
     
-    if( IsIB()){
+    if( IsBB()){
       if(j_lep_mva_hnl_cf < 0.7) return false;
     }
-    else   if( IsOB()){
-      if(j_lep_mva_hnl_cf < 0.7) return false;
-
-    }
-    else{
-      if(j_lep_mva_hnl_cf < 0.84) return false;
-    }
-
+    else      if(j_lep_mva_hnl_cf < 0.84) return false;
     return true;
   }
+
+  if(ID=="HNL_ULID_CFL"){
+
+    if(!Pass_LepMVAID()) return false;
+
+    if( IsBB()){
+      if(j_lep_mva_hnl_cf < 0.5) return false;
+    }
+    else      if(j_lep_mva_hnl_cf < 0.5) return false;
+    
+    return true;
+  }
+  if(ID=="HNL_ULID_CFVVL"){
+
+    if(!Pass_LepMVAID()) return false;
+
+    if( IsBB()){
+      if(j_lep_mva_hnl_cf < 0.) return false;
+    }
+    else      if(j_lep_mva_hnl_cf < 0.) return false;
+    return true;
+  }
+  if(ID=="HNL_ULID_CFVL"){
+
+    if(!Pass_LepMVAID()) return false;
+
+    if( IsBB()){
+      if(j_lep_mva_hnl_cf < 0.25) return false;
+    }
+    else      if(j_lep_mva_hnl_cf < 0.25) return false;
+    return true;
+  }
+
+
 
   // breakdown of 2016 ID for checking Eff.                                                                                                                                                                                                  
 
@@ -1017,7 +996,6 @@ int  Electron::PassIDTight(TString ID) const{
 bool Electron::PassMVABaseLine() const{
   
   if(! PassConversionVeto() ) return false;
-  if(! (Pass_TriggerEmulationLoose()))   return false;
   if(!Pass_LepMVAID()) return false;
   return true;
 }
@@ -1033,7 +1011,7 @@ bool Electron::PassHNLMVA(double fake_cut,double cf_cut, double conv_cut) const{
 
 int  Electron::PassIDLoose(TString ID) const{
     
-  if(ID=="passProbeID") return passVetoID()&&Pass_TriggerEmulation() ? 1 : 0;  // --- VETO POG                                                                                                                                           
+  if(ID=="passProbeID") return passMVAID_noiso_WPLoose() ? 1 : 0;  // --- VETO POG                                                                                                                                           
   //=== POG
   if(ID=="passLooseID") return passLooseID() ? 1 : 0; 
   if(ID=="HEEPLoose")   return passLooseHEEPID() ? 1 : 0; 

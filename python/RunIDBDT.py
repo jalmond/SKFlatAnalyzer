@@ -130,7 +130,7 @@ webdirname = timestamp+"_"+str_RandomNumber
 
 ## Define MasterJobDir
 
-MasterJobDir = BDTRunlogDir+'/TS_'+timestamp+'__'+str_RandomNumber+"__Classifier_"+args.Classifier+ '_' + args.BkgType +  '__Macro_'+ args.Analyzer+'__Era_'+'Era'+args.Era+"__Channel_"+args.Channel + '__Signal'+str(args.SignalMode) +'__NTrees'+ str(args.NTree)+'__Norm_'+ str(args.NormMode)+'__MinNodeSize_'+ str(args.MinNodeSize) +'__MaxDepth_'+ str(args.MaxDepth)  +'__NCut'+ str(args.NCut)+ '__BoostLearningRate_' + str(args.BoostLearningRate)+ '__BaggedFrac_'+str(args.BaggedFrac) + "_Seed_"+str(args.Seed) + "_Etabin_"+str(args.EtaBin)
+MasterJobDir = BDTRunlogDir+'/TS_'+timestamp+'__'+str_RandomNumber+"__Classifier_"+args.Classifier+ '_' + args.BkgType +  '__Macro_'+ args.Analyzer+'__Era_'+'Era'+args.Era+"__Channel_"+args.Channel + '__Signal'+str(args.SignalMode) +'__NTrees'+ str(args.NTree)+'__Norm_'+ str(args.NormMode)+'__MinNS_'+ str(args.MinNodeSize) +'__MD_'+ str(args.MaxDepth)  +'__NCut'+ str(args.NCut)+ '__BLR_' + str(args.BoostLearningRate)+ '__BF_'+str(args.BaggedFrac) + "_Seed_"+str(args.Seed) + "_Etabin_"+str(args.EtaBin)
 
 
 MasterJobDir += '__'+HOSTNAME+'/'

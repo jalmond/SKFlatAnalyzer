@@ -349,6 +349,7 @@ std::vector<Muon> AnalyzerCore::GetAllMuons(){
     Muon mu;
 
     mu.SetCharge(muon_charge->at(i));
+    mu.SetUncorrectedPt(muon_pt->at(i));
     mu.SetMiniAODPt(muon_pt->at(i));
     mu.SetMiniAODTunePPt(muon_TuneP_pt->at(i));
 
@@ -397,6 +398,7 @@ std::vector<Muon> AnalyzerCore::GetAllMuons(){
     mu.SetFilterBits(muon_filterbits->at(i));
     mu.SetPathBits(muon_pathbits->at(i));
 
+
     ///// Load branch if running BDT skim  
     if(fChain->GetBranch("muon_mva_fake"))   mu.SetHNL_LepMVA(muon_mva_fake->at(i),-999,-999); 
     if(fChain->GetBranch("muon_ptrel"))      mu.SetJetPtRel(muon_ptrel->at(i));
@@ -405,9 +407,11 @@ std::vector<Muon> AnalyzerCore::GetAllMuons(){
     if(fChain->GetBranch("muon_cj_flavour")) mu.SetCloseJetFlavour(muon_cj_flavour->at(i));
     
     bool FillCloseJetVar=!fChain->GetBranch("muon_cj_flavour");
+    if(Analyzer=="HNL_LeptonID_BDT_KinVar") FillCloseJetVar=false;
+
     if(FillCloseJetVar){
       
-      std::vector<Jet>    AK4_JetAllColl = GetJets("NoID", 10., 5.0);
+      std::vector<Jet>    AK4_JetAllColl = GetAllJets();
 
       float  JetDiscCJ = -999;
       int JetHadFlavour = -999;
@@ -424,9 +428,19 @@ std::vector<Muon> AnalyzerCore::GetAllMuons(){
 	JetHadFlavour = AK4_JetAllColl.at(IdxMatchJet).hadronFlavour();
       }
       else {
-	JetDiscCJ=0.;
+	JetDiscCJ=1.5;
 	JetHadFlavour=0;
       }
+
+      //if(mu.Pt() > 10){
+	
+	//cout << "muon_jetPtRel = " << muon_jetPtRel->at(i) << " prov  =" <<  JetLeptonPtRelLepAware(mu,true,true) << " " << JetLeptonPtRelLepAware(mu,true,false) << endl;
+	
+	//cout << "muon_jetPtRatio = " << muon_jetPtRatio->at(i) << " prov  =" <<  JetLeptonPtRatioLepAware(mu,false,true) << " " << JetLeptonPtRatioLepAware(mu,false,false) << endl;
+
+      //      }
+
+      
 
       mu.SetJetPtRel(JetLeptonPtRelLepAware(mu,true));
       mu.SetJetPtRatio(JetLeptonPtRatioLepAware(mu,false));
@@ -441,82 +455,53 @@ std::vector<Muon> AnalyzerCore::GetAllMuons(){
 
 }
 
-void AnalyzerCore::InitializeMuonIDTreeVars(){
+void AnalyzerCore::InitializeIDTreeVars(){
 
-  Pt=-1,       Eta=-1;
-  PtRatio=-1,  PtRel=-1 ;
-  CEMFracCJ=-1, NEMFracCJ=-1, CHFracCJ=-1, NHFracCJ=-1, MuFracCJ=-1, JetDiscCJ=-1;
+  // Initialise all BDT var to default
+  // Kinematic
+  Pt=-999, Eta=-999, PtBinned=-999;
+  PtRatio=-999,  PtRel=-999; MassDrop=-999;
+  /// Pileup
+  PileUp = -999; 
+  
+  // Iso
+  MiniIsoChHad=-999;  MiniIsoNHad=-999;  MiniIsoPhHad=-999;  IsoChHad=-999;  IsoNHad=-999;  IsoPhHad=-999;
+  Minireliso=-999.;  RelMiniIsoCh=-999.;  RelMiniIsoN=-999.; RelIso=-999.;
 
-  Dxy=-1,Dz=-1,DxySig=-1, DzSig=-1, RelIso=-1,IP3D=-1,MVA=-1,Chi2=-1, Minireliso=-1;
+  
+  // Closejet
+  CEMFracCJ=-999, NEMFracCJ=-999, CHFracCJ=-999, NHFracCJ=-999, MuFracCJ=-999, JetDiscCJ=-999;
 
-  RelDxy=-1,RelDz=-1,RelIP3D=-1,RelMVA=-1,RelMVAIso=-1,PileUp=-1;
+  /// IP
+  Dxy=-999.;  DxySig=-999.;  Dz=-999.;  DzSig=-999., IP3D=-999.; 
+  RelDxy=-999,RelDz=-999.,RelIP3D=-999;
 
-  MiniIsoChHad=-1,MiniIsoNHad=-1,MiniIsoPhHad=-1,IsoChHad=-1,IsoNHad=-1,IsoPhHad=-1;
-  RelMiniIsoCh=-1,RelMiniIsoN=-1;
-  Pixel_hits=-1,  Validhits=-1,Matched_stations=-1,Tracker_layers=-1;
+  // MVA
+  MVA=-999.;  MVAIso=-999.;  Chi2=-999.;
+  RelMVA=-999,RelMVAIso=-999; //36
+  
+  // Hits
+  Validhits=-999.;  Matched_stations=-999.; 
+  Pixel_hits=-999.;  Tracker_layers=-999.;  MissingHits=-999.; 
 
-}
-void AnalyzerCore::InitializeElectronIDTreeVars(){
+  // El Shower/SCL
+  Full5x5_sigmaIetaIeta=-999.;  dEtaSeed=-999.;  dPhiIn=-999.;  dEtaIn=-999.;  EtaWidth=-999.;  PhiWidth=-999.;  HoverE=-999.;
+  TrkIso=-999.;  e2x5OverE5x5=-999;  e1x5OverE5x5=-999;  e15=-999;  e25=-999;
+  e55=-999;  dr03EcalRecHitSumEt=-999;  dr03HcalDepth1TowerSumEt=-999;  dr03HcalTowerSumEt=-999;  dr03TkSumPt=-999;
+  InvEminusInvP=-999.;  ecalPFClusterIso=-999.;  hcalPFClusterIso=-999.;  
+  
+  // IDs
+  POGTight=-999;  POGMedium = -999;  HNTightID = -999;  
 
+  // COnv/CF
+  isEcalDriven= -999;  EoverP=-999;  FBrem=-999;  PassConversionVeto=-999 ;
+  IsGsfCtfScPixChargeConsistent =-999;  IsGsfScPixChargeConsistent =-999;  IsGsfCtfChargeConsistent =-999;  R9=-999;
 
-  Pt=-1;
-  Eta=-1;
-  MiniIsoChHad=-1;
-  MiniIsoNHad=-1;
-  MiniIsoPhHad=-1;
-  IsoChHad=-1;
-  IsoNHad=-1 ;
-  IsoPhHad=-1;
-  RelMiniIsoCh=-1;
-  RelMiniIsoN=-1;
-  Dxy=-1;
-  Dz=-1;
-  DxySig=-1;
-  DzSig=-1;
-  RelDxy=-1;
-  RelDz=-1;
-  RelIso=-1;
-  IP3D=-1;
-  RelIP3D=-1;
-  PtRatio=-1;
-  PtRel=-1;
-  CEMFracCJ=-1;
-  NEMFracCJ=-1;
-  CHFracCJ=-1;
-  NHFracCJ=-1;
-  MuFracCJ=-1;
-  JetDiscCJ=-1;
-  MVA=-1;
-  RelMVA=-1;
-  RelMVAIso=-1;
-  MVAIso=-1;
-  Full5x5_sigmaIetaIeta=-1;
-  dEtaSeed=-1;
-  dPhiIn=-1;
-  HoverE=-1;
-  EoverP=-1;
-  FBrem=-1;
-  R9=-1;
-  TrkIso=-1;   //InvEminusInvP=-1;                                                                    
-  dr03TkSumPt=-1;
-  dr03HcalTowerSumEt=-1;
-  dr03HcalDepth1TowerSumEt=-1;
-  dr03EcalRecHitSumEt=-1;
-  e15=-1;
-  e25=-1;
-  e55=-1;
-  e2x5OverE5x5=-1;
-  e1x5OverE5x5=-1;
-  EtaWidth=-1;
-  PhiWidth=-1;
-  ecalPFClusterIso=-1;
-  hcalPFClusterIso=-1;
-  MissingHits=-1;
-  isEcalDriven=-1;
-  PassConversionVeto=-1;
-  IsGsfCtfScPixChargeConsistent=-1;
-  IsGsfScPixChargeConsistent=-1 ;
-  IsGsfCtfChargeConsistent=-1;
+  //fisEcalDriven= -999;    fPassConversionVeto=-999 ;fIsGsfCtfScPixChargeConsistent =-999;  fIsGsfScPixChargeConsistent =-999;  fIsGsfCtfChargeConsistent =-999;
+
+  w_id_tot=1;
+
+  return;
 
 }
 
@@ -524,49 +509,24 @@ void AnalyzerCore::InitializeElectronIDTreeVars(){
 
 double AnalyzerCore::GetBDTScoreMuon(Muon mu ,BkgType bkg, TString BDTTag){
 
-  InitializeMuonIDTreeVars();
-
-  std::vector<Jet>   JetAllColl = GetJets("NoID", 10., 5.0);
+  InitializeIDTreeVars();
 
   Lepton *lep = (Lepton *)(&mu);
   SetBDTIDVar(lep);
-  MVA = mu.MVA();
+  SetBDTIDVariablesMuon(mu);
 
-  int IdxMatchJet=-1;
-  float mindR1=999.;
-
-  for(unsigned int ij=0; ij<JetAllColl.size(); ij++){
-    float dR1=lep->DeltaR(JetAllColl.at(ij));
-    if(dR1>0.4) continue;
-    if(dR1<mindR1){ mindR1=dR1; IdxMatchJet=ij; }
-  }
-
-  if(IdxMatchJet!=-1){
-    PtRatio=JetLeptonPtRatioLepAware(mu,false);
-    PtRel=JetLeptonPtRelLepAware(mu,true);
-  }
-
-  else{
-    PtRatio = min(1/(1.+lep->RelIso()), 1.5);
-    PtRel=0, PtRelWithLep=0, PtRelCorr=0;
-  }
-
-  Chi2 = mu.Chi2();
-  Validhits = mu.ValidMuonHits();
-  Matched_stations = mu.MatchedStations();
-  Pixel_hits  = mu.PixelHits();
-  Tracker_layers = mu.TrackerLayers();
 
   TString MVATagStr = BDTTag;
   if (bkg == BkgType::Fake) MVATagStr += "_Fake";
-
-
 
   //if(BDTTag.Contains("Split")) {
   //  MVATagStr = "BDTG";
   //  if(mu.Pt() < 30.) MVATagStr += "_FakeLowPt";
   //  else MVATagStr += "_FakeHighPt";
-  return MuonIDFakeMVAReader->EvaluateMVA(MVATagStr);
+
+
+  return 1;
+  //return MuonIDFakeMVAReader->EvaluateMVA(MVATagStr);
     
   //  return  MuonIDFakeNoPtMVAReader->EvaluateMVA(MVATagStr);
 
@@ -575,24 +535,40 @@ double AnalyzerCore::GetBDTScoreMuon(Muon mu ,BkgType bkg, TString BDTTag){
 
 void AnalyzerCore::SetBDTIDVar(Lepton*  lep){
 
+  PileUp = nPV;
+
+  if (Pt < 50.) PtBinned= 0;
+  else     if (Pt < 100.) PtBinned= 1;
+  else     if (Pt < 200.) PtBinned= 2;
+  else PtBinned =3;
 
   Pt    = (lep->Pt() > 500)  ? 499 : lep->Pt();
   Eta   = fabs(lep->Eta());
-  MiniIsoChHad = lep->MiniIsoChHad();
-  MiniIsoNHad = lep->MiniIsoNHad();
-  MiniIsoPhHad = lep->MiniIsoPhHad();
-  IsoChHad = lep->IsoChHad();
-  IsoNHad = lep->IsoNHad();
-  IsoPhHad = lep->IsoPhHad();
-  Dxy   = lep->LogdXY();
+  if (lep->MiniIsoChHad() > 150) MiniIsoChHad = 150;
+  else   MiniIsoChHad = lep->MiniIsoChHad();
+
+  if (lep->MiniIsoNHad() > 150) MiniIsoNHad = 150.;
+  else   MiniIsoNHad = lep->MiniIsoNHad();
+
+  if(lep->MiniIsoPhHad() > 150.) MiniIsoPhHad = 150.;
+  else MiniIsoPhHad = lep->MiniIsoPhHad();
+
+  if(lep->IsoChHad() > 150) IsoChHad = 150;
+  else IsoChHad = lep->IsoChHad();
+  if(lep->IsoNHad()  > 150)  IsoNHad  = 150;
+  else   IsoNHad = lep->IsoNHad();
+  if(lep->IsoPhHad() > 150) IsoPhHad  = 150; 
+  else IsoPhHad = lep->IsoPhHad();
+  Dxy      = lep->LogdXY();
   RelDxy   = lep->LogdXY()/lep->Pt();
   DxySig   = lep->LogdXYSig();
-  Dz   = lep->LogdZ();
-  RelDz   = lep->LogdZ()/lep->Pt();
-  DzSig   = lep->LogdZSig();
-  IP3D    = lep->SIP3D();
+  Dz       = lep->LogdZ();
+  RelDz    = lep->LogdZ()/lep->Pt();
+  DzSig    = lep->LogdZSig();
+  IP3D     = lep->SIP3D();
   RelIP3D    = lep->SIP3D()/lep->Pt();
-  RelIso    =  lep->RelIso();
+  if (lep->RelIso() > 1)  RelIso = 1;
+  else  RelIso     =  lep->RelIso();
   Minireliso   = lep->MiniRelIso();
   RelMiniIsoCh = lep->MiniRelIsoCharged();
   RelMiniIsoN = lep->MiniRelIsoNeutral();
@@ -602,7 +578,7 @@ void AnalyzerCore::SetBDTIDVar(Lepton*  lep){
                                                                                                   
   int IdxMatchJet=-1;
   float mindR1=999.;
-  std::vector<Jet>   JetAllColl = GetJets("NoID", 10., 5.0);
+  std::vector<Jet>   JetAllColl = GetAllJets();
 
   for(unsigned int ij=0; ij<JetAllColl.size(); ij++){
     float dR1=lep->DeltaR(JetAllColl.at(ij));
@@ -621,21 +597,20 @@ void AnalyzerCore::SetBDTIDVar(Lepton*  lep){
   }
 
   else{
-    CEMFracCJ=0, NEMFracCJ=0., CHFracCJ=0., NHFracCJ=0., MuFracCJ=0., JetDiscCJ=0.;
+    CEMFracCJ=1.5, NEMFracCJ=1.5, CHFracCJ=1.5, NHFracCJ=1.5, MuFracCJ=1.5, JetDiscCJ=1.5;
   }
 
   return;
 }
-						\
-
 
 
 void AnalyzerCore::SetupIDMVAReader(bool isMuon){
 
+  InitializeIDTreeVars();
   if(isMuon) {
 
     cout << "################ SETUP MUON ID MVA " << endl;
-    InitializeMuonIDTreeVars();
+
 
     // Fake                                                                                            
     MuonIDFakeMVAReader->AddVariable("Pt", &Pt);
@@ -657,7 +632,7 @@ void AnalyzerCore::SetupIDMVAReader(bool isMuon){
     MuonIDFakeMVAReader->AddVariable("NHFracCJ",&NHFracCJ);
     MuonIDFakeMVAReader->AddVariable("MVA",  &MVA);
     MuonIDFakeMVAReader->AddVariable("MuFracCJ",&MuFracCJ);
-    MuonIDFakeMVAReader->AddSpectator("w_tot", &w_tot);
+    MuonIDFakeMVAReader->AddSpectator("w_tot", &w_id_tot);
 
 
 
@@ -666,7 +641,7 @@ void AnalyzerCore::SetupIDMVAReader(bool isMuon){
 
   else{
 
-    InitializeElectronIDTreeVars();
+
 
     // Conversion MVA
     ElectronIDConvMVAReader->AddVariable("Pt", &Pt);
@@ -710,7 +685,7 @@ void AnalyzerCore::SetupIDMVAReader(bool isMuon){
     ElectronIDConvMVAReader->AddVariable("IsGsfCtfScPixChargeConsistent",  &IsGsfCtfScPixChargeConsistent);
     ElectronIDConvMVAReader->AddVariable("IsGsfScPixChargeConsistent",  &IsGsfScPixChargeConsistent);
     ElectronIDConvMVAReader->AddVariable("IsGsfCtfChargeConsistent",  &IsGsfCtfChargeConsistent);
-    ElectronIDConvMVAReader->AddSpectator("w_tot", &w_tot);
+    ElectronIDConvMVAReader->AddSpectator("w_tot", &w_id_tot);
 
     
     
@@ -740,7 +715,7 @@ void AnalyzerCore::SetupIDMVAReader(bool isMuon){
     ElectronIDCFMVAReader->AddVariable("IsGsfScPixChargeConsistent",  &IsGsfScPixChargeConsistent);
     ElectronIDCFMVAReader->AddVariable("IsGsfCtfChargeConsistent",  &IsGsfCtfChargeConsistent);
 
-    ElectronIDCFMVAReader->AddSpectator("w_tot", &w_tot);
+    ElectronIDCFMVAReader->AddSpectator("w_tot", &w_id_tot);
 
 
     ElectronIDFakeMVAReader->AddVariable("Pt", &Pt);
@@ -763,7 +738,7 @@ void AnalyzerCore::SetupIDMVAReader(bool isMuon){
     ElectronIDFakeMVAReader->AddVariable("CEMFracCJ",&CEMFracCJ);
     ElectronIDFakeMVAReader->AddVariable("MVA",  &MVA);
     ElectronIDFakeMVAReader->AddVariable("MVAIso",  &MVAIso);
-    ElectronIDFakeMVAReader->AddSpectator("w_tot", &w_tot);
+    ElectronIDFakeMVAReader->AddSpectator("w_tot", &w_id_tot);
 
   }
 
@@ -806,7 +781,7 @@ void AnalyzerCore::SetupIDMVAReader(bool isMuon){
       make_pair("BDTG_FakeHighPt", BDTG_FakeHighPt),
     };
     
-    for (auto ibdt : BDTInput)   MuonIDFakeMVAReader->BookMVA(ibdt.first,MVAPathMuonFake+ibdt.second+"_TMVAClassification_BDTG.weights.xml");
+    //for (auto ibdt : BDTInput)   MuonIDFakeMVAReader->BookMVA(ibdt.first,MVAPathMuonFake+ibdt.second+"_TMVAClassification_BDTG.weights.xml");
     
     
   }
@@ -888,31 +863,42 @@ void AnalyzerCore::SetupIDMVAReader(bool isMuon){
 
 }
 
+void AnalyzerCore::SetBDTIDVariablesMuon(Muon mu){
+
+  MVA = mu.MVA();
+
+  if (JetLeptonPtRelLepAware(mu,true) >600) PtRel = 600;
+  else PtRel=JetLeptonPtRelLepAware(mu,true);
+  PtRatio=JetLeptonPtRatioLepAware(mu,false);
+
+  if(mu.Chi2() > 100) Chi2=100;
+  else Chi2 = mu.Chi2();
+  Validhits = float(mu.ValidMuonHits());
+  Matched_stations = float(mu.MatchedStations());
+  Pixel_hits  = float(mu.PixelHits());
+  Tracker_layers = float(mu.TrackerLayers());
+
+  RelMVA    = mu.MVA()/mu.Pt();
+  POGTight = mu.isPOGTight() ?  1.: 0.;
+  POGMedium = mu.isPOGMedium() ?  1.: 0.;
+  HNTightID = mu.PassID("HNTightV2") ?  1.: 0.;
+
+  return;
+
+}
 
 
-
-
-
-
-
-
-double AnalyzerCore::GetBDTScoreEl(Electron el ,BkgType bkg, TString BDTTag){
-
-  InitializeElectronIDTreeVars();
-
-  std::vector<Jet>   JetAllColl = GetJets("NoID", 10., 5.0);
-
-  Lepton *lep = (Lepton *)(&el);
-  SetBDTIDVar(lep);
+void AnalyzerCore::SetBDTIDVariablesElectron(Electron el){
 
   MVA    = el.MVANoIsoResponse();
   MVAIso    = el.MVAIsoResponse();
-  RelMVA    = el.MVANoIsoResponse()/lep->Pt();
-  RelMVAIso    = el.MVAIsoResponse()/lep->Pt();
+  RelMVA    = el.MVANoIsoResponse()/el.Pt();
+  RelMVAIso    = el.MVAIsoResponse()/el.Pt();
   MissingHits = el.NMissingHits();
-  Full5x5_sigmaIetaIeta  = el.Full5x5_sigmaIetaIeta();  //sigmaIetaIeta  = el.sigmaIetaIeta();                                                                                                                                                
+  Full5x5_sigmaIetaIeta  = el.Full5x5_sigmaIetaIeta(); 
   dEtaSeed  = el.dEtaSeed();
-  dPhiIn  = el.dPhiIn();//  dEtaIn  = el.dEtaIn();                                                                                                                                                                                            
+  dPhiIn  = el.dPhiIn();
+  dEtaIn  = el.dEtaIn();   
   EtaWidth = el.EtaWidth();
   PhiWidth = el.PhiWidth();
   e2x5OverE5x5 = el.e2x5OverE5x5();
@@ -926,39 +912,42 @@ double AnalyzerCore::GetBDTScoreEl(Electron el ,BkgType bkg, TString BDTTag){
   dr03TkSumPt= el.dr03TkSumPt()/el.UncorrPt();
   R9= el.R9();
   HoverE  = el.HoverE();
-  TrkIso  = el.TrkIso()/el.UncorrPt();  //InvEminusInvP = fabs(el.InvEminusInvP());                                                                                                                                                           
+  if (el.TrkIso()/el.UncorrPt() > 10) TrkIso = 10;
+  else TrkIso  = el.TrkIso()/el.UncorrPt();  
+  if(isinf(el.InvEminusInvP())) InvEminusInvP = 0.;
+  else InvEminusInvP = fabs(el.InvEminusInvP());                                                                         
+  
   ecalPFClusterIso = el.ecalPFClusterIso()/el.UncorrPt();
   hcalPFClusterIso = el.hcalPFClusterIso()/el.UncorrPt();
-  isEcalDriven = el.isEcalDriven();
+  isEcalDriven = (el.isEcalDriven()) ? 1. : 0.;
   EoverP = log(el.EOverP());
-  FBrem = el.FBrem();
-  PassConversionVeto  = (el.PassConversionVeto()) ? 1 : 0;
-  IsGsfCtfScPixChargeConsistent  = (el.IsGsfCtfScPixChargeConsistent()) ? 1 : 0;
-  IsGsfScPixChargeConsistent  = (el.IsGsfScPixChargeConsistent()) ? 1 : 0;
-  IsGsfCtfChargeConsistent  = (el.IsGsfCtfChargeConsistent()) ? 1 : 0;
+  if (el.FBrem() < -1) FBrem = -1;
+  else   FBrem = el.FBrem();
+  PassConversionVeto  = (el.PassConversionVeto()) ? 1. : 0.;
+  IsGsfCtfScPixChargeConsistent  = (el.IsGsfCtfScPixChargeConsistent()) ? 1. : 0.;
+  IsGsfScPixChargeConsistent  = (el.IsGsfScPixChargeConsistent()) ? 1. : 0.;
+  IsGsfCtfChargeConsistent  = (el.IsGsfCtfChargeConsistent()) ? 1. : 0.;
+
+  PtRatio=JetLeptonPtRatioLepAware(el,false);
+
+  if (JetLeptonPtRelLepAware(el,true) > 600) PtRel = 600;
+  else PtRel=JetLeptonPtRelLepAware(el,true);
+
+  POGTight = el.PassID("passPOGTight") ?  1.: 0.;
+  POGMedium =el.PassID("passPOGMedium") ?  1.: 0.;
+  HNTightID = el.PassID("HNTightV2") ?  1.: 0.;
 
 
-  //==== Vars for non-prompt lepton bkg                                                                                                                                                                                                       
-  int IdxMatchJet=-1;
-  float mindR1=999.;
+  return;
+}
 
-  for(unsigned int ij=0; ij<JetAllColl.size(); ij++){
-    float dR1=lep->DeltaR(JetAllColl.at(ij));
-    if(dR1>0.4) continue;
-    if(dR1<mindR1){ mindR1=dR1; IdxMatchJet=ij; }
-  }
+double AnalyzerCore::GetBDTScoreEl(Electron el ,BkgType bkg, TString BDTTag){
 
+  InitializeIDTreeVars();
 
-
-  if(IdxMatchJet!=-1){
-    PtRatio=JetLeptonPtRatioLepAware(el,false);
-    PtRel=JetLeptonPtRelLepAware(el,true);
-  }
-
-  else{
-    PtRatio = min(1/(1.+lep->RelIso()), 1.5);
-    PtRel=0, PtRelWithLep=0, PtRelCorr=0;
-  }
+  Lepton *lep = (Lepton *)(&el);
+  SetBDTIDVar(lep);
+  SetBDTIDVariablesElectron(el);
 
   TString MVATagStr="";
   if(BDTTag.Contains("v2")){
@@ -1078,6 +1067,8 @@ std::vector<Electron> AnalyzerCore::GetAllElectrons(){
     double el_pt = electron_Energy->at(i) * TMath::Sin( el_theta );
     el.SetPtEtaPhiE( el_pt, electron_eta->at(i), electron_phi->at(i), electron_Energy->at(i));
 
+    el.SetUncorrectedPt(electron_EnergyUnCorr->at(i) * TMath::Sin( el_theta ));
+
     el.SetUncorrE(electron_EnergyUnCorr->at(i));
     el.SetSC(electron_scEta->at(i), electron_scPhi->at(i), electron_scEnergy->at(i));
     el.SetCharge(electron_charge->at(i));
@@ -1157,9 +1148,10 @@ std::vector<Electron> AnalyzerCore::GetAllElectrons(){
     }  
     
     bool FillCloseJetVar=!fChain->GetBranch("electron_cj_flavour");
+    if(Analyzer=="HNL_LeptonID_BDT_KinVar") FillCloseJetVar=false;
     if(FillCloseJetVar){
       
-      std::vector<Jet>    AK4_JetAllColl = GetJets("NoID", 10., 5.0);
+      std::vector<Jet>    AK4_JetAllColl = GetAllJets();
       
       float  JetDiscCJ = -999;
       float mindR1=999.;
@@ -1176,7 +1168,7 @@ std::vector<Electron> AnalyzerCore::GetAllElectrons(){
 	JetHadFlavour  = AK4_JetAllColl.at(IdxMatchJet).hadronFlavour();
       }
       else {
-	JetDiscCJ=0.;
+	JetDiscCJ=1.5;
 	JetHadFlavour = 0;
       }
 
@@ -3915,12 +3907,12 @@ Jet AnalyzerCore::GetCorrectedJetCloseToLepton(Electron lep, Jet jet){
   return jet_corr;
 }
 
-Jet AnalyzerCore::GetCorrectedJetCloseToLepton(Lepton* lep, Jet jet){
+Jet AnalyzerCore::GetCorrectedJetCloseToLepton(Lepton lep, Jet jet){
 
   //jet_LepAwareJECv2 = (raw_jet * L1 - lepton) * L2L3Res + lepton                                                                                                                                                                                                      
 
   Particle  rawJet = jet * (1./ jet.JEC_Full());
-  Particle  lepp4 = *lep;
+  Particle  lepp4 = lep;
   double l1corrFactor = jet.JEC_L1();
   Particle jetp4 = (rawJet - lepp4 * (1.0 / l1corrFactor)) * (jet.Pt() / rawJet.Pt()) + lepp4;
 
@@ -3944,8 +3936,12 @@ double  AnalyzerCore::JetLeptonMassDropLepAware( Muon lep, bool removeLep, bool 
 
   Jet closejet;
   for(auto jet : jets){
-    if (lep.DeltaR(jet) < mindR) closejet = GetCorrectedJetCloseToLepton(lep,jet);
+    if (lep.DeltaR(jet) < mindR) {
+      closejet = GetCorrectedJetCloseToLepton(lep,jet);
+      mindR = lep.DeltaR(jet);
+    }
   }
+  if(mindR==0.4) return -1;
 
   TLorentzVector lepp4 = lep;
   TLorentzVector jetp4 = closejet;
@@ -3986,9 +3982,19 @@ double  AnalyzerCore::JetLeptonMassDropLepAware( Electron lep, bool removeLep, b
 }
 
 
-
 double  AnalyzerCore::JetLeptonPtRelLepAware( Muon lep, bool removeLep, bool ApplyCorr){
 
+  if(!ApplyCorr)lep.SetPtEtaPhiE(lep.MiniAODPt(), lep.Eta(), lep.Phi(), lep.E());
+  return JetLeptonPtRelLepAware(Lepton(lep), removeLep,ApplyCorr);
+}
+double  AnalyzerCore::JetLeptonPtRelLepAware( Electron lep, bool removeLep, bool ApplyCorr){
+  return JetLeptonPtRelLepAware(Lepton(lep), removeLep,ApplyCorr);
+}
+
+
+double  AnalyzerCore::JetLeptonPtRelLepAware( Lepton lep, bool removeLep, bool ApplyCorr){
+  
+  if(!removeLep) return -999.;
 
   // ApplyCorr def is false, this is same as Mini/NanoAOD value stored
   // if ApplyCorr is true then Jet smearing and lepton smearing is applied and values are corrected
@@ -3996,63 +4002,39 @@ double  AnalyzerCore::JetLeptonPtRelLepAware( Muon lep, bool removeLep, bool App
   std::vector<Jet> jets = GetAllJets(ApplyCorr);
 
   double mindR=0.4;
-  if(!ApplyCorr)lep.SetPtEtaPhiE(lep.MiniAODPt(), lep.Eta(), lep.Phi(), lep.E());
 
   Jet closejet;
   for(auto jet : jets){
-    if (lep.DeltaR(jet) < mindR) closejet = GetCorrectedJetCloseToLepton(lep,jet);
+    if (lep.DeltaR(jet) < mindR) {
+      closejet = GetCorrectedJetCloseToLepton(lep,jet);
+      mindR = lep.DeltaR(jet);
+    }
   }
   
   TLorentzVector lepp4 = lep;
   TLorentzVector jetp4 = closejet;
   
   double PtRel = lepp4.Perp((closejet-lepp4).Vect()); // Default
-  //double PtRel2 = lepp4.Vect().Cross((jetp4 - lepp4).Vect().Unit()).Mag();
-  if(!removeLep) PtRel = lepp4.Perp((closejet).Vect());
-
 
   return PtRel;
 
 }
-
-double  AnalyzerCore::JetLeptonPtRelLepAware( Electron lep, bool removeLep, bool ApplyCorr){
-
-  // ApplyCorr def is false, this is same as Mini/NanoAOD value stored                                                                                     
-  // if ApplyCorr is true then Jet smearing and lepton smearing is applied and values are corrected                                                       
-
-  std::vector<Jet> jets = GetAllJets(ApplyCorr);
-
-  double mindR=0.4;
-  //if(!ApplyCorr)lep.SetPtEtaPhiE(lep.MiniAODPt(), lep.Eta(), lep.Phi(), lep.E());
-
-  Jet closejet;
-  for(auto jet : jets){
-    if (lep.DeltaR(jet) < mindR) closejet = GetCorrectedJetCloseToLepton(lep,jet);
-  }
-
-  TLorentzVector lepp4 = lep;
-  TLorentzVector jetp4 = closejet;
-
-  double PtRel = lepp4.Perp((closejet-lepp4).Vect());
-  if(!removeLep) PtRel = lepp4.Perp((closejet).Vect());
-
-  //  double PtRel2 = lepp4.Vect().Cross((jetp4 - lepp4).Vect().Unit()).Mag();
-
-  //cout << "JetLeptonPtRelLepAware " <<  PtRel << " vs  " << PtRel2 << " vs  "  << lep.lep_jet_ptrel() << " vs " << lep.lep_jet_ptrelDef() << endl;                                                                                          
-
-  return PtRel;
-
-}
-
 
 double  AnalyzerCore::JetLeptonPtRatioLepAware(Muon lep, bool removeLep, bool ApplyCorr){
+  if(!ApplyCorr)lep.SetPtEtaPhiE(lep.MiniAODPt(), lep.Eta(), lep.Phi(), lep.E());
+
+  return JetLeptonPtRatioLepAware(Lepton(lep), removeLep,ApplyCorr);
+}
+double  AnalyzerCore::JetLeptonPtRatioLepAware( Electron lep, bool removeLep, bool ApplyCorr){
+  return JetLeptonPtRatioLepAware(Lepton(lep), removeLep,ApplyCorr);
+}
+
+double  AnalyzerCore::JetLeptonPtRatioLepAware(Lepton lep, bool removeLep, bool ApplyCorr){
 
   std::vector<Jet> jets = GetAllJets(ApplyCorr);
 
   double  mindR=0.4;
   
-  if(!ApplyCorr)lep.SetPtEtaPhiE(lep.MiniAODPt(), lep.Eta(), lep.Phi(), lep.E());
-
   Jet closejet;
   for(auto jet : jets){
     if (lep.DeltaR(jet) < mindR) {
@@ -4063,12 +4045,8 @@ double  AnalyzerCore::JetLeptonPtRatioLepAware(Muon lep, bool removeLep, bool Ap
 
   Particle lepp4 = lep;
   
-  if (mindR == 0.4) {
+  if (mindR == 0.4)  return std::min(1./ (1. + lep.RelIso()), 1.5);
     
-    return std::min(1./ (1. + lep.RelIso()), 1.5);
-  }
-
-  
   if(closejet.Pt() == 0.) {
     cout << "mindR = " << mindR << endl;
     cout << "[JetLeptonPtRatioLepAware( Muon lep,  bool removeLep, bool ApplyCorr] 0 Jet pt" <<  endl;
@@ -4083,54 +4061,9 @@ double  AnalyzerCore::JetLeptonPtRatioLepAware(Muon lep, bool removeLep, bool Ap
   }
 
 
-  //cout << "JetLeptonPtRatioLepAware " <<  (lepp4.Pt() / closejet.Pt()) << " vs  " << lep.lep_jet_ptratio() << " vs " << lep.lep_jet_ptratioDef() << endl;
-  //cout << "Jet pt must be " << lepp4.Pt()/lep.lep_jet_ptratio() << endl;
-  //for(auto ijet : jets) cout << "Jet pt = " << GetCorrectedJetCloseToLepton(lep,ijet).Pt() <<  " dR lep " << lep.DeltaR(ijet) <<endl;
   if(removeLep)   return std::min(lepp4.Pt() / (closejet-lepp4).Pt(),1.5);
 
   return std::min(lepp4.Pt() / closejet.Pt(),1.5); 
-
-}
-
-
-double  AnalyzerCore::JetLeptonPtRatioLepAware( Electron lep,  bool removeLep, bool ApplyCorr){
-
-  std::vector<Jet> jets = GetAllJets(ApplyCorr);
-
-  double  mindR=0.4;
-
-  Jet closejet;
-  for(auto jet : jets){
-    if (lep.DeltaR(jet) < mindR) {
-      closejet = GetCorrectedJetCloseToLepton(lep,jet);
-      mindR = lep.DeltaR(jet);
-    }
-  }
-
-  Particle lepp4 = lep;
-
-  if (mindR == 0.4)    return std::min(1./ (1. + lep.RelIso()), 1.5);
-
-
-
-  if(removeLep)   return std::min(lepp4.Pt() / (closejet-lepp4).Pt(),  1.5);
-
-  if(closejet.Pt() == 0.) {
-    cout << "mindR = " << mindR<< endl;
-
-    cout << "[JetLeptonPtRatioLepAware( Electron lep,  bool removeLep, bool ApplyCorr] 0 Jet pt" <<  endl;
-    cout << "Number of jets = " << jets.size() << endl;
-    for(auto jet : jets){
-      cout << "Jet pt = " << jet.Pt() << " dR = " << lep.DeltaR(jet) << endl;
-      Jet closejet2 = GetCorrectedJetCloseToLepton(lep,jet);
-      cout << "GetCorrectedJetCloseToLepton(lep,jet) pt = " << closejet2.Pt() << endl;
-    }
-
-
-    exit(EXIT_FAILURE);
-  }
-
-  return std::min(lepp4.Pt() / closejet.Pt(), 1.5);
 
 }
 
