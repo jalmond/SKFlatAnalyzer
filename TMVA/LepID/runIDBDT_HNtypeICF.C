@@ -34,6 +34,7 @@ void runIDBDT_HNtypeICF(TString Classifier ="BDTG" ,TString BkgType = "CF", TStr
   TString signal="SignalCF";
   if(signal_mode == 0) signal="SignalCF";
   if(signal_mode == 1) signal="SignalCFEC";
+  if(signal_mode == 2) signal="SignalCFPt";
 
   cout << "signal File Name= " << signal << endl;
   for(int i=0; i < nTermWidth; i++)  cout << "-" ;   cout << endl;
@@ -43,12 +44,12 @@ void runIDBDT_HNtypeICF(TString Classifier ="BDTG" ,TString BkgType = "CF", TStr
   TMVA::gConfig().GetVariablePlotting().fNbins1D = 200; 
   TMVA::gConfig().GetVariablePlotting().fNbinsMVAoutput = 100;
 
-  const TString path = "/data6/Users/jalmond/2020/HL_SKFlatAnalyzer_ULv3/SKFlatAnalyzer/HNDiLeptonWorskspace/InputFiles/MergedFiles/Run2UltraLegacy_v3/HNL_LepIDKinVarEtaBinned/"+era+"/";
+  const TString path = "/data6/Users/jalmond/2020/HL_SKFlatAnalyzer_ULv3/SKFlatAnalyzer/HNDiLeptonWorskspace/InputFiles/MergedFiles/Run2UltraLegacy_v3/HNL_LeptonID_BDT_KinVar/"+era+"/";
   
-  TString signame = path+"HNL_LepIDKinVarEtaBinned_PromptHNLTop.root";
+  TString signame = path+"HNL_LeptonID_BDT_KinVar_HNLPrompt.root";
 
   TFile* fsin = TFile::Open(signame);
-  TFile* fbin = TFile::Open(path+"HNL_LepIDKinVarEtaBinned_"+BkgType+"Bkg.root");
+  TFile* fbin = TFile::Open(path+"HNL_LeptonID_BDT_KinVar_"+BkgType+"Bkg.root");
 
   TTree* tree_signal = (TTree*)fsin->Get(treeName);
   TTree* tree_bkg    = (TTree*)fbin->Get(treeName);
@@ -60,7 +61,8 @@ void runIDBDT_HNtypeICF(TString Classifier ="BDTG" ,TString BkgType = "CF", TStr
 
   TMVA::DataLoader* data_loader = new TMVA::DataLoader("dataset");
   
-  data_loader->AddVariable("Pt", "Pt", "units", 'F');
+  if(signal_mode == 0)data_loader->AddVariable("PtBinned", "PtBinned", "units", 'F');
+  if(signal_mode == 2)data_loader->AddVariable("Pt", "Pt", "units", 'F');
   data_loader->AddVariable("Eta", "Eta", "units", 'F');
   data_loader->AddVariable("Dxy",  "Dxy", "units", 'F');
   data_loader->AddVariable("DxySig",  "DxySig", "units", 'F');
@@ -74,21 +76,24 @@ void runIDBDT_HNtypeICF(TString Classifier ="BDTG" ,TString BkgType = "CF", TStr
   data_loader->AddVariable("EoverP",  "EoverP", "units", 'F');
   data_loader->AddVariable("FBrem",  "FBrem", "units", 'F');
   data_loader->AddVariable("R9",  "R9", "units", 'F');
-  data_loader->AddVariable("dr03TkSumPt",  "dr03TkSumPt", "units", 'F');
   data_loader->AddVariable("e55",  "e55", "units", 'F');
   data_loader->AddVariable("e2x5OverE5x5",  "e2x5OverE5x5", "units", 'F');
   data_loader->AddVariable("EtaWidth",  "EtaWidth", "units", 'F');
   data_loader->AddVariable("PhiWidth",  "PhiWidth", "units", 'F');
   data_loader->AddVariable("ecalPFClusterIso",  "ecalPFClusterIso", "units", 'F');
-  data_loader->AddVariable("PassConversionVeto",  "PassConversionVeto", "units", 'I');
-  data_loader->AddVariable("IsGsfCtfScPixChargeConsistent",  "IsGsfCtfScPixChargeConsistent", "units", 'I');
-  data_loader->AddVariable("IsGsfScPixChargeConsistent",  "IsGsfScPixChargeConsistent", "units", 'I');
-  data_loader->AddVariable("IsGsfCtfChargeConsistent",  "IsGsfCtfChargeConsistent", "units", 'I');
-  data_loader->AddSpectator("w_tot", "w_tot", "units", 'F');          
+  data_loader->AddVariable("PassConversionVeto",  "PassConversionVeto", "units", 'F');
+  data_loader->AddVariable("IsGsfCtfScPixChargeConsistent",  "IsGsfCtfScPixChargeConsistent", "units", 'F');
+  data_loader->AddVariable("IsGsfScPixChargeConsistent",  "IsGsfScPixChargeConsistent", "units", 'F');
+  data_loader->AddVariable("IsGsfCtfChargeConsistent",  "IsGsfCtfChargeConsistent", "units", 'F');
+  data_loader->AddVariable("InvEminusInvP", "InvEminusInvP", "units", 'F');
+
+
+  data_loader->AddSpectator("w_id_tot", "w_id_tot", "units", 'F');
+
 
   data_loader->AddSignalTree(tree_signal, 1.0);
   data_loader->AddBackgroundTree(tree_bkg, 1.0);
-  data_loader->SetWeightExpression("w_tot");  
+  data_loader->SetWeightExpression("w_id_tot");  
 
   //==== Nj, Nb cut
   TCut cut_s = "";
