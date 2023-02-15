@@ -6,15 +6,18 @@ from ROOT import *
 
 eras = ["2016preVFP", "2016postVFP", "2017", "2018"]
 eras = ["2016","2017","2018"]
-eras = ["2016"]
+eras = ["2017"]
 masses = ["M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000"]
 masses = ["M5000","M7500","M10000","M15000","M20000"]
 masses = ["M100","M200","M300","M400","M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M10000","M15000","M20000"]
 #masses = ["M100","M200","M300","M400","M500"]
+#masses = ["M500"]
 channels = ["MuMu","EE","EMu"]
+#channels = ["MuMu"]
 
-InputPath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/Before_Merge_230119/HNL_SignalRegionPlotter/"
-OutputPath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/Before_Merge_230119/HNL_SignalRegionPlotter/InputForCombine/"
+InputPath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegionPlotter/"
+#OutputPath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegionPlotter/InputForCombine/"
+OutputPath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegionPlotter/AddSyst/"
 Analyzer = "HNL_SignalRegionPlotter"
 
 MergeData   = False
@@ -22,16 +25,17 @@ MergeFake   = False
 MergeCF     = False
 MergeConv   = False
 MergeMC     = False
-MergeSignal = False
+MergeSignal = True
 #MergeDYVBF = True
 #MergeSSWW  = True
 
 Blinded = True
+AddSyst = True
 
 if MergeData:
 
   for era in eras:
-    OutFile=OutputPath + era + "/DATA/"+Analyzer+"_SkimTree_HNMultiLep_DATA.root"
+    OutFile=InputPath + era + "/DATA/"+Analyzer+"_SkimTree_HNMultiLep_DATA.root"
     if os.path.exists(OutFile):
       os.system("rm " + OutFile)
     os.system("hadd " + OutFile + "  " + InputPath + "/"+era+"/DATA/*")
@@ -39,7 +43,7 @@ if MergeData:
 if MergeFake:
 
   for era in eras:
-    OutFile=OutputPath + era + "/RunFake__/DATA/"+Analyzer+"_SkimTree_HNMultiLep_Fake.root"
+    OutFile=InputPath + era + "/RunFake__/DATA/"+Analyzer+"_SkimTree_HNMultiLep_Fake.root"
     if os.path.exists(OutFile):
       os.system("rm " + OutFile)
     os.system("hadd " + OutFile + "  " + InputPath + "/"+era+"/RunFake__/DATA/*")
@@ -47,15 +51,17 @@ if MergeFake:
 if MergeCF:
 
   for era in eras:
-    OutFile=OutputPath + era + "/RunCF__/DATA/"+Analyzer+"_SkimTree_Dilepton_CF.root"
+    #OutFile=InputPath + era + "/RunCF__/DATA/"+Analyzer+"_SkimTree_Dilepton_CF.root"
+    OutFile=InputPath + era + "/RunCF__/"+Analyzer+"_SkimTree_HNMultiLep_CF.root" #FIXME
     if os.path.exists(OutFile):
       os.system("rm " + OutFile)
-    os.system("hadd " + OutFile + "  " + InputPath + "/"+era+"//RunCF__/DATA/*")
+    #os.system("hadd " + OutFile + "  " + InputPath + "/"+era+"/RunCF__/DATA/*")
+    os.system("hadd " + OutFile + "  " + InputPath + "/"+era+"/RunCF__/*")
 
 if MergeConv:
 
   for era in eras:
-    OutFile=OutputPath + era + "/RunConv__/"+Analyzer+"_SkimTree_HNMultiLep_Conv.root"
+    OutFile=InputPath + era + "/RunConv__/"+Analyzer+"_SkimTree_HNMultiLep_Conv.root"
     if os.path.exists(OutFile):
       os.system("rm " + OutFile)
     os.system("hadd " + OutFile + "  " + InputPath + "/"+era+"/RunConv__/*")
@@ -63,7 +69,7 @@ if MergeConv:
 if MergeMC:
 
   for era in eras:
-    OutFile=OutputPath + era + "/"+Analyzer+"_SkimTree_HNMultiLep_MC.root"
+    OutFile=InputPath + era + "/"+Analyzer+"_SkimTree_HNMultiLep_MC.root"
     if os.path.exists(OutFile):
       os.system("rm " + OutFile)
     os.system("hadd " + OutFile + "  " + InputPath + "/"+era+"/*HNMu*")
@@ -88,7 +94,8 @@ for era in eras:
 
   f_path_data        = InputPath + era + "/DATA/"+Analyzer+"_SkimTree_HNMultiLep_DATA.root"
   f_path_fake        = InputPath + era + "/RunFake__/DATA/"+Analyzer+"_SkimTree_HNMultiLep_Fake.root"
-  f_path_cf          = InputPath + era + "/RunCF__/DATA/"+Analyzer+"_SkimTree_Dilepton_CF.root"
+  #f_path_cf          = InputPath + era + "/RunCF__/DATA/"+Analyzer+"_SkimTree_Dilepton_CF.root"
+  f_path_cf          = InputPath + era + "/RunCF__/"+Analyzer+"_SkimTree_HNMultiLep_CF.root" #FIXME
   f_path_conv        = InputPath + era + "/RunConv__/"+Analyzer+"_SkimTree_HNMultiLep_Conv.root"
   f_path_prompt      = InputPath + era + "/"+Analyzer+"_SkimTree_HNMultiLep_MC.root"
   
@@ -101,19 +108,20 @@ for era in eras:
   for mass in masses: #iterate for signals
     for channel in channels:
       if int(mass.replace("M","")) <= 500:
-        if channel == "MuMu": input_hist =  "LimitInputBDT/HNL_UL/"+str(int(mass.replace("M","")))+"/MuonSR" #path to the input histogram
-        elif channel == "EE": input_hist =  "LimitInputBDT/HNL_UL/"+str(int(mass.replace("M","")))+"/ElectronSR" #path to the input histogram
-        elif channel == "EMu": input_hist = "LimitInputBDT/HNL_UL/"+str(int(mass.replace("M","")))+"/ElectronMuonSR" #path to the input histogram
+        if channel == "MuMu": input_hist =  "LimitInputBDT/MVAUL_UL/"+mass+"/FillEventCutflow/MuonSR" #path to the input histogram
+        elif channel == "EE": input_hist =  "LimitInputBDT/MVAUL_UL/"+mass+"/FillEventCutflow/ElectronSR" #path to the input histogram
+        elif channel == "EMu": input_hist = "LimitInputBDT/MVAUL_UL/"+mass+"/FillEventCutflow/ElectronMuonSR" #path to the input histogram
       elif int(mass.replace("M","")) > 500:
-        if channel == "MuMu": input_hist =  "LimitInput/HNL_UL/MuonSR" #path to the input histogram
-        elif channel == "EE": input_hist =  "LimitInput/HNL_UL/ElectronSR" #path to the input histogram
-        elif channel == "EMu": input_hist = "LimitInput/HNL_UL/ElectronMuonSR" #path to the input histogram
+        if channel == "MuMu": input_hist =  "LimitInput/MVAUL_UL/FillEventCutflow/MuonSR" #path to the input histogram
+        elif channel == "EE": input_hist =  "LimitInput/MVAUL_UL/FillEventCutflow/ElectronSR" #path to the input histogram
+        elif channel == "EMu": input_hist = "LimitInput/MVAUL_UL/FillEventCutflow/ElectronMuonSR" #path to the input histogram
       
       if not Blinded: h_data        = f_data.Get(input_hist)
       h_fake        = f_fake.Get(input_hist)
       h_cf          = f_cf.Get(input_hist)
       h_conv        = f_conv.Get(input_hist)
       h_prompt      = f_prompt.Get(input_hist)
+      print "##### Bkg done."
       
       # Make list of [file path, histogram, histo name]
       input_list = [
@@ -158,9 +166,9 @@ for era in eras:
         input_list.append(["fake_data_path", h_data, "data_obs"])
       else:
         input_list.append([f_path_data, h_data, "data_obs"])
+      print "##### Data done."
 
       # Now list has bkg, (pseudo) data. Finally let's add signals
-
       f_path_signalDYVBF = InputPath + era + "/"+Analyzer+"_signalDYVBF_"+mass+".root"
       f_path_signalSSWW  = InputPath + era + "/"+Analyzer+"_signalSSWW_"+mass+".root"
 
@@ -183,12 +191,63 @@ for era in eras:
       try:
         h_signalSSWW  = f_signalSSWW.Get(input_hist)
       except ReferenceError:
-        print("[!!WARNING!!] There is no signal file "+f_path_signalDYVBF+".")
+        print("[!!WARNING!!] There is no signal file "+f_path_signalSSWW+".")
         print "Skipping..."
       else:
-        h_signalSSWW.Scale(scaler*scaler) # To be consistent in calculating mixing limits
+        h_signalSSWW.Scale(scaler*scaler) # To be consistent when calculating mixing limits
         print "Scaled signalSSWW :", h_signalSSWW.Integral()
         input_list.append([f_path_signalSSWW, h_signalSSWW, "signalSSWW"])
+
+      print "##### Signal done."
+
+
+      if AddSyst:
+        print "##### Systematics activated."
+        syst_list = [
+                     "JetResUp","JetResDown",
+                     "JetEnUp","JetEnDown",
+                     "JetMassUp","JetMassDown",
+                     "JetMassSmearUp","JetMassSmearDown",
+                     "MuonRecoSFUp","MuonRecoSFDown",
+                     "MuonEnUp","MuonEnDown",
+                     "MuonIDSFUp","MuonIDSFDown",
+                     "MuonISOSFUp","MuonISOSFDown",
+                     "ElectronRecoSFUp","ElectronRecoSFDown",
+                     "ElectronResUp","ElectronResDown",
+                     "ElectronEnUp","ElectronEnDown",
+                     "ElectronIDSFUp","ElectronIDSFDown",
+                     "ElectronTriggerSFUp","ElectronTriggerSFDown",
+                     "BTagSFHTagUp","BTagSFHTagDown",
+                     "BTagSFLTagUp","BTagSFLTagDown",
+                     "METUnclUp","METUnclDown",
+                     "CFUp","CFDown",
+                     "FRUp","FRDown",
+                     "PrefireUp","PrefireDown",
+                     "PUUp","PUDown"
+                    ]
+
+        Nproc = len(input_list) # The number of processes = the length of the input list before adding systematics
+        for this_syst in syst_list: # Define new input_hist with each syst name
+          if int(mass.replace("M","")) <= 500:
+            if channel == "MuMu": input_hist =  "LimitInputBDT/"+"Syst_"+this_syst+"MVAUL_UL/"+mass+"/FillEventCutflow/MuonSR"
+            elif channel == "EE": input_hist =  "LimitInputBDT/"+"Syst_"+this_syst+"MVAUL_UL/"+mass+"/FillEventCutflow/ElectronSR"
+            elif channel == "EMu": input_hist = "LimitInputBDT/"+"Syst_"+this_syst+"MVAUL_UL/"+mass+"/FillEventCutflow/ElectronMuonSR"
+          elif int(mass.replace("M","")) > 500:
+            if channel == "MuMu": input_hist =  "LimitInput/"+"Syst_"+this_syst+"MVAUL_UL/FillEventCutflow/MuonSR"
+            elif channel == "EE": input_hist =  "LimitInput/"+"Syst_"+this_syst+"MVAUL_UL/FillEventCutflow/ElectronSR"
+            elif channel == "EMu": input_hist = "LimitInput/"+"Syst_"+this_syst+"MVAUL_UL/FillEventCutflow/ElectronMuonSR"
+
+          for i in range(Nproc):
+            if not "fake_data_path" in input_list[i][0]: # There is no file like "fake_data_path" ...
+              f_syst = TFile.Open(input_list[i][0]) # Get each process's file
+              h_syst = f_syst.Get(input_hist)
+              try: h_syst.SetDirectory(0) # Store h_syst in memory so that it cannot be deleted during the iteration
+              except AttributeError: continue
+              name_syst = input_list[i][2]+"_"+this_syst # Define syst histo name
+              print "Appending "+name_syst+"..."
+              input_list.append([input_list[i][0], h_syst, name_syst]) # Append each syst histogram while iterating
+
+        print "##### Systematics done."
 
 
       print "##### Now creating an output root file..."
@@ -206,3 +265,4 @@ for era in eras:
         item[1].Write() # Write each histogram while iterating
       
       outfile.Close()
+      print OutputPath+era+"/"+mass+"_"+channel+"_card_input.root has been created."

@@ -15,7 +15,7 @@ observation -1
 bin           bin1    bin1  bin1  bin1         bin1  
 process       prompt  fake  cf    signalDYVBF  signalSSWW
 process       1       2     3     -1           0
-rate          -1      0    0     -1           -1
+rate          -1      -1    -1    -1           -1
 Lumi     lnN  1.05  1.05  1.05  1.05  1.05
 Fake     lnN  -     1.3   -     -     -
 Stat     lnN  1.1   1.5   -     1.05  1.05

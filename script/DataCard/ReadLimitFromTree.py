@@ -13,16 +13,20 @@ workdir = "/data6/Users/jihkim/CombineTool/CMSSW_10_2_13/src/DataCardsShape/HNL_
 
 years = ["2016","2017","2018"]
 years = ["Run2"]
+years = ["2017"]
 channels = ["MuMu","EE","EMu"]
 #channels = ["MuMu","EE"]
+#channels = ["MuMu"]
 masses = ["100","200","300","400","500","600","700","800","900","1000","1100","1200","1300","1500","1700","2000","2500","3000"]
 masses = ["100","200","300","400","500","600","700","800","900","1000","1100","1200","1300","1500","1700","2000","2500","3000","5000","7500","10000","15000","20000"]
 #masses = ["100","1000","10000"]
+#masses = ["500",]
 IDs = ["HNL_UL"]
 tags = [""] #["_DYVBF"]
 myWPs = ["Workshop", "InputForCombine"]
 #myWPs = ["InputForCombine"]
-myWPs = ["Workshop"]
+#myWPs = ["Workshop"]
+myWPs = ["AddSyst"]
 
 for WP in myWPs:
   this_workdir = workdir+WP
@@ -41,20 +45,20 @@ for WP in myWPs:
   
           tree_Asym.GetEntry(2) # substitute for obs. limit for now
           #f.write(mass+"\t"+str(round(tree_Asym.limit,3))+"\t")
-          #f.write(mass+"\t"+str(round(tree_Asym.limit/2.,3))+"\t") # For estimating full Run2
-          if 500 <= int(mass) and int(mass) <= 1500:
-            f.write(mass+"\t"+str(round((tree_Asym.limit/(2.-0.0005*int(mass))),3))+"\t") # For estimating bkg reduction in SR1 (5-->0.x)
-          else:
-            f.write(mass+"\t"+str(round(tree_Asym.limit,3))+"\t")
+          f.write(mass+"\t"+str(round(tree_Asym.limit/1.87,3))+"\t") # For estimating full Run2 from 2017
+          #if 500 <= int(mass) and int(mass) <= 1500:
+          #  f.write(mass+"\t"+str(round((tree_Asym.limit/(2.-0.0005*int(mass))),3))+"\t") # For estimating bkg reduction in SR1 (5-->0.x) <-- FIXED!
+          #else:
+          #  f.write(mass+"\t"+str(round(tree_Asym.limit,3))+"\t")
   
           for i in range(5): # expected limits
             tree_Asym.GetEntry(i)
             #f.write(str(round(tree_Asym.limit,3))+"\t")
-            #f.write(str(round(tree_Asym.limit/2.,3))+"\t") # For estimating full Run2
-            if 500 <= int(mass) and int(mass) <= 1500:
-              f.write(str(round((tree_Asym.limit/(2.-0.0005*int(mass))),3))+"\t") # For estimating full Run2
-            else:
-              f.write(str(round(tree_Asym.limit,3))+"\t")
+            f.write(str(round(tree_Asym.limit/1.87,3))+"\t") # For estimating full Run2 from 2017
+            #if 500 <= int(mass) and int(mass) <= 1500:
+            #  f.write(str(round((tree_Asym.limit/(2.-0.0005*int(mass))),3))+"\t") # For estimating bkg reduction in SR1 (5-->0.x) <-- Fixed!
+            #else:
+            #  f.write(str(round(tree_Asym.limit,3))+"\t")
           f.write("\n")
   
     if args.Full:
