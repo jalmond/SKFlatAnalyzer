@@ -77,6 +77,15 @@ public:
     return false;
   }
 
+  inline double MVANoIsoResponseV1() const {
+
+    if (j_mvanoiso == 1.) return 8;
+
+    if(MVANoIsoResponseRaw() > 8) return 8;
+    if(MVANoIsoResponseRaw() < -8) return -8;
+    return MVANoIsoResponseRaw();
+  }
+
   inline double MVANoIsoResponse() const {
     
     if (j_mvanoiso == 1.) return 7;
@@ -84,6 +93,15 @@ public:
     if(MVANoIsoResponseRaw() > 7) return 7;
     if(MVANoIsoResponseRaw() < -7) return -7;
     return MVANoIsoResponseRaw();
+  }
+
+  inline double MVAIsoResponseV1() const {
+
+    if (j_mvaiso == 1.) return 8;
+
+    if(MVAIsoResponseRaw() > 8) return 8;
+    if(MVAIsoResponseRaw() < -8) return -8;
+    return MVAIsoResponseRaw();
   }
 
   inline double MVAIsoResponse() const {
@@ -94,6 +112,7 @@ public:
     if(MVAIsoResponseRaw() < -7) return -7;
     return MVAIsoResponseRaw();
   }
+
     
 
   inline double MVAIsoResponseRaw() const {
@@ -316,7 +335,7 @@ public:
 
   int  PassLooseIDOpt(TString  trigger, TString dxy_method, TString sel_methodB,TString sel_methodEC, TString conv_method, TString chg_method, TString iso_methodB,TString iso_methodEC ) const;
 
-  int  PassIDOptMulti(TString np_mva_Pt,TString np_mva_BB1, TString np_mva_BB2, TString np_mva_EB1, TString np_mva_EB2,  TString np_mva_EE1, TString np_mva_EE2 ,  TString conv_mva_Pt,TString conv_mva_BB1, TString conv_mva_BB2, TString conv_mva_EE1,TString conv_mva_EE2, TString cf_mva_BB1,TString cf_mva_EE1, TString cf_mva_BB2,TString cf_mva_EE2,TString cf_mva_BBPt,TString cf_mva_EEPt,  TString pog_method,  TString conv_method, TString chg_method, TString iso_methodB,TString iso_methodEC ) const;
+  int  PassIDOptMulti(TString CFMVAMethod, TString np_mva_BB, TString np_mva_EB, TString np_mva_EE,TString conv_mva_BB,TString conv_mva_EE, TString cf_mva_BB,TString cf_mva_EE,  TString pog_method,  TString conv_method, TString chg_method, TString iso_methodB,TString iso_methodEC ) const;
 
 
   bool passIDHN(int ID, double dxy_b, double dxy_e, double dz_b,double dz_e, double sip_b, double sip_e, double iso_b,double iso_e, double miso_b, double miso_e) const;

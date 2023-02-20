@@ -1,1 +1,8 @@
 DYJets
+TTLJ_powheg
+TTLL_powheg
+SingleTop_tW_antitop_NoFullyHad
+SingleTop_tW_top_NoFullyHad
+WW_pythia
+WZ_pythia
+ZZ_pythia

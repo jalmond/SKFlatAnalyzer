@@ -19,8 +19,6 @@ void HNL_ObjectStudies::initializeAnalyzer(){
 
 void HNL_ObjectStudies::executeEvent(){
 
-  
- 
   //==== Gen for genmatching
   AnalyzerParameter param  = InitialiseHNLParameter("SignalStudy","UL");
   Event ev = GetEvent();
@@ -51,8 +49,6 @@ void HNL_ObjectStudies::executeEvent(){
 
   FillHist ("nPV_"+process , nPV, weight, 100., 0., 100.,"");
 
-  return;
-  
   vector<HNL_LeptonCore::Channel> channels = {EE,MuMu};
 
   for(auto dilep_channel : channels){
@@ -79,17 +75,33 @@ void HNL_ObjectStudies::executeEvent(){
     std::vector<Electron>   ElectronCollV = GetElectrons(param.Electron_Veto_ID, 10., 2.5);
     std::vector<Muon>       MuonCollV     = GetMuons    (param.Muon_Veto_ID, 5., 2.4);
 
+  
+
     FillHist ("NVetoMuon_"+channel, MuonCollV.size(), weight, 4, 0., 4.,"");
     FillHist ("NVetoElectron_"+channel, ElectronCollV.size(), weight, 4, 0., 4.,"");
-
+    
     std::vector<Lepton *> leps_veto  = MakeLeptonPointerVector(MuonCollV,ElectronCollV);
+
+    //cout << "param.Electron_Veto_ID = " << param.Electron_Veto_ID << endl;
 
     if(leps_veto.size()==2)    FillHist ("DiLepton_Veto_"+channel, 1, weight, 2, 0., 2.,"");
 
 
     std::vector<Electron>   ElectronCollAll = GetElectrons( "MVAID", 10., 2.5);
     std::vector<Muon>       MuonCollAll     = GetMuons    (  "MVAID", 10., 2.4);
+
+    for(auto ilep : ElectronCollAll){
+      double a = ilep.HNL_MVA_CF() ;
+      double b = GetBDTScoreElV1(ilep,AnalyzerCore::CF,  "BDTGv1");
+      if(a != b)  cout << "v1 = " << a  << " new v1 = " << b  << " eta = " << ilep.Eta() << endl;
+    }
     
+    //for(auto iel : ElectronCollAll){
+    //  cout << "Electron : " << endl;
+    //  iel.PrintMVAMap() ;
+    //}
+    
+
     std::vector<Lepton *> LepsMVAID  = (dilep_channel==EE) ? MakeLeptonPointerVector(ElectronCollAll) : MakeLeptonPointerVector(MuonCollAll);
 
     if(LepsMVAID.size() == 2)     FillHist ("DiLepton_MVA_"+channel, 1, weight, 2, 0., 2.,"");
@@ -97,7 +109,7 @@ void HNL_ObjectStudies::executeEvent(){
     std::vector<Electron>   ElectronColl;
     std::vector<Muon>       MuonColl;
 
-    
+   
     if(MCSample.Contains("Type")){
       
       for(auto iel: ElectronCollAll){ 
@@ -105,7 +117,7 @@ void HNL_ObjectStudies::executeEvent(){
 	for(auto igen : gen_lep){
 	  if(iel.DeltaR(igen) < 0.2) matched_lep=true;
 	}
-	if(iel.PassID("HNTightV3")&& matched_lep) ElectronColl.push_back(iel);
+	if(matched_lep) ElectronColl.push_back(iel);
 	
       }
       
@@ -114,7 +126,7 @@ void HNL_ObjectStudies::executeEvent(){
 	for(auto igen :gen_lep){
 	  if(iel.DeltaR(igen) <0.2) matched_lep=true;
 	}
-	if(iel.PassID("HNL_ULID_"+GetYearString()) && matched_lep)MuonColl.push_back(iel);
+	if(matched_lep)MuonColl.push_back(iel);
       } 
       
     }
@@ -126,6 +138,7 @@ void HNL_ObjectStudies::executeEvent(){
       for(auto iel: ElectronCollAll) ElectronColl.push_back(iel);                                                                                                                    
       for(auto iel: MuonCollAll) MuonColl.push_back(iel);                                                                                                           
     }
+
 
     if(dilep_channel==EE) MuonColl.clear();
     else ElectronColl.clear();
@@ -170,8 +183,9 @@ void HNL_ObjectStudies::executeEvent(){
       continue;
     }
 
-    
-    
+    return;
+
+
     std::vector<Lepton *> LepsAll  = (dilep_channel==EE) ? MakeLeptonPointerVector(ElectronColl) : MakeLeptonPointerVector(MuonColl);
 
     /// Collect All jets 
@@ -224,6 +238,7 @@ void HNL_ObjectStudies::executeEvent(){
 
       }
       
+
       if (nFakeMu==0 && dilep_channel == MuMu) continue;
       
       for(auto imu: MuonColl){

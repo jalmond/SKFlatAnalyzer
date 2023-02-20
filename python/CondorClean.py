@@ -1,7 +1,7 @@
 import argparse
 import os,subprocess
 
-os.system("condor_q " + os.getenv("USER") + " > log")
+os.system("condor_q  " + os.getenv("USER") + " > log")
 
 
 parser = argparse.ArgumentParser(description='CR plot commands')

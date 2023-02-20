@@ -253,9 +253,9 @@ void SkimTree_HNFake::executeEvent(){
   }
 
   for(auto i: AllelectronColl){
-    velectron_mva_fake->push_back(GetBDTScoreEl(i,AnalyzerCore::Fake,  "BDTG"));
-    velectron_mva_cf->push_back(GetBDTScoreEl(i,AnalyzerCore::CF,  "BDTG"));
-    velectron_mva_conv->push_back(GetBDTScoreEl(i,AnalyzerCore::Conv,  "BDTG"));
+    velectron_mva_fake->push_back(GetBDTScoreEl(i,AnalyzerCore::Fake,  "BDTGv1"));
+    velectron_mva_cf->push_back(GetBDTScoreEl(i,AnalyzerCore::CF,  "BDTGv1"));
+    velectron_mva_conv->push_back(GetBDTScoreEl(i,AnalyzerCore::Conv,  "BDTGv1"));
     velectron_ptratio->push_back(JetLeptonPtRatioLepAware(i,false));
     velectron_ptrel->push_back(JetLeptonPtRelLepAware(i,true));
     

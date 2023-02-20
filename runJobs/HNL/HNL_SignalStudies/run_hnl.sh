@@ -45,11 +45,13 @@ fi
 
 
 
-if [[ $1 == "SSWW" ]]; then
+if [[ $1 == "QCD" ]]; then
+
+    declare  -a era_list=("2017")
 
     for i in "${era_list[@]}"
     do
-        SKFlat.py -a $analyzer  -l $mcpath/${i}/SSWW.txt  -n $njobs  --nmax ${nmax}   -e ${i} &
+        SKFlat.py -a $analyzer  -i TTLJ_powheg   -n $njobs  --nmax ${nmax}   -e ${i}  --skim SkimTree_HNMultiLep &
     done
 
 fi

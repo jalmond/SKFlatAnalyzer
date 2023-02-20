@@ -83,13 +83,43 @@ void HNL_SignalStudies::executeEvent(){
 
     std::vector<Lepton *> leps_veto  = MakeLeptonPointerVector(MuonCollV,ElectronCollV);
 
-    if(SameCharge(leps_veto))    FillHist ("DiLepton_Veto_"+channel, 1, weight, 2, 0., 2.,"");
-    else continue;
-
     std::vector<Electron>   ElectronCollAll = GetElectrons( "MVAID", 10., 2.5);
     std::vector<Muon>       MuonCollAll     = GetMuons    (  "MVAID", 10., 2.4);
-    
+ 
     std::vector<Lepton *> LepsMVAID  = (dilep_channel==EE) ? MakeLeptonPointerVector(ElectronCollAll) : MakeLeptonPointerVector(MuonCollAll);
+    
+    vector<Jet> AllJets = GetAllJets();
+    for(auto ilep : LepsMVAID){
+      int nCJ(0);
+      for(auto ijet : AllJets){
+	if(ilep->DeltaR(ijet) < 0.4)   nCJ++;
+      }	
+      /*if(nCJ > 1) {
+	cout << "Multiple Close Jets " << endl;
+	cout << "ilep pt = " << ilep->Pt() << " eta = " << ilep->Eta() << " phi = " << ilep->Phi() << endl;
+	for(auto ijet : AllJets){
+	  if(ilep->DeltaR(ijet) < 0.4) {
+
+	    int LepType=GetLeptonType_JH(*ilep, gens);
+	    cout << "lep type =  " << LepType << " " <<   ilep->DeltaR(ijet) << " Jet " << ijet.Pt() << " " << ijet.Eta() << " phi = " << ijet.Phi() << " Pass ID " << ijet.PassID("tight") <<  " pass LepVeto = " <<  ijet.PassID("tightLepVeto") << " JetLeptonPtRelLepAware = " << JetLeptonPtRelLepAware(*ilep, ijet) << " JetLeptonPtRatioLepAware = " << JetLeptonPtRatioLepAware(*ilep,ijet) << " 1/(1.+lep->RelIso() = " << 1/(1.+ilep->RelIso()) << endl;
+	    cout << "RelIso() = " << ilep->RelIso() <<endl;
+	    
+	  }
+	}
+      }
+      if(nCJ == 0) {
+	cout << "No Close Jets " << endl;
+	cout << "ilep pt = " << ilep->Pt() << " eta = " << ilep->Eta() <<  " JetLeptonPtRelLepAware = " << JetLeptonPtRelLepAware(*ilep) << " JetLeptonPtRatioLepAware = " << JetLeptonPtRatioLepAware(*ilep) << endl;
+	cout << "RelIso() = " << ilep->RelIso() <<endl;
+	
+      }
+      */
+    }
+
+    return;
+
+    if(SameCharge(leps_veto))    FillHist ("DiLepton_Veto_"+channel, 1, weight, 2, 0., 2.,"");
+    else continue;
 
     if(LepsMVAID.size() == 2)     FillHist ("DiLepton_MVA_"+channel, 1, weight, 2, 0., 2.,"");
     
@@ -112,7 +142,7 @@ void HNL_SignalStudies::executeEvent(){
 	for(auto igen :gen_lep){
 	  if(iel.DeltaR(igen) <0.2) matched_lep=true;
 	}
-	if(iel.PassID("HNL_ULID_v1") && matched_lep)MuonColl.push_back(iel);
+	if(iel.PassID("HNL_ULID") && matched_lep)MuonColl.push_back(iel);
       } 
       
     }

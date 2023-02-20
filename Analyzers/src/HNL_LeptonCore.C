@@ -221,865 +221,6 @@ bool HNL_LeptonCore::IsSignal(){
 
 }
 
-double HNL_LeptonCore::ScaleLepToSS(TString bkg, bool isMuon, int lepttype){
-
-  // Code to scale  Single lepton -> SS  in Fake Bkg
-
-  if(IsData) return 1;
-  if(IsSignal()) return 1;
-
-  if (DataEra=="2016preVFP"){
-    if (bkg=="Fake"){
-      if(isMuon){
-	if(MCSample == "DYJets10to50_MG") {
-	  if(lepttype == -4) return 0;
-	  if(lepttype == -3) return 0.0465780026303;
-	  if(lepttype == -2) return 0.0724076572931;
-	  if(lepttype == -1) return 0.00479840422591;
-	}
-	if(MCSample == "DYJets") {
-	  if(lepttype == -4) return 0.0572329696533;
-	  if(lepttype == -3) return 0.0564770234749;
-	  if(lepttype == -2) return 0.0409676966337;
-	  if(lepttype == -1) return 0.00790280298411;
-	}
-	if(MCSample == "DYJets_MG") {
-	  if(lepttype == -4) return 0.0882435607735;
-	  if(lepttype == -3) return 0.081311448448;
-	  if(lepttype == -2) return 0.0659643370569;
-	  if(lepttype == -1) return 0.00992206529097;
-	}
-	if(MCSample == "WJets_MG") {
-	  if(lepttype == -4) return 0.115220352247;
-	  if(lepttype == -3) return 0.0274768699281;
-	  if(lepttype == -2) return 0.0694231704026;
-	  if(lepttype == -1) return 0.0158453689098;
-	}
-	if(MCSample == "WJets_amcatnlo") {
-	  if(lepttype == -4) return 0.0619698592973;
-	  if(lepttype == -3) return 0.00695326115641;
-	  if(lepttype == -2) return 0.0404166197094;
-	  if(lepttype == -1) return 0.0139797483175;
-	}
-	if(MCSample == "TTLL_powheg") {
-	  if(lepttype == -4) return 0.139126039156;
-	  if(lepttype == -3) return 0.202558585382;
-	  if(lepttype == -2) return 0.207892283169;
-	  if(lepttype == -1) return 0.0559496963532;
-	}
-	if(MCSample == "TTLJ_powheg") {
-	  if(lepttype == -4) return 0.0948702530882;
-	  if(lepttype == -3) return 0.123110104572;
-	  if(lepttype == -2) return 0.146543618259;
-	  if(lepttype == -1) return 0.0631661777209;
-	}
-	if(MCSample == "TTJJ_powheg") {
-	  if(lepttype == -4) return 0.00757434289774;
-	  if(lepttype == -3) return 0.0047689422696;
-	  if(lepttype == -2) return 0.00355792765871;
-	  if(lepttype == -1) return 0.00874033008484;
-	}
-      } // IS MUON
-      else{
-	if(MCSample == "DYJets10to50_MG") {
-	  if(lepttype == -4) return 0.;
-	  if(lepttype == -3) return 0.133871166836;
-	  if(lepttype == -2) return 0.0761864558785;
-	  if(lepttype == -1) return 0.0121580455753;
-	}
-	if(MCSample == "DYJets") {
-	  if(lepttype == -4) return 0.0668731824721;
-	  if(lepttype == -3) return 0;
-	  if(lepttype == -2) return 0.0431445526627;
-	  if(lepttype == -1) return 0.0148199248833;
-	}
-	if(MCSample == "DYJets_MG") {
-	  if(lepttype == -4) return 0.074201021204;
-	  if(lepttype == -3) return 0.107194280206;
-	  if(lepttype == -2) return 0.0600204979974;
-	  if(lepttype == -1) return 0.0181634640241;
-	}
-	if(MCSample == "WJets_MG") {
-	  if(lepttype == -4) return 0.0891708831574;
-	  if(lepttype == -3) return 0.0160347490068;
-	  if(lepttype == -2) return 0.0643559866362;
-	  if(lepttype == -1) return 0.022407680239;
-	}
-	if(MCSample == "WJets_amcatnlo") {
-	  if(lepttype == -4) return 0.149973618956;
-	  if(lepttype == -3) return 0;
-	  if(lepttype == -2) return 0.0450562851937;
-	  if(lepttype == -1) return 0.0184872174542;
-	}
-	if(MCSample == "TTLL_powheg") {
-	  if(lepttype == -4) return 0.192051543148;
-	  if(lepttype == -3) return 0.199373416749;
-	  if(lepttype == -2) return 0.193199075163;
-	  if(lepttype == -1) return 0.0657631437783;
-	}
-	if(MCSample == "TTLJ_powheg") {
-	  if(lepttype == -4) return 0.122296916027;
-	  if(lepttype == -3) return 0.100477782673;
-	  if(lepttype == -2) return 0.126597422473;
-	  if(lepttype == -1) return 0.0624963588657;
-	}
-	if(MCSample == "TTJJ_powheg") {
-	  if(lepttype == -4) return 0.00436034905591;
-	  if(lepttype == -3) return 0.00306620322136;
-	  if(lepttype == -2) return 0.00273954658998;
-	  if(lepttype == -1) return 0.00411027964845;
-	}
-
-      } // ISEl
-
-    }// Fake
-    if (bkg=="Conv"){
-
-      if(isMuon){
-	if(MCSample == "DYJets") {
-	  if(lepttype == -6) return 0;
-	  if(lepttype == -5) return 0;
-	  if(lepttype == 4) return 0.0419093599611;
-	  if(lepttype == 5) return 0;
-	  if(lepttype == 6) return 0;
-	}
-	if(MCSample == "WGToLNuG") {
-	  if(lepttype == -6) return 0.0711532391833;
-	  if(lepttype == -5) return 0.0642541083865;
-	  if(lepttype == 4) return 0.06324390049;
-	  if(lepttype == 5) return 0.0888595102787;
-	  if(lepttype == 6) return 0;
-	}
-	if(MCSample == "ZGToLLG") {
-	  if(lepttype == -6) return 0;
-	  if(lepttype == -5) return 0.103826548443 ;
-	  if(lepttype == 4) return 0.0463252988155;
-	  if(lepttype == 5) return 0.0324794595946;
-	  if(lepttype == 6) return 0;
-	}
-	if(MCSample == "WGToLNuG_MG") {
-	  if(lepttype == -6) return 0;
-	  if(lepttype == -5) return 0.213066671966;
-	  if(lepttype == 4) return 0.0601468790735;
-	  if(lepttype == 5) return 0.0981272474837;
-	  if(lepttype == 6) return 0;
-	}
-	if(MCSample == "WGToLNuG_01J_PtG_130") {
-	  if(lepttype == -6) return 0.0117766664178;
-	  if(lepttype == -5) return 0.117456690613;
-	  if(lepttype == 4) return 0.0487345099904;
-	  if(lepttype == 5) return 0.0194305161348;
-	  if(lepttype == 6) return 0;
-	}
-	if(MCSample == "WGToLNuG_01J_PtG_300") {
-	  if(lepttype == -6) return 0;
-	  if(lepttype == -5) return 0.0908021514215;
-	  if(lepttype == 4) return 0.0485675021303;
-	  if(lepttype == 5) return 0.0225782673895;
-	  if(lepttype == 6) return 0;
-	}
-	if(MCSample == "WGToLNuG_01J_PtG_500") {
-	  if(lepttype == -6) return 0.0561724563512;
-	  if(lepttype == -5) return 0.0432321998183;
-	  if(lepttype == 4) return 0.0515261718739;
-	  if(lepttype == 5) return 0.0323753368872;
-	  if(lepttype == 6) return 0;
-	}
-      } // IS MU CONV
-      else{
-
-	if(MCSample == "DYJets") {
-          if(lepttype == -6) return 0.0706866175904;
-          if(lepttype == -5) return 0;
-          if(lepttype == 4) return 0.0231308834326;
-          if(lepttype == 5) return 0;
-	  if(lepttype == 6) return 0;
-        }
-        if(MCSample == "WGToLNuG") {
-          if(lepttype == -6) return 0.0743475624961;
-          if(lepttype == -5) return 0.0967901777694;
-          if(lepttype == 4) return 0.00973716575438;
-          if(lepttype == 5) return 0.0948765654592;
-          if(lepttype == 6) return 0;
-        }
-        if(MCSample == "ZGToLLG") {
-          if(lepttype == -6) return 0.0712908078963;
-          if(lepttype == -5) return 0.0656579617724;
-          if(lepttype == 4) return 0.0276191326425;
-          if(lepttype == 5) return 0.0586924104856;
-          if(lepttype == 6) return 0;
-        }
-        if(MCSample == "WGToLNuG_MG") {
-          if(lepttype == -6) return 0.0573949154552;
-          if(lepttype == -5) return 0.113214754805;
-          if(lepttype == 4) return 0;
-          if(lepttype == 5) return 0.0864230220045;
-          if(lepttype == 6) return 0;
-        }
-        if(MCSample == "WGToLNuG_01J_PtG_130") {
-          if(lepttype == -6) return 0.0535322222411;
-          if(lepttype == -5) return 0.0958299692563;
-          if(lepttype == 4) return 0.0317809021905;
-          if(lepttype == 5) return 0.0997189058077;
-          if(lepttype == 6) return 0;
-        }
-        if(MCSample == "WGToLNuG_01J_PtG_300") {
-          if(lepttype == -6) return 0.052134241802;
-          if(lepttype == -5) return 0.103135278093;
-          if(lepttype == 4) return 0.025144200618;
-          if(lepttype == 5) return 0.106807935467;
-          if(lepttype == 6) return 0;
-        }
-        if(MCSample == "WGToLNuG_01J_PtG_500") {
-          if(lepttype == -6) return 0.0675554292747;
-          if(lepttype == -5) return 0.10950518686;
-          if(lepttype == 4) return 0;
-          if(lepttype == 5) return 0.108530228239;
-          if(lepttype == 6) return 0;
-	}
-      }
-    }
-  }
-
-  if (DataEra=="2016postVFP"){
-    if (bkg=="Fake"){
-
-      if(isMuon){
-	if(MCSample == "DYJets10to50_MG") {
-	  if(lepttype == -4) return 0;
-	  if(lepttype == -3) return 0.0446488068252;
-	  if(lepttype == -2) return 0.0887713098891;
-	  if(lepttype == -1) return 0.00400920380547;
-	}
-	if(MCSample == "DYJets") {
-	  if(lepttype == -4) return 0.0591685840071;
-	  if(lepttype == -3) return 0.0174470315258;
-	  if(lepttype == -2) return 0.0454424883207;
-	  if(lepttype == -1) return 0.00728206398724;
-	}
-	if(MCSample == "DYJets_MG") {
-	  if(lepttype == -4) return 0.0318908959337;
-	  if(lepttype == -3) return 0.103634312838;
-	  if(lepttype == -2) return 0.0689184472915;
-	  if(lepttype == -1) return 0.00851386616694;
-	}
-	if(MCSample == "WJets_MG") {
-	  if(lepttype == -4) return 0.0873016593436;
-	  if(lepttype == -3) return 0.0438639822984;
-	  if(lepttype == -2) return 0.0674797512283;
-	  if(lepttype == -1) return 0.014210081441;
-	}
-	if(MCSample == "WJets_amcatnlo") {
-	  if(lepttype == -4) return 0;
-	  if(lepttype == -3) return 0.0226321777479;
-	  if(lepttype == -2) return 0.0421246036661;
-	  if(lepttype == -1) return 0.0125549144221;
-	}
-	if(MCSample == "TTLL_powheg") {
-	  if(lepttype == -4) return 0.104667131836;
-	  if(lepttype == -3) return 0.20081325592;
-	  if(lepttype == -2) return 0.208661924617;
-	  if(lepttype == -1) return 0.0558379677376;
-	}
-	if(MCSample == "TTLJ_powheg") {
-	  if(lepttype == -4) return 0.088756579959;
-	  if(lepttype == -3) return 0.125114113723;
-	  if(lepttype == -2) return 0.146988576568;
-	  if(lepttype == -1) return 0.0619175029028;
-	}
-	if(MCSample == "TTJJ_powheg") {
-	  if(lepttype == -4) return 0.00584585758012;
-	  if(lepttype == -3) return 0.00621796582847;
-	  if(lepttype == -2) return 0.00360124914769;
-	  if(lepttype == -1) return 0.00921596764824;
-	}
-      }
-      else{
-	if(MCSample == "DYJets10to50_MG") {
-	  if(lepttype == -4) return 0.202594437367;
-	  if(lepttype == -3) return 0.0471701617826;
-	  if(lepttype == -2) return 0.0582181822763;
-	  if(lepttype == -1) return 0.0114115517726;
-	}
-	if(MCSample == "DYJets") {
-	  if(lepttype == -4) return 0.0772264921948;
-	  if(lepttype == -3) return 0.0600469652155;
-	  if(lepttype == -2) return 0.0388712666838;
-	  if(lepttype == -1) return 0.0140494923533;
-	}
-	if(MCSample == "DYJets_MG") {
-	  if(lepttype == -4) return 0.038627951602;
-	  if(lepttype == -3) return 0.0530281741728;
-	  if(lepttype == -2) return 0.0567311732008;
-	  if(lepttype == -1) return 0.0182212860492;
-	}
-	if(MCSample == "WJets_MG") {
-	  if(lepttype == -4) return 0.0931210071564;
-	  if(lepttype == -3) return 0.0473179559737;
-	  if(lepttype == -2) return 0.06237839904;
-	  if(lepttype == -1) return 0.0219251253234;
-	}
-	if(MCSample == "WJets_amcatnlo") {
-	  if(lepttype == -4) return 0.101981966625;
-	  if(lepttype == -3) return 0.0474174087227;
-	  if(lepttype == -2) return 0.0376332339157;
-	  if(lepttype == -1) return 0.0175780435739;
-	}
-	if(MCSample == "TTLL_powheg") {
-	  if(lepttype == -4) return 0.211966243525;
-	  if(lepttype == -3) return 0.197942477458;
-	  if(lepttype == -2) return 0.193407171274;
-	  if(lepttype == -1) return 0.0654073235911;
-	}
-	if(MCSample == "TTLJ_powheg") {
-	  if(lepttype == -4) return 0.120832681361;
-	  if(lepttype == -3) return 0.093773187407;
-	  if(lepttype == -2) return 0.125437996725;
-	  if(lepttype == -1) return 0.0626768502753;
-	}
-	if(MCSample == "TTJJ_powheg") {
-	  if(lepttype == -4) return 0.0048172474813;
-	  if(lepttype == -3) return 0.00296505680287;
-	  if(lepttype == -2) return 0.00268018523563;
-	  if(lepttype == -1) return 0.00378577636323;
-	}
-      }
-    }
-    if (bkg=="Conv"){
-      if(isMuon){
-	if(MCSample == "DYJets") {
-	  if(lepttype == -6) return 0;
-	  if(lepttype == -5) return 0;
-	  if(lepttype == 4) return 0.0409484586807;
-	  if(lepttype == 5) return 0;
-	  if(lepttype == 6) return 0;
-	}
-	if(MCSample == "WGToLNuG") {
-	  if(lepttype == -6) return 0;
-	  if(lepttype == -5) return 0.0802242955536;
-	  if(lepttype == 4) return 0.0524717662112;
-	  if(lepttype == 5) return 0.0885980730985;
-	  if(lepttype == 6) return 0;
-	}
-	if(MCSample == "ZGToLLG") {
-	  if(lepttype == -6) return 0;
-	  if(lepttype == -5) return 0.0498278535197;
-	  if(lepttype == 4) return 0.0476696220285;
-	  if(lepttype == 5) return 0.0333293323434;
-	  if(lepttype == 6) return 0;
-	}
-	if(MCSample == "WGToLNuG_MG") {
-	  if(lepttype == -6) return 0;
-	  if(lepttype == -5) return 0;
-	  if(lepttype == 4) return 0.00297573495798;
-	  if(lepttype == 5) return 0.0972431735259;
-	  if(lepttype == 6) return 0;
-	}
-	if(MCSample == "WGToLNuG_01J_PtG_130") {
-	  if(lepttype == -6) return 0.0307291405701;
-	  if(lepttype == -5) return 0.11635492465;
-	  if(lepttype == 4) return 0.0484197160954;
-	  if(lepttype == 5) return 0.0188695636221;
-	  if(lepttype == 6) return 0;
-	}
-	if(MCSample == "WGToLNuG_01J_PtG_300") {
-	  if(lepttype == -6) return 0;
-	  if(lepttype == -5) return 0.0576295232401;
-	  if(lepttype == 4) return 0.0514063247323;
-	  if(lepttype == 5) return 0.0206766309545;
-	  if(lepttype == 6) return 0;
-	}
-	if(MCSample == "WGToLNuG_01J_PtG_500") {
-	  if(lepttype == -6) return 0.0527073279269;
-	  if(lepttype == -5) return 0.0808614638502;
-	  if(lepttype == 4) return 0.0403055473637;
-	  if(lepttype == 5) return 0.0312770782153;
-	  if(lepttype == 6) return 0;
-	}
-	
-      } // Is Muon
-      else{
-
-	if(MCSample == "DYJets") {
-          if(lepttype == -6) return 0.0710610661118;
-          if(lepttype == -5) return 0;
-          if(lepttype == 4) return 0.0165795270902;
-          if(lepttype == 5) return 0;
-          if(lepttype == 6) return 0;
-        }
-        if(MCSample == "WGToLNuG") {
-          if(lepttype == -6) return 0.0723525405999;
-          if(lepttype == -5) return 0.0958573238277;
-          if(lepttype == 4) return 0.0247178672904;
-          if(lepttype == 5) return 0.0968353738747;
-          if(lepttype == 6) return 0;
-        }
-        if(MCSample == "ZGToLLG") {
-          if(lepttype == -6) return 0.0709615715024;
-          if(lepttype == -5) return 0.0644123428447;
-          if(lepttype == 4) return 0.0295698545063;
-          if(lepttype == 5) return 0.0591329878329;
-          if(lepttype == 6) return 0;
-        }
-        if(MCSample == "WGToLNuG_MG") {
-          if(lepttype == -6) return 0.0574778606778;
-          if(lepttype == -5) return 0.116224155067;
-          if(lepttype == 4) return 0;
-          if(lepttype == 5) return 0.0890354667836;
-          if(lepttype == 6) return 0;
-        }
-        if(MCSample == "WGToLNuG_01J_PtG_130") {
-          if(lepttype == -6) return 0.0522135524742;
-          if(lepttype == -5) return 0.0975329872244;
-          if(lepttype == 4) return 0.0334812036653;
-          if(lepttype == 5) return 0.0995793386633;
-          if(lepttype == 6) return 0;
-        }
-        if(MCSample == "WGToLNuG_01J_PtG_300") {
-          if(lepttype == -6) return 0.0587680819412;
-          if(lepttype == -5) return 0.105468905365;
-          if(lepttype == 4) return 0.018951838183;
-          if(lepttype == 5) return 0.108384088178;
-          if(lepttype == 6) return 0;
-        }
-        if(MCSample == "WGToLNuG_01J_PtG_500") {
-          if(lepttype == -6) return 0.0739033971624;
-          if(lepttype == -5) return 0.108579508504;
-          if(lepttype == 4) return 0.0327303923577;
-          if(lepttype == 5) return 0.108262723341;
-          if(lepttype == 6) return 0;
-        }
-	
-      } // is el
-    }// Conv
-
-  }
-  if (DataEra=="2017"){
-    if (bkg=="Fake"){
-      if(isMuon){
-	if(MCSample == "DYJets10to50_MG") {
-	  if(lepttype == -4) return 0.0888532448004;
-	  if(lepttype == -3) return 0.0779960732484;
-	  if(lepttype == -2) return 0.0771967440055;
-	  if(lepttype == -1) return 0.00481548861995;
-	}
-	if(MCSample == "DYJets") {
-	  if(lepttype == -4) return 0.0315318471314;
-	  if(lepttype == -3) return 0.0609502111404;
-	  if(lepttype == -2) return 0.040109061932;
-	  if(lepttype == -1) return 0.0069735728288;
-	}
-	if(MCSample == "DYJets_MG") {
-	  if(lepttype == -4) return 0.0643414444373;
-	  if(lepttype == -3) return 0.0628751377959;
-	  if(lepttype == -2) return 0.0668765974658;
-	  if(lepttype == -1) return 0.00813271685938;
-	}
-	if(MCSample == "WJets_MG") {
-	  if(lepttype == -4) return 0.133666629036;
-	  if(lepttype == -3) return 0.0202574788507;
-	  if(lepttype == -2) return 0.0674777485285;
-	  if(lepttype == -1) return 0.0133242425174;
-	}
-	if(MCSample == "WJets_amcatnlo") {
-	  if(lepttype == -4) return 0.0507963590519;
-	  if(lepttype == -3) return 0.0207854433536;
-	  if(lepttype == -2) return 0.0454124146937;
-	  if(lepttype == -1) return 0.0122156837975;
-	}
-	if(MCSample == "TTLL_powheg") {
-	  if(lepttype == -4) return 0.137001446224;
-	  if(lepttype == -3) return 0.202992354234;
-	  if(lepttype == -2) return 0.207423945779;
-	  if(lepttype == -1) return 0.0494693247208;
-	}
-	if(MCSample == "TTLJ_powheg") {
-	  if(lepttype == -4) return 0.0865871108799;
-	  if(lepttype == -3) return 0.120448741434;
-	  if(lepttype == -2) return 0.145669033594;
-	  if(lepttype == -1) return 0.0573959266971;
-	}
-	if(MCSample == "TTJJ_powheg") {
-	  if(lepttype == -4) return 0.00556023911103;
-	  if(lepttype == -3) return 0.00473128028599;
-	  if(lepttype == -2) return 0.00305908891521;
-	  if(lepttype == -1) return 0.00759681239872;
-	}
-      }// Is Muon
-      else{
-	if(MCSample == "DYJets10to50_MG") {
-	  if(lepttype == -4) return 0.0755092116234;
-	  if(lepttype == -3) return 0.0229499749648;
-	  if(lepttype == -2) return 0.066988381902;
-	  if(lepttype == -1) return 0.0125588437929;
-	}
-	if(MCSample == "DYJets") {
-	  if(lepttype == -4) return 0.0552410785548;
-	  if(lepttype == -3) return 0.0421885755502;
-	  if(lepttype == -2) return 0.0366123039107;
-	  if(lepttype == -1) return 0.0117257243435;
-	}
-	if(MCSample == "DYJets_MG") {
-	  if(lepttype == -4) return 0.0467636614658;
-	  if(lepttype == -3) return 0.0991595208698;
-	  if(lepttype == -2) return 0.0608961994592;
-	  if(lepttype == -1) return 0.0157233817552;
-	}
-	if(MCSample == "WJets_MG") {
-	  if(lepttype == -4) return 0.0815060879819;
-	  if(lepttype == -3) return 0.0326529129583;
-	  if(lepttype == -2) return 0.0601501060186;
-	  if(lepttype == -1) return 0.0200519948637;
-	}
-	if(MCSample == "WJets_amcatnlo") {
-	  if(lepttype == -4) return 0.0826117920487;
-	  if(lepttype == -3) return 0.0294122018262;
-	  if(lepttype == -2) return 0.0400547556236;
-	  if(lepttype == -1) return 0.0138311458242;
-	}
-	if(MCSample == "TTLL_powheg") {
-	  if(lepttype == -4) return 0.194799981666;
-	  if(lepttype == -3) return 0.19220314868;
-	  if(lepttype == -2) return 0.193012005182;
-	  if(lepttype == -1) return 0.0582404525433;
-	}
-	if(MCSample == "TTLJ_powheg") {
-	  if(lepttype == -4) return 0.123669421597;
-	  if(lepttype == -3) return 0.0933380047114;
-	  if(lepttype == -2) return 0.124284245492;
-	  if(lepttype == -1) return 0.0577522442443;
-	}
-	if(MCSample == "TTJJ_powheg") {
-	  if(lepttype == -4) return 0.00189710448533;
-	  if(lepttype == -3) return 0.00234888001663;
-	  if(lepttype == -2) return 0.00221775198456;
-	  if(lepttype == -1) return 0.00312587571063;
-	}
-
-      } // is el
-
-    }
-    if (bkg=="Conv"){
-
-      if(isMuon){
-	if(MCSample == "DYJets") {
-	  if(lepttype == -6) return 0.0185759519115;
-	  if(lepttype == -5) return 0;
-	  if(lepttype == 4) return 0.0419324539851;
-	  if(lepttype == 5) return 0;
-	  if(lepttype == 6) return 0;
-	}
-	if(MCSample == "WGToLNuG") {
-	  if(lepttype == -6) return 0.0263739440075;
-	  if(lepttype == -5) return 0.101058704056;
-	  if(lepttype == 4) return 0.0558242589275;
-	  if(lepttype == 5) return 0.0894627216415;
-        if(lepttype == 6) return 0;
-	}
-	if(MCSample == "ZGToLLG") {
-	  if(lepttype == -6) return 0;
-	  if(lepttype == -5) return 0.0511266367949;
-	  if(lepttype == 4) return 0.043073595007;
-	  if(lepttype == 5) return 0.0320899419983;
-	  if(lepttype == 6) return 0;
-	}
-	if(MCSample == "WGToLNuG_MG") {
-	  if(lepttype == -6) return 0.0521489331295;
-	  if(lepttype == -5) return 0.235875497436;
-	  if(lepttype == 4) return 0.0605964744507;
-	  if(lepttype == 5) return 0.101221458715;
-	  if(lepttype == 6) return 0;
-	}
-	if(MCSample == "WGToLNuG_01J_PtG_130") {
-	  if(lepttype == -6) return 0;
-	  if(lepttype == -5) return 0.108037709162;
-	  if(lepttype == 4) return 0.0377656165823;
-	  if(lepttype == 5) return 0.0186417310919;
-	  if(lepttype == 6) return 0;
-	}
-	if(MCSample == "WGToLNuG_01J_PtG_300") {
-	  if(lepttype == -6) return 0;
-	  if(lepttype == -5) return 0.0477203788388;
-	  if(lepttype == 4) return 0.0308223762516;
-	  if(lepttype == 5) return 0.0204273593096;
-	  if(lepttype == 6) return 0;
-	}
-	if(MCSample == "WGToLNuG_01J_PtG_500") {
-	  if(lepttype == -6) return 0;
-	  if(lepttype == -5) return 0.0599699385233;
-	  if(lepttype == 4) return 0.0401455075013;
-	  if(lepttype == 5) return 0.0272333778568;
-	  if(lepttype == 6) return 0;
-	}
-      }// Is Muon
-      else{
-
-	if(MCSample == "DYJets") {
-          if(lepttype == -6) return 0.0691108107496;
-          if(lepttype == -5) return 0;
-          if(lepttype == 4) return 0.0169471180748;
-          if(lepttype == 5) return 0;
-          if(lepttype == 6) return 0;
-        }
-        if(MCSample == "WGToLNuG") {
-          if(lepttype == -6) return 0.0750649258998;
-          if(lepttype == -5) return 0.0982071050247;
-          if(lepttype == 4) return 0.0102614309155;
-          if(lepttype == 5) return 0.0945159741836;
-	  if(lepttype == 6) return 0;
-        }
-        if(MCSample == "ZGToLLG") {
-          if(lepttype == -6) return 0.072865402691;
-          if(lepttype == -5) return 0.0636337665887;
-          if(lepttype == 4) return 0.0167542545768;
-          if(lepttype == 5) return 0.0597085903587;
-          if(lepttype == 6) return 0;
-        }
-        if(MCSample == "WGToLNuG_MG") {
-          if(lepttype == -6) return 0.0539735556572;
-          if(lepttype == -5) return 0.109687230527;
-          if(lepttype == 4) return 0.0149898227255;
-          if(lepttype == 5) return 0.0867270269549;
-          if(lepttype == 6) return 0;
-        }
-        if(MCSample == "WGToLNuG_01J_PtG_130") {
-          if(lepttype == -6) return 0.0519317048864;
-          if(lepttype == -5) return 0.0965613446738;
-          if(lepttype == 4) return 0.0248962360884;
-          if(lepttype == 5) return 0.0997762855019;
-          if(lepttype == 6) return 0;
-        }
-        if(MCSample == "WGToLNuG_01J_PtG_300") {
-          if(lepttype == -6) return 0.0446626251525;
-          if(lepttype == -5) return 0.102026051589;
-          if(lepttype == 4) return 0.0271100310876;
-          if(lepttype == 5) return 0.102491172839;
-          if(lepttype == 6) return 0;
-        }
-        if(MCSample == "WGToLNuG_01J_PtG_500") {
-          if(lepttype == -6) return 0.0752248021375;
-          if(lepttype == -5) return 0.109496361685;
-          if(lepttype == 4) return 0.0282707679785;
-          if(lepttype == 5) return 0.107143178644;
-          if(lepttype == 6) return 0;
-        }
-      }
-    }
-  } 
-  if (DataEra=="2018"){
-    if (bkg=="Fake"){
-      if(isMuon){
-	if(MCSample == "DYJets10to50_MG") {
-	  if(lepttype == -4) return 0;
-	  if(lepttype == -3) return 0.123096728448;
-	  if(lepttype == -2) return 0.0803036055287;
-	  if(lepttype == -1) return 0.0047717793612;
-	}
-	if(MCSample == "DYJets") {
-	  if(lepttype == -4) return 0.00696463586771;
-	  if(lepttype == -3) return 0.0438780100486;
-	  if(lepttype == -2) return 0.0417421933143;
-	  if(lepttype == -1) return 0.0073392189094;
-	}
-	if(MCSample == "DYJets_MG") {
-	  if(lepttype == -4) return 0.0529468362564;
-	  if(lepttype == -3) return 0.0645516974416;
-	  if(lepttype == -2) return 0.066535964078;
-	  if(lepttype == -1) return 0.00784650037983;
-	}
-	if(MCSample == "WJets_MG") {
-	  if(lepttype == -4) return 0.118545710799;
-	  if(lepttype == -3) return 0.0127698447325;
-	  if(lepttype == -2) return 0.0647870637369;
-	  if(lepttype == -1) return 0.0138581131242;
-	}
-	if(MCSample == "WJets_amcatnlo") {
-	  if(lepttype == -4) return 0.0681389367829;
-	  if(lepttype == -3) return 0.0265182069246;
-	  if(lepttype == -2) return 0.0298387453646;
-	  if(lepttype == -1) return 0.012405956567;
-	}
-	if(MCSample == "TTLL_powheg") {
-	  if(lepttype == -4) return 0.120106882374;
-	  if(lepttype == -3) return 0.203498438694;
-	  if(lepttype == -2) return 0.207775227132;
-	  if(lepttype == -1) return 0.0513387944922;
-	}
-	if(MCSample == "TTLJ_powheg") {
-	  if(lepttype == -4) return 0.0936908298859;
-	  if(lepttype == -3) return 0.12162153765;
-	  if(lepttype == -2) return 0.145649950884;
-	  if(lepttype == -1) return 0.0588665684297;
-	}
-	if(MCSample == "TTJJ_powheg") {
-	  if(lepttype == -4) return 0.00301728218843;
-	  if(lepttype == -3) return 0.0044608101292;
-	  if(lepttype == -2) return 0.00318520998121;
-	  if(lepttype == -1) return 0.00811106242909;
-	}
-      }
-      else{
-	if(MCSample == "DYJets10to50_MG") {
-          if(lepttype == -4) return 0.0263809620941;
-          if(lepttype == -3) return 0.0505285582501;
-          if(lepttype == -2) return 0.0590824336862;
-          if(lepttype == -1) return 0.0132573973623;
-        }
-        if(MCSample == "DYJets") {
-          if(lepttype == -4) return 0.0690829858176;
-          if(lepttype == -3) return 0.0502839490934;
-          if(lepttype == -2) return 0.0411787811785;
-          if(lepttype == -1) return 0.0123035980541;
-        }
-        if(MCSample == "DYJets_MG") {
-          if(lepttype == -4) return 0.0648280666748;
-          if(lepttype == -3) return 0.0751799292251;
-          if(lepttype == -2) return 0.0598041319369;
-          if(lepttype == -1) return 0.0167905208944;
-        }
-        if(MCSample == "WJets_MG") {
-          if(lepttype == -4) return 0.0965396053717;
-          if(lepttype == -3) return 0;
-          if(lepttype == -2) return 0.0552536424548;
-          if(lepttype == -1) return 0.0196790087343;
-        }
-        if(MCSample == "WJets_amcatnlo") {
-          if(lepttype == -4) return 0.0897081404251;
-          if(lepttype == -3) return 0;
-          if(lepttype == -2) return 0.02461168616;
-          if(lepttype == -1) return 0.0153165630462;
-        }
-        if(MCSample == "TTLL_powheg") {
-          if(lepttype == -4) return 0.188032041654;
-          if(lepttype == -3) return 0.192808975162;
-          if(lepttype == -2) return 0.189179207819;
-          if(lepttype == -1) return 0.0584461033085;
-        }
-        if(MCSample == "TTLJ_powheg") {
-          if(lepttype == -4) return 0.112745883327;
-          if(lepttype == -3) return 0.0944280222211;
-          if(lepttype == -2) return 0.122801716884;
-          if(lepttype == -1) return 0.057526848554;
-        }
-        if(MCSample == "TTJJ_powheg") {
-          if(lepttype == -4) return 0.00338654832424;
-          if(lepttype == -3) return 0.00315582691674;
-          if(lepttype == -2) return 0.00227283753842;
-          if(lepttype == -1) return 0.00331202875465;
-        }
-      }
-    }
-    if (bkg=="Conv"){
-
-      if(isMuon){
-	if(MCSample == "DYJets") {
-	  if(lepttype == -6) return 0.0327934154379;
-	  if(lepttype == -5) return 0;
-	  if(lepttype == 4) return 0.0403246224573;
-	  if(lepttype == 5) return 0;
-	  if(lepttype == 6) return 0;
-	}
-	if(MCSample == "WGToLNuG") {
-	  if(lepttype == -6) return 0.0143300801141;
-	  if(lepttype == -5) return 0.122955448554;
-	  if(lepttype == 4) return 0.0412258800723;
-	  if(lepttype == 5) return 0.0883493716249;
-	  if(lepttype == 6) return 0;
-	}
-	if(MCSample == "ZGToLLG") {
-	  if(lepttype == -6) return 0;
-	  if(lepttype == -5) return 0.0225612006025;
-	  if(lepttype == 4) return 0.04944162326;
-	  if(lepttype == 5) return 0.0318066469875;
-	  if(lepttype == 6) return 0;
-	}
-	if(MCSample == "WGToLNuG_MG") {
-	  if(lepttype == -6) return 0.029007051856;
-	  if(lepttype == -5) return 0.147862875289;
-	  if(lepttype == 4) return 0.0650646403326;
-	  if(lepttype == 5) return 0.0979699947088;
-	  if(lepttype == 6) return 0;
-	}
-	if(MCSample == "WGToLNuG_01J_PtG_130") {
-	  if(lepttype == -6) return 0.02093728506141;
-	  if(lepttype == -5) return 0.0649015422714;
-	  if(lepttype == 4) return 0.0360062606575;
-	  if(lepttype == 5) return 0.0181685278786;
-	  if(lepttype == 6) return 0;
-	}
-	if(MCSample == "WGToLNuG_01J_PtG_300") {
-	  if(lepttype == -6) return 0;
-	  if(lepttype == -5) return 0.228926351912;
-	  if(lepttype == 4) return 0.0298461938549;
-	  if(lepttype == 5) return 0.0187805844456;
-	  if(lepttype == 6) return 0;
-	}
-	if(MCSample == "WGToLNuG_01J_PtG_500") {
-	  if(lepttype == -6) return 0.1058167879;
-	  if(lepttype == -5) return 0.211606060083;
-	  if(lepttype == 4) return 0.0334534628876;
-	  if(lepttype == 5) return 0.0264173321757;
-	  if(lepttype == 6) return 0;
-	}
-      }
-      else{
-
-	if(MCSample == "DYJets") {
-          if(lepttype == -6) return 0.0705927145707;
-          if(lepttype == -5) return 0;
-          if(lepttype == 4) return 0.019191980252;
-          if(lepttype == 5) return 0;
-          if(lepttype == 6) return 0;
-        }
-        if(MCSample == "WGToLNuG") {
-          if(lepttype == -6) return 0.0707721113959;
-          if(lepttype == -5) return 0.0963399452712;
-          if(lepttype == 4) return 0.015759082738;
-          if(lepttype == 5) return 0.093817535877;
-          if(lepttype == 6) return 0;
-        } 
-        if(MCSample == "ZGToLLG") {
-          if(lepttype == -6) return 0.073148520429;
-          if(lepttype == -5) return 0.0663289335389;
-          if(lepttype == 4) return 0.0285164801055;
-          if(lepttype == 5) return 0.0608006734525;
-          if(lepttype == 6) return 0;
-	}
-        if(MCSample == "WGToLNuG_MG") {
-          if(lepttype == -6) return 0.0527360797951;
-          if(lepttype == -5) return 0.108585077291;
-          if(lepttype == 4) return 0.0198966242555;
-          if(lepttype == 5) return 0.0844958447767;
-          if(lepttype == 6) return 0;
-        }
-        if(MCSample == "WGToLNuG_01J_PtG_130") {
-          if(lepttype == -6) return 0.0454004562096;
-          if(lepttype == -5) return 0.0945310265575;
-          if(lepttype == 4) return 0.0204968046841;
-          if(lepttype == 5) return 0.0959067806759;
-          if(lepttype == 6) return 0;
-        }
-        if(MCSample == "WGToLNuG_01J_PtG_300") {
-          if(lepttype == -6) return 0.0542480891424;
-          if(lepttype == -5) return 0.104003840875;
-          if(lepttype == 4) return 0.0123242815894;
-          if(lepttype == 5) return 0.101207284806;
-          if(lepttype == 6) return 0;
-        }
-        if(MCSample == "WGToLNuG_01J_PtG_500") {
-          if(lepttype == -6) return 0.0648943274156;
-          if(lepttype == -5) return 0.103867860404;
-          if(lepttype == 4) return 0.0247849464842;
-          if(lepttype == 5) return 0.110922864794;
-          if(lepttype == 6) return 0;
-        }
-      }
-    }
-  }
-
-  return -99999;
-  
-}
 
 double HNL_LeptonCore::MergeMultiMC(vector<TString> vec, TString Method){
 
@@ -1691,6 +832,8 @@ bool HNL_LeptonCore::PassTriggerSelection(HNL_LeptonCore::Channel channel,Event 
 
 AnalyzerParameter HNL_LeptonCore::InitialiseHNLParameter(TString s_setup, TString tag){
   
+  /// This functions sets up AnalyzerParameter class for different types of Analyser
+  
   AnalyzerParameter param  ;
   param.Clear();
 
@@ -1703,11 +846,14 @@ AnalyzerParameter HNL_LeptonCore::InitialiseHNLParameter(TString s_setup, TStrin
   param.syst_ = AnalyzerParameter::Central;
   param.MCCorrrectionIgnoreNoHist = true;
 
-  param.MuFakeMethod = "Data";
-  param.ElFakeMethod = "Data";
-  param.CFMethod   = "Data";
+  /// By default setup POG ID 
+  /// By Default use MC for all Bkgs
+  param.MuFakeMethod = "MC";
+  param.ElFakeMethod = "MC";
+  param.CFMethod   = "MC";
   param.ConvMethod = "MC";
 
+  /// By default use tight Jets 
   param.Jet_ID                     = "tight";
   param.Jet_MinPt = 10.;
   param.Jet_MaxEta = 5.;
@@ -1724,242 +870,183 @@ AnalyzerParameter HNL_LeptonCore::InitialiseHNLParameter(TString s_setup, TStrin
   param.Electron_MinPt = 10.;
   param.Electron_MaxEta = 2.5;
 
+  /// Lepton IDs
   param.Muon_Veto_ID = "HNVeto2016";
   param.Electron_Veto_ID = "HNVeto";
-
   param.Tau_Veto_ID = "JetVLElVLMuVL";
-
+  
+  /// Fakes
   param.Muon_FR_Key  ="pt_eta_AwayJetPt40";
   param.Muon_PR_Key  ="ptcone_eta_central";
-
   param.Electron_FR_Key  = "pt_eta_AwayJetPt40";
   param.Electron_PR_Key  ="ptcone_eta_central";
 
+  /// Defaul Corrections                                                                                                                     
+
+  param.Muon_ID_SF_Key = "NUM_TightID_DEN_TrackerMuons";
+  param.Muon_ISO_SF_Key = "NUM_TightRelIso_DEN_TightIDandIPCut";
+  param.Muon_Tight_ID = "POGTightWithTightIso";
   param.Muon_RECO_SF_Key = "MuonRecoSF";
 
-  param.Electron_ID_SF_Key = "Default";
-  param.Electron_Tight_ID = "Default";
 
-  param.Muon_ID_SF_Key = "Default";
-  param.Muon_ISO_SF_Key = "Default";
-  param.Muon_Tight_ID   = "Default";
+  param.Electron_ID_SF_Key = "passTightID";
+  param.Electron_Tight_ID = "passPOGTight";
 
-  param.Muon_Trigger_SF_Key = "Default";
-  param.Muon_Trigger_NameForSF = "Default";
+  TString trigKey=TrigList_POG_Mu[0];
+  trigKey=trigKey.ReplaceAll("HLT_","");
+  trigKey=trigKey.ReplaceAll("_v","");
+  param.Muon_Trigger_SF_Key = "POGTight";
+  param.Muon_Trigger_NameForSF = trigKey;
 
+  param.Muon_FR_ID = "HNLooseV1";
+  param.Electron_FR_ID = "HNLoosePOG";
+
+  if (s_setup=="") return param;
 
   if (s_setup=="SignalStudy"){
-
     param.CFMethod   = "MC";
-
     param.Muon_Tight_ID = "HNTightV2";
-    
     param.Electron_Tight_ID = "HNTightV2";
-
     param.Muon_FR_ID = "HNLooseV1";
     param.Electron_FR_ID = "HNLooseV4";
-
     return param;
-
   }
   else if (s_setup=="HNL"){
-
     param.CFMethod   = "Data";
-
     param.Muon_Tight_ID = "HNTightV2";
     param.Electron_Tight_ID = "HNTightV2";
-
-
     param.Electron_ID_SF_Key = "TmpHNTightV2";
     param.Muon_ID_SF_Key = "TmpHNTightV2";
-
     param.Muon_FR_ID = "HNLooseV1";
     param.Electron_FR_ID = "HNLooseV4";
-    
-    //param.Muon_FR_Key  ="ptcone_ptfix_eta_AwayJetPt40";
-    param.Muon_FR_Key  ="Haneol_AwayJetPt40";
-    //param.Muon_PR_Key  ="ptcone_eta_central";
-  
-    //param.Electron_FR_Key  = "ptcone_ptfix_eta_AwayJetPt40"; //JH
-    param.Electron_FR_Key  = "Haneol_AwayJetPt40"; //JH
-    //param.Electron_PR_Key  ="ptcone_eta_central";
-
     param.Muon_RECO_SF_Key = "MuonRecoSF";
-
     return param;
-
   }
   else if (s_setup=="HNLOpt"){
-
     param.MuFakeMethod = "MC";
     param.ElFakeMethod = "MC";
     param.CFMethod   = "MC";
     param.ConvMethod = "MC";
-
     param.Muon_Tight_ID = "HNTightV2";
     param.Electron_Tight_ID = "HNTightV2";
-
-
     param.Electron_ID_SF_Key = "TmpHNTightV2";
     param.Muon_ID_SF_Key = "TmpHNTightV2";
-
     param.Muon_FR_ID = "HNLooseV1";
     param.Electron_FR_ID = "HNLooseV4";
-
-
     param.Muon_RECO_SF_Key = "MuonRecoSF";
-
     return param;
-
   }
-  
   else if (s_setup=="HNLSROpt"){
-
     param.CFMethod   = "MC";
     param.ConvMethod = "MC";
-
     param.Muon_Tight_ID = "HNTightV2";
     param.Electron_Tight_ID = "HNTightV2";
-
-
     param.Electron_ID_SF_Key = "TmpHNTightV2";
     param.Muon_ID_SF_Key = "TmpHNTightV2";
-
     param.Muon_FR_ID = "HNLooseV1";
     param.Electron_FR_ID = "HNLooseV4";
-
-
     param.Muon_RECO_SF_Key = "MuonRecoSF";
-
     return param;
-
   }
-
-
   else if (s_setup=="BDT"){
-
     param.MuFakeMethod = "MC";
     param.ElFakeMethod = "MC";
     param.CFMethod   = "MC";
     param.ConvMethod = "MC";
-
     param.Muon_Tight_ID = "MVAID";
     param.Electron_Tight_ID = "MVAID";
-
     param.Electron_ID_SF_Key = "TmpHNTightV2";
     param.Muon_ID_SF_Key = "TmpHNTightV2";
-
     param.Muon_FR_ID = "HNLooseV1";
     param.Electron_FR_ID = "HNLooseV4";
-
     param.Muon_RECO_SF_Key = "MuonRecoSF";
-
     return param;
-
   }
-
   else if (s_setup=="MVAUL"){
-
     param.MuFakeMethod = "DATA";
     param.ElFakeMethod = "DATA";
     param.CFMethod   = "MC";
     param.ConvMethod = "MC";
-
     param.Muon_Tight_ID = "HNL_ULID_"+GetYearString();
     param.Electron_Tight_ID = "HNL_ULID_"+GetYearString();
-
     param.Electron_ID_SF_Key = "TmpHNL_ULID_"+GetYearString();
     param.Muon_ID_SF_Key = "TmpHNL_ULID_"+GetYearString();
-
     param.Muon_FR_ID = "HNL_ULID_FO_"+GetYearString();
     param.Electron_FR_ID = "HNL_ULID_FO_"+GetYearString();
-
     param.Muon_RECO_SF_Key = "MuonRecoSF";
-
     return param;
-
   }
-
   else if (s_setup.Contains("MVAULN")){
-
     param.CFMethod   = "MC";
     param.ConvMethod = "MC";
-
     param.Muon_Tight_ID = "HNL_ULID_"+GetYearString();
 
     if (s_setup=="MVAULN1")  param.Electron_Tight_ID = "HNL_ULID_Baseline";
     if (s_setup=="MVAULN2")  param.Electron_Tight_ID = "HNL_ULID_CF";
     if (s_setup=="MVAULN3")  param.Electron_Tight_ID = "HNL_ULID_Fake";
     if (s_setup=="MVAULN4")  param.Electron_Tight_ID = "HNL_ULID_Conv";
-    if (s_setup=="MVAULN5")  param.Electron_Tight_ID = "HNL_ULID_CFL";
-    if (s_setup=="MVAULN6")  param.Electron_Tight_ID = "HNL_ULID_CFVL";
-    if (s_setup=="MVAULN7")  param.Electron_Tight_ID = "HNL_ULID_CFVVL";
-
+    if (s_setup=="MVAULNCF2EDPt1")  param.Electron_Tight_ID = "HNL_ULID_CFT_ED_BDTGv2Pt_MD3";
+    if (s_setup=="MVAULNCF2EDPt2")  param.Electron_Tight_ID = "HNL_ULID_CFM_ED_BDTGv2Pt_MD3";
+    if (s_setup=="MVAULNCF2EDPt3")  param.Electron_Tight_ID = "HNL_ULID_CFL_ED_BDTGv2Pt_MD3";
+    if (s_setup=="MVAULNCF2EDPt4")  param.Electron_Tight_ID = "HNL_ULID_CFVL_ED_BDTGv2Pt_MD3";
+    if (s_setup=="MVAULNCF2ED1")  param.Electron_Tight_ID = "HNL_ULID_CFT_ED_BDTGv2_MD3";
+    if (s_setup=="MVAULNCF2ED2")  param.Electron_Tight_ID = "HNL_ULID_CFM_ED_BDTGv2_MD3";
+    if (s_setup=="MVAULNCF2ED3")  param.Electron_Tight_ID = "HNL_ULID_CFL_ED_BDTGv2_MD3";
+    if (s_setup=="MVAULNCF2ED4")  param.Electron_Tight_ID = "HNL_ULID_CFVL_ED_BDTGv2_MD3";
+    if (s_setup=="MVAULNCF3ED1")  param.Electron_Tight_ID = "HNL_ULID_CFT_ED_BDTGv3_MD3";
+    if (s_setup=="MVAULNCF3ED2")  param.Electron_Tight_ID = "HNL_ULID_CFM_ED_BDTGv3_MD3";
+    if (s_setup=="MVAULNCF3ED3")  param.Electron_Tight_ID = "HNL_ULID_CFL_ED_BDTGv3_MD3";
+    if (s_setup=="MVAULNCF3ED4")  param.Electron_Tight_ID = "HNL_ULID_CFVL_ED_BDTGv3_MD3";
+    if (s_setup=="MVAULNCF2Pt1")  param.Electron_Tight_ID = "HNL_ULID_CFT_BDTGv2Pt_MD3";
+    if (s_setup=="MVAULNCF2Pt2")  param.Electron_Tight_ID = "HNL_ULID_CFM_BDTGv2Pt_MD3";
+    if (s_setup=="MVAULNCF2Pt3")  param.Electron_Tight_ID = "HNL_ULID_CFL_BDTGv2Pt_MD3";
+    if (s_setup=="MVAULNCF2Pt4")  param.Electron_Tight_ID = "HNL_ULID_CFVL_BDTGv2Pt_MD3";
+    if (s_setup=="MVAULNCF21")  param.Electron_Tight_ID = "HNL_ULID_CFT_BDTGv2_MD3";
+    if (s_setup=="MVAULNCF22")  param.Electron_Tight_ID = "HNL_ULID_CFM_BDTGv2_MD3";
+    if (s_setup=="MVAULNCF23")  param.Electron_Tight_ID = "HNL_ULID_CFL_BDTGv2_MD3";
+    if (s_setup=="MVAULNCF24")  param.Electron_Tight_ID = "HNL_ULID_CFVL_BDTGv2_MD3";
+    if (s_setup=="MVAULNCF31")  param.Electron_Tight_ID = "HNL_ULID_CFT_BDTGv3_MD3";
+    if (s_setup=="MVAULNCF32")  param.Electron_Tight_ID = "HNL_ULID_CFM_BDTGv3_MD3";
+    if (s_setup=="MVAULNCF33")  param.Electron_Tight_ID = "HNL_ULID_CFL_BDTGv3_MD3";
+    if (s_setup=="MVAULNCF34")  param.Electron_Tight_ID = "HNL_ULID_CFVL_BDTGv3_MD3";
 
     param.Electron_ID_SF_Key = "TmpHNTightV2";
     param.Muon_ID_SF_Key = "TmpHNTightV2";
-
     param.Muon_FR_ID = "HNLooseV1";
     param.Electron_FR_ID = "HNLooseV4";
-
     param.Muon_RECO_SF_Key = "MuonRecoSF";
-
     return param;
-
   }
-
-
-
-
   else if (s_setup=="BDTTop"){
-
     param.MuFakeMethod = "MC";
     param.ElFakeMethod = "MC";
     param.CFMethod   = "MC";
     param.ConvMethod = "MC";
-
     param.Muon_Tight_ID = "MVAID";
     param.Electron_Tight_ID = "TopMVAID";
-
     param.Electron_ID_SF_Key = "TmpHNTightV2";
     param.Muon_ID_SF_Key = "TmpHNTightV2";
-
     param.Muon_FR_ID = "HNLooseV1";
     param.Electron_FR_ID = "HNLooseV4";
-
     param.Muon_RECO_SF_Key = "MuonRecoSF";
-
     return param;
-
   }
-
   else if (s_setup=="EXO17028"){
-    
     param.CFMethod   = "MC";
-    
     param.Muon_Tight_ID = "HNTight_17028";
     param.Electron_Tight_ID = "HNTight_17028";
-    
     param.Electron_ID_SF_Key = "TmpHNTight_17028";
     param.Muon_ID_SF_Key = "TmpHNTight_17028";
-
     param.Muon_FR_ID = "HNLoose_17028";
     param.Electron_FR_ID = "HNLoose_17028";
-    
-    
     return param;
   }
-
   else if (s_setup=="POG"){
-
     param.CFMethod   = "MC";
-
     param.MuFakeMethod = "MC";
     param.ElFakeMethod = "MC";
-
     param.Electron_ID_SF_Key = "passTightID";
     param.Electron_Tight_ID = "passPOGTight";
-    
     param.Muon_ID_SF_Key = "NUM_TightID_DEN_TrackerMuons";
     param.Muon_ISO_SF_Key = "NUM_TightRelIso_DEN_TightIDandIPCut";
     param.Muon_Tight_ID = "POGTightWithTightIso";
@@ -1969,39 +1056,26 @@ AnalyzerParameter HNL_LeptonCore::InitialiseHNLParameter(TString s_setup, TStrin
     trigKey=trigKey.ReplaceAll("_v","");
     param.Muon_Trigger_SF_Key = "POGTight";
     param.Muon_Trigger_NameForSF = trigKey;
-
     param.Muon_FR_ID = "HNLooseV1";
     param.Electron_FR_ID = "HNLoosePOG";
-
     return param;
   }
-
-
   else if (s_setup=="POGCR"){
-
     param.CFMethod   = "MC";
-
     param.MuFakeMethod = "Data";
     param.ElFakeMethod = "Data";
-
     param.Electron_ID_SF_Key = "passTightID";
     param.Electron_Tight_ID = "passPOGTight";
-
     param.Muon_ID_SF_Key = "NUM_TightID_DEN_TrackerMuons";
     param.Muon_ISO_SF_Key = "NUM_TightRelIso_DEN_TightIDandIPCut";
     param.Muon_Tight_ID = "POGTightWithTightIso";
     param.Muon_RECO_SF_Key = "MuonRecoSF";
-
     param.Muon_Trigger_SF_Key = "Default";
     param.Muon_Trigger_NameForSF = "Default";
-
     param.Muon_FR_ID = "HNLooseV1";
     param.Electron_FR_ID = "HNLoosePOG";
-
     return param;
   }
-
-
 
   cout << "[HNL_LeptonCore::InitialiseHNLParameters ] ID not found.." << endl;
   exit(EXIT_FAILURE);
@@ -4903,43 +3977,43 @@ void HNL_LeptonCore::FillEventCutflow(HNL_LeptonCore::SearchRegion sr, double ev
   
   if(verbose_level >= 0){
     if(sr==MuonSR){
-      labels = {"SR1_bin1","SR1_bin2","SR1_bin3","SR1_bin4","SR1_bin5","SR1_bin6","SR1_bin7","SR2_bin1", "SR2_bin2", "SR3_bin1","SR3_bin2","SR3_bin3","SR3_bin4","SR3_bin5","SR3_bin6","SR3_bin7","SR3_bin8","SR3_bin9","SR3_bin10","SR3_bin11","SR3_bin12","SR3_bin13","SR3_bin14", "SR3_bin15","SR3_bin16"};
+      labels = {"SR1_bin1","SR1_bin2","SR1_bin3","SR1_bin4","SR1_bin5","SR1_bin6","SR1_bin7","SR2_bin1", "SR2_bin2", "SR3_bin1","SR3_bin2","SR3_bin3","SR3_bin4","SR3_bin5","SR3_bin6","SR3_bin7","SR3_bin8"};
       EVhitname ="MuonSR";
     }
     if(sr==ElectronSR){
-      labels = {"SR1_bin1","SR1_bin2","SR1_bin3","SR1_bin4","SR1_bin5","SR1_bin6","SR1_bin7","SR2_bin1","SR2_bin2", "SR3_bin1","SR3_bin2","SR3_bin3","SR3_bin4","SR3_bin5","SR3_bin6","SR3_bin7","SR3_bin8","SR3_bin9","SR3_bin10","SR3_bin11","SR3_bin12","SR3_bin13","SR3_bin14", "SR3_bin15","SR3_bin16"};
+      labels = {"SR1_bin1","SR1_bin2","SR1_bin3","SR1_bin4","SR1_bin5","SR1_bin6","SR1_bin7","SR2_bin1","SR2_bin2", "SR3_bin1","SR3_bin2","SR3_bin3","SR3_bin4","SR3_bin5","SR3_bin6","SR3_bin7","SR3_bin8"};
       EVhitname ="ElectronSR";
     }
     if(sr==ElectronMuonSR){
-      labels = {"SR1_bin1","SR1_bin2","SR1_bin3","SR1_bin4","SR1_bin5","SR1_bin6","SR1_bin7","SR2_bin1","SR2_bin2", "SR3_bin1","SR3_bin2","SR3_bin3","SR3_bin4","SR3_bin5","SR3_bin6","SR3_bin7","SR3_bin8","SR3_bin9","SR3_bin10","SR3_bin11","SR3_bin12","SR3_bin13","SR3_bin14", "SR3_bin15","SR3_bin16"};
+      labels = {"SR1_bin1","SR1_bin2","SR1_bin3","SR1_bin4","SR1_bin5","SR1_bin6","SR1_bin7","SR2_bin1","SR2_bin2", "SR3_bin1","SR3_bin2","SR3_bin3","SR3_bin4","SR3_bin5","SR3_bin6","SR3_bin7","SR3_bin8"};
       EVhitname ="ElectronMuonSR";
     }
     
     
     if(sr==MuonSRQQ){
-      labels = {"QMSR1_bin1","QMSR1_bin2","QMSR1_bin3","QMSR1_bin4","QMSR1_bin5","QMSR1_bin6","QMSR1_bin7","QMSR2_bin1", "QMSR2_bin2",  "QMSR3_bin1","QMSR3_bin2","QMSR3_bin3","QMSR3_bin4","QMSR3_bin5","QMSR3_bin6","QMSR3_bin7","QMSR3_bin8","QMSR3_bin9","QMSR3_bin10","QMSR3_bin11","QMSR3_bin12","QMSR3_bin13","QMSR3_bin14", "QMSR3_bin15","QMSR3_bin16",     "QPSR1_bin1","QPSR1_bin2","QPSR1_bin3","QPSR1_bin4","QPSR1_bin5","QPSR1_bin6","QPSR1_bin7","QPSR2_bin1","QPSR2_bin2",  "QPSR3_bin1","QPSR3_bin2","QPSR3_bin3","QPSR3_bin4","QPSR3_bin5","QPSR3_bin6","QPSR3_bin7","QPSR3_bin8","QPSR3_bin9","QPSR3_bin10","QPSR3_bin11","QPSR3_bin12","QPSR3_bin13","QPSR3_bin14", "QPSR3_bin15","QPSR3_bin16"};
+      labels = {"QMSR1_bin1","QMSR1_bin2","QMSR1_bin3","QMSR1_bin4","QMSR1_bin5","QMSR1_bin6","QMSR1_bin7","QMSR2_bin1", "QMSR2_bin2",  "QMSR3_bin1","QMSR3_bin2","QMSR3_bin3","QMSR3_bin4","QMSR3_bin5","QMSR3_bin6","QMSR3_bin7","QMSR3_bin8",  "QPSR1_bin1","QPSR1_bin2","QPSR1_bin3","QPSR1_bin4","QPSR1_bin5","QPSR1_bin6","QPSR1_bin7","QPSR2_bin1","QPSR2_bin2",  "QPSR3_bin1","QPSR3_bin2","QPSR3_bin3","QPSR3_bin4","QPSR3_bin5","QPSR3_bin6","QPSR3_bin7","QPSR3_bin8"};
       EVhitname ="MuonChargeSplitSR";
     }
     
     if(sr==ElectronSRQQ){
-      labels = {"QMSR1_bin1","QMSR1_bin2","QMSR1_bin3","QMSR1_bin4","QMSR1_bin5","QMSR1_bin6","QMSR1_bin7","QMSR2_bin1","QMSR2_bin2",  "QMSR3_bin1","QMSR3_bin2","QMSR3_bin3","QMSR3_bin4","QMSR3_bin5","QMSR3_bin6","QMSR3_bin7","QMSR3_bin8","QMSR3_bin9","QMSR3_bin10","QMSR3_bin11","QMSR3_bin12","QMSR3_bin13","QMSR3_bin14", "QMSR3_bin15","QMSR3_bin16"   , "QPSR1_bin1","QPSR1_bin2","QPSR1_bin3","QPSR1_bin4","QPSR1_bin5","QPSR1_bin6","QPSR1_bin7","QPSR2_bin1","QPSR2_bin2",  "QPSR3_bin1","QPSR3_bin2","QPSR3_bin3","QPSR3_bin4","QPSR3_bin5","QPSR3_bin6","QPSR3_bin7","QPSR3_bin8","QPSR3_bin9","QPSR3_bin10","QPSR3_bin11","QPSR3_bin12","QPSR3_bin13","QPSR3_bin14", "QPSR3_bin15","QPSR3_bin16"   };
+      labels = {"QMSR1_bin1","QMSR1_bin2","QMSR1_bin3","QMSR1_bin4","QMSR1_bin5","QMSR1_bin6","QMSR1_bin7","QMSR2_bin1","QMSR2_bin2",  "QMSR3_bin1","QMSR3_bin2","QMSR3_bin3","QMSR3_bin4","QMSR3_bin5","QMSR3_bin6","QMSR3_bin7","QMSR3_bin8", "QPSR1_bin1","QPSR1_bin2","QPSR1_bin3","QPSR1_bin4","QPSR1_bin5","QPSR1_bin6","QPSR1_bin7","QPSR2_bin1","QPSR2_bin2",  "QPSR3_bin1","QPSR3_bin2","QPSR3_bin3","QPSR3_bin4","QPSR3_bin5","QPSR3_bin6","QPSR3_bin7","QPSR3_bin8"};
       EVhitname ="ElectronChargeSplitSR";
     }
     if(sr==ElectronMuonSRQQ){
-      labels = {"QMSR1_bin1","QMSR1_bin2","QMSR1_bin3","QMSR1_bin4","QMSR1_bin5","QMSR1_bin6","QMSR1_bin7","QMSR2_bin1","QMSR2_bin2",  "QMSR3_bin1","QMSR3_bin2","QMSR3_bin3","QMSR3_bin4","QMSR3_bin5","QMSR3_bin6","QMSR3_bin7","QMSR3_bin8","QMSR3_bin9","QMSR3_bin10","QMSR3_bin11","QMSR3_bin12","QMSR3_bin13","QMSR3_bin14", "QMSR3_bin15","QMSR3_bin16"   , "QPSR1_bin1","QPSR1_bin2","QPSR1_bin3","QPSR1_bin4","QPSR1_bin5","QPSR1_bin6","QPSR1_bin7","QPSR2_bin1","QPSR2_bin2",  "QPSR3_bin1","QPSR3_bin2","QPSR3_bin3","QPSR3_bin4","QPSR3_bin5","QPSR3_bin6","QPSR3_bin7","QPSR3_bin8","QPSR3_bin9","QPSR3_bin10","QPSR3_bin11","QPSR3_bin12","QPSR3_bin13","QPSR3_bin14", "QPSR3_bin15","QPSR3_bin16"};
+      labels = {"QMSR1_bin1","QMSR1_bin2","QMSR1_bin3","QMSR1_bin4","QMSR1_bin5","QMSR1_bin6","QMSR1_bin7","QMSR2_bin1","QMSR2_bin2",  "QMSR3_bin1","QMSR3_bin2","QMSR3_bin3","QMSR3_bin4","QMSR3_bin5","QMSR3_bin6","QMSR3_bin7","QMSR3_bin8" , "QPSR1_bin1","QPSR1_bin2","QPSR1_bin3","QPSR1_bin4","QPSR1_bin5","QPSR1_bin6","QPSR1_bin7","QPSR2_bin1","QPSR2_bin2",  "QPSR3_bin1","QPSR3_bin2","QPSR3_bin3","QPSR3_bin4","QPSR3_bin5","QPSR3_bin6","QPSR3_bin7","QPSR3_bin8"};
       EVhitname ="ElectronMuonChargeSplitSR";
     }
 
     if(sr==MuonSRBDT){
-      labels = {"SR1_bin1","SR1_bin2","SR1_bin3","SR1_bin4","SR1_bin5","SR1_bin6","SR1_bin7","SR2_bin1", "SR2_bin2",  "SR3_bin1","SR3_bin2","SR3_bin3","SR3_bin4","SR3_bin5","SR3_bin6","SR3_bin7","SR3_bin8","SR3_bin9","SR3_bin10","SR3_bin11","SR3_bin12","SR3_bin13","SR3_bin14", "SR3_bin15","SR3_bin16", "SR3_bin17","SR3_bin18","SR3_bin19"};
+      labels = {"SR1_bin1","SR1_bin2","SR1_bin3","SR1_bin4","SR1_bin5","SR1_bin6","SR1_bin7","SR2_bin1", "SR2_bin2",  "SR3_bin1","SR3_bin2","SR3_bin3","SR3_bin4","SR3_bin5","SR3_bin6","SR3_bin7","SR3_bin8"};
       EVhitname ="MuonSR";
     }
     if(sr==ElectronSRBDT){
-      labels = {"SR1_bin1","SR1_bin2","SR1_bin3","SR1_bin4","SR1_bin5","SR1_bin6","SR1_bin7","SR2_bin1","SR2_bin2",  "SR3_bin1","SR3_bin2","SR3_bin3","SR3_bin4","SR3_bin5","SR3_bin6","SR3_bin7","SR3_bin8","SR3_bin9","SR3_bin10","SR3_bin11","SR3_bin12","SR3_bin13","SR3_bin14", "SR3_bin15","SR3_bin16", "SR3_bin17","SR3_bin18","SR3_bin19"};
+      labels = {"SR1_bin1","SR1_bin2","SR1_bin3","SR1_bin4","SR1_bin5","SR1_bin6","SR1_bin7","SR2_bin1","SR2_bin2",  "SR3_bin1","SR3_bin2","SR3_bin3","SR3_bin4","SR3_bin5","SR3_bin6","SR3_bin7","SR3_bin8"};
       EVhitname ="ElectronSR";
     }
     if(sr==ElectronMuonSRBDT){
-      labels = {"SR1_bin1","SR1_bin2","SR1_bin3","SR1_bin4","SR1_bin5","SR1_bin6","SR1_bin7","SR2_bin1","SR2_bin2",  "SR3_bin1","SR3_bin2","SR3_bin3","SR3_bin4","SR3_bin5","SR3_bin6","SR3_bin7","SR3_bin8","SR3_bin9","SR3_bin10","SR3_bin11","SR3_bin12","SR3_bin13","SR3_bin14", "SR3_bin15","SR3_bin16", "SR3_bin17","SR3_bin18","SR3_bin19"};
+      labels = {"SR1_bin1","SR1_bin2","SR1_bin3","SR1_bin4","SR1_bin5","SR1_bin6","SR1_bin7","SR2_bin1","SR2_bin2",  "SR3_bin1","SR3_bin2","SR3_bin3","SR3_bin4","SR3_bin5","SR3_bin6","SR3_bin7","SR3_bin8"};
       EVhitname ="ElectronMuonSR";
     }
 
@@ -5218,10 +4292,12 @@ void HNL_LeptonCore::FillLeptonKinematicPlots(TString label , TString cut,  Lept
   double maxDphi=-999;
   double PtRatioAwayJet(-999.);
   double Jet_Disc(-1);
+ 
 
   for(unsigned int ij=0; ij<JetAllColl.size(); ij++){
+
     double dR=lep.DeltaR(JetAllColl.at(ij));
-    if(dR<mindR){ mindR=dR; IdxMatchJet=ij; }
+    if(dR<mindR){       mindR=dR; IdxMatchJet=ij;     }
     double dphi =fabs(TVector2::Phi_mpi_pi(lep.Phi()- JetAllColl.at(ij).Phi()));
     if(dphi > maxDphi) {maxDphi= dphi; IdxMatchAwayJet=ij;}
   }
@@ -5244,20 +4320,9 @@ void HNL_LeptonCore::FillLeptonKinematicPlots(TString label , TString cut,  Lept
   FillHist( cut+ "/Lepton_Dz_"+label            , lep.fdZ() , w, 250, 0, 0.5, "dZ");
   FillHist( cut+ "/Lepton_LogDxy_"+label        , lep.LogdXY() , w, 300, -20,  10, "dXY");
 
-  double corr1 = (IsData) ? 1. : 0.98;
-  double corr2 = (IsData) ? 1. : 0.97;
-  double corr3 = (IsData) ? 1. : 0.96;
-  double corr4 = (IsData) ? 1. : 0.95;
-  FillHist( cut+ "/Lepton_LogDxy2_"+label        , lep.LogdXY()*corr1 , w, 300, -20,  10, "dXY");
-  FillHist( cut+ "/Lepton_LogDxy3_"+label        , lep.LogdXY()*corr2 , w, 300, -20,  10, "dXY");
-  FillHist( cut+ "/Lepton_LogDxy4_"+label        , lep.LogdXY()*corr3 , w, 300, -20,  10, "dXY");
-  FillHist( cut+ "/Lepton_LogDxy5_"+label        , lep.LogdXY()*corr4 , w, 300, -20,  10, "dXY");
-  FillHist( cut+ "/Lepton_LogDz_"+label         , lep.LogdZ() , w, 300, -20, 10, "dZ");
   FillHist( cut+ "/Lepton_dXYSig_"+ label       , lep.LogdXYSig(), w, 100, -10,10);
   FillHist( cut+ "/Lepton_dZSig_"+ label        , lep.LogdZSig(),w, 100,-10,10);
   FillHist( cut+ "/Lepton_SIP3D_"+ label        , lep.SIP3D(),w, 100,0,10);
-  FillHist( cut+ "/Lepton_SIP3D2_"+ label        , lep.SIP3D()*corr1,w, 100,0,10);
-  FillHist( cut+ "/Lepton_SIP3D3_"+ label        , lep.SIP3D()*corr2,w, 100,0,10);
   FillHist( cut+ "/Lepton_IP3D_"+ label        , lep.IP3D(),w, 100,0,1);
  
 
@@ -5265,28 +4330,49 @@ void HNL_LeptonCore::FillLeptonKinematicPlots(TString label , TString cut,  Lept
   FillHist( cut+ "/Lepton_PtRatio_v2_"+label    , lep.CloseJet_Ptratio(), w, 500, 0., 2., "");
   FillHist( cut+ "/Lepton_PtRel_v2_"+label      , lep.CloseJet_Ptrel(), w, 200, 0., 50., "");
 
-  FillHist( cut+ "/Lepton_PtRel_"+label         , JetLeptonPtRelLepAware( lep,true), w, 500, 0., 100., "");
-  FillHist( cut+ "/Lepton_PtRelCorr_"+label         , JetLeptonPtRelLepAware( lep,true,true), w, 500, 0., 100., "");
+  FillHist( cut+ "/Lepton_PtRel_"+label         , JetLeptonPtRelLepAware( lep), w, 500, 0., 100., "");
+  FillHist( cut+ "/Lepton_PtRelCorrL_"+label         , JetLeptonPtRelLepAware( lep,true,false), w, 500, 0., 100., "");
+  FillHist( cut+ "/Lepton_PtRelCorrJ_"+label         , JetLeptonPtRelLepAware( lep,false,true), w, 500, 0., 100., "");
+  FillHist( cut+ "/Lepton_PtRelCorrLJ_"+label         , JetLeptonPtRelLepAware( lep,true,true), w, 500, 0., 100., "");
 
-  FillHist( cut+ "/Lepton_PtRatio_"+label       , JetLeptonPtRatioLepAware(lep,false), w, 500, 0., 2., "");
-  FillHist( cut+ "/Lepton_PtRatioCorr_"+label       , JetLeptonPtRatioLepAware(lep,false,true), w, 500, 0., 2., "");
+  FillHist( cut+ "/Lepton_PtRatio_"+label       , JetLeptonPtRatioLepAware(lep), w, 500, 0., 2., "");
+  FillHist( cut+ "/Lepton_PtRatioCorrL_"+label       , JetLeptonPtRatioLepAware(lep,true,false), w, 500, 0., 2., "");
+  FillHist( cut+ "/Lepton_PtRatioCorrJ_"+label       , JetLeptonPtRatioLepAware(lep,false,true), w, 500, 0., 2., "");
+  FillHist( cut+ "/Lepton_PtRatioCorrLJ_"+label       , JetLeptonPtRatioLepAware(lep,true,true), w, 500, 0., 2., "");
 
   if(IdxMatchJet != -1 ){
     FillHist( cut+ "/Lepton_CHFracCJ_"+label      , JetAllColl.at(IdxMatchJet).ChargedHadEnergyFraction(), w, 100, 0., 1., "");
     FillHist( cut+ "/Lepton_NEMFracCJ_"+label     , JetAllColl.at(IdxMatchJet).NeutralEmEnergyFraction(), w, 100, 0., 1., "");
     FillHist( cut+ "/Lepton_CEMFracCJ_"+label     , JetAllColl.at(IdxMatchJet).ChargedEmEnergyFraction(), w, 100, 0., 1., "");
     FillHist( cut+ "/Lepton_NFracCJ_"+label       , JetAllColl.at(IdxMatchJet).NeutralHadEnergyFraction(), w, 100, 0., 1., "");
-    FillHist( cut+ "/Lepton_JetDiscCJ_"+label     , Jet_Disc , w, 400, -2., 2., "");
-    FillHist( cut+ "/Lepton_PtRatioAwayJet_"+label, PtRatioAwayJet , w, 100, 0., 5., "");
-  }
+    //  return mcCorr->GetBTaggingReweight_1a(jets, jtp, syst);
 
+    FillHist( cut+ "/Lepton_JetDiscCJ_"+label     , Jet_Disc , w, 400, -2., 2., "");
+
+    //FillHist( cut+ "/Lepton_JetDiscCJ_Corr_"+label     , Jet_Disc , w*JetSF, 400, -2., 2., "");
+    FillHist( cut+ "/Lepton_PtRatioAwayJet_"+label, PtRatioAwayJet , w, 100, 0., 5., "");
+    //FillHist( cut+ "/Lepton_JetDiscCJ_WeightCorr_"+label     , JetSF , w, 100, 0., 5., "");
+  }
 
   if(lep.LeptonFlavour()==Lepton::ELECTRON){
-    FillHist( cut+ "/Lepton_Conv_Mva_"+label  , lep.HNL_MVA_Conv(), w, 100, -1., 2., "MVA");
-    FillHist( cut+ "/Lepton_Fake_Mva_"+label  , lep.HNL_MVA_Fake(), w, 100, -1., 2., "MVA");
-    FillHist( cut+ "/Lepton_CF_Mva_"+label  , lep.HNL_MVA_CF(), w, 100, -1., 2., "MVA");
+    FillHist( cut+ "/Lepton_Conv_Mva_"+label  , lep.HNL_MVA_Conv(), w, 100, -1., 1., "MVA");
+    FillHist( cut+ "/Lepton_Fake_Mva_"+label  , lep.HNL_MVA_Fake(), w, 100, -1., 1., "MVA");
+    FillHist( cut+ "/Lepton_CF_Mva_"+label  , lep.HNL_MVA_CF(), w, 100, -1., 1., "MVA");
+
+    FillHist( cut+ "/Lepton_CFv2_Mva_"+label  , lep.HNL_MVAv2_CF(), w, 100, -1., 1., "MVA");
+    FillHist( cut+ "/Lepton_CFv3_Mva_"+label  , lep.HNL_MVAv3_CF(), w, 100, -1., 1., "MVA");
+    FillHist( cut+ "/Lepton_CFv4_Mva_"+label  , lep.HNL_MVAv4_CF(), w, 100, -1., 1., "MVA");
+
+    FillHist( cut+ "/Lepton_EDCFv2_Mva_"+label  , lep.HNL_MVAv2_ED_CF(), w, 100, -1., 1., "MVA");
+    FillHist( cut+ "/Lepton_EDCFv3_Mva_"+label  , lep.HNL_MVAv3_ED_CF(), w, 100, -1., 1., "MVA");
+    FillHist( cut+ "/Lepton_EDCFv4_Mva_"+label  , lep.HNL_MVAv4_ED_CF(), w, 100, -1., 1., "MVA");
+
+    vector<TString> MVAList = lep.GetMVAList();
+    for(auto mvaname : MVAList)     FillHist( cut+ "/Lepton_Map_"+mvaname+"_"+label  , lep.GetHNL_LepMVA(mvaname), w, 100, -1., 1., "MVA");
+    
   }
 
+  
 
   
   // Isolation 

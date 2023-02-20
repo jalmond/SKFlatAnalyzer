@@ -10,7 +10,7 @@ void HNL_LeptonID_BDT_KinVar::initializeAnalyzer(){
   GetRatio = HasFlag("GetRatio");
   HNL_LeptonCore::initializeAnalyzer();
 
-  InitializeTreeVars();
+  InitializeIDTreeVars();
 
   SetupTrees(tree_mm,tree_ee);
   
@@ -156,26 +156,33 @@ void HNL_LeptonID_BDT_KinVar::executeEvent(){
 
   gens = GetGens();
 
+  if(!PassMETFilter()) return;
+
   double weight =SetupWeight(ev,param_bdt);
+
   vector<TString> MCMergeList = {"DY","WG"};
-  
-  
   if(SeperateConv || SeperateCF)weight *= MergeMultiMC(MCMergeList,"CombineAll");
 
+  if(weight <= 0) {
+    std::vector<Electron>   ElectronCollTMP =  GetElectrons( param_bdt,"MVAID", 10., 2.5, RunFake);
+    for(auto ilep : ElectronCollTMP)   FillHist( "fEtaElZeroW", fabs(ilep.Eta()) ,weight, 300., 0., 3);
+    ////  Remove -v2 weights for training 
+    return;
+  }
+  
   if(SeperateFakes){
-    weight  = 1.; 
+    weight  = GetPrefireWeight(0) * GetPileUpWeight(nPileUp,0); 
     if(MCSample.Contains("TTL")) weight*= 0.25;
   }
-  if(MCSample.Contains("Type")) weight = 1.;
-
-  if(weight == 0) return;
-
+  if(SeperatePrompt) {
+    weight  = GetPrefireWeight(0) * GetPileUpWeight(nPileUp,0);
+  }
+  
+  if(MCSample.Contains("Type")) weight = GetPrefireWeight(0) * GetPileUpWeight(nPileUp,0);
+  
   FillHist("CutFlow", 0, weight,  20, 0., 20.);
   FillHist( "nPV", nPV ,weight, 100., 0., 100.);
  
-  if(!PassMETFilter()) return;
-
-
   vector<HNL_LeptonCore::Channel> channels = {EE,MuMu};
   
   for(auto dilep_channel : channels){
@@ -242,7 +249,6 @@ void HNL_LeptonID_BDT_KinVar::executeEvent(){
     if(SeperatePrompt) {
       OptionEl="PromptNoCF";
       OptionMu="Prompt";
-      weight=1.;
     }
 
 
@@ -297,18 +303,14 @@ void HNL_LeptonID_BDT_KinVar::MakeTreeSS2L(HNL_LeptonCore::Channel lep_channel,v
 				   float weight, TString Label)
 {
   
-  InitializeTreeVars();
-  
+
   int imu(0), iel(0);
 
   for(auto lep : LepTColl){
     
-    //bool ismuon = (lep->LeptonFlavour() == Lepton::MUON);
-
+    InitializeIDTreeVars();
+    
     float weight_lep = weight;
-
-    //if(SeperateFakes)weight_lep *= ScaleLepToSS("Fake",ismuon, GetLeptonType_JH(*lep, gens));
-    //if(SeperateConv)weight_lep *= ScaleLepToSS("Conv", ismuon, GetLeptonType_JH(*lep, gens));
 
     if(SeperateFakes && HasFlag("HF")){
       std::vector<Jet>    AK4_JetAllColl = GetAllJets();
@@ -355,13 +357,10 @@ void HNL_LeptonID_BDT_KinVar::MakeTreeSS2L(HNL_LeptonCore::Channel lep_channel,v
     if(lep->LeptonFlavour() == Lepton::ELECTRON)  SetBDTIDVariablesElectron(Electrons[iel]);
     else SetBDTIDVariablesMuon(Muons[imu]);
 
-    
-    
     w_id_tot     = !IsDATA? weight_lep: 1.;
 
     if(lep->LeptonFlavour() == Lepton::MUON)     tree_mm->Fill();
     if(lep->LeptonFlavour() == Lepton::ELECTRON) tree_ee->Fill();
-    
 
     if(lep->LeptonFlavour() == Lepton::ELECTRON) iel++;
     else imu++;

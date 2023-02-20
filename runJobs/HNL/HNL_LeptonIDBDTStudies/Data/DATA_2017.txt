@@ -8,3 +8,8 @@ DoubleMuon:C
 DoubleMuon:D
 DoubleMuon:E
 DoubleMuon:F
+MuonEG:B
+MuonEG:C
+MuonEG:D
+MuonEG:E
+MuonEG:F

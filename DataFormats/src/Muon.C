@@ -299,6 +299,7 @@ bool Muon::PassID(TString ID) const {
 
   if(ID.Contains("MuOpt")) return Pass_CB_Opt(ID);
 
+  if(ID=="HNL_ULID_Baseline") return Pass_LepMVAID();
 
   if(ID.Contains("HNL_ULID_2016") || ID.Contains("HNL_ULID_2017") )  {
 

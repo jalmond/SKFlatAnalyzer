@@ -2,6 +2,7 @@
 #define Lepton_h
 
 #include "Particle.h"
+#include <map>
 
 class Lepton: public Particle {
 public:
@@ -87,8 +88,11 @@ public:
   void SetUncorrectedPt(double d);
 
 
+
   
   /// Standard Functions
+  double  GetHNL_LepMVA(TString key) const;
+
   void SetdXY(double dXY, double dXYerr);
   inline double fdXY() const {return fabs(j_dXY);}
   inline double dXY() const {return j_dXY;}
@@ -99,14 +103,48 @@ public:
   inline double LogdXYSig() const {return std::log(fabs(j_dXY/j_dXYerr));}
   inline double LogdZSig() const {return std::log(fabs(j_dZ/j_dZerr));}
 
+  inline void PrintMVAMap() const {
+
+    cout << "PrintMVAMap::BEGIN " << j_lep_map_mva_hnl_cf.size() << endl;
+    
+    for (auto imap : j_lep_map_mva_hnl_cf ) cout << "Key " << imap.first << " val=" << imap.second << endl;
+    cout << "PrintMVAMap::END" << endl;
+  }
+
+  inline vector<TString> GetMVAList() const {
+
+    vector<TString> list;
+    for (auto imap : j_lep_map_mva_hnl_cf ) list.push_back(imap.first);
+    return list;
+
+  }
+
   void SetLepMVA(double mva);
   inline double lep_mva() const {return j_lep_mva;}
 
   //// BDT  Functions
+  void SetHNL_LepMVAMap(TString key,double mvacf);
   void SetHNL_LepMVA(double mvaf, double mvacf, double mvaconv);
+  void SetHNL_LepMVAVersion2(double mvaf, double mvacf, double mvaconv);
+  void SetHNL_LepMVAVersion3(double mvacf);
+  void SetHNL_LepMVAVersion4(double mvacf);
+
+  void SetHNL_LepMVA_EtaDependantVersion2( double mvacf);
+  void SetHNL_LepMVA_EtaDependantVersion3( double mvacf);
+  void SetHNL_LepMVA_EtaDependantVersion4( double mvacf);
+
   inline double HNL_MVA_Fake() const {return j_lep_mva_hnl_fake;}
   inline double HNL_MVA_Conv() const {return j_lep_mva_hnl_conv;}
   inline double HNL_MVA_CF()   const {return j_lep_mva_hnl_cf;}
+  
+  inline double HNL_MVAv2_CF()   const {return j_lep_mvav2_hnl_cf;}
+  inline double HNL_MVAv3_CF()   const {return j_lep_mvav3_hnl_cf;}
+  inline double HNL_MVAv4_CF()   const {return j_lep_mvav4_hnl_cf;}
+
+  inline double HNL_MVAv2_ED_CF()   const {return j_lep_mvav2_hnl_ed_cf;}
+  inline double HNL_MVAv3_ED_CF()   const {return j_lep_mvav3_hnl_ed_cf;}
+  inline double HNL_MVAv4_ED_CF()   const {return j_lep_mvav4_hnl_ed_cf;}
+  
 
 
   //// Close jet functionality  NOT IN SKFLAT ADDED in ANALYZERCORE OR IN BDT SKIM
@@ -214,7 +252,11 @@ public:
 
   virtual void Print();
 
+  std::map<TString, double> j_lep_map_mva_hnl_cf;
+
   double j_lep_mva_hnl_fake,j_lep_mva_hnl_conv,j_lep_mva_hnl_cf;
+  double j_lep_mvav2_hnl_ed_cf,j_lep_mvav3_hnl_ed_cf,j_lep_mvav4_hnl_ed_cf,j_lep_mvav2_hnl_fake,j_lep_mvav2_hnl_conv,j_lep_mvav2_hnl_cf,j_lep_mvav3_hnl_cf,j_lep_mvav4_hnl_cf;
+
 
 private:
   double j_dXY, j_dXYerr;

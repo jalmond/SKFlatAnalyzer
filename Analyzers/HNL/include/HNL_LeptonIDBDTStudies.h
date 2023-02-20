@@ -14,7 +14,9 @@ class HNL_LeptonIDBDTStudies : public HNL_RegionDefinitions {
   HNL_LeptonIDBDTStudies();
   ~HNL_LeptonIDBDTStudies();
 
+  double  GetCorrCloseJetDisc(bool ismuon, double jetdisc);
   void MakeBDTPlots(AnalyzerParameter param,HNL_LeptonCore::Channel dilep_channel, vector<Electron> ElectronColl, TString ID, double weight_ll);
+  void MakeJetDiscPlots(TString label, AnalyzerParameter param,HNL_LeptonCore::Channel dilep_channel, vector<Electron> ElectronColl ,::vector<Muon> MuonColl, double weight_ll);
 };
 
 

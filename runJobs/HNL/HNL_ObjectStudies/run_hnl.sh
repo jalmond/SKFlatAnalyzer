@@ -31,7 +31,7 @@ if [[ $1 == "VBF1500" ]]; then
 
     for i in "${era_list[@]}"
     do
-        SKFlat.py -a $analyzer  -i VBFTypeI_SF_ll_M1500  -n 1  --nmax 1000   -e ${i} &
+        SKFlat.py -a $analyzer  -i VBFTypeI_SF_ll_M1500  -n 1  --nmax 1000   -e ${i}  --userflags LeptonTypes&
     done
 
 fi
@@ -57,7 +57,7 @@ fi
 
 if [[ $1 == "" ]]; then
 
-    declare  -a era_list=("2016preVFP")
+    declare  -a era_list=("2018")
 
     for i in "${era_list[@]}"
     do
@@ -72,7 +72,8 @@ if [[ $1 == "" ]]; then
 	#SKFlat.py -a $analyzer  -i  WWW   -n 2  --nmax 2   -e ${i}   --skim SkimTree_HNMultiLepBDT &
 	#SKFlat.py -a $analyzer  -i  WWW   -n 2  --nmax 2   -e ${i}   --skim SkimTree_HNMultiLep &
 	#SKFlat.py -a $analyzer  -l ${bkgpath}/Fake.txt   -n 400  --nmax 600   -e ${i}  --userflags FakeLepton &
-	SKFlat.py -a $analyzer  -i WJets_MG   -n 50  --nmax 600   -e ${i}  --userflags LeptonTypes &
-	
+	SKFlat.py -a $analyzer  -i TTLJ_powheg   -n 600  --nmax 100   -e ${i}  --userflags LeptonTypes &
+	#SKFlat.py -a $analyzer  -i  WW_pythia   -n 2  --nmax 2   -e ${i}   --skim SkimTree_DileptonBDT &
+
     done
 fi

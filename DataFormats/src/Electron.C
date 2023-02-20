@@ -332,9 +332,6 @@ bool Electron::Pass_LepMVAID() const {
 bool Electron::Pass_LepMVATopID() const {
 
   /// ID USED IN BDT                                                                                                                                                                                                                                                          
-
-  //  if(!passMVAID_noiso_WPLoose()) return false;
-  //if(!Pass_TriggerEmulationLoose())  return false;
   if(this->Pt() < 10) return false;
   if(this->fEta() > 2.5) return false;
   if(MiniRelIso() > 0.4) return false;
@@ -383,27 +380,14 @@ bool Electron::Pass_CB_Opt(TString ID) const {
   TString mva_methodEB="";
   TString mva_methodEC="";
 
-  TString mva_methodBB1="";
-  TString mva_methodEB1="";
-  TString mva_methodEC1="";
-  
-  TString mva_methodBB2="";
-  TString mva_methodEB2="";
-  TString mva_methodEC2="";
-  TString mva_methodPt="";
 
-  TString conv_mva_methodPt="";
-  TString conv_mva_methodBB1="";
-  TString conv_mva_methodEC1="";
-  TString conv_mva_methodBB2="";
-  TString conv_mva_methodEC2="";
+  TString conv_mva_methodBB="";
+  TString conv_mva_methodEC="";
 
-  TString cf_mva_methodBB1="";
-  TString cf_mva_methodEC1="";
-  TString cf_mva_methodBB2="";
-  TString cf_mva_methodEC2="";
-  TString cf_mva_methodPt="";
+  TString cf_mva_methodBB="";
+  TString cf_mva_methodEC="";
 
+  TString CFMVAString="";
   //HNLUL_POGT_ConvBConvEC_LooseTrig_CFMVABB10p85_CFMVABB20p85_CFMVAPt30_CFMVAEC10p85_CFMVAEC20p85__DXYv1
 
   for(unsigned int i=0; i < subStrings.size(); i++){
@@ -415,52 +399,38 @@ bool Electron::Pass_CB_Opt(TString ID) const {
     if (subStrings[i].Contains("CCEC")) chg_method +="EC";
     if (subStrings[i].Contains("DXY")) dxy_method=subStrings[i];
 
+    if (subStrings[i].Contains("CFMVAMethod")){
+      CFMVAString =subStrings[i];
+      CFMVAString = CFMVAString.ReplaceAll("CFMVAMethod","");
+    }
+
     if (subStrings[i].Contains("NPMVABB")){
-      if (subStrings[i].Contains("NPMVABB1")) mva_methodBB1=subStrings[i];
-      else if (subStrings[i].Contains("NPMVABB2")) mva_methodBB2=subStrings[i];
-      else  mva_methodBB1=subStrings[i];
+      if (subStrings[i].Contains("NPMVABB")) mva_methodBB=subStrings[i];
     }
     
     if (subStrings[i].Contains("NPMVAEB")) {
-      if (subStrings[i].Contains("NPMVAEB1")) mva_methodEB1=subStrings[i];
-      else if (subStrings[i].Contains("NPMVAEB2")) mva_methodEB2=subStrings[i];
-      else mva_methodEB1=subStrings[i];
+      if (subStrings[i].Contains("NPMVAEB")) mva_methodEB=subStrings[i];
     }
 
     if (subStrings[i].Contains("NPMVAEC")){
-      if (subStrings[i].Contains("NPMVAEC1")) mva_methodEC1=subStrings[i];
-      else if (subStrings[i].Contains("NPMVAEC2")) mva_methodEC2=subStrings[i];
-      else mva_methodEC1=subStrings[i];
+      if (subStrings[i].Contains("NPMVAEC")) mva_methodEC=subStrings[i];
     }
 
-    if (subStrings[i].Contains("NPMVAPt")) mva_methodPt=subStrings[i];
-
-    if (subStrings[i].Contains("CVMVAPt")) conv_mva_methodPt=subStrings[i];
 
     if (subStrings[i].Contains("CVMVABB")){
-      if (subStrings[i].Contains("CVMVABB1")) conv_mva_methodBB1=subStrings[i];
-      else if (subStrings[i].Contains("CVMVABB2")) conv_mva_methodBB2=subStrings[i];
-      else conv_mva_methodBB1=subStrings[i];
+      if (subStrings[i].Contains("CVMVABB")) conv_mva_methodBB=subStrings[i];
     }
     if (subStrings[i].Contains("CVMVAEC")){
-      if (subStrings[i].Contains("CVMVAEC1")) conv_mva_methodEC1=subStrings[i];
-      else if (subStrings[i].Contains("CVMVAEC2")) conv_mva_methodEC2=subStrings[i];
-      else conv_mva_methodEC1=subStrings[i];
+      if (subStrings[i].Contains("CVMVAEC")) conv_mva_methodEC=subStrings[i];
     }
      
     if (subStrings[i].Contains("CFMVABB")){
-      if (subStrings[i].Contains("CFMVABB1")) cf_mva_methodBB1=subStrings[i];
-      else if (subStrings[i].Contains("CFMVABB2")) cf_mva_methodBB2=subStrings[i];
-      else cf_mva_methodBB1=subStrings[i];
+      if (subStrings[i].Contains("CFMVABB")) cf_mva_methodBB=subStrings[i];
     }
     
     if (subStrings[i].Contains("CFMVAEC")){
-      if (subStrings[i].Contains("CFMVAEC1")) cf_mva_methodEC1=subStrings[i];
-      else if (subStrings[i].Contains("CFMVAEC2")) cf_mva_methodEC2=subStrings[i];
-      else  cf_mva_methodEC1=subStrings[i];
+      if (subStrings[i].Contains("CFMVAEC")) cf_mva_methodEC=subStrings[i];
     }
-    if (subStrings[i].Contains("CFMVAPt")) cf_mva_methodPt=subStrings[i];
-
     
     if (subStrings[i].Contains("POG")) pog_method=subStrings[i];
     if (subStrings[i].Contains("WP")) pog_method=subStrings[i];
@@ -525,12 +495,12 @@ bool Electron::Pass_CB_Opt(TString ID) const {
   if(!Pass_LepMVAID()) return false;
   
   
-  return PassIDOptMulti( mva_methodPt, mva_methodBB1,mva_methodBB2, mva_methodEB1, mva_methodEB2,mva_methodEC1, mva_methodEC2,  conv_mva_methodPt, conv_mva_methodBB1, conv_mva_methodBB2,  conv_mva_methodEC1,conv_mva_methodEC2, cf_mva_methodBB1,cf_mva_methodEC1,cf_mva_methodBB2,cf_mva_methodEC2,cf_mva_methodPt,cf_mva_methodPt, pog_method, conv_method, chg_method, iso_methodB,iso_methodEC);
+  return PassIDOptMulti( CFMVAString,  mva_methodBB, mva_methodEB,mva_methodEC, conv_mva_methodBB,conv_mva_methodEC, cf_mva_methodBB,cf_mva_methodEC, pog_method, conv_method, chg_method, iso_methodB,iso_methodEC);
   
 }
+ 
 
-
-int  Electron::PassIDOptMulti(TString np_mva_Pt, TString np_mva_BB1, TString np_mva_BB2, TString np_mva_EB1, TString np_mva_EB2,  TString np_mva_EC1, TString np_mva_EC2 ,  TString conv_mva_Pt,TString conv_mva_BB1, TString conv_mva_BB2, TString conv_mva_EC1,TString conv_mva_EC2, TString cf_mva_BB1,TString cf_mva_EC1, TString cf_mva_BB2, TString cf_mva_EC2,TString cf_mva_BBPt,TString cf_mva_ECPt,  TString pog_method,  TString conv_method, TString chg_method, TString iso_methodB,TString iso_methodEC ) const{
+int  Electron::PassIDOptMulti( TString CFMVAString, TString np_mva_BB, TString np_mva_EB,  TString np_mva_EC,TString conv_mva_BB, TString conv_mva_EC, TString cf_mva_BB, TString cf_mva_EC,  TString pog_method,  TString conv_method, TString chg_method, TString iso_methodB,TString iso_methodEC ) const{
 
   
   bool DEBUG=false;  
@@ -547,51 +517,38 @@ int  Electron::PassIDOptMulti(TString np_mva_Pt, TString np_mva_BB1, TString np_
   if(pog_method == "MVAWP90" && !passMVAID_noIso_WP90())  return 0;
   if(pog_method == "MVAWP80" &&!passMVAID_noIso_WP80())  return 0;
   
+  
+
+  //  map<TString, double>::const_iterator it = j_lep_map_mva_hnl_cf.find(CFMVAString);  it->second;
+  double tmp_j_lep_mva_hnl_cf = GetHNL_LepMVA(CFMVAString);
 
   if( IsBB() ){
-    if(np_mva_BB2.Contains("MVA") ){
-      if(!PassMVA_UL_NP(np_mva_Pt,np_mva_BB1,np_mva_BB2, np_mva_EB1,np_mva_EB2, np_mva_EC1,np_mva_EC2) ) return 0;
-    }
-  
-    else  if(IsIB()){
-      if(np_mva_BB1.Contains("MVA")){
-	double   mva_cut = StringToDouble(np_mva_BB1,"NPMVABB");
+    if(IsIB()){
+      if(np_mva_BB.Contains("MVA")){
+	double   mva_cut = StringToDouble(np_mva_BB,"NPMVABB");
 	if(j_lep_mva_hnl_fake < mva_cut) return 0;
       }
       
     }
     else{
-      if(np_mva_BB1.Contains("MVA")){
-        double   mva_cut = StringToDouble(np_mva_EB1,"NPMVAEB");
+      if(np_mva_EB.Contains("MVA")){
+        double   mva_cut = StringToDouble(np_mva_EB,"NPMVAEB");
         if(j_lep_mva_hnl_fake < mva_cut) return 0;
       }
     }
 
-    if(conv_mva_BB2.Contains("MVA")){
-      if(!PassMVA_UL_Conv(conv_mva_Pt,conv_mva_BB1,conv_mva_BB2, conv_mva_EC1,conv_mva_EC2) ) {
-	if(DEBUG) cout << "PassMVA_UL_Conv BB FAIL" << endl;
-	return 0;
-      }
-    }
-    else  {
-      if(conv_mva_BB1.Contains("MVA")){
-        double   mva_cut = StringToDouble(conv_mva_BB1,"CVMVABB");
+    if(conv_mva_BB.Contains("MVA")){
+      if(conv_mva_BB.Contains("MVA")){
+        double   mva_cut = StringToDouble(conv_mva_BB,"CVMVABB");
         if(j_lep_mva_hnl_conv < mva_cut) return 0;
       }
     }
 
 
-    if(cf_mva_BB2.Contains("MVA")){
-      if(!PassMVA_UL_CF(cf_mva_BB1, cf_mva_BB2,cf_mva_BBPt) ) {
-	if(DEBUG) cout << "PassMVA_UL_CF BB FAIL" << endl;
-	
-	return 0;
-      }
-    }
-    else  {
-      if(cf_mva_BB1.Contains("MVA")){
-	double mva_cut = StringToDouble(cf_mva_BB1,"CFMVABB");
-	if(j_lep_mva_hnl_cf < mva_cut) return 0;
+    if(cf_mva_BB.Contains("MVA")){
+      if(cf_mva_BB.Contains("MVA")){
+	double mva_cut = StringToDouble(cf_mva_BB,"CFMVABB");
+	if(tmp_j_lep_mva_hnl_cf < mva_cut) return 0;
       }
     }
     
@@ -629,41 +586,22 @@ int  Electron::PassIDOptMulti(TString np_mva_Pt, TString np_mva_BB1, TString np_
     if(pog_method.Contains("MVAECWP80") && !passMVAID_noIso_WP80())  return 0;
 
 
-    if(np_mva_EC2.Contains("MVA") ){
-      if( !PassMVA_UL_NP(np_mva_Pt,np_mva_BB1,np_mva_BB2, np_mva_EB1,np_mva_EB2, np_mva_EC1,np_mva_EC2) ) return 0;
-    }
-    else if(np_mva_EC1.Contains("MVA")){
-      double   mva_cut = StringToDouble(np_mva_EC1,"NPMVAEC");
+    if(np_mva_EC.Contains("MVA")){
+      double   mva_cut = StringToDouble(np_mva_EC,"NPMVAEC");
       if(j_lep_mva_hnl_fake < mva_cut) return 0;
     }
     
-    if(conv_mva_EC2.Contains("MVA") ){
-      
-      if(PassMVA_UL_Conv(conv_mva_Pt,conv_mva_BB1,conv_mva_BB2, conv_mva_EC1,conv_mva_EC2) ) {
-	if(DEBUG) cout << "PassMVA_UL_Conv EC FAIL" << endl;
-	return 0;
-      }
-    }
-    else  {
-      if(conv_mva_EC1.Contains("MVA")){
-        double   mva_cut = StringToDouble(conv_mva_EC1,"CVMVAEC");
-        if(j_lep_mva_hnl_conv < mva_cut) return 0;
-      }
+    if(conv_mva_EC.Contains("MVA")){
+      double   mva_cut = StringToDouble(conv_mva_EC,"CVMVAEC");
+      if(j_lep_mva_hnl_conv < mva_cut) return 0;
     }
     
-    if(cf_mva_EC2.Contains("MVA")){
-      if(!PassMVA_UL_CF(cf_mva_EC1, cf_mva_EC2,cf_mva_ECPt) ) {
-	if(DEBUG) cout << "PassMVA_UL_CF EC FAIL" << endl;
-	
-	return 0;
-      }
+    
+    if(cf_mva_EC.Contains("MVA")){
+      double mva_cut = StringToDouble(cf_mva_EC,"CFMVAEC");
+      if(tmp_j_lep_mva_hnl_cf < mva_cut) return 0;
     }
-    else  {
-      if(cf_mva_EC1.Contains("MVA")){
-        double mva_cut = StringToDouble(cf_mva_EC1,"CFMVAEC");
-	if(j_lep_mva_hnl_cf < mva_cut) return 0;
-      }
-    }
+    
 
     if(conv_method.Contains("EC")) {
       if(! (PassConversionVeto()) ){
@@ -721,38 +659,25 @@ int  Electron::PassIDTight(TString ID) const{
     return true;
   }
 
-  if(ID=="HNL_ULID_CFL"){
-
+  if(ID.Contains("HNL_ULID_CF")){
+    //HNL_ULID_CFM_ED_BDTGv2Pt_MD3
     if(!Pass_LepMVAID()) return false;
-
-    if( IsBB()){
-      if(j_lep_mva_hnl_cf < 0.5) return false;
-    }
-    else      if(j_lep_mva_hnl_cf < 0.5) return false;
+    double _cut=1;
+    if(ID.Contains("_CFT_")) _cut=0.7;
+    if(ID.Contains("_CFM_")) _cut=0.5;
+    if(ID.Contains("_CFL_")) _cut=0.2;
+    if(ID.Contains("_CFVL_")) _cut=0.;
+    TString IDTmp = ID;
+    IDTmp=IDTmp.ReplaceAll("_CFT_","_CF_");
+    IDTmp=IDTmp.ReplaceAll("_CFM_","_CF_");
+    IDTmp=IDTmp.ReplaceAll("_CFL_","_CF_");
+    IDTmp=IDTmp.ReplaceAll("_CFVL_","_CF_");
+    IDTmp=IDTmp.ReplaceAll("HNL_ULID_","");
     
+    if(GetHNL_LepMVA(IDTmp) < _cut)  return false;
     return true;
+    
   }
-  if(ID=="HNL_ULID_CFVVL"){
-
-    if(!Pass_LepMVAID()) return false;
-
-    if( IsBB()){
-      if(j_lep_mva_hnl_cf < 0.) return false;
-    }
-    else      if(j_lep_mva_hnl_cf < 0.) return false;
-    return true;
-  }
-  if(ID=="HNL_ULID_CFVL"){
-
-    if(!Pass_LepMVAID()) return false;
-
-    if( IsBB()){
-      if(j_lep_mva_hnl_cf < 0.25) return false;
-    }
-    else      if(j_lep_mva_hnl_cf < 0.25) return false;
-    return true;
-  }
-
 
 
   // breakdown of 2016 ID for checking Eff.                                                                                                                                                                                                  
@@ -1074,16 +999,12 @@ int  Electron::PassIDOptLoose(TString ID) const{
 }
 int Electron::PassIDOpt(TString ID) const{
 
-  if(ID=="HNOpt")  return PassHNOpt(); 
-  if(ID=="MVAID") return  (Pass_LepMVAID()) ? 1 : 0;
+  if(ID=="HNOpt")    return   PassHNOpt(); 
+  if(ID=="MVAID")    return  (Pass_LepMVAID()) ? 1 : 0;
   if(ID=="TopMVAID") return  (Pass_LepMVATopID()) ? 1 : 0;
-
   if(ID.Contains("ElOpt")) return Pass_CB_Opt(ID) ? 1 : 0;
-
-  if(ID.Contains("HNL_ULID_v1")){
-    return Pass_CB_Opt("") ? 1 :0;
-  }
-
+  if(ID.Contains("HNL_ULID_v1"))  return Pass_CB_Opt("") ? 1 :0;
+  
   if(ID=="HNLIPv1") {
     double dxy_cut =  (IsBB()) ? 0.02 : 0.04;
     double dxy_cut2 =  (IsBB()) ? 0.01 : 0.02;

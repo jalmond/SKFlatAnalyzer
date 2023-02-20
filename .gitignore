@@ -5,6 +5,9 @@
 *.so
 *_Dict.cxx
 TMVA/*/*.root
+TMVA/LeptonID/dataset
+TMVA/LeptonID/BATCHSubmit/BDTA
+TMVA/LeptonID/Validation/*/log*
 lib/*.tar.gz
 lib/*.rootmap
 */obj
@@ -12,4 +15,4 @@ lib/*.rootmap
 HNDiLeptonWorskspace
 python/UserInfo_*.py
 python/UserInfo_template.py
-TMVA
+TMVA/dataset

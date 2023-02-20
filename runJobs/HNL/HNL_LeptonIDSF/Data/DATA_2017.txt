@@ -3,8 +3,3 @@ DoubleEG:C
 DoubleEG:D
 DoubleEG:E
 DoubleEG:F
-DoubleMuon:B
-DoubleMuon:C
-DoubleMuon:D
-DoubleMuon:E
-DoubleMuon:F

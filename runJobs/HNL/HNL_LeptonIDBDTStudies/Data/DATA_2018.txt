@@ -6,3 +6,7 @@ EGamma:A
 EGamma:B
 EGamma:C
 EGamma:D
+MuonEG:A
+MuonEG:B
+MuonEG:C
+MuonEG:D

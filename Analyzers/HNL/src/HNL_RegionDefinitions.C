@@ -878,26 +878,14 @@ TString HNL_RegionDefinitions::RunSignalRegionAK4StringBDT(bool isSR, TString mN
   
   if(!PassHMMet) return LabelPrefix+"_bin1";
   if(Nb > 0)    return LabelPrefix+"_bin1";
-  
-  if(MVAvalue < -0.5) return LabelPrefix+"_bin2";
-  else if(MVAvalue< -0.45) return LabelPrefix+"_bin2";
-  else if(MVAvalue< -0.4) return LabelPrefix+"_bin3";
-  else if(MVAvalue< -0.35) return LabelPrefix+"_bin4";
-  else if(MVAvalue< -0.3) return LabelPrefix+"_bin5";
-  else if(MVAvalue< -0.25) return LabelPrefix+"_bin6";
-  else if(MVAvalue< -0.2) return LabelPrefix+"_bin7";
-  else if(MVAvalue< -0.15) return LabelPrefix+"_bin8";
-  else if(MVAvalue< -0.1) return LabelPrefix+"_bin9";
-  else if(MVAvalue< -0.05) return LabelPrefix+"_bin10";
-  else if(MVAvalue< 0.) return LabelPrefix+"_bin11";
-  else if(MVAvalue< 0.05) return LabelPrefix+"_bin12";
-  else if(MVAvalue< 0.10) return LabelPrefix+"_bin13";
-  else if(MVAvalue< 0.15) return LabelPrefix+"_bin14";
-  else if(MVAvalue< 0.2) return LabelPrefix+"_bin15";
-  else if(MVAvalue< 0.25) return LabelPrefix+"_bin16";
-  else if(MVAvalue< 0.3) return LabelPrefix+"_bin17";
-  else if(MVAvalue< 0.35) return LabelPrefix+"_bin18";
-  else  return LabelPrefix+"_bin19";
+  if(MVAvalue< 0.0) return LabelPrefix+"_bin1";
+  else if(MVAvalue< 0.10) return LabelPrefix+"_bin2";
+  else if(MVAvalue< 0.15) return LabelPrefix+"_bin3";
+  else if(MVAvalue< 0.2) return LabelPrefix+"_bin4";
+  else if(MVAvalue< 0.25) return LabelPrefix+"_bin5";
+  else if(MVAvalue< 0.3) return LabelPrefix+"_bin6";
+  else if(MVAvalue< 0.35) return LabelPrefix+"_bin7";
+  else  return LabelPrefix+"_bin8";
 
   return "true";
 }
@@ -1220,6 +1208,12 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
     TString channel_string = GetChannelString(dilep_channel);
     param.Name = channel_string + "/" + param.DefName ;
 
+    //// Make Trilep/4 lep param
+    AnalyzerParameter paramTrilep = param;
+    AnalyzerParameter paramQuadlep = param;
+    paramTrilep.Name  = GetChannelString(trilep_channel) + "/" + param.DefName ;
+    paramQuadlep.Name = GetChannelString(fourlep_channel) + "/" + param.DefName ;
+
     float weight_channel = weight_ll;
 
     // Weight Lepton with SF corr
@@ -1293,23 +1287,23 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
     if(FillWWCRNPPlots(dilep_channel, LepsT, LepsV, VBF_JetColl, AK8_JetColl, B_JetColl, ev, METv, param, weight_channel)) passed.push_back("WpWp_CRNP");
     if(FillWWCRNP2Plots(dilep_channel, LepsT, LepsV, VBF_JetColl, AK8_JetColl, B_JetColl, ev, METv, param, weight_channel)) passed.push_back("WpWp_CRNP2");
     if(FillWWCRNP3Plots(dilep_channel, LepsT, LepsV, VBF_JetColl, AK8_JetColl, B_JetColl, ev, METv, param, weight_channel)) passed.push_back("WpWp_CRNP3");
-    if(FillWZ2CRPlots (trilep_channel, LepsT, LepsV, VBF_JetColl, AK8_JetColl, B_JetColl, ev, METv, param, weight_channel)) passed.push_back("WZ2_CR");
-    if(FillWZBCRPlots (trilep_channel, LepsT, LepsV, VBF_JetColl, AK8_JetColl, B_JetColl, ev, METv, param, weight_channel)) passed.push_back("WZB_CR");
+    if(FillWZ2CRPlots (trilep_channel, LepsT, LepsV, VBF_JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTrilep, weight_channel)) passed.push_back("WZ2_CR");
+    if(FillWZBCRPlots (trilep_channel, LepsT, LepsV, VBF_JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTrilep, weight_channel)) passed.push_back("WZB_CR");
     
 
     // LLL+                                                                                                                                 
                                                                      
-    if(FillZZCRPlots(  fourlep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, param, weight_channel)) passed.push_back("ZZ_CR");
-    if(FillZZ2CRPlots( fourlep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, param, weight_channel)) passed.push_back("ZZLoose_CR");
-    if(FillWZCRPlots( trilep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, param, weight_channel)) passed.push_back("WZ_CR");
-    if(FillZNPCRPlots(trilep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, param, weight_channel)) passed.push_back("ZNP_CR");
+    if(FillZZCRPlots(  fourlep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramQuadlep, weight_channel)) passed.push_back("ZZ_CR");
+    if(FillZZ2CRPlots( fourlep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramQuadlep, weight_channel)) passed.push_back("ZZLoose_CR");
+    if(FillWZCRPlots( trilep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTrilep, weight_channel)) passed.push_back("WZ_CR");
+    if(FillZNPCRPlots(trilep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTrilep, weight_channel)) passed.push_back("ZNP_CR");
 
     if(run_Debug)cout << "Conv split "  <<  ConversionVeto(LepsT,gens) << " " << ConversionSplitting(LepsT,gens) << endl;
     
     // Treat conversions using GENT MEthod
     if(ConversionVeto(LepsT,gens)){
-      if(FillWGCRPlots( trilep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, param, weight_channel)) passed.push_back("WG_CR");
-      if(FillZGCRPlots( trilep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, param, weight_channel)) passed.push_back("ZG_CR");
+      if(FillWGCRPlots( trilep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTrilep, weight_channel)) passed.push_back("WG_CR");
+      if(FillZGCRPlots( trilep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTrilep, weight_channel)) passed.push_back("ZG_CR");
     }
     // Treat using pt cit method
     if(ConversionSplitting(LepsT,gens)){

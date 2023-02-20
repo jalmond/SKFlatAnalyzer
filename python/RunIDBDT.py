@@ -156,7 +156,7 @@ os.system('mkdir -p '+FinalOutputPath+'/dataset/weights/')
 
 
 
-TMVADirs = [os.environ['SKFlat_WD'] + '/TMVA/LepID/']
+TMVADirs = [os.environ['SKFlat_WD'] + '/TMVA/LeptonID/']
 
 macroname=""
 for TMVADir in TMVADirs:

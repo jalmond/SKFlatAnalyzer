@@ -33,6 +33,17 @@ Lepton::Lepton() : Particle() {
   j_lep_mva_hnl_fake=-999;
   j_lep_mva_hnl_conv=-999;
   j_lep_mva_hnl_cf=-999;
+  j_lep_mvav2_hnl_fake=-999;
+  j_lep_mvav2_hnl_conv=-999;
+  j_lep_mvav2_hnl_cf=-999;
+  j_lep_mvav3_hnl_cf=-999;
+  j_lep_mvav4_hnl_cf=-999;
+  j_lep_mvav2_hnl_ed_cf=-999;
+  j_lep_mvav3_hnl_ed_cf=-999;
+  j_lep_mvav4_hnl_ed_cf=-999;
+  
+  j_lep_map_mva_hnl_cf.clear();
+
 }
 
 void Lepton::PrintObject(TString label){
@@ -101,6 +112,27 @@ Lepton::~Lepton(){
 
 }
 
+double  Lepton::GetHNL_LepMVA(TString key) const{
+
+  map<TString, double>::const_iterator it = j_lep_map_mva_hnl_cf.find(key);
+  if(it == j_lep_map_mva_hnl_cf.end()) {
+    cout<<"[Lepton::GetHNL_LepMVA]  unknown key "<< key<<endl;
+    exit(ENODATA);
+
+  }
+  //PrintMVAMap();
+  return it->second;
+}
+
+void Lepton::SetHNL_LepMVAMap(TString key,double mvacf){
+  
+  //cout << j_lep_mva_hnl_cf << " Setting MVA for " << key << " " << mvacf << endl;
+  
+  map<TString, double>::iterator it = j_lep_map_mva_hnl_cf.find(key);
+  if(it == j_lep_map_mva_hnl_cf.end()) j_lep_map_mva_hnl_cf[key] = mvacf;
+
+}
+
 
 void Lepton::SetHNL_LepMVA(double mvafake, double mvaconv,double mvacf){
 
@@ -108,6 +140,34 @@ void Lepton::SetHNL_LepMVA(double mvafake, double mvaconv,double mvacf){
   j_lep_mva_hnl_conv=mvaconv;
   j_lep_mva_hnl_cf=mvacf;
 }
+
+void Lepton::SetHNL_LepMVAVersion2(double mvafake, double mvaconv,double mvacf){
+
+  j_lep_mvav2_hnl_fake=mvafake;
+  j_lep_mvav2_hnl_conv=mvaconv;
+  j_lep_mvav2_hnl_cf=mvacf;
+}
+
+void Lepton::SetHNL_LepMVAVersion3(double mvacf)  {
+  j_lep_mvav3_hnl_cf=mvacf;
+}
+void Lepton::SetHNL_LepMVAVersion4(double mvacf){
+  j_lep_mvav4_hnl_cf=mvacf;
+}
+
+
+void Lepton::SetHNL_LepMVA_EtaDependantVersion2(double mvacf) {
+  j_lep_mvav2_hnl_ed_cf=mvacf;
+}
+void Lepton::SetHNL_LepMVA_EtaDependantVersion3(double mvacf) {
+  j_lep_mvav3_hnl_ed_cf=mvacf;
+}
+void Lepton::SetHNL_LepMVA_EtaDependantVersion4(double mvacf) {
+  j_lep_mvav4_hnl_ed_cf=mvacf;
+}
+
+
+
 
 void Lepton::SetJetNTracks(double d){
   j_jetntracks =d;
