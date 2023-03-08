@@ -436,7 +436,7 @@ TString HNL_RegionDefinitions::RunSignalRegionAK8String(HNL_LeptonCore::Channel 
   //if(!IsData)w*=  FatJetTau21_SF;
   Fill_RegionPlots(channel, 0, param.Name,"InclusiveSR1" , TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w,param.WriteOutVerbose);
   
-  double dPhil2_l = fabs(TVector2::Phi_mpi_pi( ( (AK8_JetColl[0] + *leps[1]).Phi() - (leps[0]->Phi() ))));
+  double dPhil2_l = fabs(TVector2::Phi_mpi_pi( ( (AK8_JetColl[0] + *leps[1]).Phi() - (leps[0]->Phi() )))); //JH : FIXME this is correct only for N mass < 100 GeV; invert this
   if(leps[0]->Pt() < 100) return "false";
   FillEventCutflow(HNL_LeptonCore::SR1, w, "SR1_LepPt",param.Name,param.WriteOutVerbose);
 
@@ -459,7 +459,7 @@ TString HNL_RegionDefinitions::RunSignalRegionAK8String(HNL_LeptonCore::Channel 
 	  
 	  FillEventCutflow(HNL_LeptonCore::SR1, w, "SR1_Wmass",param.Name,param.WriteOutVerbose); 
 	  FillEventCutflow(HNL_LeptonCore::SR1, w, "SR1_MET",param.Name,param.WriteOutVerbose);
-	  if(PassHMMet&&PassBJetMVeto)FillEventCutflow(HNL_LeptonCore::SR1, w, "SR1_bveto",param.Name,param.WriteOutVerbose);
+	  if(PassHMMet&&PassBJetMVeto)FillEventCutflow(HNL_LeptonCore::SR1, w, "SR1_bveto",param.Name,param.WriteOutVerbose); //JH : FIXME separate out MET and bveto step and FillEventCutflow properly
 	  
 	  
 	  if(PassHMMet&&PassBJetMVeto) {
@@ -477,7 +477,7 @@ TString HNL_RegionDefinitions::RunSignalRegionAK8String(HNL_LeptonCore::Channel 
 		dijetmass = dijetmass_tmp;
 		m = emme;
 	      }
-	    }
+	    } //JH : FIXME remove this
 	    
 	    Particle N1cand = AK8_JetColl[m] + *leps[0];
 	    
@@ -507,7 +507,7 @@ TString HNL_RegionDefinitions::RunSignalRegionAK8String(HNL_LeptonCore::Channel 
 	      else   if(MN1 > 350){
 		if(leps[0]->Pt() < 140)   return "false";
 		if(leps[1]->Pt() < 65)    return "false";
-	      }   
+	      } //JH : FIXME redundant
 	    }
 	    if(channel==EE || channel==EMu){
               if(MN1 > 635){
@@ -540,11 +540,11 @@ TString HNL_RegionDefinitions::RunSignalRegionAK8String(HNL_LeptonCore::Channel 
 	    
 	    FillEventCutflow(HNL_LeptonCore::ChannelDepSR1, w, GetChannelString(channel) +"_SR1", "ChannelCutFlow/"+param.DefName,param.WriteOutVerbose);
 	    
-	    for(int ibin=1; ibin < nSRbins; ibin++){
+	    for(int ibin=1; ibin < nSRbins; ibin++){ //JH : FIXME start with 0
 	      if(MN1 < ml1jbins[ibin]) return "SR1_bin"+to_string(ibin);
 	    }
 	    
-	    return "true";
+	    return "true"; //JH : this code never returns "true", as N1 cand was forced to get lower value than 2000. But later shall we keep MN1 and add another bin to include those over 2000 as are?
 	  }
 	}
       }
@@ -1798,7 +1798,7 @@ bool HNL_RegionDefinitions::FillHighMassSR1CRPlots(HNL_LeptonCore::Channel chann
   double ml1jbins[7] = { 0., 100.,200.,300.,500., 1000., 2000.};
   double Qml1jbins[13] = {-2000., -1000., -500., -300., -200., -100,  0., 100.,200.,300.,500., 1000., 2000.};
 
-  double MN1 = (N1cand.M() > 2000.) ? 1999. : N1cand.M();
+  double MN1 = (N1cand.M() > 2000.) ? 1999. : N1cand.M(); //JH : FIXME this is not desirable
   FillHist( "ControlSR1/"+param.Name+"/N1Mass_Central",  MN1,  w, 6, ml1jbins, "Reco M_{l1jj}");
   FillHist( "ControlSR1/"+param.Name+"/Q_N1Mass_Central",  leps[0]->Charge()*MN1,  w, 12, Qml1jbins, "Reco M_{l1jj}");
 

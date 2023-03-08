@@ -62,21 +62,30 @@ AnalyzerCore::~AnalyzerCore(){
   AK8CHSJECUncMap.clear();
   AK8PUPPIJECUncMap.clear();
 
-  delete ElectronIDFakeMVAReader;
-  delete ElectronIDCFMVAReader;
-  delete ElectronIDConvMVAReader;
-  
-  delete ElectronIDv2FakeMVAReader;
-  delete ElectronIDv2CFMVAReader;
-  delete ElectronIDv2CFMVAReaderPt;
-  delete ElectronIDv2ConvMVAReader;
+  if(SetupLeptonBDT){
+    cout << "a" << endl; //JH
+    if(ElectronIDFakeMVAReader) delete ElectronIDFakeMVAReader;
+    cout << "b" << endl; //JH
+    if(ElectronIDCFMVAReader) delete ElectronIDCFMVAReader;
+    cout << "c" << endl; //JH
+    if(ElectronIDConvMVAReader) delete ElectronIDConvMVAReader;
+    cout << "d" << endl; //JH
+    if(ElectronIDv2FakeMVAReader) delete ElectronIDv2FakeMVAReader;
+    cout << "e" << endl; //JH
+    if(ElectronIDv2CFMVAReader) delete ElectronIDv2CFMVAReader;
+    cout << "f" << endl; //JH
+    if(ElectronIDv2CFMVAReaderPt) delete ElectronIDv2CFMVAReaderPt;
+    cout << "g" << endl; //JH
+    if(ElectronIDv2ConvMVAReader) delete ElectronIDv2ConvMVAReader;
+    cout << "h" << endl; //JH
 
-  delete ElectronIDv3CFMVAReader;
+    if(ElectronIDv3CFMVAReader) delete ElectronIDv3CFMVAReader;
+    cout << "i" << endl; //JH
 
-  delete MuonIDFakeMVAReader;
-  //  delete MuonIDFakeNoPtMVAReader;
-
-  
+    if(MuonIDFakeMVAReader) delete MuonIDFakeMVAReader;
+    //if(MuonIDFakeNoPtMVAReader) delete MuonIDFakeNoPtMVAReader;
+    cout << "j" << endl; //JH
+  }
 
 }
 
@@ -2653,7 +2662,7 @@ std::vector<FatJet> AnalyzerCore::GetFatJets(AnalyzerParameter param){
 }
 std::vector<FatJet> AnalyzerCore::GetFatJets(AnalyzerParameter param,TString id, double ptmin, double fetamax){
 
-  std::vector<FatJet> jets_pc = puppiCorr->Correct(GetAllFatJets());
+  std::vector<FatJet> jets_pc = puppiCorr->Correct(GetAllFatJets()); //JH : is this propagated to MET?
   std::vector<FatJet> jets;
   if(param.syst_ == AnalyzerParameter::JetEnUp)            jets    = ScaleFatJets( jets_pc, -1 );
   else if(param.syst_ == AnalyzerParameter::JetEnDown)     jets    = ScaleFatJets( jets_pc, -1 );
@@ -4514,6 +4523,94 @@ Particle AnalyzerCore::UpdateMETSmearedJet(const Particle& METv, const std::vect
 
 }
 
+Particle AnalyzerCore::UpdateMETSyst(AnalyzerParameter param, const Particle& METv){ //JH
+
+  double met_x = METv.Px();
+  double met_y = METv.Py();
+
+  std::vector<Jet> jets_uncorr;
+  std::vector<Jet> jets;
+  std::vector<FatJet> fatjets_uncorr;
+  std::vector<FatJet> fatjets_pc;
+  std::vector<FatJet> fatjets;
+  std::vector<Muon> muons_uncorr;
+  std::vector<Muon> muons;
+  std::vector<Electron> electrons_uncorr;
+  std::vector<Electron> electrons;
+
+  //jets
+  if(param.syst_ == AnalyzerParameter::JetEnUp || param.syst_ == AnalyzerParameter::JetEnDown || param.syst_ == AnalyzerParameter::JetResUp || param.syst_ == AnalyzerParameter::JetResDown){
+    jets_uncorr = GetAllJets();
+    if(param.syst_ == AnalyzerParameter::JetEnUp)            jets    = ScaleJets( jets_uncorr, +1 );
+    else if(param.syst_ == AnalyzerParameter::JetEnDown)     jets    = ScaleJets( jets_uncorr, -1 );
+    else if(param.syst_ == AnalyzerParameter::JetResUp)      jets    = SmearJets(jets_uncorr, +1 );
+    else if(param.syst_ == AnalyzerParameter::JetResDown)    jets    = SmearJets(jets_uncorr, -1 );
+    //fatjets //JH <-- double counting? does MET include jet and fatjets at the same time?
+    fatjets_uncorr = GetAllFatJets();
+    fatjets_pc = puppiCorr->Correct(fatjets_uncorr);
+    if(param.syst_ == AnalyzerParameter::JetEnUp)            fatjets    = ScaleFatJets(fatjets_pc, -1 );
+    else if(param.syst_ == AnalyzerParameter::JetEnDown)     fatjets    = ScaleFatJets(fatjets_pc, -1 );
+    else if(param.syst_ == AnalyzerParameter::JetResUp)      fatjets    = SmearFatJets(fatjets_pc, +1 );
+    else if(param.syst_ == AnalyzerParameter::JetResDown)    fatjets    = SmearFatJets(fatjets_pc, -1 );
+  }
+  else if(param.syst_ == AnalyzerParameter::JetMassUp || param.syst_ == AnalyzerParameter::JetMassDown || param.syst_ == AnalyzerParameter::JetMassSmearUp || param.syst_ == AnalyzerParameter::JetMassSmearDown){
+    fatjets_uncorr = GetAllFatJets();
+    fatjets_pc = puppiCorr->Correct(fatjets_uncorr);
+    if(param.syst_ == AnalyzerParameter::JetMassUp)               fatjets    = ScaleSDMassFatJets( fatjets_pc, +1 );
+    else if(param.syst_ == AnalyzerParameter::JetMassDown)        fatjets    = ScaleSDMassFatJets( fatjets_pc, -1 );
+    else if(param.syst_ == AnalyzerParameter::JetMassSmearUp)     fatjets    = SmearSDMassFatJets( fatjets_pc, +1 );
+    else if(param.syst_ == AnalyzerParameter::JetMassSmearDown)   fatjets    = SmearSDMassFatJets( fatjets_pc, -1 );
+  }
+  //muons
+  else if(param.syst_ == AnalyzerParameter::MuonEnUp || param.syst_ == AnalyzerParameter::MuonEnDown){
+    muons_uncorr = GetAllMuons();
+    if(param.syst_ == AnalyzerParameter::MuonEnUp)    muons = ScaleMuons( muons_uncorr, +1 );
+    else if(param.syst_ == AnalyzerParameter::MuonEnDown)    muons = ScaleMuons( muons_uncorr, -1 );
+  }
+  //electrons
+  else if(param.syst_ == AnalyzerParameter::ElectronResUp || param.syst_ == AnalyzerParameter::ElectronResDown || param.syst_ == AnalyzerParameter::ElectronEnUp || param.syst_ == AnalyzerParameter::ElectronEnDown){
+    electrons_uncorr = GetAllElectrons();
+    if(param.syst_ == AnalyzerParameter::ElectronResUp)   electrons = SmearElectrons( electrons_uncorr, +1 );
+    else if(param.syst_ == AnalyzerParameter::ElectronResDown)   electrons = SmearElectrons( electrons_uncorr, -1 );
+    else if(param.syst_ == AnalyzerParameter::ElectronEnUp)    electrons = ScaleElectrons( electrons_uncorr, +1 );
+    else if(param.syst_ == AnalyzerParameter::ElectronEnDown)    electrons = ScaleElectrons( electrons_uncorr, -1 );
+  }
+
+  double px_orig(0.), py_orig(0.),px_corrected(0.), py_corrected(0.);
+  for(unsigned int i=0; i<jets.size(); i++){
+    px_orig+= jets_uncorr.at(i).Px();
+    py_orig+= jets_uncorr.at(i).Py();
+    px_corrected += jets.at(i).Px();
+    py_corrected += jets.at(i).Py();
+  }
+  for(unsigned int i=0; i<fatjets.size(); i++){
+    px_orig+= fatjets_uncorr.at(i).Px();
+    py_orig+= fatjets_uncorr.at(i).Py();
+    px_corrected += fatjets.at(i).Px();
+    py_corrected += fatjets.at(i).Py();
+  }
+  for(unsigned int i=0; i<muons.size(); i++){
+    px_orig+= muons_uncorr.at(i).Px();
+    py_orig+= muons_uncorr.at(i).Py();
+    px_corrected += muons.at(i).Px();
+    py_corrected += muons.at(i).Py();
+  }
+  for(unsigned int i=0; i<electrons.size(); i++){
+    px_orig+= electrons_uncorr.at(i).Px();
+    py_orig+= electrons_uncorr.at(i).Py();
+    px_corrected += electrons.at(i).Px();
+    py_corrected += electrons.at(i).Py();
+  }
+
+  met_x = met_x + px_orig - px_corrected;
+  met_y = met_y + py_orig - py_corrected;
+
+  Particle METout;
+  METout.SetPxPyPzE(met_x,met_y,0,sqrt(met_x*met_x+met_y*met_y));
+  return METout;
+
+}
+
 
 
 std::vector<Muon> AnalyzerCore::MuonApplyPtCut(const std::vector<Muon>& muons, double ptcut){
@@ -5881,7 +5978,7 @@ void AnalyzerCore::WriteHist(){
       outfile->mkdir(this_suffix);
     }
     outfile->cd(this_suffix);
-    cout << "Writing " << this_name << endl;
+    //cout << "Writing " << this_name << endl;
     mapit->second->Write(this_name);
     outfile->cd();
   }

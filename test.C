@@ -23,15 +23,31 @@ void test(TString era, bool isdata, TString sample, TString flag){ //test("2017"
   TObjArray* flags = flag.Tokenize(",");
   for(int i=0; i<flags->GetEntries(); i++) m.Userflags.push_back(((TObjString*)flags->At(i))->String()); //JH : https://root-forum.cern.ch/t/split-tstring-by-delimeter-in-root-c/18228
   if(era=="2017" && isdata && sample=="DoubleEG"){
-    m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/DATA_SkimTree_HNMultiLep/DoubleEG/periodE/2022_08_23_004058/SKFlatNtuple_2017_DATA_3.root");
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/DATA_SkimTree_HNMultiLep/DoubleEG/periodE/2022_08_23_004058/SKFlatNtuple_2017_DATA_3.root")) exit(EIO);
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/DATA_SkimTree_HNMultiLep/DoubleEG/periodE/2022_08_23_004058/SKFlatNtuple_2017_DATA_4.root")) exit(EIO);
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/DATA_SkimTree_HNMultiLep/DoubleEG/periodE/2022_08_23_004058/SKFlatNtuple_2017_DATA_5.root")) exit(EIO);
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/DATA_SkimTree_HNMultiLep/DoubleEG/periodE/2022_08_23_004058/SKFlatNtuple_2017_DATA_6.root")) exit(EIO);
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/DATA_SkimTree_HNMultiLep/DoubleEG/periodE/2022_08_23_004058/SKFlatNtuple_2017_DATA_7.root")) exit(EIO);
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/DATA_SkimTree_HNMultiLep/DoubleEG/periodE/2022_08_23_004058/SKFlatNtuple_2017_DATA_8.root")) exit(EIO);
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/DATA_SkimTree_HNMultiLep/DoubleEG/periodE/2022_08_23_004058/SKFlatNtuple_2017_DATA_9.root")) exit(EIO);
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/DATA_SkimTree_HNMultiLep/DoubleEG/periodE/2022_08_23_004058/SKFlatNtuple_2017_DATA_10.root")) exit(EIO);
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/DATA_SkimTree_HNMultiLep/DoubleEG/periodE/2022_08_23_004058/SKFlatNtuple_2017_DATA_11.root")) exit(EIO);
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/DATA_SkimTree_HNMultiLep/DoubleEG/periodE/2022_08_23_004058/SKFlatNtuple_2017_DATA_12.root")) exit(EIO);
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/DATA_SkimTree_HNMultiLep/DoubleEG/periodE/2022_08_23_004058/SKFlatNtuple_2017_DATA_13.root")) exit(EIO);
   }
   else if(era=="2017" && !isdata && sample=="DYJets"){
-    m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_HNMultiLep/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/2022_10_09_041952/SKFlatNtuple_2017_MC_6.root");
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_HNMultiLep/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/2022_10_09_041952/SKFlatNtuple_2017_MC_6.root")) exit(EIO);
+  }
+  else if(era=="2017" && !isdata && sample=="WZ"){
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC/WZTo3LNu_TuneCP5_13TeV-amcatnloFXFX-pythia8/220614_141057/0000/SKFlatNtuple_2017_MC_1.root")) exit(EIO);
+  }
+  else if(era=="2017" && !isdata && sample=="ZZ"){
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC/ZZTo4L_TuneCP5_13TeV_powheg_pythia8/220614_141827/0000/SKFlatNtuple_2017_MC_1.root")) exit(EIO);
   }
   else if(era=="2017" && !isdata && sample=="DYTypeI"){
-    m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC/DYTypeIHeavyN-DFmix_Dilepton_MN500_TuneCP5_13TeV-amcatnlo-pythia8/220801_130040/0000/SKFlatNtuple_2017_MC_1.root");
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC/DYTypeIHeavyN-DFmix_Dilepton_MN500_TuneCP5_13TeV-amcatnlo-pythia8/220801_130040/0000/SKFlatNtuple_2017_MC_1.root")) exit(EIO);
   }
-  m.SetOutfilePath("hists.root");
+  m.SetOutfilePath("hists_"+sample+".root");
   m.Init();
   m.initializeAnalyzer();
   m.initializeAnalyzerTools();

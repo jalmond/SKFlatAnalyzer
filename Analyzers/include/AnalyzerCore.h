@@ -356,6 +356,7 @@ public:
   Muon MuonUsePtCone(const Muon& muon);
   Particle UpdateMET(const Particle& METv, const std::vector<Muon>& muons);
   Particle UpdateMETSmearedJet(const Particle& METv, const std::vector<Jet>& jets);
+  Particle UpdateMETSyst(AnalyzerParameter param, const Particle& METv); //JH
 
   std::vector<Muon> MuonApplyPtCut(const std::vector<Muon>& muons, double ptcut);
   std::vector<Electron> ElectronPromptOnly(const std::vector<Electron>& electrons, const std::vector<Gen>& gens,AnalyzerParameter param);
