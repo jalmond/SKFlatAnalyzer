@@ -6,6 +6,8 @@ FatJet::FatJet() : Particle() {
   j_area=-999.;
   j_partonFlavour=-999;
   j_hadronFlavour=-999;
+  j_PxUnSmeared=-999.;
+  j_PyUnSmeared=-999.;
   j_DeepCSV=-999.;
   j_DeepCSV_CvsL=-999.;
   j_DeepCSV_CvsB=-999.;
@@ -98,6 +100,14 @@ double FatJet::LSF_PID() const{
 void FatJet::SetEnShift(double en_up, double en_down){
   j_En_up = en_up;
   j_En_down = en_down;
+}
+
+void FatJet::SetPxUnSmeared(double px){
+  j_PxUnSmeared=px;
+}
+
+void FatJet::SetPyUnSmeared(double py){
+  j_PyUnSmeared=py;
 }
 
 void FatJet::SetResShift(double res_up, double res_down){

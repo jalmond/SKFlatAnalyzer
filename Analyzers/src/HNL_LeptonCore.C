@@ -2463,22 +2463,18 @@ double HNL_LeptonCore::GetXsec(TString SigProcess, int mass){
   return 0.;
 }
 
-/*
-Particle HNL_LeptonCore::GetvMET(TString METType, AnalyzerParameter param){
+
+Particle HNL_LeptonCore::GetvMET(TString METType, AnalyzerParameter param, std::vector<Jet> jets, std::vector<FatJet> fatjets, std::vector<Muon> muons, std::vector<Electron> electrons){
 
   bool IsType1   = METType.Contains("T1");
   bool IsxyCorr  = METType.Contains("xyCorr");
   bool UsePuppi  = METType.Contains("Puppi");
-
-  //bool IsJetSmear  = METType.Contains("JetSmear"); //JH
 
   int IdxSyst = -1;
 
   if(param.syst_ == AnalyzerParameter::METUnclUp)   IdxSyst = 10;
   if(param.syst_ == AnalyzerParameter::METUnclDown)   IdxSyst = 11;
 
-  // Use CMSSW MET SYSTa                                                                                                                                                                                                                                                                                   
-  //if(METType.Contains("CMSSW")){
   if(param.syst_ == AnalyzerParameter::JetResUp)  IdxSyst = 0;
   if(param.syst_ == AnalyzerParameter::JetResDown)  IdxSyst = 1;
   if(param.syst_ == AnalyzerParameter::JetEnUp)  IdxSyst = 2;
@@ -2487,7 +2483,7 @@ Particle HNL_LeptonCore::GetvMET(TString METType, AnalyzerParameter param){
   if(param.syst_ == AnalyzerParameter::MuonEnDown)  IdxSyst = 5;
   if(param.syst_ == AnalyzerParameter::ElectronEnUp)  IdxSyst = 6;
   if(param.syst_ == AnalyzerParameter::ElectronEnDown)  IdxSyst = 7;
-  //} //JH
+
   bool ApplySyst = (!IsDATA) && IdxSyst >= 0;
 
   Particle vMET;
@@ -2519,25 +2515,13 @@ Particle HNL_LeptonCore::GetvMET(TString METType, AnalyzerParameter param){
 
   }
 
-  //if (!IsJetSmear && param.syst_ == AnalyzerParameter::Central) return vMET;
   if (param.syst_ == AnalyzerParameter::Central) return vMET;
 
-  //Particle vMETSmeared;
-  //vector<Jet> _jets = GetJets(param, param.Jet_ID, 10., 5.);
-  //if (IsJetSmear) vMETSmeared = UpdateMETSmearedJet(vMET, _jets);
-
-  //if(param.syst_ == AnalyzerParameter::Central) return vMETSmeared;
-  //double MET = vMETSmeared.Pt();
-  //double METPhi = vMETSmeared.Pt();
-  //if(param.syst_ == AnalyzerParameter::JetResUp ) CorrectedMETJER(1, GetJets(param, 10., 5.), GetFatJets(param, 200., 5.), MET,METPhi);                                                                                                                                                                  
-  //if(param.syst_ == AnalyzerParameter::JetResDown) CorrectedMETJER(-11, GetJets(param, 10., 5.), GetFatJets(param, 200., 5.), MET,METPhi);                                                                                                                                                               
-  // Write CorrectedMETXXhttps://github.com/jedori0228/LQanalyzer/blob/CatAnalyzer_13TeV_v8-0-7.36_HNAnalyzer/LQAnalysis/Analyzers/src/AnalyzerCore.cc#L4826  
   Particle vMETSyst;
-  if(ApplySyst) vMETSyst = UpdateMETSyst(param, vMET);
+  if(ApplySyst) vMETSyst = UpdateMETSyst(param, vMET, jets, fatjets, muons, electrons);
 
   return vMETSyst;
 }
-*/
 
 Particle HNL_LeptonCore::GetvMET(TString METType, AnalyzerParameter param){
 
@@ -2609,7 +2593,6 @@ Particle HNL_LeptonCore::GetvMET(TString METType, AnalyzerParameter param){
 
   return vMETSyst;
 }
-
 
 int HNL_LeptonCore::GetIndexNonMinOSSF(std::vector<Lepton *> leps){
 

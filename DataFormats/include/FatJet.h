@@ -35,6 +35,11 @@ public:
     else return j_Res_down;
   }
 
+  void SetPxUnSmeared(double px);
+  void SetPyUnSmeared(double py);
+  inline double PxUnSmeared()  const { return j_PxUnSmeared;}
+  inline double PyUnSmeared()  const { return j_PyUnSmeared;} //JH
+
   void SetTightJetID(double b);
   void SetTightLepVetoJetID(double b);
   inline bool Pass_tightJetID() const { return j_tightJetID; }
@@ -71,6 +76,8 @@ private:
   double  j_area;
   int j_partonFlavour;
   int j_hadronFlavour;
+  double  j_PxUnSmeared;
+  double  j_PyUnSmeared;
   double  j_DeepCSV;
   double  j_DeepCSV_CvsL;
   double  j_DeepCSV_CvsB;

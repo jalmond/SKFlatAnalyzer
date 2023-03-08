@@ -87,7 +87,11 @@ public:
   inline double UncorrectedPt() const { return j_unCorrPt;}
   void SetUncorrectedPt(double d);
 
-
+  /// UncorrectedPx, Py for MET propagation of energy systematics //JH
+  inline double UncorrectedPx() const { return j_unCorrPx;}
+  void SetUncorrectedPx(double d);
+  inline double UncorrectedPy() const { return j_unCorrPy;}
+  void SetUncorrectedPy(double d);
 
   
   /// Standard Functions
@@ -264,6 +268,8 @@ private:
   double j_dZ, j_dZerr;
   double j_IP3D, j_IP3Derr;
   double j_unCorrPt;
+  double j_unCorrPx;
+  double j_unCorrPy;
   double j_jetntracks,j_jetntracks_mva;
   double j_RelIso, j_MiniRelIso;
   double j_MiniIso_ChHad,j_MiniIso_NHad,j_MiniIso_PhHad;

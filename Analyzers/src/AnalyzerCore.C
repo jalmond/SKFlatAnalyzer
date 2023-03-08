@@ -342,6 +342,10 @@ std::vector<Muon> AnalyzerCore::GetAllMuons(){
 
     mu.SetCharge(muon_charge->at(i));
     mu.SetUncorrectedPt(muon_pt->at(i));
+    Muon mu_tmp;
+    mu_tmp.SetPtEtaPhiM(muon_pt->at(i), muon_eta->at(i), muon_phi->at(i), muon_mass->at(i));
+    mu.SetUncorrectedPx(mu_tmp.Px());
+    mu.SetUncorrectedPy(mu_tmp.Py()); //JH
     mu.SetMiniAODPt(muon_pt->at(i));
     mu.SetMiniAODTunePPt(muon_TuneP_pt->at(i));
 
@@ -1780,6 +1784,8 @@ std::vector<Electron> AnalyzerCore::GetAllElectrons(bool SetupBDT){
     el.SetPtEtaPhiE( el_pt, electron_eta->at(i), electron_phi->at(i), electron_Energy->at(i));
 
     el.SetUncorrectedPt(electron_EnergyUnCorr->at(i) * TMath::Sin( el_theta ));
+    el.SetUncorrectedPx(el.Px());
+    el.SetUncorrectedPy(el.Py()); //JH
 
     el.SetUncorrE(electron_EnergyUnCorr->at(i));
     el.SetSC(electron_scEta->at(i), electron_scPhi->at(i), electron_scEnergy->at(i));
@@ -4523,81 +4529,81 @@ Particle AnalyzerCore::UpdateMETSmearedJet(const Particle& METv, const std::vect
 
 }
 
-Particle AnalyzerCore::UpdateMETSyst(AnalyzerParameter param, const Particle& METv){ //JH
+Particle AnalyzerCore::UpdateMETSyst(AnalyzerParameter param, const Particle& METv, std::vector<Jet> jets, std::vector<FatJet> fatjets, std::vector<Muon> muons, std::vector<Electron> electrons){ //JH
 
   double met_x = METv.Px();
   double met_y = METv.Py();
 
-  std::vector<Jet> jets_uncorr;
-  std::vector<Jet> jets;
-  std::vector<FatJet> fatjets_uncorr;
-  std::vector<FatJet> fatjets_pc;
-  std::vector<FatJet> fatjets;
-  std::vector<Muon> muons_uncorr;
-  std::vector<Muon> muons;
-  std::vector<Electron> electrons_uncorr;
-  std::vector<Electron> electrons;
+  //std::vector<Jet> jets_uncorr;
+  //std::vector<Jet> jets;
+  //std::vector<FatJet> fatjets_uncorr;
+  //std::vector<FatJet> fatjets_pc;
+  //std::vector<FatJet> fatjets;
+  //std::vector<Muon> muons_uncorr;
+  //std::vector<Muon> muons;
+  //std::vector<Electron> electrons_uncorr;
+  //std::vector<Electron> electrons;
 
-  //jets
-  if(param.syst_ == AnalyzerParameter::JetEnUp || param.syst_ == AnalyzerParameter::JetEnDown || param.syst_ == AnalyzerParameter::JetResUp || param.syst_ == AnalyzerParameter::JetResDown){
-    jets_uncorr = GetAllJets();
-    if(param.syst_ == AnalyzerParameter::JetEnUp)            jets    = ScaleJets( jets_uncorr, +1 );
-    else if(param.syst_ == AnalyzerParameter::JetEnDown)     jets    = ScaleJets( jets_uncorr, -1 );
-    else if(param.syst_ == AnalyzerParameter::JetResUp)      jets    = SmearJets(jets_uncorr, +1 );
-    else if(param.syst_ == AnalyzerParameter::JetResDown)    jets    = SmearJets(jets_uncorr, -1 );
-    //fatjets //JH <-- double counting? does MET include jet and fatjets at the same time?
-    fatjets_uncorr = GetAllFatJets();
-    fatjets_pc = puppiCorr->Correct(fatjets_uncorr);
-    if(param.syst_ == AnalyzerParameter::JetEnUp)            fatjets    = ScaleFatJets(fatjets_pc, -1 );
-    else if(param.syst_ == AnalyzerParameter::JetEnDown)     fatjets    = ScaleFatJets(fatjets_pc, -1 );
-    else if(param.syst_ == AnalyzerParameter::JetResUp)      fatjets    = SmearFatJets(fatjets_pc, +1 );
-    else if(param.syst_ == AnalyzerParameter::JetResDown)    fatjets    = SmearFatJets(fatjets_pc, -1 );
-  }
-  else if(param.syst_ == AnalyzerParameter::JetMassUp || param.syst_ == AnalyzerParameter::JetMassDown || param.syst_ == AnalyzerParameter::JetMassSmearUp || param.syst_ == AnalyzerParameter::JetMassSmearDown){
-    fatjets_uncorr = GetAllFatJets();
-    fatjets_pc = puppiCorr->Correct(fatjets_uncorr);
-    if(param.syst_ == AnalyzerParameter::JetMassUp)               fatjets    = ScaleSDMassFatJets( fatjets_pc, +1 );
-    else if(param.syst_ == AnalyzerParameter::JetMassDown)        fatjets    = ScaleSDMassFatJets( fatjets_pc, -1 );
-    else if(param.syst_ == AnalyzerParameter::JetMassSmearUp)     fatjets    = SmearSDMassFatJets( fatjets_pc, +1 );
-    else if(param.syst_ == AnalyzerParameter::JetMassSmearDown)   fatjets    = SmearSDMassFatJets( fatjets_pc, -1 );
-  }
-  //muons
-  else if(param.syst_ == AnalyzerParameter::MuonEnUp || param.syst_ == AnalyzerParameter::MuonEnDown){
-    muons_uncorr = GetAllMuons();
-    if(param.syst_ == AnalyzerParameter::MuonEnUp)    muons = ScaleMuons( muons_uncorr, +1 );
-    else if(param.syst_ == AnalyzerParameter::MuonEnDown)    muons = ScaleMuons( muons_uncorr, -1 );
-  }
-  //electrons
-  else if(param.syst_ == AnalyzerParameter::ElectronResUp || param.syst_ == AnalyzerParameter::ElectronResDown || param.syst_ == AnalyzerParameter::ElectronEnUp || param.syst_ == AnalyzerParameter::ElectronEnDown){
-    electrons_uncorr = GetAllElectrons();
-    if(param.syst_ == AnalyzerParameter::ElectronResUp)   electrons = SmearElectrons( electrons_uncorr, +1 );
-    else if(param.syst_ == AnalyzerParameter::ElectronResDown)   electrons = SmearElectrons( electrons_uncorr, -1 );
-    else if(param.syst_ == AnalyzerParameter::ElectronEnUp)    electrons = ScaleElectrons( electrons_uncorr, +1 );
-    else if(param.syst_ == AnalyzerParameter::ElectronEnDown)    electrons = ScaleElectrons( electrons_uncorr, -1 );
-  }
+  ////jets
+  //if(param.syst_ == AnalyzerParameter::JetEnUp || param.syst_ == AnalyzerParameter::JetEnDown || param.syst_ == AnalyzerParameter::JetResUp || param.syst_ == AnalyzerParameter::JetResDown){
+  //  jets_uncorr = GetAllJets();
+  //  if(param.syst_ == AnalyzerParameter::JetEnUp)            jets    = ScaleJets( jets_uncorr, +1 );
+  //  else if(param.syst_ == AnalyzerParameter::JetEnDown)     jets    = ScaleJets( jets_uncorr, -1 );
+  //  else if(param.syst_ == AnalyzerParameter::JetResUp)      jets    = SmearJets(jets_uncorr, +1 );
+  //  else if(param.syst_ == AnalyzerParameter::JetResDown)    jets    = SmearJets(jets_uncorr, -1 );
+  //  //fatjets //JH <-- double counting? does MET include jet and fatjets at the same time?
+  //  fatjets_uncorr = GetAllFatJets();
+  //  fatjets_pc = puppiCorr->Correct(fatjets_uncorr);
+  //  if(param.syst_ == AnalyzerParameter::JetEnUp)            fatjets    = ScaleFatJets(fatjets_pc, -1 );
+  //  else if(param.syst_ == AnalyzerParameter::JetEnDown)     fatjets    = ScaleFatJets(fatjets_pc, -1 );
+  //  else if(param.syst_ == AnalyzerParameter::JetResUp)      fatjets    = SmearFatJets(fatjets_pc, +1 );
+  //  else if(param.syst_ == AnalyzerParameter::JetResDown)    fatjets    = SmearFatJets(fatjets_pc, -1 );
+  //}
+  //else if(param.syst_ == AnalyzerParameter::JetMassUp || param.syst_ == AnalyzerParameter::JetMassDown || param.syst_ == AnalyzerParameter::JetMassSmearUp || param.syst_ == AnalyzerParameter::JetMassSmearDown){
+  //  fatjets_uncorr = GetAllFatJets();
+  //  fatjets_pc = puppiCorr->Correct(fatjets_uncorr);
+  //  if(param.syst_ == AnalyzerParameter::JetMassUp)               fatjets    = ScaleSDMassFatJets( fatjets_pc, +1 );
+  //  else if(param.syst_ == AnalyzerParameter::JetMassDown)        fatjets    = ScaleSDMassFatJets( fatjets_pc, -1 );
+  //  else if(param.syst_ == AnalyzerParameter::JetMassSmearUp)     fatjets    = SmearSDMassFatJets( fatjets_pc, +1 );
+  //  else if(param.syst_ == AnalyzerParameter::JetMassSmearDown)   fatjets    = SmearSDMassFatJets( fatjets_pc, -1 );
+  //}
+  ////muons
+  //else if(param.syst_ == AnalyzerParameter::MuonEnUp || param.syst_ == AnalyzerParameter::MuonEnDown){
+  //  muons_uncorr = GetAllMuons();
+  //  if(param.syst_ == AnalyzerParameter::MuonEnUp)    muons = ScaleMuons( muons_uncorr, +1 );
+  //  else if(param.syst_ == AnalyzerParameter::MuonEnDown)    muons = ScaleMuons( muons_uncorr, -1 );
+  //}
+  ////electrons
+  //else if(param.syst_ == AnalyzerParameter::ElectronResUp || param.syst_ == AnalyzerParameter::ElectronResDown || param.syst_ == AnalyzerParameter::ElectronEnUp || param.syst_ == AnalyzerParameter::ElectronEnDown){
+  //  electrons_uncorr = GetAllElectrons();
+  //  if(param.syst_ == AnalyzerParameter::ElectronResUp)   electrons = SmearElectrons( electrons_uncorr, +1 );
+  //  else if(param.syst_ == AnalyzerParameter::ElectronResDown)   electrons = SmearElectrons( electrons_uncorr, -1 );
+  //  else if(param.syst_ == AnalyzerParameter::ElectronEnUp)    electrons = ScaleElectrons( electrons_uncorr, +1 );
+  //  else if(param.syst_ == AnalyzerParameter::ElectronEnDown)    electrons = ScaleElectrons( electrons_uncorr, -1 );
+  //}
 
   double px_orig(0.), py_orig(0.),px_corrected(0.), py_corrected(0.);
   for(unsigned int i=0; i<jets.size(); i++){
-    px_orig+= jets_uncorr.at(i).Px();
-    py_orig+= jets_uncorr.at(i).Py();
+    px_orig+= jets.at(i).PxUnSmeared();
+    py_orig+= jets.at(i).PyUnSmeared();
     px_corrected += jets.at(i).Px();
     py_corrected += jets.at(i).Py();
   }
   for(unsigned int i=0; i<fatjets.size(); i++){
-    px_orig+= fatjets_uncorr.at(i).Px();
-    py_orig+= fatjets_uncorr.at(i).Py();
+    px_orig+= fatjets.at(i).PxUnSmeared();
+    py_orig+= fatjets.at(i).PyUnSmeared();
     px_corrected += fatjets.at(i).Px();
     py_corrected += fatjets.at(i).Py();
   }
   for(unsigned int i=0; i<muons.size(); i++){
-    px_orig+= muons_uncorr.at(i).Px();
-    py_orig+= muons_uncorr.at(i).Py();
+    px_orig+= muons.at(i).UncorrectedPx();
+    py_orig+= muons.at(i).UncorrectedPy();
     px_corrected += muons.at(i).Px();
     py_corrected += muons.at(i).Py();
   }
   for(unsigned int i=0; i<electrons.size(); i++){
-    px_orig+= electrons_uncorr.at(i).Px();
-    py_orig+= electrons_uncorr.at(i).Py();
+    px_orig+= electrons.at(i).UncorrectedPx();
+    py_orig+= electrons.at(i).UncorrectedPy();
     px_corrected += electrons.at(i).Px();
     py_corrected += electrons.at(i).Py();
   }

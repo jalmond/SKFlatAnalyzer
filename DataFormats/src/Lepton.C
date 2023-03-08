@@ -10,6 +10,8 @@ Lepton::Lepton() : Particle() {
   j_IP3D = -999.;
   j_IP3Derr = -999.;
   j_unCorrPt = -999;
+  j_unCorrPx = -999;
+  j_unCorrPy = -999;
   j_RelIso = -999.;
   j_MiniRelIso = -999.;
   j_ptcone = -999.;
@@ -205,6 +207,14 @@ void Lepton::SetLepMVA(double MVA){
 
 void Lepton::SetUncorrectedPt(double uncorrPt){
   j_unCorrPt = uncorrPt;
+}
+
+void Lepton::SetUncorrectedPx(double uncorrPx){
+  j_unCorrPx = uncorrPx;
+}
+
+void Lepton::SetUncorrectedPy(double uncorrPy){
+  j_unCorrPy = uncorrPy;
 }
 
 void Lepton::SetdXY(double dXY, double dXYerr){
