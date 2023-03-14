@@ -614,10 +614,10 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
   if(SystType == "Initial"){
     SystList.push_back(AnalyzerParameter::JetResUp);
     SystList.push_back(AnalyzerParameter::JetResDown);
-    SystList.push_back(AnalyzerParameter::PUUp);
-    SystList.push_back(AnalyzerParameter::PUDown);
-    SystList.push_back(AnalyzerParameter::FRUp);
-    SystList.push_back(AnalyzerParameter::FRDown);
+    //SystList.push_back(AnalyzerParameter::PUUp);
+    //SystList.push_back(AnalyzerParameter::PUDown);
+    //SystList.push_back(AnalyzerParameter::FRUp);
+    //SystList.push_back(AnalyzerParameter::FRDown);
   }
   
   if(SystType == "All"){
@@ -2490,16 +2490,9 @@ Particle HNL_LeptonCore::GetvMET(TString METType, AnalyzerParameter param, std::
 
   if(UsePuppi){
     if(IsType1){
-      if( (!ApplySyst) ){
-        if(IsxyCorr) vMET.SetPtEtaPhiM(PuppiMET_Type1_PhiCor_pt, 0., PuppiMET_Type1_PhiCor_phi, 0.);
-        else         vMET.SetPtEtaPhiM(PuppiMET_Type1_pt, 0., PuppiMET_Type1_phi, 0.);
-      }
-      else if(METType.Contains("CMSSW")){
-        if(IsxyCorr)  vMET.SetPtEtaPhiM(PuppiMET_Type1_PhiCor_pt, 0., PuppiMET_Type1_PhiCor_phi, 0.); //JH FIXME is this just omitted or not provided?
-        else         vMET.SetPtEtaPhiM(PuppiMET_Type1_pt_shifts->at(IdxSyst), 0.,  PuppiMET_Type1_phi_shifts->at(IdxSyst), 0.);
-      }
+      if(IsxyCorr) vMET.SetPtEtaPhiM(PuppiMET_Type1_PhiCor_pt, 0., PuppiMET_Type1_PhiCor_phi, 0.);
+      else         vMET.SetPtEtaPhiM(PuppiMET_Type1_pt, 0., PuppiMET_Type1_phi, 0.);
     }
-
   }
   else{ //JH FIXME later
     if(IsType1){
@@ -2512,13 +2505,18 @@ Particle HNL_LeptonCore::GetvMET(TString METType, AnalyzerParameter param, std::
         else         vMET.SetPtEtaPhiM(pfMET_Type1_pt_shifts->at(IdxSyst), 0., pfMET_Type1_phi_shifts->at(IdxSyst), 0.);
       }
     }
-
   }
 
   if (param.syst_ == AnalyzerParameter::Central) return vMET;
 
   Particle vMETSyst;
-  if(ApplySyst) vMETSyst = UpdateMETSyst(param, vMET, jets, fatjets, muons, electrons);
+  if(ApplySyst){
+    if(METType.Contains("CMSSW")){
+      if(IsxyCorr)  vMETSyst.SetPtEtaPhiM(PuppiMET_Type1_PhiCor_pt, 0., PuppiMET_Type1_PhiCor_phi, 0.); //JH FIXME is this just omitted or not provided?
+      else         vMETSyst.SetPtEtaPhiM(PuppiMET_Type1_pt_shifts->at(IdxSyst), 0.,  PuppiMET_Type1_phi_shifts->at(IdxSyst), 0.);
+    }
+		else vMETSyst = UpdateMETSyst(param, vMET, jets, fatjets, muons, electrons);
+  }
 
   return vMETSyst;
 }

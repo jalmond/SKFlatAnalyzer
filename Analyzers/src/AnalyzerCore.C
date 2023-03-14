@@ -4534,54 +4534,6 @@ Particle AnalyzerCore::UpdateMETSyst(AnalyzerParameter param, const Particle& ME
   double met_x = METv.Px();
   double met_y = METv.Py();
 
-  //std::vector<Jet> jets_uncorr;
-  //std::vector<Jet> jets;
-  //std::vector<FatJet> fatjets_uncorr;
-  //std::vector<FatJet> fatjets_pc;
-  //std::vector<FatJet> fatjets;
-  //std::vector<Muon> muons_uncorr;
-  //std::vector<Muon> muons;
-  //std::vector<Electron> electrons_uncorr;
-  //std::vector<Electron> electrons;
-
-  ////jets
-  //if(param.syst_ == AnalyzerParameter::JetEnUp || param.syst_ == AnalyzerParameter::JetEnDown || param.syst_ == AnalyzerParameter::JetResUp || param.syst_ == AnalyzerParameter::JetResDown){
-  //  jets_uncorr = GetAllJets();
-  //  if(param.syst_ == AnalyzerParameter::JetEnUp)            jets    = ScaleJets( jets_uncorr, +1 );
-  //  else if(param.syst_ == AnalyzerParameter::JetEnDown)     jets    = ScaleJets( jets_uncorr, -1 );
-  //  else if(param.syst_ == AnalyzerParameter::JetResUp)      jets    = SmearJets(jets_uncorr, +1 );
-  //  else if(param.syst_ == AnalyzerParameter::JetResDown)    jets    = SmearJets(jets_uncorr, -1 );
-  //  //fatjets //JH <-- double counting? does MET include jet and fatjets at the same time?
-  //  fatjets_uncorr = GetAllFatJets();
-  //  fatjets_pc = puppiCorr->Correct(fatjets_uncorr);
-  //  if(param.syst_ == AnalyzerParameter::JetEnUp)            fatjets    = ScaleFatJets(fatjets_pc, -1 );
-  //  else if(param.syst_ == AnalyzerParameter::JetEnDown)     fatjets    = ScaleFatJets(fatjets_pc, -1 );
-  //  else if(param.syst_ == AnalyzerParameter::JetResUp)      fatjets    = SmearFatJets(fatjets_pc, +1 );
-  //  else if(param.syst_ == AnalyzerParameter::JetResDown)    fatjets    = SmearFatJets(fatjets_pc, -1 );
-  //}
-  //else if(param.syst_ == AnalyzerParameter::JetMassUp || param.syst_ == AnalyzerParameter::JetMassDown || param.syst_ == AnalyzerParameter::JetMassSmearUp || param.syst_ == AnalyzerParameter::JetMassSmearDown){
-  //  fatjets_uncorr = GetAllFatJets();
-  //  fatjets_pc = puppiCorr->Correct(fatjets_uncorr);
-  //  if(param.syst_ == AnalyzerParameter::JetMassUp)               fatjets    = ScaleSDMassFatJets( fatjets_pc, +1 );
-  //  else if(param.syst_ == AnalyzerParameter::JetMassDown)        fatjets    = ScaleSDMassFatJets( fatjets_pc, -1 );
-  //  else if(param.syst_ == AnalyzerParameter::JetMassSmearUp)     fatjets    = SmearSDMassFatJets( fatjets_pc, +1 );
-  //  else if(param.syst_ == AnalyzerParameter::JetMassSmearDown)   fatjets    = SmearSDMassFatJets( fatjets_pc, -1 );
-  //}
-  ////muons
-  //else if(param.syst_ == AnalyzerParameter::MuonEnUp || param.syst_ == AnalyzerParameter::MuonEnDown){
-  //  muons_uncorr = GetAllMuons();
-  //  if(param.syst_ == AnalyzerParameter::MuonEnUp)    muons = ScaleMuons( muons_uncorr, +1 );
-  //  else if(param.syst_ == AnalyzerParameter::MuonEnDown)    muons = ScaleMuons( muons_uncorr, -1 );
-  //}
-  ////electrons
-  //else if(param.syst_ == AnalyzerParameter::ElectronResUp || param.syst_ == AnalyzerParameter::ElectronResDown || param.syst_ == AnalyzerParameter::ElectronEnUp || param.syst_ == AnalyzerParameter::ElectronEnDown){
-  //  electrons_uncorr = GetAllElectrons();
-  //  if(param.syst_ == AnalyzerParameter::ElectronResUp)   electrons = SmearElectrons( electrons_uncorr, +1 );
-  //  else if(param.syst_ == AnalyzerParameter::ElectronResDown)   electrons = SmearElectrons( electrons_uncorr, -1 );
-  //  else if(param.syst_ == AnalyzerParameter::ElectronEnUp)    electrons = ScaleElectrons( electrons_uncorr, +1 );
-  //  else if(param.syst_ == AnalyzerParameter::ElectronEnDown)    electrons = ScaleElectrons( electrons_uncorr, -1 );
-  //}
-
   double px_orig(0.), py_orig(0.),px_corrected(0.), py_corrected(0.);
   for(unsigned int i=0; i<jets.size(); i++){
     px_orig+= jets.at(i).PxUnSmeared();
@@ -4607,6 +4559,16 @@ Particle AnalyzerCore::UpdateMETSyst(AnalyzerParameter param, const Particle& ME
     px_corrected += electrons.at(i).Px();
     py_corrected += electrons.at(i).Py();
   }
+
+  //if(param.syst_ == AnalyzerParameter::JetResDown){
+  //  cout << "JetResDown;" << endl;
+  //  cout << "met_x = " << met_x << endl;
+  //  cout << "px_orig = " << px_orig << endl;
+  //  cout << "px_corrected = " << px_corrected << endl;
+  //  cout << "met_y = " << met_y << endl;
+  //  cout << "py_orig = " << py_orig << endl;
+  //  cout << "py_corrected = " << py_corrected << endl;
+  //}
 
   met_x = met_x + px_orig - px_corrected;
   met_y = met_y + py_orig - py_corrected;
