@@ -161,6 +161,12 @@ TString AnalyzerParameter::GetSystType(){
   else if(syst_==Syst::JetPUIDDown){
     return "JetPUIDDown";
   }
+  else if(syst_==Syst::JetMassUp){
+    return "JetMassUp";
+  }
+  else if(syst_==Syst::JetMassDown){
+    return "JetMassDown";
+  }
   else if(syst_==Syst::JetMassSmearUp){
     return "JetMassSmearUp";
   }

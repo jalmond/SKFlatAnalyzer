@@ -637,8 +637,8 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
 		AnalyzerParameter::BTagSFHTagUp,AnalyzerParameter::BTagSFHTagDown,                                                                               
 		AnalyzerParameter::BTagSFLTagUp,AnalyzerParameter::BTagSFLTagDown,                                                                               
 		AnalyzerParameter::METUnclUp,AnalyzerParameter::METUnclDown,                                                                                     
-		AnalyzerParameter::CFUp,AnalyzerParameter::CFDown,                                                                                               
-		AnalyzerParameter::FRUp,AnalyzerParameter::FRDown,                                                                                               
+		//AnalyzerParameter::CFUp,AnalyzerParameter::CFDown,                                                                                               
+		//AnalyzerParameter::FRUp,AnalyzerParameter::FRDown,                                                                                               
 		AnalyzerParameter::PrefireUp,AnalyzerParameter::PrefireDown,                                                                                     
 		AnalyzerParameter::PUUp,AnalyzerParameter::PUDown};
     
