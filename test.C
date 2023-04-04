@@ -2,7 +2,7 @@ R__LOAD_LIBRARY(/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/lhapdf/6.2.3/lib/l
 R__LOAD_LIBRARY(/cvmfs/cms.cern.ch/slc7_amd64_gcc900/cms/cmssw/CMSSW_11_3_0/external/slc7_amd64_gcc900/lib/libTMVA.so)
 
 
-void test(TString era, bool isdata, TString sample, TString flag){ //test("2017",false,"DYJets","DEBUG")
+void test(TString era, bool isdata, TString sample, TString flag){ //echo -e ".L test.C\n test(\"2017\",false,\"DYTypeI_M500\",\"\");" | root -l 2>&1 | tee my.log
 
   //HNL_ControlRegionPlotter m;
   HNL_SignalRegionPlotter m;
