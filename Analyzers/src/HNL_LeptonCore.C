@@ -63,7 +63,7 @@ void HNL_LeptonCore::initializeAnalyzer(){
     //2016a run period 278808
     // MU
     TrigList_HNL_DblMu = {"HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v", 
-			  "HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v"};
+        "HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v"};
 
     TrigList_HNL_MuEG  = {"HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v", "HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_v"};
     TrigList_POG_MuEG  = {"HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v", "HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_v"};
@@ -77,7 +77,7 @@ void HNL_LeptonCore::initializeAnalyzer(){
     // Lumi=16.8 /fb.
     // MU                                                                                                                                                     
     TrigList_HNL_DblMu = {"HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v", 
-			  "HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v"};// "HLT_TkMu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v"};
+        "HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v"};// "HLT_TkMu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v"};
     
     TrigList_HNL_MuEG  = {"HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v", "HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v"};
     TrigList_POG_MuEG  = {"HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v", "HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v"};
@@ -98,15 +98,15 @@ void HNL_LeptonCore::initializeAnalyzer(){
     // EG                                                                                                                                                     
     TrigList_HNL_DblEG = {  "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v"};
     TrigList_HNL_EG    = {  "HLT_Ele27_WPTight_Gsf_v" ,
-			    "HLT_Ele25_eta2p1_WPTight_Gsf_v" ,
-			    "HLT_Ele115_CaloIdVT_GsfTrkIdT_v", 
-			    "HLT_Photon175_v",
-			    "HLT_Ele45_CaloIdVT_GsfTrkIdT_PFJet200_PFJet50_v",
-			    "HLT_Photon175_v",
-			    "HLT_Ele50_CaloIdVT_GsfTrkIdT_PFJet165_v",
-			    "HLT_Photon175_v",
-			    "HLT_DoubleEle33_CaloIdL_MW_v",
-			    "HLT_DoubleEle37_Ele27_CaloIdL_GsfTrkIdVL_v"};
+          "HLT_Ele25_eta2p1_WPTight_Gsf_v" ,
+          "HLT_Ele115_CaloIdVT_GsfTrkIdT_v", 
+          "HLT_Photon175_v",
+          "HLT_Ele45_CaloIdVT_GsfTrkIdT_PFJet200_PFJet50_v",
+          "HLT_Photon175_v",
+          "HLT_Ele50_CaloIdVT_GsfTrkIdT_PFJet165_v",
+          "HLT_Photon175_v",
+          "HLT_DoubleEle33_CaloIdL_MW_v",
+          "HLT_DoubleEle37_Ele27_CaloIdL_GsfTrkIdVL_v"};
     //https://twiki.cern.ch/twiki/bin/view/CMS/EgHLTRunIISummary
     TrigList_HNL_HighPtEG = {"HLT_Photon175_v","HLT_DoublePhoton60_v"};
     TrigList_POG_EG    = {  "HLT_Ele27_WPTight_Gsf_v" };
@@ -120,8 +120,8 @@ void HNL_LeptonCore::initializeAnalyzer(){
 
 
     TrigList_HNL_DblMu = { "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v", 
-			   "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v",
-			   "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_v" };
+         "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v",
+         "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_v" };
     TrigList_HNL_Mu = {  "HLT_IsoMu27_v"};
     TrigList_POG_Mu = {  "HLT_IsoMu27_v"};
     TrigList_HNL_HighPtMu = {"HLT_Mu50_v"};
@@ -129,12 +129,12 @@ void HNL_LeptonCore::initializeAnalyzer(){
 
     TrigList_HNL_DblEG = { "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v"};
     TrigList_HNL_EG = { "HLT_Ele32_WPTight_Gsf_v", 
-			"HLT_Ele32_WPTight_Gsf_L1DoubleEG_v",
-			"HLT_Ele115_CaloIdVT_GsfTrkIdT_v",
-			"HLT_Photon200_v",
-			"HLT_Ele50_CaloIdVT_GsfTrkIdT_PFJet165_v",
-			"HLT_Photon200_v",
-			"HLT_DoubleEle33_CaloIdL_MW_v"};
+      "HLT_Ele32_WPTight_Gsf_L1DoubleEG_v",
+      "HLT_Ele115_CaloIdVT_GsfTrkIdT_v",
+      "HLT_Photon200_v",
+      "HLT_Ele50_CaloIdVT_GsfTrkIdT_PFJet165_v",
+      "HLT_Photon200_v",
+      "HLT_DoubleEle33_CaloIdL_MW_v"};
     TrigList_POG_EG = {"HLT_Ele32_WPTight_Gsf_v", "HLT_Ele32_WPTight_Gsf_L1DoubleEG_v"};
     TrigList_HNL_HighPtEG = {"HLT_Photon200_v","HLT_DoublePhoton70_v"};
 
@@ -153,9 +153,9 @@ void HNL_LeptonCore::initializeAnalyzer(){
     TrigList_HNL_DblEG = {"HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v"};
     
     TrigList_HNL_EG = { "HLT_Ele32_WPTight_Gsf_v",
-			"HLT_DoubleEle25_CaloIdL_MW_v" ,
-			"HLT_Ele115_CaloIdVT_GsfTrkIdT_v",
-			"HLT_Ele50_CaloIdVT_GsfTrkIdT_PFJet165_v"};
+      "HLT_DoubleEle25_CaloIdL_MW_v" ,
+      "HLT_Ele115_CaloIdVT_GsfTrkIdT_v",
+      "HLT_Ele50_CaloIdVT_GsfTrkIdT_PFJet165_v"};
 
     TrigList_POG_EG = { "HLT_Ele32_WPTight_Gsf_v"};
 
@@ -255,22 +255,22 @@ double HNL_LeptonCore::MergeMultiMC(vector<TString> vec, TString Method){
       int NearPhotonIdx=-1;
       
       for(unsigned int i=2; i<gens.size(); i++){
-	Gen gen = gens[i];
-	if( gens.at(i).MotherIndex()<0   ) continue;
-	if( !(gens.at(i).PID()==22 && (gens.at(i).Status()==23)) ) continue;
-	NearPhotonIdx=i;
+  Gen gen = gens[i];
+  if( gens.at(i).MotherIndex()<0   ) continue;
+  if( !(gens.at(i).PID()==22 && (gens.at(i).Status()==23)) ) continue;
+  NearPhotonIdx=i;
       }
       if(NearPhotonIdx < 0) {
-	double maxpt=0;
-	for(unsigned int i=2; i<gens.size(); i++){
-	  Gen gen = gens[i];
-	  if( gens.at(i).MotherIndex()<0   ) continue;
-	  if( !(gens.at(i).PID()==22 && (gens.at(i).Status()==1)) ) continue;
-	  if(gen.isPromptFinalState() && gen.Pt() > maxpt) {
-	    NearPhotonIdx=i;
-	    maxpt = gen.Pt();
-	  }
-	}
+  double maxpt=0;
+  for(unsigned int i=2; i<gens.size(); i++){
+    Gen gen = gens[i];
+    if( gens.at(i).MotherIndex()<0   ) continue;
+    if( !(gens.at(i).PID()==22 && (gens.at(i).Status()==1)) ) continue;
+    if(gen.isPromptFinalState() && gen.Pt() > maxpt) {
+      NearPhotonIdx=i;
+      maxpt = gen.Pt();
+    }
+  }
       }
 
       if(NearPhotonIdx < 0) return 0;
@@ -278,27 +278,27 @@ double HNL_LeptonCore::MergeMultiMC(vector<TString> vec, TString Method){
       double phPt= gens[NearPhotonIdx].Pt();
     
       if(Method == "Split"){
-	if (MCSample == "WGToLNuG_01J_PtG_130"){
-	  if (phPt < 300) return 1.;
-	}
-	else if (MCSample == "WGToLNuG_01J_PtG_300"){
-	  if (phPt < 500) return 1.;
-	}
-	else if (MCSample == "WGToLNuG_01J_PtG_500"){
-	  return 1.;
+  if (MCSample == "WGToLNuG_01J_PtG_130"){
+    if (phPt < 300) return 1.;
+  }
+  else if (MCSample == "WGToLNuG_01J_PtG_300"){
+    if (phPt < 500) return 1.;
+  }
+  else if (MCSample == "WGToLNuG_01J_PtG_500"){
+    return 1.;
       }
-	else {
-	  if (phPt <= 130)  return 1.;
-	  else return 0.;
-	}
+  else {
+    if (phPt <= 130)  return 1.;
+    else return 0.;
+  }
       }
       
       if(Method.Contains("Combine")){
-	double nWG = (Method == "CombineAll") ? 2. : 1.;
-	if (phPt < 130 ) return (1./nWG);
-	if (phPt < 300 ) return (1./(nWG+1.));
-	if (phPt < 500 ) return (1./(nWG+2.));
-	return (1./(nWG+3.));
+  double nWG = (Method == "CombineAll") ? 2. : 1.;
+  if (phPt < 130 ) return (1./nWG);
+  if (phPt < 300 ) return (1./(nWG+1.));
+  if (phPt < 500 ) return (1./(nWG+2.));
+  return (1./(nWG+3.));
       
       }
     }
@@ -622,25 +622,25 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
   
   if(SystType == "All"){
     SystList = {AnalyzerParameter::JetResUp,AnalyzerParameter::JetResDown,
-		AnalyzerParameter::JetEnUp, AnalyzerParameter::JetEnDown,
-		AnalyzerParameter::JetMassUp,AnalyzerParameter::JetMassDown,                                                                                     
-		AnalyzerParameter::JetMassSmearUp,AnalyzerParameter::JetMassSmearDown,                                                                           
-		AnalyzerParameter::MuonRecoSFUp,AnalyzerParameter::MuonRecoSFDown,                                                                               
-		AnalyzerParameter::MuonEnUp,AnalyzerParameter::MuonEnDown,                                                                                       
-		AnalyzerParameter::MuonIDSFUp,AnalyzerParameter::MuonIDSFDown,                                                                                   
-		AnalyzerParameter::MuonISOSFUp,AnalyzerParameter::MuonISOSFDown,                                                                                 
-		AnalyzerParameter::ElectronRecoSFUp,AnalyzerParameter::ElectronRecoSFDown,                                                                       
-		AnalyzerParameter::ElectronResUp,AnalyzerParameter::ElectronResDown,                                                                             
-		AnalyzerParameter::ElectronEnUp,AnalyzerParameter::ElectronEnDown,                                                                               
-		AnalyzerParameter::ElectronIDSFUp,AnalyzerParameter::ElectronIDSFDown,                                                                           
-		AnalyzerParameter::ElectronTriggerSFUp,AnalyzerParameter::ElectronTriggerSFDown,                                                                 
-		AnalyzerParameter::BTagSFHTagUp,AnalyzerParameter::BTagSFHTagDown,                                                                               
-		AnalyzerParameter::BTagSFLTagUp,AnalyzerParameter::BTagSFLTagDown,                                                                               
-		AnalyzerParameter::METUnclUp,AnalyzerParameter::METUnclDown,                                                                                     
-		//AnalyzerParameter::CFUp,AnalyzerParameter::CFDown,                                                                                               
-		//AnalyzerParameter::FRUp,AnalyzerParameter::FRDown,                                                                                               
-		AnalyzerParameter::PrefireUp,AnalyzerParameter::PrefireDown,                                                                                     
-		AnalyzerParameter::PUUp,AnalyzerParameter::PUDown};
+    AnalyzerParameter::JetEnUp, AnalyzerParameter::JetEnDown,
+    AnalyzerParameter::JetMassUp,AnalyzerParameter::JetMassDown,                                                                                     
+    AnalyzerParameter::JetMassSmearUp,AnalyzerParameter::JetMassSmearDown,                                                                           
+    AnalyzerParameter::MuonRecoSFUp,AnalyzerParameter::MuonRecoSFDown,                                                                               
+    AnalyzerParameter::MuonEnUp,AnalyzerParameter::MuonEnDown,                                                                                       
+    AnalyzerParameter::MuonIDSFUp,AnalyzerParameter::MuonIDSFDown,                                                                                   
+    AnalyzerParameter::MuonISOSFUp,AnalyzerParameter::MuonISOSFDown,                                                                                 
+    AnalyzerParameter::ElectronRecoSFUp,AnalyzerParameter::ElectronRecoSFDown,                                                                       
+    AnalyzerParameter::ElectronResUp,AnalyzerParameter::ElectronResDown,                                                                             
+    AnalyzerParameter::ElectronEnUp,AnalyzerParameter::ElectronEnDown,                                                                               
+    AnalyzerParameter::ElectronIDSFUp,AnalyzerParameter::ElectronIDSFDown,                                                                           
+    AnalyzerParameter::ElectronTriggerSFUp,AnalyzerParameter::ElectronTriggerSFDown,                                                                 
+    AnalyzerParameter::BTagSFHTagUp,AnalyzerParameter::BTagSFHTagDown,                                                                               
+    AnalyzerParameter::BTagSFLTagUp,AnalyzerParameter::BTagSFLTagDown,                                                                               
+    AnalyzerParameter::METUnclUp,AnalyzerParameter::METUnclDown,                                                                                     
+    //AnalyzerParameter::CFUp,AnalyzerParameter::CFDown,                                                                                               
+    //AnalyzerParameter::FRUp,AnalyzerParameter::FRDown,                                                                                               
+    AnalyzerParameter::PrefireUp,AnalyzerParameter::PrefireDown,                                                                                     
+    AnalyzerParameter::PUUp,AnalyzerParameter::PUDown};
     
     
   }
@@ -1246,8 +1246,8 @@ bool HNL_LeptonCore::CheckLeptonFlavourForChannel(HNL_LeptonCore::Channel channe
     if (channel==EE     && !(leps[0]->LeptonFlavour() == Lepton::ELECTRON && leps[1]->LeptonFlavour() == Lepton::ELECTRON)) return false;
     if (channel==MuMu   && !(leps[0]->LeptonFlavour() == Lepton::MUON     && leps[1]->LeptonFlavour() == Lepton::MUON))    return false;
     if (channel==EMu  &&
-	!( (leps[0]->LeptonFlavour() == Lepton::ELECTRON && leps[1]->LeptonFlavour() == Lepton::MUON) ||
-	   (leps[0]->LeptonFlavour() == Lepton::MUON && leps[1]->LeptonFlavour() == Lepton::ELECTRON) ))  return false;
+  !( (leps[0]->LeptonFlavour() == Lepton::ELECTRON && leps[1]->LeptonFlavour() == Lepton::MUON) ||
+     (leps[0]->LeptonFlavour() == Lepton::MUON && leps[1]->LeptonFlavour() == Lepton::ELECTRON) ))  return false;
   
     double lep1_ptcut= (channel==EE) ?   25. : 20.;
     double lep2_ptcut= (channel==EE) ?   10. : 5.;
@@ -1302,16 +1302,16 @@ double HNL_LeptonCore::GetPtCutTrigger(TString trigname, int nlep, TString flavo
   if(flavour == "Muon"){
     if(trigname.Contains("HLT_Mu17") ||  trigname.Contains("HLT_TkMu17")) {
       if(trigname.Contains("Mu8") || trigname.Contains("TkMu8")) {
-	if(nlep==0) return 20;
-	if(nlep==1) return 10;
-	if(nlep>1) return 5.;
+  if(nlep==0) return 20;
+  if(nlep==1) return 10;
+  if(nlep>1) return 5.;
       }  
     }
     else if(trigname.Contains("HLT_Mu23") ||  trigname.Contains("HLT_Mu23")) {
       if(trigname.Contains("Mu8") || trigname.Contains("TkMu8")) {
-	if(nlep==0) return 20;
-	if(nlep==1) return 10;
-	if(nlep>1) return 5.;
+  if(nlep==0) return 20;
+  if(nlep==1) return 10;
+  if(nlep>1) return 5.;
       }
     }
     
@@ -1489,17 +1489,17 @@ bool HNL_LeptonCore::PassTriggerAndCheckStream(bool apply_ptcut,vector<Lepton*> 
     if(!IsData) {
 
       if(ev.PassTrigger(itrig))  {
-	trig_passed=true;
+  trig_passed=true;
 
-	if(apply_ptcut  && !PassPtTrigger(ev, triglist, leps)) trig_passed=false;
-	if(trig_passed) return true;
+  if(apply_ptcut  && !PassPtTrigger(ev, triglist, leps)) trig_passed=false;
+  if(trig_passed) return true;
       }
     }
     else if(check_data_pd){
       if(ev.PassTrigger(itrig) && ev.IsPDForTrigger(itrig, this->DataStream)) {
-	trig_passed=true;
-	if(apply_ptcut  && !PassPtTrigger(ev, triglist, leps,check_data_pd)) trig_passed=false;
-	if(trig_passed) return true;
+  trig_passed=true;
+  if(apply_ptcut  && !PassPtTrigger(ev, triglist, leps,check_data_pd)) trig_passed=false;
+  if(trig_passed) return true;
       }
     }
     else if(ev.PassTrigger(itrig)){
@@ -1612,17 +1612,17 @@ Particle HNL_LeptonCore::GetSignalObject(TString obj, TString Sig){
     for(unsigned int i=2; i<gens.size(); i++){
       Gen gen = gens.at(i);
       if(fabs(gen.PID()) == 24 && (gens.at(gen.MotherIndex()).PID() == 9900012 || gens.at(gen.MotherIndex()).PID() == 9900014)){
-	W2_ind= i;
-	for(unsigned int i2=2; i2<gens.size(); i2++){
-	  Gen gen2 = gens.at(i2);
-	  if(gen2.MotherIndex() == W2_ind){
-	    if (fabs(gen2.PID()) == 24 ) W2_ind = i2;
-	  }
-	}
+  W2_ind= i;
+  for(unsigned int i2=2; i2<gens.size(); i2++){
+    Gen gen2 = gens.at(i2);
+    if(gen2.MotherIndex() == W2_ind){
+      if (fabs(gen2.PID()) == 24 ) W2_ind = i2;
+    }
+  }
       }
 
       if((gen.PID() == 9900012 || gen.PID() == 9900014) &&  gen.Status() == 22) {
-	N_Mother_ind= gen.MotherIndex();
+  N_Mother_ind= gen.MotherIndex();
       }
     }
     Gen LepFromN;
@@ -1636,22 +1636,22 @@ Particle HNL_LeptonCore::GetSignalObject(TString obj, TString Sig){
       Gen gen = gens.at(i);
 
       if(int(gen.MotherIndex()) == W2_ind && gen.Status() == 23) {
-	W2 = gens.at(gen.MotherIndex());
-	if(!j1IsSet) {  j1= gen; j1IsSet=true;}
-	else j2 = gen;
+  W2 = gens.at(gen.MotherIndex());
+  if(!j1IsSet) {  j1= gen; j1IsSet=true;}
+  else j2 = gen;
       }
       if(gen.PID() == 9900012 || gen.PID() == 9900014){
-	N= gens.at(i);
+  N= gens.at(i);
       }
       if( ! ( ( fabs(gen.PID()) == 13)  || (fabs(gen.PID()) == 11) )) continue;
 
       TString LepFl = (fabs(gen.PID()) == 13) ? "Mu" : "El";
 
       if(gens.at(gen.MotherIndex()).PID() == 9900012|| gens.at(gen.MotherIndex()).PID() == 9900014) {
-	LepFromN = gen;
+  LepFromN = gen;
       }
       else if(gen.MotherIndex() == N_Mother_ind){
-	LepFromW=gen;
+  LepFromW=gen;
       }
     }
 
@@ -2466,6 +2466,7 @@ double HNL_LeptonCore::GetXsec(TString SigProcess, int mass){
 
 Particle HNL_LeptonCore::GetvMET(TString METType, AnalyzerParameter param, std::vector<Jet> jets, std::vector<FatJet> fatjets, std::vector<Muon> muons, std::vector<Electron> electrons){
 
+  cout << "MET updating..." << endl; //JH
   bool IsType1   = METType.Contains("T1");
   bool IsxyCorr  = METType.Contains("xyCorr");
   bool UsePuppi  = METType.Contains("Puppi");
@@ -2484,7 +2485,8 @@ Particle HNL_LeptonCore::GetvMET(TString METType, AnalyzerParameter param, std::
   if(param.syst_ == AnalyzerParameter::ElectronEnUp)  IdxSyst = 6;
   if(param.syst_ == AnalyzerParameter::ElectronEnDown)  IdxSyst = 7;
 
-  bool ApplySyst = (!IsDATA) && IdxSyst >= 0;
+  bool ApplySyst = (!IsDATA) && (param.syst_ != AnalyzerParameter::Central);
+  cout << "Apply syst? " << ApplySyst << endl; //JH
 
   Particle vMET;
 
@@ -2507,16 +2509,16 @@ Particle HNL_LeptonCore::GetvMET(TString METType, AnalyzerParameter param, std::
     }
   }
 
-  if (param.syst_ == AnalyzerParameter::Central) return vMET;
+  //if (param.syst_ == AnalyzerParameter::Central) return vMET; //JH : the MET needs to be updated, even if it's Central.
 
   Particle vMETSyst;
-  if(ApplySyst){
+  //if(ApplySyst){
     if(METType.Contains("CMSSW")){
-      if(IsxyCorr)  vMETSyst.SetPtEtaPhiM(PuppiMET_Type1_PhiCor_pt, 0., PuppiMET_Type1_PhiCor_phi, 0.); //JH FIXME is this just omitted or not provided?
+      if(IsxyCorr) vMETSyst.SetPtEtaPhiM(PuppiMET_Type1_PhiCor_pt, 0., PuppiMET_Type1_PhiCor_phi, 0.); //JH FIXME is this just omitted or not provided?
       else         vMETSyst.SetPtEtaPhiM(PuppiMET_Type1_pt_shifts->at(IdxSyst), 0.,  PuppiMET_Type1_phi_shifts->at(IdxSyst), 0.);
     }
-		else vMETSyst = UpdateMETSyst(param, vMET, jets, fatjets, muons, electrons);
-  }
+    else vMETSyst = UpdateMETSyst(param, vMET, jets, fatjets, muons, electrons);
+  //} //JH
 
   return vMETSyst;
 }
@@ -3418,8 +3420,8 @@ void HNL_LeptonCore::FillAK8Plots(HNL_LeptonCore::Channel channel,  TString plot
     }
   }
 
-  if(DrawSyst)FillHist( plot_dir+"/RegionPlots_"+ region+ "/AK8Jet_Mass_l1J",  l1JCand.M(),  w, 500, 0, 2000, "Reco M_{llJ}");
-  if(DrawSyst)FillHist( plot_dir+"/RegionPlots_"+ region+ "/AK8Jet_Mass_l2J",  l2JCand.M(),  w, 500, 0, 2000, "Reco M_{llJ}");
+  FillHist( plot_dir+"/RegionPlots_"+ region+ "/AK8Jet_Mass_l1J",  l1JCand.M(),  w, 500, 0, 2000, "Reco M_{llJ}");
+  FillHist( plot_dir+"/RegionPlots_"+ region+ "/AK8Jet_Mass_l2J",  l2JCand.M(),  w, 500, 0, 2000, "Reco M_{llJ}");
   if(DrawSyst)FillHist( plot_dir+"/RegionPlots_"+ region+ "/AK8Jet_Mass_llJ",  llJCand.M(),  w, 500, 0, 2000, "Reco M_{llJ}");
   if(DrawSyst)FillHist( plot_dir+"/RegionPlots_"+ region+ "/AK8Jet_Mass_llJOverl1J",  llJCand.M()/ l1JCand.M(),  w, 500, 0, 5, "Reco M_{llJ}");
 
@@ -3548,14 +3550,14 @@ void HNL_LeptonCore::Fill_RegionPlots(HNL_LeptonCore::Channel channel, TString p
     for(UInt_t emme=0; emme<jets.size(); emme++){
       for(UInt_t enne=1; enne<jets.size(); enne++) {
 
-	if(emme == enne) continue;
+  if(emme == enne) continue;
         dijetmass_tmp = (jets[emme]+jets[enne]).M();
-	
+  
         if ( fabs(dijetmass_tmp-80.4) < fabs(dijetmass-80.4) ) {
-	  dijetmass = dijetmass_tmp;
-	  m = emme;
+    dijetmass = dijetmass_tmp;
+    m = emme;
           n = enne;
-	}
+  }
       }
     }
     lljjCand = *leps[0]  + *leps[1]  + jets[m]+jets[n];
@@ -3632,8 +3634,8 @@ void HNL_LeptonCore::Fill_RegionPlots(HNL_LeptonCore::Channel channel, TString p
     double MllW = (lljjCand.M() > 2000.) ? 1999. : lljjCand.M();
 
 
-    if(DrawSyst)FillHist( plot_dir+"/RegionPlots_"+ region+ "/DiJet_M_l1W",   MN1,  w, 7, mljbins , "Reco M_{l1jj}");
-    if(DrawSyst)FillHist( plot_dir+"/RegionPlots_"+ region+ "/DiJet_M_l2W",   MN2,  w, 7, mljbins , "Reco M_{l2jj} ");
+    FillHist( plot_dir+"/RegionPlots_"+ region+ "/DiJet_M_l1W",   MN1,  w, 7, mljbins , "Reco M_{l1jj}");
+    FillHist( plot_dir+"/RegionPlots_"+ region+ "/DiJet_M_l2W",   MN2,  w, 7, mljbins , "Reco M_{l2jj} ");
     if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/DiJet_M_lAv12W", (N1Cand.M()+  N2Cand.M())/2.,  w,  500, 0., 2000., "Reco M_{l1_2jj} ");
     
     if(DrawSyst)FillHist( plot_dir+"/RegionPlots_"+ region+ "/DiJet_M_llW",  MllW ,  w, 7, mljbins , "Reco M_{lljj}");
@@ -3690,7 +3692,7 @@ void HNL_LeptonCore::Fill_RegionPlots(HNL_LeptonCore::Channel channel, TString p
   double HT = GetHT(jets, fatjets);
   if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/Ev_LT", LT  , w, 200, 0., 2000.,"L_{T} GeV");
   if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/Ev_HT", HT  , w, 200, 0., 2000.,"H_{T} GeV");
-  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/HToLepPt1", HT/ leps[0]->Pt()  , w, 100, 0., 20.,"HT/PT(1)");
+  FillHist( plot_dir+"/RegionPlots_"+ region+ "/HToLepPt1", HT/ leps[0]->Pt()  , w, 100, 0., 20.,"HT/PT(1)");
   if(DrawSyst)FillHist( plot_dir+"/RegionPlots_"+ region+ "/HToLepPt2", HT/ leps[1]->Pt()  , w, 100, 0., 20.,"HT/PT(2)");
   if(threelep&&DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/HToLepPt3", HT/ leps[2]->Pt()  , w, 100, 0., 20.,"HT/PT(3)");
   if(fourlep&&DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/HToLepPt4", HT/ leps[3]->Pt()  , w, 100, 0., 20.,"HT/PT(4)");
@@ -3811,13 +3813,13 @@ void HNL_LeptonCore::Fill_RegionPlots(HNL_LeptonCore::Channel channel, TString p
     int ijet1(-1), ijet2(-1);
     for(unsigned int ij = 0; ij < jets.size()-1; ij++){
       for(unsigned int ij2 = ij+1; ij2 < jets.size(); ij2++){
-	
-	double deta = fabs(jets[ij].Eta() - jets[ij2].Eta());
-	if(deta > maxDiJetDeta) {
-	  maxDiJetDeta=deta;
-	  ijet1=ij;
-	  ijet2=ij2;
-	}
+  
+  double deta = fabs(jets[ij].Eta() - jets[ij2].Eta());
+  if(deta > maxDiJetDeta) {
+    maxDiJetDeta=deta;
+    ijet1=ij;
+    ijet2=ij2;
+  }
       }
     }
     
@@ -3957,7 +3959,7 @@ void HNL_LeptonCore::FillEventCutflow(HNL_LeptonCore::SearchRegion sr, double ev
     
     if( sr==SR3){
       labels = {  "Presel", "NoAK8Jet", "FailVBF",    "SR3_lep_charge" ,     "SR3_lep_pt",      "SR3_dilep_mass","SR3_0JetBin","SR3_1JetBin",      "SR3_jet",       "SR3_dijet",
-		  "SR3_Wmass", "SR3_J1Pt",     "SR3_MET",      "SR3_bveto"};
+      "SR3_Wmass", "SR3_J1Pt",     "SR3_MET",      "SR3_bveto"};
       EVhitname= "SR3";
     }
     if( sr==SR3BDT){
@@ -3974,12 +3976,12 @@ void HNL_LeptonCore::FillEventCutflow(HNL_LeptonCore::SearchRegion sr, double ev
     }
     if(sr==PreselSS || sr==Presel ){
       labels = {"NoCut", "METFilter", "Trigger", "Dilepton",
-		"SS_Dilep" ,"SS_lep_veto", "SS_Dilep_mass", "SS_Presel"};
+    "SS_Dilep" ,"SS_lep_veto", "SS_Dilep_mass", "SS_Presel"};
       EVhitname = "SS_Presel";
     }
     if(sr==PreselOS || sr==Presel ){
       labels = {"NoCut", "METFilter", "Trigger", "Dilepton",
-	      "OS_Dilep" ,"OS_lep_veto", "OS_Dilep_mass", "OS_Presel"};
+        "OS_Dilep" ,"OS_lep_veto", "OS_Dilep_mass", "OS_Presel"};
       EVhitname ="OS_Presel";
     }
     if(sr==ChannelDepInc ){
@@ -4105,12 +4107,12 @@ void HNL_LeptonCore::FillEventCutflow(HNL_LeptonCore::SearchRegion sr, double ev
       vector<TString> MuID = {"MuVL","MuL","MuM","MuT"};
       labels = {"SR1"};
       for(auto ij :  JID){
-	for(auto iel : ElID){
-	  for(auto imu : MuID){
-	    TString TID=ij+"_"+iel+"_"+imu;
-	    labels.push_back(TID);
-	  }
-	}
+  for(auto iel : ElID){
+    for(auto imu : MuID){
+      TString TID=ij+"_"+iel+"_"+imu;
+      labels.push_back(TID);
+    }
+  }
       }
       EVhitname= "SR1Tau";
     }
@@ -4121,12 +4123,12 @@ void HNL_LeptonCore::FillEventCutflow(HNL_LeptonCore::SearchRegion sr, double ev
       vector<TString> MuID = {"MuVL","MuL","MuM","MuT"};
       labels = {"SR2"};
       for(auto ij :  JID){
-	for(auto iel : ElID){
-	  for(auto imu : MuID){
-	    TString TID=ij+"_"+iel+"_"+imu;
-	    labels.push_back(TID);
-	  }
-	}
+  for(auto iel : ElID){
+    for(auto imu : MuID){
+      TString TID=ij+"_"+iel+"_"+imu;
+      labels.push_back(TID);
+    }
+  }
       }
       EVhitname= "SR2Tau";
     }
@@ -4137,12 +4139,12 @@ void HNL_LeptonCore::FillEventCutflow(HNL_LeptonCore::SearchRegion sr, double ev
       vector<TString> MuID = {"MuVL","MuL","MuM","MuT"};
       labels = {"SR3"};
       for(auto ij :  JID){
-	for(auto iel : ElID){
-	  for(auto imu : MuID){
-	    TString TID=ij+"_"+iel+"_"+imu;
-	    labels.push_back(TID);
-	  }
-	}
+  for(auto iel : ElID){
+    for(auto imu : MuID){
+      TString TID=ij+"_"+iel+"_"+imu;
+      labels.push_back(TID);
+    }
+  }
       }
       EVhitname= "SR3Tau";
     }

@@ -13,11 +13,12 @@ masses = ["M100","M200","M300","M400","M500","M600","M700","M800","M900","M1000"
 #masses = ["M100","M200","M300","M400","M500"]
 #masses = ["M500"]
 channels = ["MuMu","EE","EMu"]
-#channels = ["MuMu"]
+channels = ["MuMu"]
 
 InputPath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegionPlotter/"
 #OutputPath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegionPlotter/InputForCombine/"
-OutputPath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegionPlotter/AddSyst/"
+#OutputPath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegionPlotter/AddSyst/"
+OutputPath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegionPlotter/SNUWS/"
 Analyzer = "HNL_SignalRegionPlotter"
 
 MergeData   = False
@@ -25,7 +26,7 @@ MergeFake   = False
 MergeCF     = False
 MergeConv   = False
 MergeMC     = False
-MergeSignal = True
+MergeSignal = False
 #MergeDYVBF = True
 #MergeSSWW  = True
 
@@ -52,7 +53,7 @@ if MergeCF:
 
   for era in eras:
     #OutFile=InputPath + era + "/RunCF__/DATA/"+Analyzer+"_SkimTree_Dilepton_CF.root"
-    OutFile=InputPath + era + "/RunCF__/"+Analyzer+"_SkimTree_HNMultiLep_CF.root" #FIXME
+    OutFile=InputPath + era + "/RunCF__/"+Analyzer+"_SkimTree_HNMultiLep_CF.root" #FIXME MC CF
     if os.path.exists(OutFile):
       os.system("rm " + OutFile)
     #os.system("hadd " + OutFile + "  " + InputPath + "/"+era+"/RunCF__/DATA/*")
@@ -95,7 +96,7 @@ for era in eras:
   f_path_data        = InputPath + era + "/DATA/"+Analyzer+"_SkimTree_HNMultiLep_DATA.root"
   f_path_fake        = InputPath + era + "/RunFake__/DATA/"+Analyzer+"_SkimTree_HNMultiLep_Fake.root"
   #f_path_cf          = InputPath + era + "/RunCF__/DATA/"+Analyzer+"_SkimTree_Dilepton_CF.root"
-  f_path_cf          = InputPath + era + "/RunCF__/"+Analyzer+"_SkimTree_HNMultiLep_CF.root" #FIXME
+  f_path_cf          = InputPath + era + "/RunCF__/"+Analyzer+"_SkimTree_HNMultiLep_CF.root" #FIXME MC CF
   f_path_conv        = InputPath + era + "/RunConv__/"+Analyzer+"_SkimTree_HNMultiLep_Conv.root"
   f_path_prompt      = InputPath + era + "/"+Analyzer+"_SkimTree_HNMultiLep_MC.root"
   

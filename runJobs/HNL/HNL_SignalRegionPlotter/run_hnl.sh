@@ -91,11 +91,13 @@ if [[ $1 == "" ]]; then
 #SKFlat.py -a $analyzer  -l $mcpath/Conv.txt  -n 10  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLep  --userflags RunConv &
 #SKFlat.py -a $analyzer  -l $mcpath/CF.txt  -n $njobs  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLep  --userflags RunCF &
 #SKFlat.py -a $analyzer  -l $datapath/${i}_DiLepton.txt  -n ${njobs_data}  --nmax ${nmax}   -e ${i}  --skim SkimTree_HNMultiLep --userflags RunFake &
+#SKFlat.py -a $analyzer  -l $mcpath/PromptSS.txt  -n 100  --nmax ${nmax}   -e ${i}   --skim SkimTree_HNMultiLep &
+#SKFlat.py -a $analyzer  -l $datapath/${i}_DiLepton.txt  -n ${njobs_data}  --nmax ${nmax}   -e ${i}  --skim SkimTree_HNMultiLep &
+
+# Tests
 #SKFlat.py -a $analyzer  -l $datapath/${i}_DiLepton_MuMu_B.txt  -n ${njobs_data}  --nmax ${nmax}   -e ${i}  --skim SkimTree_HNMultiLep --userflags RunFake &
-#SKFlat.py -a $analyzer  -l $mcpath/PromptSS.txt  -n 20  --nmax ${nmax}   -e ${i}   --skim SkimTree_HNMultiLep &
 SKFlat.py -a $analyzer  -i WZTo3LNu_amcatnlo -n 100  --nmax ${nmax}   -e ${i}   --skim SkimTree_HNMultiLep &
-SKFlat.py -a $analyzer  -i ZZTo4L_powheg -n 100  --nmax ${nmax}   -e ${i}   --skim SkimTree_HNMultiLep &
-#SKFlat.py -a $analyzer  -l $datapath/${i}_DiLepton.txt  -n ${njobs_data}  --nmax ${nmax}   -e ${i}  --skim SkimTree_HNMultiLep &  
+#SKFlat.py -a $analyzer  -i ZZTo4L_powheg -n 100  --nmax ${nmax}   -e ${i}   --skim SkimTree_HNMultiLep &
 
 	
     done

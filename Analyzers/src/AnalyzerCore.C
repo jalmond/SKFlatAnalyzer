@@ -297,12 +297,12 @@ void AnalyzerCore::SetupJECUncertainty(TString source , TString JetType){
 
       // Check Final bin is last bin in txt file for this eta bin
       if((i %3) == 2 && finalbin) {
-	string CheckFinalPt; 
-	is >> CheckFinalPt;
-	if(!CheckFinalPt.empty()) {
-	  cout << "[AnalyzerCore::SetupJECUncertainty] Last pt bin of  set incorrectly ..." << endl;
-	  exit(EXIT_FAILURE);
-	}
+  string CheckFinalPt; 
+  is >> CheckFinalPt;
+  if(!CheckFinalPt.empty()) {
+    cout << "[AnalyzerCore::SetupJECUncertainty] Last pt bin of  set incorrectly ..." << endl;
+    exit(EXIT_FAILURE);
+  }
       }
     }
     etaptmap[eta_min] = ptbin;
@@ -422,19 +422,19 @@ std::vector<Muon> AnalyzerCore::GetAllMuons(){
         if(dR1<mindR1){ mindR1=dR1; IdxMatchJet=ij; }
       }
       if(IdxMatchJet!=-1)    {
-	JetDiscCJ     = AK4_JetAllColl.at(IdxMatchJet).GetTaggerResult(JetTagging::DeepJet);
-	JetHadFlavour = AK4_JetAllColl.at(IdxMatchJet).hadronFlavour();
+  JetDiscCJ     = AK4_JetAllColl.at(IdxMatchJet).GetTaggerResult(JetTagging::DeepJet);
+  JetHadFlavour = AK4_JetAllColl.at(IdxMatchJet).hadronFlavour();
       }
       else {
-	JetDiscCJ=1.5;
-	JetHadFlavour=0;
+  JetDiscCJ=1.5;
+  JetHadFlavour=0;
       }
 
       //if(mu.Pt() > 10){
-	
-	//cout << "muon_jetPtRel = " << muon_jetPtRel->at(i) << " prov  =" <<  JetLeptonPtRelLepAware(mu,true,true) << " " << JetLeptonPtRelLepAware(mu,true,false) << endl;
-	
-	//cout << "muon_jetPtRatio = " << muon_jetPtRatio->at(i) << " prov  =" <<  JetLeptonPtRatioLepAware(mu,false,true) << " " << JetLeptonPtRatioLepAware(mu,false,false) << endl;
+  
+  //cout << "muon_jetPtRel = " << muon_jetPtRel->at(i) << " prov  =" <<  JetLeptonPtRelLepAware(mu,true,true) << " " << JetLeptonPtRelLepAware(mu,true,false) << endl;
+  
+  //cout << "muon_jetPtRatio = " << muon_jetPtRatio->at(i) << " prov  =" <<  JetLeptonPtRatioLepAware(mu,false,true) << " " << JetLeptonPtRatioLepAware(mu,false,false) << endl;
 
       //      }
 
@@ -1149,51 +1149,51 @@ void AnalyzerCore::SetupIDMVAReader(bool isMuon){
       cout << "Setting up 2016 CF READER " <<endl;
 
       if(RunAllForOptCF){
-	if(RunMD5){
-	  ElectronIDv2CFMVAReader->BookMVA("BDTGv2_IB_CF_MD5", MVAPathCFv2+ "BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2016_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf); 
-	  ElectronIDv2CFMVAReader->BookMVA("BDTGv2_OB_CF_MD5", MVAPathCFv2+ "BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2016_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT" +xmlpf);
-	  ElectronIDv2CFMVAReader->BookMVA("BDTGv2_EC_CF_MD5", MVAPathCFv2+ "BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2016_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv2CFMVAReader->BookMVA("BDTGv2_CF_MD5",    MVAPathCFv2+ "BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2016_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT" +xmlpf);
-	  ElectronIDv3CFMVAReader->BookMVA("BDTGv3_IB_CF_MD5", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2016_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv3CFMVAReader->BookMVA("BDTGv3_OB_CF_MD5", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2016_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv3CFMVAReader->BookMVA("BDTGv3_EC_CF_MD5", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2016_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv3CFMVAReader->BookMVA("BDTGv3_CF_MD5",    MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2016_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT" +xmlpf);
-	}
+  if(RunMD5){
+    ElectronIDv2CFMVAReader->BookMVA("BDTGv2_IB_CF_MD5", MVAPathCFv2+ "BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2016_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf); 
+    ElectronIDv2CFMVAReader->BookMVA("BDTGv2_OB_CF_MD5", MVAPathCFv2+ "BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2016_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT" +xmlpf);
+    ElectronIDv2CFMVAReader->BookMVA("BDTGv2_EC_CF_MD5", MVAPathCFv2+ "BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2016_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv2CFMVAReader->BookMVA("BDTGv2_CF_MD5",    MVAPathCFv2+ "BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2016_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT" +xmlpf);
+    ElectronIDv3CFMVAReader->BookMVA("BDTGv3_IB_CF_MD5", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2016_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv3CFMVAReader->BookMVA("BDTGv3_OB_CF_MD5", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2016_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv3CFMVAReader->BookMVA("BDTGv3_EC_CF_MD5", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2016_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv3CFMVAReader->BookMVA("BDTGv3_CF_MD5",    MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2016_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT" +xmlpf);
+  }
         if(RunMD4){
-	  ElectronIDv2CFMVAReader->BookMVA("BDTGv2_IB_CF_MD4", MVAPathCFv2+ "BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2016_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv2CFMVAReader->BookMVA("BDTGv2_OB_CF_MD4", MVAPathCFv2+ "BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2016_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv2CFMVAReader->BookMVA("BDTGv2_EC_CF_MD4", MVAPathCFv2+ "BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2016_NTrees500_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_4_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv2CFMVAReader->BookMVA("BDTGv2_CF_MD4",    MVAPathCFv2+ "BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2016_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv3CFMVAReader->BookMVA("BDTGv3_IB_CF_MD4", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2016_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv3CFMVAReader->BookMVA("BDTGv3_OB_CF_MD4", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2016_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT" +xmlpf);
-	  ElectronIDv3CFMVAReader->BookMVA("BDTGv3_EC_CF_MD4", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2016_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT" +xmlpf);
-	  ElectronIDv3CFMVAReader->BookMVA("BDTGv3_CF_MD4",    MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2016_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	}
+    ElectronIDv2CFMVAReader->BookMVA("BDTGv2_IB_CF_MD4", MVAPathCFv2+ "BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2016_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv2CFMVAReader->BookMVA("BDTGv2_OB_CF_MD4", MVAPathCFv2+ "BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2016_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv2CFMVAReader->BookMVA("BDTGv2_EC_CF_MD4", MVAPathCFv2+ "BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2016_NTrees500_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_4_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv2CFMVAReader->BookMVA("BDTGv2_CF_MD4",    MVAPathCFv2+ "BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2016_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv3CFMVAReader->BookMVA("BDTGv3_IB_CF_MD4", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2016_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv3CFMVAReader->BookMVA("BDTGv3_OB_CF_MD4", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2016_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT" +xmlpf);
+    ElectronIDv3CFMVAReader->BookMVA("BDTGv3_EC_CF_MD4", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2016_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT" +xmlpf);
+    ElectronIDv3CFMVAReader->BookMVA("BDTGv3_CF_MD4",    MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2016_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+  }
         if(RunMD3){
-	  ElectronIDv2CFMVAReader->BookMVA("BDTGv2_IB_CF_MD3", MVAPathCFv2+ "BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2016_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv2CFMVAReader->BookMVA("BDTGv2_OB_CF_MD3", MVAPathCFv2+ "BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2016_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT" +xmlpf);
-	  ElectronIDv2CFMVAReader->BookMVA("BDTGv2_EC_CF_MD3", MVAPathCFv2+ "BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2016_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv2CFMVAReader->BookMVA("BDTGv2_CF_MD3",    MVAPathCFv2+ "BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2016_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT" +xmlpf);
-	  ElectronIDv3CFMVAReader->BookMVA("BDTGv3_IB_CF_MD3", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2016_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv3CFMVAReader->BookMVA("BDTGv3_OB_CF_MD3", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2016_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv3CFMVAReader->BookMVA("BDTGv3_EC_CF_MD3",     MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2016_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv3CFMVAReader->BookMVA("BDTGv3_CF_MD3",        MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2016_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv2CFMVAReaderPt->BookMVA("BDTGv2Pt_IB_CF_MD3", MVAPathCFv2+"BDTG_CFSignalCF_IBTypeI_EE_SignalCF_IB_2016_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv2CFMVAReaderPt->BookMVA("BDTGv2Pt_OB_CF_MD3", MVAPathCFv2+"BDTG_CFSignalCF_OBTypeI_EE_SignalCF_OB_2016_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv2CFMVAReaderPt->BookMVA("BDTGv2Pt_EC_CF_MD3", MVAPathCFv2+"BDTG_CFSignalCF_ECTypeI_EE_SignalCF_EC_2016_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv2CFMVAReaderPt->BookMVA("BDTGv2Pt_CF_MD3",    MVAPathCFv2+"BDTG_CFSignalCFTypeI_EE_SignalCF_2016_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT" +xmlpf);
-	}
+    ElectronIDv2CFMVAReader->BookMVA("BDTGv2_IB_CF_MD3", MVAPathCFv2+ "BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2016_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv2CFMVAReader->BookMVA("BDTGv2_OB_CF_MD3", MVAPathCFv2+ "BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2016_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT" +xmlpf);
+    ElectronIDv2CFMVAReader->BookMVA("BDTGv2_EC_CF_MD3", MVAPathCFv2+ "BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2016_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv2CFMVAReader->BookMVA("BDTGv2_CF_MD3",    MVAPathCFv2+ "BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2016_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT" +xmlpf);
+    ElectronIDv3CFMVAReader->BookMVA("BDTGv3_IB_CF_MD3", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2016_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv3CFMVAReader->BookMVA("BDTGv3_OB_CF_MD3", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2016_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv3CFMVAReader->BookMVA("BDTGv3_EC_CF_MD3",     MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2016_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv3CFMVAReader->BookMVA("BDTGv3_CF_MD3",        MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2016_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv2CFMVAReaderPt->BookMVA("BDTGv2Pt_IB_CF_MD3", MVAPathCFv2+"BDTG_CFSignalCF_IBTypeI_EE_SignalCF_IB_2016_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv2CFMVAReaderPt->BookMVA("BDTGv2Pt_OB_CF_MD3", MVAPathCFv2+"BDTG_CFSignalCF_OBTypeI_EE_SignalCF_OB_2016_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv2CFMVAReaderPt->BookMVA("BDTGv2Pt_EC_CF_MD3", MVAPathCFv2+"BDTG_CFSignalCF_ECTypeI_EE_SignalCF_EC_2016_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv2CFMVAReaderPt->BookMVA("BDTGv2Pt_CF_MD3",    MVAPathCFv2+"BDTG_CFSignalCFTypeI_EE_SignalCF_2016_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT" +xmlpf);
+  }
         if(RunMD2){
-	  ElectronIDv2CFMVAReader->BookMVA("BDTGv2_IB_CF_MD2", MVAPathCFv2+ "BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2016_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv2CFMVAReader->BookMVA("BDTGv2_OB_CF_MD2", MVAPathCFv2+ "BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2016_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv2CFMVAReader->BookMVA("BDTGv2_EC_CF_MD2", MVAPathCFv2+ "BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2016_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv2CFMVAReader->BookMVA("BDTGv2_CF_MD2",    MVAPathCFv2+ "BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2016_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv3CFMVAReader->BookMVA("BDTGv3_IB_CF_MD2", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2016_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT" +xmlpf);
-	  ElectronIDv3CFMVAReader->BookMVA("BDTGv3_OB_CF_MD2", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2016_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT" +xmlpf);
-	  ElectronIDv3CFMVAReader->BookMVA("BDTGv3_CF_MD2",    MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2016_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv3CFMVAReader->BookMVA("BDTGv3_EC_CF_MD2", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2016_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	}
-	
+    ElectronIDv2CFMVAReader->BookMVA("BDTGv2_IB_CF_MD2", MVAPathCFv2+ "BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2016_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv2CFMVAReader->BookMVA("BDTGv2_OB_CF_MD2", MVAPathCFv2+ "BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2016_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv2CFMVAReader->BookMVA("BDTGv2_EC_CF_MD2", MVAPathCFv2+ "BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2016_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv2CFMVAReader->BookMVA("BDTGv2_CF_MD2",    MVAPathCFv2+ "BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2016_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv3CFMVAReader->BookMVA("BDTGv3_IB_CF_MD2", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2016_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT" +xmlpf);
+    ElectronIDv3CFMVAReader->BookMVA("BDTGv3_OB_CF_MD2", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2016_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT" +xmlpf);
+    ElectronIDv3CFMVAReader->BookMVA("BDTGv3_CF_MD2",    MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2016_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv3CFMVAReader->BookMVA("BDTGv3_EC_CF_MD2", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2016_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+  }
+  
         //ElectronIDv2CFMVAReaderPt->BookMVA("BDTGv2Pt_IB_CF_MD5", MVAPathCFv2+"BDTG_CFSignalCF_IBTypeI_EE_SignalCF_IB_2016_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
         //ElectronIDv2CFMVAReaderPt->BookMVA("BDTGv2Pt_IB_CF_MD4", MVAPathCFv2+"BDTG_CFSignalCF_IBTypeI_EE_SignalCF_IB_2016_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
         //ElectronIDv2CFMVAReaderPt->BookMVA("BDTGv2Pt_IB_CF_MD2", MVAPathCFv2+"BDTG_CFSignalCF_IBTypeI_EE_SignalCF_IB_2016_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
@@ -1213,56 +1213,56 @@ void AnalyzerCore::SetupIDMVAReader(bool isMuon){
     if(GetYear() == 2017) {
       
       if(RunAllForOptCF){
-	cout << "Setting up 2017 CF READER " <<endl;
+  cout << "Setting up 2017 CF READER " <<endl;
 
-	if(RunMD5){
-	  ElectronIDv2CFMVAReader->BookMVA("BDTGv2_IB_CF_MD5", MVAPathCFv2+ "BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv2CFMVAReader->BookMVA("BDTGv2_OB_CF_MD5", MVAPathCFv2+ "BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv2CFMVAReader->BookMVA("BDTGv2_EC_CF_MD5", MVAPathCFv2+ "BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv2CFMVAReader->BookMVA("BDTGv2_CF_MD5",    MVAPathCFv2+ "BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv3CFMVAReader->BookMVA("BDTGv3_IB_CF_MD5", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv3CFMVAReader->BookMVA("BDTGv3_OB_CF_MD5", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT" +xmlpf);
-	  ElectronIDv3CFMVAReader->BookMVA("BDTGv3_EC_CF_MD5", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv3CFMVAReader->BookMVA("BDTGv3_CF_MD5",    MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+  if(RunMD5){
+    ElectronIDv2CFMVAReader->BookMVA("BDTGv2_IB_CF_MD5", MVAPathCFv2+ "BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv2CFMVAReader->BookMVA("BDTGv2_OB_CF_MD5", MVAPathCFv2+ "BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv2CFMVAReader->BookMVA("BDTGv2_EC_CF_MD5", MVAPathCFv2+ "BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv2CFMVAReader->BookMVA("BDTGv2_CF_MD5",    MVAPathCFv2+ "BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv3CFMVAReader->BookMVA("BDTGv3_IB_CF_MD5", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv3CFMVAReader->BookMVA("BDTGv3_OB_CF_MD5", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT" +xmlpf);
+    ElectronIDv3CFMVAReader->BookMVA("BDTGv3_EC_CF_MD5", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv3CFMVAReader->BookMVA("BDTGv3_CF_MD5",    MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
 
-	}
-	if(RunMD4){
-	  ElectronIDv2CFMVAReader->BookMVA("BDTGv2_IB_CF_MD4", MVAPathCFv2+ "BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv2CFMVAReader->BookMVA("BDTGv2_OB_CF_MD4", MVAPathCFv2+ "BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv2CFMVAReader->BookMVA("BDTGv2_EC_CF_MD4", MVAPathCFv2+ "BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv2CFMVAReader->BookMVA("BDTGv2_CF_MD4",    MVAPathCFv2+ "BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv3CFMVAReader->BookMVA("BDTGv3_IB_CF_MD4", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT" +xmlpf);
-	  ElectronIDv3CFMVAReader->BookMVA("BDTGv3_OB_CF_MD4", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT" +xmlpf);
-	  ElectronIDv3CFMVAReader->BookMVA("BDTGv3_EC_CF_MD4", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv3CFMVAReader->BookMVA("BDTGv3_CF_MD4",    MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+  }
+  if(RunMD4){
+    ElectronIDv2CFMVAReader->BookMVA("BDTGv2_IB_CF_MD4", MVAPathCFv2+ "BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv2CFMVAReader->BookMVA("BDTGv2_OB_CF_MD4", MVAPathCFv2+ "BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv2CFMVAReader->BookMVA("BDTGv2_EC_CF_MD4", MVAPathCFv2+ "BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv2CFMVAReader->BookMVA("BDTGv2_CF_MD4",    MVAPathCFv2+ "BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv3CFMVAReader->BookMVA("BDTGv3_IB_CF_MD4", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT" +xmlpf);
+    ElectronIDv3CFMVAReader->BookMVA("BDTGv3_OB_CF_MD4", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT" +xmlpf);
+    ElectronIDv3CFMVAReader->BookMVA("BDTGv3_EC_CF_MD4", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv3CFMVAReader->BookMVA("BDTGv3_CF_MD4",    MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
 
-	}
-	if(RunMD3){
-	  ElectronIDv2CFMVAReader->BookMVA("BDTGv2_OB_CF_MD3", MVAPathCFv2+ "BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv2CFMVAReader->BookMVA("BDTGv2_IB_CF_MD3", MVAPathCFv2+ "BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv2CFMVAReader->BookMVA("BDTGv2_EC_CF_MD3", MVAPathCFv2+ "BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv2CFMVAReader->BookMVA("BDTGv2_CF_MD3",    MVAPathCFv2+ "BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv3CFMVAReader->BookMVA("BDTGv3_IB_CF_MD3", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT" +xmlpf);
-	  ElectronIDv3CFMVAReader->BookMVA("BDTGv3_OB_CF_MD3", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv3CFMVAReader->BookMVA("BDTGv3_EC_CF_MD3", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv3CFMVAReader->BookMVA("BDTGv3_CF_MD3",    MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv2CFMVAReaderPt->BookMVA("BDTGv2Pt_IB_CF_MD3", MVAPathCFv2+"BDTG_CFSignalCF_IBTypeI_EE_SignalCF_IB_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv2CFMVAReaderPt->BookMVA("BDTGv2Pt_OB_CF_MD3", MVAPathCFv2+"BDTG_CFSignalCF_OBTypeI_EE_SignalCF_OB_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv2CFMVAReaderPt->BookMVA("BDTGv2Pt_EC_CF_MD3", MVAPathCFv2+"BDTG_CFSignalCF_ECTypeI_EE_SignalCF_EC_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv2CFMVAReaderPt->BookMVA("BDTGv2Pt_CF_MD3", MVAPathCFv2+"BDTG_CFSignalCFTypeI_EE_SignalCF_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+  }
+  if(RunMD3){
+    ElectronIDv2CFMVAReader->BookMVA("BDTGv2_OB_CF_MD3", MVAPathCFv2+ "BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv2CFMVAReader->BookMVA("BDTGv2_IB_CF_MD3", MVAPathCFv2+ "BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv2CFMVAReader->BookMVA("BDTGv2_EC_CF_MD3", MVAPathCFv2+ "BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv2CFMVAReader->BookMVA("BDTGv2_CF_MD3",    MVAPathCFv2+ "BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv3CFMVAReader->BookMVA("BDTGv3_IB_CF_MD3", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT" +xmlpf);
+    ElectronIDv3CFMVAReader->BookMVA("BDTGv3_OB_CF_MD3", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv3CFMVAReader->BookMVA("BDTGv3_EC_CF_MD3", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv3CFMVAReader->BookMVA("BDTGv3_CF_MD3",    MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv2CFMVAReaderPt->BookMVA("BDTGv2Pt_IB_CF_MD3", MVAPathCFv2+"BDTG_CFSignalCF_IBTypeI_EE_SignalCF_IB_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv2CFMVAReaderPt->BookMVA("BDTGv2Pt_OB_CF_MD3", MVAPathCFv2+"BDTG_CFSignalCF_OBTypeI_EE_SignalCF_OB_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv2CFMVAReaderPt->BookMVA("BDTGv2Pt_EC_CF_MD3", MVAPathCFv2+"BDTG_CFSignalCF_ECTypeI_EE_SignalCF_EC_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv2CFMVAReaderPt->BookMVA("BDTGv2Pt_CF_MD3", MVAPathCFv2+"BDTG_CFSignalCFTypeI_EE_SignalCF_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
 
-	}
-	if(RunMD2){
-	  ElectronIDv2CFMVAReader->BookMVA("BDTGv2_IB_CF_MD2", MVAPathCFv2+ "BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv2CFMVAReader->BookMVA("BDTGv2_OB_CF_MD2", MVAPathCFv2+ "BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv2CFMVAReader->BookMVA("BDTGv2_EC_CF_MD2", MVAPathCFv2+ "BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv2CFMVAReader->BookMVA("BDTGv2_CF_MD2",    MVAPathCFv2+ "BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT" +xmlpf);
-	  ElectronIDv3CFMVAReader->BookMVA("BDTGv3_IB_CF_MD2", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT" +xmlpf);
-	  ElectronIDv3CFMVAReader->BookMVA("BDTGv3_OB_CF_MD2", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT" +xmlpf);
-	  ElectronIDv3CFMVAReader->BookMVA("BDTGv3_EC_CF_MD2", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv3CFMVAReader->BookMVA("BDTGv3_CF_MD2",    MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT" +xmlpf);
-	}
-	//ElectronIDv2CFMVAReaderPt->BookMVA("BDTGv2Pt_IB_CF_MD5", MVAPathCFv2+"BDTG_CFSignalCF_IBTypeI_EE_SignalCF_IB_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+  }
+  if(RunMD2){
+    ElectronIDv2CFMVAReader->BookMVA("BDTGv2_IB_CF_MD2", MVAPathCFv2+ "BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv2CFMVAReader->BookMVA("BDTGv2_OB_CF_MD2", MVAPathCFv2+ "BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv2CFMVAReader->BookMVA("BDTGv2_EC_CF_MD2", MVAPathCFv2+ "BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv2CFMVAReader->BookMVA("BDTGv2_CF_MD2",    MVAPathCFv2+ "BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT" +xmlpf);
+    ElectronIDv3CFMVAReader->BookMVA("BDTGv3_IB_CF_MD2", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT" +xmlpf);
+    ElectronIDv3CFMVAReader->BookMVA("BDTGv3_OB_CF_MD2", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT" +xmlpf);
+    ElectronIDv3CFMVAReader->BookMVA("BDTGv3_EC_CF_MD2", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv3CFMVAReader->BookMVA("BDTGv3_CF_MD2",    MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT" +xmlpf);
+  }
+  //ElectronIDv2CFMVAReaderPt->BookMVA("BDTGv2Pt_IB_CF_MD5", MVAPathCFv2+"BDTG_CFSignalCF_IBTypeI_EE_SignalCF_IB_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
         //ElectronIDv2CFMVAReaderPt->BookMVA("BDTGv2Pt_IB_CF_MD4", MVAPathCFv2+"BDTG_CFSignalCF_IBTypeI_EE_SignalCF_IB_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
         //ElectronIDv2CFMVAReaderPt->BookMVA("BDTGv2Pt_IB_CF_MD2", MVAPathCFv2+"BDTG_CFSignalCF_IBTypeI_EE_SignalCF_IB_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
         //ElectronIDv2CFMVAReaderPt->BookMVA("BDTGv2Pt_OB_CF_MD5", MVAPathCFv2+"BDTG_CFSignalCF_OBTypeI_EE_SignalCF_OB_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
@@ -1281,62 +1281,62 @@ void AnalyzerCore::SetupIDMVAReader(bool isMuon){
     if(GetYear() == 2018) {
       
       if(RunAllForOptCF){
-	
-	cout << "Setting up 2018 CF READER " << endl;
-	cout << "MVAPathCFv2 = " << MVAPathCFv2 << endl;
-	cout << "MVAPathCFv3 = " << MVAPathCFv3 << endl;
+  
+  cout << "Setting up 2018 CF READER " << endl;
+  cout << "MVAPathCFv2 = " << MVAPathCFv2 << endl;
+  cout << "MVAPathCFv3 = " << MVAPathCFv3 << endl;
 
-	if(RunMD5){
-	  ElectronIDv2CFMVAReader->BookMVA("BDTGv2_IB_CF_MD5", MVAPathCFv2+ "BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2018_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv2CFMVAReader->BookMVA("BDTGv2_OB_CF_MD5", MVAPathCFv2+ "BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2018_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv2CFMVAReader->BookMVA("BDTGv2_EC_CF_MD5", MVAPathCFv2+ "BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2018_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv2CFMVAReader->BookMVA("BDTGv2_CF_MD5",    MVAPathCFv2+ "BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2018_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT" +xmlpf);
-	  ElectronIDv3CFMVAReader->BookMVA("BDTGv3_IB_CF_MD5", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2018_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT" +xmlpf);
-	  ElectronIDv3CFMVAReader->BookMVA("BDTGv3_OB_CF_MD5", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2018_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT" +xmlpf);
-	  ElectronIDv3CFMVAReader->BookMVA("BDTGv3_EC_CF_MD5", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2018_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT" +xmlpf);
-	  ElectronIDv3CFMVAReader->BookMVA("BDTGv3_CF_MD5",    MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2018_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+  if(RunMD5){
+    ElectronIDv2CFMVAReader->BookMVA("BDTGv2_IB_CF_MD5", MVAPathCFv2+ "BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2018_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv2CFMVAReader->BookMVA("BDTGv2_OB_CF_MD5", MVAPathCFv2+ "BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2018_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv2CFMVAReader->BookMVA("BDTGv2_EC_CF_MD5", MVAPathCFv2+ "BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2018_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv2CFMVAReader->BookMVA("BDTGv2_CF_MD5",    MVAPathCFv2+ "BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2018_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT" +xmlpf);
+    ElectronIDv3CFMVAReader->BookMVA("BDTGv3_IB_CF_MD5", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2018_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT" +xmlpf);
+    ElectronIDv3CFMVAReader->BookMVA("BDTGv3_OB_CF_MD5", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2018_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT" +xmlpf);
+    ElectronIDv3CFMVAReader->BookMVA("BDTGv3_EC_CF_MD5", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2018_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT" +xmlpf);
+    ElectronIDv3CFMVAReader->BookMVA("BDTGv3_CF_MD5",    MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2018_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
 
-	}
-	if(RunMD4){
-	  ElectronIDv2CFMVAReader->BookMVA("BDTGv2_IB_CF_MD4", MVAPathCFv2+ "BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2018_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv2CFMVAReader->BookMVA("BDTGv2_OB_CF_MD4", MVAPathCFv2+ "BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2018_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv2CFMVAReader->BookMVA("BDTGv2_EC_CF_MD4", MVAPathCFv2+ "BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2018_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv2CFMVAReader->BookMVA("BDTGv2_CF_MD4",    MVAPathCFv2+ "BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2018_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv3CFMVAReader->BookMVA("BDTGv3_IB_CF_MD4", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2018_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT" +xmlpf);
-	  ElectronIDv3CFMVAReader->BookMVA("BDTGv3_OB_CF_MD4", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2018_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv3CFMVAReader->BookMVA("BDTGv3_EC_CF_MD4", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2018_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv3CFMVAReader->BookMVA("BDTGv3_CF_MD4",    MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2018_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+  }
+  if(RunMD4){
+    ElectronIDv2CFMVAReader->BookMVA("BDTGv2_IB_CF_MD4", MVAPathCFv2+ "BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2018_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv2CFMVAReader->BookMVA("BDTGv2_OB_CF_MD4", MVAPathCFv2+ "BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2018_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv2CFMVAReader->BookMVA("BDTGv2_EC_CF_MD4", MVAPathCFv2+ "BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2018_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv2CFMVAReader->BookMVA("BDTGv2_CF_MD4",    MVAPathCFv2+ "BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2018_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv3CFMVAReader->BookMVA("BDTGv3_IB_CF_MD4", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2018_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT" +xmlpf);
+    ElectronIDv3CFMVAReader->BookMVA("BDTGv3_OB_CF_MD4", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2018_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv3CFMVAReader->BookMVA("BDTGv3_EC_CF_MD4", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2018_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv3CFMVAReader->BookMVA("BDTGv3_CF_MD4",    MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2018_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
 
-	}
-	if(RunMD3){
-	  ElectronIDv2CFMVAReader->BookMVA("BDTGv2_IB_CF_MD3", MVAPathCFv2+ "BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2018_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv2CFMVAReader->BookMVA("BDTGv2_OB_CF_MD3", MVAPathCFv2+ "BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2018_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv2CFMVAReader->BookMVA("BDTGv2_EC_CF_MD3", MVAPathCFv2+ "BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2018_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv2CFMVAReader->BookMVA("BDTGv2_CF_MD3",    MVAPathCFv2+ "BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2018_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv3CFMVAReader->BookMVA("BDTGv3_IB_CF_MD3", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2018_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv3CFMVAReader->BookMVA("BDTGv3_OB_CF_MD3", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2018_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv3CFMVAReader->BookMVA("BDTGv3_EC_CF_MD3", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2018_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT" +xmlpf);
-	  ElectronIDv3CFMVAReader->BookMVA("BDTGv3_CF_MD3",    MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2018_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv2CFMVAReaderPt->BookMVA("BDTGv2Pt_IB_CF_MD3", MVAPathCFv2+"BDTG_CFSignalCF_IBTypeI_EE_SignalCF_IB_2018_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv2CFMVAReaderPt->BookMVA("BDTGv2Pt_OB_CF_MD3", MVAPathCFv2+"BDTG_CFSignalCF_OBTypeI_EE_SignalCF_OB_2018_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv2CFMVAReaderPt->BookMVA("BDTGv2Pt_EC_CF_MD3", MVAPathCFv2+"BDTG_CFSignalCF_ECTypeI_EE_SignalCF_EC_2018_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv2CFMVAReaderPt->BookMVA("BDTGv2Pt_CF_MD3", MVAPathCFv2+"BDTG_CFSignalCFTypeI_EE_SignalCF_2018_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+  }
+  if(RunMD3){
+    ElectronIDv2CFMVAReader->BookMVA("BDTGv2_IB_CF_MD3", MVAPathCFv2+ "BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2018_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv2CFMVAReader->BookMVA("BDTGv2_OB_CF_MD3", MVAPathCFv2+ "BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2018_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv2CFMVAReader->BookMVA("BDTGv2_EC_CF_MD3", MVAPathCFv2+ "BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2018_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv2CFMVAReader->BookMVA("BDTGv2_CF_MD3",    MVAPathCFv2+ "BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2018_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv3CFMVAReader->BookMVA("BDTGv3_IB_CF_MD3", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2018_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv3CFMVAReader->BookMVA("BDTGv3_OB_CF_MD3", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2018_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv3CFMVAReader->BookMVA("BDTGv3_EC_CF_MD3", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2018_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT" +xmlpf);
+    ElectronIDv3CFMVAReader->BookMVA("BDTGv3_CF_MD3",    MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2018_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv2CFMVAReaderPt->BookMVA("BDTGv2Pt_IB_CF_MD3", MVAPathCFv2+"BDTG_CFSignalCF_IBTypeI_EE_SignalCF_IB_2018_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv2CFMVAReaderPt->BookMVA("BDTGv2Pt_OB_CF_MD3", MVAPathCFv2+"BDTG_CFSignalCF_OBTypeI_EE_SignalCF_OB_2018_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv2CFMVAReaderPt->BookMVA("BDTGv2Pt_EC_CF_MD3", MVAPathCFv2+"BDTG_CFSignalCF_ECTypeI_EE_SignalCF_EC_2018_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv2CFMVAReaderPt->BookMVA("BDTGv2Pt_CF_MD3", MVAPathCFv2+"BDTG_CFSignalCFTypeI_EE_SignalCF_2018_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
 
-	}
-	if(RunMD2){
-	  ElectronIDv2CFMVAReader->BookMVA("BDTGv2_IB_CF_MD2", MVAPathCFv2+ "BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2018_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv2CFMVAReader->BookMVA("BDTGv2_OB_CF_MD2", MVAPathCFv2+ "BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2018_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv2CFMVAReader->BookMVA("BDTGv2_EC_CF_MD2", MVAPathCFv2+ "BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2018_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv2CFMVAReader->BookMVA("BDTGv2_CF_MD2",    MVAPathCFv2+ "BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2018_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv3CFMVAReader->BookMVA("BDTGv3_IB_CF_MD2", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2018_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv3CFMVAReader->BookMVA("BDTGv3_OB_CF_MD2", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2018_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv3CFMVAReader->BookMVA("BDTGv3_EC_CF_MD2", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2018_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	  ElectronIDv3CFMVAReader->BookMVA("BDTGv3_CF_MD2",    MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2018_NTrees500_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT" +xmlpf);
-	}
+  }
+  if(RunMD2){
+    ElectronIDv2CFMVAReader->BookMVA("BDTGv2_IB_CF_MD2", MVAPathCFv2+ "BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2018_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv2CFMVAReader->BookMVA("BDTGv2_OB_CF_MD2", MVAPathCFv2+ "BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2018_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv2CFMVAReader->BookMVA("BDTGv2_EC_CF_MD2", MVAPathCFv2+ "BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2018_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv2CFMVAReader->BookMVA("BDTGv2_CF_MD2",    MVAPathCFv2+ "BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2018_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv3CFMVAReader->BookMVA("BDTGv3_IB_CF_MD2", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2018_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv3CFMVAReader->BookMVA("BDTGv3_OB_CF_MD2", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2018_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv3CFMVAReader->BookMVA("BDTGv3_EC_CF_MD2", MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2018_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+    ElectronIDv3CFMVAReader->BookMVA("BDTGv3_CF_MD2",    MVAPathCFv3+ "Full_BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2018_NTrees500_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT" +xmlpf);
+  }
 
         //ElectronIDv2CFMVAReaderPt->BookMVA("BDTGv2Pt_IB_CF_MD5", MVAPathCFv2+"BDTG_CFSignalCF_IBTypeI_EE_SignalCF_IB_2018_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
         //ElectronIDv2CFMVAReaderPt->BookMVA("BDTGv2Pt_IB_CF_MD4", MVAPathCFv2+"BDTG_CFSignalCF_IBTypeI_EE_SignalCF_IB_2018_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
-	// ElectronIDv2CFMVAReaderPt->BookMVA("BDTGv2Pt_IB_CF_MD2", MVAPathCFv2+"BDTG_CFSignalCF_IBTypeI_EE_SignalCF_IB_2018_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
+  // ElectronIDv2CFMVAReaderPt->BookMVA("BDTGv2Pt_IB_CF_MD2", MVAPathCFv2+"BDTG_CFSignalCF_IBTypeI_EE_SignalCF_IB_2018_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
         //ElectronIDv2CFMVAReaderPt->BookMVA("BDTGv2Pt_OB_CF_MD5", MVAPathCFv2+"BDTG_CFSignalCF_OBTypeI_EE_SignalCF_OB_2018_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
         //ElectronIDv2CFMVAReaderPt->BookMVA("BDTGv2Pt_OB_CF_MD4", MVAPathCFv2+"BDTG_CFSignalCF_OBTypeI_EE_SignalCF_OB_2018_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
         //ElectronIDv2CFMVAReaderPt->BookMVA("BDTGv2Pt_OB_CF_MD2", MVAPathCFv2+"BDTG_CFSignalCF_OBTypeI_EE_SignalCF_OB_2018_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT" +xmlpf);
@@ -1355,70 +1355,70 @@ void AnalyzerCore::SetupIDMVAReader(bool isMuon){
     if(GetYear() == 2016) {
 
       if(RunAllForOptFake){
-	ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_BB_MD5",MVAPathFakev2+"BDTG_version2_FakeBkgTop_SignalElectronFake_BBTypeI_EE_SignalElectronFake_BB_2016_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
-	ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_BB_MD4",MVAPathFakev2+"BDTG_version2_FakeBkgTop_SignalElectronFake_BBTypeI_EE_SignalElectronFake_BB_2016_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT"+xmlpf);
-	ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_BB_MD3",MVAPathFakev2+"BDTG_version2_FakeBkgTop_SignalElectronFake_BBTypeI_EE_SignalElectronFake_BB_2016_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
-	ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_BB_MD2",MVAPathFakev2+"BDTG_version2_FakeBkgTop_SignalElectronFake_BBTypeI_EE_SignalElectronFake_BB_2016_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
-	ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_EC_MD5",MVAPathFakev2+"BDTG_version2_FakeBkgTop_SignalElectronFake_ECTypeI_EE_SignalElectronFake_EC_2016_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);  
-	ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_EC_MD4",MVAPathFakev2+"BDTG_version2_FakeBkgTop_SignalElectronFake_ECTypeI_EE_SignalElectronFake_EC_2016_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
-	ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_EC_MD3",MVAPathFakev2+"BDTG_version2_FakeBkgTop_SignalElectronFake_ECTypeI_EE_SignalElectronFake_EC_2016_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
-	ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_EC_MD2",MVAPathFakev2+"BDTG_version2_FakeBkgTop_SignalElectronFake_ECTypeI_EE_SignalElectronFake_EC_2016_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
-	ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_MD5",MVAPathFakev2+"BDTG_version2_FakeBkg_SignalElectronFakeTypeI_EE_SignalElectronFake_2016_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);   
-	ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_MD4",MVAPathFakev2+"BDTG_version2_FakeBkg_SignalElectronFakeTypeI_EE_SignalElectronFake_2016_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);   
-	ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_MD3",MVAPathFakev2+"BDTG_version2_FakeBkg_SignalElectronFakeTypeI_EE_SignalElectronFake_2016_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);   
-	ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_MD2",MVAPathFakev2+"BDTG_version2_FakeBkg_SignalElectronFakeTypeI_EE_SignalElectronFake_2016_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT"+xmlpf);   
-	ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_Top_MD5",MVAPathFakev2+"BDTG_version2_FakeBkgTop_SignalElectronFakeTypeI_EE_SignalElectronFake_2016_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
-	ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_Top_MD4",MVAPathFakev2+"BDTG_version2_FakeBkgTop_SignalElectronFakeTypeI_EE_SignalElectronFake_2016_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
-	ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_Top_MD3",MVAPathFakev2+"BDTG_version2_FakeBkgTop_SignalElectronFakeTypeI_EE_SignalElectronFake_2016_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
-	ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_Top_MD2",MVAPathFakev2+"BDTG_version2_FakeBkgTop_SignalElectronFakeTypeI_EE_SignalElectronFake_2016_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
-	ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_HF_MD5",MVAPathFakev2+"BDTG_version2_FakeBkg_HF_SignalElectronFakeTypeI_EE_SignalElectronFake_2016_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
-	ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_HF_MD4",MVAPathFakev2+"BDTG_version2_FakeBkg_HF_SignalElectronFakeTypeI_EE_SignalElectronFake_2016_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
-	ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_HF_MD3",MVAPathFakev2+"BDTG_version2_FakeBkg_HF_SignalElectronFakeTypeI_EE_SignalElectronFake_2016_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT"+xmlpf);
-	ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_HF_MD2",MVAPathFakev2+"BDTG_version2_FakeBkg_HF_SignalElectronFakeTypeI_EE_SignalElectronFake_2016_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
-	ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_LF_MD5",MVAPathFakev2+"BDTG_version2_FakeBkg_LF_SignalElectronFakeTypeI_EE_SignalElectronFake_2016_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
-	ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_LF_MD4",MVAPathFakev2+"BDTG_version2_FakeBkg_LF_SignalElectronFakeTypeI_EE_SignalElectronFake_2016_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
-	ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_LF_MD3",MVAPathFakev2+"BDTG_version2_FakeBkg_LF_SignalElectronFakeTypeI_EE_SignalElectronFake_2016_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
-	ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_LF_MD2",MVAPathFakev2+"BDTG_version2_FakeBkg_LF_SignalElectronFakeTypeI_EE_SignalElectronFake_2016_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
+  ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_BB_MD5",MVAPathFakev2+"BDTG_version2_FakeBkgTop_SignalElectronFake_BBTypeI_EE_SignalElectronFake_BB_2016_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
+  ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_BB_MD4",MVAPathFakev2+"BDTG_version2_FakeBkgTop_SignalElectronFake_BBTypeI_EE_SignalElectronFake_BB_2016_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT"+xmlpf);
+  ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_BB_MD3",MVAPathFakev2+"BDTG_version2_FakeBkgTop_SignalElectronFake_BBTypeI_EE_SignalElectronFake_BB_2016_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
+  ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_BB_MD2",MVAPathFakev2+"BDTG_version2_FakeBkgTop_SignalElectronFake_BBTypeI_EE_SignalElectronFake_BB_2016_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
+  ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_EC_MD5",MVAPathFakev2+"BDTG_version2_FakeBkgTop_SignalElectronFake_ECTypeI_EE_SignalElectronFake_EC_2016_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);  
+  ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_EC_MD4",MVAPathFakev2+"BDTG_version2_FakeBkgTop_SignalElectronFake_ECTypeI_EE_SignalElectronFake_EC_2016_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
+  ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_EC_MD3",MVAPathFakev2+"BDTG_version2_FakeBkgTop_SignalElectronFake_ECTypeI_EE_SignalElectronFake_EC_2016_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
+  ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_EC_MD2",MVAPathFakev2+"BDTG_version2_FakeBkgTop_SignalElectronFake_ECTypeI_EE_SignalElectronFake_EC_2016_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
+  ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_MD5",MVAPathFakev2+"BDTG_version2_FakeBkg_SignalElectronFakeTypeI_EE_SignalElectronFake_2016_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);   
+  ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_MD4",MVAPathFakev2+"BDTG_version2_FakeBkg_SignalElectronFakeTypeI_EE_SignalElectronFake_2016_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);   
+  ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_MD3",MVAPathFakev2+"BDTG_version2_FakeBkg_SignalElectronFakeTypeI_EE_SignalElectronFake_2016_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);   
+  ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_MD2",MVAPathFakev2+"BDTG_version2_FakeBkg_SignalElectronFakeTypeI_EE_SignalElectronFake_2016_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT"+xmlpf);   
+  ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_Top_MD5",MVAPathFakev2+"BDTG_version2_FakeBkgTop_SignalElectronFakeTypeI_EE_SignalElectronFake_2016_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
+  ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_Top_MD4",MVAPathFakev2+"BDTG_version2_FakeBkgTop_SignalElectronFakeTypeI_EE_SignalElectronFake_2016_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
+  ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_Top_MD3",MVAPathFakev2+"BDTG_version2_FakeBkgTop_SignalElectronFakeTypeI_EE_SignalElectronFake_2016_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
+  ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_Top_MD2",MVAPathFakev2+"BDTG_version2_FakeBkgTop_SignalElectronFakeTypeI_EE_SignalElectronFake_2016_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
+  ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_HF_MD5",MVAPathFakev2+"BDTG_version2_FakeBkg_HF_SignalElectronFakeTypeI_EE_SignalElectronFake_2016_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
+  ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_HF_MD4",MVAPathFakev2+"BDTG_version2_FakeBkg_HF_SignalElectronFakeTypeI_EE_SignalElectronFake_2016_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
+  ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_HF_MD3",MVAPathFakev2+"BDTG_version2_FakeBkg_HF_SignalElectronFakeTypeI_EE_SignalElectronFake_2016_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT"+xmlpf);
+  ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_HF_MD2",MVAPathFakev2+"BDTG_version2_FakeBkg_HF_SignalElectronFakeTypeI_EE_SignalElectronFake_2016_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
+  ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_LF_MD5",MVAPathFakev2+"BDTG_version2_FakeBkg_LF_SignalElectronFakeTypeI_EE_SignalElectronFake_2016_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
+  ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_LF_MD4",MVAPathFakev2+"BDTG_version2_FakeBkg_LF_SignalElectronFakeTypeI_EE_SignalElectronFake_2016_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
+  ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_LF_MD3",MVAPathFakev2+"BDTG_version2_FakeBkg_LF_SignalElectronFakeTypeI_EE_SignalElectronFake_2016_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
+  ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_LF_MD2",MVAPathFakev2+"BDTG_version2_FakeBkg_LF_SignalElectronFakeTypeI_EE_SignalElectronFake_2016_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
       }
     }
     if(GetYear() == 2017) {
       if(RunAllForOptFake){
-	ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_MD5",MVAPathFakev2+"BDTG_version2_FakeBkg_SignalElectronFakeTypeI_EE_SignalElectronFake_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
-	ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_MD4",MVAPathFakev2+"BDTG_version2_FakeBkg_SignalElectronFakeTypeI_EE_SignalElectronFake_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
-	ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_MD3",MVAPathFakev2+"BDTG_version2_FakeBkg_SignalElectronFakeTypeI_EE_SignalElectronFake_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT"+xmlpf);
-	ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_MD2",MVAPathFakev2+"BDTG_version2_FakeBkg_SignalElectronFakeTypeI_EE_SignalElectronFake_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT"+xmlpf);
-	ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_Top_MD5",MVAPathFakev2+"BDTG_version2_FakeBkgTop_SignalElectronFakeTypeI_EE_SignalElectronFake_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT"+xmlpf);
-	ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_Top_MD4",MVAPathFakev2+"BDTG_version2_FakeBkgTop_SignalElectronFakeTypeI_EE_SignalElectronFake_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_4_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
-	ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_Top_MD3",MVAPathFakev2+"BDTG_version2_FakeBkgTop_SignalElectronFakeTypeI_EE_SignalElectronFake_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
-	ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_Top_MD2",MVAPathFakev2+"BDTG_version2_FakeBkgTop_SignalElectronFakeTypeI_EE_SignalElectronFake_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT"+xmlpf);
-	ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_HF_MD5",MVAPathFakev2+"BDTG_version2_FakeBkg_HF_SignalElectronFakeTypeI_EE_SignalElectronFake_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
-	ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_HF_MD4",MVAPathFakev2+"BDTG_version2_FakeBkg_HF_SignalElectronFakeTypeI_EE_SignalElectronFake_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT."+xmlpf);
-	ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_HF_MD3",MVAPathFakev2+"BDTG_version2_FakeBkg_HF_SignalElectronFakeTypeI_EE_SignalElectronFake_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
-	ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_HF_MD2",MVAPathFakev2+"BDTG_version2_FakeBkg_HF_SignalElectronFakeTypeI_EE_SignalElectronFake_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
-	ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_LF_MD5",MVAPathFakev2+"BDTG_version2_FakeBkg_LF_SignalElectronFakeTypeI_EE_SignalElectronFake_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
-	ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_LF_MD4",MVAPathFakev2+"BDTG_version2_FakeBkg_LF_SignalElectronFakeTypeI_EE_SignalElectronFake_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
-	ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_LF_MD3",MVAPathFakev2+"BDTG_version2_FakeBkg_LF_SignalElectronFakeTypeI_EE_SignalElectronFake_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
-	ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_LF_MD2",MVAPathFakev2+"BDTG_version2_FakeBkg_LF_SignalElectronFakeTypeI_EE_SignalElectronFake_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT"+xmlpf);
+  ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_MD5",MVAPathFakev2+"BDTG_version2_FakeBkg_SignalElectronFakeTypeI_EE_SignalElectronFake_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
+  ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_MD4",MVAPathFakev2+"BDTG_version2_FakeBkg_SignalElectronFakeTypeI_EE_SignalElectronFake_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
+  ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_MD3",MVAPathFakev2+"BDTG_version2_FakeBkg_SignalElectronFakeTypeI_EE_SignalElectronFake_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT"+xmlpf);
+  ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_MD2",MVAPathFakev2+"BDTG_version2_FakeBkg_SignalElectronFakeTypeI_EE_SignalElectronFake_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT"+xmlpf);
+  ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_Top_MD5",MVAPathFakev2+"BDTG_version2_FakeBkgTop_SignalElectronFakeTypeI_EE_SignalElectronFake_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT"+xmlpf);
+  ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_Top_MD4",MVAPathFakev2+"BDTG_version2_FakeBkgTop_SignalElectronFakeTypeI_EE_SignalElectronFake_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_4_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
+  ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_Top_MD3",MVAPathFakev2+"BDTG_version2_FakeBkgTop_SignalElectronFakeTypeI_EE_SignalElectronFake_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
+  ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_Top_MD2",MVAPathFakev2+"BDTG_version2_FakeBkgTop_SignalElectronFakeTypeI_EE_SignalElectronFake_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT"+xmlpf);
+  ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_HF_MD5",MVAPathFakev2+"BDTG_version2_FakeBkg_HF_SignalElectronFakeTypeI_EE_SignalElectronFake_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
+  ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_HF_MD4",MVAPathFakev2+"BDTG_version2_FakeBkg_HF_SignalElectronFakeTypeI_EE_SignalElectronFake_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT."+xmlpf);
+  ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_HF_MD3",MVAPathFakev2+"BDTG_version2_FakeBkg_HF_SignalElectronFakeTypeI_EE_SignalElectronFake_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
+  ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_HF_MD2",MVAPathFakev2+"BDTG_version2_FakeBkg_HF_SignalElectronFakeTypeI_EE_SignalElectronFake_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
+  ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_LF_MD5",MVAPathFakev2+"BDTG_version2_FakeBkg_LF_SignalElectronFakeTypeI_EE_SignalElectronFake_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
+  ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_LF_MD4",MVAPathFakev2+"BDTG_version2_FakeBkg_LF_SignalElectronFakeTypeI_EE_SignalElectronFake_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
+  ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_LF_MD3",MVAPathFakev2+"BDTG_version2_FakeBkg_LF_SignalElectronFakeTypeI_EE_SignalElectronFake_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
+  ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_LF_MD2",MVAPathFakev2+"BDTG_version2_FakeBkg_LF_SignalElectronFakeTypeI_EE_SignalElectronFake_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT"+xmlpf);
       }
     }
     if(GetYear() == 2018) {
       if(RunAllForOptFake){
-	ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_MD5",MVAPathFakev2+"BDTG_version2_FakeBkg_SignalElectronFakeTypeI_EE_SignalElectronFake_2018_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT"+xmlpf);
-	ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_MD4",MVAPathFakev2+"BDTG_version2_FakeBkg_SignalElectronFakeTypeI_EE_SignalElectronFake_2018_NTrees500_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_4_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT"+xmlpf);
-	ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_MD3",MVAPathFakev2+"BDTG_version2_FakeBkg_SignalElectronFakeTypeI_EE_SignalElectronFake_2018_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT"+xmlpf);
-	ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_MD2",MVAPathFakev2+"BDTG_version2_FakeBkg_SignalElectronFakeTypeI_EE_SignalElectronFake_2018_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
-	ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_Top_MD5",MVAPathFakev2+"BDTG_version2_FakeBkgTop_SignalElectronFakeTypeI_EE_SignalElectronFake_2018_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT"+xmlpf);
-	ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_Top_MD4",MVAPathFakev2+"BDTG_version2_FakeBkgTop_SignalElectronFakeTypeI_EE_SignalElectronFake_2018_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
-	ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_Top_MD3",MVAPathFakev2+"BDTG_version2_FakeBkgTop_SignalElectronFakeTypeI_EE_SignalElectronFake_2018_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
-	ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_Top_MD2",MVAPathFakev2+"BDTG_version2_FakeBkgTop_SignalElectronFakeTypeI_EE_SignalElectronFake_2018_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
-	ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_HF_MD5",MVAPathFakev2+"BDTG_version2_FakeBkg_HF_SignalElectronFakeTypeI_EE_SignalElectronFake_2018_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
-	ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_HF_MD4",MVAPathFakev2+"BDTG_version2_FakeBkg_HF_SignalElectronFakeTypeI_EE_SignalElectronFake_2018_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
-	ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_HF_MD3",MVAPathFakev2+"BDTG_version2_FakeBkg_HF_SignalElectronFakeTypeI_EE_SignalElectronFake_2018_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
-	ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_HF_MD2",MVAPathFakev2+"BDTG_version2_FakeBkg_HF_SignalElectronFakeTypeI_EE_SignalElectronFake_2018_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
-	ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_LF_MD5",MVAPathFakev2+"BDTG_version2_FakeBkg_LF_SignalElectronFakeTypeI_EE_SignalElectronFake_2018_NTrees500_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_5_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
-	ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_LF_MD4",MVAPathFakev2+"BDTG_version2_FakeBkg_LF_SignalElectronFakeTypeI_EE_SignalElectronFake_2018_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
-	ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_LF_MD3",MVAPathFakev2+"BDTG_version2_FakeBkg_LF_SignalElectronFakeTypeI_EE_SignalElectronFake_2018_NTrees500_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT"+xmlpf);
-	ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_LF_MD2",MVAPathFakev2+"BDTG_version2_FakeBkg_LF_SignalElectronFakeTypeI_EE_SignalElectronFake_2018_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT"+xmlpf);
+  ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_MD5",MVAPathFakev2+"BDTG_version2_FakeBkg_SignalElectronFakeTypeI_EE_SignalElectronFake_2018_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT"+xmlpf);
+  ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_MD4",MVAPathFakev2+"BDTG_version2_FakeBkg_SignalElectronFakeTypeI_EE_SignalElectronFake_2018_NTrees500_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_4_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT"+xmlpf);
+  ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_MD3",MVAPathFakev2+"BDTG_version2_FakeBkg_SignalElectronFakeTypeI_EE_SignalElectronFake_2018_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT"+xmlpf);
+  ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_MD2",MVAPathFakev2+"BDTG_version2_FakeBkg_SignalElectronFakeTypeI_EE_SignalElectronFake_2018_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
+  ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_Top_MD5",MVAPathFakev2+"BDTG_version2_FakeBkgTop_SignalElectronFakeTypeI_EE_SignalElectronFake_2018_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT"+xmlpf);
+  ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_Top_MD4",MVAPathFakev2+"BDTG_version2_FakeBkgTop_SignalElectronFakeTypeI_EE_SignalElectronFake_2018_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
+  ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_Top_MD3",MVAPathFakev2+"BDTG_version2_FakeBkgTop_SignalElectronFakeTypeI_EE_SignalElectronFake_2018_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
+  ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_Top_MD2",MVAPathFakev2+"BDTG_version2_FakeBkgTop_SignalElectronFakeTypeI_EE_SignalElectronFake_2018_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
+  ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_HF_MD5",MVAPathFakev2+"BDTG_version2_FakeBkg_HF_SignalElectronFakeTypeI_EE_SignalElectronFake_2018_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
+  ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_HF_MD4",MVAPathFakev2+"BDTG_version2_FakeBkg_HF_SignalElectronFakeTypeI_EE_SignalElectronFake_2018_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
+  ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_HF_MD3",MVAPathFakev2+"BDTG_version2_FakeBkg_HF_SignalElectronFakeTypeI_EE_SignalElectronFake_2018_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
+  ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_HF_MD2",MVAPathFakev2+"BDTG_version2_FakeBkg_HF_SignalElectronFakeTypeI_EE_SignalElectronFake_2018_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
+  ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_LF_MD5",MVAPathFakev2+"BDTG_version2_FakeBkg_LF_SignalElectronFakeTypeI_EE_SignalElectronFake_2018_NTrees500_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_5_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
+  ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_LF_MD4",MVAPathFakev2+"BDTG_version2_FakeBkg_LF_SignalElectronFakeTypeI_EE_SignalElectronFake_2018_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);
+  ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_LF_MD3",MVAPathFakev2+"BDTG_version2_FakeBkg_LF_SignalElectronFakeTypeI_EE_SignalElectronFake_2018_NTrees500_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT"+xmlpf);
+  ElectronIDv2FakeMVAReader->BookMVA("BDTGv2_Fake_LF_MD2",MVAPathFakev2+"BDTG_version2_FakeBkg_LF_SignalElectronFakeTypeI_EE_SignalElectronFake_2018_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT"+xmlpf);
       }
     }
   }
@@ -1864,22 +1864,22 @@ std::vector<Electron> AnalyzerCore::GetAllElectrons(bool SetupBDT){
     if(SetupLeptonBDT){
 
       if(fChain->GetBranch("electron_mva_fake")) {
-	el.SetHNL_LepMVA(electron_mva_fake->at(i), electron_mva_conv->at(i), electron_mva_cf->at(i));
+  el.SetHNL_LepMVA(electron_mva_fake->at(i), electron_mva_conv->at(i), electron_mva_cf->at(i));
       }
       else {
-	/// If electron_mva_fake is NULL then non BDT skim is bein used and so variables need to be set by hand
-	el.SetHNL_LepMVA(GetBDTScoreElV1(el,AnalyzerCore::Fake,  "BDTGv1"),GetBDTScoreElV1(el,AnalyzerCore::Conv,  "BDTGv1"),GetBDTScoreElV1(el,AnalyzerCore::CF,  "BDTGv1"));                            
+  /// If electron_mva_fake is NULL then non BDT skim is bein used and so variables need to be set by hand
+  el.SetHNL_LepMVA(GetBDTScoreElV1(el,AnalyzerCore::Fake,  "BDTGv1"),GetBDTScoreElV1(el,AnalyzerCore::Conv,  "BDTGv1"),GetBDTScoreElV1(el,AnalyzerCore::CF,  "BDTGv1"));                            
       } 
       //vector<TString> MDList = {"_MD2","_MD3","_MD4","_MD5"};
       vector<TString> MDList = {"_MD3"};
       for(auto i : MDList){
-	el.SetHNL_LepMVAMap("CF_ED_BDTGv2"+i,GetBDTScoreEl_EtaDependant(el,AnalyzerCore::CF,  "BDTGv2",i));
-	el.SetHNL_LepMVAMap("CF_ED_BDTGv3"+i,GetBDTScoreEl_EtaDependant(el,AnalyzerCore::CF,  "BDTGv3",i));
-	el.SetHNL_LepMVAMap("CF_BDTGv2"+i,  GetBDTScoreEl(el,AnalyzerCore::CF,  "BDTGv2",i));
-	el.SetHNL_LepMVAMap("CF_BDTGv3"+i,  GetBDTScoreEl(el,AnalyzerCore::CF,  "BDTGv3",i));
-	
-	if(i=="_MD3")el.SetHNL_LepMVAMap("CF_BDTGv2Pt"+i,GetBDTScoreEl(el,AnalyzerCore::CF,  "BDTGv2Pt",i));
-	if(i=="_MD3")el.SetHNL_LepMVAMap("CF_ED_BDTGv2Pt"+i,GetBDTScoreEl_EtaDependant(el,AnalyzerCore::CF,  "BDTGv2Pt",i));
+  el.SetHNL_LepMVAMap("CF_ED_BDTGv2"+i,GetBDTScoreEl_EtaDependant(el,AnalyzerCore::CF,  "BDTGv2",i));
+  el.SetHNL_LepMVAMap("CF_ED_BDTGv3"+i,GetBDTScoreEl_EtaDependant(el,AnalyzerCore::CF,  "BDTGv3",i));
+  el.SetHNL_LepMVAMap("CF_BDTGv2"+i,  GetBDTScoreEl(el,AnalyzerCore::CF,  "BDTGv2",i));
+  el.SetHNL_LepMVAMap("CF_BDTGv3"+i,  GetBDTScoreEl(el,AnalyzerCore::CF,  "BDTGv3",i));
+  
+  if(i=="_MD3")el.SetHNL_LepMVAMap("CF_BDTGv2Pt"+i,GetBDTScoreEl(el,AnalyzerCore::CF,  "BDTGv2Pt",i));
+  if(i=="_MD3")el.SetHNL_LepMVAMap("CF_ED_BDTGv2Pt"+i,GetBDTScoreEl_EtaDependant(el,AnalyzerCore::CF,  "BDTGv2Pt",i));
       }
 
       //el.SetHNL_LepMVA_EtaDependantVersion2(GetBDTScoreEl_EtaDependant(el,AnalyzerCore::CF,  "BDTGv2","_MD3"));
@@ -1903,17 +1903,17 @@ std::vector<Electron> AnalyzerCore::GetAllElectrons(bool SetupBDT){
       int JetHadFlavour = -999;
 
       for(unsigned int ij=0; ij<AK4_JetAllColl.size(); ij++){
-	float dR1=el.DeltaR(AK4_JetAllColl.at(ij));
-	if(dR1>0.4) continue;
-	if(dR1<mindR1){ mindR1=dR1; IdxMatchJet=ij; }
+  float dR1=el.DeltaR(AK4_JetAllColl.at(ij));
+  if(dR1>0.4) continue;
+  if(dR1<mindR1){ mindR1=dR1; IdxMatchJet=ij; }
       }
       if(IdxMatchJet!=-1) {
-	JetDiscCJ      = AK4_JetAllColl.at(IdxMatchJet).GetTaggerResult(JetTagging::DeepJet);
-	JetHadFlavour  = AK4_JetAllColl.at(IdxMatchJet).hadronFlavour();
+  JetDiscCJ      = AK4_JetAllColl.at(IdxMatchJet).GetTaggerResult(JetTagging::DeepJet);
+  JetHadFlavour  = AK4_JetAllColl.at(IdxMatchJet).hadronFlavour();
       }
       else {
-	JetDiscCJ=1.5;
-	JetHadFlavour = 0;
+  JetDiscCJ=1.5;
+  JetHadFlavour = 0;
       }
 
       el.SetJetPtRel(JetLeptonPtRelLepAware(el));
@@ -2078,14 +2078,14 @@ double AnalyzerCore::GetIsoFromID(TString  lep_type, TString id, double eta, dou
       vector<TString> subStrings;
       istringstream ID_subs(sID_sub);
       do {
-	string subs;
-	ID_subs >> subs;
-	subStrings.push_back(TString(subs));
+  string subs;
+  ID_subs >> subs;
+  subStrings.push_back(TString(subs));
       } while (ID_subs);
 
       TString iso_string="";
       for(unsigned int i=0; i < subStrings.size(); i++){
-	if (subStrings[i].Contains("ISO")) iso_string = subStrings[i];
+  if (subStrings[i].Contains("ISO")) iso_string = subStrings[i];
       }
       TString iso_cut = iso_string.ReplaceAll("ISOB","");
       iso_cut = iso_cut.ReplaceAll("ISOEC","");
@@ -2487,7 +2487,7 @@ std::vector<Jet> AnalyzerCore::GetAllJets(bool applyCorr){
     jet.SetEnShift( jet_shiftedEnUp->at(i), jet_shiftedEnDown->at(i) );
     if(!IsDATA){
       if(applyCorr){
-	jet *= jet_smearedRes->at(i);
+  jet *= jet_smearedRes->at(i);
       }
       jet.SetResShift( jet_smearedResUp->at(i)/jet_smearedRes->at(i), jet_smearedResDown->at(i)/jet_smearedRes->at(i) );
       jet.SetRes(jet_smearedRes->at(i));
@@ -2595,6 +2595,10 @@ std::vector<FatJet> AnalyzerCore::GetAllFatJets(){
   for(unsigned int i=0; i<fatjet_pt->size(); i++){
     FatJet jet;
     jet.SetPtEtaPhiM(fatjet_pt->at(i), fatjet_eta->at(i), fatjet_phi->at(i), fatjet_m->at(i));
+
+    jet.SetPxUnSmeared(jet.Px());
+    jet.SetPyUnSmeared(jet.Py());
+
     jet.SetEnShift( fatjet_shiftedEnUp->at(i), fatjet_shiftedEnDown->at(i) );
     if(!IsDATA){
       jet *= fatjet_smearedRes->at(i);
@@ -2670,7 +2674,7 @@ std::vector<FatJet> AnalyzerCore::GetFatJets(AnalyzerParameter param,TString id,
 
   std::vector<FatJet> jets_pc = puppiCorr->Correct(GetAllFatJets()); //JH : is this propagated to MET?
   std::vector<FatJet> jets;
-  if(param.syst_ == AnalyzerParameter::JetEnUp)            jets    = ScaleFatJets( jets_pc, -1 );
+  if(param.syst_ == AnalyzerParameter::JetEnUp)            jets    = ScaleFatJets( jets_pc, +1 );
   else if(param.syst_ == AnalyzerParameter::JetEnDown)     jets    = ScaleFatJets( jets_pc, -1 );
   else if(param.syst_ == AnalyzerParameter::JetResUp)      jets    = SmearFatJets(jets_pc, +1 );
   else if(param.syst_ == AnalyzerParameter::JetResDown)    jets    = SmearFatJets(jets_pc, -1 );
@@ -3528,7 +3532,7 @@ double AnalyzerCore::GetMuonSFEventWeight(std::vector<Muon> muons,AnalyzerParame
 
       double this_recosf = mcCorr->MuonReco_SF(param.Muon_RECO_SF_Key, this_eta, reco_pt,SystDir_MuonRecoSF);
 
-      this_weight *= this_recosf;		      
+      this_weight *= this_recosf;          
       FillWeightHist(param.Name+"/RecoMuWeight_"+param.Name,this_recosf); 
       
 
@@ -3549,12 +3553,12 @@ double AnalyzerCore::GetMuonSFEventWeight(std::vector<Muon> muons,AnalyzerParame
     if(DataEra=="2016preVFP"){
       for(auto im : muons) {
         if(fabs(im.Eta()) > 1.5) MuonTrackineSF*= 0.99;
-	
+  
       } 
     }
     if(DataEra=="2016postVFP"){
       for(auto im : muons) {
-	if(fabs(im.Eta()) > 1.) MuonTrackineSF*= 0.995;
+  if(fabs(im.Eta()) > 1.) MuonTrackineSF*= 0.995;
       }
     }
     if(DataYear==2017){
@@ -3565,7 +3569,7 @@ double AnalyzerCore::GetMuonSFEventWeight(std::vector<Muon> muons,AnalyzerParame
     
     if(DataYear==2018){
       for(auto im : muons) {
-	if(im.Pt() > 60. && im.Pt() < 120) MuonTrackineSF*= 0.997;
+  if(im.Pt() > 60. && im.Pt() < 120) MuonTrackineSF*= 0.997;
       }
     }
     this_weight=this_weight*MuonTrackineSF;
@@ -3613,33 +3617,33 @@ double AnalyzerCore::GetLeptonSFEventWeight(std::vector<Lepton *> leps, Analyzer
 
     for (auto lep: leps){
       if(lep->LeptonFlavour() == Lepton::ELECTRON){
-	double this_recosf  = mcCorr->ElectronReco_SF(lep->Eta(),lep->Pt(), SystDir_ElectronRecoSF);
-	double this_idsf    = mcCorr->ElectronID_SF(param.Electron_ID_SF_Key, lep->Eta(), lep->Pt(), SystDir_ElectronIDSF);
-	
-	this_weight *= this_recosf*this_idsf;
+  double this_recosf  = mcCorr->ElectronReco_SF(lep->Eta(),lep->Pt(), SystDir_ElectronRecoSF);
+  double this_idsf    = mcCorr->ElectronID_SF(param.Electron_ID_SF_Key, lep->Eta(), lep->Pt(), SystDir_ElectronIDSF);
+  
+  this_weight *= this_recosf*this_idsf;
 
-	double this_trigsf = mcCorr->ElectronTrigger_SF(param.Electron_Trigger_SF_Key, param.Electron_Trigger_NameForSF,leps, SystDir_ElectronTriggerSF);
+  double this_trigsf = mcCorr->ElectronTrigger_SF(param.Electron_Trigger_SF_Key, param.Electron_Trigger_NameForSF,leps, SystDir_ElectronTriggerSF);
 
-	this_weight  *= this_trigsf;
+  this_weight  *= this_trigsf;
 
       }
       if(lep->LeptonFlavour() == Lepton::MUON){
-	
-	double this_pt  = lep->Pt();
-	double this_eta = lep->Eta();
+  
+  double this_pt  = lep->Pt();
+  double this_eta = lep->Eta();
 
 
-	double this_idsf   = mcCorr->MuonID_SF (param.Muon_ID_SF_Key,  this_eta, this_pt,SystDir_MuonIDSF);
-	double this_isosf  = mcCorr->MuonISO_SF(param.Muon_ISO_SF_Key, this_eta, this_pt,SystDir_MuonISOSF);
-	double this_trigsf = mcCorr->MuonTrigger_SF(param.Muon_Trigger_SF_Key, param.Muon_Trigger_NameForSF, leps,SystDir_MuonTriggerSF);
+  double this_idsf   = mcCorr->MuonID_SF (param.Muon_ID_SF_Key,  this_eta, this_pt,SystDir_MuonIDSF);
+  double this_isosf  = mcCorr->MuonISO_SF(param.Muon_ISO_SF_Key, this_eta, this_pt,SystDir_MuonISOSF);
+  double this_trigsf = mcCorr->MuonTrigger_SF(param.Muon_Trigger_SF_Key, param.Muon_Trigger_NameForSF, leps,SystDir_MuonTriggerSF);
 
-	this_weight *= this_idsf*this_isosf*this_trigsf;
+  this_weight *= this_idsf*this_isosf*this_trigsf;
 
-	//double reco_pt = (param.Muon_RECO_SF_Key  == "HighPtMuonRecoSF") ?  MiniAODP : this_pt;
-	double reco_pt =this_pt;
-	double this_recosf = mcCorr->MuonReco_SF(param.Muon_RECO_SF_Key, this_eta, reco_pt,SystDir_MuonRecoSF);
+  //double reco_pt = (param.Muon_RECO_SF_Key  == "HighPtMuonRecoSF") ?  MiniAODP : this_pt;
+  double reco_pt =this_pt;
+  double this_recosf = mcCorr->MuonReco_SF(param.Muon_RECO_SF_Key, this_eta, reco_pt,SystDir_MuonRecoSF);
 
-	this_weight *= this_recosf;
+  this_weight *= this_recosf;
 
       }
       
@@ -3676,8 +3680,8 @@ double AnalyzerCore::GetElectronSFEventWeight(std::vector<Electron> electrons, A
       this_weight *= this_recosf*this_idsf;
       
       if(param.WriteOutVerbose == 0){
-	FillWeightHist(param.Name+"/el_reco_sf_"+param.Name, this_recosf);
-	FillWeightHist(param.Name+"/el_id_sf_"+param.Name, this_idsf);
+  FillWeightHist(param.Name+"/el_reco_sf_"+param.Name, this_recosf);
+  FillWeightHist(param.Name+"/el_id_sf_"+param.Name, this_idsf);
       }
     }
     double this_trigsf = mcCorr->ElectronTrigger_SF(param.Electron_Trigger_SF_Key, param.Electron_Trigger_NameForSF, electrons,SystDir_ElectronTriggerSF);
@@ -4535,29 +4539,65 @@ Particle AnalyzerCore::UpdateMETSyst(AnalyzerParameter param, const Particle& ME
   double met_y = METv.Py();
 
   double px_orig(0.), py_orig(0.),px_corrected(0.), py_corrected(0.);
+  cout << "jets size : " << jets.size() << endl; //JH
   for(unsigned int i=0; i<jets.size(); i++){
+    cout << "px : " << px_orig; //JH
     px_orig+= jets.at(i).PxUnSmeared();
+    cout << " --> " << px_orig << endl; //JH
+    cout << "py : " << py_orig; //JH
     py_orig+= jets.at(i).PyUnSmeared();
+    cout << " --> " << py_orig << endl; //JH
+    cout << "px corr : " << px_corrected; //JH
     px_corrected += jets.at(i).Px();
+    cout << " --> " << px_corrected << endl; //JH
+    cout << "py corr : " << py_corrected; //JH
     py_corrected += jets.at(i).Py();
+    cout << " --> " << py_corrected << endl; //JH
   }
+  cout << "fatjets size : " << fatjets.size() << endl; //JH
   for(unsigned int i=0; i<fatjets.size(); i++){
+    cout << "px : " << px_orig; //JH
     px_orig+= fatjets.at(i).PxUnSmeared();
+    cout << " --> " << px_orig << endl; //JH
+    cout << "py : " << py_orig; //JH
     py_orig+= fatjets.at(i).PyUnSmeared();
+    cout << " --> " << py_orig << endl; //JH
+    cout << "px corr : " << px_corrected; //JH
     px_corrected += fatjets.at(i).Px();
+    cout << " --> " << px_corrected << endl; //JH
+    cout << "py corr : " << py_corrected; //JH
     py_corrected += fatjets.at(i).Py();
+    cout << " --> " << py_corrected << endl; //JH
   }
+  cout << "muons size : " << muons.size() << endl; //JH
   for(unsigned int i=0; i<muons.size(); i++){
+    cout << "px : " << px_orig; //JH
     px_orig+= muons.at(i).UncorrectedPx();
+    cout << " --> " << px_orig << endl; //JH
+    cout << "py : " << py_orig; //JH
     py_orig+= muons.at(i).UncorrectedPy();
+    cout << " --> " << py_orig << endl; //JH
+    cout << "px corr : " << px_corrected; //JH
     px_corrected += muons.at(i).Px();
+    cout << " --> " << px_corrected << endl; //JH
+    cout << "py corr : " << py_corrected; //JH
     py_corrected += muons.at(i).Py();
+    cout << " --> " << py_corrected << endl; //JH
   }
+  cout << "electrons size : " << electrons.size() << endl; //JH
   for(unsigned int i=0; i<electrons.size(); i++){
+    cout << "px : " << px_orig; //JH
     px_orig+= electrons.at(i).UncorrectedPx();
+    cout << " --> " << px_orig << endl; //JH
+    cout << "py : " << py_orig; //JH
     py_orig+= electrons.at(i).UncorrectedPy();
+    cout << " --> " << py_orig << endl; //JH
+    cout << "px corr : " << px_corrected; //JH
     px_corrected += electrons.at(i).Px();
+    cout << " --> " << px_corrected << endl; //JH
+    cout << "py corr : " << py_corrected; //JH
     py_corrected += electrons.at(i).Py();
+    cout << " --> " << py_corrected << endl; //JH
   }
 
   //if(param.syst_ == AnalyzerParameter::JetResDown){
@@ -4570,8 +4610,12 @@ Particle AnalyzerCore::UpdateMETSyst(AnalyzerParameter param, const Particle& ME
   //  cout << "py_corrected = " << py_corrected << endl;
   //}
 
+  cout << "met_x : " << met_x; //JH
   met_x = met_x + px_orig - px_corrected;
+  cout << " --> " << met_x << endl; //JH
+  cout << "met_y : " << met_y; //JH
   met_y = met_y + py_orig - py_corrected;
+  cout << " --> " << met_y << endl; //JH
 
   Particle METout;
   METout.SetPxPyPzE(met_x,met_y,0,sqrt(met_x*met_x+met_y*met_y));
@@ -5366,7 +5410,7 @@ bool AnalyzerCore::ConversionVeto(std::vector<Lepton *> leps,const std::vector<G
   //}
   //else if(MCSample.Contains("DYJet") || MCSample.Contains("WJet") ){
   //  if(leps.back()->Pt()>15.) return false;
-	//	else return !GENTMatched;
+  //  else return !GENTMatched;
   //}
 
   //if(MCSample.Contains("ZGTo") )   {
@@ -5375,7 +5419,7 @@ bool AnalyzerCore::ConversionVeto(std::vector<Lepton *> leps,const std::vector<G
   //}
   //else if(MCSample.Contains("DYJet")){
   //  if(leps.back()->Pt()>15.) return false;
-	//	else return !GENTMatched;
+  //  else return !GENTMatched;
   //}
 
   return true;

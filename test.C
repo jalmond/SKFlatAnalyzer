@@ -44,10 +44,30 @@ void test(TString era, bool isdata, TString sample, TString flag){ //test("2017"
   else if(era=="2017" && !isdata && sample=="ZZ"){
     if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC/ZZTo4L_TuneCP5_13TeV_powheg_pythia8/220614_141827/0000/SKFlatNtuple_2017_MC_1.root")) exit(EIO);
   }
-  else if(era=="2017" && !isdata && sample=="DYTypeI"){
+  else if(era=="2017" && !isdata && sample=="DYTypeI_M100"){
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC/DYTypeI_NLO_DF_M100/220712_171325/0000/SKFlatNtuple_2017_MC_1.root")) exit(EIO);
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC/DYTypeI_NLO_DF_M100/220712_171325/0000/SKFlatNtuple_2017_MC_2.root")) exit(EIO);
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC/DYTypeI_NLO_DF_M100/220712_171325/0000/SKFlatNtuple_2017_MC_3.root")) exit(EIO);
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC/DYTypeI_NLO_DF_M100/220712_171325/0000/SKFlatNtuple_2017_MC_4.root")) exit(EIO);
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC/DYTypeI_NLO_DF_M100/220712_171325/0000/SKFlatNtuple_2017_MC_5.root")) exit(EIO);
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC/DYTypeI_NLO_DF_M100/220712_171325/0000/SKFlatNtuple_2017_MC_6.root")) exit(EIO);
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC/DYTypeI_NLO_DF_M100/220712_171325/0000/SKFlatNtuple_2017_MC_7.root")) exit(EIO);
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC/DYTypeI_NLO_DF_M100/220712_171325/0000/SKFlatNtuple_2017_MC_8.root")) exit(EIO);
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC/DYTypeI_NLO_DF_M100/220712_171325/0000/SKFlatNtuple_2017_MC_9.root")) exit(EIO);
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC/DYTypeI_NLO_DF_M100/220712_171325/0000/SKFlatNtuple_2017_MC_10.root")) exit(EIO);
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC/DYTypeI_NLO_DF_M100/220712_171325/0000/SKFlatNtuple_2017_MC_11.root")) exit(EIO);
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC/DYTypeI_NLO_DF_M100/220712_171325/0000/SKFlatNtuple_2017_MC_12.root")) exit(EIO);
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC/DYTypeI_NLO_DF_M100/220712_171325/0000/SKFlatNtuple_2017_MC_13.root")) exit(EIO);
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC/DYTypeI_NLO_DF_M100/220712_171325/0000/SKFlatNtuple_2017_MC_14.root")) exit(EIO);
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC/DYTypeI_NLO_DF_M100/220712_171325/0000/SKFlatNtuple_2017_MC_15.root")) exit(EIO);
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC/DYTypeI_NLO_DF_M100/220712_171325/0000/SKFlatNtuple_2017_MC_16.root")) exit(EIO);
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC/DYTypeI_NLO_DF_M100/220712_171325/0000/SKFlatNtuple_2017_MC_17.root")) exit(EIO);
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC/DYTypeI_NLO_DF_M100/220712_171325/0000/SKFlatNtuple_2017_MC_18.root")) exit(EIO);
+  }
+  else if(era=="2017" && !isdata && sample=="DYTypeI_M500"){
     if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC/DYTypeIHeavyN-DFmix_Dilepton_MN500_TuneCP5_13TeV-amcatnlo-pythia8/220801_130040/0000/SKFlatNtuple_2017_MC_1.root")) exit(EIO);
   }
-  else if(era=="2017" && !isdata && sample=="SSWWTypeI"){
+  else if(era=="2017" && !isdata && sample=="SSWWTypeI_M1000"){
     if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC/SSWWTypeI_NLO_SF_M1000/220712_180106/0000/SKFlatNtuple_2017_MC_1.root")) exit(EIO);
   }
   m.SetOutfilePath("hists_"+sample+".root");

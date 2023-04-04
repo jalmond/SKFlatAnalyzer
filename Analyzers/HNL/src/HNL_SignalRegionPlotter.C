@@ -26,8 +26,8 @@ void HNL_SignalRegionPlotter::executeEvent(){
   if(RunSyst){
     TString param_signal_name = param_signal.Name;
     //vector<AnalyzerParameter::Syst> SystList;// = GetSystList("Initial");
-    //vector<AnalyzerParameter::Syst> SystList = GetSystList("Initial");
-    vector<AnalyzerParameter::Syst> SystList = GetSystList("All");
+    vector<AnalyzerParameter::Syst> SystList = GetSystList("Initial");
+    //vector<AnalyzerParameter::Syst> SystList = GetSystList("All");
 
     for(auto isyst : SystList){
       param_signal.syst_ = AnalyzerParameter::Syst(isyst);
@@ -97,7 +97,11 @@ void HNL_SignalRegionPlotter::RunULAnalysis(AnalyzerParameter param){
   std::vector<Jet> VBF_JetColl                       = SelectAK4Jets(jets_tmp,     30., 4.7, true,  0.4,0.8, PUIDWP,  ElectronCollV,MuonCollV, AK8_JetColl);    // High ETa jets                 
   
   //Particle METv = GetvMET("PuppiT1xyCorr", param); // returns MET with systematic correction;
-  Particle METv = GetvMET("PuppiT1xyCorr", param, VBF_JetColl, AK8_JetColl, MuonCollT, ElectronCollT); // returns MET with systematic correction; run this after all object selection done
+  cout << "=====================================================" << endl;
+  cout << "this syst : " << param.GetSystType() << endl;
+  cout << "this PuppiMET_Type1_PhiCor_pt : " << PuppiMET_Type1_PhiCor_pt << endl;
+  Particle METv = GetvMET("PuppiT1xyCorr", param, VBF_JetColl, AK8_JetColl, MuonCollT, ElectronCollT); // returns MET with systematic correction; run this after all object selection done; NOTE that VBF jet is used here
+  cout << "this MET : " << METv.Pt() << endl;
 
   //double PJet_PUID_weight = GetJetPileupIDSF(JetColl, PUIDWP, param);
   //    weight*= PJet_PUID_weight;
