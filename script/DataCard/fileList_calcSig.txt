@@ -1,0 +1,39 @@
+MC	ttZToQQ	skimmed
+MC	ttZToLLNuNu	skimmed
+MC	ttWToQQ	skimmed
+MC	ttWToLNu	skimmed
+MC	TTG	skimmed
+MC	GluGluToZZto4mu	skimmed
+MC	GluGluToZZto2e2mu	skimmed
+MC	GluGluToZZto4e	skimmed
+MC	WpWpJJ_QCD	skimmed
+MC	WpWpJJ_EWK	skimmed
+MC	WWW	skimmed
+MC	WWZ	skimmed
+MC	WZZ	skimmed
+MC	ZZZ	skimmed
+MC	WZTo3LNu_mllmin4p0_powheg	skimmed
+MC	WGToLNuG	skimmed
+#MC	ZZTo4L_powheg	skimmed
+MC	ZZTo4L_m_1toInf_powheg	skimmed
+MC	ZGTo2LG_01J	skimmed
+MC	WGJJToLNu	skimmed
+MC	WZJJToLNu	skimmed
+MC	WWG	skimmed
+MC	tZq	skimmed
+signal	DYTypeI_NLO_SF_M100
+signal	DYTypeI_NLO_SF_M500
+signal	DYTypeI_NLO_SF_M1000
+signal	DYTypeI_NLO_SF_M1500
+signal	VBFTypeI_NLO_SF_M100
+signal	VBFTypeI_NLO_SF_M500
+signal	VBFTypeI_NLO_SF_M1000
+signal	VBFTypeI_NLO_SF_M1500
+signal	SSWWTypeI_NLO_SF_M500
+signal	SSWWTypeI_NLO_SF_M1000
+signal	SSWWTypeI_NLO_SF_M1500
+signal	SSWWTypeI_NLO_SF_M2000
+signal	SSWWTypeI_NLO_SF_M3000
+signal	SSWWTypeI_NLO_SF_M5000
+signal	SSWWTypeI_NLO_SF_M15000
+signal	SSWWTypeI_NLO_SF_M20000
