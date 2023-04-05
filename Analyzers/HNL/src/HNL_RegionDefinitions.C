@@ -185,7 +185,7 @@ void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq, s
 
     if(!ConversionSplitting(leps,gens)) continue;
     //if(electrons.size()>1)cout << "passed ConversionSplitting;" << endl;
-    //if(electrons.size()>1)cout << "leps size : " << leps.size() << endl;
+    //if(electrons.size()>1)cout << "leps size : " << leps.size() << endl; //JH
 
     if(!IsData && RunPromptTLRemoval){
       weight_channel = -1*weight_ll* GetFakeWeight(leps, param , false);
@@ -264,14 +264,14 @@ void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq, s
     
 
     if(!PassPreselection(dilep_channel,qq, leps, leps_veto, TauColl, JetColl, VBF_JetColl, AK8_JetColl, B_JetColl,ev, METv ,param_channel,"", weight_channel)) continue;
-    cout << "passed presel;" << endl;
-    cout << "MET : " << METv.Pt() << endl;
+    //cout << "passed presel;" << endl;
+    //cout << "MET : " << METv.Pt() << endl;
     TString  lep_charge =  (leps[0]->Charge() < 0)  ? "QM" :  "QP";
     
     if(AK8_JetColl.size() > 0) {
       TString SRbin= RunSignalRegionAK8String (dilep_channel,qq, leps, leps_veto, TauColl, JetColl, AK8_JetColl,B_JetCollSR1,ev, METv ,param_channel,"", weight_channel) ;
-      if(SRbin != "false") cout << "passed SR1 : " << SRbin << endl;
-      if(SRbin != "false") cout << "MET : " << METv.Pt() << endl; //JH
+      //if(SRbin != "false") cout << "passed SR1 : " << SRbin << endl;
+      //if(SRbin != "false") cout << "MET : " << METv.Pt() << endl; //JH
 
       if(SRbin != "false") FillEventCutflow(LimitRegions, weight_channel, SRbin,"LimitInput/"+param.Name);
       if(SRbin != "false") FillEventCutflow(LimitRegionsQ, weight_channel, lep_charge+SRbin,"LimitInput/"+param.Name);

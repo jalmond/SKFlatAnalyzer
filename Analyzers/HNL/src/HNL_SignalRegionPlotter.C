@@ -76,11 +76,19 @@ void HNL_SignalRegionPlotter::RunULAnalysis(AnalyzerParameter param){
   double Min_Muon_Pt     = (RunFake) ? 3. : 5.;
   double Min_Electron_Pt = (RunFake) ? 7. : 10.;
 
+  cout << "======================================================================" << endl; //JH
   std::vector<Muon>       MuonCollTInit = GetMuons    ( param,mu_ID, Min_Muon_Pt, 2.4, false);
   std::vector<Electron>   ElectronCollTInit = GetElectrons( param,el_ID, Min_Electron_Pt, 2.5, false)  ;
   // select prompt using gen info
   std::vector<Muon>       MuonCollT     = GetLepCollByRunType    ( MuonCollTInit,gens,param);
   std::vector<Electron>   ElectronCollT  =  GetLepCollByRunType   ( ElectronCollTInit,gens,param);
+  //cout << "======================================================================" << endl;
+  //cout << "MuonCollV size : " << MuonCollV.size() << endl;
+  //cout << "MuonCollTInit size : " << MuonCollTInit.size() << endl;
+  //cout << "MuonCollT size : " << MuonCollT.size() << endl; //JH
+  //cout << "ElectronCollV size : " << ElectronCollV.size() << endl;
+  //cout << "ElectronCollTInit size : " << ElectronCollTInit.size() << endl;
+  //cout << "ElectronCollT size : " << ElectronCollT.size() << endl; //JH
 
   std::vector<Lepton *> leps_veto  = MakeLeptonPointerVector(MuonCollV,ElectronCollV);
   std::vector<Tau>        TauColl        = GetTaus     (leps_veto,param.Tau_Veto_ID,20., 2.3);
@@ -97,11 +105,11 @@ void HNL_SignalRegionPlotter::RunULAnalysis(AnalyzerParameter param){
   std::vector<Jet> VBF_JetColl                       = SelectAK4Jets(jets_tmp,     30., 4.7, true,  0.4,0.8, PUIDWP,  ElectronCollV,MuonCollV, AK8_JetColl);    // High ETa jets                 
   
   //Particle METv = GetvMET("PuppiT1xyCorr", param); // returns MET with systematic correction;
-  cout << "=====================================================" << endl;
-  cout << "this syst : " << param.GetSystType() << endl;
-  cout << "this PuppiMET_Type1_PhiCor_pt : " << PuppiMET_Type1_PhiCor_pt << endl;
+  //cout << "=====================================================" << endl;
+  //cout << "this syst : " << param.GetSystType() << endl;
+  //cout << "this PuppiMET_Type1_PhiCor_pt : " << PuppiMET_Type1_PhiCor_pt << endl;
   Particle METv = GetvMET("PuppiT1xyCorr", param, VBF_JetColl, AK8_JetColl, MuonCollT, ElectronCollT); // returns MET with systematic correction; run this after all object selection done; NOTE that VBF jet is used here
-  cout << "this MET : " << METv.Pt() << endl;
+  //cout << "this MET : " << METv.Pt() << endl; //JH
 
   //double PJet_PUID_weight = GetJetPileupIDSF(JetColl, PUIDWP, param);
   //    weight*= PJet_PUID_weight;

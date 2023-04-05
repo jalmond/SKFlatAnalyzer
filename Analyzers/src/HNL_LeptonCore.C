@@ -2466,7 +2466,7 @@ double HNL_LeptonCore::GetXsec(TString SigProcess, int mass){
 
 Particle HNL_LeptonCore::GetvMET(TString METType, AnalyzerParameter param, std::vector<Jet> jets, std::vector<FatJet> fatjets, std::vector<Muon> muons, std::vector<Electron> electrons){
 
-  cout << "MET updating..." << endl; //JH
+  //cout << "MET updating..." << endl; //JH
   bool IsType1   = METType.Contains("T1");
   bool IsxyCorr  = METType.Contains("xyCorr");
   bool UsePuppi  = METType.Contains("Puppi");
@@ -2486,7 +2486,7 @@ Particle HNL_LeptonCore::GetvMET(TString METType, AnalyzerParameter param, std::
   if(param.syst_ == AnalyzerParameter::ElectronEnDown)  IdxSyst = 7;
 
   bool ApplySyst = (!IsDATA) && (param.syst_ != AnalyzerParameter::Central);
-  cout << "Apply syst? " << ApplySyst << endl; //JH
+  //cout << "Apply syst? " << ApplySyst << endl; //JH
 
   Particle vMET;
 

@@ -15,7 +15,7 @@ AnalyzerCore::AnalyzerCore(){
 
   JECSources = {"AbsoluteStat","AbsoluteScale","AbsoluteFlavMap","AbsoluteMPFBias","Fragmentation","SinglePionECAL","SinglePionHCAL","FlavorQCD","TimePtEta","RelativeJEREC1","RelativeJEREC2","RelativeJERHF","RelativePtBB","RelativePtEC1","RelativePtEC2","RelativePtHF","RelativeBal","RelativeSample","RelativeFSR","RelativeStatFSR","RelativeStatEC","RelativeStatHF","PileUpDataMC","PileUpPtRef","PileUpPtBB","PileUpPtEC1","PileUpPtEC2","PileUpPtHF","FlavorZJet","FlavorPhotonJet","FlavorPureGluon","FlavorPureQuark","FlavorPureCharm","FlavorPureBottom","Total"};
 
-  SetupLeptonBDT=false;
+  SetupLeptonBDT=true; // need to activate this to run electron MVA ID
     
 }
 
@@ -1864,22 +1864,22 @@ std::vector<Electron> AnalyzerCore::GetAllElectrons(bool SetupBDT){
     if(SetupLeptonBDT){
 
       if(fChain->GetBranch("electron_mva_fake")) {
-  el.SetHNL_LepMVA(electron_mva_fake->at(i), electron_mva_conv->at(i), electron_mva_cf->at(i));
+        el.SetHNL_LepMVA(electron_mva_fake->at(i), electron_mva_conv->at(i), electron_mva_cf->at(i));
       }
       else {
-  /// If electron_mva_fake is NULL then non BDT skim is bein used and so variables need to be set by hand
-  el.SetHNL_LepMVA(GetBDTScoreElV1(el,AnalyzerCore::Fake,  "BDTGv1"),GetBDTScoreElV1(el,AnalyzerCore::Conv,  "BDTGv1"),GetBDTScoreElV1(el,AnalyzerCore::CF,  "BDTGv1"));                            
+  //  / If electron_mva_fake is NULL then non BDT skim is bein used and so variables need to be set by hand
+        el.SetHNL_LepMVA(GetBDTScoreElV1(el,AnalyzerCore::Fake,  "BDTGv1"),GetBDTScoreElV1(el,AnalyzerCore::Conv,  "BDTGv1"),GetBDTScoreElV1(el,AnalyzerCore::CF,  "BDTGv1"));                            
       } 
       //vector<TString> MDList = {"_MD2","_MD3","_MD4","_MD5"};
       vector<TString> MDList = {"_MD3"};
       for(auto i : MDList){
-  el.SetHNL_LepMVAMap("CF_ED_BDTGv2"+i,GetBDTScoreEl_EtaDependant(el,AnalyzerCore::CF,  "BDTGv2",i));
-  el.SetHNL_LepMVAMap("CF_ED_BDTGv3"+i,GetBDTScoreEl_EtaDependant(el,AnalyzerCore::CF,  "BDTGv3",i));
-  el.SetHNL_LepMVAMap("CF_BDTGv2"+i,  GetBDTScoreEl(el,AnalyzerCore::CF,  "BDTGv2",i));
-  el.SetHNL_LepMVAMap("CF_BDTGv3"+i,  GetBDTScoreEl(el,AnalyzerCore::CF,  "BDTGv3",i));
+        el.SetHNL_LepMVAMap("CF_ED_BDTGv2"+i,GetBDTScoreEl_EtaDependant(el,AnalyzerCore::CF,  "BDTGv2",i));
+        el.SetHNL_LepMVAMap("CF_ED_BDTGv3"+i,GetBDTScoreEl_EtaDependant(el,AnalyzerCore::CF,  "BDTGv3",i));
+        el.SetHNL_LepMVAMap("CF_BDTGv2"+i,  GetBDTScoreEl(el,AnalyzerCore::CF,  "BDTGv2",i));
+        el.SetHNL_LepMVAMap("CF_BDTGv3"+i,  GetBDTScoreEl(el,AnalyzerCore::CF,  "BDTGv3",i));
   
-  if(i=="_MD3")el.SetHNL_LepMVAMap("CF_BDTGv2Pt"+i,GetBDTScoreEl(el,AnalyzerCore::CF,  "BDTGv2Pt",i));
-  if(i=="_MD3")el.SetHNL_LepMVAMap("CF_ED_BDTGv2Pt"+i,GetBDTScoreEl_EtaDependant(el,AnalyzerCore::CF,  "BDTGv2Pt",i));
+        if(i=="_MD3")el.SetHNL_LepMVAMap("CF_BDTGv2Pt"+i,GetBDTScoreEl(el,AnalyzerCore::CF,  "BDTGv2Pt",i));
+        if(i=="_MD3")el.SetHNL_LepMVAMap("CF_ED_BDTGv2Pt"+i,GetBDTScoreEl_EtaDependant(el,AnalyzerCore::CF,  "BDTGv2Pt",i));
       }
 
       //el.SetHNL_LepMVA_EtaDependantVersion2(GetBDTScoreEl_EtaDependant(el,AnalyzerCore::CF,  "BDTGv2","_MD3"));
@@ -1938,6 +1938,9 @@ std::vector<Electron> AnalyzerCore::GetElectrons(AnalyzerParameter param, TStrin
   std::vector<Electron> this_AllElectrons = GetAllElectrons();
   std::vector<Electron> electrons ;
 
+  cout << "GetElectrons starts;" << endl;
+  cout << "AllElectrons size : " << this_AllElectrons.size() << endl; //JH
+
   if(param.syst_ == AnalyzerParameter::ElectronResUp)   electrons = SmearElectrons( this_AllElectrons, +1 );
   else if(param.syst_ == AnalyzerParameter::ElectronResDown)   electrons = SmearElectrons( this_AllElectrons, -1 );
   else if(param.syst_ == AnalyzerParameter::ElectronEnUp)    electrons = ScaleElectrons( this_AllElectrons, +1 );
@@ -1953,10 +1956,13 @@ std::vector<Electron> AnalyzerCore::GetElectrons(AnalyzerParameter param, TStrin
     if(!( fabs(electrons.at(i).scEta())< fetamax )){
       continue;
     }
+    cout << i+1 << "th electron passed pt, eta;" << endl;
+    cout << i+1 << "th electron trying to pass " << id << " ..." <<	endl;
     if(!( electrons.at(i).PassID(id) )){
       //cout << "Fail " << id << endl;
       continue;
     }
+    cout << i+1 << "th electron passed pt, eta;" << endl;
     if(vetoHEM){
       
       if ( FindHEMElectron (electrons.at(i)) ){
@@ -4539,83 +4545,83 @@ Particle AnalyzerCore::UpdateMETSyst(AnalyzerParameter param, const Particle& ME
   double met_y = METv.Py();
 
   double px_orig(0.), py_orig(0.),px_corrected(0.), py_corrected(0.);
-  cout << "jets size : " << jets.size() << endl; //JH
+  //cout << "jets size : " << jets.size() << endl; //JH
   for(unsigned int i=0; i<jets.size(); i++){
-    cout << "px : " << px_orig; //JH
+    //cout << "px : " << px_orig; //JH
     px_orig+= jets.at(i).PxUnSmeared();
-    cout << " --> " << px_orig << endl; //JH
-    cout << "py : " << py_orig; //JH
+    //cout << " --> " << px_orig << endl; //JH
+    //cout << "py : " << py_orig; //JH
     py_orig+= jets.at(i).PyUnSmeared();
-    cout << " --> " << py_orig << endl; //JH
-    cout << "px corr : " << px_corrected; //JH
+    //cout << " --> " << py_orig << endl; //JH
+    //cout << "px corr : " << px_corrected; //JH
     px_corrected += jets.at(i).Px();
-    cout << " --> " << px_corrected << endl; //JH
-    cout << "py corr : " << py_corrected; //JH
+    //cout << " --> " << px_corrected << endl; //JH
+    //cout << "py corr : " << py_corrected; //JH
     py_corrected += jets.at(i).Py();
-    cout << " --> " << py_corrected << endl; //JH
+    //cout << " --> " << py_corrected << endl; //JH
   }
-  cout << "fatjets size : " << fatjets.size() << endl; //JH
+  //cout << "fatjets size : " << fatjets.size() << endl; //JH
   for(unsigned int i=0; i<fatjets.size(); i++){
-    cout << "px : " << px_orig; //JH
+    //cout << "px : " << px_orig; //JH
     px_orig+= fatjets.at(i).PxUnSmeared();
-    cout << " --> " << px_orig << endl; //JH
-    cout << "py : " << py_orig; //JH
+    //cout << " --> " << px_orig << endl; //JH
+    //cout << "py : " << py_orig; //JH
     py_orig+= fatjets.at(i).PyUnSmeared();
-    cout << " --> " << py_orig << endl; //JH
-    cout << "px corr : " << px_corrected; //JH
+    //cout << " --> " << py_orig << endl; //JH
+    //cout << "px corr : " << px_corrected; //JH
     px_corrected += fatjets.at(i).Px();
-    cout << " --> " << px_corrected << endl; //JH
-    cout << "py corr : " << py_corrected; //JH
+    //cout << " --> " << px_corrected << endl; //JH
+    //cout << "py corr : " << py_corrected; //JH
     py_corrected += fatjets.at(i).Py();
-    cout << " --> " << py_corrected << endl; //JH
+    //cout << " --> " << py_corrected << endl; //JH
   }
-  cout << "muons size : " << muons.size() << endl; //JH
+  //cout << "muons size : " << muons.size() << endl; //JH
   for(unsigned int i=0; i<muons.size(); i++){
-    cout << "px : " << px_orig; //JH
+    //cout << "px : " << px_orig; //JH
     px_orig+= muons.at(i).UncorrectedPx();
-    cout << " --> " << px_orig << endl; //JH
-    cout << "py : " << py_orig; //JH
+    //cout << " --> " << px_orig << endl; //JH
+    //cout << "py : " << py_orig; //JH
     py_orig+= muons.at(i).UncorrectedPy();
-    cout << " --> " << py_orig << endl; //JH
-    cout << "px corr : " << px_corrected; //JH
+    //cout << " --> " << py_orig << endl; //JH
+    //cout << "px corr : " << px_corrected; //JH
     px_corrected += muons.at(i).Px();
-    cout << " --> " << px_corrected << endl; //JH
-    cout << "py corr : " << py_corrected; //JH
+    //cout << " --> " << px_corrected << endl; //JH
+    //cout << "py corr : " << py_corrected; //JH
     py_corrected += muons.at(i).Py();
-    cout << " --> " << py_corrected << endl; //JH
+    //cout << " --> " << py_corrected << endl; //JH
   }
-  cout << "electrons size : " << electrons.size() << endl; //JH
+  //cout << "electrons size : " << electrons.size() << endl; //JH
   for(unsigned int i=0; i<electrons.size(); i++){
-    cout << "px : " << px_orig; //JH
+    //cout << "px : " << px_orig; //JH
     px_orig+= electrons.at(i).UncorrectedPx();
-    cout << " --> " << px_orig << endl; //JH
-    cout << "py : " << py_orig; //JH
+    //cout << " --> " << px_orig << endl; //JH
+    //cout << "py : " << py_orig; //JH
     py_orig+= electrons.at(i).UncorrectedPy();
-    cout << " --> " << py_orig << endl; //JH
-    cout << "px corr : " << px_corrected; //JH
+    //cout << " --> " << py_orig << endl; //JH
+    //cout << "px corr : " << px_corrected; //JH
     px_corrected += electrons.at(i).Px();
-    cout << " --> " << px_corrected << endl; //JH
-    cout << "py corr : " << py_corrected; //JH
+    //cout << " --> " << px_corrected << endl; //JH
+    //cout << "py corr : " << py_corrected; //JH
     py_corrected += electrons.at(i).Py();
-    cout << " --> " << py_corrected << endl; //JH
+    //cout << " --> " << py_corrected << endl; //JH
   }
 
   //if(param.syst_ == AnalyzerParameter::JetResDown){
-  //  cout << "JetResDown;" << endl;
-  //  cout << "met_x = " << met_x << endl;
-  //  cout << "px_orig = " << px_orig << endl;
-  //  cout << "px_corrected = " << px_corrected << endl;
-  //  cout << "met_y = " << met_y << endl;
-  //  cout << "py_orig = " << py_orig << endl;
-  //  cout << "py_corrected = " << py_corrected << endl;
+  //  //cout << "JetResDown;" << endl;
+  //  //cout << "met_x = " << met_x << endl;
+  //  //cout << "px_orig = " << px_orig << endl;
+  //  //cout << "px_corrected = " << px_corrected << endl;
+  //  //cout << "met_y = " << met_y << endl;
+  //  //cout << "py_orig = " << py_orig << endl;
+  //  //cout << "py_corrected = " << py_corrected << endl;
   //}
 
-  cout << "met_x : " << met_x; //JH
+  //cout << "met_x : " << met_x; //JH
   met_x = met_x + px_orig - px_corrected;
-  cout << " --> " << met_x << endl; //JH
-  cout << "met_y : " << met_y; //JH
+  //cout << " --> " << met_x << endl; //JH
+  //cout << "met_y : " << met_y; //JH
   met_y = met_y + py_orig - py_corrected;
-  cout << " --> " << met_y << endl; //JH
+  //cout << " --> " << met_y << endl; //JH
 
   Particle METout;
   METout.SetPxPyPzE(met_x,met_y,0,sqrt(met_x*met_x+met_y*met_y));
