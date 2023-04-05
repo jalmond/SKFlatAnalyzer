@@ -28,8 +28,8 @@ void HNL_SignalRegionPlotter::executeEvent(){
   if(RunSyst){
     TString param_signal_name = param_signal.Name;
     //vector<AnalyzerParameter::Syst> SystList;// = GetSystList("Initial");
-    vector<AnalyzerParameter::Syst> SystList = GetSystList("Initial");
-    //vector<AnalyzerParameter::Syst> SystList = GetSystList("All");
+    //vector<AnalyzerParameter::Syst> SystList = GetSystList("Initial");
+    vector<AnalyzerParameter::Syst> SystList = GetSystList("All");
 
     for(auto isyst : SystList){
       param_signal.syst_ = AnalyzerParameter::Syst(isyst);
@@ -84,13 +84,12 @@ void HNL_SignalRegionPlotter::RunULAnalysis(AnalyzerParameter param){
   // select prompt using gen info
   std::vector<Muon>       MuonCollT     = GetLepCollByRunType    ( MuonCollTInit,gens,param);
   std::vector<Electron>   ElectronCollT  =  GetLepCollByRunType   ( ElectronCollTInit,gens,param);
-  //cout << "======================================================================" << endl;
-  //cout << "MuonCollV size : " << MuonCollV.size() << endl;
-  //cout << "MuonCollTInit size : " << MuonCollTInit.size() << endl;
-  //cout << "MuonCollT size : " << MuonCollT.size() << endl; //JH
-  //cout << "ElectronCollV size : " << ElectronCollV.size() << endl;
-  //cout << "ElectronCollTInit size : " << ElectronCollTInit.size() << endl;
-  //cout << "ElectronCollT size : " << ElectronCollT.size() << endl; //JH
+  cout << "MuonCollV size : " << MuonCollV.size() << endl;
+  cout << "MuonCollTInit size : " << MuonCollTInit.size() << endl;
+  cout << "MuonCollT size : " << MuonCollT.size() << endl; //JH
+  cout << "ElectronCollV size : " << ElectronCollV.size() << endl;
+  cout << "ElectronCollTInit size : " << ElectronCollTInit.size() << endl;
+  cout << "ElectronCollT size : " << ElectronCollT.size() << endl; //JH
 
   std::vector<Lepton *> leps_veto  = MakeLeptonPointerVector(MuonCollV,ElectronCollV);
   std::vector<Tau>        TauColl        = GetTaus     (leps_veto,param.Tau_Veto_ID,20., 2.3);

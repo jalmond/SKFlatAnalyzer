@@ -1861,8 +1861,8 @@ std::vector<Electron> AnalyzerCore::GetElectrons(AnalyzerParameter param, TStrin
   std::vector<Electron> this_AllElectrons = GetAllElectrons();
   std::vector<Electron> electrons ;
 
-  cout << "GetElectrons starts;" << endl;
-  cout << "AllElectrons size : " << this_AllElectrons.size() << endl; //JH
+  //cout << "GetElectrons starts;" << endl;
+  //cout << "AllElectrons size : " << this_AllElectrons.size() << endl; //JH
 
   if(param.syst_ == AnalyzerParameter::ElectronResUp)   electrons = SmearElectrons( this_AllElectrons, +1 );
   else if(param.syst_ == AnalyzerParameter::ElectronResDown)   electrons = SmearElectrons( this_AllElectrons, -1 );
@@ -1879,13 +1879,13 @@ std::vector<Electron> AnalyzerCore::GetElectrons(AnalyzerParameter param, TStrin
     if(!( fabs(electrons.at(i).scEta())< fetamax )){
       continue;
     }
-    cout << i+1 << "th electron passed pt, eta;" << endl;
-    cout << i+1 << "th electron trying to pass " << id << " ..." <<	endl;
+    //cout << i+1 << "th electron passed pt, eta;" << endl;
+    //cout << i+1 << "th electron trying to pass " << id << " ..." <<	endl;
     if(!( electrons.at(i).PassID(id) )){
       //cout << "Fail " << id << endl;
       continue;
     }
-    cout << i+1 << "th electron passed pt, eta;" << endl;
+    //cout << i+1 << "th electron passed ID;" << endl; //JH
     if(vetoHEM){
       
       if ( FindHEMElectron (electrons.at(i)) ){

@@ -96,7 +96,7 @@ if [[ $1 == "" ]]; then
 
 # Tests
 #SKFlat.py -a $analyzer  -l $datapath/${i}_DiLepton_MuMu_B.txt  -n ${njobs_data}  --nmax ${nmax}   -e ${i}  --skim SkimTree_HNMultiLep --userflags RunFake &
-SKFlat.py -a $analyzer  -i WZTo3LNu_amcatnlo -n 100  --nmax ${nmax}   -e ${i}   --skim SkimTree_HNMultiLep &
+SKFlat.py -a $analyzer  -i WZTo3LNu_amcatnlo -n 100  --nmax ${nmax}   -e ${i}   --skim SkimTree_HNMultiLepBDT &
 #SKFlat.py -a $analyzer  -i ZZTo4L_powheg -n 100  --nmax ${nmax}   -e ${i}   --skim SkimTree_HNMultiLep &
 
 	

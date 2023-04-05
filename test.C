@@ -1,5 +1,5 @@
 R__LOAD_LIBRARY(/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/lhapdf/6.2.3/lib/libLHAPDF.so)
-R__LOAD_LIBRARY(/cvmfs/cms.cern.ch/slc7_amd64_gcc900/cms/cmssw/CMSSW_11_3_0/external/slc7_amd64_gcc900/lib/libTMVA.so)
+R__LOAD_LIBRARY(/cvmfs/cms.cern.ch/slc7_amd64_gcc900/cms/cmssw/CMSSW_11_2_5/external/slc7_amd64_gcc900/lib/libTMVA.so)
 
 
 void test(TString era, bool isdata, TString sample, TString flag){ //echo -e ".L test.C\n test(\"2017\",false,\"DYTypeI_M500\",\"\");" | root -l 2>&1 | tee my.log
@@ -65,7 +65,8 @@ void test(TString era, bool isdata, TString sample, TString flag){ //echo -e ".L
     if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC/DYTypeI_NLO_DF_M100/220712_171325/0000/SKFlatNtuple_2017_MC_18.root")) exit(EIO);
   }
   else if(era=="2017" && !isdata && sample=="DYTypeI_M500"){
-    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC/DYTypeIHeavyN-DFmix_Dilepton_MN500_TuneCP5_13TeV-amcatnlo-pythia8/220801_130040/0000/SKFlatNtuple_2017_MC_1.root")) exit(EIO);
+    //if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC/DYTypeIHeavyN-DFmix_Dilepton_MN500_TuneCP5_13TeV-amcatnlo-pythia8/220801_130040/0000/SKFlatNtuple_2017_MC_1.root")) exit(EIO); //JH : this is an old one
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_HNMultiLepBDT/DYTypeI_NLO_DF_M500/2023_03_28_191053/SKFlatNtuple_2017_MC_0.root")) exit(EIO);
   }
   else if(era=="2017" && !isdata && sample=="SSWWTypeI_M1000"){
     if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC/SSWWTypeI_NLO_SF_M1000/220712_180106/0000/SKFlatNtuple_2017_MC_1.root")) exit(EIO);
