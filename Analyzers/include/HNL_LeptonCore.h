@@ -141,7 +141,7 @@ class HNL_LeptonCore : public AnalyzerCore {
 
   //---- BDT Related                                                                                                                                                                                                
   void initializeAnalyzer();
-  void SetupEventMVAReader();
+  void SetupEventMVAReader(bool ee=true, bool mm=true, bool emu=true);
 
   double MergeMultiMC(vector<TString> vec, TString Method);
 

@@ -7,7 +7,9 @@ void HNL_SignalLeptonOpt::initializeAnalyzer(){
   HNL_LeptonCore::initializeAnalyzer();
   
   SetupIDMVAReaderDefault(); /// Not needed for BDT skim
-  SetupEventMVAReader();                                                                                                                                                                                           
+  
+  if(HasFlag("RunEE")) SetupEventMVAReader(true,false,false); 
+  else SetupEventMVAReader(false,true,true);
 
   RunHighPt= HasFlag("RunHighPt");
   RunEE = HasFlag("RunEE");
@@ -465,11 +467,13 @@ void HNL_SignalLeptonOpt::executeEvent(){
     if(HasFlag("MuID_NP")){
 
       if(HasFlag("FullPt")){
+
+	MuonsIDs.push_back("HNLUL_POGBT_ISOB0p15_POGECT_ISOEC0p15_DXYv1");
 	
 	if(HasFlag("BB")){
 
 	  vector<TString> mvaHF;
-          for(unsigned int imva=0 ; imva < 21 ; imva++){
+          for(unsigned int imva=0 ; imva < 20 ; imva++){
             double mva_d= -1. + double(imva)*0.1;
             TString mvaTS= DoubleToString(mva_d);
             mvaHF.push_back("MVAHFBB"+mvaTS+"_");
@@ -487,7 +491,7 @@ void HNL_SignalLeptonOpt::executeEvent(){
 	if(HasFlag("EC")){
 	  
           vector<TString> mvaHF;
-          for(unsigned int imva=0 ; imva < 21 ; imva++){
+          for(unsigned int imva=0 ; imva < 20 ; imva++){
             double mva_d= -1. + double(imva)*0.1;
             TString mvaTS= DoubleToString(mva_d);
             mvaHF.push_back("MVAHFBB"+mvaTS+"_");

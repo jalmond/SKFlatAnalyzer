@@ -634,7 +634,7 @@ double HNL_LeptonCore::MergeMultiMC(vector<TString> vec, TString Method){
   return 1.;
 }
 
-void HNL_LeptonCore::SetupEventMVAReader(){
+void HNL_LeptonCore::SetupEventMVAReader(bool ee, bool mm, bool emu){
 
   InitializeTreeVars();
 
@@ -644,121 +644,125 @@ void HNL_LeptonCore::SetupEventMVAReader(){
   NCutList  = {"300"};
   NTreeList = {"850"};
   
-  MVAReaderMM->AddVariable("Nvbfj", &ev_bdt_Nvbfj);
-  MVAReaderMM->AddVariable("Ptl1", &ev_bdt_Ptl1);
-  MVAReaderMM->AddVariable("Ptl2", &ev_bdt_Ptl2);
-  MVAReaderMM->AddVariable("Ptj1", &ev_bdt_Ptj1);
-  MVAReaderMM->AddVariable("Ptj2", &ev_bdt_Ptj2);
-  MVAReaderMM->AddVariable("MET2ST", &ev_bdt_MET2ST);
-  MVAReaderMM->AddVariable("HTLT1", &ev_bdt_HTLT1);
-  MVAReaderMM->AddVariable("HTLT2", &ev_bdt_HTLT2);
-  MVAReaderMM->AddVariable("Etal1", &ev_bdt_Etal1);
-  MVAReaderMM->AddVariable("Etal2", &ev_bdt_Etal2);
-  MVAReaderMM->AddVariable("PtRatioAJl1", &ev_bdt_PtRatioAJl1);
-  MVAReaderMM->AddVariable("PtRatioAJl2", &ev_bdt_PtRatioAJl2);
-  MVAReaderMM->AddVariable("NEMFracAJl1", &ev_bdt_NEMFracAJl1);
-  MVAReaderMM->AddVariable("NEMFracAJl2", &ev_bdt_NEMFracAJl2);
-  MVAReaderMM->AddVariable("CHFracAJl1", &ev_bdt_CHFracAJl1);
-  MVAReaderMM->AddVariable("CHFracAJl2", &ev_bdt_CHFracAJl2);
-  MVAReaderMM->AddVariable("NHFracAJl1", &ev_bdt_NHFracAJl1);
-  MVAReaderMM->AddVariable("NHFracAJl2", &ev_bdt_NHFracAJl2);
-  MVAReaderMM->AddVariable("JetDiscAJl1", &ev_bdt_JetDiscAJl1);
-  MVAReaderMM->AddVariable("JetDiscAJl2", &ev_bdt_JetDiscAJl2);
+  if(mm){
+    MVAReaderMM->AddVariable("Nvbfj", &ev_bdt_Nvbfj);
+    MVAReaderMM->AddVariable("Ptl1", &ev_bdt_Ptl1);
+    MVAReaderMM->AddVariable("Ptl2", &ev_bdt_Ptl2);
+    MVAReaderMM->AddVariable("Ptj1", &ev_bdt_Ptj1);
+    MVAReaderMM->AddVariable("Ptj2", &ev_bdt_Ptj2);
+    MVAReaderMM->AddVariable("MET2ST", &ev_bdt_MET2ST);
+    MVAReaderMM->AddVariable("HTLT1", &ev_bdt_HTLT1);
+    MVAReaderMM->AddVariable("HTLT2", &ev_bdt_HTLT2);
+    MVAReaderMM->AddVariable("Etal1", &ev_bdt_Etal1);
+    MVAReaderMM->AddVariable("Etal2", &ev_bdt_Etal2);
+    MVAReaderMM->AddVariable("PtRatioAJl1", &ev_bdt_PtRatioAJl1);
+    MVAReaderMM->AddVariable("PtRatioAJl2", &ev_bdt_PtRatioAJl2);
+    MVAReaderMM->AddVariable("NEMFracAJl1", &ev_bdt_NEMFracAJl1);
+    MVAReaderMM->AddVariable("NEMFracAJl2", &ev_bdt_NEMFracAJl2);
+    MVAReaderMM->AddVariable("CHFracAJl1", &ev_bdt_CHFracAJl1);
+    MVAReaderMM->AddVariable("CHFracAJl2", &ev_bdt_CHFracAJl2);
+    MVAReaderMM->AddVariable("NHFracAJl1", &ev_bdt_NHFracAJl1);
+    MVAReaderMM->AddVariable("NHFracAJl2", &ev_bdt_NHFracAJl2);
+    MVAReaderMM->AddVariable("JetDiscAJl1", &ev_bdt_JetDiscAJl1);
+    MVAReaderMM->AddVariable("JetDiscAJl2", &ev_bdt_JetDiscAJl2);
+    MVAReaderMM->AddVariable("dRll", &ev_bdt_dRll);
+    MVAReaderMM->AddVariable("dRlj11", &ev_bdt_dRlj11);
+    MVAReaderMM->AddVariable("dRlj21", &ev_bdt_dRlj21);
+    MVAReaderMM->AddVariable("MSSSF", &ev_bdt_MSSSF);
+    MVAReaderMM->AddVariable("Mlj11", &ev_bdt_Mlj11);
+    MVAReaderMM->AddVariable("Mlj21", &ev_bdt_Mlj21);
+    MVAReaderMM->AddVariable("Mlj22", &ev_bdt_Mlj22);
+    MVAReaderMM->AddVariable("MTvl1", &ev_bdt_MTvl1);
+    MVAReaderMM->AddVariable("MTvl2", &ev_bdt_MTvl2);
+    MVAReaderMM->AddVariable("Mllj1", &ev_bdt_Mllj1);
+    MVAReaderMM->AddVariable("dRWjj", &ev_bdt_dRWjj);
+    MVAReaderMM->AddVariable("M_W2_jj", &ev_bdt_M_W2_jj);
+    MVAReaderMM->AddVariable("M_N2_l2jj", &ev_bdt_M_N2_l2jj);
+    MVAReaderMM->AddVariable("Nb", &ev_bdt_Nb);
+    MVAReaderMM->AddVariable("MuFracAJl1", &ev_bdt_MuFracAJl1);
+    MVAReaderMM->AddVariable("M_N1_l1jj", &ev_bdt_M_N1_l1jj);
+    MVAReaderMM->AddSpectator("w_tot", &w_tot);
+  }
+  
+  if(ee){
+    MVAReaderEE->AddVariable("Nvbfj", &ev_bdt_Nvbfj);
+    MVAReaderEE->AddVariable("Ptl1", &ev_bdt_Ptl1);
+    MVAReaderEE->AddVariable("Ptl2", &ev_bdt_Ptl2);
+    MVAReaderEE->AddVariable("Ptj1", &ev_bdt_Ptj1);
+    MVAReaderEE->AddVariable("Ptj2", &ev_bdt_Ptj2);
+    MVAReaderEE->AddVariable("MET2ST", &ev_bdt_MET2ST);
+    MVAReaderEE->AddVariable("HTLT1", &ev_bdt_HTLT1);
+    MVAReaderEE->AddVariable("HTLT2", &ev_bdt_HTLT2);
+    MVAReaderEE->AddVariable("Etal1", &ev_bdt_Etal1);
+    MVAReaderEE->AddVariable("Etal2", &ev_bdt_Etal2);
+    MVAReaderEE->AddVariable("PtRatioAJl1", &ev_bdt_PtRatioAJl1);
+    MVAReaderEE->AddVariable("PtRatioAJl2", &ev_bdt_PtRatioAJl2);
+    MVAReaderEE->AddVariable("NEMFracAJl1", &ev_bdt_NEMFracAJl1);
+    MVAReaderEE->AddVariable("NEMFracAJl2", &ev_bdt_NEMFracAJl2);
+    MVAReaderEE->AddVariable("CHFracAJl1", &ev_bdt_CHFracAJl1);
+    MVAReaderEE->AddVariable("CHFracAJl2", &ev_bdt_CHFracAJl2);
+    MVAReaderEE->AddVariable("NHFracAJl1", &ev_bdt_NHFracAJl1);
+    MVAReaderEE->AddVariable("NHFracAJl2", &ev_bdt_NHFracAJl2);
+    MVAReaderEE->AddVariable("JetDiscAJl1", &ev_bdt_JetDiscAJl1);
+    MVAReaderEE->AddVariable("JetDiscAJl2", &ev_bdt_JetDiscAJl2);
+    MVAReaderEE->AddVariable("dRll", &ev_bdt_dRll);
+    MVAReaderEE->AddVariable("dRlj11", &ev_bdt_dRlj11);
+    MVAReaderEE->AddVariable("dRlj21", &ev_bdt_dRlj21);
+    MVAReaderEE->AddVariable("MSSSF", &ev_bdt_MSSSF);
+    MVAReaderEE->AddVariable("Mlj11", &ev_bdt_Mlj11);
+    MVAReaderEE->AddVariable("Mlj21", &ev_bdt_Mlj21);
+    MVAReaderEE->AddVariable("Mlj22", &ev_bdt_Mlj22);
+    MVAReaderEE->AddVariable("MTvl1", &ev_bdt_MTvl1);
+    MVAReaderEE->AddVariable("MTvl2", &ev_bdt_MTvl2);
+    MVAReaderEE->AddVariable("Mllj1", &ev_bdt_Mllj1);
+    MVAReaderEE->AddVariable("dRWjj", &ev_bdt_dRWjj);
+    MVAReaderEE->AddVariable("M_W2_jj", &ev_bdt_M_W2_jj);
+    MVAReaderEE->AddVariable("M_N2_l2jj", &ev_bdt_M_N2_l2jj);
+    MVAReaderEE->AddVariable("dRlj12", &ev_bdt_dRlj12);
+    MVAReaderEE->AddVariable("dRlj22", &ev_bdt_dRlj22);
+    MVAReaderEE->AddVariable("Mllj2", &ev_bdt_Mllj2);
+    MVAReaderEE->AddSpectator("w_tot", &w_tot);
+  }
 
-  MVAReaderMM->AddVariable("dRll", &ev_bdt_dRll);
-  MVAReaderMM->AddVariable("dRlj11", &ev_bdt_dRlj11);
-  MVAReaderMM->AddVariable("dRlj21", &ev_bdt_dRlj21);
-  MVAReaderMM->AddVariable("MSSSF", &ev_bdt_MSSSF);
-  MVAReaderMM->AddVariable("Mlj11", &ev_bdt_Mlj11);
-  MVAReaderMM->AddVariable("Mlj21", &ev_bdt_Mlj21);
-  MVAReaderMM->AddVariable("Mlj22", &ev_bdt_Mlj22);
-  MVAReaderMM->AddVariable("MTvl1", &ev_bdt_MTvl1);
-  MVAReaderMM->AddVariable("MTvl2", &ev_bdt_MTvl2);
-  MVAReaderMM->AddVariable("Mllj1", &ev_bdt_Mllj1);
-  MVAReaderMM->AddVariable("dRWjj", &ev_bdt_dRWjj);
-  MVAReaderMM->AddVariable("M_W2_jj", &ev_bdt_M_W2_jj);
-  MVAReaderMM->AddVariable("M_N2_l2jj", &ev_bdt_M_N2_l2jj);
-  MVAReaderMM->AddVariable("Nb", &ev_bdt_Nb);
-  MVAReaderMM->AddVariable("MuFracAJl1", &ev_bdt_MuFracAJl1);
-  MVAReaderMM->AddVariable("M_N1_l1jj", &ev_bdt_M_N1_l1jj);
-  MVAReaderMM->AddSpectator("w_tot", &w_tot);
-
-  MVAReaderEE->AddVariable("Nvbfj", &ev_bdt_Nvbfj);
-  MVAReaderEE->AddVariable("Ptl1", &ev_bdt_Ptl1);
-  MVAReaderEE->AddVariable("Ptl2", &ev_bdt_Ptl2);
-  MVAReaderEE->AddVariable("Ptj1", &ev_bdt_Ptj1);
-  MVAReaderEE->AddVariable("Ptj2", &ev_bdt_Ptj2);
-  MVAReaderEE->AddVariable("MET2ST", &ev_bdt_MET2ST);
-  MVAReaderEE->AddVariable("HTLT1", &ev_bdt_HTLT1);
-  MVAReaderEE->AddVariable("HTLT2", &ev_bdt_HTLT2);
-  MVAReaderEE->AddVariable("Etal1", &ev_bdt_Etal1);
-  MVAReaderEE->AddVariable("Etal2", &ev_bdt_Etal2);
-  MVAReaderEE->AddVariable("PtRatioAJl1", &ev_bdt_PtRatioAJl1);
-  MVAReaderEE->AddVariable("PtRatioAJl2", &ev_bdt_PtRatioAJl2);
-  MVAReaderEE->AddVariable("NEMFracAJl1", &ev_bdt_NEMFracAJl1);
-  MVAReaderEE->AddVariable("NEMFracAJl2", &ev_bdt_NEMFracAJl2);
-  MVAReaderEE->AddVariable("CHFracAJl1", &ev_bdt_CHFracAJl1);
-  MVAReaderEE->AddVariable("CHFracAJl2", &ev_bdt_CHFracAJl2);
-  MVAReaderEE->AddVariable("NHFracAJl1", &ev_bdt_NHFracAJl1);
-  MVAReaderEE->AddVariable("NHFracAJl2", &ev_bdt_NHFracAJl2);
-  MVAReaderEE->AddVariable("JetDiscAJl1", &ev_bdt_JetDiscAJl1);
-  MVAReaderEE->AddVariable("JetDiscAJl2", &ev_bdt_JetDiscAJl2);
-  MVAReaderEE->AddVariable("dRll", &ev_bdt_dRll);
-  MVAReaderEE->AddVariable("dRlj11", &ev_bdt_dRlj11);
-  MVAReaderEE->AddVariable("dRlj21", &ev_bdt_dRlj21);
-  MVAReaderEE->AddVariable("MSSSF", &ev_bdt_MSSSF);
-  MVAReaderEE->AddVariable("Mlj11", &ev_bdt_Mlj11);
-  MVAReaderEE->AddVariable("Mlj21", &ev_bdt_Mlj21);
-  MVAReaderEE->AddVariable("Mlj22", &ev_bdt_Mlj22);
-  MVAReaderEE->AddVariable("MTvl1", &ev_bdt_MTvl1);
-  MVAReaderEE->AddVariable("MTvl2", &ev_bdt_MTvl2);
-  MVAReaderEE->AddVariable("Mllj1", &ev_bdt_Mllj1);
-  MVAReaderEE->AddVariable("dRWjj", &ev_bdt_dRWjj);
-  MVAReaderEE->AddVariable("M_W2_jj", &ev_bdt_M_W2_jj);
-  MVAReaderEE->AddVariable("M_N2_l2jj", &ev_bdt_M_N2_l2jj);
-  MVAReaderEE->AddVariable("dRlj12", &ev_bdt_dRlj12);
-  MVAReaderEE->AddVariable("dRlj22", &ev_bdt_dRlj22);
-  MVAReaderEE->AddVariable("Mllj2", &ev_bdt_Mllj2);
-  MVAReaderEE->AddSpectator("w_tot", &w_tot);
-
-  MVAReaderEM->AddVariable("Nvbfj", &ev_bdt_Nvbfj);
-  MVAReaderEM->AddVariable("Ptl1", &ev_bdt_Ptl1);
-  MVAReaderEM->AddVariable("Ptl2", &ev_bdt_Ptl2);
-  MVAReaderEM->AddVariable("Ptj1", &ev_bdt_Ptj1);
-  MVAReaderEM->AddVariable("Ptj2", &ev_bdt_Ptj2);
-  MVAReaderEM->AddVariable("MET2ST", &ev_bdt_MET2ST);
-  MVAReaderEM->AddVariable("HTLT1", &ev_bdt_HTLT1);
-  MVAReaderEM->AddVariable("HTLT2", &ev_bdt_HTLT2);
-  MVAReaderEM->AddVariable("Etal1", &ev_bdt_Etal1);
-  MVAReaderEM->AddVariable("Etal2", &ev_bdt_Etal2);
-  MVAReaderEM->AddVariable("PtRatioAJl1", &ev_bdt_PtRatioAJl1);
-  MVAReaderEM->AddVariable("PtRatioAJl2", &ev_bdt_PtRatioAJl2);
-  MVAReaderEM->AddVariable("NEMFracAJl1", &ev_bdt_NEMFracAJl1);
-  MVAReaderEM->AddVariable("NEMFracAJl2", &ev_bdt_NEMFracAJl2);
-  MVAReaderEM->AddVariable("CHFracAJl1", &ev_bdt_CHFracAJl1);
-  MVAReaderEM->AddVariable("CHFracAJl2", &ev_bdt_CHFracAJl2);
-  MVAReaderEM->AddVariable("NHFracAJl1", &ev_bdt_NHFracAJl1);
-  MVAReaderEM->AddVariable("NHFracAJl2", &ev_bdt_NHFracAJl2);
-  MVAReaderEM->AddVariable("JetDiscAJl1", &ev_bdt_JetDiscAJl1);
-  MVAReaderEM->AddVariable("JetDiscAJl2", &ev_bdt_JetDiscAJl2);
-  MVAReaderEM->AddVariable("dRll", &ev_bdt_dRll);
-  MVAReaderEM->AddVariable("dRlj11", &ev_bdt_dRlj11);
-  MVAReaderEM->AddVariable("dRlj21", &ev_bdt_dRlj21);
-  MVAReaderEM->AddVariable("MSSSF", &ev_bdt_MSSSF);
-  MVAReaderEM->AddVariable("Mlj11", &ev_bdt_Mlj11);
-  MVAReaderEM->AddVariable("Mlj21", &ev_bdt_Mlj21);
-  MVAReaderEM->AddVariable("Mlj22", &ev_bdt_Mlj22);
-  MVAReaderEM->AddVariable("MTvl1", &ev_bdt_MTvl1);
-  MVAReaderEM->AddVariable("MTvl2", &ev_bdt_MTvl2);
-  MVAReaderEM->AddVariable("Mllj1", &ev_bdt_Mllj1);
-  MVAReaderEM->AddVariable("dRWjj", &ev_bdt_dRWjj);
-  MVAReaderEM->AddVariable("M_W2_jj", &ev_bdt_M_W2_jj);
-  MVAReaderEM->AddVariable("M_N2_l2jj", &ev_bdt_M_N2_l2jj);
-  MVAReaderEM->AddVariable("Nb", &ev_bdt_Nb);
-  MVAReaderEM->AddVariable("dRlj12", &ev_bdt_dRlj12);
-  MVAReaderEM->AddVariable("M_N1_l1jj", &ev_bdt_M_N1_l1jj);
-  MVAReaderEM->AddSpectator("w_tot", &w_tot);
-
+  if(emu){
+    MVAReaderEM->AddVariable("Nvbfj", &ev_bdt_Nvbfj);
+    MVAReaderEM->AddVariable("Ptl1", &ev_bdt_Ptl1);
+    MVAReaderEM->AddVariable("Ptl2", &ev_bdt_Ptl2);
+    MVAReaderEM->AddVariable("Ptj1", &ev_bdt_Ptj1);
+    MVAReaderEM->AddVariable("Ptj2", &ev_bdt_Ptj2);
+    MVAReaderEM->AddVariable("MET2ST", &ev_bdt_MET2ST);
+    MVAReaderEM->AddVariable("HTLT1", &ev_bdt_HTLT1);
+    MVAReaderEM->AddVariable("HTLT2", &ev_bdt_HTLT2);
+    MVAReaderEM->AddVariable("Etal1", &ev_bdt_Etal1);
+    MVAReaderEM->AddVariable("Etal2", &ev_bdt_Etal2);
+    MVAReaderEM->AddVariable("PtRatioAJl1", &ev_bdt_PtRatioAJl1);
+    MVAReaderEM->AddVariable("PtRatioAJl2", &ev_bdt_PtRatioAJl2);
+    MVAReaderEM->AddVariable("NEMFracAJl1", &ev_bdt_NEMFracAJl1);
+    MVAReaderEM->AddVariable("NEMFracAJl2", &ev_bdt_NEMFracAJl2);
+    MVAReaderEM->AddVariable("CHFracAJl1", &ev_bdt_CHFracAJl1);
+    MVAReaderEM->AddVariable("CHFracAJl2", &ev_bdt_CHFracAJl2);
+    MVAReaderEM->AddVariable("NHFracAJl1", &ev_bdt_NHFracAJl1);
+    MVAReaderEM->AddVariable("NHFracAJl2", &ev_bdt_NHFracAJl2);
+    MVAReaderEM->AddVariable("JetDiscAJl1", &ev_bdt_JetDiscAJl1);
+    MVAReaderEM->AddVariable("JetDiscAJl2", &ev_bdt_JetDiscAJl2);
+    MVAReaderEM->AddVariable("dRll", &ev_bdt_dRll);
+    MVAReaderEM->AddVariable("dRlj11", &ev_bdt_dRlj11);
+    MVAReaderEM->AddVariable("dRlj21", &ev_bdt_dRlj21);
+    MVAReaderEM->AddVariable("MSSSF", &ev_bdt_MSSSF);
+    MVAReaderEM->AddVariable("Mlj11", &ev_bdt_Mlj11);
+    MVAReaderEM->AddVariable("Mlj21", &ev_bdt_Mlj21);
+    MVAReaderEM->AddVariable("Mlj22", &ev_bdt_Mlj22);
+    MVAReaderEM->AddVariable("MTvl1", &ev_bdt_MTvl1);
+    MVAReaderEM->AddVariable("MTvl2", &ev_bdt_MTvl2);
+    MVAReaderEM->AddVariable("Mllj1", &ev_bdt_Mllj1);
+    MVAReaderEM->AddVariable("dRWjj", &ev_bdt_dRWjj);
+    MVAReaderEM->AddVariable("M_W2_jj", &ev_bdt_M_W2_jj);
+    MVAReaderEM->AddVariable("M_N2_l2jj", &ev_bdt_M_N2_l2jj);
+    MVAReaderEM->AddVariable("Nb", &ev_bdt_Nb);
+    MVAReaderEM->AddVariable("dRlj12", &ev_bdt_dRlj12);
+    MVAReaderEM->AddVariable("M_N1_l1jj", &ev_bdt_M_N1_l1jj);
+    MVAReaderEM->AddSpectator("w_tot", &w_tot);
+  }
 
   for(unsigned int im=0; im<MNStrList.size(); im++){
 
@@ -772,21 +776,22 @@ void HNL_LeptonCore::SetupEventMVAReader(){
         TString FileNameMM  = "output_DY_MuMu_M"+MNStrList.at(im)+"_Mode100_NTree"+NTreeList.at(it)+"_Run2_BDT.weights.xml";
         TString MVATagStrMM = "BDT_M"+MNStrList.at(im)+"_NCut"+NCutList.at(ic)+"_NTree"+NTreeList.at(it)+"_MuMu";
 
-        MVAReaderMM->BookMVA(MVATagStrMM, AnalyzerPath+MVAPath+"NCuts"+NCutList.at(ic)+"/"+FileNameMM);
+        if(mm)MVAReaderMM->BookMVA(MVATagStrMM, AnalyzerPath+MVAPath+"NCuts"+NCutList.at(ic)+"/"+FileNameMM);
 
         TString FileNameEE  = "output_DY_EE_M"+MNStrList.at(im)+"_Mode100_NTree"+NTreeList.at(it)+"_Run2_BDT.weights.xml";
         TString MVATagStrEE = "BDT_M"+MNStrList.at(im)+"_NCut"+NCutList.at(ic)+"_NTree"+NTreeList.at(it)+"_EE";
 
-        MVAReaderEE->BookMVA(MVATagStrEE, AnalyzerPath+MVAPath+"NCuts"+NCutList.at(ic)+"/"+FileNameEE);
+        if(ee)MVAReaderEE->BookMVA(MVATagStrEE, AnalyzerPath+MVAPath+"NCuts"+NCutList.at(ic)+"/"+FileNameEE);
 
         TString FileNameEM  = "output_DY_EMu_M"+MNStrList.at(im)+"_Mode100_NTree"+NTreeList.at(it)+"_Run2_BDT.weights.xml";
         TString MVATagStrEM = "BDT_M"+MNStrList.at(im)+"_NCut"+NCutList.at(ic)+"_NTree"+NTreeList.at(it)+"_EMu";
 
-        MVAReaderEM->BookMVA(MVATagStrEM, AnalyzerPath+MVAPath+"NCuts"+NCutList.at(ic)+"/"+FileNameEM);
+        if(emu)MVAReaderEM->BookMVA(MVATagStrEM, AnalyzerPath+MVAPath+"NCuts"+NCutList.at(ic)+"/"+FileNameEM);
 
       }
     }
   }
+  return;
 
 }
 

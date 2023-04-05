@@ -5,7 +5,7 @@ datapath=${SKFlat_WD}/SkimScripts/${analyzer}/data_lists_multilep/
 sigpath=${SKFlat_WD}/SkimScripts/${analyzer}/Signals/
 njobs=600
 njobs_data=100
-nmax=200
+nmax=300
 skim=' '
 declare  -a era_list=("2016postVFP" "2016preVFP"  "2017" "2018")
 
@@ -22,7 +22,7 @@ fi
 if [[ $1 == "MC" ]]; then
     for i in "${era_list[@]}"
     do
-	SKFlat.py -a $analyzer  -l ${mcpath}/MC.txt  -n 200  --nmax ${nmax}   -e ${i}   --skim  SkimTree_HNMultiLep 
+	SKFlat.py -a $analyzer  -l ${mcpath}/MC5.txt  -n 200  --nmax ${nmax}   -e ${i}   --skim  SkimTree_HNMultiLep &
     done
 fi
 

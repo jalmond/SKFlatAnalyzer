@@ -100,7 +100,7 @@ fi
 if [[ $1 == "NP_MUON_FullPt" ]]; then
 
     declare  -a era_list=("2016postVFP" "2016preVFP" "2017" "2018")
-    declare  -a era_list=("2018")
+    declare  -a era_list=("2017")
     for i in "${era_list[@]}"
     do
 
@@ -238,8 +238,8 @@ fi
 
 if [[ $1 == "TMP" ]]; then
     
-    Flag='RunEE,ELID_Iso'
+    Flag='MuID_NP,FullPt,BB'
     
-    SKFlat.py -a $analyzer  -i WZZ  -n 20  --nmax 1000   -e 2017  --userflags $Flag  &
+    SKFlat.py -a $analyzer  -i WZZ  -n 20  --nmax 1000   -e 2017  --userflags $Flag   --skim SkimTree_HNMultiLepBDT&
 
 fi
