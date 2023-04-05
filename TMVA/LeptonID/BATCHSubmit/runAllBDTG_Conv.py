@@ -13,7 +13,7 @@ Seeds = ["100"]
 MinNodeSizes = ["2.5","5.0"]
 BoostLearningValues = ["0.05","0.5"]
 BaggedFracs =  ["0.5","0.8"]
-BDTVersion = "Version3"
+BDTVersion = "Version4"
 
 
 for Classifier in Classifiers:

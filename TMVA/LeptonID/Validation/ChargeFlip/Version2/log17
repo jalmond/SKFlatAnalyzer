@@ -1,0 +1,1606 @@
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCF_ECTypeI_EE_SignalCF_EC_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.295 (0.967)
+--------------------------------------------------
+AUC = 0.97246826327
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCF_ECTypeI_EE_SignalCF_EC_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.331 (0.518)
+--------------------------------------------------
+AUC = 0.974879318081
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCF_ECTypeI_EE_SignalCF_EC_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.325 (0.419)
+--------------------------------------------------
+AUC = 0.976910004305
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCF_ECTypeI_EE_SignalCF_EC_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.113 (0.132)
+--------------------------------------------------
+AUC = 0.978074947102
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCF_ECTypeI_EE_SignalCF_EC_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.448 (0.785)
+--------------------------------------------------
+AUC = 0.973762031326
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCF_ECTypeI_EE_SignalCF_EC_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.207 (0.241)
+--------------------------------------------------
+AUC = 0.976853366624
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCF_ECTypeI_EE_SignalCF_EC_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.27 (0.111)
+--------------------------------------------------
+AUC = 0.978583321401
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCF_ECTypeI_EE_SignalCF_EC_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.164 (0.073)
+--------------------------------------------------
+AUC = 0.979467187674
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCF_ECTypeI_EE_SignalCF_EC_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.319 (0.965)
+--------------------------------------------------
+AUC = 0.969803647265
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCF_ECTypeI_EE_SignalCF_EC_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.216 (0.764)
+--------------------------------------------------
+AUC = 0.972066496674
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCF_ECTypeI_EE_SignalCF_EC_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.2 (0.566)
+--------------------------------------------------
+AUC = 0.973774710335
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCF_ECTypeI_EE_SignalCF_EC_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.251 (0.496)
+--------------------------------------------------
+AUC = 0.974705491343
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCF_ECTypeI_EE_SignalCF_EC_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.288 (0.686)
+--------------------------------------------------
+AUC = 0.971044571102
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCF_ECTypeI_EE_SignalCF_EC_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.289 (0.741)
+--------------------------------------------------
+AUC = 0.973346076342
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCF_ECTypeI_EE_SignalCF_EC_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.33 (0.459)
+--------------------------------------------------
+AUC = 0.975013118681
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCF_ECTypeI_EE_SignalCF_EC_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.311 (0.446)
+--------------------------------------------------
+AUC = 0.976169059571
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCF_IBTypeI_EE_SignalCF_IB_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.837 (0.348)
+--------------------------------------------------
+AUC = 0.986734681121
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCF_IBTypeI_EE_SignalCF_IB_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.788 (0.083)
+--------------------------------------------------
+AUC = 0.987471594019
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCF_IBTypeI_EE_SignalCF_IB_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.737 (0.023)
+--------------------------------------------------
+AUC = 0.987782438469
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCF_IBTypeI_EE_SignalCF_IB_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.787 (0.005)
+--------------------------------------------------
+AUC = 0.987971318154
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCF_IBTypeI_EE_SignalCF_IB_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.824 (0.129)
+--------------------------------------------------
+AUC = 0.987161243398
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCF_IBTypeI_EE_SignalCF_IB_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.685 (0.007)
+--------------------------------------------------
+AUC = 0.987681359904
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCF_IBTypeI_EE_SignalCF_IB_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.776 (0.0)
+--------------------------------------------------
+AUC = 0.987856104027
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCF_IBTypeI_EE_SignalCF_IB_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.531 (0.0)
+--------------------------------------------------
+AUC = 0.988014249368
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCF_IBTypeI_EE_SignalCF_IB_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.861 (0.327)
+--------------------------------------------------
+AUC = 0.985098330509
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCF_IBTypeI_EE_SignalCF_IB_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.746 (0.538)
+--------------------------------------------------
+AUC = 0.98623449951
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCF_IBTypeI_EE_SignalCF_IB_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.92 (0.471)
+--------------------------------------------------
+AUC = 0.98679820082
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCF_IBTypeI_EE_SignalCF_IB_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.824 (0.321)
+--------------------------------------------------
+AUC = 0.987171077492
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCF_IBTypeI_EE_SignalCF_IB_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.93 (0.642)
+--------------------------------------------------
+AUC = 0.986029015627
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCF_IBTypeI_EE_SignalCF_IB_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.74 (0.265)
+--------------------------------------------------
+AUC = 0.986956592329
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCF_IBTypeI_EE_SignalCF_IB_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.791 (0.176)
+--------------------------------------------------
+AUC = 0.987395543716
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCF_IBTypeI_EE_SignalCF_IB_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.637 (0.076)
+--------------------------------------------------
+AUC = 0.987676452572
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCF_OBTypeI_EE_SignalCF_OB_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.433 (0.24)
+--------------------------------------------------
+AUC = 0.983404557499
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCF_OBTypeI_EE_SignalCF_OB_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.384 (0.176)
+--------------------------------------------------
+AUC = 0.985119992699
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCF_OBTypeI_EE_SignalCF_OB_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.375 (0.04)
+--------------------------------------------------
+AUC = 0.985839376321
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCF_OBTypeI_EE_SignalCF_OB_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.323 (0.016)
+--------------------------------------------------
+AUC = 0.986275339162
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCF_OBTypeI_EE_SignalCF_OB_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.239 (0.22)
+--------------------------------------------------
+AUC = 0.984429098905
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCF_OBTypeI_EE_SignalCF_OB_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.274 (0.037)
+--------------------------------------------------
+AUC = 0.985916493106
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCF_OBTypeI_EE_SignalCF_OB_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.453 (0.018)
+--------------------------------------------------
+AUC = 0.986563236502
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCF_OBTypeI_EE_SignalCF_OB_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.457 (0.004)
+--------------------------------------------------
+AUC = 0.987064102816
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCF_OBTypeI_EE_SignalCF_OB_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.421 (0.674)
+--------------------------------------------------
+AUC = 0.980972732629
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCF_OBTypeI_EE_SignalCF_OB_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.338 (0.43)
+--------------------------------------------------
+AUC = 0.982658618265
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCF_OBTypeI_EE_SignalCF_OB_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.217 (0.378)
+--------------------------------------------------
+AUC = 0.983555490929
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCF_OBTypeI_EE_SignalCF_OB_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.228 (0.225)
+--------------------------------------------------
+AUC = 0.984174097989
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCF_OBTypeI_EE_SignalCF_OB_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.246 (0.587)
+--------------------------------------------------
+AUC = 0.982041336639
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCF_OBTypeI_EE_SignalCF_OB_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.295 (0.325)
+--------------------------------------------------
+AUC = 0.983872763228
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCF_OBTypeI_EE_SignalCF_OB_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.223 (0.22)
+--------------------------------------------------
+AUC = 0.984784977611
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCF_OBTypeI_EE_SignalCF_OB_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.185 (0.178)
+--------------------------------------------------
+AUC = 0.985272129593
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.78 (0.314)
+--------------------------------------------------
+AUC = 0.986552132936
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.713 (0.061)
+--------------------------------------------------
+AUC = 0.987259043399
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.605 (0.018)
+--------------------------------------------------
+AUC = 0.987559186233
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.817 (0.005)
+--------------------------------------------------
+AUC = 0.987803780998
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.711 (0.113)
+--------------------------------------------------
+AUC = 0.986964197531
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.884 (0.011)
+--------------------------------------------------
+AUC = 0.987489683834
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.762 (0.0)
+--------------------------------------------------
+AUC = 0.987712853011
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.638 (0.0)
+--------------------------------------------------
+AUC = 0.987872758465
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.874 (0.525)
+--------------------------------------------------
+AUC = 0.984885861878
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.923 (0.435)
+--------------------------------------------------
+AUC = 0.986052132465
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.93 (0.359)
+--------------------------------------------------
+AUC = 0.986637854351
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.851 (0.228)
+--------------------------------------------------
+AUC = 0.986912658568
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.655 (0.65)
+--------------------------------------------------
+AUC = 0.985775398263
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.661 (0.272)
+--------------------------------------------------
+AUC = 0.986716937942
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.712 (0.131)
+--------------------------------------------------
+AUC = 0.987143529552
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.827 (0.058)
+--------------------------------------------------
+AUC = 0.987447217237
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.205 (0.349)
+--------------------------------------------------
+AUC = 0.983385030628
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.242 (0.238)
+--------------------------------------------------
+AUC = 0.985099438223
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.205 (0.038)
+--------------------------------------------------
+AUC = 0.985866306627
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.231 (0.062)
+--------------------------------------------------
+AUC = 0.986287307452
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.118 (0.473)
+--------------------------------------------------
+AUC = 0.984398545413
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.472 (0.143)
+--------------------------------------------------
+AUC = 0.985883667248
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.398 (0.032)
+--------------------------------------------------
+AUC = 0.986589089903
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.476 (0.014)
+--------------------------------------------------
+AUC = 0.987006965845
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.228 (0.847)
+--------------------------------------------------
+AUC = 0.980878557383
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.38 (0.633)
+--------------------------------------------------
+AUC = 0.982569269252
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.237 (0.37)
+--------------------------------------------------
+AUC = 0.983520609204
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.139 (0.454)
+--------------------------------------------------
+AUC = 0.984090577766
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.224 (0.61)
+--------------------------------------------------
+AUC = 0.981984769297
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.262 (0.317)
+--------------------------------------------------
+AUC = 0.983792871397
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.175 (0.283)
+--------------------------------------------------
+AUC = 0.984723378612
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.215 (0.168)
+--------------------------------------------------
+AUC = 0.985194120688
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.242 (0.387)
+--------------------------------------------------
+AUC = 0.987189386583
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.29 (0.451)
+--------------------------------------------------
+AUC = 0.988293993042
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.299 (0.493)
+--------------------------------------------------
+AUC = 0.98903922954
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.356 (0.342)
+--------------------------------------------------
+AUC = 0.989476943393
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.38 (0.242)
+--------------------------------------------------
+AUC = 0.987917682225
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.616 (0.513)
+--------------------------------------------------
+AUC = 0.989110435746
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.404 (0.286)
+--------------------------------------------------
+AUC = 0.98991563042
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.126 (0.268)
+--------------------------------------------------
+AUC = 0.990332445784
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.048 (0.469)
+--------------------------------------------------
+AUC = 0.985806371995
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.063 (0.508)
+--------------------------------------------------
+AUC = 0.986775519737
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.152 (0.412)
+--------------------------------------------------
+AUC = 0.987500766362
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.109 (0.757)
+--------------------------------------------------
+AUC = 0.987802160168
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.07 (0.547)
+--------------------------------------------------
+AUC = 0.986372061516
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.143 (0.637)
+--------------------------------------------------
+AUC = 0.987380966245
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.232 (0.693)
+--------------------------------------------------
+AUC = 0.988154334381
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.244 (0.365)
+--------------------------------------------------
+AUC = 0.988481684704
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.245 (0.594)
+--------------------------------------------------
+AUC = 0.972222516192
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.251 (0.745)
+--------------------------------------------------
+AUC = 0.974683409397
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.472 (0.52)
+--------------------------------------------------
+AUC = 0.976906359365
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.333 (0.128)
+--------------------------------------------------
+AUC = 0.978030229064
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.161 (0.818)
+--------------------------------------------------
+AUC = 0.973665562143
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.269 (0.562)
+--------------------------------------------------
+AUC = 0.97684472092
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.378 (0.225)
+--------------------------------------------------
+AUC = 0.97861146552
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.286 (0.036)
+--------------------------------------------------
+AUC = 0.979551628688
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.274 (0.866)
+--------------------------------------------------
+AUC = 0.969572143102
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.262 (0.61)
+--------------------------------------------------
+AUC = 0.971630812682
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.344 (0.544)
+--------------------------------------------------
+AUC = 0.973305262169
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.384 (0.58)
+--------------------------------------------------
+AUC = 0.974562131429
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.263 (0.949)
+--------------------------------------------------
+AUC = 0.970800855983
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.251 (0.619)
+--------------------------------------------------
+AUC = 0.972909107453
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.248 (0.541)
+--------------------------------------------------
+AUC = 0.974866899276
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.38 (0.461)
+--------------------------------------------------
+AUC = 0.976106835896
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFTypeI_EE_SignalCF_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.467 (0.736)
+--------------------------------------------------
+AUC = 0.987305467354
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFTypeI_EE_SignalCF_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.157 (0.488)
+--------------------------------------------------
+AUC = 0.988440920526
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFTypeI_EE_SignalCF_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.362 (0.738)
+--------------------------------------------------
+AUC = 0.989078038494
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFTypeI_EE_SignalCF_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.3 (0.7)
+--------------------------------------------------
+AUC = 0.989511424352
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFTypeI_EE_SignalCF_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.338 (0.689)
+--------------------------------------------------
+AUC = 0.988000286625
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFTypeI_EE_SignalCF_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.38 (0.477)
+--------------------------------------------------
+AUC = 0.98919984859
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFTypeI_EE_SignalCF_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.537 (0.292)
+--------------------------------------------------
+AUC = 0.989923062193
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFTypeI_EE_SignalCF_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.294 (0.404)
+--------------------------------------------------
+AUC = 0.990356832976
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFTypeI_EE_SignalCF_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.253 (0.635)
+--------------------------------------------------
+AUC = 0.985966945246
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFTypeI_EE_SignalCF_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.168 (0.221)
+--------------------------------------------------
+AUC = 0.98687407703
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFTypeI_EE_SignalCF_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.046 (0.402)
+--------------------------------------------------
+AUC = 0.987480445629
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFTypeI_EE_SignalCF_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.024 (0.499)
+--------------------------------------------------
+AUC = 0.987812679434
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFTypeI_EE_SignalCF_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.247 (0.84)
+--------------------------------------------------
+AUC = 0.986517404916
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFTypeI_EE_SignalCF_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.161 (0.251)
+--------------------------------------------------
+AUC = 0.987483402408
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFTypeI_EE_SignalCF_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.051 (0.634)
+--------------------------------------------------
+AUC = 0.988155138321
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFTypeI_EE_SignalCF_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.034 (0.303)
+--------------------------------------------------
+AUC = 0.988559690819
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.341 (0.322)
+--------------------------------------------------
+AUC = 0.987155827965
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.529 (0.427)
+--------------------------------------------------
+AUC = 0.989496476135
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.436 (0.137)
+--------------------------------------------------
+AUC = 0.98962503786
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.337 (0.435)
+--------------------------------------------------
+AUC = 0.988370221575
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.579 (0.029)
+--------------------------------------------------
+AUC = 0.990383721655
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.731 (0.152)
+--------------------------------------------------
+AUC = 0.990542327888
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.589 (0.474)
+--------------------------------------------------
+AUC = 0.989002915268
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.348 (0.004)
+--------------------------------------------------
+AUC = 0.990668053992
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.646 (0.008)
+--------------------------------------------------
+AUC = 0.990917856902
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.353 (0.297)
+--------------------------------------------------
+AUC = 0.989427454562
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.493 (0.0)
+--------------------------------------------------
+AUC = 0.990752609349
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.382 (0.0)
+--------------------------------------------------
+AUC = 0.991007479323
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.105 (0.378)
+--------------------------------------------------
+AUC = 0.986739447108
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.173 (0.407)
+--------------------------------------------------
+AUC = 0.986711169342
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.56 (0.246)
+--------------------------------------------------
+AUC = 0.988544869728
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.135 (0.362)
+--------------------------------------------------
+AUC = 0.988758593576
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.147 (0.598)
+--------------------------------------------------
+AUC = 0.987616318155
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.186 (0.254)
+--------------------------------------------------
+AUC = 0.987580020065
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.241 (0.209)
+--------------------------------------------------
+AUC = 0.989616852353
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.616 (0.076)
+--------------------------------------------------
+AUC = 0.989811928853
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.139 (0.554)
+--------------------------------------------------
+AUC = 0.988079750873
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.205 (0.203)
+--------------------------------------------------
+AUC = 0.988017398425
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_4_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.665 (0.039)
+--------------------------------------------------
+AUC = 0.989945228282
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_4_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.102 (0.062)
+--------------------------------------------------
+AUC = 0.990115284039
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.412 (0.546)
+--------------------------------------------------
+AUC = 0.988339719362
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.314 (0.439)
+--------------------------------------------------
+AUC = 0.9883355417
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_5_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.469 (0.005)
+--------------------------------------------------
+AUC = 0.990060780051
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_5_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.11 (0.012)
+--------------------------------------------------
+AUC = 0.990274453434
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.438 (0.14)
+--------------------------------------------------
+AUC = 0.987933201093
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.665 (0.138)
+--------------------------------------------------
+AUC = 0.989985245891
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.424 (0.087)
+--------------------------------------------------
+AUC = 0.990090884598
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.495 (0.202)
+--------------------------------------------------
+AUC = 0.989142654075
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.82 (0.01)
+--------------------------------------------------
+AUC = 0.990657442628
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.681 (0.008)
+--------------------------------------------------
+AUC = 0.990819436779
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.392 (0.306)
+--------------------------------------------------
+AUC = 0.989862434173
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.4 (0.0)
+--------------------------------------------------
+AUC = 0.990782830144
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.519 (0.0)
+--------------------------------------------------
+AUC = 0.991047454625
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.248 (0.27)
+--------------------------------------------------
+AUC = 0.990303272748
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.131 (0.0)
+--------------------------------------------------
+AUC = 0.990695932559
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.212 (0.0)
+--------------------------------------------------
+AUC = 0.991037193197
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.218 (0.409)
+--------------------------------------------------
+AUC = 0.987418422908
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.215 (0.498)
+--------------------------------------------------
+AUC = 0.987337783496
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.326 (0.208)
+--------------------------------------------------
+AUC = 0.989024788044
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.097 (0.113)
+--------------------------------------------------
+AUC = 0.989301026198
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.248 (0.662)
+--------------------------------------------------
+AUC = 0.988354837538
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.373 (0.62)
+--------------------------------------------------
+AUC = 0.98830845583
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.587 (0.014)
+--------------------------------------------------
+AUC = 0.989995154118
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.643 (0.038)
+--------------------------------------------------
+AUC = 0.990222719429
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.355 (0.528)
+--------------------------------------------------
+AUC = 0.988884902838
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.363 (0.269)
+--------------------------------------------------
+AUC = 0.988823477576
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_4_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.727 (0.0)
+--------------------------------------------------
+AUC = 0.990143058625
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.421 (0.396)
+--------------------------------------------------
+AUC = 0.989142422458
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.499 (0.528)
+--------------------------------------------------
+AUC = 0.989172963026
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_5_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.292 (0.0)
+--------------------------------------------------
+AUC = 0.990173299453
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_5_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.454 (0.0)
+--------------------------------------------------
+AUC = 0.990408740195
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.213 (0.788)
+--------------------------------------------------
+AUC = 0.986398734345
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.488 (0.179)
+--------------------------------------------------
+AUC = 0.988940344648
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.316 (0.411)
+--------------------------------------------------
+AUC = 0.989055171977
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.228 (0.587)
+--------------------------------------------------
+AUC = 0.987393709449
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.581 (0.136)
+--------------------------------------------------
+AUC = 0.989907883937
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.458 (0.33)
+--------------------------------------------------
+AUC = 0.990026343613
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.235 (0.684)
+--------------------------------------------------
+AUC = 0.988129999379
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.568 (0.16)
+--------------------------------------------------
+AUC = 0.990373688773
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.463 (0.14)
+--------------------------------------------------
+AUC = 0.990513609781
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.296 (0.312)
+--------------------------------------------------
+AUC = 0.988488090915
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.449 (0.046)
+--------------------------------------------------
+AUC = 0.990597641813
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.306 (0.02)
+--------------------------------------------------
+AUC = 0.990778401531
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.137 (0.405)
+--------------------------------------------------
+AUC = 0.98601554529
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.257 (0.436)
+--------------------------------------------------
+AUC = 0.985949622275
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.252 (0.345)
+--------------------------------------------------
+AUC = 0.987931184125
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.267 (0.573)
+--------------------------------------------------
+AUC = 0.988163592472
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.057 (0.678)
+--------------------------------------------------
+AUC = 0.986889607499
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.155 (0.501)
+--------------------------------------------------
+AUC = 0.986865767152
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.519 (0.666)
+--------------------------------------------------
+AUC = 0.98908940126
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.443 (0.335)
+--------------------------------------------------
+AUC = 0.989257412411
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.102 (0.582)
+--------------------------------------------------
+AUC = 0.987245907078
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.123 (0.568)
+--------------------------------------------------
+AUC = 0.987218183845
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_4_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.446 (0.183)
+--------------------------------------------------
+AUC = 0.989383215491
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_4_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.333 (0.086)
+--------------------------------------------------
+AUC = 0.989622809262
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.057 (0.58)
+--------------------------------------------------
+AUC = 0.987492476423
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.224 (0.467)
+--------------------------------------------------
+AUC = 0.987488248683
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_5_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.417 (0.118)
+--------------------------------------------------
+AUC = 0.989691575538
+==================================================
+==================================================
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_5_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.211 (0.091)
+--------------------------------------------------
+AUC = 0.989879385576
+==================================================
+AUC              KS_signal   KS_bkg      File 
+
+0.990542327888: ['0.731', '0.152', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.990513609781: ['0.463', '0.14', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.990373688773: ['0.568', '0.16', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT.root']
+
+0.990356832976: ['0.294', '0.404', 'BDTG_CFSignalCFTypeI_EE_SignalCF_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.990332445784: ['0.126', '0.268', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.990303272748: ['0.248', '0.27', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT.root']
+
+0.990115284039: ['0.102', '0.062', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_4_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.990090884598: ['0.424', '0.087', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.990026343613: ['0.458', '0.33', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.989985245891: ['0.665', '0.138', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT.root']
+
+0.989923062193: ['0.537', '0.292', 'BDTG_CFSignalCFTypeI_EE_SignalCF_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.98991563042: ['0.404', '0.286', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.989907883937: ['0.581', '0.136', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT.root']
+
+0.989879385576: ['0.211', '0.091', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_5_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.989862434173: ['0.392', '0.306', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT.root']
+
+0.989811928853: ['0.616', '0.076', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.989691575538: ['0.417', '0.118', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_5_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT.root']
+
+0.98962503786: ['0.436', '0.137', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.989622809262: ['0.333', '0.086', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_4_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.989616852353: ['0.241', '0.209', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT.root']
+
+0.989511424352: ['0.3', '0.7', 'BDTG_CFSignalCFTypeI_EE_SignalCF_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.989496476135: ['0.529', '0.427', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT.root']
+
+0.989476943393: ['0.356', '0.342', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.989427454562: ['0.353', '0.297', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT.root']
+
+0.989383215491: ['0.446', '0.183', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_4_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT.root']
+
+0.989301026198: ['0.097', '0.113', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.989257412411: ['0.443', '0.335', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.98919984859: ['0.38', '0.477', 'BDTG_CFSignalCFTypeI_EE_SignalCF_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.989172963026: ['0.499', '0.528', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.989142654075: ['0.495', '0.202', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT.root']
+
+0.989142422458: ['0.421', '0.396', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT.root']
+
+0.989110435746: ['0.616', '0.513', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.98908940126: ['0.519', '0.666', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_3_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT.root']
+
+0.989078038494: ['0.362', '0.738', 'BDTG_CFSignalCFTypeI_EE_SignalCF_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.989055171977: ['0.316', '0.411', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.98903922954: ['0.299', '0.493', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.989024788044: ['0.326', '0.208', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT.root']
+
+0.989002915268: ['0.589', '0.474', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT.root']
+
+0.988940344648: ['0.488', '0.179', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT.root']
+
+0.988884902838: ['0.355', '0.528', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT.root']
+
+0.988823477576: ['0.363', '0.269', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.988758593576: ['0.135', '0.362', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.988544869728: ['0.56', '0.246', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT.root']
+
+0.988488090915: ['0.296', '0.312', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT.root']
+
+0.988481684704: ['0.244', '0.365', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.988440920526: ['0.157', '0.488', 'BDTG_CFSignalCFTypeI_EE_SignalCF_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.988370221575: ['0.337', '0.435', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT.root']
+
+0.988354837538: ['0.248', '0.662', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT.root']
+
+0.988339719362: ['0.412', '0.546', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT.root']
+
+0.9883355417: ['0.314', '0.439', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.98830845583: ['0.373', '0.62', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.988293993042: ['0.29', '0.451', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.988163592472: ['0.267', '0.573', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.988155138321: ['0.051', '0.634', 'BDTG_CFSignalCFTypeI_EE_SignalCF_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.988154334381: ['0.232', '0.693', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.988129999379: ['0.235', '0.684', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT.root']
+
+0.988079750873: ['0.139', '0.554', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT.root']
+
+0.988017398425: ['0.205', '0.203', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.988000286625: ['0.338', '0.689', 'BDTG_CFSignalCFTypeI_EE_SignalCF_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.987933201093: ['0.438', '0.14', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT.root']
+
+0.987931184125: ['0.252', '0.345', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_2_nCuts_300_Shrinkage_0.5_BaggedFrac_0.5_Seed_100_BDT.root']
+
+0.987917682225: ['0.38', '0.242', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.987802160168: ['0.109', '0.757', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.987676452572: ['0.637', '0.076', 'BDTG_CFSignalCF_IBTypeI_EE_SignalCF_IB_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.987616318155: ['0.147', '0.598', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT.root']
+
+0.987580020065: ['0.186', '0.254', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.987500766362: ['0.152', '0.412', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.987492476423: ['0.057', '0.58', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT.root']
+
+0.987488248683: ['0.224', '0.467', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.987483402408: ['0.161', '0.251', 'BDTG_CFSignalCFTypeI_EE_SignalCF_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.987471594019: ['0.788', '0.083', 'BDTG_CFSignalCF_IBTypeI_EE_SignalCF_IB_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.987447217237: ['0.827', '0.058', 'BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.987418422908: ['0.218', '0.409', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT.root']
+
+0.987395543716: ['0.791', '0.176', 'BDTG_CFSignalCF_IBTypeI_EE_SignalCF_IB_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.987393709449: ['0.228', '0.587', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT.root']
+
+0.987380966245: ['0.143', '0.637', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.987337783496: ['0.215', '0.498', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.987305467354: ['0.467', '0.736', 'BDTG_CFSignalCFTypeI_EE_SignalCF_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.987259043399: ['0.713', '0.061', 'BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.987245907078: ['0.102', '0.582', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT.root']
+
+0.987218183845: ['0.123', '0.568', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.987189386583: ['0.242', '0.387', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.987171077492: ['0.824', '0.321', 'BDTG_CFSignalCF_IBTypeI_EE_SignalCF_IB_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.987161243398: ['0.824', '0.129', 'BDTG_CFSignalCF_IBTypeI_EE_SignalCF_IB_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.987155827965: ['0.341', '0.322', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT.root']
+
+0.987143529552: ['0.712', '0.131', 'BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.986964197531: ['0.711', '0.113', 'BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.986956592329: ['0.74', '0.265', 'BDTG_CFSignalCF_IBTypeI_EE_SignalCF_IB_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.986912658568: ['0.851', '0.228', 'BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.986889607499: ['0.057', '0.678', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT.root']
+
+0.98687407703: ['0.168', '0.221', 'BDTG_CFSignalCFTypeI_EE_SignalCF_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.986865767152: ['0.155', '0.501', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.98679820082: ['0.92', '0.471', 'BDTG_CFSignalCF_IBTypeI_EE_SignalCF_IB_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.986775519737: ['0.063', '0.508', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.986739447108: ['0.105', '0.378', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT.root']
+
+0.986734681121: ['0.837', '0.348', 'BDTG_CFSignalCF_IBTypeI_EE_SignalCF_IB_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.986716937942: ['0.661', '0.272', 'BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.986711169342: ['0.173', '0.407', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.986637854351: ['0.93', '0.359', 'BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.986552132936: ['0.78', '0.314', 'BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.986517404916: ['0.247', '0.84', 'BDTG_CFSignalCFTypeI_EE_SignalCF_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.986398734345: ['0.213', '0.788', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT.root']
+
+0.986372061516: ['0.07', '0.547', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.986287307452: ['0.231', '0.062', 'BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.98623449951: ['0.746', '0.538', 'BDTG_CFSignalCF_IBTypeI_EE_SignalCF_IB_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.986052132465: ['0.923', '0.435', 'BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.986029015627: ['0.93', '0.642', 'BDTG_CFSignalCF_IBTypeI_EE_SignalCF_IB_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.98601554529: ['0.137', '0.405', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT.root']
+
+0.985966945246: ['0.253', '0.635', 'BDTG_CFSignalCFTypeI_EE_SignalCF_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.985949622275: ['0.257', '0.436', 'BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.985883667248: ['0.472', '0.143', 'BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.985775398263: ['0.655', '0.65', 'BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.985272129593: ['0.185', '0.178', 'BDTG_CFSignalCF_OBTypeI_EE_SignalCF_OB_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.985194120688: ['0.215', '0.168', 'BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.985119992699: ['0.384', '0.176', 'BDTG_CFSignalCF_OBTypeI_EE_SignalCF_OB_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.985099438223: ['0.242', '0.238', 'BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.985098330509: ['0.861', '0.327', 'BDTG_CFSignalCF_IBTypeI_EE_SignalCF_IB_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.984885861878: ['0.874', '0.525', 'BDTG_CFSignalCFPtBinned_IBTypeI_EE_SignalCFPtBinned_IB_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.984784977611: ['0.223', '0.22', 'BDTG_CFSignalCF_OBTypeI_EE_SignalCF_OB_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.984723378612: ['0.175', '0.283', 'BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.984429098905: ['0.239', '0.22', 'BDTG_CFSignalCF_OBTypeI_EE_SignalCF_OB_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.984398545413: ['0.118', '0.473', 'BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.984174097989: ['0.228', '0.225', 'BDTG_CFSignalCF_OBTypeI_EE_SignalCF_OB_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.984090577766: ['0.139', '0.454', 'BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.983872763228: ['0.295', '0.325', 'BDTG_CFSignalCF_OBTypeI_EE_SignalCF_OB_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.983792871397: ['0.262', '0.317', 'BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.983555490929: ['0.217', '0.378', 'BDTG_CFSignalCF_OBTypeI_EE_SignalCF_OB_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.983520609204: ['0.237', '0.37', 'BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.983404557499: ['0.433', '0.24', 'BDTG_CFSignalCF_OBTypeI_EE_SignalCF_OB_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.983385030628: ['0.205', '0.349', 'BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.982658618265: ['0.338', '0.43', 'BDTG_CFSignalCF_OBTypeI_EE_SignalCF_OB_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.982569269252: ['0.38', '0.633', 'BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.982041336639: ['0.246', '0.587', 'BDTG_CFSignalCF_OBTypeI_EE_SignalCF_OB_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.981984769297: ['0.224', '0.61', 'BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.980972732629: ['0.421', '0.674', 'BDTG_CFSignalCF_OBTypeI_EE_SignalCF_OB_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.980878557383: ['0.228', '0.847', 'BDTG_CFSignalCFPtBinned_OBTypeI_EE_SignalCFPtBinned_OB_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.979467187674: ['0.164', '0.073', 'BDTG_CFSignalCF_ECTypeI_EE_SignalCF_EC_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.97861146552: ['0.378', '0.225', 'BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.978583321401: ['0.27', '0.111', 'BDTG_CFSignalCF_ECTypeI_EE_SignalCF_EC_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.978074947102: ['0.113', '0.132', 'BDTG_CFSignalCF_ECTypeI_EE_SignalCF_EC_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.978030229064: ['0.333', '0.128', 'BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.976910004305: ['0.325', '0.419', 'BDTG_CFSignalCF_ECTypeI_EE_SignalCF_EC_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.976906359365: ['0.472', '0.52', 'BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.976853366624: ['0.207', '0.241', 'BDTG_CFSignalCF_ECTypeI_EE_SignalCF_EC_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.97684472092: ['0.269', '0.562', 'BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.976169059571: ['0.311', '0.446', 'BDTG_CFSignalCF_ECTypeI_EE_SignalCF_EC_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.976106835896: ['0.38', '0.461', 'BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.975013118681: ['0.33', '0.459', 'BDTG_CFSignalCF_ECTypeI_EE_SignalCF_EC_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.974879318081: ['0.331', '0.518', 'BDTG_CFSignalCF_ECTypeI_EE_SignalCF_EC_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.974866899276: ['0.248', '0.541', 'BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.974705491343: ['0.251', '0.496', 'BDTG_CFSignalCF_ECTypeI_EE_SignalCF_EC_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.974683409397: ['0.251', '0.745', 'BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.974562131429: ['0.384', '0.58', 'BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_5_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.973774710335: ['0.2', '0.566', 'BDTG_CFSignalCF_ECTypeI_EE_SignalCF_EC_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.973762031326: ['0.448', '0.785', 'BDTG_CFSignalCF_ECTypeI_EE_SignalCF_EC_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.973665562143: ['0.161', '0.818', 'BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.973346076342: ['0.289', '0.741', 'BDTG_CFSignalCF_ECTypeI_EE_SignalCF_EC_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.973305262169: ['0.344', '0.544', 'BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.972909107453: ['0.251', '0.619', 'BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.97246826327: ['0.295', '0.967', 'BDTG_CFSignalCF_ECTypeI_EE_SignalCF_EC_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.972222516192: ['0.245', '0.594', 'BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2017_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.972066496674: ['0.216', '0.764', 'BDTG_CFSignalCF_ECTypeI_EE_SignalCF_EC_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.971630812682: ['0.262', '0.61', 'BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.971044571102: ['0.288', '0.686', 'BDTG_CFSignalCF_ECTypeI_EE_SignalCF_EC_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.970800855983: ['0.263', '0.949', 'BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.969803647265: ['0.319', '0.965', 'BDTG_CFSignalCF_ECTypeI_EE_SignalCF_EC_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+
+0.969572143102: ['0.274', '0.866', 'BDTG_CFSignalCFPtBinneed_ECTypeI_EE_SignalCFPtBinneed_EC_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_2_nCuts_300_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Max perfomance from BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT.root with AUC 0.991047454625
+/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/2017//BDTG_CFSignalCFPtBinnedTypeI_EE_SignalCFPtBinned_2017_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_300_Shrinkage_0.5_BaggedFrac_0.8_Seed_100_BDT.root:
+--- Goodness of signal (background) consistency: 0.554 (0.0)

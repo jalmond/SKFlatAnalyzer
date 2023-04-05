@@ -193,10 +193,6 @@ void HNL_LeptonCore::initializeAnalyzer(){
   } 
 
   
-  //SetupIDMVAReader(false,BkgType::Fake,"");
-  
-  //if (Analyzer == "HNL_SignalRegionPlotter")SetupMVAReader();
-  //if (Analyzer == "HNL_SignalLeptonOpt")SetupMVAReader();
 
 }
 
@@ -221,6 +217,337 @@ bool HNL_LeptonCore::IsSignal(){
 
 }
 
+double HNL_LeptonCore::ScaleLepToSS(TString bkg, bool isMuon, int lepttype){
+
+  if(IsData) return 1;
+  if(IsSignal()) return 1;
+
+  if (DataEra=="2016preVFP"){
+    if (bkg=="Fake"){
+      if(isMuon){
+	
+	if(MCSample == "DYJets") {
+	  if(lepttype == -4) return 0.0572329696533;
+	  if(lepttype == -3) return 0.0564770234749;
+	  if(lepttype == -2) return 0.0409676966337;
+	  if(lepttype == -1) return 0.00790280298411;
+	}
+	if(MCSample == "DYJets_MG") {
+	  if(lepttype == -4) return 0.0882435607735;
+	  if(lepttype == -3) return 0.081311448448;
+	  if(lepttype == -2) return 0.0659643370569;
+	  if(lepttype == -1) return 0.00992206529097;
+	}
+	if(MCSample == "WJets_MG") {
+	  if(lepttype == -4) return 0.115220352247;
+	  if(lepttype == -3) return 0.0274768699281;
+	  if(lepttype == -2) return 0.0694231704026;
+	  if(lepttype == -1) return 0.0158453689098;
+	}
+	if(MCSample == "WJets_amcatnlo") {
+	  if(lepttype == -4) return 0.0619698592973;
+	  if(lepttype == -3) return 0.00695326115641;
+	  if(lepttype == -2) return 0.0404166197094;
+	  if(lepttype == -1) return 0.0139797483175;
+	}
+	if(MCSample == "TTLL_powheg") {
+	  if(lepttype == -4) return  0.139126039156;
+	  if(lepttype == -3) return  0.202558585382;
+	  if(lepttype == -2) return  0.207892283169;
+	  if(lepttype == -1) return  0.0559496963532;
+	}
+	if(MCSample == "TTLJ_powheg") {
+	  if(lepttype == -4) return  0.0948702530882;
+	  if(lepttype == -3) return  0.123110104572;
+	  if(lepttype == -2) return  0.146543618259;
+	  if(lepttype == -1) return  0.0631661777209;
+	}
+      }// IS MUON
+      else{
+	if(MCSample == "DYJets") {
+	  if(lepttype == -4) return 0.0668731824721;
+	  if(lepttype == -3) return 0;
+	  if(lepttype == -2) return 0.0431445526627;
+	  if(lepttype == -1) return 0.0148199248833;
+	}
+	if(MCSample == "DYJets_MG") {
+	  if(lepttype == -4) return 0.074201021204;
+	  if(lepttype == -3) return 0.107194280206;
+	  if(lepttype == -2) return 0.0600204979974;
+	  if(lepttype == -1) return 0.0181634640241;
+	}
+	if(MCSample == "WJets_MG") {
+	  if(lepttype == -4) return 0.0891708831574;
+	  if(lepttype == -3) return 0.0160347490068;
+	  if(lepttype == -2) return 0.0643559866362;
+	  if(lepttype == -1) return 0.022407680239;
+	}
+	if(MCSample == "WJets_amcatnlo") {
+	  if(lepttype == -4) return 0.149973618956;
+	  if(lepttype == -3) return 0;
+	  if(lepttype == -2) return 0.0450562851937;
+	  if(lepttype == -1) return 0.0184872174542;
+	}
+	if(MCSample == "TTLL_powheg") {
+	  if(lepttype == -4) return  0.192051543148;
+	  if(lepttype == -3) return  0.199373416749;
+	  if(lepttype == -2) return  0.193199075163;
+	  if(lepttype == -1) return  0.0657631437783;
+	}
+	if(MCSample == "TTLJ_powheg") {
+	  if(lepttype == -4) return  0.122296916027;
+	  if(lepttype == -3) return  0.100477782673;
+	  if(lepttype == -2) return  0.126597422473;
+	  if(lepttype == -1) return  0.0624963588657;
+	}
+      }
+    }
+  }
+  if (DataEra=="2016postVFP"){
+    if (bkg=="Fake"){
+
+      if(isMuon){
+	if(MCSample == "DYJets") {
+	  if(lepttype == -4) return 0.0591685840071;
+	  if(lepttype == -3) return 0.0174470315258;
+	  if(lepttype == -2) return 0.0454424883207;
+	  if(lepttype == -1) return 0.00728206398724;
+	}
+	if(MCSample == "DYJets_MG") {
+	  if(lepttype == -4) return 0.0318908959337;
+	  if(lepttype == -3) return 0.103634312838;
+	  if(lepttype == -2) return 0.0689184472915;
+	  if(lepttype == -1) return 0.00851386616694;
+	}
+	if(MCSample == "WJets_MG") {
+	  if(lepttype == -4) return 0.0873016593436;
+	  if(lepttype == -3) return 0.0438639822984;
+	  if(lepttype == -2) return 0.0674797512283;
+	  if(lepttype == -1) return 0.014210081441;
+	}
+	if(MCSample == "WJets_amcatnlo") {
+	  if(lepttype == -4) return 0;
+	  if(lepttype == -3) return 0.0226321777479;
+	  if(lepttype == -2) return 0.0421246036661;
+	  if(lepttype == -1) return 0.0125549144221;
+	}
+	if(MCSample == "TTLL_powheg") {
+	  if(lepttype == -4) return  0.104667131836;
+	  if(lepttype == -3) return  0.20081325592;
+	  if(lepttype == -2) return  0.208661924617;
+	  if(lepttype == -1) return  0.0558379677376;
+	}
+	if(MCSample == "TTLJ_powheg") {
+	  if(lepttype == -4) return  0.088756579959;
+	  if(lepttype == -3) return  0.125114113723;
+	  if(lepttype == -2) return  0.146988576568;
+	  if(lepttype == -1) return  0.0619175029028;
+	}
+      }
+      else{
+	if(MCSample == "DYJets") {
+	  if(lepttype == -4) return 0.0772264921948;
+	  if(lepttype == -3) return 0.0600469652155;
+	  if(lepttype == -2) return 0.0388712666838;
+	  if(lepttype == -1) return 0.0140494923533;
+	}
+	if(MCSample == "DYJets_MG") {
+	  if(lepttype == -4) return 0.038627951602;
+	  if(lepttype == -3) return 0.0530281741728;
+	  if(lepttype == -2) return 0.0567311732008;
+	  if(lepttype == -1) return 0.0182212860492;
+	}
+	if(MCSample == "WJets_MG") {
+	  if(lepttype == -4) return 0.0931210071564;
+	  if(lepttype == -3) return 0.0473179559737;
+	  if(lepttype == -2) return 0.06237839904;
+	  if(lepttype == -1) return 0.0219251253234;
+	}
+	if(MCSample == "WJets_amcatnlo") {
+	  if(lepttype == -4) return 0.101981966625;
+	  if(lepttype == -3) return 0.0474174087227;
+	  if(lepttype == -2) return 0.0376332339157;
+	  if(lepttype == -1) return 0.0175780435739;
+	}
+	if(MCSample == "TTLL_powheg") {
+	  if(lepttype == -4) return  0.211966243525;
+	  if(lepttype == -3) return  0.197942477458;
+	  if(lepttype == -2) return  0.193407171274;
+	  if(lepttype == -1) return  0.0654073235911;
+	}
+	if(MCSample == "TTLJ_powheg") {
+	  if(lepttype == -4) return  0.120832681361;
+	  if(lepttype == -3) return  0.093773187407;
+	  if(lepttype == -2) return  0.125437996725;
+	  if(lepttype == -1) return  0.0626768502753;
+	}
+      }
+    }
+  }
+  if (DataEra=="2017"){
+    if (bkg=="Fake"){
+      if(isMuon){
+	if(MCSample == "DYJets") {
+	  if(lepttype == -4) return 0.0315318471314;
+	  if(lepttype == -3) return 0.0609502111404;
+	  if(lepttype == -2) return 0.040109061932;
+	  if(lepttype == -1) return 0.0069735728288;
+	}
+	if(MCSample == "DYJets_MG") {
+	  if(lepttype == -4) return 0.0643414444373;
+	  if(lepttype == -3) return 0.0628751377959;
+	  if(lepttype == -2) return 0.0668765974658;
+	  if(lepttype == -1) return 0.00813271685938;
+	}
+	if(MCSample == "WJets_MG") {
+	  if(lepttype == -4) return 0.133666629036;
+	  if(lepttype == -3) return 0.0202574788507;
+	  if(lepttype == -2) return 0.0674777485285;
+	  if(lepttype == -1) return 0.0133242425174;
+	}
+	if(MCSample == "WJets_amcatnlo") {
+	  if(lepttype == -4) return 0.0507963590519;
+	  if(lepttype == -3) return 0.0207854433536;
+	  if(lepttype == -2) return 0.0454124146937;
+	  if(lepttype == -1) return 0.0122156837975;
+	}
+	if(MCSample == "TTLL_powheg") {
+	  if(lepttype == -4) return  0.137001446224;
+	  if(lepttype == -3) return  0.202992354234;
+	  if(lepttype == -2) return  0.207423945779;
+	  if(lepttype == -1) return  0.0494693247208;
+	}
+	if(MCSample == "TTLJ_powheg") {
+	  if(lepttype == -4) return  0.0865871108799;
+	  if(lepttype == -3) return  0.120448741434;
+	  if(lepttype == -2) return  0.145669033594;
+	  if(lepttype == -1) return  0.0573959266971;
+	}
+      }
+      else{
+	if(MCSample == "DYJets") {
+	  if(lepttype == -4) return 0.0552410785548;
+	  if(lepttype == -3) return 0.0421885755502;
+	  if(lepttype == -2) return 0.0366123039107;
+	  if(lepttype == -1) return 0.0117257243435;
+	}
+	if(MCSample == "DYJets_MG") {
+	  if(lepttype == -4) return 0.0467636614658;
+	  if(lepttype == -3) return 0.0991595208698;
+	  if(lepttype == -2) return 0.0608961994592;
+	  if(lepttype == -1) return 0.0157233817552;
+	}
+	if(MCSample == "WJets_MG") {
+	  if(lepttype == -4) return 0.0815060879819;
+	  if(lepttype == -3) return 0.0326529129583;
+	  if(lepttype == -2) return 0.0601501060186;
+	  if(lepttype == -1) return 0.0200519948637;
+	}
+	if(MCSample == "WJets_amcatnlo") {
+	  if(lepttype == -4) return 0.0826117920487;
+	  if(lepttype == -3) return 0.0294122018262;
+	  if(lepttype == -2) return 0.0400547556236;
+	  if(lepttype == -1) return 0.0138311458242;
+	}
+	if(MCSample == "TTLL_powheg") {
+	  if(lepttype == -4) return  0.194799981666;
+	  if(lepttype == -3) return  0.19220314868;
+	  if(lepttype == -2) return  0.193012005182;
+	  if(lepttype == -1) return  0.0582404525433;
+	}
+	if(MCSample == "TTLJ_powheg") {
+	  if(lepttype == -4) return  0.123669421597;
+	  if(lepttype == -3) return  0.0933380047114;
+	  if(lepttype == -2) return  0.124284245492;
+	  if(lepttype == -1) return  0.0577522442443;
+	}
+      }
+    }
+  }
+  if (DataEra=="2018"){
+    if (bkg=="Fake"){
+      if(isMuon){
+
+	if(MCSample == "DYJets") {
+	  if(lepttype == -4) return 0.00696463586771;
+	  if(lepttype == -3) return 0.0438780100486;
+	  if(lepttype == -2) return 0.0417421933143;
+	  if(lepttype == -1) return 0.0073392189094;
+	}
+	if(MCSample == "DYJets_MG") {
+	  if(lepttype == -4) return 0.0529468362564;
+	  if(lepttype == -3) return 0.0645516974416;
+	  if(lepttype == -2) return 0.066535964078;
+	  if(lepttype == -1) return 0.00784650037983;
+	}
+	if(MCSample == "WJets_MG") {
+	  if(lepttype == -4) return 0.118545710799;
+	  if(lepttype == -3) return 0.0127698447325;
+	  if(lepttype == -2) return 0.0647870637369;
+	  if(lepttype == -1) return 0.0138581131242;
+	}
+	if(MCSample == "WJets_amcatnlo") {
+	  if(lepttype == -4) return 0.0681389367829;
+	  if(lepttype == -3) return 0.0265182069246;
+	  if(lepttype == -2) return 0.0298387453646;
+	  if(lepttype == -1) return 0.012405956567;
+	}
+	if(MCSample == "TTLL_powheg") {
+	  if(lepttype == -4) return  0.120106882374;
+	  if(lepttype == -3) return  0.203498438694;
+	  if(lepttype == -2) return  0.207775227132;
+	  if(lepttype == -1) return  0.0513387944922;
+	}
+	if(MCSample == "TTLJ_powheg") {
+	  if(lepttype == -4) return  0.0936908298859;
+	  if(lepttype == -3) return  0.12162153765;
+	  if(lepttype == -2) return  0.145649950884;
+	  if(lepttype == -1) return  0.0588665684297;
+	}
+      }
+      else{
+	if(MCSample == "DYJets") {
+          if(lepttype == -4) return 0.0690829858176;
+          if(lepttype == -3) return 0.0502839490934;
+          if(lepttype == -2) return 0.0411787811785;
+          if(lepttype == -1) return 0.0123035980541;
+        }
+        if(MCSample == "DYJets_MG") {
+          if(lepttype == -4) return 0.0648280666748;
+          if(lepttype == -3) return 0.0751799292251;
+          if(lepttype == -2) return 0.0598041319369;
+          if(lepttype == -1) return 0.0167905208944;
+        }
+        if(MCSample == "WJets_MG") {
+          if(lepttype == -4) return 0.0965396053717;
+          if(lepttype == -3) return 0;
+          if(lepttype == -2) return 0.0552536424548;
+          if(lepttype == -1) return 0.0196790087343;
+        }
+        if(MCSample == "WJets_amcatnlo") {
+          if(lepttype == -4) return 0.0897081404251;
+          if(lepttype == -3) return 0;
+          if(lepttype == -2) return 0.02461168616;
+          if(lepttype == -1) return 0.0153165630462;
+        }
+        if(MCSample == "TTLL_powheg") {
+          if(lepttype == -4) return  0.188032041654;
+          if(lepttype == -3) return  0.192808975162;
+          if(lepttype == -2) return  0.189179207819;
+          if(lepttype == -1) return  0.0584461033085;
+        }
+        if(MCSample == "TTLJ_powheg") {
+          if(lepttype == -4) return  0.112745883327;
+          if(lepttype == -3) return  0.0944280222211;
+          if(lepttype == -2) return  0.122801716884;
+          if(lepttype == -1) return  0.057526848554;
+        }
+      }
+    }
+  }
+
+  return -99999;
+}
 
 double HNL_LeptonCore::MergeMultiMC(vector<TString> vec, TString Method){
 
@@ -307,64 +634,7 @@ double HNL_LeptonCore::MergeMultiMC(vector<TString> vec, TString Method){
   return 1.;
 }
 
-
-
-/*
-void HNL_LeptonCore::SetupMVAReader(){
-
-  InitializeTreeVars();
-
-  MVAReader->AddVariable("Nj"      , &Nj      );
-  MVAReader->AddVariable("Nvbfj", &Nvbfj);
-  MVAReader->AddVariable("Ptl1", &Ptl1);
-  MVAReader->AddVariable("Ptl2", &Ptl2);
-  MVAReader->AddVariable("Ptj1", &Ptj1);
-  MVAReader->AddVariable("Ptj2", &Ptj2);
-  MVAReader->AddVariable("MET2ST", &MET2ST);
-  MVAReader->AddVariable("HTLT1", &HTLT1);
-  MVAReader->AddVariable("HTLT2", &HTLT2);
-  MVAReader->AddVariable("dRll", &dRll);
-  MVAReader->AddVariable("dRlj11", &dRlj11);
-  MVAReader->AddVariable("dRlj12", &dRlj12);
-  MVAReader->AddVariable("dRlj21", &dRlj21);
-  MVAReader->AddVariable("dRlj22", &dRlj22);
-  MVAReader->AddVariable("MSSSF", &MSSSF);
-  MVAReader->AddVariable("Mlj11", &Mlj11);
-  MVAReader->AddVariable("Mlj12", &Mlj12);
-  MVAReader->AddVariable("Mlj21", &Mlj21);
-  MVAReader->AddVariable("Mlj22", &Mlj22);
-  MVAReader->AddVariable("Mllj1", &Mllj1);
-  MVAReader->AddVariable("Mllj2", &Mllj2);
-  MVAReader->AddVariable("PtWj1", &PtWj1);
-  MVAReader->AddVariable("PtWj2", &PtWj2);
-  MVAReader->AddVariable("dRWjj", &dRWjj);
-  MVAReader->AddVariable("dRlW12", &dRlW12);
-  MVAReader->AddVariable("dRlW22", &dRlW22);
-  MVAReader->AddVariable("M_W2_jj", &M_W2_jj);
-  MVAReader->AddVariable("M_W1_lljj", &M_W1_lljj);
-  MVAReader->AddVariable("M_N1_l1jj", &M_N1_l1jj);
-  MVAReader->AddVariable("M_N2_l2jj", &M_N2_l2jj);
-  MVAReader->AddSpectator("w_tot", &w_tot);
-
-
-  TString AnalyzerPath=std::getenv("SKFlat_WD");
-  TString MVAPath="/data/Run2UltraLegacy_v3/2018/BDTClassifier/results_xml/";
-  MNStrList = {"85","90", "95", "100", "125", "150", "200", "250", "300", "400","500"};
-  vector <TString> Channels = {"MuMu","EE","EMu"};
-  for(unsigned int im=0; im<MNStrList.size() ; im++){
-    for(auto ich : Channels){
-      TString FileName ="DYTypeI_"+ich+ "_M"+MNStrList.at(im)+"_Mode0_Run2_BDT.weights.xml";
-      TString MVATagStr = "BDTG_M"+MNStrList.at(im)+"_"+ich;
-
-      MVAReader->BookMVA(MVATagStr, AnalyzerPath+MVAPath+FileName);
-    }
-  }
-
-  return;
-}
-*/
-
-void HNL_LeptonCore::SetupMVAReader(){
+void HNL_LeptonCore::SetupEventMVAReader(){
 
   InitializeTreeVars();
 
@@ -373,122 +643,120 @@ void HNL_LeptonCore::SetupMVAReader(){
   MNStrList = {"90", "100", "150", "200", "300", "400", "500"};
   NCutList  = {"300"};
   NTreeList = {"850"};
+  
+  MVAReaderMM->AddVariable("Nvbfj", &ev_bdt_Nvbfj);
+  MVAReaderMM->AddVariable("Ptl1", &ev_bdt_Ptl1);
+  MVAReaderMM->AddVariable("Ptl2", &ev_bdt_Ptl2);
+  MVAReaderMM->AddVariable("Ptj1", &ev_bdt_Ptj1);
+  MVAReaderMM->AddVariable("Ptj2", &ev_bdt_Ptj2);
+  MVAReaderMM->AddVariable("MET2ST", &ev_bdt_MET2ST);
+  MVAReaderMM->AddVariable("HTLT1", &ev_bdt_HTLT1);
+  MVAReaderMM->AddVariable("HTLT2", &ev_bdt_HTLT2);
+  MVAReaderMM->AddVariable("Etal1", &ev_bdt_Etal1);
+  MVAReaderMM->AddVariable("Etal2", &ev_bdt_Etal2);
+  MVAReaderMM->AddVariable("PtRatioAJl1", &ev_bdt_PtRatioAJl1);
+  MVAReaderMM->AddVariable("PtRatioAJl2", &ev_bdt_PtRatioAJl2);
+  MVAReaderMM->AddVariable("NEMFracAJl1", &ev_bdt_NEMFracAJl1);
+  MVAReaderMM->AddVariable("NEMFracAJl2", &ev_bdt_NEMFracAJl2);
+  MVAReaderMM->AddVariable("CHFracAJl1", &ev_bdt_CHFracAJl1);
+  MVAReaderMM->AddVariable("CHFracAJl2", &ev_bdt_CHFracAJl2);
+  MVAReaderMM->AddVariable("NHFracAJl1", &ev_bdt_NHFracAJl1);
+  MVAReaderMM->AddVariable("NHFracAJl2", &ev_bdt_NHFracAJl2);
+  MVAReaderMM->AddVariable("JetDiscAJl1", &ev_bdt_JetDiscAJl1);
+  MVAReaderMM->AddVariable("JetDiscAJl2", &ev_bdt_JetDiscAJl2);
 
-  MVAReaderMM->AddVariable("Nvbfj", &Nvbfj);
-  MVAReaderMM->AddVariable("Ptl1", &Ptl1);
-  MVAReaderMM->AddVariable("Ptl2", &Ptl2);
-  MVAReaderMM->AddVariable("Ptj1", &Ptj1);
-  MVAReaderMM->AddVariable("Ptj2", &Ptj2);
-  MVAReaderMM->AddVariable("MET2ST", &MET2ST);
-  MVAReaderMM->AddVariable("HTLT1", &HTLT1);
-  MVAReaderMM->AddVariable("HTLT2", &HTLT2);
-  MVAReaderMM->AddVariable("Etal1", &Etal1);
-  MVAReaderMM->AddVariable("Etal2", &Etal2);
-  MVAReaderMM->AddVariable("PtRatioAJl1", &PtRatioAJl1);
-  MVAReaderMM->AddVariable("PtRatioAJl2", &PtRatioAJl2);
-  MVAReaderMM->AddVariable("NEMFracAJl1", &NEMFracAJl1);
-  MVAReaderMM->AddVariable("NEMFracAJl2", &NEMFracAJl2);
-  MVAReaderMM->AddVariable("CHFracAJl1", &CHFracAJl1);
-  MVAReaderMM->AddVariable("CHFracAJl2", &CHFracAJl2);
-  MVAReaderMM->AddVariable("NHFracAJl1", &NHFracAJl1);
-  MVAReaderMM->AddVariable("NHFracAJl2", &NHFracAJl2);
-  MVAReaderMM->AddVariable("JetDiscAJl1", &JetDiscAJl1);
-  MVAReaderMM->AddVariable("JetDiscAJl2", &JetDiscAJl2);
-  MVAReaderMM->AddVariable("dRll", &dRll);
-  MVAReaderMM->AddVariable("dRlj11", &dRlj11);
-  MVAReaderMM->AddVariable("dRlj21", &dRlj21);
-  MVAReaderMM->AddVariable("MSSSF", &MSSSF);
-  MVAReaderMM->AddVariable("Mlj11", &Mlj11);
-  MVAReaderMM->AddVariable("Mlj21", &Mlj21);
-  MVAReaderMM->AddVariable("Mlj22", &Mlj22);
-  MVAReaderMM->AddVariable("MTvl1", &MTvl1);
-  MVAReaderMM->AddVariable("MTvl2", &MTvl2);
-  MVAReaderMM->AddVariable("Mllj1", &Mllj1);
-  MVAReaderMM->AddVariable("dRWjj", &dRWjj);
-  MVAReaderMM->AddVariable("M_W2_jj", &M_W2_jj);
-  MVAReaderMM->AddVariable("M_N2_l2jj", &M_N2_l2jj);
-  MVAReaderMM->AddVariable("Nb", &Nb);
-  MVAReaderMM->AddVariable("MuFracAJl1", &MuFracAJl1);
-  MVAReaderMM->AddVariable("M_N1_l1jj", &M_N1_l1jj);
-
+  MVAReaderMM->AddVariable("dRll", &ev_bdt_dRll);
+  MVAReaderMM->AddVariable("dRlj11", &ev_bdt_dRlj11);
+  MVAReaderMM->AddVariable("dRlj21", &ev_bdt_dRlj21);
+  MVAReaderMM->AddVariable("MSSSF", &ev_bdt_MSSSF);
+  MVAReaderMM->AddVariable("Mlj11", &ev_bdt_Mlj11);
+  MVAReaderMM->AddVariable("Mlj21", &ev_bdt_Mlj21);
+  MVAReaderMM->AddVariable("Mlj22", &ev_bdt_Mlj22);
+  MVAReaderMM->AddVariable("MTvl1", &ev_bdt_MTvl1);
+  MVAReaderMM->AddVariable("MTvl2", &ev_bdt_MTvl2);
+  MVAReaderMM->AddVariable("Mllj1", &ev_bdt_Mllj1);
+  MVAReaderMM->AddVariable("dRWjj", &ev_bdt_dRWjj);
+  MVAReaderMM->AddVariable("M_W2_jj", &ev_bdt_M_W2_jj);
+  MVAReaderMM->AddVariable("M_N2_l2jj", &ev_bdt_M_N2_l2jj);
+  MVAReaderMM->AddVariable("Nb", &ev_bdt_Nb);
+  MVAReaderMM->AddVariable("MuFracAJl1", &ev_bdt_MuFracAJl1);
+  MVAReaderMM->AddVariable("M_N1_l1jj", &ev_bdt_M_N1_l1jj);
   MVAReaderMM->AddSpectator("w_tot", &w_tot);
 
-  MVAReaderEE->AddVariable("Nvbfj", &Nvbfj);
-  MVAReaderEE->AddVariable("Ptl1", &Ptl1);
-  MVAReaderEE->AddVariable("Ptl2", &Ptl2);
-  MVAReaderEE->AddVariable("Ptj1", &Ptj1);
-  MVAReaderEE->AddVariable("Ptj2", &Ptj2);
-  MVAReaderEE->AddVariable("MET2ST", &MET2ST);
-  MVAReaderEE->AddVariable("HTLT1", &HTLT1);
-  MVAReaderEE->AddVariable("HTLT2", &HTLT2);
-  MVAReaderEE->AddVariable("Etal1", &Etal1);
-  MVAReaderEE->AddVariable("Etal2", &Etal2);
-  MVAReaderEE->AddVariable("PtRatioAJl1", &PtRatioAJl1);
-  MVAReaderEE->AddVariable("PtRatioAJl2", &PtRatioAJl2);
-  MVAReaderEE->AddVariable("NEMFracAJl1", &NEMFracAJl1);
-  MVAReaderEE->AddVariable("NEMFracAJl2", &NEMFracAJl2);
-  MVAReaderEE->AddVariable("CHFracAJl1", &CHFracAJl1);
-  MVAReaderEE->AddVariable("CHFracAJl2", &CHFracAJl2);
-  MVAReaderEE->AddVariable("NHFracAJl1", &NHFracAJl1);
-  MVAReaderEE->AddVariable("NHFracAJl2", &NHFracAJl2);
-  MVAReaderEE->AddVariable("JetDiscAJl1", &JetDiscAJl1);
-  MVAReaderEE->AddVariable("JetDiscAJl2", &JetDiscAJl2);
-  MVAReaderEE->AddVariable("dRll", &dRll);
-  MVAReaderEE->AddVariable("dRlj11", &dRlj11);
-  MVAReaderEE->AddVariable("dRlj21", &dRlj21);
-  MVAReaderEE->AddVariable("MSSSF", &MSSSF);
-  MVAReaderEE->AddVariable("Mlj11", &Mlj11);
-  MVAReaderEE->AddVariable("Mlj21", &Mlj21);
-  MVAReaderEE->AddVariable("Mlj22", &Mlj22);
-  MVAReaderEE->AddVariable("MTvl1", &MTvl1);
-  MVAReaderEE->AddVariable("MTvl2", &MTvl2);
-  MVAReaderEE->AddVariable("Mllj1", &Mllj1);
-  MVAReaderEE->AddVariable("dRWjj", &dRWjj);
-  MVAReaderEE->AddVariable("M_W2_jj", &M_W2_jj);
-  MVAReaderEE->AddVariable("M_N2_l2jj", &M_N2_l2jj);
-  MVAReaderEE->AddVariable("dRlj12", &dRlj12);
-  MVAReaderEE->AddVariable("dRlj22", &dRlj22);
-  MVAReaderEE->AddVariable("Mllj2", &Mllj2);
-
+  MVAReaderEE->AddVariable("Nvbfj", &ev_bdt_Nvbfj);
+  MVAReaderEE->AddVariable("Ptl1", &ev_bdt_Ptl1);
+  MVAReaderEE->AddVariable("Ptl2", &ev_bdt_Ptl2);
+  MVAReaderEE->AddVariable("Ptj1", &ev_bdt_Ptj1);
+  MVAReaderEE->AddVariable("Ptj2", &ev_bdt_Ptj2);
+  MVAReaderEE->AddVariable("MET2ST", &ev_bdt_MET2ST);
+  MVAReaderEE->AddVariable("HTLT1", &ev_bdt_HTLT1);
+  MVAReaderEE->AddVariable("HTLT2", &ev_bdt_HTLT2);
+  MVAReaderEE->AddVariable("Etal1", &ev_bdt_Etal1);
+  MVAReaderEE->AddVariable("Etal2", &ev_bdt_Etal2);
+  MVAReaderEE->AddVariable("PtRatioAJl1", &ev_bdt_PtRatioAJl1);
+  MVAReaderEE->AddVariable("PtRatioAJl2", &ev_bdt_PtRatioAJl2);
+  MVAReaderEE->AddVariable("NEMFracAJl1", &ev_bdt_NEMFracAJl1);
+  MVAReaderEE->AddVariable("NEMFracAJl2", &ev_bdt_NEMFracAJl2);
+  MVAReaderEE->AddVariable("CHFracAJl1", &ev_bdt_CHFracAJl1);
+  MVAReaderEE->AddVariable("CHFracAJl2", &ev_bdt_CHFracAJl2);
+  MVAReaderEE->AddVariable("NHFracAJl1", &ev_bdt_NHFracAJl1);
+  MVAReaderEE->AddVariable("NHFracAJl2", &ev_bdt_NHFracAJl2);
+  MVAReaderEE->AddVariable("JetDiscAJl1", &ev_bdt_JetDiscAJl1);
+  MVAReaderEE->AddVariable("JetDiscAJl2", &ev_bdt_JetDiscAJl2);
+  MVAReaderEE->AddVariable("dRll", &ev_bdt_dRll);
+  MVAReaderEE->AddVariable("dRlj11", &ev_bdt_dRlj11);
+  MVAReaderEE->AddVariable("dRlj21", &ev_bdt_dRlj21);
+  MVAReaderEE->AddVariable("MSSSF", &ev_bdt_MSSSF);
+  MVAReaderEE->AddVariable("Mlj11", &ev_bdt_Mlj11);
+  MVAReaderEE->AddVariable("Mlj21", &ev_bdt_Mlj21);
+  MVAReaderEE->AddVariable("Mlj22", &ev_bdt_Mlj22);
+  MVAReaderEE->AddVariable("MTvl1", &ev_bdt_MTvl1);
+  MVAReaderEE->AddVariable("MTvl2", &ev_bdt_MTvl2);
+  MVAReaderEE->AddVariable("Mllj1", &ev_bdt_Mllj1);
+  MVAReaderEE->AddVariable("dRWjj", &ev_bdt_dRWjj);
+  MVAReaderEE->AddVariable("M_W2_jj", &ev_bdt_M_W2_jj);
+  MVAReaderEE->AddVariable("M_N2_l2jj", &ev_bdt_M_N2_l2jj);
+  MVAReaderEE->AddVariable("dRlj12", &ev_bdt_dRlj12);
+  MVAReaderEE->AddVariable("dRlj22", &ev_bdt_dRlj22);
+  MVAReaderEE->AddVariable("Mllj2", &ev_bdt_Mllj2);
   MVAReaderEE->AddSpectator("w_tot", &w_tot);
 
-  MVAReaderEM->AddVariable("Nvbfj", &Nvbfj);
-  MVAReaderEM->AddVariable("Ptl1", &Ptl1);
-  MVAReaderEM->AddVariable("Ptl2", &Ptl2);
-  MVAReaderEM->AddVariable("Ptj1", &Ptj1);
-  MVAReaderEM->AddVariable("Ptj2", &Ptj2);
-  MVAReaderEM->AddVariable("MET2ST", &MET2ST);
-  MVAReaderEM->AddVariable("HTLT1", &HTLT1);
-  MVAReaderEM->AddVariable("HTLT2", &HTLT2);
-  MVAReaderEM->AddVariable("Etal1", &Etal1);
-  MVAReaderEM->AddVariable("Etal2", &Etal2);
-  MVAReaderEM->AddVariable("PtRatioAJl1", &PtRatioAJl1);
-  MVAReaderEM->AddVariable("PtRatioAJl2", &PtRatioAJl2);
-  MVAReaderEM->AddVariable("NEMFracAJl1", &NEMFracAJl1);
-  MVAReaderEM->AddVariable("NEMFracAJl2", &NEMFracAJl2);
-  MVAReaderEM->AddVariable("CHFracAJl1", &CHFracAJl1);
-  MVAReaderEM->AddVariable("CHFracAJl2", &CHFracAJl2);
-  MVAReaderEM->AddVariable("NHFracAJl1", &NHFracAJl1);
-  MVAReaderEM->AddVariable("NHFracAJl2", &NHFracAJl2);
-  MVAReaderEM->AddVariable("JetDiscAJl1", &JetDiscAJl1);
-  MVAReaderEM->AddVariable("JetDiscAJl2", &JetDiscAJl2);
-  MVAReaderEM->AddVariable("dRll", &dRll);
-  MVAReaderEM->AddVariable("dRlj11", &dRlj11);
-  MVAReaderEM->AddVariable("dRlj21", &dRlj21);
-  MVAReaderEM->AddVariable("MSSSF", &MSSSF);
-  MVAReaderEM->AddVariable("Mlj11", &Mlj11);
-  MVAReaderEM->AddVariable("Mlj21", &Mlj21);
-  MVAReaderEM->AddVariable("Mlj22", &Mlj22);
-  MVAReaderEM->AddVariable("MTvl1", &MTvl1);
-  MVAReaderEM->AddVariable("MTvl2", &MTvl2);
-  MVAReaderEM->AddVariable("Mllj1", &Mllj1);
-  MVAReaderEM->AddVariable("dRWjj", &dRWjj);
-  MVAReaderEM->AddVariable("M_W2_jj", &M_W2_jj);
-  MVAReaderEM->AddVariable("M_N2_l2jj", &M_N2_l2jj);
-  MVAReaderEM->AddVariable("Nb", &Nb);
-  MVAReaderEM->AddVariable("dRlj12", &dRlj12);
-  MVAReaderEM->AddVariable("M_N1_l1jj", &M_N1_l1jj);
-
+  MVAReaderEM->AddVariable("Nvbfj", &ev_bdt_Nvbfj);
+  MVAReaderEM->AddVariable("Ptl1", &ev_bdt_Ptl1);
+  MVAReaderEM->AddVariable("Ptl2", &ev_bdt_Ptl2);
+  MVAReaderEM->AddVariable("Ptj1", &ev_bdt_Ptj1);
+  MVAReaderEM->AddVariable("Ptj2", &ev_bdt_Ptj2);
+  MVAReaderEM->AddVariable("MET2ST", &ev_bdt_MET2ST);
+  MVAReaderEM->AddVariable("HTLT1", &ev_bdt_HTLT1);
+  MVAReaderEM->AddVariable("HTLT2", &ev_bdt_HTLT2);
+  MVAReaderEM->AddVariable("Etal1", &ev_bdt_Etal1);
+  MVAReaderEM->AddVariable("Etal2", &ev_bdt_Etal2);
+  MVAReaderEM->AddVariable("PtRatioAJl1", &ev_bdt_PtRatioAJl1);
+  MVAReaderEM->AddVariable("PtRatioAJl2", &ev_bdt_PtRatioAJl2);
+  MVAReaderEM->AddVariable("NEMFracAJl1", &ev_bdt_NEMFracAJl1);
+  MVAReaderEM->AddVariable("NEMFracAJl2", &ev_bdt_NEMFracAJl2);
+  MVAReaderEM->AddVariable("CHFracAJl1", &ev_bdt_CHFracAJl1);
+  MVAReaderEM->AddVariable("CHFracAJl2", &ev_bdt_CHFracAJl2);
+  MVAReaderEM->AddVariable("NHFracAJl1", &ev_bdt_NHFracAJl1);
+  MVAReaderEM->AddVariable("NHFracAJl2", &ev_bdt_NHFracAJl2);
+  MVAReaderEM->AddVariable("JetDiscAJl1", &ev_bdt_JetDiscAJl1);
+  MVAReaderEM->AddVariable("JetDiscAJl2", &ev_bdt_JetDiscAJl2);
+  MVAReaderEM->AddVariable("dRll", &ev_bdt_dRll);
+  MVAReaderEM->AddVariable("dRlj11", &ev_bdt_dRlj11);
+  MVAReaderEM->AddVariable("dRlj21", &ev_bdt_dRlj21);
+  MVAReaderEM->AddVariable("MSSSF", &ev_bdt_MSSSF);
+  MVAReaderEM->AddVariable("Mlj11", &ev_bdt_Mlj11);
+  MVAReaderEM->AddVariable("Mlj21", &ev_bdt_Mlj21);
+  MVAReaderEM->AddVariable("Mlj22", &ev_bdt_Mlj22);
+  MVAReaderEM->AddVariable("MTvl1", &ev_bdt_MTvl1);
+  MVAReaderEM->AddVariable("MTvl2", &ev_bdt_MTvl2);
+  MVAReaderEM->AddVariable("Mllj1", &ev_bdt_Mllj1);
+  MVAReaderEM->AddVariable("dRWjj", &ev_bdt_dRWjj);
+  MVAReaderEM->AddVariable("M_W2_jj", &ev_bdt_M_W2_jj);
+  MVAReaderEM->AddVariable("M_N2_l2jj", &ev_bdt_M_N2_l2jj);
+  MVAReaderEM->AddVariable("Nb", &ev_bdt_Nb);
+  MVAReaderEM->AddVariable("dRlj12", &ev_bdt_dRlj12);
+  MVAReaderEM->AddVariable("M_N1_l1jj", &ev_bdt_M_N1_l1jj);
   MVAReaderEM->AddSpectator("w_tot", &w_tot);
 
 
@@ -542,33 +810,237 @@ double HNL_LeptonCore::GetHNLMVAElectron(Electron el ,BkgType bkg){
 
 
 
+/// Event BDT Variables 
 
 void HNL_LeptonCore::InitializeTreeVars(){
+  
+  /// Other var in BDT code (not used to train)
+  ev_bdt_Nj=-1;
+  ev_bdt_LQ= -1;
+  ev_bdt_LT= -1;
+  ev_bdt_MET= -1;
+  ev_bdt_dEtall  = -1;
+  ev_bdt_dRjj12  = -1;
+  ev_bdt_dRjj23  = -1;
+  ev_bdt_dRjj13  = -1;
+  ev_bdt_dRlj11  = -1;
+  ev_bdt_dRlj12  = -1;
+  ev_bdt_dRlj13  = -1;
+  ev_bdt_dRlj21  = -1;
+  ev_bdt_dRlj22  = -1;
+  ev_bdt_dRlj23  = -1;
+  ev_bdt_Mlj13   = -1;
+  ev_bdt_Mlj23   = -1;
+  ev_bdt_Mllj3   = -1;
+  ev_bdt_Mllj4   = -1; 
+  ev_bdt_Mlljj12 = -1;
+  ev_bdt_Mlljj13 = -1;
+  ev_bdt_Mlljj14 = -1;
+  ev_bdt_Mlljj23 = -1;
+  ev_bdt_Mlljj24 = -1;
+  ev_bdt_Mlljj34 = -1;
+  ev_bdt_Mljj112 = -1;
+  ev_bdt_Mljj113 = -1;
+  ev_bdt_Mljj114 = -1;
+  ev_bdt_Mljj123 = -1;
+  ev_bdt_Mljj124 = -1;
+  ev_bdt_Mljj134 = -1;
+  ev_bdt_Mljj212 = -1;
+  ev_bdt_Mljj213 = -1;
+  ev_bdt_Mljj214 = -1;
+  ev_bdt_Mljj223 = -1;
+  ev_bdt_Mljj224 = -1;
+  ev_bdt_Mljj234 = -1;
+  ev_bdt_Mjj12   = -1;
+  ev_bdt_Mjj13   = -1;
+  ev_bdt_Mjj14   = -1;
+  ev_bdt_Mjj23   = -1;
+  ev_bdt_Mjj24   = -1;
+  ev_bdt_Mjj34   = -1;
+  ev_bdt_HT      = -1;
+  ev_bdt_HTLT    = -1;
+  ev_bdt_MET2HT = -1;
 
-  /*Nj=-1, Nvbfj=-1;
-  Ptl1=-1, Ptl2=-1, Ptj1=-1, Ptj2=-1, Ptj3=-1, MET=-1, HTLT=-1, HTLT1=-1,HTLT2=-1,LT=-1,  HT=-1, MET2HT=-1, MET2ST=-1;
-  dEtall=-1, dRll=-1, dRjj12=-1, dRjj23=-1, dRjj13=-1;
-  dRlj11=-1, dRlj12=-1, dRlj13=-1, dRlj21=-1, dRlj22=-1, dRlj23=-1;
-  MSSSF=-1, Mlj11=-1, Mlj12=-1, Mlj13=-1, Mlj21=-1, Mlj22=-1, Mlj23=-1;
-  MTvl1=-1, MTvl2=-1, Mllj1=-1, Mllj2=-1, Mllj3=-1, Mllj4=-1;
-  Mlljj12=-1, Mlljj13=-1, Mlljj14=-1, Mlljj23=-1, Mlljj24=-1, Mlljj34=-1;
-  Mljj112=-1, Mljj113=-1, Mljj114=-1, Mljj123=-1, Mljj124=-1, Mljj134=-1;
-  Mljj212=-1, Mljj213=-1, Mljj214=-1, Mljj223=-1, Mljj224=-1, Mljj234=-1;
-  Mjj12=-1, Mjj13=-1, Mjj14=-1, Mjj23=-1, Mjj24=-1, Mjj34=-1;*/
 
-  Nvbfj=-1, Nb=-1;
-  Ptl1=-1, Ptl2=-1, Ptj1=-1, Ptj2=-1, HTLT1=-1, HTLT2=-1, MET2ST=-1, Etal1=-1, Etal2=-1;
-  PtRatioAJl1=-1, PtRatioAJl2=-1;
-  CEMFracAJl1=-1, CEMFracAJl2=-1, NEMFracAJl1=-1, NEMFracAJl2=-1, CHFracAJl1=-1, CHFracAJl2=-1, NHFracAJl1=-1, NHFracAJl2=-1, MuFracAJl1=-1, MuFracAJl2=-1, JetDiscAJl1=-1, JetDiscAJl2=-1;
-  dRll=-1, dRlj11=-1, dRlj12=-1, dRlj21=-1, dRlj22=-1;
-  MSSSF=-1, Mlj11=-1, Mlj12=-1, Mlj21=-1, Mlj22=-1;
-  MTvl1=-1, MTvl2=-1, Mllj1=-1, Mllj2=-1; 
+  /// Used in training
+  ev_bdt_Nvbfj=-1,  ev_bdt_Nb=-1;
+  ev_bdt_Ptl1=-1,   ev_bdt_Ptl2=-1, ev_bdt_Ptj1=-1, ev_bdt_Ptj2=-1, ev_bdt_HTLT1=-1, ev_bdt_HTLT2=-1, ev_bdt_MET2ST=-1, ev_bdt_Etal1=-1, ev_bdt_Etal2=-1;
+  ev_bdt_PtRatioAJl1=-1, ev_bdt_PtRatioAJl2=-1;
+  ev_bdt_CEMFracAJl1=-1, ev_bdt_CEMFracAJl2=-1, ev_bdt_NEMFracAJl1=-1, ev_bdt_NEMFracAJl2=-1, ev_bdt_CHFracAJl1=-1, ev_bdt_CHFracAJl2=-1, ev_bdt_NHFracAJl1=-1, ev_bdt_NHFracAJl2=-1, ev_bdt_MuFracAJl1=-1, ev_bdt_MuFracAJl2=-1, ev_bdt_JetDiscAJl1=-1, ev_bdt_JetDiscAJl2=-1;
+  ev_bdt_dRll=-1, ev_bdt_dRlj11=-1, ev_bdt_dRlj12=-1, ev_bdt_dRlj21=-1, ev_bdt_dRlj22=-1;
+  ev_bdt_MSSSF=-1, ev_bdt_Mlj11=-1, ev_bdt_Mlj12=-1, ev_bdt_Mlj21=-1, ev_bdt_Mlj22=-1;
+  ev_bdt_MTvl1=-1, ev_bdt_MTvl2=-1,   ev_bdt_Mllj1=-1, ev_bdt_Mllj2=-1; 
 
-  PtWj1=-1, PtWj2=-1;
-  dRWjj=-1, dRlW12=-1, dRlW22=-1;
-  M_W2_jj=-1, M_W1_lljj=-1, M_N1_l1jj=-1, M_N2_l2jj=-1;
+  ev_bdt_PtWj1=-1, ev_bdt_PtWj2=-1;
+  ev_bdt_dRWjj=-1, ev_bdt_dRlW12=-1, ev_bdt_dRlW22=-1;
+  ev_bdt_M_W2_jj=-1, ev_bdt_M_W1_lljj=-1, ev_bdt_M_N1_l1jj=-1, ev_bdt_M_N2_l2jj=-1;
   
   w_tot=-1.;
+}
+
+void HNL_LeptonCore::SetupEventBDTVariables(std::vector<Lepton *> LepTColl,  
+					    std::vector<Jet> JetAllColl,std::vector<Jet> JetColl, std::vector<Jet> JetVBFColl, std::vector<Jet> B_JetColl, 
+					    Event  ev, Particle METv, AnalyzerParameter param){
+
+  /// Ensure obj def is correct
+  // All Jets = 10 GeV, noID and eta 3
+  
+  InitializeTreeVars();
+
+  float Mll = GetLLMass(LepTColl);
+  ev_bdt_Nb      = B_JetColl.size();
+  ev_bdt_Nj      = JetColl.size();
+  ev_bdt_Nvbfj   = JetVBFColl.size();
+  ev_bdt_Ptl1    = LepTColl[0]->Pt();
+  ev_bdt_Ptl2    = LepTColl.at(1)->Pt();
+  ev_bdt_LT      = GetLT(LepTColl);
+  ev_bdt_Ptj1    =  JetColl.size()<1? -1.: JetColl.at(0).Pt();
+  ev_bdt_Ptj2    =  JetColl.size()<2? -1.:JetColl.at(1).Pt();
+  ev_bdt_Ptj3    =  JetColl.size()<3? -1.:JetColl.at(2).Pt();
+  ev_bdt_MET     = METv.Pt();
+  ev_bdt_dEtall  = abs(LepTColl.at(0)->Eta()-LepTColl.at(1)->Eta());
+  ev_bdt_dRll    = LepTColl.at(0)->DeltaR(*LepTColl.at(1));
+  ev_bdt_dRjj12  =  JetColl.size()<2? -1.:JetColl.at(0).DeltaR(JetColl.at(1));
+  ev_bdt_dRjj23  =  JetColl.size()<3? -1.:JetColl.at(1).DeltaR(JetColl.at(2));
+  ev_bdt_dRjj13  =  JetColl.size()<3? -1.:JetColl.at(0).DeltaR(JetColl.at(2));
+  ev_bdt_dRlj11  =  JetColl.size()<1? -1.:LepTColl.at(0)->DeltaR(JetColl.at(0));
+  ev_bdt_dRlj12  =  JetColl.size()<2? -1.:LepTColl.at(0)->DeltaR(JetColl.at(1));
+  ev_bdt_dRlj13  =  JetColl.size()<3? -1.:LepTColl.at(0)->DeltaR(JetColl.at(2));
+  ev_bdt_dRlj21  =  JetColl.size()<1? -1.:LepTColl.at(1)->DeltaR(JetColl.at(0));
+  ev_bdt_dRlj22  =  JetColl.size()<2? -1.:LepTColl.at(1)->DeltaR(JetColl.at(1));
+  ev_bdt_dRlj23  =  JetColl.size()<3? -1.:LepTColl.at(1)->DeltaR(JetColl.at(2));
+  ev_bdt_MSSSF   = Mll;
+  ev_bdt_Mlj11   =  JetColl.size()<1? -1.:(*LepTColl.at(0)+JetColl.at(0)).M();
+  ev_bdt_Mlj12   =  JetColl.size()<2? -1.:(*LepTColl.at(0)+JetColl.at(1)).M();
+  ev_bdt_Mlj13   =  JetColl.size()<3? -1.:(*LepTColl.at(0)+JetColl.at(2)).M();
+  ev_bdt_Mlj21   =  JetColl.size()<1? -1.:(*LepTColl.at(1)+JetColl.at(0)).M();
+  ev_bdt_Mlj22   =  JetColl.size()<2? -1.:(*LepTColl.at(1)+JetColl.at(1)).M();
+  ev_bdt_Mlj23   =  JetColl.size()<3? -1.:(*LepTColl.at(1)+JetColl.at(2)).M();
+  ev_bdt_MTvl1   = MT(*LepTColl.at(0),METv);
+  ev_bdt_MTvl2   = MT(*LepTColl.at(1),METv);
+  ev_bdt_Mllj1   =  JetColl.size()<1? -1.:(*LepTColl.at(0)+*LepTColl.at(1)+JetColl.at(0)).M();
+  ev_bdt_Mllj2   =  JetColl.size()<2? -1.:(*LepTColl.at(0)+*LepTColl.at(1)+JetColl.at(1)).M();
+  ev_bdt_Mllj3   =  JetColl.size()<3? -1.:(*LepTColl.at(0)+*LepTColl.at(1)+JetColl.at(2)).M();
+  ev_bdt_Mllj4   = JetColl.size()<4? -1.:(*LepTColl.at(0)+*LepTColl.at(1)+JetColl.at(3)).M();
+  ev_bdt_Mlljj12 =  JetColl.size()<2? -1.:(*LepTColl.at(0)+*LepTColl.at(1)+JetColl.at(0)+JetColl.at(1)).M();
+  ev_bdt_Mlljj13 =  JetColl.size()<3? -1.:(*LepTColl.at(0)+*LepTColl.at(1)+JetColl.at(0)+JetColl.at(2)).M();
+  ev_bdt_Mlljj14 = JetColl.size()<4? -1.:(*LepTColl.at(0)+*LepTColl.at(1)+JetColl.at(0)+JetColl.at(3)).M();
+  ev_bdt_Mlljj23 =  JetColl.size()<3? -1.:(*LepTColl.at(0)+*LepTColl.at(1)+JetColl.at(1)+JetColl.at(2)).M();
+  ev_bdt_Mlljj24 = JetColl.size()<4? -1.:(*LepTColl.at(0)+*LepTColl.at(1)+JetColl.at(1)+JetColl.at(3)).M();
+  ev_bdt_Mlljj34 = JetColl.size()<4? -1.:(*LepTColl.at(0)+*LepTColl.at(1)+JetColl.at(2)+JetColl.at(3)).M();
+  ev_bdt_Mljj112 =  JetColl.size()<2? -1.:(*LepTColl.at(0)+JetColl.at(0)+JetColl.at(1)).M();
+  ev_bdt_Mljj113 =  JetColl.size()<3? -1.:(*LepTColl.at(0)+JetColl.at(0)+JetColl.at(2)).M();
+  ev_bdt_Mljj114 = JetColl.size()<4? -1.:(*LepTColl.at(0)+JetColl.at(0)+JetColl.at(3)).M();
+  ev_bdt_Mljj123 =  JetColl.size()<3? -1.:(*LepTColl.at(0)+JetColl.at(1)+JetColl.at(2)).M();
+  ev_bdt_Mljj124 = JetColl.size()<4? -1.:(*LepTColl.at(0)+JetColl.at(1)+JetColl.at(3)).M();
+  ev_bdt_Mljj134 = JetColl.size()<4? -1.:(*LepTColl.at(0)+JetColl.at(2)+JetColl.at(3)).M();
+  ev_bdt_Mljj212 =  JetColl.size()<2? -1.:(*LepTColl.at(1)+JetColl.at(0)+JetColl.at(1)).M();
+  ev_bdt_Mljj213 =  JetColl.size()<3? -1.:(*LepTColl.at(1)+JetColl.at(0)+JetColl.at(2)).M();
+  ev_bdt_Mljj214 = JetColl.size()<4? -1.:(*LepTColl.at(1)+JetColl.at(0)+JetColl.at(3)).M();
+  ev_bdt_Mljj223 =  JetColl.size()<3? -1.:(*LepTColl.at(1)+JetColl.at(1)+JetColl.at(2)).M();
+  ev_bdt_Mljj224 = JetColl.size()<4? -1.:(*LepTColl.at(1)+JetColl.at(1)+JetColl.at(3)).M();
+  ev_bdt_Mljj234 = JetColl.size()<4? -1.:(*LepTColl.at(1)+JetColl.at(2)+JetColl.at(3)).M();
+  ev_bdt_Mjj12   =  JetColl.size()<2? -1.:(JetColl.at(0)+JetColl.at(1)).M();
+  ev_bdt_Mjj13   =  JetColl.size()<3? -1.:(JetColl.at(0)+JetColl.at(2)).M();
+  ev_bdt_Mjj14   = JetColl.size()<4? -1.:(JetColl.at(0)+JetColl.at(3)).M();
+  ev_bdt_Mjj23   =  JetColl.size()<3? -1.:(JetColl.at(1)+JetColl.at(2)).M();
+  ev_bdt_Mjj24   = JetColl.size()<4? -1.:(JetColl.at(1)+JetColl.at(3)).M();
+  ev_bdt_Mjj34   = JetColl.size()<4? -1.:(JetColl.at(2)+JetColl.at(3)).M();
+
+  //==== Vars for non-prompt lepton bkg
+  int IdxMatchAwayJetl1=-1, IdxMatchAwayJetl2=-1;
+  float maxdPhi1=-999., maxdPhi2=-999.;
+
+  for(unsigned int ij=0; ij<JetAllColl.size(); ij++){
+
+    float dPhi1 = fabs(TVector2::Phi_mpi_pi(LepTColl.at(0)->Phi() - JetAllColl.at(ij).Phi()));
+    if(dPhi1>maxdPhi1){ maxdPhi1=dPhi1; IdxMatchAwayJetl1=ij; }
+
+  }
+
+  for(unsigned int ij=0; ij<JetAllColl.size(); ij++){
+
+    float dPhi2 = fabs(TVector2::Phi_mpi_pi(LepTColl.at(1)->Phi() - JetAllColl.at(ij).Phi()));
+    if(dPhi2>maxdPhi2){ maxdPhi2=dPhi2; IdxMatchAwayJetl2=ij; }
+
+  }
+
+  if(IdxMatchAwayJetl1!=-1){
+
+    ev_bdt_PtRatioAJl1 = JetAllColl.at(IdxMatchAwayJetl1).Pt()/LepTColl.at(0)->Pt();
+    ev_bdt_CEMFracAJl1 = JetAllColl.at(IdxMatchAwayJetl1).ChargedEmEnergyFraction();
+    ev_bdt_NEMFracAJl1 = JetAllColl.at(IdxMatchAwayJetl1).NeutralEmEnergyFraction();
+    ev_bdt_CHFracAJl1  = JetAllColl.at(IdxMatchAwayJetl1).ChargedHadEnergyFraction();
+    ev_bdt_NHFracAJl1  = JetAllColl.at(IdxMatchAwayJetl1).NeutralHadEnergyFraction();
+    ev_bdt_MuFracAJl1  = JetAllColl.at(IdxMatchAwayJetl1).MuonEnergyFraction();
+    ev_bdt_JetDiscAJl1 = JetAllColl.at(IdxMatchAwayJetl1).GetTaggerResult(JetTagging::DeepJet);
+
+  }
+  else{
+
+    ev_bdt_PtRatioAJl1=-1., ev_bdt_CEMFracAJl1=-1., ev_bdt_NEMFracAJl1=-1., ev_bdt_CHFracAJl1=-1., ev_bdt_NHFracAJl1=-1., ev_bdt_MuFracAJl1=-1., ev_bdt_JetDiscAJl1=-1.;
+
+  }
+
+  if(IdxMatchAwayJetl2!=-1){
+
+    ev_bdt_PtRatioAJl2 = JetAllColl.at(IdxMatchAwayJetl2).Pt()/LepTColl.at(1)->Pt();
+    ev_bdt_CEMFracAJl2 = JetAllColl.at(IdxMatchAwayJetl2).ChargedEmEnergyFraction();
+    ev_bdt_NEMFracAJl2 = JetAllColl.at(IdxMatchAwayJetl2).NeutralEmEnergyFraction();
+    ev_bdt_CHFracAJl2  = JetAllColl.at(IdxMatchAwayJetl2).ChargedHadEnergyFraction();
+    ev_bdt_NHFracAJl2  = JetAllColl.at(IdxMatchAwayJetl2).NeutralHadEnergyFraction();
+    ev_bdt_MuFracAJl2  = JetAllColl.at(IdxMatchAwayJetl2).MuonEnergyFraction();
+    ev_bdt_JetDiscAJl2 = JetAllColl.at(IdxMatchAwayJetl2).GetTaggerResult(JetTagging::DeepJet);
+
+  }
+  else{
+
+    ev_bdt_PtRatioAJl2=-1., ev_bdt_CEMFracAJl2=-1., ev_bdt_NEMFracAJl2=-1., ev_bdt_CHFracAJl2=-1., ev_bdt_NHFracAJl2=-1., ev_bdt_MuFracAJl2=-1., ev_bdt_JetDiscAJl2=-1.;
+
+  }
+
+  ev_bdt_HT      = 0;
+  for(unsigned int itj=0; itj<JetColl.size(); itj++){ ev_bdt_HT+=JetColl.at(itj).Pt(); }
+  ev_bdt_HTLT=ev_bdt_HT/ev_bdt_LT;
+  ev_bdt_HTLT1=ev_bdt_HT/LepTColl.at(0)->Pt();
+  ev_bdt_HTLT2=ev_bdt_HT/LepTColl.at(1)->Pt();
+
+  std::vector<FatJet> FatJetColl;
+  double ST = GetST( LepTColl, JetColl, FatJetColl, METv);
+  ev_bdt_MET2HT  = JetColl.size()<1? -1.:pow(ev_bdt_MET,2.)/ev_bdt_HT;
+  ev_bdt_MET2ST  = pow(ev_bdt_MET,2.)/ST;
+
+  const float MW = 80.379;
+  float dijetmass_tmp=9999.;
+  float dijetmass=99990000.;
+  int m=-999;
+  int n=-999;
+
+  for(UInt_t emme=0; emme<JetColl.size(); emme++){
+    for(UInt_t enne=emme+1; enne<JetColl.size(); enne++) {
+
+      dijetmass_tmp = (JetColl[emme]+JetColl[enne]).M();
+      if ( fabs(dijetmass_tmp-MW) < fabs(dijetmass-MW) ) {
+        dijetmass = dijetmass_tmp;
+        m = emme;
+        n = enne;
+      }
+    }
+  }
+  
+  ev_bdt_PtWj1     = JetColl.size() > 1 ? JetColl[m].Pt() : -1.;
+  ev_bdt_PtWj2     = JetColl.size() > 1 ? JetColl[n].Pt() : -1.;
+  ev_bdt_dRWjj     = JetColl.size() > 1 ? JetColl[m].DeltaR(JetColl[n]) : -1.;
+  ev_bdt_dRlW12    = JetColl.size() > 1 ? LepTColl.at(0)->DeltaR(JetColl[m] + JetColl[n]) : -1.;
+  ev_bdt_dRlW22    = JetColl.size() > 1 ? LepTColl.at(1)->DeltaR(JetColl[m] + JetColl[n]) : -1.;
+  ev_bdt_M_W2_jj   = JetColl.size() > 1 ? (JetColl[m] + JetColl[n]).M() : -1.;
+  ev_bdt_M_W1_lljj = JetColl.size() > 1 ? (JetColl[m] + JetColl[n] + *LepTColl.at(0) + *LepTColl.at(1)).M() : -1.;
+  ev_bdt_M_N1_l1jj = JetColl.size() > 1 ? (JetColl[m] + JetColl[n] + *LepTColl.at(0)).M() : -1.;
+  ev_bdt_M_N2_l2jj = JetColl.size() > 1 ? (JetColl[m] + JetColl[n] + *LepTColl.at(1)).M() : -1.;
+
+  return;
+
+
 }
 
 
@@ -4341,10 +4813,20 @@ void HNL_LeptonCore::FillAllMuonPlots(TString label , TString cut,  std::vector<
     TString eta_label="";
     if(fabs(muons.at(i).Eta()) < 1.5) eta_label = "_BB";
     else eta_label = "_EC";
-    
+ 
     TString pt_label=GetPtBin(true,muons.at(i).Pt());
-    FillMuonKinematicPlots("muon"+label+"_"+pt_label, cut, muons.at(i), w);
-    FillMuonKinematicPlots("muon"+label+eta_label, cut, muons.at(i), w);
+
+    int LepType= GetLeptonType_JH(muons.at(i), gens);
+    TString gen_label = "";
+    if (LepType >= 0) gen_label = to_string(LepType);
+    else gen_label = "Minus_"+to_string(fabs(LepType));
+
+    //if(GenTypeMatched(MatchGenDef(gens,muons[i]))){
+    //  if(label.Contains("Fake")) FillMuonKinematicPlots("muon"+label+"_"+muons.at(i).CloseJet_Flavour()+"_"+MatchGenDef(gens,muons[i]), cut, muons.at(i), w);
+    // }
+    FillMuonKinematicPlots("muon"+label+"_"+muons.at(i).CloseJet_Flavour(), cut, muons.at(i), w);
+
+    
     
   }
 
@@ -4380,7 +4862,6 @@ void HNL_LeptonCore::FillLeptonKinematicPlots(TString label , TString cut,  Lept
  
   /// Kinematics
   FillHist( cut+ "/Lepton_Pt_"+label   , lep.Pt() , w, 5000, 0., 10000., label_lep+"p_{T} GeV");
-  FillHist( cut+ "/Lepton_UncorrectedPt_"+label   , lep.UncorrectedPt() , w, 5000, 0., 10000., label_lep+"p_{T} GeV");
   FillHist( cut+ "/Lepton_Eta_"+label  , lep.Eta() , w, 60, -3., 3.,label_lep+"#eta");
   FillHist( cut+ "/Lepton_Phi_"+label  , lep.Phi() , w, 60, -3., 3.,label_lep+"#phi");
   double ptbins[11] = { 0., 10.,15., 20., 30., 40.,50., 100.,500. ,1000.,2000.};
@@ -4398,53 +4879,20 @@ void HNL_LeptonCore::FillLeptonKinematicPlots(TString label , TString cut,  Lept
  
 
   // Lep/Jet
-  FillHist( cut+ "/Lepton_PtRatio_v2_"+label    , lep.CloseJet_Ptratio(), w, 500, 0., 2., "");
-  FillHist( cut+ "/Lepton_PtRel_v2_"+label      , lep.CloseJet_Ptrel(), w, 200, 0., 50., "");
-
   FillHist( cut+ "/Lepton_PtRel_"+label         , JetLeptonPtRelLepAware( lep), w, 500, 0., 100., "");
-  FillHist( cut+ "/Lepton_PtRelCorrL_"+label         , JetLeptonPtRelLepAware( lep,true,false), w, 500, 0., 100., "");
-  FillHist( cut+ "/Lepton_PtRelCorrJ_"+label         , JetLeptonPtRelLepAware( lep,false,true), w, 500, 0., 100., "");
-  FillHist( cut+ "/Lepton_PtRelCorrLJ_"+label         , JetLeptonPtRelLepAware( lep,true,true), w, 500, 0., 100., "");
-
   FillHist( cut+ "/Lepton_PtRatio_"+label       , JetLeptonPtRatioLepAware(lep), w, 500, 0., 2., "");
-  FillHist( cut+ "/Lepton_PtRatioCorrL_"+label       , JetLeptonPtRatioLepAware(lep,true,false), w, 500, 0., 2., "");
-  FillHist( cut+ "/Lepton_PtRatioCorrJ_"+label       , JetLeptonPtRatioLepAware(lep,false,true), w, 500, 0., 2., "");
-  FillHist( cut+ "/Lepton_PtRatioCorrLJ_"+label       , JetLeptonPtRatioLepAware(lep,true,true), w, 500, 0., 2., "");
 
   if(IdxMatchJet != -1 ){
     FillHist( cut+ "/Lepton_CHFracCJ_"+label      , JetAllColl.at(IdxMatchJet).ChargedHadEnergyFraction(), w, 100, 0., 1., "");
     FillHist( cut+ "/Lepton_NEMFracCJ_"+label     , JetAllColl.at(IdxMatchJet).NeutralEmEnergyFraction(), w, 100, 0., 1., "");
     FillHist( cut+ "/Lepton_CEMFracCJ_"+label     , JetAllColl.at(IdxMatchJet).ChargedEmEnergyFraction(), w, 100, 0., 1., "");
     FillHist( cut+ "/Lepton_NFracCJ_"+label       , JetAllColl.at(IdxMatchJet).NeutralHadEnergyFraction(), w, 100, 0., 1., "");
-    //  return mcCorr->GetBTaggingReweight_1a(jets, jtp, syst);
-
     FillHist( cut+ "/Lepton_JetDiscCJ_"+label     , Jet_Disc , w, 400, -2., 2., "");
-
-    //FillHist( cut+ "/Lepton_JetDiscCJ_Corr_"+label     , Jet_Disc , w*JetSF, 400, -2., 2., "");
     FillHist( cut+ "/Lepton_PtRatioAwayJet_"+label, PtRatioAwayJet , w, 100, 0., 5., "");
-    //FillHist( cut+ "/Lepton_JetDiscCJ_WeightCorr_"+label     , JetSF , w, 100, 0., 5., "");
   }
 
-  if(lep.LeptonFlavour()==Lepton::ELECTRON){
-    FillHist( cut+ "/Lepton_Conv_Mva_"+label  , lep.HNL_MVA_Conv(), w, 100, -1., 1., "MVA");
-    FillHist( cut+ "/Lepton_Fake_Mva_"+label  , lep.HNL_MVA_Fake(), w, 100, -1., 1., "MVA");
-    FillHist( cut+ "/Lepton_CF_Mva_"+label  , lep.HNL_MVA_CF(), w, 100, -1., 1., "MVA");
-
-    FillHist( cut+ "/Lepton_CFv2_Mva_"+label  , lep.HNL_MVAv2_CF(), w, 100, -1., 1., "MVA");
-    FillHist( cut+ "/Lepton_CFv3_Mva_"+label  , lep.HNL_MVAv3_CF(), w, 100, -1., 1., "MVA");
-    FillHist( cut+ "/Lepton_CFv4_Mva_"+label  , lep.HNL_MVAv4_CF(), w, 100, -1., 1., "MVA");
-
-    FillHist( cut+ "/Lepton_EDCFv2_Mva_"+label  , lep.HNL_MVAv2_ED_CF(), w, 100, -1., 1., "MVA");
-    FillHist( cut+ "/Lepton_EDCFv3_Mva_"+label  , lep.HNL_MVAv3_ED_CF(), w, 100, -1., 1., "MVA");
-    FillHist( cut+ "/Lepton_EDCFv4_Mva_"+label  , lep.HNL_MVAv4_ED_CF(), w, 100, -1., 1., "MVA");
-
-    vector<TString> MVAList = lep.GetMVAList();
-    for(auto mvaname : MVAList)     FillHist( cut+ "/Lepton_Map_"+mvaname+"_"+label  , lep.GetHNL_LepMVA(mvaname), w, 100, -1., 1., "MVA");
-    
-  }
-
-  
-
+  map<TString, double> lep_bdt_map = lep.MAPBDT();
+  for(auto i : lep_bdt_map)     FillHist( cut+ "/Lepton_mva_"+i.first+label  , i.second, w, 100, -1., 1., "MVA");
   
   // Isolation 
 
@@ -4505,9 +4953,17 @@ void HNL_LeptonCore::FillAllElectronPlots(TString label , TString cut,  std::vec
 
     TString pt_label=GetPtBin(false,ElectronColl.at(i).Pt());
 
-    FillElectronKinematicPlots("Electron_"+label, cut, ElectronColl[i], w); 
-    FillElectronKinematicPlots("Electron_"+eta_label+"_"+pt_label+"_"+label, cut, ElectronColl[i], w); 
+    int LepType= GetLeptonType_JH(ElectronColl.at(i), gens);
+    TString gen_label ="";
+    if (LepType >= 0) gen_label = to_string(LepType);
+    else gen_label = "Minus_"+to_string(fabs(LepType));
     
+    //if(GenTypeMatched(MatchGenDef(gens,ElectronColl.at(i)))){
+    //  
+    //  if(label.Contains("Fake")) FillElectronKinematicPlots("Electron_"+label+"_"+ ElectronColl.at(i).CloseJet_Flavour()+"_"+MatchGenDef(gens,ElectronColl[i]), cut, ElectronColl.at(i), w)//;
+
+    //    }
+    FillElectronKinematicPlots("Electron_"+label+"_"+ ElectronColl.at(i).CloseJet_Flavour() , cut, ElectronColl.at(i), w);
   }
   return;
 }

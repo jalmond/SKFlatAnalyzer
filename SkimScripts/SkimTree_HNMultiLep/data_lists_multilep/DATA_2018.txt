@@ -6,7 +6,3 @@ DoubleMuon:A
 DoubleMuon:B
 DoubleMuon:C
 DoubleMuon:D
-MuonEG:A
-MuonEG:B
-MuonEG:C
-MuonEG:D

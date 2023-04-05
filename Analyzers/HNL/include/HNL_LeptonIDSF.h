@@ -14,6 +14,9 @@ class HNL_LeptonIDSF : public HNL_RegionDefinitions {
   HNL_LeptonIDSF();
   ~HNL_LeptonIDSF();
 
+  void PlotBDTVariablesMuon(AnalyzerParameter param);
+  void PlotBDTVariablesElectron(AnalyzerParameter param);
+
   void MeasureElectronIDSF(AnalyzerParameter param);
   void MeasureMuonIDSF(AnalyzerParameter param);
   void MeasureIDSF(AnalyzerParameter param,HNL_LeptonCore::Channel dilep_channel, vector<Muon > LeptonColl, TString ID, double w);

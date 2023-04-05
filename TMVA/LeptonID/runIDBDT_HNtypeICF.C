@@ -32,18 +32,18 @@ void runIDBDT_HNtypeICF(TString Classifier ="BDTG" ,TString BkgType = "CF", TStr
   TString  treeName = (channel == "MuMu")  ?  "Tree_mm" :  "Tree_ee";
 
   TString signal="SignalCF";
-  if(signal_mode == 1) signal="SignalCF";
-  if(signal_mode == 2) signal="SignalCF_BB";
-  if(signal_mode == 3) signal="SignalCF_EC";
-  if(signal_mode == -1) signal="SignalCFPtBinned";
-  if(signal_mode == -2) signal="SignalCFPtBinned_BB";
-  if(signal_mode == -3) signal="SignalCFPtBinneed_EC";
+  if(signal_mode == -1) signal="SignalCF";
+  if(signal_mode == -2) signal="SignalCF_BB";
+  if(signal_mode == -3) signal="SignalCF_EC";
+  if(signal_mode == 1) signal="SignalCFPtBinned";
+  if(signal_mode == 2) signal="SignalCFPtBinned_BB";
+  if(signal_mode == 3) signal="SignalCFPtBinned_EC";
 
 
   cout << "signal File Name= " << signal << endl;
   for(int i=0; i < nTermWidth; i++)  cout << "-" ;   cout << endl;
 
-  TString JobTag = Classifier + "_"+ BkgType + signal+"TypeI_"+channel+"_"+signal+"_"+era+"_NTrees"+NTrees+"_NormMode_"+NormMode+"_MinNodeSize_"+MinNodeSize+"_MaxDepth_"+MaxDepth+"_nCuts_"+nCuts+ClassTag +"_Seed_"+seed+"_BDT";
+  TString JobTag = Classifier  +  "_version4_"+ BkgType + "_TypeI_"+channel+"_"+signal+"_"+era+"_NTrees"+NTrees+"_NormMode_"+NormMode+"_MinNodeSize_"+MinNodeSize+"_MaxDepth_"+MaxDepth+"_nCuts_"+nCuts+ClassTag +"_Seed_"+seed+"_BDT";
 
   TMVA::gConfig().GetVariablePlotting().fNbins1D = 100; 
   TMVA::gConfig().GetVariablePlotting().fNbinsMVAoutput = 100;
@@ -66,7 +66,7 @@ void runIDBDT_HNtypeICF(TString Classifier ="BDTG" ,TString BkgType = "CF", TStr
 
   TMVA::DataLoader* data_loader = new TMVA::DataLoader("dataset");
   
-  if(signal_mode < 0)data_loader->AddVariable("PtBinned", "PtBinned", "units", 'F');
+  if(signal_mode > 0)data_loader->AddVariable("PtBinned", "PtBinned", "units", 'F');
   else  data_loader->AddVariable("Pt", "Pt", "units", 'F');
   data_loader->AddVariable("Eta", "Eta", "units", 'F');
   data_loader->AddVariable("Dxy",  "Dxy", "units", 'F');

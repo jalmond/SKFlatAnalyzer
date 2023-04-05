@@ -26,644 +26,13 @@
 
 
 
-void HNL_RegionDefinitionsOpt::FillSignalRegionForOpt(HNL_LeptonCore::ChargeType qq, std::vector<Electron> electrons, std::vector<Electron> electrons_veto, std::vector<Muon> muons, std::vector<Muon> muons_veto, std::vector<Tau> TauColl, std::vector<Jet> JetCollLoose,std::vector<Jet> JetColl, std::vector<Jet> VBF_JetColl,std::vector<FatJet>  AK8_JetColl, std::vector<Jet> B_JetColl, Event ev,   Particle METv, AnalyzerParameter param,   float weight_ll){
-  
-  vector<HNL_LeptonCore::Channel> channels = {EE,MuMu};
-  
-  for(auto dilep_channel : channels){
-    
-    float weight_channel = weight_ll;
-    
-    if(MCSample.Contains("Type")) {
-      if (!SelectChannel(dilep_channel)) continue;
-    }
-    
-    if (param.Name.Contains("MuOpt") && dilep_channel != MuMu) continue;
-    if (param.Name.Contains("ElOpt") && dilep_channel != EE) continue;
-    
-    
-    std::vector<Lepton *> LepTColl       = MakeLeptonPointerVector(muons,electrons,param);
-    std::vector<Lepton *> leps_veto  = MakeLeptonPointerVector(muons_veto,electrons_veto,param);
-    
-    if(!PassEventTypeFilter(LepTColl, gens)) continue;
-
-    if(!CheckLeptonFlavourForChannel(dilep_channel, LepTColl)) continue;
-    
-    AnalyzerParameter param_channel = param;
-    
-    
-    TString channel_string = GetChannelString(dilep_channel);
-    param_channel.Name =  channel_string + "/" + param_channel.Name;
-    
 
 
-    if(!PassMETFilter()) return;
-    
-    
-    if(RunCF){
-      if(dilep_channel == MuMu) continue;
-      
-      if(IsData && SameCharge(LepTColl)) continue;
-      if(!IsData && !SameCharge(LepTColl)) continue;
-      
-      if(IsData)weight_channel = GetCFWeightElectron(LepTColl, param_channel);
-      
-    }
-    else{
-      if(!SameCharge(LepTColl)) continue;
-    }
-    
-    if(!PassPreselection(dilep_channel,qq, LepTColl, leps_veto, TauColl, JetColl, VBF_JetColl, AK8_JetColl,	B_JetColl,ev, METv ,param_channel,"", weight_channel)) continue;
-
-    
-    double ST = GetST(LepTColl, JetColl, AK8_JetColl, METv);
-    double met2_st = pow(METv.Pt(),2.)/ ST;
-    
-    if (B_JetColl.size() > 0 ) continue;
-    if (met2_st > 15.)  continue;
-
-    if (B_JetColl.size() ==0 && met2_st < 15){
-
-
-      TString SRBin = "";
-      TString SRBDT100 = "";
-      TString SRBDT250 = "";
-      TString SRBDT500 = "";
-
-      if(AK8_JetColl.size() > 0) {
-	SRBin= RunSignalRegionAK8String (dilep_channel,qq, LepTColl, leps_veto, TauColl, JetColl, AK8_JetColl, B_JetColl,ev, METv ,param_channel,"", weight_channel) ;
-	SRBDT100 =SRBin;
-	SRBDT250 =SRBin;
-	SRBDT500 =SRBin;
-      }
-      else{
-	
-	SRBin = RunSignalRegionWWString( dilep_channel,qq, LepTColl, leps_veto,  TauColl, JetCollLoose, VBF_JetColl,  AK8_JetColl, B_JetColl,ev, METv, param_channel,  "", weight_channel);
-	SRBDT100 =SRBin;
-	SRBDT250 =SRBin;
-	SRBDT500 =SRBin;
-
-	if(SRBin == "false"){
-	  
-	  SRBDT100 = RunSignalRegionAK4StringBDT("100", dilep_channel,qq, LepTColl, leps_veto, TauColl, JetColl, VBF_JetColl, B_JetColl, ev, METv ,param_channel,"", weight_channel);
-	  SRBDT250 = RunSignalRegionAK4StringBDT("250", dilep_channel,qq, LepTColl, leps_veto, TauColl, JetColl, VBF_JetColl, B_JetColl, ev, METv ,param_channel,"", weight_channel);
-	  SRBDT500 = RunSignalRegionAK4StringBDT("500", dilep_channel,qq, LepTColl, leps_veto, TauColl, JetColl, VBF_JetColl, B_JetColl, ev, METv ,param_channel,"", weight_channel);
-	  
-	  SRBin  = RunSignalRegionAK4String (dilep_channel,qq, LepTColl, leps_veto, TauColl, JetColl, AK8_JetColl, B_JetColl, ev, METv ,param_channel,"", weight_channel);
-	}
-      }
-      
-      
-      vector <TString> BDTlabels = {"SR1_bin1","SR1_bin2","SR1_bin3","SR1_bin4","SR1_bin5","SR1_bin6","SR1_bin7","SR2_bin1", "SR2_bin2",  "SR3_bin1","SR3_bin2","SR3_bin3","SR3_bin4","SR3_bin5","SR3_bin6","SR3_bin7","SR3_bin8","SR3_bin9"};
-      vector <TString>  labels = {"SR1_bin1","SR1_bin2","SR1_bin3","SR1_bin4","SR1_bin5","SR1_bin6","SR1_bin7","SR2_bin1", "SR2_bin2", "SR3_bin1","SR3_bin2","SR3_bin3","SR3_bin4","SR3_bin5","SR3_bin6","SR3_bin7","SR3_bin8","SR3_bin9","SR3_bin10","SR3_bin11","SR3_bin12","SR3_bin13","SR3_bin14", "SR3_bin15","SR3_bin16"};
-      
-
-
-
-      for(int ip=0 ; ip < 26 ; ip++){
-        for(int ip2=0 ; ip2 < 26 ; ip2++){
-
-          TString EtaRegion = "EB";
-          double ip_d1=  2 + double(ip)*0.25;
-          double ip_d2=  2 + double(ip2)*0.25;
-          TString ipTS1= DoubleToString(ip_d1);
-          TString ipTS2= DoubleToString(ip_d2);
-
-
-          int nel=0;
-          for(auto iel : electrons) {
-            if (Category(iel).Contains(EtaRegion)) {
-              if (iel.PassIP(ip_d1,ip_d2)) nel++;
-            }
-            else if(iel.PassID("HNTightV3")){
-              nel++;
-            }
-          }
-          if (nel==2){
-            if(SRBin != "false")FillEventCutflowDef("IPOpt", "EB_IP"+ipTS1+"_"+ipTS2, weight_channel , labels, SRBin);
-            if(SRBDT100 != "false")FillEventCutflowDef("BDTIPOpt", "100_EB_IP"+ipTS1+"_"+ipTS2, weight_channel , BDTlabels, SRBDT100);
-            if(SRBDT250 != "false")FillEventCutflowDef("BDTIPOpt", "250_EB_IP"+ipTS1+"_"+ipTS2, weight_channel , BDTlabels, SRBDT250);
-            if(SRBDT500 != "false")FillEventCutflowDef("BDTIPOpt", "500_EB_IP"+ipTS1+"_"+ipTS2, weight_channel , BDTlabels, SRBDT500);
-          }
-        }
-      }
-      
-
-      for(int ip=0 ; ip < 26 ; ip++){
-        for(int ip2=0 ; ip2 < 26 ; ip2++){
-
-          TString EtaRegion = "EE";
-          double ip_d1=  2 + double(ip)*0.3;
-          double ip_d2=  2 + double(ip2)*0.3;
-          TString ipTS1= DoubleToString(ip_d1);
-          TString ipTS2= DoubleToString(ip_d2);
-
-          int nel=0;
-          for(auto iel : electrons) {
-            if (Category(iel).Contains(EtaRegion)) {
-              if (iel.PassIP(ip_d1,ip_d2)) nel++;
-            }
-            else if(iel.PassID("HNTightV3")){
-              nel++;
-            }
-          }
-          if (nel==2){
-            if(SRBin != "false")FillEventCutflowDef("IPOpt", "EE_IP"+ipTS1+"_"+ipTS2, weight_channel , labels, SRBin);
-            if(SRBDT100 != "false")FillEventCutflowDef("BDTIPOpt", "100_EE_IP"+ipTS1+"_"+ipTS2, weight_channel , BDTlabels, SRBDT100);
-            if(SRBDT250 != "false")FillEventCutflowDef("BDTIPOpt", "250_EE_IP"+ipTS1+"_"+ipTS2, weight_channel , BDTlabels, SRBDT250);
-            if(SRBDT500 != "false")FillEventCutflowDef("BDTIPOpt", "500_EE_IP"+ipTS1+"_"+ipTS2, weight_channel , BDTlabels, SRBDT500);
-          }
-        }
-      }
-
-     
-     
-      
-      continue;
-      
-      
-	
-	
-      int nPtbins=50;
-      double ptbins[nPtbins+1] = { 15.,16.,17.,18.,19.,
-				   20.,21.,22.,23.,24.,25.,26.,27.,28.,29.,
-				   30.,31.,32.,33.,34.,35.,36.,37.,38.,39.,
-				   40.,41.,42.,43.,44.,45.,46.,47.,48.,49.,
-				   50.,51.,52.,53.,54.,55.,56.,57.,58.,59.,
-				   60.,70.,80.,90.,100.,200.};
-      
-      int nIsobins=100;
-      //double isobins[nIsobins+1] = {0.,   0.0, 0.04, 0.05, 0.055, 0.06, 0.065,
-      //				  0.07, 0.075, 0.08,  0.085,0.09,   0.095,
-      //				  0.1,  0.11,  0.12,  0.13,  0.14,  0.15};
-      
-      double Isobins[101];
-      for(int i=0; i < 101; i++){
-	Isobins [i] = double(i)*0.002;
-      }
-      
-      int nMVAbins = 162;
-      double mvabins[nMVAbins+1] = {-8.1,-8.0, -7.9, - 7.8, -7.7, -7.6,-7.5,-7.4,-7.3,-7.2,-7.1,
-				    -7.0, -6.9, - 6.8, -6.7, -6.6,-6.5,-6.4,-6.3,-6.2,-6.1,
-				    -6.0, -5.9, - 5.8, -5.7, -5.6,-5.5,-5.4,-5.3,-5.2,-5.1,
-				    -5.0, -4.9, - 4.8, -4.7, -4.6,-4.5,-4.4,-4.3,-4.2,-4.1,
-				    -4.0, -3.9, - 3.8, -3.7, -3.6,-3.5,-3.4,-3.3,-3.2,-3.1,
-				    -3.0, -2.9, - 2.8, -2.7, -2.6,-2.5,-2.4,-2.3,-2.2,-2.1,
-				    -2.0, -1.9, - 1.8, -1.7, -1.6,-1.5,-1.4,-1.3,-1.2,-1.1,
-				    -1.0, -0.9, - 0.8, -0.7, -0.6,-0.5,-0.4,-0.3,-0.2,-0.1,
-				    0.0, 0.1, 0.2, 0.3, 0.4,0.5,0.6,0.7,0.8,0.9,
-				    1.0, 1.1, 1.2, 1.3, 1.4,1.5,1.6,1.7,1.8,1.9,
-				    2.0, 2.1, 2.2, 2.3, 2.4,2.5,2.6,2.7,2.8,2.9,
-				    3.0, 3.1, 3.2, 3.3, 3.4,3.5,3.6,3.7,3.8,3.9,
-				    4.0, 4.1, 4.2, 4.3, 4.4,4.5,4.6,4.7,4.8,4.9,
-				    5.0, 5.1, 5.2, 5.3, 5.4,5.5,5.6,5.7,5.8,5.9,
-				    6.0, 6.1, 6.2, 6.3, 6.4,6.5,6.6,6.7,6.8,6.9,
-				    7.0, 7.1, 7.2, 7.3, 7.4,7.5,7.6,7.7,7.8,7.9,8.0,8.1};
-      
-      
-      int nIPbins=100;
-      double IPbins[101];
-      for(int i=0; i < 101; i++){
-        IPbins[i] = double(i)*0.1;
-      }
-      
-      int nDXYbins=80;
-      double DXYbins[81];
-      for(int i=0; i < 81; i++){
-        DXYbins [i] =double(i)*0.001;
-      }
-
-      int nDZbins=100;
-      double DZbins[101];
-      for(int i=0; i < 101; i++){
-        DZbins[i] = double(i)*0.001;
-      }
-
-
-      vector<pair <double, TString> > IsoPairs = {std::make_pair(0.2,"020"),
-						  std::make_pair(0.15,"015"),
-						  std::make_pair(0.14,"014"),
-						  std::make_pair(0.13,"013"),
-						  std::make_pair(0.12,"012"),
-						  std::make_pair(0.11,"011"),
-						  std::make_pair(0.1,"010"),
-						  std::make_pair(0.095,"0095"),
-						  std::make_pair(0.09,"009"),
-						  std::make_pair(0.085,"0085"),
-						  std::make_pair(0.08,"008"),
-						  std::make_pair(0.075,"0075"),
-						  std::make_pair(0.07,"007"),
-						  std::make_pair(0.065,"0065"),
-						  std::make_pair(0.06,"006"),
-						  std::make_pair(0.055,"0055"),
-						  std::make_pair(0.05,"005") };
-      
-      
-      
-      
-      if(AK8_JetColl.size() > 0) {
-	
-	TString SR1Bin=  RunSignalRegionAK8String (dilep_channel,qq, LepTColl, leps_veto, TauColl, JetColl, AK8_JetColl, B_JetColl,ev, METv ,param_channel,"", weight_channel) ;
-	TString SR1bin = "SR1_bin0";
-	if (SR1Bin == "SR1_bin1" || SR1Bin == "SR1_bin2"  || SR1Bin == "SR1_bin3" || SR1Bin == "SR1_bin4" )SR1bin = "SR1_bin1";
-	if (SR1Bin == "SR1_bin5" || SR1Bin == "SR1_bin6" || SR1Bin == "SR1_bin7" )SR1bin = "SR1_bin2";
-	
-	
-
-	for(auto iel  : electrons){
-	  
-	  if(electrons[0].Pt() < 100) continue;
-	  
-	  
-	  if (!param.Name.Contains("HNOpt")){
-	    FillHist( "NonOpt/"+SR1bin+"_"+Category(iel)+"Pt_"+param.Name , 1., weight_channel, 2., 0.,2);
-	    
-	    continue;
-	  }
-	  
-
-	  double pt = (iel.Pt() > 200.) ? 199. : iel.Pt();
-	  
-	  
-	  if(iel.PassID("HNTightV2")) {
-	    TString lab = "_HNTightV2";
-	    FillHist( "NonOpt/"+SR1bin+"_RegionPass_"+Category(iel)+"Pt_"+param.Name+lab ,  1., weight_channel, 2., 0.,2);
-	    cout << param.Name << " HNTightV2 passed weight =  " << weight_channel << " " << Category(iel) << endl;
-	    OutCutFlow("NonOpt/"+SR1bin+"_RegionPass_"+Category(iel)+"Pt_"+param.Name+lab , weight_channel);
-	  }
-	  
-	  
-	  if(iel.passMVAID_Iso_WP90()){
-	    if(iel.IsGsfCtfScPixChargeConsistent()){
-	      FillHist( "ISOOpt/"+SR1bin+"_MVAIso90_"+Category(iel)+"Pt_Iso_"+param.Name , pt , iel.RelIso(), weight_channel, nPtbins,  ptbins , nIsobins,Isobins );
-	      FillHist( "ISOOpt/"+SR1bin+"_MVAIso90_"+Category(iel)+"Pt_MiniIso_"+param.Name , pt , iel.MiniRelIso(), weight_channel, nPtbins,  ptbins , nIsobins,Isobins );
-	      if(iel.RelIso() < 0.15){
-		FillHist( "IPOpt/"+SR1bin+"_MVAIso90_"+Category(iel)+"Pt_IP_"+param.Name , pt , fabs(iel.IP3D()/iel.IP3Derr()) , weight_channel, nPtbins,  ptbins , nIPbins,IPbins );
-		FillHist( "IPOpt/"+SR1bin+"_MVAIso90_"+Category(iel)+"Pt_DXY_"+param.Name , pt , fabs(iel.dXY()) , weight_channel, nPtbins,  ptbins , nDXYbins,DXYbins );
-		FillHist( "IPOpt/"+SR1bin+"_MVAIso90_"+Category(iel)+"Pt_DZ_"+param.Name , pt , fabs(iel.dZ()) , weight_channel, nPtbins,  ptbins , nDZbins,DZbins );
-
-		FillHist( "CBOpt/"+SR1bin+"_MVAIso90_"+Category(iel)+"MissingHits_"+param.Name, iel.NMissingHits() , weight_channel, 5, 0., 5.);
-		FillHist( "CBOpt/"+SR1bin+"_MVAIso90_"+Category(iel)+"sigmaIetaIeta_"+param.Name, iel.Full5x5_sigmaIetaIeta() , weight_channel, 1000, 0., 0.1);
-		FillHist( "CBOpt/"+SR1bin+"_MVAIso90_"+Category(iel)+"dEtaSeed_"+param.Name, fabs(iel.dEtaSeed()) , weight_channel, 1000, 0., 0.01);
-		FillHist( "CBOpt/"+SR1bin+"_MVAIso90_"+Category(iel)+"dPhiIn_"+param.Name, fabs(iel.dPhiIn()) , weight_channel, 1000, 0., 1.);
-		FillHist( "CBOpt/"+SR1bin+"_MVAIso90_"+Category(iel)+"InvEminusInvP_"+param.Name, fabs(iel.InvEminusInvP()) , weight_channel, 1000, 0., 1.);
-
-	      }
-	    }
-	  }
-	  if(iel.passMVAID_noIso_WP90()){
-	    if(iel.IsGsfCtfScPixChargeConsistent()){
-	      FillHist( "ISOOpt/"+SR1bin+"_MVANoIso90_"+Category(iel)+"Pt_Iso_"+param.Name , pt , iel.RelIso(), weight_channel, nPtbins,  ptbins , nIsobins,Isobins );
-	      FillHist( "ISOOpt/"+SR1bin+"_MVANoIso90_"+Category(iel)+"Pt_MiniIso_"+param.Name , pt , iel.MiniRelIso(), weight_channel, nPtbins,  ptbins , nIsobins,Isobins );
-	      if(iel.RelIso() <0.15){
-		FillHist( "IPOpt/"+SR1bin+"_MVANoIso90_"+Category(iel)+"Pt_IP_"+param.Name , pt , fabs(iel.IP3D()/iel.IP3Derr()) , weight_channel, nPtbins,  ptbins , nIPbins,IPbins );
-		FillHist( "IPOpt/"+SR1bin+"_MVANoIso90_"+Category(iel)+"Pt_DXY_"+param.Name , pt , fabs(iel.dXY()) , weight_channel, nPtbins,  ptbins , nDXYbins,DXYbins );
-		FillHist( "IPOpt/"+SR1bin+"_MVANoIso90_"+Category(iel)+"Pt_DZ_"+param.Name , pt , fabs(iel.dZ()) , weight_channel, nPtbins,  ptbins , nDZbins,DZbins );
-
-                FillHist( "CBOpt/"+SR1bin+"_MVANoIso90_"+Category(iel)+"MissingHits_"+param.Name, iel.NMissingHits() , weight_channel, 5, 0., 5.);
-                FillHist( "CBOpt/"+SR1bin+"_MVANoIso90_"+Category(iel)+"sigmaIetaIeta_"+param.Name, iel.Full5x5_sigmaIetaIeta() , weight_channel, 1000, 0., 0.1);
-                FillHist( "CBOpt/"+SR1bin+"_MVANoIso90_"+Category(iel)+"dEtaSeed_"+param.Name, fabs(iel.dEtaSeed()) , weight_channel, 1000, 0., 0.01);
-                FillHist( "CBOpt/"+SR1bin+"_MVANoIso90_"+Category(iel)+"dPhiIn_"+param.Name, fabs(iel.dPhiIn()) , weight_channel, 1000, 0., 1.);
-                FillHist( "CBOpt/"+SR1bin+"_MVANoIso90_"+Category(iel)+"InvEminusInvP_"+param.Name, fabs(iel.InvEminusInvP()) , weight_channel, 1000, 0., 1.);
-
-	      }
-	    }
-	  }
-	  
-	  for (auto IsoPair : IsoPairs){
-	    
-	    if(iel.RelIso() < IsoPair.first){
-	      FillHist( "MVAOpt/"+SR1bin+"_Iso"+IsoPair.second+"_"+Category(iel)+"Pt_mvaresponse_"+param.Name , pt , iel.MVANoIsoResponse(), weight_channel, nPtbins,  ptbins , nMVAbins,mvabins );
-	      FillHist( "MVAOpt/"+SR1bin+"_Iso"+IsoPair.second+"_"+Category(iel)+"Pt_Isomvaresponse_"+param.Name , pt , iel.MVAIsoResponse(), weight_channel, nPtbins,  ptbins , nMVAbins,mvabins);
-	      if(iel.IsGsfCtfScPixChargeConsistent()){
-		FillHist( "MVAOpt/CC_"+SR1bin+"_Iso"+IsoPair.second+"_"+Category(iel)+"Pt_mvaresponse_"+param.Name , pt , iel.MVANoIsoResponse(), weight_channel, nPtbins,  ptbins , nMVAbins,mvabins );
-		FillHist( "MVAOpt/CC_"+SR1bin+"_Iso"+IsoPair.second+"_"+Category(iel)+"Pt_Isomvaresponse_"+param.Name , pt , iel.MVAIsoResponse(), weight_channel, nPtbins,  ptbins , nMVAbins,mvabins);
-		cout << "MVAOpt/CC_"+SR1bin+"_Iso"+IsoPair.second+"_"+Category(iel)+"Pt_mvaresponse_"+param.Name + " passed weight =  " << weight_channel << " " << Category(iel) << endl;		
-		OutCutFlow("MVAOpt/CC_"+SR1bin+"_Iso"+IsoPair.second+"_"+Category(iel)+"Pt_mvaresponse_"+param.Name  , weight_channel);
-
-	      }
-	    }
-	    if(iel.MiniRelIso() < IsoPair.first){
-	      FillHist( "MVAOpt/"+SR1bin+"_MiniIso"+IsoPair.second+"_"+Category(iel)+"Pt_mvaresponse_"+param.Name , pt , iel.MVANoIsoResponse(), weight_channel, nPtbins,  ptbins , nMVAbins,mvabins );
-	      FillHist( "MVAOpt/"+SR1bin+"_MiniIso"+IsoPair.second+"_"+Category(iel)+"Pt_Isomvaresponse_"+param.Name , pt , iel.MVAIsoResponse(), weight_channel, nPtbins,  ptbins , nMVAbins,mvabins);
-	      if(iel.IsGsfCtfScPixChargeConsistent()){
-		FillHist( "MVAOpt/CC_"+SR1bin+"_MiniIso"+IsoPair.second+"_"+Category(iel)+"Pt_mvaresponse_"+param.Name , pt , iel.MVANoIsoResponse(), weight_channel, nPtbins,  ptbins , nMVAbins,mvabins );
-		FillHist( "MVAOpt/CC_"+SR1bin+"_MiniIso"+IsoPair.second+"_"+Category(iel)+"Pt_Isomvaresponse_"+param.Name , pt , iel.MVAIsoResponse(), weight_channel, nPtbins,  ptbins , nMVAbins,mvabins);
-	      }
-	    }
-	  }
-	}
-      }
-      else {
-	
-	TString SRWWbin = RunSignalRegionWWString( dilep_channel,qq, LepTColl, leps_veto,  TauColl, JetCollLoose, VBF_JetColl,  AK8_JetColl, B_JetColl,ev, METv, param_channel,  "", weight_channel);	
-	TString SRAK4bin  = RunSignalRegionAK4String (dilep_channel,qq, LepTColl, leps_veto, TauColl, JetColl, AK8_JetColl, B_JetColl, ev, METv ,param_channel,"", weight_channel);
-	
-	TString SR3bin = SRWWbin;
-	if (SRWWbin == "false") SR3bin = SRAK4bin;
-	
-	
-	for(auto iel  : electrons){
-	  if (!param.Name.Contains("HNOpt")){
-	    if(SR3bin!="false") FillHist( "NonOpt/"+SR3bin+"_"+Category(iel)+"Pt_"+param.Name , 1., weight_channel, 2., 0.,2);
-	    continue;
-	  }
-	  
-	  
-	  double pt = (iel.Pt() > 200.) ? 199. : iel.Pt();
-	    
-	  
-	  if(iel.PassID("HNTightV2")) {
-	    TString lab = "_HNTightV2";
-	    if(SR3bin!="false")FillHist( "NonOpt/"+SR3bin+"_RegionPass_"+Category(iel)+"Pt_"+param.Name+lab ,  1., weight_channel, 2., 0.,2);
-	    OutCutFlow( "NonOpt/"+SR3bin+"_RegionPass_"+Category(iel)+"Pt_"+param.Name+lab  , weight_channel);
-
-
-	  }
-	  
-	  
-	  if(iel.passMVAID_Iso_WP90()){
-	    if(iel.IsGsfCtfScPixChargeConsistent()){
-	      if(SR3bin!="false")FillHist( "ISOOpt/"+SR3bin+"_MVAIso90_"+Category(iel)+"Pt_Iso_"+param.Name  , pt , iel.RelIso(), weight_channel, nPtbins,  ptbins , nIsobins,Isobins );
-	      if(SR3bin!="false")FillHist( "ISOOpt/"+SR3bin+"_MVAIso90_"+Category(iel)+"Pt_MiniIso_"+param.Name  , pt , iel.MiniRelIso(), weight_channel, nPtbins,  ptbins , nIsobins,Isobins );
-	      if(iel.RelIso() <0.15){
-		if(SR3bin!="false")FillHist( "IPOpt/"+SR3bin+"_MVAIso90_"+Category(iel)+"Pt_IP_"+param.Name  , pt , fabs(iel.IP3D()/iel.IP3Derr()) , weight_channel, nPtbins,  ptbins , nIPbins,IPbins );
-		if(SR3bin!="false")FillHist( "IPOpt/"+SR3bin+"_MVAIso90_"+Category(iel)+"Pt_DXY_"+param.Name  , pt , fabs(iel.dXY()) , weight_channel, nPtbins,  ptbins , nDXYbins,DXYbins );
-		if(SR3bin!="false")FillHist( "IPOpt/"+SR3bin+"_MVAIso90_"+Category(iel)+"Pt_DZ_"+param.Name  , pt , fabs(iel.dZ()) , weight_channel, nPtbins,  ptbins , nDZbins,DZbins );
-
-                if(SR3bin!="false")FillHist( "CBOpt/"+SR3bin+"_MVAIso90_"+Category(iel)+"MissingHits_"+param.Name, iel.NMissingHits() , weight_channel, 5, 0., 5.);
-                if(SR3bin!="false")FillHist( "CBOpt/"+SR3bin+"_MVAIso90_"+Category(iel)+"sigmaIetaIeta_"+param.Name, iel.Full5x5_sigmaIetaIeta() , weight_channel, 1000, 0., 0.1);
-                if(SR3bin!="false")FillHist( "CBOpt/"+SR3bin+"_MVAIso90_"+Category(iel)+"dEtaSeed_"+param.Name, fabs(iel.dEtaSeed()) , weight_channel, 1000, 0., 0.01);
-                if(SR3bin!="false")FillHist( "CBOpt/"+SR3bin+"_MVAIso90_"+Category(iel)+"dPhiIn_"+param.Name, fabs(iel.dPhiIn()) , weight_channel, 1000, 0., 1.);
-                if(SR3bin!="false")FillHist( "CBOpt/"+SR3bin+"_MVAIso90_"+Category(iel)+"InvEminusInvP_"+param.Name, fabs(iel.InvEminusInvP()) , weight_channel, 1000, 0., 1.);
-
-	      }
-	    }
-	  }
-	  if(iel.passMVAID_noIso_WP90()){
-	    if(iel.IsGsfCtfScPixChargeConsistent()){
-	      if(SR3bin!="false")FillHist( "ISOOpt/"+SR3bin+"_MVANoIso90_"+Category(iel)+"Pt_Iso_"+param.Name  , pt , iel.RelIso(), weight_channel, nPtbins,  ptbins , nIsobins,Isobins );
-	      if(SR3bin!="false")FillHist( "ISOOpt/"+SR3bin+"_MVANoIso90_"+Category(iel)+"Pt_MiniIso_"+param.Name  , pt , iel.MiniRelIso(), weight_channel, nPtbins,  ptbins , nIsobins,Isobins );
-	      if(iel.RelIso() <0.15){
-		if(SR3bin!="false")FillHist( "IPOpt/"+SR3bin+"_MVANoIso90_"+Category(iel)+"Pt_IP_"+param.Name  , pt , fabs(iel.IP3D()/iel.IP3Derr()) , weight_channel, nPtbins,  ptbins , nIPbins,IPbins );
-		if(SR3bin!="false")FillHist( "IPOpt/"+SR3bin+"_MVANoIso90_"+Category(iel)+"Pt_DXY_"+param.Name  , pt , fabs(iel.dXY()) , weight_channel, nPtbins,  ptbins , nDXYbins,DXYbins );
-		if(SR3bin!="false")FillHist( "IPOpt/"+SR3bin+"_MVANoIso90_"+Category(iel)+"Pt_DZ_"+param.Name  , pt , fabs(iel.dZ()) , weight_channel, nPtbins,  ptbins , nDZbins,DZbins );
-                if(SR3bin!="false")FillHist( "CBOpt/"+SR3bin+"_MVANoIso90_"+Category(iel)+"MissingHits_"+param.Name, iel.NMissingHits() , weight_channel, 5, 0., 5.);
-                if(SR3bin!="false")FillHist( "CBOpt/"+SR3bin+"_MVANoIso90_"+Category(iel)+"sigmaIetaIeta_"+param.Name, iel.Full5x5_sigmaIetaIeta() , weight_channel, 1000, 0., 0.1);
-                if(SR3bin!="false")FillHist( "CBOpt/"+SR3bin+"_MVANoIso90_"+Category(iel)+"dEtaSeed_"+param.Name, fabs(iel.dEtaSeed()) , weight_channel, 1000, 0., 0.01);
-                if(SR3bin!="false")FillHist( "CBOpt/"+SR3bin+"_MVANoIso90_"+Category(iel)+"dPhiIn_"+param.Name, fabs(iel.dPhiIn()) , weight_channel, 1000, 0., 1.);
-                if(SR3bin!="false")FillHist( "CBOpt/"+SR3bin+"_MVANoIso90_"+Category(iel)+"InvEminusInvP_"+param.Name, fabs(iel.InvEminusInvP()) , weight_channel, 1000, 0., 1.);
-
-	      }
-	    }
-	  }
-	  
-	  for (auto IsoPair : IsoPairs){
-	    
-	    if(iel.RelIso() < IsoPair.first){
-	      
-	      if(SR3bin!="false")FillHist( "MVAOpt/"+SR3bin+"_Iso"+IsoPair.second+"_"+Category(iel)+"Pt_mvaresponse_"+param.Name  , pt , iel.MVANoIsoResponse(), weight_channel, nPtbins,  ptbins , nMVAbins,mvabins );
-	      if(SR3bin!="false")FillHist( "MVAOpt/"+SR3bin+"_Iso"+IsoPair.second+"_"+Category(iel)+"Pt_Isomvaresponse_"+param.Name  , pt , iel.MVAIsoResponse(), weight_channel, nPtbins,  ptbins , nMVAbins,mvabins);
-	      
-	      if(iel.IsGsfCtfScPixChargeConsistent()){
-		if(SR3bin!="false")FillHist( "MVAOpt/CC_"+SR3bin+"_Iso"+IsoPair.second+"_"+Category(iel)+"Pt_mvaresponse_"+param.Name  , pt , iel.MVANoIsoResponse(), weight_channel, nPtbins,  ptbins , nMVAbins,mvabins );
-		if(SR3bin!="false")FillHist( "MVAOpt/CC_"+SR3bin+"_Iso"+IsoPair.second+"_"+Category(iel)+"Pt_Isomvaresponse_"+param.Name  , pt , iel.MVAIsoResponse(), weight_channel, nPtbins,  ptbins , nMVAbins,mvabins);
-
-		OutCutFlow( "MVAOpt/CC_"+SR3bin+"_Iso"+IsoPair.second+"_"+Category(iel)+"Pt_mvaresponse_"+param.Name , weight_channel);
-
-	      }
-	    }
-	    if(iel.MiniRelIso() < IsoPair.first){
-	      
-	      if(SR3bin!="false")FillHist( "MVAOpt/"+SR3bin+"_MiniIso"+IsoPair.second+"_"+Category(iel)+"Pt_mvaresponse_"+param.Name  , pt , iel.MVANoIsoResponse(), weight_channel, nPtbins,  ptbins , nMVAbins,mvabins );
-	      if(SR3bin!="false")FillHist( "MVAOpt/"+SR3bin+"_MiniIso"+IsoPair.second+"_"+Category(iel)+"Pt_Isomvaresponse_"+param.Name  , pt , iel.MVAIsoResponse(), weight_channel, nPtbins,  ptbins , nMVAbins,mvabins);
-	      
-	      if(iel.IsGsfCtfScPixChargeConsistent()){
-		if(SR3bin!="false")FillHist( "MVAOpt/CC_"+SR3bin+"_MiniIso"+IsoPair.second+"_"+Category(iel)+"Pt_mvaresponse_"+param.Name  , pt , iel.MVANoIsoResponse(), weight_channel, nPtbins,  ptbins , nMVAbins,mvabins );
-		if(SR3bin!="false")FillHist( "MVAOpt/CC_"+SR3bin+"_MiniIso"+IsoPair.second+"_"+Category(iel)+"Pt_Isomvaresponse_"+param.Name  , pt , iel.MVAIsoResponse(), weight_channel, nPtbins,  ptbins , nMVAbins,mvabins);
-		
-		
-	      }
-	    }
-	  }
-	}
-      
-      
-	Particle ll =  (*LepTColl[0]) + (*LepTColl[1]);
-	float Mll = GetLLMass(LepTColl);
-	
-	Nj      = JetColl.size();
-	Nvbfj   = VBF_JetColl.size();
-	Ptl1    = LepTColl[0]->Pt();
-	Ptl2    = LepTColl.at(1)->Pt();
-	LT      = GetLT(LepTColl);
-	Ptj1    =  JetColl.size()<1? -1.: JetColl.at(0).Pt();
-	Ptj2    =  JetColl.size()<2? -1.:JetColl.at(1).Pt();
-	Ptj3    =  JetColl.size()<3? -1.:JetColl.at(2).Pt();
-	MET     = METv.Pt();
-	
-	dEtall  = abs(LepTColl.at(0)->Eta()-LepTColl.at(1)->Eta());
-	dRll    = LepTColl.at(0)->DeltaR(*LepTColl.at(1));
-	dRjj12  =  JetColl.size()<2? -1.:JetColl.at(0).DeltaR(JetColl.at(1));
-	dRjj23  =  JetColl.size()<3? -1.:JetColl.at(1).DeltaR(JetColl.at(2));
-	dRjj13  =  JetColl.size()<3? -1.:JetColl.at(0).DeltaR(JetColl.at(2));
-	dRlj11  =  JetColl.size()<1? -1.:LepTColl.at(0)->DeltaR(JetColl.at(0));
-	dRlj12  =  JetColl.size()<2? -1.:LepTColl.at(0)->DeltaR(JetColl.at(1));
-	dRlj13  =  JetColl.size()<3? -1.:LepTColl.at(0)->DeltaR(JetColl.at(2));
-	dRlj21  =  JetColl.size()<1? -1.:LepTColl.at(1)->DeltaR(JetColl.at(0));
-	dRlj22  =  JetColl.size()<2? -1.:LepTColl.at(1)->DeltaR(JetColl.at(1));
-	dRlj23  =  JetColl.size()<3? -1.:LepTColl.at(1)->DeltaR(JetColl.at(2));
-	
-	
-	MSSSF   = Mll;
-	Mlj11   =  JetColl.size()<1? -1.:(*LepTColl.at(0)+JetColl.at(0)).M();
-	Mlj12   =  JetColl.size()<2? -1.:(*LepTColl.at(0)+JetColl.at(1)).M();
-	Mlj13   =  JetColl.size()<3? -1.:(*LepTColl.at(0)+JetColl.at(2)).M();
-	Mlj21   =  JetColl.size()<1? -1.:(*LepTColl.at(1)+JetColl.at(0)).M();
-	Mlj22   =  JetColl.size()<2? -1.:(*LepTColl.at(1)+JetColl.at(1)).M();
-	Mlj23   =  JetColl.size()<3? -1.:(*LepTColl.at(1)+JetColl.at(2)).M();
-	MTvl1   = MT(*LepTColl.at(0),METv);
-	MTvl2   = MT(*LepTColl.at(1),METv);
-	Mllj1   =  JetColl.size()<1? -1.:(*LepTColl.at(0)+*LepTColl.at(1)+JetColl.at(0)).M();
-	Mllj2   =  JetColl.size()<2? -1.:(*LepTColl.at(0)+*LepTColl.at(1)+JetColl.at(1)).M();
-	Mllj3   =  JetColl.size()<3? -1.:(*LepTColl.at(0)+*LepTColl.at(1)+JetColl.at(2)).M();
-	Mllj4   = JetColl.size()<4? -1.:(*LepTColl.at(0)+*LepTColl.at(1)+JetColl.at(3)).M();
-	Mlljj12 =  JetColl.size()<2? -1.:(*LepTColl.at(0)+*LepTColl.at(1)+JetColl.at(0)+JetColl.at(1)).M();
-	Mlljj13 =  JetColl.size()<3? -1.:(*LepTColl.at(0)+*LepTColl.at(1)+JetColl.at(0)+JetColl.at(2)).M();
-	Mlljj14 = JetColl.size()<4? -1.:(*LepTColl.at(0)+*LepTColl.at(1)+JetColl.at(0)+JetColl.at(3)).M();
-	Mlljj23 =  JetColl.size()<3? -1.:(*LepTColl.at(0)+*LepTColl.at(1)+JetColl.at(1)+JetColl.at(2)).M();
-	Mlljj24 = JetColl.size()<4? -1.:(*LepTColl.at(0)+*LepTColl.at(1)+JetColl.at(1)+JetColl.at(3)).M();
-	Mlljj34 = JetColl.size()<4? -1.:(*LepTColl.at(0)+*LepTColl.at(1)+JetColl.at(2)+JetColl.at(3)).M();
-	Mljj112 =  JetColl.size()<2? -1.:(*LepTColl.at(0)+JetColl.at(0)+JetColl.at(1)).M();
-	Mljj113 =  JetColl.size()<3? -1.:(*LepTColl.at(0)+JetColl.at(0)+JetColl.at(2)).M();
-	Mljj114 = JetColl.size()<4? -1.:(*LepTColl.at(0)+JetColl.at(0)+JetColl.at(3)).M();
-	//return;                                                                                                                                  
-	Mljj123 =  JetColl.size()<3? -1.:(*LepTColl.at(0)+JetColl.at(1)+JetColl.at(2)).M();
-	Mljj124 = JetColl.size()<4? -1.:(*LepTColl.at(0)+JetColl.at(1)+JetColl.at(3)).M();
-	Mljj134 = JetColl.size()<4? -1.:(*LepTColl.at(0)+JetColl.at(2)+JetColl.at(3)).M();
-	Mljj212 =  JetColl.size()<2? -1.:(*LepTColl.at(1)+JetColl.at(0)+JetColl.at(1)).M();
-	Mljj213 =  JetColl.size()<3? -1.:(*LepTColl.at(1)+JetColl.at(0)+JetColl.at(2)).M();
-	Mljj214 = JetColl.size()<4? -1.:(*LepTColl.at(1)+JetColl.at(0)+JetColl.at(3)).M();
-	Mljj223 =  JetColl.size()<3? -1.:(*LepTColl.at(1)+JetColl.at(1)+JetColl.at(2)).M();
-	Mljj224 = JetColl.size()<4? -1.:(*LepTColl.at(1)+JetColl.at(1)+JetColl.at(3)).M();
-	Mljj234 = JetColl.size()<4? -1.:(*LepTColl.at(1)+JetColl.at(2)+JetColl.at(3)).M();
-	Mjj12   =  JetColl.size()<2? -1.:(JetColl.at(0)+JetColl.at(1)).M();
-	Mjj13   =  JetColl.size()<3? -1.:(JetColl.at(0)+JetColl.at(2)).M();
-	Mjj14   = JetColl.size()<4? -1.:(JetColl.at(0)+JetColl.at(3)).M();
-	Mjj23   =  JetColl.size()<3? -1.:(JetColl.at(1)+JetColl.at(2)).M();
-	Mjj24   = JetColl.size()<4? -1.:(JetColl.at(1)+JetColl.at(3)).M();
-	Mjj34   = JetColl.size()<4? -1.:(JetColl.at(2)+JetColl.at(3)).M();
-	
-	//Vars requiring complex algo.                                                                                                             
-	HT      = 0;
-	for(unsigned int itj=0; itj<JetColl.size(); itj++){ HT+=JetColl.at(itj).Pt(); }
-	
-	HTLT=HT/LT;
-	HTLT1=HT/LepTColl.at(0)->Pt();
-	HTLT2=HT/LepTColl.at(1)->Pt();
-	
-	std::vector<FatJet> FatJetColl;
-	
-	double ST = GetST( LepTColl, JetColl, FatJetColl, METv);
-	
-	MET2HT  = JetColl.size()<1? -1.:pow(MET,2.)/HT;
-	MET2ST  = pow(MET,2.)/ST;
-	
-	const float MW = 80.379;
-	float dijetmass_tmp=9999.;
-	float dijetmass=99990000.;
-	int m=-999;
-	int n=-999;
-	
-	for(UInt_t emme=0; emme<JetColl.size(); emme++){
-	  for(UInt_t enne=emme+1; enne<JetColl.size(); enne++) {
-	    
-	    dijetmass_tmp = (JetColl[emme]+JetColl[enne]).M();
-	    //if(emme == enne) continue;                                                                                                           
-	    
-	    if ( fabs(dijetmass_tmp-MW) < fabs(dijetmass-MW) ) {
-	      dijetmass = dijetmass_tmp;
-	      m = emme;
-	      n = enne;
-	    }
-	  }
-	}
-	
-	PtWj1     = JetColl.size() > 1 ? JetColl[m].Pt() : -1.;
-	PtWj2     = JetColl.size() > 1 ? JetColl[n].Pt() : -1.;
-	dRWjj     = JetColl.size() > 1 ? JetColl[m].DeltaR(JetColl[n]) : -1.;
-	dRlW12    = JetColl.size() > 1 ? LepTColl.at(0)->DeltaR(JetColl[m] + JetColl[n]) : -1.;
-	dRlW22    = JetColl.size() > 1 ? LepTColl.at(1)->DeltaR(JetColl[m] + JetColl[n]) : -1.;
-	M_W2_jj   = JetColl.size() > 1 ? (JetColl[m] + JetColl[n]).M() : -1.;
-	M_W1_lljj = JetColl.size() > 1 ? (JetColl[m] + JetColl[n] + *LepTColl.at(0) + *LepTColl.at(1)).M() : -1.;
-	M_N1_l1jj = JetColl.size() > 1 ? (JetColl[m] + JetColl[n] + *LepTColl.at(0)).M() : -1.;
-	M_N2_l2jj = JetColl.size() > 1 ? (JetColl[m] + JetColl[n] + *LepTColl.at(1)).M() : -1.;
-	//for(unsigned int im=0; im<MNStrList.size(); im++){                                                                                
-	
-	
-	vector<TString> MassesBDT = {"100","250","500"};
-	
-	for(auto mN : MassesBDT){
-	  TString FileName ="DYTypeI_"+GetChannelString(dilep_channel)+  "_M"+mN+"_Mode0_Run2_BDT.weights.xml";
-	  TString MVATagStr = "BDTG_M"+mN+"_"+GetChannelString(dilep_channel);
-	  
-	  float MVAvalue = MVAReader->EvaluateMVA(MVATagStr);
-	  
-	  TString MVABin = "MN"+mN+"_";
-	  if(MVAvalue< 0.) MVABin = "MN"+mN+"_SR3_bin1";
-	  else if(MVAvalue< 0.2) MVABin = "MN"+mN+"_SR3_bin2";
-	  else MVABin = "MN"+mN+"_SR3_bin3";
-	  
-
-	  for(auto iel  : electrons){
-	    double pt = (iel.Pt() > 200.) ? 199. : iel.Pt();
-	    	    
-	    if (!param.Name.Contains("HNOpt")){
-	      FillHist( "NonOpt/"+MVABin+"_"+Category(iel)+"Pt_"+param.Name , 1., weight_channel, 2., 0.,2);
-	      
-	      continue;
-	    }
-	  		
-	  
-	    if(iel.PassID("HNTightV2")) {
-	      TString lab = "_HNTightV2";
-	      FillHist( "NonOpt/"+MVABin+"_RegionPass_"+Category(iel)+"Pt_"+param.Name+lab ,  1., weight_channel, 2., 0.,2);
-	      OutCutFlow( "NonOpt/"+MVABin+"_RegionPass_"+Category(iel)+"Pt_"+param.Name+lab , weight_channel);
-
-	      
-	    }
-	    
-	    
-	    if(iel.passMVAID_Iso_WP90()){
-	      if(iel.IsGsfCtfScPixChargeConsistent()){
-		FillHist( "ISOOpt/"+MVABin+"_MVAIso90_"+Category(iel)+"Pt_Iso_"+param.Name  , pt , iel.RelIso(), weight_channel, nPtbins,  ptbins , nIsobins,Isobins );
-		FillHist( "ISOOpt/"+MVABin+"_MVAIso90_"+Category(iel)+"Pt_MiniIso_"+param.Name  , pt , iel.MiniRelIso(), weight_channel, nPtbins,  ptbins , nIsobins,Isobins );
-		if(iel.RelIso() <0.15){
-		  FillHist( "IPOpt/"+MVABin+"_MVAIso90_"+Category(iel)+"Pt_IP_"+param.Name  , pt , fabs(iel.IP3D()/iel.IP3Derr()) , weight_channel, nPtbins,  ptbins , nIPbins,IPbins );
-		  FillHist( "IPOpt/"+MVABin+"_MVAIso90_"+Category(iel)+"Pt_DXY_"+param.Name  , pt , fabs(iel.dXY()) , weight_channel, nPtbins,  ptbins , nDXYbins,DXYbins );
-		  FillHist( "IPOpt/"+MVABin+"_MVAIso90_"+Category(iel)+"Pt_DZ_"+param.Name  , pt , fabs(iel.dZ()) , weight_channel, nPtbins,  ptbins , nDZbins,DZbins );
-		  FillHist( "CBOpt/"+MVABin+"_MVAIso90_"+Category(iel)+"MissingHits_"+param.Name, iel.NMissingHits() , weight_channel, 5, 0., 5.);
-		  FillHist( "CBOpt/"+MVABin+"_MVAIso90_"+Category(iel)+"sigmaIetaIeta_"+param.Name, iel.Full5x5_sigmaIetaIeta() , weight_channel, 1000, 0., 0.1);
-		  FillHist( "CBOpt/"+MVABin+"_MVAIso90_"+Category(iel)+"dEtaSeed_"+param.Name, fabs(iel.dEtaSeed()) , weight_channel, 1000, 0., 0.01);
-		  FillHist( "CBOpt/"+MVABin+"_MVAIso90_"+Category(iel)+"dPhiIn_"+param.Name, fabs(iel.dPhiIn()) , weight_channel, 1000, 0., 1.);
-		  FillHist( "CBOpt/"+MVABin+"_MVAIso90_"+Category(iel)+"InvEminusInvP_"+param.Name, fabs(iel.InvEminusInvP()) , weight_channel, 1000, 0., 1.);
-
-		}
-	      }
-	    }
-	    if(iel.passMVAID_noIso_WP90()){
-	      if(iel.IsGsfCtfScPixChargeConsistent()){
-		FillHist( "ISOOpt/"+MVABin+"_MVANoIso90_"+Category(iel)+"Pt_Iso_"+param.Name  , pt , iel.RelIso(), weight_channel, nPtbins,  ptbins , nIsobins,Isobins );
-		FillHist( "ISOOpt/"+MVABin+"_MVANoIso90_"+Category(iel)+"Pt_MiniIso_"+param.Name  , pt , iel.MiniRelIso(), weight_channel, nPtbins,  ptbins , nIsobins,Isobins );
-		if(iel.RelIso() <0.15){
-		  FillHist( "IPOpt/"+MVABin+"_MVANoIso90_"+Category(iel)+"Pt_IP_"+param.Name  , pt , fabs(iel.IP3D()/iel.IP3Derr()) , weight_channel, nPtbins,  ptbins , nIPbins,IPbins );
-		  FillHist( "IPOpt/"+MVABin+"_MVANoIso90_"+Category(iel)+"Pt_DXY_"+param.Name  , pt , fabs(iel.dXY()) , weight_channel, nPtbins,  ptbins , nDXYbins,DXYbins );
-		  FillHist( "IPOpt/"+MVABin+"_MVANoIso90_"+Category(iel)+"Pt_DZ_"+param.Name  , pt , fabs(iel.dZ()) , weight_channel, nPtbins,  ptbins , nDZbins,DZbins );
-		  FillHist( "CBOpt/"+MVABin+"_MVANoIso90_"+Category(iel)+"MissingHits_"+param.Name, iel.NMissingHits() , weight_channel, 5, 0., 5.);
-                  FillHist( "CBOpt/"+MVABin+"_MVANoIso90_"+Category(iel)+"sigmaIetaIeta_"+param.Name, iel.Full5x5_sigmaIetaIeta() , weight_channel, 1000, 0., 0.1);
-                  FillHist( "CBOpt/"+MVABin+"_MVANoIso90_"+Category(iel)+"dEtaSeed_"+param.Name, fabs(iel.dEtaSeed()) , weight_channel, 1000, 0., 0.01);
-                  FillHist( "CBOpt/"+MVABin+"_MVANoIso90_"+Category(iel)+"dPhiIn_"+param.Name, fabs(iel.dPhiIn()) , weight_channel, 1000, 0., 1.);
-                  FillHist( "CBOpt/"+MVABin+"_MVANoIso90_"+Category(iel)+"InvEminusInvP_"+param.Name, fabs(iel.InvEminusInvP()) , weight_channel, 1000, 0., 1.);
-
-		}
-	      }
-	    }
-	    
-	    
-	    for (auto IsoPair : IsoPairs){
-	      
-	      if(iel.RelIso() < IsoPair.first){
-		FillHist( "MVAOpt/"+MVABin+"_Iso"+IsoPair.second+"_"+Category(iel)+"Pt_mvaresponse_"+param.Name  , pt , iel.MVANoIsoResponse(), weight_channel, nPtbins,  ptbins , nMVAbins,mvabins );
-		FillHist( "MVAOpt/"+MVABin+"_Iso"+IsoPair.second+"_"+Category(iel)+"Pt_Isomvaresponse_"+param.Name  , pt , iel.MVAIsoResponse(), weight_channel, nPtbins,  ptbins , nMVAbins,mvabins);
-		if(iel.IsGsfCtfScPixChargeConsistent()){
-		  FillHist( "MVAOpt/CC_"+MVABin+"_Iso"+IsoPair.second+"_"+Category(iel)+"Pt_mvaresponse_"+param.Name  , pt , iel.MVANoIsoResponse(), weight_channel, nPtbins,  ptbins , nMVAbins,mvabins );
-		  FillHist( "MVAOpt/CC_"+MVABin+"_Iso"+IsoPair.second+"_"+Category(iel)+"Pt_Isomvaresponse_"+param.Name  , pt , iel.MVAIsoResponse(), weight_channel, nPtbins,  ptbins , nMVAbins,mvabins);
-		  OutCutFlow( "MVAOpt/CC_"+MVABin+"_Iso"+IsoPair.second+"_"+Category(iel)+"Pt_mvaresponse_"+param.Name , weight_channel);
-
-		}
-	      }
-	      if(iel.MiniRelIso() < IsoPair.first){
-		FillHist( "MVAOpt/"+MVABin+"_MiniIso"+IsoPair.second+"_"+Category(iel)+"Pt_mvaresponse_"+param.Name  , pt , iel.MVANoIsoResponse(), weight_channel, nPtbins,  ptbins , nMVAbins,mvabins );
-		FillHist( "MVAOpt/"+MVABin+"_MiniIso"+IsoPair.second+"_"+Category(iel)+"Pt_Isomvaresponse_"+param.Name  , pt , iel.MVAIsoResponse(), weight_channel, nPtbins,  ptbins , nMVAbins,mvabins);
-		if(iel.IsGsfCtfScPixChargeConsistent()){
-		  FillHist( "MVAOpt/CC_"+MVABin+"_MiniIso"+IsoPair.second+"_"+Category(iel)+"Pt_mvaresponse_"+param.Name  , pt , iel.MVANoIsoResponse(), weight_channel, nPtbins,  ptbins , nMVAbins,mvabins );
-		  FillHist( "MVAOpt/CC_"+MVABin+"_MiniIso"+IsoPair.second+"_"+Category(iel)+"Pt_Isomvaresponse_"+param.Name  , pt , iel.MVAIsoResponse(), weight_channel, nPtbins,  ptbins , nMVAbins,mvabins);
-		}
-	      }
-	    }
-          }
-        }
-      }
-    }
-  }
-  
-  
-  return;
-}
-
-
-
-void HNL_RegionDefinitionsOpt::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq, std::vector<Electron> electrons, std::vector<Electron> electrons_veto, std::vector<Muon> muons, std::vector<Muon> muons_veto, std::vector<Tau> TauColl, std::vector<Jet> JetCollLoose,std::vector<Jet> JetColl, std::vector<Jet> VBF_JetColl,std::vector<FatJet>  AK8_JetColl, std::vector<Jet> B_JetColl,std::vector<Jet> B_JetCollSR1, Event ev,   Particle METv, AnalyzerParameter param,   float weight_ll){
+void HNL_RegionDefinitionsOpt::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq, 
+						   std::vector<Electron> electrons, std::vector<Electron> electrons_veto, std::vector<Muon> muons, std::vector<Muon> muons_veto, std::vector<Tau> TauColl,
+						   std::vector<Jet> AllJetColl ,  std::vector<Jet> JetCollLoose,std::vector<Jet> JetColl, std::vector<Jet> VBF_JetColl,std::vector<FatJet>  AK8_JetColl, 
+						   std::vector<Jet> B_JetColl,std::vector<Jet> B_JetCollSR1, 
+						   Event ev,   Particle METv, AnalyzerParameter param,   float weight_ll){
 
 
   // Only opt for EE/MM
@@ -805,11 +174,12 @@ void HNL_RegionDefinitionsOpt::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq
       else{
 	SRbin  = RunSignalRegionAK4String (dilep_channel,qq, leps, leps_veto, TauColl, JetColl, AK8_JetColl, B_JetColl, ev, METv ,param_channel,"", weight_channel);
 
-	TString SRBDT100 = RunSignalRegionAK4StringBDT("100", dilep_channel,qq, leps, leps_veto, TauColl, JetColl, VBF_JetColl, B_JetColl, ev, METv ,param_channel,"", weight_channel);
-	if(SRBDT100 != "false") FillEventCutflow(LimitRegionsBDT, weight_channel, SRBDT100,"LimitInputBDT/"+param.Name+"/100");
+	TString SRBDT100 = RunSignalRegionAK4StringBDT("100", dilep_channel,qq, 
+						       leps, leps_veto,  
+						       AllJetColl, JetColl, VBF_JetColl, B_JetColl, 
+						       ev, METv ,param_channel,"", weight_channel);
 
-	//TString SRBDT500 = RunSignalRegionAK4StringBDT("500", dilep_channel,qq, leps, leps_veto, TauColl, JetColl, VBF_JetColl, B_JetColl, ev, METv ,param_channel,"", weight_channel);
-        //if(SRBDT500 != "false") FillEventCutflow(LimitRegionsBDT, weight_channel, SRBDT500,"LimitInputBDT/"+param.Name+"/500");
+	if(SRBDT100 != "false") FillEventCutflow(LimitRegionsBDT, weight_channel, SRBDT100,"LimitInputBDT/"+param.Name+"/100");
 
 	if(SRbin != "false"){
  
@@ -1069,9 +439,12 @@ TString HNL_RegionDefinitionsOpt::RunSignalRegionAK8String(HNL_LeptonCore::Chann
 
 
 
-TString HNL_RegionDefinitionsOpt::RunSignalRegionAK4StringBDT(TString mN, HNL_LeptonCore::Channel channel, HNL_LeptonCore::ChargeType qq ,std::vector<Lepton *> LepTColl,   std::vector<Lepton *> leps_veto, std::vector<Tau> TauColl,std::vector<Jet> JetColl, std::vector<Jet> JetVBFColl, std::vector<Jet> B_JetColl, Event  ev, Particle METv, AnalyzerParameter param, TString PostLabel ,  float w){
 
 
+TString HNL_RegionDefinitionsOpt::RunSignalRegionAK4StringBDT(TString mN, HNL_LeptonCore::Channel channel, HNL_LeptonCore::ChargeType qq ,
+							      std::vector<Lepton *> LepTColl,   std::vector<Lepton *> leps_veto, 
+							      std::vector<Jet> JetAllColl,std::vector<Jet> JetColl, std::vector<Jet> JetVBFColl, 
+							      std::vector<Jet> B_JetColl, Event  ev, Particle METv, AnalyzerParameter param, TString PostLabel ,  float w){
 
   if(!CheckLeptonFlavourForChannel(channel, LepTColl)) return "false";
   FillEventCutflow(HNL_LeptonCore::SR3BDT, w, "SR3_lep_pt",param.Name,param.WriteOutVerbose);
@@ -1087,135 +460,27 @@ TString HNL_RegionDefinitionsOpt::RunSignalRegionAK4StringBDT(TString mN, HNL_Le
   if (channel==EE  && (fabs(ll.M()-90.) < 15)) return "false";
 
   FillEventCutflow(HNL_LeptonCore::SR3BDT, w, "SR3_dilep_mass",param.Name,param.WriteOutVerbose);
-  float Mll = GetLLMass(LepTColl);
 
-  Nj      = JetColl.size();
-  Nvbfj   = JetVBFColl.size();
-  Ptl1    = LepTColl[0]->Pt();
-  Ptl2    = LepTColl.at(1)->Pt();
-  LT      = GetLT(LepTColl);
-  Ptj1    =  JetColl.size()<1? -1.: JetColl.at(0).Pt();
-  Ptj2    =  JetColl.size()<2? -1.:JetColl.at(1).Pt();
-  Ptj3    =  JetColl.size()<3? -1.:JetColl.at(2).Pt();
-  MET     = METv.Pt();
+  SetupEventBDTVariables(LepTColl,
+			 JetAllColl, JetColl,JetVBFColl,B_JetColl,
+			 ev,METv,param);
 
-  dEtall  = abs(LepTColl.at(0)->Eta()-LepTColl.at(1)->Eta());
-  dRll    = LepTColl.at(0)->DeltaR(*LepTColl.at(1));
-  dRjj12  =  JetColl.size()<2? -1.:JetColl.at(0).DeltaR(JetColl.at(1));
-  dRjj23  =  JetColl.size()<3? -1.:JetColl.at(1).DeltaR(JetColl.at(2));
-  dRjj13  =  JetColl.size()<3? -1.:JetColl.at(0).DeltaR(JetColl.at(2));
-  dRlj11  =  JetColl.size()<1? -1.:LepTColl.at(0)->DeltaR(JetColl.at(0));
-  dRlj12  =  JetColl.size()<2? -1.:LepTColl.at(0)->DeltaR(JetColl.at(1));
-  dRlj13  =  JetColl.size()<3? -1.:LepTColl.at(0)->DeltaR(JetColl.at(2));
-  dRlj21  =  JetColl.size()<1? -1.:LepTColl.at(1)->DeltaR(JetColl.at(0));
-  dRlj22  =  JetColl.size()<2? -1.:LepTColl.at(1)->DeltaR(JetColl.at(1));
-  dRlj23  =  JetColl.size()<3? -1.:LepTColl.at(1)->DeltaR(JetColl.at(2));
-
-
-
-  MSSSF   = Mll;
-  Mlj11   =  JetColl.size()<1? -1.:(*LepTColl.at(0)+JetColl.at(0)).M();
-  Mlj12   =  JetColl.size()<2? -1.:(*LepTColl.at(0)+JetColl.at(1)).M();
-  Mlj13   =  JetColl.size()<3? -1.:(*LepTColl.at(0)+JetColl.at(2)).M();
-  Mlj21   =  JetColl.size()<1? -1.:(*LepTColl.at(1)+JetColl.at(0)).M();
-  Mlj22   =  JetColl.size()<2? -1.:(*LepTColl.at(1)+JetColl.at(1)).M();
-  Mlj23   =  JetColl.size()<3? -1.:(*LepTColl.at(1)+JetColl.at(2)).M();
-  MTvl1   = MT(*LepTColl.at(0),METv);
-  MTvl2   = MT(*LepTColl.at(1),METv);
-  Mllj1   =  JetColl.size()<1? -1.:(*LepTColl.at(0)+*LepTColl.at(1)+JetColl.at(0)).M();
-  Mllj2   =  JetColl.size()<2? -1.:(*LepTColl.at(0)+*LepTColl.at(1)+JetColl.at(1)).M();
-  Mllj3   =  JetColl.size()<3? -1.:(*LepTColl.at(0)+*LepTColl.at(1)+JetColl.at(2)).M();
-  Mllj4   = JetColl.size()<4? -1.:(*LepTColl.at(0)+*LepTColl.at(1)+JetColl.at(3)).M();
-  Mlljj12 =  JetColl.size()<2? -1.:(*LepTColl.at(0)+*LepTColl.at(1)+JetColl.at(0)+JetColl.at(1)).M();
-  Mlljj13 =  JetColl.size()<3? -1.:(*LepTColl.at(0)+*LepTColl.at(1)+JetColl.at(0)+JetColl.at(2)).M();
-  Mlljj14 = JetColl.size()<4? -1.:(*LepTColl.at(0)+*LepTColl.at(1)+JetColl.at(0)+JetColl.at(3)).M();
-  Mlljj23 =  JetColl.size()<3? -1.:(*LepTColl.at(0)+*LepTColl.at(1)+JetColl.at(1)+JetColl.at(2)).M();
-  Mlljj24 = JetColl.size()<4? -1.:(*LepTColl.at(0)+*LepTColl.at(1)+JetColl.at(1)+JetColl.at(3)).M();
-  Mlljj34 = JetColl.size()<4? -1.:(*LepTColl.at(0)+*LepTColl.at(1)+JetColl.at(2)+JetColl.at(3)).M();
-  Mljj112 =  JetColl.size()<2? -1.:(*LepTColl.at(0)+JetColl.at(0)+JetColl.at(1)).M();
-  Mljj113 =  JetColl.size()<3? -1.:(*LepTColl.at(0)+JetColl.at(0)+JetColl.at(2)).M();
-  Mljj114 = JetColl.size()<4? -1.:(*LepTColl.at(0)+JetColl.at(0)+JetColl.at(3)).M();
-  //return;                                                                                                                                                                                                                                                                                                                 
-  Mljj123 =  JetColl.size()<3? -1.:(*LepTColl.at(0)+JetColl.at(1)+JetColl.at(2)).M();
-  Mljj124 = JetColl.size()<4? -1.:(*LepTColl.at(0)+JetColl.at(1)+JetColl.at(3)).M();
-  Mljj134 = JetColl.size()<4? -1.:(*LepTColl.at(0)+JetColl.at(2)+JetColl.at(3)).M();
-  Mljj212 =  JetColl.size()<2? -1.:(*LepTColl.at(1)+JetColl.at(0)+JetColl.at(1)).M();
-  Mljj213 =  JetColl.size()<3? -1.:(*LepTColl.at(1)+JetColl.at(0)+JetColl.at(2)).M();
-  Mljj214 = JetColl.size()<4? -1.:(*LepTColl.at(1)+JetColl.at(0)+JetColl.at(3)).M();
-  Mljj223 =  JetColl.size()<3? -1.:(*LepTColl.at(1)+JetColl.at(1)+JetColl.at(2)).M();
-  Mljj224 = JetColl.size()<4? -1.:(*LepTColl.at(1)+JetColl.at(1)+JetColl.at(3)).M();
-  Mljj234 = JetColl.size()<4? -1.:(*LepTColl.at(1)+JetColl.at(2)+JetColl.at(3)).M();
-  Mjj12   =  JetColl.size()<2? -1.:(JetColl.at(0)+JetColl.at(1)).M();
-  Mjj13   =  JetColl.size()<3? -1.:(JetColl.at(0)+JetColl.at(2)).M();
-  Mjj14   = JetColl.size()<4? -1.:(JetColl.at(0)+JetColl.at(3)).M();
-  Mjj23   =  JetColl.size()<3? -1.:(JetColl.at(1)+JetColl.at(2)).M();
-  Mjj24   = JetColl.size()<4? -1.:(JetColl.at(1)+JetColl.at(3)).M();
-  Mjj34   = JetColl.size()<4? -1.:(JetColl.at(2)+JetColl.at(3)).M();
-
-  //Vars requiring complex algo.                                                                                                                                                                                                                                                                                            
-  HT      = 0;
-  for(unsigned int itj=0; itj<JetColl.size(); itj++){ HT+=JetColl.at(itj).Pt(); }
-
-  HTLT=HT/LT;
-  HTLT1=HT/LepTColl.at(0)->Pt();
-  HTLT2=HT/LepTColl.at(1)->Pt();
-
-  std::vector<FatJet> FatJetColl;
-
-  double ST = GetST( LepTColl, JetColl, FatJetColl, METv);
-
-  MET2HT  = JetColl.size()<1? -1.:pow(MET,2.)/HT;
-  MET2ST  = pow(MET,2.)/ST;
-
-  const float MW = 80.379;
-  float dijetmass_tmp=9999.;
-  float dijetmass=99990000.;
-  int m=-999;
-  int n=-999;
-
-  for(UInt_t emme=0; emme<JetColl.size(); emme++){
-    for(UInt_t enne=emme+1; enne<JetColl.size(); enne++) {
-
-      dijetmass_tmp = (JetColl[emme]+JetColl[enne]).M();
-      //if(emme == enne) continue;                                                                                                                                                                                                                                                                                          
-
-      if ( fabs(dijetmass_tmp-MW) < fabs(dijetmass-MW) ) {
-        dijetmass = dijetmass_tmp;
-        m = emme;
-        n = enne;
-      }
-    }
-  }
-
-  PtWj1     = JetColl.size() > 1 ? JetColl[m].Pt() : -1.;
-  PtWj2     = JetColl.size() > 1 ? JetColl[n].Pt() : -1.;
-  dRWjj     = JetColl.size() > 1 ? JetColl[m].DeltaR(JetColl[n]) : -1.;
-  dRlW12    = JetColl.size() > 1 ? LepTColl.at(0)->DeltaR(JetColl[m] + JetColl[n]) : -1.;
-  dRlW22    = JetColl.size() > 1 ? LepTColl.at(1)->DeltaR(JetColl[m] + JetColl[n]) : -1.;
-  M_W2_jj   = JetColl.size() > 1 ? (JetColl[m] + JetColl[n]).M() : -1.;
-  M_W1_lljj = JetColl.size() > 1 ? (JetColl[m] + JetColl[n] + *LepTColl.at(0) + *LepTColl.at(1)).M() : -1.;
-  M_N1_l1jj = JetColl.size() > 1 ? (JetColl[m] + JetColl[n] + *LepTColl.at(0)).M() : -1.;
-  M_N2_l2jj = JetColl.size() > 1 ? (JetColl[m] + JetColl[n] + *LepTColl.at(1)).M() : -1.;
-
-  //for(unsigned int im=0; im<MNStrList.size(); im++){                                                                                                                                                                                                                                                                      
-
-  TString FileName ="DYTypeI_"+GetChannelString(channel)+  "_M"+mN+"_Mode0_Run2_BDT.weights.xml";
-  TString MVATagStr = "BDTG_M"+mN+"_"+GetChannelString(channel);
-
-  float MVAvalue = MVAReader->EvaluateMVA(MVATagStr);
+  TString MVATagStr = "BDT_M"+mN+"_NCut300_NTree850_"+GetChannelString(channel);
+  float MVAvalue = 0.;
+  if(GetChannelString(channel) == "MuMu") MVAvalue = MVAReaderMM->EvaluateMVA(MVATagStr);
+  if(GetChannelString(channel) == "EE")   MVAvalue = MVAReaderEE->EvaluateMVA(MVATagStr);
+  if(GetChannelString(channel) == "EMu")  MVAvalue = MVAReaderEM->EvaluateMVA(MVATagStr);
 
   //FillHist("LimitSR3BDT/"+param.Name+"/SignalBins_M"+mN, MVAvalue, w, 40, -1., 1.);
-  if(MVAvalue < 0.) return "SR3_bin1";
+  if(MVAvalue < 0.)       return "SR3_bin1";
   else if(MVAvalue< 0.05) return "SR3_bin2";
   else if(MVAvalue< 0.10) return "SR3_bin3";
   else if(MVAvalue< 0.15) return "SR3_bin4";
-  else if(MVAvalue< 0.2) return "SR3_bin5";
+  else if(MVAvalue< 0.2)  return "SR3_bin5";
   else if(MVAvalue< 0.25) return "SR3_bin6";
-  else if(MVAvalue< 0.3) return "SR3_bin7";
+  else if(MVAvalue< 0.3)  return "SR3_bin7";
   else if(MVAvalue< 0.35) return "SR3_bin8";
-  else  return "SR3_bin9";
-
-
+  else                    return "SR3_bin9";
 
   return "true";
 }
@@ -1226,7 +491,10 @@ TString HNL_RegionDefinitionsOpt::RunSignalRegionAK4StringBDT(TString mN, HNL_Le
 
 
 
-bool  HNL_RegionDefinitionsOpt::RunSignalRegionWW(HNL_LeptonCore::Channel channel, HNL_LeptonCore::ChargeType qq ,std::vector<Lepton *> leps, std::vector<Lepton *> leps_veto , std::vector<Tau> TauColl, std::vector<Jet> JetCollLoose, std::vector<Jet> JetColl, std::vector<FatJet>  AK8_JetColl, std::vector<Jet> B_JetColl, Event ev, Particle METv, AnalyzerParameter param, TString PostLabel ,  float w){
+bool  HNL_RegionDefinitionsOpt::RunSignalRegionWW(HNL_LeptonCore::Channel channel, HNL_LeptonCore::ChargeType qq ,
+						  std::vector<Lepton *> leps, std::vector<Lepton *> leps_veto , std::vector<Tau> TauColl, 
+						  std::vector<Jet> JetCollLoose, std::vector<Jet> JetColl, std::vector<FatJet>  AK8_JetColl, std::vector<Jet> B_JetColl, 
+						  Event ev, Particle METv, AnalyzerParameter param, TString PostLabel ,  float w){
 
   TString SR2String = RunSignalRegionWWString(channel, qq, leps, leps_veto, TauColl,JetCollLoose, JetColl,AK8_JetColl,B_JetColl,ev, METv, param, PostLabel,w);
   if(SR2String == "false") return false;
@@ -1236,7 +504,10 @@ bool  HNL_RegionDefinitionsOpt::RunSignalRegionWW(HNL_LeptonCore::Channel channe
 
 
 
-TString HNL_RegionDefinitionsOpt::RunSignalRegionWWString(HNL_LeptonCore::Channel channel, HNL_LeptonCore::ChargeType qq ,std::vector<Lepton *> leps, std::vector<Lepton *> leps_veto , std::vector<Tau> TauColl, std::vector<Jet> JetCollLoose, std::vector<Jet> JetColl, std::vector<FatJet>  AK8_JetColl, std::vector<Jet> B_JetColl, Event ev, Particle METv, AnalyzerParameter param, TString PostLabel ,  float w){
+TString HNL_RegionDefinitionsOpt::RunSignalRegionWWString(HNL_LeptonCore::Channel channel, HNL_LeptonCore::ChargeType qq ,
+							  std::vector<Lepton *> leps, std::vector<Lepton *> leps_veto , std::vector<Tau> TauColl, 
+							  std::vector<Jet> JetCollLoose, std::vector<Jet> JetColl, std::vector<FatJet>  AK8_JetColl, std::vector<Jet> B_JetColl, 
+							  Event ev, Particle METv, AnalyzerParameter param, TString PostLabel ,  float w){
 
 
   if(!CheckLeptonFlavourForChannel(channel, leps)) return "false";

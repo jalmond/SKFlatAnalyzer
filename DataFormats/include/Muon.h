@@ -79,14 +79,6 @@ public:
 
   inline bool isMvaTight() const {return PassSelector(MvaTight);}
 
-  double PassStepCut(double val1, double val2, double pt1, double pt2) const ;
-  double PassMultiStepCut(double Val1, double Val2, double PtBoundary ) const;
-
-  bool PassMVA_UL_Slope(TString bb1, TString bb2, TString ptboundary) const;
-
-  bool PassMVA_UL_Exp(TString c, TString tau, TString A) const;
-
-
   void SetIso(double ch04, double nh04, double ph04, double pu04, double trkiso);
   void CalcPFRelIso(bool use_corrected_pt=true);
   inline double TrkIso() const {return j_trkiso;}
@@ -138,7 +130,7 @@ public:
   bool Pass_CB_Opt(TString ID) const;
 
   int  PassLooseIDOpt( ) const;
-  int PassIDOptMulti(TString sel_methodB,TString sel_methodEC,TString mva_methodBB1, TString mva_methodBB2,TString mva_methodBBPt,  TString mva_methodEC1, TString mva_methodEC2, TString mva_methodECPt, TString mva_methodBBC,  TString mva_methodBBTau, TString mva_methodBBA, TString mva_methodECC,  TString mva_methodECTau,  TString mva_methodECA, TString iso_methodB,TString iso_methodEC ) const;
+  int PassIDOptMulti(TString fake_method, TString sel_methodB,TString sel_methodEC, TString mva_methodBB,  TString mva_methodEC,  TString mva_methodLFBB,  TString mva_methodLFEC, TString iso_methodB,TString iso_methodEC ) const;
 			    
     
 

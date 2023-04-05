@@ -5,8 +5,9 @@ void HNL_SignalRegionOpt::initializeAnalyzer(){
   // All default settings like trigger/ PD/ BJet are decalred in HNL_LeptonCore::initializeAnalyzer to make them consistent for all HNL codes
 
   HNL_LeptonCore::initializeAnalyzer();
-  SetupMVAReader();
 
+  SetupIDMVAReaderDefault(); /// Not needed for BDT skim                                                                                                                                                           
+  SetupEventMVAReader();                                                                                                                                                                                           
 }
 
 
@@ -159,6 +160,8 @@ void HNL_SignalRegionOpt::RunULAnalysis(AnalyzerParameter param){
     // AK4 JET
     std::vector<Jet> jets_tmp     = GetJets   ( param, param.Jet_ID, 15., 5.);
     
+    std::vector<Jet> AllJetColl                      = GetJets   (param, "NoID",10, 3.);
+
     std::vector<Jet> JetCollLoose                    = SelectAK4Jets(jets_tmp,     15., 4.7, true,  0.4,0.8, "",   ElectronCollV,MuonCollV, FatjetColl_1);
 
     std::vector<Jet> BJetColltmp                    = SelectAK4Jets(jets_tmp,     20., 2.4, true,  0.4,0.8, "",   ElectronCollV,MuonCollV, FatjetColl_1);
@@ -272,7 +275,10 @@ void HNL_SignalRegionOpt::RunULAnalysis(AnalyzerParameter param){
 	    
 	    
 	    //cout << param.Name << " " << ak8_it->second.size() << " " << ak4_it->second.size() << " " << weight << endl;
-	    RunAllSignalRegions(Inclusive, ElectronCollT,ElectronCollV,MuonCollT,MuonCollV, TauColl, JetCollLoose, ak4_it->second, ak4_vbf_it->second, ak8_it->second, ak4_b_it->second, ak4_b_it->second, ev,METv, param,weight_optjet);
+	    RunAllSignalRegions(Inclusive, 
+				ElectronCollT,ElectronCollV,MuonCollT,MuonCollV, TauColl, 
+				AllJetColl,JetCollLoose, ak4_it->second, ak4_vbf_it->second, ak8_it->second, ak4_b_it->second, ak4_b_it->second, 
+				ev,METv, param,weight_optjet);
 	    
 	    param.Name = param.DefName;
 	  }
@@ -290,6 +296,7 @@ void HNL_SignalRegionOpt::RunULAnalysis(AnalyzerParameter param){
   std::vector<FatJet> AK8Jet                  = SelectAK8Jetsv2(AK8Jet_TMP, 200., 2.7, true,  1., true, -999, true, 40., 130.,-999, ElectronCollV, MuonCollV);
   std::vector<Jet> AK4Jet_TMP     = GetJets   ( param, param.Jet_ID, 20., 5.);
 
+  std::vector<Jet> AllJetColl                      = GetJets   (param, "NoID",10, 3.);
   std::vector<Jet> JetCollLoose                    = SelectAK4Jets(AK4Jet_TMP,    15., 4.7, true,  0.4,0.8, "",   ElectronCollV,MuonCollV, AK8Jet);
   std::vector<Jet> BJetCollNLV                    = SelectAK4Jets(AK4Jet_TMP,     20., 2.4, false,  0.4,0.8, "",   ElectronCollV,MuonCollV, AK8Jet);
   std::vector<Jet> JetColl                        = SelectAK4Jets(AK4Jet_TMP,     20., 2.7, true,  0.4,0.8, "",   ElectronCollV,MuonCollV, AK8Jet);
@@ -322,19 +329,31 @@ void HNL_SignalRegionOpt::RunULAnalysis(AnalyzerParameter param){
 
     param.Name = param.DefName + "Nom";
     param.SRConfig  =  "";
-    RunAllSignalRegions(Inclusive, ElectronCollT,ElectronCollV,MuonCollT,MuonCollV, TauColl, JetCollLoose, JetColl, VBF_JetColl,AK8Jet , BJetColl,BJetColl, ev,METv, param,weight);
+    RunAllSignalRegions(Inclusive, 
+			ElectronCollT,ElectronCollV,MuonCollT,MuonCollV, TauColl, 
+			AllJetColl, JetCollLoose, JetColl, VBF_JetColl,AK8Jet , BJetColl,BJetColl, 
+			ev,METv, param,weight);
 
     param.Name = param.DefName + "Trig1OR";
     param.SRConfig = "Trig1OR";
-    RunAllSignalRegions(Inclusive, ElectronCollT,ElectronCollV,MuonCollT,MuonCollV, TauColl, JetCollLoose, JetColl, VBF_JetColl,AK8Jet , BJetColl,BJetColl, ev,METv, param,weight);
+    RunAllSignalRegions(Inclusive, 
+			ElectronCollT,ElectronCollV,MuonCollT,MuonCollV, TauColl, 
+			AllJetColl, JetCollLoose, JetColl, VBF_JetColl,AK8Jet , BJetColl,BJetColl, 
+			ev,METv, param,weight);
     
     param.Name = param.DefName + "Trig2OR";
     param.SRConfig = "Trig2OR";
-    RunAllSignalRegions(Inclusive, ElectronCollT,ElectronCollV,MuonCollT,MuonCollV, TauColl, JetCollLoose, JetColl, VBF_JetColl,AK8Jet , BJetColl,BJetColl, ev,METv, param,weight);
+    RunAllSignalRegions(Inclusive, 
+			ElectronCollT,ElectronCollV,MuonCollT,MuonCollV, TauColl, 
+			AllJetColl, JetCollLoose, JetColl, VBF_JetColl,AK8Jet , BJetColl,BJetColl, 
+			ev,METv, param,weight);
 
     param.Name = param.DefName + "Trig3OR";
     param.SRConfig = "Trig3OR";
-    RunAllSignalRegions(Inclusive, ElectronCollT,ElectronCollV,MuonCollT,MuonCollV, TauColl, JetCollLoose, JetColl, VBF_JetColl,AK8Jet , BJetColl,BJetColl, ev,METv, param,weight);
+    RunAllSignalRegions(Inclusive, 
+			ElectronCollT,ElectronCollV,MuonCollT,MuonCollV, TauColl, 
+			AllJetColl, JetCollLoose, JetColl, VBF_JetColl,AK8Jet , BJetColl,BJetColl, 
+			ev,METv, param,weight);
     
     param.Name = param.DefName;
     param.SRConfig  =  "";
@@ -366,7 +385,10 @@ void HNL_SignalRegionOpt::RunULAnalysis(AnalyzerParameter param){
 
       param.Name = param.DefName + is1;
       param.SRConfig  = is1;
-      RunAllSignalRegions(Inclusive, ElectronCollT,ElectronCollV,MuonCollT,MuonCollV, TauColl, JetCollLoose, JetColl, VBF_JetColl,AK8Jet , BJetColl,BJetColl, ev,METv, param,weight);
+      RunAllSignalRegions(Inclusive, 
+			  ElectronCollT,ElectronCollV,MuonCollT,MuonCollV, TauColl, 
+			  AllJetColl,JetCollLoose, JetColl, VBF_JetColl,AK8Jet , BJetColl,BJetColl, 
+			  ev,METv, param,weight);
       // reset param                                                                                                                                                                                                                        
       param.Name = param.DefName;
       param.SRConfig  = "";
@@ -395,7 +417,10 @@ void HNL_SignalRegionOpt::RunULAnalysis(AnalyzerParameter param){
 
       param.Name = param.DefName + is1;
       param.SRConfig  = is1;
-      RunAllSignalRegions(Inclusive, ElectronCollT,ElectronCollV,MuonCollT,MuonCollV, TauColl, JetCollLoose, JetColl, VBF_JetColl,AK8Jet , BJetColl,BJetColl, ev,METv, param,weight);
+      RunAllSignalRegions(Inclusive, 
+			  ElectronCollT,ElectronCollV,MuonCollT,MuonCollV, TauColl, 
+			  AllJetColl,JetCollLoose, JetColl, VBF_JetColl,AK8Jet , BJetColl,BJetColl, 
+			  ev,METv, param,weight);
       param.Name = param.DefName;
       param.SRConfig  = "";
     }
@@ -416,12 +441,16 @@ HNL_SignalRegionOpt::HNL_SignalRegionOpt(){
 
   TMVA::Tools::Instance();
 
-  MVAReader = new TMVA::Reader();
+  MVAReaderMM = new TMVA::Reader();
+  MVAReaderEE = new TMVA::Reader();
+  MVAReaderEM = new TMVA::Reader();
 
 }
  
 HNL_SignalRegionOpt::~HNL_SignalRegionOpt(){
-  delete MVAReader;
+  delete MVAReaderMM;
+  delete MVAReaderEE;
+  delete MVAReaderEM;
 
 }
 

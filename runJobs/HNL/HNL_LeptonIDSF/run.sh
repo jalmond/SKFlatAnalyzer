@@ -7,12 +7,12 @@ nmax=200
 skim=' '
 declare  -a era_list=("2018" "2016postVFP" "2016preVFP" "2017")
 
-if [[ $1 == "TEST" ]]; then
+if [[ $1 == "TT" ]]; then
     
-    declare  -a era_list=("2018")
+    declare  -a era_list=("2017")
     for i in "${era_list[@]}"
     do
-        SKFlat.py -a $analyzer  -i VBFTypeI_DF_M500_private  -n 2  --nmax 2  -e ${i} 
+        SKFlat.py -a $analyzer  -i TTLJ_powheg  -n 600  --nmax 200  -e ${i} --skim SkimTree_DileptonBDT 
     done
 fi
 
@@ -20,12 +20,11 @@ fi
 
 if [[ $1 == "" ]]; then
 
-    declare  -a era_list=("2016postVFP" "2016preVFP")
-
+    declare  -a era_list=("2018")
     for i in "${era_list[@]}"
     do
 	SKFlat.py -a $analyzer  -l $datapath/DATA_${i}.txt  -n 200  --nmax 100   -e ${i}  --skim SkimTree_DileptonBDT&
-	SKFlat.py -a $analyzer  -l   $mcpath/MC.txt  -n 600  --nmax 100  -e ${i}  --skim SkimTree_DileptonBDT&
+	SKFlat.py -a $analyzer  -l   $mcpath/MC.txt  -n 200  --nmax 100  -e ${i}  --skim SkimTree_DileptonBDT&
     done
 fi
 

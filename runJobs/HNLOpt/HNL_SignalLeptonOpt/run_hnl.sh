@@ -96,69 +96,11 @@ fi
 #############################################################################                                                                                                                                                               
 #############################################################################     
 
-if [[ $1 == "NP_MUON_HighPt" ]]; then
-
-    declare  -a era_list=("2016postVFP" "2016preVFP" "2017" "2018")
-
-    for i in "${era_list[@]}"
-    do    
-	
-	Flag='MuID_NP,HighPt,BB'
-	source ${runPATH}/run_hnl.sh Muon ${Flag} ${i}
-	
-	Flag2='MuID_NP,HighPt,EC'
-	source ${runPATH}/run_hnl.sh Muon ${Flag2} ${i}
-	
-    done
-fi
-
-
-if [[ $1 == "NP_MUON_CONV" ]]; then
-
-    declare  -a era_list=("2016postVFP" "2016preVFP" "2017" "2018")
-
-    for i in "${era_list[@]}"
-    do
-
-        Flag='Mu_Conv'
-        source ${runPATH}/run_hnl.sh Muon ${Flag} ${i}
-
-    done
-fi
-
-
-
-if [[ $1 == "NP_MUON_FullEta_HighPt" ]]; then
-
-    declare  -a era_list=("2016postVFP" "2016preVFP" "2017" "2018")
-
-    for i in "${era_list[@]}"
-    do
-
-        Flag='MuID_NP,HighPt,FullEta'
-        source ${runPATH}/run_hnl.sh Muon ${Flag} ${i}
-
-    done
-fi
-
-if [[ $1 == "NP_MUON_Full_HighPt" ]]; then
-
-    declare  -a era_list=("2016postVFP" "2016preVFP" "2017" "2018")
-
-    for i in "${era_list[@]}"
-    do
-
-        Flag='MuID_NP,HighPt,Full'
-        source ${runPATH}/run_hnl.sh Muon ${Flag} ${i}
-
-    done
-fi
-
 
 if [[ $1 == "NP_MUON_FullPt" ]]; then
 
     declare  -a era_list=("2016postVFP" "2016preVFP" "2017" "2018")
-
+    declare  -a era_list=("2018")
     for i in "${era_list[@]}"
     do
 
@@ -168,37 +110,6 @@ if [[ $1 == "NP_MUON_FullPt" ]]; then
 	
 	Flag2='MuID_NP,FullPt,EC'
 	source ${runPATH}/run_hnl.sh Muon ${Flag2} ${i}
-
-    done
-
-fi
-
-
-if [[ $1 == "NP_MUON_FullEtaSlope" ]]; then
-
-    declare  -a era_list=("2016postVFP" "2016preVFP" "2017" "2018")
-
-    for i in "${era_list[@]}"
-    do
-
-        Flag='MuID_NP,FullPt,FullEtaSlope'
-        source ${runPATH}/run_hnl.sh Muon ${Flag} ${i}
-
-
-    done
-
-fi
-
-if [[ $1 == "NP_MUON_FullEtaExp" ]]; then
-
-    declare  -a era_list=("2016postVFP" "2016preVFP" "2017" "2018")
-
-    for i in "${era_list[@]}"
-    do
-
-        Flag='MuID_NP,FullPt,FullEtaExp'
-        source ${runPATH}/run_hnl.sh Muon ${Flag} ${i}
-
 
     done
 
@@ -242,12 +153,12 @@ if [[ $1 == "MUON_COMP" ]]; then
     for i in "${era_list[@]}"
     do
 
-    SKFlat.py -a $analyzer  -l $mcpath/MCOpt.txt  -n 20  --nmax ${nmax}   -e ${i}   --skim SkimTree_HNMultiLep &
-    SKFlat.py -a $analyzer  -l $mcpath/MCOptLarge.txt  -n 50  --nmax ${nmax}   -e ${i}  --skim SkimTree_HNMultiLep &
+    SKFlat.py -a $analyzer  -l $mcpath/MCOpt.txt  -n 20  --nmax ${nmax}   -e ${i}   --skim SkimTree_HNMultiLepBDT &
+    SKFlat.py -a $analyzer  -l $mcpath/MCOptLarge.txt  -n 50  --nmax ${nmax}   -e ${i}  --skim SkimTree_HNMultiLepBDT &
     SKFlat.py -a $analyzer  -l $sigpath/SSWWOpt.txt  -n $njobs_sig  --nmax ${nmax}  -e ${i}    &
     SKFlat.py -a $analyzer  -l $sigpath/DYOpt.txt    -n $njobs_sig  --nmax ${nmax}   -e ${i}  &
     SKFlat.py -a $analyzer  -l $sigpath/VBFOpt.txt   -n $njobs_sig  --nmax ${nmax}   -e ${i}  &
-    SKFlat.py -a $analyzer  -l $mcpath/Conv.txt  -n 10  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLep  --userflags RunConv &
+    SKFlat.py -a $analyzer  -l $mcpath/Conv.txt  -n 10  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLepBDT  --userflags RunConv &
 
     done
 
@@ -296,23 +207,23 @@ fi
 
 if [[ $1 == "MC" ]]; then
 
-    SKFlat.py -a $analyzer  -l $mcpath/MCOpt.txt  -n $njobs  --nmax ${nmax}   -e ${2}  --userflags ${3} --skim SkimTree_HNMultiLep &
-    SKFlat.py -a $analyzer  -l $mcpath/MCOptLarge.txt  -n $nLargejobs  --nmax ${nmax}   -e ${2}  --userflags ${3} --skim SkimTree_HNMultiLep &
+    SKFlat.py -a $analyzer  -l $mcpath/MCOpt.txt  -n $njobs  --nmax ${nmax}   -e ${2}  --userflags ${3} --skim SkimTree_HNMultiLepBDT &
+    SKFlat.py -a $analyzer  -l $mcpath/MCOptLarge.txt  -n $nLargejobs  --nmax ${nmax}   -e ${2}  --userflags ${3} --skim SkimTree_HNMultiLepBDT &
 
 fi
 
 if [[ $1 == "Signals" ]]; then
 
-    SKFlat.py -a $analyzer  -l $sigpath/SSWW.txt  -n $njobs_sig  --nmax ${nmax}  -e ${2}  --userflags ${3}  &
-    SKFlat.py -a $analyzer  -l $sigpath/DY.txt    -n $njobs_sig  --nmax ${nmax}   -e ${2}  --userflags ${3} &
-    SKFlat.py -a $analyzer  -l $sigpath/VBF.txt   -n $njobs_sig  --nmax ${nmax}   -e ${2}  --userflags ${3} &
+    SKFlat.py -a $analyzer  -l $sigpath/SSWW.txt  -n $njobs_sig  --nmax ${nmax}  -e ${2}  --userflags ${3}  --skim SkimTree_HNMultiLepBDT&
+    SKFlat.py -a $analyzer  -l $sigpath/DY.txt    -n $njobs_sig  --nmax ${nmax}   -e ${2}  --userflags ${3} --skim SkimTree_HNMultiLepBDT&
+    SKFlat.py -a $analyzer  -l $sigpath/VBF.txt   -n $njobs_sig  --nmax ${nmax}   -e ${2}  --userflags ${3} --skim SkimTree_HNMultiLepBDT&
 
 fi
 
 
 if [[ $1 == "CF" ]]; then
 
-    SKFlat.py -a $analyzer  -l $mcpath/CF.txt  -n $njobs  --nmax ${nmax}   -e ${2} --skim SkimTree_HNMultiLep  --userflags ${3} &
+    SKFlat.py -a $analyzer  -l $mcpath/CF.txt  -n $njobs  --nmax ${nmax}   -e ${2} --skim SkimTree_HNMultiLepBDT  --userflags ${3} &
     #SKFlat.py -a $analyzer  -l $datapath/DATA_${i}.txt  -n ${njobs_data}  --nmax ${nmax}   -e ${i} --userflags RunCF  &                                 
 
 fi
@@ -320,7 +231,7 @@ fi
 
 if [[ $1 == "Conv" ]]; then
 
-    SKFlat.py -a $analyzer  -l $mcpath/Conv.txt  -n 5  --nmax ${nmax}   -e ${2} --skim SkimTree_HNMultiLep  --userflags ${3} &
+    SKFlat.py -a $analyzer  -l $mcpath/Conv.txt  -n 5  --nmax ${nmax}   -e ${2} --skim SkimTree_HNMultiLepBDT  --userflags ${3} &
 fi
 
 

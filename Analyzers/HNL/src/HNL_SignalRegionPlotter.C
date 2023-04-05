@@ -5,8 +5,10 @@ void HNL_SignalRegionPlotter::initializeAnalyzer(){
   // All default settings like trigger/ PD/ BJet are decalred in HNL_LeptonCore::initializeAnalyzer to make them consistent for all HNL codes
 
   HNL_LeptonCore::initializeAnalyzer();
-  cout << "SetupMVAReader " << endl;
-  SetupMVAReader();
+  
+  SetupIDMVAReaderDefault(); /// Not needed for BDT skim
+  SetupEventMVAReader();                                                                                                                                                                                                                            
+
 }
 
 
@@ -147,7 +149,6 @@ HNL_SignalRegionPlotter::HNL_SignalRegionPlotter(){
   cout << "HNL_SignalRegionPlotter::HNL_SignalRegionPlotter  TMVA::Tools::Instance() " << endl;
   TMVA::Tools::Instance();
   cout << "Create Reader class " << endl;
-  //MVAReader = new TMVA::Reader();
   MVAReaderMM = new TMVA::Reader();
   MVAReaderEE = new TMVA::Reader();
   MVAReaderEM = new TMVA::Reader();
@@ -156,7 +157,6 @@ HNL_SignalRegionPlotter::HNL_SignalRegionPlotter(){
  
 HNL_SignalRegionPlotter::~HNL_SignalRegionPlotter(){
 
-  //delete MVAReader;
   delete MVAReaderMM;
   delete MVAReaderEE;
   delete MVAReaderEM;

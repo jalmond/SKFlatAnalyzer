@@ -1,4 +1,4 @@
-void runIDBDT_HNtypeIConv(TString Classifier ="BDTG" ,TString BkgType = "Conv", TString era="2017",TString channel="EE",  int signal_mode=0, TString NTrees="800", TString NormMode="NumEvents", TString   MinNodeSize ="1.5", TString MaxDepth = "4", TString nCuts="300", TString BoostLearningRate="0.05", TString BaggedFrac="0.6", TString seed = "100",  int eta_mode= 0){
+void runIDBDT_HNtypeIConv(TString Classifier ="BDTG" ,TString BkgType = "Conv", TString era="2017",TString channel="EE",  int signal_mode=1, TString NTrees="800", TString NormMode="NumEvents", TString   MinNodeSize ="1.5", TString MaxDepth = "4", TString nCuts="300", TString BoostLearningRate="0.05", TString BaggedFrac="0.6", TString seed = "100",  int eta_mode= 0){
   
   int nTermWidth=50;
   
@@ -39,14 +39,14 @@ void runIDBDT_HNtypeIConv(TString Classifier ="BDTG" ,TString BkgType = "Conv", 
   if(signal_mode==1) signal="SignalConv";
   
 
-  TString JobTag = Classifier + "_"+ BkgType + signal+"TypeI_"+channel+"_"+signal+"_"+era+"_NTrees"+NTrees+"_NormMode_"+NormMode+"_MinNodeSize_"+MinNodeSize+"_MaxDepth_"+MaxDepth+"_nCuts_"+nCuts+ClassTag +"_Seed_"+seed+"_BDT";
+  TString JobTag = Classifier +"_version4_"+ BkgType + "_TypeI_"+channel+"_"+signal+"_"+era+"_NTrees"+NTrees+"_NormMode_"+NormMode+"_MinNodeSize_"+MinNodeSize+"_MaxDepth_"+MaxDepth+"_nCuts_"+nCuts+ClassTag +"_Seed_"+seed+"_BDT";
 
   TMVA::gConfig().GetVariablePlotting().fNbins1D = 200; 
   TMVA::gConfig().GetVariablePlotting().fNbinsMVAoutput = 100;
 
   const TString path = "/data6/Users/jalmond/2020/HL_SKFlatAnalyzer_ULv3/SKFlatAnalyzer/HNDiLeptonWorskspace/InputFiles/MergedFiles/Run2UltraLegacy_v3/HNL_LeptonID_BDT_KinVar/"+era+"/";
   
-  TString signame = path+"HNL_LeptonID_BDT_KinVar_HNLPrompt.root";
+  TString signame = path+"HNL_LeptonID_BDT_KinVar_Prompt.root";
 
   TFile* fsin = TFile::Open(signame);
   TFile* fbin = TFile::Open(path+"HNL_LeptonID_BDT_KinVar_"+BkgType+"Bkg.root");

@@ -21,10 +21,14 @@
 #pragma link C++ class SkimTree_HNFake+;
 #pragma link C++ class SkimTree_HighPt1LJets+;
 #pragma link C++ class SkimTree_HNMultiLep+;
+#pragma link C++ class SkimTree_HNMultiLepBDT+;
 #pragma link C++ class MeasureJetTaggingEfficiency+;
 #pragma link C++ class SkimTree_Dilepton+;
 #pragma link C++ class SkimTree_HNL_SS_MuMu+;
 #pragma link C++ class SkimTree_HNL_SS_ElEl+;
 #pragma link C++ class SkimTree_HNL_SS_ElMu+;
+#pragma link C++ class SkimTree_CFEventSkim+;
+#pragma link C++ class SkimTree_ConvEventSkim+;
+#pragma link C++ class SkimTree_FakeEventSkim+;
 
 #endif

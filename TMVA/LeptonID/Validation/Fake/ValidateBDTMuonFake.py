@@ -64,12 +64,12 @@ parser.add_argument('-b', dest='Bkg', default="Fake")
 parser.add_argument('-e', dest='Era', default="2017")
 parser.add_argument('-f', dest='Channel', default="MuMu")
 parser.add_argument('-c', dest='Classifier', default="BDTG")
+parser.add_argument('-v', dest='Version', default="Version4")
 
 args = parser.parse_args()
 
 
-
-BDTFile_Dir = "/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeIWFake/Default/"+args.Era+"/"
+BDTFile_Dir = "/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeIMuonFake/"+args.Version+"/"+args.Era+"/"
 BDTFileList  = [f for f in listdir(BDTFile_Dir) if isfile(join(BDTFile_Dir,f))]
 
 MaxAUC=0.
@@ -81,12 +81,6 @@ addVal=0.00001
 for File in BDTFileList:
 
     if not args.Bkg in File:
-        continue
-
-    if not "LepPt" in File:
-        continue
-
-    if not args.Channel in File:
         continue
         
     if not args.Classifier in File:
@@ -106,8 +100,8 @@ for File in BDTFileList:
     if not AUC  in Results:
         Results[AUC] = res
     else:
-        Results[AUC-addVar] = res
-        addVar=addVar+0.00001
+        Results[AUC-addVal] = res
+        addVal=addVal+0.00001
 
     n=n+1
 
@@ -116,8 +110,14 @@ for key in sorted(Results,reverse=True):
     if float(Results[key][0]) < 0.05 or float(Results[key][1])< 0.05:
         continue
     print 
-    print "%s: %s" % (key, Results[key])
+    if float(Results[key][0]) > 0.95 or float(Results[key][1])> 0.95:
+        continue
 
+    if float(Results[key][0]) < 0.1 or float(Results[key][1])< 0.1:
+        print "%s: %s" % (key, Results[key])
+    else:
+        print "----> %s: %s" % (key, Results[key])
+        
 #for x in Results:
 #    print x[3] + " " + x[2] + " " + x[0] + " " + x[1]
 

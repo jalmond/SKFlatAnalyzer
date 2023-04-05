@@ -1,4 +1,5 @@
 void runIDBDT_HNtypeIMuonFake(TString Classifier ="BDTG" ,TString BkgType = "FakeBkg", TString era="2016",TString channel="MuMu",  int signal_mode=10, TString NTrees="400", TString NormMode="EqualNumEvents", TString   MinNodeSize ="2.5", TString MaxDepth = "3", TString nCuts="300", TString BoostLearningRate="0.1", TString BaggedFrac="0.6", TString seed = "100",  int eta_mode= 0){
+
   
   int nTermWidth=50;
   
@@ -8,6 +9,7 @@ void runIDBDT_HNtypeIMuonFake(TString Classifier ="BDTG" ,TString BkgType = "Fak
   else   if(Classifier == "BDTG")cout << "** BDT GRADBOOST *** " <<endl;
   else return;
   
+  TString version="version5";
 
   cout << "-- Era = " << era << endl;
 
@@ -32,13 +34,14 @@ void runIDBDT_HNtypeIMuonFake(TString Classifier ="BDTG" ,TString BkgType = "Fak
 
   TString  treeName = (channel == "MuMu")  ?  "Tree_mm" :  "Tree_ee";
 
-  TString signal="SignalTop";
-  if(signal_mode == 10 )signal = "SignalHNLTest";//  pt bin1
+  TString signal="SignalMuonFake";
 
   cout << "signal File Name= " << signal << endl;
   for(int i=0; i < nTermWidth; i++)  cout << "-" ;   cout << endl;
 
-  TString JobTag = Classifier +  "_"+ BkgType + signal+"TypeI_"+channel+"_"+signal+"_"+era+"_NTrees"+NTrees+"_NormMode_"+NormMode+"_MinNodeSize_"+MinNodeSize+"_MaxDepth_"+MaxDepth+"_nCuts_"+nCuts+ClassTag +"_Seed_"+seed+"_BDT";
+  TString JobTag = Classifier +"_"+version+"_Muon"+ BkgType +"_TypeI_"+channel+"_"+signal+"_"+era+"_NTrees"+NTrees+"_NormMode_"+NormMode+"_MinNodeSize_"+MinNodeSize+"_MaxDepth_"+MaxDepth+"_nCuts_"+nCuts+ClassTag +"_Seed_"+seed+"_BDT";
+
+
 
 
 
@@ -103,11 +106,6 @@ void runIDBDT_HNtypeIMuonFake(TString Classifier ="BDTG" ,TString BkgType = "Fak
   //==== Nj, Nb cut
   TCut cut_s = "";
   TCut cut_b = "";
-
-  if(signal_mode == 2){
-    cut_s = "Eta>1.5";
-    cut_b = "Eta>1.5";
-  }
 
   int n_train_signal = tree_signal->GetEntries(cut_s)/2 ;
   int n_train_back = tree_bkg->GetEntries(cut_b)/2 ;

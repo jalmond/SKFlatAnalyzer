@@ -19,124 +19,124 @@ void HNL_LeptonID_BDT_KinVar::initializeAnalyzer(){
 void HNL_LeptonID_BDT_KinVar::SetupTrees(TTree* tree_mm, TTree* tree_ee){
 
 
-  tree_mm->Branch("Pt", &Pt, "Pt/F"); 
-  tree_ee->Branch("Pt", &Pt, "Pt/F");
-  tree_mm->Branch("PtBinned", &PtBinned, "PtBinned/F");
-  tree_ee->Branch("PtBinned", &PtBinned, "PtBinned/F");
-  tree_mm->Branch("Eta", &Eta, "Eta/F");
-  tree_ee->Branch("Eta", &Eta, "Eta/F");
-  tree_ee->Branch("PileUp", &PileUp, "PileUp/F");
-  tree_mm->Branch("PileUp", &PileUp, "PileUp/F");
+  tree_mm->Branch("Pt", &bdt_id_Pt, "Pt/F"); 
+  tree_ee->Branch("Pt", &bdt_id_Pt, "Pt/F");
+  tree_mm->Branch("PtBinned", &bdt_id_PtBinned, "PtBinned/F");
+  tree_ee->Branch("PtBinned", &bdt_id_PtBinned, "PtBinned/F");
+  tree_mm->Branch("Eta", &bdt_id_Eta, "Eta/F");
+  tree_ee->Branch("Eta", &bdt_id_Eta, "Eta/F");
+  tree_ee->Branch("PileUp", &bdt_id_PileUp, "PileUp/F");
+  tree_mm->Branch("PileUp", &bdt_id_PileUp, "PileUp/F");
 
-  tree_mm->Branch("MiniIsoChHad", &MiniIsoChHad, "MiniIsoChHad/F"); 
-  tree_ee->Branch("MiniIsoChHad", &MiniIsoChHad, "MiniIsoChHad/F");
-  tree_mm->Branch("MiniIsoNHad", &MiniIsoNHad, "MiniIsoNHad/F"); 
-  tree_ee->Branch("MiniIsoNHad", &MiniIsoNHad, "MiniIsoNHad/F");
-  tree_mm->Branch("MiniIsoPhHad", &MiniIsoPhHad, "MiniIsoPhHad/F");  
-  tree_ee->Branch("MiniIsoPhHad", &MiniIsoPhHad, "MiniIsoPhHad/F");
+  tree_mm->Branch("MiniIsoChHad", &bdt_id_MiniIsoChHad, "MiniIsoChHad/F"); 
+  tree_ee->Branch("MiniIsoChHad", &bdt_id_MiniIsoChHad, "MiniIsoChHad/F");
+  tree_mm->Branch("MiniIsoNHad", &bdt_id_MiniIsoNHad, "MiniIsoNHad/F"); 
+  tree_ee->Branch("MiniIsoNHad", &bdt_id_MiniIsoNHad, "MiniIsoNHad/F");
+  tree_mm->Branch("MiniIsoPhHad", &bdt_id_MiniIsoPhHad, "MiniIsoPhHad/F");  
+  tree_ee->Branch("MiniIsoPhHad", &bdt_id_MiniIsoPhHad, "MiniIsoPhHad/F");
 
-  tree_ee->Branch("RelMiniIsoCh", &RelMiniIsoCh, "RelMiniIsoCh/F");
-  tree_ee->Branch("RelMiniIsoN", &RelMiniIsoN, "RelMiniIsoN/F");
-  tree_mm->Branch("RelMiniIsoCh", &RelMiniIsoCh, "RelMiniIsoCh/F");
-  tree_mm->Branch("RelMiniIsoN", &RelMiniIsoN, "RelMiniIsoN/F");
-
-
-  tree_mm->Branch("IsoChHad", &IsoChHad, "IsoChHad/F"); 
-  tree_ee->Branch("IsoChHad", &IsoChHad, "IsoChHad/F");
-  tree_mm->Branch("IsoNHad", &IsoNHad, "IsoNHad/F"); 
-  tree_ee->Branch("IsoNHad", &IsoNHad, "IsoNHad/F");
-  tree_mm->Branch("IsoPhHad", &IsoPhHad, "IsoPhHad/F"); 
-  tree_ee->Branch("IsoPhHad", &IsoPhHad, "IsoPhHad/F");
+  tree_ee->Branch("RelMiniIsoCh", &bdt_id_RelMiniIsoCh, "RelMiniIsoCh/F");
+  tree_ee->Branch("RelMiniIsoN", &bdt_id_RelMiniIsoN, "RelMiniIsoN/F");
+  tree_mm->Branch("RelMiniIsoCh", &bdt_id_RelMiniIsoCh, "RelMiniIsoCh/F");
+  tree_mm->Branch("RelMiniIsoN", &bdt_id_RelMiniIsoN, "RelMiniIsoN/F");
 
 
-  tree_mm->Branch("Dxy", &Dxy, "Dxy/F"); 
-  tree_ee->Branch("Dxy", &Dxy, "Dxy/F");
-  tree_mm->Branch("RelDxy", &RelDxy, "RelDxy/F");
-  tree_ee->Branch("RelDxy", &RelDxy, "RelDxy/F");
-  tree_mm->Branch("DxySig", &DxySig, "DxySig/F"); 
-  tree_ee->Branch("DxySig", &DxySig, "DxySig/F");
-  tree_mm->Branch("Dz", &Dz, "Dz/F"); 
-  tree_ee->Branch("Dz", &Dz, "Dz/F");
-  tree_mm->Branch("RelDz", &RelDz, "RelDz/F");
-  tree_ee->Branch("RelDz", &RelDz, "RelDz/F");
-  tree_mm->Branch("DzSig", &DzSig, "DzSig/F"); 
-  tree_ee->Branch("DzSig", &DzSig, "DzSig/F");
-  tree_mm->Branch("RelIso", &RelIso, "RelIso/F"); 
-  tree_ee->Branch("RelIso", &RelIso, "RelIso/F");
-  tree_mm->Branch("IP3D", &IP3D, "IP3D/F"); 
-  tree_ee->Branch("IP3D", &IP3D, "IP3D/F");
-  tree_mm->Branch("RelIP3D", &RelIP3D, "RelIP3D/F");
-  tree_ee->Branch("RelIP3D", &RelIP3D, "RelIP3D/F");
+  tree_mm->Branch("IsoChHad", &bdt_id_IsoChHad, "IsoChHad/F"); 
+  tree_ee->Branch("IsoChHad", &bdt_id_IsoChHad, "IsoChHad/F");
+  tree_mm->Branch("IsoNHad", &bdt_id_IsoNHad, "IsoNHad/F"); 
+  tree_ee->Branch("IsoNHad", &bdt_id_IsoNHad, "IsoNHad/F");
+  tree_mm->Branch("IsoPhHad", &bdt_id_IsoPhHad, "IsoPhHad/F"); 
+  tree_ee->Branch("IsoPhHad", &bdt_id_IsoPhHad, "IsoPhHad/F");
 
-  tree_mm->Branch("MVA", &MVA, "MVA/F"); 
-  tree_ee->Branch("MVA", &MVA, "MVA/F");
-  tree_mm->Branch("RelMVA", &RelMVA, "RelMVA/F");
-  tree_ee->Branch("RelMVA", &RelMVA, "RelMVA/F");
 
-  tree_ee->Branch("MVAIso", &MVAIso, "MVAIso/F");
-  tree_ee->Branch("RelMVAIso", &RelMVAIso, "RelMVAIso/F");
+  tree_mm->Branch("Dxy", &bdt_id_Dxy, "Dxy/F"); 
+  tree_ee->Branch("Dxy", &bdt_id_Dxy, "Dxy/F");
+  tree_mm->Branch("RelDxy", &bdt_id_RelDxy, "RelDxy/F");
+  tree_ee->Branch("RelDxy", &bdt_id_RelDxy, "RelDxy/F");
+  tree_mm->Branch("DxySig", &bdt_id_DxySig, "DxySig/F"); 
+  tree_ee->Branch("DxySig", &bdt_id_DxySig, "DxySig/F");
+  tree_mm->Branch("Dz", &bdt_id_Dz, "Dz/F"); 
+  tree_ee->Branch("Dz", &bdt_id_Dz, "Dz/F");
+  tree_mm->Branch("RelDz", &bdt_id_RelDz, "RelDz/F");
+  tree_ee->Branch("RelDz", &bdt_id_RelDz, "RelDz/F");
+  tree_mm->Branch("DzSig", &bdt_id_DzSig, "DzSig/F"); 
+  tree_ee->Branch("DzSig", &bdt_id_DzSig, "DzSig/F");
+  tree_mm->Branch("RelIso", &bdt_id_RelIso, "RelIso/F"); 
+  tree_ee->Branch("RelIso", &bdt_id_RelIso, "RelIso/F");
+  tree_mm->Branch("IP3D", &bdt_id_IP3D, "IP3D/F"); 
+  tree_ee->Branch("IP3D", &bdt_id_IP3D, "IP3D/F");
+  tree_mm->Branch("RelIP3D", &bdt_id_RelIP3D, "RelIP3D/F");
+  tree_ee->Branch("RelIP3D", &bdt_id_RelIP3D, "RelIP3D/F");
 
-  tree_mm->Branch("Chi2", &Chi2, "Chi2/F");  
-  tree_mm->Branch("Validhits", &Validhits, "Validhits/F");  
+  tree_mm->Branch("MVA", &bdt_id_MVA, "MVA/F"); 
+  tree_ee->Branch("MVA", &bdt_id_MVA, "MVA/F");
+  tree_mm->Branch("RelMVA", &bdt_id_RelMVA, "RelMVA/F");
+  tree_ee->Branch("RelMVA", &bdt_id_RelMVA, "RelMVA/F");
 
-  tree_mm->Branch("Matched_stations", &Matched_stations, "Matched_stations/F");
-  tree_mm->Branch("Pixel_hits", &Pixel_hits, "Pixel_hits/F");
-  tree_mm->Branch("Minireliso", &Minireliso, "Minireliso/F");
-  tree_mm->Branch("Tracker_layers", &Tracker_layers, "Tracker_layers/F");
-  tree_mm->Branch("POGTight", &POGTight, "POGTight/F");
-  tree_mm->Branch("POGMedium", &POGMedium, "POGMedium/F");
-  tree_mm->Branch("HNTightID", &HNTightID, "HNTightID/F");
+  tree_ee->Branch("MVAIso", &bdt_id_MVAIso, "MVAIso/F");
+  tree_ee->Branch("RelMVAIso", &bdt_id_RelMVAIso, "RelMVAIso/F");
 
-  tree_ee->Branch("POGTight", &POGTight, "POGTight/F");
-  tree_ee->Branch("POGMedium", &POGMedium, "POGMedium/F");
-  tree_ee->Branch("HNTightID", &HNTightID, "HNTightID/F");
-  tree_mm->Branch("PtRatio", &PtRatio, "PtRatio/F");         tree_ee->Branch("PtRatio", &PtRatio, "PtRatio/F");         
-  tree_mm->Branch("PtRel", &PtRel, "PtRel/F");         tree_ee->Branch("PtRel", &PtRel, "PtRel/F");         
-  tree_mm->Branch("MassDrop", &MassDrop, "MassDrop/F");         tree_ee->Branch("MassDrop", &MassDrop, "MassDrop/F");         
+  tree_mm->Branch("Chi2", &bdt_id_Chi2, "Chi2/F");  
+  tree_mm->Branch("Validhits", &bdt_id_Validhits, "Validhits/F");  
 
-  tree_mm->Branch("CEMFracCJ", &CEMFracCJ, "CEMFracCJ/F");   tree_ee->Branch("CEMFracCJ", &CEMFracCJ, "CEMFracCJ/F");   
-  tree_mm->Branch("NEMFracCJ", &NEMFracCJ, "NEMFracCJ/F");   tree_ee->Branch("NEMFracCJ", &NEMFracCJ, "NEMFracCJ/F");   
-  tree_mm->Branch("CHFracCJ", &CHFracCJ, "CHFracCJ/F");      tree_ee->Branch("CHFracCJ", &CHFracCJ, "CHFracCJ/F");      
-  tree_mm->Branch("NHFracCJ", &NHFracCJ, "NHFracCJ/F");      tree_ee->Branch("NHFracCJ", &NHFracCJ, "NHFracCJ/F");      
-  tree_mm->Branch("MuFracCJ", &MuFracCJ, "MuFracCJ/F");      tree_ee->Branch("MuFracCJ", &MuFracCJ, "MuFracCJ/F");      
-  tree_mm->Branch("JetDiscCJ", &JetDiscCJ, "JetDiscCJ/F");   tree_ee->Branch("JetDiscCJ", &JetDiscCJ, "JetDiscCJ/F");   
+  tree_mm->Branch("Matched_stations", &bdt_id_Matched_stations, "Matched_stations/F");
+  tree_mm->Branch("Pixel_hits", &bdt_id_Pixel_hits, "Pixel_hits/F");
+  tree_mm->Branch("Minireliso", &bdt_id_Minireliso, "Minireliso/F");
+  tree_mm->Branch("Tracker_layers", &bdt_id_Tracker_layers, "Tracker_layers/F");
+  tree_mm->Branch("POGTight", &bdt_id_POGTight, "POGTight/F");
+  tree_mm->Branch("POGMedium", &bdt_id_POGMedium, "POGMedium/F");
+  tree_mm->Branch("HNTightID", &bdt_id_HNTightID, "HNTightID/F");
+
+  tree_ee->Branch("POGTight", &bdt_id_POGTight, "POGTight/F");
+  tree_ee->Branch("POGMedium", &bdt_id_POGMedium, "POGMedium/F");
+  tree_ee->Branch("HNTightID", &bdt_id_HNTightID, "HNTightID/F");
+  tree_mm->Branch("PtRatio", &bdt_id_PtRatio, "PtRatio/F");         tree_ee->Branch("PtRatio", &bdt_id_PtRatio, "PtRatio/F");         
+  tree_mm->Branch("PtRel", &bdt_id_PtRel, "PtRel/F");         tree_ee->Branch("PtRel", &bdt_id_PtRel, "PtRel/F");         
+  tree_mm->Branch("MassDrop", &bdt_id_MassDrop, "MassDrop/F");         tree_ee->Branch("MassDrop", &bdt_id_MassDrop, "MassDrop/F");         
+
+  tree_mm->Branch("CEMFracCJ", &bdt_id_CEMFracCJ, "CEMFracCJ/F");   tree_ee->Branch("CEMFracCJ", &bdt_id_CEMFracCJ, "CEMFracCJ/F");   
+  tree_mm->Branch("NEMFracCJ", &bdt_id_NEMFracCJ, "NEMFracCJ/F");   tree_ee->Branch("NEMFracCJ", &bdt_id_NEMFracCJ, "NEMFracCJ/F");   
+  tree_mm->Branch("CHFracCJ", &bdt_id_CHFracCJ, "CHFracCJ/F");      tree_ee->Branch("CHFracCJ", &bdt_id_CHFracCJ, "CHFracCJ/F");      
+  tree_mm->Branch("NHFracCJ", &bdt_id_NHFracCJ, "NHFracCJ/F");      tree_ee->Branch("NHFracCJ", &bdt_id_NHFracCJ, "NHFracCJ/F");      
+  tree_mm->Branch("MuFracCJ", &bdt_id_MuFracCJ, "MuFracCJ/F");      tree_ee->Branch("MuFracCJ", &bdt_id_MuFracCJ, "MuFracCJ/F");      
+  tree_mm->Branch("JetDiscCJ", &bdt_id_JetDiscCJ, "JetDiscCJ/F");   tree_ee->Branch("JetDiscCJ", &bdt_id_JetDiscCJ, "JetDiscCJ/F");   
 
 
   // Electron Specific variables
-  tree_ee->Branch("MissingHits", &MissingHits, "MissingHits/F");
-  tree_ee->Branch("Full5x5_sigmaIetaIeta", &Full5x5_sigmaIetaIeta, "Full5x5_sigmaIetaIeta/F");
-  tree_ee->Branch("dEtaSeed",    &dEtaSeed, "dEtaSeed/F");
-  tree_ee->Branch("dPhiIn", &dPhiIn, "dPhiIn/F");
-  tree_ee->Branch("dEtaIn", &dEtaIn, "dEtaIn/F");
-  tree_ee->Branch("HoverE", &HoverE, "HoverE/F");
-  tree_ee->Branch("TrkIso", &TrkIso, "TrkIso/F");
-  tree_ee->Branch("isEcalDriven", &isEcalDriven, "isEcalDriven/F");
-  tree_ee->Branch("EoverP", &EoverP, "EoverP/F");
-  tree_ee->Branch("FBrem", &FBrem, "FBrem/F");
-  tree_ee->Branch("InvEminusInvP", &InvEminusInvP, "InvEminusInvP/F");
-  tree_ee->Branch("PassConversionVeto", &PassConversionVeto, "PassConversionVeto/F");
-  tree_ee->Branch("ecalPFClusterIso", &ecalPFClusterIso, "ecalPFClusterIso/F");
-  tree_ee->Branch("hcalPFClusterIso", &hcalPFClusterIso, "hcalPFClusterIso/F");
-  tree_ee->Branch("IsGsfCtfScPixChargeConsistent", &IsGsfCtfScPixChargeConsistent, "IsGsfCtfScPixChargeConsistent/F");
-  tree_ee->Branch("IsGsfScPixChargeConsistent", &IsGsfScPixChargeConsistent, "IsGsfScPixChargeConsistent/F");
-  tree_ee->Branch("IsGsfCtfChargeConsistent", &IsGsfCtfChargeConsistent, "IsGsfCtfChargeConsistent/F");
+  tree_ee->Branch("MissingHits", &bdt_id_MissingHits, "MissingHits/F");
+  tree_ee->Branch("Full5x5_sigmaIetaIeta", &bdt_id_Full5x5_sigmaIetaIeta, "Full5x5_sigmaIetaIeta/F");
+  tree_ee->Branch("dEtaSeed",    &bdt_id_dEtaSeed, "dEtaSeed/F");
+  tree_ee->Branch("dPhiIn", &bdt_id_dPhiIn, "dPhiIn/F");
+  tree_ee->Branch("dEtaIn", &bdt_id_dEtaIn, "dEtaIn/F");
+  tree_ee->Branch("HoverE", &bdt_id_HoverE, "HoverE/F");
+  tree_ee->Branch("TrkIso", &bdt_id_TrkIso, "TrkIso/F");
+  tree_ee->Branch("isEcalDriven", &bdt_id_isEcalDriven, "isEcalDriven/F");
+  tree_ee->Branch("EoverP", &bdt_id_EoverP, "EoverP/F");
+  tree_ee->Branch("FBrem", &bdt_id_FBrem, "FBrem/F");
+  tree_ee->Branch("InvEminusInvP", &bdt_id_InvEminusInvP, "InvEminusInvP/F");
+  tree_ee->Branch("PassConversionVeto", &bdt_id_PassConversionVeto, "PassConversionVeto/F");
+  tree_ee->Branch("ecalPFClusterIso", &bdt_id_ecalPFClusterIso, "ecalPFClusterIso/F");
+  tree_ee->Branch("hcalPFClusterIso", &bdt_id_hcalPFClusterIso, "hcalPFClusterIso/F");
+  tree_ee->Branch("IsGsfCtfScPixChargeConsistent", &bdt_id_IsGsfCtfScPixChargeConsistent, "IsGsfCtfScPixChargeConsistent/F");
+  tree_ee->Branch("IsGsfScPixChargeConsistent", &bdt_id_IsGsfScPixChargeConsistent, "IsGsfScPixChargeConsistent/F");
+  tree_ee->Branch("IsGsfCtfChargeConsistent", &bdt_id_IsGsfCtfChargeConsistent, "IsGsfCtfChargeConsistent/F");
   
-  tree_ee->Branch("EtaWidth",&EtaWidth,"EtaWidth/F");
-  tree_ee->Branch("PhiWidth",&PhiWidth,"PhiWidth/F");
-  tree_ee->Branch("e2x5OverE5x5",&e2x5OverE5x5,"e2x5OverE5x5/F");
-  tree_ee->Branch("e1x5OverE5x5",&e1x5OverE5x5,"e1x5OverE5x5/F");
-  tree_ee->Branch("e15",&e15,"e15/F");
-  tree_ee->Branch("e25",&e25,"e25/F");
-  tree_ee->Branch("e55",&e55,"e55/F");
-  tree_ee->Branch("dr03EcalRecHitSumEt",&dr03EcalRecHitSumEt,"dr03EcalRecHitSumEt/F");
-  tree_ee->Branch("dr03HcalDepth1TowerSumEt",&dr03HcalDepth1TowerSumEt,"dr03HcalDepth1TowerSumEt/F");
-  tree_ee->Branch("dr03HcalTowerSumEt",&dr03HcalTowerSumEt,"dr03HcalTowerSumEt/F");
-  tree_ee->Branch("dr03TkSumPt",&dr03TkSumPt,"dr03TkSumPt/F");
-  tree_ee->Branch("R9",&R9,"R9/F");
+  tree_ee->Branch("EtaWidth",&bdt_id_EtaWidth,"EtaWidth/F");
+  tree_ee->Branch("PhiWidth",&bdt_id_PhiWidth,"PhiWidth/F");
+  tree_ee->Branch("e2x5OverE5x5",&bdt_id_e2x5OverE5x5,"e2x5OverE5x5/F");
+  tree_ee->Branch("e1x5OverE5x5",&bdt_id_e1x5OverE5x5,"e1x5OverE5x5/F");
+  tree_ee->Branch("e15",&bdt_id_e15,"e15/F");
+  tree_ee->Branch("e25",&bdt_id_e25,"e25/F");
+  tree_ee->Branch("e55",&bdt_id_e55,"e55/F");
+  tree_ee->Branch("dr03EcalRecHitSumEt",&bdt_id_dr03EcalRecHitSumEt,"dr03EcalRecHitSumEt/F");
+  tree_ee->Branch("dr03HcalDepth1TowerSumEt",&bdt_id_dr03HcalDepth1TowerSumEt,"dr03HcalDepth1TowerSumEt/F");
+  tree_ee->Branch("dr03HcalTowerSumEt",&bdt_id_dr03HcalTowerSumEt,"dr03HcalTowerSumEt/F");
+  tree_ee->Branch("dr03TkSumPt",&bdt_id_dr03TkSumPt,"dr03TkSumPt/F");
+  tree_ee->Branch("R9",&bdt_id_R9,"R9/F");
 
   // Event weight
-  tree_mm->Branch("w_id_tot", &w_id_tot, "w_id_tot/F"); 
-  tree_ee->Branch("w_id_tot", &w_id_tot, "w_id_tot/F");                     
+  tree_mm->Branch("w_id_tot", &bdt_id_w_id_tot, "w_id_tot/F"); 
+  tree_ee->Branch("w_id_tot", &bdt_id_w_id_tot, "w_id_tot/F");                     
 
   outfile->cd();
 
@@ -158,7 +158,8 @@ void HNL_LeptonID_BDT_KinVar::executeEvent(){
 
   if(!PassMETFilter()) return;
 
-  double weight =SetupWeight(ev,param_bdt);
+  /// Ignore PU and Prefireweight
+  double weight = MCweight(true, true)*ev.GetTriggerLumi("Full") ;//SetupWeight(ev,param_bdt);
 
   vector<TString> MCMergeList = {"DY","WG"};
   if(SeperateConv || SeperateCF)weight *= MergeMultiMC(MCMergeList,"CombineAll");
@@ -171,14 +172,14 @@ void HNL_LeptonID_BDT_KinVar::executeEvent(){
   }
   
   if(SeperateFakes){
-    weight  = GetPrefireWeight(0) * GetPileUpWeight(nPileUp,0); 
-    if(MCSample.Contains("TTL")) weight*= 0.25;
+    weight  = 1.;//GetPrefireWeight(0) * GetPileUpWeight(nPileUp,0); 
+    if(MCSample.Contains("TTL")) weight*= 0.5;
   }
   if(SeperatePrompt) {
-    weight  = GetPrefireWeight(0) * GetPileUpWeight(nPileUp,0);
+    weight  = 1.;//GetPrefireWeight(0) * GetPileUpWeight(nPileUp,0);
   }
   
-  if(MCSample.Contains("Type")) weight = GetPrefireWeight(0) * GetPileUpWeight(nPileUp,0);
+  if(MCSample.Contains("Type")) weight = 1;//GetPrefireWeight(0) * GetPileUpWeight(nPileUp,0);
   
   FillHist("CutFlow", 0, weight,  20, 0., 20.);
   FillHist( "nPV", nPV ,weight, 100., 0., 100.);
@@ -312,7 +313,13 @@ void HNL_LeptonID_BDT_KinVar::MakeTreeSS2L(HNL_LeptonCore::Channel lep_channel,v
     
     float weight_lep = weight;
 
-    if(SeperateFakes && HasFlag("HF")){
+    if(SeperateFakes && HasFlag("SSWeight")){
+      bool ismuon = (lep->LeptonFlavour() == Lepton::MUON);
+      weight_lep *= ScaleLepToSS("Fake",ismuon, GetLeptonType_JH(*lep, gens));
+    }
+
+
+    if(SeperateFakes && HasFlag("HFB")){
       std::vector<Jet>    AK4_JetAllColl = GetAllJets();
 
       int JetHadFlavour = -999;
@@ -325,12 +332,90 @@ void HNL_LeptonID_BDT_KinVar::MakeTreeSS2L(HNL_LeptonCore::Channel lep_channel,v
         if(dR1<mindR1){ mindR1=dR1; IdxMatchJet=ij; }
       }
       if(IdxMatchJet!=-1)     JetHadFlavour = AK4_JetAllColl.at(IdxMatchJet).hadronFlavour();
-      else JetHadFlavour=4;
+      else JetHadFlavour=5;
       
-      if (JetHadFlavour < 4)  return;
+      if (JetHadFlavour != 5)  return;
+    }
+
+    if(SeperateFakes && HasFlag("HFC")){
+      std::vector<Jet>    AK4_JetAllColl = GetAllJets();
+
+      int JetHadFlavour = -999;
+      int IdxMatchJet=-1;
+      float mindR1=999.;
+
+      for(unsigned int ij=0; ij<AK4_JetAllColl.size(); ij++){
+        float dR1=lep->DeltaR(AK4_JetAllColl.at(ij));
+        if(dR1>0.4) continue;
+        if(dR1<mindR1){ mindR1=dR1; IdxMatchJet=ij; }
+      }
+      if(IdxMatchJet!=-1)     JetHadFlavour = AK4_JetAllColl.at(IdxMatchJet).hadronFlavour();
+      else JetHadFlavour=0;
+
+      if (JetHadFlavour != 4)  return;
     }
 
     if(SeperateFakes && HasFlag("LF")){
+      
+      /// Remove some types of fakes based on SS  study
+      
+      if(lep->LeptonFlavour() == Lepton::MUON) {
+	if(MCSample.Contains("TT")){
+	  
+	  if(MatchGenDef(gens, *lep) == "pi+"){
+	    double r = ((double) rand() / (RAND_MAX));
+	    if(r > 0.1) return;
+	  }
+	  if(MatchGenDef(gens, *lep) == "electron"){
+	    double r = ((double) rand() / (RAND_MAX));
+	    if(r > 0.1) return;
+	  }
+	  if(MatchGenDef(gens, *lep) == "K+"){
+	    double r = ((double) rand() / (RAND_MAX));
+	    if(r > 0.1) return;
+	  }
+	}
+	else{
+	  if(MatchGenDef(gens, *lep) == "pi+"){
+	    double r = ((double) rand() / (RAND_MAX));
+          if(r > 0.05) return;
+	  }
+	  if(MatchGenDef(gens, *lep) == "electron") return;
+	  if(MatchGenDef(gens, *lep) == "K+") return;	
+	}
+      }
+      else{
+	
+	if(MCSample.Contains("TT")){
+
+          if(MatchGenDef(gens, *lep) == "pi+"){
+            double r = ((double) rand() / (RAND_MAX));
+            if(r > 0.1) return;
+          }
+
+          if(MatchGenDef(gens, *lep) == "tau"){
+            double r = ((double) rand() / (RAND_MAX));
+            if(r > 0.1) return;
+          }
+        }
+        else{
+          if(MatchGenDef(gens, *lep) == "pi+"){
+            double r = ((double) rand() / (RAND_MAX));
+	    if(r > 0.05) return;
+          }
+
+	  if(MatchGenDef(gens, *lep) == "tau"){
+            double r = ((double) rand() / (RAND_MAX));
+            if(r > 0.2) return;
+          }
+	  if(MatchGenDef(gens, *lep) == "__"){
+            double r = ((double) rand() / (RAND_MAX));
+            if(r > 0.2) return;
+          }
+        }
+      }
+      
+      
       std::vector<Jet>    AK4_JetAllColl = GetAllJets();
       
       int JetHadFlavour = -999;
@@ -357,7 +442,7 @@ void HNL_LeptonID_BDT_KinVar::MakeTreeSS2L(HNL_LeptonCore::Channel lep_channel,v
     if(lep->LeptonFlavour() == Lepton::ELECTRON)  SetBDTIDVariablesElectron(Electrons[iel]);
     else SetBDTIDVariablesMuon(Muons[imu]);
 
-    w_id_tot     = !IsDATA? weight_lep: 1.;
+    bdt_id_w_id_tot     = !IsDATA? weight_lep: 1.;
 
     if(lep->LeptonFlavour() == Lepton::MUON)     tree_mm->Fill();
     if(lep->LeptonFlavour() == Lepton::ELECTRON) tree_ee->Fill();

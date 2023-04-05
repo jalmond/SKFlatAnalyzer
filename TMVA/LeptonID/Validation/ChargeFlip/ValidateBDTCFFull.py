@@ -72,7 +72,7 @@ parser.add_argument('-c', dest='Classifier', default="BDTG")
 
 args = parser.parse_args()
 
-BDTFile_Dir = "/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICFFullList/Version2/"+args.Era+"/"
+BDTFile_Dir = "/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICFVersion1/Version3/"+args.Era+"/"
 BDTFileList  = [f for f in listdir(BDTFile_Dir) if isfile(join(BDTFile_Dir,f))]
 
 
@@ -117,7 +117,7 @@ for File in BDTFileList:
 
 print "AUC              KS_signal   KS_bkg      File "
 for key in sorted(Results,reverse=True):
-    if float(Results[key][0]) < 0.05 or float(Results[key][1])< 0.05:
+    if float(Results[key][0]) < 0.1 or float(Results[key][1])< 0.1:
         continue
     print 
     print "%s: %s" % (key, Results[key])

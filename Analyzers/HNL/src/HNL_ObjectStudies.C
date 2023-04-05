@@ -91,7 +91,7 @@ void HNL_ObjectStudies::executeEvent(){
     std::vector<Muon>       MuonCollAll     = GetMuons    (  "MVAID", 10., 2.4);
 
     for(auto ilep : ElectronCollAll){
-      double a = ilep.HNL_MVA_CF() ;
+      double a = ilep.HNL_MVA_CF("v2") ;
       double b = GetBDTScoreElV1(ilep,AnalyzerCore::CF,  "BDTGv1");
       if(a != b)  cout << "v1 = " << a  << " new v1 = " << b  << " eta = " << ilep.Eta() << endl;
     }

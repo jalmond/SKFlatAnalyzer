@@ -19,6 +19,11 @@ public:
   void SetIndexPIDStatus(int i, int p, int t);
   inline int Index() const { return j_index; }
   inline int PID() const { return j_PID; }
+
+  inline TString SPID() const {
+    return PIDToString(j_PID);
+  }
+
   inline int Status() const { return j_status; }
   void SetMother(int mindex);
   inline int MotherIndex() const { return j_mother_index; }

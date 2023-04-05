@@ -43,6 +43,7 @@ def PerformKolmogorovSmirnov(filepath):
 
     HistTest_S = RootFile.Get(Test_S)
     HistTest_B = RootFile.Get(Test_B)
+    
 
     if not HistTrain_S:
         return 
@@ -66,7 +67,7 @@ parser.add_argument('-c', dest='Classifier', default="BDTG")
 
 args = parser.parse_args()
 
-BDTFile_Dir = "/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version2/"+args.Era+"/"
+BDTFile_Dir = "/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeICF/Version3/"+args.Era+"/"
 BDTFileList  = [f for f in listdir(BDTFile_Dir) if isfile(join(BDTFile_Dir,f))]
 
 
@@ -82,7 +83,7 @@ for File in BDTFileList:
     if not args.Bkg in File:
         continue
     
-    
+
     if not args.Flag in File:
         continue
         
@@ -93,6 +94,7 @@ for File in BDTFileList:
     res = PerformKolmogorovSmirnov(BDTFile_Dir+"/"+File)
     print ("-"*50)
     
+    print BDTFile_Dir+"/"+File
     AUC= AUCCalc(BDTFile_Dir+"/"+File)
     res.append(File)
     if AUC  > MaxAUC:
@@ -110,7 +112,7 @@ for File in BDTFileList:
 
 print "AUC              KS_signal   KS_bkg      File "
 for key in sorted(Results,reverse=True):
-    if float(Results[key][0]) < 0.05 or float(Results[key][1])< 0.05:
+    if float(Results[key][0]) < 0.1 or float(Results[key][1])< 0.1:
         continue
     print 
     print "%s: %s" % (key, Results[key])

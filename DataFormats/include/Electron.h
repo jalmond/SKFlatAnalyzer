@@ -159,6 +159,7 @@ public:
   bool PassMVA_UL_EB(double mva1, double mva2, double mva3) const ;
   bool PassMVA_UL_EE(double mva1, double mva2, double mva3) const ;
   bool PassMVA(double mva1, double mva2, double mva3) const;
+
   bool PassHNID()const ;
   int PassHNOpt()const ;
   void SetPassConversionVeto(bool b);
@@ -335,7 +336,7 @@ public:
 
   int  PassLooseIDOpt(TString  trigger, TString dxy_method, TString sel_methodB,TString sel_methodEC, TString conv_method, TString chg_method, TString iso_methodB,TString iso_methodEC ) const;
 
-  int  PassIDOptMulti(TString CFMVAMethod, TString np_mva_BB, TString np_mva_EB, TString np_mva_EE,TString conv_mva_BB,TString conv_mva_EE, TString cf_mva_BB,TString cf_mva_EE,  TString pog_method,  TString conv_method, TString chg_method, TString iso_methodB,TString iso_methodEC ) const;
+  int  PassIDOptMulti(TString CFMVAMethod, TString NPMVAMethod,TString np_mva_BB,  TString np_mva_EE,TString conv_mva_BB,TString conv_mva_EE, TString cf_mva_BB,TString cf_mva_EE,  TString pog_method,  TString conv_method, TString chg_method, TString iso_methodB,TString iso_methodEC ) const;
 
 
   bool passIDHN(int ID, double dxy_b, double dxy_e, double dz_b,double dz_e, double sip_b, double sip_e, double iso_b,double iso_e, double miso_b, double miso_e) const;

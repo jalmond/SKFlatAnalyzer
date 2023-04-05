@@ -11,8 +11,24 @@ void SkimTree_EventSkim::initializeAnalyzer(){
 
 void SkimTree_EventSkim::executeEvent(){
 
+
+  std::vector<Muon>     muonPreColl     = GetMuons("HNLoosest", 10., 2.4);
+  std::vector<Electron> electronPreColl = GetElectrons("HNLoosest", 10., 2.5);
+  
+  bool HasFakeLep=false;
+
+  vector<Gen>   gens= GetGens();  
+  for(auto iel: electronPreColl){
+    if(iel.IsFake(GetLeptonType_JH(iel, gens))) HasFakeLep=true;
+  }
+  for(auto imu: muonPreColl){
+    if(imu.IsFake(GetLeptonType_JH(imu, gens))) HasFakeLep=true;
+  }
+  
+  if(!HasFakeLep) return;
   newtree->Fill();
   //if(newtree->Fill()<0) exit(EIO);
+
   return;
 }
 

@@ -141,7 +141,7 @@ class HNL_LeptonCore : public AnalyzerCore {
 
   //---- BDT Related                                                                                                                                                                                                
   void initializeAnalyzer();
-  void SetupMVAReader();
+  void SetupEventMVAReader();
 
   double MergeMultiMC(vector<TString> vec, TString Method);
 
@@ -155,6 +155,7 @@ class HNL_LeptonCore : public AnalyzerCore {
   
   // ------ General 
   bool IsSignal(); //// checks if sample is Signal
+  double ScaleLepToSS(TString bkg, bool isMuon, int lepttype);
   void PrintParam(AnalyzerParameter param); 
   void OutCutFlow(TString lab, double w);
   TString QToString(HNL_LeptonCore::ChargeType q);
@@ -401,36 +402,26 @@ class HNL_LeptonCore : public AnalyzerCore {
 
   /// Event BDT var
   void InitializeTreeVars();
-  
-  /*Float_t Nj, Nvbfj;
-  Float_t Ptl1, Ptl2, Ptj1, Ptj2, Ptj3, MET,MET2ST, HT,HTLT,HTLT1,HTLT2, LT,  MET2HT;
-  Float_t dEtall, dRll, dRjj12, dRjj23, dRjj13;
-  Float_t dRlj11, dRlj12, dRlj13, dRlj21, dRlj22, dRlj23;
-  Float_t dphivl1, dphivl2, dphivj1, dphivj2, dphivj3;
-  Float_t MSSSF,  Mlj11, Mlj12, Mlj13, Mlj21, Mlj22, Mlj23;
-  Float_t MTvl1, MTvl2, MTvll, Mllj1, Mllj2, Mllj3, Mllj4;
-  Float_t Mlljj12, Mlljj13, Mlljj14, Mlljj23, Mlljj24, Mlljj34;
-  Float_t Mljj112, Mljj113, Mljj114, Mljj123, Mljj124, Mljj134;
-  Float_t Mljj212, Mljj213, Mljj214, Mljj223, Mljj224, Mljj234;
-  Float_t Mjj12, Mjj13, Mjj14, Mjj23, Mjj24, Mjj34;*/
+  void SetupEventBDTVariables(std::vector<Lepton *> LepTColl,    std::vector<Jet> JetAllColl,std::vector<Jet> JetColl, std::vector<Jet> JetVBFColl, std::vector<Jet> B_JetColl, Event  ev, Particle METv, AnalyzerParameter param);
 
-  Float_t Nj, Nvbfj, Nb;
-  Float_t Ptl1, Ptl2, Ptj1, Ptj2, Ptj3, MET, HT, LT, HTLT, HTLT1, HTLT2, MET2ST, MET2HT, Etal1, Etal2;
-  Float_t PtRatioAJl1, PtRatioAJl2;
-  Float_t CEMFracAJl1, CEMFracAJl2, NEMFracAJl1, NEMFracAJl2, CHFracAJl1, CHFracAJl2, NHFracAJl1, NHFracAJl2, MuFracAJl1, MuFracAJl2, JetDiscAJl1, JetDiscAJl2;
-  Float_t dEtall, dRll, dRjj12, dRjj23, dRjj13;
-  Float_t dRlj11, dRlj12, dRlj13, dRlj21, dRlj22, dRlj23;
-  Float_t dphivl1, dphivl2, dphivj1, dphivj2, dphivj3;
-  Float_t MSSSF, Mlj11, Mlj12, Mlj13, Mlj21, Mlj22, Mlj23;
-  Float_t MTvl1, MTvl2, MTvll, Mllj1, Mllj2, Mllj3, Mllj4;
-  Float_t Mlljj12, Mlljj13, Mlljj14, Mlljj23, Mlljj24, Mlljj34;
-  Float_t Mljj112, Mljj113, Mljj114, Mljj123, Mljj124, Mljj134;
-  Float_t Mljj212, Mljj213, Mljj214, Mljj223, Mljj224, Mljj234;
-  Float_t Mjj12, Mjj13, Mjj14, Mjj23, Mjj24, Mjj34;
 
-  Float_t PtWj1, PtWj2;
-  Float_t dRWjj, dRlW12, dRlW22;
-  Float_t M_W2_jj, M_N1_l1jj, M_N2_l2jj, M_W1_lljj;
+  Float_t ev_bdt_Nj, ev_bdt_Nvbfj, ev_bdt_Nb, ev_bdt_LQ;
+  Float_t ev_bdt_Ptl1, ev_bdt_Ptl2, ev_bdt_Ptj1, ev_bdt_Ptj2, ev_bdt_Ptj3, ev_bdt_MET, ev_bdt_HT, ev_bdt_LT, ev_bdt_HTLT, ev_bdt_HTLT1, ev_bdt_HTLT2, ev_bdt_MET2ST, ev_bdt_MET2HT, ev_bdt_Etal1, ev_bdt_Etal2;
+  Float_t ev_bdt_PtRatioAJl1, ev_bdt_PtRatioAJl2;
+  Float_t ev_bdt_CEMFracAJl1, ev_bdt_CEMFracAJl2, ev_bdt_NEMFracAJl1, ev_bdt_NEMFracAJl2, ev_bdt_CHFracAJl1, ev_bdt_CHFracAJl2, ev_bdt_NHFracAJl1, ev_bdt_NHFracAJl2, ev_bdt_MuFracAJl1, ev_bdt_MuFracAJl2, ev_bdt_JetDiscAJl1, ev_bdt_JetDiscAJl2;
+  Float_t ev_bdt_dEtall, ev_bdt_dRll, ev_bdt_dRjj12, ev_bdt_dRjj23, ev_bdt_dRjj13;
+  Float_t ev_bdt_dRlj11, ev_bdt_dRlj12, ev_bdt_dRlj13, ev_bdt_dRlj21, ev_bdt_dRlj22, ev_bdt_dRlj23;
+  Float_t ev_bdt_dphivl1, ev_bdt_dphivl2, ev_bdt_dphivj1, ev_bdt_dphivj2, ev_bdt_dphivj3;
+  Float_t ev_bdt_MSSSF, ev_bdt_Mlj11, ev_bdt_Mlj12, ev_bdt_Mlj13, ev_bdt_Mlj21, ev_bdt_Mlj22, ev_bdt_Mlj23;
+  Float_t ev_bdt_MTvl1, ev_bdt_MTvl2, ev_bdt_MTvll, ev_bdt_Mllj1, ev_bdt_Mllj2, ev_bdt_Mllj3, ev_bdt_Mllj4;
+  Float_t ev_bdt_Mlljj12, ev_bdt_Mlljj13, ev_bdt_Mlljj14, ev_bdt_Mlljj23, ev_bdt_Mlljj24, ev_bdt_Mlljj34;
+  Float_t ev_bdt_Mljj112, ev_bdt_Mljj113, ev_bdt_Mljj114, ev_bdt_Mljj123, ev_bdt_Mljj124, ev_bdt_Mljj134;
+  Float_t ev_bdt_Mljj212, ev_bdt_Mljj213, ev_bdt_Mljj214, ev_bdt_Mljj223, ev_bdt_Mljj224, ev_bdt_Mljj234;
+  Float_t ev_bdt_Mjj12, ev_bdt_Mjj13, ev_bdt_Mjj14, ev_bdt_Mjj23, ev_bdt_Mjj24, ev_bdt_Mjj34;
+
+  Float_t ev_bdt_PtWj1, ev_bdt_PtWj2;
+  Float_t ev_bdt_dRWjj, ev_bdt_dRlW12, ev_bdt_dRlW22;
+  Float_t ev_bdt_M_W2_jj, ev_bdt_M_N1_l1jj, ev_bdt_M_N2_l2jj, ev_bdt_M_W1_lljj;
 
   Float_t w_tot;
 
