@@ -10,16 +10,24 @@ eras = ["2017"]
 masses = ["M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000"]
 masses = ["M5000","M7500","M10000","M15000","M20000"]
 masses = ["M100","M200","M300","M400","M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M10000","M15000","M20000"]
-#masses = ["M100","M200","M300","M400","M500"]
+masses = ["M100","M200","M300","M400","M500"]
 #masses = ["M500"]
 channels = ["MuMu","EE","EMu"]
-channels = ["MuMu"]
+channels = ["MuMu","EE"]
 
 InputPath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegionPlotter/"
 #OutputPath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegionPlotter/InputForCombine/"
 #OutputPath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegionPlotter/AddSyst/"
-OutputPath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegionPlotter/SNUWS/"
+OutputPath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegionPlotter/KPS23Spr/"
+OutputPath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegionPlotter/KPS23Spr_woBDT/"
 Analyzer = "HNL_SignalRegionPlotter"
+
+DataSkim = ""
+FakeSkim = "_SkimTree_HNMultiLepBDT_"
+CFSkim = "_SkimTree_HNMultiLepBDT_"
+ConvSkim = "_SkimTree_HNMultiLepBDT_"
+MCSkim = "_SkimTree_HNMultiLepBDT_"
+SignalSkim = "_SkimTree_HNMultiLepBDT_"
 
 MergeData   = False
 MergeFake   = False
@@ -36,44 +44,45 @@ AddSyst = True
 if MergeData:
 
   for era in eras:
-    OutFile=InputPath + era + "/DATA/"+Analyzer+"_SkimTree_HNMultiLep_DATA.root"
+    OutFile=InputPath + era + "/DATA/"+Analyzer+DataSkim+"DATA.root"
     if os.path.exists(OutFile):
       os.system("rm " + OutFile)
-    os.system("hadd " + OutFile + "  " + InputPath + "/"+era+"/DATA/*")
+    os.system("hadd " + OutFile + " " + InputPath + "/"+era+"/DATA/*")
 
 if MergeFake:
 
   for era in eras:
-    OutFile=InputPath + era + "/RunFake__/DATA/"+Analyzer+"_SkimTree_HNMultiLep_Fake.root"
+    OutFile=InputPath + era + "/RunFake__/DATA/"+Analyzer+FakeSkim+"Fake.root"
     if os.path.exists(OutFile):
       os.system("rm " + OutFile)
-    os.system("hadd " + OutFile + "  " + InputPath + "/"+era+"/RunFake__/DATA/*")
+    os.system("hadd " + OutFile + " " + InputPath + "/"+era+"/RunFake__/DATA/*")
 
 if MergeCF:
 
   for era in eras:
-    #OutFile=InputPath + era + "/RunCF__/DATA/"+Analyzer+"_SkimTree_Dilepton_CF.root"
-    OutFile=InputPath + era + "/RunCF__/"+Analyzer+"_SkimTree_HNMultiLep_CF.root" #FIXME MC CF
+    #OutFile=InputPath + era + "/RunCF__/DATA/"+Analyzer+CFSkim+"CF.root"
+    OutFile=InputPath + era + "/RunCF__/"+Analyzer+CFSkim+"CF.root" #FIXME MC CF
     if os.path.exists(OutFile):
       os.system("rm " + OutFile)
-    #os.system("hadd " + OutFile + "  " + InputPath + "/"+era+"/RunCF__/DATA/*")
-    os.system("hadd " + OutFile + "  " + InputPath + "/"+era+"/RunCF__/*")
+    #os.system("hadd " + OutFile + " " + InputPath + "/"+era+"/RunCF__/DATA/*")
+    os.system("hadd " + OutFile + " " + InputPath + "/"+era+"/RunCF__/*")
 
 if MergeConv:
 
   for era in eras:
-    OutFile=InputPath + era + "/RunConv__/"+Analyzer+"_SkimTree_HNMultiLep_Conv.root"
+    OutFile=InputPath + era + "/RunConv__/"+Analyzer+ConvSkim+"Conv.root"
     if os.path.exists(OutFile):
       os.system("rm " + OutFile)
-    os.system("hadd " + OutFile + "  " + InputPath + "/"+era+"/RunConv__/*")
+    os.system("hadd " + OutFile + " " + InputPath + "/"+era+"/RunConv__/*")
 
 if MergeMC:
 
   for era in eras:
-    OutFile=InputPath + era + "/"+Analyzer+"_SkimTree_HNMultiLep_MC.root"
+    OutFile=InputPath + era + "/"+Analyzer+MCSkim+"MC.root"
     if os.path.exists(OutFile):
       os.system("rm " + OutFile)
-    os.system("hadd " + OutFile + "  " + InputPath + "/"+era+"/*HNMu*")
+    MClist = cmd.getoutput('ls '+InputPath+era+' | grep -v private | grep -v Run').replace("\n"," ").replace("HNL_SignalRegionPlotter",InputPath+era+"/HNL_SignalRegionPlotter") # remove signals, directories
+    os.system("hadd " + OutFile + " " + MClist)
 
 if MergeSignal:
 
@@ -93,12 +102,12 @@ if MergeSignal:
 for era in eras:
   os.system('mkdir -p '+OutputPath + era)
 
-  f_path_data        = InputPath + era + "/DATA/"+Analyzer+"_SkimTree_HNMultiLep_DATA.root"
-  f_path_fake        = InputPath + era + "/RunFake__/DATA/"+Analyzer+"_SkimTree_HNMultiLep_Fake.root"
-  #f_path_cf          = InputPath + era + "/RunCF__/DATA/"+Analyzer+"_SkimTree_Dilepton_CF.root"
-  f_path_cf          = InputPath + era + "/RunCF__/"+Analyzer+"_SkimTree_HNMultiLep_CF.root" #FIXME MC CF
-  f_path_conv        = InputPath + era + "/RunConv__/"+Analyzer+"_SkimTree_HNMultiLep_Conv.root"
-  f_path_prompt      = InputPath + era + "/"+Analyzer+"_SkimTree_HNMultiLep_MC.root"
+  f_path_data        = InputPath + era + "/DATA/"+Analyzer+DataSkim+"DATA.root"
+  f_path_fake        = InputPath + era + "/RunFake__/DATA/"+Analyzer+FakeSkim+"Fake.root"
+  #f_path_cf          = InputPath + era + "/RunCF__/DATA/"+Analyzer+CFSkim+"CF.root"
+  f_path_cf          = InputPath + era + "/RunCF__/"+Analyzer+CFSkim+"CF.root" #FIXME MC CF
+  f_path_conv        = InputPath + era + "/RunConv__/"+Analyzer+ConvSkim+"Conv.root"
+  f_path_prompt      = InputPath + era + "/"+Analyzer+MCSkim+"MC.root"
   
   if not Blinded: f_data        = TFile.Open(f_path_data)
   f_fake        = TFile.Open(f_path_fake)
@@ -109,9 +118,13 @@ for era in eras:
   for mass in masses: #iterate for signals
     for channel in channels:
       if int(mass.replace("M","")) <= 500:
-        if channel == "MuMu": input_hist =  "LimitInputBDT/MVAUL_UL/"+mass+"/FillEventCutflow/MuonSR" #path to the input histogram
-        elif channel == "EE": input_hist =  "LimitInputBDT/MVAUL_UL/"+mass+"/FillEventCutflow/ElectronSR" #path to the input histogram
-        elif channel == "EMu": input_hist = "LimitInputBDT/MVAUL_UL/"+mass+"/FillEventCutflow/ElectronMuonSR" #path to the input histogram
+        #if channel == "MuMu": input_hist =  "LimitInputBDT/MVAUL_UL/"+mass+"/FillEventCutflow/MuonSR" #path to the input histogram
+        #elif channel == "EE": input_hist =  "LimitInputBDT/MVAUL_UL/"+mass+"/FillEventCutflow/ElectronSR" #path to the input histogram
+        #elif channel == "EMu": input_hist = "LimitInputBDT/MVAUL_UL/"+mass+"/FillEventCutflow/ElectronMuonSR" #path to the input histogram
+        ######### Test what if without BDT #########
+        if channel == "MuMu": input_hist =  "LimitInput/MVAUL_UL/FillEventCutflow/MuonSR" #path to the input histogram
+        elif channel == "EE": input_hist =  "LimitInput/MVAUL_UL/FillEventCutflow/ElectronSR" #path to the input histogram
+        elif channel == "EMu": input_hist = "LimitInput/MVAUL_UL/FillEventCutflow/ElectronMuonSR" #path to the input histogram
       elif int(mass.replace("M","")) > 500:
         if channel == "MuMu": input_hist =  "LimitInput/MVAUL_UL/FillEventCutflow/MuonSR" #path to the input histogram
         elif channel == "EE": input_hist =  "LimitInput/MVAUL_UL/FillEventCutflow/ElectronSR" #path to the input histogram

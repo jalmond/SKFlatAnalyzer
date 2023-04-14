@@ -69,7 +69,8 @@ void test(TString era, bool isdata, TString sample, TString flag){ //echo -e ".L
     if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_HNMultiLepBDT/DYTypeI_NLO_DF_M500/2023_03_28_191053/SKFlatNtuple_2017_MC_0.root")) exit(EIO);
   }
   else if(era=="2017" && !isdata && sample=="SSWWTypeI_M1000"){
-    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC/SSWWTypeI_NLO_SF_M1000/220712_180106/0000/SKFlatNtuple_2017_MC_1.root")) exit(EIO);
+    //if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC/SSWWTypeI_NLO_SF_M1000/220712_180106/0000/SKFlatNtuple_2017_MC_1.root")) exit(EIO);
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_HNMultiLepBDT/SSWWTypeI_NLO_SF_M1000/2023_03_28_191053/SKFlatNtuple_2017_MC_0.root")) exit(EIO);
   }
   m.SetOutfilePath("hists_"+sample+".root");
   m.Init();

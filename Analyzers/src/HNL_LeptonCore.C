@@ -1448,7 +1448,8 @@ AnalyzerParameter HNL_LeptonCore::InitialiseHNLParameter(TString s_setup, TStrin
     param.Electron_Tight_ID = "HNL_ULID_"+GetYearString();
     param.Electron_ID_SF_Key = "TmpHNL_ULID_"+GetYearString();
     param.Muon_ID_SF_Key = "TmpHNL_ULID_"+GetYearString();
-    param.Muon_FR_ID = "HNL_ULID_FO_"+GetYearString();
+    //param.Muon_FR_ID = "HNL_ULID_FO_"+GetYearString();
+    param.Muon_FR_ID = "HNL_TopMVA_FO_MM"; //JH
     param.Electron_FR_ID = "HNL_ULID_FO_"+GetYearString();
     param.Muon_RECO_SF_Key = "MuonRecoSF";
     return param;
@@ -3112,7 +3113,7 @@ double  HNL_LeptonCore::GetMass(TString type , std::vector<Jet> jets, std::vecto
     int n=-999;
     double ST(0.);
     for(UInt_t emme=0; emme<jets.size(); emme++){
-      ST += jets[emme].Pt();
+      ST += jets[emme].Pt(); //JH : ???
       for(UInt_t enne=1; enne<jets.size(); enne++) {
 
         dijetmass_tmp = (jets[emme]+jets[enne]).M();

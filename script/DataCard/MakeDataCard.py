@@ -20,19 +20,23 @@ input_path = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegi
 eras = ["2016","2017","2018"]
 eras = ["2017"]
 channels = ["MuMu","EE","EMu"]
-#channels = ["MuMu"]
+channels = ["MuMu","EE"]
 masses = ["M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000"]
 masses = ["M5000","M7500","M10000","M15000","M20000"]
 masses = ["M100","M200","M300","M400","M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M10000","M15000","M20000"]
-#masses = ["M100","M200","M300","M400","M500"]
+masses = ["M100","M200","M300","M400","M500"]
 #masses = ["M500"]
 
 myWPs = ["Workshop", "InputForCombine"]
 myWPs = ["InputForCombine"]
 myWPs = ["Workshop"]
 myWPs = ["AddSyst"]
+myWPs = ["KPS23Spr"]
+myWPs = ["KPS23Spr_woBDT"]
 
 doCombine = False
+
+lines_orig = lines[:]
 
 for WP in myWPs:
   if not doCombine:
@@ -43,14 +47,24 @@ for WP in myWPs:
         for mass in masses:
           lines[4] = "shapes * *  "+input_path+WP+"/"+era+"/"+mass+"_"+channel+"_card_input.root $PROCESS $PROCESS_$SYSTEMATIC\n"
           if int(mass.replace("M","")) < 500:
-            if channel == "MuMu": lines[17] = "rate           -1      -1     0     -1           0\n"
-            else: lines[17] = "rate           -1      -1    -1     -1           0\n"
+            if channel == "MuMu": lines[17] = "rate           -1      -1     0     -1           0\n"  # no cf
+            else: lines[17] = "rate           -1      -1    -1     -1           0\n"                  # no SSWW
           if 500 <= int(mass.replace("M","")) and int(mass.replace("M","")) <= 3000:
             if channel == "MuMu": lines[17] = "rate           -1      -1     0     -1           -1\n"
             else: lines[17] = "rate           -1      -1    -1     -1           -1\n"
           elif 3000 < int(mass.replace("M","")):
             if channel == "MuMu": lines[17] = "rate           -1      -1     0     0           -1\n"
-            else: lines[17] = "rate           -1      -1    -1     0           -1\n"
+            else: lines[17] = "rate           -1      -1    -1     0           -1\n"                  # no DYVBF
+          for i in range(len(lines)):
+            if channel == "MuMu":
+              if "Muon" in lines[i]: lines[i] = lines_orig[i]
+              if "Electron" in lines[i]: lines[i] = lines[i].replace("1","-")
+            elif channel == "EE":
+              if "Muon" in lines[i]: lines[i] = lines[i].replace("1","-")
+              if "Electron" in lines[i]: lines[i] = lines_orig[i]
+            elif channel == "EMu":
+              if "Muon" in lines[i]: lines[i] = lines_orig[i]
+              if "Electron" in lines[i]: lines[i] = lines_orig[i]
           with open(WP+"/card_"+era+"_"+channel+"_"+mass+"_HNL_UL.txt",'w') as f:
             for line in lines:
               f.write(line)
