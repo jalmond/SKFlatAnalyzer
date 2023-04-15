@@ -41,8 +41,7 @@ void HNL_RegionDefinitionsOpt::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq
   for(auto dilep_channel : channels){
     
     if(run_Debug) cout << "HNL_RegionDefinitionsOpt::RunAllSignalRegions " << GetChannelString(dilep_channel) <<  endl;
-
-
+    
     float weight_channel = weight_ll;
     
     /// SelectChannel separates OS/SS samples and EE/MM sinsce signales have all processes in sample
@@ -56,7 +55,6 @@ void HNL_RegionDefinitionsOpt::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq
 
     if(run_Debug)cout << "ParamName = " << param.Name << endl;
     std::vector<Lepton *> leps       = MakeLeptonPointerVector(muons,electrons,param);
-
     
     //PassEventTypeFilter filters out events in MC if runconv and no conversion is present and vice versa
     if(!PassEventTypeFilter(leps, gens)) continue;
@@ -77,21 +75,10 @@ void HNL_RegionDefinitionsOpt::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq
 
     if(!PassMETFilter()) return;
 
-    if(MCSample.Contains("Type")){
-      vector<Gen> SigGens = GetGenLepronsSignal();
-      if (SigGens.size()==2){
-
-	if(SigGens[0].PID() > 0 && SigGens[1].PID()  > 0 )     FillEventCutflow(HNL_LeptonCore::ChannelDepIncQ, weight_channel, GetChannelString(dilep_channel) +"_MMQ_NoCut", "ChannelCutFlow/"+param.Name,param.WriteOutVerbose);// Def
-	else if(SigGens[0].PID()  < 0 && SigGens[1].PID()  < 0 )     FillEventCutflow(HNL_LeptonCore::ChannelDepIncQ, weight_channel, GetChannelString(dilep_channel) +"_PPQ_NoCut", "ChannelCutFlow/"+param.Name,param.WriteOutVerbose);//Def
-	
-      }
-    }
-    
     
     TString channel_string = GetChannelString(dilep_channel);
     param_channel.Name =  channel_string + "/" + param_channel.Name; 
-    
-
+   
     std::vector<Lepton *> leps_veto  = MakeLeptonPointerVector(muons_veto,electrons_veto,param);
     
     if(leps.size() ==2)  FillEventCutflow(HNL_LeptonCore::ChannelDepDilep, weight_channel, GetChannelString(dilep_channel) +"_Dilep", "ChannelCutFlow/"+param.Name,param.WriteOutVerbose);//Def
@@ -99,13 +86,10 @@ void HNL_RegionDefinitionsOpt::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq
 
     if(RunCF){
       if(dilep_channel == MuMu) continue;
-
       if(IsData && SameCharge(leps)) continue;
       if(!IsData && !SameCharge(leps)) continue;
-      
       if(IsData)weight_channel = GetCFWeightElectron(leps, param_channel);
       if(IsData)FillWeightHist(param.Name+"/CFWeight",weight_channel);
-
     }
     else{
       if(!SameCharge(leps)) continue;
@@ -125,10 +109,11 @@ void HNL_RegionDefinitionsOpt::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq
     // Run PRESEL + SR1-3                                                                                                                                                           
     //bool run_ORTrigger = false;
 
-    
+
     HNL_LeptonCore::SearchRegion LimitRegions = HNL_LeptonCore::MuonSR;
     if (dilep_channel == EE) LimitRegions =HNL_LeptonCore::ElectronSR;
     if (dilep_channel == EMu) LimitRegions =HNL_LeptonCore::ElectronMuonSR;
+
     HNL_LeptonCore::SearchRegion LimitRegionsQ = HNL_LeptonCore::MuonSRQQ;
     if (dilep_channel == EE) LimitRegionsQ =HNL_LeptonCore::ElectronSRQQ;
     if (dilep_channel == EMu) LimitRegionsQ =HNL_LeptonCore::ElectronMuonSRQQ;
@@ -138,13 +123,13 @@ void HNL_RegionDefinitionsOpt::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq
     if (dilep_channel == EMu) LimitRegionsBDT =HNL_LeptonCore::ElectronMuonSRBDT;
 
     
+
     if(!PassPreselection(dilep_channel,qq, leps, leps_veto, TauColl, JetColl, VBF_JetColl, AK8_JetColl, B_JetColl,ev, METv ,param_channel,"", weight_channel)) continue;
 
-
+ 
     //FillAllMuonPlots("Presel", "Muons"  , muons ,weight_channel);
     //FillAllElectronPlots("Presel", "Electrons"  , electrons ,weight_channel);
-
-
+    
     TString  lep_charge =  (leps[0]->Charge() < 0)  ? "QM" :  "QP";
 
     if(AK8_JetColl.size() > 0) {
@@ -156,30 +141,40 @@ void HNL_RegionDefinitionsOpt::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq
     else{
       
       TString SRbin = RunSignalRegionWWString( dilep_channel,qq, leps, leps_veto,  TauColl, JetCollLoose, VBF_JetColl,  AK8_JetColl, B_JetColl,ev, METv, param_channel,  "", weight_channel);
-      
-      
+            
       if(SRbin != "false"){
-
-
 	FillEventCutflow(LimitRegions, weight_channel, SRbin,"LimitInput/"+param.Name);
 	FillEventCutflow(LimitRegionsBDT, weight_channel, SRbin,"LimitInputBDT/"+param.Name+"/100");
-
       }
       else{
+
 	SRbin  = RunSignalRegionAK4String (dilep_channel,qq, leps, leps_veto, TauColl, JetColl, AK8_JetColl, B_JetColl, ev, METv ,param_channel,"", weight_channel);
 
-	TString SRBDT100 = RunSignalRegionAK4StringBDT("100", dilep_channel,qq, 
-						       leps, leps_veto,  
-						       AllJetColl, JetColl, VBF_JetColl, B_JetColl, 
-						       ev, METv ,param_channel,"", weight_channel);
+	TString SRBDT100 = RunSignalRegionAK4StringBDT("100", dilep_channel, leps, ev);   
+	/*
+	  // TEST ev.HNL_MVA_Event is consistent with SetupEventBDTVariables 
+	SetupEventBDTVariables(leps,
+			       AllJetColl, JetColl,VBF_JetColl,B_JetColl,
+			       ev,METv,param);
+
+	TString MVATagStr = "BDT_M100_NCut300_NTree850_"+GetChannelString(dilep_channel);
+	float MVAvalue = 0.;
+	if(GetChannelString(dilep_channel) == "MuMu") MVAvalue = MVAReaderMM->EvaluateMVA(MVATagStr);
+	if(GetChannelString(dilep_channel) == "EE")   MVAvalue = MVAReaderEE->EvaluateMVA(MVATagStr);
+	if(GetChannelString(dilep_channel) == "EMu")  MVAvalue = MVAReaderEM->EvaluateMVA(MVATagStr);
+	
+	if(MVAvalue != ev.HNL_MVA_Event(GetChannelString(dilep_channel)+"_100")){
+	  cout << "Summary of BDT 100"<< endl;
+	  cout << "MVAvalue = " << MVAvalue << endl;
+	  cout << "Predetermined value = " << ev.HNL_MVA_Event(GetChannelString(dilep_channel)+"_100") << endl;
+	}
+
+	*/
 
 	if(SRBDT100 != "false") FillEventCutflow(LimitRegionsBDT, weight_channel, SRBDT100,"LimitInputBDT/"+param.Name+"/100");
 
 	if(SRbin != "false"){
- 
 	  FillEventCutflow(LimitRegions, weight_channel, SRbin,"LimitInput/"+param.Name);
-	  //FillEventCutflow(LimitRegionsQ, weight_channel, lep_charge+SRbin,"LimitInput/"+param.Name);
-
 	}
       }
     }
@@ -208,7 +203,6 @@ bool  HNL_RegionDefinitionsOpt::PassPreselection(HNL_LeptonCore::Channel channel
 
   // Make sure events contain 2 leps                                                                                                       
   // Make sure correct leptons are used                                                                                                                                      
-  if(!CheckLeptonFlavourForChannel(channel, leps)) return false;
 
   if (! (  PassMultiTriggerSelection(channel, ev, leps,"Dilep", "HighPt") || PassMultiTriggerSelection(channel, ev, leps,"Dilep", "Lep"))) return false;
   
@@ -301,7 +295,6 @@ TString HNL_RegionDefinitionsOpt::RunSignalRegionAK8String(HNL_LeptonCore::Chann
 
   FillEventCutflow(HNL_LeptonCore::SR1, w, "SR1_Init",param.Name,param.WriteOutVerbose);
   
-  if(!CheckLeptonFlavourForChannel(channel, leps)) return "false";  
   if (leps_veto.size() != 2) return "false";
   FillEventCutflow(HNL_LeptonCore::SR1,w, "SR1_lep_pt",param.Name,param.WriteOutVerbose);
   if(AK8_JetColl.size() == 0) return "false";
@@ -435,37 +428,15 @@ TString HNL_RegionDefinitionsOpt::RunSignalRegionAK8String(HNL_LeptonCore::Chann
 
 
 
-TString HNL_RegionDefinitionsOpt::RunSignalRegionAK4StringBDT(TString mN, HNL_LeptonCore::Channel channel, HNL_LeptonCore::ChargeType qq ,
-							      std::vector<Lepton *> LepTColl,   std::vector<Lepton *> leps_veto, 
-							      std::vector<Jet> JetAllColl,std::vector<Jet> JetColl, std::vector<Jet> JetVBFColl, 
-							      std::vector<Jet> B_JetColl, Event  ev, Particle METv, AnalyzerParameter param, TString PostLabel ,  float w){
+TString HNL_RegionDefinitionsOpt::RunSignalRegionAK4StringBDT(TString mN, HNL_LeptonCore::Channel channel, 
+							      std::vector<Lepton *> LepTColl,  Event  ev){
 
-  if(!CheckLeptonFlavourForChannel(channel, LepTColl)) return "false";
-  FillEventCutflow(HNL_LeptonCore::SR3BDT, w, "SR3_lep_pt",param.Name,param.WriteOutVerbose);
-
-  if (leps_veto.size() != 2) return "false";
-
-  if(qq==Plus && LepTColl[0]->Charge() < 0) return "false";
-  if(qq==Minus && LepTColl[0]->Charge() > 0) return "false";
-
-  FillEventCutflow(HNL_LeptonCore::SR3BDT, w, "SR3_lep_charge",param.Name,param.WriteOutVerbose);
-
+  if (LepTColl.size() != 2) return "false";
   Particle ll =  (*LepTColl[0]) + (*LepTColl[1]);
   if (channel==EE  && (fabs(ll.M()-90.) < 15)) return "false";
 
-  FillEventCutflow(HNL_LeptonCore::SR3BDT, w, "SR3_dilep_mass",param.Name,param.WriteOutVerbose);
+  float MVAvalue = ev.HNL_MVA_Event(GetChannelString(channel)+"_"+mN);
 
-  SetupEventBDTVariables(LepTColl,
-			 JetAllColl, JetColl,JetVBFColl,B_JetColl,
-			 ev,METv,param);
-
-  TString MVATagStr = "BDT_M"+mN+"_NCut300_NTree850_"+GetChannelString(channel);
-  float MVAvalue = 0.;
-  if(GetChannelString(channel) == "MuMu") MVAvalue = MVAReaderMM->EvaluateMVA(MVATagStr);
-  if(GetChannelString(channel) == "EE")   MVAvalue = MVAReaderEE->EvaluateMVA(MVATagStr);
-  if(GetChannelString(channel) == "EMu")  MVAvalue = MVAReaderEM->EvaluateMVA(MVATagStr);
-
-  //FillHist("LimitSR3BDT/"+param.Name+"/SignalBins_M"+mN, MVAvalue, w, 40, -1., 1.);
   if(MVAvalue < 0.)       return "SR3_bin1";
   else if(MVAvalue< 0.05) return "SR3_bin2";
   else if(MVAvalue< 0.10) return "SR3_bin3";
@@ -503,8 +474,6 @@ TString HNL_RegionDefinitionsOpt::RunSignalRegionWWString(HNL_LeptonCore::Channe
 							  std::vector<Jet> JetCollLoose, std::vector<Jet> JetColl, std::vector<FatJet>  AK8_JetColl, std::vector<Jet> B_JetColl, 
 							  Event ev, Particle METv, AnalyzerParameter param, TString PostLabel ,  float w){
 
-
-  if(!CheckLeptonFlavourForChannel(channel, leps)) return "false";
 
   if (leps_veto.size() != 2) return "false";
 
@@ -665,7 +634,6 @@ bool  HNL_RegionDefinitionsOpt::RunSignalRegionAK4(HNL_LeptonCore::Channel chann
 TString HNL_RegionDefinitionsOpt::RunSignalRegionAK4String(HNL_LeptonCore::Channel channel, HNL_LeptonCore::ChargeType qq ,std::vector<Lepton *> leps, std::vector<Lepton *> leps_veto ,  std::vector<Tau> TauColl,std::vector<Jet> JetColl, std::vector<FatJet>  AK8_JetColl, std::vector<Jet> B_JetColl, Event ev, Particle METv, AnalyzerParameter param, TString PostLabel ,  float w){
 
                                         
-  if(!CheckLeptonFlavourForChannel(channel, leps)) return "false";
   FillEventCutflow(HNL_LeptonCore::SR3, w, "SR3_lep_pt",param.Name,param.WriteOutVerbose);
 
   if (leps_veto.size() != 2) return "false";
@@ -838,6 +806,7 @@ TString HNL_RegionDefinitionsOpt::RunSignalRegionAK4String(HNL_LeptonCore::Chann
 
   }
   else{
+
     if(N1cand.M() < 200) {
       bin=10.5;
       sbin="11";
@@ -882,7 +851,6 @@ TString HNL_RegionDefinitionsOpt::RunSignalRegionAK4String(HNL_LeptonCore::Chann
 
 bool HNL_RegionDefinitionsOpt::RunSignalRegionTrilepton(HNL_LeptonCore::Channel channel,std::vector<Lepton *> leps, std::vector<Lepton *> leps_veto ,  std::vector<Jet> JetColl ,std::vector<FatJet>  AK8_JetColl, std::vector<Jet> B_JetColl, Event ev, Particle METv, AnalyzerParameter param, TString PostLabel ,  float w){
   
-  if(!CheckLeptonFlavourForChannel(channel, leps)) return false;
   if (leps_veto.size() != 3) return false;
   
   FillEventCutflow(HNL_LeptonCore::SR4,w, "SR4_3lep",param.Name);

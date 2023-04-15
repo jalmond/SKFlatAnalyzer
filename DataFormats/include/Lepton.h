@@ -203,7 +203,7 @@ public:
       else if(vers=="v2")  return j_lep_mva_hnl_fake_v2;
       else if(vers=="v3")  return j_lep_mva_hnl_fake_v3;
     }
-    cout<<"[Lepton::HNL_MVA_Fake] no version set "<< endl;
+    cout<<"[Lepton::HNL_MVA_Fake] no version set "<< vers<< endl;
     exit(ENODATA);
     
   }

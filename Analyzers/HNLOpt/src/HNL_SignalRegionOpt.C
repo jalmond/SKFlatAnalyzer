@@ -309,10 +309,10 @@ void HNL_SignalRegionOpt::RunULAnalysis(AnalyzerParameter param){
   JetTagging::Parameters param_jetsT = JetTagging::Parameters(JetTagging::DeepJet, JetTagging::Tight, JetTagging::incl, JetTagging::mujets);
 
   std::vector<Jet> BJetColl    = SelectBJets(param,  BJetCollNLV, param_jetsM);
-  double sf_btagM_NLV               = GetBJetSF(param, BJetCollNLV, param_jetsM);
+  double sf_btagM_NLV          = GetBJetSF(param, BJetCollNLV, param_jetsM);
 
   std::vector<Jet> BJetCollSR1    = SelectBJets(param,  BJetCollNLV, param_jetsT);
-  double sf_btagSR1_NLV               = GetBJetSF(param, BJetCollNLV, param_jetsT);
+  double sf_btagSR1_NLV           = GetBJetSF(param, BJetCollNLV, param_jetsT);
   
 
   /// param.WriteOutVerbose used to set code how many historgams to draw

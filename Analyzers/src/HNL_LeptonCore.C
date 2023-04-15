@@ -2,8 +2,6 @@
 
 void HNL_LeptonCore::initializeAnalyzer(){
 
-
-  
   SglMuon_Channel    =   (IsDATA && (this->DataStream == "SingleMuon"        )); //--> Needed when adding Mu50 + validation                 
   DblEG_Channel      =   (IsDATA && (this->DataStream == DoubleElectronPD()  ));
   DblMuon_Channel    =   (IsDATA && (this->DataStream == DoubleMuonPD()      ));
@@ -23,7 +21,6 @@ void HNL_LeptonCore::initializeAnalyzer(){
 
   /// Other flags                                                                                                                                      
   RunSyst = HasFlag("RunSyst");
-
   HEM1516 = HasFlag("HEM1516");
 
 
@@ -795,26 +792,6 @@ void HNL_LeptonCore::SetupEventMVAReader(bool ee, bool mm, bool emu){
 
 }
 
-
-
-double HNL_LeptonCore::GetHNLMVAMuon(Muon mu ,BkgType bkg){
-  
-  //  if(mu.Pt() < 20&&bkg==BkgType::Fake) return GetBDTScoreMuon(mu, bkg, "BDTG_LowPt");
-  //  return GetBDTScoreMuon(mu, bkg, "BDTG");
-  return -999;
-
-}
-
-double HNL_LeptonCore::GetHNLMVAElectron(Electron el ,BkgType bkg){
-
-  //if(el.Pt() < 20) return GetBDTScoreEl(el, bkg, "BDTG_Bin1");
-  //return GetBDTScoreEl(el, bkg, "BDTG");
-  return -999;
-
-}
-
-
-
 /// Event BDT Variables 
 
 void HNL_LeptonCore::InitializeTreeVars(){
@@ -1049,6 +1026,29 @@ void HNL_LeptonCore::SetupEventBDTVariables(std::vector<Lepton *> LepTColl,
 }
 
 
+double HNL_LeptonCore::EvaluateEventMVA(TString mN, TString NCut, TString NTree,HNL_LeptonCore::Channel channel ,
+					std::vector<Lepton *> LepTColl, Event  ev, Particle METv, AnalyzerParameter param){
+
+  std::vector<FatJet> FatjetColl                  = GetHNLAK8Jets("BDT",param);
+  std::vector<Jet> All_JetColl                    = GetHNLJets("NoCut_Eta3",param);
+  std::vector<Jet> B_JetColl                      = GetHNLJets("BJetM",param);
+  std::vector<Jet> JetColl                        = GetHNLJets("Tight",param);
+  std::vector<Jet> VBF_JetColl                    = GetHNLJets("VBFTight",param);
+  
+  SetupEventBDTVariables(LepTColl,
+                         All_JetColl, JetColl,VBF_JetColl,B_JetColl,
+                         ev,METv,param);
+
+  TString MVATagStr = "BDT_M"+mN+"_NCut"+NCut+"_NTree"+NTree+"_"+GetChannelString(channel);
+  float MVAvalue = -99999.;
+  if(GetChannelString(channel) == "MuMu") MVAvalue = MVAReaderMM->EvaluateMVA(MVATagStr);
+  if(GetChannelString(channel) == "EE")   MVAvalue = MVAReaderEE->EvaluateMVA(MVATagStr);
+  if(GetChannelString(channel) == "EMu")  MVAvalue = MVAReaderEM->EvaluateMVA(MVATagStr);
+
+
+  return MVAvalue;
+}
+
 void HNL_LeptonCore::TriggerPrintOut(Event ev){
   
   vector<TString> PDs = {"DoubleEG","DoubleMuon","MuonEG","SingleElectron","SingleMuon", "EGamma"};
@@ -1091,6 +1091,8 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
   if(SystType == "Initial"){
     SystList.push_back(AnalyzerParameter::JetResUp);
     SystList.push_back(AnalyzerParameter::JetResDown);
+    SystList.push_back(AnalyzerParameter::JetMassUp);
+    SystList.push_back(AnalyzerParameter::JetMassDown);
     //SystList.push_back(AnalyzerParameter::PUUp);
     //SystList.push_back(AnalyzerParameter::PUDown);
     //SystList.push_back(AnalyzerParameter::FRUp);
@@ -2500,46 +2502,54 @@ TString HNL_LeptonCore::QToString(HNL_LeptonCore::ChargeType q){
 
 std::vector<FatJet> HNL_LeptonCore::GetHNLAK8Jets(TString JetType, AnalyzerParameter param){
 
-  std::vector<Electron>   ElectronCollV = GetElectrons(param.Electron_Veto_ID, 10., 2.5);
-  std::vector<Muon>       MuonCollV     = GetMuons    (param.Muon_Veto_ID,     5.,  2.4);
-  
   std::vector<FatJet>   FatjetColl  = GetFatJets(param, "tight", 200., 5.);
   if(JetType=="Loose") return FatjetColl;
 
-  std::vector<FatJet> AK8_JetColl                  = SelectAK8Jets(FatjetColl, 200., 5., true,  1., false, -999, false, 0., 20000., ElectronCollV, MuonCollV);
+  std::vector<Electron>   ElectronCollV = GetElectrons(param.Electron_Veto_ID, 10., 2.5);
+  std::vector<Muon>       MuonCollV     = GetMuons    (param.Muon_Veto_ID,     5.,  2.4);
 
+  std::vector<FatJet> AK8_JetColl                  = SelectAK8Jets  (FatjetColl, 200., 5., true,  1., false, -999, false, 0., 20000., ElectronCollV, MuonCollV);
+  std::vector<FatJet> AK8_JetCollBDT                  = SelectAK8Jets(FatjetColl  , 200., 2.7, true, 1., false, -999, false, 40., 130., ElectronCollV, MuonCollV);
+  std::vector<FatJet> AK8_JetCollHNL                  = SelectAK8Jetsv2(FatjetColl, 200., 2.7, true,  1., true, -999, true, 40., 130.,-999, ElectronCollV, MuonCollV);
+
+  if(JetType=="HNL") return AK8_JetCollHNL;
+  if(JetType=="BDT") return AK8_JetCollBDT;
   return AK8_JetColl;
 }
 
 std::vector<Jet> HNL_LeptonCore::GetHNLJets(TString JetType, AnalyzerParameter param){
 
-  /// Lepotns for cleaninh 
-  std::vector<Electron>   ElectronCollV = GetElectrons(param.Electron_Veto_ID, 10., 2.5);
-  std::vector<Muon>       MuonCollV     = GetMuons    (param.Muon_Veto_ID,     5.,  2.4);
-
   /// AK4 
   std::vector<Jet> AK4_Loose     = GetJets   ( param, param.Jet_ID, 10., 5.);
-  std::vector<Jet> AK4_All       = GetJets   ( param, "NoID",      0.,  5.);
+  std::vector<Jet> AK4_All       = GetJets   ( param, "NoID",      10.,  5.);
+  std::vector<Jet> AK4_NoCut3    = GetJets   ( param, "NoID",      10.,  3.);
 
   // AK8
   std::vector<FatJet> AK8_JetCollLoose             = GetHNLAK8Jets("Loose", param);
 
-  /// BJET
-  std::vector<Jet> BJetCollLoose                   = SelectAK4Jets(AK4_Loose,  15., 2.4, true,  0.4,0.8, "",   ElectronCollV,MuonCollV,  AK8_JetCollLoose);
-  std::vector<Jet> BJetCollNoLepClean              = SelectAK4Jets(AK4_Loose,  20., 2.4, false,  0.4,0.8, "",   ElectronCollV,MuonCollV,  AK8_JetCollLoose);
-  
-  if(JetType=="All")   return AK4_Loose;
+  if(JetType=="All")          return AK4_All;
+  if(JetType=="NoCut_Eta3")   return AK4_NoCut3;
+
+  /// Lepotns for cleaning                                                                                                                                                                                          
+  std::vector<Electron>   ElectronCollV = GetElectrons(param.Electron_Veto_ID, 10., 2.5);
+  std::vector<Muon>       MuonCollV     = GetMuons    (param.Muon_Veto_ID,     5.,  2.4);
 
   if(JetType=="Loose")    return SelectAK4Jets(AK4_Loose,     15., 4.7, true,  0.4,0.8, "",   ElectronCollV,MuonCollV, AK8_JetCollLoose);
   if(JetType=="Tight")    return SelectAK4Jets(AK4_Loose,     20., 2.7, true,  0.4,0.8, "",   ElectronCollV,MuonCollV, AK8_JetCollLoose);
-  if(JetType=="VBFTight") return SelectAK4Jets(AK4_Loose,     20., 4.7, true,  0.4,0.8, "",   ElectronCollV,MuonCollV, AK8_JetCollLoose);
+  if(JetType=="VBFTight") return SelectAK4Jets(AK4_Loose,     30., 4.7, true,  0.4,0.8, "",   ElectronCollV,MuonCollV, AK8_JetCollLoose);
 
+  /// BJET
+  std::vector<Jet> BJetCollLoose                   = SelectAK4Jets(AK4_Loose,  20., 2.4, true,  0.4,0.8, "",   ElectronCollV,MuonCollV,  AK8_JetCollLoose);
+  std::vector<Jet> BJetCollNoLepClean              = SelectAK4Jets(AK4_Loose,  20., 2.4, false,  0.4,0.8, "",   ElectronCollV,MuonCollV,  AK8_JetCollLoose);
+
+  
   JetTagging::Parameters param_jets = JetTagging::Parameters(JetTagging::DeepJet, JetTagging::Medium, JetTagging::incl, JetTagging::mujets);
   JetTagging::Parameters param_jetsT = JetTagging::Parameters(JetTagging::DeepJet, JetTagging::Tight, JetTagging::incl, JetTagging::mujets);
-  if(JetType=="BJetM")     return SelectBJets(param, BJetCollLoose, param_jets);
-  if(JetType=="BJetT")     return SelectBJets(param, BJetCollLoose, param_jetsT);
-  if(JetType=="BJetM_NoLC")     return SelectBJets(param, BJetCollLoose, param_jets);
-  if(JetType=="BJetT_NoLC")     return SelectBJets(param, BJetCollLoose, param_jetsT);
+
+  if(JetType=="BJetM")          return SelectBJets(param, BJetCollLoose, param_jets);
+  if(JetType=="BJetT")          return SelectBJets(param, BJetCollLoose, param_jetsT);
+  if(JetType=="BJetM_NoLC")     return SelectBJets(param, BJetCollNoLepClean, param_jets);
+  if(JetType=="BJetT_NoLC")     return SelectBJets(param, BJetCollNoLepClean, param_jetsT);
 
   // Else just return Standard Jet coll for HNL
   return SelectAK4Jets(AK4_Loose,     20., 2.7, true,  0.4,0.8, "",   ElectronCollV,MuonCollV, AK8_JetCollLoose);
@@ -4526,15 +4536,15 @@ void HNL_LeptonCore::FillEventCutflow(HNL_LeptonCore::SearchRegion sr, double ev
   
   if(verbose_level >= 0){
     if(sr==MuonSR){
-      labels = {"SR1_bin1","SR1_bin2","SR1_bin3","SR1_bin4","SR1_bin5","SR1_bin6","SR1_bin7","SR2_bin1", "SR2_bin2", "SR3_bin1","SR3_bin2","SR3_bin3","SR3_bin4","SR3_bin5","SR3_bin6","SR3_bin7","SR3_bin8"};
+      labels = {"SR1_bin1","SR1_bin2","SR1_bin3","SR1_bin4","SR1_bin5","SR1_bin6","SR1_bin7","SR2_bin1", "SR2_bin2", "SR3_bin1","SR3_bin2","SR3_bin3","SR3_bin4","SR3_bin5","SR3_bin6","SR3_bin7","SR3_bin8","SR3_bin9","SR3_bin10","SR3_bin11","SR3_bin12","SR3_bin13","SR3_bin14","SR3_bin15","SR3_bin16"};
       EVhitname ="MuonSR";
     }
     if(sr==ElectronSR){
-      labels = {"SR1_bin1","SR1_bin2","SR1_bin3","SR1_bin4","SR1_bin5","SR1_bin6","SR1_bin7","SR2_bin1","SR2_bin2", "SR3_bin1","SR3_bin2","SR3_bin3","SR3_bin4","SR3_bin5","SR3_bin6","SR3_bin7","SR3_bin8"};
+      labels = {"SR1_bin1","SR1_bin2","SR1_bin3","SR1_bin4","SR1_bin5","SR1_bin6","SR1_bin7","SR2_bin1","SR2_bin2", "SR3_bin1","SR3_bin2","SR3_bin3","SR3_bin4","SR3_bin5","SR3_bin6","SR3_bin7","SR3_bin8","SR3_bin9","SR3_bin10","SR3_bin11","SR3_bin12","SR3_bin13","SR3_bin14","SR3_bin15","SR3_bin16"};
       EVhitname ="ElectronSR";
     }
     if(sr==ElectronMuonSR){
-      labels = {"SR1_bin1","SR1_bin2","SR1_bin3","SR1_bin4","SR1_bin5","SR1_bin6","SR1_bin7","SR2_bin1","SR2_bin2", "SR3_bin1","SR3_bin2","SR3_bin3","SR3_bin4","SR3_bin5","SR3_bin6","SR3_bin7","SR3_bin8"};
+      labels = {"SR1_bin1","SR1_bin2","SR1_bin3","SR1_bin4","SR1_bin5","SR1_bin6","SR1_bin7","SR2_bin1","SR2_bin2", "SR3_bin1","SR3_bin2","SR3_bin3","SR3_bin4","SR3_bin5","SR3_bin6","SR3_bin7","SR3_bin8","SR3_bin9","SR3_bin10","SR3_bin11","SR3_bin12","SR3_bin13","SR3_bin14","SR3_bin15","SR3_bin16"};
       EVhitname ="ElectronMuonSR";
     }
     
@@ -4554,15 +4564,15 @@ void HNL_LeptonCore::FillEventCutflow(HNL_LeptonCore::SearchRegion sr, double ev
     }
 
     if(sr==MuonSRBDT){
-      labels = {"SR1_bin1","SR1_bin2","SR1_bin3","SR1_bin4","SR1_bin5","SR1_bin6","SR1_bin7","SR2_bin1", "SR2_bin2",  "SR3_bin1","SR3_bin2","SR3_bin3","SR3_bin4","SR3_bin5","SR3_bin6","SR3_bin7","SR3_bin8"};
+      labels = {"SR1_bin1","SR1_bin2","SR1_bin3","SR1_bin4","SR1_bin5","SR1_bin6","SR1_bin7","SR2_bin1", "SR2_bin2",  "SR3_bin1","SR3_bin2","SR3_bin3","SR3_bin4","SR3_bin5","SR3_bin6","SR3_bin7","SR3_bin8","SR3_bin9"};
       EVhitname ="MuonSR";
     }
     if(sr==ElectronSRBDT){
-      labels = {"SR1_bin1","SR1_bin2","SR1_bin3","SR1_bin4","SR1_bin5","SR1_bin6","SR1_bin7","SR2_bin1","SR2_bin2",  "SR3_bin1","SR3_bin2","SR3_bin3","SR3_bin4","SR3_bin5","SR3_bin6","SR3_bin7","SR3_bin8"};
+      labels = {"SR1_bin1","SR1_bin2","SR1_bin3","SR1_bin4","SR1_bin5","SR1_bin6","SR1_bin7","SR2_bin1","SR2_bin2",  "SR3_bin1","SR3_bin2","SR3_bin3","SR3_bin4","SR3_bin5","SR3_bin6","SR3_bin7","SR3_bin8","SR3_bin9"};
       EVhitname ="ElectronSR";
     }
     if(sr==ElectronMuonSRBDT){
-      labels = {"SR1_bin1","SR1_bin2","SR1_bin3","SR1_bin4","SR1_bin5","SR1_bin6","SR1_bin7","SR2_bin1","SR2_bin2",  "SR3_bin1","SR3_bin2","SR3_bin3","SR3_bin4","SR3_bin5","SR3_bin6","SR3_bin7","SR3_bin8"};
+      labels = {"SR1_bin1","SR1_bin2","SR1_bin3","SR1_bin4","SR1_bin5","SR1_bin6","SR1_bin7","SR2_bin1","SR2_bin2",  "SR3_bin1","SR3_bin2","SR3_bin3","SR3_bin4","SR3_bin5","SR3_bin6","SR3_bin7","SR3_bin8","SR3_bin9"};
       EVhitname ="ElectronMuonSR";
     }
 

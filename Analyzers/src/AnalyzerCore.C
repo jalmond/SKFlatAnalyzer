@@ -3100,7 +3100,6 @@ double AnalyzerCore::GetJetPileupIDSF(vector<Jet> jets , TString WP, AnalyzerPar
 
 vector<FatJet>  AnalyzerCore::SelectAK8Jets(vector<FatJet> fatjets, double pt_cut ,  double eta_cut, bool lepton_cleaning  , double dr_lep_clean , bool apply_tau21, double tau21_cut , bool apply_masscut, double sdmass_lower_cut,  double sdmass_upper_cut, vector<Electron>  veto_electrons, vector<Muon>  veto_muons){
 
-
   return SelectAK8Jetsv2(fatjets,pt_cut,eta_cut, lepton_cleaning, dr_lep_clean,apply_tau21, tau21_cut,apply_masscut,sdmass_lower_cut,sdmass_upper_cut, -999., veto_electrons,veto_muons);
 }
 

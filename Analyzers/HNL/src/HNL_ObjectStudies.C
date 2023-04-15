@@ -701,21 +701,7 @@ void HNL_ObjectStudies::executeEvent(){
       if(lepType == 5) ElectronCollType5.push_back(iel);
       if(lepType == 6) ElectronCollType6.push_back(iel);
 
-      if(iel.PassID("HNTightV3")) {
-	ElectronCollHNL.push_back(iel);
-	if(GetHNLMVAElectron(iel,BkgType::Fake) > 0.)  ElectronCollMVALooseT.push_back(iel);
-	if(GetHNLMVAElectron(iel,BkgType::Fake) > 0.25)  ElectronCollMVAMediumT.push_back(iel);
-	if(GetHNLMVAElectron(iel,BkgType::Fake) > 0.5)  ElectronCollMVATightT.push_back(iel);
-	if(GetHNLMVAElectron(iel,BkgType::Fake) > 0.7)  ElectronCollMVAVeryTightT.push_back(iel);
-      }
-      if(GetHNLMVAElectron(iel,BkgType::Fake) > 0.)    ElectronCollMVALoose.push_back(iel);
-      if(GetHNLMVAElectron(iel,BkgType::Fake) > 0.25)  ElectronCollMVAMedium.push_back(iel);
-      if(GetHNLMVAElectron(iel,BkgType::Fake) > 0.5)   ElectronCollMVATight.push_back(iel);
-      if(GetHNLMVAElectron(iel,BkgType::Fake) > 0.7)   ElectronCollMVAVeryTight.push_back(iel);
 
-      
-
-      if(iel.PassID("HNTightV2"))     ElectronCollPOGTight.push_back(iel);                                                                                                                                                                                                                       
     }
     
 

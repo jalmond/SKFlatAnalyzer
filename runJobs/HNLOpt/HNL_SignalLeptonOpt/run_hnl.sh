@@ -12,12 +12,12 @@ datapath=${SKFlat_WD}/runJobs/SampleLists/DATA/
 skim=' '
 
 # JOB CONFIG                                                                                                                                               
-njobs=5
-nLargejobs=15
+njobs=10
+nLargejobs=25
 njobs_sig=5
-njobs_data=5
+njobs_data=10
 
-nmax=300
+nmax=350
 
 if [[ $1 == "NP_ELECTRON_CF_HighPt" ]]; then
 
@@ -240,6 +240,7 @@ if [[ $1 == "TMP" ]]; then
     
     Flag='MuID_NP,FullPt,BB'
     
-    SKFlat.py -a $analyzer  -i WZZ  -n 20  --nmax 1000   -e 2017  --userflags $Flag   --skim SkimTree_HNMultiLepBDT&
+    SKFlat.py -a $analyzer  -i DYTypeI_DF_M100_private  -n 20  --nmax 1000   -e 2017  --userflags $Flag   --skim SkimTree_HNMultiLepBDT&
+       
 
 fi

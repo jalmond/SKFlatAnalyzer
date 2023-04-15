@@ -756,8 +756,10 @@ int  Muon::PassIDOptMulti(TString mva_method,TString sel_methodB,TString sel_met
   //cout << "PassIDOptMulti " << endl;
   if( fabs(this->Eta())<= 1.479 ){
     
-    if(mva_methodLFBB.Contains("MVALFBB") && !PassULMVA(HNL_MVA_Fake(mva_method),StringToDouble(mva_methodLFBB,"MVALFBB"),  mva_methodLFBB )) return 0;   
-    
+    if(mva_method != ""){
+      if(mva_methodLFBB.Contains("MVALFBB") && !PassULMVA(HNL_MVA_Fake(mva_method),StringToDouble(mva_methodLFBB,"MVALFBB"),  mva_methodLFBB )) return 0;   
+    }
+
     if(mva_methodBB.Contains("MVAHFBB") && !PassULMVA(MVA(),StringToDouble(mva_methodBB,"MVAHFBB"), mva_methodBB )) return 0;
     
 
@@ -779,12 +781,10 @@ int  Muon::PassIDOptMulti(TString mva_method,TString sel_methodB,TString sel_met
   else{
     if(DEBUG) cout << "PassIDOpt ENDCAP " << endl;
 
-
-    if(mva_methodLFEC.Contains("MVALFv3EC") && !PassULMVA(HNL_MVA_Fake("v3"),StringToDouble(mva_methodLFEC,"MVALFv3EC"),  mva_methodLFEC )) return 0;
-    if(mva_methodLFEC.Contains("MVALFv2EC") && !PassULMVA(HNL_MVA_Fake("v2"),StringToDouble(mva_methodLFEC,"MVALFv2EC"),  mva_methodLFEC )) return 0;
-    if(mva_methodLFEC.Contains("MVALFv1EC") && !PassULMVA(HNL_MVA_Fake("v1"),StringToDouble(mva_methodLFEC,"MVALFv1EC"),  mva_methodLFEC )) return 0;
-
-    if(mva_methodEC.Contains("MVAEC") && !PassULMVA(MVA(),StringToDouble(mva_methodEC,"MVAEC"), mva_methodEC )) return 0;
+    if(mva_method != ""){
+      if(mva_methodLFEC.Contains("MVALFEC") && !PassULMVA(HNL_MVA_Fake(mva_method),StringToDouble(mva_methodLFEC,"MVALFEC"),  mva_methodLFEC )) return 0;
+    }
+    if(mva_methodEC.Contains("MVAHFEC") && !PassULMVA(MVA(),StringToDouble(mva_methodEC,"MVAHFEC"), mva_methodEC )) return 0;
 
     if(iso_methodEC != ""){
 

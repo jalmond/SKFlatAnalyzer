@@ -145,8 +145,6 @@ class HNL_LeptonCore : public AnalyzerCore {
 
   double MergeMultiMC(vector<TString> vec, TString Method);
 
-  double GetHNLMVAMuon(Muon mu ,BkgType bkg);
-  double GetHNLMVAElectron(Electron mu ,BkgType bkg);
 
 
   // JETS
@@ -403,6 +401,11 @@ class HNL_LeptonCore : public AnalyzerCore {
   /// Event BDT var
   void InitializeTreeVars();
   void SetupEventBDTVariables(std::vector<Lepton *> LepTColl,    std::vector<Jet> JetAllColl,std::vector<Jet> JetColl, std::vector<Jet> JetVBFColl, std::vector<Jet> B_JetColl, Event  ev, Particle METv, AnalyzerParameter param);
+
+  double EvaluateEventMVA(TString mN, TString NCut, TString NTree,HNL_LeptonCore::Channel channel ,
+			  std::vector<Lepton *> LepTColl,
+			  Event  ev, Particle METv, AnalyzerParameter param);
+
 
 
   Float_t ev_bdt_Nj, ev_bdt_Nvbfj, ev_bdt_Nb, ev_bdt_LQ;

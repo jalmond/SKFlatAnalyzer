@@ -17,7 +17,7 @@ class HNL_SignalLeptonOpt : public HNL_RegionDefinitionsOpt {
 
 
 
-  void RunULAnalysis(AnalyzerParameter param, vector<Electron> el, vector<Muon> mu);
+  void RunULAnalysis(AnalyzerParameter param, vector<Electron> el, vector<Muon> mu, std::vector<Tau> taus, std::vector<Jet> AllJetColl ,  std::vector<Jet> JetCollLoose,std::vector<Jet> JetColl, std::vector<Jet> VBF_JetColl,std::vector<FatJet>  AK8_JetColl, std::vector<Jet> B_JetColl,std::vector<Jet> B_JetCollSR1,Event ev);
 
 
 };
