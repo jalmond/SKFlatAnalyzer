@@ -28,8 +28,8 @@ void HNL_SignalRegionPlotter::executeEvent(){
   if(RunSyst){
     TString param_signal_name = param_signal.Name;
     //vector<AnalyzerParameter::Syst> SystList;// = GetSystList("Initial");
-    vector<AnalyzerParameter::Syst> SystList = GetSystList("Initial");
-    //vector<AnalyzerParameter::Syst> SystList = GetSystList("All");
+    //vector<AnalyzerParameter::Syst> SystList = GetSystList("Initial");
+    vector<AnalyzerParameter::Syst> SystList = GetSystList("All");
 
     for(auto isyst : SystList){
       param_signal.syst_ = AnalyzerParameter::Syst(isyst);
