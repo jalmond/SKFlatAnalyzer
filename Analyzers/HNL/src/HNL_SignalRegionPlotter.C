@@ -103,12 +103,21 @@ void HNL_SignalRegionPlotter::RunULAnalysis(AnalyzerParameter param){
   std::vector<Jet> VBF_JetColl                    = GetHNLJets("VBFTight",param);
   std::vector<Jet> BJetColl                       = GetHNLJets("BJetM",param);
   std::vector<Jet> BJetCollSR1                    = GetHNLJets("BJetT",param);
+  //cout << "AK8_JetColl   size : " << AK8_JetColl   .size() << endl;
+  //cout << "AK4_JetAllCollsize : " << AK4_JetAllColl.size() << endl;
+  //cout << "JetColl       size : " << JetColl       .size() << endl;
+  //cout << "JetCollLoose  size : " << JetCollLoose  .size() << endl;
+  //cout << "VBF_JetColl   size : " << VBF_JetColl   .size() << endl;
+  //cout << "BJetColl      size : " << BJetColl      .size() << endl;
+  //cout << "BJetCollSR1   size : " << BJetCollSR1   .size() << endl; //JH
   
   // select B jets                                                                                                                                                                        
   JetTagging::Parameters param_jets = JetTagging::Parameters(JetTagging::DeepJet, JetTagging::Medium, JetTagging::incl, JetTagging::mujets);
   double sf_btag               = GetBJetSF(param, JetColl, param_jets);
   JetTagging::Parameters param_jetsT = JetTagging::Parameters(JetTagging::DeepJet, JetTagging::Tight, JetTagging::incl, JetTagging::mujets);
   double sf_btagSR1               = GetBJetSF(param, JetColl, param_jetsT);
+  //cout << "sf_btag : "    << sf_btag    << endl;
+  //cout << "sf_btagSR1 : " << sf_btagSR1 << endl; //JH
 
   Particle METv = GetvMET("PuppiT1xyCorr", param, VBF_JetColl, AK8_JetColl, MuonCollT, ElectronCollT); // returns MET with systematic correction; run this after all object selection done; NOTE that VBF jet is used here
 

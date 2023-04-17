@@ -222,81 +222,81 @@ double HNL_LeptonCore::ScaleLepToSS(TString bkg, bool isMuon, int lepttype){
   if (DataEra=="2016preVFP"){
     if (bkg=="Fake"){
       if(isMuon){
-	
-	if(MCSample == "DYJets") {
-	  if(lepttype == -4) return 0.0572329696533;
-	  if(lepttype == -3) return 0.0564770234749;
-	  if(lepttype == -2) return 0.0409676966337;
-	  if(lepttype == -1) return 0.00790280298411;
-	}
-	if(MCSample == "DYJets_MG") {
-	  if(lepttype == -4) return 0.0882435607735;
-	  if(lepttype == -3) return 0.081311448448;
-	  if(lepttype == -2) return 0.0659643370569;
-	  if(lepttype == -1) return 0.00992206529097;
-	}
-	if(MCSample == "WJets_MG") {
-	  if(lepttype == -4) return 0.115220352247;
-	  if(lepttype == -3) return 0.0274768699281;
-	  if(lepttype == -2) return 0.0694231704026;
-	  if(lepttype == -1) return 0.0158453689098;
-	}
-	if(MCSample == "WJets_amcatnlo") {
-	  if(lepttype == -4) return 0.0619698592973;
-	  if(lepttype == -3) return 0.00695326115641;
-	  if(lepttype == -2) return 0.0404166197094;
-	  if(lepttype == -1) return 0.0139797483175;
-	}
-	if(MCSample == "TTLL_powheg") {
-	  if(lepttype == -4) return  0.139126039156;
-	  if(lepttype == -3) return  0.202558585382;
-	  if(lepttype == -2) return  0.207892283169;
-	  if(lepttype == -1) return  0.0559496963532;
-	}
-	if(MCSample == "TTLJ_powheg") {
-	  if(lepttype == -4) return  0.0948702530882;
-	  if(lepttype == -3) return  0.123110104572;
-	  if(lepttype == -2) return  0.146543618259;
-	  if(lepttype == -1) return  0.0631661777209;
-	}
+  
+  if(MCSample == "DYJets") {
+    if(lepttype == -4) return 0.0572329696533;
+    if(lepttype == -3) return 0.0564770234749;
+    if(lepttype == -2) return 0.0409676966337;
+    if(lepttype == -1) return 0.00790280298411;
+  }
+  if(MCSample == "DYJets_MG") {
+    if(lepttype == -4) return 0.0882435607735;
+    if(lepttype == -3) return 0.081311448448;
+    if(lepttype == -2) return 0.0659643370569;
+    if(lepttype == -1) return 0.00992206529097;
+  }
+  if(MCSample == "WJets_MG") {
+    if(lepttype == -4) return 0.115220352247;
+    if(lepttype == -3) return 0.0274768699281;
+    if(lepttype == -2) return 0.0694231704026;
+    if(lepttype == -1) return 0.0158453689098;
+  }
+  if(MCSample == "WJets_amcatnlo") {
+    if(lepttype == -4) return 0.0619698592973;
+    if(lepttype == -3) return 0.00695326115641;
+    if(lepttype == -2) return 0.0404166197094;
+    if(lepttype == -1) return 0.0139797483175;
+  }
+  if(MCSample == "TTLL_powheg") {
+    if(lepttype == -4) return  0.139126039156;
+    if(lepttype == -3) return  0.202558585382;
+    if(lepttype == -2) return  0.207892283169;
+    if(lepttype == -1) return  0.0559496963532;
+  }
+  if(MCSample == "TTLJ_powheg") {
+    if(lepttype == -4) return  0.0948702530882;
+    if(lepttype == -3) return  0.123110104572;
+    if(lepttype == -2) return  0.146543618259;
+    if(lepttype == -1) return  0.0631661777209;
+  }
       }// IS MUON
       else{
-	if(MCSample == "DYJets") {
-	  if(lepttype == -4) return 0.0668731824721;
-	  if(lepttype == -3) return 0;
-	  if(lepttype == -2) return 0.0431445526627;
-	  if(lepttype == -1) return 0.0148199248833;
-	}
-	if(MCSample == "DYJets_MG") {
-	  if(lepttype == -4) return 0.074201021204;
-	  if(lepttype == -3) return 0.107194280206;
-	  if(lepttype == -2) return 0.0600204979974;
-	  if(lepttype == -1) return 0.0181634640241;
-	}
-	if(MCSample == "WJets_MG") {
-	  if(lepttype == -4) return 0.0891708831574;
-	  if(lepttype == -3) return 0.0160347490068;
-	  if(lepttype == -2) return 0.0643559866362;
-	  if(lepttype == -1) return 0.022407680239;
-	}
-	if(MCSample == "WJets_amcatnlo") {
-	  if(lepttype == -4) return 0.149973618956;
-	  if(lepttype == -3) return 0;
-	  if(lepttype == -2) return 0.0450562851937;
-	  if(lepttype == -1) return 0.0184872174542;
-	}
-	if(MCSample == "TTLL_powheg") {
-	  if(lepttype == -4) return  0.192051543148;
-	  if(lepttype == -3) return  0.199373416749;
-	  if(lepttype == -2) return  0.193199075163;
-	  if(lepttype == -1) return  0.0657631437783;
-	}
-	if(MCSample == "TTLJ_powheg") {
-	  if(lepttype == -4) return  0.122296916027;
-	  if(lepttype == -3) return  0.100477782673;
-	  if(lepttype == -2) return  0.126597422473;
-	  if(lepttype == -1) return  0.0624963588657;
-	}
+  if(MCSample == "DYJets") {
+    if(lepttype == -4) return 0.0668731824721;
+    if(lepttype == -3) return 0;
+    if(lepttype == -2) return 0.0431445526627;
+    if(lepttype == -1) return 0.0148199248833;
+  }
+  if(MCSample == "DYJets_MG") {
+    if(lepttype == -4) return 0.074201021204;
+    if(lepttype == -3) return 0.107194280206;
+    if(lepttype == -2) return 0.0600204979974;
+    if(lepttype == -1) return 0.0181634640241;
+  }
+  if(MCSample == "WJets_MG") {
+    if(lepttype == -4) return 0.0891708831574;
+    if(lepttype == -3) return 0.0160347490068;
+    if(lepttype == -2) return 0.0643559866362;
+    if(lepttype == -1) return 0.022407680239;
+  }
+  if(MCSample == "WJets_amcatnlo") {
+    if(lepttype == -4) return 0.149973618956;
+    if(lepttype == -3) return 0;
+    if(lepttype == -2) return 0.0450562851937;
+    if(lepttype == -1) return 0.0184872174542;
+  }
+  if(MCSample == "TTLL_powheg") {
+    if(lepttype == -4) return  0.192051543148;
+    if(lepttype == -3) return  0.199373416749;
+    if(lepttype == -2) return  0.193199075163;
+    if(lepttype == -1) return  0.0657631437783;
+  }
+  if(MCSample == "TTLJ_powheg") {
+    if(lepttype == -4) return  0.122296916027;
+    if(lepttype == -3) return  0.100477782673;
+    if(lepttype == -2) return  0.126597422473;
+    if(lepttype == -1) return  0.0624963588657;
+  }
       }
     }
   }
@@ -304,160 +304,160 @@ double HNL_LeptonCore::ScaleLepToSS(TString bkg, bool isMuon, int lepttype){
     if (bkg=="Fake"){
 
       if(isMuon){
-	if(MCSample == "DYJets") {
-	  if(lepttype == -4) return 0.0591685840071;
-	  if(lepttype == -3) return 0.0174470315258;
-	  if(lepttype == -2) return 0.0454424883207;
-	  if(lepttype == -1) return 0.00728206398724;
-	}
-	if(MCSample == "DYJets_MG") {
-	  if(lepttype == -4) return 0.0318908959337;
-	  if(lepttype == -3) return 0.103634312838;
-	  if(lepttype == -2) return 0.0689184472915;
-	  if(lepttype == -1) return 0.00851386616694;
-	}
-	if(MCSample == "WJets_MG") {
-	  if(lepttype == -4) return 0.0873016593436;
-	  if(lepttype == -3) return 0.0438639822984;
-	  if(lepttype == -2) return 0.0674797512283;
-	  if(lepttype == -1) return 0.014210081441;
-	}
-	if(MCSample == "WJets_amcatnlo") {
-	  if(lepttype == -4) return 0;
-	  if(lepttype == -3) return 0.0226321777479;
-	  if(lepttype == -2) return 0.0421246036661;
-	  if(lepttype == -1) return 0.0125549144221;
-	}
-	if(MCSample == "TTLL_powheg") {
-	  if(lepttype == -4) return  0.104667131836;
-	  if(lepttype == -3) return  0.20081325592;
-	  if(lepttype == -2) return  0.208661924617;
-	  if(lepttype == -1) return  0.0558379677376;
-	}
-	if(MCSample == "TTLJ_powheg") {
-	  if(lepttype == -4) return  0.088756579959;
-	  if(lepttype == -3) return  0.125114113723;
-	  if(lepttype == -2) return  0.146988576568;
-	  if(lepttype == -1) return  0.0619175029028;
-	}
+  if(MCSample == "DYJets") {
+    if(lepttype == -4) return 0.0591685840071;
+    if(lepttype == -3) return 0.0174470315258;
+    if(lepttype == -2) return 0.0454424883207;
+    if(lepttype == -1) return 0.00728206398724;
+  }
+  if(MCSample == "DYJets_MG") {
+    if(lepttype == -4) return 0.0318908959337;
+    if(lepttype == -3) return 0.103634312838;
+    if(lepttype == -2) return 0.0689184472915;
+    if(lepttype == -1) return 0.00851386616694;
+  }
+  if(MCSample == "WJets_MG") {
+    if(lepttype == -4) return 0.0873016593436;
+    if(lepttype == -3) return 0.0438639822984;
+    if(lepttype == -2) return 0.0674797512283;
+    if(lepttype == -1) return 0.014210081441;
+  }
+  if(MCSample == "WJets_amcatnlo") {
+    if(lepttype == -4) return 0;
+    if(lepttype == -3) return 0.0226321777479;
+    if(lepttype == -2) return 0.0421246036661;
+    if(lepttype == -1) return 0.0125549144221;
+  }
+  if(MCSample == "TTLL_powheg") {
+    if(lepttype == -4) return  0.104667131836;
+    if(lepttype == -3) return  0.20081325592;
+    if(lepttype == -2) return  0.208661924617;
+    if(lepttype == -1) return  0.0558379677376;
+  }
+  if(MCSample == "TTLJ_powheg") {
+    if(lepttype == -4) return  0.088756579959;
+    if(lepttype == -3) return  0.125114113723;
+    if(lepttype == -2) return  0.146988576568;
+    if(lepttype == -1) return  0.0619175029028;
+  }
       }
       else{
-	if(MCSample == "DYJets") {
-	  if(lepttype == -4) return 0.0772264921948;
-	  if(lepttype == -3) return 0.0600469652155;
-	  if(lepttype == -2) return 0.0388712666838;
-	  if(lepttype == -1) return 0.0140494923533;
-	}
-	if(MCSample == "DYJets_MG") {
-	  if(lepttype == -4) return 0.038627951602;
-	  if(lepttype == -3) return 0.0530281741728;
-	  if(lepttype == -2) return 0.0567311732008;
-	  if(lepttype == -1) return 0.0182212860492;
-	}
-	if(MCSample == "WJets_MG") {
-	  if(lepttype == -4) return 0.0931210071564;
-	  if(lepttype == -3) return 0.0473179559737;
-	  if(lepttype == -2) return 0.06237839904;
-	  if(lepttype == -1) return 0.0219251253234;
-	}
-	if(MCSample == "WJets_amcatnlo") {
-	  if(lepttype == -4) return 0.101981966625;
-	  if(lepttype == -3) return 0.0474174087227;
-	  if(lepttype == -2) return 0.0376332339157;
-	  if(lepttype == -1) return 0.0175780435739;
-	}
-	if(MCSample == "TTLL_powheg") {
-	  if(lepttype == -4) return  0.211966243525;
-	  if(lepttype == -3) return  0.197942477458;
-	  if(lepttype == -2) return  0.193407171274;
-	  if(lepttype == -1) return  0.0654073235911;
-	}
-	if(MCSample == "TTLJ_powheg") {
-	  if(lepttype == -4) return  0.120832681361;
-	  if(lepttype == -3) return  0.093773187407;
-	  if(lepttype == -2) return  0.125437996725;
-	  if(lepttype == -1) return  0.0626768502753;
-	}
+  if(MCSample == "DYJets") {
+    if(lepttype == -4) return 0.0772264921948;
+    if(lepttype == -3) return 0.0600469652155;
+    if(lepttype == -2) return 0.0388712666838;
+    if(lepttype == -1) return 0.0140494923533;
+  }
+  if(MCSample == "DYJets_MG") {
+    if(lepttype == -4) return 0.038627951602;
+    if(lepttype == -3) return 0.0530281741728;
+    if(lepttype == -2) return 0.0567311732008;
+    if(lepttype == -1) return 0.0182212860492;
+  }
+  if(MCSample == "WJets_MG") {
+    if(lepttype == -4) return 0.0931210071564;
+    if(lepttype == -3) return 0.0473179559737;
+    if(lepttype == -2) return 0.06237839904;
+    if(lepttype == -1) return 0.0219251253234;
+  }
+  if(MCSample == "WJets_amcatnlo") {
+    if(lepttype == -4) return 0.101981966625;
+    if(lepttype == -3) return 0.0474174087227;
+    if(lepttype == -2) return 0.0376332339157;
+    if(lepttype == -1) return 0.0175780435739;
+  }
+  if(MCSample == "TTLL_powheg") {
+    if(lepttype == -4) return  0.211966243525;
+    if(lepttype == -3) return  0.197942477458;
+    if(lepttype == -2) return  0.193407171274;
+    if(lepttype == -1) return  0.0654073235911;
+  }
+  if(MCSample == "TTLJ_powheg") {
+    if(lepttype == -4) return  0.120832681361;
+    if(lepttype == -3) return  0.093773187407;
+    if(lepttype == -2) return  0.125437996725;
+    if(lepttype == -1) return  0.0626768502753;
+  }
       }
     }
   }
   if (DataEra=="2017"){
     if (bkg=="Fake"){
       if(isMuon){
-	if(MCSample == "DYJets") {
-	  if(lepttype == -4) return 0.0315318471314;
-	  if(lepttype == -3) return 0.0609502111404;
-	  if(lepttype == -2) return 0.040109061932;
-	  if(lepttype == -1) return 0.0069735728288;
-	}
-	if(MCSample == "DYJets_MG") {
-	  if(lepttype == -4) return 0.0643414444373;
-	  if(lepttype == -3) return 0.0628751377959;
-	  if(lepttype == -2) return 0.0668765974658;
-	  if(lepttype == -1) return 0.00813271685938;
-	}
-	if(MCSample == "WJets_MG") {
-	  if(lepttype == -4) return 0.133666629036;
-	  if(lepttype == -3) return 0.0202574788507;
-	  if(lepttype == -2) return 0.0674777485285;
-	  if(lepttype == -1) return 0.0133242425174;
-	}
-	if(MCSample == "WJets_amcatnlo") {
-	  if(lepttype == -4) return 0.0507963590519;
-	  if(lepttype == -3) return 0.0207854433536;
-	  if(lepttype == -2) return 0.0454124146937;
-	  if(lepttype == -1) return 0.0122156837975;
-	}
-	if(MCSample == "TTLL_powheg") {
-	  if(lepttype == -4) return  0.137001446224;
-	  if(lepttype == -3) return  0.202992354234;
-	  if(lepttype == -2) return  0.207423945779;
-	  if(lepttype == -1) return  0.0494693247208;
-	}
-	if(MCSample == "TTLJ_powheg") {
-	  if(lepttype == -4) return  0.0865871108799;
-	  if(lepttype == -3) return  0.120448741434;
-	  if(lepttype == -2) return  0.145669033594;
-	  if(lepttype == -1) return  0.0573959266971;
-	}
+  if(MCSample == "DYJets") {
+    if(lepttype == -4) return 0.0315318471314;
+    if(lepttype == -3) return 0.0609502111404;
+    if(lepttype == -2) return 0.040109061932;
+    if(lepttype == -1) return 0.0069735728288;
+  }
+  if(MCSample == "DYJets_MG") {
+    if(lepttype == -4) return 0.0643414444373;
+    if(lepttype == -3) return 0.0628751377959;
+    if(lepttype == -2) return 0.0668765974658;
+    if(lepttype == -1) return 0.00813271685938;
+  }
+  if(MCSample == "WJets_MG") {
+    if(lepttype == -4) return 0.133666629036;
+    if(lepttype == -3) return 0.0202574788507;
+    if(lepttype == -2) return 0.0674777485285;
+    if(lepttype == -1) return 0.0133242425174;
+  }
+  if(MCSample == "WJets_amcatnlo") {
+    if(lepttype == -4) return 0.0507963590519;
+    if(lepttype == -3) return 0.0207854433536;
+    if(lepttype == -2) return 0.0454124146937;
+    if(lepttype == -1) return 0.0122156837975;
+  }
+  if(MCSample == "TTLL_powheg") {
+    if(lepttype == -4) return  0.137001446224;
+    if(lepttype == -3) return  0.202992354234;
+    if(lepttype == -2) return  0.207423945779;
+    if(lepttype == -1) return  0.0494693247208;
+  }
+  if(MCSample == "TTLJ_powheg") {
+    if(lepttype == -4) return  0.0865871108799;
+    if(lepttype == -3) return  0.120448741434;
+    if(lepttype == -2) return  0.145669033594;
+    if(lepttype == -1) return  0.0573959266971;
+  }
       }
       else{
-	if(MCSample == "DYJets") {
-	  if(lepttype == -4) return 0.0552410785548;
-	  if(lepttype == -3) return 0.0421885755502;
-	  if(lepttype == -2) return 0.0366123039107;
-	  if(lepttype == -1) return 0.0117257243435;
-	}
-	if(MCSample == "DYJets_MG") {
-	  if(lepttype == -4) return 0.0467636614658;
-	  if(lepttype == -3) return 0.0991595208698;
-	  if(lepttype == -2) return 0.0608961994592;
-	  if(lepttype == -1) return 0.0157233817552;
-	}
-	if(MCSample == "WJets_MG") {
-	  if(lepttype == -4) return 0.0815060879819;
-	  if(lepttype == -3) return 0.0326529129583;
-	  if(lepttype == -2) return 0.0601501060186;
-	  if(lepttype == -1) return 0.0200519948637;
-	}
-	if(MCSample == "WJets_amcatnlo") {
-	  if(lepttype == -4) return 0.0826117920487;
-	  if(lepttype == -3) return 0.0294122018262;
-	  if(lepttype == -2) return 0.0400547556236;
-	  if(lepttype == -1) return 0.0138311458242;
-	}
-	if(MCSample == "TTLL_powheg") {
-	  if(lepttype == -4) return  0.194799981666;
-	  if(lepttype == -3) return  0.19220314868;
-	  if(lepttype == -2) return  0.193012005182;
-	  if(lepttype == -1) return  0.0582404525433;
-	}
-	if(MCSample == "TTLJ_powheg") {
-	  if(lepttype == -4) return  0.123669421597;
-	  if(lepttype == -3) return  0.0933380047114;
-	  if(lepttype == -2) return  0.124284245492;
-	  if(lepttype == -1) return  0.0577522442443;
-	}
+  if(MCSample == "DYJets") {
+    if(lepttype == -4) return 0.0552410785548;
+    if(lepttype == -3) return 0.0421885755502;
+    if(lepttype == -2) return 0.0366123039107;
+    if(lepttype == -1) return 0.0117257243435;
+  }
+  if(MCSample == "DYJets_MG") {
+    if(lepttype == -4) return 0.0467636614658;
+    if(lepttype == -3) return 0.0991595208698;
+    if(lepttype == -2) return 0.0608961994592;
+    if(lepttype == -1) return 0.0157233817552;
+  }
+  if(MCSample == "WJets_MG") {
+    if(lepttype == -4) return 0.0815060879819;
+    if(lepttype == -3) return 0.0326529129583;
+    if(lepttype == -2) return 0.0601501060186;
+    if(lepttype == -1) return 0.0200519948637;
+  }
+  if(MCSample == "WJets_amcatnlo") {
+    if(lepttype == -4) return 0.0826117920487;
+    if(lepttype == -3) return 0.0294122018262;
+    if(lepttype == -2) return 0.0400547556236;
+    if(lepttype == -1) return 0.0138311458242;
+  }
+  if(MCSample == "TTLL_powheg") {
+    if(lepttype == -4) return  0.194799981666;
+    if(lepttype == -3) return  0.19220314868;
+    if(lepttype == -2) return  0.193012005182;
+    if(lepttype == -1) return  0.0582404525433;
+  }
+  if(MCSample == "TTLJ_powheg") {
+    if(lepttype == -4) return  0.123669421597;
+    if(lepttype == -3) return  0.0933380047114;
+    if(lepttype == -2) return  0.124284245492;
+    if(lepttype == -1) return  0.0577522442443;
+  }
       }
     }
   }
@@ -465,45 +465,45 @@ double HNL_LeptonCore::ScaleLepToSS(TString bkg, bool isMuon, int lepttype){
     if (bkg=="Fake"){
       if(isMuon){
 
-	if(MCSample == "DYJets") {
-	  if(lepttype == -4) return 0.00696463586771;
-	  if(lepttype == -3) return 0.0438780100486;
-	  if(lepttype == -2) return 0.0417421933143;
-	  if(lepttype == -1) return 0.0073392189094;
-	}
-	if(MCSample == "DYJets_MG") {
-	  if(lepttype == -4) return 0.0529468362564;
-	  if(lepttype == -3) return 0.0645516974416;
-	  if(lepttype == -2) return 0.066535964078;
-	  if(lepttype == -1) return 0.00784650037983;
-	}
-	if(MCSample == "WJets_MG") {
-	  if(lepttype == -4) return 0.118545710799;
-	  if(lepttype == -3) return 0.0127698447325;
-	  if(lepttype == -2) return 0.0647870637369;
-	  if(lepttype == -1) return 0.0138581131242;
-	}
-	if(MCSample == "WJets_amcatnlo") {
-	  if(lepttype == -4) return 0.0681389367829;
-	  if(lepttype == -3) return 0.0265182069246;
-	  if(lepttype == -2) return 0.0298387453646;
-	  if(lepttype == -1) return 0.012405956567;
-	}
-	if(MCSample == "TTLL_powheg") {
-	  if(lepttype == -4) return  0.120106882374;
-	  if(lepttype == -3) return  0.203498438694;
-	  if(lepttype == -2) return  0.207775227132;
-	  if(lepttype == -1) return  0.0513387944922;
-	}
-	if(MCSample == "TTLJ_powheg") {
-	  if(lepttype == -4) return  0.0936908298859;
-	  if(lepttype == -3) return  0.12162153765;
-	  if(lepttype == -2) return  0.145649950884;
-	  if(lepttype == -1) return  0.0588665684297;
-	}
+  if(MCSample == "DYJets") {
+    if(lepttype == -4) return 0.00696463586771;
+    if(lepttype == -3) return 0.0438780100486;
+    if(lepttype == -2) return 0.0417421933143;
+    if(lepttype == -1) return 0.0073392189094;
+  }
+  if(MCSample == "DYJets_MG") {
+    if(lepttype == -4) return 0.0529468362564;
+    if(lepttype == -3) return 0.0645516974416;
+    if(lepttype == -2) return 0.066535964078;
+    if(lepttype == -1) return 0.00784650037983;
+  }
+  if(MCSample == "WJets_MG") {
+    if(lepttype == -4) return 0.118545710799;
+    if(lepttype == -3) return 0.0127698447325;
+    if(lepttype == -2) return 0.0647870637369;
+    if(lepttype == -1) return 0.0138581131242;
+  }
+  if(MCSample == "WJets_amcatnlo") {
+    if(lepttype == -4) return 0.0681389367829;
+    if(lepttype == -3) return 0.0265182069246;
+    if(lepttype == -2) return 0.0298387453646;
+    if(lepttype == -1) return 0.012405956567;
+  }
+  if(MCSample == "TTLL_powheg") {
+    if(lepttype == -4) return  0.120106882374;
+    if(lepttype == -3) return  0.203498438694;
+    if(lepttype == -2) return  0.207775227132;
+    if(lepttype == -1) return  0.0513387944922;
+  }
+  if(MCSample == "TTLJ_powheg") {
+    if(lepttype == -4) return  0.0936908298859;
+    if(lepttype == -3) return  0.12162153765;
+    if(lepttype == -2) return  0.145649950884;
+    if(lepttype == -1) return  0.0588665684297;
+  }
       }
       else{
-	if(MCSample == "DYJets") {
+  if(MCSample == "DYJets") {
           if(lepttype == -4) return 0.0690829858176;
           if(lepttype == -3) return 0.0502839490934;
           if(lepttype == -2) return 0.0411787811785;
@@ -861,8 +861,8 @@ void HNL_LeptonCore::InitializeTreeVars(){
 }
 
 void HNL_LeptonCore::SetupEventBDTVariables(std::vector<Lepton *> LepTColl,  
-					    std::vector<Jet> JetAllColl,std::vector<Jet> JetColl, std::vector<Jet> JetVBFColl, std::vector<Jet> B_JetColl, 
-					    Event  ev, Particle METv, AnalyzerParameter param){
+              std::vector<Jet> JetAllColl,std::vector<Jet> JetColl, std::vector<Jet> JetVBFColl, std::vector<Jet> B_JetColl, 
+              Event  ev, Particle METv, AnalyzerParameter param){
 
   /// Ensure obj def is correct
   // All Jets = 10 GeV, noID and eta 3
@@ -1027,7 +1027,7 @@ void HNL_LeptonCore::SetupEventBDTVariables(std::vector<Lepton *> LepTColl,
 
 
 double HNL_LeptonCore::EvaluateEventMVA(TString mN, TString NCut, TString NTree,HNL_LeptonCore::Channel channel ,
-					std::vector<Lepton *> LepTColl, Event  ev, Particle METv, AnalyzerParameter param){
+          std::vector<Lepton *> LepTColl, Event  ev, Particle METv, AnalyzerParameter param){
 
   std::vector<FatJet> FatjetColl                  = GetHNLAK8Jets("BDT",param);
   std::vector<Jet> All_JetColl                    = GetHNLJets("NoCut_Eta3",param);
@@ -2526,6 +2526,7 @@ std::vector<Jet> HNL_LeptonCore::GetHNLJets(TString JetType, AnalyzerParameter p
 
   // AK8
   std::vector<FatJet> AK8_JetCollLoose             = GetHNLAK8Jets("Loose", param);
+  std::vector<FatJet> AK8_JetCollHNL               = GetHNLAK8Jets("HNL", param); //JH
 
   if(JetType=="All")          return AK4_All;
   if(JetType=="NoCut_Eta3")   return AK4_NoCut3;
@@ -2534,9 +2535,12 @@ std::vector<Jet> HNL_LeptonCore::GetHNLJets(TString JetType, AnalyzerParameter p
   std::vector<Electron>   ElectronCollV = GetElectrons(param.Electron_Veto_ID, 10., 2.5);
   std::vector<Muon>       MuonCollV     = GetMuons    (param.Muon_Veto_ID,     5.,  2.4);
 
-  if(JetType=="Loose")    return SelectAK4Jets(AK4_Loose,     15., 4.7, true,  0.4,0.8, "",   ElectronCollV,MuonCollV, AK8_JetCollLoose);
-  if(JetType=="Tight")    return SelectAK4Jets(AK4_Loose,     20., 2.7, true,  0.4,0.8, "",   ElectronCollV,MuonCollV, AK8_JetCollLoose);
-  if(JetType=="VBFTight") return SelectAK4Jets(AK4_Loose,     30., 4.7, true,  0.4,0.8, "",   ElectronCollV,MuonCollV, AK8_JetCollLoose);
+  //if(JetType=="Loose")    return SelectAK4Jets(AK4_Loose,     15., 4.7, true,  0.4,0.8, "",   ElectronCollV,MuonCollV, AK8_JetCollLoose);
+  //if(JetType=="Tight")    return SelectAK4Jets(AK4_Loose,     20., 2.7, true,  0.4,0.8, "",   ElectronCollV,MuonCollV, AK8_JetCollLoose);
+  //if(JetType=="VBFTight") return SelectAK4Jets(AK4_Loose,     30., 4.7, true,  0.4,0.8, "",   ElectronCollV,MuonCollV, AK8_JetCollLoose);
+  if(JetType=="Loose")    return SelectAK4Jets(AK4_Loose,     15., 4.7, true,  0.4,0.8, "",   ElectronCollV,MuonCollV, AK8_JetCollHNL);
+  if(JetType=="Tight")    return SelectAK4Jets(AK4_Loose,     20., 2.7, true,  0.4,0.8, "",   ElectronCollV,MuonCollV, AK8_JetCollHNL);
+  if(JetType=="VBFTight") return SelectAK4Jets(AK4_Loose,     30., 4.7, true,  0.4,0.8, "",   ElectronCollV,MuonCollV, AK8_JetCollHNL); //JH
 
   /// BJET
   std::vector<Jet> BJetCollLoose                   = SelectAK4Jets(AK4_Loose,  20., 2.4, true,  0.4,0.8, "",   ElectronCollV,MuonCollV,  AK8_JetCollLoose);
@@ -3868,29 +3872,29 @@ void HNL_LeptonCore::FillAK8Plots(HNL_LeptonCore::Channel channel,  TString plot
 
 
 
-  if(DrawSyst) FillHist( plot_dir+"/RegionPlots_"+ region+ "/"+  "N_AK8Jets", fatjets.size() , w, 10, 0., 10., "N_{AK8 jets}");
+  FillHist( plot_dir+"/RegionPlots_"+ region+ "/"+  "N_AK8Jets", fatjets.size() , w, 10, 0., 10., "N_{AK8 jets}");
 
-  double minDRTauAK8=9999.;
-  for(unsigned int i=0; i < fatjets.size(); i++){
-    
-    for(auto itau : TauColl){
-      if(fatjets[i].DeltaR(itau) < minDRTauAK8) minDRTauAK8 = fatjets[i].DeltaR(itau) ;
-    }
-    
-    if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/AK8Jet_Eta",  fatjets[i].Eta() , w, 100, -5., 5., "AK8 Jet #eta");
-    if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/AK8Jet_Pt",  fatjets[i].Pt() , w, 100, 0., 2000., "AK8 Jet p_{T} GeV");
-    if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/AK8Jet_SDMass",  fatjets[i].SDMass() , w, 100, 0., 500., "Mass_{softdrop} GeV");
-    if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/AK8Jet_tau21",  fatjets[i].PuppiTau2()/ fatjets[i].PuppiTau1() , w, 200, 0., 1., "#tau_{21}");
-    if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+"/R_AK8Jet_MET",  fatjets[i].DeltaR(met) ,w, 50,  0., 5,"#DeltaR(FJ,met)");
-    if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+"/AK8_Tagger_DeepCSV" , fatjets[i].GetTaggerResult(JetTagging::DeepCSV), w, 50, 0, 1., "JetTagging::DeepCSV");
-    if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+"/AK8_Tagger_particleNet_WvsQCD" , fatjets[i].GetTaggerResult(JetTagging::particleNet_WvsQCD), w, 50, 0, 1., "JetTagging::particleNet_WvsQCD");
-    if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+"/AK8_Tagger_particleNet_TvsQCD" , fatjets[i].GetTaggerResult(JetTagging::particleNet_TvsQCD), w, 50, 0, 1., "JetTagging::particleNet_WvsQCD");
-    if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+"/AK8_Tagger_particleNet_ZvsQCD" , fatjets[i].GetTaggerResult(JetTagging::particleNet_ZvsQCD), w, 50, 0, 1., "JetTagging::particleNet_WvsQCD");
-    if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+"/AK8_Tagger_particleNet_QCD" , fatjets[i].GetTaggerResult(JetTagging::particleNet_QCD), w, 50, 0, 1., "JetTagging::particleNet_WvsQCD");
-    if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+"/AK8_Tagger_particleNetMD_QCD" , fatjets[i].GetTaggerResult(JetTagging::particleNetMD_QCD), w, 50, 0, 1., "JetTagging::particleNet_WvsQCD");
-  }
+  //double minDRTauAK8=9999.;
+  //for(unsigned int i=0; i < fatjets.size(); i++){
+  //  
+  //  for(auto itau : TauColl){
+  //    if(fatjets[i].DeltaR(itau) < minDRTauAK8) minDRTauAK8 = fatjets[i].DeltaR(itau) ;
+  //  }
+  //  
+  //  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/AK8Jet_Eta",  fatjets[i].Eta() , w, 100, -5., 5., "AK8 Jet #eta");
+  //  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/AK8Jet_Pt",  fatjets[i].Pt() , w, 100, 0., 2000., "AK8 Jet p_{T} GeV");
+  //  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/AK8Jet_SDMass",  fatjets[i].SDMass() , w, 100, 0., 500., "Mass_{softdrop} GeV");
+  //  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/AK8Jet_tau21",  fatjets[i].PuppiTau2()/ fatjets[i].PuppiTau1() , w, 200, 0., 1., "#tau_{21}");
+  //  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+"/R_AK8Jet_MET",  fatjets[i].DeltaR(met) ,w, 50,  0., 5,"#DeltaR(FJ,met)");
+  //  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+"/AK8_Tagger_DeepCSV" , fatjets[i].GetTaggerResult(JetTagging::DeepCSV), w, 50, 0, 1., "JetTagging::DeepCSV");
+  //  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+"/AK8_Tagger_particleNet_WvsQCD" , fatjets[i].GetTaggerResult(JetTagging::particleNet_WvsQCD), w, 50, 0, 1., "JetTagging::particleNet_WvsQCD");
+  //  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+"/AK8_Tagger_particleNet_TvsQCD" , fatjets[i].GetTaggerResult(JetTagging::particleNet_TvsQCD), w, 50, 0, 1., "JetTagging::particleNet_WvsQCD");
+  //  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+"/AK8_Tagger_particleNet_ZvsQCD" , fatjets[i].GetTaggerResult(JetTagging::particleNet_ZvsQCD), w, 50, 0, 1., "JetTagging::particleNet_WvsQCD");
+  //  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+"/AK8_Tagger_particleNet_QCD" , fatjets[i].GetTaggerResult(JetTagging::particleNet_QCD), w, 50, 0, 1., "JetTagging::particleNet_WvsQCD");
+  //  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+"/AK8_Tagger_particleNetMD_QCD" , fatjets[i].GetTaggerResult(JetTagging::particleNetMD_QCD), w, 50, 0, 1., "JetTagging::particleNet_WvsQCD");
+  //}
 
-  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/AK8Jet_dRmin_Tau",   minDRTauAK8,  w, 50, 0, 5, "#DeltaR (WAK8,Tau)");
+  //if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/AK8Jet_dRmin_Tau",   minDRTauAK8,  w, 50, 0, 5, "#DeltaR (WAK8,Tau)");
 
 
   if(leps.size() != 2) return;
@@ -3910,28 +3914,32 @@ void HNL_LeptonCore::FillAK8Plots(HNL_LeptonCore::Channel channel,  TString plot
 
   FillHist( plot_dir+"/RegionPlots_"+ region+ "/AK8Jet_Mass_l1J",  l1JCand.M(),  w, 500, 0, 2000, "Reco M_{llJ}");
   FillHist( plot_dir+"/RegionPlots_"+ region+ "/AK8Jet_Mass_l2J",  l2JCand.M(),  w, 500, 0, 2000, "Reco M_{llJ}");
-  if(DrawSyst)FillHist( plot_dir+"/RegionPlots_"+ region+ "/AK8Jet_Mass_llJ",  llJCand.M(),  w, 500, 0, 2000, "Reco M_{llJ}");
-  if(DrawSyst)FillHist( plot_dir+"/RegionPlots_"+ region+ "/AK8Jet_Mass_llJOverl1J",  llJCand.M()/ l1JCand.M(),  w, 500, 0, 5, "Reco M_{llJ}");
+  FillHist( plot_dir+"/RegionPlots_"+ region+ "/AK8Jet_Mass_llJ",  llJCand.M(),  w, 500, 0, 2000, "Reco M_{llJ}");
+  //if(DrawSyst)FillHist( plot_dir+"/RegionPlots_"+ region+ "/AK8Jet_Mass_llJOverl1J",  llJCand.M()/ l1JCand.M(),  w, 500, 0, 5, "Reco M_{llJ}");
 
-  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/AK8Jet_dR_W_lep1",   fatjets[0].DeltaR(*leps[0]),  w, 50, 0, 5, "#DeltaR (Wj1,lep1)");
-  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/AK8Jet_dR_W_lep2",   fatjets[0].DeltaR(*leps[1]),  w, 50, 0, 5, "#DeltaR (Wj2,lep2)");
+  FillHist( plot_dir+"/RegionPlots_"+ region+ "/AK8Jet_dR_W_lep1",   fatjets[0].DeltaR(*leps[0]),  w, 50, 0, 5, "#DeltaR (Wj1,lep1)");
+  FillHist( plot_dir+"/RegionPlots_"+ region+ "/AK8Jet_dR_W_lep2",   fatjets[0].DeltaR(*leps[1]),  w, 50, 0, 5, "#DeltaR (Wj2,lep2)");
   
-  if(fatjets[0].DeltaR(*leps[0] ) < fatjets[0].DeltaR(*leps[1] )){
-    Particle lJcloseCand = *leps[0]  +  fatjets[0];
-    if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/AK8Jet_Mass_W_close_lep",  lJcloseCand.M(),  w, 250, 0, 2000, "Reco M_{llJ}");
-  }
+  FillHist( plot_dir+"/RegionPlots_"+ region+ "/AK8Jet_dPhi_l2_lJ",  fabs(TVector2::Phi_mpi_pi( ( (fatjets[0] + *leps[0]).Phi() - (leps[1]->Phi() )))),  w,  100, 0., 5., "");
+  FillHist( plot_dir+"/RegionPlots_"+ region+ "/AK8Jet_dPhi_l1_lJ",  fabs(TVector2::Phi_mpi_pi( ( (fatjets[0] + *leps[1]).Phi() - (leps[0]->Phi() )))),  w,  100, 0., 5., "");
+
+
+  //if(fatjets[0].DeltaR(*leps[0] ) < fatjets[0].DeltaR(*leps[1] )){
+  //  Particle lJcloseCand = *leps[0]  +  fatjets[0];
+  //  FillHist( plot_dir+"/RegionPlots_"+ region+ "/AK8Jet_Mass_W_close_lep",  lJcloseCand.M(),  w, 250, 0, 2000, "Reco M_{llJ}");
+  //}
 
 
 
-  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/AK8Jet_dPhi_l1_llJ",  fabs(TVector2::Phi_mpi_pi( ( (fatjets[0] + *leps[0]+*leps[1]).Phi() - (leps[0]->Phi() )))),  w,  100, 0., 5., "");
-  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/AK8Jet_dPhi_l1_llJ",  fabs(TVector2::Phi_mpi_pi( ( (fatjets[0] + *leps[0]+*leps[1]).Phi() - (leps[1]->Phi() )))),  w,  100, 0., 5., "");
-  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/AK8Jet_dPhi_N1_llJ",  fabs(TVector2::Phi_mpi_pi( ( (fatjets[0] + *leps[0]+*leps[1]).Phi() - ((*leps[0]+fatjets[0]).Phi() )))),  w,  100, 0., 5., "");
-  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/AK8Jet_dPhi_N2_llJ",  fabs(TVector2::Phi_mpi_pi( ( (fatjets[0] + *leps[0]+*leps[1]).Phi() - ((*leps[1]+fatjets[0]).Phi() )))),  w,  100, 0., 5., "");
-  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/AK8Jet_dPhi_W_llJ",  fabs(TVector2::Phi_mpi_pi( ( (fatjets[0] + *leps[0]+*leps[1]).Phi() - ((fatjets[0]).Phi() )))),  w,  100, 0., 5., "");
-  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/AK8Jet_dPhi_l1_lJ",  fabs(TVector2::Phi_mpi_pi( ( (fatjets[0] + *leps[0]).Phi() - (leps[1]->Phi() )))),  w,  100, 0., 5., "");
-  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/AK8Jet_dPhi_l2_lJ",  fabs(TVector2::Phi_mpi_pi( ( (fatjets[0] + *leps[1]).Phi() - (leps[0]->Phi() )))),  w,  100, 0., 5., "");
-  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/AK8Jet_dPhi_l1_J",  fabs(TVector2::Phi_mpi_pi( ( (fatjets[0] ).Phi() - (leps[0]->Phi() )))),  w,  100, 0., 5., "");
-  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/AK8Jet_dPhi_l2_J",  fabs(TVector2::Phi_mpi_pi( ( (fatjets[0] ).Phi() - (leps[1]->Phi() )))),  w,  100, 0., 5., "");
+  //if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/AK8Jet_dPhi_l1_llJ",  fabs(TVector2::Phi_mpi_pi( ( (fatjets[0] + *leps[0]+*leps[1]).Phi() - (leps[0]->Phi() )))),  w,  100, 0., 5., "");
+  //if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/AK8Jet_dPhi_l1_llJ",  fabs(TVector2::Phi_mpi_pi( ( (fatjets[0] + *leps[0]+*leps[1]).Phi() - (leps[1]->Phi() )))),  w,  100, 0., 5., "");
+  //if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/AK8Jet_dPhi_N1_llJ",  fabs(TVector2::Phi_mpi_pi( ( (fatjets[0] + *leps[0]+*leps[1]).Phi() - ((*leps[0]+fatjets[0]).Phi() )))),  w,  100, 0., 5., "");
+  //if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/AK8Jet_dPhi_N2_llJ",  fabs(TVector2::Phi_mpi_pi( ( (fatjets[0] + *leps[0]+*leps[1]).Phi() - ((*leps[1]+fatjets[0]).Phi() )))),  w,  100, 0., 5., "");
+  //if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/AK8Jet_dPhi_W_llJ",  fabs(TVector2::Phi_mpi_pi( ( (fatjets[0] + *leps[0]+*leps[1]).Phi() - ((fatjets[0]).Phi() )))),  w,  100, 0., 5., "");
+  //if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/AK8Jet_dPhi_l1_lJ",  fabs(TVector2::Phi_mpi_pi( ( (fatjets[0] + *leps[0]).Phi() - (leps[1]->Phi() )))),  w,  100, 0., 5., "");
+  //if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/AK8Jet_dPhi_l2_lJ",  fabs(TVector2::Phi_mpi_pi( ( (fatjets[0] + *leps[1]).Phi() - (leps[0]->Phi() )))),  w,  100, 0., 5., "");
+  //if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/AK8Jet_dPhi_l1_J",  fabs(TVector2::Phi_mpi_pi( ( (fatjets[0] ).Phi() - (leps[0]->Phi() )))),  w,  100, 0., 5., "");
+  //if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/AK8Jet_dPhi_l2_J",  fabs(TVector2::Phi_mpi_pi( ( (fatjets[0] ).Phi() - (leps[1]->Phi() )))),  w,  100, 0., 5., "");
 
   return;
 }
@@ -3969,7 +3977,7 @@ void HNL_LeptonCore::Fill_RegionPlots(HNL_LeptonCore::Channel channel, TString p
     if(ilep->LeptonFlavour() == Lepton::MUON) nmu++;
   }
 
-  bool DrawAll(false), DrawSyst(false);
+  bool DrawAll(false), DrawSyst(false); //JH
   if (plot_dir.Contains("Syst")){
     //DrawSyst=true; //JH
   }
@@ -3982,10 +3990,10 @@ void HNL_LeptonCore::Fill_RegionPlots(HNL_LeptonCore::Channel channel, TString p
 
 
  /// Draw N leptons
-  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/N_El", nel,  w, 5, 0, 5, "El size");
-  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/N_Mu", nmu,  w, 5, 0, 5, "Mu size");
+  FillHist( plot_dir+"/RegionPlots_"+ region+ "/N_El", nel,  w, 5, 0, 5, "El size");
+  FillHist( plot_dir+"/RegionPlots_"+ region+ "/N_Mu", nmu,  w, 5, 0, 5, "Mu size");
   // Draw N jets
-  if(DrawSyst) FillHist( plot_dir+"/RegionPlots_"+ region+ "/N_AK4Jets", jets.size() , w, 10, 0., 10., "N_{AK4 jets}");
+  FillHist( plot_dir+"/RegionPlots_"+ region+ "/N_AK4Jets", jets.size() , w, 10, 0., 10., "N_{AK4 jets}");
 
 
   if(leps.size() < 2) return;
@@ -4021,10 +4029,9 @@ void HNL_LeptonCore::Fill_RegionPlots(HNL_LeptonCore::Channel channel, TString p
 
     if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/Single_AK4Jet_dPhi_l1_l1J",  fabs(TVector2::Phi_mpi_pi( ( (*leps[0]+ jets[0]).Phi() - (leps[1]->Phi() )))),  w,  500, 0., 2000., "Reco_Onejet M_{lljj}");
 
-    if(DrawSyst)FillHist( plot_dir+"/RegionPlots_"+ region+ "/AK4Jet_1_pt", jets[0].Pt() ,  w, 2000, 0, 2000,"l_{1} p_{T} GeV"); //JH
-    if(DrawSyst)FillHist( plot_dir+"/RegionPlots_"+ region+ "/AK4Jet_2_pt", jets[1].Pt() ,  w, 2000, 0, 2000,"1_{2} p_{T} GeV"); //JH
-    if(DrawSyst)FillHist( plot_dir+"/RegionPlots_"+ region+ "/AK4Jet_1_eta", jets[0].Eta()  , w, 60, -3., 3,"l_{1} #eta");       //JH
-    if(DrawSyst)FillHist( plot_dir+"/RegionPlots_"+ region+ "/AK4Jet_2_eta", jets[1].Eta()  , w, 60, -3., 3.,"l_{2} #eta");      //JH
+    FillHist( plot_dir+"/RegionPlots_"+ region+ "/OneJet_AK4Jet_1_pt", jets[0].Pt() ,  w, 2000, 0, 2000,"l_{1} p_{T} GeV"); //JH
+    FillHist( plot_dir+"/RegionPlots_"+ region+ "/OneJet_AK4Jet_1_eta", jets[0].Eta()  , w, 60, -3., 3,"l_{1} #eta");       //JH
+
 
   }
   
@@ -4109,11 +4116,54 @@ void HNL_LeptonCore::Fill_RegionPlots(HNL_LeptonCore::Channel channel, TString p
 
 
 
-    FillHist( plot_dir+"/RegionPlots_"+ region+ "/DiJet_M_l1W_M_l2W",  N1Cand.M(), N2Cand.M(), w, 100, 0., 2000., 100, 0., 2000.);
+    //FillHist( plot_dir+"/RegionPlots_"+ region+ "/DiJet_M_l1W_M_l2W",  N1Cand.M(), N2Cand.M(), w, 100, 0., 2000., 100, 0., 2000.);
     if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/DiJet_dR_W_lep1",   WCand.DeltaR(*leps[0] ),  w, 50, 0, 5, "#DeltaR (W,lep1)");
     if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/DiJet_dR_W_lep2",   WCand.DeltaR(*leps[1] ),  w, 50, 0, 5, "#DeltaR (W,lep2)");
     FillHist( plot_dir+"/RegionPlots_"+ region+ "/DiJet_M_W",   WCand.M(),  w, 100, 0, 2000, "Reco M_{jj}");
+    FillHist( plot_dir+"/RegionPlots_"+ region+ "/DiJet_M_N1Cand",   N1Cand.M(),  w, 100, 0, 2000, "Reco M_{l1jj}");
+    FillHist( plot_dir+"/RegionPlots_"+ region+ "/DiJet_M_N2Cand",   N2Cand.M(),  w, 100, 0, 2000, "Reco M_{l2jj}");
+ 
+    FillHist( plot_dir+"/RegionPlots_"+ region+ "/DiJet_AK4Jet_1_pt", jets[0].Pt() ,  w, 2000, 0, 2000,"l_{1} p_{T} GeV"); //JH
+    FillHist( plot_dir+"/RegionPlots_"+ region+ "/DiJet_AK4Jet_2_pt", jets[1].Pt() ,  w, 2000, 0, 2000,"1_{2} p_{T} GeV"); //JH
+    FillHist( plot_dir+"/RegionPlots_"+ region+ "/DiJet_AK4Jet_1_eta", jets[0].Eta()  , w, 60, -3., 3,"l_{1} #eta");       //JH
+    FillHist( plot_dir+"/RegionPlots_"+ region+ "/DiJet_AK4Jet_2_eta", jets[1].Eta()  , w, 60, -3., 3.,"l_{2} #eta");      //JH
+
+
+    double maxDiJetDeta=0.;
+    int ijet1(-1), ijet2(-1);
+    for(unsigned int ij = 0; ij < jets.size()-1; ij++){
+      for(unsigned int ij2 = ij+1; ij2 < jets.size(); ij2++){
+        double deta = fabs(jets[ij].Eta() - jets[ij2].Eta());
+        if(deta > maxDiJetDeta) {
+          maxDiJetDeta=deta;
+          ijet1=ij;
+          ijet2=ij2;
+        }
+      }
+    }
     
+    if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+"/Jet_dR_jet1_lep1",  jets[ijet1].DeltaR(*leps[0]) ,w, 100,  0., 5,"#DeltaR(j,l1)");
+    if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+"/Jet_dR_jet1_lep2",  jets[ijet1].DeltaR(*leps[1]) ,w, 100,  0., 5,"#DeltaR(j,l1)");
+    
+    FillHist( plot_dir+"/RegionPlots_"+ region+ "/MaxDEta_jet1_jet2", maxDiJetDeta  , w, 200, 0., 10., "Max DEta");
+    Particle JJMEta = jets[ijet1] + jets[ijet2];
+    
+    FillHist( plot_dir+"/RegionPlots_"+ region+ "/"+ "MaxDEtaJets_MJJ",JJMEta.M()   , w, 200, 0., 2000., "MaxDEta MJJ");
+    
+    double Av_JetEta= 0.5*(jets[ijet1].Eta()+ jets[ijet2].Eta());
+    double zeppenfeld = TMath::Max((*leps[0]).Eta()  - Av_JetEta , (*leps[1]).Eta()  - Av_JetEta ) /maxDiJetDeta;
+    FillHist( plot_dir+"/RegionPlots_"+ region+ "/"+ "MaxDEta_Jets_zeppenfeld", zeppenfeld  , w, 200, 0., 2., "zeppenfeld");
+
+    //////////////////
+    Particle JJLead = jets[0] + jets[1];
+    FillHist( plot_dir+"/RegionPlots_"+ region+ "/"+ "Lead_MJJ",JJLead.M()   , w, 200, 0., 2000., "Lead MJJ");
+    
+    maxDiJetDeta=fabs(jets[0].Eta() - jets[1].Eta());
+
+    Av_JetEta= 0.5*(jets[0].Eta()+ jets[1].Eta());
+    zeppenfeld = TMath::Max((*leps[0]).Eta()  - Av_JetEta , (*leps[1]).Eta()  - Av_JetEta ) /maxDiJetDeta;
+    FillHist( plot_dir+"/RegionPlots_"+ region+ "/"+ "Lead_zeppenfeld", zeppenfeld  , w, 200, 0., 2., "zeppenfeld");    
+
 
     int nSRbins=8;
     double mljbins[nSRbins] = { 0., 200., 400.,500., 600.,700., 1000., 2000.};
@@ -4122,8 +4172,8 @@ void HNL_LeptonCore::Fill_RegionPlots(HNL_LeptonCore::Channel channel, TString p
     double MllW = (lljjCand.M() > 2000.) ? 1999. : lljjCand.M();
 
 
-    FillHist( plot_dir+"/RegionPlots_"+ region+ "/DiJet_M_l1W",   MN1,  w, 7, mljbins , "Reco M_{l1jj}");
-    FillHist( plot_dir+"/RegionPlots_"+ region+ "/DiJet_M_l2W",   MN2,  w, 7, mljbins , "Reco M_{l2jj} ");
+    //FillHist( plot_dir+"/RegionPlots_"+ region+ "/DiJet_M_l1W",   MN1,  w, 7, mljbins , "Reco M_{l1jj}");
+    //FillHist( plot_dir+"/RegionPlots_"+ region+ "/DiJet_M_l2W",   MN2,  w, 7, mljbins , "Reco M_{l2jj} ");
     if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/DiJet_M_lAv12W", (N1Cand.M()+  N2Cand.M())/2.,  w,  500, 0., 2000., "Reco M_{l1_2jj} ");
     
     if(DrawSyst)FillHist( plot_dir+"/RegionPlots_"+ region+ "/DiJet_M_llW",  MllW ,  w, 7, mljbins , "Reco M_{lljj}");
@@ -4163,6 +4213,14 @@ void HNL_LeptonCore::Fill_RegionPlots(HNL_LeptonCore::Channel channel, TString p
   FillHist( plot_dir+"/RegionPlots_"+ region+ "/Lep_1_eta", leps[0]->Eta()  , w, 60, -3., 3,"l_{1} #eta");
   FillHist( plot_dir+"/RegionPlots_"+ region+ "/Lep_2_eta", leps[1]->Eta()  , w, 60, -3., 3.,"l_{2} #eta");
 
+  double ll_dphi = fabs(TVector2::Phi_mpi_pi( ( (*leps[0]).Phi() - (*leps[1]).Phi() )) );
+  double ll_deta = fabs((*leps[0]).Eta() - (*leps[1]).Eta());
+  FillHist( plot_dir+"/RegionPlots_"+ region+ "/"+ "dPhi_lep1_lep2", ll_dphi  , w, 200, -5., 5., "#Delta #Phi(l1,l2)") ;
+  FillHist( plot_dir+"/RegionPlots_"+ region+ "/"+ "dEta_lep1_lep2", ll_deta  , w, 200, -5., 5., "#Delta #Phi(l1,l2)") ;
+
+  FillHist( plot_dir+"/RegionPlots_"+ region+ "/Ev_LT", LT  , w, 200, 0., 2000.,"L_{T} GeV");
+  FillHist( plot_dir+"/RegionPlots_"+ region+ "/M_ll",  llCand.M(), w, 400, 0., 2000., "M_{ll} GeV");
+
   if(threelep) {
     FillHist( plot_dir+"/RegionPlots_"+ region+ "/Lep_3_pt", leps[2]->Pt()  , w, 100, 0., 1000.,"l_{3} p_{T} GeV"); //JH
     FillHist( plot_dir+"/RegionPlots_"+ region+ "/Lep_3_eta", leps[2]->Eta()  , w, 60, -3., 3.,"l_{3} #eta");
@@ -4178,16 +4236,15 @@ void HNL_LeptonCore::Fill_RegionPlots(HNL_LeptonCore::Channel channel, TString p
 
 
   double HT = GetHT(jets, fatjets);
-  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/Ev_LT", LT  , w, 200, 0., 2000.,"L_{T} GeV");
-  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/Ev_HT", HT  , w, 200, 0., 2000.,"H_{T} GeV");
+  FillHist( plot_dir+"/RegionPlots_"+ region+ "/Ev_HT", HT  , w, 200, 0., 2000.,"H_{T} GeV");
   FillHist( plot_dir+"/RegionPlots_"+ region+ "/HToLepPt1", HT/ leps[0]->Pt()  , w, 100, 0., 20.,"HT/PT(1)");
   if(DrawSyst)FillHist( plot_dir+"/RegionPlots_"+ region+ "/HToLepPt2", HT/ leps[1]->Pt()  , w, 100, 0., 20.,"HT/PT(2)");
   if(threelep&&DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/HToLepPt3", HT/ leps[2]->Pt()  , w, 100, 0., 20.,"HT/PT(3)");
   if(fourlep&&DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/HToLepPt4", HT/ leps[3]->Pt()  , w, 100, 0., 20.,"HT/PT(4)");
 
   
-  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/"+ "nPV",  nvtx , w, 120, 0., 120.);
-  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/"+ "nPileUp",  nPileUp, w, 120, 0., 120.);
+  FillHist( plot_dir+"/RegionPlots_"+ region+ "/"+ "nPV",  nvtx , w, 120, 0., 120.);
+  FillHist( plot_dir+"/RegionPlots_"+ region+ "/"+ "nPileUp",  nPileUp, w, 120, 0., 120.);
   
   double ST = GetST(leps, jets, fatjets, met);
   double met2_st = pow(met.Pt(),2.)/ ST;  
@@ -4243,140 +4300,79 @@ void HNL_LeptonCore::Fill_RegionPlots(HNL_LeptonCore::Channel channel, TString p
   
 
   if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/MET_uncorr", METunsmearedv.Pt()  , w, 200, 0., 400.,"MET GeV");
-  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/M_ll",  llCand.M(), w, 400, 0., 2000., "M_{ll} GeV");
   
   //  return;
 
-  double mindRlepj1(99999.);
-  double mindRlepj2(99999.);
+  //double mindRlepj1(99999.);
+  //double mindRlepj2(99999.);
 
-  for(unsigned int i=0; i < jets.size(); i++){
+  //for(unsigned int i=0; i < jets.size(); i++){
 
-    if(i == 0){
-      FillHist( plot_dir+"/RegionPlots_"+ region+ "/"+ "Jet_1_pt",  jets[i].Pt() , w, 100, 0., 2000., "j_{1} p_{T} GeV");
-      FillHist( plot_dir+"/RegionPlots_"+ region+ "/"+ "Jet_1_eta",  jets[i].Eta() , w, 100, -5., 5., "j_{1} #eta");
-    }
-    if(i == 1){
-      FillHist( plot_dir+"/RegionPlots_"+ region+ "/"+ "Jet_2_pt",  jets[i].Pt() , w, 100, 0., 2000., "j_{2} p_{T} GeV");
-      FillHist( plot_dir+"/RegionPlots_"+ region+ "/"+ "Jet_2_eta",  jets[i].Eta() , w, 100, -5., 5., "j_{2} #eta"); //JH
-    }
-    
-    if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/Jet_pileup_mva",  jets[i].PileupJetId() , w, 100, -1., 1., "PileupJetId");
-    if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/Jet_pileup_loose", jets[i].PassPileupMVA("loose", GetEraShort()), w, 2, 0., 2., "PileupJetId");
-    if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/Jet_pileup_medium", jets[i].PassPileupMVA("medium", GetEraShort()), w, 2, 0., 2., "PileupJetId");
-    if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/Jet_pileup_tight", jets[i].PassPileupMVA("tight", GetEraShort()), w, 2, 0., 2., "PileupJetId");
+  //  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/Jet_pileup_mva",  jets[i].PileupJetId() , w, 100, -1., 1., "PileupJetId");
+  //  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/Jet_pileup_loose", jets[i].PassPileupMVA("loose", GetEraShort()), w, 2, 0., 2., "PileupJetId");
+  //  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/Jet_pileup_medium", jets[i].PassPileupMVA("medium", GetEraShort()), w, 2, 0., 2., "PileupJetId");
+  //  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/Jet_pileup_tight", jets[i].PassPileupMVA("tight", GetEraShort()), w, 2, 0., 2., "PileupJetId");
 
-    if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/AK4DeepCSV_score", jets[i].GetTaggerResult(JetTagging::DeepCSV), w, 100, 0, 1., "DeepCSV_score");
-    if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/AK4DeepJet_score", jets[i].GetTaggerResult(JetTagging::DeepJet), w, 100, 0, 1., "DeepCSV_score");
-    if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/Jet_pt",  jets[i].Pt() , w, 400, 0., 2000., "AK4 Jet p_{T} GeV");
-    if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/Jet_eta",  jets[i].Eta() , w, 100, -5., 5., "AK4 Jet #eta ");
-    if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/Jet_CEEF", jets[i].ChargedEmEnergyFraction(), w, 50, 0., 1. ,"");
-    if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/Jet_CHEF", jets[i].ChargedHadEnergyFraction(), w, 50, 0., 1. ,"");
+  //  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/AK4DeepCSV_score", jets[i].GetTaggerResult(JetTagging::DeepCSV), w, 100, 0, 1., "DeepCSV_score");
+  //  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/AK4DeepJet_score", jets[i].GetTaggerResult(JetTagging::DeepJet), w, 100, 0, 1., "DeepCSV_score");
+  //  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/Jet_pt",  jets[i].Pt() , w, 400, 0., 2000., "AK4 Jet p_{T} GeV");
+  //  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/Jet_eta",  jets[i].Eta() , w, 100, -5., 5., "AK4 Jet #eta ");
+  //  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/Jet_CEEF", jets[i].ChargedEmEnergyFraction(), w, 50, 0., 1. ,"");
+  //  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/Jet_CHEF", jets[i].ChargedHadEnergyFraction(), w, 50, 0., 1. ,"");
 
-    if(jets[i].DeltaR(*leps[0] ) < mindRlepj1) mindRlepj1=jets[i].DeltaR(*leps[0] );
-    if(jets[i].DeltaR(*leps[1] ) < mindRlepj2) mindRlepj2=jets[i].DeltaR(*leps[1] );
-    
-    if(i == 0){
-      if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/"+ "dR_jet1_lep1",  jets[i].DeltaR(*leps[0] ) , w, 50, 0., 5., "#Delta R(l1,j)") ;
-      if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/"+ "dR_jet1_lep2",  jets[i].DeltaR(*leps[1] ) , w, 50, 0., 5., "#Delta R(l2,j)"); 
-    }
-    if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/"+ "dR_jet_lep1",  jets[i].DeltaR(*leps[0] ) , w, 50, 0., 5., "#Delta R(l1,j)") ;
-    if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/"+ "dR_jet_lep2",  jets[i].DeltaR(*leps[1] ) , w, 50, 0., 5., "#Delta R(l2,j)");
-    
-    
-    if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+"/"+"dR_jet_MET",  jets[i].DeltaR(met) ,w, 50,  0., 5,"#DeltaR(j,met)");
+  //  if(jets[i].DeltaR(*leps[0] ) < mindRlepj1) mindRlepj1=jets[i].DeltaR(*leps[0] );
+  //  if(jets[i].DeltaR(*leps[1] ) < mindRlepj2) mindRlepj2=jets[i].DeltaR(*leps[1] );
+  //  
+  //  if(i == 0){
+  //    if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/"+ "dR_jet1_lep1",  jets[i].DeltaR(*leps[0] ) , w, 50, 0., 5., "#Delta R(l1,j)") ;
+  //    if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/"+ "dR_jet1_lep2",  jets[i].DeltaR(*leps[1] ) , w, 50, 0., 5., "#Delta R(l2,j)"); 
+  //  }
+  //  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/"+ "dR_jet_lep1",  jets[i].DeltaR(*leps[0] ) , w, 50, 0., 5., "#Delta R(l1,j)") ;
+  //  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/"+ "dR_jet_lep2",  jets[i].DeltaR(*leps[1] ) , w, 50, 0., 5., "#Delta R(l2,j)");
+  //  
+  //  
+  //  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+"/"+"dR_jet_MET",  jets[i].DeltaR(met) ,w, 50,  0., 5,"#DeltaR(j,met)");
 
-    for(unsigned int j=1; j < jets.size(); j++){
-      if(i==j)continue;
-      if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+"/"+"Jet_dR_jj",  jets[i].DeltaR(jets[j]) ,w, 50,  0., 5,"#DeltaR(j,j)");
-      if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+"/"+"Jet_M_jj",  (jets[i]+jets[j]).M() ,w, 200,  0., 2000,"M(j,j)");
-    }
-  }
+  //  for(unsigned int j=1; j < jets.size(); j++){
+  //    if(i==j)continue;
+  //    if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+"/"+"Jet_dR_jj",  jets[i].DeltaR(jets[j]) ,w, 50,  0., 5,"#DeltaR(j,j)");
+  //    if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+"/"+"Jet_M_jj",  (jets[i]+jets[j]).M() ,w, 200,  0., 2000,"M(j,j)");
+  //  }
+  //}
 
+  ////////
+  //
+  //if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/"+ "dRmin_jet_lep1", mindRlepj1  , w, 50, 0., 5., "#Delta R(l1,j)") ;
+  //if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/"+ "dRmin_jet_lep2", mindRlepj2  , w, 50, 0., 5., "#Delta R(l1,j)") ;
 
+  //if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/"+ "Sum_lep_eta", (fabs(leps[0]->Eta())+  fabs(leps[1]->Eta())) , w, 50, 0., 5.);
+  //if(fabs(leps[0]->Eta()) > fabs(leps[1]->Eta())) {
+  //  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/"+ "Max_lep_eta", fabs(leps[0]->Eta()) , w, 50, 0., 2.5);
+  //}
+  //else  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/"+ "Max_lep_eta", fabs(leps[1]->Eta()) , w, 50, 0., 2.5);
+  //  
+  //
 
-  if(jets.size() > 1){
+  //if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+"/"+"dR_l1_MET",  leps[0]->DeltaR(met) ,w, 100,  0., 5,"#DeltaR(l1,met)");
+  //if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+"/"+"dR_l2_MET",  leps[1]->DeltaR(met) ,w, 100,  0., 5,"#DeltaR(l2,met)");
+  //if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+"/"+"dR_ll", leps[0]->DeltaR(*leps[1] ) ,w, 50,  0., 5,"#DeltaR(l,l)");
 
-    double maxDiJetDeta=0.;
-    int ijet1(-1), ijet2(-1);
-    for(unsigned int ij = 0; ij < jets.size()-1; ij++){
-      for(unsigned int ij2 = ij+1; ij2 < jets.size(); ij2++){
-  
-  double deta = fabs(jets[ij].Eta() - jets[ij2].Eta());
-  if(deta > maxDiJetDeta) {
-    maxDiJetDeta=deta;
-    ijet1=ij;
-    ijet2=ij2;
-  }
-      }
-    }
-    
-    if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+"/Jet_dR_jet1_lep1",  jets[ijet1].DeltaR(*leps[0]) ,w, 100,  0., 5,"#DeltaR(j,l1)");
-    if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+"/Jet_dR_jet1_lep2",  jets[ijet1].DeltaR(*leps[1]) ,w, 100,  0., 5,"#DeltaR(j,l1)");
-    
-    
-    if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/"+ "MaxDEta_jet1_jet2", maxDiJetDeta  , w, 200, 0., 10., "Max DEta");
-    Particle JJMEta = jets[ijet1] + jets[ijet2];
-    
-    if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/"+ "MaxDEtaJets_MJJ",JJMEta.M()   , w, 200, 0., 2000., "MaxDEta MJJ");
-    
-    double Av_JetEta= 0.5*(jets[ijet1].Eta()+ jets[ijet2].Eta());
-    double zeppenfeld = TMath::Max((*leps[0]).Eta()  - Av_JetEta , (*leps[1]).Eta()  - Av_JetEta ) /maxDiJetDeta;
-    if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/"+ "MaxDEta_Jets_zeppenfeld", zeppenfeld  , w, 200, 0., 2., "zeppenfeld");
-  }
+  //if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+"/"+"dPhi_l1_MET",  fabs(TVector2::Phi_mpi_pi( ( (*leps[0]).Phi() - (met).Phi() )) ) ,w, 100,  0., 5,"#DeltaR(l1,met)");
+  //if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+"/"+"dPhi_l2_MET",  fabs(TVector2::Phi_mpi_pi( ( (*leps[1]).Phi() - (met).Phi() )) ) ,w, 100,  0., 5,"#DeltaR(l1,met)");
 
-  if(jets.size()>1){
+  //if(leps[1]->Pt() < 100){
+  //  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+"/"+"dR_lN_MET",  leps[1]->DeltaR(met) ,w, 100,  0., 5,"#DeltaR(l1,met)");
+  //  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+"/"+"dPhi_lN_MET",  fabs(TVector2::Phi_mpi_pi( ( (*leps[1]).Phi() - (met).Phi() )) ) ,w, 100,  0., 5,"#DeltaR(l1,met)");
+  //  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+"/"+"dR_lW_MET",  leps[0]->DeltaR(met) ,w, 100,  0., 5,"#DeltaR(l1,met)");
+  //  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+"/"+"dPhi_lW_MET",  fabs(TVector2::Phi_mpi_pi( ( (*leps[0]).Phi() - (met).Phi() ))) ,w, 100,  0., 5,"#DeltaR(l1,met)");
+  //}
+  //else{
+  //  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+"/"+"dR_lN_MET",  leps[0]->DeltaR(met) ,w, 100,  0., 5,"#DeltaR(l1,met)");
+  //  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+"/"+"dPhi_lN_MET",  fabs(TVector2::Phi_mpi_pi( ( (*leps[0]).Phi() - (met).Phi() ))) ,w, 100,  0., 5,"#DeltaR(l1,met)");
+  //  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+"/"+"dR_lW_MET",  leps[1]->DeltaR(met) ,w, 100,  0., 5,"#DeltaR(l1,met)");
+  //  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+"/"+"dPhi_lW_MET",  fabs(TVector2::Phi_mpi_pi( ( (*leps[1]).Phi() - (met).Phi() ))) ,w, 100,  0., 5,"#DeltaR(l1,met)");
 
-    Particle JJLead = jets[0] + jets[1];
-    if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/"+ "Lead_MJJ",JJLead.M()   , w, 200, 0., 2000., "Lead MJJ");
-    
-    double maxDiJetDeta=fabs(jets[0].Eta() - jets[1].Eta());
-
-    double Av_JetEta= 0.5*(jets[0].Eta()+ jets[1].Eta());
-    double zeppenfeld = TMath::Max((*leps[0]).Eta()  - Av_JetEta , (*leps[1]).Eta()  - Av_JetEta ) /maxDiJetDeta;
-    if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/"+ "Lead_zeppenfeld", zeppenfeld  , w, 200, 0., 2., "zeppenfeld");    
-  }
-
-
-  //////
-
-  double ll_dphi = fabs(TVector2::Phi_mpi_pi( ( (*leps[0]).Phi() - (*leps[1]).Phi() )) );
-  double ll_deta = fabs((*leps[0]).Eta() - (*leps[1]).Eta());
-  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/"+ "dPhi_lep1_lep2", ll_dphi  , w, 200, -5., 5., "#Delta #Phi(l1,l2)") ;
-  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/"+ "dEta_lep1_lep2", ll_deta  , w, 200, -5., 5., "#Delta #Phi(l1,l2)") ;
-
-  
-  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/"+ "dRmin_jet_lep1", mindRlepj1  , w, 50, 0., 5., "#Delta R(l1,j)") ;
-  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/"+ "dRmin_jet_lep2", mindRlepj2  , w, 50, 0., 5., "#Delta R(l1,j)") ;
-
-  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/"+ "Sum_lep_eta", (fabs(leps[0]->Eta())+  fabs(leps[1]->Eta())) , w, 50, 0., 5.);
-  if(fabs(leps[0]->Eta()) > fabs(leps[1]->Eta())) {
-    if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/"+ "Max_lep_eta", fabs(leps[0]->Eta()) , w, 50, 0., 2.5);
-  }
-  else  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/"+ "Max_lep_eta", fabs(leps[1]->Eta()) , w, 50, 0., 2.5);
-    
-  
-
-  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+"/"+"dR_l1_MET",  leps[0]->DeltaR(met) ,w, 100,  0., 5,"#DeltaR(l1,met)");
-  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+"/"+"dR_l2_MET",  leps[1]->DeltaR(met) ,w, 100,  0., 5,"#DeltaR(l2,met)");
-  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+"/"+"dR_ll", leps[0]->DeltaR(*leps[1] ) ,w, 50,  0., 5,"#DeltaR(l,l)");
-
-  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+"/"+"dPhi_l1_MET",  fabs(TVector2::Phi_mpi_pi( ( (*leps[0]).Phi() - (met).Phi() )) ) ,w, 100,  0., 5,"#DeltaR(l1,met)");
-  if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+"/"+"dPhi_l2_MET",  fabs(TVector2::Phi_mpi_pi( ( (*leps[1]).Phi() - (met).Phi() )) ) ,w, 100,  0., 5,"#DeltaR(l1,met)");
-
-  if(leps[1]->Pt() < 100){
-    if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+"/"+"dR_lN_MET",  leps[1]->DeltaR(met) ,w, 100,  0., 5,"#DeltaR(l1,met)");
-    if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+"/"+"dPhi_lN_MET",  fabs(TVector2::Phi_mpi_pi( ( (*leps[1]).Phi() - (met).Phi() )) ) ,w, 100,  0., 5,"#DeltaR(l1,met)");
-    if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+"/"+"dR_lW_MET",  leps[0]->DeltaR(met) ,w, 100,  0., 5,"#DeltaR(l1,met)");
-    if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+"/"+"dPhi_lW_MET",  fabs(TVector2::Phi_mpi_pi( ( (*leps[0]).Phi() - (met).Phi() ))) ,w, 100,  0., 5,"#DeltaR(l1,met)");
-  }
-  else{
-    if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+"/"+"dR_lN_MET",  leps[0]->DeltaR(met) ,w, 100,  0., 5,"#DeltaR(l1,met)");
-    if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+"/"+"dPhi_lN_MET",  fabs(TVector2::Phi_mpi_pi( ( (*leps[0]).Phi() - (met).Phi() ))) ,w, 100,  0., 5,"#DeltaR(l1,met)");
-    if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+"/"+"dR_lW_MET",  leps[1]->DeltaR(met) ,w, 100,  0., 5,"#DeltaR(l1,met)");
-    if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+"/"+"dPhi_lW_MET",  fabs(TVector2::Phi_mpi_pi( ( (*leps[1]).Phi() - (met).Phi() ))) ,w, 100,  0., 5,"#DeltaR(l1,met)");
-
-  }
+  //}
 
 
   

@@ -39,7 +39,8 @@ void test(TString era, bool isdata, TString sample, TString flag){ //echo -e ".L
     if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_HNMultiLep/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/2022_10_09_041952/SKFlatNtuple_2017_MC_6.root")) exit(EIO);
   }
   else if(era=="2017" && !isdata && sample=="WZ"){
-    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC/WZTo3LNu_TuneCP5_13TeV-amcatnloFXFX-pythia8/220614_141057/0000/SKFlatNtuple_2017_MC_1.root")) exit(EIO);
+    //if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC/WZTo3LNu_TuneCP5_13TeV-amcatnloFXFX-pythia8/220614_141057/0000/SKFlatNtuple_2017_MC_1.root")) exit(EIO);
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_HNMultiLepBDT/WZTo3LNu_TuneCP5_13TeV-amcatnloFXFX-pythia8/2023_03_29_184218/SKFlatNtuple_2017_MC_0.root")) exit(EIO);
   }
   else if(era=="2017" && !isdata && sample=="ZZ"){
     if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC/ZZTo4L_TuneCP5_13TeV_powheg_pythia8/220614_141827/0000/SKFlatNtuple_2017_MC_1.root")) exit(EIO);

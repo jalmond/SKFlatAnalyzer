@@ -266,6 +266,7 @@ void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq, s
     if(!PassPreselection(dilep_channel,qq, leps, leps_veto, TauColl, JetColl, VBF_JetColl, AK8_JetColl, B_JetColl,ev, METv ,param_channel,"", weight_channel)) continue;
     //cout << "passed presel;" << endl;
     //cout << "MET : " << METv.Pt() << endl;
+    //cout << "AK8 jet size : " << AK8_JetColl.size() << endl; //JH
     TString  lep_charge =  (leps[0]->Charge() < 0)  ? "QM" :  "QP";
     
     if(AK8_JetColl.size() > 0) {
@@ -380,7 +381,10 @@ bool  HNL_RegionDefinitions::PassPreselection(HNL_LeptonCore::Channel channel,HN
 
   Fill_RegionPlots(channel, 0, param.Name,"Preselection" , TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w,param.WriteOutVerbose);
   FillEventCutflow(HNL_LeptonCore::ChannelDepPresel, w, GetChannelString(channel) +"_Presel", "ChannelCutFlow/"+param.DefName,param.WriteOutVerbose);
-  
+ 
+  //cout << "end presel;" << endl; //JH
+  //cout << "AK8 jet size : " << AK8_JetColl.size() << endl; //JH
+
   return true;
 }
 
@@ -443,7 +447,7 @@ TString HNL_RegionDefinitions::RunSignalRegionAK8String(HNL_LeptonCore::Channel 
   //if(!IsData)w*=  FatJetTau21_SF;
   Fill_RegionPlots(channel, 0, param.Name,"InclusiveSR1" , TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w,param.WriteOutVerbose);
   
-  double dPhil2_l = fabs(TVector2::Phi_mpi_pi( ( (AK8_JetColl[0] + *leps[1]).Phi() - (leps[0]->Phi() )))); //JH : FIXME this is correct only for N mass < 100 GeV; invert this
+  double dPhil2_l = fabs(TVector2::Phi_mpi_pi( ( (AK8_JetColl[0] + *leps[1]).Phi() - (leps[0]->Phi() )))); //JH : FIXME this is correct only for N mass < 100 GeV; invert this ........??????????????
   if(leps[0]->Pt() < 100) return "false";
   FillEventCutflow(HNL_LeptonCore::SR1, w, "SR1_LepPt",param.Name,param.WriteOutVerbose);
 
@@ -636,7 +640,8 @@ TString HNL_RegionDefinitions::RunSignalRegionWWString(HNL_LeptonCore::Channel c
   bool PassBJetMVeto = (B_JetColl.size()==0);
 
   double HT(0.);
-  for(UInt_t emme=0; emme<JetCollLoose.size(); emme++){ //JH : FIXME Do we need loose VBF jets?
+  //for(UInt_t emme=0; emme<JetCollLoose.size(); emme++){ //JH : FIXME Do we need loose VBF jets?
+  for(UInt_t emme=0; emme<JetColl.size(); emme++){ //JH
     HT += JetColl[emme].Pt();
   }
   
@@ -780,6 +785,7 @@ TString HNL_RegionDefinitions::RunSignalRegionAK4String(HNL_LeptonCore::Channel 
   if(JetColl.size() >0)FillEventCutflow(HNL_LeptonCore::SR3, w, "SR3_jet",param.Name,param.WriteOutVerbose);
 
   //Fill_RegionPlots      (channel, true, param.Name+"/SR3Initial/" , "", JetColl, AK8_JetColl, leps,  METv, nPV, w);
+  Fill_RegionPlots(channel, 0, param.Name,"SR3Initial" ,TauColl,  JetColl, AK8_JetColl, leps,  METv, nPV, w,param.WriteOutVerbose);
   if(JetColl.size() < 2) return "false";
 
 
@@ -804,12 +810,9 @@ TString HNL_RegionDefinitions::RunSignalRegionAK4String(HNL_LeptonCore::Channel 
     return "false";
   }
 
-
-  Fill_RegionPlots(channel, 0, param.Name,"DiJetSR3" ,TauColl,  JetColl, AK8_JetColl, leps,  METv, nPV, w,param.WriteOutVerbose);
-
   FillEventCutflow(HNL_LeptonCore::SR3, w, "SR3_bveto",param.Name,param.WriteOutVerbose);
 
-  //Fill_RegionPlots      (channel, true, param.Name+"/SR3/" , "", JetColl, AK8_JetColl, leps,  METv, nPV, w);
+  Fill_RegionPlots(channel, 0, param.Name,"DiJetSR3" ,TauColl,  JetColl, AK8_JetColl, leps,  METv, nPV, w,param.WriteOutVerbose);
   //FIll Limit 
 
   double bin = 0;
