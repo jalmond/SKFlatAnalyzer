@@ -1,2 +1,2 @@
-DYJets_MG
+DYJets
 TTLL_powheg

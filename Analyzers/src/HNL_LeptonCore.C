@@ -1093,6 +1093,10 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
     SystList.push_back(AnalyzerParameter::JetResDown);
     SystList.push_back(AnalyzerParameter::JetMassUp);
     SystList.push_back(AnalyzerParameter::JetMassDown);
+    SystList.push_back(AnalyzerParameter::JetMassSmearUp);
+    SystList.push_back(AnalyzerParameter::JetMassSmearDown);
+    SystList.push_back(AnalyzerParameter::JetEnUp);
+    SystList.push_back(AnalyzerParameter::JetEnDown);
     //SystList.push_back(AnalyzerParameter::PUUp);
     //SystList.push_back(AnalyzerParameter::PUDown);
     //SystList.push_back(AnalyzerParameter::FRUp);
