@@ -10,16 +10,15 @@ eras = ["2017"]
 masses = ["M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000"]
 masses = ["M5000","M7500","M10000","M15000","M20000"]
 masses = ["M100","M200","M300","M400","M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M10000","M15000","M20000"]
-masses = ["M100","M200","M300","M400","M500"]
+#masses = ["M100","M200","M300","M400","M500"]
 #masses = ["M500"]
 channels = ["MuMu","EE","EMu"]
-channels = ["MuMu","EE"]
+#channels = ["MuMu","EE"]
 
 InputPath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegionPlotter/"
 #OutputPath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegionPlotter/InputForCombine/"
 #OutputPath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegionPlotter/AddSyst/"
-OutputPath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegionPlotter/KPS23Spr/"
-OutputPath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegionPlotter/KPS23Spr_woBDT/"
+OutputPath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegionPlotter/SR2HT_SR3l2pt/"
 Analyzer = "HNL_SignalRegionPlotter"
 
 DataSkim = ""
@@ -30,11 +29,11 @@ MCSkim = "_SkimTree_HNMultiLepBDT_"
 SignalSkim = "_SkimTree_HNMultiLepBDT_"
 
 MergeData   = False
-MergeFake   = False
-MergeCF     = False
-MergeConv   = False
-MergeMC     = False
-MergeSignal = False
+MergeFake   = True
+MergeCF     = True
+MergeConv   = True
+MergeMC     = True
+MergeSignal = True
 #MergeDYVBF = True
 #MergeSSWW  = True
 
