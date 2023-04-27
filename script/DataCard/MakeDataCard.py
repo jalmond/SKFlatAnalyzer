@@ -20,11 +20,11 @@ input_path = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegi
 eras = ["2016","2017","2018"]
 eras = ["2017"]
 channels = ["MuMu","EE","EMu"]
-channels = ["MuMu","EE"]
+#channels = ["MuMu","EE"]
 masses = ["M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000"]
 masses = ["M5000","M7500","M10000","M15000","M20000"]
 masses = ["M100","M200","M300","M400","M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M10000","M15000","M20000"]
-masses = ["M100","M200","M300","M400","M500"]
+#masses = ["M100","M200","M300","M400","M500"]
 #masses = ["M500"]
 
 myWPs = ["Workshop", "InputForCombine"]
@@ -33,6 +33,8 @@ myWPs = ["Workshop"]
 myWPs = ["AddSyst"]
 myWPs = ["KPS23Spr"]
 myWPs = ["KPS23Spr_woBDT"]
+myWPs = ["SR2HT_SR3l2pt"]
+myWPs = ["SR2HT_SR3l2pt_ChargeSplit"]
 
 doCombine = False
 

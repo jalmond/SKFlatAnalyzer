@@ -19,6 +19,7 @@ InputPath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegio
 #OutputPath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegionPlotter/InputForCombine/"
 #OutputPath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegionPlotter/AddSyst/"
 OutputPath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegionPlotter/SR2HT_SR3l2pt/"
+OutputPath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegionPlotter/SR2HT_SR3l2pt_ChargeSplit/"
 Analyzer = "HNL_SignalRegionPlotter"
 
 DataSkim = ""
@@ -29,16 +30,21 @@ MCSkim = "_SkimTree_HNMultiLepBDT_"
 SignalSkim = "_SkimTree_HNMultiLepBDT_"
 
 MergeData   = False
-MergeFake   = True
-MergeCF     = True
-MergeConv   = True
-MergeMC     = True
-MergeSignal = True
+MergeFake   = False
+MergeCF     = False
+MergeConv   = False
+MergeMC     = False
+MergeSignal = False
 #MergeDYVBF = True
 #MergeSSWW  = True
 
 Blinded = True
 AddSyst = True
+ChargeSplit = True
+if ChargeSplit:
+  ChargeSplit = "ChargeSplit"
+else:
+  ChargeSplit = ""
 
 if MergeData:
 
@@ -117,17 +123,17 @@ for era in eras:
   for mass in masses: #iterate for signals
     for channel in channels:
       if int(mass.replace("M","")) <= 500:
-        #if channel == "MuMu": input_hist =  "LimitInputBDT/MVAUL_UL/"+mass+"/FillEventCutflow/MuonSR" #path to the input histogram
-        #elif channel == "EE": input_hist =  "LimitInputBDT/MVAUL_UL/"+mass+"/FillEventCutflow/ElectronSR" #path to the input histogram
-        #elif channel == "EMu": input_hist = "LimitInputBDT/MVAUL_UL/"+mass+"/FillEventCutflow/ElectronMuonSR" #path to the input histogram
+        if channel == "MuMu": input_hist =  "LimitInputBDT/MVAUL_UL/"+mass+"/FillEventCutflow/MuonSR" #path to the input histogram
+        elif channel == "EE": input_hist =  "LimitInputBDT/MVAUL_UL/"+mass+"/FillEventCutflow/ElectronSR" #path to the input histogram
+        elif channel == "EMu": input_hist = "LimitInputBDT/MVAUL_UL/"+mass+"/FillEventCutflow/ElectronMuonSR" #path to the input histogram
         ######### Test what if without BDT #########
-        if channel == "MuMu": input_hist =  "LimitInput/MVAUL_UL/FillEventCutflow/MuonSR" #path to the input histogram
-        elif channel == "EE": input_hist =  "LimitInput/MVAUL_UL/FillEventCutflow/ElectronSR" #path to the input histogram
-        elif channel == "EMu": input_hist = "LimitInput/MVAUL_UL/FillEventCutflow/ElectronMuonSR" #path to the input histogram
+        #if channel == "MuMu": input_hist =  "LimitInput/MVAUL_UL/FillEventCutflow/MuonSR" #path to the input histogram
+        #elif channel == "EE": input_hist =  "LimitInput/MVAUL_UL/FillEventCutflow/ElectronSR" #path to the input histogram
+        #elif channel == "EMu": input_hist = "LimitInput/MVAUL_UL/FillEventCutflow/ElectronMuonSR" #path to the input histogram
       elif int(mass.replace("M","")) > 500:
-        if channel == "MuMu": input_hist =  "LimitInput/MVAUL_UL/FillEventCutflow/MuonSR" #path to the input histogram
-        elif channel == "EE": input_hist =  "LimitInput/MVAUL_UL/FillEventCutflow/ElectronSR" #path to the input histogram
-        elif channel == "EMu": input_hist = "LimitInput/MVAUL_UL/FillEventCutflow/ElectronMuonSR" #path to the input histogram
+        if channel == "MuMu": input_hist =  "LimitInput/MVAUL_UL/FillEventCutflow/Muon"+ChargeSplit+"SR" #path to the input histogram
+        elif channel == "EE": input_hist =  "LimitInput/MVAUL_UL/FillEventCutflow/Electron"+ChargeSplit+"SR" #path to the input histogram
+        elif channel == "EMu": input_hist = "LimitInput/MVAUL_UL/FillEventCutflow/ElectronMuon"+ChargeSplit+"SR" #path to the input histogram
       
       if not Blinded: h_data        = f_data.Get(input_hist)
       h_fake        = f_fake.Get(input_hist)
@@ -246,9 +252,9 @@ for era in eras:
             elif channel == "EE": input_hist =  "LimitInputBDT/"+"Syst_"+this_syst+"MVAUL_UL/"+mass+"/FillEventCutflow/ElectronSR"
             elif channel == "EMu": input_hist = "LimitInputBDT/"+"Syst_"+this_syst+"MVAUL_UL/"+mass+"/FillEventCutflow/ElectronMuonSR"
           elif int(mass.replace("M","")) > 500:
-            if channel == "MuMu": input_hist =  "LimitInput/"+"Syst_"+this_syst+"MVAUL_UL/FillEventCutflow/MuonSR"
-            elif channel == "EE": input_hist =  "LimitInput/"+"Syst_"+this_syst+"MVAUL_UL/FillEventCutflow/ElectronSR"
-            elif channel == "EMu": input_hist = "LimitInput/"+"Syst_"+this_syst+"MVAUL_UL/FillEventCutflow/ElectronMuonSR"
+            if channel == "MuMu": input_hist =  "LimitInput/"+"Syst_"+this_syst+"MVAUL_UL/FillEventCutflow/Muon"+ChargeSplit+"SR"
+            elif channel == "EE": input_hist =  "LimitInput/"+"Syst_"+this_syst+"MVAUL_UL/FillEventCutflow/Electron"+ChargeSplit+"SR"
+            elif channel == "EMu": input_hist = "LimitInput/"+"Syst_"+this_syst+"MVAUL_UL/FillEventCutflow/ElectronMuon"+ChargeSplit+"SR"
 
           for i in range(Nproc):
             if not "fake_data_path" in input_list[i][0]: # There is no file like "fake_data_path" ...
