@@ -390,6 +390,7 @@ bool Electron::Pass_CB_Opt(TString ID) const {
       NPMVAString = NPMVAString.ReplaceAll("NPMVAMethod","");
     }
 
+
     if (subStrings[i].Contains("NPMVABB")){
       if (subStrings[i].Contains("NPMVABB")) mva_methodBB=subStrings[i];
     }
@@ -502,11 +503,11 @@ int  Electron::PassIDOptMulti( TString CFMVAString, TString NPMVAString, TString
   
 
   //  map<TString, double>::const_iterator it = j_lep_map_mva_hnl_cf.find(CFMVAString);  it->second;
-  double tmp_j_lep_mva_hnl_cf = HNL_MVA_CF(CFMVAString);
-  double tmp_j_lep_mva_hnl_fake = HNL_MVA_Fake(NPMVAString);
+  
 
   if( IsBB() ){
     if(np_mva_BB.Contains("MVA")){
+      double tmp_j_lep_mva_hnl_fake = HNL_MVA_Fake(NPMVAString);
       double   mva_cut = StringToDouble(np_mva_BB,"NPMVABB");
       if(tmp_j_lep_mva_hnl_fake < mva_cut) return 0;
     }      
@@ -521,8 +522,8 @@ int  Electron::PassIDOptMulti( TString CFMVAString, TString NPMVAString, TString
 
     if(cf_mva_BB.Contains("MVA")){
       if(cf_mva_BB.Contains("MVA")){
+	double tmp_j_lep_mva_hnl_cf   = HNL_MVA_CF(CFMVAString);
 	double mva_cut = StringToDouble(cf_mva_BB,"CFMVABB");
-
 	if(tmp_j_lep_mva_hnl_cf < mva_cut) return 0;
       }
     }
@@ -562,6 +563,7 @@ int  Electron::PassIDOptMulti( TString CFMVAString, TString NPMVAString, TString
 
 
     if(np_mva_EC.Contains("MVA")){
+      double tmp_j_lep_mva_hnl_fake = HNL_MVA_Fake(NPMVAString);
       double   mva_cut = StringToDouble(np_mva_EC,"NPMVAEC");
       if(tmp_j_lep_mva_hnl_fake < mva_cut) return 0;
     }
@@ -573,6 +575,7 @@ int  Electron::PassIDOptMulti( TString CFMVAString, TString NPMVAString, TString
     
     
     if(cf_mva_EC.Contains("MVA")){
+      double tmp_j_lep_mva_hnl_cf   = HNL_MVA_CF(CFMVAString);
       double mva_cut = StringToDouble(cf_mva_EC,"CFMVAEC");
       if(tmp_j_lep_mva_hnl_cf < mva_cut) return 0;
     }
@@ -624,49 +627,76 @@ int  Electron::PassIDTight(TString ID) const{
     return 1;
   }
   
-  if(ID.Contains("HNL_ULID_CF")){
+  if(ID.Contains("HNL_ULIDs_CF")){
     if(!Pass_LepMVAID()) return 0;
     double _cut=1;
+    if(ID.Contains("_CFVT_")) _cut=0.85;
     if(ID.Contains("_CFT_")) _cut=0.7;
     if(ID.Contains("_CFM_")) _cut=0.5;
     if(ID.Contains("_CFL_")) _cut=0.2;
     if(ID.Contains("_CFVL_")) _cut=0.;
     TString IDTmp = ID;
+    IDTmp=IDTmp.ReplaceAll("_CFVT_","_CF_");
     IDTmp=IDTmp.ReplaceAll("_CFT_","_CF_");
     IDTmp=IDTmp.ReplaceAll("_CFM_","_CF_");
     IDTmp=IDTmp.ReplaceAll("_CFL_","_CF_");
     IDTmp=IDTmp.ReplaceAll("_CFVL_","_CF_");
     
-    if(IDTmp == "HNL_ULID_CF_BDTGv0"        && !PassULMVA(HNL_MVA_CF("v2"),_cut,"j_lep_mva_hnl_cf"))            return 0;
-    if(IDTmp == "HNL_ULID_CF_BDTGv1"        && !PassULMVA(HNL_MVA_CF("v1"),_cut, "j_lep_mvav1_hnl_cf"))        return 0;
-    if(IDTmp == "HNL_ULID_CF_BDTGv2"        && !PassULMVA(HNL_MVA_CF("v2"),_cut,"j_lep_mvav2_hnl_cf"))        return 0;
-    if(IDTmp == "HNL_ULID_CF_BDTGv2p1"      && !PassULMVA(HNL_MVA_CF("v2p1"),_cut,"j_lep_mvav2p1_hnl_cf"))    return 0;
-    if(IDTmp == "HNL_ULID_CF_BDTGv2p2"      && !PassULMVA(HNL_MVA_CF("v2p2"),_cut,"j_lep_mvav2p2_hnl_cf"))    return 0;
-    if(IDTmp == "HNL_ULID_CF_ED_BDTGv2"     && !PassULMVA(HNL_MVA_CF("EDv2"),_cut,"j_lep_mvav2_hnl_ed_cf"))  return 0;
-    if(IDTmp == "HNL_ULID_CF_ED_BDTGv2p1"   && !PassULMVA(HNL_MVA_CF("EDv2p1"),_cut,"j_lep_mvav2p1_hnl_ed_cf"))  return 0;
-    if(IDTmp == "HNL_ULID_CF_ED_BDTGv2p2"   && !PassULMVA(HNL_MVA_CF("EDv2p2"),_cut,"j_lep_mvav2p2_hnl_ed_cf"))  return 0;
+    if(IDTmp == "HNL_ULIDs_CF_BDTGv1"        && !PassULMVA(HNL_MVA_CF("v1"),_cut, "j_lep_mvav1_hnl_cf"))        return 0;
+    if(IDTmp == "HNL_ULIDs_CF_BDTGv2"        && !PassULMVA(HNL_MVA_CF("v2"),_cut,"j_lep_mvav2_hnl_cf"))        return 0;
+    if(IDTmp == "HNL_ULIDs_CF_BDTGv2p1"      && !PassULMVA(HNL_MVA_CF("v2p1"),_cut,"j_lep_mvav2p1_hnl_cf"))    return 0;
+    if(IDTmp == "HNL_ULIDs_CF_BDTGv2p2"      && !PassULMVA(HNL_MVA_CF("v2p2"),_cut,"j_lep_mvav2p2_hnl_cf"))    return 0;
+    if(IDTmp == "HNL_ULIDs_CF_ED_BDTGv2"     && !PassULMVA(HNL_MVA_CF("EDv2"),_cut,"j_lep_mvav2_hnl_ed_cf"))  return 0;
+    if(IDTmp == "HNL_ULIDs_CF_ED_BDTGv2p1"   && !PassULMVA(HNL_MVA_CF("EDv2p1"),_cut,"j_lep_mvav2p1_hnl_ed_cf"))  return 0;
+    if(IDTmp == "HNL_ULIDs_CF_ED_BDTGv2p2"   && !PassULMVA(HNL_MVA_CF("EDv2p2"),_cut,"j_lep_mvav2p2_hnl_ed_cf"))  return 0;
 
     return 1;
   }
 
   
-  if(ID.Contains("HNL_ULID_FAKE")){
+  if(ID.Contains("HNL_ULIDs_FAKE")){
     if(!Pass_LepMVAID()) return 0;
     double _cut=1;
-    if(ID.Contains("_FAKET_")) _cut=0.7;
-    if(ID.Contains("_FAKEM_")) _cut=0.5;
-    if(ID.Contains("_FAKEL_")) _cut=0.2;
-    if(ID.Contains("_FAKEVL_")) _cut=0.;
+    if(ID.Contains("_FAKEVT_")) _cut=0.7;
+    if(ID.Contains("_FAKET_"))  _cut=0.5;
+    if(ID.Contains("_FAKEM_"))  _cut=0.3;
+    if(ID.Contains("_FAKEL_"))  _cut=0.;
+    if(ID.Contains("_FAKEVL_")) _cut=-0.2;
+
     TString IDTmp = ID;
+    IDTmp=IDTmp.ReplaceAll("_FAKEVT_","_FAKE_");
     IDTmp=IDTmp.ReplaceAll("_FAKET_","_FAKE_");
     IDTmp=IDTmp.ReplaceAll("_FAKEM_","_FAKE_");
     IDTmp=IDTmp.ReplaceAll("_FAKEL_","_FAKE_");
     IDTmp=IDTmp.ReplaceAll("_FAKEVL_","_FAKE_");
 
-    if(IDTmp == "HNL_ULID_FAKE_BDTG" && !PassULMVA(HNL_MVA_Fake("v1"),_cut,"j_lep_mva_hnl_fake_v2"))  return 0;
+    if(IDTmp == "HNL_ULIDs_FAKE_BDTG"     && !PassULMVA(HNL_MVA_Fake("v4"),     _cut,"j_lep_mva_hnl_fake_v4"))  return 0;
+    if(IDTmp == "HNL_ULIDs_FAKE_BDTG_LF"  && !PassULMVA(HNL_MVA_Fake("v4_LF"),  _cut,"j_lep_mva_hnl_fake_v4_lf"))  return 0;
+    if(IDTmp == "HNL_ULIDs_FAKE_BDTG_HF"  && !PassULMVA(HNL_MVA_Fake("v4_HF"),  _cut,"j_lep_mva_hnl_fake_v4_hf"))  return 0;
+    if(IDTmp == "HNL_ULIDs_FAKE_BDTG_HFB" && !PassULMVA(HNL_MVA_Fake("v4_HFB"), _cut,"j_lep_mva_hnl_fake_v4_hfb"))  return 0;
+    if(IDTmp == "HNL_ULIDs_FAKE_BDTG_HFC" && !PassULMVA(HNL_MVA_Fake("v4_HFC"), _cut,"j_lep_mva_hnl_fake_v4_hfc"))  return 0;
+    if(IDTmp == "HNL_ULIDs_FAKE_BDTG_Top" && !PassULMVA(HNL_MVA_Fake("v4_Top"), _cut,"j_lep_mva_hnl_fake_v4_top"))  return 0;
 
     return 1;
   }
+
+if(ID.Contains("HNL_ULIDs_CONV")){
+    if(!Pass_LepMVAID()) return 0;
+    double _cut=1;
+    if(ID.Contains("_CONVT_"))  _cut=0.;
+    if(ID.Contains("_CONVM_"))  _cut=-0.5;
+    if(ID.Contains("_CONVL_"))  _cut=-0.7;
+ 
+    TString IDTmp = ID;
+    IDTmp=IDTmp.ReplaceAll("_CONVT_","_CONV_");
+    IDTmp=IDTmp.ReplaceAll("_CONVM_","_CONV_");
+    IDTmp=IDTmp.ReplaceAll("_CONVL_","_CONV_");
+
+    if(IDTmp == "HNL_ULIDs_CONV_BDTG"     && !PassULMVA(HNL_MVA_Conv("v2"),     _cut,"j_lep_mva_hnl_conv_v2"))  return 0;
+
+    return 1;
+  }
+
 
   // breakdown of 2016 ID for checking Eff.                                                                                                                                                                                                  
 
@@ -899,7 +929,7 @@ bool Electron::PassMVABaseLine() const{
 
 bool Electron::PassHNLMVA(double fake_cut,double cf_cut, double conv_cut) const{
   
-  if(!PassULMVA(HNL_MVA_CF("v2"),  cf_cut,  "j_lep_mva_hnl_cf_v2"))   return false;
+  if(!PassULMVA(HNL_MVA_CF("EDv2"),  cf_cut,  "j_lep_mva_hnl_cf_v2"))   return false;
   if(!PassULMVA(HNL_MVA_Fake("v2"),fake_cut,"j_lep_mva_hnl_fake_v2")) return false;
   if(!PassULMVA(HNL_MVA_Conv("v2"),conv_cut,"j_lep_mva_hnl_conv_v2")) return false;
   return true;

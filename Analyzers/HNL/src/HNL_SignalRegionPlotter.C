@@ -8,11 +8,12 @@ void HNL_SignalRegionPlotter::initializeAnalyzer(){
   
   SetupIDMVAReaderDefault(); /// Not needed for BDT skim
   SetupEventMVAReader();                                                                                                                                                                                                                            
-
 }
 
 
 void HNL_SignalRegionPlotter::executeEvent(){
+
+  FillTimer("START_EV");
   
   if((_jentry==0)){ 
     // Print out trigger info in HNL_LeptonCore::initializeAnalyzer
@@ -40,6 +41,7 @@ void HNL_SignalRegionPlotter::executeEvent(){
     }
   }    
 
+  FillTimer("END_EV");
 
   return ;
 }
@@ -90,11 +92,8 @@ void HNL_SignalRegionPlotter::RunULAnalysis(AnalyzerParameter param){
   //cout << "ElectronCollV size : " << ElectronCollV.size() << endl;
   //cout << "ElectronCollTInit size : " << ElectronCollTInit.size() << endl;
   //cout << "ElectronCollT size : " << ElectronCollT.size() << endl; //JH
-
   std::vector<Lepton *> leps_veto  = MakeLeptonPointerVector(MuonCollV,ElectronCollV);
   std::vector<Tau>        TauColl        = GetTaus     (leps_veto,param.Tau_Veto_ID,20., 2.3);
-
-  // Creat Lepton vector to have lepton blind codes 
 
   std::vector<FatJet> AK8_JetColl                 = GetHNLAK8Jets("HNL",param);
   std::vector<Jet> AK4_JetAllColl                 = GetHNLJets("NoCut_Eta3",param);
@@ -125,7 +124,14 @@ void HNL_SignalRegionPlotter::RunULAnalysis(AnalyzerParameter param){
   if(!IsData && AK8_JetColl.size()==0)weight = weight*sf_btag;
   if(!IsData && AK8_JetColl.size()>0)weight = weight*sf_btagSR1;
 
-  RunAllSignalRegions(Inclusive, ElectronCollT,ElectronCollV,MuonCollT,MuonCollV,  TauColl,JetCollLoose, AK4_JetAllColl, JetColl,VBF_JetColl,AK8_JetColl, BJetColl,BJetCollSR1, ev,METv, param, weight);
+  FillTimer("START_SR");
+
+  RunAllSignalRegions(Inclusive,
+		      ElectronCollT,ElectronCollV,MuonCollT,MuonCollV,  TauColl,
+		      JetCollLoose, AK4_JetAllColl, JetColl,VBF_JetColl,AK8_JetColl, BJetColl,BJetCollSR1, 
+		      ev,METv, param, weight);
+
+  FillTimer("END_SR");
 
 
 }

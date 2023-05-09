@@ -199,6 +199,7 @@ bool Muon::PassID(TString ID) const {
     return true;
   }
 
+
   if(ID=="HNL_HN3L" || ID == "HNL_TopMVA_MM") {
     if(!PassID("MVALoose")) return false;
     if(MVA() < 0.64)  return false;
@@ -331,7 +332,7 @@ bool Muon::PassID(TString ID) const {
     if(ID.Contains("_FAKEL_")) _cut=0.2;
     if(ID.Contains("_FAKEVL_")) _cut=0.;
     if(ID.Contains("_FAKEVVL_")) _cut=-0.2;
-
+    
 
     TString IDTmp = ID;
     IDTmp=IDTmp.ReplaceAll("_FAKET_","_FAKE_");
@@ -340,7 +341,7 @@ bool Muon::PassID(TString ID) const {
     IDTmp=IDTmp.ReplaceAll("_FAKEVL_","_FAKE_");
     IDTmp=IDTmp.ReplaceAll("_FAKEVVL_","_FAKE_");
 
-    if(IDTmp == "HNL_ULID_FAKE_BDTG"  && !PassULMVA(HNL_MVA_Fake("v2"),_cut,"j_lep_mva_hnl_fake_v2"))            return false;
+    if(IDTmp == "HNL_ULID_FAKE_BDTG"  && !PassULMVA(HNL_MVA_Fake("v3"),_cut,"j_lep_mva_hnl_fake_v2"))            return false;
     return true;
   }
 
@@ -351,7 +352,7 @@ bool Muon::PassID(TString ID) const {
     if(ID.Contains("_TopFAKET_")) _cut=0.7;
     if(ID.Contains("_TopFAKEM_")) _cut=0.5;
     if(ID.Contains("_TopFAKEL_")) _cut=0.2;
-    if(ID.Contains("_TopFAKEV_")) _cut=0.;
+    if(ID.Contains("_TopFAKEVL_")) _cut=0.;
     if(ID.Contains("_TopFAKEVVL_")) _cut=-0.2;
 
     TString IDTmp = ID;
@@ -368,8 +369,28 @@ bool Muon::PassID(TString ID) const {
 
   //// FUNCTIONS for MVA ID 
   
+  if(ID.Contains("HNL_ULIDv2") ) {
+      
+    if(HNL_MVA_Fake("v3") < 0.)  return false;    
+    if(!PassID("HNL_ULIDv1_2016")) return false;
+    
+    return true;
+  }
 
-  if(ID.Contains("HNL_ULID_2016") || ID.Contains("HNL_ULID_2017") )  {
+  if(ID.Contains("HNL_ULIDv3") ) {
+    if(HNL_MVA_Fake("v3") < 0.2)  return false;
+    if(!PassID("HNL_ULIDv1_2016")) return false;
+    return true;
+  }
+  if(ID.Contains("HNL_ULIDv4") ) {
+    if(HNL_MVA_Fake("v3") < 0.4)  return false;
+    if(!PassID("HNL_ULIDv1_2016")) return false;
+    return true;
+  }
+
+
+
+  if(ID.Contains("HNL_ULIDv1_2016")  || ID.Contains("HNL_ULID_2016")){
 
     if(!PassID("MVALoose")) return false;
 
@@ -379,31 +400,101 @@ bool Muon::PassID(TString ID) const {
     else{
       if(MVA() < 0.6)  return false;
     }
+    
+    //if(!PassID("HNLIPv7"))  return false;
 
-    double dxy_cut = 0.02 ;
-    if(fabs(dXY()) >  dxy_cut)   return false;
-    if(fabs(dZ()) >  0.05)   return false;
-    if(fabs(IP3D()/IP3Derr()) >5.) return false;
     return true;
   }
 
-  if(ID.Contains("HNL_ULID_2018"))  {
+  if(ID.Contains("HNL_ULIDv1_2017") || ID.Contains("HNL_ULID_2017"))  {
 
     if(!PassID("MVALoose")) return false;
 
     if( fabs(this->Eta()) <= 1.479 ){
-      if(MVA() < 0.71)  return false;
+      if(MVA() < 0.68)  return false;
     }
     else{
-      if(MVA() < 0.65)  return false;
+      if(MVA() < 0.64)  return false;
     }
 
-    double dxy_cut = 0.02 ;
-    if(fabs(dXY()) >  dxy_cut)   return false;
-    if(fabs(dZ()) >  0.05)   return false;
-    if(fabs(IP3D()/IP3Derr()) >5.) return false;
+    if(!PassID("HNLIPv8"))  return false;
+
     return true;
   }
+
+  if(ID.Contains("HNL_ULIDv1_2018")|| ID.Contains("HNL_ULID_2018"))  {
+
+    if(!PassID("MVALoose")) return false;
+
+    if( fabs(this->Eta()) <= 1.479 ){
+      if(MVA() < 0.6)  return false;
+    }
+    else{
+      if(MVA() < 0.78)  return false;
+    }
+
+    if(!PassID("HNLIPv9"))  return false;
+
+    return true;
+  }
+
+
+  if(ID.Contains("HNL_ULIDv2_2016"))   {
+
+    if(!PassID("MVALoose")) return false;
+
+    if( fabs(this->Eta()) <= 1.479 ){
+      if(HNL_MVA_Fake("v3") < -0.3)  return false;
+      if(MVA() < 0.76)  return false;
+    }
+    else{
+      if(HNL_MVA_Fake("v3") < -0.1)  return false;
+      if(MVA() < 0.6)  return false;
+    }
+
+      //if(!PassID("HNLIPv7"))  return false;
+
+    return true;
+  }
+
+
+  if(ID.Contains("HNL_ULIDv2_2017"))   {
+
+    if(!PassID("MVALoose")) return false;
+
+    if( fabs(this->Eta()) <= 1.479 ){
+      if(HNL_MVA_Fake("v3") < -0.1)  return false;
+      if(MVA() < 0.68)  return false;
+    }
+    else{
+      if(HNL_MVA_Fake("v3") < -0.3)  return false;
+      if(MVA() < 0.64)  return false;
+    }
+
+    if(!PassID("HNLIPv8"))  return false;
+    return true;
+  }
+
+  if(ID.Contains("HNL_ULIDv2_2018"))   {
+
+    if(!PassID("MVALoose")) return false;
+
+    if( fabs(this->Eta()) <= 1.479 ){
+      if(HNL_MVA_Fake("v3") < -0.1)  return false;
+      if(MVA() < 0.6)  return false;
+    }
+    else{
+      if(HNL_MVA_Fake("v3") < 0.3)  return false;
+      if(MVA() < 0.7)  return false;
+    }
+
+    //if(!PassID("HNLIPv7"))  return false;
+
+    return true;
+  }
+
+
+
 
   //// Following are functions to test UL UDs
   
@@ -545,9 +636,13 @@ bool Muon::Pass_CB_Opt(TString ID) const {
   //
   //cout << "ID = " << ID << "  " << this->Pt() << " " << this->Eta()<< endl;
 
-  //if (ID.Contains("HNL2016") && !PassID("HNL_ULID_2016")) return false;
-  //if (ID.Contains("HNL2017") && !PassID("HNL_ULID_2017")) return false;
-  //if (ID.Contains("HNL2018") && !PassID("HNL_ULID_2018")) return false;
+  if (ID.Contains("HNLv12016") && !PassID("HNL_ULIDv1_2016")) return false;
+  if (ID.Contains("HNLv12017") && !PassID("HNL_ULIDv1_2017")) return false;
+  if (ID.Contains("HNLv12018") && !PassID("HNL_ULIDv1_2018")) return false;
+
+  if (ID.Contains("HNLv22016") && !PassID("HNL_ULIDv2_2016")) return false;
+  if (ID.Contains("HNLv22017") && !PassID("HNL_ULIDv2_2017")) return false;
+  if (ID.Contains("HNLv22018") && !PassID("HNL_ULIDv2_2018")) return false;
 
  
   TString ID_sub = ID;
@@ -561,6 +656,8 @@ bool Muon::Pass_CB_Opt(TString ID) const {
     ID_subs >> subs;
     subStrings.push_back(TString(subs));
   } while (ID_subs);
+
+  //for (auto is : subStrings) cout << " --> " << is << endl;
 
 
   TString dxy_method = "";
@@ -608,23 +705,17 @@ bool Muon::Pass_CB_Opt(TString ID) const {
   }
 
   
-  /*cout << "mva_methodBB1 = " << mva_methodBB1 << endl;
-  cout << "mva_methodBB2 = " << mva_methodBB2 << endl;
-						
-  cout << "mva_methodEC1 = " << mva_methodEC1 << endl;
-  cout << "mva_methodEC2 = " << mva_methodEC2 << endl;
-  cout << "mva_methodPt = " << mva_methodECPt << endl;
-
-  cout << "mva_methodBBC = " << mva_methodBBC << endl;
-  cout << "mva_methodBBTau = " << mva_methodBBTau << endl;
-  cout << "mva_methodBBA = " << mva_methodBBA << endl;
-  cout << "mva_methodECC = " << mva_methodECC << endl;
-  cout << "mva_methodECTau = " << mva_methodECTau << endl;
-  cout << "mva_methodECA = " << mva_methodECA << endl;
+  /*cout << "mva_methodBB = " << mva_methodBB << endl;
+  cout << "mva_methodEC = " << mva_methodEC << endl;
+  cout << "mva_methodLFBB = " << mva_methodLFBB << endl;
+  cout << "mva_methodLFEC = " << mva_methodLFEC << endl;
+  
+  cout << "pog_methodB " <<  pog_methodB << endl;  
+  cout << "pog_methodEC " <<  pog_methodEC << endl;  
+  cout << "iso_methodB " <<  iso_methodB << endl;  
+  cout << "iso_methodEC " <<  iso_methodEC << endl;  
+  cout << "dxy_method " <<  dxy_method << endl;  
   */
-
-  //cout << "mva_methodConv " << mva_methodConv << endl;  
-
 
   if(dxy_method.Contains("DXYv")){
     
@@ -637,10 +728,10 @@ bool Muon::Pass_CB_Opt(TString ID) const {
   }
   if(ID.Contains("MuOptLoose")) return PassLooseIDOpt();
 
-
   return   PassIDOptMulti(NPMVAString,pog_methodB,pog_methodEC,mva_methodBB,mva_methodEC ,mva_methodLFBB,mva_methodLFEC,  iso_methodB,iso_methodEC);
-  
+ 
 }
+
 bool Muon::passIDHN(int ID, double dxy_b, double dxy_e, double dz_b,double dz_e, double sip_b, double sip_e, double iso_b,double iso_e, double miso_b, double miso_e) const{
 
   if( fabs(this->Eta())<= 1.479 ){

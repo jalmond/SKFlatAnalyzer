@@ -15,12 +15,22 @@ AnalyzerCore::AnalyzerCore(){
   JECSources = {"AbsoluteStat","AbsoluteScale","AbsoluteFlavMap","AbsoluteMPFBias","Fragmentation","SinglePionECAL","SinglePionHCAL","FlavorQCD","TimePtEta","RelativeJEREC1","RelativeJEREC2","RelativeJERHF","RelativePtBB","RelativePtEC1","RelativePtEC2","RelativePtHF","RelativeBal","RelativeSample","RelativeFSR","RelativeStatFSR","RelativeStatEC","RelativeStatHF","PileUpDataMC","PileUpPtRef","PileUpPtBB","PileUpPtEC1","PileUpPtEC2","PileUpPtHF","FlavorZJet","FlavorPhotonJet","FlavorPureGluon","FlavorPureQuark","FlavorPureCharm","FlavorPureBottom","Total"};
 
   iSetupLeptonBDT=false;
+  TimeTagMatcher.clear();
+  TimerMap.clear();
+  TimerMap["LATEST"] = std::clock();
+  TimingMap.clear();
+  TimingMap["start"] = std::clock();
+
+  //  double time_elapsed_ms = 1000.0 * (c_end-c_start) / CLOCKS_PER_SEC;
+  //std::cout << "CPU time used: " << time_elapsed_ms / 1000.0 << " s\n";
+
     
 }
 
 AnalyzerCore::~AnalyzerCore(){
 
   //=== hist maps
+  
 
   for(std::map< TString, TH1D* >::iterator mapit = maphist_TH1D.begin(); mapit!=maphist_TH1D.end(); mapit++){
     delete mapit->second;
@@ -74,8 +84,56 @@ AnalyzerCore::~AnalyzerCore(){
     
     delete MuonIDFakeMVAReader;
   }
-    
+  
 }
+
+
+void  AnalyzerCore::FillTimer(TString inittag){
+  
+  TString tag = "";
+  if (TimeTagMatcher.find(inittag) == TimeTagMatcher.end()) {
+    tag = TString(std::to_string(TimeTagMatcher.size())) +"_"+inittag;
+    TimeTagMatcher[inittag] = tag;
+  }
+  else{
+    auto itr = TimeTagMatcher.find(inittag);
+    tag = itr->second;
+  }
+
+  if (TimerMap.find(tag) == TimerMap.end()) {
+    auto itr = TimerMap.find("LATEST");
+    double last_time = itr->second;
+    TimerMap[tag] = (std::clock() - last_time)/ CLOCKS_PER_SEC;
+  }
+  else{
+    auto itr = TimerMap.find("LATEST");
+    auto itr2= TimerMap.find(tag);
+    TimerMap[tag]= itr2->second + ( (std::clock() - itr->second)/ CLOCKS_PER_SEC);
+  }
+  TimerMap["LATEST"] =std::clock() ;
+  
+  if(_jentry==0) return;
+
+  if(_jentry%10000==0){
+    vector<TString> TimerLabels;
+    for(auto i: TimeTagMatcher) TimerLabels.push_back(i.first);
+    for(auto i : TimerMap) {
+      if(i.first != "LATEST")    cout << i.first << " processing time = " << i.second << endl;
+    }
+  }
+
+  return;
+}
+
+void  AnalyzerCore::AddTimerStamp(TString tag){
+  
+  if (TimingMap.find(tag) == TimingMap.end()) TimingMap[tag] = std::clock();
+  
+  return;
+
+}
+
+
 
 bool AnalyzerCore::AnalyserRunsFullBkg(){
 
@@ -404,7 +462,8 @@ std::vector<Muon> AnalyzerCore::GetAllMuons(){
 
     if(FillCloseJetVar){
       
-      std::vector<Jet>    AK4_JetAllColl = GetAllJets();
+      std::vector<Jet>    AK4_JetAllColl = All_Jets;
+      //std::vector<Jet>    AK4_JetAllColl = GetAllJets();
 
       float  JetDiscCJ = -999;
       int JetHadFlavour = -999;
@@ -450,6 +509,7 @@ std::vector<Muon> AnalyzerCore::GetAllMuons(){
   return out;
 
 }
+
 
 void AnalyzerCore::InitializeElectronIDTreeVars(){
 
@@ -1577,7 +1637,7 @@ double AnalyzerCore::GetBDTScoreEl(Electron el ,BkgType bkg, TString BDTTag){
 
 std::vector<Muon> AnalyzerCore::GetMuons(TString id, double ptmin, double fetamax){
 
-  std::vector<Muon> muons = GetAllMuons();
+  std::vector<Muon> muons =  All_Muons;
   std::vector<Muon> out;
   for(unsigned int i=0; i<muons.size(); i++){
     if(!( muons.at(i).Pt()>ptmin )){
@@ -1607,7 +1667,7 @@ std::vector<Muon> AnalyzerCore::GetMuons(AnalyzerParameter param, bool Run_Fake)
 
 std::vector<Muon> AnalyzerCore::GetMuons(AnalyzerParameter param, TString id, double ptmin, double fetamax, bool Run_Fake){
 
-  std::vector<Muon> this_AllMuons = GetAllMuons();
+  std::vector<Muon> this_AllMuons =  All_Muons;
   std::vector<Muon> muons ;
 
   if(param.syst_ == AnalyzerParameter::MuonEnUp)    muons = ScaleMuons( this_AllMuons, +1 );
@@ -1815,7 +1875,7 @@ std::vector<Electron> AnalyzerCore::GetAllElectrons(){
     if(Analyzer=="HNL_LeptonID_BDT_KinVar") FillCloseJetVar=false;
     if(FillCloseJetVar){
       
-      std::vector<Jet>    AK4_JetAllColl = GetAllJets();
+      std::vector<Jet>    AK4_JetAllColl = All_Jets;
       
       float  JetDiscCJ = -999;
       float mindR1=999.;
@@ -1858,7 +1918,7 @@ std::vector<Electron> AnalyzerCore::GetElectrons(AnalyzerParameter param,  bool 
 
 std::vector<Electron> AnalyzerCore::GetElectrons(AnalyzerParameter param, TString id, double ptmin, double fetamax, bool run_fake, bool vetoHEM){
   
-  std::vector<Electron> this_AllElectrons = GetAllElectrons();
+  std::vector<Electron> this_AllElectrons = All_Electrons;
   std::vector<Electron> electrons ;
 
   //cout << "GetElectrons starts;" << endl;
@@ -1911,7 +1971,7 @@ std::vector<Electron> AnalyzerCore::GetElectrons(AnalyzerParameter param, TStrin
 
 std::vector<Electron> AnalyzerCore::GetElectrons(TString id, double ptmin, double fetamax, bool vetoHEM){
 
-  std::vector<Electron> electrons = GetAllElectrons();
+  std::vector<Electron> electrons = All_Electrons;
 
   std::vector<Electron> out;
   for(unsigned int i=0; i<electrons.size(); i++){
@@ -2471,7 +2531,7 @@ std::vector<Jet> AnalyzerCore::GetAllJets(bool applyCorr){
 
 std::vector<Jet> AnalyzerCore::GetJets(TString ID, double ptmin, double fetamax){
 
-  std::vector<Jet> jets = GetAllJets();
+  std::vector<Jet> jets = All_Jets;
 
   std::vector<Jet> out;
   for(unsigned int i=0; i<jets.size(); i++){
@@ -2505,7 +2565,7 @@ std::vector<Jet> AnalyzerCore::GetJets(AnalyzerParameter param){
 }
 std::vector<Jet> AnalyzerCore::GetJets(AnalyzerParameter param,TString id, double ptmin, double fetamax){
 
-  std::vector<Jet> jets_uncorr = GetAllJets();
+  std::vector<Jet> jets_uncorr = All_Jets;
   std::vector<Jet> jets;
   if(param.syst_ == AnalyzerParameter::JetEnUp)            jets    = ScaleJets( jets_uncorr, +1 );
   else if(param.syst_ == AnalyzerParameter::JetEnDown)     jets    = ScaleJets( jets_uncorr, -1 );
@@ -2592,7 +2652,7 @@ std::vector<FatJet> AnalyzerCore::GetAllFatJets(){
 
 std::vector<FatJet> AnalyzerCore::GetFatJets(TString id, double ptmin, double fetamax){
 
-  std::vector<FatJet> jets = GetAllFatJets();
+  std::vector<FatJet> jets = All_FatJets;
   std::vector<FatJet> out;
   for(unsigned int i=0; i<jets.size(); i++){
     if(!( jets.at(i).Pt()>ptmin )){
@@ -2622,7 +2682,7 @@ std::vector<FatJet> AnalyzerCore::GetFatJets(AnalyzerParameter param){
 }
 std::vector<FatJet> AnalyzerCore::GetFatJets(AnalyzerParameter param,TString id, double ptmin, double fetamax){
 
-  std::vector<FatJet> jets_pc = puppiCorr->Correct(GetAllFatJets()); //JH : is this propagated to MET?
+  std::vector<FatJet> jets_pc = puppiCorr->Correct(All_FatJets);
   std::vector<FatJet> jets;
   if(param.syst_ == AnalyzerParameter::JetEnUp)            jets    = ScaleFatJets( jets_pc, +1 );
   else if(param.syst_ == AnalyzerParameter::JetEnDown)     jets    = ScaleFatJets( jets_pc, -1 );
@@ -3969,10 +4029,10 @@ double AnalyzerCore::GetCFWeightElectron(vector<Lepton *> lepptrs, AnalyzerParam
 
 void AnalyzerCore::SetupLeptonBDTSKFlat(){
 
-  std::vector<Muon>     AllmuonColl     = GetAllMuons();
-  std::vector<Electron> AllelectronColl = GetAllElectrons();
+  std::vector<Muon>     AllmuonColl     = All_Muons;
+  std::vector<Electron> AllelectronColl = All_Electrons;
 
-  std::vector<Jet>    AK4_JetAllColl = GetAllJets();
+  std::vector<Jet>    AK4_JetAllColl = All_Jets;
 
   for(auto i: AllmuonColl){
     vmuon_mva_fake_v1->push_back(GetBDTScoreMuon(i,AnalyzerCore::Fake,  "BDTGv1"));
@@ -4184,6 +4244,17 @@ void AnalyzerCore::SetupLeptonBDT(){
   return;
 }
 
+
+void AnalyzerCore::beginEvent(){
+  
+  // fill jets first as they are independant
+  All_Jets      = GetAllJets();
+  All_FatJets   = GetAllFatJets();
+  All_Muons     = GetAllMuons();
+  All_Electrons = GetAllElectrons();
+  
+  return;
+}
 void AnalyzerCore::initializeAnalyzerTools(){
 
   //==== MCCorrection
@@ -6583,6 +6654,42 @@ void AnalyzerCore::WriteHist(){
 
   }
 
+
+  //=== hist maps                                                                                                                                                                                                                                                             
+  if(TimingMap.size() > 0){
+    auto itr = TimingMap.find("start");
+    double start_time = itr->second;
+
+    for(auto i : TimingMap) {
+      cout << i.first << " processing time = " << (i.second- start_time) / CLOCKS_PER_SEC << endl;
+    }
+  }
+
+
+  if(TimerMap.size() > 1){
+    vector<TString> TimerLabels;
+    for(auto i: TimeTagMatcher) TimerLabels.push_back(i.second);
+    sort(TimerLabels.begin(), TimerLabels.end());
+
+    TH1* timer_hist = new TH1D("TimeHist", "", TimerLabels.size(), 0, TimerLabels.size());
+    for (unsigned int i=0 ; i < TimerLabels.size(); i++) timer_hist->GetXaxis()->SetBinLabel(i+1,TimerLabels[i]);
+    timer_hist->SetDirectory(NULL);
+    for(auto i : TimerMap) {
+      if(i.first != "LATEST"){
+        cout << i.first << " processing time = " << i.second << endl;
+	timer_hist->Fill(i.first, i.second);
+      }
+    }
+
+    TDirectory *dir = outfile->GetDirectory("Timer");
+    if(!dir)  outfile->mkdir("Timer");
+    outfile->cd("Timer");
+    
+    timer_hist->Write();
+    outfile->cd();
+    delete timer_hist;
+  }
+  
 }
 
 

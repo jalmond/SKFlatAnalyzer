@@ -119,6 +119,7 @@ public:
 
   void SetLepMVA(double mva);
   inline double lep_mva() const {return j_lep_mva;}
+  inline double LepMVA() const {return j_lep_mva;}
 
   //// BDT ID Functions
   void SetHNL_FakeLepMVAV1(double mvafake);

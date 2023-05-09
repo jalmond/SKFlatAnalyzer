@@ -42,6 +42,9 @@ void HNL_RegionDefinitionsOpt::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq
     
     if(run_Debug) cout << "HNL_RegionDefinitionsOpt::RunAllSignalRegions " << GetChannelString(dilep_channel) <<  endl;
     
+    if(param.Name.Contains("HNTightV2"))OutCutFlow(param.Name+"_"+GetChannelString(dilep_channel)+"_pre", weight_ll);
+
+
     float weight_channel = weight_ll;
     
     /// SelectChannel separates OS/SS samples and EE/MM sinsce signales have all processes in sample
@@ -395,13 +398,54 @@ TString HNL_RegionDefinitionsOpt::RunSignalRegionAK8String(HNL_LeptonCore::Chann
 	    
 	    Particle N1cand = AK8_JetColl[m] + *leps[0];
 	    
+	    double MN1 = (N1cand.M() > 2000.) ? 1999. : N1cand.M();
+
+if(channel==MuMu){
+	      if(MN1 > 350){
+		if(leps[0]->Pt() < 140)   return "false";
+		if(leps[1]->Pt() < 65)    return "false";
+	      }
+	      else   if(MN1 > 280){
+		if(leps[0]->Pt() < 140)   return "false";
+		if(leps[1]->Pt() < 40)    return "false";
+	      }   
+	      else if(MN1 > 225){
+		if(leps[0]->Pt() < 140)   return "false";
+		if(leps[1]->Pt() < 25)    return "false";
+	      }   
+	      else   if(MN1 > 150){
+		if(leps[0]->Pt() < 70)   return "false";
+		if(leps[1]->Pt() < 15)    return "false";
+	      }   
+	      else   if(MN1 > 350){
+		if(leps[0]->Pt() < 140)   return "false";
+		if(leps[1]->Pt() < 65)    return "false";
+	      }   
+	    }
+	    if(channel==EE || channel==EMu){
+              if(MN1 > 635){
+                if(leps[0]->Pt() < 140)   return "false";
+		if(leps[1]->Pt() < 50)    return "false";
+              }
+              else   if(MN1 > 550){
+                if(leps[0]->Pt() < 120)   return "false";
+		if(leps[1]->Pt() < 50)    return "false";
+              }
+              else if(MN1 > 440){
+                if(leps[0]->Pt() < 120)   return "false";
+                if(leps[1]->Pt() < 35)    return "false";
+              }
+              else   if(MN1 > 270){
+                if(leps[0]->Pt() < 100)   return "false";
+                if(leps[1]->Pt() < 25)    return "false";
+              }
+	    }   
+
 	    int nSRbins=8;
 	    double ml1jbins[nSRbins] = { 0., 200., 400.,500., 600.,700., 1000., 2000.};
 	    double Qml1jbins[13] = {-2000., -1000., -500., -300., -200., -100,  0., 100.,200.,300.,500., 1000., 2000.};
 	    
-	    double MN1 = (N1cand.M() > 2000.) ? 1999. : N1cand.M();
 	    
-	    if(MN1 > 600 && leps[0]->Pt() < 140)   return "false";
 	    
 	    if(param.WriteOutVerbose == 0)FillHist( "LimitSR1/"+param.Name+"/N1Mass_Central",  MN1,  w, 7, ml1jbins, "Reco M_{l1jj}");
 	    if(param.WriteOutVerbose == 0 )FillHist( "LimitSR1/"+param.Name+"/Q_N1Mass_Central",  leps[0]->Charge()*MN1,  w, 12, Qml1jbins, "Reco M_{l1jj}");
@@ -558,7 +602,7 @@ TString HNL_RegionDefinitionsOpt::RunSignalRegionWWString(HNL_LeptonCore::Channe
   double HT(0.);
 
   if (param.SRConfig.Contains("LooseJet")){
-    for(UInt_t emme=0; emme<JetCollLoose.size(); emme++){
+    for(UInt_t emme=0; emme<JetColl.size(); emme++){
       HT += JetCollLoose[emme].Pt();
     }
   }
@@ -569,7 +613,7 @@ TString HNL_RegionDefinitionsOpt::RunSignalRegionWWString(HNL_LeptonCore::Channe
     }
   }
   else{
-    for(UInt_t emme=0; emme<JetCollLoose.size(); emme++){
+    for(UInt_t emme=0; emme<JetColl.size(); emme++){
       HT += JetCollLoose[emme].Pt();
     }
   }
@@ -656,7 +700,7 @@ TString HNL_RegionDefinitionsOpt::RunSignalRegionAK4String(HNL_LeptonCore::Chann
   
   int  NB_JetColl      =  B_JetColl.size();
 
-  double pt_bin1= 80.;
+  double pt_bin1= 120.;
   if (param.SRConfig.Contains("SR3_bin1pt_60_")) pt_bin1= 60.;
   if (param.SRConfig.Contains("SR3_bin1pt_70_")) pt_bin1= 70.;
   if (param.SRConfig.Contains("SR3_bin1pt_80_")) pt_bin1= 80.;
@@ -664,7 +708,7 @@ TString HNL_RegionDefinitionsOpt::RunSignalRegionAK4String(HNL_LeptonCore::Chann
   if (param.SRConfig.Contains("SR3_bin1pt_100_")) pt_bin1= 100.;
   if (param.SRConfig.Contains("SR3_bin1pt_120_")) pt_bin1= 120.;
 
-  double pt_bin2= 80.;
+  double pt_bin2= 120.;
   if (param.SRConfig.Contains("SR3_bin2pt_60_")) pt_bin2= 60.;
   if (param.SRConfig.Contains("SR3_bin2pt_70_")) pt_bin2= 70.;
   if (param.SRConfig.Contains("SR3_bin2pt_80_")) pt_bin2= 80.;
@@ -756,80 +800,26 @@ TString HNL_RegionDefinitionsOpt::RunSignalRegionAK4String(HNL_LeptonCore::Chann
   
   Particle N1cand = JetColl[m] + JetColl[n]+ *leps[0];
   Particle N2cand = JetColl[m] + JetColl[n]+ *leps[1];
+  Particle Wcand = JetColl[m] + JetColl[n]+ *leps[0]+ *leps[1];
+
   double dRl2JJ = leps[1]->DeltaR(JetColl[m] + JetColl[n]);
+  double LT = leps[0]->Pt() + leps[1]->Pt();
 
   TString sbin="";
   
-  if(leps[1]->Pt() < 25) {
-    if (met2_st < 9 && N2cand.M() < 100.&& dRl2JJ < 3.1) {
-      bin=2.5;
-      sbin="3";
+  if(LT > 150){
+    if(N1cand.M() > 350.) {
+      if(Wcand.M() > 600)  sbin="3";
+      else  sbin="4";
     }
-    else{
-      bin=3.5;
-      sbin="4";
-    }
+    else sbin="5";
   }
-  else if(leps[1]->Pt() < 60) {
- 
-    if (met2_st < 9  && dRl2JJ < 3.1){
-      
-      if(N2cand.M() < 100.) { 
-	bin=4.5;
-	sbin="5";
-      }
-      else if(N2cand.M() < 125.) {
-	bin=5.5;
-	sbin="6";
-      }
-      else if(N2cand.M() < 150.) {
-	bin=6.5;
-	sbin="7";
-      }
-      else if(N2cand.M() < 175.) {
-	bin=7.5;
-	sbin="8";
-      }
-      else if(N2cand.M() < 200.) {
-	bin=8.5;
-	sbin="9";
-      }
-      else {
-	bin=9.5;
-	sbin="10";
-      }
-    }
+  else {
+    if(N1cand.M() > 250.) {
+      sbin="6";
+    }  
     else {
-      bin=9.5;
-      sbin="10";
-    }
-
-  }
-  else{
-
-    if(N1cand.M() < 200) {
-      bin=10.5;
-      sbin="11";
-    }
-    else  if(N1cand.M() < 250.) {
-      bin=11.5;
-      sbin="12";
-    }
-    else if(N1cand.M() < 300.) {
-      bin=12.5;
-      sbin="13";
-    }
-    else if(N1cand.M() < 500.) {
-      bin=13.5;
-      sbin="14";
-      }
-    else if(N1cand.M() < 1000.) {
-      bin=14.5;
-	sbin="15";
-    }
-    else {
-      bin = 15.5;
-      sbin="16";
+      sbin="7";
     }
   }
   

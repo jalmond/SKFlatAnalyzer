@@ -11,18 +11,22 @@ void HNL_SignalStudies::initializeAnalyzer(){
     SetupJECUncertainty(jec_source);
   }
   
-  //SetupIDMVAReader(false);
-  // SetupIDMVAReader(true);
+  SetupIDMVAReaderDefault();
 
 }
 
 
 void HNL_SignalStudies::executeEvent(){
 
+  AddTimerStamp("start_ev");
   
- 
+  FillTimer("START_EV");
+
   //==== Gen for genmatching
   AnalyzerParameter param  = InitialiseHNLParameter("SignalStudy","UL");
+  PlotBDTVariablesElectron(param);
+  PlotBDTVariablesMuon(param);
+
   Event ev = GetEvent();
   double weight =SetupWeight(ev,param);
 
@@ -31,7 +35,7 @@ void HNL_SignalStudies::executeEvent(){
   TString process="";
   if(!IsData){
     gens = GetGens();
-    
+   
     process = GetProcess();
 
     vector<TString> labels ={"Inclusive","OS_ElEl", "SS_El-El-", "SS_El+El+","OS_MuMu", "SS_Mu-Mu-" , "SS_Mu+Mu+","OS_ElMu","SS_El-Mu-" ,"SS_El+Mu+", "OS_MuEl","SS_Mu-El-","SS_Mu+El+"};
@@ -50,7 +54,8 @@ void HNL_SignalStudies::executeEvent(){
   }
   if(process.Contains("OS")) return;
 
-  
+  FillTimer("SS_EV");
+
   vector<HNL_LeptonCore::Channel> channels = {EE,MuMu};
 
   for(auto dilep_channel : channels){
@@ -61,6 +66,10 @@ void HNL_SignalStudies::executeEvent(){
 
     TString channel = GetChannelString(dilep_channel) ;
 
+    FillTimer("START_RUN_"+channel);
+    Particle METv = GetvMET("PuppiT1xyCorr",param); // returns MET with systematic correction                                                                                                    
+
+    
     //double ptbins[11] = { 0., 10.,15., 20., 30., 40.,50., 100.,500. ,1000., 2000.};
 
     std::vector<Jet>      jetsTmp     = GetJets   ( "NoID",    10., 5.);
@@ -68,13 +77,12 @@ void HNL_SignalStudies::executeEvent(){
 
     FillHist ("NoCut_"+channel, 1, weight, 2, 0., 2.,"");
     
-    if(MCSample.Contains("DYType") && MCSample.Contains("private"))  MakeType1SignalPlots(channel, false);
-    if(MCSample.Contains("VBFType") && MCSample.Contains("private"))  MakeType1VBFSignalPlots(channel, false);
+    if(MCSample.Contains("DYType")   && MCSample.Contains("private"))  MakeType1SignalPlots(channel, false);
+    if(MCSample.Contains("VBFType")  && MCSample.Contains("private"))  MakeType1VBFSignalPlots(channel, false);
     if(MCSample.Contains("SSWWType") && MCSample.Contains("private"))  MakeType1SSWWSignalPlots(channel, false);
     
     vector<Gen> gen_lep= GetGenLepronsSignal();
         
-    
     std::vector<Electron>   ElectronCollV = GetElectrons(param.Electron_Veto_ID, 10., 2.5);
     std::vector<Muon>       MuonCollV     = GetMuons    (param.Muon_Veto_ID, 5., 2.4);
 
@@ -94,489 +102,153 @@ void HNL_SignalStudies::executeEvent(){
       for(auto ijet : AllJets){
 	if(ilep->DeltaR(ijet) < 0.4)   nCJ++;
       }	
-      /*if(nCJ > 1) {
-	cout << "Multiple Close Jets " << endl;
-	cout << "ilep pt = " << ilep->Pt() << " eta = " << ilep->Eta() << " phi = " << ilep->Phi() << endl;
-	for(auto ijet : AllJets){
-	  if(ilep->DeltaR(ijet) < 0.4) {
-
-	    int LepType=GetLeptonType_JH(*ilep, gens);
-	    cout << "lep type =  " << LepType << " " <<   ilep->DeltaR(ijet) << " Jet " << ijet.Pt() << " " << ijet.Eta() << " phi = " << ijet.Phi() << " Pass ID " << ijet.PassID("tight") <<  " pass LepVeto = " <<  ijet.PassID("tightLepVeto") << " JetLeptonPtRelLepAware = " << JetLeptonPtRelLepAware(*ilep, ijet) << " JetLeptonPtRatioLepAware = " << JetLeptonPtRatioLepAware(*ilep,ijet) << " 1/(1.+lep->RelIso() = " << 1/(1.+ilep->RelIso()) << endl;
-	    cout << "RelIso() = " << ilep->RelIso() <<endl;
-	    
-	  }
-	}
-      }
-      if(nCJ == 0) {
-	cout << "No Close Jets " << endl;
-	cout << "ilep pt = " << ilep->Pt() << " eta = " << ilep->Eta() <<  " JetLeptonPtRelLepAware = " << JetLeptonPtRelLepAware(*ilep) << " JetLeptonPtRatioLepAware = " << JetLeptonPtRatioLepAware(*ilep) << endl;
-	cout << "RelIso() = " << ilep->RelIso() <<endl;
-	
-      }
-      */
     }
 
-    return;
+    AddTimerStamp("start_limit_Code");
 
-    if(SameCharge(leps_veto))    FillHist ("DiLepton_Veto_"+channel, 1, weight, 2, 0., 2.,"");
-    else continue;
+    std::vector<FatJet> AK8_JetColl                 = GetHNLAK8Jets("HNL",param);
+    std::vector<Jet> AK4_JetAllColl                 = GetHNLJets("NoCut_Eta3",param);
+    std::vector<Jet> JetColl                        = GetHNLJets("Tight",param);
+    std::vector<Jet> JetCollLoose                   = GetHNLJets("Loose",param);
+    std::vector<Jet> VBF_JetColl                    = GetHNLJets("VBFTight",param);
+    std::vector<Jet> BJetColl                       = GetHNLJets("BJetM",param);
+    std::vector<Jet> BJetCollSR1                    = GetHNLJets("BJetT",param);
 
-    if(LepsMVAID.size() == 2)     FillHist ("DiLepton_MVA_"+channel, 1, weight, 2, 0., 2.,"");
-    
-    std::vector<Electron>   ElectronColl;
-    std::vector<Muon>       MuonColl;
+    std::vector<Tau>        TauColl        = GetTaus     (leps_veto,param.Tau_Veto_ID,20., 2.3);
 
-    if(MCSample.Contains("Type")){
-      
-      for(auto iel: ElectronCollAll){ 
-	bool matched_lep=false;
-	for(auto igen : gen_lep){
-	  if(iel.DeltaR(igen) < 0.2) matched_lep=true;
-	}
-	if(iel.PassID("HNTightV3")&& matched_lep) ElectronColl.push_back(iel);
-	
-      }
-      
-      for(auto iel: MuonCollAll){
-	bool matched_lep=false;
-	for(auto igen :gen_lep){
-	  if(iel.DeltaR(igen) <0.2) matched_lep=true;
-	}
-	if(iel.PassID("HNL_ULID") && matched_lep)MuonColl.push_back(iel);
-      } 
-      
-    }
-    else{
+    RunAllSignalRegions(Inclusive, 
+			ElectronCollAll,ElectronCollV,MuonCollAll,MuonCollV,  TauColl,
+			JetCollLoose, AK4_JetAllColl, JetColl,VBF_JetColl,AK8_JetColl, BJetColl,BJetCollSR1, 
+			ev,METv, param		, weight);
 
-      for(auto iel: ElectronCollAll)if(iel.PassID("HNTightV3")) ElectronColl.push_back(iel);
-      for(auto iel: MuonCollAll) if(iel.PassID("HNL_ULID_v1")) MuonColl.push_back(iel);
 
-    }
-
-    if(dilep_channel==EE) MuonColl.clear();
-    else ElectronColl.clear();
-
-    std::vector<Electron>   ElectronCollFake;
-    std::vector<Muon>       MuonCollFake;
-    std::vector<Electron>   ElectronCollConv;
-    std::vector<Electron>   ElectronCollCF;
-    std::vector<Muon>       MuonCollConv;
-    std::vector<Electron>   ElectronCollPrompt;
-    std::vector<Muon>       MuonCollPrompt;
-
-
-    if(!IsData){
-      if (!MCSample.Contains("Type")){
-	
-	ElectronCollFake = SkimLepColl(ElectronColl, gens, param, "HFake");
-	ElectronCollConv = SkimLepColl(ElectronColl, gens, param, "NHConv");
-	ElectronCollCF = SkimLepColl(ElectronColl, gens, param, "CF");
-	ElectronCollPrompt = SkimLepColl(ElectronColl, gens, param, "PromptNoCF");
-	
-	FillAllElectronPlots("Prompt", "Electrons"  , ElectronCollPrompt , weight);
-	FillAllElectronPlots("Fake", "Electrons"  , ElectronCollFake , weight);
-	FillAllElectronPlots("Conv", "Electrons"  , ElectronCollConv , weight);
-	FillAllElectronPlots("CF", "Electrons"  , ElectronCollCF , weight);
-	
-	MuonCollFake = SkimLepColl(MuonColl, gens, param, "HFake");
-	MuonCollConv = SkimLepColl(MuonColl, gens, param, "NHConv");
-	MuonCollPrompt = SkimLepColl(MuonColl, gens, param, "Prompt");
-	FillAllMuonPlots("Prompt", "Muons"  , MuonCollPrompt , weight);
-	FillAllMuonPlots("Fake", "Muons"  , MuonCollFake , weight);
-	FillAllMuonPlots("Conv", "Muons"  , MuonCollConv , weight);
-	
-      }
-      else{
-	FillAllMuonPlots("Signal", "Muons"  , MuonColl , weight);
-	FillAllElectronPlots("Signal", "Electrons"  , ElectronColl , weight);
-      }      
-    }
-
-    std::vector<Lepton *> LepsAll  = (dilep_channel==EE) ? MakeLeptonPointerVector(ElectronColl) : MakeLeptonPointerVector(MuonColl);
-
-    if(LepsMVAID.size() == 2)     FillHist ("DiLepton_MVA2_"+channel, 1, weight, 2, 0., 2.,"");
-    
-
-    if (PassTriggerSelection(dilep_channel, ev, LepsAll,"Full",false) && SameCharge(LepsAll)) {
-            
-
-      FillHist ("Trigger_"+GetChannelString(dilep_channel), 1, weight, 2, 0., 2.,"");
-
-      Particle ll =  (*LepsAll[0]) + (*LepsAll[1]);
-      if(ll.M() < 10) continue;
-      FillHist ("LowMassCut_"+GetChannelString(dilep_channel), 1, weight, 2, 0., 2.,"");
-
-      if (SameCharge(MuonColl)) {
-	
-	FillHist ("SameSignDilep_"+GetChannelString(dilep_channel), 1, weight, 2, 0., 2.,"");
-
-	vector<Muon> MuonFakePass;
-	FillAllMuonPlots("SS", "Muons"  , MuonColl , weight);
-	vector<double> mva_cut = {-1, -0.5, 0., 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.95};
-	
-	for(unsigned int i=0 ; i < mva_cut.size(); i++){
-	  if(MuonColl[0].MVA() > mva_cut[i] && MuonColl[1].MVA() > mva_cut[i])    FillHist( "Vec/FakeMVAMuonColl", i+1,  weight,15, 0., 15,"HNTight");
-	  if(MuonColl[0].MVA() > 0.65 && MuonColl[1].MVA() > 0.65)    {
-	    if(MuonColl[0].HNL_MVA_Conv("v2")  > mva_cut[i] && MuonColl[1].HNL_MVA_Conv("v2")  )   FillHist( "Vec/ConvMVAMuonColl", i+1,  weight,15, 0., 15,"HNTight");
-
-	  }
-	}
-
-	if( MuonColl[0].PassFakeMVA(0.4,0.8,0.4,0.8) && MuonColl[1].PassFakeMVA(0.4,0.8,0.4,0.8))    {
-	  
-	  FillAllMuonPlots("PassFake", "Muons"  , MuonColl , weight);
-
-	  if(MuonColl[0].HNL_MVA_Conv("v2") > -0.8 && MuonColl[1].HNL_MVA_Conv("v2") > -0.8) FillHist( "Vec/TightMuonColl", 2,  weight,5, 0., 5,"HNTight");
-	}
-	
-	if(MuonColl[0].PassID("HNTightV2") && MuonColl[1].PassID("HNTightV2"))   FillHist( "Vec/TightMuonColl", 1,  weight,5, 0., 5,"HNTight");
-      
-	
-      }
-      
-      if (SameCharge(ElectronColl)) {
-
-        Particle ll =  (ElectronColl[0]) + (ElectronColl[1]);
-
-
-	double bdt_l1_fake = ElectronColl[0].HNL_MVA_Fake("v2");
-	double bdt_l2_fake = ElectronColl[1].HNL_MVA_Fake("v2");
-	
-	double bdt_l1_cf = ElectronColl[0].HNL_MVA_CF("v2");
-	double bdt_l2_cf = ElectronColl[1].HNL_MVA_CF("v2");
-
-	double bdt_l1_conv = ElectronColl[0].HNL_MVA_Conv("v2");
-	double bdt_l2_conv = ElectronColl[1].HNL_MVA_Conv("v2");
-
-
-	
-        // VETO Z PEAK IN EE CHANNEL                                                                                                                                           
-	
-        if (! (fabs(ll.M()-90.) < 15)) {
-
-	  FillHist ("SameSignDilep_"+GetChannelString(dilep_channel), 1, weight, 2, 0., 2.,"");
-	  
-	  FillAllElectronPlots("SS", "Electrons"  , ElectronColl , weight);
-	  
-	  if(ElectronColl[0].PassID("HNTightV2") && ElectronColl[1].PassID("HNTightV2"))  FillHist( "Vec/TightElectronColl", 1,  weight,5, 0., 5,"HNTight");
-	  
-	  
-	  vector<double> mva_cut = {-1, -0.5, 0., 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.95};
-	  
-	  if(ElectronColl[0].PassID("HNTightV2") && ElectronColl[1].PassID("HNTightV2")) {
-	    
-	    FillHist( "Vec/FakeMVAElectronColl", 0,  weight,15, 0., 15,"HNTight");
-	    FillHist( "Vec/ConvMVAElectronColl", 0,  weight,15, 0., 15,"HNTight");
-	    FillHist( "Vec/CFMVAElectronColl", 0,  weight,15, 0., 15,"HNTight");
-
-	    FillAllElectronPlots("SSTight", "Electrons"  , ElectronColl , weight);
-	    
-	  }
-
-	  
-	  for(unsigned int i=0 ; i< mva_cut.size(); i++){
-	    
-	    double mva_cut1 = mva_cut[i] ;
-	    
-	    
-	    if(bdt_l1_fake  > mva_cut[i] && bdt_l2_fake > mva_cut[i])    FillHist( "Vec/FakeMVAElectronColl", i+1,  weight,15, 0., 15,"HNTight");
-
-	    if(bdt_l1_conv > mva_cut[i] && bdt_l2_conv > mva_cut[i])    FillHist( "Vec/ConvMVAElectronColl", i+1,  weight,15, 0., 15,"HNTight");
-
-	    if(ElectronColl[0].PassCFMVA(bdt_l1_cf, mva_cut1,mva_cut1) && ElectronColl[1].PassCFMVA(bdt_l2_cf, mva_cut1,mva_cut1))      FillHist( "Vec/CFMVAElectronColl", i+1,  weight,15, 0., 15,"HNTight");
-	    
-	    
-	    if(ElectronColl[0].PassCFMVA(bdt_l1_cf, mva_cut1,0.) && ElectronColl[1].PassCFMVA(bdt_l2_cf, mva_cut1,0.))      FillHist( "Vec/CFMVAElectronColl_BB", i+1,  weight,15, 0., 15,"HNTight");
-	    if(ElectronColl[0].PassCFMVA(bdt_l1_cf, 0.,mva_cut1) && ElectronColl[1].PassCFMVA(bdt_l2_cf, 0, mva_cut1))      FillHist( "Vec/CFMVAElectronColl_EC", i+1,  weight,15, 0., 15,"HNTight");
-	    
-	    if(ElectronColl[0].PassFakeMVA(bdt_l1_fake, mva_cut1,0.) && ElectronColl[1].PassFakeMVA(bdt_l2_fake,mva_cut1,0.))  FillHist( "Vec/FakeMVAElectronColl_BB", i+1,  weight,15, 0., 15,"HNTight");
-	    if(ElectronColl[0].PassFakeMVA(bdt_l1_fake, 0., mva_cut1) && ElectronColl[1].PassFakeMVA(bdt_l2_fake,0., mva_cut1))  FillHist( "Vec/FakeMVAElectronColl_EC", i+1,  weight,15, 0., 15,"HNTight");
-	    
-	    if(ElectronColl[0].PassConvMVA(bdt_l1_conv, mva_cut1,0.) && ElectronColl[1].PassConvMVA(bdt_l2_conv, mva_cut1,0.) )  FillHist( "Vec/ConvMVAElectronColl_BB", i+1,  weight,15, 0., 15,"HNTight");
-	    if(ElectronColl[0].PassConvMVA(bdt_l1_conv, 0., mva_cut1) && ElectronColl[1].PassConvMVA(bdt_l2_conv, 0., mva_cut1) )  FillHist( "Vec/ConvMVAElectronColl_EC", i+1,  weight,15, 0., 15,"HNTight");
-	    
-	    
-	  }
-	  
-	  if(ElectronColl[0].PassFakeMVA(bdt_l1_fake, 0.6, 0.7) && ElectronColl[1].PassFakeMVA(bdt_l2_fake, 0.6, 0.7 ))   {
-	    
-	    FillAllElectronPlots("PassFake", "Electrons"  , ElectronColl , weight);
-	    
-	    if(ElectronColl[0].PassCFMVA(bdt_l1_cf,0. ,0.5) && ElectronColl[1].PassCFMVA(bdt_l2_cf,0. ,0.5) ){
-
-	      FillAllElectronPlots("PassFakeCF", "Electrons"  , ElectronColl , weight);
-
-	      if(bdt_l1_conv  > -0.9 && bdt_l2_conv > -0.9)   {
-		FillHist( "Vec/TightElectronColl", 2,  weight,5, 0., 5,"HNTight");
-		
-	      }
-	    }
-	  }
-	} 
-      }
-      
-    }
-    
-    continue;
-  
-    
-    if(SameCharge(LepsAll)) {
-
-      
-      FillAllMuonPlots("SS", "Muons"  , MuonColl , weight);                                                                                                                                                  
-      FillAllElectronPlots("SS", "Electrons"  , ElectronColl , weight);                                                                                                                                 
-
-
-      for(auto ilep : LepsAll){
-        int  lepType = GetLeptonType_JH(*ilep, gens);
-
-        if(ilep->LeptonFlavour() == Lepton::ELECTRON)       FillHist( "LepType/SSElectron", lepType ,weight, 14., -7., 7);
-        else  FillHist( "LepType/SSMuon", lepType, weight, 14., -7., 7);
-      }
-    }
-
-
-    std::vector<Muon> MuonCollMVALoose;
-    std::vector<Muon> MuonCollMVAMedium;
-    std::vector<Muon> MuonCollMVATight;
-    std::vector<Muon> MuonCollHNL;
-    std::vector<Muon> MuonCollMVAVeryTight;
-    std::vector<Muon> MuonCollMVALooseT;
-    std::vector<Muon> MuonCollMVAMediumT;
-    std::vector<Muon> MuonCollMVATightT;
-    std::vector<Muon> MuonCollHNTL;
-    std::vector<Muon> MuonCollMVAVeryTightT;
-    std::vector<Muon> MuonCollPOGTight;
-
-    std::vector<Muon> MuonCollPOGMVA;
-    std::vector<Muon> MuonCollPOGMVAT;
-
-    std::vector<Electron> ElectronCollHNL;
-    std::vector<Electron> ElectronCollMVALoose;
-    std::vector<Electron> ElectronCollMVAMedium;
-    std::vector<Electron> ElectronCollMVATight;
-    std::vector<Electron> ElectronCollMVAVeryTight;
-    std::vector<Electron> ElectronCollMVALooseT;
-    std::vector<Electron> ElectronCollMVAMediumT;
-    std::vector<Electron> ElectronCollMVATightT;
-    std::vector<Electron> ElectronCollMVAVeryTightT;
-
-    std::vector<Electron> ElectronCollPOGTight;
-    std::vector<Electron> ElectronCollHNTight;
-
-    std::vector<Muon> MuonCollMVAMaxLoose;
-    std::vector<Muon> MuonCollMVAMaxMedium;
-    std::vector<Muon> MuonCollMVAMaxTight;
-
-
-    std::vector<Muon> MuonCollTypeM6;
-    std::vector<Muon> MuonCollTypeM5;
-    std::vector<Muon> MuonCollTypeM4;
-    std::vector<Muon> MuonCollTypeM3;
-    std::vector<Muon> MuonCollTypeM2;
-    std::vector<Muon> MuonCollTypeM1;
-    std::vector<Muon> MuonCollType0;
-    std::vector<Muon> MuonCollType1;
-    std::vector<Muon> MuonCollType2;
-    std::vector<Muon> MuonCollType3;
-    std::vector<Muon> MuonCollType4;
-    std::vector<Muon> MuonCollType5;
-    std::vector<Muon> MuonCollType6;
-
-    for(auto iel :  MuonColl ) {
-
-      int  lepType = GetLeptonType_JH(iel, gens);
-    
-      if(lepType == -6) MuonCollTypeM6.push_back(iel);
-      if(lepType == -5) MuonCollTypeM5.push_back(iel);
-      if(lepType == -4) MuonCollTypeM4.push_back(iel);
-      if(lepType == -3) MuonCollTypeM3.push_back(iel);
-      if(lepType == -2) MuonCollTypeM2.push_back(iel);
-      if(lepType == -1) MuonCollTypeM1.push_back(iel);
-      if(lepType == 0) MuonCollType0.push_back(iel);
-      if(lepType == 1) MuonCollType1.push_back(iel);
-      if(lepType == 2) MuonCollType2.push_back(iel);
-      if(lepType == 3) MuonCollType3.push_back(iel);
-      if(lepType == 4) MuonCollType4.push_back(iel);
-      if(lepType == 5) MuonCollType5.push_back(iel);
-      if(lepType == 6) MuonCollType6.push_back(iel);
-      if(iel.PassID("HNL_ULID_v1"))   {
-	MuonCollHNL.push_back(iel);
-
- 	if(iel.MVA() > 0.5)  MuonCollPOGMVAT.push_back(iel);   
-      }
-
-      if(iel.MVA() > 0.5)  MuonCollPOGMVA.push_back(iel);
-
-      if(iel.PassID("HNTightV2"))     MuonCollPOGTight.push_back(iel);                                                                                                                                                                                                                        
-
-    }
-
-
-    std::vector<Electron> ElectronCollTypeM6;
-    std::vector<Electron> ElectronCollTypeM5;
-    std::vector<Electron> ElectronCollTypeM4;
-    std::vector<Electron> ElectronCollTypeM3;
-    std::vector<Electron> ElectronCollTypeM2;
-    std::vector<Electron> ElectronCollTypeM1;
-    std::vector<Electron> ElectronCollType0;
-    std::vector<Electron> ElectronCollType1;
-    std::vector<Electron> ElectronCollType2;
-    std::vector<Electron> ElectronCollType3;
-    std::vector<Electron> ElectronCollType4;
-    std::vector<Electron> ElectronCollType5;
-    std::vector<Electron> ElectronCollType6;
-
-    for(auto iel :  ElectronColl ) {
-
-      int  lepType = GetLeptonType_JH(iel, gens);
-
-      if(lepType == -6) ElectronCollTypeM6.push_back(iel);
-      if(lepType == -5) ElectronCollTypeM5.push_back(iel);
-      if(lepType == -4) ElectronCollTypeM4.push_back(iel);
-      if(lepType == -3) ElectronCollTypeM3.push_back(iel);
-      if(lepType == -2) ElectronCollTypeM2.push_back(iel);
-      if(lepType == -1) ElectronCollTypeM1.push_back(iel);
-      if(lepType == 0) ElectronCollType0.push_back(iel);
-      if(lepType == 1) ElectronCollType1.push_back(iel);
-      if(lepType == 2) ElectronCollType2.push_back(iel);
-      if(lepType == 3) ElectronCollType3.push_back(iel);
-      if(lepType == 4) ElectronCollType4.push_back(iel);
-      if(lepType == 5) ElectronCollType5.push_back(iel);
-      if(lepType == 6) ElectronCollType6.push_back(iel);
-
-      if(iel.PassID("HNTightV3")) {
-	ElectronCollHNL.push_back(iel);
-      }
-       if(iel.PassID("HNTightV2"))     ElectronCollPOGTight.push_back(iel);                                                                                                                                                                                                                       
-    }
-    
-
-    
-    if(!IsData){
-      
-      FillAllMuonPlots("TypeM6", "Muons"  , MuonCollTypeM6 , weight);
-      FillAllMuonPlots("TypeM5", "Muons"  , MuonCollTypeM5 , weight);
-      FillAllMuonPlots("TypeM4", "Muons"  , MuonCollTypeM4 , weight);
-      FillAllMuonPlots("TypeM3", "Muons"  , MuonCollTypeM3 , weight);
-      FillAllMuonPlots("TypeM2", "Muons"  , MuonCollTypeM2 , weight);
-      FillAllMuonPlots("TypeM1", "Muons"  , MuonCollTypeM1 , weight);
-      FillAllMuonPlots("Type0", "Muons"  , MuonCollType0 , weight);
-      FillAllMuonPlots("Type1", "Muons"  , MuonCollType1 , weight);
-      FillAllMuonPlots("Type2", "Muons"  , MuonCollType2 , weight);
-      FillAllMuonPlots("Type3", "Muons"  , MuonCollType3 , weight);
-      FillAllMuonPlots("Type4", "Muons"  , MuonCollType4 , weight);
-      FillAllMuonPlots("Type5", "Muons"  , MuonCollType5 , weight);
-      FillAllMuonPlots("Type6", "Muons"  , MuonCollType6 , weight);
-      FillAllElectronPlots("TypeM6", "Electrons"  , ElectronCollTypeM6 , weight);
-      FillAllElectronPlots("TypeM5", "Electrons"  , ElectronCollTypeM5 , weight);
-      FillAllElectronPlots("TypeM4", "Electrons"  , ElectronCollTypeM4 , weight);
-      FillAllElectronPlots("TypeM3", "Electrons"  , ElectronCollTypeM3 , weight);
-      FillAllElectronPlots("TypeM2", "Electrons"  , ElectronCollTypeM2 , weight);
-      FillAllElectronPlots("TypeM1", "Electrons"  , ElectronCollTypeM1 , weight);
-      FillAllElectronPlots("Type0", "Electrons"  , ElectronCollType0 , weight);
-      FillAllElectronPlots("Type1", "Electrons"  , ElectronCollType1 , weight);
-      FillAllElectronPlots("Type2", "Electrons"  , ElectronCollType2 , weight);
-      FillAllElectronPlots("Type3", "Electrons"  , ElectronCollType3 , weight);
-      FillAllElectronPlots("Type4", "Electrons"  , ElectronCollType4 , weight);
-      FillAllElectronPlots("Type5", "Electrons"  , ElectronCollType5 , weight);
-      FillAllElectronPlots("Type6", "Electrons"  , ElectronCollType6 , weight);
-    }
-    if(SameCharge(ElectronCollHNL))FillAllElectronPlots("HNL", "Electrons"  , ElectronCollHNL , weight);
-    
-    map<double , std::vector<Muon> > MuonVecMap;
-    MuonVecMap[0.] = MuonColl;
-    MuonVecMap[1.] = MuonCollHNL;
-    MuonVecMap[2.] = MuonCollMVALoose;
-    MuonVecMap[3.] = MuonCollMVAMedium;
-    MuonVecMap[4.] = MuonCollMVATight;
-    MuonVecMap[5.] = MuonCollMVAVeryTight;
-    MuonVecMap[6.] = MuonCollPOGMVA;
-    MuonVecMap[7.] = MuonCollPOGTight;
-    MuonVecMap[8.] = MuonCollMVALooseT;
-    MuonVecMap[9.] = MuonCollMVAMediumT;
-    MuonVecMap[10.] = MuonCollMVATightT;
-    MuonVecMap[11.] = MuonCollMVAVeryTightT;
-    MuonVecMap[12.] = MuonCollPOGMVAT;
-
-
-
-    for(auto imap : MuonVecMap)   {
-      if(SameCharge(imap.second))FillHist( "Vec/MuonColl", imap.first,  weight,15, 0., 15,"HNTight");
-    }
-    
-
-    map<double , std::vector<Electron> > ElectronVecMap;
-    ElectronVecMap[0.] = ElectronColl;
-    ElectronVecMap[1.] = ElectronCollHNL;
-    ElectronVecMap[2.] = ElectronCollMVALoose;
-    ElectronVecMap[3.] = ElectronCollMVAMedium;
-    ElectronVecMap[4.] = ElectronCollMVATight;
-    ElectronVecMap[5.] = ElectronCollMVAVeryTight;
-    ElectronVecMap[6.] = ElectronCollMVALooseT;
-    ElectronVecMap[7.] = ElectronCollMVAMediumT;
-    ElectronVecMap[8.] = ElectronCollMVATightT;
-    ElectronVecMap[9.] = ElectronCollMVAVeryTightT;
-    ElectronVecMap[10.] = ElectronCollPOGTight;
-
-
-    for(auto imap : ElectronVecMap)   {
-      if(SameCharge(imap.second))FillHist( "Vec/ElectronColl", imap.first,  weight,15, 0., 15,"HNTight");
-    }
-
-
-    continue;
-
-
-
-    return;
-
-
-
-
-    if(dilep_channel==MuMu){
-      
-      vector<Muon> LMuons;
-      vector<Muon> HMuons;
-      
-      for(auto imuon : MuonColl){
-	Lepton *l = (Lepton *)(&imuon);
-	
-	int lepSrc = GetFakeLepSrcType(*l, jetsTmp);
-	if(lepSrc == 1)   LMuons.push_back(imuon);
-	if(lepSrc == 2 || lepSrc == 3)  HMuons.push_back(imuon);
-      }
-
-      
-      FillAllMuonPlots("LightFlavour", "Muons"  , LMuons , weight);
-      FillAllMuonPlots("HeavyFlavour", "Muons"  , HMuons , weight);
-      
-    }
-    else{
-
-      vector<Electron> LElectrons;
-      vector<Electron> HElectrons;
-
-      for(auto iel : ElectronColl){
-        Lepton *l = (Lepton *)(&iel);
-
-        int lepSrc = GetFakeLepSrcType(*l, jetsTmp);
-        if(lepSrc == 1)   LElectrons.push_back(iel);
-        if(lepSrc == 2 || lepSrc == 3)  HElectrons.push_back(iel);
-      }
-
-
-      FillAllElectronPlots("LightFlavour", "Electrons"  , LElectrons , weight);
-      FillAllElectronPlots("HeavyFlavour", "Electrons"  , HElectrons , weight);
-
-
-      
-    }
-    continue;
+    FillTimer("END_Limitcode_"+channel);
+    FillTimer("END_Run_"+channel);
 
   }
 }
 
+
+void HNL_SignalStudies::PlotBDTVariablesMuon(AnalyzerParameter param){
+
+  Event ev = GetEvent();
+  double weight =SetupWeight(ev,param);
+
+  std::vector<Electron>   ElectronCollProbe = GetElectrons("passPOGTight", 10., 2.5);
+  std::vector<Muon>       MuonCollProbe     = GetMuons    ("passProbe", 10., 2.4);
+
+  HNL_LeptonCore::Channel dilep_channel = MuMu;
+
+  for(auto imu : MuonCollProbe){
+
+    TString channel_string = GetChannelString(dilep_channel) ;
+
+    if(!imu.PassID("MVALoose")) continue;
+
+    TString tag= imu.LepGenType(GetLeptonType_JH(imu, gens));
+
+    TString etabin = (fabs(imu.Eta()) < 1.5) ? "BB_" : "EC_";
+    TString ptbin = "Ptlt20_";
+    if(imu.Pt() < 20) ptbin = "Ptlt20_";
+    else if(imu.Pt() < 50) ptbin = "Ptlt50_";
+    else  ptbin = "Ptgt50_";
+
+
+    vector<TString> Tags = {tag+"/Lep_MVA_",
+                            tag+imu.CloseJet_Flavour()+"/Lep_MVA_",
+                            tag+etabin+"/El_MVA_",
+                            tag+etabin+imu.CloseJet_Flavour()+"/El_MVA_",
+                            tag+etabin+ptbin+"/El_MVA_",
+                            tag+etabin+ptbin+imu.CloseJet_Flavour()+"/El_MVA_",
+    };
+
+    for(auto i  : Tags){
+
+      if(i.Contains("Pileup")) continue;
+      if(i.Contains("IsEWtau")) continue;
+      if(i.Contains("LF") && !i.Contains("IsFake")) continue;
+      if(i.Contains("HF") && !i.Contains("IsFake")) continue;
+
+      map<TString, double> mapBDT = imu.MAPBDT();
+
+      for(auto imap : mapBDT ) {
+	FillHist(channel_string+i+"_"+imap.first, imap.second , weight, 200, -1., 1);
+	if(imap.second > 0.)     FillHist(channel_string+i+"HFvar__LFcut_"+imap.first, imu.MVA() , weight, 200, -1., 1);
+      }
+      
+      FillHist(channel_string+i+"Fake_"+channel_string, imu.MVA() , weight, 200, -1., 1);
+
+      if(imu.MVA() > 0.5){
+	for(auto imap : mapBDT ) FillHist(channel_string+i+"LFVar__HFcut_"+imap.first+"_mvacut", imap.second , weight, 200, -1., 1);
+      }
+      if(imu.MVA() > 0.5 && imu.HNL_MVA_Fake("v3") > 0.2){
+	FillMuonKinematicPlots("muon_"+i, "PassMVA", imu, weight);
+      }
+    }
+  }
+}
+
+void HNL_SignalStudies::PlotBDTVariablesElectron(AnalyzerParameter param){
+
+  Event ev = GetEvent();
+  double weight =SetupWeight(ev,param);
+  
+  std::vector<Electron>   ElectronCollProbe = GetElectrons("passProbeID", 10., 2.5);
+
+  HNL_LeptonCore::Channel dilep_channel= EE;
+
+  for(auto iel : ElectronCollProbe){
+
+    TString channel_string = GetChannelString(dilep_channel) ;
+
+    FillHist("ElectronIDPlots/"+channel_string+"_MiniIso",iel.MiniRelIso() , weight, 200, 0., 5);
+    FillHist("ElectronIDPlots/"+channel_string+"_NMissingHits",iel.NMissingHits() , weight, 5, 0., 5);
+    FillHist("ElectronIDPlots/"+channel_string+"_SIP3D",iel.SIP3D() , weight, 200, -10., 10);
+    FillHist("ElectronIDPlots/"+channel_string+"_fdXY",iel.fdXY() , weight, 1000, -0.5, 0.5);
+    FillHist("ElectronIDPlots/"+channel_string+"_fdZ",iel.fdZ() , weight, 1000, -0.5, 0.5);
+    FillHist("ElectronIDPlots/"+channel_string+"_Pass_TriggerEmulationLoose",iel.Pass_TriggerEmulationLoose() , weight, 2, 0., 2);
+
+    if(!iel.PassID("MVALoose")) continue;
+
+    TString tag= iel.LepGenType(GetLeptonType_JH(iel, gens));
+    if(IsCF(iel,gens)) tag = tag +"_IsCF";
+    
+    TString etabin = (fabs(iel.Eta()) < 1.5) ? "BB_" : "EC_";
+    TString ptbin = "Ptlt20_";
+    if(iel.Pt() < 20) ptbin = "Ptlt20_";
+    else if(iel.Pt() < 50) ptbin = "Ptlt50_";
+    else  ptbin = "Ptgt50_";
+    
+    vector<TString> Tags = {tag+"/El_MVA_",
+			    tag+iel.CloseJet_Flavour()+"/El_MVA_",
+			    tag+etabin+"/El_MVA_",
+                            tag+etabin+iel.CloseJet_Flavour()+"/El_MVA_",
+			    tag+etabin+ptbin+"/El_MVA_",
+                            tag+etabin+ptbin+iel.CloseJet_Flavour()+"/El_MVA_",
+		    
+    };
+
+    for(auto i  : Tags){
+
+      if(i.Contains("Pileup")) continue;
+      if(i.Contains("IsEWtau")) continue;
+      if(i.Contains("IsCF") && !i.Contains("IsPrompt")) continue;
+      if(i.Contains("LF") && !i.Contains("IsFake")) continue;
+      if(i.Contains("HF") && !i.Contains("IsFake")) continue;
+
+      map<TString, double> mapBDT = iel.MAPBDT();
+
+      for(auto imap : mapBDT ) FillHist(channel_string+i+"_"+imap.first+"_"+channel_string, imap.second , weight, 200, -1., 1);
+      
+      
+      if(iel.HNL_MVA_Fake("v4_LF") > 0. && iel.HNL_MVA_Fake("v4_HF") > 0. && iel.HNL_MVA_Conv("v2") > -0.7 && iel.HNL_MVA_CF("v2") > 0.5 )   FillElectronKinematicPlots("electron_"+i, "PassMVA", iel, weight);
+      
+      
+    } 
+  }
+  
+  return;
+}
 void HNL_SignalStudies::RunLeptonChannel(HNL_LeptonCore::Channel channel_ID, std::vector<Lepton *> LepsT,std::vector<Lepton *> LepsV, std::vector<Tau> TauColl,  std::vector<Jet> JetCollLoose, std::vector<Jet> JetColl, std::vector<Jet> VBFJetColl,  std::vector<FatJet> FatjetColl,std::vector<Jet> BJetColl,   Event Ev, AnalyzerParameter param,  float _weight)   {
   
 

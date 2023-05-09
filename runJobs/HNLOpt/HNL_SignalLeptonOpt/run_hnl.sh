@@ -6,7 +6,7 @@ rundir=HNLOpt/HNL_SignalLeptonOpt
 runPATH=${SKFlat_WD}/runJobs/${rundir}/
 sigpath=${SKFlat_WD}/runJobs/SampleLists/Signals/
 mcpath=${SKFlat_WD}/runJobs/SampleLists/Bkg/
-datapath=${SKFlat_WD}/runJobs/SampleLists/DATA/
+datapath=${SKFlat_WD}/runJobs/SampleLists/Data/
 
 #SKIM                                                                                                                                                     
 skim=' '
@@ -16,24 +16,38 @@ njobs=10
 nLargejobs=25
 njobs_sig=5
 njobs_data=10
-
 nmax=350
 
-if [[ $1 == "NP_ELECTRON_CF_HighPt" ]]; then
+
+if [[ $1 == "" ]]; then
+
+    declare  -a era_list=("2017" )
+
+    for i in "${era_list[@]}"
+    do
+	
+	#SKFlat.py -a $analyzer  -l $datapath/${i}_DiLepton.txt  -n ${njobs_data}  --nmax ${nmax}   -e ${i}  --skim SkimTree_HNMultiLepBDT &  
+	#SKFlat.py -a $analyzer  -l $sigpath/DY.txt    -n $njobs_sig  --nmax ${nmax}   -e ${i}  --skim SkimTree_HNMultiLepBDT  &
+	SKFlat.py -a $analyzer  -i DYTypeI_DF_M100_private    -n 1   --nmax 1   -e ${i}  --skim SkimTree_HNMultiLepBDT  &
+    done
+fi
+
+
+if [[ $1 == "ELECTRON_CF" ]]; then
 
     declare  -a era_list=("2017" )
 
     for i in "${era_list[@]}"
     do
 
-        #Flag='RunEE,ELID_CF,HighPt,BB'
-	#source ${runPATH}/run_hnl.sh Electron ${Flag} ${i}
+        Flag='RunEE,ELID_CF,HighPt,BB'
+	source ${runPATH}/run_hnl.sh Electron ${Flag} ${i}
 
-        #Flag2='RunEE,ELID_CF,HighPt,EC'
-	#source ${runPATH}/run_hnl.sh Electron ${Flag2} ${i}
+        Flag2='RunEE,ELID_CF,HighPt,EC'
+	source ${runPATH}/run_hnl.sh Electron ${Flag2} ${i}
 
-	Flag3='RunEE,ELID_CF,HighPt,FullEta'
-        source ${runPATH}/run_hnl.sh Electron ${Flag3} ${i}
+	#Flag3='RunEE,ELID_CF,HighPt,FullEta'
+        #source ${runPATH}/run_hnl.sh Electron ${Flag3} ${i}
 
     done
 fi
@@ -96,19 +110,44 @@ fi
 #############################################################################                                                                                                                                                               
 #############################################################################     
 
-
-if [[ $1 == "NP_MUON_FullPt" ]]; then
+if [[ $1 == "NP_MUON_FullEta" ]]; then
 
     declare  -a era_list=("2016postVFP" "2016preVFP" "2017" "2018")
-    declare  -a era_list=("2017")
     for i in "${era_list[@]}"
     do
 
-	Flag='MuID_NP,FullPt,BB'
+        Flag='MuID_NP,FullEta'
+        source ${runPATH}/run_hnl.sh Muon ${Flag} ${i}
+
+    done
+
+fi
+
+if [[ $1 == "NP_MUON_DXY" ]]; then
+
+    declare  -a era_list=("2016postVFP" "2016preVFP" "2017" "2018")
+    for i in "${era_list[@]}"
+    do
+
+        Flag='MuID_DXY'
+        source ${runPATH}/run_hnl.sh Muon ${Flag} ${i}
+
+    done
+
+fi
+
+if [[ $1 == "NP_MUON" ]]; then
+
+    declare  -a era_list=("2016postVFP" "2016preVFP" "2017" "2018")
+    declare  -a era_list=("2016postVFP" "2016preVFP" "2017" "2018")
+    for i in "${era_list[@]}"
+    do
+
+	Flag='MuID_NP,BB'
 	source ${runPATH}/run_hnl.sh Muon ${Flag} ${i}
 
 	
-	Flag2='MuID_NP,FullPt,EC'
+	Flag2='MuID_NP,EC'
 	source ${runPATH}/run_hnl.sh Muon ${Flag2} ${i}
 
     done
@@ -180,7 +219,7 @@ if [[ $1 == "Muon" ]]; then
     
     source ${runPATH}/run_hnl.sh MC  ${3} ${2}  
     
-    source ${runPATH}/run_hnl.sh Signals ${3} ${2} 
+    #source ${runPATH}/run_hnl.sh Signals ${3} ${2} 
     
     ConvFlag=${2}',RunConv'
 
@@ -193,12 +232,12 @@ if [[ $1 == "Electron" ]]; then
 
     # If no inut then this is ran                                                                                                                        
     source ${runPATH}/run_hnl.sh Signals ${3} ${2} 
-    #source ${runPATH}/run_hnl.sh MC  ${3} ${2}
+    source ${runPATH}/run_hnl.sh MC  ${3} ${2}
     
     CFFlag=${2}',RunCF'
-    #source ${runPATH}/run_hnl.sh CF ${3} ${CFFlag}
+    source ${runPATH}/run_hnl.sh CF ${3} ${CFFlag}
     ConvFlag=${2}',RunConv'
-    #source ${runPATH}/run_hnl.sh Conv ${3} ${ConvFlag}
+    source ${runPATH}/run_hnl.sh Conv ${3} ${ConvFlag}
     
 
 fi
@@ -214,9 +253,9 @@ fi
 
 if [[ $1 == "Signals" ]]; then
 
-    SKFlat.py -a $analyzer  -l $sigpath/SSWW.txt  -n $njobs_sig  --nmax ${nmax}  -e ${2}  --userflags ${3}  --skim SkimTree_HNMultiLepBDT&
-    SKFlat.py -a $analyzer  -l $sigpath/DY.txt    -n $njobs_sig  --nmax ${nmax}   -e ${2}  --userflags ${3} --skim SkimTree_HNMultiLepBDT&
-    SKFlat.py -a $analyzer  -l $sigpath/VBF.txt   -n $njobs_sig  --nmax ${nmax}   -e ${2}  --userflags ${3} --skim SkimTree_HNMultiLepBDT&
+    SKFlat.py -a $analyzer  -l $sigpath/SSWWOpt.txt  -n $njobs_sig  --nmax ${nmax}  -e ${2}  --userflags ${3}  --skim SkimTree_HNMultiLepBDT&
+    SKFlat.py -a $analyzer  -l $sigpath/DYOpt.txt    -n $njobs_sig  --nmax ${nmax}   -e ${2}  --userflags ${3} --skim SkimTree_HNMultiLepBDT&
+    SKFlat.py -a $analyzer  -l $sigpath/VBFOpt.txt   -n $njobs_sig  --nmax ${nmax}   -e ${2}  --userflags ${3} --skim SkimTree_HNMultiLepBDT&
 
 fi
 

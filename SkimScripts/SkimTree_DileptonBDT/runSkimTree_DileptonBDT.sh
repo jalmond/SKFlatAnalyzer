@@ -9,16 +9,16 @@ nmax=300
 skim=' '
 declare  -a era_list=("2018" "2017"  "2016preVFP" "2016postVFP")
 
-declare  -a era_list=("2017")
+declare  -a era_list=("2018")
 
 
 if [[ $1 == "" ]]; then
     for i in "${era_list[@]}"
     do
         SKFlat.py -a $analyzer  -l $datapath/DATA_${i}.txt  -n ${njobs_data}  --nmax ${nmax}   -e ${i}  --skim SkimTree_Dilepton  &
-	SKFlat.py -a $analyzer  -l $datapath/${i}_SingleLepton.txt  -n ${njobs_data}  --nmax ${nmax}   -e ${i}  --skim SkimTree_Dilepton  &
+	#SKFlat.py -a $analyzer  -l $datapath/${i}_SingleLepton.txt  -n ${njobs_data}  --nmax ${nmax}   -e ${i}  --skim SkimTree_Dilepton  &
 	#SKFlat.py -a $analyzer  -l $datapath/DATA_${i}EMu.txt  -n ${njobs_data}  --nmax ${nmax}   -e ${i}   &
-	SKFlat.py -a $analyzer  -l  $mcpath/MC2.txt  -n 1000  --nmax ${nmax}   -e ${i}  --skim SkimTree_Dilepton 
+	#SKFlat.py -a $analyzer  -l  $mcpath/MC2.txt  -n 1000  --nmax ${nmax}   -e ${i}  --skim SkimTree_Dilepton 
 	#SKFlat.py -a $analyzer  -i TTLJ_powheg  -n 2000  --nmax ${nmax}   -e ${i}   
     done
 

@@ -26,7 +26,7 @@ fi
 
 if [[ $1 == "DY300" ]]; then
 
-    SKFlat.py -a $analyzer  -i DYTypeI_DF_M300_private  -n 10  --nmax ${nmax}   -e 2018 &
+    SKFlat.py -a $analyzer  -i DYTypeI_DF_M300_private  -n 1  --nmax ${nmax}   -e 2018 --skim SkimTree_HNMultiLepBDT&
 
 fi
 

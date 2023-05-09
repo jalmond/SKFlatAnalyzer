@@ -15,7 +15,7 @@ void SkimTree_HNL_SS_MuMu::executeEvent(){
 
   TString process = GetProcess();
   
-  if (process == "SS_Mu+Mu+" or process == "SS_Mu-Mu-") {
+  if (SelectChannel(MuMu)){
     
     newtree->Fill();
     return;

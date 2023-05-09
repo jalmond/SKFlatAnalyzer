@@ -20,6 +20,9 @@ class HNL_SignalStudies : public HNL_RegionDefinitions {
 
   void CheckHEMIssue(HNL_LeptonCore::Channel channel,std::vector<Lepton *> LepsT,std::vector<Lepton *> LepsV,       vector<Jet>& JetColl, Particle& vMET, float weight, TString Label, TString Option);
 
+  void PlotBDTVariablesMuon(AnalyzerParameter param);
+  void PlotBDTVariablesElectron(AnalyzerParameter param);
+
 
   void MakeType1SignalPlots(TString a, bool b);
   void MakeType1VBFSignalPlots(TString process, bool apply_reco_cut);

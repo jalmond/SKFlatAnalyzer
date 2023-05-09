@@ -1,4 +1,5 @@
 *~
+Analyzers/.vscode/
 *.pyc
 *.pcm
 *.d

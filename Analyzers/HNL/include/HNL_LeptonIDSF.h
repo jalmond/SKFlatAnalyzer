@@ -14,8 +14,6 @@ class HNL_LeptonIDSF : public HNL_RegionDefinitions {
   HNL_LeptonIDSF();
   ~HNL_LeptonIDSF();
 
-  void PlotBDTVariablesMuon(AnalyzerParameter param);
-  void PlotBDTVariablesElectron(AnalyzerParameter param);
 
   void MeasureElectronIDSF(AnalyzerParameter param);
   void MeasureMuonIDSF(AnalyzerParameter param);
