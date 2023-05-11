@@ -4,8 +4,8 @@ R__LOAD_LIBRARY(/cvmfs/cms.cern.ch/slc7_amd64_gcc900/cms/cmssw/CMSSW_11_2_5/exte
 
 void test(TString era, bool isdata, TString sample, TString flag){ //echo -e ".L test.C\n test(\"2017\",false,\"DYTypeI_M500\",\"\");" | root -l 2>&1 | tee my.log
 
-  //HNL_ControlRegionPlotter m;
-  HNL_SignalRegionPlotter m;
+  HNL_ControlRegionPlotter m;
+  //HNL_SignalRegionPlotter m;
 
   m.SetTreeName("recoTree/SKFlat");
 
@@ -36,7 +36,10 @@ void test(TString era, bool isdata, TString sample, TString flag){ //echo -e ".L
     if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/DATA_SkimTree_HNMultiLep/DoubleEG/periodE/2022_08_23_004058/SKFlatNtuple_2017_DATA_13.root")) exit(EIO);
   }
   else if(era=="2017" && !isdata && sample=="DYJets"){
-    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_HNMultiLep/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/2022_10_09_041952/SKFlatNtuple_2017_MC_6.root")) exit(EIO);
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_HNMultiLepBDT/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/2023_05_03_230947/SKFlatNtuple_2017_MC_0.root")) exit(EIO);
+  }
+  else if(era=="2017" && !isdata && sample=="TTLL"){
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_HNMultiLepBDT/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/2023_05_03_230947/SKFlatNtuple_2017_MC_0.root")) exit(EIO);
   }
   else if(era=="2017" && !isdata && sample=="WZ"){
     //if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC/WZTo3LNu_TuneCP5_13TeV-amcatnloFXFX-pythia8/220614_141057/0000/SKFlatNtuple_2017_MC_1.root")) exit(EIO);

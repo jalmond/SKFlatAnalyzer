@@ -1,4 +1,4 @@
-DYJets_MG
+DYJets
 TTLL_powheg
 WW_pythia
 WZ_pythia

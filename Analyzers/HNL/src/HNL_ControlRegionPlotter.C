@@ -17,7 +17,8 @@ void HNL_ControlRegionPlotter::executeEvent(){
 
   if(!IsData)  gens = GetGens();
 
-  AnalyzerParameter param_signal = HNL_LeptonCore::InitialiseHNLParameter("MVAUL","_UL");
+  //AnalyzerParameter param_signal = HNL_LeptonCore::InitialiseHNLParameter("MVAUL","_UL");
+  AnalyzerParameter param_signal = HNL_LeptonCore::InitialiseHNLParameter("HNL","_UL");
 
   RunControlRegions(param_signal);
 
@@ -101,10 +102,6 @@ void HNL_ControlRegionPlotter::RunControlRegions(AnalyzerParameter param){
 
   //std::vector<Lepton *> LepsT       = MakeLeptonPointerVector(MuonCollT,ElectronCollT,param);
   //std::vector<Lepton *> LepsV  = MakeLeptonPointerVector(MuonCollV,ElectronCollV,param);
-  
-  Particle METv = GetvMET("PuppiT1xyULCorr",param); // reyturns MET with systematic correction                                                                      
-
-  if(run_Debug) cout << "PuppiT1xyULCorr = " << METv.Pt() << endl;
 
   std::vector<FatJet> AK8_JetColl                 = GetHNLAK8Jets("HNL",param);
   std::vector<Jet>    AK4_JetAllColl              = GetHNLJets("NoCut_Eta3",param);
@@ -113,6 +110,10 @@ void HNL_ControlRegionPlotter::RunControlRegions(AnalyzerParameter param){
   std::vector<Jet>    AK4_VBF_JetColl             = GetHNLJets("VBFTight",param);
   std::vector<Jet>    AK4_BJetColl                = GetHNLJets("BJetM",param);
   std::vector<Jet>    AK4_BJetCollSR1             = GetHNLJets("BJetT",param);
+
+  Particle METv = GetvMET("PuppiT1xyCorr", param, AK4_VBF_JetColl, AK8_JetColl, MuonCollT, ElectronCollT); // returns MET with systematic correction; run this after all object selection done; NOTE that VBF jet is used here
+
+  if(run_Debug) cout << "PuppiT1xyULCorr = " << METv.Pt() << endl;
 
   TString PUIDWP="";
   if(PUIDWP != ""){
