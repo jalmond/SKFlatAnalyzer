@@ -1398,11 +1398,13 @@ AnalyzerParameter HNL_LeptonCore::InitialiseHNLParameter(TString s_setup, TStrin
     param.Electron_Tight_ID = "HNTightV2";
     param.Electron_ID_SF_Key = "TmpHNTightV2";
     param.Muon_ID_SF_Key = "TmpHNTightV2";
-    //param.Muon_FR_ID = "HNLooseV1";
-    param.Muon_FR_ID = "HNTightV2"; //JH
-    //param.Electron_FR_ID = "HNLooseV4";
-    param.Electron_FR_ID = "HNTightV2"; //JH
+    param.Muon_FR_ID = "HNLooseV1";
+    param.Electron_FR_ID = "HNLooseV4";
     param.Muon_RECO_SF_Key = "MuonRecoSF";
+    param.Muon_FR_Key  ="ptcone_ptfix_eta_AwayJetPt40";
+    param.Muon_PR_Key  ="";
+    param.Electron_FR_Key  = "ptcone_ptfix_eta_AwayJetPt40";
+    param.Electron_PR_Key  =""; //JH
     return param;
   }
   else if (s_setup=="HNLOpt"){
@@ -3215,7 +3217,8 @@ vector<Muon> HNL_LeptonCore::GetLepCollByRunType(const std::vector<Muon>& MuColl
   for(unsigned int i=0; i<MuColl.size(); i++){
     if(Option=="NoSel")  ReturnVec.push_back(MuColl.at(i));
     else {
-      int LepType=GetLeptonType_JH(MuColl.at(i), TruthColl); bool PassSel=true;
+      int LepType=GetLeptonType_JH(MuColl.at(i), TruthColl);
+      bool PassSel=false;
       if( LepType > 0 && LepType < 4) PassSel=true;
       if( GetHadFake    && (LepType<0 && LepType>=-4) ) PassSel=true;
       if( GetNHIntConv &&         LepType>=4         ) PassSel=true;
@@ -3837,11 +3840,11 @@ TString HNL_LeptonCore::Category(Electron el){
 ---------------------------------------------------------------------------------------------------------------*/
 
 
-void HNL_LeptonCore::Fill_RegionPlots(HNL_LeptonCore::Channel channel, int plotLL, TString plot_dir, TString region,   std::vector<Jet> jets,  std::vector<FatJet> fatjets,std::vector<Lepton *> Leps, Particle  met, double nvtx,  double w, int verbose_level){
+void HNL_LeptonCore::Fill_RegionPlots(HNL_LeptonCore::Channel channel, int plotLL, TString plot_dir, TString region, std::vector<Jet> jets, std::vector<FatJet> fatjets, std::vector<Jet> bjets, std::vector<Lepton *> Leps, Particle  met, double nvtx,  double w, int verbose_level){
 
   if(verbose_level>0) return;
   std::vector<Tau>  Taus;
-  Fill_RegionPlots(channel, plotLL,plot_dir ,region, Taus,jets, fatjets, Leps, met, nvtx, w , verbose_level);
+  Fill_RegionPlots(channel, plotLL,plot_dir ,region, Taus,jets, fatjets, bjets, Leps, met, nvtx, w , verbose_level);
 
 }
 
@@ -3941,20 +3944,20 @@ void HNL_LeptonCore::FillAK8Plots(HNL_LeptonCore::Channel channel,  TString plot
 }
 
 
-void HNL_LeptonCore::Fill_RegionPlots(HNL_LeptonCore::Channel channel, int fill_lep, TString plot_dir, TString region, vector<Tau> Taus,  std::vector<Jet> jets,    std::vector<FatJet> fatjets, std::vector<Lepton *> leps , Particle  met, double nvtx,  double w,int verbose_level){
+void HNL_LeptonCore::Fill_RegionPlots(HNL_LeptonCore::Channel channel, int fill_lep, TString plot_dir, TString region, vector<Tau> Taus, std::vector<Jet> jets, std::vector<FatJet> fatjets, std::vector<Jet> bjets, std::vector<Lepton *> leps , Particle  met, double nvtx,  double w,int verbose_level){
 
   if(verbose_level > 0) return;
-  Fill_RegionPlots(channel, plot_dir ,region, Taus, jets,fatjets, leps, met, nvtx, w,verbose_level);
+  Fill_RegionPlots(channel, plot_dir ,region, Taus, jets, fatjets, bjets, leps, met, nvtx, w,verbose_level);
 
   if(fill_lep ==0) {
     TString plot_dir_lep = plot_dir;
     plot_dir_lep = plot_dir_lep.ReplaceAll(GetChannelString(channel),"LL");
-    Fill_RegionPlots(channel, plot_dir_lep ,region, Taus, jets ,fatjets, leps, met, nvtx, w,verbose_level);
+    Fill_RegionPlots(channel, plot_dir_lep ,region, Taus, jets ,fatjets, bjets, leps, met, nvtx, w,verbose_level);
   }
   return;
 }
 
-void HNL_LeptonCore::Fill_RegionPlots(HNL_LeptonCore::Channel channel, TString plot_dir, TString region, std::vector<Tau> TauColl, std::vector<Jet> jets,    std::vector<FatJet> fatjets, std::vector<Lepton *> leps , Particle  met, double nvtx,  double w, int verbose_level){
+void HNL_LeptonCore::Fill_RegionPlots(HNL_LeptonCore::Channel channel, TString plot_dir, TString region, std::vector<Tau> TauColl, std::vector<Jet> jets, std::vector<FatJet> fatjets, std::vector<Jet> bjets, std::vector<Lepton *> leps , Particle  met, double nvtx,  double w, int verbose_level){
   
   if(verbose_level > 0) return;
 
@@ -3989,7 +3992,7 @@ void HNL_LeptonCore::Fill_RegionPlots(HNL_LeptonCore::Channel channel, TString p
   FillHist( plot_dir+"/RegionPlots_"+ region+ "/N_Mu", nmu,  w, 5, 0, 5, "Mu size");
   // Draw N jets
   FillHist( plot_dir+"/RegionPlots_"+ region+ "/N_AK4Jets", jets.size() , w, 10, 0., 10., "N_{AK4 jets}");
-
+  FillHist( plot_dir+"/RegionPlots_"+ region+ "/N_BJets", bjets.size() , w, 10, 0., 10., "N_{B jets}");
 
   if(leps.size() < 2) return;
 
@@ -4221,7 +4224,7 @@ void HNL_LeptonCore::Fill_RegionPlots(HNL_LeptonCore::Channel channel, TString p
   FillHist( plot_dir+"/RegionPlots_"+ region+ "/"+ "dEta_lep1_lep2", ll_deta  , w, 200, -5., 5., "#Delta #Phi(l1,l2)") ;
 
   FillHist( plot_dir+"/RegionPlots_"+ region+ "/Ev_LT", LT  , w, 200, 0., 2000.,"L_{T} GeV");
-  FillHist( plot_dir+"/RegionPlots_"+ region+ "/M_ll",  llCand.M(), w, 400, 0., 2000., "M_{ll} GeV");
+  FillHist( plot_dir+"/RegionPlots_"+ region+ "/M_ll",  llCand.M(), w, 2000, 0., 2000., "M_{ll} GeV");
 
   if(threelep) {
     FillHist( plot_dir+"/RegionPlots_"+ region+ "/Lep_3_pt", leps[2]->Pt()  , w, 1000, 0., 1000.,"l_{3} p_{T} GeV"); //JH

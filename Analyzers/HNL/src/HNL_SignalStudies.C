@@ -292,7 +292,7 @@ void HNL_SignalStudies::RunLeptonChannel(HNL_LeptonCore::Channel channel_ID, std
 
   // UL ANALYSIS                                                                                                                
   
-  Fill_RegionPlots(channel_ID, 0, param.Name,"SSInclusive" ,  VBFJetColl, FatjetColl, LepsT,  METv, nPV, _weight);
+  Fill_RegionPlots(channel_ID, 0, param.Name,"SSInclusive" ,  VBFJetColl, FatjetColl,BJetColl, LepsT,  METv, nPV, _weight);
 
 
   // UL ANALYSIS

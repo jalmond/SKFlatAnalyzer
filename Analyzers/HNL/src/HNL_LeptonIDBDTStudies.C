@@ -989,7 +989,7 @@ void HNL_LeptonIDBDTStudies::MakeBDTPlots(AnalyzerParameter param,HNL_LeptonCore
     
     std::vector<Tau> TauColl;
 
-    Fill_RegionPlots(dilep_channel, 0, param.Name,"ZPeak" ,  TauColl, JetColl, AK8_JetColl, LeptonColl,  GetvMET("PuppiT1xyCorr"), nPV, weight_ll,param.WriteOutVerbose);
+    Fill_RegionPlots(dilep_channel, 0, param.Name,"ZPeak" ,  TauColl, JetColl, AK8_JetColl, BJetColl, LeptonColl, GetvMET("PuppiT1xyCorr"), nPV, weight_ll,param.WriteOutVerbose);
   }
 
   return;

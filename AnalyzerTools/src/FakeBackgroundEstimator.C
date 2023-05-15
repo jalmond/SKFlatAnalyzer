@@ -30,13 +30,13 @@ void FakeBackgroundEstimator::ReadHistograms(){
     if(a.Contains("#")) continue; //JH : skip so many histograms
     
     TFile *file = new TFile(datapath+"/"+e);
-    TList *histlist = file->GetListOfKeys();
+    TList *histlist = file->GetListOfKeys(); //JH : call hist names consisting of b_c_d; e.g. HNTightV2_ptcone_ptfix_eta_AwayJetPt40, HNTight_17028_ptcone_ptfix_eta_AwayJetPt40, ...
     for(int i=0;i<histlist->Capacity();i++){
       TString this_frname = histlist->At(i)->GetName();
 
-      //if (!this_frname.Contains(b)) continue;
-      //if (!this_frname.Contains(c)) continue;
-      //if (!this_frname.Contains(d)) continue; //JH : Haneol's fake rate histogram doesn't contain these names //XXX Beware that John's histogram SHOULD include these lines
+      if (!this_frname.Contains(b)) continue;
+      if (!this_frname.Contains(c)) continue;
+      if (!this_frname.Contains(d)) continue; //JH : filter out unmatched hist name
 
       histDir->cd();
 
@@ -63,12 +63,12 @@ void FakeBackgroundEstimator::ReadHistograms(){
     if(a.Contains("#")) continue; //JH : skip so many histograms
 
     TFile *file = new TFile(datapath+"/"+e);
-    TList *histlist = file->GetListOfKeys();
+    TList *histlist = file->GetListOfKeys(); //JH : call hist names consisting of b_c_d; e.g. HNTightV2_ptcone_ptfix_eta_AwayJetPt40, HNTight_17028_ptcone_ptfix_eta_AwayJetPt40, ...
     for(int i=0;i<histlist->Capacity();i++){
       TString this_frname = histlist->At(i)->GetName();
-      //if (!this_frname.Contains(b)) continue;
-      //if (!this_frname.Contains(c)) continue;
-      //if (!this_frname.Contains(d)) continue; //JH : Haneol's fake rate histogram doesn't contain these names //XXX Beware that John's histogram SHOULD include these lines
+      if (!this_frname.Contains(b)) continue;
+      if (!this_frname.Contains(c)) continue;
+      if (!this_frname.Contains(d)) continue; //JH : filter out unmatched hist name
       
       histDir->cd();
 
@@ -124,7 +124,8 @@ double FakeBackgroundEstimator::GetElectronFakeRate(TString ID, TString key, dou
   value = (mapit->second)->GetBinContent(this_bin);
   error = (mapit->second)->GetBinError(this_bin);
 
-  //cout << "[FakeBackgroundEstimator::FakeBackgroundEstimator] value = " << value << endl;
+  //cout << "[FakeBackgroundEstimator::GetElectronFakeRate] pt = " << pt << ", eta = " << eta << endl;
+  //cout << "[FakeBackgroundEstimator::GetElectronFakeRate] value = " << value << endl;
 
   return value+double(sys)*error;
 
