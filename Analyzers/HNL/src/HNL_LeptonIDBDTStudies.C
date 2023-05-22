@@ -986,10 +986,11 @@ void HNL_LeptonIDBDTStudies::MakeBDTPlots(AnalyzerParameter param,HNL_LeptonCore
     std::vector<Electron>   ElectronCollV = GetElectrons(param.Electron_Veto_ID, 10., 2.5);
     std::vector<Muon>       MuonCollV     = GetMuons    (param.Muon_Veto_ID, 5., 2.4);
     
+    std::vector<Lepton *> LeptonCollV      = MakeLeptonPointerVector(ElectronCollV);
     
     std::vector<Tau> TauColl;
 
-    Fill_RegionPlots(dilep_channel, 0, param.Name,"ZPeak" ,  TauColl, JetColl, AK8_JetColl, BJetColl, LeptonColl, GetvMET("PuppiT1xyCorr"), nPV, weight_ll,param.WriteOutVerbose);
+    Fill_RegionPlots(dilep_channel, 0, param.Name,"ZPeak" ,  TauColl, JetColl, AK8_JetColl, BJetColl, LeptonColl, LeptonCollV, GetvMET("PuppiT1xyCorr"), nPV, weight_ll,param.WriteOutVerbose);
   }
 
   return;

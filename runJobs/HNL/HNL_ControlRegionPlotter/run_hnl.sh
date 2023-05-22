@@ -115,9 +115,10 @@ if [[ $1 == "" ]]; then
 
 #Check DY, Top CR with Dilepton skim
 SKFlat.py -a $analyzer  -l $datapath/${i}_DiLepton.txt  -n ${njobs_data}  --nmax ${nmax}   -e ${i}  --skim SkimTree_Dilepton  &
+SKFlat.py -a $analyzer  -l $datapath/${i}_DiLepton_EMu.txt  -n ${njobs_data}  --nmax ${nmax}   -e ${i}  &
 SKFlat.py -a $analyzer  -l $mcpath/PromptOS.txt  -n ${njobs_data}  --nmax ${nmax}   -e ${i}  --skim SkimTree_Dilepton  &
 SKFlat.py -a $analyzer  -l $datapath/${i}_DiLepton.txt  -n ${njobs_data}  --nmax ${nmax}   -e ${i}  --skim SkimTree_Dilepton --userflags RunFake  &
-
+SKFlat.py -a $analyzer  -l $datapath/${i}_DiLepton_EMu.txt  -n ${njobs_data}  --nmax ${nmax}   -e ${i} --userflags RunFake  &
     done
 
 fi

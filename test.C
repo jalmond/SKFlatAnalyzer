@@ -23,7 +23,7 @@ void test(TString era, bool isdata, TString sample, TString flag){ //echo -e ".L
   TObjArray* flags = flag.Tokenize(",");
   for(int i=0; i<flags->GetEntries(); i++) m.Userflags.push_back(((TObjString*)flags->At(i))->String()); //JH : https://root-forum.cern.ch/t/split-tstring-by-delimeter-in-root-c/18228
   if(era=="2017" && isdata && sample=="DoubleEG"){
-    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/DATA_SkimTree_HNMultiLep/DoubleEG/periodE/2022_08_23_004058/SKFlatNtuple_2017_DATA_3.root")) exit(EIO);
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/DATA_SkimTree_HNMultiLep/DoubleEG/periodE/2023_03_28_040435/SKFlatNtuple_2017_DATA_3.root")) exit(EIO);
     //if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/DATA_SkimTree_HNMultiLep/DoubleEG/periodE/2022_08_23_004058/SKFlatNtuple_2017_DATA_4.root")) exit(EIO);
     //if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/DATA_SkimTree_HNMultiLep/DoubleEG/periodE/2022_08_23_004058/SKFlatNtuple_2017_DATA_5.root")) exit(EIO);
     //if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/DATA_SkimTree_HNMultiLep/DoubleEG/periodE/2022_08_23_004058/SKFlatNtuple_2017_DATA_6.root")) exit(EIO);
@@ -65,7 +65,8 @@ void test(TString era, bool isdata, TString sample, TString flag){ //echo -e ".L
     //if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC/SSWWTypeI_NLO_SF_M1000/220712_180106/0000/SKFlatNtuple_2017_MC_1.root")) exit(EIO);
     if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_HNMultiLepBDT/SSWWTypeI_NLO_SF_M1000/2023_03_28_191053/SKFlatNtuple_2017_MC_0.root")) exit(EIO);
   }
-  m.SetOutfilePath("hists_"+sample+"_"+flag+".root");
+  m.SetOutfilePath("hists_"+sample+".root");
+  if(flag.Length()>0) m.SetOutfilePath("hists_"+sample+"_"+flag+".root");
   m.Init();
   m.initializeAnalyzer();
   m.initializeAnalyzerTools();
