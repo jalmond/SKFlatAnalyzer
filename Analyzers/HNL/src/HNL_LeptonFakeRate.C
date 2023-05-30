@@ -19,7 +19,7 @@ void HNL_LeptonFakeRate::executeEvent(){
   //************************************************///
   // setup list of IDs
   //************************************************///
-  vector<pair<TString, TString> > MuIDs; vector<pair<TString, TString> > ELIDs;
+  vector<pair<TString, TString> > MuIDs; vector<pair<TString, TString> > ElIDs;
   vector<HNL_LeptonCore::Channel> channel;
   vector<TString> paramnames;
   
@@ -32,16 +32,18 @@ void HNL_LeptonFakeRate::executeEvent(){
   //                  PassConversionVeto() IsGsfCtfScPixChargeConsistent Pass_TriggerEmulation
   // HNLoose_17028 : Pass_HNLoose2016(0.6, 0.2, 0.1, 10.) && MVA(-0.1, 0.1, -0.1) PassConversionVeto() IsGsfCtfScPixChargeConsistent Pass_TriggerEmulation
 
-  ELIDs.push_back(make_pair("HNL_ULID_"+era, "HNL_ULID_FO_"+era));
+  //ElIDs.push_back(make_pair("HNL_ULID_"+era, "HNL_ULID_FO_"+era));
+  ElIDs.push_back(make_pair("HNL_ULID_"+era, "HNL_ULID_Baseline")); //JH : test
   paramnames.push_back("HNL_ULID_"+era  );                                                                                                                    
 
 
-  for (auto i: ELIDs) {
+  for (auto i: ElIDs) {
     channel.push_back(EE);
-    MuIDs.push_back(make_pair("HNVeto2016","HNLoose_17028"));
+    MuIDs.push_back(make_pair("HNVeto2016","HNLoose_17028")); //JH : only loose ID is necessary here (to veto muons in electron fake rate measurement, and vice versa)
   }
     
-  MuIDs.push_back(make_pair("HNL_ULID_"+era, "HNL_ULID_FO_"+era));
+  //MuIDs.push_back(make_pair("HNL_ULID_"+era, "HNL_ULID_FO_"+era));
+  MuIDs.push_back(make_pair("HNL_ULID_"+era, "MVALoose")); //JH : test
   paramnames.push_back("HNL_ULID_"+era  );
   
 
@@ -63,16 +65,16 @@ void HNL_LeptonFakeRate::executeEvent(){
   paramnames.push_back("HNMVA");*/
 
  
-  int iel= MuIDs.size() - channel.size();
-  for (int i =0; i < iel; i++){
+  int imu = MuIDs.size() - channel.size(); //JH : N of muon for muon fake rate measurement (not for muon veto in electron channel)
+  for (int i =0; i < imu; i++){
     channel.push_back(MuMu);
-    ELIDs.push_back(make_pair("HNVetoMVA","HNLoose_17028"));
-  }
+    ElIDs.push_back(make_pair("HNVetoMVA","HNLoose_17028"));
+  } //JH
 
-  if( paramnames.size() != ELIDs.size()) return;
+  if( paramnames.size() != ElIDs.size()) return;
 
 
-  for(unsigned int it_id=0; it_id<ELIDs.size(); it_id++){
+  for(unsigned int it_id=0; it_id<ElIDs.size(); it_id++){
     
     //************************************************///
     // setup leptton veto/loose/tight 
@@ -80,8 +82,8 @@ void HNL_LeptonFakeRate::executeEvent(){
 
     TString MuonTightID      = MuIDs[it_id].first;
     TString MuonLooseID      = MuIDs[it_id].second;
-    TString ElectronTightID  = ELIDs[it_id].first;
-    TString ElectronLooseID  = ELIDs[it_id].second;
+    TString ElectronTightID  = ElIDs[it_id].first;
+    TString ElectronLooseID  = ElIDs[it_id].second;
 
     TString FakeRateID       = (channel[it_id] == MuMu) ? MuonLooseID :  ElectronLooseID;
     TString Tight_ID         = (channel[it_id] == MuMu) ? MuonTightID :  ElectronTightID;
@@ -111,7 +113,7 @@ void HNL_LeptonFakeRate::executeEvent(){
     //     param.WriteOutVerbose = 2;  Run Main ID and make  only FR 
     //     param.WriteOutVerbose = 3;  Run Main ID and make  only FR + PR
     //     param.WriteOutVerbose = 0;  makes NVertx plots
-    param.WriteOutVerbose= -2; // 0 means only make FR  1 means FR+PR  2 means SR+PR + CR plots  3 means makes NVertx plots
+    param.WriteOutVerbose= 2; // 0 means only make FR  1 means FR+PR  2 means SR+PR + CR plots  3 means makes NVertx plots
    
     
     if(param.WriteOutVerbose >=0){
@@ -191,7 +193,7 @@ void HNL_LeptonFakeRate::RunM(std::vector<Electron> loose_el,  std::vector<Muon>
   if(loose_mu.size() == 0) return;
 
   
-  // remove if muon                                                                                                                          
+  // remove if electron
   if(loose_el.size() > 0) return;
 
 
@@ -214,11 +216,11 @@ void HNL_LeptonFakeRate::RunM(std::vector<Electron> loose_el,  std::vector<Muon>
     return;
   }
 
-  if (param.Muon_Tight_ID != "HNTightV2") return;
+  //if (param.Muon_Tight_ID != "HNTightV2") return; //JH
 
   MakeDiLepPlots(MuMu,param, ev, leps,blepsT,param.Name+channel_s,event_weight);
 
-  if(loose_mu.size() != 1) return;
+  if(loose_mu.size() != 1) return; //JH : require only one loose muon
   
   bool has_away_jet=false;
   for(unsigned int ij=0; ij < jets.size(); ij++){
@@ -608,7 +610,6 @@ void HNL_LeptonFakeRate::MakeDiLepPlots(HNL_LeptonCore::Channel channel, Analyze
 
 
 void HNL_LeptonFakeRate::MakeNVertexDistPrescaledTrig(HNL_LeptonCore::Channel channel, AnalyzerParameter param, Event ev, std::vector<Lepton *> leps,std::vector<bool> blepsT,  TString label, float event_weight){
-  
 
   if(leps.size() != 2) return;
   if(!blepsT[0] || !blepsT[1]) return;
@@ -653,7 +654,6 @@ void HNL_LeptonFakeRate::MakeNVertexDistPrescaledTrig(HNL_LeptonCore::Channel ch
     bool pass_3 = ev.PassTrigger(triggerslist_3) && Mu3PD;
     bool pass_8 = ev.PassTrigger(triggerslist_8) && Mu8PD;
     bool pass_17 = ev.PassTrigger(triggerslist_17) && Mu17PD;
-
 
     if(pass_3){
       if(leps[1]->Pt() > 5){
@@ -750,7 +750,8 @@ void HNL_LeptonFakeRate::MakeNVertexDistPrescaledTrig(HNL_LeptonCore::Channel ch
 
 }
 void HNL_LeptonFakeRate::GetFakeRateAndPromptRates(AnalyzerParameter param, std::vector<Lepton *> leps,std::vector<bool> blepsT, std::vector<Jet>    jetCollTight, TString label, float event_weight, float isocut){
-						      
+		      
+  cout << "GetFakeRateAndPromptRates;" << endl; //JH
   
   if (leps.size()<1) return;
   
@@ -947,6 +948,7 @@ float HNL_LeptonFakeRate::GetPrescale(std::vector<Lepton *>   leps  ){
 
 void HNL_LeptonFakeRate::MakeFakeRatePlots(TString label, TString mutag,AnalyzerParameter param,  std::vector<Lepton *> leps , std::vector<bool> blepsT ,  std::vector<Jet> jets,  float event_weight, float isocut, Particle MET){
 				
+  cout << "MakeFakeRatePlots;" << endl; //JH
   if(!IsDATA)gens = GetGens();
 
 
@@ -1012,6 +1014,7 @@ bool HNL_LeptonFakeRate::UseEvent(std::vector<Lepton *> leps ,  std::vector< Jet
 
 
 void HNL_LeptonFakeRate::GetFakeRates(std::vector<Lepton *> leps,std::vector<bool> blepsT,  AnalyzerParameter param,TString tightlabel,  std::vector<Jet> jets,  TString tag,float event_weight, float isocut){
+  cout << "GetFakeRates;" << endl; //JH
 					 
   bool IsMuon=(leps[0]->LeptonFlavour() == Lepton::MUON);
   int nbin_ptcone=  IsMuon ? 10 : 8;

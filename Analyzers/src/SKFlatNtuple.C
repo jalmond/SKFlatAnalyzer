@@ -260,7 +260,7 @@ SKFlatNtuple::SKFlatNtuple(){
   MaxEvent = -1;
 
   _nentries = 0;
-    _jentry= 0;
+  _jentry= 0;
   NSkipEvent = 0;
   LogEvery = 1000;
   IsDATA = false;
