@@ -154,8 +154,6 @@ void HNL_LeptonID_BDT_KinVar::executeEvent(){
   
   Event ev = GetEvent();
 
-  gens = GetGens();
-
   if(!PassMETFilter()) return;
 
   /// Ignore PU and Prefireweight
@@ -259,8 +257,8 @@ void HNL_LeptonID_BDT_KinVar::executeEvent(){
     //if (!PassTriggerSelection(dilep_channel, ev, LepsAll, "Dilep")) continue;
 
 
-    std::vector<Electron>   ElectronCollTSkim  = (IsSignal()) ? ElectronCollT :  SkimLepColl(ElectronCollT, gens, param_bdt, OptionEl);
-    std::vector<Muon>       MuonCollTSkim      = (IsSignal()) ? MuonCollT :  SkimLepColl(MuonCollT, gens, param_bdt, OptionMu);
+    std::vector<Electron>   ElectronCollTSkim  = (IsSignal()) ? ElectronCollT :  SkimLepColl(ElectronCollT, param_bdt, OptionEl);
+    std::vector<Muon>       MuonCollTSkim      = (IsSignal()) ? MuonCollT :  SkimLepColl(MuonCollT, param_bdt, OptionMu);
 
 
     std::vector<Lepton *> LepsT  = MakeLeptonPointerVector(MuonCollTSkim,ElectronCollTSkim);
@@ -268,7 +266,7 @@ void HNL_LeptonID_BDT_KinVar::executeEvent(){
     if(SameCharge(LepsAll)) {
       
       for(auto ilep : LepsT){
-	int  lepType = GetLeptonType_JH(*ilep, gens);
+	int  lepType = ilep->LeptonGenType();
 
 	if(ilep->LeptonFlavour() == Lepton::ELECTRON)       FillHist( "LepType/SSElectron", lepType ,weight, 14., -7., 7);
 	else  FillHist( "LepType/SSMuon", lepType, weight, 14., -7., 7);
@@ -276,7 +274,7 @@ void HNL_LeptonID_BDT_KinVar::executeEvent(){
     }
 
     for(auto ilep : LepsT) {
-      int  lepType = GetLeptonType_JH(*ilep, gens);
+      int  lepType = ilep->LeptonGenType();
       double neg_w = (weight > 0) ? weight : 0.;
       if(ilep->LeptonFlavour() == Lepton::ELECTRON)       FillHist( "LepType/Electron", lepType ,neg_w, 14., -7., 7);
       else  FillHist( "LepType/Muon", lepType, neg_w, 14., -7., 7);
@@ -315,7 +313,7 @@ void HNL_LeptonID_BDT_KinVar::MakeTreeSS2L(HNL_LeptonCore::Channel lep_channel,v
 
     if(SeperateFakes && HasFlag("SSWeight")){
       bool ismuon = (lep->LeptonFlavour() == Lepton::MUON);
-      weight_lep *= ScaleLepToSS("Fake",ismuon, GetLeptonType_JH(*lep, gens));
+      weight_lep *= ScaleLepToSS("Fake",ismuon, lep->LeptonGenType());
     }
 
 
@@ -362,53 +360,53 @@ void HNL_LeptonID_BDT_KinVar::MakeTreeSS2L(HNL_LeptonCore::Channel lep_channel,v
       if(lep->LeptonFlavour() == Lepton::MUON) {
 	if(MCSample.Contains("TT")){
 	  
-	  if(MatchGenDef(gens, *lep) == "pi+"){
+	  if(MatchGenDef(All_Gens, *lep) == "pi+"){
 	    double r = ((double) rand() / (RAND_MAX));
 	    if(r > 0.1) return;
 	  }
-	  if(MatchGenDef(gens, *lep) == "electron"){
+	  if(MatchGenDef(All_Gens, *lep) == "electron"){
 	    double r = ((double) rand() / (RAND_MAX));
 	    if(r > 0.1) return;
 	  }
-	  if(MatchGenDef(gens, *lep) == "K+"){
+	  if(MatchGenDef(All_Gens, *lep) == "K+"){
 	    double r = ((double) rand() / (RAND_MAX));
 	    if(r > 0.1) return;
 	  }
 	}
 	else{
-	  if(MatchGenDef(gens, *lep) == "pi+"){
+	  if(MatchGenDef(All_Gens, *lep) == "pi+"){
 	    double r = ((double) rand() / (RAND_MAX));
           if(r > 0.05) return;
 	  }
-	  if(MatchGenDef(gens, *lep) == "electron") return;
-	  if(MatchGenDef(gens, *lep) == "K+") return;	
+	  if(MatchGenDef(All_Gens, *lep) == "electron") return;
+	  if(MatchGenDef(All_Gens, *lep) == "K+") return;	
 	}
       }
       else{
 	
 	if(MCSample.Contains("TT")){
 
-          if(MatchGenDef(gens, *lep) == "pi+"){
+          if(MatchGenDef(All_Gens, *lep) == "pi+"){
             double r = ((double) rand() / (RAND_MAX));
             if(r > 0.1) return;
           }
 
-          if(MatchGenDef(gens, *lep) == "tau"){
+          if(MatchGenDef(All_Gens, *lep) == "tau"){
             double r = ((double) rand() / (RAND_MAX));
             if(r > 0.1) return;
           }
         }
         else{
-          if(MatchGenDef(gens, *lep) == "pi+"){
+          if(MatchGenDef(All_Gens, *lep) == "pi+"){
             double r = ((double) rand() / (RAND_MAX));
 	    if(r > 0.05) return;
           }
 
-	  if(MatchGenDef(gens, *lep) == "tau"){
+	  if(MatchGenDef(All_Gens, *lep) == "tau"){
             double r = ((double) rand() / (RAND_MAX));
             if(r > 0.2) return;
           }
-	  if(MatchGenDef(gens, *lep) == "__"){
+	  if(MatchGenDef(All_Gens, *lep) == "__"){
             double r = ((double) rand() / (RAND_MAX));
             if(r > 0.2) return;
           }

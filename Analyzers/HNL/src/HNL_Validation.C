@@ -5,6 +5,8 @@ void HNL_Validation::initializeAnalyzer(){
   // All default settings like trigger/ PD/ BJet are decalred in HNL_LeptonCore::initializeAnalyzer to make them consistent for all HNL codes
 
   HNL_LeptonCore::initializeAnalyzer();
+  //  cout <<  "SetupEventMVAReader " << endl;
+  //SetupEventMVAReader();			
 
 }
 
@@ -18,7 +20,6 @@ void HNL_Validation::executeEvent(){
   if(ValPOG)  ParamSetup="POG";
   if(ValPOG)  TriggerConfig="POG";
 
-  if(!IsData)  gens = GetGens();
 
   AnalyzerParameter param_signal = HNL_LeptonCore::InitialiseHNLParameter(ParamSetup,"_UL");
   
@@ -42,10 +43,10 @@ void HNL_Validation::executeEvent(){
     weight = ev.GetTriggerLumi("Full") * MCweight(true, true) *  GetKFactor() * GetPrefireWeight(0);
     weight_pu = GetPileUpWeight(nPileUp,0);
     weight_puM = GetPileUpWeight(nPileUp-1,0);
-    weight_dy = (IsData) ? 1:  mcCorr->GetOfficialDYReweight(GetGens(),0);
+    weight_dy = (IsData) ? 1:  mcCorr->GetOfficialDYReweight(All_Gens,0);
 
     if(MCSample.Contains("TT") and MCSample.Contains("powheg")) {
-      w_topptrw = mcCorr->GetTopPtReweight(GetGens());
+      w_topptrw = mcCorr->GetTopPtReweight(All_Gens);
       FillWeightHist("TopPtWeight_" , w_topptrw);
     }
   }
@@ -57,11 +58,11 @@ void HNL_Validation::executeEvent(){
   TString el_ID = (RunFake) ?  param_signal.Electron_FR_ID : param_signal.Electron_Tight_ID ;
   TString mu_ID = (RunFake) ?  param_signal.Muon_FR_ID :  param_signal.Muon_Tight_ID ;
 
-  std::vector<Muon>       MuonCollT     = MuonPromptOnly    ( GetMuons    ( param_signal,mu_ID, 5, 2.4, RunFake)      ,gens,param_signal);
-  std::vector<Electron>   ElectronCollT = ElectronPromptOnly( GetElectrons( param_signal,el_ID, 10, 2.5, RunFake) ,gens,param_signal);
+  std::vector<Muon>       MuonCollT     = MuonPromptOnly    ( GetMuons    ( param_signal,mu_ID, 5, 2.4, RunFake)      ,All_Gens,param_signal);
+  std::vector<Electron>   ElectronCollT = ElectronPromptOnly( GetElectrons( param_signal,el_ID, 10, 2.5, RunFake) ,All_Gens,param_signal);
   
-  std::vector<Muon>       MuonCollTM = MuonPromptOnly( MuonCollT,gens);
-  std::vector<Electron>       ElectronCollTM = ElectronPromptOnly( ElectronCollT,gens);
+  std::vector<Muon>       MuonCollTM = MuonPromptOnly( MuonCollT,All_Gens);
+  std::vector<Electron>   ElectronCollTM = ElectronPromptOnly( ElectronCollT,All_Gens);
   
   std::vector<Tau>        mytaus        = GetTaus     (param_signal.Tau_Veto_ID,20., 2.3); 
 
@@ -73,39 +74,26 @@ void HNL_Validation::executeEvent(){
   std::vector<Lepton *> LepsV  = MakeLeptonPointerVector(MuonCollV,ElectronCollV);
   
   // JET COLLECTION
-  std::vector<FatJet>   fatjets_tmp  = GetFatJets(param_signal, param_signal.FatJet_ID, 200., 5.);
-  std::vector<FatJet> AK8_JetColl                  = SelectAK8Jets(fatjets_tmp, 200., 5., true,  1., false, -999, false, 40., 130., ElectronCollV, MuonCollV);
-  
-  
-  // AK4 JET
-  std::vector<Jet> jets_tmp     = GetJets   ( param_signal, param_signal.Jet_ID, 30., 2.5);
-  std::vector<Jet> bjets_tmp     = GetJets   ( param_signal, param_signal.Jet_ID, 30., 2.4);
+  std::vector<FatJet> AK8_JetColl                 = GetHNLAK8Jets("",param_signal);
+  std::vector<Jet> AK4_JetAllColl                 = GetHNLJets("NoCut_Eta3",param_signal);
+  std::vector<Jet> JetColl                        = GetHNLJets("Tight",param_signal);
+  std::vector<Jet> JetCollLoose                   = GetHNLJets("Loose",param_signal);
+  std::vector<Jet> VBF_JetColl                    = GetHNLJets("VBFTight",param_signal);
+  std::vector<Jet> BJetColl                       = GetHNLJets("BJetM",param_signal);
+  std::vector<Jet> BJetCollSR1                    = GetHNLJets("BJetT",param_signal);
 
-  std::vector<Jet> JetColl                        = SelectAK4Jets(jets_tmp,     20., 2.5, true,  0.4,0.8,"",   ElectronCollV,MuonCollV, AK8_JetColl);
-  std::vector<Jet> VBF_JetColl                    = SelectAK4Jets(jets_tmp,     30., 4.7, true,  0.4,0.8,"",  ElectronCollV,MuonCollV, AK8_JetColl);    // High ETa jets 
-  
-  // select B jets
   JetTagging::Parameters param_jets = JetTagging::Parameters(JetTagging::DeepJet, JetTagging::Medium, JetTagging::incl, JetTagging::mujets);
-  
-  
-  std::vector<Jet> BJetColl    = SelectBJets(param_signal, bjets_tmp, param_jets);
-  double sf_btag               = GetBJetSF(param_signal, bjets_tmp, param_jets); 
+  double sf_btag               = GetBJetSF(param_signal, JetColl, param_jets);
   if(!IsData) FillWeightHist(param_signal.Name+"/BJetSF", sf_btag);
 
   
   if(IsData) sf_btag=1;
 
   // Chose Typ1 Phi corr MET + smear jets 
-  Particle METv = GetvMET("T1xyCorr"); // reyturns MET with systematic correction≈
-  Particle PuppiMETv = GetvMET("PuppiT1xyCorr");
-  Particle METvNoPhi = GetvMET("T1");
-  Particle PuppiMETvNoPhi = GetvMET("PuppiT1");
-  Particle PuppiMETvULPhiCorr = GetvMET("PuppiT1xyULCorr");
-  Particle METvULPhiCorr = GetvMET("T1xyULCorr");
-  Particle PuppiMETJetSmeared = UpdateMETSmearedJet(PuppiMETv, GetJets(param_signal, param_signal.Jet_ID, 10., 5.));
-  Particle PuppiMETJetSmeared2 = UpdateMETSmearedJet(PuppiMETv, GetJets(param_signal, param_signal.Jet_ID, 20., 2.5));
-  
 
+  map<TString, Particle> MapOfMET = METMap(param_signal);
+
+  Particle PuppiMETv = GetvMET("PuppiT1xyULCorr",param_signal);
   if(!PassMETFilter()) return;
   
   vector<HNL_LeptonCore::Channel> channels = {MuMu, EMu};
@@ -156,15 +144,14 @@ void HNL_Validation::executeEvent(){
     
     
     Particle llCand = *LepsT[0] + *LepsT[1];
-
   
     if(llCand.M() < 50) continue;
 
     std::map< TString, bool > map_Region_to_Bool;
+
     map_Region_to_Bool.clear();
-    map_Region_to_Bool["ZPeak"] = (LepsT[1]->Pt() > 15 && fabs(llCand.M() - 90) < 10);
-    map_Region_to_Bool["ZPeakTruthMatched"] =  (LepsT[1]->Pt() > 15 && fabs(llCand.M() - 90) < 10) && (LepsTM.size()==2);
-    map_Region_to_Bool["DiLep"] = (LepsT[1]->Pt() > 20 );
+    map_Region_to_Bool["ZPeak"] =  (LepsT[1]->Pt() > 15 && fabs(llCand.M() - 90) < 10) && (LepsTM.size()==2);
+    map_Region_to_Bool["ZPeakPt50"] =  (LepsT[1]->Pt() > 50 && fabs(llCand.M() - 90) < 10) && (LepsTM.size()==2);
     map_Region_to_Bool["BJetCR"] =  (BJetColl.size() >= 1 && (LepsT[1]->Pt() > 20 )) && (JetColl.size() >= 2);
     map_Region_to_Bool["TopCR"] =  (BJetColl.size() >= 1 &&  PuppiMETv.Pt() > 50 && (LepsT[1]->Pt() > 20 ) && JetColl.size() >= 1);
     
@@ -201,26 +188,8 @@ void HNL_Validation::executeEvent(){
 	  FillHist( param_channel.Name+"/RegionPlots_"+ region+ "/PuppiMETType1XY",  PuppiMETv.Pt() , _weight, 100, 0., 400.);
 	  FillHist( param_channel.Name+"/RegionPlots_"+ region+ "/PuppiMETPhiType1XY",  PuppiMETv.Phi() , _weight, 10, -3.2, 3.2);
 	  
-          FillHist( param_channel.Name+"/RegionPlots_"+ region+ "/PFMETType1XY",  METv.Pt() , _weight, 100, 0., 400.);
-          FillHist( param_channel.Name+"/RegionPlots_"+ region+ "/PFMETPhiType1XY",  METv.Phi() , _weight, 10, -3.2, 3.2);
-	  
-          FillHist( param_channel.Name+"/RegionPlots_"+ region+ "/PFMETType1",  METvNoPhi.Pt() , _weight, 100, 0., 400.);
-          FillHist( param_channel.Name+"/RegionPlots_"+ region+ "/PFMETPhiType1",  METvNoPhi.Phi() , _weight, 10, -3.2, 3.2);
-	  
-          FillHist( param_channel.Name+"/RegionPlots_"+ region+ "/PuppiMETType1",  PuppiMETvNoPhi.Pt() , _weight, 100, 0., 400.);
-          FillHist( param_channel.Name+"/RegionPlots_"+ region+ "/PuppiMETPhiType1",  PuppiMETvNoPhi.Phi() , _weight, 10, -3.2, 3.2);
-
-	  FillHist( param_channel.Name+"/RegionPlots_"+ region+ "/PuppiMETType1POGXY",  PuppiMETvULPhiCorr.Pt() , _weight, 100, 0., 400.);
-          FillHist( param_channel.Name+"/RegionPlots_"+ region+ "/PuppiMETPhiType1POGXY",  PuppiMETvULPhiCorr.Phi() , _weight, 10, -3.2, 3.2);
-
-	  FillHist( param_channel.Name+"/RegionPlots_"+ region+ "/PFMETType1POGXY",  METvULPhiCorr.Pt() , _weight, 100, 0., 400.);
-          FillHist( param_channel.Name+"/RegionPlots_"+ region+ "/PFMETPhiType1POGXY", METvULPhiCorr.Phi() , _weight, 10, -3.2, 3.2);
-
-	  FillHist( param_channel.Name+"/RegionPlots_"+ region+ "/PuppiMETType1XYSmeared",  PuppiMETJetSmeared.Pt() , _weight, 100, 0., 400.);
-          FillHist( param_channel.Name+"/RegionPlots_"+ region+ "/PuppiMETPhiType1XYSmeared", PuppiMETJetSmeared.Phi() , _weight, 10, -3.2, 3.2);
-
-	  FillHist( param_channel.Name+"/RegionPlots_"+ region+ "/PuppiMETType1XYSmeared2",  PuppiMETJetSmeared2.Pt() , _weight, 100, 0., 400.);
-          FillHist( param_channel.Name+"/RegionPlots_"+ region+ "/PuppiMETPhiType1XYSmeared2", PuppiMETJetSmeared2.Phi() , _weight, 10, -3.2, 3.2);
+	  for(auto imet : MapOfMET)  FillHist( param_channel.Name+"/RegionPlots_"+ region+ "/METPt_"+imet.first,  imet.second.Pt() , _weight, 100, 0., 400.);
+	  for(auto imet : MapOfMET)  FillHist( param_channel.Name+"/RegionPlots_"+ region+ "/METPhi_"+imet.first,  imet.second.Phi() , _weight, 10, -3.2, 3.2);
 
 
 	}

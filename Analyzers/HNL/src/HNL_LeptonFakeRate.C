@@ -148,6 +148,11 @@ void HNL_LeptonFakeRate::executeEventFromParameter(AnalyzerParameter param, TStr
   
   std::vector<Electron> loose_electrons     = GetElectrons( param,param.Electron_Loose_ID, 9.5, 2.5,false) ;
   std::vector<Muon>     loose_muons         = GetMuons    ( param,param.Muon_Loose_ID, 5, 2.4, false);
+  cout << "=================================================================================" << endl; //JH
+  for(auto lmu:loose_muons){
+					cout << "loose muon pt : " << lmu.Pt() << endl; //JH
+					if(lmu.Pt()<10.) cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << endl; //JH
+	}
   
   //cout << "loose_electrons = " << loose_electrons.size() << " loose_muons " << loose_muons.size() << endl;
 
@@ -188,7 +193,7 @@ void HNL_LeptonFakeRate::RunM(std::vector<Electron> loose_el,  std::vector<Muon>
   TString channel_s="_MuMu";
   Event ev = GetEvent();
 
-  Particle METv = GetvMET("PuppiT1xyULCorr",param);
+  Particle METv = GetvMET("PuppiT1xyULCorr");
 
   if(loose_mu.size() == 0) return;
 
@@ -242,8 +247,7 @@ void HNL_LeptonFakeRate::RunM(std::vector<Electron> loose_el,  std::vector<Muon>
 
   bool truth_match= false;
   if(!IsDATA) {
-    gens = GetGens();
-    if(GetLeptonType_JH(loose_mu.at(0), gens) > 0 ) truth_match=true;
+    if(loose_mu.at(0).LeptonGenType() > 0 ) truth_match=true;
   }
   else truth_match=true;
 
@@ -269,24 +273,24 @@ void HNL_LeptonFakeRate::RunM(std::vector<Electron> loose_el,  std::vector<Muon>
   if((60. < MT)  &&(MT < 100.)){
     if(loose_mu[0].Pt() > 20){
       if(jets.size() > 0 && blepsT[0]){
-	if(jets[0].Pt() > 40){
-	  
-	  FillRegionPlots("MuMu","SingleTightMu_promptCR_"+param.Name, jets,  loose_el,loose_mu, METv, event_weight);
-	  if(has_away_jet)FillRegionPlots("MuMu","SingleTightMuAwayJet_promptCR_"+param.Name, jets,  loose_el,loose_mu, METv, event_weight);
+  if(jets[0].Pt() > 40){
+    
+    FillRegionPlots("MuMu","SingleTightMu_promptCR_"+param.Name, jets,  loose_el,loose_mu, METv, event_weight);
+    if(has_away_jet)FillRegionPlots("MuMu","SingleTightMuAwayJet_promptCR_"+param.Name, jets,  loose_el,loose_mu, METv, event_weight);
 
-	  bool isPrompt=false;
-	  for(unsigned int ij=0; ij < jets.size(); ij++){
-	    if(jets.at(ij).Pt() < 40.) continue;
-	    float dphi =fabs(TVector2::Phi_mpi_pi(loose_mu[0].Phi()- jets.at(ij).Phi()));
-	    if(dphi > 2.5){
-	      if((jets.at(ij).Pt() /  loose_mu[0].Pt() ) < 1.) isPrompt = true;
-	    }
-	  }
-	  
-	  if (isPrompt) FillRegionPlots("MuMu","SingleTightMu_promptCR2_"+param.Name, jets,  loose_el,loose_mu, METv, event_weight);
-	  if (isPrompt&&has_away_jet) FillRegionPlots("MuMu","SingleTightMuAwayJet_promptCR2_"+param.Name, jets,  loose_el,loose_mu, METv, event_weight);
-	}
-	
+    bool isPrompt=false;
+    for(unsigned int ij=0; ij < jets.size(); ij++){
+      if(jets.at(ij).Pt() < 40.) continue;
+      float dphi =fabs(TVector2::Phi_mpi_pi(loose_mu[0].Phi()- jets.at(ij).Phi()));
+      if(dphi > 2.5){
+        if((jets.at(ij).Pt() /  loose_mu[0].Pt() ) < 1.) isPrompt = true;
+      }
+    }
+    
+    if (isPrompt) FillRegionPlots("MuMu","SingleTightMu_promptCR2_"+param.Name, jets,  loose_el,loose_mu, METv, event_weight);
+    if (isPrompt&&has_away_jet) FillRegionPlots("MuMu","SingleTightMuAwayJet_promptCR2_"+param.Name, jets,  loose_el,loose_mu, METv, event_weight);
+  }
+  
       }
     }
   }
@@ -323,7 +327,7 @@ void HNL_LeptonFakeRate::RunE( std::vector<Electron> loose_el, std::vector<Muon>
   TString label = param.Name;
   Event ev = GetEvent();
 
-  Particle METv = GetvMET("PuppiT1xyULCorr",param);
+  Particle METv = GetvMET("PuppiT1xyULCorr");
   
   if(loose_el.size() == 0) return;
  
@@ -379,8 +383,7 @@ void HNL_LeptonFakeRate::RunE( std::vector<Electron> loose_el, std::vector<Muon>
 
   bool truth_match= false;
   if(!IsDATA) {
-    gens = GetGens();
-    if(GetLeptonType(loose_el.at(0), gens) > 0 ) truth_match=true;
+    if(loose_el.at(0).LeptonGenType() > 0 ) truth_match=true; //JH : Note that this contains internal conversions (4, 5)
   }
   else truth_match=true;
 
@@ -404,22 +407,22 @@ void HNL_LeptonFakeRate::RunE( std::vector<Electron> loose_el, std::vector<Muon>
   if((60. < MT)  &&(MT < 100.)){
     if(loose_el[0].Pt() > 25){
       if(jets.size() > 0 && blepsT[0]){
-	if(jets[0].Pt() > 40){
-	  FillRegionPlots("EE","SingleTightEl_promptCR_"+param.Name, jets,  loose_el,loose_mu, METv, event_weight);
-	  if(has_away_jet)	  FillRegionPlots("EE","SingleTightElAwayJet_promptCR_"+param.Name, jets,  loose_el,loose_mu, METv, event_weight);
+  if(jets[0].Pt() > 40){
+    FillRegionPlots("EE","SingleTightEl_promptCR_"+param.Name, jets,  loose_el,loose_mu, METv, event_weight);
+    if(has_away_jet)    FillRegionPlots("EE","SingleTightElAwayJet_promptCR_"+param.Name, jets,  loose_el,loose_mu, METv, event_weight);
 
-	  bool isPrompt=false;
+    bool isPrompt=false;
           for(unsigned int ij=0; ij < jets.size(); ij++){
-	    if(jets.at(ij).Pt() < 40.) continue;
+      if(jets.at(ij).Pt() < 40.) continue;
             float dphi =fabs(TVector2::Phi_mpi_pi(loose_el[0].Phi()- jets.at(ij).Phi()));
             if(dphi > 2.5){
               if((jets.at(ij).Pt() /  loose_el[0].Pt() ) < 1.) isPrompt = true;
-	    }
-	  }
-	  
+      }
+    }
+    
           if (isPrompt ) FillRegionPlots("EE","SingleTightEl_promptCR2_"+param.Name, jets,  loose_el,loose_mu, METv, event_weight);
-	  if (isPrompt && has_away_jet) FillRegionPlots("EE","SingleTightElAwayJet_promptCR2_"+param.Name, jets,  loose_el,loose_mu, METv, event_weight);
-	}
+    if (isPrompt && has_away_jet) FillRegionPlots("EE","SingleTightElAwayJet_promptCR2_"+param.Name, jets,  loose_el,loose_mu, METv, event_weight);
+  }
       }
     }
   }
@@ -512,9 +515,9 @@ void HNL_LeptonFakeRate::MakeDiLepPlots(HNL_LeptonCore::Channel channel, Analyze
     if(pass_3){
       if(leps[1]->Pt() > 5){
         double prescale_weight  =  (IsDATA) ? 1. : ev.GetTriggerLumi(triggerslist_3)*NVxt_Mu3;
-	
+  
         if(PassZMass) {
-	  for(auto ilep : leps)FillHist(( plot_dir +  "/RegionPlots_Dilep/"+triggerslist_3 + "_LepPt").Data(), ilep->Pt() , event_weight*prescale_weight,nbin_pt, bins_pt);
+    for(auto ilep : leps)FillHist(( plot_dir +  "/RegionPlots_Dilep/"+triggerslist_3 + "_LepPt").Data(), ilep->Pt() , event_weight*prescale_weight,nbin_pt, bins_pt);
         }
         FillHist(( plot_dir +  "/RegionPlots_Dilep/"+triggerslist_3 + "_LLMass").Data(), Z.M() , event_weight*prescale_weight, 100., 0., 200);
       }
@@ -523,9 +526,9 @@ void HNL_LeptonFakeRate::MakeDiLepPlots(HNL_LeptonCore::Channel channel, Analyze
     if(pass_8){
       if(leps[1]->Pt() > 10){
         double prescale_weight  =  (IsDATA) ? 1. : ev.GetTriggerLumi(triggerslist_8)*NVxt_Mu8;
-	
+  
         if(PassZMass){
-	  for(auto ilep : leps)FillHist(( plot_dir +  "/RegionPlots_Dilep/"+triggerslist_8 + "_LepPt").Data(), ilep->Pt() , event_weight*prescale_weight,nbin_pt, bins_pt);
+    for(auto ilep : leps)FillHist(( plot_dir +  "/RegionPlots_Dilep/"+triggerslist_8 + "_LepPt").Data(), ilep->Pt() , event_weight*prescale_weight,nbin_pt, bins_pt);
         }
         FillHist(( plot_dir +  "/RegionPlots_Dilep/"+triggerslist_8 + "_LLMass").Data(), Z.M() , event_weight*prescale_weight, 100., 0., 200);
 
@@ -657,32 +660,32 @@ void HNL_LeptonFakeRate::MakeNVertexDistPrescaledTrig(HNL_LeptonCore::Channel ch
 
     if(pass_3){
       if(leps[1]->Pt() > 5){
-	double prescale_weight  =  (IsDATA) ? 1. : ev.GetTriggerLumi(triggerslist_3);
+  double prescale_weight  =  (IsDATA) ? 1. : ev.GetTriggerLumi(triggerslist_3);
 
-	if(PassZMass) {
-	  FillHist(( triggerslist_3 + "_Nvtx").Data(),  nPV , event_weight*prescale_weight,nbin_npv, bins_npv);
-	}
-	FillHist(( triggerslist_3 + "_LLMass").Data(), Z.M() , event_weight*prescale_weight, 100., 0., 200);
+  if(PassZMass) {
+    FillHist(( triggerslist_3 + "_Nvtx").Data(),  nPV , event_weight*prescale_weight,nbin_npv, bins_npv);
+  }
+  FillHist(( triggerslist_3 + "_LLMass").Data(), Z.M() , event_weight*prescale_weight, 100., 0., 200);
       }
     }
     if(pass_8){
       if(leps[1]->Pt() > 10){
-	double prescale_weight  =  (IsDATA) ? 1. : ev.GetTriggerLumi(triggerslist_8);
+  double prescale_weight  =  (IsDATA) ? 1. : ev.GetTriggerLumi(triggerslist_8);
 
-	if(PassZMass){
-	  FillHist(( triggerslist_8 + "_Nvtx").Data(),  nPV , event_weight*prescale_weight,nbin_npv, bins_npv);
-	}
+  if(PassZMass){
+    FillHist(( triggerslist_8 + "_Nvtx").Data(),  nPV , event_weight*prescale_weight,nbin_npv, bins_npv);
+  }
         FillHist(( triggerslist_8 + "_LLMass").Data(), Z.M() , event_weight*prescale_weight, 100., 0., 200);
 
       }
     }
     if(pass_17){
       if(leps[1]->Pt() > 20){
-	double prescale_weight  =  (IsDATA) ? 1. : ev.GetTriggerLumi(triggerslist_17);
-	if(PassZMass){
-	  FillHist(( triggerslist_17 + "_Nvtx").Data(),  nPV , event_weight*prescale_weight,nbin_npv, bins_npv);
-	} 
-	FillHist(( triggerslist_17 + "_LLMass").Data(), Z.M() , event_weight*prescale_weight, 100., 0., 200);
+  double prescale_weight  =  (IsDATA) ? 1. : ev.GetTriggerLumi(triggerslist_17);
+  if(PassZMass){
+    FillHist(( triggerslist_17 + "_Nvtx").Data(),  nPV , event_weight*prescale_weight,nbin_npv, bins_npv);
+  } 
+  FillHist(( triggerslist_17 + "_LLMass").Data(), Z.M() , event_weight*prescale_weight, 100., 0., 200);
       }
     }   
   }
@@ -709,9 +712,9 @@ void HNL_LeptonFakeRate::MakeNVertexDistPrescaledTrig(HNL_LeptonCore::Channel ch
     if(pass_8){
       if(leps[1]->Pt() > 10){
         double prescale_weight  =  (IsDATA) ? 1. : ev.GetTriggerLumi(triggerslist_8);
-	if(PassZMass){
-	  FillHist(( triggerslist_8 + "_Nvtx").Data(),  nPV , event_weight*prescale_weight,nbin_npv, bins_npv);
-	}
+  if(PassZMass){
+    FillHist(( triggerslist_8 + "_Nvtx").Data(),  nPV , event_weight*prescale_weight,nbin_npv, bins_npv);
+  }
         FillHist(( triggerslist_8 + "_LLMass").Data(), Z.M() , event_weight*prescale_weight, 100., 0., 200);
 
       }
@@ -719,27 +722,27 @@ void HNL_LeptonFakeRate::MakeNVertexDistPrescaledTrig(HNL_LeptonCore::Channel ch
     if(pass_12){
       if(leps[1]->Pt() > 14){
         double prescale_weight  =  (IsDATA) ? 1. : ev.GetTriggerLumi(triggerslist_12);
-	if(PassZMass){
-	  FillHist(( triggerslist_12 + "_Nvtx").Data(),  nPV , event_weight*prescale_weight,nbin_npv, bins_npv);
-	}
-	FillHist(( triggerslist_12 + "_LLMass").Data(), Z.M() , event_weight*prescale_weight, 100., 0., 200);
-	      }
+  if(PassZMass){
+    FillHist(( triggerslist_12 + "_Nvtx").Data(),  nPV , event_weight*prescale_weight,nbin_npv, bins_npv);
+  }
+  FillHist(( triggerslist_12 + "_LLMass").Data(), Z.M() , event_weight*prescale_weight, 100., 0., 200);
+        }
     }
     if(pass_17){
       if(leps[1]->Pt() > 20){
         double prescale_weight  =  (IsDATA) ? 1. : ev.GetTriggerLumi(triggerslist_17);
-	if(PassZMass){
-	  FillHist(( triggerslist_17 + "_Nvtx").Data(),  nPV , event_weight*prescale_weight,nbin_npv, bins_npv);
-	}
-	FillHist(( triggerslist_17 + "_LLMass").Data(), Z.M() , event_weight*prescale_weight, 100., 0., 200);
+  if(PassZMass){
+    FillHist(( triggerslist_17 + "_Nvtx").Data(),  nPV , event_weight*prescale_weight,nbin_npv, bins_npv);
+  }
+  FillHist(( triggerslist_17 + "_LLMass").Data(), Z.M() , event_weight*prescale_weight, 100., 0., 200);
       }
     }
     if(pass_23){
       if(leps[1]->Pt() > 25){
         double prescale_weight  =  (IsDATA) ? 1. : ev.GetTriggerLumi(triggerslist_23);
-	if(PassZMass){
-	  FillHist(( triggerslist_23 + "_Nvtx").Data(),  nPV , event_weight*prescale_weight,nbin_npv, bins_npv);
-	}
+  if(PassZMass){
+    FillHist(( triggerslist_23 + "_Nvtx").Data(),  nPV , event_weight*prescale_weight,nbin_npv, bins_npv);
+  }
         FillHist(( triggerslist_23 + "_LLMass").Data(), Z.M() , event_weight*prescale_weight, 100., 0., 200);
       }
     }
@@ -750,13 +753,11 @@ void HNL_LeptonFakeRate::MakeNVertexDistPrescaledTrig(HNL_LeptonCore::Channel ch
 
 }
 void HNL_LeptonFakeRate::GetFakeRateAndPromptRates(AnalyzerParameter param, std::vector<Lepton *> leps,std::vector<bool> blepsT, std::vector<Jet>    jetCollTight, TString label, float event_weight, float isocut){
-		      
-  cout << "GetFakeRateAndPromptRates;" << endl; //JH
-  
+          
   if (leps.size()<1) return;
   
   Event ev = GetEvent();
-  Particle METv = GetvMET("PuppiT1xyULCorr",param);
+  Particle METv = GetvMET("PuppiT1xyULCorr");
 
   
   if(leps.size()==1){
@@ -818,8 +819,8 @@ void HNL_LeptonFakeRate::MakePromptRatePlots(TString label, TString tag,Analyzer
       FillHist((prefix + "_ptcone_eta").Data(), lep_pt_corr, lep_eta,  weight_ptcorr, nbin_ptcone, ptbinscone, nbin_eta , etabins);
       FillHist((prefix + "_ptratio_eta").Data(), lep_jet_ptratio, lep_eta,  weight_ptcorr, nbin_ptcone, ptbinscone, nbin_eta , etabins);
       if(fabs(90. - Z.M()) < 5){
-	FillHist((prefix + "_TZ_pt_eta").Data(), lep_pt, lep_eta,  weight_ptcorr, nbin_pt, ptbins, nbin_eta , etabins);
-	FillHist((prefix + "_TZ_ptcone_eta").Data(), lep_pt_corr, lep_eta,  weight_ptcorr, nbin_ptcone, ptbinscone, nbin_eta , etabins);
+  FillHist((prefix + "_TZ_pt_eta").Data(), lep_pt, lep_eta,  weight_ptcorr, nbin_pt, ptbins, nbin_eta , etabins);
+  FillHist((prefix + "_TZ_ptcone_eta").Data(), lep_pt_corr, lep_eta,  weight_ptcorr, nbin_ptcone, ptbinscone, nbin_eta , etabins);
       }
     }
   }
@@ -843,7 +844,7 @@ void HNL_LeptonFakeRate::MakePromptRatePlots(TString label, TString tag,Analyzer
       FillHist((prefix + "_ptcone_eta").Data(), lep_pt_corr, lep_eta,  weight_ptcorr, nbin_ptcone, ptbinscone, nbin_eta , etabins);
       FillHist((prefix + "_ptratio_eta").Data(), lep_jet_ptratio, lep_eta,  weight_ptcorr, nbin_ptcone, ptbinscone, nbin_eta , etabins);
       if(fabs(90. - Z.M()) < 5){
-	FillHist((prefix + "_TZ_pt_eta").Data(), lep_pt, lep_eta,  weight_ptcorr, nbin_pt, ptbins, nbin_eta , etabins);
+  FillHist((prefix + "_TZ_pt_eta").Data(), lep_pt, lep_eta,  weight_ptcorr, nbin_pt, ptbins, nbin_eta , etabins);
         FillHist((prefix + "_TZ_ptcone_eta").Data(), lep_pt_corr, lep_eta,  weight_ptcorr, nbin_ptcone, ptbinscone, nbin_eta , etabins);
       }
     }
@@ -947,34 +948,30 @@ float HNL_LeptonFakeRate::GetPrescale(std::vector<Lepton *>   leps  ){
  
 
 void HNL_LeptonFakeRate::MakeFakeRatePlots(TString label, TString mutag,AnalyzerParameter param,  std::vector<Lepton *> leps , std::vector<bool> blepsT ,  std::vector<Jet> jets,  float event_weight, float isocut, Particle MET){
-				
-  cout << "MakeFakeRatePlots;" << endl; //JH
-  if(!IsDATA)gens = GetGens();
-
-
+        
   /// FOR FAKE RATE SUBTRACTION NEED ONLY PROMPT MUONS                                                                                                                                                  
   bool truth_match= false;
 
   if(!IsDATA) {
     if(leps.size() > 0){
-      if(GetLeptonType(*leps[0], gens) > 0 ) truth_match=true;
+      if(leps[0]->LeptonGenType() > 0 ) truth_match=true;
     }
   }
   else truth_match=true;
   if(!truth_match) return;
 
   bool useevent20 = UseEvent(leps , jets, 20.,  MET, event_weight);
-  bool useevent30 = UseEvent(leps , jets, 30.,  MET, event_weight);
-  bool useevent40 = UseEvent(leps , jets, 40.,  MET, event_weight);
-  bool useevent60 = UseEvent(leps , jets, 60.,  MET, event_weight);
+  //bool useevent30 = UseEvent(leps , jets, 30.,  MET, event_weight);
+  //bool useevent40 = UseEvent(leps , jets, 40.,  MET, event_weight);
+  //bool useevent60 = UseEvent(leps , jets, 60.,  MET, event_weight); //JH
 
 
   label= mutag;
   if(jets.size() >= 1){
     if(useevent20)GetFakeRates(leps, blepsT, param, label, jets,  label+"_20",(event_weight),isocut);
-    if(useevent30)GetFakeRates(leps, blepsT,param, label, jets,   label+"_30",(event_weight),isocut);
-    if(useevent40)GetFakeRates(leps, blepsT,param, label, jets,  label+"_40",(event_weight),isocut);
-    if(useevent60)GetFakeRates(leps, blepsT,param, label,jets,   label+"_60",(event_weight),isocut);
+    //if(useevent30)GetFakeRates(leps, blepsT,param, label, jets,   label+"_30",(event_weight),isocut);
+    //if(useevent40)GetFakeRates(leps, blepsT,param, label, jets,  label+"_40",(event_weight),isocut);
+    //if(useevent60)GetFakeRates(leps, blepsT,param, label,jets,   label+"_60",(event_weight),isocut); //JH
   }
   return;
 }
@@ -997,13 +994,13 @@ bool HNL_LeptonFakeRate::UseEvent(std::vector<Lepton *> leps ,  std::vector< Jet
         for(unsigned int ij=0; ij < jets.size(); ij++){
           if(jets.at(ij).Pt() < awayjetcut) continue;
           float dphi =fabs(TVector2::Phi_mpi_pi(leps.at(ielT)->Phi()- jets.at(ij).Phi()));
-	  if( (jets.at(ij).ChargedEmEnergyFraction()) > 0.65)  continue;
+    if( (jets.at(ij).ChargedEmEnergyFraction()) > 0.65)  continue;
 
           if(dphi > 2.5){
             if((jets.at(ij).Pt() /  leps.at(ielT)->Pt() ) < 1.2) continue;
             useevent = true;
           }
-	}
+  }
       }
     }
   }
@@ -1014,8 +1011,7 @@ bool HNL_LeptonFakeRate::UseEvent(std::vector<Lepton *> leps ,  std::vector< Jet
 
 
 void HNL_LeptonFakeRate::GetFakeRates(std::vector<Lepton *> leps,std::vector<bool> blepsT,  AnalyzerParameter param,TString tightlabel,  std::vector<Jet> jets,  TString tag,float event_weight, float isocut){
-  cout << "GetFakeRates;" << endl; //JH
-					 
+          
   bool IsMuon=(leps[0]->LeptonFlavour() == Lepton::MUON);
   int nbin_ptcone=  IsMuon ? 10 : 8;
   int nbin_pt    = IsMuon ? 10 : 9;
@@ -1040,8 +1036,9 @@ void HNL_LeptonFakeRate::GetFakeRates(std::vector<Lepton *> leps,std::vector<boo
   Event ev = GetEvent();
 
   float lep_pt = leps[0]->Pt();
+  if(lep_pt < 10)cout << "lep_pt : " << lep_pt << endl; //JH
   //float lep_pt_corr =  leps[0]->CalcPtCone(leps[0]->RelIso(), isocut);
-  //double lep_jet_ptratio = lep_pt/leps[0]->CloseJet_Ptratio();
+  double lep_jet_ptratio = lep_pt/leps[0]->CloseJet_Ptratio();
   float lep_eta =   fabs(leps[0]->Eta());
   float lep_reliso  = leps[0]->RelIso();
   float lep_ip3d    = fabs(leps[0]->IP3D()/leps[0]->IP3Derr());
@@ -1049,7 +1046,7 @@ void HNL_LeptonFakeRate::GetFakeRates(std::vector<Lepton *> leps,std::vector<boo
   float lep_dxy     = fabs(leps[0]->dXY());
   
   //if(lep_jet_ptratio > 100.) lep_jet_ptratio = 99.;
-  if(lep_pt > 60.) lep_pt = 59;
+  //if(lep_pt > 60.) lep_pt = 59;
   float weight_ptcorr=event_weight;
   float weight_pt=event_weight;
   TString L_prefix = "Fake_Loose"+tag;
@@ -1071,7 +1068,7 @@ void HNL_LeptonFakeRate::GetFakeRates(std::vector<Lepton *> leps,std::vector<boo
     if(lep_pt < 5) return;
     else if(lep_pt <10){
       if(Mu3PD&&ev.PassTrigger(triggerslist_3)) { fill_plot=true; if(!IsDATA)weight_ptcorr = event_weight * ev.GetTriggerLumi(triggerslist_3);}
-      else { fill_plot=false;weight_ptcorr = 0.;	}
+      else { fill_plot=false;weight_ptcorr = 0.;  }
     }
     else  if(lep_pt < 20) {
       if(Mu8PD&&ev.PassTrigger(triggerslist_8)) {  fill_plot=true;if(!IsDATA)weight_ptcorr= event_weight * ev.GetTriggerLumi(triggerslist_8); }
@@ -1094,7 +1091,7 @@ void HNL_LeptonFakeRate::GetFakeRates(std::vector<Lepton *> leps,std::vector<boo
 
     bool El8PD=  (!IsDATA || (IsDATA&& ev.IsPDForTrigger(triggerslist_8, this->DataStream) ));
     bool El12PD= (!IsDATA || (IsDATA&& ev.IsPDForTrigger(triggerslist_12, this->DataStream) ));
-    bool El17PD= (!IsDATA || (IsDATA&& ev.IsPDForTrigger(triggerslist_17, this->DataStream) ));
+    //    bool El17PD= (!IsDATA || (IsDATA&& ev.IsPDForTrigger(triggerslist_17, this->DataStream) ));
     bool El23PD= (!IsDATA || (IsDATA&& ev.IsPDForTrigger(triggerslist_23, this->DataStream) ));
 
 
@@ -1111,7 +1108,7 @@ void HNL_LeptonFakeRate::GetFakeRates(std::vector<Lepton *> leps,std::vector<boo
     }
     else{
       if(El23PD&&ev.PassTrigger(triggerslist_23)) {fill_plot=true;if(!IsDATA)weight_ptcorr = event_weight * ev.GetTriggerLumi(triggerslist_23);}
-      else{fill_plot=false;	  weight_ptcorr = 0.;}
+      else{fill_plot=false;    weight_ptcorr = 0.;}
     }// end ptbin check
     prescale_lep = GetPrescale(leps);
   }
@@ -1120,14 +1117,13 @@ void HNL_LeptonFakeRate::GetFakeRates(std::vector<Lepton *> leps,std::vector<boo
   std::vector<Jet> jets_tmp     = GetJets   ( param, param.Jet_ID, 20., 5.);
   std::vector<FatJet> AK8_JetColl;
   JetTagging::Parameters param_jets = JetTagging::Parameters(JetTagging::DeepJet, JetTagging::Medium, JetTagging::incl, JetTagging::mujets);
-							     
+                   
 
   std::vector<Jet> BJetColl    = SelectBJets(param, jets_tmp , param_jets);
   double sf_btag               = GetBJetSF(param, jets_tmp, param_jets);
   if(!IsData )weight_pt*= sf_btag;
 
   
-  double ptminfix = IsMuon ? 8 : 12;
   double ptmin    = IsMuon ? 10 : 10;
 
   for(int ilep = 0 ; ilep < 2; ilep++)  {
@@ -1136,26 +1132,26 @@ void HNL_LeptonFakeRate::GetFakeRates(std::vector<Lepton *> leps,std::vector<boo
     if(lep_pt > ptmin){
 
       if(param.WriteOutVerbose ==  -3){
-	FillHist((prefix + "_reliso").Data(), lep_reliso, weight_pt*prescale_lep, 50, 0., 1.);
-	FillHist((prefix + "_dXY").Data(),    lep_dxy, weight_pt*prescale_lep, 50, 0., 1.);
-	FillHist((prefix + "_IP3D").Data(),   lep_ip3d, weight_pt*prescale_lep, 50, 0., 10.);
-	FillHist((prefix + "_mva").Data(),    lep_mva, weight_pt*prescale_lep, 50, -1., 1.);
-	FillHist((prefix + "_pt_eta").Data(), lep_pt, lep_eta,weight_pt*prescale_lep, nbin_pt, ptbins, nbin_eta , etabins);
-	FillHist((prefix + "_pt").Data(),     lep_pt, weight_pt*prescale_lep, nbin_pt, ptbins, "p_{T} (GeV)");
-	FillHist((prefix + "_eta").Data(),    lep_eta, weight_pt*prescale_lep , nbin_eta, etabins,"#eta");
-	if(BJetColl.size()==0){
-	  FillHist((prefix + "_0BJet_pt").Data(),     lep_pt, weight_pt*prescale_lep, nbin_pt, ptbins, "p_{T} (GeV)");
-	  FillHist((prefix + "_0BJet_eta").Data(),    lep_eta, weight_pt*prescale_lep , nbin_eta, etabins,"#eta");
-	}
-	else{
-	  FillHist((prefix + "_BJet_pt").Data(),     lep_pt, weight_pt*prescale_lep, nbin_pt, ptbins, "p_{T} (GeV)");
-	  FillHist((prefix + "_BJet_eta").Data(),    lep_eta, weight_pt*prescale_lep , nbin_eta, etabins,"#eta");
-	}
+  FillHist((prefix + "_reliso").Data(), lep_reliso, weight_pt*prescale_lep, 50, 0., 1.);
+  FillHist((prefix + "_dXY").Data(),    lep_dxy, weight_pt*prescale_lep, 50, 0., 1.);
+  FillHist((prefix + "_IP3D").Data(),   lep_ip3d, weight_pt*prescale_lep, 50, 0., 10.);
+  FillHist((prefix + "_mva").Data(),    lep_mva, weight_pt*prescale_lep, 50, -1., 1.);
+  FillHist((prefix + "_pt_eta").Data(), lep_pt, lep_eta,weight_pt*prescale_lep, nbin_pt, ptbins, nbin_eta , etabins);
+  FillHist((prefix + "_pt").Data(),     lep_pt, weight_pt*prescale_lep, nbin_pt, ptbins, "p_{T} (GeV)");
+  FillHist((prefix + "_eta").Data(),    lep_eta, weight_pt*prescale_lep , nbin_eta, etabins,"#eta");
+  if(BJetColl.size()==0){
+    FillHist((prefix + "_0BJet_pt").Data(),     lep_pt, weight_pt*prescale_lep, nbin_pt, ptbins, "p_{T} (GeV)");
+    FillHist((prefix + "_0BJet_eta").Data(),    lep_eta, weight_pt*prescale_lep , nbin_eta, etabins,"#eta");
+  }
+  else{
+    FillHist((prefix + "_BJet_pt").Data(),     lep_pt, weight_pt*prescale_lep, nbin_pt, ptbins, "p_{T} (GeV)");
+    FillHist((prefix + "_BJet_eta").Data(),    lep_eta, weight_pt*prescale_lep , nbin_eta, etabins,"#eta");
+  }
       }    
     }
     if(fill_plot) {
       FillHist((prefix + "_pt_eta").Data(), lep_pt, lep_eta,  weight_ptcorr, nbin_pt, ptbins, nbin_eta , etabins);
-      //FillHist((prefix + "_ptratio_eta").Data(), lep_jet_ptratio, lep_eta,  weight_ptcorr, nbin_pt, ptbins, nbin_eta , etabins);
+      FillHist((prefix + "_ptratio_eta").Data(), lep_jet_ptratio, lep_eta,  weight_ptcorr, nbin_pt, ptbins, nbin_eta , etabins);
     }
   }
   return;

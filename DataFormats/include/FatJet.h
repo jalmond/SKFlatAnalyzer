@@ -38,7 +38,7 @@ public:
   void SetPxUnSmeared(double px);
   void SetPyUnSmeared(double py);
   inline double PxUnSmeared()  const { return j_PxUnSmeared;}
-  inline double PyUnSmeared()  const { return j_PyUnSmeared;} //JH
+  inline double PyUnSmeared()  const { return j_PyUnSmeared;}
 
   void SetTightJetID(double b);
   void SetTightLepVetoJetID(double b);

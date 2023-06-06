@@ -5,6 +5,7 @@ void HNL_LeptonIDBDTStudies::initializeAnalyzer(){
   // All default settings like trigger/ PD/ BJet are decalred in HNL_LeptonCore::initializeAnalyzer to make them consistent for all HNL codes
 
   HNL_LeptonCore::initializeAnalyzer();
+  SetupIDMVAReaderDefault(); /// Not needed for BDT skim                                                                                                                    
 
 }
 
@@ -236,8 +237,6 @@ void HNL_LeptonIDBDTStudies::executeEvent(){
     TriggerPrintOut(GetEvent());
   }
   
-  if(!IsData)  gens = GetGens();
-
   TString ID = "POG";
 
   AnalyzerParameter param  = HNL_LeptonCore::InitialiseHNLParameter(ID,"");
@@ -254,55 +253,45 @@ void HNL_LeptonIDBDTStudies::executeEvent(){
 
   if(!PassMETFilter()) return;
 
-  
-  if(HasFlag("JetDisc"))MakeJetDiscPlots("LooseMuE",param,MuMu, ElectronCollProbe, MuonColl, weight);
-  if(HasFlag("JetDisc"))MakeJetDiscPlots("TightMuE",param,MuMu, ElectronColl, MuonColl, weight);
-
-  if(HasFlag("JetDisc"))MakeJetDiscPlots("LooseEMu",param,EE, ElectronColl, MuonCollProbe, weight);
-  if(HasFlag("JetDisc"))MakeJetDiscPlots("TightEMu",param,EE, ElectronColl, MuonColl, weight);
-
-
-
   if(HasFlag("Fakes")) {
-
     
     std::vector<Lepton *> LeptonCollProbe      = MakeLeptonPointerVector(MuonCollProbe, ElectronCollProbe);
     
-    
+
     if(SameCharge(MuonCollProbe)&&ElectronCollProbe.size()==0) {
       
       for( auto ilep : LeptonCollProbe){
 	
-	int LepType=GetLeptonType_JH(*ilep, gens);
+	int LepType=ilep->LeptonGenType();
 	if(LepType >0 ) continue;
 
 	
-	//if(!(MatchGenDef(gens, *ilep) == "__" || MatchGenDef(gens, *ilep) == "pi0") ) continue;
-	if(!(MatchGenDef(gens, *ilep) == "__") ) continue;
+	//if(!(MatchGenDef(All_Gens, *ilep) == "__" || MatchGenDef(All_Gens, *ilep) == "pi0") ) continue;
+	if(!(MatchGenDef(All_Gens, *ilep) == "__") ) continue;
 
-	cout << "SSMM MatchGenDef = " << MatchGenDef(gens, *ilep) << endl;
+	cout << "SSMM MatchGenDef = " << MatchGenDef(All_Gens, *ilep) << endl;
 	cout << "Reco " << ilep->GetFlavour() << " pt = " << ilep->Pt() << " eta = " << ilep->Eta() << " phi = " << ilep->Phi() << endl;
 	cout << "CloseJet_Flavour = " << ilep->CloseJet_Flavour() << " type = " << LepType << endl;
 	
-	PrintMatchedGen(gens, *ilep);
+	PrintMatchedGen(All_Gens, *ilep);
       }
     }  
     if(SameCharge(ElectronCollProbe) && MuonCollProbe.size()==0) {
       
       for( auto ilep: LeptonCollProbe){
 	
-	int LepType=GetLeptonType_JH(*ilep, gens);
+	int LepType=ilep->LeptonGenType();
 
 	if(LepType >0 ) continue;
 
 	
-        //if(!(MatchGenDef(gens, *ilep) == "__" || MatchGenDef(gens, *ilep) == "pi0") ) continue;
-	if(!(MatchGenDef(gens, *ilep) == "__") ) continue;   
+        //if(!(MatchGenDef(All_Gens, *ilep) == "__" || MatchGenDef(All_Gens, *ilep) == "pi0") ) continue;
+	if(!(MatchGenDef(All_Gens, *ilep) == "__") ) continue;   
 	
-	cout << "SSEE MatchGenDef = " << MatchGenDef(gens, *ilep) << endl;
+	cout << "SSEE MatchGenDef = " << MatchGenDef(All_Gens, *ilep) << endl;
 	cout << "Reco " << ilep->GetFlavour() << " pt = " << ilep->Pt() << " eta = " << ilep->Eta() << " phi = " << ilep->Phi() << endl;
 	cout << "CloseJet_Flavour = " << ilep->CloseJet_Flavour() << " type = " << LepType << endl;
-	PrintMatchedGen(gens, *ilep);
+	PrintMatchedGen(All_Gens, *ilep);
       }
     }
 
@@ -384,41 +373,11 @@ void HNL_LeptonIDBDTStudies::MakeJetDiscPlots(TString label, AnalyzerParameter p
 		if(ilep->Pt() > 25) FillHist( cut+ "/"+ilep->GetFlavour() + "Jet_gt25PtRatio_"+label   , JetLeptonPtRatioLepAware(*ilep) , weight_ll, 200,0,2);
 		if(ilep->Pt() > 25)     FillHist( cut+ "/"+ilep->GetFlavour() + "Jet_gt25PtRel_"+label   , JetLeptonPtRelLepAware(*ilep) , weight_ll, 200,0,200);
                 FillHist( cut+ "/"+ilep->GetFlavour() + "Jet_PtRel_"+label   , JetLeptonPtRelLepAware(*ilep) , weight_ll, 200,0,200);
-                FillHist( cut+ "/"+ilep->GetFlavour() + "Jet_PtRel2_"+label   , JetLeptonPtRelLepAware(*ilep,false,true,false) , weight_ll, 200,0,200);
-                FillHist( cut+ "/"+ilep->GetFlavour() + "Jet_PtRel3_"+label   , JetLeptonPtRelLepAware(*ilep,true,false,false) , weight_ll, 200,0,200);
-                FillHist( cut+ "/"+ilep->GetFlavour() + "Jet_PtRel4_"+label   , JetLeptonPtRelLepAware(*ilep,true,true,false) , weight_ll, 200,0,200);
-                FillHist( cut+ "/"+ilep->GetFlavour() + "Jet_PtRel5_"+label   , JetLeptonPtRelLepAware(*ilep,false,true,true) , weight_ll, 200,0,200);
-                FillHist( cut+ "/"+ilep->GetFlavour() + "Jet_PtRel6_"+label   , JetLeptonPtRelLepAware(*ilep,true,false,true) , weight_ll, 200,0,200);
-                FillHist( cut+ "/"+ilep->GetFlavour() + "Jet_PtRel7"+label   , JetLeptonPtRelLepAware(*ilep,true,true,true) , weight_ll, 200,0,200);
-		FillHist( cut+ "/"+ilep->GetFlavour() + "Jet_PtRel8"+label   , JetLeptonPtRelLepAware(*ilep,false,false,true) , weight_ll, 200,0,200);
-
                 FillHist( cut+ "/"+ilep->GetFlavour() + "Jet_PtRatio_"+label   , JetLeptonPtRatioLepAware(*ilep) , weight_ll, 200,0,2);
-                FillHist( cut+ "/"+ilep->GetFlavour() + "Jet_PtRatio2_"+label   , JetLeptonPtRatioLepAware(*ilep,false,true,false) , weight_ll, 200,0,2);
-                FillHist( cut+ "/"+ilep->GetFlavour() + "Jet_PtRatio3_"+label   , JetLeptonPtRatioLepAware(*ilep,true,false,false) , weight_ll, 200,0,2);
-                FillHist( cut+ "/"+ilep->GetFlavour() + "Jet_PtRatio4_"+label   , JetLeptonPtRatioLepAware(*ilep,true,true,false) , weight_ll, 200,0,2);
-                FillHist( cut+ "/"+ilep->GetFlavour() + "Jet_PtRatio5_"+label   , JetLeptonPtRatioLepAware(*ilep,false,true,true) , weight_ll, 200,0,2);
-                FillHist( cut+ "/"+ilep->GetFlavour() + "Jet_PtRatio6_"+label   , JetLeptonPtRatioLepAware(*ilep,true,false,true) , weight_ll, 200,0,2);
-                FillHist( cut+ "/"+ilep->GetFlavour() + "Jet_PtRatio7_"+label   , JetLeptonPtRatioLepAware(*ilep,true,true,true) , weight_ll, 200,0,2);
-		FillHist( cut+ "/"+ilep->GetFlavour() + "Jet_PtRatio8_"+label   , JetLeptonPtRatioLepAware(*ilep,false,false,true) , weight_ll, 200,0,2);
-		
-		if(ilep->IsPrompt( GetLeptonType_JH(*ilep, gens))){
+		if(ilep->IsPrompt( )){
 		  FillHist( cut+ "/"+ilep->GetFlavour() + "PromptLep_Jet_PtRel_"+label   , JetLeptonPtRelLepAware(*ilep) , weight_ll, 200,0,200);
-		  FillHist( cut+ "/"+ilep->GetFlavour() + "PromptLep_Jet_PtRel2_"+label   , JetLeptonPtRelLepAware(*ilep,false,true,false) , weight_ll, 200,0,200);
-		  FillHist( cut+ "/"+ilep->GetFlavour() + "PromptLep_Jet_PtRel3_"+label   , JetLeptonPtRelLepAware(*ilep,true,false,false) , weight_ll, 200,0,200);
-		  FillHist( cut+ "/"+ilep->GetFlavour() + "PromptLep_Jet_PtRel4_"+label   , JetLeptonPtRelLepAware(*ilep,true,true,false) , weight_ll, 200,0,200);
-		  FillHist( cut+ "/"+ilep->GetFlavour() + "PromptLep_Jet_PtRel5_"+label   , JetLeptonPtRelLepAware(*ilep,false,true,true) , weight_ll, 200,0,200);
-		  FillHist( cut+ "/"+ilep->GetFlavour() + "PromptLep_Jet_PtRel6_"+label   , JetLeptonPtRelLepAware(*ilep,true,false,true) , weight_ll, 200,0,200);
-		  FillHist( cut+ "/"+ilep->GetFlavour() + "PromptLep_Jet_PtRel7"+label   , JetLeptonPtRelLepAware(*ilep,true,true,true) , weight_ll, 200,0,200);
-		  FillHist( cut+ "/"+ilep->GetFlavour() + "PromptLep_Jet_PtRel8"+label   , JetLeptonPtRelLepAware(*ilep,false,false,true) , weight_ll, 200,0,200);
 
 		  FillHist( cut+ "/"+ilep->GetFlavour() + "PromptLep_Jet_PtRatio_"+label   , JetLeptonPtRatioLepAware(*ilep) , weight_ll, 200,0,2);
-		  FillHist( cut+ "/"+ilep->GetFlavour() + "PromptLep_Jet_PtRatio2_"+label   , JetLeptonPtRatioLepAware(*ilep,false,true,false) , weight_ll, 200,0,2);
-		  FillHist( cut+ "/"+ilep->GetFlavour() + "PromptLep_Jet_PtRatio3_"+label   , JetLeptonPtRatioLepAware(*ilep,true,false,false) , weight_ll, 200,0,2);
-		  FillHist( cut+ "/"+ilep->GetFlavour() + "PromptLep_Jet_PtRatio4_"+label   , JetLeptonPtRatioLepAware(*ilep,true,true,false) , weight_ll, 200,0,2);
-		  FillHist( cut+ "/"+ilep->GetFlavour() + "PromptLep_Jet_PtRatio5_"+label   , JetLeptonPtRatioLepAware(*ilep,false,true,true) , weight_ll, 200,0,2);
-		  FillHist( cut+ "/"+ilep->GetFlavour() + "PromptLep_Jet_PtRatio6_"+label   , JetLeptonPtRatioLepAware(*ilep,true,false,true) , weight_ll, 200,0,2);
-		  FillHist( cut+ "/"+ilep->GetFlavour() + "PromptLep_Jet_PtRatio7_"+label   , JetLeptonPtRatioLepAware(*ilep,true,true,true) , weight_ll, 200,0,2);
-		  FillHist( cut+ "/"+ilep->GetFlavour() + "PromptLep_Jet_PtRatio8_"+label   , JetLeptonPtRatioLepAware(*ilep,false,false,true) , weight_ll, 200,0,2);
 
 		}
 
@@ -438,7 +397,7 @@ void HNL_LeptonIDBDTStudies::MakeJetDiscPlots(TString label, AnalyzerParameter p
 		    if(ilep->Pt() < 20) ptlabel="lt20_";
 		    else if(ilep->Pt() < 35)ptlabel="lt35_";
 		    else ptlabel="gt35_";
-		    if(!ilep->IsPrompt( GetLeptonType_JH(*ilep, gens))) isprompt=false;
+		    if(!ilep->IsPrompt( )) isprompt=false;
 		  }
 		}
 		
@@ -511,41 +470,12 @@ void HNL_LeptonIDBDTStudies::MakeJetDiscPlots(TString label, AnalyzerParameter p
 		if(ilep->Pt() > 25) FillHist( cut+ "/"+ilep->GetFlavour() + "Jet_gt25PtRatio_"+label   , JetLeptonPtRatioLepAware(*ilep) , weight_ll, 200,0,2);
 		if(ilep->Pt() > 25)     FillHist( cut+ "/"+ilep->GetFlavour() + "Jet_gt25PtRel_"+label   , JetLeptonPtRelLepAware(*ilep) , weight_ll, 200,0,200);
                 FillHist( cut+ "/"+ilep->GetFlavour() + "Jet_PtRel_"+label   , JetLeptonPtRelLepAware(*ilep) , weight_ll, 200,0,200);
-                FillHist( cut+ "/"+ilep->GetFlavour() + "Jet_PtRel2_"+label   , JetLeptonPtRelLepAware(*ilep,false,true,false) , weight_ll, 200,0,200);
-                FillHist( cut+ "/"+ilep->GetFlavour() + "Jet_PtRel3_"+label   , JetLeptonPtRelLepAware(*ilep,true,false,false) , weight_ll, 200,0,200);
-                FillHist( cut+ "/"+ilep->GetFlavour() + "Jet_PtRel4_"+label   , JetLeptonPtRelLepAware(*ilep,true,true,false) , weight_ll, 200,0,200);
-                FillHist( cut+ "/"+ilep->GetFlavour() + "Jet_PtRel5_"+label   , JetLeptonPtRelLepAware(*ilep,false,true,true) , weight_ll, 200,0,200);
-                FillHist( cut+ "/"+ilep->GetFlavour() + "Jet_PtRel6_"+label   , JetLeptonPtRelLepAware(*ilep,true,false,true) , weight_ll, 200,0,200);
-                FillHist( cut+ "/"+ilep->GetFlavour() + "Jet_PtRel7"+label   , JetLeptonPtRelLepAware(*ilep,true,true,true) , weight_ll, 200,0,200);
-                FillHist( cut+ "/"+ilep->GetFlavour() + "Jet_PtRel8"+label   , JetLeptonPtRelLepAware(*ilep,false,false,true) , weight_ll, 200,0,200);
-
                 FillHist( cut+ "/"+ilep->GetFlavour() + "Jet_PtRatio_"+label   , JetLeptonPtRatioLepAware(*ilep) , weight_ll, 200,0,2);
-                FillHist( cut+ "/"+ilep->GetFlavour() + "Jet_PtRatio2_"+label   , JetLeptonPtRatioLepAware(*ilep,false,true,false) , weight_ll, 200,0,2);
-                FillHist( cut+ "/"+ilep->GetFlavour() + "Jet_PtRatio3_"+label   , JetLeptonPtRatioLepAware(*ilep,true,false,false) , weight_ll, 200,0,2);
-                FillHist( cut+ "/"+ilep->GetFlavour() + "Jet_PtRatio4_"+label   , JetLeptonPtRatioLepAware(*ilep,true,true,false) , weight_ll, 200,0,2);
-                FillHist( cut+ "/"+ilep->GetFlavour() + "Jet_PtRatio5_"+label   , JetLeptonPtRatioLepAware(*ilep,false,true,true) , weight_ll, 200,0,2);
-                FillHist( cut+ "/"+ilep->GetFlavour() + "Jet_PtRatio6_"+label   , JetLeptonPtRatioLepAware(*ilep,true,false,true) , weight_ll, 200,0,2);
-                FillHist( cut+ "/"+ilep->GetFlavour() + "Jet_PtRatio7_"+label   , JetLeptonPtRatioLepAware(*ilep,true,true,true) , weight_ll, 200,0,2);
-                FillHist( cut+ "/"+ilep->GetFlavour() + "Jet_PtRatio8_"+label   , JetLeptonPtRatioLepAware(*ilep,false,false,true) , weight_ll, 200,0,2);
 
-		if(ilep->IsPrompt( GetLeptonType_JH(*ilep, gens))){
+		if(ilep->IsPrompt()){
                   FillHist( cut+ "/"+ilep->GetFlavour() + "PromptLep_Jet_PtRel_"+label   , JetLeptonPtRelLepAware(*ilep) , weight_ll, 200,0,200);
-                  FillHist( cut+ "/"+ilep->GetFlavour() + "PromptLep_Jet_PtRel2_"+label   , JetLeptonPtRelLepAware(*ilep,false,true,false) , weight_ll, 200,0,200);
-                  FillHist( cut+ "/"+ilep->GetFlavour() + "PromptLep_Jet_PtRel3_"+label   , JetLeptonPtRelLepAware(*ilep,true,false,false) , weight_ll, 200,0,200);
-                  FillHist( cut+ "/"+ilep->GetFlavour() + "PromptLep_Jet_PtRel4_"+label   , JetLeptonPtRelLepAware(*ilep,true,true,false) , weight_ll, 200,0,200);
-                  FillHist( cut+ "/"+ilep->GetFlavour() + "PromptLep_Jet_PtRel5_"+label   , JetLeptonPtRelLepAware(*ilep,false,true,true) , weight_ll, 200,0,200);
-                  FillHist( cut+ "/"+ilep->GetFlavour() + "PromptLep_Jet_PtRel6_"+label   , JetLeptonPtRelLepAware(*ilep,true,false,true) , weight_ll, 200,0,200);
-                  FillHist( cut+ "/"+ilep->GetFlavour() + "PromptLep_Jet_PtRel7"+label   , JetLeptonPtRelLepAware(*ilep,true,true,true) , weight_ll, 200,0,200);
-                  FillHist( cut+ "/"+ilep->GetFlavour() + "PromptLep_Jet_PtRel8"+label   , JetLeptonPtRelLepAware(*ilep,false,false,true) , weight_ll, 200,0,200);
 
                   FillHist( cut+ "/"+ilep->GetFlavour() + "PromptLep_Jet_PtRatio_"+label   , JetLeptonPtRatioLepAware(*ilep) , weight_ll, 200,0,2);
-                  FillHist( cut+ "/"+ilep->GetFlavour() + "PromptLep_Jet_PtRatio2_"+label   , JetLeptonPtRatioLepAware(*ilep,false,true,false) , weight_ll, 200,0,2);
-                  FillHist( cut+ "/"+ilep->GetFlavour() + "PromptLep_Jet_PtRatio3_"+label   , JetLeptonPtRatioLepAware(*ilep,true,false,false) , weight_ll, 200,0,2);
-                  FillHist( cut+ "/"+ilep->GetFlavour() + "PromptLep_Jet_PtRatio4_"+label   , JetLeptonPtRatioLepAware(*ilep,true,true,false) , weight_ll, 200,0,2);
-                  FillHist( cut+ "/"+ilep->GetFlavour() + "PromptLep_Jet_PtRatio5_"+label   , JetLeptonPtRatioLepAware(*ilep,false,true,true) , weight_ll, 200,0,2);
-                  FillHist( cut+ "/"+ilep->GetFlavour() + "PromptLep_Jet_PtRatio6_"+label   , JetLeptonPtRatioLepAware(*ilep,true,false,true) , weight_ll, 200,0,2);
-                  FillHist( cut+ "/"+ilep->GetFlavour() + "PromptLep_Jet_PtRatio7_"+label   , JetLeptonPtRatioLepAware(*ilep,true,true,true) , weight_ll, 200,0,2);
-                  FillHist( cut+ "/"+ilep->GetFlavour() + "PromptLep_Jet_PtRatio8_"+label   , JetLeptonPtRatioLepAware(*ilep,false,false,true) , weight_ll, 200,0,2);
 
                 }
 
@@ -565,7 +495,7 @@ void HNL_LeptonIDBDTStudies::MakeJetDiscPlots(TString label, AnalyzerParameter p
 		    if(ilep->Pt() < 20)ptlabel="lt20_";
                     else if(ilep->Pt() < 35)ptlabel="lt35_";
                     else ptlabel="gt35_";
-                    if(!ilep->IsPrompt( GetLeptonType_JH(*ilep, gens))) isprompt=false;
+                    if(!ilep->IsPrompt()) isprompt=false;
 
 		  }
 		}
@@ -681,7 +611,7 @@ void HNL_LeptonIDBDTStudies::MakeJetDiscPlots(TString label, AnalyzerParameter p
 	    if(ilep->Pt() < 20)ptlabel="lt20_";
 	    else if(ilep->Pt() < 35)ptlabel="lt35_";
 	    else ptlabel="gt35_";
-	    if(!ilep->IsPrompt( GetLeptonType_JH(*ilep, gens))) isprompt=false;
+	    if(!ilep->IsPrompt()) isprompt=false;
 	  }
 	}
 	
@@ -736,42 +666,14 @@ void HNL_LeptonIDBDTStudies::MakeJetDiscPlots(TString label, AnalyzerParameter p
 	if(ilep->Pt() > 25) 	FillHist( cut+ "/"+ilep->GetFlavour() + "Jet_gt25PtRel_"+label   , JetLeptonPtRelLepAware(*ilep) , weight_ll, 200,0,200);
 	
 	FillHist( cut+ "/"+ilep->GetFlavour() + "Jet_PtRel_"+label   , JetLeptonPtRelLepAware(*ilep) , weight_ll, 200,0,200);
-	FillHist( cut+ "/"+ilep->GetFlavour() + "Jet_PtRel2_"+label   , JetLeptonPtRelLepAware(*ilep,false,true,false) , weight_ll, 200,0,200);
-	FillHist( cut+ "/"+ilep->GetFlavour() + "Jet_PtRel3_"+label   , JetLeptonPtRelLepAware(*ilep,true,false,false) , weight_ll, 200,0,200);
-	FillHist( cut+ "/"+ilep->GetFlavour() + "Jet_PtRel4_"+label   , JetLeptonPtRelLepAware(*ilep,true,true,false) , weight_ll, 200,0,200);
-	FillHist( cut+ "/"+ilep->GetFlavour() + "Jet_PtRel5_"+label   , JetLeptonPtRelLepAware(*ilep,false,true,true) , weight_ll, 200,0,200);
-	FillHist( cut+ "/"+ilep->GetFlavour() + "Jet_PtRel6_"+label   , JetLeptonPtRelLepAware(*ilep,true,false,true) , weight_ll, 200,0,200);
-	FillHist( cut+ "/"+ilep->GetFlavour() + "Jet_PtRel7"+label   , JetLeptonPtRelLepAware(*ilep,true,true,true) , weight_ll, 200,0,200);
-	FillHist( cut+ "/"+ilep->GetFlavour() + "Jet_PtRel8"+label   , JetLeptonPtRelLepAware(*ilep,false,false,true) , weight_ll, 200,0,200);
 
 	FillHist( cut+ "/"+ilep->GetFlavour() + "Jet_PtRatio_"+label   , JetLeptonPtRatioLepAware(*ilep) , weight_ll, 200,0,2);
 
-	FillHist( cut+ "/"+ilep->GetFlavour() + "Jet_PtRatio2_"+label   , JetLeptonPtRatioLepAware(*ilep,false,true,false) , weight_ll, 200,0,2);
-	FillHist( cut+ "/"+ilep->GetFlavour() + "Jet_PtRatio3_"+label   , JetLeptonPtRatioLepAware(*ilep,true,false,false) , weight_ll, 200,0,2);
-	FillHist( cut+ "/"+ilep->GetFlavour() + "Jet_PtRatio4_"+label   , JetLeptonPtRatioLepAware(*ilep,true,true,false) , weight_ll, 200,0,2);
-	FillHist( cut+ "/"+ilep->GetFlavour() + "Jet_PtRatio5_"+label   , JetLeptonPtRatioLepAware(*ilep,false,true,true) , weight_ll, 200,0,2);
-	FillHist( cut+ "/"+ilep->GetFlavour() + "Jet_PtRatio6_"+label   , JetLeptonPtRatioLepAware(*ilep,true,false,true) , weight_ll, 200,0,2);
-	FillHist( cut+ "/"+ilep->GetFlavour() + "Jet_PtRatio7_"+label   , JetLeptonPtRatioLepAware(*ilep,true,true,true) , weight_ll, 200,0,2);
-	FillHist( cut+ "/"+ilep->GetFlavour() + "Jet_PtRatio8_"+label   , JetLeptonPtRatioLepAware(*ilep,false,false,true) , weight_ll, 200,0,2);
 
-	if(ilep->IsPrompt( GetLeptonType_JH(*ilep, gens))){
+	if(ilep->IsPrompt()){
 	  FillHist( cut+ "/"+ilep->GetFlavour() + "PromptLep_Jet_PtRel_"+label   , JetLeptonPtRelLepAware(*ilep) , weight_ll, 200,0,200);
-	  FillHist( cut+ "/"+ilep->GetFlavour() + "PromptLep_Jet_PtRel2_"+label   , JetLeptonPtRelLepAware(*ilep,false,true,false) , weight_ll, 200,0,200);
-	  FillHist( cut+ "/"+ilep->GetFlavour() + "PromptLep_Jet_PtRel3_"+label   , JetLeptonPtRelLepAware(*ilep,true,false,false) , weight_ll, 200,0,200);
-	  FillHist( cut+ "/"+ilep->GetFlavour() + "PromptLep_Jet_PtRel4_"+label   , JetLeptonPtRelLepAware(*ilep,true,true,false) , weight_ll, 200,0,200);
-	  FillHist( cut+ "/"+ilep->GetFlavour() + "PromptLep_Jet_PtRel5_"+label   , JetLeptonPtRelLepAware(*ilep,false,true,true) , weight_ll, 200,0,200);
-	  FillHist( cut+ "/"+ilep->GetFlavour() + "PromptLep_Jet_PtRel6_"+label   , JetLeptonPtRelLepAware(*ilep,true,false,true) , weight_ll, 200,0,200);
-	  FillHist( cut+ "/"+ilep->GetFlavour() + "PromptLep_Jet_PtRel7"+label   , JetLeptonPtRelLepAware(*ilep,true,true,true) , weight_ll, 200,0,200);
-	  FillHist( cut+ "/"+ilep->GetFlavour() + "PromptLep_Jet_PtRel8"+label   , JetLeptonPtRelLepAware(*ilep,false,false,true) , weight_ll, 200,0,200);
 
 	  FillHist( cut+ "/"+ilep->GetFlavour() + "PromptLep_Jet_PtRatio_"+label   , JetLeptonPtRatioLepAware(*ilep) , weight_ll, 200,0,2);
-	  FillHist( cut+ "/"+ilep->GetFlavour() + "PromptLep_Jet_PtRatio2_"+label   , JetLeptonPtRatioLepAware(*ilep,false,true,false) , weight_ll, 200,0,2);
-	  FillHist( cut+ "/"+ilep->GetFlavour() + "PromptLep_Jet_PtRatio3_"+label   , JetLeptonPtRatioLepAware(*ilep,true,false,false) , weight_ll, 200,0,2);
-	  FillHist( cut+ "/"+ilep->GetFlavour() + "PromptLep_Jet_PtRatio4_"+label   , JetLeptonPtRatioLepAware(*ilep,true,true,false) , weight_ll, 200,0,2);
-	  FillHist( cut+ "/"+ilep->GetFlavour() + "PromptLep_Jet_PtRatio5_"+label   , JetLeptonPtRatioLepAware(*ilep,false,true,true) , weight_ll, 200,0,2);
-	  FillHist( cut+ "/"+ilep->GetFlavour() + "PromptLep_Jet_PtRatio6_"+label   , JetLeptonPtRatioLepAware(*ilep,true,false,true) , weight_ll, 200,0,2);
-	  FillHist( cut+ "/"+ilep->GetFlavour() + "PromptLep_Jet_PtRatio7_"+label   , JetLeptonPtRatioLepAware(*ilep,true,true,true) , weight_ll, 200,0,2);
-	  FillHist( cut+ "/"+ilep->GetFlavour() + "PromptLep_Jet_PtRatio8_"+label   , JetLeptonPtRatioLepAware(*ilep,false,false,true) , weight_ll, 200,0,2);
 
 	}
 
@@ -803,21 +705,21 @@ void HNL_LeptonIDBDTStudies::CheckSSFakeBreakDown(AnalyzerParameter param,HNL_Le
 
     if(MuonColl.size()>0) return;
 
-    vector<Electron> ElectronCollFake     = SkimLepColl(ElectronColl, gens, param, "HFake");
-    vector<Electron> ElectronCollPrompt   = SkimLepColl(ElectronColl, gens, param, "PromptNoCF");
+    vector<Electron> ElectronCollFake     = SkimLepColl(ElectronColl, param, "HFake");
+    vector<Electron> ElectronCollPrompt   = SkimLepColl(ElectronColl, param, "PromptNoCF");
     
     if(ElectronCollFake.size()==0) return;
     
     for(auto iel : ElectronCollFake) {
       
-      TString lep_fake_tag=MatchGenDef(gens, iel); 
+      TString lep_fake_tag=MatchGenDef(All_Gens, iel); 
       if (std::find(lables.begin(), lables.end(), lep_fake_tag) == lables.end()){
 
         cout << "Reco " << iel.GetFlavour() << " pt = " << iel.Pt() << " eta = " << iel.Eta() << " phi = " << iel.Phi() << endl;                                        
         cout << "CloseJet_Flavour = " << iel.CloseJet_Flavour() << endl;                                                                             
 	
 	cout << "lep_fake_tag = " << lep_fake_tag << " missing "<< endl;
-        PrintMatchedGen(gens, iel);                                                                                                                                
+        PrintMatchedGen(All_Gens, iel);                                                                                                                                
 	
       }
       else {
@@ -854,8 +756,8 @@ void HNL_LeptonIDBDTStudies::CheckSSFakeBreakDown(AnalyzerParameter param,HNL_Le
 
     if(ElectronColl.size()>0) return;
 
-    vector<Muon> MuonCollFake     = SkimLepColl(MuonColl, gens, param, "HFake");
-    vector<Muon> MuonCollPrompt   = SkimLepColl(MuonColl, gens, param, "Prompt");
+    vector<Muon> MuonCollFake     = SkimLepColl(MuonColl, param, "HFake");
+    vector<Muon> MuonCollPrompt   = SkimLepColl(MuonColl, param, "Prompt");
     
     if(MuonCollFake.size()==0) return;
 
@@ -865,14 +767,13 @@ void HNL_LeptonIDBDTStudies::CheckSSFakeBreakDown(AnalyzerParameter param,HNL_Le
                                                  
     for(auto imu : MuonCollFake) {
 
-
-      TString lep_fake_tag=MatchGenDef(gens, imu);
+      TString lep_fake_tag=MatchGenDef(All_Gens, imu);
       
       if (std::find(lables.begin(), lables.end(), lep_fake_tag) == lables.end()){
 	cout << "Reco " << imu.GetFlavour() << " pt = " << imu.Pt() << " eta = " << imu.Eta() << " phi = " << imu.Phi() << endl;
 	cout << "CloseJet_Flavour = " << imu.CloseJet_Flavour() << endl;
 	cout <<"lep_fake_tag = " << lep_fake_tag << " missing "<< endl;
-        PrintMatchedGen(gens, imu);
+        PrintMatchedGen(All_Gens, imu);
 
       }
 
@@ -894,12 +795,10 @@ void HNL_LeptonIDBDTStudies::CheckSSFakeBreakDown(AnalyzerParameter param,HNL_Le
     }
     if(!SameCharge(LeptonColl))return;
 
-    //FillAllMuonPlots("SS_FakeMuon","MC"+channel_string,MuonCollFake,weight_ll);
-    //FillAllMuonPlots("SS_PromptMuon","MC"+channel_string,MuonCollPrompt,weight_ll);
-    
-    //FillHist(channel_string+"_SSFake/NFake", MuonCollFake.size(), weight_ll, 5, 0, 5);
-    
-    }
+    FillAllMuonPlots("SS_FakeMuon","MC"+channel_string,MuonCollFake,weight_ll);
+    FillAllMuonPlots("SS_PromptMuon","MC"+channel_string,MuonCollPrompt,weight_ll);
+        
+  }
   
     
 
@@ -915,16 +814,16 @@ void HNL_LeptonIDBDTStudies::MakeBDTPlots(AnalyzerParameter param,HNL_LeptonCore
   
   if(!IsData){
 
-    vector<Electron> ElectronCollFake     = SkimLepColl(ElectronColl, gens, param, "HFake");
+    vector<Electron> ElectronCollFake     = SkimLepColl(ElectronColl, param, "HFake");
     FillAllElectronPlots("FakeElectron","MC"+channel_string,ElectronCollFake,weight_ll);
 
-    vector<Electron> ElectronCollCF     = SkimLepColl(ElectronColl, gens, param, "CF");
+    vector<Electron> ElectronCollCF     = SkimLepColl(ElectronColl,  param, "CF");
     FillAllElectronPlots("CFElectron","MC"+channel_string,ElectronCollCF,weight_ll);
 
-    vector<Electron> ElectronCollConv     = SkimLepColl(ElectronColl, gens, param, "NHConv");
+    vector<Electron> ElectronCollConv     = SkimLepColl(ElectronColl, param, "NHConv");
     FillAllElectronPlots("ConvElectron","MC"+channel_string,ElectronCollConv,weight_ll);
 
-    vector<Electron> ElectronCollPrompt   = SkimLepColl(ElectronColl, gens, param, "PromptNoCF");
+    vector<Electron> ElectronCollPrompt   = SkimLepColl(ElectronColl, param, "PromptNoCF");
     FillAllElectronPlots("PromptElectron","MC"+channel_string,ElectronCollPrompt,weight_ll);
   }
   

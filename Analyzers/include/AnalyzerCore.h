@@ -120,23 +120,23 @@ public:
 
 
   TMVA::Reader *MuonIDFakeMVAReader;
-
+  TMVA::Reader *MuonIDFakeNoPtMVAReader;
   TMVA::Reader *ElectronIDFakeMVAReader;
   TMVA::Reader *ElectronIDCFMVAReader;
   TMVA::Reader *ElectronIDConvMVAReader;
-
   TMVA::Reader *ElectronIDv2FakeMVAReader;
   TMVA::Reader *ElectronIDv2ConvMVAReader;
   TMVA::Reader *ElectronIDv2CFMVAReader;
-
   TMVA::Reader *ElectronIDv2CFMVAReaderPt;
-
   TMVA::Reader *ElectronIDv3CFMVAReader;
+
+  bool PtOrderObj;
 
   // ID MVA                                                                                            
   void InitializeIDTreeVars();
   void InitializeElectronIDTreeVars();
-  
+  void PrintBDTInput();
+
   /// For adding var to Trees
   void SetupLeptonBDTSKFlat();
   void ResetLeptonBDTSKFlat();
@@ -151,6 +151,8 @@ public:
   void SetupIDMVAReaderMuon();
   void SetupIDMVAReaderElectron(bool v1, bool v2);
   void SetupIDMVAReaderDefault();
+
+  void CompareBDT(TString var1, double a, double b,  int ilep );
 
 
   /// Var for ID BDTs
@@ -178,6 +180,7 @@ public:
   double GetBDTScoreElV1(Electron el ,BkgType bkg,TString bdttag);
   double GetBDTScoreMuon(Muon mu ,BkgType bkg, TString bdttag="BDTA");
   double GetBDTScoreEl_EtaDependant(Electron el ,BkgType bkg, TString BDTTag);
+  double GetBDTScoreMuon_EtaDependant(Muon el ,BkgType bkg, TString BDTTag);
 
 
   double GetIsoFromID(TString type_lep, TString id, double eta, double pt);
@@ -214,20 +217,21 @@ public:
 
 
   double  JetLeptonPtRelLepAware(  Lepton lep, Jet jet);
-  double  JetLeptonPtRelLepAware(  Lepton lep, bool CorrLep=false, bool CorrJet=false,bool CheckID=false);
-  double  JetLeptonPtRelLepAware(  Muon lep, bool CorrLep=false, bool CorrJet=false,bool CheckID=false);
-  double  JetLeptonPtRelLepAware(  Electron lep, bool CorrLep=false, bool CorrJet=false,bool CheckID=false);
+  double  JetLeptonPtRelLepAware(  Lepton lep);
+  double  JetLeptonPtRelLepAware(  Electron lep);
+  double  JetLeptonPtRelLepAware(  Muon lep,     bool CorrLep=false);
 
-  double  JetLeptonPtRatioLepAware(  Lepton lep, Jet jet);
-  double  JetLeptonPtRatioLepAware( Lepton lep, bool CorrLep=false, bool CorrJet=false,bool CheckID=false);
-  double  JetLeptonPtRatioLepAware( Muon lep, bool CorrLep=false, bool CorrJet=false,bool CheckID=false);
-  double  JetLeptonPtRatioLepAware( Electron lep, bool CorrLep=false, bool CorrJet=false,bool CheckID=false);
+  double  JetLeptonPtRatioLepAware( Lepton lep, Jet jet);
+  double  JetLeptonPtRatioLepAware( Lepton lep);
+  double  JetLeptonPtRatioLepAware( Muon lep, bool CorrLep=false);
+  double  JetLeptonPtRatioLepAware( Electron lep);
 
 
-  bool ConversionSplitting(std::vector<Lepton *> leps,const std::vector<Gen>& gens);
+  bool ConversionSplitting(std::vector<Lepton *> leps);
   bool ConversionVeto(std::vector<Lepton *> leps,const std::vector<Gen>& gens);
   bool ConversionVeto_Backup(std::vector<Lepton *> leps,const std::vector<Gen>& gens);
   bool IsCF(Electron el, std::vector<Gen> gens);
+  bool IsCF(Muon mu, std::vector<Gen> gens);
 
 
   //===================================================
@@ -361,7 +365,8 @@ public:
   Muon MuonUsePtCone(const Muon& muon);
   Particle UpdateMET(const Particle& METv, const std::vector<Muon>& muons);
   Particle UpdateMETSmearedJet(const Particle& METv, const std::vector<Jet>& jets);
-  Particle UpdateMETSyst(AnalyzerParameter param, const Particle& METv, std::vector<Jet> jets, std::vector<FatJet> fatjets, std::vector<Muon> muons, std::vector<Electron> electrons); //JH
+  Particle UpdateMETSyst(AnalyzerParameter param, const Particle& METv, std::vector<Jet> jets, std::vector<FatJet> fatjets, std::vector<Muon> muons, std::vector<Electron> electrons);
+  Particle UpdateMETSyst(double met_pt, double met_phi, double met_shift_pt, double met_shift_phi, const Particle& METv);
 
   std::vector<Muon> MuonApplyPtCut(const std::vector<Muon>& muons, double ptcut);
   std::vector<Electron> ElectronPromptOnly(const std::vector<Electron>& electrons, const std::vector<Gen>& gens,AnalyzerParameter param);
@@ -512,8 +517,8 @@ public:
 
   // JA Added functions 
 
-  vector<Muon> SkimLepColl(const vector<Muon>& MuColl, vector<Gen>& TruthColl, AnalyzerParameter param, TString Option);
-  vector<Electron> SkimLepColl(const vector<Electron>& ElColl, vector<Gen>& TruthColl, AnalyzerParameter param,TString Option);
+  vector<Muon> SkimLepColl(const vector<Muon>& MuColl, AnalyzerParameter param, TString Option);
+  vector<Electron> SkimLepColl(const vector<Electron>& ElColl, AnalyzerParameter param,TString Option);
   vector<Electron> SkimLepColl(const vector<Electron>& ElColl,TString Option);
   vector<Muon> SkimLepColl(const vector<Muon>& MuColl,  TString Option);
   vector<Jet> SkimJetColl(const vector<Jet>& JetColl, vector<Gen>& TruthColl, AnalyzerParameter param,TString Option);
@@ -562,10 +567,17 @@ public:
   vector<float>* velectron_mva_fakeHFC_v4;
   vector<float>* velectron_mva_fakeLF_v4;
   vector<float>* velectron_mva_fakeTop_v4;
+  vector<float>* velectron_mva_fake_ed_v4;
+  vector<float>* velectron_mva_fakeHF_ed_v4;
+  vector<float>* velectron_mva_fakeHFB_ed_v4;
+  vector<float>* velectron_mva_fakeHFC_ed_v4;
+  vector<float>* velectron_mva_fakeLF_ed_v4;
+  vector<float>* velectron_mva_fakeTop_ed_v4;
 
  
   vector<float>* velectron_mva_conv_v1;
   vector<float>* velectron_mva_conv_v2;
+  vector<float>* velectron_mva_conv_ed_v2;
 
   vector<float>* velectron_mva_cf_v1;
   vector<float>* velectron_mva_cf_v2;
@@ -580,17 +592,28 @@ public:
   vector<float>* vmuon_mva_fake_v1;
   vector<float>* vmuon_mva_fake_v2;
   vector<float>* vmuon_mva_fake_v3;
+  vector<float>* vmuon_mva_fake_v4;
+  vector<float>* vmuon_mva_fake_ed_v4;
   vector<float>* vmuon_ptrel;
   vector<float>* vmuon_ptratio;
   vector<float>* vmuon_cj_bjetdisc;
   vector<float>* vmuon_cj_flavour;
 
+  vector<int>*   vmuon_lepton_type;
+  vector<int>*   velectron_lepton_type;
+  vector<bool>*  velectron_is_cf;
+  vector<bool>*  vmuon_is_cf;
+
   vector<Jet>      All_Jets;
   vector<FatJet>   All_FatJets;
   vector<Muon>    All_Muons;
   vector<Electron> All_Electrons;
+  vector<Gen> All_Gens;
 
   string run_timestamp;
+
+
+  bool TESTBDT;
 
 };
 

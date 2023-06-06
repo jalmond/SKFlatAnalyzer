@@ -19,7 +19,6 @@ void HNL_SignalEfficiency::executeEvent(){
 
   TString process="";
   if(!IsData){
-    gens = GetGens();
     
     process = GetProcess();
 
@@ -32,7 +31,7 @@ void HNL_SignalEfficiency::executeEvent(){
     if(_jentry% 10000==0){
       cout << "process = " << process << endl;
       
-      PrintGen(gens);
+      PrintGen(All_Gens);
     }
 
   }
@@ -43,14 +42,14 @@ void HNL_SignalEfficiency::executeEvent(){
   
   vector<Muon> _InputMuons = GetMuons    ( "NoCut", 10., 2.4);
 
-  vector<Muon> InputMuons = GetSignalLeptons(_InputMuons, gens);
+  vector<Muon> InputMuons = GetSignalLeptons(_InputMuons, All_Gens);
 
 
   vector<Electron> _InputElectrons = GetElectrons    ( "NoCut", 10., 2.5);
   
   /// Require leptons to match 
 
-  vector<Electron> InputElectrons = GetSignalLeptons(_InputElectrons, gens);
+  vector<Electron> InputElectrons = GetSignalLeptons(_InputElectrons, All_Gens);
   
   vector<HNL_LeptonCore::Channel> channels = {EE,MuMu};//, EMu};
   
@@ -110,21 +109,20 @@ void HNL_SignalEfficiency::executeEvent(){
 
 	  double pt = (iel.Pt() > 2000) ? 1999 : iel.Pt();
 
-	  int LepType=GetLeptonType_JH(iel, gens);
-	  if (iel.IsPrompt(LepType)) {
+	  if (iel.IsPrompt()) {
 	    FillHist( "Prompt_"+channel+"/Electron_pt_"+iel.GetEtaRegion()+"_"+imap.second, pt, weight, 10, ptbins);
             FillHist( "Prompt_"+channel+"/Electron_pt_"+imap.second, pt, weight,  400, 0., 2000.);
 	    
 	  }
-	  if (iel.IsFake(LepType)) {
+	  if (iel.IsFake()) {
 	    FillHist( "Fake_"+channel+"/Electron_pt_"+iel.GetEtaRegion()+"_"+imap.second, pt, weight, 10, ptbins);
 	    FillHist( "Fake_"+channel+"/Electron_pt_"+imap.second, pt, weight,  400, 0., 2000.);
 	  }
-	  if (iel.IsConv(LepType)) {
+	  if (iel.IsConv()) {
 	    FillHist( "Conv_"+channel+"/Electron_pt_"+iel.GetEtaRegion()+"_"+imap.second, pt, weight, 10, ptbins);
 	    FillHist( "Conv_"+channel+"/Electron_pt_"+imap.second, pt,  weight,  400, 0., 2000.);
 	  }
-	  if(IsCF(iel, gens)){
+	  if(iel.LeptonIsCF()){
 	    FillHist( "CF_"+channel+"/Electron_pt_"+iel.GetEtaRegion()+"_"+imap.second, pt, weight, 10, ptbins);
             FillHist( "CF_"+channel+"/Electron_pt_"+imap.second, pt,  weight,  400, 0., 2000.);
 	  }
@@ -136,16 +134,15 @@ void HNL_SignalEfficiency::executeEvent(){
 	  
 	  double pt = (imu.Pt() > 2000) ? 1999 : imu.Pt();
 	  
-	  int LepType=GetLeptonType_JH(imu, gens);
-	  if (imu.IsPrompt(LepType)) {
+	  if (imu.IsPrompt()) {
 	    FillHist( "Prompt_"+channel+"/Muon_pt_"+imu.GetEtaRegion()+"_"+imap.second, pt, weight, 10, ptbins);
 	    FillHist( "Prompt_"+channel+"/Muon_pt_"+imap.second, pt, weight,  400, 0., 2000.);
 	  }
-	  if (imu.IsFake(LepType)) {
+	  if (imu.IsFake()) {
 	    FillHist( "Fake_"+channel+"/Muon_pt_"+imu.GetEtaRegion()+"_"+imap.second, pt, weight, 10, ptbins);
 	    FillHist( "Fake_"+channel+"/Muon_pt_"+imap.second, pt, weight,  400, 0., 2000.);
 	  }
-	  if (imu.IsConv(LepType)) {
+	  if (imu.IsConv()) {
 	    FillHist( "Conv_"+channel+"/Muon_pt_"+imu.GetEtaRegion()+"_"+imap.second, pt, weight, 10, ptbins);
 	    FillHist( "Conv_"+channel+"/Muon_pt_"+imap.second, pt,  weight,  400, 0., 2000.);
 	  }

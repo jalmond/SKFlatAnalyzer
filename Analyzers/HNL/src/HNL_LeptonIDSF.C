@@ -18,7 +18,6 @@ void HNL_LeptonIDSF::executeEvent(){
     TriggerPrintOut(GetEvent());
   }
   
-  if(!IsData)  gens = GetGens();
   AnalyzerParameter param =  HNL_LeptonCore::InitialiseHNLParameter("MVAUL","");
   MeasureElectronIDSF(param);
   MeasureMuonIDSF(param);
@@ -229,7 +228,7 @@ void HNL_LeptonIDSF::MeasureIDSF(AnalyzerParameter param,HNL_LeptonCore::Channel
 
   if(!IsData){
     if(!SameCharge(ElectronColl)) {
-      if( IsCF(ElectronColl[0],gens) || IsCF(ElectronColl[1],gens)) return;
+      if( ElectronColl[0].LeptonIsCF() || ElectronColl[1].LeptonIsCF()) return;
     }
   }
 
@@ -306,7 +305,7 @@ void HNL_LeptonIDSF::FilllHistBins(Lepton lep, bool passID,  TString Channel_str
   double ptbins    [nbin_pt    +1] = { 10.,15.,20.,30.,35., 40.,50., 60., 80., 100.,200.};
   double etabins   [nbin_eta+1   ] = { 0.,0.8,  1.479, 2.,  2.5};
   
-  int lepType = (IsData) ? 1 : GetLeptonType_JH(lep, gens);
+  int lepType = (IsData) ? 1 : lep.LeptonGenType();
   TString TypeLable="";
   if(lepType < 0 ) TypeLable="_NonPrompt";
 

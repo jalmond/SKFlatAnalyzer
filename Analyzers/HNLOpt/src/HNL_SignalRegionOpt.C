@@ -18,9 +18,6 @@ void HNL_SignalRegionOpt::executeEvent(){
     TriggerPrintOut(GetEvent());
   }
   
-  if(!IsData)  gens = GetGens();
-
-
   AnalyzerParameter param_signal = HNL_LeptonCore::InitialiseHNLParameter("HNLSROpt","_UL");
   
   ///HNLSROpt sets Fake to use data and CF to use MC ..... 
@@ -94,8 +91,8 @@ void HNL_SignalRegionOpt::RunULAnalysis(AnalyzerParameter param){
   std::vector<Electron>   ElectronCollTInit = GetElectrons( param,el_ID, Min_Electron_Pt, 2.5, RunFake)  ;
   
   //// Select leptons that pass gen cuts based on fakes/cf....
-  std::vector<Muon>       MuonCollT     = GetLepCollByRunType    ( MuonCollTInit,gens,param);
-  std::vector<Electron>   ElectronCollT  =  GetLepCollByRunType   ( ElectronCollTInit,gens,param);
+  std::vector<Muon>       MuonCollT     = GetLepCollByRunType    ( MuonCollTInit,param);
+  std::vector<Electron>   ElectronCollT  =  GetLepCollByRunType   ( ElectronCollTInit,param);
   
   //cout << "---------------------- " << endl;
   //cout << "ElectronCollT " << ElectronCollT.size() << " ID = " << el_ID << endl;
@@ -111,7 +108,7 @@ void HNL_SignalRegionOpt::RunULAnalysis(AnalyzerParameter param){
 
   
   /// Get MET for PUPPPI TYPE 1
-  Particle METv = GetvMET("PuppiT1xyCorr",param); // returns MET with systematic correction
+  Particle METv = GetvMET("PuppiT1xyCorr"); // returns MET with systematic correction
 
   
   

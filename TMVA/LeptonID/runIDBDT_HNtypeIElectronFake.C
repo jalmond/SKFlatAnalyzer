@@ -2,8 +2,7 @@ void runIDBDT_HNtypeIElectronFake(TString Classifier ="BDTG" ,TString BkgType = 
   
   int nTermWidth=50;
   
-
-  TString version="version5";
+  TString version="version6";
 
   for(int i=0; i < nTermWidth; i++)  cout << "=" ;   cout << endl;
   cout << "Running runIDBDT_HNtypeI{"+BkgType+"}: [Setup Options]" << endl;
@@ -36,6 +35,8 @@ void runIDBDT_HNtypeIElectronFake(TString Classifier ="BDTG" ,TString BkgType = 
   TString  treeName = (channel == "MuMu")  ?  "Tree_mm" :  "Tree_ee";
 
   TString signal="SignalElectronFake";
+  if(signal_mode == 2) signal="SignalElectronFake_BB";
+  if(signal_mode == 3) signal="SignalElectronFake_EC";
 
 
   cout << "signal File Name= " << signal << endl;
@@ -96,7 +97,14 @@ void runIDBDT_HNtypeIElectronFake(TString Classifier ="BDTG" ,TString BkgType = 
   //==== Nj, Nb cut
   TCut cut_s = "";
   TCut cut_b = "";
-
+  if(fabs(signal_mode)==2){
+    cut_s = "Eta<1.5";
+    cut_b = "Eta<1.5";
+  }
+  if(fabs(signal_mode)==3){
+    cut_s = "Eta>1.5&&Eta<2.5";
+    cut_b = "Eta>1.5&&Eta<2.5";
+  }
   int n_train_signal = tree_signal->GetEntries(cut_s)/2 ;
   int n_train_back = tree_bkg->GetEntries(cut_b)/2 ;
   

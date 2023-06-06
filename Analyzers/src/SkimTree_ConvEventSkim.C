@@ -17,12 +17,11 @@ void SkimTree_ConvEventSkim::executeEvent(){
   
   bool HasConvLep=false;
 
-  vector<Gen>   gens= GetGens();  
   for(auto iel: electronPreColl){
-    if(iel.IsConv(GetLeptonType_JH(iel, gens))) HasConvLep=true;
+    if(iel.IsConv()) HasConvLep=true;
   }
   for(auto imu: muonPreColl){
-    if(imu.IsConv(GetLeptonType_JH(imu, gens))) HasConvLep=true;
+    if(imu.IsConv()) HasConvLep=true;
   }
   
   if(!HasConvLep) return;

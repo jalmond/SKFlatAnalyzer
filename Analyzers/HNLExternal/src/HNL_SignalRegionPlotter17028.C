@@ -16,8 +16,6 @@ void HNL_SignalRegionPlotter17028::executeEvent(){
     TriggerPrintOut(GetEvent());
   }
   
-  if(!IsData)  gens = GetGens();
-
   AnalyzerParameter param_signal = HNL_LeptonCore::InitialiseHNLParameter("HNL","_UL");
   RunEXO17028Analysis(param_signal);
 
@@ -48,14 +46,14 @@ void HNL_SignalRegionPlotter17028::RunEXO17028Analysis(AnalyzerParameter param){
   std::vector<Muon>       MuonCollTInit = GetMuons    ( param,mu_ID, Min_Muon_Pt, 2.4, RunFake);
   std::vector<Electron>   ElectronCollTInit = GetElectrons( param,el_ID, Min_Electron_Pt, 2.5, RunFake)  ;
 
-  std::vector<Muon>       MuonCollT     = GetLepCollByRunType    ( MuonCollTInit,gens,param,"NoSel");
-  std::vector<Electron>   ElectronCollT  =  GetLepCollByRunType   ( ElectronCollTInit,gens,param,"NoSel");
+  std::vector<Muon>       MuonCollT     = GetLepCollByRunType    ( MuonCollTInit,param,"NoSel");
+  std::vector<Electron>   ElectronCollT  =  GetLepCollByRunType   ( ElectronCollTInit,param,"NoSel");
 
   std::vector<Tau>        mytaus        = GetTaus     (param.Tau_Veto_ID,20., 2.3); 
 
   // Creat Lepton vector to have lepton blind codes 
 
-  Particle METv = GetvMET("T1xyCorr",param); // reyturns MET with systematic correction
+  Particle METv = GetvMET("T1xyCorr"); // reyturns MET with systematic correction
 
   
   std::vector<FatJet> fatjets_tmp                 = GetFatJets(param, param.FatJet_ID, 200., 5.);

@@ -14,31 +14,35 @@ public:
 
   //// Function to Check Nature of lepton
 
-  
-  inline TString LepGenType(int LepType) const {
-    if((LepType==1 || LepType==2)) return "IsPrompt";
-    if( (LepType<0 && LepType>=-4)) return "IsFake";
-    if(LepType==3) return "IsEWtau";
-    if((LepType>=4 || LepType<-4 )) return "IsConv";
+  inline TString LepGenTypeString() const {
+    if(j_LeptonIsCF) {
+      if((j_LeptonType==1 || j_LeptonType==2)) return "IsPromptCF";
+      else if ((j_LeptonType>=4 || j_LeptonType<-4 ))  return "IsConvCF";
+      else return "IsFakeCF";
+    }
+    if((j_LeptonType==1 || j_LeptonType==2)) return "IsPrompt";
+    if( (j_LeptonType<0 && j_LeptonType>=-4)) return "IsFake";
+    if(j_LeptonType==3) return "IsEWtau";
+    if((j_LeptonType>=4 || j_LeptonType<-4 )) return "IsConv";
     else return "NULL";
   }
 
-  inline bool IsPrompt(int LepType) const {
-    if((LepType==1 || LepType==2)) return true;
+  inline bool IsPrompt() const {
+    if((j_LeptonType==1 || j_LeptonType==2)) return true;
     else return false;
   }
 
-  inline bool IsFake(int LepType) const {
-    if( (LepType<0 && LepType>=-4)) return true;
+  inline bool IsFake() const {
+    if( (j_LeptonType<0 && j_LeptonType>=-4)) return true;
     else return false;
   }
-  inline bool IsEWtau(int LepType) const {
-    if(LepType==3) return true;
+  inline bool IsEWtau() const {
+    if(j_LeptonType==3) return true;
     else return false;
   }
 
-  inline bool IsConv(int LepType) const {
-    if((LepType>=4 || LepType<-4 )) return true;
+  inline bool IsConv() const {
+    if((j_LeptonType>=4 || j_LeptonType<-4 )) return true;
     else return false;
   }
 
@@ -126,13 +130,17 @@ public:
   void SetHNL_FakeLepMVAV2(double mvafake,double mvafake_hf, double mvafake_lf, double mvafake_top);
   void SetHNL_FakeLepMVAV3(double mvafake,double mvafake_hf,double mvafake_hfb,double mvafake_hfc, double mvafake_lf, double mvafake_top);
   void SetHNL_FakeLepMVAV4(double mvafake,double mvafake_hf,double mvafake_hfb,double mvafake_hfc, double mvafake_lf, double mvafake_top);
+  void SetHNL_FakeLepMVA_EtaDependantV4(double mvafake,double mvafake_hf,double mvafake_hfb,double mvafake_hfc, double mvafake_lf, double mvafake_top);
 
   void SetHNL_FakeLepMVAMuonV1(double mvafake);
   void SetHNL_FakeLepMVAMuonV2(double mvafake);
   void SetHNL_FakeLepMVAMuonV3(double mvafake);
+  void SetHNL_FakeLepMVAMuonV4(double mvafake);
+  void SetHNL_FakeLepMVAMuon_EtaDependantV4(double mvafake);
 
   void SetHNL_ConvLepMVAV1(double mvaconv);
   void SetHNL_ConvLepMVAV2(double mvaconv);
+  void SetHNL_ConvLepMVA_EtaDependantV2(double mvaconv);
 
   void SetHNL_CFLepMVAV1(double mvacf);
   void SetHNL_CFLepMVAV2(double mvacfv2, double mvacfv2p1,double mvacfv2p2);
@@ -160,8 +168,15 @@ public:
       _map["El_Fake_v4_HFC"] = j_lep_mva_hnl_fake_v4_hfc;
       _map["El_Fake_v4_LF"] = j_lep_mva_hnl_fake_v4_lf;
       _map["El_Fake_v4_Top"] = j_lep_mva_hnl_fake_v4_top;
+      _map["El_ED_Fake_v4"] = j_lep_mva_hnl_fake_ed_v4;
+      _map["El_ED_Fake_v4_HF"] = j_lep_mva_hnl_fake_ed_v4_hf;
+      _map["El_ED_Fake_v4_HFB"] = j_lep_mva_hnl_fake_ed_v4_hfb;
+      _map["El_ED_Fake_v4_HFC"] = j_lep_mva_hnl_fake_ed_v4_hfc;
+      _map["El_ED_Fake_v4_LF"] = j_lep_mva_hnl_fake_ed_v4_lf;
+      _map["El_ED_Fake_v4_Top"] = j_lep_mva_hnl_fake_ed_v4_top;
       _map["El_Conv_v1"] = j_lep_mva_hnl_conv_v1;
       _map["El_Conv_v2"] = j_lep_mva_hnl_conv_v2;
+      _map["El_ED_Conv_v2"] = j_lep_mva_hnl_conv_ed_v2;
       _map["El_CF_v1"] = j_lep_mva_hnl_cf_v1;
       _map["El_CF_v2"] = j_lep_mva_hnl_cf_v2;
       _map["El_CF_v2p1"] = j_lep_mva_hnl_cf_v2p1;
@@ -174,6 +189,8 @@ public:
       _map["Mu_LF_Fake_v1"] = j_lep_mva_hnl_fake_v1;
       _map["Mu_LF_Fake_v2"] = j_lep_mva_hnl_fake_v2;
       _map["Mu_LF_Fake_v3"] = j_lep_mva_hnl_fake_v3;
+      _map["Mu_LF_Fake_v4"] = j_lep_mva_hnl_fake_v4;
+      _map["Mu_ED_LF_Fake_v4"] = j_lep_mva_hnl_fake_ed_v4;
       
     }
     return _map;
@@ -198,11 +215,20 @@ public:
       else if(vers=="v4_HFC")  return j_lep_mva_hnl_fake_v4_hfc;
       else if(vers=="v4_LF")  return j_lep_mva_hnl_fake_v4_lf;
       else if(vers=="v4_Top")  return j_lep_mva_hnl_fake_v4_top;
+      else if(vers=="EDv4")  return j_lep_mva_hnl_fake_ed_v4;
+      else if(vers=="EDv4_HF")  return j_lep_mva_hnl_fake_ed_v4_hf;
+      else if(vers=="EDv4_HFB")  return j_lep_mva_hnl_fake_ed_v4_hfb;
+      else if(vers=="EDv4_HFC")  return j_lep_mva_hnl_fake_ed_v4_hfc;
+      else if(vers=="EDv4_LF")  return j_lep_mva_hnl_fake_ed_v4_lf;
+      else if(vers=="EDv4_Top")  return j_lep_mva_hnl_fake_ed_v4_top;
+
     }
     else{
       if(vers=="v1")  return j_lep_mva_hnl_fake_v1;
       else if(vers=="v2")  return j_lep_mva_hnl_fake_v2;
       else if(vers=="v3")  return j_lep_mva_hnl_fake_v3;
+      else if(vers=="v4")  return j_lep_mva_hnl_fake_v4;
+      else if(vers=="EDv4")  return j_lep_mva_hnl_fake_ed_v4;
     }
     cout<<"[Lepton::HNL_MVA_Fake] no version set "<< vers<< endl;
     exit(ENODATA);
@@ -213,6 +239,7 @@ public:
     if(j_LeptonFlavour==ELECTRON){
       if(vers=="v1")return j_lep_mva_hnl_conv_v1;
       else if(vers=="v2")return j_lep_mva_hnl_conv_v2;
+      else if(vers=="EDv2")return j_lep_mva_hnl_conv_ed_v2;
     }
     
     cout<<"[Lepton::HNL_MVA_CONV]"<< endl;
@@ -294,9 +321,11 @@ public:
   inline bool PassLepID()  const {return j_passID;}
   inline bool LepIDSet()  const {return j_IDSet;}
 
-
-  inline int LeptonType() const {return j_LeptonType;}
+  inline int LeptonGenType() const {return j_LeptonType;}
   void SetLeptonType(int t);
+
+  inline bool LeptonIsCF() const {return j_LeptonIsCF;}
+  void SetLeptonIsCF(bool t);
 
   inline Flavour LeptonFlavour() const {return j_LeptonFlavour;}
   void SetLeptonFlavour(Flavour f);
@@ -356,11 +385,12 @@ public:
   //// Version 4                                                                                                                                                                                                                                       
 
   double j_lep_mva_hnl_fake_v4_hf,j_lep_mva_hnl_fake_v4_hfb,j_lep_mva_hnl_fake_v4_hfc,j_lep_mva_hnl_fake_v4_lf, j_lep_mva_hnl_fake_v4_top, j_lep_mva_hnl_fake_v4;
+  double j_lep_mva_hnl_fake_ed_v4_hf,j_lep_mva_hnl_fake_ed_v4_hfb,j_lep_mva_hnl_fake_ed_v4_hfc,j_lep_mva_hnl_fake_ed_v4_lf, j_lep_mva_hnl_fake_ed_v4_top, j_lep_mva_hnl_fake_ed_v4;
   
 
   ///// Conv
   
-  double j_lep_mva_hnl_conv_v1, j_lep_mva_hnl_conv_v2;
+  double j_lep_mva_hnl_conv_v1, j_lep_mva_hnl_conv_v2,j_lep_mva_hnl_conv_ed_v2;
 
   ////// CF
  
@@ -388,6 +418,7 @@ private:
   Flavour j_LeptonFlavour;
 
   int j_LeptonType;
+  bool j_LeptonIsCF;
 
   bool j_passID;
   

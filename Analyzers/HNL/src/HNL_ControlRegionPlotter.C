@@ -15,8 +15,6 @@ void HNL_ControlRegionPlotter::executeEvent(){
 
   Event ev = GetEvent();
 
-  if(!IsData)  gens = GetGens();
-
   //AnalyzerParameter param_signal = HNL_LeptonCore::InitialiseHNLParameter("MVAUL","_UL");
   AnalyzerParameter param_signal = HNL_LeptonCore::InitialiseHNLParameter("HNL","_UL");
 
@@ -89,8 +87,8 @@ void HNL_ControlRegionPlotter::RunControlRegions(AnalyzerParameter param){
   //cout << "MuonCollTInit size = " << MuonCollTInit.size() << endl;
   //cout << "ElectronCollTInit size = " << ElectronCollTInit.size() << endl;
 
-  std::vector<Muon>       MuonCollT     = GetLepCollByRunType    ( MuonCollTInit,gens,param,"");  
-  std::vector<Electron>   ElectronCollT  =  GetLepCollByRunType   ( ElectronCollTInit,gens,param,"");
+  std::vector<Muon>       MuonCollT     = GetLepCollByRunType    ( MuonCollTInit, param,"");  
+  std::vector<Electron>   ElectronCollT  =  GetLepCollByRunType   ( ElectronCollTInit,param,"");
 
 
   if(run_Debug) {

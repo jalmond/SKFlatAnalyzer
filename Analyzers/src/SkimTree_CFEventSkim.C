@@ -17,7 +17,7 @@ void SkimTree_CFEventSkim::executeEvent(){
 
   vector<Gen>   gens= GetGens();  
   for(auto iel: electronPreColl){
-    if(IsCF(iel, gens)) HasCFLep=true;
+    if(iel.LeptonIsCF()) HasCFLep=true;
   }
   
   if(!HasCFLep) return;

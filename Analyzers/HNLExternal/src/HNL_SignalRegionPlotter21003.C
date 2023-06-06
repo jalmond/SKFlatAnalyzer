@@ -16,8 +16,6 @@ void HNL_SignalRegionPlotter21003::executeEvent(){
     TriggerPrintOut(GetEvent());
   }
   
-  if(!IsData)  gens = GetGens();
-
   AnalyzerParameter param_signal = HNL_LeptonCore::InitialiseHNLParameter("HNL","_UL");
   RunULAnalysis(param_signal);
 
@@ -46,8 +44,8 @@ void HNL_SignalRegionPlotter21003::RunULAnalysis(AnalyzerParameter param){
   std::vector<Muon>       MuonCollTInit = GetMuons    ( param,mu_ID, Min_Muon_Pt, 2.4, RunFake);
   std::vector<Electron>   ElectronCollTInit = GetElectrons( param,el_ID, Min_Electron_Pt, 2.5, RunFake)  ;
 
-  std::vector<Muon>       MuonCollT     = GetLepCollByRunType    ( MuonCollTInit,gens,param);
-  std::vector<Electron>   ElectronCollT  =  GetLepCollByRunType   ( ElectronCollTInit,gens,param);
+  std::vector<Muon>       MuonCollT     = GetLepCollByRunType    ( MuonCollTInit,param);
+  std::vector<Electron>   ElectronCollT  =  GetLepCollByRunType   ( ElectronCollTInit,param);
 
   std::vector<Lepton *> leps_veto  = MakeLeptonPointerVector(MuonCollV,ElectronCollV);
 
@@ -55,7 +53,7 @@ void HNL_SignalRegionPlotter21003::RunULAnalysis(AnalyzerParameter param){
 
   // Creat Lepton vector to have lepton blind codes 
 
-  Particle METv = GetvMET("T1xyCorr",param); // returns MET with systematic correction
+  Particle METv = GetvMET("T1xyCorr"); // returns MET with systematic correction
 
   
   std::vector<FatJet> AK8_JetColl;
@@ -97,7 +95,7 @@ void HNL_SignalRegionPlotter21003::RunULAnalysis(AnalyzerParameter param){
 
     std::vector<Lepton *> leps       = MakeLeptonPointerVector(MuonCollT,ElectronCollT,param);
 
-    if(!PassEventTypeFilter(leps, gens)) continue;
+    if(!PassEventTypeFilter(leps)) continue;
 
     if(!IsData && RunPromptTLRemoval){
       weight_channel = -1*weight* GetFakeWeight(leps, param , false);

@@ -8,3 +8,8 @@ DoubleEG:B_ver2
 DoubleEG:D
 DoubleEG:E
 DoubleEG:F
+MuonEG:C
+MuonEG:B_ver2
+MuonEG:D
+MuonEG:E
+MuonEG:F

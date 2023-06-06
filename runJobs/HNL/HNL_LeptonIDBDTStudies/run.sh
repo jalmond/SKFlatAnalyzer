@@ -6,14 +6,15 @@ njobs=250
 nmax=800
 skim=' SkimTree_Dilepton'
 declare  -a era_list=("2018" "2016postVFP" "2016preVFP" "2017")
-declare  -a era_list=("2018")
+
+declare  -a era_list=("2017")
 
 if [[ $1 == "TEST" ]]; then
     
-    declare  -a era_list=("2018")
+    declare  -a era_list=("2017")
     for i in "${era_list[@]}"
     do
-        SKFlat.py -a $analyzer  -i TTLJ_powheg  -n 200  --nmax 300  -e ${i}    --userflags Fakes --skim SkimTree_FakeEventSkim&
+        SKFlat.py -a $analyzer  -i TTLJ_powheg  -n 200  --nmax 300  -e ${i}  --userflags Fakes  --skim  SkimTree_HNMultiLepBDT &
     done
 fi
 

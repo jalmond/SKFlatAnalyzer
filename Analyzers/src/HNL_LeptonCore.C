@@ -576,18 +576,18 @@ double HNL_LeptonCore::MergeMultiMC(vector<TString> vec, TString Method){
       
       int NearPhotonIdx=-1;
       
-      for(unsigned int i=2; i<gens.size(); i++){
-  Gen gen = gens[i];
-  if( gens.at(i).MotherIndex()<0   ) continue;
-  if( !(gens.at(i).PID()==22 && (gens.at(i).Status()==23)) ) continue;
+      for(unsigned int i=2; i<All_Gens.size(); i++){
+  Gen gen = All_Gens[i];
+  if( All_Gens.at(i).MotherIndex()<0   ) continue;
+  if( !(All_Gens.at(i).PID()==22 && (All_Gens.at(i).Status()==23)) ) continue;
   NearPhotonIdx=i;
       }
       if(NearPhotonIdx < 0) {
   double maxpt=0;
-  for(unsigned int i=2; i<gens.size(); i++){
-    Gen gen = gens[i];
-    if( gens.at(i).MotherIndex()<0   ) continue;
-    if( !(gens.at(i).PID()==22 && (gens.at(i).Status()==1)) ) continue;
+  for(unsigned int i=2; i<All_Gens.size(); i++){
+    Gen gen = All_Gens[i];
+    if( All_Gens.at(i).MotherIndex()<0   ) continue;
+    if( !(All_Gens.at(i).PID()==22 && (All_Gens.at(i).Status()==1)) ) continue;
     if(gen.isPromptFinalState() && gen.Pt() > maxpt) {
       NearPhotonIdx=i;
       maxpt = gen.Pt();
@@ -597,7 +597,7 @@ double HNL_LeptonCore::MergeMultiMC(vector<TString> vec, TString Method){
 
       if(NearPhotonIdx < 0) return 0;
       
-      double phPt= gens[NearPhotonIdx].Pt();
+      double phPt= All_Gens[NearPhotonIdx].Pt();
     
       if(Method == "Split"){
   if (MCSample == "WGToLNuG_01J_PtG_130"){
@@ -1701,7 +1701,7 @@ double HNL_LeptonCore::SetupWeight(Event ev, AnalyzerParameter param){
 
   double w_topptrw(1.);
   if(MCSample.Contains("TT") and MCSample.Contains("powheg")) {
-    w_topptrw = mcCorr->GetTopPtReweight(GetGens()); 
+    w_topptrw = mcCorr->GetTopPtReweight(All_Gens); 
     FillWeightHist("TopPtWeight_" , w_topptrw);
   }
   
@@ -2093,17 +2093,16 @@ Particle HNL_LeptonCore::GetSignalObject(TString obj, TString Sig){
   
   if(Sig=="DY"){
 
-    if(gens.size()==0)   gens = GetGens();
 
     int N_Mother_ind(-1); // Index of N                                                                                                                                                                                                                                
     int W2_ind(0); // Index of W2 : i.e W from N decay                                                                                                                
 
-    for(unsigned int i=2; i<gens.size(); i++){
-      Gen gen = gens.at(i);
-      if(fabs(gen.PID()) == 24 && (gens.at(gen.MotherIndex()).PID() == 9900012 || gens.at(gen.MotherIndex()).PID() == 9900014)){
+    for(unsigned int i=2; i<All_Gens.size(); i++){
+      Gen gen = All_Gens.at(i);
+      if(fabs(gen.PID()) == 24 && (All_Gens.at(gen.MotherIndex()).PID() == 9900012 || All_Gens.at(gen.MotherIndex()).PID() == 9900014)){
   W2_ind= i;
-  for(unsigned int i2=2; i2<gens.size(); i2++){
-    Gen gen2 = gens.at(i2);
+  for(unsigned int i2=2; i2<All_Gens.size(); i2++){
+    Gen gen2 = All_Gens.at(i2);
     if(gen2.MotherIndex() == W2_ind){
       if (fabs(gen2.PID()) == 24 ) W2_ind = i2;
     }
@@ -2121,22 +2120,22 @@ Particle HNL_LeptonCore::GetSignalObject(TString obj, TString Sig){
     Gen j1,j2;
     bool j1IsSet(false);
 
-    for(unsigned int i=2; i<gens.size(); i++){
-      Gen gen = gens.at(i);
+    for(unsigned int i=2; i<All_Gens.size(); i++){
+      Gen gen = All_Gens.at(i);
 
       if(int(gen.MotherIndex()) == W2_ind && gen.Status() == 23) {
-  W2 = gens.at(gen.MotherIndex());
+  W2 = All_Gens.at(gen.MotherIndex());
   if(!j1IsSet) {  j1= gen; j1IsSet=true;}
   else j2 = gen;
       }
       if(gen.PID() == 9900012 || gen.PID() == 9900014){
-  N= gens.at(i);
+  N= All_Gens.at(i);
       }
       if( ! ( ( fabs(gen.PID()) == 13)  || (fabs(gen.PID()) == 11) )) continue;
 
       TString LepFl = (fabs(gen.PID()) == 13) ? "Mu" : "El";
 
-      if(gens.at(gen.MotherIndex()).PID() == 9900012|| gens.at(gen.MotherIndex()).PID() == 9900014) {
+      if(All_Gens.at(gen.MotherIndex()).PID() == 9900012|| All_Gens.at(gen.MotherIndex()).PID() == 9900014) {
   LepFromN = gen;
       }
       else if(gen.MotherIndex() == N_Mother_ind){
@@ -2520,7 +2519,7 @@ std::vector<FatJet> HNL_LeptonCore::GetHNLAK8Jets(TString JetType, AnalyzerParam
 
   std::vector<FatJet> AK8_JetColl                     = SelectAK8Jets  (FatjetColl, 200., 5., true,  1., false, -999, false, 0., 20000., ElectronCollV, MuonCollV);
   std::vector<FatJet> AK8_JetCollBDT                  = SelectAK8Jets(FatjetColl  , 200., 2.7, true, 1., false, -999, false, 40., 130., ElectronCollV, MuonCollV);
-  std::vector<FatJet> AK8_JetCollHNL                  = SelectAK8Jetsv2(FatjetColl, 200., 2.7, true,  1., true, -999, true, 40., 130.,-999, ElectronCollV, MuonCollV);
+  std::vector<FatJet> AK8_JetCollHNL                  = SelectAK8Jetsv2(FatjetColl, 200., 5., true,  1., false, -999, true, 40., 130.,-999, ElectronCollV, MuonCollV);
 
   if(JetType=="HNL") return AK8_JetCollHNL;
   if(JetType=="BDT") return AK8_JetCollBDT;
@@ -2533,36 +2532,35 @@ std::vector<Jet> HNL_LeptonCore::GetHNLJets(TString JetType, AnalyzerParameter p
 
   if(JetType=="All")          return GetJets   ( param, "NoID",      10.,  5.);
   if(JetType=="NoCut_Eta3")   return GetJets   ( param, "NoID",      10.,  3.);
+  if(JetType=="SmearCorr")    return GetJets   ( param, param.Jet_ID,15.,  2.5);
 
+  
   std::vector<Jet> AK4_Loose     = GetJets   ( param, param.Jet_ID, 10., 5.);
+
   // AK8
-  std::vector<FatJet> AK8_JetCollLoose             = GetHNLAK8Jets("Loose", param);
-  std::vector<FatJet> AK8_JetCollHNL               = GetHNLAK8Jets("HNL", param); //JH
+  std::vector<FatJet> AK8_JetColl             = GetHNLAK8Jets("HNL", param);
 
   /// Lepotns for cleaning                                                                                                                                                                                          
   std::vector<Electron>   ElectronCollV = GetElectrons(param.Electron_Veto_ID, 10., 2.5);
   std::vector<Muon>       MuonCollV     = GetMuons    (param.Muon_Veto_ID,     5.,  2.4);
 
-  //if(JetType=="Loose")    return SelectAK4Jets(AK4_Loose,     15., 4.7, true,  0.4,0.8, "",   ElectronCollV,MuonCollV, AK8_JetCollLoose);
-  //if(JetType=="Tight")    return SelectAK4Jets(AK4_Loose,     20., 2.7, true,  0.4,0.8, "",   ElectronCollV,MuonCollV, AK8_JetCollLoose);
-  //if(JetType=="VBFTight") return SelectAK4Jets(AK4_Loose,     30., 4.7, true,  0.4,0.8, "",   ElectronCollV,MuonCollV, AK8_JetCollLoose);
-  if(JetType=="Loose")    return SelectAK4Jets(AK4_Loose,     15., 4.7, true,  0.4,0.8, "",   ElectronCollV,MuonCollV, AK8_JetCollHNL);
-  if(JetType=="Tight")    return SelectAK4Jets(AK4_Loose,     20., 2.7, true,  0.4,0.8, "",   ElectronCollV,MuonCollV, AK8_JetCollHNL);
-  if(JetType=="VBFTight") return SelectAK4Jets(AK4_Loose,     30., 4.7, true,  0.4,0.8, "",   ElectronCollV,MuonCollV, AK8_JetCollHNL); //JH
+  if(JetType=="Loose")    return SelectAK4Jets(AK4_Loose,     15., 4.7, true,  0.4,0.8, "",   ElectronCollV,MuonCollV, AK8_JetColl);
+  if(JetType=="Tight")    return SelectAK4Jets(AK4_Loose,     20., 2.7, true,  0.4,0.8, "",   ElectronCollV,MuonCollV, AK8_JetColl);
+  if(JetType=="VBFTight") return SelectAK4Jets(AK4_Loose,     30., 4.7, true,  0.4,0.8, "",   ElectronCollV,MuonCollV, AK8_JetColl);
 
   /// BJET
   JetTagging::Parameters param_jets = JetTagging::Parameters(JetTagging::DeepJet, JetTagging::Medium, JetTagging::incl, JetTagging::mujets);
   JetTagging::Parameters param_jetsT = JetTagging::Parameters(JetTagging::DeepJet, JetTagging::Tight, JetTagging::incl, JetTagging::mujets);
 
-  std::vector<Jet> BJetCollLoose                   = SelectAK4Jets(AK4_Loose,  20., 2.4, true,  0.4,0.8, "",   ElectronCollV,MuonCollV,  AK8_JetCollLoose);
+  std::vector<Jet> BJetCollLoose                   = SelectAK4Jets(AK4_Loose,  20., 2.4, true,  0.4,0.8, "",   ElectronCollV,MuonCollV,  AK8_JetColl);
   if(JetType=="BJetM")          return SelectBJets(param, BJetCollLoose, param_jets);
   if(JetType=="BJetT")          return SelectBJets(param, BJetCollLoose, param_jetsT);
-  std::vector<Jet> BJetCollNoLepClean              = SelectAK4Jets(AK4_Loose,  20., 2.4, false,  0.4,0.8, "",   ElectronCollV,MuonCollV,  AK8_JetCollLoose);
+  std::vector<Jet> BJetCollNoLepClean              = SelectAK4Jets(AK4_Loose,  20., 2.4, false,  0.4,0.8, "",   ElectronCollV,MuonCollV,  AK8_JetColl);
   if(JetType=="BJetM_NoLC")     return SelectBJets(param, BJetCollNoLepClean, param_jets);
   if(JetType=="BJetT_NoLC")     return SelectBJets(param, BJetCollNoLepClean, param_jetsT);
 
   // Else just return Standard Jet coll for HNL
-  return SelectAK4Jets(AK4_Loose,     20., 2.7, true,  0.4,0.8, "",   ElectronCollV,MuonCollV, AK8_JetCollLoose);
+  return SelectAK4Jets(AK4_Loose,     20., 2.7, true,  0.4,0.8, "",   ElectronCollV,MuonCollV, AK8_JetColl);
 
 }
 
@@ -2570,27 +2568,27 @@ std::vector<Jet> HNL_LeptonCore::GetHNLJets(TString JetType, AnalyzerParameter p
 vector<Gen> HNL_LeptonCore::GetGenLepronsSignal(){
 
   bool isDYVBF=false;
-  vector<Gen> gens= GetGens();
+
   vector<Gen> gen_lep;
   int N_Mother(0);
 
-  for (auto i : gens){ Gen gen = i; if(gen.PID() == 9900012 || gen.PID() == 9900014) isDYVBF=true; }
+  for (auto i : All_Gens){ Gen gen = i; if(gen.PID() == 9900012 || gen.PID() == 9900014) isDYVBF=true; }
 
   if(isDYVBF){
 
-    for(unsigned int i=2; i<gens.size(); i++){
+    for(unsigned int i=2; i<All_Gens.size(); i++){
 
-      Gen gen = gens.at(i);
+      Gen gen = All_Gens.at(i);
 
       if((gen.PID() == 9900012 || gen.PID() == 9900014)  && gen.Status()==22) {
         N_Mother= gen.MotherIndex();
       }
     }
 
-    for(unsigned int i=2; i<gens.size(); i++){
-      Gen gen = gens.at(i);     TString lep_ch="";
+    for(unsigned int i=2; i<All_Gens.size(); i++){
+      Gen gen = All_Gens.at(i);     TString lep_ch="";
 
-      if((gens.at(gen.MotherIndex()).PID() == 9900012|| gens.at(gen.MotherIndex()).PID() == 9900014) && !(gens.at(i).PID() == 9900012 || gens.at(i).PID() == 9900014)){
+      if((All_Gens.at(gen.MotherIndex()).PID() == 9900012|| All_Gens.at(gen.MotherIndex()).PID() == 9900014) && !(All_Gens.at(i).PID() == 9900012 || All_Gens.at(i).PID() == 9900014)){
 
         if(fabs(gen.PID()) == 15)     gen_lep.push_back(gen);
 
@@ -2598,7 +2596,7 @@ vector<Gen> HNL_LeptonCore::GetGenLepronsSignal(){
         if(fabs(gen.PID()) == 11)     gen_lep.push_back(gen);
 
       }
-      else if(gen.MotherIndex() == N_Mother&& !(gens.at(i).PID() == 9900012 || gens.at(i).PID() == 9900014)){
+      else if(gen.MotherIndex() == N_Mother&& !(All_Gens.at(i).PID() == 9900012 || All_Gens.at(i).PID() == 9900014)){
 
 
         if(fabs(gen.PID()) == 15) gen_lep.push_back(gen);
@@ -2614,8 +2612,8 @@ vector<Gen> HNL_LeptonCore::GetGenLepronsSignal(){
 
 
 
-    for(unsigned int i=2; i<gens.size(); i++){
-      Gen gen = gens.at(i);
+    for(unsigned int i=2; i<All_Gens.size(); i++){
+      Gen gen = All_Gens.at(i);
       if (fabs(gen.PID()) == 13 && gen.Status() == 23) gen_lep.push_back(gen);
       if (fabs(gen.PID()) == 11 && gen.Status() == 23) gen_lep.push_back(gen);
       if (fabs(gen.PID()) == 15 && gen.Status() == 23)gen_lep.push_back(gen);
@@ -2655,22 +2653,22 @@ TString HNL_LeptonCore::GetProcess(){
   //  cout << "index\tPID\tStatus\tMIdx\tMPID\tStart\tPt\tEta\tPhi\tM" << endl;                                                                                                                                          
 
   bool isDYVBF=false;
-  vector<Gen> gens= GetGens();
 
-  for (auto i : gens){ Gen gen = i; if(gen.PID() == 9900012 || gen.PID() == 9900014) isDYVBF=true; }
+  for (auto i : All_Gens){ Gen gen = i; if(gen.PID() == 9900012 || gen.PID() == 9900014) isDYVBF=true; }
 
   if(isDYVBF){
 
     /*bool isVBF=false;                                                                                                                                                                                                  
                                                                                                                                                                                                                          
-    for (auto i : gens){                                                                                                                                                                                                 
+    for (auto i : All_Gens){                                                                                                                                                                                                 
       Gen gen = i;                                                                                                                                                                                                       
       if (gen.PID() == 22 && gen.Status() == 21) isVBF=true;                                                                                                                                                             
     }                                                                                                                                                                                                                    
     */
 
-    for(unsigned int i=2; i<gens.size(); i++){
-      Gen gen = gens.at(i);
+    for(unsigned int i=2; i<All_Gens.size(); i++){
+
+      Gen gen = All_Gens.at(i);
 
       if((gen.PID() == 9900012 || gen.PID() == 9900014)  && gen.Status()==22) {
         N_Mother= gen.MotherIndex();
@@ -2683,10 +2681,10 @@ TString HNL_LeptonCore::GetProcess(){
     TString lep1_s="", lep2_s="";
     TString lep1_ss="", lep2_ss="";
 
-    for(unsigned int i=2; i<gens.size(); i++){
-      Gen gen = gens.at(i);     TString lep_ch="";
+    for(unsigned int i=2; i<All_Gens.size(); i++){
+      Gen gen = All_Gens.at(i);     TString lep_ch="";
 
-      if((gens.at(gen.MotherIndex()).PID() == 9900012|| gens.at(gen.MotherIndex()).PID() == 9900014) && !(gens.at(i).PID() == 9900012 || gens.at(i).PID() == 9900014)){
+      if((All_Gens.at(gen.MotherIndex()).PID() == 9900012|| All_Gens.at(gen.MotherIndex()).PID() == 9900014) && !(All_Gens.at(i).PID() == 9900012 || All_Gens.at(i).PID() == 9900014)){
         //if(fabs(gen.PID())  < 16 && fabs(gen.PID())  > 10) lep_2_ch = (gen.PID() < 0) ? 1 : -1;                                                                                                                        
 
         if(fabs(gen.PID()) == 15) {
@@ -2709,7 +2707,7 @@ TString HNL_LeptonCore::GetProcess(){
           lep_2_ch = (gen.PID() < 0) ? 1 : -1;
         }
       }
-      else if(gen.MotherIndex() == N_Mother&& !(gens.at(i).PID() == 9900012 || gens.at(i).PID() == 9900014)){
+      else if(gen.MotherIndex() == N_Mother&& !(All_Gens.at(i).PID() == 9900012 || All_Gens.at(i).PID() == 9900014)){
 
         //if(fabs(gen.PID())  < 16 && fabs(gen.PID())  > 10)  lep_1_ch = (gen.PID() < 0) ? 1 : -1;                                                                                                                      
         if(fabs(gen.PID()) == 15) {
@@ -2741,8 +2739,8 @@ TString HNL_LeptonCore::GetProcess(){
 
 
     TString pr="SS_";
-    for(unsigned int i=2; i<gens.size(); i++){
-      Gen gen = gens.at(i);
+    for(unsigned int i=2; i<All_Gens.size(); i++){
+      Gen gen = All_Gens.at(i);
       if (fabs(gen.PID()) == 13 && gen.Status() == 23) {
         pr=pr+"Mu";
         if (gen.PID() < 0) pr = pr+"+";
@@ -2866,52 +2864,53 @@ std::vector<Jet> HNL_LeptonCore::SelBJets(std::vector<Jet>& jetColl, JetTagging:
 
 
 
+map<TString, Particle> HNL_LeptonCore::METMap( AnalyzerParameter param){
+  
+  vector<TString> vmets = {"T1xyCorr",
+         "PuppiT1xyCorr",
+         "T1",
+         "PuppiT1",
+         "PuppiT1xyULCorr",
+         "T1xyULCorr"};
+
+
+  Particle METv      = GetvMET("T1xyCorr");
+  Particle PuppiMETv = GetvMET("PuppiT1xyCorr");
+  Particle METvNoPhi = GetvMET("T1");
+  Particle PuppiMETvNoPhi = GetvMET("PuppiT1");
+  Particle PuppiMETvULPhiCorr = GetvMET("PuppiT1xyULCorr");
+  Particle METvULPhiCorr = GetvMET("T1xyULCorr");
+  map<TString, Particle> mapmet;
+  for(auto i : vmets) {
+    mapmet[i] = GetvMET(i,param);
+    mapmet[i+"_propsmear"] = GetvMET(i,param,true);
+    mapmet[i+"_SmearJet_propsmear"] = GetvMET(i+"SmearJet",param,true);
+    mapmet[i+"_SmearMuon_propsmear"] = GetvMET(i+"SmearMuon",param,true);
+  }
+  
+  return mapmet;
+}
+
 Particle HNL_LeptonCore::GetvMET(TString METType){
 
-  bool IsType1   = METType.Contains("T1");
-  bool IsxyCorr  = METType.Contains("xyCorr");
-  bool UsePuppi  = METType.Contains("Puppi");
+  bool IsType1      = METType.Contains("T1");  
+  bool IsxyCorr     = METType.Contains("xyCorr");
+  bool UsePuppi     = METType.Contains("Puppi");
   bool IsFixxyCorr  = METType.Contains("xyULCorr");
 
   //METXYCorr_Met_MetPhi(double uncormet, double uncormet_phi, int runnb, TString year, bool isMC, int npv, bool isUL =false,bool ispuppi=false)r                                                                                                                                                          
-
   double Met_pt(0.), Met_phi(0.);
 
   Particle vMET;
-  if(UsePuppi){
-    if(IsType1){
-      if(IsxyCorr) {
-        Met_pt=PuppiMET_Type1_PhiCor_pt;
-        Met_phi = PuppiMET_Type1_PhiCor_phi;
-      }
-      else  {
-        Met_pt=PuppiMET_Type1_pt;
-        Met_phi=PuppiMET_Type1_phi;
-      }
-    }// T1                                                                                                                                                                                                                                                                                                 
-    else{
-      Met_pt=PuppiMET_pt;
-      Met_phi=PuppiMET_phi;
-    }
-  } // PUPPI                                                                                                                                                                                                                                                                                               
 
-  else{
-    // PRMET                                                                                                                                                                                                                                                                                               
-    if(IsType1){
-      if(IsxyCorr) {
-        Met_pt =pfMET_Type1_PhiCor_pt;
-        Met_phi=pfMET_Type1_PhiCor_phi;
-      }
-      else{
-        Met_pt =pfMET_Type1_pt;
-        Met_phi =pfMET_Type1_phi;
-      }
-    }
-    else{
-      Met_pt=pfMET_pt;
-      Met_phi=pfMET_phi;
-    }
-  }
+  if(UsePuppi && IsType1  && IsxyCorr)  { Met_pt = PuppiMET_Type1_PhiCor_pt ; Met_phi = PuppiMET_Type1_PhiCor_phi;}
+  if(UsePuppi && IsType1  && !IsxyCorr) { Met_pt = PuppiMET_Type1_pt;         Met_phi = PuppiMET_Type1_phi;}
+  if(UsePuppi && !IsType1 && !IsxyCorr) { Met_pt = PuppiMET_pt;               Met_phi = PuppiMET_phi;}
+  
+  if(!UsePuppi&& IsType1  && IsxyCorr)  { Met_pt = pfMET_Type1_PhiCor_pt;     Met_phi = pfMET_Type1_PhiCor_phi;}
+  if(!UsePuppi&& IsType1  && !IsxyCorr) { Met_pt = pfMET_Type1_pt;            Met_phi = pfMET_Type1_phi;}
+  if(!UsePuppi&& !IsType1 && !IsxyCorr) { Met_pt = pfMET_pt;                  Met_phi = pfMET_phi;}
+  
   if(IsFixxyCorr) {
     TString Year= "2016";
     if(DataYear==2017) Year= "2017";
@@ -2921,9 +2920,158 @@ Particle HNL_LeptonCore::GetvMET(TString METType){
     Met_phi=METPair.second;
   }
 
+
   vMET.SetPtEtaPhiM(Met_pt, 0., Met_phi, 0.);
   return vMET;
 
+}
+
+Particle HNL_LeptonCore::GetvCorrMET(TString METType, AnalyzerParameter param, Particle METUncorr){
+
+  //// THIS FUNCTION UPDATES MET BASED ON JET Smearing / muon rocc 
+  //// Follows https://twiki.cern.ch/twiki/bin/view/CMS/MissingETRun2Corrections
+
+  //// Jets in simulation can be smeared (as shown in JetResolution twiki) to achieve better agreement with data. This is done by default in GetAllJets().....  This correction is a propagation of the smeared such jets to MET. The Smeared MET correction replaces the vector sum of transverse momenta of particles which can be clustered as jets with the vector sum of the transverse momenta of the jets to which smearing is applied.
+
+  //// Jets pt > 15 GeV not near PF muon OR electrons 
+  
+  bool SmearJets  = METType.Contains("SmearJet");
+  bool SmearMuons = METType.Contains("SmearMuon"); 
+  bool SmearBoth  = !SmearJets &&  !SmearMuons; 
+  
+  if(SmearBoth || SmearJets) {
+    
+    std::vector<Jet>  Jets        = GetHNLJets("SmearCorr",param); //// GetvCorrMEToly called for Syst==Cental so get jets == cebtral jets always 
+    std::vector<Muon> loose_muons = GetMuons("POGLoose",     10.,  2.4);
+
+    std::vector<Jet> jets_corr;
+    for(auto ij : Jets){
+      if(ij.Pt() < 15.) continue;
+      if(fabs(ij.Eta()) > 2.5) continue;
+      bool overlap_mu(false);
+      for(auto imu : loose_muons) {
+  if(imu.DeltaR(ij) < 0.4) {
+    overlap_mu=true;
+    break;
+  }
+      }
+      if(overlap_mu) continue;
+      double jetEMFrac = ij.ChargedEmEnergyFraction() + ij.NeutralEmEnergyFraction();
+      if (jetEMFrac > 0.9) continue;
+      jets_corr.push_back(ij);
+    }
+
+    Particle UpdatedMET = UpdateMETSmearedJet(METUncorr,jets_corr);
+    if(SmearJets) return UpdatedMET;
+    
+    std::vector<Muon> tight_muons = GetMuons(param.Muon_Tight_ID, 20.,  2.4);
+    Particle UpdatedMET2 = UpdateMET(UpdatedMET,tight_muons);
+    return UpdatedMET2;
+    
+  }
+  else   if(SmearMuons ) {
+    std::vector<Muon> tight_muons = GetMuons(param.Muon_Tight_ID, 20.,  2.4);
+    Particle UpdatedMET = UpdateMET(METUncorr,tight_muons);
+    return UpdatedMET;
+  }
+
+  return METUncorr;
+}
+
+
+Particle HNL_LeptonCore::GetvMET(TString METType, AnalyzerParameter param,bool PropSmearing){
+
+  bool ApplySyst      = (!IsDATA) && (param.syst_ != AnalyzerParameter::Central);
+
+  Particle vStandMET = GetvMET(METType);
+  if(!ApplySyst && !PropSmearing) return vStandMET;  //// This function calls central values stored in MINMIAOD OR POG COrrected            
+  if(!ApplySyst && PropSmearing)  return GetvCorrMET(METType,param,vStandMET);
+
+  bool UsePuppi     = METType.Contains("Puppi");
+  bool IsxyCorr     = METType.Contains("xyCorr");
+
+  int IdxSyst = -1;
+  if(param.syst_ == AnalyzerParameter::METUnclUp)     IdxSyst = 10;
+  if(param.syst_ == AnalyzerParameter::METUnclDown)   IdxSyst = 11;
+  if(param.syst_ == AnalyzerParameter::JetResUp)      IdxSyst = 0;
+  if(param.syst_ == AnalyzerParameter::JetResDown)    IdxSyst = 1;
+  if(param.syst_ == AnalyzerParameter::JetEnUp)       IdxSyst = 2;
+  if(param.syst_ == AnalyzerParameter::JetEnDown)     IdxSyst = 3;
+  if(param.syst_ == AnalyzerParameter::MuonEnUp)      IdxSyst = 4;
+  if(param.syst_ == AnalyzerParameter::MuonEnDown)    IdxSyst = 5;
+  if(param.syst_ == AnalyzerParameter::ElectronEnUp)  IdxSyst = 6;
+  if(param.syst_ == AnalyzerParameter::ElectronEnDown)IdxSyst = 7;
+
+  Particle vMETSyst;
+
+  if(IdxSyst>=0){
+
+    if(UsePuppi){
+      if( isfinite(PuppiMET_Type1_pt_shifts->at(IdxSyst)))  vMETSyst = UpdateMETSyst(PuppiMET_Type1_pt, PuppiMET_Type1_phi, PuppiMET_Type1_pt_shifts->at(IdxSyst),PuppiMET_Type1_phi_shifts->at(IdxSyst), vStandMET);
+      else return vStandMET;
+    }
+    else{
+      if(isfinite(pfMET_Type1_PhiCor_pt_shifts->at(IdxSyst))){
+  if(IsxyCorr) vMETSyst = UpdateMETSyst(pfMET_Type1_PhiCor_pt, pfMET_Type1_PhiCor_phi, pfMET_Type1_PhiCor_pt_shifts->at(IdxSyst), pfMET_Type1_PhiCor_phi_shifts->at(IdxSyst), vStandMET);
+  else         vMETSyst = UpdateMETSyst(pfMET_Type1_pt, pfMET_Type1_phi, pfMET_Type1_pt_shifts->at(IdxSyst), pfMET_Type1_phi_shifts->at(IdxSyst), vStandMET);
+      }
+      else return vStandMET;
+    }
+  }
+  
+  return vMETSyst;
+}
+
+Particle HNL_LeptonCore::GetvMET(TString METType, AnalyzerParameter param,
+         std::vector<Jet> jets, std::vector<FatJet> fatjets, 
+         std::vector<Muon> muons, std::vector<Electron> electrons,
+         bool PropSmearing){
+
+  ////// This function is used to get MET both central and systematic
+
+  bool ApplySyst      = (!IsDATA) && (param.syst_ != AnalyzerParameter::Central);
+
+  Particle vStandMET = GetvMET(METType);  
+  if(!ApplySyst && !PropSmearing) return vStandMET;  //// This function calls central values stored in MINMIAOD OR POG COrrected
+  if(!ApplySyst && PropSmearing)  return GetvCorrMET(METType,param,vStandMET);
+
+  bool UsePuppi     = METType.Contains("Puppi");
+  bool IsxyCorr     = METType.Contains("xyCorr");
+
+  int IdxSyst = -1;
+  if(param.syst_ == AnalyzerParameter::METUnclUp)     IdxSyst = 10;
+  if(param.syst_ == AnalyzerParameter::METUnclDown)   IdxSyst = 11;
+  if(param.syst_ == AnalyzerParameter::JetResUp)      IdxSyst = 0;
+  if(param.syst_ == AnalyzerParameter::JetResDown)    IdxSyst = 1;
+  if(param.syst_ == AnalyzerParameter::JetEnUp)       IdxSyst = 2;
+  if(param.syst_ == AnalyzerParameter::JetEnDown)     IdxSyst = 3;
+  if(param.syst_ == AnalyzerParameter::MuonEnUp)      IdxSyst = 4;
+  if(param.syst_ == AnalyzerParameter::MuonEnDown)    IdxSyst = 5;
+  if(param.syst_ == AnalyzerParameter::ElectronEnUp)  IdxSyst = 6;
+  if(param.syst_ == AnalyzerParameter::ElectronEnDown)IdxSyst = 7;
+  
+  Particle vMETSyst;
+  
+  if(IdxSyst < 10 )  vMETSyst = UpdateMETSyst(param, vStandMET, jets, fatjets, muons, electrons); 
+  else if(IdxSyst>=0){
+    
+    if(UsePuppi) {
+      if(isfinite(PuppiMET_Type1_pt_shifts->at(IdxSyst))){       
+  vMETSyst = UpdateMETSyst(PuppiMET_Type1_pt, PuppiMET_Type1_phi, PuppiMET_Type1_pt_shifts->at(IdxSyst),PuppiMET_Type1_phi_shifts->at(IdxSyst), vStandMET);
+      }
+      else return vStandMET;
+    }
+    else {
+      if(isfinite(pfMET_Type1_PhiCor_pt_shifts->at(IdxSyst))){
+  if(IsxyCorr) vMETSyst = UpdateMETSyst(pfMET_Type1_PhiCor_pt, pfMET_Type1_PhiCor_phi, pfMET_Type1_PhiCor_pt_shifts->at(IdxSyst), pfMET_Type1_PhiCor_phi_shifts->at(IdxSyst), vStandMET);
+  else         vMETSyst = UpdateMETSyst(pfMET_Type1_pt, pfMET_Type1_phi, pfMET_Type1_pt_shifts->at(IdxSyst), pfMET_Type1_phi_shifts->at(IdxSyst), vStandMET);
+      }
+      else return vStandMET;
+    }
+  }
+  
+  return vMETSyst;
+  
 }
 
 
@@ -2956,135 +3104,6 @@ double HNL_LeptonCore::GetXsec(TString SigProcess, int mass){
 }
 
 
-Particle HNL_LeptonCore::GetvMET(TString METType, AnalyzerParameter param, std::vector<Jet> jets, std::vector<FatJet> fatjets, std::vector<Muon> muons, std::vector<Electron> electrons){
-
-  //cout << "MET updating..." << endl; //JH
-  bool IsType1   = METType.Contains("T1");
-  bool IsxyCorr  = METType.Contains("xyCorr");
-  bool UsePuppi  = METType.Contains("Puppi");
-
-  int IdxSyst = -1;
-
-  if(param.syst_ == AnalyzerParameter::METUnclUp)   IdxSyst = 10;
-  if(param.syst_ == AnalyzerParameter::METUnclDown)   IdxSyst = 11;
-
-  if(param.syst_ == AnalyzerParameter::JetResUp)  IdxSyst = 0;
-  if(param.syst_ == AnalyzerParameter::JetResDown)  IdxSyst = 1;
-  if(param.syst_ == AnalyzerParameter::JetEnUp)  IdxSyst = 2;
-  if(param.syst_ == AnalyzerParameter::JetEnDown)  IdxSyst = 3;
-  if(param.syst_ == AnalyzerParameter::MuonEnUp)  IdxSyst = 4;
-  if(param.syst_ == AnalyzerParameter::MuonEnDown)  IdxSyst = 5;
-  if(param.syst_ == AnalyzerParameter::ElectronEnUp)  IdxSyst = 6;
-  if(param.syst_ == AnalyzerParameter::ElectronEnDown)  IdxSyst = 7;
-
-  bool ApplySyst = (!IsDATA) && (param.syst_ != AnalyzerParameter::Central);
-  //cout << "Apply syst? " << ApplySyst << endl; //JH
-
-  Particle vMET;
-
-  if(UsePuppi){
-    if(IsType1){
-      if(IsxyCorr) vMET.SetPtEtaPhiM(PuppiMET_Type1_PhiCor_pt, 0., PuppiMET_Type1_PhiCor_phi, 0.);
-      else         vMET.SetPtEtaPhiM(PuppiMET_Type1_pt, 0., PuppiMET_Type1_phi, 0.);
-    }
-  }
-  else{ //JH FIXME later
-    if(IsType1){
-      if( (!ApplySyst) or ( IdxSyst>=0 && (!isfinite(pfMET_Type1_PhiCor_pt_shifts->at(IdxSyst))) ) ){
-        if(IsxyCorr) vMET.SetPtEtaPhiM(pfMET_Type1_PhiCor_pt, 0., pfMET_Type1_PhiCor_phi, 0.);
-        else         vMET.SetPtEtaPhiM(pfMET_Type1_pt, 0., pfMET_Type1_phi, 0.);
-      }
-      else{
-        if(IsxyCorr) vMET.SetPtEtaPhiM(pfMET_Type1_PhiCor_pt_shifts->at(IdxSyst), 0., pfMET_Type1_PhiCor_phi_shifts->at(IdxSyst), 0.);
-        else         vMET.SetPtEtaPhiM(pfMET_Type1_pt_shifts->at(IdxSyst), 0., pfMET_Type1_phi_shifts->at(IdxSyst), 0.);
-      }
-    }
-  }
-
-  //if (param.syst_ == AnalyzerParameter::Central) return vMET; //JH : the MET needs to be updated, even if it's Central.
-
-  Particle vMETSyst;
-  //if(ApplySyst){
-    if(METType.Contains("CMSSW")){
-      if(IsxyCorr) vMETSyst.SetPtEtaPhiM(PuppiMET_Type1_PhiCor_pt, 0., PuppiMET_Type1_PhiCor_phi, 0.); //JH FIXME is this just omitted or not provided?
-      else         vMETSyst.SetPtEtaPhiM(PuppiMET_Type1_pt_shifts->at(IdxSyst), 0.,  PuppiMET_Type1_phi_shifts->at(IdxSyst), 0.);
-    }
-    else vMETSyst = UpdateMETSyst(param, vMET, jets, fatjets, muons, electrons);
-  //} //JH
-
-  return vMETSyst;
-}
-
-Particle HNL_LeptonCore::GetvMET(TString METType, AnalyzerParameter param){
-
-  bool IsType1   = METType.Contains("T1");
-  bool IsxyCorr  = METType.Contains("xyCorr");
-  bool UsePuppi  = METType.Contains("Puppi");
-
-  bool IsJetSmear  = METType.Contains("JetSmear");
-
-  int IdxSyst = -1;
-
-  if(param.syst_ == AnalyzerParameter::METUnclUp)   IdxSyst = 10;
-  if(param.syst_ == AnalyzerParameter::METUnclDown)   IdxSyst = 11;
-
-  // Use CMSSW MET SYSTa                                                                                                                                                                                                                                                                                   
-  if(METType.Contains("CMSSW")){
-    if(param.syst_ == AnalyzerParameter::JetEnUp)  IdxSyst = 2;
-    if(param.syst_ == AnalyzerParameter::JetEnDown)  IdxSyst = 3;
-    if(param.syst_ == AnalyzerParameter::JetResUp)  IdxSyst = 0;
-    if(param.syst_ == AnalyzerParameter::JetResDown)  IdxSyst = 1;
-  }
-  bool ApplySyst = (!IsDATA) && IdxSyst >= 0;
-
-  Particle vMET;
-
-  if(UsePuppi){
-    if(IsType1){
-      if( (!ApplySyst) ){
-        if(IsxyCorr) vMET.SetPtEtaPhiM(PuppiMET_Type1_PhiCor_pt, 0., PuppiMET_Type1_PhiCor_phi, 0.);
-        else         vMET.SetPtEtaPhiM(PuppiMET_Type1_pt, 0., PuppiMET_Type1_phi, 0.);
-      }
-      else{
-        if(IsxyCorr)  vMET.SetPtEtaPhiM(PuppiMET_Type1_PhiCor_pt, 0., PuppiMET_Type1_PhiCor_phi, 0.);
-        else         vMET.SetPtEtaPhiM(PuppiMET_Type1_pt_shifts->at(IdxSyst), 0.,  PuppiMET_Type1_phi_shifts->at(IdxSyst), 0.);
-      }
-    }
-
-  }
-  else{
-    if(IsType1){
-      if( (!ApplySyst) or ( IdxSyst>=0 && (!isfinite(pfMET_Type1_PhiCor_pt_shifts->at(IdxSyst))) ) ){
-        if(IsxyCorr) vMET.SetPtEtaPhiM(pfMET_Type1_PhiCor_pt, 0., pfMET_Type1_PhiCor_phi, 0.);
-        else         vMET.SetPtEtaPhiM(pfMET_Type1_pt, 0., pfMET_Type1_phi, 0.);
-      }
-      else{
-        if(IsxyCorr) vMET.SetPtEtaPhiM(pfMET_Type1_PhiCor_pt_shifts->at(IdxSyst), 0., pfMET_Type1_PhiCor_phi_shifts->at(IdxSyst), 0.);
-        else         vMET.SetPtEtaPhiM(pfMET_Type1_pt_shifts->at(IdxSyst), 0., pfMET_Type1_phi_shifts->at(IdxSyst), 0.);
-      }
-    }
-
-  }
-
-  if (!IsJetSmear && param.syst_ == AnalyzerParameter::Central) return vMET;
-
-  Particle vMETSmeared;
-  vector<Jet> _jets = GetJets(param, param.Jet_ID, 10., 5.);
-  if (IsJetSmear) vMETSmeared = UpdateMETSmearedJet(vMET, _jets);
-
-  if(param.syst_ == AnalyzerParameter::Central) return vMETSmeared;
-  double MET = vMETSmeared.Pt();
-  double METPhi = vMETSmeared.Pt();
-  //if(param.syst_ == AnalyzerParameter::JetResUp ) CorrectedMETJER(1, GetJets(param, 10., 5.), GetFatJets(param, 200., 5.), MET,METPhi);                                                                                                                                                                  
-  //if(param.syst_ == AnalyzerParameter::JetResDown) CorrectedMETJER(-11, GetJets(param, 10., 5.), GetFatJets(param, 200., 5.), MET,METPhi);                                                                                                                                                               
-  // Write CorrectedMETXXhttps://github.com/jedori0228/LQanalyzer/blob/CatAnalyzer_13TeV_v8-0-7.36_HNAnalyzer/LQAnalysis/Analyzers/src/AnalyzerCore.cc#L4826                                                                                                                                               
-
-  Particle vMETSyst;
-  vMETSyst.SetPtEtaPhiM(MET, 0., METPhi, 0.);
-
-
-  return vMETSyst;
-}
 
 int HNL_LeptonCore::GetIndexNonMinOSSF(std::vector<Lepton *> leps){
 
@@ -3187,8 +3206,10 @@ double  HNL_LeptonCore::GetMass(TString type , std::vector<Jet> jets, std::vecto
 
 
 
-vector<Muon> HNL_LeptonCore::GetLepCollByRunType(const std::vector<Muon>& MuColl, vector<Gen>& TruthColl, AnalyzerParameter param, TString Option){
+vector<Muon> HNL_LeptonCore::GetLepCollByRunType(const std::vector<Muon>& MuColl, AnalyzerParameter param, TString Option){
 
+
+  /// Empty Option means  param is used to configure
   if(Option == ""){
     if(param.MuFakeMethod == "MC") Option+="HFake";
 
@@ -3200,7 +3221,7 @@ vector<Muon> HNL_LeptonCore::GetLepCollByRunType(const std::vector<Muon>& MuColl
 
   if(RunPromptTLRemoval) Option == "NHIntConv";
 
-  ///cout << "AnalyzerCore::GetLepCollByRunType  Muon Option = " << Option << endl;                                                                                                                                                                                                                        
+  ///cout << "AnalyzerCore::GetLepCollByRunType  Muon Option = " << Option << endl;                                                                                                                                                                                                                   
 
   bool GetHadFake=false,  GetNHIntConv=false, GetNHExtConv=false;
 
@@ -3220,7 +3241,7 @@ vector<Muon> HNL_LeptonCore::GetLepCollByRunType(const std::vector<Muon>& MuColl
   for(unsigned int i=0; i<MuColl.size(); i++){
     if(Option=="NoSel")  ReturnVec.push_back(MuColl.at(i));
     else {
-      int LepType=GetLeptonType_JH(MuColl.at(i), TruthColl);
+      int LepType= MuColl.at(i).LeptonGenType();
       bool PassSel=false;
       if( LepType > 0 && LepType < 4) PassSel=true;
       if( GetHadFake    && (LepType<0 && LepType>=-4) ) PassSel=true;
@@ -3283,7 +3304,7 @@ vector<Muon> HNL_LeptonCore::GetSignalLeptons(const std::vector<Muon>& MuColl, v
 
 
 
-vector<Electron> HNL_LeptonCore::GetLepCollByRunType(const vector<Electron>& ElColl, vector<Gen>& TruthColl, AnalyzerParameter param, TString Option){
+vector<Electron> HNL_LeptonCore::GetLepCollByRunType(const vector<Electron>& ElColl, AnalyzerParameter param, TString Option){
 
 
   if(Option == ""){
@@ -3319,13 +3340,15 @@ vector<Electron> HNL_LeptonCore::GetLepCollByRunType(const vector<Electron>& ElC
   for(unsigned int i=0; i<ElColl.size(); i++){
     if (Option == "NoSel") ReturnVec.push_back(ElColl.at(i));
     else {
-      int LepType=GetLeptonType_JH(ElColl.at(i), TruthColl); bool PassSel=true;
+      int LepType= ElColl.at(i).LeptonGenType();
+
+      bool PassSel=false;
       if( LepType > 0 && LepType < 4) PassSel=true;
       if( GetHadFake    && (LepType<0 && LepType>=-4) ) PassSel=true;
       if( GetNHIntConv &&         LepType>=4         ) PassSel=true;
       if( GetNHExtConv &&         LepType<-4         ) PassSel=true;
-      if( GetCF   && IsCF(ElColl.at(i), TruthColl) ) PassSel=true;
-      if( !GetCF && IsCF(ElColl.at(i), TruthColl) ) PassSel=false;
+      if( GetCF   && ElColl.at(i).LeptonIsCF() ) PassSel=true;
+      if( !GetCF && ElColl.at(i).LeptonIsCF() ) PassSel=false;
       if( PassSel ) ReturnVec.push_back(ElColl.at(i));
     }
   }
@@ -3662,63 +3685,46 @@ TString HNL_LeptonCore::GetEtaLabel(Muon mu){
 }
 
 
-double HNL_LeptonCore::PassEventTypeFilter(vector<Lepton *> leps , vector<Gen> gens){
+double HNL_LeptonCore::PassEventTypeFilter(vector<Lepton *> leps){
 
   if(IsData) return true;
-
-
+  
   int nConv(0);
-  //int nCF=(0);
-                                                                                                                                                  
+  int nCF=(0);
+  int nFake=(0);                                                                                                                                                                                                                                                                                           
   for(auto ilep: leps){
-    int LepType=GetLeptonType_JH(*ilep, gens);
-    if( LepType >=4 || LepType < -4) nConv++;
+    //int LepType= GetLeptonType_JH(*ilep, gens);
+    if( ilep->IsConv())     nConv++;
+    if( ilep->LeptonIsCF()) nCF++;
+    if( ilep->IsFake())     nFake++;
   }
-  if(RunConv && nConv==0)  return false;
+  if(RunConv && nConv == 0)  return false;
+  if(RunCF   && nCF   == 0)  return false;
+  if(RunFake && nFake == 0)  return false;
+
   if(!RunPromptTLRemoval){
     if(!RunConv && nConv > 0) return false;
+    if(!RunCF && nCF > 0) return false;
   }
 
   return true;
 }
 
-TString HNL_LeptonCore::GetElType(Electron el, const std::vector<Gen>& gens){
+
+TString HNL_LeptonCore::GetElTypeTString(Electron el){
   if(IsDATA) return "";
   TString tag = "";
-  if(GetLeptonType(el, gens) > 0) tag += "NF";
-  else tag += "F";
 
-  if(fabs(GetLeptonType(el, gens))  >=4)  tag += "_Conv";
-  if(IsCF(el, gens)) tag += "_CF";
-
-  return tag;
-}
-TString HNL_LeptonCore::GetElTypeString(Electron el, const std::vector<Gen>& gens){
-  if(IsDATA) return "";
-  TString tag = "";
-  if(GetLeptonType(el, gens) > 0) tag += "NonFake";
-  else tag += "Fake";
-
-  if(fabs(GetLeptonType(el, gens))  >=4)  tag += "_Conv";
-  if(IsCF(el, gens)) tag += "_CF";
-
+  if(GetLeptonType(el, All_Gens) < 0) tag = "Minus";
+  tag+=TString::Itoa(fabs( el.LeptonGenType()), 10);
   return tag;
 }
 
-TString HNL_LeptonCore::GetElTypeTString(Electron el, const std::vector<Gen>& gens){
+TString HNL_LeptonCore::GetLepTypeTString(const Lepton& lep){
   if(IsDATA) return "";
   TString tag = "";
-
-  if(GetLeptonType(el, gens) < 0) tag = "Minus";
-  tag+=TString::Itoa(fabs(GetLeptonType(el, gens)), 10);
-  return tag;
-}
-
-TString HNL_LeptonCore::GetLepTypeTString(const Lepton& lep, const std::vector<Gen>& gens){
-  if(IsDATA) return "";
-  TString tag = "";
-  if(GetLeptonType(lep, gens) < 0) tag = "Minus";
-  tag+=TString::Itoa(fabs(GetLeptonType(lep, gens)), 10);
+  if(GetLeptonType(lep, All_Gens) < 0) tag = "Minus";
+  tag+=TString::Itoa(fabs(lep.LeptonGenType()), 10);
   return tag;
 }
 
@@ -3925,6 +3931,10 @@ void HNL_LeptonCore::FillAK8Plots(HNL_LeptonCore::Channel channel,  TString plot
   FillHist( plot_dir+"/RegionPlots_"+ region+ "/AK8Jet_dPhi_l2_lJ",  fabs(TVector2::Phi_mpi_pi( ( (fatjets[0] + *leps[0]).Phi() - (leps[1]->Phi() )))),  w,  100, 0., 5., "");
   FillHist( plot_dir+"/RegionPlots_"+ region+ "/AK8Jet_dPhi_l1_lJ",  fabs(TVector2::Phi_mpi_pi( ( (fatjets[0] + *leps[1]).Phi() - (leps[0]->Phi() )))),  w,  100, 0., 5., "");
 
+  FillHist( plot_dir+"/RegionPlots_"+ region+ "/AK8Jet_Eta",  fatjets[0].Eta() , w, 100, -5., 5., "AK8 Jet #eta");
+  FillHist( plot_dir+"/RegionPlots_"+ region+ "/AK8Jet_Pt",  fatjets[0].Pt() , w, 2000, 0., 2000., "AK8 Jet p_{T} GeV");
+  FillHist( plot_dir+"/RegionPlots_"+ region+ "/AK8Jet_SDMass",  fatjets[0].SDMass() , w, 500, 0., 500., "Mass_{softdrop} GeV");
+  FillHist( plot_dir+"/RegionPlots_"+ region+ "/AK8Jet_tau21",  fatjets[0].PuppiTau2()/ fatjets[0].PuppiTau1() , w, 200, 0., 1., "#tau_{21}");
 
   //if(fatjets[0].DeltaR(*leps[0] ) < fatjets[0].DeltaR(*leps[1] )){
   //  Particle lJcloseCand = *leps[0]  +  fatjets[0];
@@ -4005,12 +4015,12 @@ void HNL_LeptonCore::Fill_RegionPlots(HNL_LeptonCore::Channel channel, TString p
 
   if(leps.size() < 2) return;
 
-  //for(auto ilep : leps){
-  //  map<TString, double> lep_bdt_map = ilep->MAPBDT();
-  //  for(auto i : lep_bdt_map)     FillHist( plot_dir+ "/Lepton_mva_"+i.first + "_"+region , i.second, w, 100, -1., 1., "MVA");
-  //  FillHist( plot_dir+ "/LepRegionPlots_"+ region+ "/Lepton_mva_HF_"+region , ilep->LepMVA(), w, 100, -1., 1., "MVA");
-  //  for(auto i : lep_bdt_map)FillHist( plot_dir+ "/LepRegionPlots_"+ region+ "/"+i.first+"_HFMVA_"+region, i.second, ilep->LepMVA(), w, 100, -1., 1.,100, -1., 1.);
-  //} //JH : check later
+  for(auto ilep : leps){
+    map<TString, double> lep_bdt_map = ilep->MAPBDT();
+    for(auto i : lep_bdt_map)     FillHist( plot_dir+"/LepRegionPlots_"+ region+ "/Lepton_mva_"+i.first + "_"+region , i.second, w, 100, -1., 1., "MVA");
+    FillHist( plot_dir+ "/LepRegionPlots_"+ region+ "/Lepton_mva_HF_"+region , ilep->LepMVA(), w, 100, -1., 1., "MVA");
+    for(auto i : lep_bdt_map)FillHist( plot_dir+ "/LepRegionPlots_"+ region+ "/"+i.first+"_HFMVA_"+region, i.second, ilep->LepMVA(), w, 100, -1., 1.,100, -1., 1.);
+  }
 
   if(DrawAll)FillHist( plot_dir+"/RegionPlots_"+ region+ "/SumQ", leps[0]->Charge() + leps[1]->Charge(),  w, 10, -5, 5, "Q size");
 
@@ -4267,7 +4277,7 @@ void HNL_LeptonCore::Fill_RegionPlots(HNL_LeptonCore::Channel channel, TString p
   FillHist( plot_dir+"/RegionPlots_"+ region+ "/Ev_MET2_ST", met2_st  , w, 40, 0., 20.,"MET2/ST GeV");
 
 
-  Particle METv = GetvMET("T1xyCorr");
+  Particle METv      = GetvMET("T1xyCorr");
   Particle PuppiMETv = GetvMET("PuppiT1xyCorr");
   Particle METvNoPhi = GetvMET("T1");
   Particle PuppiMETvNoPhi = GetvMET("PuppiT1");
@@ -4406,11 +4416,10 @@ void HNL_LeptonCore::FillEventCutflowDef(TString analysis_dir_name,TString histn
 
   TH1D *this_hist = GetHist1D(analysis_dir_name+"/"+histname);
 
-
   if( !this_hist ){
     TString cf_name="FillEventCutflow";
     //if(histname.Contains("Syst")) cf_name= "FillEventCutflow_Syst";
-    //if(histname.Contains("SR")) cf_name="FillEventCutflow_SR";
+    if(histname.Contains("SR")) cf_name="LimitBins/";
     if(histname.Contains("_massbinned")) cf_name="FillEventCutflow_MassBinned";
     
     if(!analysis_dir_name.Contains("ChannelCutFlow"))  cf_name = analysis_dir_name + "/"+cf_name;
@@ -4446,40 +4455,68 @@ void HNL_LeptonCore::FillEventCutflow(HNL_LeptonCore::SearchRegion sr, double ev
   if (verbose_level == 0) {
     
     if(sr==SR1 ){
-      labels = {  "Presel", "AK8Jet", "SR1_Init",   "SR1_lep_charge",  "SR1_lep_pt", "SR1_dilep_mass" , "SR1_LepPt","SR1_DphiN_Wlep", "SR1_TauVeto", "SR1_HTPt", "SR1_Wmass",  "SR1_MET" , "SR1_bveto" };
-      EVhitname= "SR1";
+      labels = {  "SR1_Init", 
+      "SR1_lep_charge", 
+      "SR1_lep_pt", 
+      "SR1_dilep_mass" , 
+      "SR1_LepPt",
+      "SR1_DphiN_Wlep",
+      "SR1_TauVeto",
+      "SR1_HTPt", 
+      "SR1_Wmass", 
+      "SR1_MET" ,
+      "SR1_bveto",
+      "SR1_masscuts" };
+      EVhitname= "Cutflow_SR1";
     }
     
     if(sr==SR2){
-      labels = {   "Presel", "SR2_lep_charge", "SR2_lep_pt", "SR2_DPhi", "SR2_DiJet",  "SR2_DiJetEta",  "SR2_DiJetMass", "SR2_VBF",     "SR2_ht_lt1",      "SR2_bveto"};
-      EVhitname= "SR2";
+      labels = {  "SR2_lep_charge", 
+      "SR2_lep_pt", 
+      "SR2_DPhi", 
+      "SR2_DiJet", 
+      "SR2_DiJetEta", 
+      "SR2_DiJetMass", 
+      "SR2_VBF", 
+      "SR2_met", 
+      "SR2_ht_lt1", 
+      "SR2_bveto",
+      "SR2_Final"};
+      EVhitname= "Cutflow_SR2";
     }
     
     if( sr==SR3){
-      labels = {  "Presel", "NoAK8Jet", "FailVBF",    "SR3_lep_charge" ,     "SR3_lep_pt",      "SR3_dilep_mass","SR3_0JetBin","SR3_1JetBin",      "SR3_jet",       "SR3_dijet",
-      "SR3_Wmass", "SR3_J1Pt",     "SR3_MET",      "SR3_bveto"};
-      EVhitname= "SR3";
+      labels = { "SR3_lep_charge" , 
+     "SR3_lep_pt", 
+     "SR3_dilep_mass",
+     "SR3_0JetBinHPT",
+     "SR3_1JetBinHPT",
+     "SR3_dijet",
+     "SR3_Wmass", 
+     "SR3_J1Pt", 
+     "SR3_MET", 
+     "SR3_bveto"};
+      EVhitname= "Cutflow_SR3";
     }
     if( sr==SR3BDT){
-      labels = {  "Presel", "NoAK8Jet", "FailVBF",    "SR3_lep_charge" ,     "SR3_lep_pt",      "SR3_dilep_mass",      "SR3_jet",       "SR3_dijet",
-                  "SR3_Wmass", "SR3_J1Pt",     "SR3_MET",      "SR3_bveto"};
-      EVhitname= "SR3BDT";
+      labels = {  "SR3_lep_charge" , 
+      "SR3_lep_pt", 
+      "SR3_dilep_mass", 
+      "SR3_jet", 
+      "SR3_dijet",
+                  "SR3_Wmass", 
+      "SR3_J1Pt", 
+      "SR3_MET", 
+      "SR3_bveto"};
+      EVhitname= "Cutflow_SR3BDT";
     }
 
-
-
-    if(sr==SR4){
-      labels = {      "SR4_3lep",             "SR4_3lep_veto", "SR4_3lep_chargereq",   "SR4_3lep_bjet",      "SR4_3lep_Zmlll",       "SR4_3lep_Zmll_os",      "SR4_lll_mu"};
-      EVhitname= "SR4";
-    }
     if(sr==PreselSS || sr==Presel ){
-      labels = {"NoCut", "METFilter", "Trigger", "Dilepton",
-    "SS_Dilep" ,"SS_lep_veto", "SS_Dilep_mass", "SS_Presel"};
+      labels = {"NoCut", "METFilter", "Trigger", "Dilepton","SS_Dilep" ,"SS_lep_veto", "SS_Dilep_mass", "SS_Presel"};
       EVhitname = "SS_Presel";
     }
     if(sr==PreselOS || sr==Presel ){
-      labels = {"NoCut", "METFilter", "Trigger", "Dilepton",
-        "OS_Dilep" ,"OS_lep_veto", "OS_Dilep_mass", "OS_Presel"};
+      labels = {"NoCut", "METFilter", "Trigger", "Dilepton", "OS_Dilep" ,"OS_lep_veto", "OS_Dilep_mass", "OS_Presel"};
       EVhitname ="OS_Presel";
     }
     if(sr==ChannelDepInc ){
@@ -4545,48 +4582,25 @@ void HNL_LeptonCore::FillEventCutflow(HNL_LeptonCore::SearchRegion sr, double ev
   }
   
   if(verbose_level >= 0){
-    if(sr==MuonSR){
-      labels = {"SR1_bin1","SR1_bin2","SR1_bin3","SR1_bin4","SR1_bin5","SR1_bin6","SR1_bin7","SR2_bin1", "SR2_bin2", "SR3_bin1","SR3_bin2","SR3_bin3","SR3_bin4","SR3_bin5","SR3_bin6","SR3_bin7"};
-      EVhitname ="MuonSR";
-    }
-    if(sr==ElectronSR){
-      labels = {"SR1_bin1","SR1_bin2","SR1_bin3","SR1_bin4","SR1_bin5","SR1_bin6","SR1_bin7","SR2_bin1","SR2_bin2", "SR3_bin1","SR3_bin2","SR3_bin3","SR3_bin4","SR3_bin5","SR3_bin6","SR3_bin7"};
-      EVhitname ="ElectronSR";
-    }
-    if(sr==ElectronMuonSR){
-      labels = {"SR1_bin1","SR1_bin2","SR1_bin3","SR1_bin4","SR1_bin5","SR1_bin6","SR1_bin7","SR2_bin1","SR2_bin2", "SR3_bin1","SR3_bin2","SR3_bin3","SR3_bin4","SR3_bin5","SR3_bin6","SR3_bin7"};
-      EVhitname ="ElectronMuonSR";
-    }
-    
-    
-    if(sr==MuonSRQQ){
-      labels = {"QMSR1_bin1","QMSR1_bin2","QMSR1_bin3","QMSR1_bin4","QMSR1_bin5","QMSR1_bin6","QMSR1_bin7","QMSR2_bin1", "QMSR2_bin2",  "QMSR3_bin1","QMSR3_bin2","QMSR3_bin3","QMSR3_bin4","QMSR3_bin5","QMSR3_bin6","QMSR3_bin7",  "QPSR1_bin1","QPSR1_bin2","QPSR1_bin3","QPSR1_bin4","QPSR1_bin5","QPSR1_bin6","QPSR1_bin7","QPSR2_bin1","QPSR2_bin2",  "QPSR3_bin1","QPSR3_bin2","QPSR3_bin3","QPSR3_bin4","QPSR3_bin5","QPSR3_bin6","QPSR3_bin7"};
-      EVhitname ="MuonChargeSplitSR";
-    }
-    
-    if(sr==ElectronSRQQ){
-      labels = {"QMSR1_bin1","QMSR1_bin2","QMSR1_bin3","QMSR1_bin4","QMSR1_bin5","QMSR1_bin6","QMSR1_bin7","QMSR2_bin1","QMSR2_bin2",  "QMSR3_bin1","QMSR3_bin2","QMSR3_bin3","QMSR3_bin4","QMSR3_bin5","QMSR3_bin6","QMSR3_bin7", "QPSR1_bin1","QPSR1_bin2","QPSR1_bin3","QPSR1_bin4","QPSR1_bin5","QPSR1_bin6","QPSR1_bin7","QPSR2_bin1","QPSR2_bin2",  "QPSR3_bin1","QPSR3_bin2","QPSR3_bin3","QPSR3_bin4","QPSR3_bin5","QPSR3_bin6","QPSR3_bin7"};
-      EVhitname ="ElectronChargeSplitSR";
-    }
-    if(sr==ElectronMuonSRQQ){
-      labels = {"QMSR1_bin1","QMSR1_bin2","QMSR1_bin3","QMSR1_bin4","QMSR1_bin5","QMSR1_bin6","QMSR1_bin7","QMSR2_bin1","QMSR2_bin2",  "QMSR3_bin1","QMSR3_bin2","QMSR3_bin3","QMSR3_bin4","QMSR3_bin5","QMSR3_bin6","QMSR3_bin7" , "QPSR1_bin1","QPSR1_bin2","QPSR1_bin3","QPSR1_bin4","QPSR1_bin5","QPSR1_bin6","QPSR1_bin7","QPSR2_bin1","QPSR2_bin2",  "QPSR3_bin1","QPSR3_bin2","QPSR3_bin3","QPSR3_bin4","QPSR3_bin5","QPSR3_bin6","QPSR3_bin7"};
-      EVhitname ="ElectronMuonChargeSplitSR";
-    }
+    vector<TString> SRlabels = {"SR1_MNbin1","SR1_MNbin2","SR1_MNbin3","SR1_MNbin4","SR1_MNbin5","SR1_MNbin6","SR1_MNbin7","SR2_HTLTbin1", "SR2_HTLTbin2", "SR3_bin1","SR3_bin2","SR3_bin3","SR3_bin4","SR3_bin5","SR3_bin6","SR3_bin7","SR3_bin8"};
+    vector<TString> SRQlabels=  {"QMSR1_MNbin1","QMSR1_MNbin2","QMSR1_MNbin3","QMSR1_MNbin4","QMSR1_MNbin5","QMSR1_MNbin6","QMSR1_MNbin7","QMSR2_HTLTbin1", "QMSR2_HTLTbin2",  "QMSR3_bin1","QMSR3_bin2","QMSR3_bin3","QMSR3_bin4","QMSR3_bin5","QMSR3_bin6","QMSR3_bin7",  "QPSR1_MNbin1","QPSR1_MNbin2","QPSR1_MNbin3","QPSR1_MNbin4","QPSR1_MNbin5","QPSR1_MNbin6","QPSR1_MNbin7","QPSR2_HTLTbin1","QPSR2_HTLTbin2",  "QPSR3_bin1","QPSR3_bin2","QPSR3_bin3","QPSR3_bin4","QPSR3_bin5","QPSR3_bin6","QPSR3_bin7"};
+    vector<TString> SRBDTlabels=  {"SR1_MNbin1","SR1_MNbin2","SR1_MNbin3","SR1_MNbin4","SR1_MNbin5","SR1_MNbin6","SR1_MNbin7","SR2_HTLTbin1", "SR2_HTLTbin2",  "SR3_BDTbin1","SR3_BDTbin2","SR3_BDTbin3","SR3_BDTbin4","SR3_BDTbin5","SR3_BDTbin6","SR3_BDTbin7","SR3_BDTbin8","SR3_BDTbin9"};
 
-    if(sr==MuonSRBDT){
-      labels = {"SR1_bin1","SR1_bin2","SR1_bin3","SR1_bin4","SR1_bin5","SR1_bin6","SR1_bin7","SR2_bin1", "SR2_bin2",  "SR3_bin1","SR3_bin2","SR3_bin3","SR3_bin4","SR3_bin5","SR3_bin6","SR3_bin7","SR3_bin8","SR3_bin9"};
-      EVhitname ="MuonSR";
-    }
-    if(sr==ElectronSRBDT){
-      labels = {"SR1_bin1","SR1_bin2","SR1_bin3","SR1_bin4","SR1_bin5","SR1_bin6","SR1_bin7","SR2_bin1","SR2_bin2",  "SR3_bin1","SR3_bin2","SR3_bin3","SR3_bin4","SR3_bin5","SR3_bin6","SR3_bin7","SR3_bin8","SR3_bin9"};
-      EVhitname ="ElectronSR";
-    }
-    if(sr==ElectronMuonSRBDT){
-      labels = {"SR1_bin1","SR1_bin2","SR1_bin3","SR1_bin4","SR1_bin5","SR1_bin6","SR1_bin7","SR2_bin1","SR2_bin2",  "SR3_bin1","SR3_bin2","SR3_bin3","SR3_bin4","SR3_bin5","SR3_bin6","SR3_bin7","SR3_bin8","SR3_bin9"};
-      EVhitname ="ElectronMuonSR";
-    }
-
-
+    if(sr==MuonSR || sr==ElectronSR || sr==ElectronMuonSR)       labels = SRlabels;
+    if(sr==MuonSRQQ || sr==ElectronSRQQ || sr==ElectronMuonSRQQ) labels = SRQlabels;
+    if(sr==MuonSRBDT || sr==ElectronSRBDT || sr==ElectronMuonSRBDT) labels = SRBDTlabels ;    
+    //
+    if(sr==MuonSR)         EVhitname ="MuonSR";
+    if(sr==ElectronSR)     EVhitname ="ElectronSR";
+    if(sr==ElectronMuonSR) EVhitname ="ElectronMuonSR";
+    //
+    if(sr==MuonSRQQ )       EVhitname ="MuonChargeSplitSR";
+    if(sr==ElectronSRQQ)    EVhitname ="ElectronChargeSplitSR";
+    if(sr==ElectronMuonSRQQ)EVhitname ="ElectronMuonChargeSplitSR";
+    //
+    if(sr==MuonSRBDT)     EVhitname ="MuonSR";
+    if(sr==ElectronSRBDT) EVhitname ="ElectronSR";
+    if(sr==ElectronMuonSRBDT) EVhitname ="ElectronMuonSR";
   }
   
   
@@ -4842,14 +4856,27 @@ void HNL_LeptonCore::FillAllMuonPlots(TString label , TString cut,  std::vector<
  
     TString pt_label=GetPtBin(true,muons.at(i).Pt());
 
-    int LepType= GetLeptonType_JH(muons.at(i), gens);
+    int LepType= muons.at(i).LeptonGenType();
+
     TString gen_label = "";
     if (LepType >= 0) gen_label = to_string(LepType);
     else gen_label = "Minus_"+to_string(fabs(LepType));
 
-    //if(GenTypeMatched(MatchGenDef(gens,muons[i]))){
-    //  if(label.Contains("Fake")) FillMuonKinematicPlots("muon"+label+"_"+muons.at(i).CloseJet_Flavour()+"_"+MatchGenDef(gens,muons[i]), cut, muons.at(i), w);
-    // }
+    if(Analyzer == "HNL_LeptonIDBDTStudies"){
+      if(GenTypeMatched(MatchGenDef(All_Gens,muons[i]))){
+  if(label.Contains("Fake")) FillMuonKinematicPlots("muon"+label+"_"+muons.at(i).CloseJet_Flavour()+"_"+MatchGenDef(All_Gens,muons[i]), cut, muons.at(i), w);
+      }
+      
+      if(muons[i].HNL_MVA_Fake("v1") < -0.5) FillMuonKinematicPlots("muon_lowMVAv1_"+label+"_"+muons.at(i).CloseJet_Flavour()+"_"+MatchGenDef(All_Gens,muons[i]), cut, muons.at(i), w);
+      if(muons[i].HNL_MVA_Fake("v1") > 0.5) FillMuonKinematicPlots("muon_highMVAv1_"+label+"_"+muons.at(i).CloseJet_Flavour(), cut, muons.at(i), w);
+      if(muons[i].HNL_MVA_Fake("v2") < -0.5) FillMuonKinematicPlots("muon_lowMVAv2_"+label+"_"+muons.at(i).CloseJet_Flavour()+"_"+MatchGenDef(All_Gens,muons[i]), cut, muons.at(i), w);
+      if(muons[i].HNL_MVA_Fake("v2") > 0.5) FillMuonKinematicPlots("muon_highMVAv2_"+label+"_"+muons.at(i).CloseJet_Flavour(), cut, muons.at(i), w);
+      if(muons[i].HNL_MVA_Fake("v3") < -0.5) FillMuonKinematicPlots("muon_lowMVAv3_"+label+"_"+muons.at(i).CloseJet_Flavour()+"_"+MatchGenDef(All_Gens,muons[i]), cut, muons.at(i), w);
+      if(muons[i].HNL_MVA_Fake("v3") > 0.5) FillMuonKinematicPlots("muon_highMVAv3_"+label+"_"+muons.at(i).CloseJet_Flavour(), cut, muons.at(i), w);
+      if(muons[i].MVA() < -0.5) FillMuonKinematicPlots("muon_lowMVAHF_"+label+"_"+muons.at(i).CloseJet_Flavour()+"_"+MatchGenDef(All_Gens,muons[i]), cut, muons.at(i), w);
+      if(muons[i].MVA() > 0.5) FillMuonKinematicPlots("muon_highMVAHF_"+label+"_"+muons.at(i).CloseJet_Flavour(), cut, muons.at(i), w);
+
+    }
     FillMuonKinematicPlots("muon"+label+"_"+muons.at(i).CloseJet_Flavour(), cut, muons.at(i), w);
 
     
@@ -4979,16 +5006,18 @@ void HNL_LeptonCore::FillAllElectronPlots(TString label , TString cut,  std::vec
 
     TString pt_label=GetPtBin(false,ElectronColl.at(i).Pt());
 
-    int LepType= GetLeptonType_JH(ElectronColl.at(i), gens);
+    int LepType= ElectronColl.at(i).LeptonGenType();
     TString gen_label ="";
     if (LepType >= 0) gen_label = to_string(LepType);
     else gen_label = "Minus_"+to_string(fabs(LepType));
     
-    //if(GenTypeMatched(MatchGenDef(gens,ElectronColl.at(i)))){
-    //  
-    //  if(label.Contains("Fake")) FillElectronKinematicPlots("Electron_"+label+"_"+ ElectronColl.at(i).CloseJet_Flavour()+"_"+MatchGenDef(gens,ElectronColl[i]), cut, ElectronColl.at(i), w)//;
-
-    //    }
+    if(Analyzer== "HNL_LeptonIDBDTStudies"){
+      
+      if(GenTypeMatched(MatchGenDef(All_Gens,ElectronColl.at(i)))){
+  
+  if(label.Contains("Fake")) FillElectronKinematicPlots("Electron_"+label+"_"+ ElectronColl.at(i).CloseJet_Flavour()+"_"+MatchGenDef(All_Gens,ElectronColl[i]), cut, ElectronColl.at(i), w);
+      }
+    }
     FillElectronKinematicPlots("Electron_"+label+"_"+ ElectronColl.at(i).CloseJet_Flavour() , cut, ElectronColl.at(i), w);
   }
   return;

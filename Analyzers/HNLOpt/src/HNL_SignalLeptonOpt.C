@@ -21,7 +21,6 @@ void HNL_SignalLeptonOpt::executeEvent(){
 
   OutCutFlow("CutFlow_All_Events", 1);
 
-  if(!IsData)  gens = GetGens();
 
   AnalyzerParameter param_signal = HNL_LeptonCore::InitialiseHNLParameter("HNLOpt","_UL");
     
@@ -39,7 +38,7 @@ void HNL_SignalLeptonOpt::executeEvent(){
     if(!SameCharge(ElectronCollV)) return;
     if(MuonCollV.size() > 0) return;
    
-    std::vector<FatJet> FatjetColl                  = GetHNLAK8Jets("HNL",param_signal);
+    std::vector<FatJet> FatjetColl                  = GetHNLAK8Jets("",param_signal);
     std::vector<Jet> AllJetColl                     = GetHNLJets("NoCut_Eta3",param_signal);
     std::vector<Jet> JetColl                        = GetHNLJets("Tight",param_signal);
     std::vector<Jet> JetCollLoose                   = GetHNLJets("Loose",param_signal);
@@ -58,7 +57,13 @@ void HNL_SignalLeptonOpt::executeEvent(){
     vector<TString> vMVAConvBB1,vMVAConvEC1;
     vector<TString> vMVAConvBB2, vMVAConvEC2;
 
-    
+    // 2017 
+    /// BB HNLOpt_UL_ElOpt_HNLUL_POGT_ConvBConvEC_CCEC_LooseTrig_CFMVABB0p2_CFMVAMethodEDv2p1_DXYv1  5.6896150203
+    //     HNLOpt_UL_ElOpt_HNLUL_POGT_ConvBConvEC_CCEC_LooseTrig_CFMVABB0p93_CFMVAMethodv2_DXYv1     5.68214929691
+    //     HNLOpt_UL_ElOpt_HNLUL_POGT_ConvBConvEC_CCEC_LooseTrig_CFMVABB0p76_CFMVAMethodEDv2_DXYv1   5.68022917878
+
+    //  EC  /HNLOpt_UL_ElOpt_HNLUL_POGT_ConvBConvEC_CCBB_LooseTrig_CFMVAEC0p91_CFMVAMethodEDv2_DXYv1/LimitBins/ElectronSR 5.47130259473
+    //      
     if(HasFlag("ELID_NP_CF")){
 
     }
@@ -70,31 +75,23 @@ void HNL_SignalLeptonOpt::executeEvent(){
       vMVACFBB.clear();
       vMVACFEC.clear();
       
-      int nMVACF=31;
-      
-      for(int imva=0 ; imva < nMVACF ; imva++){
-	double mva_d=  -1. + double(imva)*.05;
-	TString mvaTS= DoubleToString(mva_d);
-	vMVACFBB.push_back("CFMVABB"+mvaTS+"_");
-	vMVACFEC.push_back("CFMVAEC"+mvaTS+"_");
-      }
-      for(int imva=1 ; imva < 45 ; imva++){
-	double mva_d=  0.5 + double(imva)*.01;
-	TString mvaTS= DoubleToString(mva_d);
-	vMVACFBB.push_back("CFMVABB"+mvaTS+"_");
-	vMVACFEC.push_back("CFMVAEC"+mvaTS+"_");
-      }
-	
-      vector<TString> vMVACFBB2={};
-      vector<TString> vMVACFEC2={};
-      for(int imva=1 ; imva < 16 ; imva++){
-	double mva_d=  0.6 + double(imva)*.02;
-	TString mvaTS= DoubleToString(mva_d);
-	vMVACFBB2.push_back("CFMVABB"+mvaTS+"_");
-	vMVACFEC2.push_back("CFMVAEC"+mvaTS+"_");
-      }
-      
       if(HasFlag("BB")){
+
+	int nMVACF=30;
+	for(int imva=0 ; imva < nMVACF ; imva++){
+	  double mva_d=  -1. + double(imva)*.05;
+	  TString mvaTS= DoubleToString(mva_d);
+	  vMVACFBB.push_back("CFMVABB"+mvaTS+"_");
+	  vMVACFEC.push_back("CFMVAEC"+mvaTS+"_");
+	}
+	for(int imva=1 ; imva < 45 ; imva++){
+	  double mva_d=  0.5 + double(imva)*.01;
+	  TString mvaTS= DoubleToString(mva_d);
+	  vMVACFBB.push_back("CFMVABB"+mvaTS+"_");
+	  vMVACFEC.push_back("CFMVAEC"+mvaTS+"_");
+	}
+
+
 	for(auto i1 : vMVACFBB)   ElectronsIDs.push_back("HNLUL_POGT_ConvBConvEC_CCEC_LooseTrig_"+i1+"CFMVAMethodv2_DXYv1"); 
 	for(auto i1 : vMVACFBB)   ElectronsIDs.push_back("HNLUL_POGT_ConvBConvEC_CCEC_LooseTrig_"+i1+"CFMVAMethodv2p1_DXYv1"); 
 	for(auto i1 : vMVACFBB)   ElectronsIDs.push_back("HNLUL_POGT_ConvBConvEC_CCEC_LooseTrig_"+i1+"CFMVAMethodv2p2_DXYv1"); 
@@ -103,12 +100,45 @@ void HNL_SignalLeptonOpt::executeEvent(){
 	for(auto i1 : vMVACFBB)   ElectronsIDs.push_back("HNLUL_POGT_ConvBConvEC_CCEC_LooseTrig_"+i1+"CFMVAMethodEDv2p2_DXYv1");
       }
       if(HasFlag("EC")){
+
+	int nMVACF=30;
+        for(int imva=0 ; imva < nMVACF ; imva++){
+          double mva_d=  -1. + double(imva)*.05;
+          TString mvaTS= DoubleToString(mva_d);
+          vMVACFBB.push_back("CFMVABB"+mvaTS+"_");
+          vMVACFEC.push_back("CFMVAEC"+mvaTS+"_");
+        }
+        for(int imva=1 ; imva < 45 ; imva++){
+          double mva_d=  0.5 + double(imva)*.01;
+          TString mvaTS= DoubleToString(mva_d);
+          vMVACFBB.push_back("CFMVABB"+mvaTS+"_");
+          vMVACFEC.push_back("CFMVAEC"+mvaTS+"_");
+        }
 	for(auto i1 : vMVACFEC)  ElectronsIDs.push_back("HNLUL_POGT_ConvBConvEC_CCBB_LooseTrig_"+i1+"CFMVAMethodv2_DXYv1");
 	for(auto i1 : vMVACFEC)  ElectronsIDs.push_back("HNLUL_POGT_ConvBConvEC_CCBB_LooseTrig_"+i1+"CFMVAMethodv2p1_DXYv1");
 	for(auto i1 : vMVACFEC)  ElectronsIDs.push_back("HNLUL_POGT_ConvBConvEC_CCBB_LooseTrig_"+i1+"CFMVAMethodv2p2_DXYv1");
 	for(auto i1 : vMVACFEC)  ElectronsIDs.push_back("HNLUL_POGT_ConvBConvEC_CCBB_LooseTrig_"+i1+"CFMVAMethodEDv2_DXYv1");
 	for(auto i1 : vMVACFEC)  ElectronsIDs.push_back("HNLUL_POGT_ConvBConvEC_CCBB_LooseTrig_"+i1+"CFMVAMethodEDv2p1_DXYv1");
 	for(auto i1 : vMVACFEC)  ElectronsIDs.push_back("HNLUL_POGT_ConvBConvEC_CCBB_LooseTrig_"+i1+"CFMVAMethodEDv2p2_DXYv1");
+      }
+
+      if(HasFlag("FullEta")){
+	
+	int nMVACF=15;
+        for(int imva=0 ; imva < nMVACF ; imva++){
+          double mva_d=  0.2 + double(imva)*.05;
+          TString mvaTS= DoubleToString(mva_d);
+          vMVACFBB.push_back("CFMVABB"+mvaTS+"_");
+          vMVACFEC.push_back("CFMVAEC"+mvaTS+"_");
+        }
+	for(auto i1 : vMVACFBB) {
+	  for(auto i2 : vMVACFEC) {
+            ElectronsIDs.push_back("HNLUL_POGT_ConvBConvEC_LooseTrig_"+i1+i2+"CFMVAMethodv2_DXYv1");
+            ElectronsIDs.push_back("HNLUL_POGT_ConvBConvEC_LooseTrig_"+i1+i2+"CFMVAMethodv2p1_DXYv1");
+	    ElectronsIDs.push_back("HNLUL_POGT_ConvBConvEC_LooseTrig_"+i1+i2+"CFMVAMethodEDv2_DXYv1");
+	    ElectronsIDs.push_back("HNLUL_POGT_ConvBConvEC_LooseTrig_"+i1+i2+"CFMVAMethodEDv2p1_DXYv1");
+	  }
+	}
       }
     }
     
@@ -220,7 +250,7 @@ void HNL_SignalLeptonOpt::executeEvent(){
     ElectronsIDs.push_back("HN2016POGCC");
 
     Event ev = GetEvent();
-    ev.SetMVA("EE",100, EvaluateEventMVA("100", "300","850", EE,  LepsVeto,ev, GetvMET("PuppiT1xyCorr",param_signal) ,param_signal));
+    ev.SetMVA("EE",100, EvaluateEventMVA("100", "300","850", EE,  LepsVeto,ev, GetvMET("PuppiT1xyCorr") ,param_signal));
     //ev.SetMVA("EE",400, EvaluateEventMVA("400", "300","850", EE,  LepsVeto,ev, GetvMET("PuppiT1xyCorr",param_signal) ,param_signal));
 
 
@@ -285,14 +315,14 @@ void HNL_SignalLeptonOpt::executeEvent(){
       if(BJetColl.size() == 0){
 	if(MuonCollV[0].PassID("MVALoose") && MuonCollV[1].PassID("MVALoose")){
 
-	  Fill_RegionPlots(MuMu, 0, param_signal.Name,"Preselection" , TauColl, JetColl, FatjetColl, LepsVeto, GetvMET("PuppiT1xyCorr",param_signal), nPV, SetupWeight(ev,param_signal),param_signal.WriteOutVerbose);
-	  if(MuonCollV[0].PassID("HNL_HN3L") && MuonCollV[1].PassID("HNL_HN3L")) Fill_RegionPlots(MuMu, 0, param_signal.Name,"Preselection2" , TauColl, JetColl, FatjetColl, LepsVeto, GetvMET("PuppiT1xyCorr",param_signal), nPV, SetupWeight(ev,param_signal),param_signal.WriteOutVerbose);
+	  Fill_RegionPlots(MuMu, 0, param_signal.Name,"Preselection" , TauColl, JetColl, FatjetColl, LepsVeto, GetvMET("PuppiT1xyCorr"), nPV, SetupWeight(ev,param_signal),param_signal.WriteOutVerbose);
+	  if(MuonCollV[0].PassID("HNL_HN3L") && MuonCollV[1].PassID("HNL_HN3L")) Fill_RegionPlots(MuMu, 0, param_signal.Name,"Preselection2" , TauColl, JetColl, FatjetColl, LepsVeto, GetvMET("PuppiT1xyCorr"), nPV, SetupWeight(ev,param_signal),param_signal.WriteOutVerbose);
 
-	  if(MuonCollV[0].PassID("HNTightV2") && MuonCollV[1].PassID("HNTightV2")) Fill_RegionPlots(MuMu, 0, param_signal.Name,"Preselection3" , TauColl, JetColl, FatjetColl, LepsVeto, GetvMET("PuppiT1xyCorr",param_signal), nPV, SetupWeight(ev,param_signal),param_signal.WriteOutVerbose);
+	  if(MuonCollV[0].PassID("HNTightV2") && MuonCollV[1].PassID("HNTightV2")) Fill_RegionPlots(MuMu, 0, param_signal.Name,"Preselection3" , TauColl, JetColl, FatjetColl, LepsVeto, GetvMET("PuppiT1xyCorr"), nPV, SetupWeight(ev,param_signal),param_signal.WriteOutVerbose);
 
-	  if(MuonCollV[0].PassID("HNL_ULIDv2") && MuonCollV[1].PassID("HNL_ULIDv2")) Fill_RegionPlots(MuMu, 0, param_signal.Name,"Preselection4" , TauColl, JetColl, FatjetColl, LepsVeto, GetvMET("PuppiT1xyCorr",param_signal), nPV, SetupWeight(ev,param_signal),param_signal.WriteOutVerbose);
-	  if(MuonCollV[0].PassID("HNL_ULIDv3") && MuonCollV[1].PassID("HNL_ULIDv3")) Fill_RegionPlots(MuMu, 0, param_signal.Name,"Preselection5" , TauColl, JetColl, FatjetColl, LepsVeto, GetvMET("PuppiT1xyCorr",param_signal), nPV, SetupWeight(ev,param_signal),param_signal.WriteOutVerbose);
-	  if(MuonCollV[0].PassID("HNL_ULIDv4") && MuonCollV[1].PassID("HNL_ULIDv4")) Fill_RegionPlots(MuMu, 0, param_signal.Name,"Preselection6" , TauColl, JetColl, FatjetColl, LepsVeto, GetvMET("PuppiT1xyCorr",param_signal), nPV, SetupWeight(ev,param_signal),param_signal.WriteOutVerbose);
+	  if(MuonCollV[0].PassID("HNL_ULIDv2") && MuonCollV[1].PassID("HNL_ULIDv2")) Fill_RegionPlots(MuMu, 0, param_signal.Name,"Preselection4" , TauColl, JetColl, FatjetColl, LepsVeto, GetvMET("PuppiT1xyCorr"), nPV, SetupWeight(ev,param_signal),param_signal.WriteOutVerbose);
+	  if(MuonCollV[0].PassID("HNL_ULIDv3") && MuonCollV[1].PassID("HNL_ULIDv3")) Fill_RegionPlots(MuMu, 0, param_signal.Name,"Preselection5" , TauColl, JetColl, FatjetColl, LepsVeto, GetvMET("PuppiT1xyCorr"), nPV, SetupWeight(ev,param_signal),param_signal.WriteOutVerbose);
+	  if(MuonCollV[0].PassID("HNL_ULIDv4") && MuonCollV[1].PassID("HNL_ULIDv4")) Fill_RegionPlots(MuMu, 0, param_signal.Name,"Preselection6" , TauColl, JetColl, FatjetColl, LepsVeto, GetvMET("PuppiT1xyCorr"), nPV, SetupWeight(ev,param_signal),param_signal.WriteOutVerbose);
 	  
 	  
 	}      
@@ -330,8 +360,8 @@ void HNL_SignalLeptonOpt::executeEvent(){
 	
 	vector<TString> mvaHF1;
 	vector<TString> mvaHF2;
-        for(unsigned int imva=0 ; imva < 20 ; imva++){
-          double mva_d= 0.4 + double(imva)*0.02;
+        for(unsigned int imva=0 ; imva < 12 ; imva++){
+          double mva_d= 0.2 + double(imva)*0.05;
           TString mvaTS= DoubleToString(mva_d);
           mvaHF1.push_back("MVAHFBB"+mvaTS+"_");
           mvaHF2.push_back("MVAHFEC"+mvaTS+"_");
@@ -339,8 +369,8 @@ void HNL_SignalLeptonOpt::executeEvent(){
 
         vector<TString> mvaLF1;
         vector<TString> mvaLF2;
-	for(unsigned int imva=0 ; imva < 5 ; imva++){
-          double mva_d= -0.5 + double(imva)*0.2;
+	for(unsigned int imva=0 ; imva < 6 ; imva++){
+          double mva_d= -0.7 + double(imva)*0.1;
           TString mvaTS= DoubleToString(mva_d);
 	  mvaLF1.push_back("MVALFBB"+mvaTS+"_");
 	  mvaLF2.push_back("MVALFEC"+mvaTS+"_");
@@ -351,73 +381,13 @@ void HNL_SignalLeptonOpt::executeEvent(){
 	    MuonsIDs.push_back("HNLUL_"+i1+i2+"DXYv1");
 	    for(auto i3 : mvaLF1){
 	      for(auto i4 : mvaLF2){
+		MuonsIDs.push_back("HNLUL_"+i1+i2+i3+i4+"NPMMv1_DXYv1");
+		MuonsIDs.push_back("HNLUL_"+i1+i2+i3+i4+"NPMMv2_DXYv1");
 		MuonsIDs.push_back("HNLUL_"+i1+i2+i3+i4+"NPMMv3_DXYv1");
 	      }
 	    }
 	  }
 	}
-      }
-
-      if(HasFlag("BB")){
-	
-	vector<TString> mvaHF;
-	mvaHF.push_back("MVAHFBBneg1_");
-	mvaHF.push_back("MVAHFBBneg0p8_");
-	mvaHF.push_back("MVAHFBBneg0p4_");
-	mvaHF.push_back("MVAHFBB0_");
-	mvaHF.push_back("MVAHFBB0p2_");
-	mvaHF.push_back("MVAHFBB0p4_");
-	for(unsigned int imva=0 ; imva < 20 ; imva++){
-	  double mva_d= 0. + double(imva)*0.02;
-	  TString mvaTS= DoubleToString(mva_d);
-	  mvaHF.push_back("MVAHFBB"+mvaTS+"_");
-	}
-
-	vector<TString> mvaLF;
-	for(unsigned int imva=0 ; imva < 15 ; imva++){
-          double mva_d= -1. + double(imva)*0.1;
-          TString mvaTS= DoubleToString(mva_d);
-          mvaLF.push_back("MVALFBB"+mvaTS+"_");
-        }
-	
-	for(auto i1 : mvaHF){
-	  MuonsIDs.push_back("HNLUL_POGECT_ISOEC0p15_"+i1+"DXYv1");
-	  MuonsIDs.push_back("HNLUL_MVAHFEC0p64_"+i1+"DXYv1");
-	  MuonsIDs.push_back("HNLUL_MVAHFEC0p64_"+i1);
-	  for(auto i2 : mvaLF){
-	    MuonsIDs.push_back("HNLUL_MVAHFEC0p64_"+i2+i1+"NPMMv3_DXYv1");
-	  }
-	}
-      }
-      if(HasFlag("EC")){
-	
-	vector<TString> mvaHF;
-	mvaHF.push_back("MVAHFECneg1_");
-	mvaHF.push_back("MVAHFECneg0p8_");
-	mvaHF.push_back("MVAHFECneg0p6_");
-	mvaHF.push_back("MVAHFECneg0p4_");
-	mvaHF.push_back("MVAHFECneg0p2_");
-	for(unsigned int imva=0 ; imva < 45 ; imva++){
-	  double mva_d= 0. + double(imva)*0.02;
-	  TString mvaTS= DoubleToString(mva_d);
-	  mvaHF.push_back("MVAHFEC"+mvaTS+"_");
-	}
-
-	vector<TString> mvaLF;
-        for(unsigned int imva=0 ; imva < 30 ; imva++){
-          double mva_d= -1. + double(imva)*0.05;
-          TString mvaTS= DoubleToString(mva_d);
-          mvaLF.push_back("MVALFEC"+mvaTS+"_");
-        }
-
-        for(auto i1 : mvaHF){
-          MuonsIDs.push_back("HNLUL_POGBT_ISOB0p15_"+i1+"DXYv1");
-          MuonsIDs.push_back("HNLUL_MVAHFBB0p64_"+i1+"DXYv1");
-          MuonsIDs.push_back("HNLUL_MVAHFBB0p64_"+i1);
-          for(auto i2 : mvaLF){
-            MuonsIDs.push_back("HNLUL_MVAHFBB0p64_"+i2+i1+"NPMMv3_DXYv1");
-          }
-        }
       }
     }
     
@@ -548,12 +518,9 @@ void HNL_SignalLeptonOpt::executeEvent(){
       MuonsIDs.push_back("POGTightPFIsoVeryVeryTight");
     }
     
-    MuonsIDs.push_back("HNL_ULIDv1_2016");
-    MuonsIDs.push_back("HNL_ULIDv1_2017");
-    MuonsIDs.push_back("HNL_ULIDv1_2018");
-    MuonsIDs.push_back("HNL_ULIDv2_2016");
-    MuonsIDs.push_back("HNL_ULIDv2_2017");
-    MuonsIDs.push_back("HNL_ULIDv2_2018");
+    MuonsIDs.push_back("HNL_ULID_2016");
+    MuonsIDs.push_back("HNL_ULID_2017");
+    MuonsIDs.push_back("HNL_ULID_2018");
     MuonsIDs.push_back("HNL_ULIDv2");
     MuonsIDs.push_back("HNL_ULIDv3");
     MuonsIDs.push_back("HNL_ULIDv4");
@@ -579,8 +546,8 @@ void HNL_SignalLeptonOpt::executeEvent(){
     
     
 
-    ev.SetMVA("MuMu",100, EvaluateEventMVA("100", "300","850", MuMu,  LepsVeto,ev, GetvMET("PuppiT1xyCorr",param_signal),param_signal));
-    //    ev.SetMVA("MuMu",400, EvaluateEventMVA("400", "300","850", MuMu,  LepsVeto,ev, GetvMET("PuppiT1xyCorr",param_signal),param_signal));
+    ev.SetMVA("MuMu",100, EvaluateEventMVA("100", "300","850", MuMu,  LepsVeto,ev, GetvMET("PuppiT1xyCorr"),param_signal));
+    //    ev.SetMVA("MuMu",400, EvaluateEventMVA("400", "300","850", MuMu,  LepsVeto,ev, GetvMET("PuppiT1xyCorr"),param_signal));
     
     //cout << "Number of MuonsIDs = " << MuonsIDs.size() << endl;
     
@@ -676,15 +643,16 @@ void HNL_SignalLeptonOpt::RunULAnalysis(AnalyzerParameter param, vector<Electron
     if(ilep.PassID(mu_ID)) MuonCollTInit.push_back(ilep);
   }
 
-  std::vector<Muon>       MuonCollT     = GetLepCollByRunType    ( MuonCollTInit,gens,param);
-  std::vector<Electron>   ElectronCollT  =  GetLepCollByRunType   ( ElectronCollTInit,gens,param);
+  std::vector<Muon>       MuonCollT     = GetLepCollByRunType    ( MuonCollTInit,param);
+  std::vector<Electron>   ElectronCollT  =  GetLepCollByRunType   ( ElectronCollTInit,param);
   
-  Particle METv = GetvMET("PuppiT1xyCorr",param); // returns MET with systematic correction                                                                                                                      
+  Particle METv = GetvMET("PuppiT1xyCorr"); // returns MET with systematic correction                                                                                                                      
 
   FillHist( "TESTHIST/"+param.Name+"/NEvents",  5,  1, 10, 0,10 );
    
-
-  param.WriteOutVerbose=1; // Does not Fill Cutflow OR Region Plotter  
+  
+  if(param.Name.Contains("HNTightV2")) param.WriteOutVerbose=0; // Does not Fill Cutflow OR Region Plotter  
+  else  param.WriteOutVerbose=1;
 
   if(param.Name.Contains("HNTightV2"))OutCutFlow(param.Name+"_pre", weight);
   RunAllSignalRegions(Inclusive, ElectronCollT,ElectronCollV,MuonCollT,MuonCollV, TauColl, AllJetColl,JetCollLoose, JetColl, VBF_JetColl,AK8_JetColl , B_JetColl,B_JetCollSR1, ev,METv, param,weight);

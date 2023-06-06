@@ -269,7 +269,7 @@ void HNL_FakeRateOpt::RunM(std::vector<Electron> loose_el,  std::vector<Muon> lo
   TString channel_s="_MuMu";
   Event ev = GetEvent();
 
-  Particle METv = GetvMET("PuppiT1xyULCorr",param);
+  Particle METv = GetvMET("PuppiT1xyULCorr");
 
   if(loose_mu.size() == 0) return;
 
@@ -322,8 +322,7 @@ void HNL_FakeRateOpt::RunM(std::vector<Electron> loose_el,  std::vector<Muon> lo
 
   bool truth_match= false;
   if(!IsDATA) {
-    gens = GetGens();
-    if(GetLeptonType_JH(loose_mu.at(0), gens) > 0 ) truth_match=true;
+    if(loose_mu.at(0).LeptonGenType() > 0 ) truth_match=true;
   }
   else truth_match=true;
 
@@ -403,7 +402,7 @@ void HNL_FakeRateOpt::RunE( std::vector<Electron> loose_el, std::vector<Muon> lo
   TString label = param.Name;
   Event ev = GetEvent();
 
-  Particle METv = GetvMET("PuppiT1xyULCorr",param);
+  Particle METv = GetvMET("PuppiT1xyULCorr");
   
   if(loose_el.size() == 0) return;
  
@@ -459,8 +458,7 @@ void HNL_FakeRateOpt::RunE( std::vector<Electron> loose_el, std::vector<Muon> lo
 
   bool truth_match= false;
   if(!IsDATA) {
-    gens = GetGens();
-    if(GetLeptonType(loose_el.at(0), gens) > 0 ) truth_match=true;
+    if(loose_el.at(0).LeptonGenType()  > 0 ) truth_match=true;
   }
   else truth_match=true;
 
@@ -836,7 +834,7 @@ void HNL_FakeRateOpt::GetFakeRateAndPromptRates(AnalyzerParameter param, std::ve
   if (leps.size()<1) return;
   
   Event ev = GetEvent();
-  Particle METv = GetvMET("PuppiT1xyULCorr",param);
+  Particle METv = GetvMET("PuppiT1xyULCorr");
 
   
   if(leps.size()==1){
@@ -1021,15 +1019,13 @@ float HNL_FakeRateOpt::GetPrescale(std::vector<Lepton *>   leps  ){
 
 void HNL_FakeRateOpt::MakeFakeRatePlots(TString label, TString mutag,AnalyzerParameter param,  std::vector<Lepton *> leps , std::vector<bool> blepsT ,  std::vector<Jet> jets,  float event_weight, float isocut, Particle MET){
 				
-  if(!IsDATA)gens = GetGens();
-
 
   /// FOR FAKE RATE SUBTRACTION NEED ONLY PROMPT MUONS                                                                                                                                                  
   bool truth_match= false;
 
   if(!IsDATA) {
     if(leps.size() > 0){
-      if(GetLeptonType(*leps[0], gens) > 0 ) truth_match=true;
+      if(leps[0]->LeptonGenType() > 0 ) truth_match=true;
     }
   }
   else truth_match=true;

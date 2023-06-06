@@ -12,7 +12,6 @@ void HNL_ConversionStudy::executeEvent(){
 
  
   Event ev = GetEvent();
-  if(!IsData)  gens = GetGens();
 
   AnalyzerParameter param = HNL_LeptonCore::InitialiseHNLParameter("HNL","_UL");
   double weight =SetupWeight(ev,param);
@@ -32,8 +31,8 @@ void HNL_ConversionStudy::executeEvent(){
 
     if(1){
 
-      for(unsigned int i=2; i<gens.size(); i++){
-	Gen gen = gens.at(i);
+      for(unsigned int i=2; i<All_Gens.size(); i++){
+	Gen gen = All_Gens.at(i);
 
 	if(gen.PID() == 22){
 	  cout << gen.isPromptFinalState() << " " << gen.Status() << "  pt = " << gen.Pt() << " " << gen.Eta() << " " << gen.Phi() << endl;
@@ -64,8 +63,8 @@ void HNL_ConversionStudy::executeEvent(){
     cout << "New Event " << endl;
     
     
-    for(unsigned int i=2; i<gens.size(); i++){
-      Gen gen = gens.at(i);
+    for(unsigned int i=2; i<All_Gens.size(); i++){
+      Gen gen = All_Gens.at(i);
       
       if(gen.PID() == 22){
 	if(runDebug)cout << gen.isPromptFinalState() << " " << gen.Status() << "  pt = " << gen.Pt() << " " << gen.Eta() << " " << gen.Phi() << endl;
@@ -83,11 +82,11 @@ void HNL_ConversionStudy::executeEvent(){
   if(runDebug){
     
     for(auto iel : ElectronCollV) {
-      if(runDebug)cout << "Electron " << " " << iel.Pt() << " eta = " << iel.Eta() << " Type = " << GetLeptonType_JH(iel, gens) << endl;
+      if(runDebug)cout << "Electron " << " " << iel.Pt() << " eta = " << iel.Eta() << " Type = " << iel.LeptonGenType() << endl;
     }
     
     for(auto iel : MuonCollV) {
-      if(runDebug)cout << "Muon " << " " << iel.Pt() << " eta = " << iel.Eta() << " Type = " << GetLeptonType_JH(iel, gens) << endl;
+      if(runDebug)cout << "Muon " << " " << iel.Pt() << " eta = " << iel.Eta() << " Type = " <<  iel.LeptonGenType() << endl;
     }
   }
   
@@ -98,9 +97,9 @@ void HNL_ConversionStudy::executeEvent(){
 
   for(unsigned int ilep=0; ilep < LepsV.size(); ilep++){
 
-    TString SFlav = TString::Itoa(fabs(GetLeptonType_JH(*LepsV[ilep], gens)), 10);
-
-    if(GetLeptonType_JH(*LepsV[ilep], gens) < 0) SFlav = "Minus_"+SFlav;
+    TString SFlav = TString::Itoa(fabs(LepsV[ilep]->LeptonGenType()), 10);
+    
+    if(LepsV[ilep]->LeptonGenType() < 0) SFlav = "Minus_"+SFlav;
     else SFlav = "Plus_"+SFlav;
 
     double PTthreshold=5.,dPtRelmax=0.5;//2)                                                                                           
@@ -109,29 +108,29 @@ void HNL_ConversionStudy::executeEvent(){
     int NearPhotonIdx=-1;
     int NearPhoton23Idx=-1;
     
-    for(unsigned int i=2; i<gens.size(); i++){
-      Gen gen = gens[i];
-      if( gens.at(i).MotherIndex()<0   ) continue;
-      //if( LepsV[ilep]->DeltaR(gens.at(i)) < 0.2) {
-      if(gens.at(i).PID()==22){
-	cout << event  << "\t" << gen.PID() << "\t" << gen.Status() << "\t" << gen.MotherIndex() << "\t" << gens.at(gen.MotherIndex()).PID()<< "  " <<  LepsV[ilep]->DeltaR(gens.at(i)) <<  "\t";
+    for(unsigned int i=2; i<All_Gens.size(); i++){
+      Gen gen = All_Gens[i];
+      if( All_Gens.at(i).MotherIndex()<0   ) continue;
+      //if( LepsV[ilep]->DeltaR(All_Gens.at(i)) < 0.2) {
+      if(All_Gens.at(i).PID()==22){
+	cout << event  << "\t" << gen.PID() << "\t" << gen.Status() << "\t" << gen.MotherIndex() << "\t" << All_Gens.at(gen.MotherIndex()).PID()<< "  " <<  LepsV[ilep]->DeltaR(All_Gens.at(i)) <<  "\t";
 	printf("%.2f\t%.2f\t%.2f\t%.2f\n",gen.Pt(), gen.Eta(), gen.Phi(), gen.M());
 	
       }
-      if( !(gens.at(i).PID()==22 && (gens.at(i).Status()==1 || gens.at(i).Status()==23)) ) continue;
-      if( gens.at(i).Status()==23) NearPhoton23Idx=i;
-      if( gens.at(i).Pt()<PTthreshold  ) continue;
-      if( !(LepsV[ilep]->Pt()/gens.at(i).Pt()>(1.-dPtRelmax) && LepsV[ilep]->Pt()/gens.at(i).Pt()<(1.+dPtRelmax)) ) continue;
-      if( LepsV[ilep]->DeltaR(gens.at(i))>dRmax ) continue;
+      if( !(All_Gens.at(i).PID()==22 && (All_Gens.at(i).Status()==1 || All_Gens.at(i).Status()==23)) ) continue;
+      if( All_Gens.at(i).Status()==23) NearPhoton23Idx=i;
+      if( All_Gens.at(i).Pt()<PTthreshold  ) continue;
+      if( !(LepsV[ilep]->Pt()/All_Gens.at(i).Pt()>(1.-dPtRelmax) && LepsV[ilep]->Pt()/All_Gens.at(i).Pt()<(1.+dPtRelmax)) ) continue;
+      if( LepsV[ilep]->DeltaR(All_Gens.at(i))>dRmax ) continue;
       
-      if( gens.at(i).Status()==23 && !IsFinalPhotonSt23(gens) ) continue;//4)                                                          
-      if( LepsV[ilep]->DeltaR(gens.at(i))<dRmin ){ dRmin=LepsV[ilep]->DeltaR(gens.at(i)); NearPhotonIdx=i;}
+      if( All_Gens.at(i).Status()==23 && !IsFinalPhotonSt23(All_Gens) ) continue;//4)                                                          
+      if( LepsV[ilep]->DeltaR(All_Gens.at(i))<dRmin ){ dRmin=LepsV[ilep]->DeltaR(All_Gens.at(i)); NearPhotonIdx=i;}
     }
    
     
     if(NearPhotonIdx>0) {
-      double phPt= gens[NearPhotonIdx].Pt();
-      double phPtGen= gens[NearPhoton23Idx].Pt();
+      double phPt= All_Gens[NearPhotonIdx].Pt();
+      double phPtGen= All_Gens[NearPhoton23Idx].Pt();
       
       FillHist( (PlotDir + SFlav+"/" + LepsV[ilep]->GetFlavour()+"_matched_FSphoton_pt").Data(),phPt, weight, 1000, 0, 1000);
       FillHist( (PlotDir + SFlav+"/" + LepsV[ilep]->GetFlavour()+"_matched_photon_pt").Data(),phPtGen, weight, 1000, 0, 1000);
@@ -139,8 +138,8 @@ void HNL_ConversionStudy::executeEvent(){
     }
     return;
     
-    for(unsigned int i=2; i<gens.size(); i++){
-      Gen gen = gens.at(i);
+    for(unsigned int i=2; i<All_Gens.size(); i++){
+      Gen gen = All_Gens.at(i);
       double phPt=gen.Pt();
 
       if(LepsV[ilep]->DeltaR(gen) < 0.2) {
@@ -162,20 +161,20 @@ void HNL_ConversionStudy::executeEvent(){
   // 1) Fakes/ CF are done by data and Conv done my MC
   // - in this case if MC should remove Fake lep and CF leps
   // - this is done by Adding option 
-  std::vector<Muon>       MuonCollT     = SkimLepColl    ( GetMuons    ( param,mu_ID, muon_pt,     2.4, RunFake)  ,gens,param,"NHConv");
-  std::vector<Electron>   ElectronCollT = SkimLepColl    ( GetElectrons( param,el_ID, electron_pt, 2.5, RunFake)  ,gens,param,"NHConv");
+  std::vector<Muon>       MuonCollT     = SkimLepColl    ( GetMuons    ( param,mu_ID, muon_pt,     2.4, RunFake) ,param,"NHConv");
+  std::vector<Electron>   ElectronCollT = SkimLepColl    ( GetElectrons( param,el_ID, electron_pt, 2.5, RunFake) ,param,"NHConv");
 
   
   // Creat Lepton vector to have lepton blind codes                                                                                                          
   std::vector<Lepton *> LepsT       = MakeLeptonPointerVector(MuonCollT,ElectronCollT);
   //std::vector<Lepton *> LepsV  = MakeLeptonPointerVector(MuonCollV,ElectronCollV);
   
-  Particle METv = GetvMET("PuppiT1xyULCorr",param); // reyturns MET with systematic correction                                              
+  Particle METv = GetvMET("PuppiT1xyULCorr"); // reyturns MET with systematic correction                                              
 
   std::map< TString, bool > map_Region_to_Bool;
   map_Region_to_Bool.clear();
   map_Region_to_Bool["Inclusive"] = true;
-  map_Region_to_Bool["ConversionVeto"] = ConversionVeto(LepsT,gens);
+  map_Region_to_Bool["ConversionVeto"] = ConversionVeto(LepsT,All_Gens);
     
   
   for(std::map< TString, bool >::iterator it = map_Region_to_Bool.begin(); it != map_Region_to_Bool.end(); it++){
@@ -189,8 +188,8 @@ void HNL_ConversionStudy::executeEvent(){
       for(unsigned int ilep=0; ilep < LepsT.size(); ilep++){
 	
 	double lpt = (LepsT.at(ilep)->Pt() > 100.) ? 99.: LepsT.at(ilep)->Pt();
-	TString SFlav = TString::Itoa(fabs(GetLeptonType_JH(*LepsT[ilep], gens)), 10);
-	if(GetLeptonType_JH(*LepsT[ilep], gens) < 0) SFlav = "Minus_"+SFlav;
+	TString SFlav = TString::Itoa(fabs(LepsT[ilep]->LeptonGenType()), 10);
+	if(LepsT[ilep]->LeptonGenType() < 0) SFlav = "Minus_"+SFlav;
 	else SFlav = "Plus_"+SFlav;
 
 	TString il = TString::Itoa(ilep, 10);
@@ -203,28 +202,28 @@ void HNL_ConversionStudy::executeEvent(){
 	float dRmin=999.;
 	int NearPhotonIdx=-1;
 	
-	for(unsigned int i=2; i<gens.size(); i++){
-	  if( gens.at(i).MotherIndex()<0   ) continue;
-	  if( !(gens.at(i).PID()==22 && (gens.at(i).Status()==1 || gens.at(i).Status()==23)) ) continue;
-	  if( gens.at(i).Pt()<PTthreshold  ) continue;
-	  if( !(LepsT[ilep]->Pt()/gens.at(i).Pt()>(1.-dPtRelmax) && LepsT[ilep]->Pt()/gens.at(i).Pt()<(1.+dPtRelmax)) ) continue;
-	  if( LepsT[ilep]->DeltaR(gens.at(i))>dRmax ) continue;
-	  if( gens.at(i).Status()==23 && !IsFinalPhotonSt23(gens) ) continue;//4)
-	  if( LepsT[ilep]->DeltaR(gens.at(i))<dRmin ){ dRmin=LepsT[ilep]->DeltaR(gens.at(i)); NearPhotonIdx=i; }
+	for(unsigned int i=2; i<All_Gens.size(); i++){
+	  if( All_Gens.at(i).MotherIndex()<0   ) continue;
+	  if( !(All_Gens.at(i).PID()==22 && (All_Gens.at(i).Status()==1 || All_Gens.at(i).Status()==23)) ) continue;
+	  if( All_Gens.at(i).Pt()<PTthreshold  ) continue;
+	  if( !(LepsT[ilep]->Pt()/All_Gens.at(i).Pt()>(1.-dPtRelmax) && LepsT[ilep]->Pt()/All_Gens.at(i).Pt()<(1.+dPtRelmax)) ) continue;
+	  if( LepsT[ilep]->DeltaR(All_Gens.at(i))>dRmax ) continue;
+	  if( All_Gens.at(i).Status()==23 && !IsFinalPhotonSt23(All_Gens) ) continue;//4)
+	  if( LepsT[ilep]->DeltaR(All_Gens.at(i))<dRmin ){ dRmin=LepsT[ilep]->DeltaR(All_Gens.at(i)); NearPhotonIdx=i; }
 	}
 	
 	if(NearPhotonIdx>0) {
-	  double phPt= gens[NearPhotonIdx].Pt() > 100. ? 99. : gens[NearPhotonIdx].Pt();
+	  double phPt= All_Gens[NearPhotonIdx].Pt() > 100. ? 99. : All_Gens[NearPhotonIdx].Pt();
 
 	  FillHist( (PlotDir + SFlav+"/" + LepsT[ilep]->GetFlavour()+"_matched_photon_pt").Data(),phPt, weight, 7, ptbins);
 	  FillHist( (PlotDir + "/" + LepsT[ilep]->GetFlavour()+"_matched_photon_pt").Data(),phPt, weight, 7, ptbins);
 	}
 	
-	for(unsigned int i=2; i<gens.size(); i++){
-	  Gen gen = gens.at(i);
+	for(unsigned int i=2; i<All_Gens.size(); i++){
+	  Gen gen = All_Gens.at(i);
 	  if(LepsT[ilep]->DeltaR(gen) < 0.2) {
 	    if(gen.PID() == 22 && gen.isPromptFinalState() ) {
-	      double phPt= gen.Pt() > 100. ? 99. : gens[NearPhotonIdx].Pt();
+	      double phPt= gen.Pt() > 100. ? 99. : All_Gens[NearPhotonIdx].Pt();
 	      FillHist( (PlotDir + SFlav+"/" + LepsT[ilep]->GetFlavour()+"_matched2_photon_pt").Data(),phPt, weight, 7, ptbins);
 	      FillHist( (PlotDir + "/" + LepsT[ilep]->GetFlavour()+"_matched2_photon_pt").Data(),phPt, weight, 7, ptbins);
 	      
@@ -232,10 +231,10 @@ void HNL_ConversionStudy::executeEvent(){
 	  }
 	}
 	
-	Gen MatchedGen = GetGenMatchedLepton(*LepsT[ilep], gens);
+	Gen MatchedGen = GetGenMatchedLepton(*LepsT[ilep], All_Gens);
 	if(MatchedGen.MotherIndex() > 0){
-	  TString MotherID = TString::Itoa(gens[MatchedGen.MotherIndex()].PID(), 10);
-	  double mpt = (gens[MatchedGen.MotherIndex()].Pt() > 100) ? 99. : gens[MatchedGen.MotherIndex()].Pt(); 
+	  TString MotherID = TString::Itoa(All_Gens[MatchedGen.MotherIndex()].PID(), 10);
+	  double mpt = (All_Gens[MatchedGen.MotherIndex()].Pt() > 100) ? 99. : All_Gens[MatchedGen.MotherIndex()].Pt(); 
 	  
 	  FillHist( (PlotDir + SFlav+"/" + LepsT[ilep]->GetFlavour()+"_mother_pid"+MotherID+"_pt").Data(), mpt , weight, 7, ptbins);
 	}

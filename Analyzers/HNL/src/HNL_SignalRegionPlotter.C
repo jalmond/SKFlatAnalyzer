@@ -20,8 +20,6 @@ void HNL_SignalRegionPlotter::executeEvent(){
     TriggerPrintOut(GetEvent());
   }
   
-  if(!IsData)  gens = GetGens();
-
   AnalyzerParameter param_signal = HNL_LeptonCore::InitialiseHNLParameter("MVAUL","_UL");
   RunULAnalysis(param_signal);
 
@@ -53,6 +51,7 @@ void HNL_SignalRegionPlotter::RunULAnalysis(AnalyzerParameter param){
   Event ev = GetEvent();
   double weight =SetupWeight(ev,param);
 
+  if(TESTBDT && event != 144880) return;
 
   ///// MERGE WJet samples for more stats                                                                                                                                      
   //if(MCSample.Contains("WJet")){
@@ -80,36 +79,28 @@ void HNL_SignalRegionPlotter::RunULAnalysis(AnalyzerParameter param){
   double Min_Muon_Pt     = (RunFake) ? 3. : 5.;
   double Min_Electron_Pt = (RunFake) ? 7. : 10.;
 
-  //cout << "======================================================================" << endl; //JH
   std::vector<Muon>       MuonCollTInit = GetMuons    ( param,mu_ID, Min_Muon_Pt, 2.4, false);
   std::vector<Electron>   ElectronCollTInit = GetElectrons( param,el_ID, Min_Electron_Pt, 2.5, false)  ;
-  // select prompt using gen info
-  std::vector<Muon>       MuonCollT     = GetLepCollByRunType    ( MuonCollTInit,gens,param);
-  std::vector<Electron>   ElectronCollT  =  GetLepCollByRunType   ( ElectronCollTInit,gens,param);
-  //cout << "MuonCollV size : " << MuonCollV.size() << endl;
-  //cout << "MuonCollTInit size : " << MuonCollTInit.size() << endl;
-  //cout << "MuonCollT size : " << MuonCollT.size() << endl; //JH
-  //cout << "ElectronCollV size : " << ElectronCollV.size() << endl;
-  //cout << "ElectronCollTInit size : " << ElectronCollTInit.size() << endl;
-  //cout << "ElectronCollT size : " << ElectronCollT.size() << endl; //JH
+ 
+  std::vector<Muon>       MuonCollT     = GetLepCollByRunType    ( MuonCollTInit ,param);
+  std::vector<Electron>   ElectronCollT  =  GetLepCollByRunType   ( ElectronCollTInit,param);
+
+  //cout << "Number of MuonCollT = " << MuonCollT.size() << " number of electrons = " << ElectronCollT.size() << endl;
+
   std::vector<Lepton *> leps_veto  = MakeLeptonPointerVector(MuonCollV,ElectronCollV);
   std::vector<Tau>        TauColl        = GetTaus     (leps_veto,param.Tau_Veto_ID,20., 2.3);
 
-  std::vector<FatJet> AK8_JetColl                 = GetHNLAK8Jets("HNL",param);
+  //std::vector<FatJet> AK8_JetColl                 = GetHNLAK8Jets("HNL",param);
+  std::vector<FatJet> AK8_JetColl                 = GetHNLAK8Jets("",param); //JH : test
   std::vector<Jet> AK4_JetAllColl                 = GetHNLJets("NoCut_Eta3",param);
   std::vector<Jet> JetColl                        = GetHNLJets("Tight",param);
   std::vector<Jet> JetCollLoose                   = GetHNLJets("Loose",param);
   std::vector<Jet> VBF_JetColl                    = GetHNLJets("VBFTight",param);
   std::vector<Jet> BJetColl                       = GetHNLJets("BJetM",param);
   std::vector<Jet> BJetCollSR1                    = GetHNLJets("BJetT",param);
-  //cout << "AK8_JetColl   size : " << AK8_JetColl   .size() << endl;
-  //cout << "AK4_JetAllCollsize : " << AK4_JetAllColl.size() << endl;
-  //cout << "JetColl       size : " << JetColl       .size() << endl;
-  //cout << "JetCollLoose  size : " << JetCollLoose  .size() << endl;
-  //cout << "VBF_JetColl   size : " << VBF_JetColl   .size() << endl;
-  //cout << "BJetColl      size : " << BJetColl      .size() << endl;
-  //cout << "BJetCollSR1   size : " << BJetCollSR1   .size() << endl; //JH
-  
+ 
+  Particle METv = GetvMET("PuppiT1xyCorr", param, VBF_JetColl, AK8_JetColl, MuonCollT, ElectronCollT); // returns MET with systematic correction; run this after all object selection done; NOTE that VBF jet is used here
+
   // select B jets                                                                                                                                                                        
   JetTagging::Parameters param_jets = JetTagging::Parameters(JetTagging::DeepJet, JetTagging::Medium, JetTagging::incl, JetTagging::mujets);
   double sf_btag               = GetBJetSF(param, JetColl, param_jets);
@@ -117,8 +108,6 @@ void HNL_SignalRegionPlotter::RunULAnalysis(AnalyzerParameter param){
   double sf_btagSR1               = GetBJetSF(param, JetColl, param_jetsT);
   //cout << "sf_btag : "    << sf_btag    << endl;
   //cout << "sf_btagSR1 : " << sf_btagSR1 << endl; //JH
-
-  Particle METv = GetvMET("PuppiT1xyCorr", param, VBF_JetColl, AK8_JetColl, MuonCollT, ElectronCollT); // returns MET with systematic correction; run this after all object selection done; NOTE that VBF jet is used here
 
   //if(!IsData) weight*= sf_btag;
   if(!IsData && AK8_JetColl.size()==0)weight = weight*sf_btag;

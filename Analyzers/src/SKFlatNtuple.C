@@ -210,7 +210,7 @@ vector<TString> SKFlatNtuple::EventsToKeep(vector<vector<TString> > ev_run_vec){
     // loop over nth vector
     for(unsigned int i=0; i < ev_run_vec[n].size(); i++){
 
-      int matched(0);
+      long unsigned int matched(0);
       // check if event/run in [n][i] is matched to any other list 
       for(unsigned int j=0; j < ev_run_vec.size(); j++){
 	// obviously of n== j then lists are the same
@@ -495,6 +495,7 @@ void SKFlatNtuple::Init()
 
   electron_mva_conv_v1=0;
   electron_mva_conv_v2=0;
+  electron_mva_conv_ed_v2=0;
 
   electron_mva_cf_v1=0;
   electron_mva_cf_v2=0;
@@ -524,6 +525,16 @@ void SKFlatNtuple::Init()
   electron_mva_fakeHFC_v4=0;
   electron_mva_fakeLF_v4=0;
   electron_mva_fakeTop_v4=0;
+
+  electron_mva_fake_ed_v4=0;
+  electron_mva_fakeHF_ed_v4=0;
+  electron_mva_fakeHFB_ed_v4=0;
+  electron_mva_fakeHFC_ed_v4=0;
+  electron_mva_fakeLF_ed_v4=0;
+  electron_mva_fakeTop_ed_v4=0;
+
+  electron_lepton_type=0;
+  electron_is_cf=0;
 
   muon_PfChargedHadronIsoR04 = 0;
   muon_PfNeutralHadronIsoR04 = 0;
@@ -622,6 +633,10 @@ void SKFlatNtuple::Init()
   muon_mva_fake_v1=0;
   muon_mva_fake_v2=0;
   muon_mva_fake_v3=0;
+  muon_mva_fake_v4=0;
+  muon_mva_fake_ed_v4=0;
+  muon_lepton_type=0;
+  muon_is_cf=0;
   muon_simType = 0;
   muon_simExtType = 0;
   muon_simFlavour = 0;
@@ -910,6 +925,7 @@ void SKFlatNtuple::Init()
 
   if(fChain->GetBranch("electron_mva_conv_v1")) fChain->SetBranchAddress("electron_mva_conv_v1",&electron_mva_conv_v1,&b_electron_mva_conv_v1);
   if(fChain->GetBranch("electron_mva_conv_v2")) fChain->SetBranchAddress("electron_mva_conv_v2",&electron_mva_conv_v2,&b_electron_mva_conv_v2);
+  if(fChain->GetBranch("electron_mva_conv_ed_v2")) fChain->SetBranchAddress("electron_mva_conv_ed_v2",&electron_mva_conv_ed_v2,&b_electron_mva_conv_ed_v2);
 
   if(fChain->GetBranch("electron_mva_cf_v1")) fChain->SetBranchAddress("electron_mva_cf_v1",&electron_mva_cf_v1,&b_electron_mva_cf_v1);
   if(fChain->GetBranch("electron_mva_cf_v2")) fChain->SetBranchAddress("electron_mva_cf_v2",&electron_mva_cf_v2,&b_electron_mva_cf_v2);
@@ -940,6 +956,17 @@ void SKFlatNtuple::Init()
   if(fChain->GetBranch("electron_mva_fakeHFC_v4")) fChain->SetBranchAddress("electron_mva_fakeHFC_v4",&electron_mva_fakeHFC_v4,&b_electron_mva_fakeHFC_v4);
   if(fChain->GetBranch("electron_mva_fakeLF_v4")) fChain->SetBranchAddress("electron_mva_fakeLF_v4",&electron_mva_fakeLF_v4,&b_electron_mva_fakeLF_v4);
   if(fChain->GetBranch("electron_mva_fakeTop_v4")) fChain->SetBranchAddress("electron_mva_fakeTop_v4",&electron_mva_fakeTop_v4,&b_electron_mva_fakeTop_v4);
+
+  if(fChain->GetBranch("electron_mva_fake_ed_v4")) fChain->SetBranchAddress("electron_mva_fake_ed_v4",&electron_mva_fake_ed_v4,&b_electron_mva_fake_ed_v4);
+  if(fChain->GetBranch("electron_mva_fakeHF_ed_v4")) fChain->SetBranchAddress("electron_mva_fakeHF_ed_v4",&electron_mva_fakeHF_ed_v4,&b_electron_mva_fakeHF_ed_v4);
+  if(fChain->GetBranch("electron_mva_fakeHFB_ed_v4")) fChain->SetBranchAddress("electron_mva_fakeHFB_ed_v4",&electron_mva_fakeHFB_ed_v4,&b_electron_mva_fakeHFB_ed_v4);
+  if(fChain->GetBranch("electron_mva_fakeHFC_ed_v4")) fChain->SetBranchAddress("electron_mva_fakeHFC_ed_v4",&electron_mva_fakeHFC_ed_v4,&b_electron_mva_fakeHFC_ed_v4);
+  if(fChain->GetBranch("electron_mva_fakeLF_ed_v4")) fChain->SetBranchAddress("electron_mva_fakeLF_ed_v4",&electron_mva_fakeLF_ed_v4,&b_electron_mva_fakeLF_ed_v4);
+  if(fChain->GetBranch("electron_mva_fakeTop_ed_v4")) fChain->SetBranchAddress("electron_mva_fakeTop_ed_v4",&electron_mva_fakeTop_ed_v4,&b_electron_mva_fakeTop_ed_v4);
+
+  if(fChain->GetBranch("electron_lepton_type")) fChain->SetBranchAddress("electron_lepton_type",&electron_lepton_type,&b_electron_lepton_type);
+  if(fChain->GetBranch("electron_is_cf")) fChain->SetBranchAddress("electron_is_cf",&electron_is_cf,&b_electron_is_cf);
+
 
   fChain->SetBranchAddress("muon_PfChargedHadronIsoR04", &muon_PfChargedHadronIsoR04, &b_muon_PfChargedHadronIsoR04);
   fChain->SetBranchAddress("muon_PfNeutralHadronIsoR04", &muon_PfNeutralHadronIsoR04, &b_muon_PfNeutralHadronIsoR04);
@@ -1036,7 +1063,10 @@ void SKFlatNtuple::Init()
   if(fChain->GetBranch("muon_mva_fake_v1"))fChain->SetBranchAddress("muon_mva_fake_v1",&muon_mva_fake_v1,&b_muon_mva_fake_v1);
   if(fChain->GetBranch("muon_mva_fake_v2"))fChain->SetBranchAddress("muon_mva_fake_v2",&muon_mva_fake_v2,&b_muon_mva_fake_v2);
   if(fChain->GetBranch("muon_mva_fake_v3"))fChain->SetBranchAddress("muon_mva_fake_v3",&muon_mva_fake_v3,&b_muon_mva_fake_v3);
-  
+  if(fChain->GetBranch("muon_mva_fake_v4"))fChain->SetBranchAddress("muon_mva_fake_v4",&muon_mva_fake_v4,&b_muon_mva_fake_v4);
+  if(fChain->GetBranch("muon_mva_fake_ed_v4"))fChain->SetBranchAddress("muon_mva_fake_ed_v4",&muon_mva_fake_ed_v4,&b_muon_mva_fake_ed_v4);
+  if(fChain->GetBranch("muon_lepton_type"))fChain->SetBranchAddress("muon_lepton_type",&muon_lepton_type,&b_muon_lepton_type);
+  if(fChain->GetBranch("muon_is_cf")) fChain->SetBranchAddress("muon_is_cf",&muon_is_cf,&b_muon_is_cf);
   
   fChain->SetBranchAddress("muon_simType", &muon_simType, &b_muon_simType);
   fChain->SetBranchAddress("muon_simExtType", &muon_simExtType, &b_muon_simExtType);

@@ -17,12 +17,11 @@ void SkimTree_EventSkim::executeEvent(){
   
   bool HasFakeLep=false;
 
-  vector<Gen>   gens= GetGens();  
   for(auto iel: electronPreColl){
-    if(iel.IsFake(GetLeptonType_JH(iel, gens))) HasFakeLep=true;
+    if(iel.IsFake()) HasFakeLep=true;
   }
   for(auto imu: muonPreColl){
-    if(imu.IsFake(GetLeptonType_JH(imu, gens))) HasFakeLep=true;
+    if(imu.IsFake()) HasFakeLep=true;
   }
   
   if(!HasFakeLep) return;

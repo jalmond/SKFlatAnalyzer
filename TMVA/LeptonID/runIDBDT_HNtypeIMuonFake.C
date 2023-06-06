@@ -9,7 +9,7 @@ void runIDBDT_HNtypeIMuonFake(TString Classifier ="BDTG" ,TString BkgType = "Fak
   else   if(Classifier == "BDTG")cout << "** BDT GRADBOOST *** " <<endl;
   else return;
   
-  TString version="version5";
+  TString version="version6";
 
   cout << "-- Era = " << era << endl;
 
@@ -35,7 +35,12 @@ void runIDBDT_HNtypeIMuonFake(TString Classifier ="BDTG" ,TString BkgType = "Fak
   TString  treeName = (channel == "MuMu")  ?  "Tree_mm" :  "Tree_ee";
 
   TString signal="SignalMuonFake";
+  if(signal_mode==0) signal="SignalMuonFake_BB";
+  if(signal_mode==1) signal="SignalMuonFake_EC";
 
+  if(signal_mode==2) signal="SignalMuonFakeNoPtBB";
+  if(signal_mode==3) signal="SignalMuonFakeNoPtEC";
+  if(signal_mode==4) signal="SignalMuonFakeNoPt";
   cout << "signal File Name= " << signal << endl;
   for(int i=0; i < nTermWidth; i++)  cout << "-" ;   cout << endl;
 
@@ -64,7 +69,7 @@ void runIDBDT_HNtypeIMuonFake(TString Classifier ="BDTG" ,TString BkgType = "Fak
 
   TMVA::DataLoader* data_loader = new TMVA::DataLoader("dataset");
   // Kinematics
-  data_loader->AddVariable("Pt", "Pt", "units", 'F');
+  if(signal_mode< 2)data_loader->AddVariable("Pt", "Pt", "units", 'F');
   data_loader->AddVariable("Eta", "Eta", "units", 'F');
 
   // Iso
@@ -106,6 +111,24 @@ void runIDBDT_HNtypeIMuonFake(TString Classifier ="BDTG" ,TString BkgType = "Fak
   //==== Nj, Nb cut
   TCut cut_s = "";
   TCut cut_b = "";
+
+  if(fabs(signal_mode)==0){
+    cut_s = "Eta<1.5";
+    cut_b = "Eta<1.5";
+  }
+  if(fabs(signal_mode)==1){
+    cut_s = "Eta>1.5&&Eta<2.5";
+    cut_b = "Eta>1.5&&Eta<2.5";
+  }
+
+  if(fabs(signal_mode)==2){
+    cut_s = "Eta<1.5";
+    cut_b = "Eta<1.5";
+  }
+  if(fabs(signal_mode)==3){
+    cut_s = "Eta>1.5&&Eta<2.5";
+    cut_b = "Eta>1.5&&Eta<2.5";
+  }
 
   int n_train_signal = tree_signal->GetEntries(cut_s)/2 ;
   int n_train_back = tree_bkg->GetEntries(cut_b)/2 ;

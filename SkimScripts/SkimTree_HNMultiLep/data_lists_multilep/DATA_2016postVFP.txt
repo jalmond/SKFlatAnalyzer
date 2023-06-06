@@ -4,3 +4,6 @@ DoubleMuon:H
 DoubleEG:F
 DoubleEG:G
 DoubleEG:H
+MuonEG:F
+MuonEG:G
+MuonEG:H

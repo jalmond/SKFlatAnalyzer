@@ -62,47 +62,46 @@ void Electron::PrintObject(TString label){
   cout << "PrintObject " << label << endl;
   Lepton::PrintObject(label);
 
+  cout << "j_En_up " << j_En_up << endl;
+  cout << "j_En_down " << j_En_down<< endl;
+  cout << "j_Res_up " << j_Res_up << endl;
+  cout << "j_Res_down " << j_Res_down << endl;
 
-  cout << "j_En_up" << j_En_up << endl;
-  cout << "j_En_down" << j_En_down<< endl;
-  cout << "j_Res_up" << j_Res_up << endl;
-  cout << "j_Res_down" << j_Res_down << endl;
-
-  cout << "j_scEta" << j_scEta << endl;
-  cout << "j_scPhi" << j_scPhi << endl;
-  cout << "j_scE" << j_scE << endl;
-  cout << "j_mvaiso" << j_mvaiso << endl;
-  cout << "j_mvanoiso" << j_mvanoiso << endl;
-  cout << "j_EnergyUnCorr" << j_EnergyUnCorr << endl;
-  cout << "j_passConversionVeto" << j_passConversionVeto << endl;
-  cout << "j_NMissingHits" << j_NMissingHits << endl;
-  cout << "j_Full5x5_sigmaIetaIeta" << j_Full5x5_sigmaIetaIeta << endl;
-  cout << "j_sigmaIetaIeta" << j_sigmaIetaIeta << endl;
-  cout << "j_dEtaSeed" << j_dEtaSeed << endl;
-  cout << "j_dPhiIn" << j_dPhiIn << endl;
-  cout << "j_dEtaIn" << j_dEtaIn << endl;
-  cout << "j_HoverE" << j_HoverE  << endl;
-  cout << "j_PhiWidth" << j_PhiWidth << endl;
-  cout << "j_EtaWidth" << j_EtaWidth << endl;
-  cout << "j_InvEminusInvP" << j_InvEminusInvP << endl;
-  cout << "j_e2x5OverE5x5" << j_e2x5OverE5x5 << endl;
-  cout << "j_e1x5OverE5x5" << j_e1x5OverE5x5 << endl;
-  cout << "j_e15" << j_e15 << endl;
-  cout << "j_e25" << j_e25 << endl;
-  cout << "j_e55" << j_e55 << endl;
-  cout << "j_trkiso" << j_trkiso << endl;
-  cout << "j_dr03EcalRecHitSumEt" << j_dr03EcalRecHitSumEt << endl;
-  cout << "j_dr03HcalDepth1TowerSumEt" << j_dr03HcalDepth1TowerSumEt << endl;
-  cout << "j_dr03HcalTowerSumEt" << j_dr03HcalTowerSumEt << endl;
-  cout << "j_dr03TkSumPt" << j_dr03TkSumPt << endl;
-  cout << "j_ecalPFClusterIso" << j_ecalPFClusterIso << endl;
-  cout << "j_hcalPFClusterIso" << j_hcalPFClusterIso << endl;
-  cout << "j_isEcalDriven" << j_isEcalDriven << endl;
-  cout << "j_IDBit" << j_IDBit << endl;
-  cout << "j_Rho" << j_Rho << endl;
-  cout << "j_isGsfCtfScPixChargeConsistent" << j_isGsfCtfScPixChargeConsistent << endl;
-  cout << "j_isGsfScPixChargeConsistent" << j_isGsfScPixChargeConsistent << endl;
-  cout << "j_isGsfCtfChargeConsistent" << j_isGsfCtfChargeConsistent << endl;
+  cout << "j_scEta " << j_scEta << endl;
+  cout << "j_scPhi " << j_scPhi << endl;
+  cout << "j_scE " << j_scE << endl;
+  cout << "j_mvaiso " << j_mvaiso << endl;
+  cout << "j_mvanoiso " << j_mvanoiso << endl;
+  cout << "j_EnergyUnCorr " << j_EnergyUnCorr << endl;
+  cout << "j_passConversionVeto " << j_passConversionVeto << endl;
+  cout << "j_NMissingHits " << j_NMissingHits << endl;
+  cout << "j_Full5x5_sigmaIetaIeta " << j_Full5x5_sigmaIetaIeta << endl;
+  cout << "j_sigmaIetaIeta " << j_sigmaIetaIeta << endl;
+  cout << "j_dEtaSeed " << j_dEtaSeed << endl;
+  cout << "j_dPhiIn " << j_dPhiIn << endl;
+  cout << "j_dEtaIn " << j_dEtaIn << endl;
+  cout << "j_HoverE " << j_HoverE  << endl;
+  cout << "j_PhiWidth " << j_PhiWidth << endl;
+  cout << "j_EtaWidth " << j_EtaWidth << endl;
+  cout << "j_InvEminusInvP " << j_InvEminusInvP << endl;
+  cout << "j_e2x5OverE5x5 " << j_e2x5OverE5x5 << endl;
+  cout << "j_e1x5OverE5x5 " << j_e1x5OverE5x5 << endl;
+  cout << "j_e15 " << j_e15 << endl;
+  cout << "j_e25 " << j_e25 << endl;
+  cout << "j_e55 " << j_e55 << endl;
+  cout << "j_trkiso " << j_trkiso << endl;
+  cout << "j_dr03EcalRecHitSumEt " << j_dr03EcalRecHitSumEt << endl;
+  cout << "j_dr03HcalDepth1TowerSumEt " << j_dr03HcalDepth1TowerSumEt << endl;
+  cout << "j_dr03HcalTowerSumEt " << j_dr03HcalTowerSumEt << endl;
+  cout << "j_dr03TkSumPt " << j_dr03TkSumPt << endl;
+  cout << "j_ecalPFClusterIso " << j_ecalPFClusterIso << endl;
+  cout << "j_hcalPFClusterIso " << j_hcalPFClusterIso << endl;
+  cout << "j_isEcalDriven " << j_isEcalDriven << endl;
+  cout << "j_IDBit " << j_IDBit << endl;
+  cout << "j_Rho " << j_Rho << endl;
+  cout << "j_isGsfCtfScPixChargeConsistent " << j_isGsfCtfScPixChargeConsistent << endl;
+  cout << "j_isGsfScPixChargeConsistent " << j_isGsfScPixChargeConsistent << endl;
+  cout << "j_isGsfCtfChargeConsistent " << j_isGsfCtfChargeConsistent << endl;
 
 
 }
@@ -930,8 +929,8 @@ bool Electron::PassMVABaseLine() const{
 bool Electron::PassHNLMVA(double fake_cut,double cf_cut, double conv_cut) const{
   
   if(!PassULMVA(HNL_MVA_CF("EDv2"),  cf_cut,  "j_lep_mva_hnl_cf_v2"))   return false;
-  if(!PassULMVA(HNL_MVA_Fake("v2"),fake_cut,"j_lep_mva_hnl_fake_v2")) return false;
-  if(!PassULMVA(HNL_MVA_Conv("v2"),conv_cut,"j_lep_mva_hnl_conv_v2")) return false;
+  if(!PassULMVA(HNL_MVA_Fake("EDv4"),fake_cut,"j_lep_mva_hnl_fake_v2")) return false;
+  if(!PassULMVA(HNL_MVA_Conv("EDv2"),conv_cut,"j_lep_mva_hnl_conv_ed_v2")) return false;
   return true;
 }
 

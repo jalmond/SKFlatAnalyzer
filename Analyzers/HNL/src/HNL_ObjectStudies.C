@@ -28,7 +28,6 @@ void HNL_ObjectStudies::executeEvent(){
   FillHist ("nPV" , nPV, weight, 100., 0., 100.,"");
   TString process="";
   if(!IsData){
-    gens = GetGens();
     
     process = GetProcess();
 
@@ -41,7 +40,7 @@ void HNL_ObjectStudies::executeEvent(){
     if(_jentry% 10000==0){
       cout << "process = " << process << endl;
       
-      PrintGen(gens);
+      PrintGen(All_Gens);
     }
   }
   if(process.Contains("OS")) return;
@@ -59,7 +58,7 @@ void HNL_ObjectStudies::executeEvent(){
 
     TString channel = GetChannelString(dilep_channel) ;
 
-    double ptbins[11] = { 0., 10.,15., 20., 30., 40.,50., 100.,500. ,1000., 2000.};
+    //double ptbins[11] = { 0., 10.,15., 20., 30., 40.,50., 100.,500. ,1000., 2000.};
 
     std::vector<Jet>      jetsTmp     = GetJets   ( "NoID",    10., 5.);
     //for(auto ijet : jetsTmp ) ijet.PrintObject("Jet ");
@@ -157,19 +156,19 @@ void HNL_ObjectStudies::executeEvent(){
       if(!IsData){
 	if (!MCSample.Contains("Type")){
 	  
-	  ElectronCollFake = SkimLepColl(ElectronColl, gens, param, "HFake");
-	  ElectronCollConv = SkimLepColl(ElectronColl, gens, param, "NHConv");
-	  ElectronCollCF = SkimLepColl(ElectronColl, gens, param, "CF");
-	  ElectronCollPrompt = SkimLepColl(ElectronColl, gens, param, "PromptNoCF");
+	  ElectronCollFake = SkimLepColl(ElectronColl, param, "HFake");
+	  ElectronCollConv = SkimLepColl(ElectronColl, param, "NHConv");
+	  ElectronCollCF = SkimLepColl(ElectronColl, param, "CF");
+	  ElectronCollPrompt = SkimLepColl(ElectronColl, param, "PromptNoCF");
 	  
 	  FillAllElectronPlots("Prompt", "Electrons"  , ElectronCollPrompt , weight);
 	  FillAllElectronPlots("Fake", "Electrons"  , ElectronCollFake , weight);
 	  FillAllElectronPlots("Conv", "Electrons"  , ElectronCollConv , weight);
 	  FillAllElectronPlots("CF", "Electrons"  , ElectronCollCF , weight);
 	  
-	  MuonCollFake = SkimLepColl(MuonColl, gens, param, "HFake");
-	  MuonCollConv = SkimLepColl(MuonColl, gens, param, "NHConv");
-	  MuonCollPrompt = SkimLepColl(MuonColl, gens, param, "Prompt");
+	  MuonCollFake = SkimLepColl(MuonColl, param, "HFake");
+	  MuonCollConv = SkimLepColl(MuonColl, param, "NHConv");
+	  MuonCollPrompt = SkimLepColl(MuonColl, param, "Prompt");
 	  FillAllMuonPlots("Prompt", "Muons"  , MuonCollPrompt , weight);
 	  FillAllMuonPlots("Fake", "Muons"  , MuonCollFake , weight);
 	  FillAllMuonPlots("Conv", "Muons"  , MuonCollConv , weight);
@@ -232,9 +231,7 @@ void HNL_ObjectStudies::executeEvent(){
 	if(imu.PassID("HNL_TopMVA_MM")) MuonTopColl.push_back(imu);                                                                     
 	if(imu.PassID("HNL_ULID_"+GetYearString())) MuonHNLColl.push_back(imu);                                                                     
 	if(imu.PassID("HNTightV2")) MuonV2Coll.push_back(imu);
-	
-        int MulepType = GetLeptonType_JH(imu, gens);
-        if(imu.IsFake( MulepType)) nFakeMu++;
+	if(imu.IsFake()) nFakeMu++;
 
       }
       
@@ -243,14 +240,14 @@ void HNL_ObjectStudies::executeEvent(){
       
       for(auto imu: MuonColl){
 
-	int MulepType = GetLeptonType_JH(imu, gens);
+	int MulepType = imu.LeptonGenType();
 	FillHist("LepType/AllMuon", MulepType,   weight,12, -6., 6.);
 	
 	TString JetFlavour = imu.CloseJet_Flavour();
 
 	FillHist("JetType/AllMuon", imu.CloseJet_FlavourInt(),   weight,6, 0., 6.);
 
-        if(imu.IsFake( GetLeptonType_JH(imu, gens))) {
+        if(imu.IsFake()){
 
 	  if (imu.Pt() < 500.)  FillHist("FakeMuon/Pt", imu.Pt(),   weight,100, 0., 500.);
 	  else  FillHist("FakeMuon/Pt", 499.,   weight,100, 0., 500.);
@@ -305,22 +302,22 @@ void HNL_ObjectStudies::executeEvent(){
 	TString Jet1Flavour = MuonColl[0].CloseJet_Flavour();
 	TString Jet2Flavour = MuonColl[1].CloseJet_Flavour();
 	
-	if(MuonColl[0].IsFake( GetLeptonType_JH(MuonColl[0], gens)) && MuonColl[1].IsPrompt( GetLeptonType_JH(MuonColl[1], gens)) ) {
+	if(MuonColl[0].IsFake() && MuonColl[1].IsPrompt()){
 	  
-	  FillHist("TypeVsFlavour/Muon", GetLeptonType_JH(MuonColl[0], gens),   weight, 10, -5., 5.);
-	  if(Jet1Flavour == "LF")      FillHist("TypeVsFlavour/MuonLF", GetLeptonType_JH(MuonColl[0], gens),   weight, 10, -5., 5.);
-	  else if(Jet1Flavour == "HF") FillHist("TypeVsFlavour/MuonHF", GetLeptonType_JH(MuonColl[0], gens),   weight,10, -5., 5.);
+	  FillHist("TypeVsFlavour/Muon", MuonColl[0].LeptonGenType(),   weight, 10, -5., 5.);
+	  if(Jet1Flavour == "LF")      FillHist("TypeVsFlavour/MuonLF", MuonColl[0].LeptonGenType(),   weight, 10, -5., 5.);
+	  else if(Jet1Flavour == "HF") FillHist("TypeVsFlavour/MuonHF", MuonColl[0].LeptonGenType(),   weight,10, -5., 5.);
 	  
 	  FillHist ("SameSignDilep_"+GetChannelString(dilep_channel)+"_"+Jet1Flavour+"_Fake", 0, weight, 5, 0., 5.,"");
 	  if (SameCharge(MuonTopColl))  FillHist ("SameSignDilep_"+GetChannelString(dilep_channel)+"_"+Jet1Flavour+"_Fake", 1, weight, 5, 0., 5.,"");
 	  if (SameCharge(MuonHNLColl))  FillHist ("SameSignDilep_"+GetChannelString(dilep_channel)+"_"+Jet1Flavour+"_Fake", 2, weight, 5, 0., 5.,"");
 	  if (SameCharge(MuonV2Coll)) FillHist ("SameSignDilep_"+GetChannelString(dilep_channel)+"_"+Jet1Flavour+"_Fake", 3, weight, 5, 0., 5.,"");
 	}
-	if(MuonColl[1].IsFake( GetLeptonType_JH(MuonColl[1], gens)) && MuonColl[0].IsPrompt( GetLeptonType_JH(MuonColl[0], gens)) ) {
+	if(MuonColl[1].IsFake() && MuonColl[0].IsPrompt()){
 
-	  FillHist("TypeVsFlavour/Muon", GetLeptonType_JH(MuonColl[1], gens),   weight,10, -5., 5.);
-          if(Jet2Flavour == "LF")      FillHist("TypeVsFlavour/MuonLF", GetLeptonType_JH(MuonColl[1], gens),   weight,10, -5., 5.);
-          else if(Jet2Flavour == "HF") FillHist("TypeVsFlavour/MuonHF", GetLeptonType_JH(MuonColl[1], gens),   weight,10, -5., 5.);
+	  FillHist("TypeVsFlavour/Muon", MuonColl[1].LeptonGenType(),   weight,10, -5., 5.);
+          if(Jet2Flavour == "LF")      FillHist("TypeVsFlavour/MuonLF", MuonColl[1].LeptonGenType(),   weight,10, -5., 5.);
+          else if(Jet2Flavour == "HF") FillHist("TypeVsFlavour/MuonHF", MuonColl[1].LeptonGenType(),   weight,10, -5., 5.);
 	  
 	  FillHist ("SameSignDilep_"+GetChannelString(dilep_channel) +"_"+Jet2Flavour+"_Fake", 0, weight, 5, 0., 5.,"");
 	  if (SameCharge(MuonTopColl))  FillHist ("SameSignDilep_"+GetChannelString(dilep_channel) +"_"+Jet2Flavour+"_Fake", 1, weight, 5, 0., 5.,"");
@@ -328,15 +325,15 @@ void HNL_ObjectStudies::executeEvent(){
 	  if (SameCharge(MuonV2Coll)) FillHist ("SameSignDilep_"+GetChannelString(dilep_channel) +"_"+Jet2Flavour+"_Fake", 3, weight, 5, 0., 5.,"");
 	}
 	
-        if(MuonColl[0].IsFake( GetLeptonType_JH(MuonColl[0], gens)) && MuonColl[1].IsFake( GetLeptonType_JH(MuonColl[1], gens))){
+        if(MuonColl[0].IsFake() && MuonColl[1].IsFake()){
 
-	  FillHist("TypeVsFlavour/MuonFF", GetLeptonType_JH(MuonColl[0], gens),   weight,10, -5., 5.);
-	  FillHist("TypeVsFlavour/MuonFF", GetLeptonType_JH(MuonColl[1], gens),   weight,10, -5., 5.);
-          if(Jet1Flavour == "LF")      FillHist("TypeVsFlavour/MuonFF_LF", GetLeptonType_JH(MuonColl[0], gens),   weight,10, -5., 5.);
-          else if(Jet1Flavour == "HF") FillHist("TypeVsFlavour/MuonFF_HF", GetLeptonType_JH(MuonColl[0], gens),   weight,10, -5., 5.);
+	  FillHist("TypeVsFlavour/MuonFF", MuonColl[0].LeptonGenType(),   weight,10, -5., 5.);
+	  FillHist("TypeVsFlavour/MuonFF", MuonColl[1].LeptonGenType(),   weight,10, -5., 5.);
+          if(Jet1Flavour == "LF")      FillHist("TypeVsFlavour/MuonFF_LF", MuonColl[0].LeptonGenType(),   weight,10, -5., 5.);
+          else if(Jet1Flavour == "HF") FillHist("TypeVsFlavour/MuonFF_HF", MuonColl[0].LeptonGenType(),   weight,10, -5., 5.);
 	  
-          if(Jet2Flavour == "LF")      FillHist("TypeVsFlavour/MuonFF_LF", GetLeptonType_JH(MuonColl[1], gens),   weight,10, -5., 5.);
-          else if(Jet2Flavour == "HF") FillHist("TypeVsFlavour/MuonFF_HF", GetLeptonType_JH(MuonColl[1], gens),   weight,10, -5., 5.);
+          if(Jet2Flavour == "LF")      FillHist("TypeVsFlavour/MuonFF_LF", MuonColl[1].LeptonGenType(),   weight,10, -5., 5.);
+          else if(Jet2Flavour == "HF") FillHist("TypeVsFlavour/MuonFF_HF", MuonColl[1].LeptonGenType(),   weight,10, -5., 5.);
 
 	  FillHist ("SameSignDilep_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_"+Jet2Flavour+"_Fake", 0, weight, 5, 0., 5.,"");
 	  if (SameCharge(MuonTopColl))  FillHist ("SameSignDilep_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_"+Jet2Flavour+"_Fake", 1, weight, 5, 0., 5.,"");
@@ -352,17 +349,17 @@ void HNL_ObjectStudies::executeEvent(){
 	  if (SameCharge(MuonV2Coll)) FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel), 3, weight, 5, 0., 5.,"");
 	  
 	  
-	  if(MuonColl[0].IsFake( GetLeptonType_JH(MuonColl[0], gens)) && MuonColl[1].IsPrompt( GetLeptonType_JH(MuonColl[1], gens)) ) {
+	  if(MuonColl[0].IsFake() && MuonColl[1].IsPrompt()){
 	    if (SameCharge(MuonTopColl))  FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_Fake", 1, weight, 5, 0., 5.,"");
 	    if (SameCharge(MuonHNLColl))  FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_Fake", 2, weight, 5, 0., 5.,"");
 	    if (SameCharge(MuonV2Coll)) FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_Fake", 3, weight, 5, 0., 5.,"");
 	  }
-	  if(MuonColl[1].IsFake( GetLeptonType_JH(MuonColl[1], gens)) && MuonColl[0].IsPrompt( GetLeptonType_JH(MuonColl[0], gens)) ) {
+	  if(MuonColl[1].IsFake() && MuonColl[0].IsPrompt()){
 	    if (SameCharge(MuonTopColl))  FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel) +"_"+Jet2Flavour+"_Fake", 1, weight, 5, 0., 5.,"");
 	    if (SameCharge(MuonHNLColl))  FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel) +"_"+Jet2Flavour+"_Fake", 2, weight, 5, 0., 5.,"");
 	    if (SameCharge(MuonV2Coll)) FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel) +"_"+Jet2Flavour+"_Fake", 3, weight, 5, 0., 5.,"");
 	  }
-	  if(MuonColl[0].IsFake( GetLeptonType_JH(MuonColl[0], gens)) &&MuonColl[1].IsFake( GetLeptonType_JH(MuonColl[1], gens)) ){
+	  if(MuonColl[0].IsFake() &&MuonColl[1].IsFake()){
 	    if (SameCharge(MuonTopColl))  FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_"+Jet2Flavour+"_Fake", 1, weight, 5, 0., 5.,"");
             if (SameCharge(MuonHNLColl))  FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_"+Jet2Flavour+"_Fake", 2, weight, 5, 0., 5.,"");
             if (SameCharge(MuonV2Coll)) FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_"+Jet2Flavour+"_Fake", 3, weight, 5, 0., 5.,"");
@@ -390,9 +387,7 @@ void HNL_ObjectStudies::executeEvent(){
 	if(iel.PassID("HNL_ULID_N4_"+GetYearString()))  ElectronHNLN4Coll.push_back(iel);                                                                              
 	if(iel.PassID("HNL_ULID_N5_"+GetYearString()))  ElectronHNLN5Coll.push_back(iel);                                                                              
 	if(iel.PassID("HNL_ULID_N6_"+GetYearString()))  ElectronHNLN6Coll.push_back(iel);                                                                              
-
-	int EllepType = GetLeptonType_JH(iel, gens);
-        if(iel.IsFake(EllepType)) nFakeEl++;
+        if(iel.IsFake()) nFakeEl++;
 
       }
 
@@ -400,14 +395,14 @@ void HNL_ObjectStudies::executeEvent(){
       if (nFakeEl==0 && dilep_channel == EE) continue;
 
       for(auto iel: ElectronColl){
-	int El_lepType = GetLeptonType_JH(iel, gens);
+	int El_lepType = iel.LeptonGenType();
 	FillHist("LepType/AllElectron", El_lepType,   weight,12, -6.,6.);
 
         TString JetFlavour = iel.CloseJet_Flavour();
 
         FillHist("JetType/AllElectron", iel.CloseJet_FlavourInt(),   weight,6, 0., 6.);
 
-	if(iel.IsFake( GetLeptonType_JH(iel, gens))) {
+	if(iel.IsFake()){
 	  
 	  if (iel.Pt() < 500.)  FillHist("FakeEl/Pt", iel.Pt(),   weight,100, 0., 500.);
 	  else FillHist("FakeEl/Pt", 499.,   weight,100, 0., 500.);
@@ -467,10 +462,10 @@ void HNL_ObjectStudies::executeEvent(){
 	  TString Jet1Flavour = CloseJetFlavour(AllAK4Jets, ElectronColl[0]) ;
 	  TString Jet2Flavour = CloseJetFlavour(AllAK4Jets, ElectronColl[1]) ;
 	  
-	  if(ElectronColl[0].IsFake( GetLeptonType_JH(ElectronColl[0], gens))  && ElectronColl[1].IsPrompt( GetLeptonType_JH(ElectronColl[1], gens)) ) {
+	  if(ElectronColl[0].IsFake()  && ElectronColl[1].IsPrompt()){
 
-	    if(Jet1Flavour == "LF")       FillHist("TypeVsFlavour/ElectronLF", GetLeptonType_JH(ElectronColl[0], gens),   weight,10, -5., 5.);
-	    else  if(Jet1Flavour == "HF") FillHist("TypeVsFlavour/ElectronHF", GetLeptonType_JH(ElectronColl[0], gens),   weight,10, -5., 5.);
+	    if(Jet1Flavour == "LF")       FillHist("TypeVsFlavour/ElectronLF", ElectronColl[0].LeptonGenType(),   weight,10, -5., 5.);
+	    else  if(Jet1Flavour == "HF") FillHist("TypeVsFlavour/ElectronHF", ElectronColl[0].LeptonGenType(),   weight,10, -5., 5.);
 	    
 
 	    FillHist ("SameSignDilep_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_Fake", 0, weight, 10, 0., 10.,"");
@@ -483,10 +478,10 @@ void HNL_ObjectStudies::executeEvent(){
 	    if(SameCharge(ElectronHNLN5Coll))                    FillHist ("SameSignDilep_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_Fake", 7, weight, 10, 0., 10.,"");
 	    if(SameCharge(ElectronHNLN6Coll))                    FillHist ("SameSignDilep_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_Fake", 8, weight, 10, 0., 10.,"");
 	  }
-	  if(ElectronColl[1].IsFake( GetLeptonType_JH(ElectronColl[1], gens)) && ElectronColl[0].IsPrompt( GetLeptonType_JH(ElectronColl[0], gens))) {
+	  if(ElectronColl[1].IsFake() && ElectronColl[0].IsPrompt()){
 
-            if(Jet2Flavour == "LF")      FillHist("TypeVsFlavour/ElectronLF", GetLeptonType_JH(ElectronColl[1], gens),   weight,10, -5., 5.);
-            else if(Jet2Flavour == "HF") FillHist("TypeVsFlavour/ElectronHF", GetLeptonType_JH(ElectronColl[1], gens),   weight,10, -5., 5.);
+            if(Jet2Flavour == "LF")      FillHist("TypeVsFlavour/ElectronLF", ElectronColl[1].LeptonGenType(),   weight,10, -5., 5.);
+            else if(Jet2Flavour == "HF") FillHist("TypeVsFlavour/ElectronHF", ElectronColl[1].LeptonGenType(),   weight,10, -5., 5.);
 
 	    FillHist ("SameSignDilep_"+GetChannelString(dilep_channel) +"_"+Jet2Flavour+"_Fake", 0, weight, 10, 0., 10.,"");
 	    if(SameCharge(ElectronV2Coll))                     FillHist ("SameSignDilep_"+GetChannelString(dilep_channel) +"_"+Jet2Flavour+"_Fake", 1, weight, 10, 0., 10.,"");
@@ -498,13 +493,13 @@ void HNL_ObjectStudies::executeEvent(){
 	    if(SameCharge(ElectronHNLN5Coll))                    FillHist ("SameSignDilep_"+GetChannelString(dilep_channel) +"_"+Jet2Flavour+"_Fake", 7, weight, 10, 0., 10.,"");
 	    if(SameCharge(ElectronHNLN6Coll))                    FillHist ("SameSignDilep_"+GetChannelString(dilep_channel) +"_"+Jet2Flavour+"_Fake", 8, weight, 10, 0., 10.,"");
 	  }
-	  if(ElectronColl[0].IsFake( GetLeptonType_JH(ElectronColl[0], gens))  &&  ElectronColl[1].IsFake( GetLeptonType_JH(ElectronColl[1], gens))){
+	  if(ElectronColl[0].IsFake()  &&  ElectronColl[1].IsFake()){
 	    
-            if(Jet1Flavour == "LF")      FillHist("TypeVsFlavour/ElectronFF_LF", GetLeptonType_JH(ElectronColl[0], gens),   weight,10, -5., 5.);
-            else if(Jet1Flavour == "HF") FillHist("TypeVsFlavour/ElectronFF_HF", GetLeptonType_JH(ElectronColl[1], gens),   weight,10, -5., 5.);
+            if(Jet1Flavour == "LF")      FillHist("TypeVsFlavour/ElectronFF_LF", ElectronColl[0].LeptonGenType(),   weight,10, -5., 5.);
+            else if(Jet1Flavour == "HF") FillHist("TypeVsFlavour/ElectronFF_HF", ElectronColl[0].LeptonGenType(),   weight,10, -5., 5.);
 	    
-	    if(Jet2Flavour == "LF")      FillHist("TypeVsFlavour/ElectronFF_LF", GetLeptonType_JH(ElectronColl[1], gens),   weight,10, -5., 5.);
-            else if(Jet2Flavour == "HF") FillHist("TypeVsFlavour/ElectronFF_HF", GetLeptonType_JH(ElectronColl[1], gens),   weight,10, -5., 5.);
+	    if(Jet2Flavour == "LF")      FillHist("TypeVsFlavour/ElectronFF_LF", ElectronColl[1].LeptonGenType(),   weight,10, -5., 5.);
+            else if(Jet2Flavour == "HF") FillHist("TypeVsFlavour/ElectronFF_HF", ElectronColl[1].LeptonGenType(),   weight,10, -5., 5.);
 
             FillHist ("SameSignDilep_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_"+Jet2Flavour+"_Fake", 0, weight, 10, 0., 10.,"");
             if(SameCharge(ElectronV2Coll))                     FillHist ("SameSignDilep_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_"+Jet2Flavour+"_Fake", 1, weight, 10, 0., 10.,"");
@@ -528,7 +523,7 @@ void HNL_ObjectStudies::executeEvent(){
 	    if(SameCharge(ElectronHNLN5Coll))                    FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel), 7, weight, 10, 0., 10.,"");
 	    if(SameCharge(ElectronHNLN6Coll))                    FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel), 8, weight, 10, 0., 10.,"");
 	    
-	    if(ElectronColl[0].IsFake( GetLeptonType_JH(ElectronColl[0], gens))  && ElectronColl[1].IsPrompt( GetLeptonType_JH(ElectronColl[1], gens)) ) {
+	    if(ElectronColl[0].IsFake()  && ElectronColl[1].IsPrompt()){
 	      FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_Fake", 0, weight, 10, 0., 10.,"");
 	      if(SameCharge(ElectronV2Coll))                     FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_Fake", 1, weight, 10, 0., 10.,"");
 	      if(SameCharge(ElectronHNLColl))                    FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_Fake", 2, weight, 10, 0., 10.,"");
@@ -540,7 +535,7 @@ void HNL_ObjectStudies::executeEvent(){
 	      if(SameCharge(ElectronHNLN5Coll))                    FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_Fake", 7, weight, 10, 0., 10.,"");
 	      if(SameCharge(ElectronHNLN6Coll))                    FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_Fake", 8, weight, 10, 0., 10.,"");
 	    }
-	    if(ElectronColl[1].IsFake( GetLeptonType_JH(ElectronColl[1], gens)) && ElectronColl[0].IsPrompt( GetLeptonType_JH(ElectronColl[0], gens))) {
+	    if(ElectronColl[1].IsFake() && ElectronColl[0].IsPrompt()){
               FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel) +"_"+Jet2Flavour+"_Fake", 0, weight, 10, 0., 10.,"");
               if(SameCharge(ElectronV2Coll))                     FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel) +"_"+Jet2Flavour+"_Fake", 1, weight, 10, 0., 10.,"");
               if(SameCharge(ElectronHNLColl))                    FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel) +"_"+Jet2Flavour+"_Fake", 2, weight, 10, 0., 10.,"");
@@ -553,7 +548,7 @@ void HNL_ObjectStudies::executeEvent(){
               if(SameCharge(ElectronHNLN6Coll))                    FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel) +"_"+Jet2Flavour+"_Fake", 8, weight, 10, 0., 10.,"");
             }
 
-	    if(ElectronColl[0].IsFake( GetLeptonType_JH(ElectronColl[0], gens))  &&  ElectronColl[1].IsFake( GetLeptonType_JH(ElectronColl[1], gens)) ){
+	    if(ElectronColl[0].IsFake()  &&  ElectronColl[1].IsFake()){
 	      FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_"+Jet2Flavour+"_Fake", 0, weight, 10, 0., 10.,"");
               if(SameCharge(ElectronV2Coll))                     FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_"+Jet2Flavour+"_Fake", 1, weight, 10, 0., 10.,"");
               if(SameCharge(ElectronHNLColl))                    FillHist ("SameSignDilep_0b_"+GetChannelString(dilep_channel) +"_"+Jet1Flavour+"_"+Jet2Flavour+"_Fake", 2, weight, 10, 0., 10.,"");
@@ -584,7 +579,7 @@ void HNL_ObjectStudies::executeEvent(){
 
 
       for(auto ilep : LepsAll){
-        int  lepType = GetLeptonType_JH(*ilep, gens);
+        int  lepType = ilep->LeptonGenType();
 
         if(ilep->LeptonFlavour() == Lepton::ELECTRON)       FillHist( "LepType/SSElectron", lepType ,weight, 14., -7., 7);
         else  FillHist( "LepType/SSMuon", lepType, weight, 14., -7., 7);
@@ -641,7 +636,8 @@ void HNL_ObjectStudies::executeEvent(){
 
     for(auto iel :  MuonColl ) {
 
-      int  lepType = GetLeptonType_JH(iel, gens);
+      int  lepType = iel.LeptonGenType();
+
     
       if(lepType == -6) MuonCollTypeM6.push_back(iel);
       if(lepType == -5) MuonCollTypeM5.push_back(iel);
@@ -685,7 +681,8 @@ void HNL_ObjectStudies::executeEvent(){
 
     for(auto iel :  ElectronColl ) {
 
-      int  lepType = GetLeptonType_JH(iel, gens);
+      int  lepType = iel.LeptonGenType();
+
 
       if(lepType == -6) ElectronCollTypeM6.push_back(iel);
       if(lepType == -5) ElectronCollTypeM5.push_back(iel);
@@ -836,10 +833,10 @@ void HNL_ObjectStudies::RunLeptonChannel(HNL_LeptonCore::Channel channel_ID, std
   FillHist (GetChannelString(channel_ID)+"_NoCut", 1, _weight, 2, 0., 2.,"");
 
   HNL_LeptonCore::SearchRegion Region1 = sigmm;
-  HNL_LeptonCore::SearchRegion Region2 = sigmm_17028;
+  //  HNL_LeptonCore::SearchRegion Region2 = sigmm_17028;
 
-  if(channel_ID == EE) {  Region1 = sigee;   Region2 = sigee_17028;}
-  if(channel_ID == EMu){ Region1 = sigem; Region2 = sigem_17028;}
+  if(channel_ID == EE) {  Region1 = sigee; };//  Region2 = sigee_17028;}
+  if(channel_ID == EMu){ Region1 = sigem; }//Region2 = sigem_17028;}
   
   Particle METv =GetvMET("PuppiT1xyULCorr");
 
@@ -1061,8 +1058,8 @@ void HNL_ObjectStudies::MakeType1SSWWSignalPlots(TString process, bool apply_rec
 
   if(apply_reco_cut) process=process+"_PtEtaReq";
 
-  for(unsigned int i=2; i<gens.size(); i++){
-    Gen gen = gens.at(i);
+  for(unsigned int i=2; i<All_Gens.size(); i++){
+    Gen gen = All_Gens.at(i);
     
     if(apply_reco_cut){
       if( (fabs(gen.PID()) == 13 )|| (fabs(gen.PID()) == 11 )){
@@ -1084,8 +1081,8 @@ void HNL_ObjectStudies::MakeType1SSWWSignalPlots(TString process, bool apply_rec
   TString LepFl_l1, LepFl_l2;
   int Lep_Mother_ind(-1);
 
-  for(unsigned int i=2; i<gens.size(); i++){
-    Gen gen = gens.at(i);
+  for(unsigned int i=2; i<All_Gens.size(); i++){
+    Gen gen = All_Gens.at(i);
     if( ! ( ( fabs(gen.PID()) == 13)  || (fabs(gen.PID()) == 11) )) continue;
     if (gen.Status() == 23){
       TString LepFl = (fabs(gen.PID()) == 13) ? "Mu" : "El";
@@ -1096,8 +1093,8 @@ void HNL_ObjectStudies::MakeType1SSWWSignalPlots(TString process, bool apply_rec
     }
   }
 
-  for(unsigned int i=2; i<gens.size(); i++){
-    Gen gen = gens.at(i);
+  for(unsigned int i=2; i<All_Gens.size(); i++){
+    Gen gen = All_Gens.at(i);
 
     if (gen.MotherIndex() == Lep_Mother_ind){
       if(fabs(gen.PID()) > 6) continue;
@@ -1111,7 +1108,7 @@ void HNL_ObjectStudies::MakeType1SSWWSignalPlots(TString process, bool apply_rec
     cout << "Lep2 " << Lep2.Pt() << endl;
     cout <<  "j1 " << j1.Pt() << endl;
     cout <<  "j2 " << j2.Pt() << endl;
-    PrintGen(gens);
+    PrintGen(All_Gens);
     exit(EXIT_FAILURE);
   }
   
@@ -1199,16 +1196,14 @@ void HNL_ObjectStudies::MakeType1VBFSignalPlots(TString process, bool apply_reco
   
   TString  mu_ch="";
   
-  gens = GetGens();
-  
   if(apply_reco_cut) process=process+"_PtEtaReq";
 
 
   // First loop over gen collection to get index of W/N and apply pt/eta cuts if needed                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
-  for(unsigned int i=2; i<gens.size(); i++){
-    Gen gen = gens.at(i);
+  for(unsigned int i=2; i<All_Gens.size(); i++){
+    Gen gen = All_Gens.at(i);
 
-    if(gens.at(gen.MotherIndex()).PID() == 9900012 || gens.at(gen.MotherIndex()).PID() == 9900014){
+    if(All_Gens.at(gen.MotherIndex()).PID() == 9900012 || All_Gens.at(gen.MotherIndex()).PID() == 9900014){
 
       if(apply_reco_cut){
         if( (fabs(gen.PID()) == 13 )|| (fabs(gen.PID()) == 11 )){
@@ -1218,11 +1213,11 @@ void HNL_ObjectStudies::MakeType1VBFSignalPlots(TString process, bool apply_reco
     }
 
 
-    if(fabs(gen.PID()) == 24 && (gens.at(gen.MotherIndex()).PID() == 9900012 || gens.at(gen.MotherIndex()).PID() == 9900014)){
+    if(fabs(gen.PID()) == 24 && (All_Gens.at(gen.MotherIndex()).PID() == 9900012 || All_Gens.at(gen.MotherIndex()).PID() == 9900014)){
       W2_ind= i;
       // If W decays to W in gen then get daughter                                                                                                                                                                                                                                                                                                                                                                                    
-      for(unsigned int i2=2; i2<gens.size(); i2++){
-        Gen gen2 = gens.at(i2);
+      for(unsigned int i2=2; i2<All_Gens.size(); i2++){
+        Gen gen2 = All_Gens.at(i2);
         if(gen2.MotherIndex() == W2_ind){
           if (fabs(gen2.PID()) == 24 ) W2_ind = i2;
         }
@@ -1235,8 +1230,8 @@ void HNL_ObjectStudies::MakeType1VBFSignalPlots(TString process, bool apply_reco
   }
 
   // Loop over again to cut on Lep from W1                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
-  for(unsigned int i=2; i<gens.size(); i++){
-    Gen gen = gens.at(i);
+  for(unsigned int i=2; i<All_Gens.size(); i++){
+    Gen gen = All_Gens.at(i);
 
     if(gen.MotherIndex() == N_Mother_ind){
       if(apply_reco_cut){
@@ -1258,16 +1253,16 @@ void HNL_ObjectStudies::MakeType1VBFSignalPlots(TString process, bool apply_reco
   TString LepFl_l1, LepFl_l2;
 
   // Loop over Gen collection and Natch N/W/l/j objects                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
-  for(unsigned int i=2; i<gens.size(); i++){
-    Gen gen = gens.at(i);
+  for(unsigned int i=2; i<All_Gens.size(); i++){
+    Gen gen = All_Gens.at(i);
 
     if(int(gen.MotherIndex()) == W2_ind && gen.Status() == 23) {
-      W2 = gens.at(gen.MotherIndex());
+      W2 = All_Gens.at(gen.MotherIndex());
       if(!j1IsSet) {  j1= gen; j1IsSet=true;}
       else j2 = gen;
     }
     if(gen.PID() == 9900012 || gen.PID() == 9900014){
-      N= gens.at(i);
+      N= All_Gens.at(i);
     }
 
     if( fabs(gen.PID()) < 7 && gen.Status() == 23){
@@ -1278,7 +1273,7 @@ void HNL_ObjectStudies::MakeType1VBFSignalPlots(TString process, bool apply_reco
 
     TString LepFl = (fabs(gen.PID()) == 13) ? "Mu" : "El";
 
-    if(gens.at(gen.MotherIndex()).PID() == 9900012|| gens.at(gen.MotherIndex()).PID() == 9900014) {
+    if(All_Gens.at(gen.MotherIndex()).PID() == 9900012|| All_Gens.at(gen.MotherIndex()).PID() == 9900014) {
       LepFromN = gen;
       LepFl_l1=LepFl;
     }
@@ -1418,12 +1413,12 @@ void HNL_ObjectStudies::MakeType1VBFSignalPlots(TString process, bool apply_reco
     cout << "j1.Pt()  " << j1.Pt() << endl;
     cout << "j2.Pt()  " << j2.Pt() << endl;
     
-    PrintGen(gens);
+    PrintGen(All_Gens);
     exit(EXIT_FAILURE);
   }
   if(LepFromN.Pt() == 0 || LepFromW.Pt() == 0.) {
     cout << "LepFromN pt = " << LepFromN.Pt() << "  LepFromW pt = " << LepFromW.Pt() << endl;
-    PrintGen(gens);
+    PrintGen(All_Gens);
     exit(EXIT_FAILURE);
   }
 
@@ -1438,16 +1433,14 @@ void HNL_ObjectStudies::MakeType1SignalPlots(TString process, bool apply_reco_cu
   int W2_ind(0); // Index of W2 : i.e W from N decay 
   TString  mu_ch="";
 
-  gens = GetGens();
-  
   if(apply_reco_cut) process=process+"_PtEtaReq";
   
 
   // First loop over gen collection to get index of W/N and apply pt/eta cuts if needed
-  for(unsigned int i=2; i<gens.size(); i++){
-    Gen gen = gens.at(i);
+  for(unsigned int i=2; i<All_Gens.size(); i++){
+    Gen gen = All_Gens.at(i);
     
-    if(gens.at(gen.MotherIndex()).PID() == 9900012 || gens.at(gen.MotherIndex()).PID() == 9900014){
+    if(All_Gens.at(gen.MotherIndex()).PID() == 9900012 || All_Gens.at(gen.MotherIndex()).PID() == 9900014){
 
       if(apply_reco_cut){
 	if( (fabs(gen.PID()) == 13 )|| (fabs(gen.PID()) == 11 )){
@@ -1457,12 +1450,12 @@ void HNL_ObjectStudies::MakeType1SignalPlots(TString process, bool apply_reco_cu
     }
    
     
-    if(fabs(gen.PID()) == 24 && (gens.at(gen.MotherIndex()).PID() == 9900012 || gens.at(gen.MotherIndex()).PID() == 9900014)){
+    if(fabs(gen.PID()) == 24 && (All_Gens.at(gen.MotherIndex()).PID() == 9900012 || All_Gens.at(gen.MotherIndex()).PID() == 9900014)){
       W2_ind= i;
       // If W decays to W in gen then get daughter
       
-      for(unsigned int i2=2; i2<gens.size(); i2++){
-	Gen gen2 = gens.at(i2);
+      for(unsigned int i2=2; i2<All_Gens.size(); i2++){
+	Gen gen2 = All_Gens.at(i2);
 	if(gen2.MotherIndex() == W2_ind){
 	  if (fabs(gen2.PID()) == 24 ) W2_ind = i2;
 	}
@@ -1475,8 +1468,8 @@ void HNL_ObjectStudies::MakeType1SignalPlots(TString process, bool apply_reco_cu
   }
 
   // Loop over again to cut on Lep from W1
-  for(unsigned int i=2; i<gens.size(); i++){
-    Gen gen = gens.at(i);
+  for(unsigned int i=2; i<All_Gens.size(); i++){
+    Gen gen = All_Gens.at(i);
     
     if(gen.MotherIndex() == N_Mother_ind){
       if(apply_reco_cut){
@@ -1498,23 +1491,23 @@ void HNL_ObjectStudies::MakeType1SignalPlots(TString process, bool apply_reco_cu
   TString LepFl_l1, LepFl_l2;
   
   // Loop over Gen collection and Natch N/W/l/j objects
-  for(unsigned int i=2; i<gens.size(); i++){
-    Gen gen = gens.at(i);
+  for(unsigned int i=2; i<All_Gens.size(); i++){
+    Gen gen = All_Gens.at(i);
     
     if(int(gen.MotherIndex()) == W2_ind && gen.Status() == 23) {
-      W2 = gens.at(gen.MotherIndex());
+      W2 = All_Gens.at(gen.MotherIndex());
       if(!j1IsSet) {  j1= gen; j1IsSet=true;}
       else j2 = gen;
     }
     if(gen.PID() == 9900012 || gen.PID() == 9900014){
-      N= gens.at(i);
+      N= All_Gens.at(i);
     }
     
     if( ! ( ( fabs(gen.PID()) == 13)  || (fabs(gen.PID()) == 11) )) continue;
     
     TString LepFl = (fabs(gen.PID()) == 13) ? "Mu" : "El";
 
-    if(gens.at(gen.MotherIndex()).PID() == 9900012|| gens.at(gen.MotherIndex()).PID() == 9900014) {
+    if(All_Gens.at(gen.MotherIndex()).PID() == 9900012|| All_Gens.at(gen.MotherIndex()).PID() == 9900014) {
       LepFromN = gen;
       LepFl_l1=LepFl;
     }
@@ -1526,7 +1519,7 @@ void HNL_ObjectStudies::MakeType1SignalPlots(TString process, bool apply_reco_cu
   
   if(LepFromN.Pt() == 0 || LepFromW.Pt() == 0.) {
     cout << "LepFromN pt = " << LepFromN.Pt() << "  LepFromW pt = " << LepFromW.Pt() << endl;
-    PrintGen(gens);
+    PrintGen(All_Gens);
     exit(EXIT_FAILURE);
   }
   
@@ -1572,7 +1565,7 @@ void HNL_ObjectStudies::MakeType1SignalPlots(TString process, bool apply_reco_cu
   
   if(j1.Pt() == 0  || j2.Pt() == 0.)      {
     cout << "J1 pt = " << j1.Pt() << " J2 pt = " << j2.Pt() << endl;   
-    PrintGen(gens);
+    PrintGen(All_Gens);
     exit(EXIT_FAILURE);
   }
 
@@ -1590,7 +1583,7 @@ void HNL_ObjectStudies::MakeType1SignalPlots(TString process, bool apply_reco_cu
   //  cout << (LepFromN + j1+j2).Phi() << " " << N.Phi() << endl;
   //  cout << (LepFromN + j1+j2).M() << " " << N.M() << endl;
   //  cout << (j1+j2).M() << " " << W2.M() << endl;
-  //  PrintGen(gens);
+  //  PrintGen(All_Gens);
   //  exit(EXIT_FAILURE);
   // }
 

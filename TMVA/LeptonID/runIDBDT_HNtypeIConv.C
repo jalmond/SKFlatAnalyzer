@@ -32,6 +32,9 @@ void runIDBDT_HNtypeIConv(TString Classifier ="BDTG" ,TString BkgType = "Conv", 
   TString  treeName = (channel == "MuMu")  ?  "Tree_mm" :  "Tree_ee";
 
   TString signal="SignalConv";
+  if(signal_mode == 2) signal="SignalConv_BB";
+  if(signal_mode == 3) signal="SignalConv_EC";
+
 
   cout << "signal File Name= " << signal << endl;
   for(int i=0; i < nTermWidth; i++)  cout << "-" ;   cout << endl;
@@ -39,12 +42,12 @@ void runIDBDT_HNtypeIConv(TString Classifier ="BDTG" ,TString BkgType = "Conv", 
   if(signal_mode==1) signal="SignalConv";
   
 
-  TString JobTag = Classifier +"_version4_"+ BkgType + "_TypeI_"+channel+"_"+signal+"_"+era+"_NTrees"+NTrees+"_NormMode_"+NormMode+"_MinNodeSize_"+MinNodeSize+"_MaxDepth_"+MaxDepth+"_nCuts_"+nCuts+ClassTag +"_Seed_"+seed+"_BDT";
+  TString JobTag = Classifier +"_version6_"+ BkgType + "_TypeI_"+channel+"_"+signal+"_"+era+"_NTrees"+NTrees+"_NormMode_"+NormMode+"_MinNodeSize_"+MinNodeSize+"_MaxDepth_"+MaxDepth+"_nCuts_"+nCuts+ClassTag +"_Seed_"+seed+"_BDT";
 
   TMVA::gConfig().GetVariablePlotting().fNbins1D = 200; 
   TMVA::gConfig().GetVariablePlotting().fNbinsMVAoutput = 100;
 
-  const TString path = "/data6/Users/jalmond/2020/HL_SKFlatAnalyzer_ULv3/SKFlatAnalyzer/HNDiLeptonWorskspace/InputFiles/MergedFiles/Run2UltraLegacy_v3/HNL_LeptonID_BDT_KinVar/"+era+"/";
+  const TString path = "/data6/Users/jalmond/2020/HL_SKFlatAnalyzer_ULv3/SKFlatAnalyzer/HNDiLeptonWorskspace/InputFiles/MergedFiles/Run2UltraLegacy_v3/HNL_LeptonID_BDT_KinVar/Version3/"+era+"/";
   
   TString signame = path+"HNL_LeptonID_BDT_KinVar_Prompt.root";
 
@@ -108,6 +111,14 @@ void runIDBDT_HNtypeIConv(TString Classifier ="BDTG" ,TString BkgType = "Conv", 
   TCut cut_s = "";
   TCut cut_b = "";
 
+  if(fabs(signal_mode)==2){
+    cut_s = "Eta<1.5";
+    cut_b = "Eta<1.5";
+  }
+  if(fabs(signal_mode)==3){
+    cut_s = "Eta>1.5&&Eta<2.5";
+    cut_b = "Eta>1.5&&Eta<2.5";
+  }
   int n_train_signal = tree_signal->GetEntries(cut_s)/2;
   int n_train_back = tree_bkg->GetEntries(cut_b)/2;
 
