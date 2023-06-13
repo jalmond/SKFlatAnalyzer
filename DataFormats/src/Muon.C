@@ -390,7 +390,7 @@ bool Muon::PassID(TString ID) const {
 
 
 
-  if(ID.Contains("HNL_ULID_2016")){
+  if(ID=="HNL_ULID_2016"){
 
     if(!PassID("MVALoose")) return false;
 
@@ -404,7 +404,7 @@ bool Muon::PassID(TString ID) const {
     return true;
   }
 
-  if(ID.Contains("HNL_ULID_2017"))  {
+  if(ID=="HNL_ULID_2017")  {
 
     if(!PassID("MVALoose")) return false;
 
@@ -420,7 +420,7 @@ bool Muon::PassID(TString ID) const {
     return true;
   }
 
-  if(ID.Contains("HNL_ULID_2018"))  {
+  if(ID=="HNL_ULID_2018")  {
 
     if(!PassID("MVALoose")) return false;
 
@@ -432,6 +432,42 @@ bool Muon::PassID(TString ID) const {
     }
 
     if(!PassID("HNLIPv9"))  return false;
+
+    return true;
+  }
+
+  if(ID=="HNL_ULID_2017_LooseV1")  {
+    if(!PassID("MVALoose")) return false;
+    if(MVA() < 0.6)  return false;
+    if(!PassID("HNLIPv8"))  return false;
+
+    return true;
+  }
+  if(ID=="HNL_ULID_2017_LooseV2")  {
+    if(!PassID("MVALoose")) return false;
+    if(MVA() < 0.4)  return false;
+    if(!PassID("HNLIPv8"))  return false;
+
+    return true;
+  }
+  if(ID=="HNL_ULID_2017_LooseV3")  {
+    if(!PassID("MVALoose")) return false;
+    if(MVA() < 0.2)  return false;
+    if(!PassID("HNLIPv8"))  return false;
+
+    return true;
+  }
+  if(ID=="HNL_ULID_2017_LooseV4")  {
+    if(!PassID("MVALoose")) return false;
+    if(MVA() < 0)  return false;
+    if(!PassID("HNLIPv8"))  return false;
+
+    return true;
+  }
+  if(ID=="HNL_ULID_2017_LooseV5")  {
+    if(!PassID("MVALoose")) return false;
+    if(MVA() < -0.2)  return false;
+    if(!PassID("HNLIPv8"))  return false;
 
     return true;
   }

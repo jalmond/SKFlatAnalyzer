@@ -2004,7 +2004,17 @@ std::vector<Muon> AnalyzerCore::GetMuons(AnalyzerParameter param, TString id, do
       continue;
     }
     if(!( muons.at(i).PassID(id) )){
-      // cout << "Fail ID" << endl;                                                                                                        
+      if(muons.at(i).PassID("MVALoose")&&muons.at(i).PassID("HNLIPv8")){
+          for(int j=1; j<=5; j++){
+            TString this_str;
+            this_str.Itoa(j,10);
+            if(id.Contains("V"+this_str)&&muons.at(i).MVA()>(0.6-0.2*(j-1))){
+              cout << id << " failed but passed MVALoose and HNLIPv8;" << endl; //JH
+              cout << "MVA cut : " << (0.6-0.2*(j-1)) << endl;
+              cout << "MVA : " << muons.at(i).MVA() <<  endl; //JH
+            }
+          }
+      }
       continue;
     }
  
@@ -2150,28 +2160,28 @@ std::vector<Electron> AnalyzerCore::GetAllElectrons(){
     ////*************** FAKE MVA
     if(fChain->GetBranch("electron_mva_fake_v1"))  el.SetHNL_FakeLepMVAV1(electron_mva_fake_v1->at(i));
     if(fChain->GetBranch("electron_mva_fake_v2"))  el.SetHNL_FakeLepMVAV2(electron_mva_fake_v2->at(i), 
-									  electron_mva_fakeHF_v2->at(i),
-									  electron_mva_fakeLF_v2->at(i),
-									  electron_mva_fakeTop_v2->at(i));
+                    electron_mva_fakeHF_v2->at(i),
+                    electron_mva_fakeLF_v2->at(i),
+                    electron_mva_fakeTop_v2->at(i));
     if(fChain->GetBranch("electron_mva_fake_v3"))  el.SetHNL_FakeLepMVAV3(electron_mva_fake_v3->at(i), 
-									  electron_mva_fakeHF_v3->at(i), 
-									  electron_mva_fakeHFB_v3->at(i), 
-									  electron_mva_fakeHFC_v3->at(i),
-									  electron_mva_fakeLF_v3->at(i),
-									  electron_mva_fakeTop_v3->at(i));
+                    electron_mva_fakeHF_v3->at(i), 
+                    electron_mva_fakeHFB_v3->at(i), 
+                    electron_mva_fakeHFC_v3->at(i),
+                    electron_mva_fakeLF_v3->at(i),
+                    electron_mva_fakeTop_v3->at(i));
     if(fChain->GetBranch("electron_mva_fake_v4"))  el.SetHNL_FakeLepMVAV4(electron_mva_fake_v4->at(i), 
-									  electron_mva_fakeHF_v4->at(i), 
-									  electron_mva_fakeHFB_v4->at(i),
-									  electron_mva_fakeHFC_v4->at(i), 
-									  electron_mva_fakeLF_v4->at(i),
-									  electron_mva_fakeTop_v4->at(i));
+                    electron_mva_fakeHF_v4->at(i), 
+                    electron_mva_fakeHFB_v4->at(i),
+                    electron_mva_fakeHFC_v4->at(i), 
+                    electron_mva_fakeLF_v4->at(i),
+                    electron_mva_fakeTop_v4->at(i));
 
     if(fChain->GetBranch("electron_mva_fake_ed_v4"))  el.SetHNL_FakeLepMVA_EtaDependantV4(electron_mva_fake_ed_v4->at(i),
-											  electron_mva_fakeHF_ed_v4->at(i),
-											  electron_mva_fakeHFB_ed_v4->at(i),
-											  electron_mva_fakeHFC_ed_v4->at(i),
-											  electron_mva_fakeLF_ed_v4->at(i),
-											  electron_mva_fakeTop_ed_v4->at(i));
+                        electron_mva_fakeHF_ed_v4->at(i),
+                        electron_mva_fakeHFB_ed_v4->at(i),
+                        electron_mva_fakeHFC_ed_v4->at(i),
+                        electron_mva_fakeLF_ed_v4->at(i),
+                        electron_mva_fakeTop_ed_v4->at(i));
     
     ////*************** CONV MVA
     if(fChain->GetBranch("electron_mva_conv_v1"))    el.SetHNL_ConvLepMVAV1(electron_mva_conv_v1->at(i));
@@ -2181,11 +2191,11 @@ std::vector<Electron> AnalyzerCore::GetAllElectrons(){
     ////*************** CF MVA
     if(fChain->GetBranch("electron_mva_cf_v1"))     el.SetHNL_CFLepMVAV1(electron_mva_cf_v1->at(i));
     if(fChain->GetBranch("electron_mva_cf_v2"))     el.SetHNL_CFLepMVAV2(electron_mva_cf_v2->at(i),
-									 electron_mva_cf_v2p1->at(i),
-									 electron_mva_cf_v2p2->at(i));
+                   electron_mva_cf_v2p1->at(i),
+                   electron_mva_cf_v2p2->at(i));
     if(fChain->GetBranch("electron_mva_cf_ed_v2"))  el.SetHNL_CFLepMVA_EtaDependantV2(electron_mva_cf_ed_v2->at(i),
-										      electron_mva_cf_ed_v2p1->at(i),
-										      electron_mva_cf_ed_v2p2->at(i));
+                          electron_mva_cf_ed_v2p1->at(i),
+                          electron_mva_cf_ed_v2p2->at(i));
     
 
     if(iSetupLeptonBDT){
@@ -2193,30 +2203,30 @@ std::vector<Electron> AnalyzerCore::GetAllElectrons(){
       if(!fChain->GetBranch("electron_mva_fake_v1"))  el.SetHNL_FakeLepMVAV1(GetBDTScoreElV1(el,AnalyzerCore::Fake,  "BDTGv1"));
       
       if(!fChain->GetBranch("electron_mva_fake_v2"))  el.SetHNL_FakeLepMVAV2(GetBDTScoreEl(el, AnalyzerCore::Fake,  "BDTGv2"    ), 
-									     GetBDTScoreEl(el, AnalyzerCore::Fake,  "BDTGv2_HF" ),
-									     GetBDTScoreEl(el, AnalyzerCore::Fake,  "BDTGv2_LF" ),
-									     GetBDTScoreEl(el, AnalyzerCore::Fake,  "BDTGv2_Top"));
+                       GetBDTScoreEl(el, AnalyzerCore::Fake,  "BDTGv2_HF" ),
+                       GetBDTScoreEl(el, AnalyzerCore::Fake,  "BDTGv2_LF" ),
+                       GetBDTScoreEl(el, AnalyzerCore::Fake,  "BDTGv2_Top"));
       
       if(!fChain->GetBranch("electron_mva_fake_v3"))  el.SetHNL_FakeLepMVAV3(GetBDTScoreEl(el, AnalyzerCore::Fake,  "BDTGv3"      ), 
-									       GetBDTScoreEl(el, AnalyzerCore::Fake,  "BDTGv3_HF" ), 
-									       GetBDTScoreEl(el, AnalyzerCore::Fake,  "BDTGv3_HFB"), 
-									       GetBDTScoreEl(el, AnalyzerCore::Fake,  "BDTGv3_HFC"), 
-									       GetBDTScoreEl(el, AnalyzerCore::Fake,  "BDTGv3_LF" ),
-									       GetBDTScoreEl(el, AnalyzerCore::Fake,  "BDTGv3_Top"));
+                         GetBDTScoreEl(el, AnalyzerCore::Fake,  "BDTGv3_HF" ), 
+                         GetBDTScoreEl(el, AnalyzerCore::Fake,  "BDTGv3_HFB"), 
+                         GetBDTScoreEl(el, AnalyzerCore::Fake,  "BDTGv3_HFC"), 
+                         GetBDTScoreEl(el, AnalyzerCore::Fake,  "BDTGv3_LF" ),
+                         GetBDTScoreEl(el, AnalyzerCore::Fake,  "BDTGv3_Top"));
       
       if(!fChain->GetBranch("electron_mva_fake_v4"))  el.SetHNL_FakeLepMVAV4(GetBDTScoreEl(el,  AnalyzerCore::Fake,  "BDTGv4" ), 
-									     GetBDTScoreEl(el,AnalyzerCore::Fake,  "BDTGv4_HF"), 
-									     GetBDTScoreEl(el,AnalyzerCore::Fake,  "BDTGv4_HFB"), 
-									     GetBDTScoreEl(el,AnalyzerCore::Fake,  "BDTGv4_HFC"), 
-									     GetBDTScoreEl(el,AnalyzerCore::Fake,  "BDTGv4_LF"),
-									     GetBDTScoreEl(el,AnalyzerCore::Fake,  "BDTGv4_Top"));
+                       GetBDTScoreEl(el,AnalyzerCore::Fake,  "BDTGv4_HF"), 
+                       GetBDTScoreEl(el,AnalyzerCore::Fake,  "BDTGv4_HFB"), 
+                       GetBDTScoreEl(el,AnalyzerCore::Fake,  "BDTGv4_HFC"), 
+                       GetBDTScoreEl(el,AnalyzerCore::Fake,  "BDTGv4_LF"),
+                       GetBDTScoreEl(el,AnalyzerCore::Fake,  "BDTGv4_Top"));
 
       if(!fChain->GetBranch("electron_mva_fake_ed_v4"))  el.SetHNL_FakeLepMVA_EtaDependantV4(GetBDTScoreEl_EtaDependant(el,AnalyzerCore::Fake,  "BDTGv4" ),
-											     GetBDTScoreEl_EtaDependant(el,AnalyzerCore::Fake,  "BDTGv4_HF"),
-											     GetBDTScoreEl_EtaDependant(el,AnalyzerCore::Fake,  "BDTGv4_HFB"),
-											     GetBDTScoreEl_EtaDependant(el,AnalyzerCore::Fake,  "BDTGv4_HFC"),
-											     GetBDTScoreEl_EtaDependant(el,AnalyzerCore::Fake,  "BDTGv4_LF"),
-											     GetBDTScoreEl_EtaDependant(el,AnalyzerCore::Fake,  "BDTGv4_Top"));
+                           GetBDTScoreEl_EtaDependant(el,AnalyzerCore::Fake,  "BDTGv4_HF"),
+                           GetBDTScoreEl_EtaDependant(el,AnalyzerCore::Fake,  "BDTGv4_HFB"),
+                           GetBDTScoreEl_EtaDependant(el,AnalyzerCore::Fake,  "BDTGv4_HFC"),
+                           GetBDTScoreEl_EtaDependant(el,AnalyzerCore::Fake,  "BDTGv4_LF"),
+                           GetBDTScoreEl_EtaDependant(el,AnalyzerCore::Fake,  "BDTGv4_Top"));
       
 
 
@@ -2226,11 +2236,11 @@ std::vector<Electron> AnalyzerCore::GetAllElectrons(){
       
       if(!fChain->GetBranch("electron_mva_cf_v1"))     el.SetHNL_CFLepMVAV1(GetBDTScoreElV1(el,AnalyzerCore::CF,  "BDTGv1"));
       if(!fChain->GetBranch("electron_mva_cf_v2"))     el.SetHNL_CFLepMVAV2(GetBDTScoreEl(el,AnalyzerCore::CF,  "BDTGv2"),
-									    GetBDTScoreEl(el,AnalyzerCore::CF,  "BDTGv2p1"),
-									    GetBDTScoreEl(el,AnalyzerCore::CF,  "BDTGv2p2"));
+                      GetBDTScoreEl(el,AnalyzerCore::CF,  "BDTGv2p1"),
+                      GetBDTScoreEl(el,AnalyzerCore::CF,  "BDTGv2p2"));
       if(!fChain->GetBranch("electron_mva_cf_ed_v2"))  el.SetHNL_CFLepMVA_EtaDependantV2(GetBDTScoreEl_EtaDependant(el,AnalyzerCore::CF,  "BDTGv2"),
-											 GetBDTScoreEl_EtaDependant(el,AnalyzerCore::CF,  "BDTGv2p1"),
-											 GetBDTScoreEl_EtaDependant(el,AnalyzerCore::CF,  "BDTGv2p2"));
+                       GetBDTScoreEl_EtaDependant(el,AnalyzerCore::CF,  "BDTGv2p1"),
+                       GetBDTScoreEl_EtaDependant(el,AnalyzerCore::CF,  "BDTGv2p2"));
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2283,10 +2293,10 @@ std::vector<Electron> AnalyzerCore::GetAllElectrons(){
       int JetHadFlavour = -999;
 
       for(unsigned int ij=0; ij<AK4_JetAllColl.size(); ij++){
-	if(TESTBDT)cout << "Jet pt = " << AK4_JetAllColl.at(ij).Pt() << " " << AK4_JetAllColl.at(ij).Eta() << " " << AK4_JetAllColl.at(ij).Phi() << endl;
-	float dR1=el.DeltaR(AK4_JetAllColl.at(ij));
-	if(dR1>0.4) continue;
-	if(dR1<mindR1){ mindR1=dR1; IdxMatchJet=ij; }
+  if(TESTBDT)cout << "Jet pt = " << AK4_JetAllColl.at(ij).Pt() << " " << AK4_JetAllColl.at(ij).Eta() << " " << AK4_JetAllColl.at(ij).Phi() << endl;
+  float dR1=el.DeltaR(AK4_JetAllColl.at(ij));
+  if(dR1>0.4) continue;
+  if(dR1<mindR1){ mindR1=dR1; IdxMatchJet=ij; }
       }
       if(IdxMatchJet!=-1) {
   JetDiscCJ      = AK4_JetAllColl.at(IdxMatchJet).GetTaggerResult(JetTagging::DeepJet);
@@ -2351,7 +2361,7 @@ std::vector<Electron> AnalyzerCore::GetElectrons(AnalyzerParameter param, TStrin
       continue;
     }
     //cout << i+1 << "th electron passed pt, eta;" << endl;
-    //cout << i+1 << "th electron trying to pass " << id << " ..." <<	endl;
+    //cout << i+1 << "th electron trying to pass " << id << " ..." <<  endl;
     if(!( electrons.at(i).PassID(id) )){
       //cout << "Fail " << id << endl;
       continue;
@@ -2904,7 +2914,7 @@ std::vector<Jet> AnalyzerCore::GetAllJets(bool applySmear){
     jet.SetEnShift( jet_shiftedEnUp->at(i), jet_shiftedEnDown->at(i) );
     if(!IsDATA){
       if(applySmear){
-	jet *= jet_smearedRes->at(i);
+  jet *= jet_smearedRes->at(i);
       }
       jet.SetResShift( jet_smearedResUp->at(i)/jet_smearedRes->at(i), jet_smearedResDown->at(i)/jet_smearedRes->at(i) );
       jet.SetRes(jet_smearedRes->at(i));
@@ -5833,7 +5843,7 @@ vector<TString> AnalyzerCore::GetGenList(){
                             "BBaryon",
                             "proton",
                             "conv",
-			    "__"};
+          "__"};
 
   return lables;
 
@@ -5895,21 +5905,21 @@ TString AnalyzerCore::MatchGenDef(std::vector<Gen>& gens,const Lepton& Lep){
 
       if(Lep.DeltaR(gen) < 0.4)  {
         if(fabs(gen.Pt() - Lep.Pt() ) / Lep.Pt() < 0.25) {
-	  
-	  if(MatchGenPID(fabs(gen.PID()), gens, gen) != "") {
-	    //cout << "MatchGenPID = " << MatchGenPID(fabs(gen.PID()),gens,  gen) << endl;
-	    return MatchGenPID(fabs(gen.PID()),gens,  gen);
-	  }
-	  MatchedGensID.push_back(i);
-	}
-	//cout << "CloseGensID.push_back " << i << endl;
-	CloseGensID.push_back(i);
+    
+    if(MatchGenPID(fabs(gen.PID()), gens, gen) != "") {
+      //cout << "MatchGenPID = " << MatchGenPID(fabs(gen.PID()),gens,  gen) << endl;
+      return MatchGenPID(fabs(gen.PID()),gens,  gen);
+    }
+    MatchedGensID.push_back(i);
+  }
+  //cout << "CloseGensID.push_back " << i << endl;
+  CloseGensID.push_back(i);
       }
       
       if(Lep.DeltaR(gen) < mindR ){
-	mindR=Lep.DeltaR(gen) ;
-	closest_pid= fabs(gen.PID());
-	closest_id = i;
+  mindR=Lep.DeltaR(gen) ;
+  closest_pid= fabs(gen.PID());
+  closest_id = i;
       }
     }
     
@@ -5917,36 +5927,36 @@ TString AnalyzerCore::MatchGenDef(std::vector<Gen>& gens,const Lepton& Lep){
     TString pid_matched="NULL";
     for(auto j : MatchedGensID) {
       if(Lep.DeltaR(gens[j]) < mindR){
-	mindR=Lep.DeltaR(gens[j]);
-	
-	if(fabs(gens[j].Pt() - Lep.Pt() ) / Lep.Pt() < 0.25) {
-	  pid_matched=Lep.PIDToString(fabs(gens[j].PID()));
-	  
-	  //cout << "pid_matched = " << pid_matched <<  " " <<  j <<endl;
-	  int mind = gens.at(j).MotherIndex();
-	  int pdid = j;
-	  //cout << "mind = " << mind << endl;
-	  while(std::find(CloseGensID.begin(), CloseGensID.end(), mind) != CloseGensID.end()) {
-	    if(fabs(gens.at(mind).PID()) <= 6)  break;
+  mindR=Lep.DeltaR(gens[j]);
+  
+  if(fabs(gens[j].Pt() - Lep.Pt() ) / Lep.Pt() < 0.25) {
+    pid_matched=Lep.PIDToString(fabs(gens[j].PID()));
+    
+    //cout << "pid_matched = " << pid_matched <<  " " <<  j <<endl;
+    int mind = gens.at(j).MotherIndex();
+    int pdid = j;
+    //cout << "mind = " << mind << endl;
+    while(std::find(CloseGensID.begin(), CloseGensID.end(), mind) != CloseGensID.end()) {
+      if(fabs(gens.at(mind).PID()) <= 6)  break;
             if(fabs(gens.at(mind).PID()) == 2212)  break;
 
-	    pdid = mind;
-	    mind = gens.at(mind).MotherIndex();
-	  }
-	  //cout << "Lep.PIDToString(fabs(gens[mind].PID()) = " << mind << " " << Lep.PIDToString(fabs(gens[mind].PID()))<< endl;
+      pdid = mind;
+      mind = gens.at(mind).MotherIndex();
+    }
+    //cout << "Lep.PIDToString(fabs(gens[mind].PID()) = " << mind << " " << Lep.PIDToString(fabs(gens[mind].PID()))<< endl;
           if(fabs(gens[pdid].PID()) == 423) return "D*";
-	  if(fabs(gens[pdid].PID()) == 421) return "D0";
-	  if(fabs(gens[pdid].PID()) == 431) return "Ds+";
-	  if(fabs(gens[pdid].PID()) == 433) return "Ds+";
-	  if(fabs(gens[pdid].PID()) == 413) return "D*";
-	  if(fabs(gens[pdid].PID()) == 411) return "D+";
+    if(fabs(gens[pdid].PID()) == 421) return "D0";
+    if(fabs(gens[pdid].PID()) == 431) return "Ds+";
+    if(fabs(gens[pdid].PID()) == 433) return "Ds+";
+    if(fabs(gens[pdid].PID()) == 413) return "D*";
+    if(fabs(gens[pdid].PID()) == 411) return "D+";
           if(fabs(gens[pdid].PID()) == 511) return "B0";
           if(fabs(gens[pdid].PID()) == 531) return "B0s";
           if(fabs(gens[pdid].PID()) == 533) return "B0s";
           if(fabs(gens[pdid].PID()) == 513) return "B*";
           if(fabs(gens[pdid].PID()) == 521) return "B+";
           if(fabs(gens[pdid].PID()) == 523) return "B*";
-	}
+  }
       }
     }
     
@@ -6003,8 +6013,8 @@ TString AnalyzerCore::MatchGenDef(std::vector<Gen>& gens,const Lepton& Lep){
     // }
     
     if(closest_pid != 9999 )return Lep.PIDToString(closest_pid) ;
-			      
-			      
+            
+            
   }
   else{
     
@@ -6046,19 +6056,19 @@ TString AnalyzerCore::MatchGenDef(std::vector<Gen>& gens,const Lepton& Lep){
     if(fabs(gens.at(gens[Idx_Closest].MotherIndex()).PID()) == 2212 ) {
 
       for(unsigned int i=2; i<gens.size(); i++){
-	Gen gen = gens.at(i);
-	if(Lep.DeltaR(gen) < 0.4)  {
-	  if(fabs(gen.PID()) == 22 && gen.Status()==1 && (fabs(gens.at(gen.MotherIndex()).PID()) == 111)) return "pi0ph";
-	  if((fabs(gens.at(gen.MotherIndex()).PID()) == 111)) return "pi0";
-	  //if(fabs(gen.PID()) == 511 ) return "B0";
-	  //f(fabs(gen.PID()) == 531 ) return "B0s";
-	  //if(fabs(gen.PID()) == 533 ) return "B0s";
-	  //if(fabs(gen.PID()) == 521 ) return "B+";
+  Gen gen = gens.at(i);
+  if(Lep.DeltaR(gen) < 0.4)  {
+    if(fabs(gen.PID()) == 22 && gen.Status()==1 && (fabs(gens.at(gen.MotherIndex()).PID()) == 111)) return "pi0ph";
+    if((fabs(gens.at(gen.MotherIndex()).PID()) == 111)) return "pi0";
+    //if(fabs(gen.PID()) == 511 ) return "B0";
+    //f(fabs(gen.PID()) == 531 ) return "B0s";
+    //if(fabs(gen.PID()) == 533 ) return "B0s";
+    //if(fabs(gen.PID()) == 521 ) return "B+";
           //if(fabs(gen.PID()) == 411 ) return "D+";
           //if(fabs(gen.PID()) == 421 ) return "D0";
-	  if(fabs(gen.PID()) == 22 ) return "conv";
+    if(fabs(gen.PID()) == 22 ) return "conv";
 
-	}
+  }
       }
       return "proton";
     }
@@ -7147,7 +7157,7 @@ void AnalyzerCore::WriteHist(){
     for(auto i : TimerMap) {
       if(i.first != "LATEST"){
         cout << i.first << " processing time = " << i.second << endl;
-	timer_hist->Fill(i.first, i.second);
+  timer_hist->Fill(i.first, i.second);
       }
     }
 
