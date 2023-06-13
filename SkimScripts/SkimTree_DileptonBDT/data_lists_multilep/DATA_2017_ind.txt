@@ -1,9 +1,7 @@
 SingleElectron:E
 DoubleEG:E
-MuonEG:E
 SingleElectron:F
 DoubleEG:F
-MuonEG:F
 SingleMuon:B
 DoubleMuon:B
 SingleMuon:C

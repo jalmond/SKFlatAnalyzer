@@ -46,8 +46,8 @@ void HNL_SignalRegionPlotter17028::RunEXO17028Analysis(AnalyzerParameter param){
   std::vector<Muon>       MuonCollTInit = GetMuons    ( param,mu_ID, Min_Muon_Pt, 2.4, RunFake);
   std::vector<Electron>   ElectronCollTInit = GetElectrons( param,el_ID, Min_Electron_Pt, 2.5, RunFake)  ;
 
-  std::vector<Muon>       MuonCollT     = GetLepCollByRunType    ( MuonCollTInit,param,"NoSel");
-  std::vector<Electron>   ElectronCollT  =  GetLepCollByRunType   ( ElectronCollTInit,param,"NoSel");
+  std::vector<Muon>       MuonCollT     = GetLepCollByRunType    ( MuonCollTInit,param);
+  std::vector<Electron>   ElectronCollT  =  GetLepCollByRunType   ( ElectronCollTInit,param);
 
   std::vector<Tau>        mytaus        = GetTaus     (param.Tau_Veto_ID,20., 2.3); 
 
@@ -57,7 +57,6 @@ void HNL_SignalRegionPlotter17028::RunEXO17028Analysis(AnalyzerParameter param){
 
   
   std::vector<FatJet> fatjets_tmp                 = GetFatJets(param, param.FatJet_ID, 200., 5.);
-  
   std::vector<FatJet> AK8_JetColl                  = SelectAK8Jets(fatjets_tmp, 200., 5., true,  1., true, -999, true, 60., 130., ElectronCollV, MuonCollV);
     
   

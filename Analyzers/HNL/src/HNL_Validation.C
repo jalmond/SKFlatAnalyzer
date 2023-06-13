@@ -5,8 +5,6 @@ void HNL_Validation::initializeAnalyzer(){
   // All default settings like trigger/ PD/ BJet are decalred in HNL_LeptonCore::initializeAnalyzer to make them consistent for all HNL codes
 
   HNL_LeptonCore::initializeAnalyzer();
-  //  cout <<  "SetupEventMVAReader " << endl;
-  //SetupEventMVAReader();			
 
 }
 
@@ -41,7 +39,7 @@ void HNL_Validation::executeEvent(){
   double w_topptrw(1.);
   if(!IsData){
     weight = ev.GetTriggerLumi("Full") * MCweight(true, true) *  GetKFactor() * GetPrefireWeight(0);
-    weight_pu = GetPileUpWeight(nPileUp,0);
+    weight_pu  = GetPileUpWeight(nPileUp,0);
     weight_puM = GetPileUpWeight(nPileUp-1,0);
     weight_dy = (IsData) ? 1:  mcCorr->GetOfficialDYReweight(All_Gens,0);
 
@@ -60,8 +58,8 @@ void HNL_Validation::executeEvent(){
 
   std::vector<Muon>       MuonCollT     = MuonPromptOnly    ( GetMuons    ( param_signal,mu_ID, 5, 2.4, RunFake)      ,All_Gens,param_signal);
   std::vector<Electron>   ElectronCollT = ElectronPromptOnly( GetElectrons( param_signal,el_ID, 10, 2.5, RunFake) ,All_Gens,param_signal);
-  
-  std::vector<Muon>       MuonCollTM = MuonPromptOnly( MuonCollT,All_Gens);
+ 
+  std::vector<Muon>       MuonCollTM     = MuonPromptOnly( MuonCollT,All_Gens);
   std::vector<Electron>   ElectronCollTM = ElectronPromptOnly( ElectronCollT,All_Gens);
   
   std::vector<Tau>        mytaus        = GetTaus     (param_signal.Tau_Veto_ID,20., 2.3); 
@@ -93,7 +91,7 @@ void HNL_Validation::executeEvent(){
 
   map<TString, Particle> MapOfMET = METMap(param_signal);
 
-  Particle PuppiMETv = GetvMET("PuppiT1xyULCorr",param_signal);
+  Particle PuppiMETv = GetvMET("PuppiT1xyULCorr",param_signal,true);
   if(!PassMETFilter()) return;
   
   vector<HNL_LeptonCore::Channel> channels = {MuMu, EMu};
@@ -150,20 +148,19 @@ void HNL_Validation::executeEvent(){
     std::map< TString, bool > map_Region_to_Bool;
 
     map_Region_to_Bool.clear();
-    map_Region_to_Bool["ZPeak"] =  (LepsT[1]->Pt() > 15 && fabs(llCand.M() - 90) < 10) && (LepsTM.size()==2);
-    map_Region_to_Bool["ZPeakPt50"] =  (LepsT[1]->Pt() > 50 && fabs(llCand.M() - 90) < 10) && (LepsTM.size()==2);
-    map_Region_to_Bool["BJetCR"] =  (BJetColl.size() >= 1 && (LepsT[1]->Pt() > 20 )) && (JetColl.size() >= 2);
-    map_Region_to_Bool["TopCR"] =  (BJetColl.size() >= 1 &&  PuppiMETv.Pt() > 50 && (LepsT[1]->Pt() > 20 ) && JetColl.size() >= 1);
+    map_Region_to_Bool["ZPeak"]     =  (BJetColl.size() == 0 && LepsT[1]->Pt() > 15 && fabs(llCand.M() - 90) < 10) && (LepsTM.size()==2);
+    map_Region_to_Bool["ZPeakPt50"] =  (BJetColl.size() == 0 && LepsT[1]->Pt() > 50 && fabs(llCand.M() - 90) < 10) && (LepsTM.size()==2);
+    map_Region_to_Bool["BJetCR"]    =  (BJetColl.size() >= 1 && LepsT[1]->Pt() > 20 && JetColl.size() >= 2);
     
     std::map< TString, double > map_Region_to_Weight;
     map_Region_to_Weight.clear();
-    map_Region_to_Weight["LumiWeight"] = weight_channel;
+    map_Region_to_Weight["LumiWeight"]  = weight_channel;
     map_Region_to_Weight["PileUpWight"] = weight_channel*weight_pu;
-    map_Region_to_Weight["LeptonID"] = weight_channel*weight_pu*weight_Lep;
-    map_Region_to_Weight["DYReweight"] = weight_channel*weight_pu*weight_Lep*weight_dy;
-    map_Region_to_Weight["BTagSF"] = weight_channel*weight_pu*weight_Lep*sf_btag;
-    map_Region_to_Weight["TopRW"] = weight_channel*weight_pu*weight_Lep*sf_btag*w_topptrw;
-    map_Region_to_Weight["TopRWPUM"] = weight_channel*weight_puM*weight_Lep*sf_btag*w_topptrw;
+    map_Region_to_Weight["LeptonID"]    = weight_channel*weight_pu*weight_Lep;
+    map_Region_to_Weight["DYReweight"]  = weight_channel*weight_pu*weight_Lep*weight_dy;
+    map_Region_to_Weight["BTagSF"]      = weight_channel*weight_pu*weight_Lep*sf_btag;
+    map_Region_to_Weight["TopRW"]       = weight_channel*weight_pu*weight_Lep*sf_btag*w_topptrw;
+    map_Region_to_Weight["TopRWPUM"]    = weight_channel*weight_puM*weight_Lep*sf_btag*w_topptrw;
     
 
     for(std::map< TString, bool >::iterator it = map_Region_to_Bool.begin(); it != map_Region_to_Bool.end(); it++){

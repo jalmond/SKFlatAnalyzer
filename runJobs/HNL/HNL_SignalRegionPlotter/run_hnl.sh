@@ -15,14 +15,23 @@ declare  -a era_list=("2017")
 if [[ $1 == "WZ" ]]; then
 
     SKFlat.py -a $analyzer  -i WZTo3LNu_amcatnlo -n 300   --nmax ${nmax}  -e 2018 --skim SkimTree_HNMultiLep&
+    
+fi
+
+if [[ $1 == "M1000" ]]; then
+
+    SKFlat.py -a $analyzer  -i VBFTypeI_DF_M1000_private  -n 10  --nmax ${nmax}   -e 2017  --skim SkimTree_HNMultiLepBDT&
+    SKFlat.py -a $analyzer  -i DYTypeI_DF_M1000_private  -n 10  --nmax ${nmax}   -e 2017  --skim SkimTree_HNMultiLepBDT&
 
 fi
 
-if [[ $1 == "VBF1000" ]]; then
+if [[ $1 == "M400" ]]; then
 
-    SKFlat.py -a $analyzer  -i VBFTypeI_DF_M1000_private  -n 10  --nmax ${nmax}   -e 2018  &
+    SKFlat.py -a $analyzer  -i DYTypeI_DF_M400_private  -n 10  --nmax ${nmax}   -e 2017  --skim SkimTree_HNMultiLepBDT&
 
 fi
+
+
 
 if [[ $1 == "DY" ]]; then
 

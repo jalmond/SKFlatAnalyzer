@@ -46,6 +46,8 @@ void HNL_SignalStudies::executeEvent(){
       PrintGen(All_Gens);
     }
   }
+  return;
+
   if(process.Contains("OS")) return;
 
   FillHist ("ObjectCount/SS_NoCut", 1, weight, 2, 0., 2.,"");

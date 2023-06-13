@@ -64,7 +64,7 @@ namespace JetTagging{
   }
 
   enum WP{
-    Loose, Medium, Tight
+    Loose, Medium, Tight, None,
   };
 
   inline string WPToString(WP wp){

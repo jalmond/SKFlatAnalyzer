@@ -9,12 +9,11 @@ nmax=400
 skim=' '
 
 declare  -a era_list=("2018" "2017" "2016postVFP" "2016preVFP")
-declare  -a era_list=("2017")
 
 
 if [[ $1 == "TEST" ]]; then
     
-    SKFlat.py -a $analyzer  -i WZ_pythia -n 10   -e 2017 --skim SkimTree_Dilepton  &
+    SKFlat.py -a $analyzer  -i WZ_pythia -n 20   -e 2017 --skim SkimTree_Dilepton  &
 
 fi
 

@@ -118,7 +118,7 @@ void HNL_SignalRegionOpt::RunULAnalysis(AnalyzerParameter param){
     std::vector<FatJet> fatjets_tmp  = GetFatJets(param, param.FatJet_ID, 200., 5.);
     
     // 
-    std::vector<FatJet> FatjetColl_1                  = SelectAK8Jetsv2(fatjets_tmp, 200., 2.7, true,  1., true, -999, true, 40., 130.,-999, ElectronCollV, MuonCollV);
+    std::vector<FatJet> FatjetColl_1                  = SelectAK8Jetsv2(fatjets_tmp, 200., 2.7, true,  1., true, -999, true, 40., 130.,"", ElectronCollV, MuonCollV);
 
     vector<double> etabins = {};//{2.7,4.7};
     vector<bool> LepVeto = {true, false};
@@ -149,8 +149,6 @@ void HNL_SignalRegionOpt::RunULAnalysis(AnalyzerParameter param){
 	}
       }
     }
-    fatjet_map["ak8_type1"]   = SelectAK8Jetsv2(fatjets_tmp, 200., 2.7, false,  1., true, 1., true, 40., 130., -999, ElectronCollV, MuonCollV);                                                                                                                               
-    fatjet_map["ak8_type2"]   = SelectAK8Jetsv2(fatjets_tmp, 200., 2.7, false,  1., false, 0., true, 40., 130., 0.6, ElectronCollV, MuonCollV);                                                                                                                               
 
     //HNL_ULak8_etabin2_NoLV_SDMassCut_PNTagger06_ak4_type1PuL_ak4_vbf_type1_ak4_b_type2_M                                                          
     //HNL_ULak8_etabin2_NoLV_tau21_LP_SDMassCut__ak4_type1PuL_ak4_vbf_type1_ak4_b_type2_M
@@ -290,7 +288,7 @@ void HNL_SignalRegionOpt::RunULAnalysis(AnalyzerParameter param){
   //// NOW make some jet selection to use in other studies
 
   std::vector<FatJet> AK8Jet_TMP  = GetFatJets(param, param.FatJet_ID, 200., 5.);
-  std::vector<FatJet> AK8Jet                  = SelectAK8Jetsv2(AK8Jet_TMP, 200., 2.7, true,  1., true, -999, true, 40., 130.,-999, ElectronCollV, MuonCollV);
+  std::vector<FatJet> AK8Jet                  = SelectAK8Jetsv2(AK8Jet_TMP, 200., 2.7, true,  1., true, -999, true, 40., 130.,"", ElectronCollV, MuonCollV);
   std::vector<Jet> AK4Jet_TMP     = GetJets   ( param, param.Jet_ID, 20., 5.);
 
   std::vector<Jet> AllJetColl                      = GetJets   (param, "NoID",10, 3.);

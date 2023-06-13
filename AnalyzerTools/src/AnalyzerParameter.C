@@ -62,8 +62,7 @@ void AnalyzerParameter::Clear(){
   SystDir_PU=0;
   SystDir_BTag="central";
   BJet_Method="2a";
-  ElFakeMethod="MC";
-  MuFakeMethod="MC";
+  FakeMethod="MC";
   CFMethod="MC";
   ConvMethod="MC";
   JetPUID="Default";
@@ -111,8 +110,7 @@ AnalyzerParameter::AnalyzerParameter(){
   SystDir_PU=0;
   SystDir_BTag="Default";
   BJet_Method="Default";
-  ElFakeMethod="MC";
-  MuFakeMethod="MC";
+  FakeMethod="MC";
   CFMethod="MC";
   ConvMethod="MC";
 

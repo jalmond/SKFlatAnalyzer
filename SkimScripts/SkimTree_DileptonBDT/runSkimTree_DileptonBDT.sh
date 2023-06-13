@@ -29,11 +29,12 @@ fi
 
 if [[ $1 == "IndData" ]]; then
     
-
-    SKFlat.py -a $analyzer  -i TTLJ_powheg  -n 6000  --nmax 75    -e 2018  --skim SkimTree_Dilepton  
+    declare  -a era_list=("2018" "2017"  "2016preVFP")
+    
      for i in "${era_list[@]}"
      do
-	 SKFlat.py -a $analyzer  -l  $datapath/DATA_${i}_ind.txt  -n 500  --nmax 50    -e ${i} --skim SkimTree_Dilepton 
+	 SKFlat.py -a $analyzer  -l  $datapath/DATA_${i}_ind.txt  -n 500  --nmax 100    -e ${i} --skim SkimTree_Dilepton& 
+	 SKFlat.py -a $analyzer  -l  $datapath/DATA_${i}EMu_ind.txt  -n 500  --nmax 100    -e ${i} 
      done
 
 fi

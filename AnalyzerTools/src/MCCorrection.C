@@ -4824,6 +4824,7 @@ double MCCorrection::MuonReco_SF(TString key, double eta, double p, int sys){
 double MCCorrection::MuonID_SF(TString ID, double eta, double pt, int sys){
 
   if(ID=="Default") return 1.;
+  if(ID=="-") return 1.;
 
   //cout << "[MCCorrection::MuonID_SF] ID = " << ID << endl;
   //cout << "[MCCorrection::MuonID_SF] eta = " << eta << ", pt = " << pt << endl;
@@ -5096,6 +5097,7 @@ double MCCorrection::MuonTrigger_SF(TString ID, TString trig, const std::vector<
 double MCCorrection::ElectronID_SF(TString ID, double sceta, double pt, int sys){
 
   if(ID=="Default") return 1.;
+  if(ID=="-") return 1.;
 
   double value = 1.;
   double error = 0.;

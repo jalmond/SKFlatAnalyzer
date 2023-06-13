@@ -8,8 +8,6 @@ njobs_data=20
 nmax=300
 skim=' '
 declare  -a era_list=("2016postVFP" "2016preVFP" "2017" "2018")
-declare  -a era_list=("2017")
-
 
 
 if [[ $1 == "Sig" ]]; then
@@ -17,8 +15,8 @@ if [[ $1 == "Sig" ]]; then
 
     for i in "${era_list[@]}"
     do
-	SKFlat.py -a $analyzer  -l $mcpath/SSWW.txt  -n $njobs  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLepBDT&
-	SKFlat.py -a $analyzer  -l $mcpath/DY.txt  -n $njobs  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLepBDT&
+	#SKFlat.py -a $analyzer  -l $mcpath/SSWW.txt  -n $njobs  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLepBDT&
+	#SKFlat.py -a $analyzer  -l $mcpath/DY.txt  -n $njobs  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLepBDT&
 	SKFlat.py -a $analyzer  -l $mcpath/VBF.txt  -n $njobs  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLepBDT&
 
 

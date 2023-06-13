@@ -64,6 +64,9 @@ class HNL_LeptonCore : public AnalyzerCore {
     ChannelDepTrigger,
     ChannelDepInc,
     ChannelDepIncQ,
+    MuonSRSummary,
+    ElectronSRSummary,
+    ElectronMuonSRSummary,
     MuonSR,
     ElectronSR,
     ElectronMuonSR,
@@ -79,6 +82,7 @@ class HNL_LeptonCore : public AnalyzerCore {
     SR1,
     SR2,
     SR3,
+    SR3Fail,
     SR3BDT,
     SR4,
     Presel,
@@ -158,7 +162,7 @@ class HNL_LeptonCore : public AnalyzerCore {
   void OutCutFlow(TString lab, double w);
   TString QToString(HNL_LeptonCore::ChargeType q);
   bool CheckLeptonFlavourForChannel(HNL_LeptonCore::Channel channel, std::vector<Lepton *> leps);
-  double PassEventTypeFilter(vector<Lepton *> leps);
+  bool PassGenMatchFilter(vector<Lepton *> leps,AnalyzerParameter param);
   bool HasLowMassMeson(std::vector<Lepton *> leps);
 
   double SetupWeight(Event ev, AnalyzerParameter param);
@@ -199,8 +203,8 @@ class HNL_LeptonCore : public AnalyzerCore {
   std::vector<Jet> SelBJets(std::vector<Jet>& jetColl, JetTagging::Parameters jtp);
 
   ///// MET FUNCTIONS 
-  Particle GetvMET(TString METType, AnalyzerParameter param, std::vector<Jet> jets, std::vector<FatJet> fatjets, std::vector<Muon> muons, std::vector<Electron> electrons, bool propsmear=false);
-  Particle GetvMET(TString METType, AnalyzerParameter param, bool propsmear=false);
+  Particle GetvMET(TString METType, AnalyzerParameter param, std::vector<Jet> jets, std::vector<FatJet> fatjets, std::vector<Muon> muons, std::vector<Electron> electrons, bool propsmear=true);
+  Particle GetvMET(TString METType, AnalyzerParameter param, bool propsmear=true);
   Particle GetvMET(TString METType);
   Particle GetvCorrMET(TString METType, AnalyzerParameter param, Particle METUncorr);
 
@@ -255,7 +259,7 @@ class HNL_LeptonCore : public AnalyzerCore {
   bool SameCharge(std::vector<Lepton *> leps, int ch=0);
 
   /// global var for user flags
-  bool RunFake, RunCF,  RunConv, RunSyst,RunPromptTLRemoval,run_ORTrigger;
+  bool RunPrompt,RunFake, RunCF,  RunConv, RunSyst,RunPromptTLRemoval,run_ORTrigger;
   bool IsSkimmed;
   bool Signal;
   bool HEM1516 ,BeforeRun319077;

@@ -209,7 +209,7 @@ bool Jet::PassPileupMVA(TString WP, TString Era) const {
   bool pass=false;
 
   if (Era.Contains("2016")){
-    if(WP=="tight"){
+    if(WP=="Tight"){
       if(fabs(this->Eta()) < 2.5){
         if(this->Pt() < 10.){ pass=true;}
         else if(this->Pt() < 20.){ if(PileupJetId() > 0.71) pass=true; }
@@ -244,7 +244,7 @@ bool Jet::PassPileupMVA(TString WP, TString Era) const {
       }
       else pass=true;
     }
-    else if(WP=="medium"){
+    else if(WP=="Medium"){
       if(fabs(this->Eta()) < 2.5){
         if(this->Pt() < 10.){ pass=true;}
         else if(this->Pt() < 20.){ if(PileupJetId() > 0.20) pass=true; }
@@ -279,7 +279,7 @@ bool Jet::PassPileupMVA(TString WP, TString Era) const {
       }
       else pass=true;
     }
-    else if(WP=="loose"){
+    else if(WP=="Loose"){
       if(fabs(this->Eta()) < 2.5){
         if(this->Pt() < 10.){ pass=true;}
         else if(this->Pt() < 20.){ if(PileupJetId() > -0.95) pass=true; }
@@ -324,7 +324,7 @@ bool Jet::PassPileupMVA(TString WP, TString Era) const {
 
   else if (Era.Contains("2017")){
 
-    if(WP=="tight"){
+    if(WP=="Tight"){
       if(fabs(this->Eta()) < 2.5){
         if(this->Pt() < 10.){ pass=true;}
         else if(this->Pt() < 20.){ if(PileupJetId() > 0.77) pass=true; }
@@ -359,7 +359,7 @@ bool Jet::PassPileupMVA(TString WP, TString Era) const {
       }
       else pass=true;
     }
-    else if(WP=="medium"){
+    else if(WP=="Medium"){
       if(fabs(this->Eta()) < 2.5){
         if(this->Pt() < 10.){ pass=true;}
         else if(this->Pt() < 20.){ if(PileupJetId() > 0.26) pass=true; }
@@ -394,7 +394,7 @@ bool Jet::PassPileupMVA(TString WP, TString Era) const {
       }
       else pass=true;
     }
-    else if(WP=="loose"){
+    else if(WP=="Loose"){
       if(fabs(this->Eta()) < 2.5){
         if(this->Pt() < 10.){ pass=true;}
         else if(this->Pt() < 20.){ if(PileupJetId() > -0.95) pass=true; }
@@ -436,7 +436,7 @@ bool Jet::PassPileupMVA(TString WP, TString Era) const {
   }
   
   else if (Era.Contains("2018")){
-    if(WP=="tight"){
+    if(WP=="Tight"){
       if(fabs(this->Eta()) < 2.5){
 	if(this->Pt() < 10.){ pass=true;}
 	else if(this->Pt() < 20.){ if(PileupJetId() > 0.77) pass=true; }
@@ -471,7 +471,7 @@ bool Jet::PassPileupMVA(TString WP, TString Era) const {
       }
       else pass=true;
     }
-    else if(WP=="medium"){
+    else if(WP=="Medium"){
       if(fabs(this->Eta()) < 2.5){
 	if(this->Pt() < 10.){ pass=true;}
 	else if(this->Pt() < 20.){ if(PileupJetId() > 0.26) pass=true; }
@@ -506,7 +506,7 @@ bool Jet::PassPileupMVA(TString WP, TString Era) const {
       }
       else pass=true;
     }
-    else if(WP=="loose"){
+    else if(WP=="Loose"){
       if(fabs(this->Eta()) < 2.5){
 	if(this->Pt() < 10.){ pass=true;}
 	else if(this->Pt() < 20.){ if(PileupJetId() > -0.95) pass=true; }

@@ -41,7 +41,7 @@ public:
 
   int SystDir_PU,WriteOutVerbose;
 
-  std::string SystDir_BTag,  BJet_Method,   ElFakeMethod, MuFakeMethod, CFMethod,  ConvMethod;
+  std::string SystDir_BTag,  BJet_Method,   FakeMethod,CFMethod,  ConvMethod;
 ;
 ;
 

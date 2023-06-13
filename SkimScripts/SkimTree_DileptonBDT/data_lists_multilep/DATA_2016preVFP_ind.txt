@@ -1,5 +1,4 @@
 DoubleMuon:E
-MuonEG:F
 SingleMuon:E
 DoubleMuon:F
 SingleMuon:F

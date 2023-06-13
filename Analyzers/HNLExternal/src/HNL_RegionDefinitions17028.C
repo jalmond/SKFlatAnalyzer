@@ -13,9 +13,9 @@ void HNL_RegionDefinitions17028::RunEXO17028SignalRegions( std::vector<Electron>
       if (!SelectChannel(dilep_channel)) continue;
     }
 
-    if(dilep_channel != EMu){
-      if(MCSample.Contains("Type") &&(! MCSample.Contains("SS"))) weight_ll = weight_ll*2;
-    }
+    //if(dilep_channel != EMu){
+    //  if(MCSample.Contains("Type") &&(! MCSample.Contains("SS"))) weight_ll = weight_ll*2;
+    // }
     AnalyzerParameter param_channel = param;
 
     TString channel_string = GetChannelString(dilep_channel);
@@ -25,13 +25,10 @@ void HNL_RegionDefinitions17028::RunEXO17028SignalRegions( std::vector<Electron>
 
 
     if(!IsDATA && dilep_channel != MuMu)  weight_channel*= GetElectronSFEventWeight(electrons, param_channel);                                             
-
     if(!IsDATA && dilep_channel != EE)    weight_channel*= GetMuonSFEventWeight(muons, param_channel);                                                     
-
 
     FillEventCutflow(HNL_LeptonCore::ChannelDepInc, weight_channel, GetChannelString(dilep_channel) +"_NoCut", "ChannelCutFlow/"+param.DefName);
     FillHist( GetChannelString(dilep_channel)+"_NoCut"  , 1.,  weight_channel, 2, 0.,2. , "N cut");
-
 
     std::vector<Lepton *> leps       = MakeLeptonPointerVector(muons,electrons,param_channel);
     std::vector<Lepton *> leps_veto  = MakeLeptonPointerVector(muons_veto,electrons_veto,param_channel);
@@ -153,12 +150,10 @@ bool  HNL_RegionDefinitions17028::PassPreselection(HNL_LeptonCore::Channel chann
 bool  HNL_RegionDefinitions17028::RunSignalRegionAK8(HNL_LeptonCore::Channel channel, HNL_LeptonCore::ChargeType qq , std::vector<Lepton *> leps, std::vector<Lepton *> leps_veto , std::vector<Jet> JetColl, std::vector<FatJet>  AK8_JetColl, std::vector<Jet> B_JetColl, Event ev, Particle METv, AnalyzerParameter param, TString PostLabel ,  float w){
 
 
-
   if(!CheckLeptonFlavourForChannel(channel, leps)) return false;
 
   if (leps_veto.size() != 2) return false;
-
-  if(AK8_JetColl.size() == 0) return false;
+  if (AK8_JetColl.size() == 0) return false;
 
   
   if(qq==Plus && leps[0]->Charge() < 0) return false;
@@ -185,11 +180,8 @@ bool  HNL_RegionDefinitions17028::RunSignalRegionAK8(HNL_LeptonCore::Channel cha
     
     
     if(PassHMMet&&PassBJetMVeto) {
-      
-      
-      FillEventCutflow(HNL_LeptonCore::ChannelDepSR2, w, GetChannelString(channel) +"_SR2", "ChannelCutFlow/"+param.DefName);
-
-      Fill_All_SignalRegion1(channel, signal_region1, IsData, "SS",  param.Name,  JetColl, AK8_JetColl, leps, METv , nPV , w   );
+      //FillEventCutflow(HNL_LeptonCore::ChannelDepSR2, w, GetChannelString(channel) +"_SR2", "ChannelCutFlow/"+param.DefName);
+      Fill_All_SignalRegion2(channel, signal_region1, IsData, "SS",  param.Name,  JetColl, AK8_JetColl, leps, METv , nPV , w   );
 
       return true;
     }
@@ -341,7 +333,8 @@ void HNL_RegionDefinitions17028::Fill_All_SignalRegion1(HNL_LeptonCore::Channel 
 void HNL_RegionDefinitions17028::Fill_All_SignalRegion2(HNL_LeptonCore::Channel channel, TString signal_region2, bool isdata, TString charge_s, TString label, std::vector<Jet> jets, std::vector<FatJet> fatjets, std::vector<Lepton *> leps, Particle _MET,int _npv  , double w){
 
   // get loop of systs + one nominal                                                                                                                                                                                                    
-
+  
+  
   if(channel == EE){
     // EE SR2/4                                                                                                                                                                                                                         
     Fill_SigRegionPlots2(channel,signal_region2 , "mn100", label, jets,  fatjets,  leps,  _MET, _npv, w, 25.,15., 40.,130., 90., 220., 15.);
@@ -435,7 +428,7 @@ void HNL_RegionDefinitions17028::Fill_SigRegionPlots2(HNL_LeptonCore::Channel ch
   Particle N1cand = fatjets[m] + *leps[0];
   Particle N2cand = fatjets[m] + *leps[1];
 
-  HNL_LeptonCore::SearchRegion  cutflow_SR_index = SR1;
+  HNL_LeptonCore::SearchRegion  cutflow_SR_index = SR2;
   TString label_mass_tmp=label_mass;
   //if  (label_anid.Contains("OS")) label_mass_tmp+="OS";                                                                                                                                                                             
 
@@ -495,7 +488,7 @@ void   HNL_RegionDefinitions17028::Fill_SigRegionPlots1(HNL_LeptonCore::Channel 
 
 
 
-  HNL_LeptonCore::SearchRegion cutflow_SR_index = SR3;
+  HNL_LeptonCore::SearchRegion cutflow_SR_index = SR1;
   if(jets.size() >= var1) return;
   if(jets[0].Pt() < var2)return;
   if(Wcand.DeltaR(*leps[1]) > var3) return;

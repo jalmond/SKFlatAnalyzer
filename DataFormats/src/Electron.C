@@ -777,7 +777,7 @@ int  Electron::PassIDTight(TString ID) const{
 
   }
 
-  if(ID=="HNL_Peking") {
+  if(ID=="HNL_Peking_2017" || ID=="HNL_Peking_2018") {
 
     if(!passMVAID_Iso_WP90()) return 0;
     if(! IsGsfCtfScPixChargeConsistent())  return 0;

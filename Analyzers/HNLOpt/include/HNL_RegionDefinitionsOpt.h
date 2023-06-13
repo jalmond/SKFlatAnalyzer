@@ -15,17 +15,20 @@ class HNL_RegionDefinitionsOpt : public HNL_LeptonCore {
   // analyis functions to run SR
   
 			
+
+
+  void   RunAllSignalRegionsOpt(HNL_LeptonCore::ChargeType q,
+                             std::vector<Electron> electrons, std::vector<Electron> electrons_veto, std::vector<Muon> muons, std::vector<Muon> muons_veto, std::vector<Tau> taus,
+                             std::vector<Jet>  all_jets, std::vector<Jet> loose_jets, std::vector<Jet> jets, std::vector<Jet> jets_vbf, std::vector<FatJet>  fatjets,
+                             std::vector<Jet> bjets,std::vector<Jet> bjetsSR1,
+                             Event ev,  Particle METv, AnalyzerParameter param,  float w);
+
+
   void   RunAllSignalRegions(HNL_LeptonCore::ChargeType q, 
 			     std::vector<Electron> electrons, std::vector<Electron> electrons_veto, std::vector<Muon> muons, std::vector<Muon> muons_veto, std::vector<Tau> taus, 
 			     std::vector<Jet>  all_jets, std::vector<Jet> loose_jets, std::vector<Jet> jets, std::vector<Jet> jets_vbf, std::vector<FatJet>  fatjets, 
 			     std::vector<Jet> bjets,std::vector<Jet> bjetsSR1, 
 			     Event ev,  Particle METv, AnalyzerParameter param,  float w);
-
-
-
-  void RunAllControlRegions(std::vector<Electron> electrons,  std::vector<Electron> electrons_veto, std::vector<Muon> muons, std::vector<Muon> muons_veto, 
-			    std::vector<Jet> jets, std::vector<Jet> jets_vbf, std::vector<FatJet>  fatjets, std::vector<Jet> bjets, 
-			    Event ev, Particle METv, AnalyzerParameter param,  float weight_mm );
 
 
   /// PRESEL 
@@ -42,7 +45,7 @@ class HNL_RegionDefinitionsOpt : public HNL_LeptonCore {
 			   std::vector<Jet> jets, std::vector<FatJet>  fatjets, std::vector<Jet> bjets, 
 			   Event ev,  Particle METv, AnalyzerParameter param, TString channel_string ,  float w);
   
-  TString  RunSignalRegionAK8String(HNL_LeptonCore::Channel channel,HNL_LeptonCore::ChargeType q, 
+  TString  RunSignalRegionAK8String(TString mass, HNL_LeptonCore::Channel channel,HNL_LeptonCore::ChargeType q, 
 				    std::vector<Lepton *> leps,std::vector<Lepton *> leps_veto, std::vector<Tau> Taus, 
 				    std::vector<Jet> jets, std::vector<FatJet>  fatjets, std::vector<Jet> bjets, 
 				    Event ev,  Particle METv, AnalyzerParameter param, TString channel_string ,  float w);
@@ -71,78 +74,25 @@ class HNL_RegionDefinitionsOpt : public HNL_LeptonCore {
 				    std::vector<Jet> jets, std::vector<FatJet>  fatjets, std::vector<Jet> bjets, 
 				    Event ev,  Particle METv, AnalyzerParameter param, TString channel_string ,  float w);
   
-  TString RunSignalRegionAK4StringBDT(TString mn, HNL_LeptonCore::Channel channel ,
-				      std::vector<Lepton *> LepTCol, Event ev);
+  TString RunSignalRegionAK4StringBDT(TString mn, HNL_LeptonCore::Channel channel , std::vector<Lepton *> LepTCol ,
+				      std::vector<Jet> JetColl,std::vector<Jet> B_JetColl, Particle METv,   Event ev);
 
 
-  bool RunSignalRegionTrilepton(HNL_LeptonCore::Channel channel, 
-				std::vector<Lepton *> leps,std::vector<Lepton *> leps_veto, 
-				std::vector<Jet> jets, std::vector<FatJet>  fatjets, std::vector<Jet> bjets, 
-				Event ev,  Particle METv, AnalyzerParameter param, TString channel_string ,  float w);
 
 
-  bool PassVBF(vector<Jet>  jets,std::vector<Lepton *> leps1, double mjj_cut,bool use_leadjet=false);
+  bool PassVBF(vector<Jet>  jets,std::vector<Lepton *> leps1, double mjj_cut, AnalyzerParameter param, double weight,bool use_leadjet=false);
   bool PassVBFInitial(vector<Jet>  jets);
   
-  // CR
-
-  bool FillOSPreselectionPlots(HNL_LeptonCore::Channel channel, 
-			       std::vector<Lepton *> leps,std::vector<Lepton *> leps_veto , 
-			       std::vector<Jet> jets_vbf, std::vector<FatJet> fatjets, std::vector< Jet> bjets, 
-			       Event ev, Particle METv, AnalyzerParameter param, float w);
-
-  bool FillSSPreselectionPlots(HNL_LeptonCore::Channel channel, 
-			       std::vector<Lepton *> leps,std::vector<Lepton *> leps_veto , 
-			       std::vector<Jet> jets_vbf, std::vector<FatJet> fatjets,  std::vector< Jet> bjets,
-			       Event ev, Particle METv, AnalyzerParameter param, float w);
-
-  bool FillSSVBFPreselectionPlots(HNL_LeptonCore::Channel channel, 
-				  std::vector<Lepton *> leps,std::vector<Lepton *> leps_veto , 
-				  std::vector<Jet> jets_vbf, std::vector<FatJet>  fatjets, std::vector<Jet> bjets, 
-				  Event ev, Particle METv, AnalyzerParameter param, float w);
-
-
-  bool FillZZCRPlots(HNL_LeptonCore::Channel channel, 
-		     std::vector<Lepton *> leps,std::vector<Lepton *> leps_veto, 
-		     std::vector<Jet> jets, std::vector<FatJet>  fatjets, std::vector<Jet> bjets,  
-		     Event ev, Particle METv, AnalyzerParameter param, float w);
-
-  bool FillZZ2CRPlots(HNL_LeptonCore::Channel channel, 
-		      std::vector<Lepton *> leps,std::vector<Lepton *> leps_veto, 
-		      std::vector<Jet> jets, std::vector<FatJet>  fatjets, std::vector<Jet> bjets, 
-		      Event ev, Particle METv, AnalyzerParameter param, float w);
-
-  bool FillZCRPlots(HNL_LeptonCore::Channel channel, 
-		    std::vector<Lepton *> leps,std::vector<Lepton *> leps_veto, std::vector<Jet> jets, std::vector<FatJet>  fatjets, std::vector<Jet> bjets,  Event ev, Particle METv, AnalyzerParameter param, float w);
-  bool FillZNPCRPlots(HNL_LeptonCore::Channel channel, std::vector<Lepton *> leps,std::vector<Lepton *> leps_veto, std::vector<Jet> jets, std::vector<FatJet>  fatjets, std::vector<Jet> bjets,  Event ev, Particle METv, AnalyzerParameter param, float w);
-
-  bool FillTopCRPlots(HNL_LeptonCore::Channel channel, std::vector<Lepton *> leps,std::vector<Lepton *> leps_veto, std::vector<Jet> jets, std::vector<FatJet>  fatjets, std::vector<Jet> bjets, Event ev, Particle METv, AnalyzerParameter param, float w);
-  bool FillWWCR1Plots(HNL_LeptonCore::Channel channel, std::vector<Lepton *> leps,std::vector<Lepton *> leps_veto, std::vector<Jet> jets, std::vector<FatJet>  fatjets, std::vector<Jet> bjets, Event ev, Particle METv, AnalyzerParameter param, float w);
-  bool FillWWCR2Plots(HNL_LeptonCore::Channel channel, std::vector<Lepton *> leps,std::vector<Lepton *> leps_veto, std::vector<Jet> jets, std::vector<FatJet>  fatjets, std::vector<Jet> bjets, Event ev, Particle METv, AnalyzerParameter param, float w);
-  bool FillWWCRNPPlots(HNL_LeptonCore::Channel channel, std::vector<Lepton *> leps,std::vector<Lepton *> leps_veto, std::vector<Jet> jets, std::vector<FatJet>  fatjets, std::vector<Jet> bjets,Event ev, Particle METv, AnalyzerParameter param, float w);
-  bool FillWWCRNP2Plots(HNL_LeptonCore::Channel channel, std::vector<Lepton *> leps,std::vector<Lepton *> leps_veto, std::vector<Jet> jets, std::vector<FatJet>  fatjets, std::vector<Jet> bjets,Event ev, Particle METv, AnalyzerParameter param, float w);
-
-  bool FillWZCRPlots(HNL_LeptonCore::Channel channel, std::vector<Lepton *> leps,std::vector<Lepton *> leps_veto, std::vector<Jet> jets, std::vector<FatJet>  fatjets, std::vector<Jet> bjets, Event ev, Particle METv, AnalyzerParameter param, float w);
-  bool FillWZ2CRPlots(HNL_LeptonCore::Channel channel, std::vector<Lepton *> leps,std::vector<Lepton *> leps_veto, std::vector<Jet> jets, std::vector<FatJet>  fatjets, std::vector<Jet> bjets,  Event ev, Particle METv, AnalyzerParameter param, float w);
-  bool FillWZBCRPlots(HNL_LeptonCore::Channel channel, std::vector<Lepton *> leps,std::vector<Lepton *> leps_veto, std::vector<Jet> jets, std::vector<FatJet>  fatjets, std::vector<Jet> bjets,  Event ev, Particle METv, AnalyzerParameter param, float w);
-
-  bool FillZGCRPlots(HNL_LeptonCore::Channel channel, std::vector<Lepton *> leps,std::vector<Lepton *> leps_veto, std::vector<Jet> jets, std::vector<FatJet>  fatjets, std::vector<Jet> bjets,  Event ev, Particle METv, AnalyzerParameter param, float w);
-  bool FillWGCRPlots(HNL_LeptonCore::Channel channel, std::vector<Lepton *> leps,std::vector<Lepton *> leps_veto, std::vector<Jet> jets, std::vector<FatJet>  fatjets, std::vector<Jet> bjets,  Event ev, Particle METv, AnalyzerParameter param, float w);
-
-  bool FillHighMassSR1CRPlots(HNL_LeptonCore::Channel channel, std::vector<Lepton *> leps,std::vector<Lepton *> leps_veto, std::vector<Jet> jets, std::vector<FatJet>  fatjets, std::vector<Jet> bjets,  Event ev, Particle METv, AnalyzerParameter param, float w);
-  bool FillHighMassSR2CRPlots(HNL_LeptonCore::Channel channel, std::vector<Lepton *> leps,std::vector<Lepton *> leps_veto, std::vector<Jet> jets, std::vector<FatJet>  fatjets, std::vector<Jet> bjets,  Event ev, Particle METv, AnalyzerParameter param, float w);
-
-  bool FillHighMassSR3CRPlots(HNL_LeptonCore::Channel channel, std::vector<Lepton *> leps,std::vector<Lepton *> leps_veto, std::vector<Jet> jets, std::vector<FatJet>  fatjets, std::vector<Jet> bjets,  Event ev, Particle METv, AnalyzerParameter param, float w);
-
-  bool FillHighMass1JetCRPlots(HNL_LeptonCore::Channel channel, std::vector<Lepton *> leps,std::vector<Lepton *> leps_veto, std::vector<Jet> jets, std::vector<FatJet>  fatjets, std::vector<Jet> bjets,  Event ev, Particle METv, AnalyzerParameter param, float w);
-  bool FillHighMassBJetCRPlots(HNL_LeptonCore::Channel channel, std::vector<Lepton *> leps,std::vector<Lepton *> leps_veto, std::vector<Jet> jets, std::vector<FatJet>  fatjets, std::vector<Jet> bjets,  Event ev, Particle METv, AnalyzerParameter param, float w);
-  bool FillHighMassNPCRPlots(HNL_LeptonCore::Channel channel, std::vector<Lepton *> leps,std::vector<Lepton *> leps_veto, std::vector<Jet> jets, std::vector<FatJet>  fatjets, std::vector<Jet> bjets,  Event ev, Particle METv, AnalyzerParameter param, float w);
 
 
 
+  vector<double> MassBinsSR1(HNL_LeptonCore::Channel channel, TString mass );
 
+  TString PassSigRegion1(std::vector<Jet> jets, std::vector<FatJet> fatjets, std::vector<Lepton *> leps, Particle  met,  vector<double> VarCuts);
+  TString PassSigRegion2(std::vector<Jet> jets, std::vector<FatJet> fatjets, std::vector<Lepton *> leps, Particle  met,  vector<double> VarCuts);
 
-
+  TString  GetEXO17028_SignalRegion1Bin(HNL_LeptonCore::Channel channel, TString mass ,  std::vector<Jet> jets, std::vector<FatJet> fatjets, std::vector<Lepton *> leps, Particle _MET);
+  TString  GetEXO17028_SignalRegion2Bin(HNL_LeptonCore::Channel channel, TString mass ,  std::vector<Jet> jets, std::vector<FatJet> fatjets, std::vector<Lepton *> leps, Particle _MET);
 
 };
 
