@@ -18,5 +18,6 @@
 #pragma link C++ class HNL_ControlRegionPlotter+;
 #pragma link C++ class HNL_SignalRegionPlotter+;
 #pragma link C++ class HNL_SignalEfficiency+;
+#pragma link C++ class HNL_GenStudy+;
 
 #endif

@@ -41,16 +41,18 @@ void HNL_LeptonFakeRate::executeEvent(){
   //  MuIDs.push_back(make_pair("HNVeto2016","HNLoose_17028")); //JH : Mu Tight (never used) + Mu Loose (to veto muon in El fake mearuement)
   //}
     
-  MuIDs.push_back(make_pair("HNL_ULID_"+era, "HNL_ULID_2017_LooseV1")); //JH : test
-  paramnames.push_back("HNL_ULID_"+era+"_V1"  );
-  MuIDs.push_back(make_pair("HNL_ULID_"+era, "HNL_ULID_2017_LooseV2")); //JH : test
-  paramnames.push_back("HNL_ULID_"+era+"_V2"  );
-  MuIDs.push_back(make_pair("HNL_ULID_"+era, "HNL_ULID_2017_LooseV3")); //JH : test
-  paramnames.push_back("HNL_ULID_"+era+"_V3"  );
-  MuIDs.push_back(make_pair("HNL_ULID_"+era, "HNL_ULID_2017_LooseV4")); //JH : test
-  paramnames.push_back("HNL_ULID_"+era+"_V4"  );
+  //MuIDs.push_back(make_pair("HNL_ULID_"+era, "HNL_ULID_2017_LooseV1")); //JH : test
+  //paramnames.push_back("HNL_ULID_"+era+"_V1"  );
+  //MuIDs.push_back(make_pair("HNL_ULID_"+era, "HNL_ULID_2017_LooseV2")); //JH : test
+  //paramnames.push_back("HNL_ULID_"+era+"_V2"  );
+  //MuIDs.push_back(make_pair("HNL_ULID_"+era, "HNL_ULID_2017_LooseV3")); //JH : test
+  //paramnames.push_back("HNL_ULID_"+era+"_V3"  );
+  //MuIDs.push_back(make_pair("HNL_ULID_"+era, "HNL_ULID_2017_LooseV4")); //JH : test
+  //paramnames.push_back("HNL_ULID_"+era+"_V4"  );
   MuIDs.push_back(make_pair("HNL_ULID_"+era, "HNL_ULID_2017_LooseV5")); //JH : test
   paramnames.push_back("HNL_ULID_"+era+"_V5"  );
+  MuIDs.push_back(make_pair("HNL_ULID_"+era, "HNL_TopMVA_FO_MM")); //JH : test
+  paramnames.push_back("HNL_ULID_"+era+"_TriLep"  );
   
 
   // MUON IDS
@@ -163,10 +165,6 @@ void HNL_LeptonFakeRate::executeEventFromParameter(AnalyzerParameter param, TStr
     if(mu.isPOGMedium())      FillHist(param.Name+"_AllMuon_MVA_POGM", mu.MVA() , weight, 200., -1, 1); //JH : to check loose muon MVA
     if(mu.Pass_LepMVAID())    FillHist(param.Name+"_AllMuon_MVA_LepMVAID", mu.MVA() , weight, 200., -1, 1); //JH : to check loose muon MVA
     if(mu.PassID("MVALoose")) FillHist(param.Name+"_AllMuon_MVA_MVALoose", mu.MVA() , weight, 200., -1, 1); //JH : to check loose muon MVA
-    if(mu.PassID("HNLIPv8")){
-      FillHist(param.Name+"_AllMuon_MVA_HNLIPv8", mu.MVA() , weight, 200., -1, 1); //JH : to check loose muon MVA
-      if(mu.PassID("MVALoose")) FillHist(param.Name+"_AllMuon_MVA_HNLLooseBasic", mu.MVA() , weight, 200., -1, 1);
-    }
   } //JH
   
   std::vector<Electron> loose_electrons     = GetElectrons( param,param.Electron_Loose_ID, 9.5, 2.5,false) ;
@@ -969,16 +967,16 @@ float HNL_LeptonFakeRate::GetPrescale(std::vector<Lepton *>   leps  ){
 
 void HNL_LeptonFakeRate::MakeFakeRatePlots(TString label, TString mutag,AnalyzerParameter param,  std::vector<Lepton *> leps , std::vector<bool> blepsT ,  std::vector<Jet> jets,  float event_weight, float isocut, Particle MET){
         
-  /// FOR FAKE RATE SUBTRACTION NEED ONLY PROMPT MUONS                                                                                                                                                  
-  bool truth_match= false;
+  /// FOR FAKE RATE SUBTRACTION NEED ONLY PROMPT MUONS  
+  //bool truth_match= false;
 
-  if(!IsDATA) {
-    if(leps.size() > 0){
-      if(leps[0]->LeptonGenType() > 0 ) truth_match=true;
-    }
-  }
-  else truth_match=true;
-  if(!truth_match) return;
+  //if(!IsDATA) {
+  //  if(leps.size() > 0){
+  //    if(leps[0]->LeptonGenType() > 0 ) truth_match=true;
+  //  }
+  //}
+  //else truth_match=true;
+  //if(!truth_match) return; //JH : to compare fake rates from heavy/light jets, I need non-prompt leptons as well
 
   //bool useevent20 = UseEvent(leps , jets, 20.,  MET, event_weight);
   //bool useevent30 = UseEvent(leps , jets, 30.,  MET, event_weight);
@@ -1147,28 +1145,54 @@ void HNL_LeptonFakeRate::GetFakeRates(std::vector<Lepton *> leps,std::vector<boo
   for(int ilep = 0 ; ilep < 2; ilep++)  {
     TString prefix = (ilep==0) ? L_prefix : T_prefix;
     if((ilep==1) && !(blepsT[0])) continue;
-    if(lep_pt > ptmin){
-      if(param.WriteOutVerbose ==  -3){
-        FillHist((prefix + "_reliso").Data(), lep_reliso, weight_pt*prescale_lep, 50, 0., 1.);
-        FillHist((prefix + "_dXY").Data(),    lep_dxy, weight_pt*prescale_lep, 50, 0., 1.);
-        FillHist((prefix + "_IP3D").Data(),   lep_ip3d, weight_pt*prescale_lep, 50, 0., 10.);
-        FillHist((prefix + "_mva").Data(),    lep_mva, weight_pt*prescale_lep, 50, -1., 1.);
-        FillHist((prefix + "_pt_eta").Data(), lep_pt, lep_eta,weight_pt*prescale_lep, nbin_pt, ptbins, nbin_eta , etabins);
-        FillHist((prefix + "_pt").Data(),     lep_pt, weight_pt*prescale_lep, nbin_pt, ptbins, "p_{T} (GeV)");
-        FillHist((prefix + "_eta").Data(),    lep_eta, weight_pt*prescale_lep , nbin_eta, etabins,"#eta");
-        if(BJetColl.size()==0){
-          FillHist((prefix + "_0BJet_pt").Data(),     lep_pt, weight_pt*prescale_lep, nbin_pt, ptbins, "p_{T} (GeV)");
-          FillHist((prefix + "_0BJet_eta").Data(),    lep_eta, weight_pt*prescale_lep , nbin_eta, etabins,"#eta");
-        }
-        else{
-          FillHist((prefix + "_BJet_pt").Data(),     lep_pt, weight_pt*prescale_lep, nbin_pt, ptbins, "p_{T} (GeV)");
-          FillHist((prefix + "_BJet_eta").Data(),    lep_eta, weight_pt*prescale_lep , nbin_eta, etabins,"#eta");
-        }
-      }
-    }
+    if(!IsDATA){ if(leps[0]->LepGenTypeString()!="IsPrompt") continue; }
+    //if(lep_pt > ptmin){
+    //  FillHist((prefix + "_reliso").Data(), lep_reliso, weight_pt*prescale_lep, 50, 0., 1.);
+    //  FillHist((prefix + "_dXY").Data(),    lep_dxy, weight_pt*prescale_lep, 50, 0., 1.);
+    //  FillHist((prefix + "_IP3D").Data(),   lep_ip3d, weight_pt*prescale_lep, 50, 0., 10.);
+    //  FillHist((prefix + "_mva").Data(),    lep_mva, weight_pt*prescale_lep, 50, -1., 1.);
+    //  FillHist((prefix + "_pt_eta").Data(), lep_pt, lep_eta,weight_pt*prescale_lep, nbin_pt, ptbins, nbin_eta , etabins);
+    //  FillHist((prefix + "_pt").Data(),     lep_pt, weight_pt*prescale_lep, nbin_pt, ptbins, "p_{T} (GeV)");
+    //  FillHist((prefix + "_eta").Data(),    lep_eta, weight_pt*prescale_lep , nbin_eta, etabins,"#eta");
+    //  if(BJetColl.size()==0){
+    //    FillHist((prefix + "_0BJet_pt").Data(),     lep_pt, weight_pt*prescale_lep, nbin_pt, ptbins, "p_{T} (GeV)");
+    //    FillHist((prefix + "_0BJet_eta").Data(),    lep_eta, weight_pt*prescale_lep , nbin_eta, etabins,"#eta");
+    //  }
+    //  else{
+    //    FillHist((prefix + "_BJet_pt").Data(),     lep_pt, weight_pt*prescale_lep, nbin_pt, ptbins, "p_{T} (GeV)");
+    //    FillHist((prefix + "_BJet_eta").Data(),    lep_eta, weight_pt*prescale_lep , nbin_eta, etabins,"#eta");
+    //  }
+    //}
     if(fill_plot) {
       //FillHist((prefix + "_pt_eta").Data(), lep_pt, lep_eta,  weight_ptcorr, nbin_pt, ptbins, nbin_eta , etabins);
       FillHist((prefix + "_ptratio_eta").Data(), lep_jet_ptratio, lep_eta,  weight_ptcorr, nbin_pt, ptbins, nbin_eta , etabins);
+      FillHist((prefix + "_ptratio").Data(), lep_jet_ptratio,  weight_ptcorr, nbin_pt, ptbins);
+      if(!IsDATA){
+        if(leps[0]->LepGenTypeString()=="IsPrompt"){
+          FillHist((prefix + "_prompt_ptratio_eta").Data(), lep_jet_ptratio, lep_eta,  weight_ptcorr, nbin_pt, ptbins, nbin_eta , etabins);
+          FillHist((prefix + "_prompt_ptratio").Data(), lep_jet_ptratio, weight_ptcorr, nbin_pt, ptbins);
+        }
+        if(leps[0]->LepGenTypeString()=="IsFake"){
+          FillHist((prefix + "_fake_ptratio_eta").Data(), lep_jet_ptratio, lep_eta,  weight_ptcorr, nbin_pt, ptbins, nbin_eta , etabins);
+          FillHist((prefix + "_fake_ptratio").Data(), lep_jet_ptratio, weight_ptcorr, nbin_pt, ptbins);
+          if(leps[0]->CloseJet_Flavour().Contains("HF")){
+            FillHist((prefix + "_fakeHF_ptratio_eta").Data(), lep_jet_ptratio, lep_eta,  weight_ptcorr, nbin_pt, ptbins, nbin_eta , etabins);
+            FillHist((prefix + "_fakeHF_ptratio").Data(), lep_jet_ptratio, weight_ptcorr, nbin_pt, ptbins);
+          }
+          else if(leps[0]->CloseJet_Flavour().Contains("LF")){
+            FillHist((prefix + "_fakeLF_ptratio_eta").Data(), lep_jet_ptratio, lep_eta,  weight_ptcorr, nbin_pt, ptbins, nbin_eta , etabins);
+            FillHist((prefix + "_fakeLF_ptratio").Data(), lep_jet_ptratio, weight_ptcorr, nbin_pt, ptbins);
+          }
+        }
+        if(leps[0]->LepGenTypeString()=="IsEWtau"){
+          FillHist((prefix + "_tau_ptratio_eta").Data(), lep_jet_ptratio, lep_eta,  weight_ptcorr, nbin_pt, ptbins, nbin_eta , etabins);
+          FillHist((prefix + "_tau_ptratio").Data(), lep_jet_ptratio, weight_ptcorr, nbin_pt, ptbins);
+        }
+        if(leps[0]->LepGenTypeString()=="IsConv"){
+          FillHist((prefix + "_conv_ptratio_eta").Data(), lep_jet_ptratio, lep_eta,  weight_ptcorr, nbin_pt, ptbins, nbin_eta , etabins);
+          FillHist((prefix + "_conv_ptratio").Data(), lep_jet_ptratio, weight_ptcorr, nbin_pt, ptbins);
+        }
+      }
     }
   }
   return;

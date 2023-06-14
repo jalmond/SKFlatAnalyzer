@@ -302,7 +302,7 @@ bool Muon::PassID(TString ID) const {
 
   /////////// FINAL UL HNL Type-1 ID                                                                                                                                                                                                                                                                                          
 
-  if(ID.Contains("HNL_ULID_2016")){
+  if(ID=="HNL_ULID_2016"){
 
     if(!PassID("MVALoose")) return false;
 
@@ -322,7 +322,7 @@ bool Muon::PassID(TString ID) const {
   }
 
 
-  if(ID.Contains("HNL_ULID_2017"))  {
+  if(ID=="HNL_ULID_2017")  {
 
     if(!PassID("MVALoose")) return false;
 
@@ -342,7 +342,7 @@ bool Muon::PassID(TString ID) const {
   }
 
 
-  if(ID.Contains("HNL_ULID_2018"))  {
+  if(ID=="HNL_ULID_2018")  {
 
     if(!PassID("MVALoose")) return false;
 
@@ -439,6 +439,13 @@ bool Muon::PassID(TString ID) const {
     return true;
   }
   if(ID=="HNL_ULID_2017_LooseV5")  {
+    if(!PassID("MVALoose")) return false;
+    if(MVA() < -0.2)  return false;
+    if(!PassID("HNLIPv8"))  return false;
+
+    return true;
+  }
+  if(ID=="HNL_ULID_2017_LooseTriLep")  {
     if(!PassID("MVALoose")) return false;
     if(MVA() < -0.2)  return false;
     if(!PassID("HNLIPv8"))  return false;

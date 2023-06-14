@@ -2004,17 +2004,6 @@ std::vector<Muon> AnalyzerCore::GetMuons(AnalyzerParameter param, TString id, do
       continue;
     }
     if(!( muons.at(i).PassID(id) )){
-      if(muons.at(i).PassID("MVALoose")&&muons.at(i).PassID("HNLIPv8")){
-          for(int j=1; j<=5; j++){
-            TString this_str;
-            this_str.Itoa(j,10);
-            if(id.Contains("V"+this_str)&&muons.at(i).MVA()>(0.6-0.2*(j-1))){
-              cout << id << " failed but passed MVALoose and HNLIPv8;" << endl; //JH
-              cout << "MVA cut : " << (0.6-0.2*(j-1)) << endl;
-              cout << "MVA : " << muons.at(i).MVA() <<  endl; //JH
-            }
-          }
-      }
       continue;
     }
  
