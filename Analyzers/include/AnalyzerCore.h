@@ -461,6 +461,7 @@ public:
 
   void FillHist(TString histname, double value, double weight, int n_bin, double x_min, double x_max, TString label="");
   void FillHist(TString histname, double value, double weight, int n_bin, double *xbins, TString label="");
+  void FillHist(TString histname, vector<TString> labels, TString label, double weight);
 
   void FillHist(TString histname,
                 double value_x, double value_y,

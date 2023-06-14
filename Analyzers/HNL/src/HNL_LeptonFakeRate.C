@@ -53,6 +53,8 @@ void HNL_LeptonFakeRate::executeEvent(){
   paramnames.push_back("HNL_ULID_"+era+"_V5"  );
   MuIDs.push_back(make_pair("HNL_ULID_"+era, "HNL_TopMVA_FO_MM")); //JH : test
   paramnames.push_back("HNL_ULID_"+era+"_TriLep"  );
+  MuIDs.push_back(make_pair("HNL_ULID_"+era, "MVALoose")); //JH : test
+  paramnames.push_back("HNL_ULID_"+era+"_MVALoose"  );
   
 
   // MUON IDS
