@@ -24,7 +24,9 @@ class HNL_LeptonFakeRate  : public HNL_LeptonCore {
 
   double ApplyNvtxReweight(int Nvtx, TString Key);
   void MakeNVertexDistPrescaledTrig(HNL_LeptonCore::Channel channel, AnalyzerParameter param, Event ev,std::vector<Lepton *> leps,std::vector<bool> blepsT,  TString label, float event_weight);				  
-				    
+	
+  void GetMCFakeRates(std::vector<Muon> loose_muons, AnalyzerParameter param,  float weight);
+
   void GetFakeRates(std::vector<Lepton *> leps,std::vector<bool> blepsT,  AnalyzerParameter param,TString tightlabel,  std::vector<Jet> jets,  TString tag,float event_weight, float isocut);
 					   
   void GetFakeRateAndPromptRates(AnalyzerParameter param, std::vector<Lepton *> leps,std::vector<bool> blepsT, std::vector<Jet>    jetCollTight, TString label, float event_weight, float isocut);

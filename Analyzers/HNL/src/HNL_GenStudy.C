@@ -1,10 +1,8 @@
 #include "HNL_GenStudy.h"
 
-void HNL_GenStudy::executeEvent(){
+void HNL_GenStudy::executeEvent(Long64_t Nentry){
 
   double weight = MCweight(true, false); //use sign only, not xsec
-  cout << "weight : " << weight << endl;
-  cout << "gen size : " << All_Gens.size() << endl;
   int nmu(0), nel(0);
   for(auto gen:All_Gens){
     if(gen.fromHardProcessFinalState()){
@@ -15,7 +13,6 @@ void HNL_GenStudy::executeEvent(){
 
   // sanity check
   int nlep = nel+nmu;
-  cout << "nlep : " << nlep << endl;
   if(nlep!=2){
     cout << "!!ERROR!! signal doesn't have 2 leptons; rather : " << nlep << endl;
     exit(EXIT_FAILURE);
@@ -47,7 +44,7 @@ void HNL_GenStudy::executeEvent(){
     "M2000",
     "M2500",
     "M3000",
-	};
+  };
   VBFlabels={
     "M500",
     "M600",
@@ -98,14 +95,19 @@ void HNL_GenStudy::executeEvent(){
     exit(EXIT_FAILURE);
   }
 
-  cout << "MCSample : " << MCSample << endl;
-  TObjArray *tokens = MCSample.Tokenize("_");
+  TObjArray *tokens = MCSample.Tokenize("_"); // split TString
   TString this_mass = ((TObjString*)tokens->At(2))->GetString();
   if(MCSample.Contains("DY")){
     FillHist("DY_tot",DYlabels,this_mass,weight);
     if(ee) FillHist("DY_ee",DYlabels,this_mass,weight);
     if(mm) FillHist("DY_mm",DYlabels,this_mass,weight);
     if(em) FillHist("DY_em",DYlabels,this_mass,weight);
+    if(Nentry%2==0){
+      FillHist("DY_half_tot",DYlabels,this_mass,weight);
+      if(ee) FillHist("DY_half_ee",DYlabels,this_mass,weight);
+      if(mm) FillHist("DY_half_mm",DYlabels,this_mass,weight);
+      if(em) FillHist("DY_half_em",DYlabels,this_mass,weight);
+    }
   }
   if(MCSample.Contains("VBF")){
     FillHist("VBF_tot",VBFlabels,this_mass,weight);
@@ -113,7 +115,7 @@ void HNL_GenStudy::executeEvent(){
     if(mm) FillHist("VBF_mm",VBFlabels,this_mass,weight);
     if(em) FillHist("VBF_em",VBFlabels,this_mass,weight);
   }
-  if(MCSample.Contains("SSWW")){
+  if(MCSample.Contains("SSWW")&&MCSample.Contains("SF")){ // no need to do this with DF
     FillHist("SSWW_tot",SSWWlabels,this_mass,weight);
     if(ee) FillHist("SSWW_ee",SSWWlabels,this_mass,weight);
     if(mm) FillHist("SSWW_mm",SSWWlabels,this_mass,weight);

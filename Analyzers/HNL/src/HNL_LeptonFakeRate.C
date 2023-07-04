@@ -49,8 +49,8 @@ void HNL_LeptonFakeRate::executeEvent(){
   //paramnames.push_back("HNL_ULID_"+era+"_V3"  );
   //MuIDs.push_back(make_pair("HNL_ULID_"+era, "HNL_ULID_2017_LooseV4")); //JH : test
   //paramnames.push_back("HNL_ULID_"+era+"_V4"  );
-  MuIDs.push_back(make_pair("HNL_ULID_"+era, "HNL_ULID_2017_LooseV5")); //JH : test
-  paramnames.push_back("HNL_ULID_"+era+"_V5"  );
+  //MuIDs.push_back(make_pair("HNL_ULID_"+era, "HNL_ULID_2017_LooseV5")); //JH : test
+  //paramnames.push_back("HNL_ULID_"+era+"_V5"  );
   MuIDs.push_back(make_pair("HNL_ULID_"+era, "HNL_TopMVA_FO_MM")); //JH : test
   paramnames.push_back("HNL_ULID_"+era+"_TriLep"  );
   MuIDs.push_back(make_pair("HNL_ULID_"+era, "MVALoose")); //JH : test
@@ -123,7 +123,8 @@ void HNL_LeptonFakeRate::executeEvent(){
     //     param.WriteOutVerbose = 2;  Run Main ID and make  only FR 
     //     param.WriteOutVerbose = 3;  Run Main ID and make  only FR + PR
     //     param.WriteOutVerbose = 0;  makes NVertx plots
-    param.WriteOutVerbose= 2; // 0 means only make FR  1 means FR+PR  2 means SR+PR + CR plots  3 means makes NVertx plots
+    //param.WriteOutVerbose= 2; // 0 means only make FR  1 means FR+PR  2 means SR+PR + CR plots  3 means makes NVertx plots
+    param.WriteOutVerbose= 4; // MC fake rate
    
     
     if(param.WriteOutVerbose >=0){
@@ -150,34 +151,52 @@ void HNL_LeptonFakeRate::executeEventFromParameter(AnalyzerParameter param, TStr
   // setup event level objects
   Event ev = GetEvent();
 
-  double weight = SetupWeight(ev, param) / ev.GetTriggerLumi("Full");
+  //double weight = SetupWeight(ev, param) / ev.GetTriggerLumi("Full"); //FIXME later
+  double weight = MCweight(true, false); // use sign, but not scale by xsec
   if(IsData) weight = 1;
   
   if(!PassMETFilter()) return;
 
   for(auto mu:All_Muons){
-    FillHist(param.Name+"_AllMuon_MVA", mu.MVA() , weight, 200., -1, 1); //JH : to check loose muon MVA
-    if(mu.Pt()>10.)           FillHist(param.Name+"_AllMuon_MVA_pt10", mu.MVA() , weight, 200., -1, 1); //JH : to check loose muon MVA
-    if(mu.fEta()<2.4)         FillHist(param.Name+"_AllMuon_MVA_eta2p4", mu.MVA() , weight, 200., -1, 1); //JH : to check loose muon MVA
-    if(mu.MiniRelIso()<0.4)   FillHist(param.Name+"_AllMuon_MVA_MiniIso0p4", mu.MVA() , weight, 200., -1, 1); //JH : to check loose muon MVA
-    if(mu.SIP3D()<8.)         FillHist(param.Name+"_AllMuon_MVA_SIP3D8", mu.MVA() , weight, 200., -1, 1); //JH : to check loose muon MVA
-    if(mu.fdXY()<0.05)        FillHist(param.Name+"_AllMuon_MVA_dxy0p05", mu.MVA() , weight, 200., -1, 1); //JH : to check loose muon MVA
-    if(mu.fdZ()<0.1)          FillHist(param.Name+"_AllMuon_MVA_dz0p1", mu.MVA() , weight, 200., -1, 1); //JH : to check loose muon MVA
-    if(mu.isPOGLoose())       FillHist(param.Name+"_AllMuon_MVA_POGL", mu.MVA() , weight, 200., -1, 1); //JH : to check loose muon MVA
-    if(mu.isPOGMedium())      FillHist(param.Name+"_AllMuon_MVA_POGM", mu.MVA() , weight, 200., -1, 1); //JH : to check loose muon MVA
-    if(mu.Pass_LepMVAID())    FillHist(param.Name+"_AllMuon_MVA_LepMVAID", mu.MVA() , weight, 200., -1, 1); //JH : to check loose muon MVA
-    if(mu.PassID("MVALoose")) FillHist(param.Name+"_AllMuon_MVA_MVALoose", mu.MVA() , weight, 200., -1, 1); //JH : to check loose muon MVA
+    FillHist(param.Name+"_AllMuon_MVA", mu.MVA() , weight, 200., -1, 1); //JH : to check all muon MVA
+    FillHist(param.Name+"_AllMuon_LeptonType", mu.LeptonGenType() , weight, 13, -6, 7); //JH : to check all muon type
+    //if(mu.Pt()>10.)           FillHist(param.Name+"_AllMuon_MVA_pt10", mu.MVA() , weight, 200., -1, 1); //JH : to check loose muon MVA
+    //if(mu.fEta()<2.4)         FillHist(param.Name+"_AllMuon_MVA_eta2p4", mu.MVA() , weight, 200., -1, 1); //JH : to check loose muon MVA
+    //if(mu.MiniRelIso()<0.4)   FillHist(param.Name+"_AllMuon_MVA_MiniIso0p4", mu.MVA() , weight, 200., -1, 1); //JH : to check loose muon MVA
+    //if(mu.SIP3D()<8.)         FillHist(param.Name+"_AllMuon_MVA_SIP3D8", mu.MVA() , weight, 200., -1, 1); //JH : to check loose muon MVA
+    //if(mu.fdXY()<0.05)        FillHist(param.Name+"_AllMuon_MVA_dxy0p05", mu.MVA() , weight, 200., -1, 1); //JH : to check loose muon MVA
+    //if(mu.fdZ()<0.1)          FillHist(param.Name+"_AllMuon_MVA_dz0p1", mu.MVA() , weight, 200., -1, 1); //JH : to check loose muon MVA
+    //if(mu.isPOGLoose())       FillHist(param.Name+"_AllMuon_MVA_POGL", mu.MVA() , weight, 200., -1, 1); //JH : to check loose muon MVA
+    //if(mu.isPOGMedium())      FillHist(param.Name+"_AllMuon_MVA_POGM", mu.MVA() , weight, 200., -1, 1); //JH : to check loose muon MVA
+    //if(mu.Pass_LepMVAID())    FillHist(param.Name+"_AllMuon_MVA_LepMVAID", mu.MVA() , weight, 200., -1, 1); //JH : to check loose muon MVA
+    //if(mu.PassID("MVALoose")) FillHist(param.Name+"_AllMuon_MVA_MVALoose", mu.MVA() , weight, 200., -1, 1); //JH : to check loose muon MVA
   } //JH
   
   std::vector<Electron> loose_electrons     = GetElectrons( param,param.Electron_Loose_ID, 9.5, 2.5,false) ;
   std::vector<Muon>     loose_muons         = GetMuons    ( param,param.Muon_Loose_ID, 5, 2.4, false);
-  //cout << "loose ID : " << param.Muon_Loose_ID << endl; //JH
-  FillHist(( param.Name + "_Nmu").Data(), loose_muons.size() , weight, 10., 0., 10); //JH
+  FillHist(param.Name + "_AllMuon_NMu", All_Muons.size() , weight, 10., 0., 10);
+  FillHist(( param.Name + "_NlooseMu").Data(), loose_muons.size() , weight, 10., 0., 10);
   for(auto mu:loose_muons){
-    FillHist(( param.Name + "_MVA").Data(), mu.MVA() , weight, 200., -1, 1); //JH : to check loose muon MVA
-  } //JH
+    FillHist(( param.Name + "_MVA").Data(), mu.MVA() , weight, 200., -1, 1);
+    FillHist(( param.Name + "_LeptonType").Data(), mu.LeptonGenType() , weight, 13, -6, 7);
+    FillHist(( param.Name + "_JetFlavor").Data(), mu.CloseJet_FlavourInt()  , weight, 6, 0, 6);
+    FillHist(( param.Name + "_LeptonType_JetFlavor").Data(), mu.LeptonGenType(), mu.CloseJet_FlavourInt(), weight, 13, -6, 7, 6, 0, 6);
+  }
+  if(param.Muon_Loose_ID.Contains("MVALoose")){
+    for(auto mu:loose_muons){
+      FillHist(( param.Name + "_Ptratio").Data(), mu.CloseJet_Ptratio() , weight, 50., 0, 5);
+      FillHist(( param.Name + "_BScore").Data(), mu.CloseJet_BScore() , weight, 100., 0, 1);
+      if(mu.MVA()<0.64){
+        FillHist(( param.Name + "_Ptratio_MVAlt0p64").Data(), mu.CloseJet_Ptratio() , weight, 50., 0, 5);
+        FillHist(( param.Name + "_BScore_MVAlt0p64").Data(), mu.CloseJet_BScore() , weight, 100., 0, 1);
+      }
+    }
+  }
   
-  //cout << "loose_electrons = " << loose_electrons.size() << " loose_muons " << loose_muons.size() << endl;
+  if(param.WriteOutVerbose == 4){
+    GetMCFakeRates(loose_muons, param, weight);
+    return;
+  }
 
   std::vector<Jet> jets_tmp     = GetJets   ( param, "tight", 30., 2.7);
   std::vector<Jet> jets; 
@@ -203,6 +222,69 @@ void HNL_LeptonFakeRate::executeEventFromParameter(AnalyzerParameter param, TStr
   }
 }
 
+void HNL_LeptonFakeRate::GetMCFakeRates(std::vector<Muon> loose_muons, AnalyzerParameter param,  float weight){
+
+  // No selection MC fake rate
+  if(!IsDATA){
+    int nbin_pt = 11;
+    double ptbins[nbin_pt+1];
+    vector<double> vptbins =  {10., 15.,20.,25.,30.,35.,40.,50.,60.,100.,200.,1000.} ; 
+    std::copy(vptbins.begin(), vptbins.end(), ptbins);
+    TString L_prefix = "Fake_Loose_"+param.Name+"_NoSel";
+    TString T_prefix = "Fake_Tight_"+param.Name+"_NoSel"; //JH : Fake_Tight_MuMu_HNL_ULID_2017_trilep
+    for(auto mu:loose_muons){
+      double lep_pt = mu.Pt();
+      double lep_jet_ptratio = lep_pt/mu.CloseJet_Ptratio();
+      bool passT = false;
+      if(mu.PassID(param.Muon_Tight_ID)) passT = true;
+      for(int ilep = 0 ; ilep < 2; ilep++){
+        TString prefix = (ilep==0) ? L_prefix : T_prefix;
+        if(ilep==1 && !passT) continue;
+        if(mu.LepGenTypeString()=="IsPrompt"){
+          //FillHist((prefix + "_prompt_ptratio_eta").Data(), lep_jet_ptratio, lep_eta,  weight, nbin_pt, ptbins, nbin_eta , etabins);
+          FillHist((prefix + "_prompt_ptratio").Data(), lep_jet_ptratio, weight, nbin_pt, ptbins);
+        }
+        if(mu.LepGenTypeString()=="IsFake"){
+          //FillHist((prefix + "_fake_ptratio_eta").Data(), lep_jet_ptratio, lep_eta,  weight, nbin_pt, ptbins, nbin_eta , etabins);
+          FillHist((prefix + "_fake_ptratio").Data(), lep_jet_ptratio, weight, nbin_pt, ptbins);
+          if(mu.CloseJet_Flavour().Contains("HF")){
+            //FillHist((prefix + "_fakeHF_ptratio_eta").Data(), lep_jet_ptratio, lep_eta,  weight, nbin_pt, ptbins, nbin_eta , etabins);
+            FillHist((prefix + "_fakeHF_ptratio").Data(), lep_jet_ptratio, weight, nbin_pt, ptbins);
+            if(mu.MVA()>0.64){
+              FillHist(( prefix + "_fakeHF_Ptratio_MVAgt0p64").Data(), mu.CloseJet_Ptratio() , weight, 50., 0, 5);
+              FillHist(( prefix + "_fakeHF_BScore_MVAgt0p64").Data(), mu.CloseJet_BScore() , weight, 100., 0, 1);
+            }
+						else{
+              FillHist(( prefix + "_fakeHF_Ptratio_MVAlt0p64").Data(), mu.CloseJet_Ptratio() , weight, 50., 0, 5);
+              FillHist(( prefix + "_fakeHF_BScore_MVAlt0p64").Data(), mu.CloseJet_BScore() , weight, 100., 0, 1);
+            }
+          }
+          else if(mu.CloseJet_Flavour().Contains("LF")){
+            //FillHist((prefix + "_fakeLF_ptratio_eta").Data(), lep_jet_ptratio, lep_eta,  weight, nbin_pt, ptbins, nbin_eta , etabins);
+            FillHist((prefix + "_fakeLF_ptratio").Data(), lep_jet_ptratio, weight, nbin_pt, ptbins);
+            if(mu.MVA()>0.64){
+              FillHist(( prefix + "_fakeLF_Ptratio_MVAgt0p64").Data(), mu.CloseJet_Ptratio() , weight, 50., 0, 5);
+              FillHist(( prefix + "_fakeLF_BScore_MVAgt0p64").Data(), mu.CloseJet_BScore() , weight, 100., 0, 1);
+            }
+						else{
+              FillHist(( prefix + "_fakeLF_Ptratio_MVAlt0p64").Data(), mu.CloseJet_Ptratio() , weight, 50., 0, 5);
+              FillHist(( prefix + "_fakeLF_BScore_MVAlt0p64").Data(), mu.CloseJet_BScore() , weight, 100., 0, 1);
+            }
+          }
+        }
+        if(mu.LepGenTypeString()=="IsEWtau"){
+          //FillHist((prefix + "_tau_ptratio_eta").Data(), lep_jet_ptratio, lep_eta,  weight, nbin_pt, ptbins, nbin_eta , etabins);
+          FillHist((prefix + "_tau_ptratio").Data(), lep_jet_ptratio, weight, nbin_pt, ptbins);
+        }
+        if(mu.LepGenTypeString()=="IsConv"){
+          //FillHist((prefix + "_conv_ptratio_eta").Data(), lep_jet_ptratio, lep_eta,  weight, nbin_pt, ptbins, nbin_eta , etabins);
+          FillHist((prefix + "_conv_ptratio").Data(), lep_jet_ptratio, weight, nbin_pt, ptbins);
+        }
+      }
+    }
+  }
+
+}
 
 void HNL_LeptonFakeRate::RunM(std::vector<Electron> loose_el,  std::vector<Muon> loose_mu, std::vector<Jet> jets,   AnalyzerParameter param,  float event_weight){
 
@@ -1068,7 +1150,7 @@ void HNL_LeptonFakeRate::GetFakeRates(std::vector<Lepton *> leps,std::vector<boo
   float weight_ptcorr=event_weight;
   float weight_pt=event_weight;
   TString L_prefix = "Fake_Loose_"+tag;
-  TString T_prefix =  "Fake_Tight_"+tag; //JH : Fake_Tight_MuMu_HNL_ULID_2017_V1_40
+  TString T_prefix = "Fake_Tight_"+tag; //JH : Fake_Tight_MuMu_HNL_ULID_2017_V1_40
 
   double prescale_lep (1.);
 

@@ -52,6 +52,7 @@ public :
 
    virtual void beginEvent(){};
    virtual void executeEvent(){};
+   virtual void executeEvent(Long64_t Nentry){}; //JH
    virtual void endEvent(){};
 
    virtual void SetEra(TString era){

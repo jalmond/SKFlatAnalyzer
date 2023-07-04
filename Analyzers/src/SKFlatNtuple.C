@@ -165,6 +165,7 @@ void SKFlatNtuple::Loop(){
 
     beginEvent();
     executeEvent();
+    executeEvent(jentry);
     endEvent();
 
     //std::cout << jentry << " :" << muon_pt->size() << std::endl;

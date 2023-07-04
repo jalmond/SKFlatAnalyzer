@@ -8,7 +8,7 @@ class HNL_GenStudy  : public HNL_LeptonCore {
 
  public:
   
-  void executeEvent();
+  void executeEvent(Long64_t Nentry);
 
   HNL_GenStudy();
   ~HNL_GenStudy();
