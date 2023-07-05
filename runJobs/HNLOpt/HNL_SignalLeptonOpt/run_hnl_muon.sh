@@ -38,6 +38,21 @@ fi
 #############################################################################                                                                                                                                                               
 #############################################################################     
 
+
+
+if [[ $1 == "Muon_POG" ]]; then
+
+    declare  -a era_list=("2016postVFP" "2016preVFP" "2017" "2018")
+    for i in "${era_list[@]}"
+    do
+        Flag='Muon_POG'
+        source ${runPATH}/run_hnl_muon.sh MuonAll ${Flag} ${i}
+    done
+fi
+
+
+
+
 if [[ $1 == "MUON_SEL" ]]; then
 
     declare  -a era_list=("2016postVFP" "2016preVFP" "2017" "2018")
@@ -61,12 +76,9 @@ if [[ $1 == "NP_MUON_HF" ]]; then
     declare  -a era_list=("2017")
     for i in "${era_list[@]}"
     do
-
         Flag='HF_Bin1,FullEta,MuID_NP'
         source ${runPATH}/run_hnl_muon.sh MuonAll ${Flag} ${i}
-
     done
-
 fi
 
 if [[ $1 == "NP_MUON_HF_Bin2" ]]; then
@@ -91,12 +103,36 @@ if [[ $1 == "NP_MUON_HF_Bin3" ]]; then
     for i in "${era_list[@]}"
     do
 
-        Flag='HF_Bin3,FullEta,MuID_NP'
+        Flag='HF_Bin3,FullEta,MuID_NP,SIP'
+        source ${runPATH}/run_hnl_muon.sh MuonAll ${Flag} ${i}
+	Flag='HF_Bin3,FullEta,MuID_NP,DXY'
+        source ${runPATH}/run_hnl_muon.sh MuonAll ${Flag} ${i}
+	Flag='HF_Bin3,FullEta,MuID_NP,DZ'
+        source ${runPATH}/run_hnl_muon.sh MuonAll ${Flag} ${i}
+
+	
+    done
+
+fi
+
+
+
+if [[ $1 == "NP_MUON_LF_Bin1" ]]; then
+
+    declare  -a era_list=("2016postVFP" "2016preVFP" "2017" "2018")
+
+    for i in "${era_list[@]}"
+    do
+
+        Flag='LF_Bin1,MuID_NP,BB'
+        source ${runPATH}/run_hnl_muon.sh MuonAll ${Flag} ${i}
+	Flag='LF_Bin1,MuID_NP,EC'
         source ${runPATH}/run_hnl_muon.sh MuonAll ${Flag} ${i}
 
     done
 
 fi
+
 
 
 

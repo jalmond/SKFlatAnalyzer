@@ -6,6 +6,7 @@ Particle::Particle() :
   TLorentzVector(),
   j_Charge(0)
 {
+  k_debug=false;
 }
 
 Particle::Particle(const TLorentzVector& p) :

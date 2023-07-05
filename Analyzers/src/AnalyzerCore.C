@@ -878,12 +878,6 @@ void AnalyzerCore::SetupIDMVAReaderDefault(){
  
   SetupLeptonBDT();
 
-  if(TESTBDT) {
-    SetupIDMVAReaderMuon();
-    SetupIDMVAReaderElectron(true,true);
-    return;
-  }
-
   // setup ALL MVA Readers for Mu and El
   // Muon ID Setup
   if(!(fChain->GetBranch("muon_mva_fake_v1") || fChain->GetBranch("muon_mva_fake_v2") || fChain->GetBranch("muon_mva_fake_v3") || fChain->GetBranch("muon_mva_fake_v4"))) SetupIDMVAReaderMuon();
@@ -2032,21 +2026,6 @@ std::vector<Electron> AnalyzerCore::GetAllElectrons(){
   if(!electron_Energy) return out;
 
 
-  if(TESTBDT) cout << "=====================================" << endl;
-  if(TESTBDT) cout << "Event " << event << endl;
-  if(TESTBDT){
-    for(unsigned int i=0; i<electron_Energy->size(); i++)  {
-      Electron el;
-      el.SetPtEtaPhiE(1., electron_eta->at(i), electron_phi->at(i), electron_Energy->at(i));
-      double el_theta = el.Theta();
-      double el_pt = electron_Energy->at(i) * TMath::Sin( el_theta );
-      cout << "Pt = " << el_pt  ;
-      cout << " electron_EnergyUnCorr->at(i) = " << electron_EnergyUnCorr->at(i)  ;
-      cout << " PtRatio = " << electron_ptratio->at(i);
-      cout << " PtRel = " << electron_ptrel->at(i);
-      cout << " BJET = " << electron_cj_bjetdisc->at(i) << endl;
-    }    
-  }
   for(unsigned int i=0; i<electron_Energy->size(); i++){
 
     Electron el;
@@ -2058,8 +2037,6 @@ std::vector<Electron> AnalyzerCore::GetAllElectrons(){
     double el_theta = el.Theta();
     double el_pt = electron_Energy->at(i) * TMath::Sin( el_theta );
     el.SetPtEtaPhiE( el_pt, electron_eta->at(i), electron_phi->at(i), electron_Energy->at(i));
-    if(TESTBDT)cout << "Pt = " << el.Pt() << " " << el.Eta() << " " << el.Phi()<< endl;
-    
     el.SetUncorrectedPt(electron_EnergyUnCorr->at(i) * TMath::Sin( el_theta ));
     el.SetUncorrectedPx(el.Px());
     el.SetUncorrectedPy(el.Py()); //JH
@@ -2138,12 +2115,6 @@ std::vector<Electron> AnalyzerCore::GetAllElectrons(){
     if(fChain->GetBranch("electron_ptratio")) el.SetJetPtRatio(electron_ptratio->at(i));
     if(fChain->GetBranch("electron_cj_bjetdisc")) el.SetCloseJetBScore(electron_cj_bjetdisc->at(i));
     
-    if(TESTBDT){
-      cout << "electron_ptratio->at(i) = " << electron_ptratio->at(i) << endl;
-      cout << "electron_ptrel->at(i) = " << electron_ptrel->at(i) << endl;
-      cout << "electron_cj_bjetdisc->at(i) = " << electron_cj_bjetdisc->at(i) << endl;
-      cout << "electron_cj_flavour->at(i) = " << electron_cj_flavour->at(i) << endl;
-    }
     
     //////// MVA Branches
     ////*************** FAKE MVA
@@ -2282,10 +2253,9 @@ std::vector<Electron> AnalyzerCore::GetAllElectrons(){
       int JetHadFlavour = -999;
 
       for(unsigned int ij=0; ij<AK4_JetAllColl.size(); ij++){
-  if(TESTBDT)cout << "Jet pt = " << AK4_JetAllColl.at(ij).Pt() << " " << AK4_JetAllColl.at(ij).Eta() << " " << AK4_JetAllColl.at(ij).Phi() << endl;
-  float dR1=el.DeltaR(AK4_JetAllColl.at(ij));
-  if(dR1>0.4) continue;
-  if(dR1<mindR1){ mindR1=dR1; IdxMatchJet=ij; }
+	float dR1=el.DeltaR(AK4_JetAllColl.at(ij));
+	if(dR1>0.4) continue;
+	if(dR1<mindR1){ mindR1=dR1; IdxMatchJet=ij; }
       }
       if(IdxMatchJet!=-1) {
   JetDiscCJ      = AK4_JetAllColl.at(IdxMatchJet).GetTaggerResult(JetTagging::DeepJet);
@@ -2929,7 +2899,6 @@ std::vector<Jet> AnalyzerCore::GetAllJets(bool applySmear){
     jet.SetPileupJetId(jet_PileupJetId->at(i));
     jet.SetTightJetID(jet_tightJetID->at(i));
     jet.SetTightLepVetoJetID(jet_tightLepVetoJetID->at(i));
-    //if(TESTBDT) cout << "JET BDT = " <<  jet.GetTaggerResult(JetTagging::DeepJet) << endl;
     
     out.push_back(jet);
   }
@@ -6812,6 +6781,17 @@ bool AnalyzerCore::IsSignalPID(int pid){
 //==== END Gen Matching Tools
 //==============================================================
 
+TProfile* AnalyzerCore::GetHistPf(TString histname){
+
+  TProfile *h = NULL;
+  std::map<TString, TProfile*>::iterator mapit = maphist_TProfile.find(histname);
+  if(mapit != maphist_TProfile.end()) return mapit->second;
+
+  return h;
+
+}
+
+
 TH1D* AnalyzerCore::GetHist1D(TString histname){
 
   TH1D *h = NULL;
@@ -6848,6 +6828,20 @@ void AnalyzerCore::FillWeightHist(TString label, double _weight){
     FillHist( "weights/"+ label , _weight ,1., 200, -5., 5,"ev weight");
 
   return;
+}
+
+void AnalyzerCore::FillProf(TString histname, double xvalue, double yvalue, int n_bin, double x_min, double x_max , TString label){
+
+  TProfile *this_hist = GetHistPf(histname);
+  if( !this_hist ){
+    this_hist = new TProfile(histname, "", n_bin, x_min, x_max);
+    this_hist->SetDirectory(NULL);
+    this_hist->GetXaxis()->SetTitle(label);
+    maphist_TProfile[histname] = this_hist;
+  }
+
+  this_hist->Fill(xvalue, yvalue, 1.);
+
 }
 
 void AnalyzerCore::FillHist(TString histname, double value, double weight, int n_bin, double x_min, double x_max , TString label){
@@ -7059,6 +7053,18 @@ void AnalyzerCore::JSFillHist(TString suffix, TString histname,
 void AnalyzerCore::WriteHist(){
 
   outfile->cd();
+  for(std::map< TString, TProfile* >::iterator mapit = maphist_TProfile.begin(); mapit!=maphist_TProfile.end(); mapit++){
+    TString this_fullname=mapit->second->GetName();
+    TString this_name=this_fullname(this_fullname.Last('/')+1,this_fullname.Length());
+    TString this_suffix=this_fullname(0,this_fullname.Last('/'));
+    TDirectory *dir = outfile->GetDirectory(this_suffix);
+    if(!dir){
+      outfile->mkdir(this_suffix);
+    }
+    outfile->cd(this_suffix);
+    mapit->second->Write(this_name);
+    outfile->cd();
+  }
   for(std::map< TString, TH1D* >::iterator mapit = maphist_TH1D.begin(); mapit!=maphist_TH1D.end(); mapit++){
     TString this_fullname=mapit->second->GetName();
     TString this_name=this_fullname(this_fullname.Last('/')+1,this_fullname.Length());

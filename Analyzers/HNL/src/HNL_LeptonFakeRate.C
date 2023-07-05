@@ -184,11 +184,13 @@ void HNL_LeptonFakeRate::executeEventFromParameter(AnalyzerParameter param, TStr
   }
   if(param.Muon_Loose_ID.Contains("MVALoose")){
     for(auto mu:loose_muons){
-      FillHist(( param.Name + "_Ptratio").Data(), mu.CloseJet_Ptratio() , weight, 50., 0, 5);
+      FillHist(( param.Name + "_Ptratio").Data(), mu.CloseJet_Ptratio() , weight, 20., 0, 2);
       FillHist(( param.Name + "_BScore").Data(), mu.CloseJet_BScore() , weight, 100., 0, 1);
+      FillHist(( param.Name + "_BScore_Ptratio").Data(), mu.CloseJet_BScore(), mu.CloseJet_Ptratio(), weight, 100., 0, 1, 20., 0, 2);
       if(mu.MVA()<0.64){
-        FillHist(( param.Name + "_Ptratio_MVAlt0p64").Data(), mu.CloseJet_Ptratio() , weight, 50., 0, 5);
+        FillHist(( param.Name + "_Ptratio_MVAlt0p64").Data(), mu.CloseJet_Ptratio() , weight, 20., 0, 2);
         FillHist(( param.Name + "_BScore_MVAlt0p64").Data(), mu.CloseJet_BScore() , weight, 100., 0, 1);
+        FillHist(( param.Name + "_BScore_Ptratio_MVAlt0p64").Data(), mu.CloseJet_BScore(), mu.CloseJet_Ptratio(), weight, 100., 0, 1, 20., 0, 2);
       }
     }
   }
@@ -243,31 +245,43 @@ void HNL_LeptonFakeRate::GetMCFakeRates(std::vector<Muon> loose_muons, AnalyzerP
         if(mu.LepGenTypeString()=="IsPrompt"){
           //FillHist((prefix + "_prompt_ptratio_eta").Data(), lep_jet_ptratio, lep_eta,  weight, nbin_pt, ptbins, nbin_eta , etabins);
           FillHist((prefix + "_prompt_ptratio").Data(), lep_jet_ptratio, weight, nbin_pt, ptbins);
+          FillHist((prefix + "_prompt_BScore_Ptratio").Data(), mu.CloseJet_BScore(), mu.CloseJet_Ptratio(), weight, 100., 0, 1, 20., 0, 2);
+          FillProf((prefix + "_prompt_MVA_ptratio").Data(), mu.MVA(), lep_jet_ptratio, 200, -1, 1);
         }
         if(mu.LepGenTypeString()=="IsFake"){
           //FillHist((prefix + "_fake_ptratio_eta").Data(), lep_jet_ptratio, lep_eta,  weight, nbin_pt, ptbins, nbin_eta , etabins);
           FillHist((prefix + "_fake_ptratio").Data(), lep_jet_ptratio, weight, nbin_pt, ptbins);
+          FillHist((prefix + "_fake_BScore_Ptratio").Data(), mu.CloseJet_BScore(), mu.CloseJet_Ptratio(), weight, 100., 0, 1, 20., 0, 2);
+          FillProf((prefix + "_fake_MVA_ptratio").Data(), mu.MVA(), lep_jet_ptratio, 200, -1, 1);
           if(mu.CloseJet_Flavour().Contains("HF")){
             //FillHist((prefix + "_fakeHF_ptratio_eta").Data(), lep_jet_ptratio, lep_eta,  weight, nbin_pt, ptbins, nbin_eta , etabins);
             FillHist((prefix + "_fakeHF_ptratio").Data(), lep_jet_ptratio, weight, nbin_pt, ptbins);
+            FillHist((prefix + "_fakeHF_BScore_Ptratio").Data(), mu.CloseJet_BScore(), mu.CloseJet_Ptratio(), weight, 100., 0, 1, 20., 0, 2);
+            FillProf((prefix + "_fakeHF_MVA_ptratio").Data(), mu.MVA(), lep_jet_ptratio, 200, -1, 1);
             if(mu.MVA()>0.64){
-              FillHist(( prefix + "_fakeHF_Ptratio_MVAgt0p64").Data(), mu.CloseJet_Ptratio() , weight, 50., 0, 5);
+              FillHist(( prefix + "_fakeHF_Ptratio_MVAgt0p64").Data(), mu.CloseJet_Ptratio() , weight, 20., 0, 2);
+              FillHist(( prefix + "_fakeHF_BScore_Ptratio_MVAgt0p64").Data(), mu.CloseJet_BScore(), mu.CloseJet_Ptratio(), weight, 100., 0, 1, 20., 0, 2);
               FillHist(( prefix + "_fakeHF_BScore_MVAgt0p64").Data(), mu.CloseJet_BScore() , weight, 100., 0, 1);
             }
 						else{
-              FillHist(( prefix + "_fakeHF_Ptratio_MVAlt0p64").Data(), mu.CloseJet_Ptratio() , weight, 50., 0, 5);
+              FillHist(( prefix + "_fakeHF_Ptratio_MVAlt0p64").Data(), mu.CloseJet_Ptratio() , weight, 20., 0, 2);
+              FillHist(( prefix + "_fakeHF_BScore_Ptratio_MVAlt0p64").Data(), mu.CloseJet_BScore(), mu.CloseJet_Ptratio(), weight, 100., 0, 1, 20., 0, 2);
               FillHist(( prefix + "_fakeHF_BScore_MVAlt0p64").Data(), mu.CloseJet_BScore() , weight, 100., 0, 1);
             }
           }
           else if(mu.CloseJet_Flavour().Contains("LF")){
             //FillHist((prefix + "_fakeLF_ptratio_eta").Data(), lep_jet_ptratio, lep_eta,  weight, nbin_pt, ptbins, nbin_eta , etabins);
             FillHist((prefix + "_fakeLF_ptratio").Data(), lep_jet_ptratio, weight, nbin_pt, ptbins);
+            FillHist((prefix + "_fakeLF_BScore_Ptratio").Data(), mu.CloseJet_BScore(), mu.CloseJet_Ptratio(), weight, 100., 0, 1, 20., 0, 2);
+            FillProf((prefix + "_fakeLF_MVA_ptratio").Data(), mu.MVA(), lep_jet_ptratio, 200, -1, 1);
             if(mu.MVA()>0.64){
-              FillHist(( prefix + "_fakeLF_Ptratio_MVAgt0p64").Data(), mu.CloseJet_Ptratio() , weight, 50., 0, 5);
+              FillHist(( prefix + "_fakeLF_Ptratio_MVAgt0p64").Data(), mu.CloseJet_Ptratio() , weight, 20., 0, 2);
+              FillHist(( prefix + "_fakeLF_BScore_Ptratio_MVAgt0p64").Data(), mu.CloseJet_BScore(), mu.CloseJet_Ptratio(), weight, 100., 0, 1, 20., 0, 2);
               FillHist(( prefix + "_fakeLF_BScore_MVAgt0p64").Data(), mu.CloseJet_BScore() , weight, 100., 0, 1);
             }
 						else{
-              FillHist(( prefix + "_fakeLF_Ptratio_MVAlt0p64").Data(), mu.CloseJet_Ptratio() , weight, 50., 0, 5);
+              FillHist(( prefix + "_fakeLF_Ptratio_MVAlt0p64").Data(), mu.CloseJet_Ptratio() , weight, 20., 0, 2);
+              FillHist(( prefix + "_fakeLF_BScore_Ptratio_MVAlt0p64").Data(), mu.CloseJet_BScore(), mu.CloseJet_Ptratio(), weight, 100., 0, 1, 20., 0, 2);
               FillHist(( prefix + "_fakeLF_BScore_MVAlt0p64").Data(), mu.CloseJet_BScore() , weight, 100., 0, 1);
             }
           }
@@ -275,10 +289,14 @@ void HNL_LeptonFakeRate::GetMCFakeRates(std::vector<Muon> loose_muons, AnalyzerP
         if(mu.LepGenTypeString()=="IsEWtau"){
           //FillHist((prefix + "_tau_ptratio_eta").Data(), lep_jet_ptratio, lep_eta,  weight, nbin_pt, ptbins, nbin_eta , etabins);
           FillHist((prefix + "_tau_ptratio").Data(), lep_jet_ptratio, weight, nbin_pt, ptbins);
+          FillHist((prefix + "_tau_BScore_Ptratio").Data(), mu.CloseJet_BScore(), mu.CloseJet_Ptratio(), weight, 100., 0, 1, 20., 0, 2);
+          FillProf((prefix + "_tau_MVA_ptratio").Data(), mu.MVA(), lep_jet_ptratio, 200, -1, 1);
         }
         if(mu.LepGenTypeString()=="IsConv"){
           //FillHist((prefix + "_conv_ptratio_eta").Data(), lep_jet_ptratio, lep_eta,  weight, nbin_pt, ptbins, nbin_eta , etabins);
           FillHist((prefix + "_conv_ptratio").Data(), lep_jet_ptratio, weight, nbin_pt, ptbins);
+          FillHist((prefix + "_conv_BScore_Ptratio").Data(), mu.CloseJet_BScore(), mu.CloseJet_Ptratio(), weight, 100., 0, 1, 20., 0, 2);
+          FillProf((prefix + "_conv_MVA_ptratio").Data(), mu.MVA(), lep_jet_ptratio, 200, -1, 1);
         }
       }
     }

@@ -197,30 +197,32 @@ public:
   }
 
   inline double HNL_MVA_Fake(TString vers) const {
+
+    //    if(k_debug) cout << "HNL_MVA_Fake " << vers << endl;
     if(j_LeptonFlavour==ELECTRON){
       if(vers=="v1")  return j_lep_mva_hnl_fake_v1;
       else if(vers=="v2")  return j_lep_mva_hnl_fake_v2;
-      else if(vers=="v2_HF")  return j_lep_mva_hnl_fake_v2_hf;
-      else if(vers=="v2_LF")  return j_lep_mva_hnl_fake_v2_lf;
-      else if(vers=="v2_Top")  return j_lep_mva_hnl_fake_v2_top;
+      else if(vers=="v2HF")  return j_lep_mva_hnl_fake_v2_hf;
+      else if(vers=="v2LF")  return j_lep_mva_hnl_fake_v2_lf;
+      else if(vers=="v2Top")  return j_lep_mva_hnl_fake_v2_top;
       else if(vers=="v3")  return j_lep_mva_hnl_fake_v3;
-      else if(vers=="v3_HF")  return j_lep_mva_hnl_fake_v3_hf;
-      else if(vers=="v3_HFB")  return j_lep_mva_hnl_fake_v3_hfb;
-      else if(vers=="v3_HFC")  return j_lep_mva_hnl_fake_v3_hfc;
-      else if(vers=="v3_LF")  return j_lep_mva_hnl_fake_v3_lf;
-      else if(vers=="v3_Top")  return j_lep_mva_hnl_fake_v3_top;
+      else if(vers=="v3HF")  return j_lep_mva_hnl_fake_v3_hf;
+      else if(vers=="v3HFB")  return j_lep_mva_hnl_fake_v3_hfb;
+      else if(vers=="v3HFC")  return j_lep_mva_hnl_fake_v3_hfc;
+      else if(vers=="v3LF")  return j_lep_mva_hnl_fake_v3_lf;
+      else if(vers=="v3Top")  return j_lep_mva_hnl_fake_v3_top;
       else if(vers=="v4")  return j_lep_mva_hnl_fake_v4;
-      else if(vers=="v4_HF")  return j_lep_mva_hnl_fake_v4_hf;
-      else if(vers=="v4_HFB")  return j_lep_mva_hnl_fake_v4_hfb;
-      else if(vers=="v4_HFC")  return j_lep_mva_hnl_fake_v4_hfc;
-      else if(vers=="v4_LF")  return j_lep_mva_hnl_fake_v4_lf;
-      else if(vers=="v4_Top")  return j_lep_mva_hnl_fake_v4_top;
+      else if(vers=="v4HF")  return j_lep_mva_hnl_fake_v4_hf;
+      else if(vers=="v4HFB")  return j_lep_mva_hnl_fake_v4_hfb;
+      else if(vers=="v4HFC")  return j_lep_mva_hnl_fake_v4_hfc;
+      else if(vers=="v4LF")  return j_lep_mva_hnl_fake_v4_lf;
+      else if(vers=="v4Top")  return j_lep_mva_hnl_fake_v4_top;
       else if(vers=="EDv4")  return j_lep_mva_hnl_fake_ed_v4;
-      else if(vers=="EDv4_HF")  return j_lep_mva_hnl_fake_ed_v4_hf;
-      else if(vers=="EDv4_HFB")  return j_lep_mva_hnl_fake_ed_v4_hfb;
-      else if(vers=="EDv4_HFC")  return j_lep_mva_hnl_fake_ed_v4_hfc;
-      else if(vers=="EDv4_LF")  return j_lep_mva_hnl_fake_ed_v4_lf;
-      else if(vers=="EDv4_Top")  return j_lep_mva_hnl_fake_ed_v4_top;
+      else if(vers=="EDv4HF")  return j_lep_mva_hnl_fake_ed_v4_hf;
+      else if(vers=="EDv4HFB")  return j_lep_mva_hnl_fake_ed_v4_hfb;
+      else if(vers=="EDv4HFC")  return j_lep_mva_hnl_fake_ed_v4_hfc;
+      else if(vers=="EDv4LF")  return j_lep_mva_hnl_fake_ed_v4_lf;
+      else if(vers=="EDv4Top")  return j_lep_mva_hnl_fake_ed_v4_top;
 
     }
     else{
@@ -235,7 +237,11 @@ public:
     
   }
 
+
   inline double HNL_MVA_Conv(TString vers) const {
+ 
+    //    if(k_debug)cout << "HNL_MVA_Conv "<< vers<< endl;
+
     if(j_LeptonFlavour==ELECTRON){
       if(vers=="v1")return j_lep_mva_hnl_conv_v1;
       else if(vers=="v2")return j_lep_mva_hnl_conv_v2;
@@ -247,16 +253,23 @@ public:
 
   }
   inline double HNL_MVA_CF(TString vers) const {
+
+    //    if(k_debug)cout << "HNL_MVA_CF "<< vers<< endl;
+
     if(j_LeptonFlavour==ELECTRON){
       if(vers=="v1")return j_lep_mva_hnl_cf_v1;
-      else if(vers=="v2")return j_lep_mva_hnl_cf_v2;
-      else if(vers=="v2p1")return j_lep_mva_hnl_cf_v2p1;
-      else if(vers=="v2p2")return j_lep_mva_hnl_cf_v2p2;
-      else if(vers=="EDv2")return j_lep_mva_hnl_ed_cf_v2;
-      else if(vers=="EDv2p1")return j_lep_mva_hnl_ed_cf_v2p1;
-      else if(vers=="EDv2p2")return j_lep_mva_hnl_ed_cf_v2p2;
+      if(this->fEta() < 1.5) {
+	if(vers=="v2")return j_lep_mva_hnl_cf_v2;
+	else if(vers=="v2p1")return j_lep_mva_hnl_cf_v2p1;
+	else if(vers=="v2p2")return j_lep_mva_hnl_cf_v2p2;
+      }
+      else{
+	if(vers=="v2")return j_lep_mva_hnl_ed_cf_v2;
+	else if(vers=="v2p1")return j_lep_mva_hnl_ed_cf_v2p1;
+	else if(vers=="v2p2")return j_lep_mva_hnl_ed_cf_v2p2;
+      }
     }
-    cout<<"[Lepton::HNL_MVA_CONV]"<< endl;
+    cout<<"[Lepton::HNL_MVA_CF] " << vers << endl;
     exit(ENODATA);
 
   }

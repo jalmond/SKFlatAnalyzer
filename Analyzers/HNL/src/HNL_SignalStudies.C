@@ -17,7 +17,8 @@ void HNL_SignalStudies::initializeAnalyzer(){
 
 
 void HNL_SignalStudies::executeEvent(){
-
+  cout << run << endl;
+  return;
   AddTimerStamp("start_ev");
   
   FillTimer("START_EV");
@@ -46,15 +47,15 @@ void HNL_SignalStudies::executeEvent(){
       PrintGen(All_Gens);
     }
   }
-  return;
-
+  
+  
   if(process.Contains("OS")) return;
 
   FillHist ("ObjectCount/SS_NoCut", 1, weight, 2, 0., 2.,"");
 
   FillTimer("SS_EV");
 
-  vector<HNL_LeptonCore::Channel> channels = {EE,MuMu};
+  vector<HNL_LeptonCore::Channel> channels = {EE};//,MuMu};
   
   for(auto dilep_channel : channels){
 
@@ -67,7 +68,9 @@ void HNL_SignalStudies::executeEvent(){
     if(dilep_channel == MuMu) PlotBDTVariablesMuon(param);
     if(dilep_channel == EE)   PlotBDTVariablesElectron(param);
     
-    
+    continue;
+
+
     FillTimer("START_RUN_"+channel);
     
     
@@ -304,7 +307,6 @@ void HNL_SignalStudies::RunLeptonChannel(HNL_LeptonCore::Channel channel_ID, std
   // UL ANALYSIS                                                                                                                
   
   Fill_RegionPlots(channel_ID, 0, param.Name,"SSInclusive" ,  VBFJetColl, FatjetColl,BJetColl, LepsT, LepsV, METv, nPV, _weight);
-
 
   // UL ANALYSIS
   

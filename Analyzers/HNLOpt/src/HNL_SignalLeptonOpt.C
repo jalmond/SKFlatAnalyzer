@@ -38,7 +38,7 @@ void HNL_SignalLeptonOpt::executeEvent(){
     if(!SameCharge(ElectronCollV)) return;
     if(MuonCollV.size() > 0) return;
    
-    std::vector<FatJet> FatjetColl                  = GetHNLAK8Jets("HNL",param_signal);
+    std::vector<FatJet> FatjetColl                  = GetHNLAK8Jets("HNL_PNL",param_signal);
     std::vector<Jet> AllJetColl                     = GetHNLJets("NoCut_Eta3",param_signal);
     std::vector<Jet> JetColl                        = GetHNLJets("Tight",param_signal);
     std::vector<Jet> JetCollLoose                   = GetHNLJets("Loose",param_signal);
@@ -48,78 +48,248 @@ void HNL_SignalLeptonOpt::executeEvent(){
 
     vector<TString> ElectronsIDs;
 
-    vector<TString> vTrig = {"LooseTrig_"};//"LooseTrig_"};//,"TightTrig_"};
+    vector<TString> vTrig = {"LTrig_"};//"LooseTrig_"};//,"TightTrig_"};
     vector<TString> vConv = {"ConvBConvEC_"};//,"ConvBConvEC_","ConvEC_"};
     vector<TString> vCC = {"CCBCCEC_","CCEC_"};//,"CCEC_",""};
 
-    vector<TString> vMVACFBB, vMVACFEC;
-    vector<TString> vMVAConvBB1,vMVAConvEC1;
-    vector<TString> vMVAConvBB2, vMVAConvEC2;
 
-    // 2017 
-    /// BB HNLOpt_UL_ElOpt_HNLUL_POGT_ConvBConvEC_CCEC_LooseTrig_CFMVABB0p2_CFMVAMethodEDv2p1_DXYv1  5.6896150203
-    //     HNLOpt_UL_ElOpt_HNLUL_POGT_ConvBConvEC_CCEC_LooseTrig_CFMVABB0p93_CFMVAMethodv2_DXYv1     5.68214929691
-    //     HNLOpt_UL_ElOpt_HNLUL_POGT_ConvBConvEC_CCEC_LooseTrig_CFMVABB0p76_CFMVAMethodEDv2_DXYv1   5.68022917878
+    if(HasFlag("ELID_CF_Scan")){
+      if(HasFlag("Bin4")){
 
-    //  EC  /HNLOpt_UL_ElOpt_HNLUL_POGT_ConvBConvEC_CCBB_LooseTrig_CFMVAEC0p91_CFMVAMethodEDv2_DXYv1/LimitBins/ElectronSR 5.47130259473
-    //      
-    if(HasFlag("ELID_NP_CF")){
+	vector<TString> vMVACFBB;
+	vector<TString> vMVACFEC;
 
+	for(int imva=0 ; imva < 21 ; imva++){
+          double mva_d=  0.65 + double(imva)*.01;
+          TString mvaTS= DoubleToString(mva_d);
+          vMVACFBB.push_back("BCFv2cc"+mvaTS+"_");
+          vMVACFEC.push_back("ECFv2cc"+mvaTS+"_");
+	}
+
+        for(auto id : vMVACFBB) {
+          for(auto id2 : vMVACFEC) {
+	    ElectronsIDs.push_back("HNLUL_LTrig_CFScan_DXYv1_"+id+id2);
+	  }
+	}	
+      }      
+    }
+
+    if(HasFlag("ELID_NP")){
+
+      if(HasFlag("Bin3")){
+
+        vector<TString> vMVAFakeBB;
+        vector<TString> vMVAFakeEC;
+
+	///EE/HNLOpt_UL_ElOpt_HNLUL_LTrig_NPScan_DXYv1_BNPv4Topccneg0p2_BNPEDv4LFcc0p2_ENPv4cc0p2/LimitBins/ElectronSR                5.90247373622
+
+
+	for(int imva=0 ; imva < 8 ; imva++){
+	  double mva_d=  -0.25 + double(imva)*.05;
+	  TString mvaTS= DoubleToString(mva_d);
+	  vMVAFakeBB.push_back("BNPv4Topcc"+mvaTS+"_");
+	  vMVAFakeBB.push_back("BNPEDv4Topcc"+mvaTS+"_");
+	}
+	
+
+	for(int imva=0 ; imva < 8 ; imva++){
+          double mva_d=  0.4 + double(imva)*0.05;
+	  TString mvaTS= DoubleToString(mva_d);
+
+	  vMVAFakeEC.push_back("ENPEDv4Topcc"+mvaTS+"_");
+	  
+        }
+	vector<TString> vMVAFakeLF = {"BNPEDv4LFccneg1_ENPEDv4LFccneg1_"};
+	for(int imva=0 ; imva < 12 ; imva++){
+	  double mva_d=  -0.2 + double(imva)*0.05;
+          TString mvaTS= DoubleToString(mva_d);
+	  vMVAFakeLF.push_back("BNPEDv4LFcc"+mvaTS+"_"+"ENPEDv4LFcc"+mvaTS+"_");
+	}
+
+
+	for(auto id : vMVAFakeBB) {
+	  for(auto id2 : vMVAFakeEC) {
+	    for(auto id3 : vMVAFakeLF) {
+	    ElectronsIDs.push_back("HNLUL_LTrig_NPScan_DXYv1_"+id+id2+id3);
+	    }
+	  }
+	}
+
+      }
+    
+      if(HasFlag("Bin2")){
+
+	vector<TString> vMVAFakeBB;
+	vector<TString> vMVAFakeEC;
+	vector<TString> TrainingFlav = {"v4","v4LF","v4HF","v4HFB","v4HFC""v4Top", "EDv4","EDv4LF","EDv4HF","EDv4Top","EDv4HFB","EDv4HFC"};
+
+	vector<TString> TrainingFlav1 = {"v4","v4HF","v4Top", "EDv4","EDv4HF","EDv4Top"};
+	vector<TString> TrainingFlav2 = {"EDv4LF"};
+
+        vector<TString> vMVAFake;
+
+        if(HasFlag("InclusiveEta")){
+	  
+	  
+	  for(int imva=0 ; imva < 5;  imva++){
+            double mva_d=  -1. + double(imva)*.2;
+            TString mvaTS= DoubleToString(mva_d);
+	    for(auto ft1 : TrainingFlav1){
+	      vMVAFakeBB.push_back("BNP"+ft1+"cc"+mvaTS+"_");
+	    }
+	  }
+	  for(int imva=0 ; imva < 10;  imva++){
+            double mva_d=  -0.1 + double(imva)*.1;
+            TString mvaTS= DoubleToString(mva_d);
+            for(auto ft1 : TrainingFlav1){
+              vMVAFakeBB.push_back("BNP"+ft1+"cc"+mvaTS+"_");
+            }
+          }
+
+	  for(int imva=0 ; imva < 5;  imva++){
+            double mva_d=  -1. + double(imva)*.2;
+            TString mvaTS= DoubleToString(mva_d);
+	    for(auto ft1 : TrainingFlav1){
+	      vMVAFakeEC.push_back("ENP"+ft1+"cc"+mvaTS+"_");
+	    }
+	  }
+
+          for(int imva=0 ; imva < 10;  imva++){
+            double mva_d=  -0.1 + double(imva)*.1;
+            TString mvaTS= DoubleToString(mva_d);
+            for(auto ft1 : TrainingFlav1){
+              vMVAFakeEC.push_back("ENP"+ft1+"cc"+mvaTS+"_");
+            }
+          }
+
+	  
+	  for(auto f1 : vMVAFakeBB){
+	    for(auto f2 : vMVAFakeEC){
+	      if(HasFlag("HasLF")){
+		if( f1.Contains("v4Top") && f2.Contains("v4Top"))  vMVAFake.push_back(f1+f2+"BNPEDv4LFcc0p2_ENPEDv4LFcc0p2");
+		if( f1.Contains("v4HF")  && f2.Contains("v4HF"))   vMVAFake.push_back(f1+f2+"BNPEDv4LFcc0p2_ENPEDv4LFcc0p2");
+		if( (!f1.Contains("Top") && !f1.Contains("HF"))  && (!f2.Contains("Top") || !f2.Contains("HF")))  vMVAFake.push_back(f1+f2+"BNPEDv4LFcc0p2_ENPEDv4LFcc0p2");
+	      }
+	      if(HasFlag("NoLF")){
+		if( f1.Contains("v4Top") && f2.Contains("v4Top"))  vMVAFake.push_back(f1+f2);
+		if( f1.Contains("v4HF")  && f2.Contains("v4HF"))   vMVAFake.push_back(f1+f2);
+		if( (!f1.Contains("Top") && !f1.Contains("HF"))  && (!f2.Contains("Top") || !f2.Contains("HF")))  vMVAFake.push_back(f1+f2);
+	      }
+            }
+          }
+          for(auto id : vMVAFake) ElectronsIDs.push_back("HNLUL_LTrig_NPScan_DXYv1_"+id);
+	}
+
+      
+        if(HasFlag("BB")){
+	  
+	  int nMVAFake=20;
+          //for(int imva=0 ; imva < nMVAFake ; imva++){
+          //  double mva_d=  -1. + double(imva)*.1;
+          //  TString mvaTS= DoubleToString(mva_d);
+	  //  for(auto ft : TrainingFlav){
+	  ///    vMVAFakeBB.push_back("BNP"+ft+"cc"+mvaTS+"_");
+	  //  }
+	  // }
+	  
+	  for(int imva=0 ; imva < 18;  imva++){
+	    double mva_d=  -1. + double(imva)*.1;
+	    TString mvaTS1= DoubleToString(mva_d);
+
+	    for(int imva2=0 ; imva2 < 11; imva2++){
+	      double mva2_d=  -1. + double(imva2)*.15;
+	      TString mvaTS2= DoubleToString(mva2_d);
+	      
+	      for(auto ft1 : TrainingFlav1){
+		for(auto ft2 : TrainingFlav2){
+		  vMVAFakeBB.push_back("BNP"+ft1+"cc"+mvaTS1+"_BNP"+ft2+"cc"+mvaTS2+"_");
+		}
+	      }
+	    }
+          }
+	  
+	  
+	  for(auto id : vMVAFakeBB) ElectronsIDs.push_back("HNLUL_LTrig_NPScan_DXYv1_"+id+"ENPv4cc0p2");
+	}
+
+	
+	if(HasFlag("EC")){
+
+          int nMVAFake=20;
+
+	  for(int imva=0 ; imva < 18; imva++){
+            double mva_d=  -1. + double(imva)*.1;
+            TString mvaTS1= DoubleToString(mva_d);
+
+            for(int imva2=0 ; imva2 < 11;  imva2++){
+              double mva2_d=  -1. + double(imva2)*.15;
+	      TString mvaTS2= DoubleToString(mva2_d);
+	      
+	      for(auto ft1 : TrainingFlav1){
+		for(auto ft2 : TrainingFlav2){
+		  vMVAFakeEC.push_back("ENP"+ft1+"cc"+mvaTS1+"_ENP"+ft2+"cc"+mvaTS2+"_");
+		}
+	      }
+	    }
+	  }	    
+
+	  
+          for(auto id :vMVAFakeEC) ElectronsIDs.push_back("HNLUL_LTrig_NPScan_DXYv1_"+id+"BNPv4cc0p2");
+        }
+      }
     }
     
     
     /// V1 El
-    if(HasFlag("ELID_CF")){
+    else if(HasFlag("ELID_CF")){
       
+      vector<TString> vMVACFBB, vMVACFEC;
       vMVACFBB.clear();
       vMVACFEC.clear();
-      
-      if(HasFlag("BB")){
 
-	int nMVACF=30;
-	for(int imva=0 ; imva < nMVACF ; imva++){
-	  double mva_d=  -1. + double(imva)*.05;
-	  TString mvaTS= DoubleToString(mva_d);
-	  vMVACFBB.push_back("CFMVABB"+mvaTS+"_");
-	  vMVACFEC.push_back("CFMVAEC"+mvaTS+"_");
+      if(HasFlag("Bin1")){
+	
+	if(HasFlag("BB")){
+	  
+	  int nMVACF=30;
+	  for(int imva=0 ; imva < nMVACF ; imva++){
+	    double mva_d=  -1. + double(imva)*.05;
+	    TString mvaTS= DoubleToString(mva_d);
+	    vMVACFBB.push_back("CFB"+mvaTS+"_");
+	    vMVACFEC.push_back("CFE"+mvaTS+"_");
+	  }
+	  for(int imva=1 ; imva < 45 ; imva++){
+	    double mva_d=  0.5 + double(imva)*.01;
+	    TString mvaTS= DoubleToString(mva_d);
+	    vMVACFBB.push_back("CFB"+mvaTS+"_");
+	    vMVACFEC.push_back("CFE"+mvaTS+"_");
+	  }
+	  
+	  
+	  for(auto i1 : vMVACFBB)   ElectronsIDs.push_back("HNLUL_POGT_ConvBConvEC_CCEC_LTrig_"+i1+"BCFVv2_DXYv1"); 
+	  for(auto i1 : vMVACFBB)   ElectronsIDs.push_back("HNLUL_POGT_ConvBConvEC_CCEC_LTrig_"+i1+"BCFV2p2_DXYv1"); 
+
 	}
-	for(int imva=1 ; imva < 45 ; imva++){
-	  double mva_d=  0.5 + double(imva)*.01;
-	  TString mvaTS= DoubleToString(mva_d);
-	  vMVACFBB.push_back("CFMVABB"+mvaTS+"_");
-	  vMVACFEC.push_back("CFMVAEC"+mvaTS+"_");
+	if(HasFlag("EC")){
+	  
+	  int nMVACF=30;
+	  for(int imva=0 ; imva < nMVACF ; imva++){
+	    double mva_d=  -1. + double(imva)*.05;
+	    TString mvaTS= DoubleToString(mva_d);
+	    vMVACFBB.push_back("BCFVv2"+mvaTS+"_");
+	    vMVACFEC.push_back("ECFVv2"+mvaTS+"_");
+	  }
+	  for(int imva=1 ; imva < 45 ; imva++){
+	    double mva_d=  0.5 + double(imva)*.01;
+	    TString mvaTS= DoubleToString(mva_d);
+	    vMVACFBB.push_back("BCFVv2"+mvaTS+"_");
+	    vMVACFEC.push_back("ECFVv2"+mvaTS+"_");
+	  }
+	  for(auto i1 : vMVACFEC)  ElectronsIDs.push_back("HNLUL_POGT_ConvBConvEC_CCBB_LTrig_"+i1+"ECFVv2_DXYv1");
+	  for(auto i1 : vMVACFEC)  ElectronsIDs.push_back("HNLUL_POGT_ConvBConvEC_CCBB_LTrig_"+i1+"ECFVv2p2_DXYv1");
 	}
-
-
-	for(auto i1 : vMVACFBB)   ElectronsIDs.push_back("HNLUL_POGT_ConvBConvEC_CCEC_LooseTrig_"+i1+"CFMVAMethodv2_DXYv1"); 
-	for(auto i1 : vMVACFBB)   ElectronsIDs.push_back("HNLUL_POGT_ConvBConvEC_CCEC_LooseTrig_"+i1+"CFMVAMethodv2p1_DXYv1"); 
-	for(auto i1 : vMVACFBB)   ElectronsIDs.push_back("HNLUL_POGT_ConvBConvEC_CCEC_LooseTrig_"+i1+"CFMVAMethodv2p2_DXYv1"); 
-	for(auto i1 : vMVACFBB)   ElectronsIDs.push_back("HNLUL_POGT_ConvBConvEC_CCEC_LooseTrig_"+i1+"CFMVAMethodEDv2_DXYv1");
-	for(auto i1 : vMVACFBB)   ElectronsIDs.push_back("HNLUL_POGT_ConvBConvEC_CCEC_LooseTrig_"+i1+"CFMVAMethodEDv2p1_DXYv1");
-	for(auto i1 : vMVACFBB)   ElectronsIDs.push_back("HNLUL_POGT_ConvBConvEC_CCEC_LooseTrig_"+i1+"CFMVAMethodEDv2p2_DXYv1");
       }
-      if(HasFlag("EC")){
 
-	int nMVACF=30;
-        for(int imva=0 ; imva < nMVACF ; imva++){
-          double mva_d=  -1. + double(imva)*.05;
-          TString mvaTS= DoubleToString(mva_d);
-          vMVACFBB.push_back("CFMVABB"+mvaTS+"_");
-          vMVACFEC.push_back("CFMVAEC"+mvaTS+"_");
-        }
-        for(int imva=1 ; imva < 45 ; imva++){
-          double mva_d=  0.5 + double(imva)*.01;
-          TString mvaTS= DoubleToString(mva_d);
-          vMVACFBB.push_back("CFMVABB"+mvaTS+"_");
-          vMVACFEC.push_back("CFMVAEC"+mvaTS+"_");
-        }
-	for(auto i1 : vMVACFEC)  ElectronsIDs.push_back("HNLUL_POGT_ConvBConvEC_CCBB_LooseTrig_"+i1+"CFMVAMethodv2_DXYv1");
-	for(auto i1 : vMVACFEC)  ElectronsIDs.push_back("HNLUL_POGT_ConvBConvEC_CCBB_LooseTrig_"+i1+"CFMVAMethodv2p1_DXYv1");
-	for(auto i1 : vMVACFEC)  ElectronsIDs.push_back("HNLUL_POGT_ConvBConvEC_CCBB_LooseTrig_"+i1+"CFMVAMethodv2p2_DXYv1");
-	for(auto i1 : vMVACFEC)  ElectronsIDs.push_back("HNLUL_POGT_ConvBConvEC_CCBB_LooseTrig_"+i1+"CFMVAMethodEDv2_DXYv1");
-	for(auto i1 : vMVACFEC)  ElectronsIDs.push_back("HNLUL_POGT_ConvBConvEC_CCBB_LooseTrig_"+i1+"CFMVAMethodEDv2p1_DXYv1");
-	for(auto i1 : vMVACFEC)  ElectronsIDs.push_back("HNLUL_POGT_ConvBConvEC_CCBB_LooseTrig_"+i1+"CFMVAMethodEDv2p2_DXYv1");
-      }
 
       if(HasFlag("FullEta")){
 	
@@ -127,57 +297,25 @@ void HNL_SignalLeptonOpt::executeEvent(){
         for(int imva=0 ; imva < nMVACF ; imva++){
           double mva_d=  0.2 + double(imva)*.05;
           TString mvaTS= DoubleToString(mva_d);
-          vMVACFBB.push_back("CFMVABB"+mvaTS+"_");
-          vMVACFEC.push_back("CFMVAEC"+mvaTS+"_");
+          vMVACFBB.push_back("BCFVv2"+mvaTS+"_");
+          vMVACFEC.push_back("ECFVv2"+mvaTS+"_");
         }
 	for(auto i1 : vMVACFBB) {
 	  for(auto i2 : vMVACFEC) {
-            ElectronsIDs.push_back("HNLUL_POGT_ConvBConvEC_LooseTrig_"+i1+i2+"CFMVAMethodv2_DXYv1");
-            ElectronsIDs.push_back("HNLUL_POGT_ConvBConvEC_LooseTrig_"+i1+i2+"CFMVAMethodv2p1_DXYv1");
-	    ElectronsIDs.push_back("HNLUL_POGT_ConvBConvEC_LooseTrig_"+i1+i2+"CFMVAMethodEDv2_DXYv1");
-	    ElectronsIDs.push_back("HNLUL_POGT_ConvBConvEC_LooseTrig_"+i1+i2+"CFMVAMethodEDv2p1_DXYv1");
+            ElectronsIDs.push_back("HNLUL_POGT_ConvBConvEC_LTrig_"+i1+i2+"CFVv2_DXYv1");
+            ElectronsIDs.push_back("HNLUL_POGT_ConvBConvEC_LTrig_"+i1+i2+"CFVv2p2_DXYv1");
 	  }
 	}
       }
     }
     
-    if(HasFlag("ELID_Conv")){
+    else if(HasFlag("ELID_Conv")){
       vector<TString> vMVAConvBB;
       vector<TString> vMVAConvEC;
 
-      int nMVACV=20;
-      for(int imva=0 ; imva < nMVACV ; imva++){
-	double mva_d=  -1. + double(imva)*.05;
-	TString mvaTS= DoubleToString(mva_d);
-	vMVAConvBB.push_back("CVMVABB"+mvaTS+"_"+"CVMVAEC"+mvaTS+"_");
-	//vMVAConvEC.push_back("CVMVAEC"+mvaTS+"_");
-	
-      }
-      
-      
-      for(auto i1 : vMVAConvBB){
-	///for(auto i2 : vMVAConvEC){
-	ElectronsIDs.push_back("HNLUL_HNL2016_"+i1);
-	ElectronsIDs.push_back("HNLUL_HNL2018_"+i1);
-	//}
-      }
     }
 
 
-    //HNLOpt_UL_ElOpt_HNLUL_ConvBConvEC_LooseTrig_NPMVABB1neg1_NPMVAEB1neg1_NPMVAEC1neg1_CFMVABB0p7_CFMVAEC0p85_NPMVABB20p5_NPMVAEB20p5_NPMVAEC20p5__DXYv1
-    
-    //    for(int i1 = 0; i1 <  vMVANPBB2.size(); i1++){
-    /*
-    for(auto i2 : vMVACFBB) {
-      for(auto i3 : vMVACFEC) {
-	ElectronsIDs.push_back("HNLUL_POGT_ConvBConvEC_LooseTrig_"+i2+i3+"DXYv1"); 
-	ElectronsIDs.push_back("HNLUL_MVAWP90_ISOB0p1_ISOEC0p1_ConvBConvEC_LooseTrig_"+i2+i3+"DXYv1"); 
-	ElectronsIDs.push_back("HNLUL_MVAWP80_ISOB0p1_ISOEC0p1_ConvBConvEC_LooseTrig_"+i2+i3+"DXYv1"); 
-	ElectronsIDs.push_back("HNLUL_MVAWP90_ISOB0p1_ISOEC0p1_ConvBConvEC_LooseTrig_DXYv1");
-	ElectronsIDs.push_back("HNLUL_MVAWP90_ISOB0p1_ISOEC0p1_ConvBConvEC_LooseTrig");
-	ElectronsIDs.push_back("HNLUL_MVAWP90_ISOB0p1_ISOEC0p1_LooseTrig");
-      }
-      }*/
 
     vector<TString> vIsoB  = {"ISOB0p05","ISOB0p06","ISOB0p07","ISOB0p08","ISOB0p09","ISOB0p1","ISOB0p11","ISOB0p12","ISOB0p15"};
     vector<TString> vIsoEC = {"ISOEC0p05","ISOEC0p06","ISOEC0p07","ISOEC0p08","ISOEC0p09","ISOEC0p1","ISOEC0p11","ISOEC0p12","ISOEC0p15"};
@@ -209,7 +347,7 @@ void HNL_SignalLeptonOpt::executeEvent(){
       }
     }
 
-    
+       
     for(auto iTrig : vTrig){
       for(auto iConv : vConv){
 	for(auto iCC : vCC){
@@ -222,35 +360,36 @@ void HNL_SignalLeptonOpt::executeEvent(){
 	}
       }
     }
-
-  
-    ElectronsIDs.push_back("HNTight_17028");
+    
     ElectronsIDs.push_back("HNTightV2");
     ElectronsIDs.push_back("HNL_ULID_2016");
     ElectronsIDs.push_back("HNL_ULID_2017");
     ElectronsIDs.push_back("HNL_ULID_2018");
-    ElectronsIDs.push_back("HNL_Peking");
-    ElectronsIDs.push_back("HNL_Peking_2016");
-
-    ElectronsIDs.push_back("passPOGTight");
-    ElectronsIDs.push_back("passPOGMedium");
-    ElectronsIDs.push_back("passMediumID");
-    ElectronsIDs.push_back("passTightID");
-    ElectronsIDs.push_back("passHEEPID");
-    ElectronsIDs.push_back("passMVAID_noIso_WP90Opt");
-    ElectronsIDs.push_back("passMVAID_noIso_WP80Opt");
-    ElectronsIDs.push_back("passMVAID_noIso_WP80");
-    ElectronsIDs.push_back("passMVAID_Iso_WP80");
-    ElectronsIDs.push_back("passMVAID_Iso_WP90");
-    ElectronsIDs.push_back("HNHEEPID");
-    ElectronsIDs.push_back("SUSYTight");
-    ElectronsIDs.push_back("HN2016MVA");
-    ElectronsIDs.push_back("HN2016MVA2");
-    ElectronsIDs.push_back("HN2016POGCC");
+  
+    if(HasFlag("Electron_POG")){
+      ElectronsIDs.clear();
+      ElectronsIDs.push_back("HNTight_17028");
+      ElectronsIDs.push_back("HNTightV2");
+      ElectronsIDs.push_back("HNL_Peking_"+GetYearString());
+      
+      ElectronsIDs.push_back("passPOGTight");
+      ElectronsIDs.push_back("passPOGMedium");
+      ElectronsIDs.push_back("passMediumID");
+      ElectronsIDs.push_back("passTightID");
+      ElectronsIDs.push_back("passHEEPID");
+      ElectronsIDs.push_back("passMVAID_noIso_WP90Opt");
+      ElectronsIDs.push_back("passMVAID_noIso_WP80Opt");
+      ElectronsIDs.push_back("passMVAID_noIso_WP80");
+      ElectronsIDs.push_back("passMVAID_Iso_WP80");
+      ElectronsIDs.push_back("passMVAID_Iso_WP90");
+      ElectronsIDs.push_back("HNHEEPID");
+      ElectronsIDs.push_back("SUSYTight");
+    }
 
     Event ev = GetEvent();
     ev.SetMVA("EE",100, EvaluateEventMVA("100", "300","850", EE,  LepsVeto,ev, GetvMET("PuppiT1xyCorr") ,param_signal));
-    //ev.SetMVA("EE",400, EvaluateEventMVA("400", "300","850", EE,  LepsVeto,ev, GetvMET("PuppiT1xyCorr",param_signal) ,param_signal));
+    ev.SetMVA("EE",400, EvaluateEventMVA("400", "300","850", EE,  LepsVeto,ev, GetvMET("PuppiT1xyCorr") ,param_signal));
+    //    ev.SetMVA("EE",500, EvaluateEventMVA("500", "300","850", EE,  LepsVeto,ev, GetvMET("PuppiT1xyCorr") ,param_signal));
 
 
     //cout << "ElectronsIDs size = " << ElectronsIDs.size() << endl;
@@ -422,30 +561,65 @@ void HNL_SignalLeptonOpt::executeEvent(){
 
           vector<TString> mvaHF;
 	  if(DataYear == 2016) mvaHF.push_back("MVAHFBB0p75_MVAHFEC0p72_");
-	  if(DataYear == 2017) mvaHF.push_back("MVAHFBB0p68_MVAHFEC0p63_");
+	  if(DataYear == 2017) mvaHF.push_back("MVAHFBB0p68_MVAHFEC0p64_");
 	  if(DataYear == 2018) mvaHF.push_back("MVAHFBB0p68_MVAHFEC0p64_");
-          vector<TString> vdxy = {"DXY0p005_","DXY0p01_","DXY0p02_","DXY0p05_","DXY0p1_"};
-          vector<TString> vdz  = {"DZ0p02_","DZ0p04_","DZ0p05_","DZ0p1_"}; 
-          vector<TString> vsip ;
-
-	  for(unsigned int ip=0 ; ip < 8 ; ip++){
-            double ip_d= 3. + double(ip)*1;
-            TString ipTS= DoubleToString(ip_d);
-            vsip.push_back("SIP"+ipTS+"_");
-          }
-
-          for(auto i1 : mvaHF){
-            for(auto i2 : vdxy){
-	      for(auto i3 : vdz){
-		for(auto i4 : vsip){
-		  MuonsIDs.push_back("HNLUL_"+i1+i2+i3+i4);
-		}
-	      }
+          //vector<TString> vdxy = {"DXY0p005_","DXY0p01_","DXY0p02_","DXY0p05_","DXY0p1_"};
+          //vector<TString> vdz  = {"DZ0p02_","DZ0p04_","DZ0p05_","DZ0p1_"}; 
+          vector<TString> vip ;
+	  if(HasFlag("SIP")){
+	    for(unsigned int ip=0 ; ip < 51 ; ip++){
+	      double ip_d= 3. + double(ip)*0.1;
+	      TString ipTS= DoubleToString(ip_d);
+	      vip.push_back("SIP"+ipTS+"_");
 	    }
+	  }
+	  if(HasFlag("DXY")){
+            for(unsigned int ip=0 ; ip < 11 ; ip++){
+              double ip_d= 0.005 + double(ip)*0.005;
+              TString ipTS= DoubleToString(ip_d);
+              vip.push_back("DXY"+ipTS+"_");
+            }
           }
+	  if(HasFlag("DZ")){
+            for(unsigned int ip=0 ; ip < 13 ; ip++){
+              double ip_d= 0.04 + double(ip)*0.005;
+              TString ipTS= DoubleToString(ip_d);
+              vip.push_back("DZ"+ipTS+"_");
+            }
+          }
+	  
+          for(auto i1 : mvaHF){
+	    for(auto i2 : vip){
+	      MuonsIDs.push_back("HNLUL_"+i1+i2);
+	    }
+	  }
 
         }// Bin3                                                                                                                                            
-      }
+      }// Eta
+      
+      if(HasFlag("LF_Bin1")){
+
+	vector<TString> mvaHF;
+	if(DataYear == 2016) mvaHF.push_back("MVAHFBB0p75_MVAHFEC0p72_");
+	if(DataYear == 2017) mvaHF.push_back("MVAHFBB0p68_MVAHFEC0p64_");
+	if(DataYear == 2018) mvaHF.push_back("MVAHFBB0p68_MVAHFEC0p64_");
+
+
+	vector<TString> mvaLF;
+
+	for(unsigned int imva=0 ; imva < 91 ; imva++){
+	  double mva_d= -1 + double(imva)*0.02;
+	  TString mvaTS= DoubleToString(mva_d);
+	  if(HasFlag("BB")) mvaLF.push_back("MVALFBB"+mvaTS+"_");
+	  if(HasFlag("EC")) mvaLF.push_back("MVALFEC"+mvaTS+"_");
+
+	}
+	for(auto i1 : mvaLF){
+	  for(auto i2 : mvaHF){
+	    MuonsIDs.push_back("HNLUL_"+i1+i2+"NPMMEDv4");
+	  }
+	}
+      }// Bin2   
     }
     
     
@@ -453,58 +627,25 @@ void HNL_SignalLeptonOpt::executeEvent(){
     vector<TString> vIsoB  = {"ISOB0p05","ISOB0p06","ISOB0p07", "ISOB0p08","ISOB0p09","ISOB0p1","ISOB0p125","ISOB0p15"};
     vector<TString> vIsoEC = {"ISOEC0p05","ISOEC0p06","ISOEC0p07","ISOEC0p08","ISOEC0p09","ISOEC0p1","ISOEC0p125","ISOEC0p15"};
 
-    if(HasFlag("Mu_Final")){
+    if(HasFlag("Muon_Iso")){
       MuonsIDs.clear();
 
-      MuonsIDs.push_back("HNLUL_HNL" + GetYearString());
-      MuonsIDs.push_back("HNLUL_HNL" + GetYearString()+"_"+"DXYv1");
-      MuonsIDs.push_back("HNLUL_HNL" + GetYearString()+"_POGBT_POGECT_"+"DXYv1");
-      MuonsIDs.push_back("HNLUL_HNL" + GetYearString()+"_POGBT_"+"DXYv1");
-      MuonsIDs.push_back("HNLUL_HNL" + GetYearString()+"_POGECT_"+"DXYv1");
-      MuonsIDs.push_back("HNLUL_HNL" + GetYearString()+"_POGBT_POGECT_");
-      MuonsIDs.push_back("HNLUL_HNL" + GetYearString()+"_POGBT_");
-      MuonsIDs.push_back("HNLUL_HNL" + GetYearString()+"_POGECT_");
-      MuonsIDs.push_back("HNLUL_HNL" + GetYearString()+"_"+"DXYv2");
-      MuonsIDs.push_back("HNLUL_HNL" + GetYearString()+"_"+"DXYv3");
-      MuonsIDs.push_back("HNLUL_HNL" + GetYearString()+"_"+"DXYv4");
-      MuonsIDs.push_back("HNLUL_HNL" + GetYearString()+"_"+"DXYv5");
-      MuonsIDs.push_back("HNLUL_HNL" + GetYearString()+"_"+"DXYv6");
-      MuonsIDs.push_back("HNLUL_HNL" + GetYearString()+"_"+"DXYv7");
-      MuonsIDs.push_back("HNLUL_HNL" + GetYearString()+"_"+"DXYv8");
-      MuonsIDs.push_back("HNLUL_HNL" + GetYearString()+"_"+"DXYv9");
-      
-      MuonsIDs.push_back("HNLUL_HNL" + GetYearString()+"_POGBT_POGECT_"+"DXYv2");
-      MuonsIDs.push_back("HNLUL_HNL" + GetYearString()+"_POGBT_POGECT_"+"DXYv3");
-      MuonsIDs.push_back("HNLUL_HNL" + GetYearString()+"_POGBT_POGECT_"+"DXYv4");
-      MuonsIDs.push_back("HNLUL_HNL" + GetYearString()+"_POGBT_POGECT_"+"DXYv5");
-      MuonsIDs.push_back("HNLUL_HNL" + GetYearString()+"_POGBT_POGECT_"+"DXYv6");
-      MuonsIDs.push_back("HNLUL_HNL" + GetYearString()+"_POGBT_POGECT_"+"DXYv7");
-      MuonsIDs.push_back("HNLUL_HNL" + GetYearString()+"_POGBT_POGECT_"+"DXYv8");
-      MuonsIDs.push_back("HNLUL_HNL" + GetYearString()+"_POGBT_POGECT_"+"DXYv9");
-      
       for(unsigned int ib = 0 ; ib < vIsoB.size(); ib++){
 	for(unsigned int ie = 0 ; ie < vIsoEC.size(); ie++){
 	  TString iISOB = vIsoB[ib];
 	  TString iISOEC = vIsoEC[ie];
 	  
-	  MuonsIDs.push_back("HNLUL_HNL" + GetYearString()+"_"+iISOB+"_"+iISOEC+"_DXYv1");
-	  MuonsIDs.push_back("HNLUL_HNL" + GetYearString()+"_"+iISOB+"_"+iISOEC+"_DXYv2");
-	  MuonsIDs.push_back("HNLUL_HNL" + GetYearString()+"_"+iISOB+"_"+iISOEC+"_DXYv3");
-	  MuonsIDs.push_back("HNLUL_HNL" + GetYearString()+"_"+iISOB+"_"+iISOEC+"_DXYv4");
-	  MuonsIDs.push_back("HNLUL_HNL" + GetYearString()+"_"+iISOB+"_"+iISOEC+"_DXYv5");
-	  
-	  
-	  MuonsIDs.push_back("HNLUL_HNL" + GetYearString()+"_POGBT_POGECT_"+iISOB+"_"+iISOEC);
-	  MuonsIDs.push_back("HNLUL_HNL" + GetYearString()+"_POGBT_POGECT_"+iISOB+"_"+iISOEC+"_DXYv1");
-	  MuonsIDs.push_back("HNLUL_HNL" + GetYearString()+"_POGBM_POGECM_"+iISOB+"_"+iISOEC+"_DXYv1");
-	  MuonsIDs.push_back("HNLUL_HNL" + GetYearString()+"_POGBT_POGECT_"+iISOB+"_"+iISOEC+"_DXYv2");
-	  MuonsIDs.push_back("HNLUL_HNL" + GetYearString()+"_POGBM_POGECM_"+iISOB+"_"+iISOEC+"_DXYv2");
-	  MuonsIDs.push_back("HNLUL_HNL" + GetYearString()+"_POGBT_POGECT_"+iISOB+"_"+iISOEC+"_DXYv3");
-	  MuonsIDs.push_back("HNLUL_HNL" + GetYearString()+"_POGBM_POGECM_"+iISOB+"_"+iISOEC+"_DXYv3");
-	  MuonsIDs.push_back("HNLUL_HNL" + GetYearString()+"_POGBT_POGECT_"+iISOB+"_"+iISOEC+"_DXYv4");
-	  MuonsIDs.push_back("HNLUL_HNL" + GetYearString()+"_POGBM_POGECM_"+iISOB+"_"+iISOEC+"_DXYv4");
-	  MuonsIDs.push_back("HNLUL_HNL" + GetYearString()+"_POGBT_POGECT_"+iISOB+"_"+iISOEC+"_DXYv5");
-	  MuonsIDs.push_back("HNLUL_HNL" + GetYearString()+"_POGBM_POGECM_"+iISOB+"_"+iISOEC+"_DXYv5");
+	  MuonsIDs.push_back("HNLUL_POGBT_POGECT_"+iISOB+"_"+iISOEC);
+	  MuonsIDs.push_back("HNLUL_POGBT_POGECT_"+iISOB+"_"+iISOEC+"_DXYv1");
+	  MuonsIDs.push_back("HNLUL_POGBM_POGECM_"+iISOB+"_"+iISOEC+"_DXYv1");
+	  MuonsIDs.push_back("HNLUL_POGBT_POGECT_"+iISOB+"_"+iISOEC+"_DXYv2");
+	  MuonsIDs.push_back("HNLUL_POGBM_POGECM_"+iISOB+"_"+iISOEC+"_DXYv2");
+	  MuonsIDs.push_back("HNLUL_POGBT_POGECT_"+iISOB+"_"+iISOEC+"_DXYv3");
+	  MuonsIDs.push_back("HNLUL_POGBM_POGECM_"+iISOB+"_"+iISOEC+"_DXYv3");
+	  MuonsIDs.push_back("HNLUL_POGBT_POGECT_"+iISOB+"_"+iISOEC+"_DXYv4");
+	  MuonsIDs.push_back("HNLUL_POGBM_POGECM_"+iISOB+"_"+iISOEC+"_DXYv4");
+	  MuonsIDs.push_back("HNLUL_POGBT_POGECT_"+iISOB+"_"+iISOEC+"_DXYv5");
+	  MuonsIDs.push_back("HNLUL_POGBM_POGECM_"+iISOB+"_"+iISOEC+"_DXYv5");
 	}
       }
       
@@ -561,7 +702,10 @@ void HNL_SignalLeptonOpt::executeEvent(){
       MuonsIDs.push_back("HNTight_Iso10_dxy_05_ip_4");
       MuonsIDs.push_back("HNTight_Iso10_dxy_05_ip_999");
       
-      
+    }  
+    if(HasFlag("Muon_POG")){
+      MuonsIDs.clear();
+
       MuonsIDs.push_back("HNTightPFIsoLoose");
       MuonsIDs.push_back("HNTightPFIsoMedium");
       MuonsIDs.push_back("HNTightPFIsoTight");
@@ -572,18 +716,17 @@ void HNL_SignalLeptonOpt::executeEvent(){
       MuonsIDs.push_back("POGTightPFIsoTight");
       MuonsIDs.push_back("POGTightPFIsoVeryTight");
       MuonsIDs.push_back("POGTightPFIsoVeryVeryTight");
+      MuonsIDs.push_back("HNL_ULID_2016");
+      MuonsIDs.push_back("HNL_ULID_2017");
+      MuonsIDs.push_back("HNL_ULID_2018");
+      MuonsIDs.push_back("HNL_ULIDv2");
+      MuonsIDs.push_back("HNL_ULIDv3");
+      MuonsIDs.push_back("HNL_ULIDv4");
+      MuonsIDs.push_back("HNTight_17028");
+      MuonsIDs.push_back("HNL_Peking");
+      MuonsIDs.push_back("HNL_HN3L");
     }
-    
-    MuonsIDs.push_back("HNL_ULID_2016");
-    MuonsIDs.push_back("HNL_ULID_2017");
-    MuonsIDs.push_back("HNL_ULID_2018");
-    MuonsIDs.push_back("HNL_ULIDv2");
-    MuonsIDs.push_back("HNL_ULIDv3");
-    MuonsIDs.push_back("HNL_ULIDv4");
-    MuonsIDs.push_back("HNTight_17028");
     MuonsIDs.push_back("HNTightV2");
-    MuonsIDs.push_back("HNL_Peking");
-    MuonsIDs.push_back("HNL_HN3L");
     
     bool SROpt=false;
     if(HasFlag("Mu_SelectionOptSR1")){
@@ -622,7 +765,7 @@ void HNL_SignalLeptonOpt::executeEvent(){
 
     ev.SetMVA("MuMu",100, EvaluateEventMVA("100", "300","850", MuMu,  LepsVeto,ev, GetvMET("PuppiT1xyCorr"),param_signal));
     ev.SetMVA("MuMu",400, EvaluateEventMVA("400", "300","850", MuMu,  LepsVeto,ev, GetvMET("PuppiT1xyCorr"),param_signal));
-    ev.SetMVA("MuMu",500, EvaluateEventMVA("500", "300","850", MuMu,  LepsVeto,ev, GetvMET("PuppiT1xyCorr"),param_signal));
+    //    ev.SetMVA("MuMu",500, EvaluateEventMVA("500", "300","850", MuMu,  LepsVeto,ev, GetvMET("PuppiT1xyCorr"),param_signal));
     
     //cout << "Number of MuonsIDs = " << MuonsIDs.size() << endl;
     

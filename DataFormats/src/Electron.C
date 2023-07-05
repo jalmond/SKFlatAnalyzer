@@ -52,7 +52,6 @@ Electron::Electron(){
   j_isGsfCtfChargeConsistent = false;
   this->SetLeptonFlavour(ELECTRON);
 
-
 }
 
 void Electron::PrintObject(TString label){
@@ -323,15 +322,19 @@ bool Electron::Pass_LepMVATopID() const {
 
 
 bool Electron::Pass_CB_Opt(TString ID) const {
-    
-  //  if (ID.Contains("HNL2016") && !PassID("HNL_ULID_2016")) return false;
-  //if (ID.Contains("HNL2017") && !PassID("HNL_ULID_2017")) return false;
-  //if (ID.Contains("HNL2018") && !PassID("HNL_ULID_2018")) return false;
-
-
+  
+  bool DEBUG=false;
   /// OPTIMISATION CODES
   
-  //cout << ID  << "  " << this->Pt() << " eta = " << this->Eta() << endl;                                                                                                                                                                                                  
+  if(DEBUG)cout << ID  << "  " << this->Pt() << " eta = " << this->Eta() << endl;                                                                                                                                          
+  if(DEBUG){
+    if (ID.Contains("NPScan") && !PassID("HNL_ULID_NPOpt")) cout << "Fail NPScan cut " << endl;
+  }
+
+  if (ID.Contains("NPScan") && !PassID("HNL_ULID_NPOpt")) return false;
+  if (ID.Contains("CFScan") && !PassID("HNL_ULID_CFOpt")) return false;
+
+
   TString ID_sub = ID;
   ID_sub = ID_sub.ReplaceAll("_"," ");
   string sID_sub = string(ID_sub);
@@ -354,66 +357,58 @@ bool Electron::Pass_CB_Opt(TString ID) const {
   
   TString pog_method="";
 
-  TString mva_methodBB="";
-  TString mva_methodEB="";
-  TString mva_methodEC="";
 
+  map<TString, TString> MVAVersions;
+  map<TString, TString> MVACuts;
 
-  TString conv_mva_methodBB="";
-  TString conv_mva_methodEC="";
+  map<TString, TString> MVAMap;
+  MVAMap["np_mva_v4"]     = "NPv4";
+  MVAMap["np_mva_HF_v4"]  = "NPv4HF";
+  MVAMap["np_mva_HFB_v4"] = "NPv4HFB";
+  MVAMap["np_mva_HFC_v4"] = "NPv4HFC";
+  MVAMap["np_mva_LF_v4"]  = "NPv4LF";
+  MVAMap["np_mva_Top_v4"] = "NPv4Top";
+  MVAMap["np_mva_EDv4"]     = "NPEDv4";
+  MVAMap["np_mva_HF_EDv4"]  = "NPEDv4HF";
+  MVAMap["np_mva_HFB_EDv4"] = "NPEDv4HFB";
+  MVAMap["np_mva_HFC_EDv4"] = "NPEDv4HFC";
+  MVAMap["np_mva_LF_EDv4"]  = "NPEDv4LF";
+  MVAMap["np_mva_Top_EDv4"] = "NPEDv4Top";
+  MVAMap["conv_mva_v2"]   = "CVv2";
+  MVAMap["conv_mva_EDv2"]   = "CVEDv2";
+  MVAMap["cf_mva_v2p2"]   = "CFv2p2";
+  MVAMap["cf_mva_v2"]     = "CFv2";
 
-  TString cf_mva_methodBB="";
-  TString cf_mva_methodEC="";
-
-  TString CFMVAString="";
-  TString NPMVAString="";
-  //HNLUL_POGT_ConvBConvEC_LooseTrig_CFMVABB10p85_CFMVABB20p85_CFMVAPt30_CFMVAEC10p85_CFMVAEC20p85__DXYv1
+  map<TString, double>  BarrelMVAVersions;
+  map<TString, double>  EndcapMVAVersions;
 
   for(unsigned int i=0; i < subStrings.size(); i++){
-    if (subStrings[i].Contains("LooseTrig")) trig ="Loose";
-    if (subStrings[i].Contains("TightTrig")) trig ="Tight";
+    if (subStrings[i].Contains("LTrig")) trig ="Loose";
+    if (subStrings[i].Contains("TTrig")) trig ="Tight";
     if (subStrings[i].Contains("ConvB")) conv_method +="B";
     if (subStrings[i].Contains("ConvEC")) conv_method +="EC";
     if (subStrings[i].Contains("CCB")) chg_method +="B";
     if (subStrings[i].Contains("CCEC")) chg_method +="EC";
-  
     if (subStrings[i].Contains("DXY")) dxy_method=subStrings[i];
+    
+    for(auto im : MVAMap) {
+      
+      //cout << im.second << " " << subStrings[i] << endl;
+      if (subStrings[i].Contains(("B"+im.second+"cc"))){
+	TString OrigSubString = subStrings[i];
+	if(DEBUG) cout << "BarrelMVAVersions " << im.second << " " << StringToDouble(OrigSubString,("B"+im.second+"cc")) << endl;
+	BarrelMVAVersions[im.second]  =  StringToDouble(OrigSubString,("B"+im.second+"cc"));
+      }
+      if (subStrings[i].Contains(("E"+im.second+"cc"))){
+	TString OrigSubString = subStrings[i];
+	if(DEBUG) cout << "EndcapMVAVersions " << im.second << " " <<StringToDouble(OrigSubString,("E"+im.second+"cc")) << endl;
 
-    if (subStrings[i].Contains("CFMVAMethod")){
-      CFMVAString =subStrings[i];
-      CFMVAString = CFMVAString.ReplaceAll("CFMVAMethod","");
-    }
-
-    if (subStrings[i].Contains("NPMVAMethod")){
-      NPMVAString =subStrings[i];
-      NPMVAString = NPMVAString.ReplaceAll("NPMVAMethod","");
-    }
-
-
-    if (subStrings[i].Contains("NPMVABB")){
-      if (subStrings[i].Contains("NPMVABB")) mva_methodBB=subStrings[i];
+	EndcapMVAVersions[im.second]  =  StringToDouble(OrigSubString,("E"+im.second+"cc"));
+      }
     }
     
-    if (subStrings[i].Contains("NPMVAEC")){
-      if (subStrings[i].Contains("NPMVAEC")) mva_methodEC=subStrings[i];
-    }
 
 
-    if (subStrings[i].Contains("CVMVABB")){
-      if (subStrings[i].Contains("CVMVABB")) conv_mva_methodBB=subStrings[i];
-    }
-    if (subStrings[i].Contains("CVMVAEC")){
-      if (subStrings[i].Contains("CVMVAEC")) conv_mva_methodEC=subStrings[i];
-    }
-     
-    if (subStrings[i].Contains("CFMVABB")){
-      if (subStrings[i].Contains("CFMVABB")) cf_mva_methodBB=subStrings[i];
-    }
-    
-    if (subStrings[i].Contains("CFMVAEC")){
-      if (subStrings[i].Contains("CFMVAEC")) cf_mva_methodEC=subStrings[i];
-    }
-    
     if (subStrings[i].Contains("POG")) pog_method=subStrings[i];
     if (subStrings[i].Contains("WP")) pog_method=subStrings[i];
 
@@ -477,20 +472,16 @@ bool Electron::Pass_CB_Opt(TString ID) const {
   if(!Pass_LepMVAID()) return false;
   
   
-  return (PassIDOptMulti( CFMVAString, NPMVAString, mva_methodBB, mva_methodEC, conv_mva_methodBB,conv_mva_methodEC, cf_mva_methodBB,cf_mva_methodEC, pog_method, conv_method, chg_method, iso_methodB,iso_methodEC) == 1) ? true : false;
+  return (PassIDOptMulti( BarrelMVAVersions,EndcapMVAVersions, pog_method, conv_method, chg_method, iso_methodB,iso_methodEC) == 1) ? true : false;
   
 }
  
 
-int  Electron::PassIDOptMulti( TString CFMVAString, TString NPMVAString, TString np_mva_BB, TString np_mva_EC,TString conv_mva_BB, TString conv_mva_EC, TString cf_mva_BB, TString cf_mva_EC,  TString pog_method,  TString conv_method, TString chg_method, TString iso_methodB,TString iso_methodEC ) const{
+int  Electron::PassIDOptMulti( map<TString,double>  BarrelMVAMap, map<TString,double>  EndcapMVAMap , TString pog_method,  TString conv_method, TString chg_method, TString iso_methodB,TString iso_methodEC ) const{
 
   
   bool DEBUG=false;  
   
-  //cout << "PassIDOptMulti " << np_mva_BB1 << " " << conv_mva_BB1 << endl;
-  
-  //if(conv_mva_BB1.Contains("MVA") && !PassMVA_UL_Conv(conv_mva_Pt,conv_mva_BB1,conv_mva_BB2, conv_mva_EC1,conv_mva_EC2) ) return 0;
-  //if(cf_mva_BB.Contains("MVA") && !PassMVA_UL_CF(cf_mva_BB, cf_mva_EC) ) return 0;
 
   if(pog_method == "POGT" && ! (passTightID()) ) return 0;
   if(pog_method == "POGM" && ! (passMediumID()) ) return 0;
@@ -499,32 +490,37 @@ int  Electron::PassIDOptMulti( TString CFMVAString, TString NPMVAString, TString
   if(pog_method == "MVAWP90" && !passMVAID_noIso_WP90())  return 0;
   if(pog_method == "MVAWP80" &&!passMVAID_noIso_WP80())  return 0;
   
-  
-
-  //  map<TString, double>::const_iterator it = j_lep_map_mva_hnl_cf.find(CFMVAString);  it->second;
-  
-
   if( IsBB() ){
-    if(np_mva_BB.Contains("MVA")){
-      double tmp_j_lep_mva_hnl_fake = HNL_MVA_Fake(NPMVAString);
-      double   mva_cut = StringToDouble(np_mva_BB,"NPMVABB");
-      if(tmp_j_lep_mva_hnl_fake < mva_cut) return 0;
-    }      
-    
-    if(conv_mva_BB.Contains("MVA")){
-      if(conv_mva_BB.Contains("MVA")){
-        double   mva_cut = StringToDouble(conv_mva_BB,"CVMVABB");
-        if(HNL_MVA_Conv("v2") < mva_cut) return 0;
-      }
-    }
+  
+    for(auto imap :  BarrelMVAMap){
 
+      if(imap.first.Contains("CF")){
 
-    if(cf_mva_BB.Contains("MVA")){
-      if(cf_mva_BB.Contains("MVA")){
-	double tmp_j_lep_mva_hnl_cf   = HNL_MVA_CF(CFMVAString);
-	double mva_cut = StringToDouble(cf_mva_BB,"CFMVABB");
-	if(tmp_j_lep_mva_hnl_cf < mva_cut) return 0;
+	TString   mva_version = imap.first;
+	mva_version=mva_version.ReplaceAll("CF","");
+
+	if(DEBUG) cout << "Barrel " << imap.first <<  " " << HNL_MVA_CF(mva_version) <<"  " <<  imap.second << endl;
+	if(HNL_MVA_CF(mva_version) < imap.second) return 0;
       }
+      
+      else       if(imap.first.Contains("CV")){
+
+	TString   mva_version = imap.first;
+        mva_version=mva_version.ReplaceAll("CV","");
+
+	if(DEBUG) cout << "Barrel " << imap.first <<  " " << HNL_MVA_Conv(mva_version) <<"  " <<  imap.second << endl;
+	if(HNL_MVA_Conv(mva_version) < imap.second) return 0;
+      }
+      else       if(imap.first.Contains("NP")){
+	
+	TString   mva_version = imap.first;
+        mva_version=mva_version.ReplaceAll("NP","");
+
+	if(DEBUG) cout << "Barrel " << imap.first <<  " " << HNL_MVA_Fake(mva_version) <<"  " <<  imap.second << endl;	
+        if(HNL_MVA_Fake(mva_version) < imap.second) return 0;
+      }
+
+      
     }
     
 
@@ -561,23 +557,38 @@ int  Electron::PassIDOptMulti( TString CFMVAString, TString NPMVAString, TString
     if(pog_method.Contains("MVAECWP80") && !passMVAID_noIso_WP80())  return 0;
 
 
-    if(np_mva_EC.Contains("MVA")){
-      double tmp_j_lep_mva_hnl_fake = HNL_MVA_Fake(NPMVAString);
-      double   mva_cut = StringToDouble(np_mva_EC,"NPMVAEC");
-      if(tmp_j_lep_mva_hnl_fake < mva_cut) return 0;
+
+    for(auto imap :  EndcapMVAMap){
+
+      if(imap.first.Contains("CF")){
+
+	TString   mva_version = imap.first;
+        mva_version=mva_version.ReplaceAll("CF","");
+
+        if(DEBUG) cout << "Endcap " << imap.first <<  " " << HNL_MVA_CF(mva_version) <<"  " <<  imap.second << endl;
+	if(HNL_MVA_CF(mva_version) < imap.second) return 0;
+      }
+
+      else       if(imap.first.Contains("CV")){
+
+	TString   mva_version = imap.first;
+        mva_version=mva_version.ReplaceAll("CV","");
+
+        if(DEBUG) cout << "Endcap " << imap.first <<  " " << HNL_MVA_Conv(mva_version) <<"  " <<  imap.second << endl;
+	if(HNL_MVA_Conv(mva_version) < imap.second) return 0;
+      }
+      else       if(imap.first.Contains("NP")){
+
+	TString   mva_version = imap.first;
+        mva_version=mva_version.ReplaceAll("NP","");
+
+        if(DEBUG) cout << "Endcap " << imap.first <<  " " << HNL_MVA_Fake(mva_version) <<"  " <<  imap.second << endl;
+	if(HNL_MVA_Fake(mva_version) < imap.second) return 0;
+      }
+
+
     }
-    
-    if(conv_mva_EC.Contains("MVA")){
-      double   mva_cut = StringToDouble(conv_mva_EC,"CVMVAEC");
-      if(HNL_MVA_Conv("v2") < mva_cut) return 0;
-    }
-    
-    
-    if(cf_mva_EC.Contains("MVA")){
-      double tmp_j_lep_mva_hnl_cf   = HNL_MVA_CF(CFMVAString);
-      double mva_cut = StringToDouble(cf_mva_EC,"CFMVAEC");
-      if(tmp_j_lep_mva_hnl_cf < mva_cut) return 0;
-    }
+
     
 
     if(conv_method.Contains("EC")) {
@@ -645,9 +656,6 @@ int  Electron::PassIDTight(TString ID) const{
     if(IDTmp == "HNL_ULIDs_CF_BDTGv2"        && !PassULMVA(HNL_MVA_CF("v2"),_cut,"j_lep_mvav2_hnl_cf"))        return 0;
     if(IDTmp == "HNL_ULIDs_CF_BDTGv2p1"      && !PassULMVA(HNL_MVA_CF("v2p1"),_cut,"j_lep_mvav2p1_hnl_cf"))    return 0;
     if(IDTmp == "HNL_ULIDs_CF_BDTGv2p2"      && !PassULMVA(HNL_MVA_CF("v2p2"),_cut,"j_lep_mvav2p2_hnl_cf"))    return 0;
-    if(IDTmp == "HNL_ULIDs_CF_ED_BDTGv2"     && !PassULMVA(HNL_MVA_CF("EDv2"),_cut,"j_lep_mvav2_hnl_ed_cf"))  return 0;
-    if(IDTmp == "HNL_ULIDs_CF_ED_BDTGv2p1"   && !PassULMVA(HNL_MVA_CF("EDv2p1"),_cut,"j_lep_mvav2p1_hnl_ed_cf"))  return 0;
-    if(IDTmp == "HNL_ULIDs_CF_ED_BDTGv2p2"   && !PassULMVA(HNL_MVA_CF("EDv2p2"),_cut,"j_lep_mvav2p2_hnl_ed_cf"))  return 0;
 
     return 1;
   }
@@ -729,6 +737,39 @@ int  Electron::PassIDTight(TString ID) const{
     return 1;
   }
 
+
+  if(ID == "HNL_ULID_NPOpt"){
+
+    if(!PassMVABaseLine()) return 0;
+
+    if( IsBB()){
+      if(!PassULMVA(HNL_MVA_CF("v2"),   0.7,  "j_lep_mva_hnl_cf_v2"))   return false;
+    }else {
+      if(!PassULMVA(HNL_MVA_CF("v2"),   0.8,  "j_lep_mva_hnl_cf_v2"))   return false;
+    }
+    if(!PassULMVA(HNL_MVA_Conv("EDv2"), -0.7,"j_lep_mva_hnl_conv_ed_v2")) return false;
+    
+    return 1;
+
+  }
+
+  if(ID == "HNL_ULID_CFOpt"){
+
+    if(!PassMVABaseLine()) return 0;
+
+    if( IsBB()){
+      if(!PassULMVA(HNL_MVA_Fake("EDv4Top"),   -0.2,  "j_lep_mva_hnl_fake_topv4"))   return false;
+      if(!PassULMVA(HNL_MVA_Fake("EDv4LF"),   0.2,  "j_lep_mva_hnl_fake_lf4"))   return false;
+    }else {
+      if(!PassULMVA(HNL_MVA_Fake("EDv4Top"),   0.7,  "j_lep_mva_hnl_fake_topv4"))   return false;
+      if(!PassULMVA(HNL_MVA_Fake("EDv4LF"),    0.2,  "j_lep_mva_hnl_fake_lf4"))   return false;
+
+    }
+    if(!PassULMVA(HNL_MVA_Conv("EDv2"), -0.7,"j_lep_mva_hnl_conv_ed_v2")) return false;
+
+    return 1;
+
+  }
 
 
   if(ID.Contains("HNL_ULID_FO_201")){
@@ -928,7 +969,7 @@ bool Electron::PassMVABaseLine() const{
 
 bool Electron::PassHNLMVA(double fake_cut,double cf_cut, double conv_cut) const{
   
-  if(!PassULMVA(HNL_MVA_CF("EDv2"),  cf_cut,  "j_lep_mva_hnl_cf_v2"))   return false;
+  if(!PassULMVA(HNL_MVA_CF("v2"),  cf_cut,  "j_lep_mva_hnl_cf_v2"))   return false;
   if(!PassULMVA(HNL_MVA_Fake("EDv4"),fake_cut,"j_lep_mva_hnl_fake_v2")) return false;
   if(!PassULMVA(HNL_MVA_Conv("EDv2"),conv_cut,"j_lep_mva_hnl_conv_ed_v2")) return false;
   return true;

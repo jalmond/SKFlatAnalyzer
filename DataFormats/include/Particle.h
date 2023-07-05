@@ -97,13 +97,17 @@ public:
 
   }
 
+  bool k_debug;
 
 
   //==== Print four vector
   virtual void Print();
 
+  
+
 private:
   double j_Charge;
+
 
   ClassDef(Particle,1)
 
