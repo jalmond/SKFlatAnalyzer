@@ -305,14 +305,7 @@ bool Muon::PassID(TString ID) const {
   if(ID=="HNL_ULID_2016"){
 
     if(!PassID("MVALoose")) return false;
-
-    if( fabs(this->Eta()) <= 1.479 ){
-      if(MVA() < 0.75)  return false;
-    }
-    else{
-      if(MVA() < 0.72)  return false;
-    }
-
+    if(MVA() < 0.72)  return false;
     if(fabs(dXY()) >  0.05)   return false;
     if(fabs(dZ()) >  0.1)   return false;
     if(fabs(IP3D()/IP3Derr()) > 7) return false;
@@ -325,15 +318,7 @@ bool Muon::PassID(TString ID) const {
   if(ID=="HNL_ULID_2017")  {
 
     if(!PassID("MVALoose")) return false;
-
-    if( fabs(this->Eta()) <= 1.479 ){
-      if(MVA() < 0.68)  return false;
-    }
-    else{
-      if(MVA() < 0.64)  return false;
-    }
-
-
+    if(MVA() < 0.64)  return false;
     if(fabs(dXY()) >  0.05)   return false;
     if(fabs(dZ()) >  0.1)   return false;
     if(fabs(IP3D()/IP3Derr()) > 7) return false;
@@ -345,14 +330,7 @@ bool Muon::PassID(TString ID) const {
   if(ID=="HNL_ULID_2018")  {
 
     if(!PassID("MVALoose")) return false;
-
-    if( fabs(this->Eta()) <= 1.479 ){
-      if(MVA() < 0.68)  return false;
-    }
-    else{
-      if(MVA() < 0.64)  return false;
-    }
-
+    if(MVA() < 0.64)  return false;
     if(fabs(dXY()) >  0.05)   return false;
     if(fabs(dZ()) >  0.1)   return false;
     if(fabs(IP3D()/IP3Derr()) > 7) return false;

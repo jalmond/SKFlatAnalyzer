@@ -80,6 +80,14 @@ void test(TString era, bool isdata, TString sample, TString skim, TString flag){
   }
   else if(era=="2017" && !isdata && sample=="TTLJ" && skim=="HNFakeBDT"){
     if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_HNFakeBDT/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/2023_05_18_102358/SKFlatNtuple_2017_MC_0.root")) exit(EIO);
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_HNFakeBDT/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/2023_05_18_102358/SKFlatNtuple_2017_MC_1.root")) exit(EIO);
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_HNFakeBDT/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/2023_05_18_102358/SKFlatNtuple_2017_MC_2.root")) exit(EIO);
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_HNFakeBDT/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/2023_05_18_102358/SKFlatNtuple_2017_MC_3.root")) exit(EIO);
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_HNFakeBDT/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/2023_05_18_102358/SKFlatNtuple_2017_MC_4.root")) exit(EIO);
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_HNFakeBDT/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/2023_05_18_102358/SKFlatNtuple_2017_MC_5.root")) exit(EIO);
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_HNFakeBDT/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/2023_05_18_102358/SKFlatNtuple_2017_MC_6.root")) exit(EIO);
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_HNFakeBDT/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/2023_05_18_102358/SKFlatNtuple_2017_MC_7.root")) exit(EIO);
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_HNFakeBDT/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/2023_05_18_102358/SKFlatNtuple_2017_MC_8.root")) exit(EIO);
   }
   else if(era=="2017" && !isdata && sample=="TTLJ" && skim=="FakeEventSkimBDT"){
     if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_FakeEventSkimBDT/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/2023_05_19_153135/SKFlatNtuple_2017_MC_0.root")) exit(EIO);
@@ -120,8 +128,8 @@ void test(TString era, bool isdata, TString sample, TString skim, TString flag){
     //if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC/SSWWTypeI_NLO_SF_M1000/220712_180106/0000/SKFlatNtuple_2017_MC_1.root")) exit(EIO);
     if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_HNMultiLepBDT/SSWWTypeI_NLO_SF_M1000/2023_03_28_191053/SKFlatNtuple_2017_MC_0.root")) exit(EIO);
   }
-  m.SetOutfilePath("hists_"+sample+".root");
   if(flag.Length()>0) m.SetOutfilePath("hists_"+sample+"_"+flag+".root");
+	else m.SetOutfilePath("hists_"+sample+".root");
   m.Init();
   m.initializeAnalyzer();
   m.initializeAnalyzerTools();

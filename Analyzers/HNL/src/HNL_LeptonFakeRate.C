@@ -123,8 +123,7 @@ void HNL_LeptonFakeRate::executeEvent(){
     //     param.WriteOutVerbose = 2;  Run Main ID and make  only FR 
     //     param.WriteOutVerbose = 3;  Run Main ID and make  only FR + PR
     //     param.WriteOutVerbose = 0;  makes NVertx plots
-    //param.WriteOutVerbose= 2; // 0 means only make FR  1 means FR+PR  2 means SR+PR + CR plots  3 means makes NVertx plots
-    param.WriteOutVerbose= 4; // MC fake rate
+    param.WriteOutVerbose= 2; // 0 means only make FR  1 means FR+PR  2 means SR+PR + CR plots  3 means makes NVertx plots
    
     
     if(param.WriteOutVerbose >=0){
@@ -157,45 +156,159 @@ void HNL_LeptonFakeRate::executeEventFromParameter(AnalyzerParameter param, TStr
   
   if(!PassMETFilter()) return;
 
-  for(auto mu:All_Muons){
-    FillHist(param.Name+"_AllMuon_MVA", mu.MVA() , weight, 200., -1, 1); //JH : to check all muon MVA
-    FillHist(param.Name+"_AllMuon_LeptonType", mu.LeptonGenType() , weight, 13, -6, 7); //JH : to check all muon type
-    //if(mu.Pt()>10.)           FillHist(param.Name+"_AllMuon_MVA_pt10", mu.MVA() , weight, 200., -1, 1); //JH : to check loose muon MVA
-    //if(mu.fEta()<2.4)         FillHist(param.Name+"_AllMuon_MVA_eta2p4", mu.MVA() , weight, 200., -1, 1); //JH : to check loose muon MVA
-    //if(mu.MiniRelIso()<0.4)   FillHist(param.Name+"_AllMuon_MVA_MiniIso0p4", mu.MVA() , weight, 200., -1, 1); //JH : to check loose muon MVA
-    //if(mu.SIP3D()<8.)         FillHist(param.Name+"_AllMuon_MVA_SIP3D8", mu.MVA() , weight, 200., -1, 1); //JH : to check loose muon MVA
-    //if(mu.fdXY()<0.05)        FillHist(param.Name+"_AllMuon_MVA_dxy0p05", mu.MVA() , weight, 200., -1, 1); //JH : to check loose muon MVA
-    //if(mu.fdZ()<0.1)          FillHist(param.Name+"_AllMuon_MVA_dz0p1", mu.MVA() , weight, 200., -1, 1); //JH : to check loose muon MVA
-    //if(mu.isPOGLoose())       FillHist(param.Name+"_AllMuon_MVA_POGL", mu.MVA() , weight, 200., -1, 1); //JH : to check loose muon MVA
-    //if(mu.isPOGMedium())      FillHist(param.Name+"_AllMuon_MVA_POGM", mu.MVA() , weight, 200., -1, 1); //JH : to check loose muon MVA
-    //if(mu.Pass_LepMVAID())    FillHist(param.Name+"_AllMuon_MVA_LepMVAID", mu.MVA() , weight, 200., -1, 1); //JH : to check loose muon MVA
-    //if(mu.PassID("MVALoose")) FillHist(param.Name+"_AllMuon_MVA_MVALoose", mu.MVA() , weight, 200., -1, 1); //JH : to check loose muon MVA
-  } //JH
-  
   std::vector<Electron> loose_electrons     = GetElectrons( param,param.Electron_Loose_ID, 9.5, 2.5,false) ;
   std::vector<Muon>     loose_muons         = GetMuons    ( param,param.Muon_Loose_ID, 5, 2.4, false);
-  FillHist(param.Name + "_AllMuon_NMu", All_Muons.size() , weight, 10., 0., 10);
-  FillHist(( param.Name + "_NlooseMu").Data(), loose_muons.size() , weight, 10., 0., 10);
-  for(auto mu:loose_muons){
-    FillHist(( param.Name + "_MVA").Data(), mu.MVA() , weight, 200., -1, 1);
-    FillHist(( param.Name + "_LeptonType").Data(), mu.LeptonGenType() , weight, 13, -6, 7);
-    FillHist(( param.Name + "_JetFlavor").Data(), mu.CloseJet_FlavourInt()  , weight, 6, 0, 6);
-    FillHist(( param.Name + "_LeptonType_JetFlavor").Data(), mu.LeptonGenType(), mu.CloseJet_FlavourInt(), weight, 13, -6, 7, 6, 0, 6);
-  }
-  if(param.Muon_Loose_ID.Contains("MVALoose")){
+
+  if(HasFlag("FakeRateTruth")){
+    for(auto mu:All_Muons){
+      FillHist(param.Name+"_AllMuon_MVA", mu.MVA() , weight, 200., -1, 1); //JH : to check all muon MVA
+      FillHist(param.Name+"_AllMuon_LeptonType", mu.LeptonGenType() , weight, 13, -6, 7); //JH : to check all muon type
+      //if(mu.Pt()>10.)           FillHist(param.Name+"_AllMuon_MVA_pt10", mu.MVA() , weight, 200., -1, 1); //JH : to check loose muon MVA
+      //if(mu.fEta()<2.4)         FillHist(param.Name+"_AllMuon_MVA_eta2p4", mu.MVA() , weight, 200., -1, 1); //JH : to check loose muon MVA
+      //if(mu.MiniRelIso()<0.4)   FillHist(param.Name+"_AllMuon_MVA_MiniIso0p4", mu.MVA() , weight, 200., -1, 1); //JH : to check loose muon MVA
+      //if(mu.SIP3D()<8.)         FillHist(param.Name+"_AllMuon_MVA_SIP3D8", mu.MVA() , weight, 200., -1, 1); //JH : to check loose muon MVA
+      //if(mu.fdXY()<0.05)        FillHist(param.Name+"_AllMuon_MVA_dxy0p05", mu.MVA() , weight, 200., -1, 1); //JH : to check loose muon MVA
+      //if(mu.fdZ()<0.1)          FillHist(param.Name+"_AllMuon_MVA_dz0p1", mu.MVA() , weight, 200., -1, 1); //JH : to check loose muon MVA
+      //if(mu.isPOGLoose())       FillHist(param.Name+"_AllMuon_MVA_POGL", mu.MVA() , weight, 200., -1, 1); //JH : to check loose muon MVA
+      //if(mu.isPOGMedium())      FillHist(param.Name+"_AllMuon_MVA_POGM", mu.MVA() , weight, 200., -1, 1); //JH : to check loose muon MVA
+      //if(mu.Pass_LepMVAID())    FillHist(param.Name+"_AllMuon_MVA_LepMVAID", mu.MVA() , weight, 200., -1, 1); //JH : to check loose muon MVA
+      //if(mu.PassID("MVALoose")) FillHist(param.Name+"_AllMuon_MVA_MVALoose", mu.MVA() , weight, 200., -1, 1); //JH : to check loose muon MVA
+    } //JH
+    
+    FillHist(param.Name + "_AllMuon_NMu", All_Muons.size() , weight, 10., 0., 10);
+    FillHist((param.Name + "_NlooseMu").Data(), loose_muons.size() , weight, 10., 0., 10);
     for(auto mu:loose_muons){
-      FillHist(( param.Name + "_Ptratio").Data(), mu.CloseJet_Ptratio() , weight, 20., 0, 2);
-      FillHist(( param.Name + "_BScore").Data(), mu.CloseJet_BScore() , weight, 100., 0, 1);
-      FillHist(( param.Name + "_BScore_Ptratio").Data(), mu.CloseJet_BScore(), mu.CloseJet_Ptratio(), weight, 100., 0, 1, 20., 0, 2);
-      if(mu.MVA()<0.64){
-        FillHist(( param.Name + "_Ptratio_MVAlt0p64").Data(), mu.CloseJet_Ptratio() , weight, 20., 0, 2);
-        FillHist(( param.Name + "_BScore_MVAlt0p64").Data(), mu.CloseJet_BScore() , weight, 100., 0, 1);
-        FillHist(( param.Name + "_BScore_Ptratio_MVAlt0p64").Data(), mu.CloseJet_BScore(), mu.CloseJet_Ptratio(), weight, 100., 0, 1, 20., 0, 2);
+      double PtParton = mu.PtParton(1,0.64,0.64);
+      double CloseJetPt = mu.Pt()/mu.CloseJet_Ptratio();
+      FillHist((param.Name + "_MVA").Data(), mu.MVA() , weight, 200., -1, 1);
+      FillHist((param.Name + "_LeptonType").Data(), mu.LeptonGenType() , weight, 13, -6, 7);
+      FillHist((param.Name + "_JetFlavor").Data(), mu.CloseJet_FlavourInt()  , weight, 6, 0, 6);
+      FillHist((param.Name + "_LeptonType_JetFlavor").Data(), mu.LeptonGenType(), mu.CloseJet_FlavourInt(), weight, 13, -6, 7, 6, 0, 6);
+      if(mu.LepGenTypeString()=="IsPrompt"){
+        FillProf((param.Name + "_prompt_MVA_PtParton").Data(), mu.MVA(), PtParton, 200, -1, 1);
+        FillProf((param.Name + "_prompt_MVA_CloseJetPt").Data(), mu.MVA(), CloseJetPt, 200, -1, 1);
+        FillProf((param.Name + "_prompt_MVA_Ptratio").Data(), mu.MVA(), mu.CloseJet_Ptratio(), 200, -1, 1);
+        FillProf((param.Name + "_prompt_MVA_BScore").Data(), mu.MVA(), mu.CloseJet_BScore(), 200, -1, 1);
+        FillProf((param.Name + "_prompt_Ptratio_CloseJetPt").Data(), mu.CloseJet_Ptratio(), CloseJetPt, 30, 0, 1.5);
+        FillProf((param.Name + "_prompt_BScore_CloseJetPt").Data(), mu.CloseJet_BScore(), CloseJetPt, 200, 0, 1);
+        FillProf((param.Name + "_prompt_BScore_Ptratio_CloseJetPt").Data(), mu.CloseJet_BScore(), mu.CloseJet_Ptratio(), CloseJetPt, 200, 0, 1, 30, 0, 1.5);
+        FillHist((param.Name + "_prompt_Ptratio").Data(), mu.CloseJet_Ptratio(), weight, 30, 0, 1.5);
+        FillHist((param.Name + "_prompt_BScore_Ptratio").Data(), mu.CloseJet_BScore(), mu.CloseJet_Ptratio(), weight, 200, 0, 1, 30, 0, 1.5);
+        FillHist((param.Name + "_prompt_BScore_PtParton").Data(), mu.CloseJet_BScore(), PtParton, weight, 200, 0, 1, 100., 0, 1000);
+      }
+      if(mu.LepGenTypeString()=="IsFake"){
+        FillProf((param.Name + "_fake_MVA_PtParton").Data(), mu.MVA(), PtParton, 200, -1, 1);
+        FillProf((param.Name + "_fake_MVA_CloseJetPt").Data(), mu.MVA(), CloseJetPt, 200, -1, 1);
+        FillProf((param.Name + "_fake_MVA_Ptratio").Data(), mu.MVA(), mu.CloseJet_Ptratio(), 200, -1, 1);
+        FillProf((param.Name + "_fake_MVA_BScore").Data(), mu.MVA(), mu.CloseJet_BScore(), 200, -1, 1);
+        FillProf((param.Name + "_fake_Ptratio_CloseJetPt").Data(), mu.CloseJet_Ptratio(), CloseJetPt, 30, 0, 1.5);
+        FillProf((param.Name + "_fake_BScore_CloseJetPt").Data(), mu.CloseJet_BScore(), CloseJetPt, 200, 0, 1);
+        FillProf((param.Name + "_fake_BScore_Ptratio_CloseJetPt").Data(), mu.CloseJet_BScore(), mu.CloseJet_Ptratio(), CloseJetPt, 200, 0, 1, 30, 0, 1.5);
+        FillHist((param.Name + "_fake_Ptratio").Data(), mu.CloseJet_Ptratio(), weight, 30, 0, 1.5);
+        FillHist((param.Name + "_fake_BScore_Ptratio").Data(), mu.CloseJet_BScore(), mu.CloseJet_Ptratio(), weight, 200, 0, 1, 30, 0, 1.5);
+        FillHist((param.Name + "_fake_BScore_PtParton").Data(), mu.CloseJet_BScore(), PtParton, weight, 200, 0, 1, 100., 0, 1000);
+        if(mu.MVA()>0.64){
+          FillProf((param.Name + "_fake_Ptratio_CloseJetPt_MVAgt0p64").Data(), mu.CloseJet_Ptratio(), CloseJetPt, 30, 0, 1.5);
+          FillProf((param.Name + "_fake_BScore_CloseJetPt_MVAgt0p64").Data(), mu.CloseJet_BScore(), CloseJetPt, 200, 0, 1);
+          FillProf((param.Name + "_fake_BScore_Ptratio_CloseJetPt_MVAgt0p64").Data(), mu.CloseJet_BScore(), mu.CloseJet_Ptratio(), CloseJetPt, 200, 0, 1, 30, 0, 1.5);
+          FillHist((param.Name + "_fake_Ptratio_MVAgt0p64").Data(), mu.CloseJet_Ptratio() , weight, 30, 0, 1.5);
+          FillHist((param.Name + "_fake_BScore_Ptratio_MVAgt0p64").Data(), mu.CloseJet_BScore(), mu.CloseJet_Ptratio(), weight, 200, 0, 1, 30, 0, 1.5);
+          FillHist((param.Name + "_fake_BScore_PtParton_MVAgt0p64").Data(), mu.CloseJet_BScore(), PtParton, weight, 200, 0, 1, 100., 0, 1000);
+          FillHist((param.Name + "_fake_BScore_MVAgt0p64").Data(), mu.CloseJet_BScore() , weight, 200, 0, 1);
+        }
+        else{
+          FillProf((param.Name + "_fake_Ptratio_CloseJetPt_MVAlt0p64").Data(), mu.CloseJet_Ptratio(), CloseJetPt, 30, 0, 1.5);
+          FillProf((param.Name + "_fake_BScore_CloseJetPt_MVAlt0p64").Data(), mu.CloseJet_BScore(), CloseJetPt, 200, 0, 1);
+          FillProf((param.Name + "_fake_BScore_Ptratio_CloseJetPt_MVAlt0p64").Data(), mu.CloseJet_BScore(), mu.CloseJet_Ptratio(), CloseJetPt, 200, 0, 1, 30, 0, 1.5);
+          FillHist((param.Name + "_fake_Ptratio_MVAlt0p64").Data(), mu.CloseJet_Ptratio() , weight, 30, 0, 1.5);
+          FillHist((param.Name + "_fake_BScore_Ptratio_MVAlt0p64").Data(), mu.CloseJet_BScore(), mu.CloseJet_Ptratio(), weight, 200, 0, 1, 30, 0, 1.5);
+          FillHist((param.Name + "_fake_BScore_PtParton_MVAlt0p64").Data(), mu.CloseJet_BScore(), PtParton, weight, 200, 0, 1, 100., 0, 1000);
+          FillHist((param.Name + "_fake_BScore_MVAlt0p64").Data(), mu.CloseJet_BScore() , weight, 200, 0, 1);
+        }
+        if(mu.CloseJet_Flavour().Contains("HF")){
+          FillProf((param.Name + "_fakeHF_MVA_PtParton").Data(), mu.MVA(), PtParton, 200, -1, 1);
+          FillProf((param.Name + "_fakeHF_MVA_CloseJetPt").Data(), mu.MVA(), CloseJetPt, 200, -1, 1);
+          FillProf((param.Name + "_fakeHF_MVA_Ptratio").Data(), mu.MVA(), mu.CloseJet_Ptratio(), 200, -1, 1);
+          FillProf((param.Name + "_fakeHF_MVA_BScore").Data(), mu.MVA(), mu.CloseJet_BScore(), 200, -1, 1);
+          FillProf((param.Name + "_fakeHF_Ptratio_CloseJetPt").Data(), mu.CloseJet_Ptratio(), CloseJetPt, 30, 0, 1.5);
+          FillProf((param.Name + "_fakeHF_BScore_CloseJetPt").Data(), mu.CloseJet_BScore(), CloseJetPt, 200, 0, 1);
+          FillProf((param.Name + "_fakeHF_BScore_Ptratio_CloseJetPt").Data(), mu.CloseJet_BScore(), mu.CloseJet_Ptratio(), CloseJetPt, 200, 0, 1, 30, 0, 1.5);
+          FillHist((param.Name + "_fakeHF_Ptratio").Data(), mu.CloseJet_Ptratio(), weight, 30, 0, 1.5);
+          FillHist((param.Name + "_fakeHF_BScore_Ptratio").Data(), mu.CloseJet_BScore(), mu.CloseJet_Ptratio(), weight, 200, 0, 1, 30, 0, 1.5);
+          FillHist((param.Name + "_fakeHF_BScore_PtParton").Data(), mu.CloseJet_BScore(), PtParton, weight, 200, 0, 1, 100., 0, 1000);
+          if(mu.MVA()>0.64){
+            FillProf((param.Name + "_fakeHF_Ptratio_CloseJetPt_MVAgt0p64").Data(), mu.CloseJet_Ptratio(), CloseJetPt, 30, 0, 1.5);
+            FillProf((param.Name + "_fakeHF_BScore_CloseJetPt_MVAgt0p64").Data(), mu.CloseJet_BScore(), CloseJetPt, 200, 0, 1);
+            FillProf((param.Name + "_fakeHF_BScore_Ptratio_CloseJetPt_MVAgt0p64").Data(), mu.CloseJet_BScore(), mu.CloseJet_Ptratio(), CloseJetPt, 200, 0, 1, 30, 0, 1.5);
+            FillHist((param.Name + "_fakeHF_Ptratio_MVAgt0p64").Data(), mu.CloseJet_Ptratio() , weight, 30, 0, 1.5);
+            FillHist((param.Name + "_fakeHF_BScore_Ptratio_MVAgt0p64").Data(), mu.CloseJet_BScore(), mu.CloseJet_Ptratio(), weight, 200, 0, 1, 30, 0, 1.5);
+            FillHist((param.Name + "_fakeHF_BScore_PtParton_MVAgt0p64").Data(), mu.CloseJet_BScore(), PtParton, weight, 200, 0, 1, 100., 0, 1000);
+            FillHist((param.Name + "_fakeHF_BScore_MVAgt0p64").Data(), mu.CloseJet_BScore() , weight, 200, 0, 1);
+          }
+          else{
+            FillProf((param.Name + "_fakeHF_Ptratio_CloseJetPt_MVAlt0p64").Data(), mu.CloseJet_Ptratio(), CloseJetPt, 30, 0, 1.5);
+            FillProf((param.Name + "_fakeHF_BScore_CloseJetPt_MVAlt0p64").Data(), mu.CloseJet_BScore(), CloseJetPt, 200, 0, 1);
+            FillProf((param.Name + "_fakeHF_BScore_Ptratio_CloseJetPt_MVAlt0p64").Data(), mu.CloseJet_BScore(), mu.CloseJet_Ptratio(), CloseJetPt, 200, 0, 1, 30, 0, 1.5);
+            FillHist((param.Name + "_fakeHF_Ptratio_MVAlt0p64").Data(), mu.CloseJet_Ptratio() , weight, 30, 0, 1.5);
+            FillHist((param.Name + "_fakeHF_BScore_Ptratio_MVAlt0p64").Data(), mu.CloseJet_BScore(), mu.CloseJet_Ptratio(), weight, 200, 0, 1, 30, 0, 1.5);
+            FillHist((param.Name + "_fakeHF_BScore_PtParton_MVAlt0p64").Data(), mu.CloseJet_BScore(), PtParton, weight, 200, 0, 1, 100., 0, 1000);
+            FillHist((param.Name + "_fakeHF_BScore_MVAlt0p64").Data(), mu.CloseJet_BScore() , weight, 200, 0, 1);
+          }
+        }
+        else if(mu.CloseJet_Flavour().Contains("LF")){
+          FillProf((param.Name + "_fakeLF_MVA_PtParton").Data(), mu.MVA(), PtParton, 200, -1, 1);
+          FillProf((param.Name + "_fakeLF_MVA_CloseJetPt").Data(), mu.MVA(), CloseJetPt, 200, -1, 1);
+          FillProf((param.Name + "_fakeLF_MVA_Ptratio").Data(), mu.MVA(), mu.CloseJet_Ptratio(), 200, -1, 1);
+          FillProf((param.Name + "_fakeLF_MVA_BScore").Data(), mu.MVA(), mu.CloseJet_BScore(), 200, -1, 1);
+          FillProf((param.Name + "_fakeLF_Ptratio_CloseJetPt").Data(), mu.CloseJet_Ptratio(), CloseJetPt, 30, 0, 1.5);
+          FillProf((param.Name + "_fakeLF_BScore_CloseJetPt").Data(), mu.CloseJet_BScore(), CloseJetPt, 200, 0, 1);
+          FillProf((param.Name + "_fakeLF_BScore_Ptratio_CloseJetPt").Data(), mu.CloseJet_BScore(), mu.CloseJet_Ptratio(), CloseJetPt, 200, 0, 1, 30, 0, 1.5);
+          FillHist((param.Name + "_fakeLF_Ptratio").Data(), mu.CloseJet_Ptratio(), weight, 30, 0, 1.5);
+          FillHist((param.Name + "_fakeLF_BScore_Ptratio").Data(), mu.CloseJet_BScore(), mu.CloseJet_Ptratio(), weight, 200, 0, 1, 30, 0, 1.5);
+          FillHist((param.Name + "_fakeLF_BScore_PtParton").Data(), mu.CloseJet_BScore(), PtParton, weight, 200, 0, 1, 100, 0, 1000);
+          if(mu.MVA()>0.64){
+            FillProf((param.Name + "_fakeLF_Ptratio_CloseJetPt_MVAgt0p64").Data(), mu.CloseJet_Ptratio(), CloseJetPt, 30, 0, 1.5);
+            FillProf((param.Name + "_fakeLF_BScore_CloseJetPt_MVAgt0p64").Data(), mu.CloseJet_BScore(), CloseJetPt, 200, 0, 1);
+            FillProf((param.Name + "_fakeLF_BScore_Ptratio_CloseJetPt_MVAgt0p64").Data(), mu.CloseJet_BScore(), mu.CloseJet_Ptratio(), CloseJetPt, 200, 0, 1, 30, 0, 1.5);
+            FillHist((param.Name + "_fakeLF_Ptratio_MVAgt0p64").Data(), mu.CloseJet_Ptratio() , weight, 30, 0, 1.5);
+            FillHist((param.Name + "_fakeLF_BScore_Ptratio_MVAgt0p64").Data(), mu.CloseJet_BScore(), mu.CloseJet_Ptratio(), weight, 200, 0, 1, 30, 0, 1.5);
+            FillHist((param.Name + "_fakeLF_BScore_PtParton_MVAgt0p64").Data(), mu.CloseJet_BScore(), PtParton, weight, 200, 0, 1, 100., 0, 1000);
+            FillHist((param.Name + "_fakeLF_BScore_MVAgt0p64").Data(), mu.CloseJet_BScore() , weight, 200, 0, 1);
+          }
+          else{
+            FillProf((param.Name + "_fakeLF_Ptratio_CloseJetPt_MVAlt0p64").Data(), mu.CloseJet_Ptratio(), CloseJetPt, 30, 0, 1.5);
+            FillProf((param.Name + "_fakeLF_BScore_CloseJetPt_MVAlt0p64").Data(), mu.CloseJet_BScore(), CloseJetPt, 200, 0, 1);
+            FillProf((param.Name + "_fakeLF_BScore_Ptratio_CloseJetPt_MVAlt0p64").Data(), mu.CloseJet_BScore(), mu.CloseJet_Ptratio(), CloseJetPt, 200, 0, 1, 30, 0, 1.5);
+            FillHist((param.Name + "_fakeLF_Ptratio_MVAlt0p64").Data(), mu.CloseJet_Ptratio() , weight, 30, 0, 1.5);
+            FillHist((param.Name + "_fakeLF_BScore_Ptratio_MVAlt0p64").Data(), mu.CloseJet_BScore(), mu.CloseJet_Ptratio(), weight, 200, 0, 1, 30, 0, 1.5);
+            FillHist((param.Name + "_fakeLF_BScore_PtParton_MVAlt0p64").Data(), mu.CloseJet_BScore(), PtParton, weight, 200, 0, 1, 100., 0, 1000);
+            FillHist((param.Name + "_fakeLF_BScore_MVAlt0p64").Data(), mu.CloseJet_BScore() , weight, 200, 0, 1);
+          }
+        }
+      }
+      if(mu.LepGenTypeString()=="IsEWtau"){
+        FillProf((param.Name + "_tau_MVA_PtParton").Data(), mu.MVA(), PtParton, 200, -1, 1);
+        FillProf((param.Name + "_tau_MVA_CloseJetPt").Data(), mu.MVA(), CloseJetPt, 200, -1, 1);
+        FillProf((param.Name + "_tau_MVA_Ptratio").Data(), mu.MVA(), mu.CloseJet_Ptratio(), 200, -1, 1);
+        FillProf((param.Name + "_tau_MVA_BScore").Data(), mu.MVA(), mu.CloseJet_BScore(), 200, -1, 1);
+        FillProf((param.Name + "_tau_Ptratio_CloseJetPt").Data(), mu.CloseJet_Ptratio(), CloseJetPt, 30, 0, 1.5);
+        FillProf((param.Name + "_tau_BScore_CloseJetPt").Data(), mu.CloseJet_BScore(), CloseJetPt, 200, 0, 1);
+        FillProf((param.Name + "_tau_BScore_Ptratio_CloseJetPt").Data(), mu.CloseJet_BScore(), mu.CloseJet_Ptratio(), CloseJetPt, 200, 0, 1, 30, 0, 1.5);
+        FillHist((param.Name + "_tau_BScore_Ptratio").Data(), mu.CloseJet_BScore(), mu.CloseJet_Ptratio(), weight, 200, 0, 1, 30, 0, 1.5);
+        FillHist((param.Name + "_tau_BScore_PtParton").Data(), mu.CloseJet_BScore(), PtParton, weight, 200, 0, 1, 100., 0, 1000);
+      }
+      if(mu.LepGenTypeString()=="IsConv"){
+        FillProf((param.Name + "_conv_MVA_PtParton").Data(), mu.MVA(), PtParton, 200, -1, 1);
+        FillProf((param.Name + "_conv_MVA_CloseJetPt").Data(), mu.MVA(), CloseJetPt, 200, -1, 1);
+        FillProf((param.Name + "_conv_MVA_Ptratio").Data(), mu.MVA(), mu.CloseJet_Ptratio(), 200, -1, 1);
+        FillProf((param.Name + "_conv_MVA_BScore").Data(), mu.MVA(), mu.CloseJet_BScore(), 200, -1, 1);
+        FillProf((param.Name + "_conv_Ptratio_CloseJetPt").Data(), mu.CloseJet_Ptratio(), CloseJetPt, 30, 0, 1.5);
+        FillProf((param.Name + "_conv_BScore_CloseJetPt").Data(), mu.CloseJet_BScore(), CloseJetPt, 200, 0, 1);
+        FillProf((param.Name + "_conv_BScore_Ptratio_CloseJetPt").Data(), mu.CloseJet_BScore(), mu.CloseJet_Ptratio(), CloseJetPt, 200, 0, 1, 30, 0, 1.5);
+        FillHist((param.Name + "_conv_BScore_Ptratio").Data(), mu.CloseJet_BScore(), mu.CloseJet_Ptratio(), weight, 200, 0, 1, 30, 0, 1.5);
+        FillHist((param.Name + "_conv_BScore_PtParton").Data(), mu.CloseJet_BScore(), PtParton, weight, 200, 0, 1, 100., 0, 1000);
       }
     }
-  }
-  
-  if(param.WriteOutVerbose == 4){
     GetMCFakeRates(loose_muons, param, weight);
     return;
   }
@@ -235,68 +348,35 @@ void HNL_LeptonFakeRate::GetMCFakeRates(std::vector<Muon> loose_muons, AnalyzerP
     TString L_prefix = "Fake_Loose_"+param.Name+"_NoSel";
     TString T_prefix = "Fake_Tight_"+param.Name+"_NoSel"; //JH : Fake_Tight_MuMu_HNL_ULID_2017_trilep
     for(auto mu:loose_muons){
-      double lep_pt = mu.Pt();
-      double lep_jet_ptratio = lep_pt/mu.CloseJet_Ptratio();
+      double PtParton = mu.PtParton(1,0.64,0.64); //FIXME add correction factor later
       bool passT = false;
       if(mu.PassID(param.Muon_Tight_ID)) passT = true;
       for(int ilep = 0 ; ilep < 2; ilep++){
         TString prefix = (ilep==0) ? L_prefix : T_prefix;
         if(ilep==1 && !passT) continue;
         if(mu.LepGenTypeString()=="IsPrompt"){
-          //FillHist((prefix + "_prompt_ptratio_eta").Data(), lep_jet_ptratio, lep_eta,  weight, nbin_pt, ptbins, nbin_eta , etabins);
-          FillHist((prefix + "_prompt_ptratio").Data(), lep_jet_ptratio, weight, nbin_pt, ptbins);
-          FillHist((prefix + "_prompt_BScore_Ptratio").Data(), mu.CloseJet_BScore(), mu.CloseJet_Ptratio(), weight, 100., 0, 1, 20., 0, 2);
-          FillProf((prefix + "_prompt_MVA_ptratio").Data(), mu.MVA(), lep_jet_ptratio, 200, -1, 1);
+          //FillHist((prefix + "_prompt_PtParton_eta").Data(), PtParton, lep_eta,  weight, nbin_pt, ptbins, nbin_eta , etabins);
+          FillHist((prefix + "_prompt_PtParton").Data(), PtParton, weight, nbin_pt, ptbins);
         }
         if(mu.LepGenTypeString()=="IsFake"){
-          //FillHist((prefix + "_fake_ptratio_eta").Data(), lep_jet_ptratio, lep_eta,  weight, nbin_pt, ptbins, nbin_eta , etabins);
-          FillHist((prefix + "_fake_ptratio").Data(), lep_jet_ptratio, weight, nbin_pt, ptbins);
-          FillHist((prefix + "_fake_BScore_Ptratio").Data(), mu.CloseJet_BScore(), mu.CloseJet_Ptratio(), weight, 100., 0, 1, 20., 0, 2);
-          FillProf((prefix + "_fake_MVA_ptratio").Data(), mu.MVA(), lep_jet_ptratio, 200, -1, 1);
+          //FillHist((prefix + "_fake_PtParton_eta").Data(), PtParton, lep_eta,  weight, nbin_pt, ptbins, nbin_eta , etabins);
+          FillHist((prefix + "_fake_PtParton").Data(), PtParton, weight, nbin_pt, ptbins);
           if(mu.CloseJet_Flavour().Contains("HF")){
-            //FillHist((prefix + "_fakeHF_ptratio_eta").Data(), lep_jet_ptratio, lep_eta,  weight, nbin_pt, ptbins, nbin_eta , etabins);
-            FillHist((prefix + "_fakeHF_ptratio").Data(), lep_jet_ptratio, weight, nbin_pt, ptbins);
-            FillHist((prefix + "_fakeHF_BScore_Ptratio").Data(), mu.CloseJet_BScore(), mu.CloseJet_Ptratio(), weight, 100., 0, 1, 20., 0, 2);
-            FillProf((prefix + "_fakeHF_MVA_ptratio").Data(), mu.MVA(), lep_jet_ptratio, 200, -1, 1);
-            if(mu.MVA()>0.64){
-              FillHist(( prefix + "_fakeHF_Ptratio_MVAgt0p64").Data(), mu.CloseJet_Ptratio() , weight, 20., 0, 2);
-              FillHist(( prefix + "_fakeHF_BScore_Ptratio_MVAgt0p64").Data(), mu.CloseJet_BScore(), mu.CloseJet_Ptratio(), weight, 100., 0, 1, 20., 0, 2);
-              FillHist(( prefix + "_fakeHF_BScore_MVAgt0p64").Data(), mu.CloseJet_BScore() , weight, 100., 0, 1);
-            }
-						else{
-              FillHist(( prefix + "_fakeHF_Ptratio_MVAlt0p64").Data(), mu.CloseJet_Ptratio() , weight, 20., 0, 2);
-              FillHist(( prefix + "_fakeHF_BScore_Ptratio_MVAlt0p64").Data(), mu.CloseJet_BScore(), mu.CloseJet_Ptratio(), weight, 100., 0, 1, 20., 0, 2);
-              FillHist(( prefix + "_fakeHF_BScore_MVAlt0p64").Data(), mu.CloseJet_BScore() , weight, 100., 0, 1);
-            }
+            //FillHist((prefix + "_fakeHF_PtParton_eta").Data(), PtParton, lep_eta,  weight, nbin_pt, ptbins, nbin_eta , etabins);
+            FillHist((prefix + "_fakeHF_PtParton").Data(), PtParton, weight, nbin_pt, ptbins);
           }
           else if(mu.CloseJet_Flavour().Contains("LF")){
-            //FillHist((prefix + "_fakeLF_ptratio_eta").Data(), lep_jet_ptratio, lep_eta,  weight, nbin_pt, ptbins, nbin_eta , etabins);
-            FillHist((prefix + "_fakeLF_ptratio").Data(), lep_jet_ptratio, weight, nbin_pt, ptbins);
-            FillHist((prefix + "_fakeLF_BScore_Ptratio").Data(), mu.CloseJet_BScore(), mu.CloseJet_Ptratio(), weight, 100., 0, 1, 20., 0, 2);
-            FillProf((prefix + "_fakeLF_MVA_ptratio").Data(), mu.MVA(), lep_jet_ptratio, 200, -1, 1);
-            if(mu.MVA()>0.64){
-              FillHist(( prefix + "_fakeLF_Ptratio_MVAgt0p64").Data(), mu.CloseJet_Ptratio() , weight, 20., 0, 2);
-              FillHist(( prefix + "_fakeLF_BScore_Ptratio_MVAgt0p64").Data(), mu.CloseJet_BScore(), mu.CloseJet_Ptratio(), weight, 100., 0, 1, 20., 0, 2);
-              FillHist(( prefix + "_fakeLF_BScore_MVAgt0p64").Data(), mu.CloseJet_BScore() , weight, 100., 0, 1);
-            }
-						else{
-              FillHist(( prefix + "_fakeLF_Ptratio_MVAlt0p64").Data(), mu.CloseJet_Ptratio() , weight, 20., 0, 2);
-              FillHist(( prefix + "_fakeLF_BScore_Ptratio_MVAlt0p64").Data(), mu.CloseJet_BScore(), mu.CloseJet_Ptratio(), weight, 100., 0, 1, 20., 0, 2);
-              FillHist(( prefix + "_fakeLF_BScore_MVAlt0p64").Data(), mu.CloseJet_BScore() , weight, 100., 0, 1);
-            }
+            //FillHist((prefix + "_fakeLF_PtParton_eta").Data(), PtParton, lep_eta,  weight, nbin_pt, ptbins, nbin_eta , etabins);
+            FillHist((prefix + "_fakeLF_PtParton").Data(), PtParton, weight, nbin_pt, ptbins);
           }
         }
         if(mu.LepGenTypeString()=="IsEWtau"){
-          //FillHist((prefix + "_tau_ptratio_eta").Data(), lep_jet_ptratio, lep_eta,  weight, nbin_pt, ptbins, nbin_eta , etabins);
-          FillHist((prefix + "_tau_ptratio").Data(), lep_jet_ptratio, weight, nbin_pt, ptbins);
-          FillHist((prefix + "_tau_BScore_Ptratio").Data(), mu.CloseJet_BScore(), mu.CloseJet_Ptratio(), weight, 100., 0, 1, 20., 0, 2);
-          FillProf((prefix + "_tau_MVA_ptratio").Data(), mu.MVA(), lep_jet_ptratio, 200, -1, 1);
+          //FillHist((prefix + "_tau_PtParton_eta").Data(), PtParton, lep_eta,  weight, nbin_pt, ptbins, nbin_eta , etabins);
+          FillHist((prefix + "_tau_PtParton").Data(), PtParton, weight, nbin_pt, ptbins);
         }
         if(mu.LepGenTypeString()=="IsConv"){
-          //FillHist((prefix + "_conv_ptratio_eta").Data(), lep_jet_ptratio, lep_eta,  weight, nbin_pt, ptbins, nbin_eta , etabins);
-          FillHist((prefix + "_conv_ptratio").Data(), lep_jet_ptratio, weight, nbin_pt, ptbins);
-          FillHist((prefix + "_conv_BScore_Ptratio").Data(), mu.CloseJet_BScore(), mu.CloseJet_Ptratio(), weight, 100., 0, 1, 20., 0, 2);
-          FillProf((prefix + "_conv_MVA_ptratio").Data(), mu.MVA(), lep_jet_ptratio, 200, -1, 1);
+          //FillHist((prefix + "_conv_PtParton_eta").Data(), PtParton, lep_eta,  weight, nbin_pt, ptbins, nbin_eta , etabins);
+          FillHist((prefix + "_conv_PtParton").Data(), PtParton, weight, nbin_pt, ptbins);
         }
       }
     }
@@ -926,7 +1006,13 @@ void HNL_LeptonFakeRate::MakePromptRatePlots(TString label, TString tag,Analyzer
     float lep_eta = fabs(leps[ilep]->Eta());
     if(lep_pt_corr > 2000.) lep_pt_corr = 1999.;
 
-    float lep_jet_ptratio = lep_pt/leps[ilep]->CloseJet_Ptratio();
+    float PtParton;
+    if(leps[ilep]->GetFlavour()=="Muon"){
+      PtParton = leps[ilep]->PtParton(1, 0.64, 0.64);
+    }
+    else{
+      PtParton = leps[ilep]->PtParton(1, 0.15, 0.2); //FIXME only for 2017
+    }
     
     float weight_ptcorr=event_weight;
     TString L_prefix = "Prompt_Loose"+tag ;
@@ -937,7 +1023,7 @@ void HNL_LeptonFakeRate::MakePromptRatePlots(TString label, TString tag,Analyzer
       if((Tlep==1) && ! (blepsT[ilep])) continue;
       FillHist((prefix + "_pt_eta").Data(), lep_pt, lep_eta,  weight_ptcorr, nbin_pt, ptbins, nbin_eta , etabins);
       FillHist((prefix + "_ptcone_eta").Data(), lep_pt_corr, lep_eta,  weight_ptcorr, nbin_ptcone, ptbinscone, nbin_eta , etabins);
-      FillHist((prefix + "_ptratio_eta").Data(), lep_jet_ptratio, lep_eta,  weight_ptcorr, nbin_ptcone, ptbinscone, nbin_eta , etabins);
+      FillHist((prefix + "_PtParton_eta").Data(), PtParton, lep_eta,  weight_ptcorr, nbin_ptcone, ptbinscone, nbin_eta , etabins);
       if(fabs(90. - Z.M()) < 5){
   FillHist((prefix + "_TZ_pt_eta").Data(), lep_pt, lep_eta,  weight_ptcorr, nbin_pt, ptbins, nbin_eta , etabins);
   FillHist((prefix + "_TZ_ptcone_eta").Data(), lep_pt_corr, lep_eta,  weight_ptcorr, nbin_ptcone, ptbinscone, nbin_eta , etabins);
@@ -950,7 +1036,13 @@ void HNL_LeptonFakeRate::MakePromptRatePlots(TString label, TString tag,Analyzer
     float lep_pt = leps[ilep]->Pt();
     float lep_pt_corr =  leps[ilep]->CalcPtCone(leps[ilep]->RelIso(), isocut);
     float lep_eta = fabs(leps[ilep]->Eta());
-    float lep_jet_ptratio = leps[ilep]->CloseJet_Ptratio();
+    float PtParton;
+    if(leps[ilep]->GetFlavour()=="Muon"){
+      PtParton = leps[ilep]->PtParton(1, 0.64, 0.64);
+    }
+    else{
+      PtParton = leps[ilep]->PtParton(1, 0.15, 0.2); //FIXME only for 2017
+    }
 
     if(lep_pt_corr > 2000.) lep_pt_corr = 1999.;
     float weight_ptcorr=event_weight;
@@ -962,7 +1054,7 @@ void HNL_LeptonFakeRate::MakePromptRatePlots(TString label, TString tag,Analyzer
       if((Tlep==1) && ! (blepsT[ilep])) continue;
       FillHist((prefix + "_pt_eta").Data(), lep_pt, lep_eta,  weight_ptcorr, nbin_pt, ptbins, nbin_eta , etabins);
       FillHist((prefix + "_ptcone_eta").Data(), lep_pt_corr, lep_eta,  weight_ptcorr, nbin_ptcone, ptbinscone, nbin_eta , etabins);
-      FillHist((prefix + "_ptratio_eta").Data(), lep_jet_ptratio, lep_eta,  weight_ptcorr, nbin_ptcone, ptbinscone, nbin_eta , etabins);
+      FillHist((prefix + "_PtParton_eta").Data(), PtParton, lep_eta,  weight_ptcorr, nbin_ptcone, ptbinscone, nbin_eta , etabins);
       if(fabs(90. - Z.M()) < 5){
   FillHist((prefix + "_TZ_pt_eta").Data(), lep_pt, lep_eta,  weight_ptcorr, nbin_pt, ptbins, nbin_eta , etabins);
         FillHist((prefix + "_TZ_ptcone_eta").Data(), lep_pt_corr, lep_eta,  weight_ptcorr, nbin_ptcone, ptbinscone, nbin_eta , etabins);
@@ -1098,6 +1190,10 @@ void HNL_LeptonFakeRate::MakeFakeRatePlots(TString label, TString mutag,Analyzer
 
 bool HNL_LeptonFakeRate::UseEvent(std::vector<Lepton *> leps ,  std::vector< Jet> jets, float awayjetcut, Particle MET, float wt){
 
+  FillHist("UseEvent_Njet", jets.size(), wt, 10, 0, 10);
+  FillHist("UseEvent_MET", MET.Pt() , wt, 200., 0, 2000);
+  vector<TString> cutflows = {"Start","MET","MT","AwayJetPt","JetEMfrac","Jetdphi","PtRatio","Mu3","Mu8","Mu17"};
+  FillHist("UseEvent_Cutflow", cutflows , "Start", wt);
 
   bool useevent = false;
   if(leps.size() != 1) return false;
@@ -1107,14 +1203,48 @@ bool HNL_LeptonFakeRate::UseEvent(std::vector<Lepton *> leps ,  std::vector< Jet
   for(unsigned int w = 0; w < leps.size();  w++){
     METdphi = TVector2::Phi_mpi_pi(leps.at(w)->Phi()-MET.Phi());
     MT = sqrt(2.* leps.at(w)->Et()*MET.Pt() * (1 - cos( METdphi)));
+
+    if(MET.Pt() < 40) FillHist("UseEvent_Cutflow", cutflows , "MET", wt); 
+    
     if(( (MET.Pt() < 40) && (MT < 25.)) ) {
+
+      FillHist("UseEvent_Cutflow", cutflows , "MT", wt);
+      vector<Jet> jetpt;
+      vector<Jet> jetEMfrac;
+      vector<Jet> jetdphi;
+      vector<Jet> jetPtratio;
+      for(unsigned int ij=0; ij < jets.size(); ij++){
+        if(jets.at(ij).Pt() > awayjetcut) jetpt.push_back(jets.at(ij));
+      }
+      if(jetpt.size()>0){
+        FillHist("UseEvent_Cutflow", cutflows , "AwayJetPt", wt);
+        for(unsigned int ij=0; ij < jetpt.size(); ij++){
+          if(jetpt.at(ij).ChargedEmEnergyFraction() < 0.65) jetEMfrac.push_back(jetpt.at(ij));
+        }
+      }
+      if(jetEMfrac.size()>0){
+        FillHist("UseEvent_Cutflow", cutflows , "JetEMfrac", wt);
+        for(unsigned int ij=0; ij < jetEMfrac.size(); ij++){
+          float dphi =fabs(TVector2::Phi_mpi_pi(leps.at(0)->Phi() - jetEMfrac.at(ij).Phi()));
+          if(dphi > 2.5) jetdphi.push_back(jetEMfrac.at(ij));
+        }
+      }
+      if(jetdphi.size()>0){
+        FillHist("UseEvent_Cutflow", cutflows , "Jetdphi", wt);
+        for(unsigned int ij=0; ij < jetdphi.size(); ij++){
+          if(jetdphi.at(ij).Pt() / leps.at(0)->Pt() > 1.2) jetPtratio.push_back(jetdphi.at(ij));
+        }
+      }
+      if(jetPtratio.size()>0){
+        FillHist("UseEvent_Cutflow", cutflows , "PtRatio", wt);
+      }
+        
 
       for (unsigned int ielT=0; ielT < leps.size(); ielT++){
         for(unsigned int ij=0; ij < jets.size(); ij++){
           if(jets.at(ij).Pt() < awayjetcut) continue;
           float dphi =fabs(TVector2::Phi_mpi_pi(leps.at(ielT)->Phi()- jets.at(ij).Phi()));
-    if( (jets.at(ij).ChargedEmEnergyFraction()) > 0.65)  continue;
-
+          if( (jets.at(ij).ChargedEmEnergyFraction()) > 0.65)  continue;
           if(dphi > 2.5){
             if((jets.at(ij).Pt() /  leps.at(ielT)->Pt() ) < 1.2) continue;
             useevent = true;
@@ -1156,14 +1286,19 @@ void HNL_LeptonFakeRate::GetFakeRates(std::vector<Lepton *> leps,std::vector<boo
 
   float lep_pt = leps[0]->Pt();
   //float lep_pt_corr =  leps[0]->CalcPtCone(leps[0]->RelIso(), isocut);
-  double lep_jet_ptratio = lep_pt/leps[0]->CloseJet_Ptratio();
+  float PtParton;
+  if(leps[0]->GetFlavour()=="Muon"){
+    PtParton = leps[0]->PtParton(1, 0.64, 0.64);
+  }
+  else{
+    PtParton = leps[0]->PtParton(1, 0.15, 0.2); //FIXME only for 2017
+  }
   float lep_eta =   fabs(leps[0]->Eta());
   float lep_reliso  = leps[0]->RelIso();
   float lep_ip3d    = fabs(leps[0]->IP3D()/leps[0]->IP3Derr());
   float lep_mva     =  leps[0]->lep_mva();
   float lep_dxy     = fabs(leps[0]->dXY());
   
-  //if(lep_jet_ptratio > 100.) lep_jet_ptratio = 99.;
   //if(lep_pt > 60.) lep_pt = 59;
   float weight_ptcorr=event_weight;
   float weight_pt=event_weight;
@@ -1182,18 +1317,19 @@ void HNL_LeptonFakeRate::GetFakeRates(std::vector<Lepton *> leps,std::vector<boo
     bool Mu3PD= (!IsDATA || (IsDATA&& ev.IsPDForTrigger(triggerslist_3, this->DataStream) ));
     bool Mu8PD= (!IsDATA || (IsDATA&& ev.IsPDForTrigger(triggerslist_8, this->DataStream) ));
     bool Mu17PD= (!IsDATA || (IsDATA&& ev.IsPDForTrigger(triggerslist_17, this->DataStream) ));
+    vector<TString> cutflows = {"Start","MET","MT","AwayJetPt","JetEMfrac","Jetdphi","PtRatio","Mu3","Mu8","Mu17"};
     
     if(lep_pt < 5) return;
     else if(lep_pt <10){
-      if(Mu3PD&&ev.PassTrigger(triggerslist_3)) { fill_plot=true; if(!IsDATA)weight_ptcorr = event_weight * ev.GetTriggerLumi(triggerslist_3);}
+      if(Mu3PD&&ev.PassTrigger(triggerslist_3)) { fill_plot=true; FillHist("UseEvent_Cutflow", cutflows , "Mu3", event_weight); if(!IsDATA)weight_ptcorr = event_weight * ev.GetTriggerLumi(triggerslist_3);}
       else { fill_plot=false;weight_ptcorr = 0.;  }
     }
     else  if(lep_pt < 20) {
-      if(Mu8PD&&ev.PassTrigger(triggerslist_8)) {  fill_plot=true;if(!IsDATA)weight_ptcorr= event_weight * ev.GetTriggerLumi(triggerslist_8); }
+      if(Mu8PD&&ev.PassTrigger(triggerslist_8)) { fill_plot=true; FillHist("UseEvent_Cutflow", cutflows , "Mu8", event_weight); if(!IsDATA)weight_ptcorr= event_weight * ev.GetTriggerLumi(triggerslist_8); }
       else{ fill_plot=false;weight_ptcorr = 0.;      }
     }
     else {
-      if(Mu17PD && ev.PassTrigger(triggerslist_17)) {  fill_plot=true; if(!IsDATA) weight_ptcorr= event_weight * ev.GetTriggerLumi(triggerslist_17);}
+      if(Mu17PD && ev.PassTrigger(triggerslist_17)) { fill_plot=true; FillHist("UseEvent_Cutflow", cutflows , "Mu17", event_weight); if(!IsDATA) weight_ptcorr= event_weight * ev.GetTriggerLumi(triggerslist_17);}
       else{ fill_plot=false;weight_ptcorr = 0.;      }
     }
     
@@ -1247,7 +1383,7 @@ void HNL_LeptonFakeRate::GetFakeRates(std::vector<Lepton *> leps,std::vector<boo
   for(int ilep = 0 ; ilep < 2; ilep++)  {
     TString prefix = (ilep==0) ? L_prefix : T_prefix;
     if((ilep==1) && !(blepsT[0])) continue;
-    if(!IsDATA){ if(leps[0]->LepGenTypeString()!="IsPrompt") continue; }
+    //if(!IsDATA){ if(leps[0]->LepGenTypeString()!="IsPrompt") continue; }
     //if(lep_pt > ptmin){
     //  FillHist((prefix + "_reliso").Data(), lep_reliso, weight_pt*prescale_lep, 50, 0., 1.);
     //  FillHist((prefix + "_dXY").Data(),    lep_dxy, weight_pt*prescale_lep, 50, 0., 1.);
@@ -1267,32 +1403,32 @@ void HNL_LeptonFakeRate::GetFakeRates(std::vector<Lepton *> leps,std::vector<boo
     //}
     if(fill_plot) {
       //FillHist((prefix + "_pt_eta").Data(), lep_pt, lep_eta,  weight_ptcorr, nbin_pt, ptbins, nbin_eta , etabins);
-      FillHist((prefix + "_ptratio_eta").Data(), lep_jet_ptratio, lep_eta,  weight_ptcorr, nbin_pt, ptbins, nbin_eta , etabins);
-      FillHist((prefix + "_ptratio").Data(), lep_jet_ptratio,  weight_ptcorr, nbin_pt, ptbins);
+      FillHist((prefix + "_PtParton_eta").Data(), PtParton, lep_eta,  weight_ptcorr, nbin_pt, ptbins, nbin_eta , etabins);
+      FillHist((prefix + "_PtParton").Data(), PtParton,  weight_ptcorr, nbin_pt, ptbins);
       if(!IsDATA){
         if(leps[0]->LepGenTypeString()=="IsPrompt"){
-          FillHist((prefix + "_prompt_ptratio_eta").Data(), lep_jet_ptratio, lep_eta,  weight_ptcorr, nbin_pt, ptbins, nbin_eta , etabins);
-          FillHist((prefix + "_prompt_ptratio").Data(), lep_jet_ptratio, weight_ptcorr, nbin_pt, ptbins);
+          FillHist((prefix + "_prompt_PtParton_eta").Data(), PtParton, lep_eta,  weight_ptcorr, nbin_pt, ptbins, nbin_eta , etabins);
+          FillHist((prefix + "_prompt_PtParton").Data(), PtParton, weight_ptcorr, nbin_pt, ptbins);
         }
         if(leps[0]->LepGenTypeString()=="IsFake"){
-          FillHist((prefix + "_fake_ptratio_eta").Data(), lep_jet_ptratio, lep_eta,  weight_ptcorr, nbin_pt, ptbins, nbin_eta , etabins);
-          FillHist((prefix + "_fake_ptratio").Data(), lep_jet_ptratio, weight_ptcorr, nbin_pt, ptbins);
+          FillHist((prefix + "_fake_PtParton_eta").Data(), PtParton, lep_eta,  weight_ptcorr, nbin_pt, ptbins, nbin_eta , etabins);
+          FillHist((prefix + "_fake_PtParton").Data(), PtParton, weight_ptcorr, nbin_pt, ptbins);
           if(leps[0]->CloseJet_Flavour().Contains("HF")){
-            FillHist((prefix + "_fakeHF_ptratio_eta").Data(), lep_jet_ptratio, lep_eta,  weight_ptcorr, nbin_pt, ptbins, nbin_eta , etabins);
-            FillHist((prefix + "_fakeHF_ptratio").Data(), lep_jet_ptratio, weight_ptcorr, nbin_pt, ptbins);
+            FillHist((prefix + "_fakeHF_PtParton_eta").Data(), PtParton, lep_eta,  weight_ptcorr, nbin_pt, ptbins, nbin_eta , etabins);
+            FillHist((prefix + "_fakeHF_PtParton").Data(), PtParton, weight_ptcorr, nbin_pt, ptbins);
           }
           else if(leps[0]->CloseJet_Flavour().Contains("LF")){
-            FillHist((prefix + "_fakeLF_ptratio_eta").Data(), lep_jet_ptratio, lep_eta,  weight_ptcorr, nbin_pt, ptbins, nbin_eta , etabins);
-            FillHist((prefix + "_fakeLF_ptratio").Data(), lep_jet_ptratio, weight_ptcorr, nbin_pt, ptbins);
+            FillHist((prefix + "_fakeLF_PtParton_eta").Data(), PtParton, lep_eta,  weight_ptcorr, nbin_pt, ptbins, nbin_eta , etabins);
+            FillHist((prefix + "_fakeLF_PtParton").Data(), PtParton, weight_ptcorr, nbin_pt, ptbins);
           }
         }
         if(leps[0]->LepGenTypeString()=="IsEWtau"){
-          FillHist((prefix + "_tau_ptratio_eta").Data(), lep_jet_ptratio, lep_eta,  weight_ptcorr, nbin_pt, ptbins, nbin_eta , etabins);
-          FillHist((prefix + "_tau_ptratio").Data(), lep_jet_ptratio, weight_ptcorr, nbin_pt, ptbins);
+          FillHist((prefix + "_tau_PtParton_eta").Data(), PtParton, lep_eta,  weight_ptcorr, nbin_pt, ptbins, nbin_eta , etabins);
+          FillHist((prefix + "_tau_PtParton").Data(), PtParton, weight_ptcorr, nbin_pt, ptbins);
         }
         if(leps[0]->LepGenTypeString()=="IsConv"){
-          FillHist((prefix + "_conv_ptratio_eta").Data(), lep_jet_ptratio, lep_eta,  weight_ptcorr, nbin_pt, ptbins, nbin_eta , etabins);
-          FillHist((prefix + "_conv_ptratio").Data(), lep_jet_ptratio, weight_ptcorr, nbin_pt, ptbins);
+          FillHist((prefix + "_conv_PtParton_eta").Data(), PtParton, lep_eta,  weight_ptcorr, nbin_pt, ptbins, nbin_eta , etabins);
+          FillHist((prefix + "_conv_PtParton").Data(), PtParton, weight_ptcorr, nbin_pt, ptbins);
         }
       }
     }

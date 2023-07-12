@@ -6,6 +6,8 @@
 #include "TMath.h"
 #include "TH3.h"
 #include "TProfile.h"
+#include "TProfile2D.h"
+#include "TProfile3D.h"
 #include <sstream>      
 #include <ctime>
 
@@ -438,7 +440,9 @@ public:
   void FillTimer(TString tag);
   //==== Plotting
 
-  std::map< TString, TProfile* > maphist_TProfile;
+  std::map< TString, TProfile* >   maphist_TProfile;
+  std::map< TString, TProfile2D* > maphist_TProfile2D;
+  std::map< TString, TProfile3D* > maphist_TProfile3D;
   std::map< TString, TH1D* > maphist_TH1D;
   std::map< TString, TH2D* > maphist_TH2D;
   std::map< TString, TH3D* > maphist_TH3D;
@@ -452,7 +456,9 @@ public:
   vector<TString> JECSources;
 
 
-  TProfile* GetHistPf(TString histname);
+  TProfile*   GetHistPf(TString histname);
+  TProfile2D* GetHistPf2D(TString histname);
+  TProfile3D* GetHistPf3D(TString histname);
   TH1D* GetHist1D(TString histname);
   TH2D* GetHist2D(TString histname);
   TH3D* GetHist3D(TString histname);
@@ -462,7 +468,14 @@ public:
 
   // === HIST settings/filling                        
 
-  void FillProf(TString histname, double xvalue, double yvalue, int n_bin, double x_min, double x_max, TString label="");
+  void FillProf(TString histname, double xvalue, double yvalue, int n_bin, double x_min, double x_max);
+  void FillProf(TString histname, double xvalue, double yvalue, double zvalue,
+									                int n_binx, double x_min, double x_max,
+									                int n_biny, double y_min, double y_max);
+  void FillProf(TString histname, double xvalue, double yvalue, double zvalue, double wvalue,
+									                int n_binx, double x_min, double x_max,
+									                int n_biny, double y_min, double y_max,
+									                int n_binz, double z_min, double z_max);
   void FillHist(TString histname, double value, double weight, int n_bin, double x_min, double x_max, TString label="");
   void FillHist(TString histname, double value, double weight, int n_bin, double *xbins, TString label="");
   void FillHist(TString histname, vector<TString> labels, TString label, double weight);

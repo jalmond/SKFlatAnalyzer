@@ -2253,9 +2253,9 @@ std::vector<Electron> AnalyzerCore::GetAllElectrons(){
       int JetHadFlavour = -999;
 
       for(unsigned int ij=0; ij<AK4_JetAllColl.size(); ij++){
-	float dR1=el.DeltaR(AK4_JetAllColl.at(ij));
-	if(dR1>0.4) continue;
-	if(dR1<mindR1){ mindR1=dR1; IdxMatchJet=ij; }
+  float dR1=el.DeltaR(AK4_JetAllColl.at(ij));
+  if(dR1>0.4) continue;
+  if(dR1<mindR1){ mindR1=dR1; IdxMatchJet=ij; }
       }
       if(IdxMatchJet!=-1) {
   JetDiscCJ      = AK4_JetAllColl.at(IdxMatchJet).GetTaggerResult(JetTagging::DeepJet);
@@ -6791,6 +6791,25 @@ TProfile* AnalyzerCore::GetHistPf(TString histname){
 
 }
 
+TProfile2D* AnalyzerCore::GetHistPf2D(TString histname){
+
+  TProfile2D *h = NULL;
+  std::map<TString, TProfile2D*>::iterator mapit = maphist_TProfile2D.find(histname);
+  if(mapit != maphist_TProfile2D.end()) return mapit->second;
+
+  return h;
+
+}
+
+TProfile3D* AnalyzerCore::GetHistPf3D(TString histname){
+
+  TProfile3D *h = NULL;
+  std::map<TString, TProfile3D*>::iterator mapit = maphist_TProfile3D.find(histname);
+  if(mapit != maphist_TProfile3D.end()) return mapit->second;
+
+  return h;
+
+}
 
 TH1D* AnalyzerCore::GetHist1D(TString histname){
 
@@ -6830,17 +6849,47 @@ void AnalyzerCore::FillWeightHist(TString label, double _weight){
   return;
 }
 
-void AnalyzerCore::FillProf(TString histname, double xvalue, double yvalue, int n_bin, double x_min, double x_max , TString label){
+void AnalyzerCore::FillProf(TString histname, double xvalue, double yvalue, int n_bin, double x_min, double x_max){
 
   TProfile *this_hist = GetHistPf(histname);
   if( !this_hist ){
     this_hist = new TProfile(histname, "", n_bin, x_min, x_max);
     this_hist->SetDirectory(NULL);
-    this_hist->GetXaxis()->SetTitle(label);
     maphist_TProfile[histname] = this_hist;
   }
 
-  this_hist->Fill(xvalue, yvalue, 1.);
+  this_hist->Fill(xvalue, yvalue);
+
+}
+
+void AnalyzerCore::FillProf(TString histname, double xvalue, double yvalue, double zvalue,
+                                              int n_binx, double x_min, double x_max,
+                                              int n_biny, double y_min, double y_max){
+
+  TProfile2D *this_hist = GetHistPf2D(histname);
+  if( !this_hist ){
+    this_hist = new TProfile2D(histname, "", n_binx, x_min, x_max, n_biny, y_min, y_max);
+    this_hist->SetDirectory(NULL);
+    maphist_TProfile2D[histname] = this_hist;
+  }
+
+  this_hist->Fill(xvalue, yvalue, zvalue);
+
+}
+
+void AnalyzerCore::FillProf(TString histname, double xvalue, double yvalue, double zvalue, double wvalue,
+                                              int n_binx, double x_min, double x_max,
+                                              int n_biny, double y_min, double y_max,
+                                              int n_binz, double z_min, double z_max){
+
+  TProfile3D *this_hist = GetHistPf3D(histname);
+  if( !this_hist ){
+    this_hist = new TProfile3D(histname, "", n_binx, x_min, x_max, n_biny, y_min, y_max, n_binz, z_min, z_max);
+    this_hist->SetDirectory(NULL);
+    maphist_TProfile3D[histname] = this_hist;
+  }
+
+  this_hist->Fill(xvalue, yvalue, zvalue, wvalue);
 
 }
 
@@ -7054,6 +7103,30 @@ void AnalyzerCore::WriteHist(){
 
   outfile->cd();
   for(std::map< TString, TProfile* >::iterator mapit = maphist_TProfile.begin(); mapit!=maphist_TProfile.end(); mapit++){
+    TString this_fullname=mapit->second->GetName();
+    TString this_name=this_fullname(this_fullname.Last('/')+1,this_fullname.Length());
+    TString this_suffix=this_fullname(0,this_fullname.Last('/'));
+    TDirectory *dir = outfile->GetDirectory(this_suffix);
+    if(!dir){
+      outfile->mkdir(this_suffix);
+    }
+    outfile->cd(this_suffix);
+    mapit->second->Write(this_name);
+    outfile->cd();
+  }
+  for(std::map< TString, TProfile2D* >::iterator mapit = maphist_TProfile2D.begin(); mapit!=maphist_TProfile2D.end(); mapit++){
+    TString this_fullname=mapit->second->GetName();
+    TString this_name=this_fullname(this_fullname.Last('/')+1,this_fullname.Length());
+    TString this_suffix=this_fullname(0,this_fullname.Last('/'));
+    TDirectory *dir = outfile->GetDirectory(this_suffix);
+    if(!dir){
+      outfile->mkdir(this_suffix);
+    }
+    outfile->cd(this_suffix);
+    mapit->second->Write(this_name);
+    outfile->cd();
+  }
+  for(std::map< TString, TProfile3D* >::iterator mapit = maphist_TProfile3D.begin(); mapit!=maphist_TProfile3D.end(); mapit++){
     TString this_fullname=mapit->second->GetName();
     TString this_name=this_fullname(this_fullname.Last('/')+1,this_fullname.Length());
     TString this_suffix=this_fullname(0,this_fullname.Last('/'));

@@ -172,24 +172,12 @@ void GetMCTruthFR(TString year, TString channel, TString ID, TString sample, TFi
   TH1D *h_loose_fake   = (TH1D*)f_fake_MC->Get("Fake_Loose_"+channel+"_HNL_ULID_"+year+"_"+ID+"_NoSel_fake_ptratio");
   TH1D *h_loose_fakeHF = (TH1D*)f_fake_MC->Get("Fake_Loose_"+channel+"_HNL_ULID_"+year+"_"+ID+"_NoSel_fakeHF_ptratio");
   TH1D *h_loose_fakeLF = (TH1D*)f_fake_MC->Get("Fake_Loose_"+channel+"_HNL_ULID_"+year+"_"+ID+"_NoSel_fakeLF_ptratio");
-  TH1D *h_loose_fakeHF_Ptratio_MVAlt0p64 = (TH1D*)f_fake_MC->Get("Fake_Loose_"+channel+"_HNL_ULID_"+year+"_"+ID+"_NoSel_fakeHF_Ptratio_MVAlt0p64");
-  TH1D *h_loose_fakeHF_Ptratio_MVAgt0p64 = (TH1D*)f_fake_MC->Get("Fake_Loose_"+channel+"_HNL_ULID_"+year+"_"+ID+"_NoSel_fakeHF_Ptratio_MVAgt0p64");
-  TH1D *h_loose_fakeHF_BScore_MVAlt0p64  = (TH1D*)f_fake_MC->Get("Fake_Loose_"+channel+"_HNL_ULID_"+year+"_"+ID+"_NoSel_fakeHF_BScore_MVAlt0p64");
-  TH1D *h_loose_fakeHF_BScore_MVAgt0p64  = (TH1D*)f_fake_MC->Get("Fake_Loose_"+channel+"_HNL_ULID_"+year+"_"+ID+"_NoSel_fakeHF_BScore_MVAgt0p64");
-  TH1D *h_loose_fakeLF_Ptratio_MVAlt0p64 = (TH1D*)f_fake_MC->Get("Fake_Loose_"+channel+"_HNL_ULID_"+year+"_"+ID+"_NoSel_fakeLF_Ptratio_MVAlt0p64");
-  TH1D *h_loose_fakeLF_Ptratio_MVAgt0p64 = (TH1D*)f_fake_MC->Get("Fake_Loose_"+channel+"_HNL_ULID_"+year+"_"+ID+"_NoSel_fakeLF_Ptratio_MVAgt0p64");
-  TH1D *h_loose_fakeLF_BScore_MVAlt0p64  = (TH1D*)f_fake_MC->Get("Fake_Loose_"+channel+"_HNL_ULID_"+year+"_"+ID+"_NoSel_fakeLF_BScore_MVAlt0p64");
-  TH1D *h_loose_fakeLF_BScore_MVAgt0p64  = (TH1D*)f_fake_MC->Get("Fake_Loose_"+channel+"_HNL_ULID_"+year+"_"+ID+"_NoSel_fakeLF_BScore_MVAgt0p64");
   TH1D *h_tight_prompt = (TH1D*)f_fake_MC->Get("Fake_Tight_"+channel+"_HNL_ULID_"+year+"_"+ID+"_NoSel_prompt_ptratio");
   TH1D *h_tight_tau    = (TH1D*)f_fake_MC->Get("Fake_Tight_"+channel+"_HNL_ULID_"+year+"_"+ID+"_NoSel_tau_ptratio");
   TH1D *h_tight_conv   = (TH1D*)f_fake_MC->Get("Fake_Tight_"+channel+"_HNL_ULID_"+year+"_"+ID+"_NoSel_conv_ptratio");
   TH1D *h_tight_fake   = (TH1D*)f_fake_MC->Get("Fake_Tight_"+channel+"_HNL_ULID_"+year+"_"+ID+"_NoSel_fake_ptratio");
   TH1D *h_tight_fakeHF = (TH1D*)f_fake_MC->Get("Fake_Tight_"+channel+"_HNL_ULID_"+year+"_"+ID+"_NoSel_fakeHF_ptratio");
   TH1D *h_tight_fakeLF = (TH1D*)f_fake_MC->Get("Fake_Tight_"+channel+"_HNL_ULID_"+year+"_"+ID+"_NoSel_fakeLF_ptratio");
-  TH1D *h_tight_fakeHF_Ptratio_MVAgt0p64 = (TH1D*)f_fake_MC->Get("Fake_Tight_"+channel+"_HNL_ULID_"+year+"_"+ID+"_NoSel_fakeHF_Ptratio_MVAgt0p64");
-  TH1D *h_tight_fakeHF_BScore_MVAgt0p64  = (TH1D*)f_fake_MC->Get("Fake_Tight_"+channel+"_HNL_ULID_"+year+"_"+ID+"_NoSel_fakeHF_BScore_MVAgt0p64");
-  TH1D *h_tight_fakeLF_Ptratio_MVAgt0p64 = (TH1D*)f_fake_MC->Get("Fake_Tight_"+channel+"_HNL_ULID_"+year+"_"+ID+"_NoSel_fakeLF_Ptratio_MVAgt0p64");
-  TH1D *h_tight_fakeLF_BScore_MVAgt0p64  = (TH1D*)f_fake_MC->Get("Fake_Tight_"+channel+"_HNL_ULID_"+year+"_"+ID+"_NoSel_fakeLF_BScore_MVAgt0p64");
 
   // Show the stacked histo
   TCanvas *c1  = new TCanvas("FakeRate_"+sample+"_"+channel+"_"+ID+"_"+year+"_prompt","",800,800);

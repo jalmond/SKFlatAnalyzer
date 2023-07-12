@@ -85,9 +85,21 @@ public:
 
   //// HNL UL Funtions
   inline bool MaxPt() const { return (this->Pt() > 2000) ? 1999 : this->Pt(); }
-  inline double PtConeCorrected(double Corr, bool passMVA){
-    if (passMVA)  return this->Pt();
-    return ( j_lep_jetptratio ) * Corr;
+  inline double PtParton(double Corr, double MVACutBB, double MVACutEC){
+    if(j_LeptonFlavour==MUON){
+      if (j_lep_mva > MVACutBB)  return this->Pt();
+      return ( this->Pt() /j_lep_jetptratio ) * Corr;
+    }
+    else{
+      if(IsBB()){
+        if (j_lep_mva_hnl_fake_v4 > MVACutBB)  return this->Pt();
+        return ( this->Pt() /j_lep_jetptratio ) * Corr;
+      }
+      else{
+        if (j_lep_mva_hnl_fake_ed_v4 > MVACutEC)  return this->Pt();
+        return ( this->Pt() /j_lep_jetptratio ) * Corr;
+      }
+    }
   }
   
   /// TEMP Variables to test MVA Top 
