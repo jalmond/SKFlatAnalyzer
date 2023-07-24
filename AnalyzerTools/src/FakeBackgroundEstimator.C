@@ -199,8 +199,10 @@ double FakeBackgroundEstimator::GetMuonFakeRate(TString ID, TString key, double 
   double error = 0.;
 
   eta = fabs(eta);
-  if(pt>=60) pt = 59;
-  if(pt < 7) pt=7;
+  //if(pt>=60) pt = 59; //FIXME
+  //if(pt < 7) pt=7; //FIXME
+  if(pt>=1000) pt = 1000; // FIXME JH
+  if(pt < 10) pt=10; //FIXME JH
 
   ID = ID.ReplaceAll("ElOpt_","");
   ID = ID.ReplaceAll("MuOpt_","");
@@ -356,7 +358,7 @@ float FakeBackgroundEstimator::CalculateDilepWeight(float r1, float fr1, float r
   double termLL(0.);
   
   if(eventtype==0) {
-    termTT = termTT_sf+ termTT_df;
+    termTT = termTT_sf + termTT_df;
     termTL = termTL_sf + termTL_df;
     termLT = termLT_sf + termLT_df;
     termLL = termLL_sf + termLL_df;    

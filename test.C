@@ -80,17 +80,23 @@ void test(TString era, bool isdata, TString sample, TString skim, TString flag){
   }
   else if(era=="2017" && !isdata && sample=="TTLJ" && skim=="HNFakeBDT"){
     if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_HNFakeBDT/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/2023_05_18_102358/SKFlatNtuple_2017_MC_0.root")) exit(EIO);
-    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_HNFakeBDT/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/2023_05_18_102358/SKFlatNtuple_2017_MC_1.root")) exit(EIO);
-    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_HNFakeBDT/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/2023_05_18_102358/SKFlatNtuple_2017_MC_2.root")) exit(EIO);
-    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_HNFakeBDT/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/2023_05_18_102358/SKFlatNtuple_2017_MC_3.root")) exit(EIO);
-    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_HNFakeBDT/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/2023_05_18_102358/SKFlatNtuple_2017_MC_4.root")) exit(EIO);
-    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_HNFakeBDT/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/2023_05_18_102358/SKFlatNtuple_2017_MC_5.root")) exit(EIO);
-    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_HNFakeBDT/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/2023_05_18_102358/SKFlatNtuple_2017_MC_6.root")) exit(EIO);
-    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_HNFakeBDT/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/2023_05_18_102358/SKFlatNtuple_2017_MC_7.root")) exit(EIO);
-    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_HNFakeBDT/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/2023_05_18_102358/SKFlatNtuple_2017_MC_8.root")) exit(EIO);
+    //if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_HNFakeBDT/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/2023_05_18_102358/SKFlatNtuple_2017_MC_1.root")) exit(EIO);
+    //if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_HNFakeBDT/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/2023_05_18_102358/SKFlatNtuple_2017_MC_2.root")) exit(EIO);
+    //if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_HNFakeBDT/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/2023_05_18_102358/SKFlatNtuple_2017_MC_3.root")) exit(EIO);
+    //if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_HNFakeBDT/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/2023_05_18_102358/SKFlatNtuple_2017_MC_4.root")) exit(EIO);
+    //if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_HNFakeBDT/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/2023_05_18_102358/SKFlatNtuple_2017_MC_5.root")) exit(EIO);
+    //if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_HNFakeBDT/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/2023_05_18_102358/SKFlatNtuple_2017_MC_6.root")) exit(EIO);
+    //if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_HNFakeBDT/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/2023_05_18_102358/SKFlatNtuple_2017_MC_7.root")) exit(EIO);
+    //if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_HNFakeBDT/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/2023_05_18_102358/SKFlatNtuple_2017_MC_8.root")) exit(EIO);
   }
   else if(era=="2017" && !isdata && sample=="TTLJ" && skim=="FakeEventSkimBDT"){
     if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_FakeEventSkimBDT/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/2023_05_19_153135/SKFlatNtuple_2017_MC_0.root")) exit(EIO);
+  }
+  else if(era=="2017" && !isdata && sample=="TTLJ" && skim=="HNMultiLepBDT"){
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_HNMultiLepBDT/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/2023_05_16_104322/SKFlatNtuple_2017_MC_0.root")) exit(EIO);
+  }
+  else if(era=="2017" && !isdata && sample=="QCD_Mu_300" && skim=="FakeEventSkimBDT"){
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_FakeEventSkimBDT/QCD_Pt-300To470_MuEnrichedPt5_TuneCP5_13TeV-pythia8/2023_05_19_153135/SKFlatNtuple_2017_MC_0.root")) exit(EIO);
   }
   else if(era=="2017" && !isdata && sample=="WJets" && skim=="HNFakeBDT"){
     if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_HNFakeBDT/WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/2023_05_18_102358/SKFlatNtuple_2017_MC_0.root")) exit(EIO);
@@ -98,8 +104,14 @@ void test(TString era, bool isdata, TString sample, TString skim, TString flag){
   else if(era=="2017" && !isdata && sample=="DYJets"){
     if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_HNMultiLepBDT/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/2023_05_03_230947/SKFlatNtuple_2017_MC_0.root")) exit(EIO);
   }
+  else if(era=="2017" && !isdata && sample=="TTLL" && skim=="HNMultiLepBDT"){
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_HNMultiLepBDT/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/2023_05_16_104322/SKFlatNtuple_2017_MC_0.root")) exit(EIO);
+  }
   else if(era=="2017" && !isdata && sample=="TTLL"){
     if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_HNMultiLepBDT/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/2023_05_03_230947/SKFlatNtuple_2017_MC_0.root")) exit(EIO);
+  }
+  else if(era=="2017" && !isdata && sample=="TTJJ" && skim=="HNMultiLepBDT"){
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_HNMultiLepBDT/TTToHadronic_TuneCP5_13TeV-powheg-pythia8/2023_05_16_033011/SKFlatNtuple_2017_MC_0.root")) exit(EIO);
   }
   else if(era=="2017" && !isdata && sample=="WZ"){
     //if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC/WZTo3LNu_TuneCP5_13TeV-amcatnloFXFX-pythia8/220614_141057/0000/SKFlatNtuple_2017_MC_1.root")) exit(EIO);

@@ -21,10 +21,12 @@ void HNL_SignalRegionPlotter::executeEvent(){
   }
   
   AnalyzerParameter param_signal = HNL_LeptonCore::InitialiseHNLParameter("MVAUL","_UL");
-  //AnalyzerParameter param_signal = HNL_LeptonCore::InitialiseHNLParameter("HNL","_UL");
+  if(RunFakeClosurePred)     param_signal.Muon_FR_Key = "PtPartonQCD_eta_TriLepQCD"; //JH
+  else if(RunFakeClosureObs) param_signal.FakeMethod = "MC"; //JH
   RunULAnalysis(param_signal);
 
-  if(!IsData) RunSyst=true;
+  //if(!IsData) RunSyst=true;
+  if(!IsData) RunSyst=false; //FIXME later
   if(RunSyst){
     TString param_signal_name = param_signal.Name;
     //vector<AnalyzerParameter::Syst> SystList;// = GetSystList("Initial");
@@ -81,8 +83,16 @@ void HNL_SignalRegionPlotter::RunULAnalysis(AnalyzerParameter param){
   std::vector<Muon>       MuonCollTInit = GetMuons    ( param,mu_ID, Min_Muon_Pt, 2.4, false);
   std::vector<Electron>   ElectronCollTInit = GetElectrons( param,el_ID, Min_Electron_Pt, 2.5, false)  ;
  
-  std::vector<Muon>       MuonCollT     = GetLepCollByRunType    ( MuonCollTInit ,param);
-  std::vector<Electron>   ElectronCollT  =  GetLepCollByRunType   ( ElectronCollTInit,param);
+  std::vector<Muon>       MuonCollT;
+  std::vector<Electron>   ElectronCollT;
+  if(RunFakeClosure){
+    MuonCollT     = MuonCollTInit;
+    ElectronCollT  =  ElectronCollTInit; //JH : for closure test, pretend the MCs are data
+  }
+  else{
+    MuonCollT     = GetLepCollByRunType    ( MuonCollTInit ,param);
+    ElectronCollT  =  GetLepCollByRunType   ( ElectronCollTInit,param);
+  }
 
   //cout << "Number of MuonCollT = " << MuonCollT.size() << " number of electrons = " << ElectronCollT.size() << endl;
 
@@ -113,9 +123,9 @@ void HNL_SignalRegionPlotter::RunULAnalysis(AnalyzerParameter param){
   FillTimer("START_SR");
 
   RunAllSignalRegions(Inclusive,
-		      ElectronCollT,ElectronCollV,MuonCollT,MuonCollV,  TauColl,
-		      JetCollLoose, AK4_JetAllColl, JetColl,VBF_JetColl,AK8_JetColl, BJetColl,BJetColl, 
-		      ev,METv, param, weight);
+          ElectronCollT,ElectronCollV,MuonCollT,MuonCollV,  TauColl,
+          JetCollLoose, AK4_JetAllColl, JetColl,VBF_JetColl,AK8_JetColl, BJetColl,BJetColl, 
+          ev,METv, param, weight);
 
   FillTimer("END_SR");
 

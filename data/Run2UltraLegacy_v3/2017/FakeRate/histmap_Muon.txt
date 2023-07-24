@@ -1,4 +1,5 @@
-FakeRate        HNL_ULID_2017 pt_eta AwayJetPt40 FakeRate13TeV_mu_2017_mva.root
+FakeRate  HNL_ULID_2017 PtPartonQCD_eta TriLepQCD FakeRate_Mu_2017_QCD.root
+FakeRate  HNL_ULID_2017 pt_eta AwayJetPt40 FakeRate13TeV_mu_2017_mva.root
 FakeRate	HNTightV2	ptcone_eta        AwayJetPt40	    FakeRate13TeV_mu_2017.root
 FakeRate	HNTightV2	Haneol        AwayJetPt40	    Muon_FakeRate_HNTightV2_2017.root
 FakeRate	HNTightV2	ptcone_ptfix_eta        AwayJetPt40     FakeRate13TeV_mu_ptfix_2017.root

@@ -4112,7 +4112,7 @@ double AnalyzerCore::GetFakeRateM(double eta, double pt, AnalyzerParameter param
 
 double AnalyzerCore::GetFakeWeight(std::vector<Lepton *> leps, AnalyzerParameter _param, bool apply_r){
 
-  if(!IsData) return 1.;
+  //if(!IsData) return 1.; FIXME need this to perform the closure test
   
   double this_weight = -1.;
   if(leps.size() == 1){
@@ -6313,6 +6313,23 @@ bool AnalyzerCore::IsFromHadron(const Gen& me, const std::vector<Gen>& gens){
 
 }
 
+std::vector<Lepton *> AnalyzerCore::LeptonUsePtParton(std::vector<Lepton *> leps){
+
+  std::vector<Lepton *> out;
+
+  for(unsigned int i=0; i<leps.size(); i++){
+    //==== muons is a const vector. So in this function, we have to copy the elements like below
+    Lepton *this_lepton = leps.at(i);
+    if(this_lepton->LeptonFlavour()==Lepton::MUON) this_lepton->SetPtEtaPhiM( leps.at(i)->PtParton(0.697,0.64,0.64), leps.at(i)->Eta(), leps.at(i)->Phi(), leps.at(i)->M() ); //FIXME JH : year, sample dependent...
+		else if(this_lepton->LeptonFlavour()==Lepton::ELECTRON) this_lepton->SetPtEtaPhiM( leps.at(i)->PtParton(1,0.15,0.2), leps.at(i)->Eta(), leps.at(i)->Phi(), leps.at(i)->M() ); //FIXME JH : year, sample dependent...
+    out.push_back( this_lepton );
+  }
+
+  std::sort(out.begin(),       out.end(),        PtComparingPtr);
+
+  return out;
+
+}
 
 bool AnalyzerCore::ConversionSplitting(std::vector<Lepton *> leps){
   
@@ -6849,20 +6866,21 @@ void AnalyzerCore::FillWeightHist(TString label, double _weight){
   return;
 }
 
-void AnalyzerCore::FillProf(TString histname, double xvalue, double yvalue, int n_bin, double x_min, double x_max){
+void AnalyzerCore::FillProf(TString histname, double xvalue, double yvalue, double weight, int n_bin, double x_min, double x_max, bool IsAverage){ //JH : true by default
 
   TProfile *this_hist = GetHistPf(histname);
   if( !this_hist ){
     this_hist = new TProfile(histname, "", n_bin, x_min, x_max);
     this_hist->SetDirectory(NULL);
+    if(IsAverage) this_hist->SetBit(TH1::kIsAverage);
     maphist_TProfile[histname] = this_hist;
   }
 
-  this_hist->Fill(xvalue, yvalue);
+  this_hist->Fill(xvalue, yvalue, weight);
 
 }
 
-void AnalyzerCore::FillProf(TString histname, double xvalue, double yvalue, double zvalue,
+void AnalyzerCore::FillProf(TString histname, double xvalue, double yvalue, double zvalue, double weight,
                                               int n_binx, double x_min, double x_max,
                                               int n_biny, double y_min, double y_max){
 
@@ -6873,11 +6891,11 @@ void AnalyzerCore::FillProf(TString histname, double xvalue, double yvalue, doub
     maphist_TProfile2D[histname] = this_hist;
   }
 
-  this_hist->Fill(xvalue, yvalue, zvalue);
+  this_hist->Fill(xvalue, yvalue, zvalue, weight);
 
 }
 
-void AnalyzerCore::FillProf(TString histname, double xvalue, double yvalue, double zvalue, double wvalue,
+void AnalyzerCore::FillProf(TString histname, double xvalue, double yvalue, double zvalue, double wvalue, double weight,
                                               int n_binx, double x_min, double x_max,
                                               int n_biny, double y_min, double y_max,
                                               int n_binz, double z_min, double z_max){
@@ -6889,7 +6907,7 @@ void AnalyzerCore::FillProf(TString histname, double xvalue, double yvalue, doub
     maphist_TProfile3D[histname] = this_hist;
   }
 
-  this_hist->Fill(xvalue, yvalue, zvalue, wvalue);
+  this_hist->Fill(xvalue, yvalue, zvalue, wvalue, weight);
 
 }
 

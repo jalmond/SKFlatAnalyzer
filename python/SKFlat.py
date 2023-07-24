@@ -573,6 +573,8 @@ for InputSample in InputSamples:
     commandsfilename = args.Analyzer+'_'+args.Era+'_'+InputSample
     if IsDATA:
       commandsfilename += '_'+DataPeriod
+    if args.Skim!="":
+      commandsfilename += "_"+args.Skim #JH : I want to see Skim name when I do condor_q !!!!
     for flag in Userflags:
       commandsfilename += '__'+flag
     run_commands = open(base_rundir+'/'+commandsfilename+'.sh','w')

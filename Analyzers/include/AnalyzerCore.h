@@ -218,7 +218,6 @@ public:
   double  JetLeptonMassDropLepAware(  Muon lep, bool removeLep,bool ApplyCorr=false);
   double  JetLeptonMassDropLepAware(  Electron lep, bool removeLep,bool ApplyCorr=false);
 
-
   double  JetLeptonPtRelLepAware(  Lepton lep, Jet jet);
   double  JetLeptonPtRelLepAware(  Lepton lep);
   double  JetLeptonPtRelLepAware(  Electron lep);
@@ -229,6 +228,7 @@ public:
   double  JetLeptonPtRatioLepAware( Muon lep, bool CorrLep=false);
   double  JetLeptonPtRatioLepAware( Electron lep);
 
+  std::vector<Lepton *> LeptonUsePtParton(std::vector<Lepton *> leps);
 
   bool ConversionSplitting(std::vector<Lepton *> leps);
   bool ConversionVeto(std::vector<Lepton *> leps,const std::vector<Gen>& gens);
@@ -468,11 +468,11 @@ public:
 
   // === HIST settings/filling                        
 
-  void FillProf(TString histname, double xvalue, double yvalue, int n_bin, double x_min, double x_max);
-  void FillProf(TString histname, double xvalue, double yvalue, double zvalue,
+  void FillProf(TString histname, double xvalue, double yvalue, double weight, int n_bin, double x_min, double x_max, bool IsAverage=true);
+  void FillProf(TString histname, double xvalue, double yvalue, double zvalue, double weight,
 									                int n_binx, double x_min, double x_max,
 									                int n_biny, double y_min, double y_max);
-  void FillProf(TString histname, double xvalue, double yvalue, double zvalue, double wvalue,
+  void FillProf(TString histname, double xvalue, double yvalue, double zvalue, double wvalue, double weight,
 									                int n_binx, double x_min, double x_max,
 									                int n_biny, double y_min, double y_max,
 									                int n_binz, double z_min, double z_max);
