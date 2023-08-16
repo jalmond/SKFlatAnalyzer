@@ -74,13 +74,14 @@ void HNL_SignalRegionPlotter::RunULAnalysis(AnalyzerParameter param){
   std::vector<Electron>   ElectronCollV = GetElectrons(param.Electron_Veto_ID, 10., 2.5); 
   std::vector<Muon>       MuonCollV     = GetMuons    (param.Muon_Veto_ID, 5., 2.4);
 
-  TString el_ID = (RunFake) ?  param.Electron_FR_ID : param.Electron_Tight_ID ;
-  TString mu_ID = (RunFake) ?  param.Muon_FR_ID :  param.Muon_Tight_ID ;
+  TString el_ID = (RunFake) ? param.Electron_FR_ID : param.Electron_Tight_ID ;
+  TString mu_ID = (RunFake) ? param.Muon_FR_ID : param.Muon_Tight_ID ;
 
   double Min_Muon_Pt     = (RunFake) ? 3. : 5.;
   double Min_Electron_Pt = (RunFake) ? 7. : 10.;
 
   std::vector<Muon>       MuonCollTInit = GetMuons    ( param,mu_ID, Min_Muon_Pt, 2.4, false);
+  cout << "muon ID : " << mu_ID << endl; //JH
   std::vector<Electron>   ElectronCollTInit = GetElectrons( param,el_ID, Min_Electron_Pt, 2.5, false)  ;
  
   std::vector<Muon>       MuonCollT;

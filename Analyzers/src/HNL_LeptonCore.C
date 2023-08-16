@@ -14,7 +14,7 @@ void HNL_LeptonCore::initializeAnalyzer(){
 
   //=== bkg flags                                                                                                                                      
   RunPrompt  = HasFlag("RunPrompt");
-  RunFake    = HasFlag("RunFake") || HasFlag("RunFakeClosurePred") || HasFlag("RunFakeClosureObs"); //JH ......................................
+  RunFake    = HasFlag("RunFake") || HasFlag("RunFakeClosurePred"); //JH
   RunFakeClosure     = HasFlag("RunFakeClosurePred") || HasFlag("RunFakeClosureObs"); //JH : this makes the analyzer return at the presel level
   RunFakeClosurePred = HasFlag("RunFakeClosurePred"); //JH : closure predicted using QCD MC fake rates
   RunFakeClosureObs  = HasFlag("RunFakeClosureObs"); //JH : closure observed from MC info
@@ -3772,6 +3772,8 @@ bool HNL_LeptonCore::PassGenMatchFilter(vector<Lepton *> leps, AnalyzerParameter
   if(RunCF   && param.CFMethod   != "MC") return false;
   if(RunConv && param.ConvMethod != "MC") return false;
 
+  if(RunFakeClosureObs && param.FakeMethod != "MC") return false; //JH : fake closure observed must be estimated by MC truth info
+
   if(MCSample.Contains("Type")) return true;
 
   //// Function filters events when using MC based on if they are Fake/CF/Conv
@@ -3791,6 +3793,8 @@ bool HNL_LeptonCore::PassGenMatchFilter(vector<Lepton *> leps, AnalyzerParameter
   if(RunPrompt && (nPrompt == leps.size())) return true;
   if(RunPrompt && (nPrompt != leps.size())) return false;
 
+  if(RunFakeClosureObs && (nFake  > 0))  return true;
+  if(RunFakeClosureObs && (nFake == 0))  return false;
 
   if( (RunFake || RunConv || RunCF )){
 
