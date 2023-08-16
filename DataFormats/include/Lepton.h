@@ -249,6 +249,16 @@ public:
     
   }
 
+  inline int TagHF() const {
+    if(j_LeptonFlavour==ELECTRON){
+      if(HNL_MVA_Fake("EDv4HF")<HNL_MVA_Fake("EDv4LF")) return 1;
+			else return 0;
+		}
+		else{
+      if(LepMVA()<HNL_MVA_Fake("EDv4")) return 1;
+			else return 0;
+		}
+	}
 
   inline double HNL_MVA_Conv(TString vers) const {
  

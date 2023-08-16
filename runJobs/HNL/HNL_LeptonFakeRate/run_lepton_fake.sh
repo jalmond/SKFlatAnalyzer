@@ -16,23 +16,24 @@ if [[ $1 == "" ]]; then
     do
 
 
-#### Measure truth fake rates from MCs, to optimize loose ID (MC) ####
+#### Measure truth fake rates from MCs, to optimize loose ID (MC) and get PtParton SF (QCD) ####
 
 #TEST#
 #SKFlat.py -a $analyzer  -i QCD_Pt-15To20_MuEnriched  -n ${njobs}  --nmax ${nmax}  -e ${i}  --userflags FakeRateTruth &
 #SKFlat.py -a $analyzer  -i QCD_Pt-120To170_MuEnriched  -n ${njobs}  --nmax ${nmax}  -e ${i}  --userflags FakeRateTruth &
 
+SKFlat.py -a $analyzer  -i TTLJ_powheg  -n ${njobs}  --nmax ${nmax}  -e ${i}   --skim SkimTree_HNFakeBDT --userflags FakeRateTruth &
 #SKFlat.py -a $analyzer  -l $mcpath/MC.txt  -n ${njobs}  --nmax ${nmax}  -e ${i}   --skim SkimTree_HNFakeBDT --userflags FakeRateTruth &
-#SKFlat.py -a $analyzer  -l $mcpath/QCD_mu.txt  -n ${njobs}  --nmax ${nmax} --skim SkimTree_FakeEventSkimBDT -e ${i}  --userflags FakeRateTruth &
+SKFlat.py -a $analyzer  -l $mcpath/QCD_mu.txt  -n ${njobs}  --nmax ${nmax} --skim SkimTree_FakeEventSkimBDT -e ${i}  --userflags FakeRateTruth &
 
-#### Measure truth fake rates from MCs in the measurement region to make use of it for the MC closure test (QCD), to get PtParton SF (QCD) ####
+#### Measure truth fake rates from MCs *in the measurement region* to make use of it for the MC closure test (QCD), to get PtParton SF (QCD) ####
 
 #### TEST ####
 #SKFlat.py -a $analyzer  -i QCD_Pt-15To20_MuEnriched  -n ${njobs}  --nmax ${nmax}  -e ${i} --skim SkimTree_FakeEventSkimBDT & 
 #SKFlat.py -a $analyzer  -i QCD_Pt-120To170_MuEnriched  -n ${njobs}  --nmax ${nmax}  -e ${i} --skim SkimTree_FakeEventSkimBDT &
 
 #SKFlat.py -a $analyzer  -l $mcpath/MC.txt  -n ${njobs}  --nmax ${nmax}  -e ${i}   --skim SkimTree_FakeEventSkimBDT &
-SKFlat.py -a $analyzer  -l $mcpath/QCD_mu.txt  -n ${njobs}  --nmax ${nmax}  -e ${i} --skim SkimTree_FakeEventSkimBDT &
+#SKFlat.py -a $analyzer  -l $mcpath/QCD_mu.txt  -n ${njobs}  --nmax ${nmax}  -e ${i} --skim SkimTree_FakeEventSkimBDT &
 
 #### Measuring the data-driven fake rates (MC : prompt subtraction) ####
 #SKFlat.py -a $analyzer  -l $datapath/DATA_${i}_mu.txt  -n ${njobs_data}  --nmax ${nmax}  -e ${i} --skim SkimTree_HNFakeBDT&

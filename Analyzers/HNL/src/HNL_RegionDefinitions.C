@@ -236,8 +236,11 @@ void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq,
     //if(RunFake&& IsData){
     if(RunFake){ //FIXME need this even in MC to perform the closure test
       //weight_channel = GetFakeWeight(leps, param_channel, true);
-      weight_channel *= GetFakeWeight(leps, param_channel, false); //FIXME tentatively pr = 1.
-      FillWeightHist(param_channel.Name+"/FakeWeight",weight_channel);
+      if(!RunFakeClosureObs){ // closure obs should collect fake leptons from MC, not applying any fake weight to them
+        weight_channel *= GetFakeWeight(LeptonUsePtParton(leps), param_channel, false); //FIXME tentatively pr = 1. note PtParton is used here
+        FillWeightHist(param_channel.Name+"/FakeWeight",weight_channel);
+        FillWeightHist(param_channel.Name+"/FakeWeightonly",GetFakeWeight(LeptonUsePtParton(leps), param_channel, false));
+      }
     }
     
     // Run PRESEL + SR1-3                                                                                                                                                           
@@ -381,10 +384,12 @@ bool  HNL_RegionDefinitions::PassPreselection(HNL_LeptonCore::Channel channel,HN
 
   // REMOVE 0 Jet EVENTS
   //int njets     = JetColl.size() + AK8_JetColl.size() + VBF_JetColl.size();
- 
-  if(RunFake){ leps = LeptonUsePtParton(leps); } //JH
 
   Fill_RegionPlots(channel, 0, param.Name,"Preselection" , TauColl, JetColl, AK8_JetColl, B_JetColl, leps, leps_veto, METv, nPV, w,param.WriteOutVerbose);
+  if(RunFake){
+    leps = LeptonUsePtParton(leps); //JH
+    Fill_RegionPlots(channel, 0, param.Name,"Preselection_PtParton" , TauColl, JetColl, AK8_JetColl, B_JetColl, leps, leps_veto, METv, nPV, w,param.WriteOutVerbose);
+  }
   FillEventCutflow(HNL_LeptonCore::ChannelDepPresel, w, GetChannelString(channel) +"_Presel", "ChannelCutFlow/"+param.DefName,param.WriteOutVerbose);
  
   //cout << "end presel;" << endl; //JH

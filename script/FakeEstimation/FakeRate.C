@@ -205,7 +205,7 @@ void GetMCTruthFRratio(TString sample, TString year, TString channel, TString ID
   h_FRratio->SetName("FakeRateRatioHoverL_"+sample+"_"+channel+"_"+year+"_"+ID+"_"+var);
   TString var_latex;
   if(var=="PtPartonUncorr") var_latex = "p_{T}^{parton, uncorr}";
-	else if(var=="PtPartonQCD") var_latex = "p_{T}^{parton, corr}";
+  else if(var=="PtPartonQCD") var_latex = "p_{T}^{parton, corr}";
   h_FRratio->GetXaxis()->SetTitle(var_latex+" (GeV)");
   h_FRratio->GetXaxis()->SetLabelOffset(0);
   h_FRratio->GetYaxis()->SetTitle("#frac{FR_{HF}}{FR_{LF}}");
@@ -224,6 +224,21 @@ void GetMCTruthFRratio(TString sample, TString year, TString channel, TString ID
   t->SetTextSize(0.04);
   t->SetTextAlign(31);
   t->Draw();
+
+  // calculate deviation from 1
+  double dev(0.);
+  for(unsigned int i=1; i<=10; i++){
+    dev+=pow(h_FRratio->GetBinContent(i)-1.,2);
+  }
+  dev = sqrt(dev);
+  TString dev_t = Form("%.3f",dev);
+
+  TText *t2 = new TText(.94,.71,"dev from 1 : "+dev_t);
+  t2->SetNDC(); // set this or the text will show at x, y w.r.t x, y-axis of the histogram (not pad)
+  t2->SetTextSize(0.04);
+  t2->SetTextFont(42);
+  t2->SetTextAlign(31);
+  t2->Draw();
 
   // create root file
   outfile->cd();
@@ -255,7 +270,7 @@ void GetMCTruthFR(TString sample, TString year, TString channel, TString ID, TSt
   h_tight->SetName("FakeRate_"+sample+"_"+channel+"_"+year+"_"+ID+"_"+leptype+"_"+var);
   TString var_latex;
   if(var=="PtPartonUncorr") var_latex = "p_{T}^{parton, uncorr}";
-	else if(var=="PtPartonQCD") var_latex = "p_{T}^{parton, corr}";
+  else if(var=="PtPartonQCD") var_latex = "p_{T}^{parton, corr}";
   h_tight->GetXaxis()->SetTitle(var_latex+" (GeV)");
   h_tight->GetXaxis()->SetLabelOffset(0);
   h_tight->GetYaxis()->SetTitle("#frac{Tight}{Loose}");
@@ -286,10 +301,17 @@ void GetPtPartonSF(TString year, TString channel){ //FIXME add lepton channel la
   TString fake_MC = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_LeptonFakeRate/"+year+"/HNL_LeptonFakeRate_SkimTree_FakeEventSkimBDT_QCD_MuEnriched.root";
   TFile *f_fake_MC = new TFile(fake_MC);
 
-  vector<TString> IDs = {"MVALoose", "TriLep",
-                         "Blt0p01", "Blt0p015", "Blt0p02", "Blt0p025", "Blt0p03", "Blt0p035",
+  vector<TString> IDs = {
+                         "MVALoose", "TriLep",
+                         "Blt0p01", "Blt0p015", "Blt0p02", "Blt0p025", "Blt0p03", "Blt0p035", "Blt0p04", "Blt0p045", "Blt0p05", "Blt0p055", "Blt0p1", "Blt0p2",
                          "Pgt0p45", "Plt0p45",
-                         "Blt0p01_Pgt0p45", "Blt0p01_Plt0p45"};
+                         "TagHF", "TagLF",
+                         "Blt0p01_Pgt0p45", "Blt0p01_Plt0p45",
+                         "Blt0p01_TagHF", "Blt0p01_TagLF",
+                         "Blt0p025_Pgt0p45", "Blt0p025_Plt0p45",
+                         "Blt0p025_TagHF", "Blt0p025_TagLF",
+                         "Blt0p025_Pgt0p45_TagHF", "Blt0p025_Pgt0p45_TagLF",
+                        };
 
   for(auto ID:IDs){
 
@@ -308,30 +330,32 @@ void FakeRate(){
   //TFile *outfileQCDFakeRate = new TFile("FakeRate_Mu_2017_QCD.root","RECREATE");
   //GetFR2D(outfileQCDFakeRate);
   //GetFR1D(outfileQCDFakeRate);
-  //TFile *outfile = new TFile("FakeRate_Mu_2017_IDopt.root","RECREATE");
-  //GetMCTruthFRratio("TT","2017","MuMu","TriLep"  ,"PtPartonUncorr",outfile);
+  TFile *outfile = new TFile("FakeRate_Mu_2017_IDopt.root","RECREATE");
+  GetMCTruthFRratio("TT","2017","MuMu","TriLep"  ,"PtPartonUncorr",outfile);
   //GetMCTruthFRratio("TT","2017","MuMu","TriLep"  ,"PtPartonQCD"   ,outfile);
-  //GetMCTruthFRratio("TT","2017","MuMu","MVALoose","PtPartonUncorr",outfile);
+  GetMCTruthFRratio("TT","2017","MuMu","MVALoose","PtPartonUncorr",outfile);
   //GetMCTruthFRratio("TT","2017","MuMu","MVALoose","PtPartonQCD"   ,outfile);
-  //GetMCTruthFRratio("TT","2017","MuMu","Blt0p01"   ,"PtPartonUncorr",outfile);
+  GetMCTruthFRratio("TT","2017","MuMu","Blt0p01"   ,"PtPartonUncorr",outfile);
   //GetMCTruthFRratio("TT","2017","MuMu","Blt0p01"   ,"PtPartonQCD"   ,outfile);
-  //GetMCTruthFRratio("TT","2017","MuMu","Blt0p015"  ,"PtPartonUncorr",outfile);
+  GetMCTruthFRratio("TT","2017","MuMu","Blt0p015"  ,"PtPartonUncorr",outfile);
   //GetMCTruthFRratio("TT","2017","MuMu","Blt0p015"  ,"PtPartonQCD"   ,outfile);
-  //GetMCTruthFRratio("TT","2017","MuMu","Blt0p02"   ,"PtPartonUncorr",outfile);
+  GetMCTruthFRratio("TT","2017","MuMu","Blt0p02"   ,"PtPartonUncorr",outfile);
   //GetMCTruthFRratio("TT","2017","MuMu","Blt0p02"   ,"PtPartonQCD"   ,outfile);
-  //GetMCTruthFRratio("TT","2017","MuMu","Blt0p025"  ,"PtPartonUncorr",outfile);
+  GetMCTruthFRratio("TT","2017","MuMu","Blt0p025"  ,"PtPartonUncorr",outfile);
   //GetMCTruthFRratio("TT","2017","MuMu","Blt0p025"  ,"PtPartonQCD"   ,outfile);
-  //GetMCTruthFRratio("TT","2017","MuMu","Blt0p03"   ,"PtPartonUncorr",outfile);
+  GetMCTruthFRratio("TT","2017","MuMu","Blt0p03"   ,"PtPartonUncorr",outfile);
   //GetMCTruthFRratio("TT","2017","MuMu","Blt0p03"   ,"PtPartonQCD"   ,outfile);
-  //GetMCTruthFRratio("TT","2017","MuMu","Blt0p035"  ,"PtPartonUncorr",outfile);
+  GetMCTruthFRratio("TT","2017","MuMu","Blt0p035"  ,"PtPartonUncorr",outfile);
   //GetMCTruthFRratio("TT","2017","MuMu","Blt0p035"  ,"PtPartonQCD"   ,outfile);
-  //GetMCTruthFRratio("TT","2017","MuMu","Pgt0p45"  ,"PtPartonUncorr",outfile);
+  GetMCTruthFRratio("TT","2017","MuMu","Pgt0p45"  ,"PtPartonUncorr",outfile);
   //GetMCTruthFRratio("TT","2017","MuMu","Pgt0p45"  ,"PtPartonQCD"   ,outfile);
-  //GetMCTruthFRratio("TT","2017","MuMu","Plt0p45"  ,"PtPartonUncorr",outfile);
+  GetMCTruthFRratio("TT","2017","MuMu","Plt0p45"  ,"PtPartonUncorr",outfile);
   //GetMCTruthFRratio("TT","2017","MuMu","Plt0p45"  ,"PtPartonQCD"   ,outfile);
-  //GetMCTruthFRratio("TT","2017","MuMu","Blt0p01_Pgt0p45"  ,"PtPartonUncorr",outfile);
+  GetMCTruthFRratio("TT","2017","MuMu","Blt0p01_Pgt0p45"  ,"PtPartonUncorr",outfile);
   //GetMCTruthFRratio("TT","2017","MuMu","Blt0p01_Pgt0p45"  ,"PtPartonQCD"   ,outfile);
-  //GetMCTruthFRratio("TT","2017","MuMu","Blt0p01_Plt0p45"  ,"PtPartonUncorr",outfile);
+  GetMCTruthFRratio("TT","2017","MuMu","Blt0p01_Plt0p45"  ,"PtPartonUncorr",outfile);
   //GetMCTruthFRratio("TT","2017","MuMu","Blt0p01_Plt0p45"  ,"PtPartonQCD"   ,outfile);
-  GetPtPartonSF("2017","MuMu");
+  GetMCTruthFRratio("TT","2017","MuMu","TagLF"  ,"PtPartonUncorr"   ,outfile);
+  GetMCTruthFRratio("TT","2017","MuMu","TagHF"  ,"PtPartonUncorr"   ,outfile);
+  //GetPtPartonSF("2017","MuMu");
 }

@@ -118,7 +118,10 @@ void HNL_SignalRegionPlotter::RunULAnalysis(AnalyzerParameter param){
   //cout << "sf_btag : "    << sf_btag    << endl;
   //cout << "sf_btagSR1 : " << sf_btagSR1 << endl; //JH
 
-  if(!IsData)weight = weight*sf_btag;
+  if(!IsData){
+    weight = weight*sf_btag;
+    FillWeightHist(param.Name+"/BtagSF",sf_btag);
+  }
 
   FillTimer("START_SR");
 

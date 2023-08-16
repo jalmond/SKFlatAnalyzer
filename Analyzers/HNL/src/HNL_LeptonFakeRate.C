@@ -41,26 +41,58 @@ void HNL_LeptonFakeRate::executeEvent(){
   //  MuIDs.push_back(make_pair("HNVeto2016","HNLoose_17028")); //JH : Mu Tight (never used) + Mu Loose (to veto muon in El fake mearuement)
   //}
     
+  MuIDs.push_back(make_pair("HNL_ULID_"+era, "HNL_ULID_2017_TagHF")); //JH : test
+  paramnames.push_back("HNL_ULID_"+era+"_TagHF"  );
+  MuIDs.push_back(make_pair("HNL_ULID_"+era, "HNL_ULID_2017_TagLF")); //JH : test
+  paramnames.push_back("HNL_ULID_"+era+"_TagLF"  );
   MuIDs.push_back(make_pair("HNL_ULID_"+era, "HNL_ULID_2017_Pgt0p45")); //JH : test
   paramnames.push_back("HNL_ULID_"+era+"_Pgt0p45"  );
   MuIDs.push_back(make_pair("HNL_ULID_"+era, "HNL_ULID_2017_Plt0p45")); //JH : test
   paramnames.push_back("HNL_ULID_"+era+"_Plt0p45"  );
+  MuIDs.push_back(make_pair("HNL_ULID_"+era, "HNL_ULID_2017_Blt0p01")); //JH : test
+  paramnames.push_back("HNL_ULID_"+era+"_Blt0p01"  );
   MuIDs.push_back(make_pair("HNL_ULID_"+era, "HNL_ULID_2017_Blt0p01_Pgt0p45")); //JH : test
   paramnames.push_back("HNL_ULID_"+era+"_Blt0p01_Pgt0p45"  );
   MuIDs.push_back(make_pair("HNL_ULID_"+era, "HNL_ULID_2017_Blt0p01_Plt0p45")); //JH : test
   paramnames.push_back("HNL_ULID_"+era+"_Blt0p01_Plt0p45"  );
-  MuIDs.push_back(make_pair("HNL_ULID_"+era, "HNL_ULID_2017_Blt0p01")); //JH : test
-  paramnames.push_back("HNL_ULID_"+era+"_Blt0p01"  );
+  MuIDs.push_back(make_pair("HNL_ULID_"+era, "HNL_ULID_2017_Blt0p01_TagHF")); //JH : test
+  paramnames.push_back("HNL_ULID_"+era+"_Blt0p01_TagHF"  );
+  MuIDs.push_back(make_pair("HNL_ULID_"+era, "HNL_ULID_2017_Blt0p01_TagLF")); //JH : test
+  paramnames.push_back("HNL_ULID_"+era+"_Blt0p01_TagLF"  );
   MuIDs.push_back(make_pair("HNL_ULID_"+era, "HNL_ULID_2017_Blt0p015")); //JH : test
   paramnames.push_back("HNL_ULID_"+era+"_Blt0p015"  );
   MuIDs.push_back(make_pair("HNL_ULID_"+era, "HNL_ULID_2017_Blt0p02")); //JH : test
   paramnames.push_back("HNL_ULID_"+era+"_Blt0p02"  );
   MuIDs.push_back(make_pair("HNL_ULID_"+era, "HNL_ULID_2017_Blt0p025")); //JH : test
   paramnames.push_back("HNL_ULID_"+era+"_Blt0p025"  );
+  MuIDs.push_back(make_pair("HNL_ULID_"+era, "HNL_ULID_2017_Blt0p025_Pgt0p45")); //JH : test
+  paramnames.push_back("HNL_ULID_"+era+"_Blt0p025_Pgt0p45"  );
+  MuIDs.push_back(make_pair("HNL_ULID_"+era, "HNL_ULID_2017_Blt0p025_Plt0p45")); //JH : test
+  paramnames.push_back("HNL_ULID_"+era+"_Blt0p025_Plt0p45"  );
+  MuIDs.push_back(make_pair("HNL_ULID_"+era, "HNL_ULID_2017_Blt0p025_TagHF")); //JH : test
+  paramnames.push_back("HNL_ULID_"+era+"_Blt0p025_TagHF"  );
+  MuIDs.push_back(make_pair("HNL_ULID_"+era, "HNL_ULID_2017_Blt0p025_TagLF")); //JH : test
+  paramnames.push_back("HNL_ULID_"+era+"_Blt0p025_TagLF"  );
+  MuIDs.push_back(make_pair("HNL_ULID_"+era, "HNL_ULID_2017_Blt0p025_Pgt0p45_TagHF")); //JH : test
+  paramnames.push_back("HNL_ULID_"+era+"_Blt0p025_Pgt0p45_TagHF"  );
+  MuIDs.push_back(make_pair("HNL_ULID_"+era, "HNL_ULID_2017_Blt0p025_Pgt0p45_TagLF")); //JH : test
+  paramnames.push_back("HNL_ULID_"+era+"_Blt0p025_Pgt0p45_TagLF"  );
   MuIDs.push_back(make_pair("HNL_ULID_"+era, "HNL_ULID_2017_Blt0p03")); //JH : test
   paramnames.push_back("HNL_ULID_"+era+"_Blt0p03"  );
   MuIDs.push_back(make_pair("HNL_ULID_"+era, "HNL_ULID_2017_Blt0p035")); //JH : test
   paramnames.push_back("HNL_ULID_"+era+"_Blt0p035"  );
+  MuIDs.push_back(make_pair("HNL_ULID_"+era, "HNL_ULID_2017_Blt0p04")); //JH : test
+  paramnames.push_back("HNL_ULID_"+era+"_Blt0p04"  );
+  MuIDs.push_back(make_pair("HNL_ULID_"+era, "HNL_ULID_2017_Blt0p045")); //JH : test
+  paramnames.push_back("HNL_ULID_"+era+"_Blt0p045"  );
+  MuIDs.push_back(make_pair("HNL_ULID_"+era, "HNL_ULID_2017_Blt0p05")); //JH : test
+  paramnames.push_back("HNL_ULID_"+era+"_Blt0p05"  );
+  MuIDs.push_back(make_pair("HNL_ULID_"+era, "HNL_ULID_2017_Blt0p055")); //JH : test
+  paramnames.push_back("HNL_ULID_"+era+"_Blt0p055"  );
+  MuIDs.push_back(make_pair("HNL_ULID_"+era, "HNL_ULID_2017_Blt0p1")); //JH : test
+  paramnames.push_back("HNL_ULID_"+era+"_Blt0p1"  );
+  MuIDs.push_back(make_pair("HNL_ULID_"+era, "HNL_ULID_2017_Blt0p2")); //JH : test
+  paramnames.push_back("HNL_ULID_"+era+"_Blt0p2"  );
   MuIDs.push_back(make_pair("HNL_ULID_"+era, "HNL_TopMVA_FO_MM")); //JH : test
   paramnames.push_back("HNL_ULID_"+era+"_TriLep"  );
   MuIDs.push_back(make_pair("HNL_ULID_"+era, "MVALoose")); //JH : test
@@ -190,12 +222,31 @@ void HNL_LeptonFakeRate::executeEventFromParameter(AnalyzerParameter param, TStr
     FillHist((param.Name + "_NlooseMu").Data(), loose_muons.size() , eventSign, 10., 0., 10);
 
     std::map<TString, double> PtPartonSFmap;
-    PtPartonSFmap[param.Muon_Loose_ID] = 0.697; //FIXME fill in the values later
+    //PtPartonSFmap[param.Muon_Loose_ID] = 0.697; //FIXME fill in the values later
+    PtPartonSFmap["HNL_ULID_2017_MVALoose"] = 0.734;
+    PtPartonSFmap["HNL_ULID_2017_TriLep"] = 0.706;
+    PtPartonSFmap["HNL_ULID_2017_Blt0p01"] = 0.555;
+    PtPartonSFmap["HNL_ULID_2017_Blt0p015"] = 0.611;
+    PtPartonSFmap["HNL_ULID_2017_Blt0p02"] = 0.659;
+    PtPartonSFmap["HNL_ULID_2017_Blt0p025"] = 0.687;
+    PtPartonSFmap["HNL_ULID_2017_Blt0p03"] = 0.702;
+    PtPartonSFmap["HNL_ULID_2017_Blt0p035"] = 0.717;
+    PtPartonSFmap["HNL_ULID_2017_Pgt0p45"] = 0.769;
+    PtPartonSFmap["HNL_ULID_2017_Plt0p45"] = 0.308;
+    PtPartonSFmap["HNL_ULID_2017_Blt0p01_Pgt0p45"] = 0.571;
+    PtPartonSFmap["HNL_ULID_2017_Blt0p01_Plt0p45"] = 0.308;
+    double PtPartonQCD;
+    //double PtPartonData;
+    double PtPartonUncorr;
+    double CloseJetPt;
+    int TagHF;
     for(auto mu:loose_muons){
-      double PtPartonQCD = mu.PtParton(PtPartonSFmap[param.Muon_Loose_ID],0.64,0.64);
-      //double PtPartonData = mu.PtParton(1,0.64,0.64);
-      double PtPartonUncorr = mu.PtParton(1,0.64,0.64);
-      double CloseJetPt = mu.Pt()/mu.CloseJet_Ptratio();
+      PtPartonQCD = mu.PtParton(PtPartonSFmap[param.Muon_Loose_ID],0.64,0.64);
+      //PtPartonData = mu.PtParton(1,0.64,0.64);
+      PtPartonUncorr = mu.PtParton(1,0.64,0.64);
+      CloseJetPt = mu.Pt()/mu.CloseJet_Ptratio();
+      if(mu.MVA()<mu.HNL_MVA_Fake("EDv4")) TagHF = 1;
+      else TagHF = 0;
       FillHist((param.Name + "_MVA").Data(), mu.MVA() , eventSign, 200., -1, 1);
       FillHist((param.Name + "_LeptonType").Data(), mu.LeptonGenType() , eventSign, 13, -6, 7);
       FillHist((param.Name + "_JetFlavor").Data(), mu.CloseJet_FlavourInt()  , eventSign, 6, 0, 6);
@@ -262,6 +313,10 @@ void HNL_LeptonFakeRate::executeEventFromParameter(AnalyzerParameter param, TStr
           FillHist((param.Name + "_fakeHF_BScore_Ptratio").Data(), mu.CloseJet_BScore(), mu.CloseJet_Ptratio(), eventSign, 200, 0, 1, 30, 0, 1.5);
           //FillHist((param.Name + "_fakeHF_BScore_PtPartonUncorr").Data(), mu.CloseJet_BScore(), PtPartonUncorr, eventSign, 200, 0, 1, 100., 0, 1000);
           //FillHist((param.Name + "_fakeHF_BScore_PtPartonQCD").Data(), mu.CloseJet_BScore(), PtPartonQCD, eventSign, 200, 0, 1, 100., 0, 1000);
+          FillHist((param.Name + "_fakeHF_MVALight").Data(), mu.HNL_MVA_Fake("EDv4") , eventSign, 200, -1, 1);
+          FillHist((param.Name + "_fakeHF_MVA_MVALight").Data(), mu.MVA(), mu.HNL_MVA_Fake("EDv4") , eventSign, 200, -1, 1, 200, -1, 1);
+          FillHist((param.Name + "_fakeHF_TagHF").Data(), TagHF , eventSign, 2, 0, 2);
+          FillHist((param.Name + "_fakeHF_TagHFnew").Data(), mu.TagHF() , eventSign, 2, 0, 2);
           if(mu.MVA()>0.64){
             //FillProf((param.Name + "_fakeHF_Ptratio_CloseJetPt_MVAgt0p64").Data(), mu.CloseJet_Ptratio(), CloseJetPt, eventSign, 30, 0, 1.5);
             //FillProf((param.Name + "_fakeHF_BScore_CloseJetPt_MVAgt0p64").Data(), mu.CloseJet_BScore(), CloseJetPt, eventSign, 200, 0, 1);
@@ -279,6 +334,10 @@ void HNL_LeptonFakeRate::executeEventFromParameter(AnalyzerParameter param, TStr
             FillHist((param.Name + "_fakeHF_BScore_MVAlt0p64").Data(), mu.CloseJet_BScore() , eventSign, 200, 0, 1);
             FillHist((param.Name + "_fakeHF_Ptratio_MVAlt0p64").Data(), mu.CloseJet_Ptratio() , eventSign, 30, 0, 1.5);
             FillHist((param.Name + "_fakeHF_BScore_Ptratio_MVAlt0p64").Data(), mu.CloseJet_BScore(), mu.CloseJet_Ptratio(), eventSign, 200, 0, 1, 30, 0, 1.5);
+            FillHist((param.Name + "_fakeHF_MVALight_MVAlt0p64").Data(), mu.HNL_MVA_Fake("EDv4") , eventSign, 200, -1, 1);
+            FillHist((param.Name + "_fakeHF_MVA_MVALight_MVAlt0p64").Data(), mu.MVA(), mu.HNL_MVA_Fake("EDv4") , eventSign, 200, -1, 1, 200, -1, 1);
+            FillHist((param.Name + "_fakeHF_TagHF_MVAlt0p64").Data(), TagHF , eventSign, 2, 0, 2);
+            FillHist((param.Name + "_fakeHF_TagHFnew_MVAlt0p64").Data(), mu.TagHF() , eventSign, 2, 0, 2);
             //FillHist((param.Name + "_fakeHF_BScore_PtPartonUncorr_MVAlt0p64").Data(), mu.CloseJet_BScore(), PtPartonUncorr, eventSign, 200, 0, 1, 100., 0, 1000);
             //FillHist((param.Name + "_fakeHF_BScore_PtPartonQCD_MVAlt0p64").Data(), mu.CloseJet_BScore(), PtPartonQCD, eventSign, 200, 0, 1, 100., 0, 1000);
           }
@@ -297,6 +356,10 @@ void HNL_LeptonFakeRate::executeEventFromParameter(AnalyzerParameter param, TStr
           FillHist((param.Name + "_fakeLF_BScore_Ptratio").Data(), mu.CloseJet_BScore(), mu.CloseJet_Ptratio(), eventSign, 200, 0, 1, 30, 0, 1.5);
           //FillHist((param.Name + "_fakeLF_BScore_PtPartonUncorr").Data(), mu.CloseJet_BScore(), PtPartonUncorr, eventSign, 200, 0, 1, 100, 0, 1000);
           //FillHist((param.Name + "_fakeLF_BScore_PtPartonQCD").Data(), mu.CloseJet_BScore(), PtPartonQCD, eventSign, 200, 0, 1, 100, 0, 1000);
+          FillHist((param.Name + "_fakeLF_MVALight").Data(), mu.HNL_MVA_Fake("EDv4") , eventSign, 200, -1, 1);
+          FillHist((param.Name + "_fakeLF_MVA_MVALight").Data(), mu.MVA(), mu.HNL_MVA_Fake("EDv4") , eventSign, 200, -1, 1, 200, -1, 1);
+          FillHist((param.Name + "_fakeLF_TagHF").Data(), TagHF , eventSign, 2, 0, 2);
+          FillHist((param.Name + "_fakeLF_TagHFnew").Data(), mu.TagHF() , eventSign, 2, 0, 2);
           if(mu.MVA()>0.64){
             //FillProf((param.Name + "_fakeLF_Ptratio_CloseJetPt_MVAgt0p64").Data(), mu.CloseJet_Ptratio(), CloseJetPt, eventSign, 30, 0, 1.5);
             //FillProf((param.Name + "_fakeLF_BScore_CloseJetPt_MVAgt0p64").Data(), mu.CloseJet_BScore(), CloseJetPt, eventSign, 200, 0, 1);
@@ -314,6 +377,10 @@ void HNL_LeptonFakeRate::executeEventFromParameter(AnalyzerParameter param, TStr
             FillHist((param.Name + "_fakeLF_BScore_MVAlt0p64").Data(), mu.CloseJet_BScore() , eventSign, 200, 0, 1);
             FillHist((param.Name + "_fakeLF_Ptratio_MVAlt0p64").Data(), mu.CloseJet_Ptratio() , eventSign, 30, 0, 1.5);
             FillHist((param.Name + "_fakeLF_BScore_Ptratio_MVAlt0p64").Data(), mu.CloseJet_BScore(), mu.CloseJet_Ptratio(), eventSign, 200, 0, 1, 30, 0, 1.5);
+            FillHist((param.Name + "_fakeLF_MVALight_MVAlt0p64").Data(), mu.HNL_MVA_Fake("EDv4") , eventSign, 200, -1, 1);
+            FillHist((param.Name + "_fakeLF_MVA_MVALight_MVAlt0p64").Data(), mu.MVA(), mu.HNL_MVA_Fake("EDv4") , eventSign, 200, -1, 1, 200, -1, 1);
+            FillHist((param.Name + "_fakeLF_TagHF_MVAlt0p64").Data(), TagHF , eventSign, 2, 0, 2);
+            FillHist((param.Name + "_fakeLF_TagHFnew_MVAlt0p64").Data(), mu.TagHF() , eventSign, 2, 0, 2);
             //FillHist((param.Name + "_fakeLF_BScore_PtPartonUncorr_MVAlt0p64").Data(), mu.CloseJet_BScore(), PtPartonUncorr, eventSign, 200, 0, 1, 100., 0, 1000);
             //FillHist((param.Name + "_fakeLF_BScore_PtPartonQCD_MVAlt0p64").Data(), mu.CloseJet_BScore(), PtPartonQCD, eventSign, 200, 0, 1, 100., 0, 1000);
           }
@@ -386,8 +453,21 @@ void HNL_LeptonFakeRate::GetMCFakeRates(std::vector<Muon> loose_muons, AnalyzerP
     std::copy(vptbins.begin(), vptbins.end(), ptbins);
     TString L_prefix = "Fake_Loose_"+param.Name+"_NoSel";
     TString T_prefix = "Fake_Tight_"+param.Name+"_NoSel"; //JH : Fake_Tight_MuMu_HNL_ULID_2017_trilep
+    std::map<TString, double> PtPartonSFmap;
+    PtPartonSFmap["HNL_ULID_2017_MVALoose"] = 0.734;
+    PtPartonSFmap["HNL_ULID_2017_TriLep"] = 0.706;
+    PtPartonSFmap["HNL_ULID_2017_Blt0p01"] = 0.555;
+    PtPartonSFmap["HNL_ULID_2017_Blt0p015"] = 0.611;
+    PtPartonSFmap["HNL_ULID_2017_Blt0p02"] = 0.659;
+    PtPartonSFmap["HNL_ULID_2017_Blt0p025"] = 0.687;
+    PtPartonSFmap["HNL_ULID_2017_Blt0p03"] = 0.702;
+    PtPartonSFmap["HNL_ULID_2017_Blt0p035"] = 0.717;
+    PtPartonSFmap["HNL_ULID_2017_Pgt0p45"] = 0.769;
+    PtPartonSFmap["HNL_ULID_2017_Plt0p45"] = 0.308;
+    PtPartonSFmap["HNL_ULID_2017_Blt0p01_Pgt0p45"] = 0.571;
+    PtPartonSFmap["HNL_ULID_2017_Blt0p01_Plt0p45"] = 0.308;
     for(auto mu:loose_muons){
-      double PtPartonQCD = mu.PtParton(0.697,0.64,0.64);
+      double PtPartonQCD = mu.PtParton(PtPartonSFmap[param.Muon_Loose_ID],0.64,0.64);
       //double PtPartonData = mu.PtParton(1,0.64,0.64);
       double PtPartonUncorr = mu.PtParton(1,0.64,0.64);
       bool passT = false;
@@ -1336,9 +1416,22 @@ void HNL_LeptonFakeRate::GetFakeRates(std::vector<Lepton *> leps,std::vector<boo
   float PtPartonUncorr;
   float PtPartonQCD;
   float PtPartonData;
+  std::map<TString, double> PtPartonSFmap;
+  PtPartonSFmap["HNL_ULID_2017_MVALoose"] = 0.734;
+  PtPartonSFmap["HNL_ULID_2017_TriLep"] = 0.706;
+  PtPartonSFmap["HNL_ULID_2017_Blt0p01"] = 0.555;
+  PtPartonSFmap["HNL_ULID_2017_Blt0p015"] = 0.611;
+  PtPartonSFmap["HNL_ULID_2017_Blt0p02"] = 0.659;
+  PtPartonSFmap["HNL_ULID_2017_Blt0p025"] = 0.687;
+  PtPartonSFmap["HNL_ULID_2017_Blt0p03"] = 0.702;
+  PtPartonSFmap["HNL_ULID_2017_Blt0p035"] = 0.717;
+  PtPartonSFmap["HNL_ULID_2017_Pgt0p45"] = 0.769;
+  PtPartonSFmap["HNL_ULID_2017_Plt0p45"] = 0.308;
+  PtPartonSFmap["HNL_ULID_2017_Blt0p01_Pgt0p45"] = 0.571;
+  PtPartonSFmap["HNL_ULID_2017_Blt0p01_Plt0p45"] = 0.308;
   if(leps[0]->GetFlavour()=="Muon"){
     PtPartonUncorr = leps[0]->PtParton(1, 0.64, 0.64);
-    PtPartonQCD = leps[0]->PtParton(0.697, 0.64, 0.64);
+    PtPartonQCD = leps[0]->PtParton(PtPartonSFmap[param.Muon_Loose_ID], 0.64, 0.64);
   }
   else{
     PtPartonUncorr = leps[0]->PtParton(1, 0.15, 0.2); //FIXME only for 2017
