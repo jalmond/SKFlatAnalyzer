@@ -177,7 +177,6 @@ void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq,
     std::vector<Lepton *> leps       = MakeLeptonPointerVector(muons,electrons,param);
     //if(electrons.size()>1)cout << "leps defined;" << endl;
     //if(electrons.size()>1)cout << "leps size : " << leps.size() << endl;
-    FillHist("Nlep_NoCut", leps.size() , weight_channel, 10., 0., 10); //JH
 
     if(!IsDATA && dilep_channel != MuMu)  weight_channel*= GetElectronSFEventWeight(electrons, param);
     if(!IsDATA && dilep_channel != EE)    weight_channel*= GetMuonSFEventWeight(muons, param);
@@ -263,7 +262,7 @@ void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq,
     
 
     if(!PassPreselection(dilep_channel,qq, leps, leps_veto, TauColl, JetColl, VBF_JetColl, AK8_JetColl, B_JetColl,ev, METv ,param_channel,"", weight_channel)) continue;
-    if(RunFakeClosure) return; //JH : don't need further steps
+    if(RunFakeClosure) continue; //JH : don't need further steps
     //cout << "passed presel;" << endl;
     //cout << "MET : " << METv.Pt() << endl;
     //cout << "AK8 jet size : " << AK8_JetColl.size() << endl; //JH
