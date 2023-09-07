@@ -1,0 +1,16 @@
+MuMu_Channel	Pt	Muon_Loose_PtCone	HN	5	1	40
+MuMu_Channel	Pt	Muon_Tight_PtCone	HN	5	1	40
+MuMu_Channel	PtParton	Muon_Loose_Eta	HN	5	2	11
+MuMu_Channel	PtParton	Muon_Tight_Eta	HN	5	2	11
+#Electron	HN	Electron_Loose_PtCone	HN	5	1	40
+#Electron	HN	Electron_Tight_PtCone	HN	5	1	40
+#Electron	HN	Electron_Loose_Eta	HN	5	2	11
+#Electron	HN	Electron_Tight_Eta	HN	5	2	11
+#Electron	Z	DiLep_Mass_Ele8	HN	1	71	110
+#Electron	Z	DiLep_Mass_Ele12	HN	1	71	110
+#Electron	Z	DiLep_Mass_Ele17	HN	1	71	110
+#Electron	Z	DiLep_Mass_Ele23	HN	1	71	110
+#Electron	W	MT_Ele8	HN	1	1	200
+#Electron	W	MT_Ele12	HN	1	1	200
+#Electron	W	MT_Ele17	HN	1	1	200
+#Electron	W	MT_Ele23	HN	1	1	200
