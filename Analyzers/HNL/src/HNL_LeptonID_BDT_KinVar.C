@@ -18,11 +18,12 @@ void HNL_LeptonID_BDT_KinVar::initializeAnalyzer(){
 }
 void HNL_LeptonID_BDT_KinVar::SetupTrees(TTree* tree_mm, TTree* tree_ee){
 
-
   tree_mm->Branch("Pt", &bdt_id_Pt, "Pt/F"); 
   tree_ee->Branch("Pt", &bdt_id_Pt, "Pt/F");
   tree_mm->Branch("PtBinned", &bdt_id_PtBinned, "PtBinned/F");
   tree_ee->Branch("PtBinned", &bdt_id_PtBinned, "PtBinned/F");
+  tree_mm->Branch("PtBinned2", &bdt_id_PtBinned2, "PtBinned2/F");
+  tree_ee->Branch("PtBinned2", &bdt_id_PtBinned2, "PtBinned2/F");
   tree_mm->Branch("Eta", &bdt_id_Eta, "Eta/F");
   tree_ee->Branch("Eta", &bdt_id_Eta, "Eta/F");
   tree_ee->Branch("PileUp", &bdt_id_PileUp, "PileUp/F");
@@ -70,11 +71,10 @@ void HNL_LeptonID_BDT_KinVar::SetupTrees(TTree* tree_mm, TTree* tree_ee){
 
   tree_mm->Branch("MVA", &bdt_id_MVA, "MVA/F"); 
   tree_ee->Branch("MVA", &bdt_id_MVA, "MVA/F");
-  tree_mm->Branch("RelMVA", &bdt_id_RelMVA, "RelMVA/F");
-  tree_ee->Branch("RelMVA", &bdt_id_RelMVA, "RelMVA/F");
+  tree_ee->Branch("MVARaw", &bdt_id_MVARaw, "MVARaw/F");
 
   tree_ee->Branch("MVAIso", &bdt_id_MVAIso, "MVAIso/F");
-  tree_ee->Branch("RelMVAIso", &bdt_id_RelMVAIso, "RelMVAIso/F");
+  tree_ee->Branch("MVAIsoRaw", &bdt_id_MVAIsoRaw, "MVAIsoRaw/F");
 
   tree_mm->Branch("Chi2", &bdt_id_Chi2, "Chi2/F");  
   tree_mm->Branch("Validhits", &bdt_id_Validhits, "Validhits/F");  
@@ -90,9 +90,14 @@ void HNL_LeptonID_BDT_KinVar::SetupTrees(TTree* tree_mm, TTree* tree_ee){
   tree_ee->Branch("POGTight", &bdt_id_POGTight, "POGTight/F");
   tree_ee->Branch("POGMedium", &bdt_id_POGMedium, "POGMedium/F");
   tree_ee->Branch("HNTightID", &bdt_id_HNTightID, "HNTightID/F");
+  tree_ee->Branch("POGMVA80", &bdt_id_POGMVA80ID, "POGMVA80/F");
+  tree_ee->Branch("POGMVA90", &bdt_id_POGMVA90ID, "POGMVA90/F");
   tree_mm->Branch("PtRatio", &bdt_id_PtRatio, "PtRatio/F");         tree_ee->Branch("PtRatio", &bdt_id_PtRatio, "PtRatio/F");         
+  tree_mm->Branch("PtRatioV2", &bdt_id_PtRatioV2, "PtRatioV2/F");         tree_ee->Branch("PtRatioV2", &bdt_id_PtRatioV2, "PtRatioV2/F");         
+  tree_mm->Branch("PtRatioV3", &bdt_id_PtRatioV3, "PtRatioV3/F");         tree_ee->Branch("PtRatioV3", &bdt_id_PtRatioV3, "PtRatioV3/F");         
   tree_mm->Branch("PtRel", &bdt_id_PtRel, "PtRel/F");         tree_ee->Branch("PtRel", &bdt_id_PtRel, "PtRel/F");         
-  tree_mm->Branch("MassDrop", &bdt_id_MassDrop, "MassDrop/F");         tree_ee->Branch("MassDrop", &bdt_id_MassDrop, "MassDrop/F");         
+  tree_mm->Branch("PtRelV2", &bdt_id_PtRelV2, "PtRelV2/F");         tree_ee->Branch("PtRelV2", &bdt_id_PtRelV2, "PtRelV2/F");         
+  tree_mm->Branch("PtRelV3", &bdt_id_PtRelV3, "PtRelV3/F");         tree_ee->Branch("PtRelV3", &bdt_id_PtRelV3, "PtRelV3/F");         
 
   tree_mm->Branch("CEMFracCJ", &bdt_id_CEMFracCJ, "CEMFracCJ/F");   tree_ee->Branch("CEMFracCJ", &bdt_id_CEMFracCJ, "CEMFracCJ/F");   
   tree_mm->Branch("NEMFracCJ", &bdt_id_NEMFracCJ, "NEMFracCJ/F");   tree_ee->Branch("NEMFracCJ", &bdt_id_NEMFracCJ, "NEMFracCJ/F");   
@@ -100,6 +105,8 @@ void HNL_LeptonID_BDT_KinVar::SetupTrees(TTree* tree_mm, TTree* tree_ee){
   tree_mm->Branch("NHFracCJ", &bdt_id_NHFracCJ, "NHFracCJ/F");      tree_ee->Branch("NHFracCJ", &bdt_id_NHFracCJ, "NHFracCJ/F");      
   tree_mm->Branch("MuFracCJ", &bdt_id_MuFracCJ, "MuFracCJ/F");      tree_ee->Branch("MuFracCJ", &bdt_id_MuFracCJ, "MuFracCJ/F");      
   tree_mm->Branch("JetDiscCJ", &bdt_id_JetDiscCJ, "JetDiscCJ/F");   tree_ee->Branch("JetDiscCJ", &bdt_id_JetDiscCJ, "JetDiscCJ/F");   
+  tree_mm->Branch("JetDiscCJCvsB", &bdt_id_JetDiscCJCvsB, "JetDiscCJCvsB/F");   tree_ee->Branch("JetDiscCJCvsB", &bdt_id_JetDiscCJCvsB, "JetDiscCJCvsB/F");
+  tree_mm->Branch("JetDiscCJCvsL", &bdt_id_JetDiscCJCvsL, "JetDiscCJCvsL/F");   tree_ee->Branch("JetDiscCJCvsL", &bdt_id_JetDiscCJCvsL, "JetDiscCJCvsL/F");
 
 
   // Electron Specific variables
@@ -113,6 +120,7 @@ void HNL_LeptonID_BDT_KinVar::SetupTrees(TTree* tree_mm, TTree* tree_ee){
   tree_ee->Branch("isEcalDriven", &bdt_id_isEcalDriven, "isEcalDriven/F");
   tree_ee->Branch("EoverP", &bdt_id_EoverP, "EoverP/F");
   tree_ee->Branch("FBrem", &bdt_id_FBrem, "FBrem/F");
+  tree_ee->Branch("Rho", &bdt_id_Rho, "Rho/F");
   tree_ee->Branch("InvEminusInvP", &bdt_id_InvEminusInvP, "InvEminusInvP/F");
   tree_ee->Branch("PassConversionVeto", &bdt_id_PassConversionVeto, "PassConversionVeto/F");
   tree_ee->Branch("ecalPFClusterIso", &bdt_id_ecalPFClusterIso, "ecalPFClusterIso/F");
@@ -147,9 +155,10 @@ void HNL_LeptonID_BDT_KinVar::executeEvent(){
 
   if(MCSample.Contains("TTLJ") && SeperatePrompt) {
     double r = ((double) rand() / (RAND_MAX));
-    if(r > 0.12) return;
-  }
 
+    if(!HasFlag("NoBJet") && (r > 0.12)) return;
+  }
+  
   AnalyzerParameter param_bdt = HNL_LeptonCore::InitialiseHNLParameter("BDT", "");
   
   Event ev = GetEvent();
@@ -169,7 +178,7 @@ void HNL_LeptonID_BDT_KinVar::executeEvent(){
     return;
   }
   
-  if(SeperateFakes){
+  if(SeperateFakes && !HasFlag("ByType")){
     weight  = 1.;//GetPrefireWeight(0) * GetPileUpWeight(nPileUp,0); 
     if(MCSample.Contains("TTL")) weight*= 0.5;
   }
@@ -289,6 +298,11 @@ void HNL_LeptonID_BDT_KinVar::executeEvent(){
 
     if(weight < 0) continue;
 
+    if(HasFlag("NoBJet") && SeperatePrompt){
+      std::vector<Jet>    AK4_BJetColl                = GetHNLJets("BJetM",     param_bdt);
+      if(AK4_BJetColl.size() > 0) return;
+    }
+    
     MakeTreeSS2L(dilep_channel, LepsT,MuonCollTSkim,ElectronCollTSkim, AK4_JetAllColl,  weight, "");
 
   }
@@ -316,119 +330,224 @@ void HNL_LeptonID_BDT_KinVar::MakeTreeSS2L(HNL_LeptonCore::Channel lep_channel,v
       weight_lep *= ScaleLepToSS("Fake",ismuon, lep->LeptonGenType());
     }
 
+    TString lep_fake_tag= "";
+    if(SeperateFakes) lep_fake_tag=  MatchGenDef(All_Gens, *lep);
 
-    if(SeperateFakes && HasFlag("HFB")){
-      std::vector<Jet>    AK4_JetAllColl = GetAllJets();
+    
+    if(HasFlag("ByType")){
+      if(SeperateFakes  && HasFlag("LF")){
+	
+	std::vector<Jet>    AK4_JetAllColl = GetAllJets();
+	
+	int JetHadFlavour = -999;
+	int IdxMatchJet=-1;
+	float mindR1=999.;
+	
+	for(unsigned int ij=0; ij<AK4_JetAllColl.size(); ij++){
+	  float dR1=lep->DeltaR(AK4_JetAllColl.at(ij));
+	  if(dR1>0.4) continue;
+	  if(dR1<mindR1){ mindR1=dR1; IdxMatchJet=ij; }
+	}
+	
+	if(IdxMatchJet!=-1)     JetHadFlavour = AK4_JetAllColl.at(IdxMatchJet).hadronFlavour();
+	else JetHadFlavour=-1;
+	
+	
+	if (JetHadFlavour != 0)  return;
+	if(lep->LeptonFlavour() == Lepton::MUON) {
+	  if (HasFlag("LFMother_1")  && lep_fake_tag!="q") return;
+          if (HasFlag("LFMother_not1")  && lep_fake_tag=="q") return;
+	  if (HasFlag("LFMother_2")  && !(lep_fake_tag=="K+" || lep_fake_tag=="pi+")) return;
+	  if (HasFlag("LFMother_not2")  && (lep_fake_tag=="K+" || lep_fake_tag=="pi+")) return;
+	  if (HasFlag("LFMother_3")  && !(lep_fake_tag=="g" )) return;
+	  if (HasFlag("LFMother_not3")  && (lep_fake_tag=="g" )) return;
+	}
+	
+	if(lep->LeptonFlavour() == Lepton::ELECTRON) {
+	  if (HasFlag("LFMother_1")  && !(lep_fake_tag=="q" || lep_fake_tag.Contains("pi0")) ) return;
+	  if (HasFlag("LFMother_not1")  && (lep_fake_tag=="q" || lep_fake_tag.Contains("pi0")) ) return;
+	  if (HasFlag("LFMother_2")  && lep_fake_tag!="ph") return;
+	  if (HasFlag("LFMother_not2")  && lep_fake_tag=="ph") return;
+          if (HasFlag("LFMother_3")  && lep_fake_tag!="g") return;
+          if (HasFlag("LFMother_not3")  && lep_fake_tag=="g") return;
 
-      int JetHadFlavour = -999;
-      int IdxMatchJet=-1;
-      float mindR1=999.;
-
-      for(unsigned int ij=0; ij<AK4_JetAllColl.size(); ij++){
-        float dR1=lep->DeltaR(AK4_JetAllColl.at(ij));
-        if(dR1>0.4) continue;
-        if(dR1<mindR1){ mindR1=dR1; IdxMatchJet=ij; }
+	}
       }
-      if(IdxMatchJet!=-1)     JetHadFlavour = AK4_JetAllColl.at(IdxMatchJet).hadronFlavour();
-      else JetHadFlavour=5;
       
-      if (JetHadFlavour != 5)  return;
-    }
-
-    if(SeperateFakes && HasFlag("HFC")){
-      std::vector<Jet>    AK4_JetAllColl = GetAllJets();
-
-      int JetHadFlavour = -999;
-      int IdxMatchJet=-1;
-      float mindR1=999.;
-
-      for(unsigned int ij=0; ij<AK4_JetAllColl.size(); ij++){
-        float dR1=lep->DeltaR(AK4_JetAllColl.at(ij));
-        if(dR1>0.4) continue;
-        if(dR1<mindR1){ mindR1=dR1; IdxMatchJet=ij; }
+      if(SeperateFakes && HasFlag("HFB")){
+	std::vector<Jet>    AK4_JetAllColl = GetAllJets();
+	
+	int JetHadFlavour = -999;
+	int IdxMatchJet=-1;
+	float mindR1=999.;
+	
+	for(unsigned int ij=0; ij<AK4_JetAllColl.size(); ij++){
+	  float dR1=lep->DeltaR(AK4_JetAllColl.at(ij));
+	  if(dR1>0.4) continue;
+	  if(dR1<mindR1){ mindR1=dR1; IdxMatchJet=ij; }
+	}
+	
+	if(IdxMatchJet!=-1)     JetHadFlavour = AK4_JetAllColl.at(IdxMatchJet).hadronFlavour();
+	else JetHadFlavour=-1;
+	
+	if (JetHadFlavour != 5)  return;
       }
-      if(IdxMatchJet!=-1)     JetHadFlavour = AK4_JetAllColl.at(IdxMatchJet).hadronFlavour();
-      else JetHadFlavour=0;
-
-      if (JetHadFlavour != 4)  return;
+      
+      if(SeperateFakes && HasFlag("ByType") && HasFlag("HFC")){
+	std::vector<Jet>    AK4_JetAllColl = GetAllJets();
+	
+	int JetHadFlavour = -999;
+	int IdxMatchJet=-1;
+	float mindR1=999.;
+	
+	for(unsigned int ij=0; ij<AK4_JetAllColl.size(); ij++){
+	  float dR1=lep->DeltaR(AK4_JetAllColl.at(ij));
+	  if(dR1>0.4) continue;
+	  if(dR1<mindR1){ mindR1=dR1; IdxMatchJet=ij; }
+	}
+	
+	if(IdxMatchJet!=-1)     JetHadFlavour = AK4_JetAllColl.at(IdxMatchJet).hadronFlavour();
+	else JetHadFlavour=-1;
+	
+	if (JetHadFlavour != 4)  return;
+	
+	if (HasFlag("HFMother_D0") && lep_fake_tag!="D0") return;
+	if (HasFlag("HFMother_Dplus") && lep_fake_tag!="D+") return;
+	if (HasFlag("HFMother_D") && lep_fake_tag!="D") return;
+      }
     }
-
-    if(SeperateFakes && HasFlag("LF")){
+    else {
+      if(SeperateFakes && HasFlag("HFB")){
+	std::vector<Jet>    AK4_JetAllColl = GetAllJets();
+	
+	int JetHadFlavour = -999;
+	int IdxMatchJet=-1;
+	float mindR1=999.;
+	
+	for(unsigned int ij=0; ij<AK4_JetAllColl.size(); ij++){
+	  float dR1=lep->DeltaR(AK4_JetAllColl.at(ij));
+	  if(dR1>0.4) continue;
+	  if(dR1<mindR1){ mindR1=dR1; IdxMatchJet=ij; }
+	}
+	if(IdxMatchJet!=-1)     JetHadFlavour = AK4_JetAllColl.at(IdxMatchJet).hadronFlavour();
+	else JetHadFlavour=-1;
+	
+	if (JetHadFlavour != 5)  return;
+      }
       
-      /// Remove some types of fakes based on SS  study
+      if(SeperateFakes && HasFlag("HFC")){
+	std::vector<Jet>    AK4_JetAllColl = GetAllJets();
+	
+	int JetHadFlavour = -999;
+	int IdxMatchJet=-1;
+	float mindR1=999.;
+	
+	for(unsigned int ij=0; ij<AK4_JetAllColl.size(); ij++){
+	  float dR1=lep->DeltaR(AK4_JetAllColl.at(ij));
+	  if(dR1>0.4) continue;
+	  if(dR1<mindR1){ mindR1=dR1; IdxMatchJet=ij; }
+	}
+	if(IdxMatchJet!=-1)     JetHadFlavour = AK4_JetAllColl.at(IdxMatchJet).hadronFlavour();
+	else JetHadFlavour=-1;
+	
+	if (JetHadFlavour != 4)  return;
+      }
       
-      if(lep->LeptonFlavour() == Lepton::MUON) {
-	if(MCSample.Contains("TT")){
-	  
-	  if(MatchGenDef(All_Gens, *lep) == "pi+"){
-	    double r = ((double) rand() / (RAND_MAX));
-	    if(r > 0.1) return;
+      if(SeperateFakes && HasFlag("LF")){
+	
+	/// Remove some types of fakes based on SS  study
+	
+	if(lep->LeptonFlavour() == Lepton::MUON) {
+	  if(MCSample.Contains("TT")){
+	    
+	    if(MatchGenDef(All_Gens, *lep) == "pi+"){
+	      double r = ((double) rand() / (RAND_MAX));
+	      if(r > 0.1) return;
+	    }
+	    if(MatchGenDef(All_Gens, *lep) == "electron"){
+	      double r = ((double) rand() / (RAND_MAX));
+	      if(r > 0.1) return;
+	    }
+	    if(MatchGenDef(All_Gens, *lep) == "K+"){
+	      double r = ((double) rand() / (RAND_MAX));
+	      if(r > 0.1) return;
+	    }
 	  }
-	  if(MatchGenDef(All_Gens, *lep) == "electron"){
-	    double r = ((double) rand() / (RAND_MAX));
-	    if(r > 0.1) return;
-	  }
-	  if(MatchGenDef(All_Gens, *lep) == "K+"){
-	    double r = ((double) rand() / (RAND_MAX));
-	    if(r > 0.1) return;
+	  else{
+	    if(MatchGenDef(All_Gens, *lep) == "pi+"){
+	      double r = ((double) rand() / (RAND_MAX));
+	      if(r > 0.05) return;
+	    }
+	    if(MatchGenDef(All_Gens, *lep) == "electron") return;
+	    if(MatchGenDef(All_Gens, *lep) == "K+") return;	
 	  }
 	}
 	else{
-	  if(MatchGenDef(All_Gens, *lep) == "pi+"){
-	    double r = ((double) rand() / (RAND_MAX));
-          if(r > 0.05) return;
+	  
+	  if(MCSample.Contains("TT")){
+	    
+	    if(MatchGenDef(All_Gens, *lep) == "pi+"){
+	      double r = ((double) rand() / (RAND_MAX));
+	      if(r > 0.1) return;
+	    }
+	    
+	    if(MatchGenDef(All_Gens, *lep) == "tau"){
+	      double r = ((double) rand() / (RAND_MAX));
+	      if(r > 0.1) return;
+	    }
 	  }
-	  if(MatchGenDef(All_Gens, *lep) == "electron") return;
-	  if(MatchGenDef(All_Gens, *lep) == "K+") return;	
+	  else{
+	    if(MatchGenDef(All_Gens, *lep) == "pi+"){
+	      double r = ((double) rand() / (RAND_MAX));
+	      if(r > 0.05) return;
+	    }
+	    
+	    if(MatchGenDef(All_Gens, *lep) == "tau"){
+	      double r = ((double) rand() / (RAND_MAX));
+	      if(r > 0.2) return;
+	    }
+	    if(MatchGenDef(All_Gens, *lep) == "__"){
+	      double r = ((double) rand() / (RAND_MAX));
+	      if(r > 0.2) return;
+	    }
+	  }
 	}
-      }
-      else{
 	
-	if(MCSample.Contains("TT")){
-
-          if(MatchGenDef(All_Gens, *lep) == "pi+"){
-            double r = ((double) rand() / (RAND_MAX));
-            if(r > 0.1) return;
-          }
-
-          if(MatchGenDef(All_Gens, *lep) == "tau"){
-            double r = ((double) rand() / (RAND_MAX));
-            if(r > 0.1) return;
-          }
-        }
-        else{
-          if(MatchGenDef(All_Gens, *lep) == "pi+"){
-            double r = ((double) rand() / (RAND_MAX));
-	    if(r > 0.05) return;
-          }
-
-	  if(MatchGenDef(All_Gens, *lep) == "tau"){
-            double r = ((double) rand() / (RAND_MAX));
-            if(r > 0.2) return;
-          }
-	  if(MatchGenDef(All_Gens, *lep) == "__"){
-            double r = ((double) rand() / (RAND_MAX));
-            if(r > 0.2) return;
-          }
-        }
+	
+	std::vector<Jet>    AK4_JetAllColl = GetAllJets();
+	
+	int JetHadFlavour = -999;
+	int IdxMatchJet=-1;
+	float mindR1=999.;
+	
+	for(unsigned int ij=0; ij<AK4_JetAllColl.size(); ij++){
+	  float dR1=lep->DeltaR(AK4_JetAllColl.at(ij));
+	  if(dR1>0.4) continue;
+	  if(dR1<mindR1){ mindR1=dR1; IdxMatchJet=ij; }
+	}
+	if(IdxMatchJet!=-1)     JetHadFlavour = AK4_JetAllColl.at(IdxMatchJet).hadronFlavour();
+	else JetHadFlavour=-1;
+	
+	if (JetHadFlavour != 0)  return;
       }
-      
-      
-      std::vector<Jet>    AK4_JetAllColl = GetAllJets();
-      
-      int JetHadFlavour = -999;
-      int IdxMatchJet=-1;
-      float mindR1=999.;
-
-      for(unsigned int ij=0; ij<AK4_JetAllColl.size(); ij++){
-        float dR1=lep->DeltaR(AK4_JetAllColl.at(ij));
-        if(dR1>0.4) continue;
-        if(dR1<mindR1){ mindR1=dR1; IdxMatchJet=ij; }
+    
+      if(SeperateFakes && HasFlag("LFAll")){
+	std::vector<Jet>    AK4_JetAllColl = GetAllJets();
+	
+	int JetHadFlavour = -999;
+	int IdxMatchJet=-1;
+	float mindR1=999.;
+	
+	for(unsigned int ij=0; ij<AK4_JetAllColl.size(); ij++){
+	  float dR1=lep->DeltaR(AK4_JetAllColl.at(ij));
+	  if(dR1>0.4) continue;
+	  if(dR1<mindR1){ mindR1=dR1; IdxMatchJet=ij; }
+	}
+	if(IdxMatchJet!=-1)     JetHadFlavour = AK4_JetAllColl.at(IdxMatchJet).hadronFlavour();
+	else JetHadFlavour=-1;
+	
+	if (JetHadFlavour != 0)  return;
       }
-      if(IdxMatchJet!=-1)     JetHadFlavour = AK4_JetAllColl.at(IdxMatchJet).hadronFlavour();
-      else JetHadFlavour=0;
-      
-      if (JetHadFlavour != 0)  return;
     }
     
     if(lep->LeptonFlavour() == Lepton::MUON) FillHist( "nPV_Muon", nPV ,weight, 100., 0., 100.);

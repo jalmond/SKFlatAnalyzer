@@ -1,3 +1,7 @@
+DoubleMuon:A
+DoubleMuon:B
+DoubleMuon:C
+DoubleMuon:D
 EGamma:A
 EGamma:B
 EGamma:C

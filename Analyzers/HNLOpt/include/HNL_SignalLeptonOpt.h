@@ -1,9 +1,9 @@
 #ifndef HNL_SignalLeptonOpt_h
 #define HNL_SignalLeptonOpt_h
 
-#include "HNL_RegionDefinitionsOpt.h"
+#include "HNL_RegionForLeptonOpt.h"
 
-class HNL_SignalLeptonOpt : public HNL_RegionDefinitionsOpt {
+class HNL_SignalLeptonOpt : public HNL_RegionForLeptonOpt {
 
  public:
 

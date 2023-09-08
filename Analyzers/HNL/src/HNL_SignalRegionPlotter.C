@@ -73,6 +73,7 @@ void HNL_SignalRegionPlotter::RunULAnalysis(AnalyzerParameter param){
   // veto leptons
   std::vector<Electron>   ElectronCollV = GetElectrons(param.Electron_Veto_ID, 10., 2.5); 
   std::vector<Muon>       MuonCollV     = GetMuons    (param.Muon_Veto_ID, 5., 2.4);
+  
 
   TString el_ID = (RunFake) ? param.Electron_FR_ID : param.Electron_Tight_ID ;
   TString mu_ID = (RunFake) ? param.Muon_FR_ID : param.Muon_Tight_ID ;
@@ -105,7 +106,7 @@ void HNL_SignalRegionPlotter::RunULAnalysis(AnalyzerParameter param){
   std::vector<Jet> JetCollLoose                   = GetHNLJets("Loose",param);
   std::vector<Jet> VBF_JetColl                    = GetHNLJets("VBFTight",param);
   std::vector<Jet> BJetColl                       = GetHNLJets("BJetM",param);
-  //  std::vector<Jet> BJetCollSR1                    = GetHNLJets("BJetT",param);
+
  
   Particle METv = GetvMET("PuppiT1xyULCorr",param); // returns MET with systematic correction; run this after all object selection done; NOTE that VBF jet is used here
 

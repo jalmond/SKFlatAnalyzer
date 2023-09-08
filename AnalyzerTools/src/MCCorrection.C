@@ -5323,7 +5323,8 @@ double MCCorrection::ElectronTrigger_SF(TString ID, TString trig, vector<double>
 
 
   }
-
+  
+  if(value == 0) return 1.;
   return value;
 
 }

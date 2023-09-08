@@ -17,8 +17,7 @@ void HNL_SignalStudies::initializeAnalyzer(){
 
 
 void HNL_SignalStudies::executeEvent(){
-  cout << run << endl;
-  return;
+
   AddTimerStamp("start_ev");
   
   FillTimer("START_EV");
@@ -28,6 +27,7 @@ void HNL_SignalStudies::executeEvent(){
 
   Event ev = GetEvent();
   double weight =SetupWeight(ev,param);
+  if(MCSample.Contains("WGToLNuG")) weight *= 0.5;
 
   FillHist ("ObjectCount/NoCut", 1, weight, 2, 0., 2.,"");
 
@@ -55,7 +55,7 @@ void HNL_SignalStudies::executeEvent(){
 
   FillTimer("SS_EV");
 
-  vector<HNL_LeptonCore::Channel> channels = {EE};//,MuMu};
+  vector<HNL_LeptonCore::Channel> channels = {EE,MuMu};
   
   for(auto dilep_channel : channels){
 
@@ -68,9 +68,7 @@ void HNL_SignalStudies::executeEvent(){
     if(dilep_channel == MuMu) PlotBDTVariablesMuon(param);
     if(dilep_channel == EE)   PlotBDTVariablesElectron(param);
     
-    continue;
-
-
+    
     FillTimer("START_RUN_"+channel);
     
     
@@ -83,6 +81,7 @@ void HNL_SignalStudies::executeEvent(){
     if(MCSample.Contains("SSWWType") && MCSample.Contains("private"))  MakeType1SSWWSignalPlots(channel, false);
     
   }
+
   Particle METv = GetvMET("PuppiT1xyCorr"); // returns MET with systematic correction                                                                                                    
   
   std::vector<Electron>   ElectronCollV = GetElectrons(param.Electron_Veto_ID, 10., 2.5);
@@ -92,10 +91,130 @@ void HNL_SignalStudies::executeEvent(){
   FillHist ("ObjectCount/NVetoElectron", ElectronCollV.size(), weight, 4, 0., 4.,"");
   
   std::vector<Lepton *> leps_veto  = MakeLeptonPointerVector(MuonCollV,ElectronCollV);
+
+
+  std::vector<Electron>   ElectronColl = GetElectrons("HNL_ULID_2017_OPT", 10., 2.5);
+  std::vector<Muon>       MuonColl     = GetMuons    ("HNL_ULID_2016", 10., 2.4);
+ 
+  std::vector<Lepton *> leps_tight  = MakeLeptonPointerVector(MuonColl,ElectronColl);
   
+
+  bool SSMuMu = (SameCharge(leps_tight) &&  SameCharge(leps_veto) && leps_tight[0]->Pt() > 20 && leps_tight[1]->Pt() > 10);
+  bool SSEE = (SameCharge(leps_tight) &&  SameCharge(leps_veto) && leps_tight[0]->Pt() > 25 && leps_tight[1]->Pt() > 15);
+  
+  for(auto ilep : leps_tight){
+    TString tag= ilep->LepGenTypeString();
+    TString etabin = (fabs(ilep->Eta()) < 1.5) ? "BB_" : "EC_";
+    vector<TString> Tags = {tag+etabin+"/MVA_"};
+    for(auto i  : Tags){
+      
+      if(i.Contains("Pileup")) continue;
+      if(i.Contains("IsEWtau")) continue;
+      if(i.Contains("IsCF") && !i.Contains("IsPrompt")) continue;
+      if(i.Contains("LF") && !i.Contains("IsFake")) continue;
+      if(i.Contains("HF") && !i.Contains("IsFake")) continue;
+      
+      map<TString, double> mapBDT = ilep->MAPBDT();
+      for(auto imap : mapBDT )  FillHist("BDTVariables/"+ ilep->GetFlavour()+ "/"+ i+"_"+imap.first, imap.second  , weight, 200, -1., 1);
+    }
+  }
+  
+  
+  for(auto ilep : MuonColl){
+    TString tag= ilep.LepGenTypeString();
+    TString etabin = (fabs(ilep.Eta()) < 1.5) ? "BB_" : "EC_";
+    TString ptbin = "Ptlt20_";
+    if(ilep.Pt() < 15) ptbin = "Ptlt15_";
+    else if(ilep.Pt() < 20) ptbin = "Ptlt20_";
+    else if(ilep.Pt() < 50) ptbin = "Ptlt50_";
+    else if(ilep.Pt() < 200) ptbin = "Ptlt100_";
+    else  ptbin = "Ptgt100_";
+
+    vector<TString> Tags = {tag+etabin+"/MVA_", tag+etabin+ptbin+"/MVA_"};
+    for(auto i  : Tags){
+      
+      if(i.Contains("Pileup")) continue;
+      if(i.Contains("IsEWtau")) continue;
+      if(i.Contains("IsCF") && !i.Contains("IsPrompt")) continue;
+      if(i.Contains("LF") && !i.Contains("IsFake")) continue;
+      if(i.Contains("HF") && !i.Contains("IsFake")) continue;
+      
+      if(SSMuMu)FillMuonKinematicPlots(i,"Muon_SS",ilep,weight);
+      FillMuonKinematicPlots(i,"Muon",ilep,weight);
+     }
+  }
+  for(auto ilep : ElectronColl){
+    TString tag= ilep.LepGenTypeString();
+    TString etabin = (fabs(ilep.Eta()) < 1.5) ? "BB_" : "EC_";
+
+    TString ptbin = "Ptlt20_";
+    if(ilep.Pt() < 15) ptbin = "Ptlt15_";
+    else if(ilep.Pt() < 20) ptbin = "Ptlt20_";
+    else if(ilep.Pt() < 50) ptbin = "Ptlt50_";
+    else if(ilep.Pt() < 200) ptbin = "Ptlt100_";
+    else  ptbin = "Ptgt100_";
+
+    vector<TString> Tags = {tag+etabin+"/MVA_", tag+etabin+ptbin+"/MVA_"};
+
+    for(auto i  : Tags){
+      
+      if(i.Contains("Pileup")) continue;
+      if(i.Contains("IsEWtau")) continue;
+      if(i.Contains("IsCF") && !i.Contains("IsPrompt")) continue;
+      if(i.Contains("LF") && !i.Contains("IsFake")) continue;
+      if(i.Contains("HF") && !i.Contains("IsFake")) continue;
+      
+      if(SSEE)FillElectronKinematicPlots(i,"Electron_SS",ilep,weight);
+      FillElectronKinematicPlots(i, "Electron",ilep,weight);
+    }
+  }
+
+    
+  
+  
+  
+  if(SameCharge(ElectronCollV)){
+    Particle Z = *leps_veto[0] + *leps_veto[1];
+    vector<TString>  IDList = {"HNTightV2",
+			       "MVAID",
+			       "HNL_ULID_2016",
+			       "HNL_ULID_2016_OPT",
+			       "HNL_ULID_2016_OPTv2",
+			       "HNL_ULID_2017_OPT",
+			       "HNL_ULID_2018_OPT",
+    };
+    for(auto i : IDList){
+      double Zmass = (Z.M() > 400) ? 399 : Z.M();
+      if(fabs(Z.M() - 90) > 10){
+	if(ElectronCollV[0].PassID(i) && ElectronCollV[1].PassID(i) )    FillHist("Mass/"+i+"_ll_mass" , Zmass , weight, 100, 0., 400);
+      }
+    }
+  }
+
+
+  if(SameCharge( MuonCollV)){
+    Particle Z = *leps_veto[0] + *leps_veto[1];
+    vector<TString>  IDList = {"HNTightV2",
+                               "MVAID",
+                               "HNL_ULID_LF",
+                               "HNL_ULID_2017"
+    };
+    for(auto i : IDList){
+      double Zmass = (Z.M() > 400) ? 399 : Z.M();
+      if(fabs(Z.M() - 90) > 10){
+        if(MuonCollV[0].PassID(i) && MuonCollV[1].PassID(i) )    FillHist("MuonMass/"+i+"_ll_mass" , Zmass , weight, 100, 0., 400);
+      }
+    }
+  }
+
+
+  
+  
+  return;
+ 
   AddTimerStamp("start_limit_Code");
   
-  std::vector<FatJet> AK8_JetColl                 = GetHNLAK8Jets("HNL",param);
+  std::vector<FatJet> AK8_JetColl                 = GetHNLAK8Jets("HNL_PNL",param);
   std::vector<Jet> AK4_JetAllColl                 = GetHNLJets("NoCut_Eta3",param);
   std::vector<Jet> JetColl                        = GetHNLJets("Tight",param);
   std::vector<Jet> JetCollLoose                   = GetHNLJets("Loose",param);
@@ -103,10 +222,10 @@ void HNL_SignalStudies::executeEvent(){
   std::vector<Jet> BJetColl                       = GetHNLJets("BJetM",param);
   std::vector<Jet> BJetCollSR1                    = GetHNLJets("BJetT",param);
   std::vector<Tau> TauColl                        = GetTaus     (leps_veto,param.Tau_Veto_ID,20., 2.3);
-  
+
   vector<TString>  IDList = {"HNTightV2",
 			     "MVAID",
-			     "HNL_ULID_2016"};
+			     "HNL_ULID_2017"};
   
   TString pnameD = param.DefName;
   TString pname = param.Name;
@@ -142,10 +261,26 @@ void HNL_SignalStudies::PlotBDTVariablesMuon(AnalyzerParameter param){
 
   HNL_LeptonCore::Channel dilep_channel = MuMu;
 
+  TString channel_string = GetChannelString(dilep_channel) ;
+  vector<TString>  IDList = {"HNTightV2",
+                             "MVAID",
+                             "HNL_ULID_2017"};
+
+
+  if(SameCharge(MuonCollProbe)) {
+    if(MuonCollProbe[0].Pt() > 20 &&  MuonCollProbe[1].Pt() > 10) {
+
+      for (auto ID: IDList){
+	if(MuonCollProbe[0].PassID(ID) && MuonCollProbe[1].PassID(ID))     FillHist("ID/"+ID+"_"+channel_string+"_nev" , 1 , weight, 2, 0., 2);
+      }
+    }
+  }
+  else return ;
+
 
   for(auto imu : MuonCollProbe){
 
-    TString channel_string = GetChannelString(dilep_channel) ;
+
 
     if(!imu.PassID("MVALoose")) continue;
 
@@ -179,19 +314,18 @@ void HNL_SignalStudies::PlotBDTVariablesMuon(AnalyzerParameter param){
       map<TString, double> mapBDT = imu.MAPBDT();
 
       for(auto imap : mapBDT )	{
+
 	FillHist("PlotBDTVariables/"+channel_string+i+"_"+imap.first, imap.second , weight, 200, -1., 1);
-	if(imap.second > 0.)  FillHist("PlotBDTVariables/"+channel_string+i+"HFvar__LFcut_"+imap.first, imu.MVA() , weight, 200, -1., 1);
-	if(imu.MVA() > 0.5)  FillHist("PlotBDTVariables/"+channel_string+i+"LFVar__HFcut_"+imap.first+"_mvacut", imap.second , weight, 200, -1., 1);
+	if(!imu.PassID("HNL_ULID_2017") )     FillHist("PlotBDTVariablesFail/"+channel_string+i+"_"+imap.first+"_"+channel_string, imap.second , weight, 200, -1., 1);
+
 	if(SameCharge(MuonCollProbe)) {
 	  FillHist("PlotBDTVariables/SS_"+channel_string+i+"_"+imap.first, imap.second , weight, 200, -1., 1);
-	  if(imap.second > 0.)  FillHist("PlotBDTVariables/SS_"+channel_string+i+"HFvar__LFcut_"+imap.first, imu.MVA() , weight, 200, -1., 1);
-	  if(imu.MVA() > 0.5)  FillHist("PlotBDTVariables/SS_"+channel_string+i+"LFVar__HFcut_"+imap.first+"_mvacut", imap.second , weight, 200, -1., 1);
 	}
       }
-      FillHist("PlotBDTVariables/"+channel_string+i+"Fake_"+channel_string, imu.MVA() , weight, 200, -1., 1);
-      
+
       if(SameCharge(MuonCollProbe)) FillHist("PlotBDTVariables/SS_"+channel_string+i+"Fake_"+channel_string, imu.MVA() , weight, 200, -1., 1);
-      if(imu.MVA() > 0.5 && imu.HNL_MVA_Fake("v3") > 0.2)FillMuonKinematicPlots("muon_"+i, "PassMVA", imu, weight);
+   
+
       
     }
   }
@@ -206,16 +340,25 @@ void HNL_SignalStudies::PlotBDTVariablesElectron(AnalyzerParameter param){
 
   HNL_LeptonCore::Channel dilep_channel= EE;
 
+  vector<TString>  IDList = {"HNTightV2",
+                             "MVAID",
+                             "HNL_ULID_2017"};
+  
+  
+  TString channel_string = GetChannelString(dilep_channel) ;
+  if(SameCharge(ElectronCollProbe)) {
+    if(ElectronCollProbe[0].Pt() > 25 &&  ElectronCollProbe[1].Pt() > 15) {
+
+      
+      for (auto ID: IDList){
+        if(ElectronCollProbe[0].PassID(ID) && ElectronCollProbe[1].PassID(ID))     FillHist("ID/"+ID+"_"+channel_string+"_nev" , 1 , weight, 2, 0., 2);
+      }
+    }
+  }
+  else return;
+
+
   for(auto iel : ElectronCollProbe){
-
-    TString channel_string = GetChannelString(dilep_channel) ;
-
-    FillHist("PlotBDTVariables/ElectronIDPlots/"+channel_string+"_MiniIso",iel.MiniRelIso() , weight, 200, 0., 5);
-    FillHist("PlotBDTVariables/ElectronIDPlots/"+channel_string+"_NMissingHits",iel.NMissingHits() , weight, 5, 0., 5);
-    FillHist("PlotBDTVariables/ElectronIDPlots/"+channel_string+"_SIP3D",iel.SIP3D() , weight, 200, -10., 10);
-    FillHist("PlotBDTVariables/ElectronIDPlots/"+channel_string+"_fdXY",iel.fdXY() , weight, 1000, -0.5, 0.5);
-    FillHist("PlotBDTVariables/ElectronIDPlots/"+channel_string+"_fdZ",iel.fdZ() , weight, 1000, -0.5, 0.5);
-    FillHist("PlotBDTVariables/ElectronIDPlots/"+channel_string+"_Pass_TriggerEmulationLoose",iel.Pass_TriggerEmulationLoose() , weight, 2, 0., 2);
 
     if(!iel.PassID("MVALoose")) continue;
 
@@ -234,7 +377,7 @@ void HNL_SignalStudies::PlotBDTVariablesElectron(AnalyzerParameter param){
 			    tag+etabin+"/El_MVA_",
                             tag+etabin+iel.CloseJet_Flavour()+"/El_MVA_",
 			    tag+etabin+ptbin+"/El_MVA_",
-                            tag+etabin+ptbin+iel.CloseJet_Flavour()+"/El_MVA_",
+                            //tag+etabin+ptbin+iel.CloseJet_Flavour()+"/El_MVA_",
 		    
     };
 
@@ -249,15 +392,20 @@ void HNL_SignalStudies::PlotBDTVariablesElectron(AnalyzerParameter param){
       map<TString, double> mapBDT = iel.MAPBDT();
 
       for(auto imap : mapBDT ){
+
 	FillHist("PlotBDTVariables/"+channel_string+i+"_"+imap.first+"_"+channel_string, imap.second , weight, 200, -1., 1);
-	if(SameCharge(ElectronCollProbe))FillHist("PlotBDTVariables/SS_"+channel_string+i+"_"+imap.first+"_"+channel_string, imap.second , weight, 200, -1., 1);
 
+	if(iel.PassID("HNL_ULID_2017") ) 
+	  FillHist("PlotBDTVariables/HNL_ULID_2017/"+channel_string+i+"_"+imap.first+"_"+channel_string, imap.second , weight, 200, -1., 1);
+
+	else           FillHist("PlotBDTVariablesl/Fail_HNL_ULID_2017/"+channel_string+i+"_"+imap.first+"_"+channel_string, imap.second , weight, 200, -1., 1);
+	
+	
+	if(SameCharge(ElectronCollProbe)){
+	    FillHist("PlotBDTVariables/SS_"+channel_string+i+"_"+imap.first+"_"+channel_string, imap.second , weight, 200, -1., 1);
+	    
+	}
       }
-
-      
-      if(iel.HNL_MVA_Fake("v4_LF") > 0. && iel.HNL_MVA_Fake("v4_HF") > 0. && iel.HNL_MVA_Conv("v2") > -0.7 && iel.HNL_MVA_CF("v2") > 0.5 )   FillElectronKinematicPlots("electron_"+i, "PassMVA", iel, weight);
-      
-      
     } 
   }
   

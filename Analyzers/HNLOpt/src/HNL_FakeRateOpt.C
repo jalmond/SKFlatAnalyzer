@@ -1111,7 +1111,7 @@ void HNL_FakeRateOpt::GetFakeRates(std::vector<Lepton *> leps,std::vector<bool> 
   float lep_eta =   fabs(leps[0]->Eta());
   float lep_reliso  = leps[0]->RelIso();
   float lep_ip3d    = fabs(leps[0]->IP3D()/leps[0]->IP3Derr());
-  float lep_mva     =  leps[0]->lep_mva();
+  float lep_mva     =  leps[0]->LepMVA();
   float lep_dxy     = fabs(leps[0]->dXY());
   if(lep_pt_corr > 100.) lep_pt_corr = 99.;
 
@@ -1282,7 +1282,7 @@ void HNL_FakeRateOpt::FillRegionPlots( TString plot_dir, TString region,  std::v
   float lep_reliso  = lep1.RelIso();
   float lep_minireliso  = lep1.MiniRelIso();
   float lep_ip3d    = fabs(lep1.IP3D()/lep1.IP3Derr());
-  float lep_mva     =  lep1.lep_mva();
+  float lep_mva     =  lep1.LepMVA();
   float lep_dxy     = fabs(lep1.dXY());
 
   if(els.size() > 0)   FillHist( plot_dir +  "/RegionPlots_"+ region+ "/NMissingHits", els[0].NMissingHits(), w, 5, 0., 5.);

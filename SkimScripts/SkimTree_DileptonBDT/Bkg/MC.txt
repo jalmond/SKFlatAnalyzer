@@ -1,7 +1,6 @@
 DYJets
 TTLL_powheg
 TTLJ_powheg
-SingleTop_sch_Lep
 SingleTop_tch_antitop_Incl
 SingleTop_tch_top_Incl
 WJets_MG

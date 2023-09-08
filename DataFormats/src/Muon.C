@@ -262,6 +262,47 @@ bool Muon::PassID(TString ID) const {
     return true;
   }
 
+  if(ID=="HNL_HF_v1") {
+    if(!PassID("MVALoose")) return false;
+    if(MVA() < 0.1)  return false;
+    return true;
+  }
+  if(ID=="HNL_HF_v2") {
+    if(!PassID("MVALoose")) return false;
+    if(MVA() < 0.2)  return false;
+    return true;
+  }
+  if(ID=="HNL_HF_v3") {
+    if(!PassID("MVALoose")) return false;
+    if(MVA() < 0.3)  return false;
+    return true;
+  }
+  if(ID=="HNL_HF_v4") {
+    if(!PassID("MVALoose")) return false;
+    if(MVA() < 0.4)  return false;
+    return true;
+  }
+
+  if(ID=="HNL_LF_v1") {
+    if(!PassID("MVALoose")) return false;
+    if(HNL_MVA_Fake("EDv4")  < 0.1)  return false;
+    return true;
+  }
+  if(ID=="HNL_LF_v2") {
+    if(!PassID("MVALoose")) return false;
+    if(HNL_MVA_Fake("EDv4") < 0.2)  return false;
+    return true;
+  }
+  if(ID=="HNL_LF_v3") {
+    if(!PassID("MVALoose")) return false;
+    if(HNL_MVA_Fake("EDv4") < 0.3)  return false;
+    return true;
+  }
+  if(ID=="HNL_LF_v4") {
+    if(!PassID("MVALoose")) return false;
+    if(HNL_MVA_Fake("EDv4") < 0.4)  return false;
+    return true;
+  }
 
 
   //==== Customized
@@ -300,7 +341,36 @@ bool Muon::PassID(TString ID) const {
   }
 
 
+  if(ID.Contains("HNL_ULID_LF")){
+
+    if(!PassID("MVALoose")) return false;
+
+    if( fabs(this->Eta()) <= 1.479 ){
+      if(MVA() < 0.4)  return false;
+    }
+    else{
+      if(MVA() < 0.6)  return false;
+    }
+
+    if(HNL_MVA_Fake("EDv4") < 0) return false;
+
+    return true;
+  }
+
   /////////// FINAL UL HNL Type-1 ID                                                                                                                                                                                                                                                                                          
+  if(ID.Contains("HNL_ULID_2016_L")){
+    
+    if(!PassID("MVALoose")) return false;
+
+    if( fabs(this->Eta()) <= 1.479 ){
+      if(MVA() < 0.75)  return false;
+    }
+    else{
+      if(MVA() < 0.72)  return false;
+    }
+    return true;
+  }
+
 
   if(ID=="HNL_ULID_2016"){
 
@@ -309,11 +379,12 @@ bool Muon::PassID(TString ID) const {
     if(fabs(dXY()) >  0.05)   return false;
     if(fabs(dZ()) >  0.1)   return false;
     if(fabs(IP3D()/IP3Derr()) > 7) return false;
-
-
+    ///if(!( RelIso()<0.15 ))  return false;
+    if(fabs(dXY()) > 0.01)   return false;
+    if(fabs(dZ()) >  0.05)   return false;
+        
     return true;
   }
-
 
   if(ID=="HNL_ULID_2017")  {
 
@@ -583,6 +654,30 @@ bool Muon::PassID(TString ID) const {
     return true;
   }
 
+
+
+  if(ID.Contains("HNL_LFULID_2017"))  {
+
+    if(!PassID("MVALoose")) return false;
+
+    if( fabs(this->Eta()) <= 1.479 ){
+      if(MVA() < 0.68) {
+	if(HNL_MVA_Fake("EDv4") < -0.6) return false;
+      }
+    }
+    else{
+      if(MVA() < 0.64)  {
+        if(HNL_MVA_Fake("EDv4") < -0.6) return false;
+      }
+    }
+
+
+    if(fabs(dXY()) >  0.05)   return false;
+    if(fabs(dZ()) >  0.1)   return false;
+    if(fabs(IP3D()/IP3Derr()) > 7) return false;
+
+    return true;
+  }
 
 
   //// Following are functions to test UL UDs
@@ -1144,7 +1239,8 @@ bool Muon::Pass_HNVeto2016() const {
   //  if(Pass_POGHighPtTight()) return true;
   if(!( isPOGLoose() )) return false;
   if(!( fabs(dXY())<0.2 && fabs(dZ())<0.5) ) return false;
-  if(!( RelIso()<0.6 ))  return false;
+  if(MiniRelIso() > 0.4) return false; /// chnage to be consistent with loose mva 
+  //if(!( RelIso()<0.6 ))  return false;
   if(!( Chi2()<50. )) return false;
   return true;
 }

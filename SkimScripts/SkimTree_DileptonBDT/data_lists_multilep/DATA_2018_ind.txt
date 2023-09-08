@@ -1,6 +1,1 @@
-SingleMuon:D
-EGamma:D
-DoubleMuon:A
-DoubleMuon:B
-DoubleMuon:C
 DoubleMuon:D

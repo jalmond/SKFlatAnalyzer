@@ -4,6 +4,7 @@ ClassImp(Jet)
 
 Jet::Jet() : Particle() {
   j_area=-999.;
+  j_issmeared=false;
   j_partonFlavour=-999;
   j_hadronFlavour=-999;
   j_GenHFHadronMatcher_flavour=-999;

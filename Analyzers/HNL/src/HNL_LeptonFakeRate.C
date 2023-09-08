@@ -1439,7 +1439,7 @@ void HNL_LeptonFakeRate::GetFakeRates(std::vector<Lepton *> leps,std::vector<boo
   float lep_eta =   fabs(leps[0]->Eta());
   float lep_reliso  = leps[0]->RelIso();
   float lep_ip3d    = fabs(leps[0]->IP3D()/leps[0]->IP3Derr());
-  float lep_mva     =  leps[0]->lep_mva();
+  float lep_mva     =  leps[0]->LepMVA();
   float lep_dxy     = fabs(leps[0]->dXY());
   
   //if(lep_pt > 60.) lep_pt = 59;
@@ -1524,26 +1524,30 @@ void HNL_LeptonFakeRate::GetFakeRates(std::vector<Lepton *> leps,std::vector<boo
   double ptmin    = IsMuon ? 10 : 10;
 
   for(int ilep = 0 ; ilep < 2; ilep++)  {
+
     TString prefix = (ilep==0) ? L_prefix : T_prefix;
     if((ilep==1) && !(blepsT[0])) continue;
-    //if(!IsDATA){ if(leps[0]->LepGenTypeString()!="IsPrompt") continue; }
-    //if(lep_pt > ptmin){
-    //  FillHist((prefix + "_reliso").Data(), lep_reliso, weight_pt*prescale_lep, 50, 0., 1.);
-    //  FillHist((prefix + "_dXY").Data(),    lep_dxy, weight_pt*prescale_lep, 50, 0., 1.);
-    //  FillHist((prefix + "_IP3D").Data(),   lep_ip3d, weight_pt*prescale_lep, 50, 0., 10.);
-    //  FillHist((prefix + "_mva").Data(),    lep_mva, weight_pt*prescale_lep, 50, -1., 1.);
-    //  FillHist((prefix + "_pt_eta").Data(), lep_pt, lep_eta,weight_pt*prescale_lep, nbin_pt, ptbins, nbin_eta , etabins);
-    //  FillHist((prefix + "_pt").Data(),     lep_pt, weight_pt*prescale_lep, nbin_pt, ptbins, "p_{T} (GeV)");
-    //  FillHist((prefix + "_eta").Data(),    lep_eta, weight_pt*prescale_lep , nbin_eta, etabins,"#eta");
-    //  if(BJetColl.size()==0){
-    //    FillHist((prefix + "_0BJet_pt").Data(),     lep_pt, weight_pt*prescale_lep, nbin_pt, ptbins, "p_{T} (GeV)");
-    //    FillHist((prefix + "_0BJet_eta").Data(),    lep_eta, weight_pt*prescale_lep , nbin_eta, etabins,"#eta");
-    //  }
-    //  else{
-    //    FillHist((prefix + "_BJet_pt").Data(),     lep_pt, weight_pt*prescale_lep, nbin_pt, ptbins, "p_{T} (GeV)");
-    //    FillHist((prefix + "_BJet_eta").Data(),    lep_eta, weight_pt*prescale_lep , nbin_eta, etabins,"#eta");
-    //  }
-    //}
+    
+    if(lep_pt > ptmin){
+
+      if(param.WriteOutVerbose ==  -3){
+	FillHist((prefix + "_reliso").Data(), lep_reliso, weight_pt*prescale_lep, 50, 0., 1.);
+	FillHist((prefix + "_dXY").Data(),    lep_dxy, weight_pt*prescale_lep, 50, 0., 1.);
+	FillHist((prefix + "_IP3D").Data(),   lep_ip3d, weight_pt*prescale_lep, 50, 0., 10.);
+	FillHist((prefix + "_mva").Data(),    lep_mva, weight_pt*prescale_lep, 50, -1., 1.);
+	FillHist((prefix + "_pt_eta").Data(), lep_pt, lep_eta,weight_pt*prescale_lep, nbin_pt, ptbins, nbin_eta , etabins);
+	FillHist((prefix + "_pt").Data(),     lep_pt, weight_pt*prescale_lep, nbin_pt, ptbins, "p_{T} (GeV)");
+	FillHist((prefix + "_eta").Data(),    lep_eta, weight_pt*prescale_lep , nbin_eta, etabins,"#eta");
+	if(BJetColl.size()==0){
+	  FillHist((prefix + "_0BJet_pt").Data(),     lep_pt, weight_pt*prescale_lep, nbin_pt, ptbins, "p_{T} (GeV)");
+	  FillHist((prefix + "_0BJet_eta").Data(),    lep_eta, weight_pt*prescale_lep , nbin_eta, etabins,"#eta");
+	}
+	else{
+	  FillHist((prefix + "_BJet_pt").Data(),     lep_pt, weight_pt*prescale_lep, nbin_pt, ptbins, "p_{T} (GeV)");
+	  FillHist((prefix + "_BJet_eta").Data(),    lep_eta, weight_pt*prescale_lep , nbin_eta, etabins,"#eta");
+	}
+      }    
+    }
     if(fill_plot) {
       FillProf((prefix + "_MVA_PtPartonUncorr").Data(), lep_mva, PtPartonUncorr, weight_ptcorr, 200, -1, 1);
       FillHist((prefix + "_PtPartonUncorr_eta").Data(), PtPartonUncorr, lep_eta,  weight_ptcorr, nbin_pt, ptbins, nbin_eta , etabins);
@@ -1647,7 +1651,7 @@ void HNL_LeptonFakeRate::FillRegionPlots( TString plot_dir, TString region,  std
   float lep_reliso  = lep1.RelIso();
   float lep_minireliso  = lep1.MiniRelIso();
   float lep_ip3d    = fabs(lep1.IP3D()/lep1.IP3Derr());
-  float lep_mva     =  lep1.lep_mva();
+  float lep_mva     =  lep1.LepMVA();
   float lep_dxy     = fabs(lep1.dXY());
 
   if(els.size() > 0)   FillHist( plot_dir +  "/RegionPlots_"+ region+ "/NMissingHits", els[0].NMissingHits(), w, 5, 0., 5.);

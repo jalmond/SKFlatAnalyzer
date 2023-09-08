@@ -12,6 +12,13 @@ public:
   ~Electron();
 
   void  PrintObject(TString label);
+  
+
+  inline bool IsIB() const { return (Lepton::Region(fabs(this->scEta())) == 1); }
+  inline bool IsOB() const { return (Lepton::Region(fabs(this->scEta())) == 2); }
+  inline bool IsEC() const { return (Lepton::Region(fabs(this->scEta())) == 3); }
+  inline bool IsBB() const { return (Lepton::Region(fabs(this->scEta())) < 3); }
+
 
   void SetEnShift(double en_up, double en_down);
   inline double EnShift(int s) const {
@@ -32,35 +39,12 @@ public:
   inline double scE() const { return j_scE; }
 
 
-  // MVA
+  ///////// ELECTRON MVA FUNCTIONS 
+
+  // MVA                                                                                                                                                                                                                                                                  
   void SetMVA(double mvaiso, double mvanoiso);
   inline double MVAIso() const { return j_mvaiso; }
   inline double MVANoIso() const { return j_mvanoiso; }
-
-
-  inline bool PassCFMVA(double val, double mva1, double mva2) {
-    if(fabs(j_scEta) <= 1.5 && val > mva1) return true;
-    if(fabs(j_scEta) > 1.5 && val > mva2) return true;
-
-    return false;
-
-  }
-
-  inline bool PassConvMVA(double val, double mva1, double mva2) {
-    if(fabs(j_scEta) <= 1.5 && val > mva1) return true;
-    if(fabs(j_scEta) > 1.5 && val > mva2) return true;
-
-    return false;
-
-  }
-
-  inline bool PassFakeMVA(double val, double mva1, double mva2) {
-    if(fabs(j_scEta) <= 1.5 && val > mva1) return true;
-    if(fabs(j_scEta) > 1.5 && val > mva2) return true;
-
-    return false;
-
-  }
 
   inline bool PassMVANoIsoResponse(double A, double B, double C){
     double mva_resp = MVANoIsoResponse();
@@ -77,6 +61,7 @@ public:
     return false;
   }
 
+  
   inline double MVANoIsoResponseV1() const {
 
     if (j_mvanoiso == 1.) return 8;
@@ -139,15 +124,6 @@ public:
   bool PassMVA_UL_CF(TString val1, TString val2, TString ptboundary)const ;
   bool PassMVA_UL_Conv(TString pt,TString bb1, TString bb2, TString ee1, TString ee2)const ;
   double PassStepCut(double val, double val2, double pt1, double pt2) const;
-
-
-  inline bool PassIP(double A , double B) const{
-    double cut = A   +  ((B-A) * ( Pt()-10)) / 50;
-    if  (Pt() > 59) cut = B;
-
-    if(fabs(IP3D()/IP3Derr()) < cut) return true;
-    return false;
-  }
 
   void SetUncorrE(double une);
   inline double UncorrE() const { return j_EnergyUnCorr; }
@@ -347,6 +323,7 @@ public:
   int  PassIDOpt(TString ID) const;
   int  PassIDLoose(TString ID) const;
   int  PassIDTight(TString ID) const;
+  int  PassIDStudy(TString ID) const;
 
 
   bool Pass_TESTID() const;
@@ -366,6 +343,10 @@ public:
 
   inline void SetR9(double r9) { j_r9=r9; }
   inline double R9() const { return j_r9; }
+
+  inline void  SetpsEoverEraw(double psE) {j_psEoverEraw=psE;}
+  inline double psEoverEraw() const { return j_psEoverEraw;}
+
   inline void SetL1Et(double l1et) { j_L1Et=l1et; }
   inline double L1Et() const { return j_L1Et; }
 
@@ -395,7 +376,7 @@ private:
   vector<int> j_IDCutBit;
   double j_RelPFIso_Rho;
 
-  double j_Rho ,j_r9;
+  double j_Rho ,j_r9, j_psEoverEraw;
   
 
   int j_isGsfCtfScPixChargeConsistent,j_isGsfScPixChargeConsistent,j_isGsfCtfChargeConsistent;

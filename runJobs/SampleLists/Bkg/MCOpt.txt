@@ -3,8 +3,6 @@ ttZToLLNuNu
 WWW
 WWZ
 WZZ
-WpWp_EWK
-WpWp_QCD
 WZTo3LNu_amcatnlo
 ZZZ
 GluGluHToZZTo4L

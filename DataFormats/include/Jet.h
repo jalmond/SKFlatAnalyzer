@@ -16,6 +16,10 @@ public:
   void SetGenFlavours(int pf, int hf);
   inline int partonFlavour() const { return j_partonFlavour; }
   inline int hadronFlavour() const { return j_hadronFlavour; }
+  
+  inline void SetIsSmeared(bool b)  {j_issmeared = b; }
+  inline bool IsSmeared() const {return j_issmeared;}
+
   void SetGenHFHadronMatcher(int flavour, int origin);
   inline int GenHFHadronMatcherFlavour() const { return j_GenHFHadronMatcher_flavour; }
   inline int GenHFHadronMatcherOrigin() const { return j_GenHFHadronMatcher_origin; }
@@ -29,12 +33,14 @@ public:
   inline double MuonEnergyFraction() const { return j_muonEnergyFraction;}
 
   inline double NVtxTracks() const { return j_nvtx_tracks;}
+
   void SetNTracks(double v);
 
   void SetJEC(double l1, double full);
   inline double JEC_L1() const {return j_jec_l1;}
   inline double JEC_Full() const {return j_jec_full;}
-
+  
+  
   void SetMultiplicities(double cM, double nM);
   void SetPileupJetId(double v);
   inline double PileupJetId() const { return j_PileupJetId; }
@@ -50,6 +56,12 @@ public:
   void SetRes(double res);
   void SetPxUnSmeared(double px);
   void SetPyUnSmeared(double py);
+
+  inline double JECfactor(){
+    double RAWE = sqrt(j_PxUnSmeared*j_PxUnSmeared + j_PyUnSmeared *j_PyUnSmeared) / j_jec_full ;
+    
+    return RAWE/this->Pt();
+  }
 
   inline double ResShift(int s) const {
     if(s==0) return 1.;
@@ -71,6 +83,10 @@ public:
   inline double Res() const { return j_Res;}
   inline double PxUnSmeared()  const { return j_PxUnSmeared;}
   inline double PyUnSmeared()  const { return j_PyUnSmeared;}
+
+  inline int NMult() const { return j_neutralMultiplicity;}
+  inline int CHMult() const { return j_chargedMultiplicity;}
+
   bool Pass_HNTight() const;
 
   bool PassID(TString ID) const;
@@ -82,6 +98,7 @@ public:
 private:
 
   double  j_area;
+  bool j_issmeared;
   int j_partonFlavour;
   int j_hadronFlavour;
   double  j_PxUnSmeared;

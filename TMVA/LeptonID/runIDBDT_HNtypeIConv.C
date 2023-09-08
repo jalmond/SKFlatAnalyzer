@@ -32,8 +32,10 @@ void runIDBDT_HNtypeIConv(TString Classifier ="BDTG" ,TString BkgType = "Conv", 
   TString  treeName = (channel == "MuMu")  ?  "Tree_mm" :  "Tree_ee";
 
   TString signal="SignalConv";
-  if(signal_mode == 2) signal="SignalConv_BB";
-  if(signal_mode == 3) signal="SignalConv_EC";
+  if(signal_mode == 1) signal="SignalConv_BB";
+  if(signal_mode == 2) signal="SignalConv_EC";
+  if(signal_mode == 3) signal="SignalConv_LowPtBB";
+  if(signal_mode == 4) signal="SignalConv_LowPtEC";
 
 
   cout << "signal File Name= " << signal << endl;
@@ -42,14 +44,17 @@ void runIDBDT_HNtypeIConv(TString Classifier ="BDTG" ,TString BkgType = "Conv", 
   if(signal_mode==1) signal="SignalConv";
   
 
-  TString JobTag = Classifier +"_version6_"+ BkgType + "_TypeI_"+channel+"_"+signal+"_"+era+"_NTrees"+NTrees+"_NormMode_"+NormMode+"_MinNodeSize_"+MinNodeSize+"_MaxDepth_"+MaxDepth+"_nCuts_"+nCuts+ClassTag +"_Seed_"+seed+"_BDT";
+  TString JobTag = Classifier +"_version7_"+ BkgType + "_TypeI_"+channel+"_"+signal+"_"+era+"_NTrees"+NTrees+"_NormMode_"+NormMode+"_MinNodeSize_"+MinNodeSize+"_MaxDepth_"+MaxDepth+"_nCuts_"+nCuts+ClassTag +"_Seed_"+seed+"_BDT";
 
   TMVA::gConfig().GetVariablePlotting().fNbins1D = 200; 
   TMVA::gConfig().GetVariablePlotting().fNbinsMVAoutput = 100;
 
-  const TString path = "/data6/Users/jalmond/2020/HL_SKFlatAnalyzer_ULv3/SKFlatAnalyzer/HNDiLeptonWorskspace/InputFiles/MergedFiles/Run2UltraLegacy_v3/HNL_LeptonID_BDT_KinVar/Version3/"+era+"/";
+  const TString path = "/data6/Users/jalmond/2020/HL_SKFlatAnalyzer_ULv3/SKFlatAnalyzer/HNDiLeptonWorskspace/InputFiles/MergedFiles/Run2UltraLegacy_v3/HNL_LeptonID_BDT_KinVar/Version4/"+era+"/";
   
   TString signame = path+"HNL_LeptonID_BDT_KinVar_Prompt.root";
+
+  if(signal_mode==3 || signal_mode==4 )  signame = path+"HNL_LeptonID_BDT_KinVar_LowPtPrompt.root";
+
 
   TFile* fsin = TFile::Open(signame);
   TFile* fbin = TFile::Open(path+"HNL_LeptonID_BDT_KinVar_"+BkgType+"Bkg.root");
@@ -66,42 +71,51 @@ void runIDBDT_HNtypeIConv(TString Classifier ="BDTG" ,TString BkgType = "Conv", 
   
   data_loader->AddVariable("Pt", "Pt", "units", 'F');
   data_loader->AddVariable("Eta", "Eta", "units", 'F');
-  data_loader->AddVariable("MiniIsoChHad", "MiniIsoChHad", "units", 'F'); 
-  data_loader->AddVariable("RelMiniIsoCh", "RelMiniIsoCh", "units", 'F');
-  data_loader->AddVariable("IsoChHad", "IsoChHad", "units", 'F');
-  data_loader->AddVariable("IsoNHad", "IsoNHad", "units", 'F');
-  data_loader->AddVariable("IsoPhHad", "IsoPhHad", "units", 'F');
-  data_loader->AddVariable("Dxy",  "Dxy", "units", 'F');
-  data_loader->AddVariable("DxySig",  "DxySig", "units", 'F');
-  data_loader->AddVariable("Dz",  "Dz", "units", 'F');   
-  data_loader->AddVariable("DzSig",  "DzSig", "units", 'F');   
+  data_loader->AddVariable("MiniIsoChHad", "MiniIsoChHad", "units", 'F');
   data_loader->AddVariable("RelIso", "RelIso", "units", 'F'); 
-  data_loader->AddVariable("IP3D", "IP3D", "units", 'F');       
-  data_loader->AddVariable("PtRatio",  "PtRatio", "units", 'F');
-  data_loader->AddVariable("PtRel",  "PtRel", "units", 'F');
-  data_loader->AddVariable("CEMFracCJ","CEMFracCJ", "units", 'F');
-  data_loader->AddVariable("NEMFracCJ","NEMFracCJ", "units", 'F');
-  data_loader->AddVariable("CHFracCJ","CHFracCJ", "units", 'F');
+
+  if(era=="2016"){
+    data_loader->AddVariable("Dxy",  "Dxy", "units", 'F');
+    data_loader->AddVariable("Dz",  "Dz", "units", 'F');   
+  }
+  else{
+    data_loader->AddVariable("DxySig",  "DxySig", "units", 'F');
+    data_loader->AddVariable("DzSig",  "DzSig", "units", 'F');   
+    data_loader->AddVariable("IP3D", "IP3D", "units", 'F');       
+  }
+
+  data_loader->AddVariable("PtRatioV3",  "PtRatioV3", "units", 'F');
+  data_loader->AddVariable("PtRelV2",  "PtRelV2", "units", 'F');
+  //data_loader->AddVariable("CEMFracCJ","CEMFracCJ", "units", 'F');
+  //data_loader->AddVariable("NEMFracCJ","NEMFracCJ", "units", 'F');
+  //data_loader->AddVariable("CHFracCJ","CHFracCJ", "units", 'F');
   data_loader->AddVariable("JetDiscCJ","JetDiscCJ","units", 'F');
-  data_loader->AddVariable("NHFracCJ","NHFracCJ","units", 'F');
-  data_loader->AddVariable("MVA",  "MVA", "units", 'F');
-  data_loader->AddVariable("MVAIso",  "MVAIso", "units", 'F');          
+  data_loader->AddVariable("JetDiscCJCvsB","JetDiscCJCvsB","units", 'F');
+  //data_loader->AddVariable("NHFracCJ","NHFracCJ","units", 'F');
+
+  //data_loader->AddVariable("MVA",  "MVA", "units", 'F');
+  //data_loader->AddVariable("MVAIso",  "MVAIso", "units", 'F');          
+
+  data_loader->AddVariable("MVARaw",  "MVARaw", "units", 'F'); 
+  data_loader->AddVariable("bdt_id_POGMVA80ID","bdt_id_POGMVA80ID", "units", 'F');
+  data_loader->AddVariable("bdt_id_POGMVA90ID","bdt_id_POGMVA90ID", "units", 'F');
+
   data_loader->AddVariable("Full5x5_sigmaIetaIeta",  "Full5x5_sigmaIetaIeta", "units", 'F');
-  data_loader->AddVariable("dEtaSeed",  "dEtaSeed", "units", 'F');
+  ///  data_loader->AddVariable("dEtaSeed",  "dEtaSeed", "units", 'F');
   data_loader->AddVariable("dPhiIn",  "dPhiIn", "units", 'F');
   data_loader->AddVariable("EoverP",  "EoverP", "units", 'F');
   data_loader->AddVariable("FBrem",  "FBrem", "units", 'F');
   data_loader->AddVariable("R9",  "R9", "units", 'F');
-  data_loader->AddVariable("TrkIso",  "TrkIso", "units", 'F');
-  data_loader->AddVariable("EtaWidth",  "EtaWidth", "units", 'F');
+  data_loader->AddVariable("e55",  "e55", "units", 'F');
+
+  //  data_loader->AddVariable("EtaWidth",  "EtaWidth", "units", 'F');
   data_loader->AddVariable("PhiWidth",  "PhiWidth", "units", 'F');
-  data_loader->AddVariable("InvEminusInvP", "InvEminusInvP", "units", 'F');
-  data_loader->AddVariable("ecalPFClusterIso",  "ecalPFClusterIso", "units", 'F');
+  //data_loader->AddVariable("ecalPFClusterIso",  "ecalPFClusterIso", "units", 'F');
   data_loader->AddVariable("MissingHits",  "MissingHits", "units", 'F');
   data_loader->AddVariable("PassConversionVeto",  "PassConversionVeto", "units", 'F');
-  data_loader->AddVariable("IsGsfCtfScPixChargeConsistent",  "IsGsfCtfScPixChargeConsistent", "units", 'F');
+  //data_loader->AddVariable("IsGsfCtfScPixChargeConsistent",  "IsGsfCtfScPixChargeConsistent", "units", 'F');
   data_loader->AddVariable("IsGsfScPixChargeConsistent",  "IsGsfScPixChargeConsistent", "units", 'F');
-  data_loader->AddVariable("IsGsfCtfChargeConsistent",  "IsGsfCtfChargeConsistent", "units", 'F');
+  //data_loader->AddVariable("IsGsfCtfChargeConsistent",  "IsGsfCtfChargeConsistent", "units", 'F');
   data_loader->AddSpectator("w_id_tot", "w_id_tot", "units", 'F');          
   data_loader->AddSignalTree(tree_signal, 1.0);
   data_loader->AddBackgroundTree(tree_bkg, 1.0);
@@ -111,13 +125,21 @@ void runIDBDT_HNtypeIConv(TString Classifier ="BDTG" ,TString BkgType = "Conv", 
   TCut cut_s = "";
   TCut cut_b = "";
 
-  if(fabs(signal_mode)==2){
+  if(fabs(signal_mode)==1){
     cut_s = "Eta<1.5";
     cut_b = "Eta<1.5";
   }
-  if(fabs(signal_mode)==3){
+  if(fabs(signal_mode)==2){
     cut_s = "Eta>1.5&&Eta<2.5";
     cut_b = "Eta>1.5&&Eta<2.5";
+  }
+  if(fabs(signal_mode)==3){
+    cut_s = "Eta<1.5&&Pt<20";
+    cut_b = "Eta<1.5&&Pt<20";
+  }
+  if(fabs(signal_mode)==4){
+    cut_s = "Eta>1.5&&Eta<2.5&&Pt<20";
+    cut_b = "Eta>1.5&&Eta<2.5&&Pt<20";
   }
   int n_train_signal = tree_signal->GetEntries(cut_s)/2;
   int n_train_back = tree_bkg->GetEntries(cut_b)/2;
