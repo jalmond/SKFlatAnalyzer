@@ -3752,7 +3752,7 @@ bool HNL_LeptonCore::PassGenMatchFilter(vector<Lepton *> leps, AnalyzerParameter
   /// If user used Data driven method for Fake/CF then function returns for Fake/F bkf true for data and false for MC 
   /// If user used Data driven method for Fake/CF then for Conv function requires at least one conv lepton is present 
 
-  if(IsData || RunFakeClosurePred) return true; //JH : FakeClosurePred mimics data
+  if(IsData || RunFakeClosurePred || MCSample.Contains("WJets_Sherpa")) return true; //JH : FakeClosurePred mimics data & WJets_Sherpa is not tracked, anyhow...
   if(RunFake && param.FakeMethod != "MC") return false;
   if(RunCF   && param.CFMethod   != "MC") return false;
   if(RunConv && param.ConvMethod != "MC") return false;

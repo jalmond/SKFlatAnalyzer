@@ -260,7 +260,6 @@ void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq,
     if (dilep_channel == EMu) LimitRegionsBDTQ =HNL_LeptonCore::ElectronMuonSRBDTQQ;
     */
     
-
     if(!PassPreselection(dilep_channel,qq, leps, leps_veto, TauColl, JetColl, VBF_JetColl, AK8_JetColl, B_JetColl,ev, METv ,param_channel,"", weight_channel)) continue;
     if(RunFakeClosure) continue; //JH : don't need further steps
     //cout << "passed presel;" << endl;
@@ -341,15 +340,16 @@ bool  HNL_RegionDefinitions::PassPreselection(HNL_LeptonCore::Channel channel,HN
   if(run_Debug) cout << "HNL_RegionDefinitions::PassPreselection " << GetChannelString(channel) <<  endl;
 
   // Make sure events contain 2 leps                                                                                                       
-  // Make sure correct leptons are used                                                                                                                                      
+  // Make sure correct leptons are used
   if(!CheckLeptonFlavourForChannel(channel, leps)) return false;
   FillEventCutflow(HNL_LeptonCore::ChannelDepPresel, w, GetChannelString(channel) +"_FlavorFilter", "ChannelCutFlow/"+param.DefName,param.WriteOutVerbose); //JH
 
+  // This is just OR-ing of multiple PassTriggerSelections
   if (! (  PassMultiTriggerSelection(channel, ev, leps,"Dilep", "HighPt") || PassMultiTriggerSelection(channel, ev, leps,"Dilep", "Lep"))) return false;
-  
   //FillEventCutflow(HNL_LeptonCore::ChannelDepTrigger, w, GetChannelString(channel) +"_MultiTrigger", "ChannelCutFlow/"+param.DefName,param.WriteOutVerbose);
   FillEventCutflow(HNL_LeptonCore::ChannelDepPresel, w, GetChannelString(channel) +"_MultiTrigger", "ChannelCutFlow/"+param.DefName,param.WriteOutVerbose); //JH
   
+  // Trigger safe pt cut is applied here
   if (!PassTriggerSelection(channel, ev, leps,"Dilep")) return false;
   FillEventCutflow(HNL_LeptonCore::ChannelDepPresel, w, GetChannelString(channel) +"_Trigger", "ChannelCutFlow/"+param.DefName,param.WriteOutVerbose); //JH
   
@@ -2326,7 +2326,7 @@ bool HNL_RegionDefinitions::FillWGCRPlots(HNL_LeptonCore::Channel channel, std::
   if(run_Debug){
     cout << "HNL_WG_ThreeLepton_CR " << param.Name << " " << event  << endl;
 
-    PrintGen(All_Gens);
+    //PrintGen(All_Gens);
   }
   Fill_RegionPlots(channel,1,"HNL_WG_ThreeLepton_CR"  , param.Name, JetColl,  AK8_JetColl, B_JetColl,  leps, leps_veto, METv, nPV, w);
 

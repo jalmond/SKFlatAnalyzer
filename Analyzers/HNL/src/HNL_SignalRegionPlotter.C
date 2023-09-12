@@ -89,6 +89,7 @@ void HNL_SignalRegionPlotter::RunULAnalysis(AnalyzerParameter param){
   if(RunFakeClosure){
     MuonCollT     = MuonCollTInit;
     ElectronCollT  =  ElectronCollTInit; //JH : for closure test, pretend the MCs are data
+    PrintGen(All_Gens); //JH : FIXME remove it later
   }
   else{
     MuonCollT     = GetLepCollByRunType    ( MuonCollTInit ,param);
