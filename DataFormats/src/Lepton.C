@@ -299,6 +299,7 @@ void Lepton::SetUncorrectedPx(double uncorrPx){
 
 void Lepton::SetUncorrectedPy(double uncorrPy){
   j_unCorrPy = uncorrPy;
+}
 
 void Lepton::SetElSCEta(double sceta){
   j_elSCeta=sceta;
