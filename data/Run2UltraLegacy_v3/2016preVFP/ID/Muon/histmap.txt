@@ -10,7 +10,5 @@ Trigger  Eff_DATA  IsoMu24_POGTight                        Efficiencies_muon_gen
 Trigger  Eff_MC    IsoMu24_POGTight                        Efficiencies_muon_generalTracks_Z_Run2016_UL_HIPM_SingleMuonTriggers.root  NUM_IsoMu24_or_IsoTkMu24_DEN_CutBasedIdTight_and_PFIsoTight_abseta_pt_efficiencyMC
 Trigger  Eff_DATA  Mu50_POGHighPtLooseTrkIso               Efficiencies_muon_generalTracks_Z_Run2016_UL_HIPM_SingleMuonTriggers.root  NUM_Mu50_or_TkMu50_DEN_CutBasedIdGlobalHighPt_and_TkIsoLoose_abseta_pt_efficiencyData
 Trigger  Eff_MC    Mu50_POGHighPtLooseTrkIso               Efficiencies_muon_generalTracks_Z_Run2016_UL_HIPM_SingleMuonTriggers.root  NUM_Mu50_or_TkMu50_DEN_CutBasedIdGlobalHighPt_and_TkIsoLoose_abseta_pt_efficiencyMC
-ID      SF         TmpHNTightV2                               HNL_IDSFTmp_mu_2016preVFP.root                                    Data_MC_SF_HNTightV2
-ID      SF         TmpHNTight_17028                           HNL_IDSFTmp_mu_2016preVFP.root                                              Data_MC_SF_HNTight_17028 
-ID      SF         TmpPOGTightWithTightIso                    HNL_IDSFTmp_mu_2016preVFP.root                                              Data_MC_SF_POGTightWithTightIso 
-ID      SF         TmpHNL_ULID_2016                        HNL_LeptonIDSF_Mu_2016preVFP.root                                           Data_MC_SF_HNL_ULID_2016
+ID      SF         NUM_HNTightV2                           HNL_LeptonIDSF_Muon_2016preVFP_Eta_MuonPt.root                              Data_MC_SF_Eta_MuonPt_HNTightV2
+ID      SF         NUM_HNL_ULID_2016                       HNL_LeptonIDSF_Muon_2016preVFP_Eta_MuonPt.root                              Data_MC_SF_Eta_MuonPt_HNL_ULID_2016

@@ -1,3 +1,4 @@
+
 #include "HNL_RegionDefinitions.h"
 
 
@@ -1019,8 +1020,6 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
   //cout << "----------------   RunAllControlRegions  [Veto ]----------------------------------------------------------------------------------------------------------------" << endl;
   std::vector<Lepton *> LepsV  = MakeLeptonPointerVector(muons_veto,electrons_veto,param);
 
-  //if(!PassHEMVeto(channel, LepsV)) return false;
-
 
   ///  Select events based on NConv and if running Run_Conv
   FillHist("CR_BeforeConvCut", 1. , weight_ll, 2., 0.,  2.);
@@ -1033,6 +1032,8 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
   }
 
   for(unsigned int ic = 0; ic < channels.size(); ic++){
+
+    if(!PassHEMVeto(channels[ic], LepsV)) continue;
 
     if(run_Debug) cout << "----------------------------------------" << endl;
     if(run_Debug) cout << "HNL_RegionDefinitions::RunAllControlRegions [" << GetChannelString(channels[ic])<<" ]" << endl;
@@ -1107,17 +1108,19 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
     
     
     if(RunCR("BDTCheck",CRs)){
-    
+      
+      double BDTweight_channel = weight_channel;
       if( B_JetColl.size() > 0)  return;
 
       if (!PassTriggerSelection(dilep_channel, ev, LepsT,"POG")) return;
+
 
       if(LepsV.size() ==2){
 	
 	Particle  ll = (*LepsV[0]) + (*LepsV[1]);
 	
 	if(!IsData && ll.Charge() != 0) return;
-	if(IsData  && ll.Charge() != 0) weight_channel = -1;
+	if(IsData  && ll.Charge() != 0) BDTweight_channel = -1;
 	
 	if (fabs(ll.M()-90.) <  10) {
 	    
@@ -1125,10 +1128,13 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
 	    if(!IsData && !ilep.IsPrompt()) continue;
 	    if(!IsData && ilep.LeptonIsCF()) continue;
 	    
+	    /// dont subtract SS for high pt 
+	    if(IsData  && ll.Charge() != 0 && ilep.Pt() > 100) continue;
+
 	    TString CFMVA = "";
 	    TString ConvMVA = "";
 	    TString FakeMVA = "";
-	    if( FindHEMElectron (ilep)) FillBDTHists(ilep,"HEM",weight_channel);
+	    if( FindHEMElectron (ilep)) FillBDTHists(ilep,"HEM",BDTweight_channel);
 	    if( FindHEMElectron (ilep))  continue;
 	    
 	    TString ptstring = "Pt1";
@@ -1137,32 +1143,8 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
 	    else ptstring = "Pt3";
 
 	    TString etastring = ilep.sEtaRegion();
-	    FillBDTHists(ilep,ptstring+"_"+etastring,weight_channel);
+	    FillBDTHists(ilep,ptstring+"_"+etastring,BDTweight_channel);
 	    
-	    if(ilep.IsBB() ){
-	      
-	      if(ilep.IsIB() ) FillBDTHists(ilep,"IB",weight_channel);
-	      else if(ilep.IsOB() ) FillBDTHists(ilep,"OB",weight_channel);
-	      
-	      if(ilep.Pt() < 15 ) FillBDTHists(ilep,"BB_Pt1",weight_channel);
-	      else if(ilep.Pt() < 20 ) FillBDTHists(ilep,"BB_Pt2",weight_channel);
-	      else if(ilep.Pt() < 50 )  FillBDTHists(ilep,"BB_Pt3",weight_channel);
-	      else if(ilep.Pt() < 200 )  FillBDTHists(ilep,"BB_Pt4",weight_channel);
-	      else FillBDTHists(ilep,"BB_Pt5",weight_channel);
-	      
-	    }
-	    else{
-	      FillBDTHists(ilep,"EC",weight_channel);
-	      if(ilep.fEta() < 2.)   FillBDTHists(ilep,"EC1",weight_channel);
-	      else  FillBDTHists(ilep,"EC2",weight_channel);
-
-	      if(ilep.Pt() < 15 ) FillBDTHists(ilep,"EC_Pt1",weight_channel);
-	      else if(ilep.Pt() < 20 ) FillBDTHists(ilep,"EC_Pt2",weight_channel);
-	      else if(ilep.Pt() < 50 ) FillBDTHists(ilep,"EC_Pt3",weight_channel);
-	      else if(ilep.Pt() < 200 ) FillBDTHists(ilep,"EC_Pt4",weight_channel);
-	      else FillBDTHists(ilep,"EC_Pt5",weight_channel);
-	      
-	    }
 	  }
 	}
       }

@@ -20,10 +20,8 @@ void HNL_ControlRegionPlotter::executeEvent(){
   AnalyzerParameter param_signal = HNL_LeptonCore::InitialiseHNLParameter("HNL");
   //RunControlRegions(param_signal , {"CR_OS_Z","CR_OS_Top","CR_WZ"});
 
-  vector<TString> IDs = {"HNL_ULID_Baseline"};//"HNL_ULID_2016",  "HNL_ULID_2017",      "HNL_ULID_2018"};
+  vector<TString> IDs = {};//"HNL_ULID_Baseline";
   
-  vector<TString> ELIDs = {"HNL_ULID_ConvUpdate","HNL_ULID_ConvUpdateSplit","HNL_ULID_ConvUpdateFlat","HNL_ULID_Conv_2016","HNL_ULID_Conv_Run2", "passMVAID_noIso_WP90"};
-
   TString param_signal_name = param_signal.Name;
   for (auto id: IDs){
     param_signal.Electron_Tight_ID = id;
@@ -40,21 +38,25 @@ void HNL_ControlRegionPlotter::executeEvent(){
     
     return;
   }
-
-  AnalyzerParameter param_signal2 = HNL_LeptonCore::InitialiseHNLParameter("HNL");
-
+  
+  vector<TString> ELIDs = {"HNL_ULID_Run2","passMVAID_noIso_WP90","HNTightV2"};
   for (auto id: ELIDs){
-    param_signal2.Electron_Tight_ID = id;
+    AnalyzerParameter param_signal2 = HNL_LeptonCore::InitialiseHNLParameter("HNL");
     param_signal2.Name = param_signal_name + id;
-    param_signal2.DefName = param_signal_name + id;
-    param_signal2.Electron_ID_SF_Key = "Default";
-    param_signal2.Electron_FR_ID = "HNL_ULID_Baseline";
-    param_signal2.Muon_FR_Key  ="ptcone_eta_AwayJetPt40";
-    param_signal2.Electron_FR_Key  = "ptcone_eta_AwayJetPt40";
+    param_signal2.FakeMethod = "MC";
+    param_signal2.CFMethod   = "MC";
+    param_signal2.ConvMethod = "MC";
 
+    param_signal2.Electron_Tight_ID = id;
+    if(id=="HNL_ULID_Run2")param_signal2.Electron_ID_SF_Key = "passHNL_ULID_Run2";
+    else if(id=="HNTightV2")param_signal2.Electron_ID_SF_Key = "passHNTightV2";
+    else  param_signal2.Electron_ID_SF_Key = "Default";
+    
+    param_signal2.Muon_ID_SF_Key = "NUM_HNL_ULID_"+GetYearString();
+    param_signal2.Muon_Tight_ID  = "HNL_ULID_"+GetYearString();
+    param_signal2.Muon_RECO_SF_Key = "MuonRecoSF";
     RunControlRegions(param_signal2 , {"CR_OS_Z","CR_OS_Top","CR_WZ"});
   }
-
   
   return;
 

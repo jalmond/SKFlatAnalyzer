@@ -14,12 +14,6 @@ public:
   void  PrintObject(TString label);
   
 
-  inline bool IsIB() const { return (Lepton::Region(fabs(this->scEta())) == 1); }
-  inline bool IsOB() const { return (Lepton::Region(fabs(this->scEta())) == 2); }
-  inline bool IsEC() const { return (Lepton::Region(fabs(this->scEta())) == 3); }
-  inline bool IsBB() const { return (Lepton::Region(fabs(this->scEta())) < 3); }
-
-
   void SetEnShift(double en_up, double en_down);
   inline double EnShift(int s) const {
     if(s==0) return 1.;
@@ -33,6 +27,9 @@ public:
     else return j_Res_down;
   }
 
+
+  ///// Supercluster Variables
+
   void SetSC(double sceta, double scphi, double sce);
   inline double scEta() const { return j_scEta; }
   inline double scPhi() const { return j_scPhi; }
@@ -41,11 +38,12 @@ public:
 
   ///////// ELECTRON MVA FUNCTIONS 
 
-  // MVA                                                                                                                                                                                                                                                                  
   void SetMVA(double mvaiso, double mvanoiso);
   inline double MVAIso() const { return j_mvaiso; }
   inline double MVANoIso() const { return j_mvanoiso; }
 
+
+  /////// --> Response functions used for BDT tarining 
   inline bool PassMVANoIsoResponse(double A, double B, double C){
     double mva_resp = MVANoIsoResponse();
     double cut = A - std::exp(-Pt() / B) * C;
@@ -53,19 +51,15 @@ public:
     return false;
   }
 
-
   inline bool PassMVAIsoResponse(double A, double B, double C){
     double mva_resp = MVAIsoResponse();
     double cut = A - std::exp(-Pt() / B) * C;
     if (mva_resp < cut)return true;
     return false;
   }
-
   
   inline double MVANoIsoResponseV1() const {
-
     if (j_mvanoiso == 1.) return 8;
-
     if(MVANoIsoResponseRaw() > 8) return 8;
     if(MVANoIsoResponseRaw() < -8) return -8;
     return MVANoIsoResponseRaw();
@@ -117,24 +111,20 @@ public:
 
   bool PassMVABaseLine() const;
   bool PassHNLMVA(double fake_cut,double cf_cut, double conv_cut) const;
-
-  double PassMultiStepCut(double Val1, double Val2, double PtBoundary ) const;
-
-  bool PassMVA_UL_NP(TString pt,TString bb1, TString bb2, TString eb1, TString eb2, TString ee1, TString ee2) const;
-  bool PassMVA_UL_CF(TString val1, TString val2, TString ptboundary)const ;
-  bool PassMVA_UL_Conv(TString pt,TString bb1, TString bb2, TString ee1, TString ee2)const ;
-  double PassStepCut(double val, double val2, double pt1, double pt2) const;
-
-  void SetUncorrE(double une);
-  inline double UncorrE() const { return j_EnergyUnCorr; }
-  inline double UncorrPt() const { return Pt() * j_EnergyUnCorr/E(); }
-
-  double StringToDouble(TString st,TString subSt) const;
-
   bool PassMVA_UL_BB(double mva1, double mva2, double mva3) const ;
   bool PassMVA_UL_EB(double mva1, double mva2, double mva3) const ;
   bool PassMVA_UL_EE(double mva1, double mva2, double mva3) const ;
   bool PassMVA(double mva1, double mva2, double mva3) const;
+
+
+  //// Uncorrected Energy variables
+  void SetUncorrE(double une);
+  inline double UncorrE() const { return j_EnergyUnCorr; }
+  inline double UncorrPt() const { return Pt() * j_EnergyUnCorr/E(); }
+
+
+  double StringToDouble(TString st,TString subSt) const;
+
 
   bool PassHNID()const ;
   int PassHNOpt()const ;
@@ -142,9 +132,6 @@ public:
   inline int PassConversionVeto() const { return j_passConversionVeto; }
   void SetNMissingHits(int n);
   inline int NMissingHits() const { return j_NMissingHits; }
-
-
-
 
   void SetEtaWidth(double d);
   void SetPhiWidth(double d);

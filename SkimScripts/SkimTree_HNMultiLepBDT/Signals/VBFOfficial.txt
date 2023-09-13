@@ -25,4 +25,3 @@ VBFTypeI_SF_ll_M500
 VBFTypeI_SF_ll_M600
 VBFTypeI_SF_ll_M700
 VBFTypeI_SF_ll_M800
-VBFTypeI_SF_ll_M900

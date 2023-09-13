@@ -1444,7 +1444,7 @@ AnalyzerParameter HNL_LeptonCore::InitialiseHNLParameter(TString s_setup, TStrin
     param.Muon_ID_SF_Key = "TmpHNL_ULID_"+GetYearString();
     //param.Muon_FR_ID = "HNL_ULID_FO_"+GetYearString();
     param.Muon_FR_ID = "HNL_TopMVA_FO_MM"; //JH
-    param.Electron_FR_ID = "HNL_ULID_FO_"+GetYearString();
+    param.Electron_FR_ID = "HNL_ULID_"+GetYearString(); //FIXME later
     param.Muon_RECO_SF_Key = "MuonRecoSF";
     return param;
   }

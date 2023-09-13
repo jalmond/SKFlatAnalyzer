@@ -13,11 +13,8 @@ public:
   void  PrintObject(TString label);
 
   //// Function to Check Nature of lepton
-
   inline TString LepGenTypeString() const {
-
     //// return TString based on Gen type
-
     if(j_LeptonIsCF) {
       if((j_LeptonType==1 || j_LeptonType==2)) return "IsPromptCF";
       else if ((j_LeptonType>=4 || j_LeptonType<-4 ))  return "IsConvCF";
@@ -61,8 +58,15 @@ public:
     IB, OB, GAP, EC
   };
 
+  inline double defEta() const{
+    double lepeta = this->Eta();
+    if(j_LeptonFlavour==ELECTRON) lepeta = j_elSCeta;
+    return lepeta;
+  }
+
+
   inline EtaRegion etaRegion() const {
-    double sceta = fabs(this->Eta());
+    double sceta = fabs(defEta());
     if( sceta < 0.8 ) return IB;
     else if( sceta < 1.444 ) return OB;
     else if( sceta < 1.566 ) return GAP;
@@ -70,14 +74,15 @@ public:
   }
   
   inline TString  etaRegionString() const {
-    double sceta = fabs(this->Eta());
+    double sceta = fabs(defEta());
     if( sceta < 0.8 ) return "EB1";
     else if( sceta < 1.479 ) return "EB2";
     else return "EE";
   }
 
 
-  inline int Region(double eta) const {
+  inline int Region() const {
+    double eta = fabs(defEta());
     if( eta < 0.8 ) return 1;
     else if( eta < 1.479 ) return 2;
     else return 3;
@@ -85,32 +90,65 @@ public:
   
   inline TString sEtaRegion() const {
     if(j_LeptonFlavour==MUON){
-      if( this->Eta() < -2 ) return "Eta1";
-      else if( this->Eta() < -1.479 ) return "Eta2";
-      else if( this->Eta() < -1 ) return "Eta3";
-      else if( this->Eta() < 0 ) return "Eta4";
-      else if( this->Eta() < 1 ) return "Eta5";
-      else if( this->Eta() < 1.479 ) return "Eta6";
-      else if( this->Eta() < 2 ) return "Eta7";
-      else return "Eta8";
+
+      double eta = fabs(defEta());
+      if( fabs(eta) < 0.9 )      return "EtaBin1";
+      else if( fabs(eta) < 1.2)  return "EtaBin2";
+      else if( fabs(eta) < 2.1 ) return "EtaBin3";
+      else  if( fabs(eta) < 2.4 )return "EtaBin4";
+      return "EtaX";
     }
     else{
-      if( this->Eta() < -2 ) return "Eta1";
-      else if( this->Eta() < -1.56 ) return "Eta2";
-      else if( this->Eta()  > -1.44 && this->Eta() < -1 ) return "Eta3";
-      else if( this->Eta() < 0 ) return "Eta4";
-      else if( this->Eta() < 1 ) return "Eta5";
-      else if( this->Eta() < 1.444 ) return "Eta6";
-      else if( this->Eta() < 2 && this->Eta() > 1.56) return "Eta7";
-      else return "Eta8";
+
+      double eta = defEta();
+      if( eta< -2 )         return "scEtaBin1";
+      else if( eta< -1.56 ) return "scEtaBin2";
+      else if( eta > -1.44 && eta< -0.8 ) return "scEtaBin3";
+      else if( eta< 0 )     return "scEtaBin4";
+      else if( eta< 0.8 )   return "scEtaBin5";
+      else if( eta< 1.444 ) return "scEtaBin6";
+      else if( eta< 2 && eta> 1.56) return "scEtaBin7";
+      else return "scEtaBin8";
     }    
   }
 
+  inline TString sPtRegion(TString Year) const {
+    if(j_LeptonFlavour==MUON){
+      if( this->Pt() > 10 && this->Pt() < 15 ) return "PtBin1";
+      else  if( this->Pt()  < 20 ) return "PtBin2";
+      else  if( this->Pt()  < 25 ) return "PtBin3";
+      else  if( this->Pt()  < 30 ) return "PtBin4";
+      else  if( this->Pt()  < 40 ) return "PtBin5";
+      else  if( this->Pt()  < 50 ) return "PtBin6";
+      else  if( this->Pt()  < 60 ) return "PtBin7";
+      else   return "PtBin8";
 
-  inline bool IsIB() const { return (Region(fabs(this->Eta())) == 1); }
-  inline bool IsOB() const { return (Region(fabs(this->Eta())) == 2); }
-  inline bool IsEC() const { return (Region(fabs(this->Eta())) == 3); }
-  inline bool IsBB() const { return (Region(fabs(this->Eta())) < 3); }
+    }
+    else{
+      if(Year=="2016"){
+	if( this->Pt() > 10 && this->Pt() < 20 ) return "PtBin1";
+	else  if( this->Pt()  < 35 ) return "PtBin2";
+	else  if( this->Pt()  < 50 ) return "PtBin3";
+	else  if( this->Pt()  < 100 ) return "PtBin4";
+	else   return "PtBin5";
+      }
+      else{
+	if( this->Pt() > 10 && this->Pt() < 20 ) return "PtBin1";
+        else  if( this->Pt()  < 35 ) return "PtBin2";
+        else  if( this->Pt()  < 50 ) return "PtBin3";
+        else  if( this->Pt()  < 100 ) return "PtBin4";
+        else  if( this->Pt()  < 200 ) return "PtBin5";
+        else   return "Pt6";
+
+      }
+    }
+  }
+
+
+  inline bool IsIB() const { return (Region() == 1); }
+  inline bool IsOB() const { return (Region() == 2); }
+  inline bool IsEC() const { return (Region() == 3); }
+  inline bool IsBB() const { return (Region() < 3); }
 
   //// HNL UL Funtions
   inline bool MaxPt() const { return (this->Pt() > 2000) ? 1999 : this->Pt(); }
@@ -147,6 +185,8 @@ public:
   inline double UncorrectedPy() const { return j_unCorrPy;}
   void SetUncorrectedPy(double d);
 
+  inline double ElScEta() const {return j_elSCeta;};
+  void SetElSCEta(double sceta);
   
   /// Standard Functions
 
@@ -405,7 +445,7 @@ public:
   
   void SetLepIso(double ch, double nh, double ph);
 
-  inline double fEta() const {return fabs(this->Eta());}
+  inline double fEta() const {return fabs(defEta());}
 
   bool PassULMVA(double mva1, double cut, TString s_mva) const;
 
@@ -440,8 +480,8 @@ public:
   }
 
   inline TString GetEtaRegion() const {
-    if(fabs(this->Eta()) < 0.8) return "BB";
-    if(fabs(this->Eta()) < 1.5) return "EB";
+    if(fabs(defEta()) < 0.8) return "BB";
+    if(fabs(defEta()) < 1.5) return "EB";
     return "EE";
   }
 
@@ -497,9 +537,9 @@ private:
   double j_lep_mva;
   double j_dZ, j_dZerr;
   double j_IP3D, j_IP3Derr;
-  double j_unCorrPt;
   double j_unCorrPx;
   double j_unCorrPy;
+  double j_unCorrPt,j_elSCeta;
   double j_jetntracks,j_jetntracks_mva;
   double j_RelIso, j_MiniRelIso;
   double j_MiniIso_ChHad,j_MiniIso_NHad,j_MiniIso_PhHad;

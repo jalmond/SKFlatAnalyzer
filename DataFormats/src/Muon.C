@@ -262,47 +262,6 @@ bool Muon::PassID(TString ID) const {
     return true;
   }
 
-  if(ID=="HNL_HF_v1") {
-    if(!PassID("MVALoose")) return false;
-    if(MVA() < 0.1)  return false;
-    return true;
-  }
-  if(ID=="HNL_HF_v2") {
-    if(!PassID("MVALoose")) return false;
-    if(MVA() < 0.2)  return false;
-    return true;
-  }
-  if(ID=="HNL_HF_v3") {
-    if(!PassID("MVALoose")) return false;
-    if(MVA() < 0.3)  return false;
-    return true;
-  }
-  if(ID=="HNL_HF_v4") {
-    if(!PassID("MVALoose")) return false;
-    if(MVA() < 0.4)  return false;
-    return true;
-  }
-
-  if(ID=="HNL_LF_v1") {
-    if(!PassID("MVALoose")) return false;
-    if(HNL_MVA_Fake("EDv4")  < 0.1)  return false;
-    return true;
-  }
-  if(ID=="HNL_LF_v2") {
-    if(!PassID("MVALoose")) return false;
-    if(HNL_MVA_Fake("EDv4") < 0.2)  return false;
-    return true;
-  }
-  if(ID=="HNL_LF_v3") {
-    if(!PassID("MVALoose")) return false;
-    if(HNL_MVA_Fake("EDv4") < 0.3)  return false;
-    return true;
-  }
-  if(ID=="HNL_LF_v4") {
-    if(!PassID("MVALoose")) return false;
-    if(HNL_MVA_Fake("EDv4") < 0.4)  return false;
-    return true;
-  }
 
 
   //==== Customized
@@ -341,33 +300,13 @@ bool Muon::PassID(TString ID) const {
   }
 
 
-  if(ID.Contains("HNL_ULID_LF")){
-
-    if(!PassID("MVALoose")) return false;
-
-    if( fabs(this->Eta()) <= 1.479 ){
-      if(MVA() < 0.4)  return false;
-    }
-    else{
-      if(MVA() < 0.6)  return false;
-    }
-
-    if(HNL_MVA_Fake("EDv4") < 0) return false;
-
-    return true;
-  }
-
   /////////// FINAL UL HNL Type-1 ID                                                                                                                                                                                                                                                                                          
-  if(ID.Contains("HNL_ULID_2016_L")){
+  if(ID.Contains("HNL_ULID_2016_Fake")){
     
     if(!PassID("MVALoose")) return false;
+    if(MVA() < 0.72)  return false;
+    if(fabs(IP3D()/IP3Derr()) > 7) return false;
 
-    if( fabs(this->Eta()) <= 1.479 ){
-      if(MVA() < 0.75)  return false;
-    }
-    else{
-      if(MVA() < 0.72)  return false;
-    }
     return true;
   }
 
@@ -376,12 +315,7 @@ bool Muon::PassID(TString ID) const {
 
     if(!PassID("MVALoose")) return false;
     if(MVA() < 0.72)  return false;
-    if(fabs(dXY()) >  0.05)   return false;
-    if(fabs(dZ()) >  0.1)   return false;
     if(fabs(IP3D()/IP3Derr()) > 7) return false;
-    ///if(!( RelIso()<0.15 ))  return false;
-    if(fabs(dXY()) > 0.01)   return false;
-    if(fabs(dZ()) >  0.05)   return false;
         
     return true;
   }
@@ -390,8 +324,6 @@ bool Muon::PassID(TString ID) const {
 
     if(!PassID("MVALoose")) return false;
     if(MVA() < 0.64)  return false;
-    if(fabs(dXY()) >  0.05)   return false;
-    if(fabs(dZ()) >  0.1)   return false;
     if(fabs(IP3D()/IP3Derr()) > 7) return false;
 
     return true;
@@ -402,63 +334,12 @@ bool Muon::PassID(TString ID) const {
 
     if(!PassID("MVALoose")) return false;
     if(MVA() < 0.64)  return false;
-    if(fabs(dXY()) >  0.05)   return false;
-    if(fabs(dZ()) >  0.1)   return false;
     if(fabs(IP3D()/IP3Derr()) > 7) return false;
 
     return true;
   }
 
-
-
-  ///////// Preliminary v1 IDs [These were reaplce 12/Jun/23/]
-
-  if(ID=="HNL_ULIDv1_2016"){
-
-    if(!PassID("MVALoose")) return false;
-
-    if( fabs(this->Eta()) <= 1.479 ){
-      if(MVA() < 0.77)  return false;
-    }
-    else{
-      if(MVA() < 0.6)  return false;
-    }
-
-    return true;
-  }
-
-  if(ID=="HNL_ULIDv1_2017")  {
-
-    if(!PassID("MVALoose")) return false;
-
-    if( fabs(this->Eta()) <= 1.479 ){
-      if(MVA() < 0.68)  return false;
-    }
-    else{
-      if(MVA() < 0.64)  return false;
-    }
-
-    if(!PassID("HNLIPv8"))  return false;
-
-    return true;
-  }
-
-  if(ID=="HNL_ULIDv1_2018")  {
-
-    if(!PassID("MVALoose")) return false;
-
-    if( fabs(this->Eta()) <= 1.479 ){
-      if(MVA() < 0.6)  return false;
-    }
-    else{
-      if(MVA() < 0.78)  return false;
-    }
-
-    if(!PassID("HNLIPv9"))  return false;
-
-    return true;
-  }
-
+  // IDs to test TriLep method
   if(ID=="HNL_ULID_2017_TagHF") {
     if(!PassID("MVALoose")) return false;
     if(MVA() < 0.64) {
@@ -678,6 +559,7 @@ bool Muon::PassID(TString ID) const {
 
     return true;
   }
+
 
 
   //// Following are functions to test UL UDs

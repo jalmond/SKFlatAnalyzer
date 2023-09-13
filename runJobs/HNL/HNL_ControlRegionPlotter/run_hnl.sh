@@ -10,11 +10,17 @@ njobs_sig=2
 njobs_data=300 #JH
 nmax=300
 skim=' '
+<<<<<<< HEAD
 #declare  -a era_list=("2016postVFP" "2016preVFP" "2017" )
 #declare  -a era_list=("2018")
 declare  -a era_list=("2017")
+=======
+declare  -a era_list=("2016postVFP" "2016preVFP" "2017" "2018" )
+
+>>>>>>> HNL_Run2UltraLegacy-shared
 
 if [[ $1 == "WZ" ]]; then
+    declare  -a era_list=("2018" )
 
     for i in "${era_list[@]}"
     do
@@ -93,7 +99,7 @@ fi
 if [[ $1 == "MVA" ]]; then
 
     declare  -a era_list=("2016postVFP" "2016preVFP" "2018"  "2017")
-    declare  -a era_list=("2016postVFP" "2016preVFP")
+ 
     for i in "${era_list[@]}"
     do
 	SKFlat.py -a $analyzer  -l $datapath/${i}_SingleLepton_E.txt  -n 200  --nmax 300   -e ${i}  --skim SkimTree_DileptonBDT  &

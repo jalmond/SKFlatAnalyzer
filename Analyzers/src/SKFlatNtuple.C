@@ -489,18 +489,21 @@ void SKFlatNtuple::Init()
   electron_jetPtRatio = 0;
   electron_jetPtRel = 0;
   electron_jetNTracks = 0;
-  //  electron_jetNTracksMVA = 0;
-  electron_v2_cj_bjetdisc=0;
-  electron_v2_cj_cvsbjetdisc=0;
-  electron_v2_cj_cvsljetdisc=0;
-  electron_v2_cj_flavour=0;
+  
+  /////// VERSION 4 HNL BDT SKIM VARIABLES 
+  
+  //---> JET/LEP VAR
+  electron_ptrel = 0;
+  electron_ptratio = 0;
+  electron_lepton_type=0;
+  electron_is_cf=0;
 
+  //---> BDT VAR                                                                                                                                                                                                   
   electron_mva_conv_v2=0;
   electron_mva_conv_ed_v2=0;
 
   electron_mva_cf_v2=0;
   electron_mva_cf_ed_v2=0;
-
   electron_mva_fake_v4=0;
   electron_mva_fakeHF_v4=0;
   electron_mva_fakeHFB_v4=0;
@@ -515,10 +518,16 @@ void SKFlatNtuple::Init()
   electron_mva_fakeLF_ed_v4=0;
   electron_mva_fakeTop_ed_v4=0;
 
-  electron_lepton_type=0;
-  electron_is_cf=0;
+  /////// VERSION 5 HNL BDT SKIM VARIABLES                                                                                                                                                                        
+  //---> JET/LEP VAR  v2 since default is changed for lep with no CJ                                                                                                                                                                                            
 
-  ///// V5 BDT EL
+  electron_v2_cj_bjetdisc=0;
+  electron_v2_cj_cvsbjetdisc=0;
+  electron_v2_cj_cvsljetdisc=0;
+  electron_v2_cj_flavour=0;
+
+  //---> BDT VAR                                                                                                                                                                                                 
+
   electron_mva_fake_ed_v5=0;
   electron_mva_fakeHFB_v5=0;
   electron_mva_fakeHFC_v5=0;
@@ -530,6 +539,9 @@ void SKFlatNtuple::Init()
   electron_mva_fake_QCD_HFBvsHFC_v5=0;
   electron_mva_fake_QCD_LF1_v5=0;
   electron_mva_fake_QCD_LF2_v5=0;
+
+
+  ///////////// END OF HNL BDT VAR
 
   muon_PfChargedHadronIsoR04 = 0;
   muon_PfNeutralHadronIsoR04 = 0;
@@ -621,21 +633,29 @@ void SKFlatNtuple::Init()
   muon_jetPtRel = 0;
   muon_jetNTracks = 0;
   //  muon_jetNTracksMVA = 0;
+
+  /////// VERSION 4 HNL BDT SKIM VARIABLES                                                                                                                                                                       
+
   muon_ptrel = 0;
   muon_ptratio = 0;
+  muon_mva_fake_v4=0;
+  muon_mva_fake_ed_v4=0;
+  muon_lepton_type=0;
+  muon_is_cf=0;
+
+  /////// VERSION 5 HNL BDT SKIM VARIABLES                                                                                                                                                                       
+
   muon_v2_cj_bjetdisc=0;
   muon_v2_cj_cvsbjetdisc=0;
   muon_v2_cj_cvsljetdisc=0;
   muon_v2_cj_flavour=0;
-  muon_mva_fake_v4=0;
-  muon_mva_fake_ed_v4=0;
+
   muon_mva_fake_QCD_LFvsHF_v5=0;
   muon_mva_fake_QCD_HFBvsHFC_v5=0;
   muon_mva_fake_QCD_LF1_v5=0;
   muon_mva_fake_QCD_LF2_v5=0;
 
-  muon_lepton_type=0;
-  muon_is_cf=0;
+  
   muon_simType = 0;
   muon_simExtType = 0;
   muon_simFlavour = 0;
@@ -918,50 +938,50 @@ void SKFlatNtuple::Init()
   fChain->SetBranchAddress("electron_pathbits", &electron_pathbits, &b_electron_pathbits);
   fChain->SetBranchAddress("electron_filterbits", &electron_filterbits, &b_electron_filterbits);
 
-  if(fChain->GetBranch("electron_ptrel"))   fChain->SetBranchAddress("electron_ptrel",&electron_ptrel,&b_electron_ptrel);
-  if(fChain->GetBranch("electron_ptratio")) fChain->SetBranchAddress("electron_ptratio",&electron_ptratio,&b_electron_ptratio);
-  if(fChain->GetBranch("electron_v2_cj_bjetdisc")) fChain->SetBranchAddress("electron_v2_cj_bjetdisc",&electron_v2_cj_bjetdisc,&b_electron_v2_cj_bjetdisc);
-  if(fChain->GetBranch("electron_v2_cj_cvsbjetdisc")) fChain->SetBranchAddress("electron_v2_cj_cvsbjetdisc",&electron_v2_cj_cvsbjetdisc,&b_electron_v2_cj_cvsbjetdisc);
-  if(fChain->GetBranch("electron_v2_cj_cvsljetdisc")) fChain->SetBranchAddress("electron_v2_cj_cvsljetdisc",&electron_v2_cj_cvsljetdisc,&b_electron_v2_cj_cvsljetdisc);
-  if(fChain->GetBranch("electron_v2_cj_flavour")) fChain->SetBranchAddress("electron_v2_cj_flavour",&electron_v2_cj_flavour,&b_electron_v2_cj_flavour);
+  /////// VERSION 4 HNL BDT SKIM VARIABLES                                                                                                                                                                       
+  
+  //---> JET/LEP VAR                                                                                                                                                                                              
+  if(fChain->GetBranch("electron_ptrel"))       fChain->SetBranchAddress("electron_ptrel",&electron_ptrel,&b_electron_ptrel);
+  if(fChain->GetBranch("electron_ptratio"))     fChain->SetBranchAddress("electron_ptratio",&electron_ptratio,&b_electron_ptratio);
+  if(fChain->GetBranch("electron_lepton_type")) fChain->SetBranchAddress("electron_lepton_type",&electron_lepton_type,&b_electron_lepton_type);
+  if(fChain->GetBranch("electron_is_cf"))       fChain->SetBranchAddress("electron_is_cf",&electron_is_cf,&b_electron_is_cf);
 
-  if(fChain->GetBranch("electron_mva_conv_v2")) fChain->SetBranchAddress("electron_mva_conv_v2",&electron_mva_conv_v2,&b_electron_mva_conv_v2);
-  if(fChain->GetBranch("electron_mva_conv_ed_v2")) fChain->SetBranchAddress("electron_mva_conv_ed_v2",&electron_mva_conv_ed_v2,&b_electron_mva_conv_ed_v2);
-
-  if(fChain->GetBranch("electron_mva_cf_v2")) fChain->SetBranchAddress("electron_mva_cf_v2",&electron_mva_cf_v2,&b_electron_mva_cf_v2);
-  if(fChain->GetBranch("electron_mva_cf_ed_v2")) fChain->SetBranchAddress("electron_mva_cf_ed_v2",&electron_mva_cf_ed_v2,&b_electron_mva_cf_ed_v2);
-
-  if(fChain->GetBranch("electron_mva_fake_v4")) fChain->SetBranchAddress("electron_mva_fake_v4",&electron_mva_fake_v4,&b_electron_mva_fake_v4);
-  if(fChain->GetBranch("electron_mva_fakeHF_v4")) fChain->SetBranchAddress("electron_mva_fakeHF_v4",&electron_mva_fakeHF_v4,&b_electron_mva_fakeHF_v4);
-  if(fChain->GetBranch("electron_mva_fakeHFB_v4")) fChain->SetBranchAddress("electron_mva_fakeHFB_v4",&electron_mva_fakeHFB_v4,&b_electron_mva_fakeHFB_v4);
-  if(fChain->GetBranch("electron_mva_fakeHFC_v4")) fChain->SetBranchAddress("electron_mva_fakeHFC_v4",&electron_mva_fakeHFC_v4,&b_electron_mva_fakeHFC_v4);
-  if(fChain->GetBranch("electron_mva_fakeLF_v4")) fChain->SetBranchAddress("electron_mva_fakeLF_v4",&electron_mva_fakeLF_v4,&b_electron_mva_fakeLF_v4);
-  if(fChain->GetBranch("electron_mva_fakeTop_v4")) fChain->SetBranchAddress("electron_mva_fakeTop_v4",&electron_mva_fakeTop_v4,&b_electron_mva_fakeTop_v4);
-
-  if(fChain->GetBranch("electron_mva_fake_ed_v4")) fChain->SetBranchAddress("electron_mva_fake_ed_v4",&electron_mva_fake_ed_v4,&b_electron_mva_fake_ed_v4);
-  if(fChain->GetBranch("electron_mva_fakeHF_ed_v4")) fChain->SetBranchAddress("electron_mva_fakeHF_ed_v4",&electron_mva_fakeHF_ed_v4,&b_electron_mva_fakeHF_ed_v4);
+  //---> BDT VAR                                                                                                                                                                                                 
+  if(fChain->GetBranch("electron_mva_conv_v2"))       fChain->SetBranchAddress("electron_mva_conv_v2",&electron_mva_conv_v2,&b_electron_mva_conv_v2);
+  if(fChain->GetBranch("electron_mva_conv_ed_v2"))    fChain->SetBranchAddress("electron_mva_conv_ed_v2",&electron_mva_conv_ed_v2,&b_electron_mva_conv_ed_v2);
+  if(fChain->GetBranch("electron_mva_cf_v2"))         fChain->SetBranchAddress("electron_mva_cf_v2",&electron_mva_cf_v2,&b_electron_mva_cf_v2);
+  if(fChain->GetBranch("electron_mva_cf_ed_v2"))      fChain->SetBranchAddress("electron_mva_cf_ed_v2",&electron_mva_cf_ed_v2,&b_electron_mva_cf_ed_v2);
+  if(fChain->GetBranch("electron_mva_fake_v4"))       fChain->SetBranchAddress("electron_mva_fake_v4",&electron_mva_fake_v4,&b_electron_mva_fake_v4);
+  if(fChain->GetBranch("electron_mva_fakeHF_v4"))     fChain->SetBranchAddress("electron_mva_fakeHF_v4",&electron_mva_fakeHF_v4,&b_electron_mva_fakeHF_v4);
+  if(fChain->GetBranch("electron_mva_fakeHFB_v4"))    fChain->SetBranchAddress("electron_mva_fakeHFB_v4",&electron_mva_fakeHFB_v4,&b_electron_mva_fakeHFB_v4);
+  if(fChain->GetBranch("electron_mva_fakeHFC_v4"))    fChain->SetBranchAddress("electron_mva_fakeHFC_v4",&electron_mva_fakeHFC_v4,&b_electron_mva_fakeHFC_v4);
+  if(fChain->GetBranch("electron_mva_fakeLF_v4"))     fChain->SetBranchAddress("electron_mva_fakeLF_v4",&electron_mva_fakeLF_v4,&b_electron_mva_fakeLF_v4);
+  if(fChain->GetBranch("electron_mva_fakeTop_v4"))    fChain->SetBranchAddress("electron_mva_fakeTop_v4",&electron_mva_fakeTop_v4,&b_electron_mva_fakeTop_v4);
+  if(fChain->GetBranch("electron_mva_fake_ed_v4"))    fChain->SetBranchAddress("electron_mva_fake_ed_v4",&electron_mva_fake_ed_v4,&b_electron_mva_fake_ed_v4);
+  if(fChain->GetBranch("electron_mva_fakeHF_ed_v4"))  fChain->SetBranchAddress("electron_mva_fakeHF_ed_v4",&electron_mva_fakeHF_ed_v4,&b_electron_mva_fakeHF_ed_v4);
   if(fChain->GetBranch("electron_mva_fakeHFB_ed_v4")) fChain->SetBranchAddress("electron_mva_fakeHFB_ed_v4",&electron_mva_fakeHFB_ed_v4,&b_electron_mva_fakeHFB_ed_v4);
   if(fChain->GetBranch("electron_mva_fakeHFC_ed_v4")) fChain->SetBranchAddress("electron_mva_fakeHFC_ed_v4",&electron_mva_fakeHFC_ed_v4,&b_electron_mva_fakeHFC_ed_v4);
-  if(fChain->GetBranch("electron_mva_fakeLF_ed_v4")) fChain->SetBranchAddress("electron_mva_fakeLF_ed_v4",&electron_mva_fakeLF_ed_v4,&b_electron_mva_fakeLF_ed_v4);
+  if(fChain->GetBranch("electron_mva_fakeLF_ed_v4"))  fChain->SetBranchAddress("electron_mva_fakeLF_ed_v4",&electron_mva_fakeLF_ed_v4,&b_electron_mva_fakeLF_ed_v4);
   if(fChain->GetBranch("electron_mva_fakeTop_ed_v4")) fChain->SetBranchAddress("electron_mva_fakeTop_ed_v4",&electron_mva_fakeTop_ed_v4,&b_electron_mva_fakeTop_ed_v4);
 
-  if(fChain->GetBranch("electron_mva_conv_ed_v5")) fChain->SetBranchAddress("electron_mva_conv_ed_v5",&electron_mva_conv_ed_v5,&b_electron_mva_conv_ed_v5);
-  if(fChain->GetBranch("electron_mva_cf_ed_v5"))   fChain->SetBranchAddress("electron_mva_cf_ed_v5",  &electron_mva_cf_ed_v5,  &b_electron_mva_cf_ed_v5);
-  if(fChain->GetBranch("electron_mva_cf_ed_v5pt")) fChain->SetBranchAddress("electron_mva_cf_ed_v5pt",&electron_mva_cf_ed_v5pt,&b_electron_mva_cf_ed_v5pt);
 
-  if(fChain->GetBranch("electron_mva_fake_ed_v5")) fChain->SetBranchAddress("electron_mva_fake_ed_v5",&electron_mva_fake_ed_v5,&b_electron_mva_fake_ed_v5);
-  if(fChain->GetBranch("electron_mva_fakeHFB_v5")) fChain->SetBranchAddress("electron_mva_fakeHFB_v5",&electron_mva_fakeHFB_v5,&b_electron_mva_fakeHFB_v5);
-  if(fChain->GetBranch("electron_mva_fakeHFC_v5")) fChain->SetBranchAddress("electron_mva_fakeHFC_v5",&electron_mva_fakeHFC_v5,&b_electron_mva_fakeHFC_v5);
-  if(fChain->GetBranch("electron_mva_fakeLF_v5")) fChain->SetBranchAddress("electron_mva_fakeLF_v5",&electron_mva_fakeLF_v5,&b_electron_mva_fakeLF_v5);
-
+  /////// VERSION 5 HNL BDT SKIM VARIABLES                                                                                                                                                                       
+  if(fChain->GetBranch("electron_v2_cj_bjetdisc"))    fChain->SetBranchAddress("electron_v2_cj_bjetdisc",&electron_v2_cj_bjetdisc,&b_electron_v2_cj_bjetdisc);
+  if(fChain->GetBranch("electron_v2_cj_cvsbjetdisc")) fChain->SetBranchAddress("electron_v2_cj_cvsbjetdisc",&electron_v2_cj_cvsbjetdisc,&b_electron_v2_cj_cvsbjetdisc);
+  if(fChain->GetBranch("electron_v2_cj_cvsljetdisc")) fChain->SetBranchAddress("electron_v2_cj_cvsljetdisc",&electron_v2_cj_cvsljetdisc,&b_electron_v2_cj_cvsljetdisc);
+  if(fChain->GetBranch("electron_v2_cj_flavour"))     fChain->SetBranchAddress("electron_v2_cj_flavour",&electron_v2_cj_flavour,&b_electron_v2_cj_flavour);
+  //---> BDT VAR                                                                                                                                                                                                 
+  if(fChain->GetBranch("electron_mva_conv_ed_v5"))    fChain->SetBranchAddress("electron_mva_conv_ed_v5",&electron_mva_conv_ed_v5,&b_electron_mva_conv_ed_v5);
+  if(fChain->GetBranch("electron_mva_cf_ed_v5"))      fChain->SetBranchAddress("electron_mva_cf_ed_v5",  &electron_mva_cf_ed_v5,  &b_electron_mva_cf_ed_v5);
+  if(fChain->GetBranch("electron_mva_cf_ed_v5pt"))    fChain->SetBranchAddress("electron_mva_cf_ed_v5pt",&electron_mva_cf_ed_v5pt,&b_electron_mva_cf_ed_v5pt);
+  if(fChain->GetBranch("electron_mva_fake_ed_v5"))    fChain->SetBranchAddress("electron_mva_fake_ed_v5",&electron_mva_fake_ed_v5,&b_electron_mva_fake_ed_v5);
+  if(fChain->GetBranch("electron_mva_fakeHFB_v5"))    fChain->SetBranchAddress("electron_mva_fakeHFB_v5",&electron_mva_fakeHFB_v5,&b_electron_mva_fakeHFB_v5);
+  if(fChain->GetBranch("electron_mva_fakeHFC_v5"))    fChain->SetBranchAddress("electron_mva_fakeHFC_v5",&electron_mva_fakeHFC_v5,&b_electron_mva_fakeHFC_v5);
+  if(fChain->GetBranch("electron_mva_fakeLF_v5"))     fChain->SetBranchAddress("electron_mva_fakeLF_v5",&electron_mva_fakeLF_v5,&b_electron_mva_fakeLF_v5);
   if(fChain->GetBranch("electron_mva_fake_QCD_LFvsHF_v5"))   fChain->SetBranchAddress("electron_mva_fake_QCD_LFvsHF_v5",&electron_mva_fake_QCD_LFvsHF_v5,&b_electron_mva_fake_QCD_LFvsHF_v5);
   if(fChain->GetBranch("electron_mva_fake_QCD_HFBvsHFC_v5")) fChain->SetBranchAddress("electron_mva_fake_QCD_HFBvsHFC_v5",&electron_mva_fake_QCD_HFBvsHFC_v5,&b_electron_mva_fake_QCD_HFBvsHFC_v5);
-
   if(fChain->GetBranch("electron_mva_fake_QCD_LF1_v5")) fChain->SetBranchAddress("electron_mva_fake_QCD_LF1_v5",&electron_mva_fake_QCD_LF1_v5,&b_electron_mva_fake_QCD_LF1_v5);
   if(fChain->GetBranch("electron_mva_fake_QCD_LF2_v5")) fChain->SetBranchAddress("electron_mva_fake_QCD_LF2_v5",&electron_mva_fake_QCD_LF2_v5,&b_electron_mva_fake_QCD_LF2_v5);
-
-  if(fChain->GetBranch("electron_lepton_type")) fChain->SetBranchAddress("electron_lepton_type",&electron_lepton_type,&b_electron_lepton_type);
-  if(fChain->GetBranch("electron_is_cf")) fChain->SetBranchAddress("electron_is_cf",&electron_is_cf,&b_electron_is_cf);
 
 
   fChain->SetBranchAddress("muon_PfChargedHadronIsoR04", &muon_PfChargedHadronIsoR04, &b_muon_PfChargedHadronIsoR04);
@@ -1052,23 +1072,25 @@ void SKFlatNtuple::Init()
   fChain->SetBranchAddress("muon_jetPtRatio", &muon_jetPtRatio, &b_muon_jetPtRatio);
   fChain->SetBranchAddress("muon_jetPtRel", &muon_jetPtRel, &b_muon_jetPtRel);
 
-  //// HNL BDT variables   
-  if(fChain->GetBranch("muon_ptrel")) fChain->SetBranchAddress("muon_ptrel",&muon_ptrel,&b_muon_ptrel);
-  if(fChain->GetBranch("muon_ptratio"))fChain->SetBranchAddress("muon_ptratio",&muon_ptratio,&b_muon_ptratio);
-  if(fChain->GetBranch("muon_v2_cj_bjetdisc"))fChain->SetBranchAddress("muon_v2_cj_bjetdisc",&muon_v2_cj_bjetdisc,&b_muon_v2_cj_bjetdisc);
-  if(fChain->GetBranch("muon_v2_cj_cvsbjetdisc"))fChain->SetBranchAddress("muon_v2_cj_cvsbjetdisc",&muon_v2_cj_cvsbjetdisc,&b_muon_v2_cj_cvsbjetdisc);
-  if(fChain->GetBranch("muon_v2_cj_cvsljetdisc"))fChain->SetBranchAddress("muon_v2_cj_cvsljetdisc",&muon_v2_cj_cvsljetdisc,&b_muon_v2_cj_cvsljetdisc);
-  if(fChain->GetBranch("muon_v2_cj_flavour"))fChain->SetBranchAddress("muon_v2_cj_flavour",&muon_v2_cj_flavour,&b_muon_v2_cj_flavour);
-  if(fChain->GetBranch("muon_mva_fake_v4"))fChain->SetBranchAddress("muon_mva_fake_v4",&muon_mva_fake_v4,&b_muon_mva_fake_v4);
+  /////// VERSION 4 HNL BDT SKIM VARIABLES                                                                                                                                                                       
+  if(fChain->GetBranch("muon_ptrel"))         fChain->SetBranchAddress("muon_ptrel",&muon_ptrel,&b_muon_ptrel);
+  if(fChain->GetBranch("muon_ptratio"))       fChain->SetBranchAddress("muon_ptratio",&muon_ptratio,&b_muon_ptratio);
+  if(fChain->GetBranch("muon_mva_fake_v4"))   fChain->SetBranchAddress("muon_mva_fake_v4",&muon_mva_fake_v4,&b_muon_mva_fake_v4);
   if(fChain->GetBranch("muon_mva_fake_ed_v4"))fChain->SetBranchAddress("muon_mva_fake_ed_v4",&muon_mva_fake_ed_v4,&b_muon_mva_fake_ed_v4);
-  if(fChain->GetBranch("muon_mva_fake_QCD_LFvsHF_v5")) fChain->SetBranchAddress("muon_mva_fake_QCD_LFvsHF_v5",&muon_mva_fake_QCD_LFvsHF_v5,&b_muon_mva_fake_QCD_LFvsHF_v5);
+  if(fChain->GetBranch("muon_lepton_type"))   fChain->SetBranchAddress("muon_lepton_type",&muon_lepton_type,&b_muon_lepton_type);
+  if(fChain->GetBranch("muon_is_cf"))         fChain->SetBranchAddress("muon_is_cf",&muon_is_cf,&b_muon_is_cf);
+
+  /////// VERSION 5 HNL BDT SKIM VARIABLES                                                                                                                                                                       
+  if(fChain->GetBranch("muon_v2_cj_bjetdisc"))    fChain->SetBranchAddress("muon_v2_cj_bjetdisc",&muon_v2_cj_bjetdisc,&b_muon_v2_cj_bjetdisc);
+  if(fChain->GetBranch("muon_v2_cj_cvsbjetdisc")) fChain->SetBranchAddress("muon_v2_cj_cvsbjetdisc",&muon_v2_cj_cvsbjetdisc,&b_muon_v2_cj_cvsbjetdisc);
+  if(fChain->GetBranch("muon_v2_cj_cvsljetdisc")) fChain->SetBranchAddress("muon_v2_cj_cvsljetdisc",&muon_v2_cj_cvsljetdisc,&b_muon_v2_cj_cvsljetdisc);
+  if(fChain->GetBranch("muon_v2_cj_flavour"))     fChain->SetBranchAddress("muon_v2_cj_flavour",&muon_v2_cj_flavour,&b_muon_v2_cj_flavour);
+  if(fChain->GetBranch("muon_mva_fake_QCD_LFvsHF_v5"))   fChain->SetBranchAddress("muon_mva_fake_QCD_LFvsHF_v5",&muon_mva_fake_QCD_LFvsHF_v5,&b_muon_mva_fake_QCD_LFvsHF_v5);
   if(fChain->GetBranch("muon_mva_fake_QCD_HFBvsHFC_v5")) fChain->SetBranchAddress("muon_mva_fake_QCD_HFBvsHFC_v5",&muon_mva_fake_QCD_HFBvsHFC_v5,&b_muon_mva_fake_QCD_HFBvsHFC_v5);
-  if(fChain->GetBranch("muon_mva_fake_QCD_LF1_v5")) fChain->SetBranchAddress("muon_mva_fake_QCD_LF1_v5",&muon_mva_fake_QCD_LF1_v5,&b_muon_mva_fake_QCD_LF1_v5);
-  if(fChain->GetBranch("muon_mva_fake_QCD_LF2_v5")) fChain->SetBranchAddress("muon_mva_fake_QCD_LF2_v5",&muon_mva_fake_QCD_LF2_v5,&b_muon_mva_fake_QCD_LF2_v5);
+  if(fChain->GetBranch("muon_mva_fake_QCD_LF1_v5"))      fChain->SetBranchAddress("muon_mva_fake_QCD_LF1_v5",&muon_mva_fake_QCD_LF1_v5,&b_muon_mva_fake_QCD_LF1_v5);
+  if(fChain->GetBranch("muon_mva_fake_QCD_LF2_v5"))      fChain->SetBranchAddress("muon_mva_fake_QCD_LF2_v5",&muon_mva_fake_QCD_LF2_v5,&b_muon_mva_fake_QCD_LF2_v5);
 
 
-  if(fChain->GetBranch("muon_lepton_type"))fChain->SetBranchAddress("muon_lepton_type",&muon_lepton_type,&b_muon_lepton_type);
-  if(fChain->GetBranch("muon_is_cf")) fChain->SetBranchAddress("muon_is_cf",&muon_is_cf,&b_muon_is_cf);
   
   fChain->SetBranchAddress("muon_simType", &muon_simType, &b_muon_simType);
   fChain->SetBranchAddress("muon_simExtType", &muon_simExtType, &b_muon_simExtType);

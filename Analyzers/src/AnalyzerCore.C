@@ -37,7 +37,6 @@ AnalyzerCore::~AnalyzerCore(){
 
   //=== hist maps
   
-
   for(std::map< TString, TH1D* >::iterator mapit = maphist_TH1D.begin(); mapit!=maphist_TH1D.end(); mapit++){
     delete mapit->second;
   }
@@ -191,7 +190,7 @@ void AnalyzerCore::SwitchToTempDir(){
   while (!tempDir) {
     //==== First, let's find a directory name that doesn't exist yet
     std::stringstream dirname;
-    dirname << "Analyzer4Core" << counter;
+    dirname << "AnalyzerCore" << counter;
     if (gROOT->GetDirectory((dirname.str()).c_str())) {
       ++counter;
       continue;
@@ -2644,6 +2643,7 @@ std::vector<Electron> AnalyzerCore::GetAllElectrons(){
 
     el.SetUncorrE(electron_EnergyUnCorr->at(i));
     el.SetSC(electron_scEta->at(i), electron_scPhi->at(i), electron_scEnergy->at(i));
+    el.SetElSCEta(electron_scEta->at(i));
     el.SetCharge(electron_charge->at(i));
     el.SetdXY(electron_dxyVTX->at(i), electron_dxyerrVTX->at(i));
     el.SetdZ(electron_dzVTX->at(i), electron_dzerrVTX->at(i));
@@ -5162,15 +5162,15 @@ void AnalyzerCore::SetupLeptonBDTSKFlat(){
 }
 
 void AnalyzerCore::ResetLeptonBDTSKFlatV5(){
+  
+  ///// Reset V5 variables to add to BDT skim
+  ///// No overlap with V4
+  //cout << "V5 variables (some removed from original BDT skim code     "<< endl;
 
-  velectron_ptrel->clear();
-  velectron_ptratio->clear();
   velectron_v2_cj_bjetdisc->clear();
   velectron_v2_cj_cvsbjetdisc->clear();
   velectron_v2_cj_cvsljetdisc->clear();
   velectron_v2_cj_flavour->clear();
-  velectron_lepton_type->clear();
-  velectron_is_cf->clear();
   
   velectron_mva_cf_ed_v5->clear();
   velectron_mva_cf_ed_v5pt->clear();
@@ -5184,24 +5184,34 @@ void AnalyzerCore::ResetLeptonBDTSKFlatV5(){
   velectron_mva_fake_QCD_LF1_v5->clear();
   velectron_mva_fake_QCD_LF2_v5->clear();
 
-  vmuon_ptrel->clear();
-  vmuon_ptratio->clear();
   vmuon_v2_cj_bjetdisc->clear();
   vmuon_v2_cj_cvsbjetdisc->clear();
   vmuon_v2_cj_cvsljetdisc->clear();
   vmuon_v2_cj_flavour->clear();
-  vmuon_lepton_type->clear();
-  vmuon_is_cf->clear();
 
   vmuon_mva_fake_QCD_LFvsHF_v5->clear();
   vmuon_mva_fake_QCD_HFBvsHFC_v5->clear();
   vmuon_mva_fake_QCD_LF1_v5->clear();
   vmuon_mva_fake_QCD_LF2_v5->clear();
+
+  //cout << "END V5 variables (some removed from original BDT skim code     "<< endl;
+
   return;
 }
 
 void AnalyzerCore::ResetLeptonBDTSKFlat(){
 
+  //// V4 variables (some removed from original BDT skim code
+  //  cout << "V4 variables (some removed from original BDT skim code     " << endl;
+
+  velectron_ptrel->clear();
+  velectron_ptratio->clear();
+  vmuon_ptrel->clear();
+  vmuon_ptratio->clear();
+  velectron_lepton_type->clear();
+  velectron_is_cf->clear();
+  vmuon_lepton_type->clear();
+  vmuon_is_cf->clear();
 
   velectron_mva_cf_v2->clear();
   velectron_mva_cf_ed_v2->clear();
@@ -5219,10 +5229,10 @@ void AnalyzerCore::ResetLeptonBDTSKFlat(){
   velectron_mva_fakeHFC_ed_v4->clear();
   velectron_mva_fakeLF_ed_v4->clear();
   velectron_mva_fakeTop_ed_v4->clear();
-
   vmuon_mva_fake_ed_v4->clear();
   vmuon_mva_fake_v4->clear();
-
+  
+  //  cout << "END V4 variables (some removed from original BDT skim code     "<< endl;
 
   return;
 }
@@ -8145,7 +8155,8 @@ void AnalyzerCore::WriteHist(){
     outfile->cd();
     delete timer_hist;
   }
-  
+ 
+ 
 }
 
 

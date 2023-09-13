@@ -13,6 +13,7 @@ Lepton::Lepton() : Particle() {
   j_unCorrPt = -999;
   j_unCorrPx = -999;
   j_unCorrPy = -999;
+  j_elSCeta= -999;
   j_RelIso = -999.;
   j_MiniRelIso = -999.;
   j_ptcone = -999.;
@@ -268,14 +269,14 @@ void Lepton::SetCloseJetBScore(double bscore){
 }
 
 
-void Lepton::SetCloseJetCvsBScore(double bscore){
-  j_lep_jetbscore = bscore;
+void Lepton::SetCloseJetCvsBScore(double score){
+  j_lep_jetcvsbscore= score;
 }
 
 
-void Lepton::SetCloseJetCvsLScore(double bscore){
+void Lepton::SetCloseJetCvsLScore(double score){
 
-  j_lep_jetbscore = bscore;
+  j_lep_jetcvslscore = score;
 }
 
 void Lepton::SetCloseJetFlavour(int flav){
@@ -298,6 +299,9 @@ void Lepton::SetUncorrectedPx(double uncorrPx){
 
 void Lepton::SetUncorrectedPy(double uncorrPy){
   j_unCorrPy = uncorrPy;
+
+void Lepton::SetElSCEta(double sceta){
+  j_elSCeta=sceta;
 }
 
 void Lepton::SetdXY(double dXY, double dXYerr){

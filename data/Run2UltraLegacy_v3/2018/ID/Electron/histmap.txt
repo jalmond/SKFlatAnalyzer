@@ -10,7 +10,5 @@ ID	SF	passLooseID	egammaEffi.txt_Ele_Loose_EGM2D.root	EGamma_SF2D	TH2F
 ID	SF	passVetoID	egammaEffi.txt_Ele_Veto_EGM2D.root	EGamma_SF2D	TH2F
 RECO	SF	ptgt20	egammaEffi_ptAbove20.txt_EGM2D_UL2018.root	EGamma_SF2D	TH2F
 RECO	SF	ptlt20	egammaEffi_ptBelow20.txt_EGM2D_UL2018.root	EGamma_SF2D	TH2F
-ID      SF      TmpHNTightV2 HNL_IDSFTmp_el_2018.root                       Data_MC_SF_HNTightV2     TH2F
-ID      SF      TmpHNTight_17028 HNL_IDSFTmp_el_2018.root                   Data_MC_SF_HNTight_17028     TH2F
-ID      SF      TmppassPOGTight HNL_IDSFTmp_el_2018.root                    Data_MC_SF_passPOGTight     TH2F
-ID      SF      TmpHNL_ULID_2018                        HNL_LeptonIDSF_El_2018.root                      Data_MC_SF_HNL_ULID_2018 TH2F
+ID      SF      passHNTightV2      HNL_LeptonIDSF_Electron_2018_Eta_Pt.root            Data_MC_SF_Eta_Pt_HNTightV2     TH2F
+ID      SF      passHNL_ULID_Run2  HNL_LeptonIDSF_Electron_2018_Eta_Pt.root            Data_MC_SF_Eta_Pt_HNL_ULID_Run2 TH2F

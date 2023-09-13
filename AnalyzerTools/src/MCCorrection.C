@@ -70,7 +70,7 @@ void MCCorrection::ReadHistograms(){
     cout << "[MCCorrection::MCCorrection] key = " << it->first << endl;
   }
 
-
+  
   vector<TString> muhistmaps=Split(gSystem->GetFromPipe("find "+IDpath+"/Muon/ -name 'histmap*.txt' -type f"),"\n");
   for(const auto& muhistmap:muhistmaps){
     string elline2;
@@ -4834,8 +4834,12 @@ double MCCorrection::MuonID_SF(TString ID, double eta, double pt, int sys){
 
   eta = fabs(eta);
 
-
-  if(ID=="NUM_TightID_DEN_TrackerMuons" || ID=="NUM_MediumID_DEN_TrackerMuons" || ID=="NUM_HighPtID_DEN_TrackerMuons"){
+  if(ID.Contains("HNL_ULID")){
+    if(pt<10.) pt = 10.1;
+    if(pt>=120.) pt = 119.9;
+    if(eta>=2.4) eta = 2.39;
+  }
+  else   if(ID=="NUM_TightID_DEN_TrackerMuons" || ID=="NUM_MediumID_DEN_TrackerMuons" || ID=="NUM_HighPtID_DEN_TrackerMuons"){
     //==== boundaries
     if(pt<15.) pt = 15.1;
     if(pt>=120.) pt = 119.9;

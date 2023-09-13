@@ -8,7 +8,9 @@ void SkimTree_FakeEventSkimBDT::initializeAnalyzer(){
 
   SetupIDMVAReaderDefault();
   InitialiseLeptonBDTSKFlat();
-  ///// ELECTRON BRANCHES                                                                                                                                                                                                                                                                                                     
+  ///// ELECTRON BRANCHES                                                                                                                                                                                                                                                               
+    
+      
   if(!fChain->GetBranch("electron_mva_cf_v2")){
     newtree->Branch("electron_mva_cf_v2",     &velectron_mva_cf_v2);
     newtree->Branch("electron_mva_cf_ed_v2",  &velectron_mva_cf_ed_v2);
@@ -48,12 +50,13 @@ void SkimTree_FakeEventSkimBDT::initializeAnalyzer(){
   newtree->Branch("electron_mva_fake_QCD_LF1_v5",     &velectron_mva_fake_QCD_LF1_v5);
   newtree->Branch("electron_mva_fake_QCD_LF2_v5",     &velectron_mva_fake_QCD_LF2_v5);
   
-  newtree->Branch("electron_v2_cj_bjetdisc",&velectron_v2_cj_bjetdisc);
+  newtree->Branch("electron_v2_cj_bjetdisc",   &velectron_v2_cj_bjetdisc);
   newtree->Branch("electron_v2_cj_cvsbjetdisc",&velectron_v2_cj_cvsbjetdisc);
   newtree->Branch("electron_v2_cj_cvsljetdisc",&velectron_v2_cj_cvsljetdisc);
-  newtree->Branch("electron_v2_cj_flavour", &velectron_v2_cj_flavour);
-  //// MUON BRANCH                                                                                                                                                                                                                                                                                                            
+  newtree->Branch("electron_v2_cj_flavour",    &velectron_v2_cj_flavour);
 
+  //// MUON BRANCH                                                                                                                                                                                               
+  
   if(!fChain->GetBranch("muon_mva_fake_ed_v4")){
     newtree->Branch("muon_mva_fake_v4",   &vmuon_mva_fake_v4);
     newtree->Branch("muon_mva_fake_ed_v4",&vmuon_mva_fake_ed_v4);
@@ -61,6 +64,7 @@ void SkimTree_FakeEventSkimBDT::initializeAnalyzer(){
     newtree->Branch("muon_ptratio",       &vmuon_ptratio);
     newtree->Branch("muon_lepton_type",   &vmuon_lepton_type);
     newtree->Branch("muon_is_cf",         &vmuon_is_cf);
+    newtree->Branch("SKWeight", &vSKWeight);
   }
 
   newtree->Branch("muon_mva_fake_QCD_LFvsHF_v5",  &vmuon_mva_fake_QCD_LFvsHF_v5);
@@ -70,12 +74,8 @@ void SkimTree_FakeEventSkimBDT::initializeAnalyzer(){
 
   newtree->Branch("muon_v2_cj_bjetdisc",   &vmuon_v2_cj_bjetdisc);
   newtree->Branch("muon_v2_cj_cvsbjetdisc",&vmuon_v2_cj_cvsbjetdisc);
-  newtree->Branch("muon_v2_cj_cvsljetdisc"   ,&vmuon_v2_cj_cvsljetdisc);
+  newtree->Branch("muon_v2_cj_cvsljetdisc",&vmuon_v2_cj_cvsljetdisc);
   newtree->Branch("muon_v2_cj_flavour",    &vmuon_v2_cj_flavour);
-
-
-  newtree->Branch("SKWeight", &vSKWeight);
-
 
 }
 
