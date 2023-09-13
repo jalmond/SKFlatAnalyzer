@@ -1354,7 +1354,7 @@ AnalyzerParameter HNL_LeptonCore::InitialiseHNLParameter(TString s_setup, TStrin
   /// Fakes
   param.Muon_FR_Key  ="ptcone_eta_AwayJetPt40";
   param.Muon_PR_Key  ="ptcone_eta_central";
-  param.Electron_FR_Key  = "ptcone_eta_AwayJetPt40";
+  param.Electron_FR_Key  = "pt_eta_AwayJetPt40";
   param.Electron_PR_Key  ="ptcone_eta_central";
   /// Defaul Corrections                                                                                                                    
   param.Muon_ID_SF_Key = "NUM_TightID_DEN_TrackerMuons";
