@@ -1,12 +1,10 @@
-MuMu	PtParton	Ev_MET	MVAUL_UL	10	1	15
-MuMu	PtParton	Lep_1_pt	MVAUL_UL	10	1	20
-MuMu	PtParton	Lep_1_eta	MVAUL_UL	5	1	12
-MuMu	PtParton	Lep_2_pt	MVAUL_UL	10	1	15
-MuMu	PtParton	Lep_2_eta	MVAUL_UL	5	1	12
-#MuMu	PtParton	N_AK4Jets	MVAUL_UL	2	2	5
-MuMu	PtParton	N_AK4Jets	MVAUL_UL	1	1	10
+MuMu	Pt	Ev_MET	MVAUL_UL	10	1	15
 MuMu	Pt	Lep_1_pt	MVAUL_UL	10	1	20
+MuMu	Pt	Lep_1_eta	MVAUL_UL	5	1	12
 MuMu	Pt	Lep_2_pt	MVAUL_UL	10	1	15
+MuMu	Pt	Lep_2_eta	MVAUL_UL	5	1	12
+#MuMu	Pt	N_AK4Jets	MVAUL_UL	2	2	5
+MuMu	Pt	N_AK4Jets	MVAUL_UL	1	1	10
 #Electron	HN	Electron_Loose_PtCone	HN	5	1	40
 #Electron	HN	Electron_Tight_PtCone	HN	5	1	40
 #Electron	HN	Electron_Loose_Eta	HN	5	2	11

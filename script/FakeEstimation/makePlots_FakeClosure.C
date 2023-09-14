@@ -32,8 +32,8 @@ void makePlots_FakeClosure(){
   // Select what to draw first
   //TString DrawSample = "All";
   //TString DrawSample = "DY";
-  //TString DrawSample = "DY_MG";
-  TString DrawSample = "TT";
+  TString DrawSample = "DY_MG";
+  //TString DrawSample = "TT";
   //TString DrawSample = "WJets";
 
   // Set MC, Bundle numbers according to the sample type
@@ -112,13 +112,15 @@ void makePlots_FakeClosure(){
         f_Data[1][it_y] = new TFile(workdir+file_path+flagPred+"/"+analyzer+"_"+skim+"_TTJJ_powheg.root");
         f_Data[2][it_y] = new TFile(workdir+file_path+flagPred+"/"+analyzer+"_"+skim+"_TTLL_powheg.root");
         f_Data[3][it_y] = new TFile(workdir+file_path+flagPred+"/"+analyzer+"_"+skim+"_TTLJ_powheg.root");
-        f_Data[4][it_y] = new TFile(workdir+file_path+flagPred+"/"+analyzer+"_"+skim+"_WJets_MG.root");
+        //f_Data[4][it_y] = new TFile(workdir+file_path+flagPred+"/"+analyzer+"_"+skim+"_WJets_MG.root");
+        f_Data[4][it_y] = new TFile(workdir+file_path+flagPred+"/"+analyzer+"_"+skim+"_WJets_Sherpa.root");
         
         f_MC[0][it_y]   = new TFile(workdir+file_path+flagObs+"/"+analyzer+"_"+skim+"_DYJets.root");
         f_MC[1][it_y]   = new TFile(workdir+file_path+flagObs+"/"+analyzer+"_"+skim+"_TTJJ_powheg.root");
         f_MC[2][it_y]   = new TFile(workdir+file_path+flagObs+"/"+analyzer+"_"+skim+"_TTLL_powheg.root");
         f_MC[3][it_y]   = new TFile(workdir+file_path+flagObs+"/"+analyzer+"_"+skim+"_TTLJ_powheg.root");
-        f_MC[4][it_y]   = new TFile(workdir+file_path+flagObs+"/"+analyzer+"_"+skim+"_WJets_MG.root");
+        //f_MC[4][it_y]   = new TFile(workdir+file_path+flagObs+"/"+analyzer+"_"+skim+"_WJets_MG.root");
+        f_MC[4][it_y]   = new TFile(workdir+file_path+flagObs+"/"+analyzer+"_"+skim+"_WJets_Sherpa.root");
       }
       else if(DrawSample=="DY"){
         f_Data[0][it_y] = new TFile(workdir+file_path+flagPred+"/"+analyzer+"_"+skim+"_DYJets.root");
