@@ -176,6 +176,7 @@ void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq,
   
     //cout << "ParamName = " << param.Name << endl;
     std::vector<Lepton *> leps       = MakeLeptonPointerVector(muons,electrons,param);
+    if(RunFake || RunFakeClosure) leps = LeptonUsePtParton(leps); //JH : FIXME if you want to go back, just remove this line
     //if(electrons.size()>1)cout << "leps defined;" << endl;
     //if(electrons.size()>1)cout << "leps size : " << leps.size() << endl;
 
@@ -380,7 +381,7 @@ bool  HNL_RegionDefinitions::PassPreselection(HNL_LeptonCore::Channel channel,HN
 
   Fill_RegionPlots(channel, 0, param.Name,"Preselection" , TauColl, JetColl, AK8_JetColl, B_JetColl, leps, leps_veto, METv, nPV, w,param.WriteOutVerbose);
   if(RunFake || RunFakeClosureObs){
-    leps = LeptonUsePtParton(leps); //JH
+    leps = LeptonUsePtParton(leps);
     Fill_RegionPlots(channel, 0, param.Name,"Preselection_PtParton" , TauColl, JetColl, AK8_JetColl, B_JetColl, leps, leps_veto, METv, nPV, w,param.WriteOutVerbose);
   }
   FillEventCutflow(HNL_LeptonCore::ChannelDepPresel, w, GetChannelString(channel) +"_Presel", "ChannelCutFlow/"+param.DefName,param.WriteOutVerbose);
