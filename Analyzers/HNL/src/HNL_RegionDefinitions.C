@@ -381,7 +381,7 @@ bool  HNL_RegionDefinitions::PassPreselection(HNL_LeptonCore::Channel channel,HN
 
   Fill_RegionPlots(channel, 0, param.Name,"Preselection" , TauColl, JetColl, AK8_JetColl, B_JetColl, leps, leps_veto, METv, nPV, w,param.WriteOutVerbose);
   if(RunFake || RunFakeClosureObs){
-    leps = LeptonUsePtParton(leps);
+    //leps = LeptonUsePtParton(leps); //JH : FIXME if you want to go back, uncomment this line
     Fill_RegionPlots(channel, 0, param.Name,"Preselection_PtParton" , TauColl, JetColl, AK8_JetColl, B_JetColl, leps, leps_veto, METv, nPV, w,param.WriteOutVerbose);
   }
   FillEventCutflow(HNL_LeptonCore::ChannelDepPresel, w, GetChannelString(channel) +"_Presel", "ChannelCutFlow/"+param.DefName,param.WriteOutVerbose);

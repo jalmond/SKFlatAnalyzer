@@ -114,8 +114,8 @@ if [[ $1 == "" ]]; then
 #SKFlat.py -a $analyzer -i TTLL_powheg -n 400 --nmax ${nmax} -e ${i} --skim SkimTree_HNMultiLepBDT --userflags RunFakeClosureObs &
 #SKFlat.py -a $analyzer -i TTLJ_powheg -n 400 --nmax ${nmax} -e ${i} --skim SkimTree_HNMultiLepBDT --userflags RunFakeClosureObs &
 #SKFlat.py -a $analyzer -i TTJJ_powheg -n 400 --nmax ${nmax} -e ${i} --skim SkimTree_HNMultiLepBDT --userflags RunFakeClosureObs &
-#SKFlat.py -a $analyzer -l /data6/Users/jihkim/SKFlatAnalyzer/runJobs/HNL/HNL_SignalRegionPlotter/Bkg/FakeClosure.txt -n 400 --nmax ${nmax} -e ${i} --skim SkimTree_HNMultiLepBDT --userflags RunFakeClosurePred &
-#SKFlat.py -a $analyzer -l /data6/Users/jihkim/SKFlatAnalyzer/runJobs/HNL/HNL_SignalRegionPlotter/Bkg/FakeClosure.txt -n 400 --nmax ${nmax} -e ${i} --skim SkimTree_HNMultiLepBDT --userflags RunFakeClosureObs &
+SKFlat.py -a $analyzer -l /data6/Users/jihkim/SKFlatAnalyzer/runJobs/HNL/HNL_SignalRegionPlotter/Bkg/FakeClosure.txt -n 400 --nmax ${nmax} -e ${i} --skim SkimTree_HNMultiLepBDT --userflags RunFakeClosurePred &
+SKFlat.py -a $analyzer -l /data6/Users/jihkim/SKFlatAnalyzer/runJobs/HNL/HNL_SignalRegionPlotter/Bkg/FakeClosure.txt -n 400 --nmax ${nmax} -e ${i} --skim SkimTree_HNMultiLepBDT --userflags RunFakeClosureObs &
 
 # Data
 #SKFlat.py -a $analyzer  -l $datapath/${i}_DiLepton.txt  -n ${njobs_data}  --nmax ${nmax}   -e ${i}  --skim SkimTree_HNMultiLepBDT &
@@ -124,7 +124,7 @@ if [[ $1 == "" ]]; then
 #SKFlat.py -a $analyzer  -l $datapath/${i}_DiLepton_MuMu_B.txt  -n ${njobs_data}  --nmax ${nmax}   -e ${i}  --skim SkimTree_HNMultiLep --userflags RunFake &
 #SKFlat.py -a $analyzer  -i WZTo3LNu_amcatnlo -n 100  --nmax ${nmax}   -e ${i}   --skim SkimTree_HNMultiLepBDT &
 #SKFlat.py -a $analyzer  -i ZZTo4L_powheg -n 100  --nmax ${nmax}   -e ${i}   --skim SkimTree_HNMultiLep &
-SKFlat.py -a $analyzer -i TTLJ_powheg -n 400 --nmax ${nmax} -e ${i} --skim SkimTree_HNMultiLepBDT --userflags RunFakeClosurePred &
+#SKFlat.py -a $analyzer -i TTLJ_powheg -n 400 --nmax ${nmax} -e ${i} --skim SkimTree_HNMultiLepBDT --userflags RunFakeClosurePred &
         
     done
 

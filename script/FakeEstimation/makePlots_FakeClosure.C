@@ -32,8 +32,8 @@ void makePlots_FakeClosure(){
   // Select what to draw first
   //TString DrawSample = "All";
   //TString DrawSample = "DY";
-  TString DrawSample = "DY_MG";
-  //TString DrawSample = "TT";
+  //TString DrawSample = "DY_MG";
+  TString DrawSample = "TT";
   //TString DrawSample = "WJets";
 
   // Set MC, Bundle numbers according to the sample type
