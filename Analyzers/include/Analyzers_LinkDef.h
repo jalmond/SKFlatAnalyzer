@@ -4,6 +4,7 @@
 #pragma link off all classes;
 #pragma link off all functions;
 #pragma link C++ nestedclasses;
+
 #pragma link C++ class SKFlatNtuple+;
 #pragma link C++ class AnalyzerCore+;
 #pragma link C++ class HNL_LeptonCore+;
@@ -18,6 +19,7 @@
 #pragma link C++ class SkimTree_FakeEventSkimBDT+;
 #pragma link C++ class SkimTree_Dilepton+;
 #pragma link C++ class SkimTree_DileptonBDT+;
+#pragma link C++ class SkimTree_BDT+;
 #pragma link C++ class SkimTree_EventSkim+;
 #pragma link C++ class SkimTree_HighPt1LJets+;
 #pragma link C++ class SkimTree_HNElectronOpt+;

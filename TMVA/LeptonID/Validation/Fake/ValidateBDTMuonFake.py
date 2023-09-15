@@ -62,9 +62,9 @@ import argparse
 parser = argparse.ArgumentParser(description='option')
 parser.add_argument('-b', dest='Bkg', default="Fake")
 parser.add_argument('-e', dest='Era', default="2017")
-parser.add_argument('-f', dest='Channel', default="MuMu")
+parser.add_argument('-f', dest='Flag', default="BDT")
 parser.add_argument('-c', dest='Classifier', default="BDTG")
-parser.add_argument('-v', dest='Version', default="Version4")
+parser.add_argument('-v', dest='Version', default="Version11")
 
 args = parser.parse_args()
 
@@ -84,6 +84,9 @@ for File in BDTFileList:
         continue
         
     if not args.Classifier in File:
+        continue
+
+    if not args.Flag in File:
         continue
 
     print ("="*50)
@@ -109,12 +112,13 @@ print "AUC              KS_signal   KS_bkg      File "
 for key in sorted(Results,reverse=True):
     if float(Results[key][0]) < 0.05 or float(Results[key][1])< 0.05:
         continue
-    print 
+
     if float(Results[key][0]) > 0.95 or float(Results[key][1])> 0.95:
         continue
 
-    if float(Results[key][0]) < 0.1 or float(Results[key][1])< 0.1:
-        print "%s: %s" % (key, Results[key])
+    if float(Results[key][0]) < 0.05 or float(Results[key][1])< 0.95:
+        #print "%s: %s" % (key, Results[key])
+        continue
     else:
         print "----> %s: %s" % (key, Results[key])
         

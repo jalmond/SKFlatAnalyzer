@@ -16,28 +16,25 @@ njobs=25
 nLargejobs=50
 njobs_sig=30
 njobs_data=10
-nmax=300
+nmax=350
 
 
 if [[ $1 == "" ]]; then
     
-    SKFlat.py -a $analyzer  -i DYTypeI_DF_M100_private  -n 1  --nmax 10   -e 2018 --skim SkimTree_HNMultiLepBDT  --userflags 'RunEE,ELID_Full,Scan1' &
+    SKFlat.py -a $analyzer  -i DYTypeI_DF_M100_private  -n 1  --nmax 10   -e 2018 --skim SkimTree_HNMultiLepBDT  --userflags 'RunEE,ELID_FullScan,ScanEC' &
     
 fi
 
 
-if [[ $1 == "ELECTRON_Full_Scan" ]]; then
+if [[ $1 == "ELECTRON_Conv_Scan" ]]; then
 
-    declare  -a era_list=("2016postVFP" "2016preVFP"  "2017" "2018")
+    declare  -a era_list=("2018" "2016postVFP" "2016preVFP"  "2017")
 
     for i in "${era_list[@]}"
     do
 
-        Flag='RunEE,ELID_FullScan,ScanEC'
+        Flag='RunEE,ELID_ConvScan'
         source ${runPATH}/run_hnl.sh Electron ${Flag} ${i}
-        Flag='RunEE,ELID_FullScan,ScanBB'
-        source ${runPATH}/run_hnl.sh Electron ${Flag} ${i}
-
     done
 fi
 

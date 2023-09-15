@@ -24,8 +24,8 @@ void HNL_LeptonIDSF::executeEvent(){
   AnalyzerParameter param =  HNL_LeptonCore::InitialiseHNLParameter("MVAUL","");
 
 
-  //MeasureElectronEfficiencies(param);
-  //  MeasureMuonEfficiencies(param);
+  MeasureElectronEfficiencies(param);
+  MeasureMuonEfficiencies(param);
 
   MeasureElectronIDSF(param);
   MeasureMuonIDSF(param);
@@ -34,6 +34,7 @@ void HNL_LeptonIDSF::executeEvent(){
 
 void HNL_LeptonIDSF::MeasureMuonEfficiencies(AnalyzerParameter param){
 
+  if(IsData) return;
   Event ev = GetEvent();
   double weight = SetupWeight(ev,param)/MCweight(true, true);
   weight *= MCweight(true, false);
@@ -53,13 +54,14 @@ void HNL_LeptonIDSF::MeasureMuonEfficiencies(AnalyzerParameter param){
 
   FillMuonPlots("MuonEff" , "Muon", MuonCollProbePrompt, weight);
 
-  vector<TString> IDs = {"HNL_Peking", "HNTightV2","HNL_HN3L","MVAID","MVALoose","HNL_ULID_2016","HNL_ULID_2017","HNL_ULID_LF","HNL_ULID_2016_L","HNL_ULID_2017_L"};
+  vector<TString> IDs = {"HNL_Peking", "HNTightV2","HNL_HN3L","MVAID","MVALoose","HNL_ULID_2016","HNL_ULID_2017","HNTightPFIsoTight",};
   for(auto ID : IDs) PlotIDEfficiency(param,dilep_channel, MuonCollProbePrompt ,  ID,  weight);
   
 
 }
 
 void HNL_LeptonIDSF::MeasureElectronEfficiencies(AnalyzerParameter param){
+  if(IsData) return;
 
   Event ev = GetEvent();
 
@@ -91,8 +93,21 @@ void HNL_LeptonIDSF::MeasureElectronEfficiencies(AnalyzerParameter param){
   vector<TString> IDs = {"HNL_ULID_Baseline",
 			 "HNTightV2", 
 			 "HNL_Peking_2016","HNL_Peking_2017",
+			 "HNL_ULID_OPT_POG1",
+			 "HNL_ULID_OPT_POG2",
+			 "HNL_ULID_OPT_POG3",
+			 "HNL_ULID_OPT_POG4",
+			 "HNL_ULID_OPT_POG5",
+			 "HNL_ULID_Run2_CF",
+			 "HNL_ULID_Run2_Conv",
+			 "HNL_ULID_Run2_Fake",
+			 "HNL_ULID_Run2_CFPt",
+			 "HN2016MVA",
+			 "HN2016MVA2",
+			 "HN2016MVA2CC",
+			 "HN2016POG",
 			 "passHEEPID","passMediumID","passTightID","passMVAID_Iso_WP80","passMVAID_Iso_WP90","passMVAID_noIso_WP80","passMVAID_noIso_WP90",
-			 "MVAID","passProbeID","passProbeIDTight","MVALoose"};
+			 "MVAID","passProbeID","passProbeIDTight","MVALoose",};
 
   if (PassTriggerSelection(dilep_channel, ev, LeptonColl,"Dilep")) {
     for(auto ID : IDs)PlotIDEfficiency(param,"EE_Prompt", ElectronCollProbePrompt ,  ID,  weight);
@@ -247,7 +262,33 @@ void HNL_LeptonIDSF::MeasureElectronIDSF(AnalyzerParameter param){
 
   for(auto id : IDs)    MeasureIDSF(param ,dilep_channel, ProbeEl, id, weight);
   
-  vector<TString> MVAIDs = {"HNL_ULID_Run2",
+  vector<TString> MVAIDs = {"MVALoose",
+			    "HNL_ULID_ScanCFVT_BDTG",
+			    "HNL_ULID_ScanCFT_BDTG",
+			    "HNL_ULID_ScanCFM_BDTG",
+			    "HNL_ULID_ScanCFL_BDTG",
+			    "HNL_ULID_ScanCFVL_BDTG",
+			    
+			    "HNL_ULID_ScanCFVTPt_BDTG",
+			    "HNL_ULID_ScanCFTPt_BDTG",
+			    "HNL_ULID_ScanCFMPt_BDTG",
+			    "HNL_ULID_ScanCFLPt_BDTG",
+			    "HNL_ULID_ScanCFVLPt_BDTG",
+
+			    "HNL_ULID_ScanFAKEVVT_BDTG",
+			    "HNL_ULID_ScanFAKEVT_BDTG",
+			    "HNL_ULID_ScanFAKET_BDTG",
+			    "HNL_ULID_ScanFAKEM_BDTG",
+			    "HNL_ULID_ScanFAKEL_BDTG",
+			    "HNL_ULID_ScanFAKEVL_BDTG",
+			    "HNL_ULID_ScanFAKEVVL_BDTG",
+
+			    "HNL_ULID_ScanCONVVT_BDTG",
+			    "HNL_ULID_ScanCONVT_BDTG",
+			    "HNL_ULID_ScanCONVM_BDTG",
+			    "HNL_ULID_ScanCONVL_BDTG",
+
+			    "HNL_ULID_Run2",
 			    "HNL_ULID_Run2_CF",
 			    "HNL_ULID_Run2_CFPt",
 			    "HNL_ULID_Run2_Conv",

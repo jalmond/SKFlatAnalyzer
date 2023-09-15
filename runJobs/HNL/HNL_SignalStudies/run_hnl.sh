@@ -26,7 +26,9 @@ if [[ $1 == "Sig" ]]; then
 fi
 
 
-if [[ $1 == "DY100" ]]; then
+if [[ $1 == "DY" ]]; then
+
+    declare  -a era_list=("2017")
 
     for i in "${era_list[@]}"
     do

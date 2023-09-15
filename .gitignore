@@ -1,4 +1,6 @@
 *~
+TMVA/LeptonID/BATCHSubmit
+TMVA/LeptonID/Validation
 Analyzers/.vscode/
 *.pyc
 *.pcm

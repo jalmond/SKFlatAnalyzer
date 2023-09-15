@@ -18,6 +18,7 @@ parser.add_argument('-m', dest='Classifier', default="BDTA")
 parser.add_argument('-b', dest='BkgType', default="Fake")
 parser.add_argument('-c', dest='Channel', default="EE")
 parser.add_argument('-ns', dest='SignalMode', default=2, type=int)
+parser.add_argument('-nv', dest='VarMode', default=0, type=int)
 parser.add_argument('-nt', dest='NTree', default=850, type=int)
 parser.add_argument('-Nrom', dest='NormMode', default="EqualNumEvents")
 parser.add_argument('-MinNodeSize', dest='MinNodeSize', default="2.5")
@@ -130,7 +131,7 @@ webdirname = timestamp+"_"+str_RandomNumber
 
 ## Define MasterJobDir
 
-MasterJobDir = BDTRunlogDir+'/TS_'+timestamp+'__'+str_RandomNumber+"__Classifier_"+args.Classifier+ '_' + args.BkgType +  '__Macro_'+ args.Analyzer+'__Era_'+'Era'+args.Era+"__Channel_"+args.Channel + '__Signal'+str(args.SignalMode) +'__NTrees'+ str(args.NTree)+'__Norm_'+ str(args.NormMode)+'__MinNS_'+ str(args.MinNodeSize) +'__MD_'+ str(args.MaxDepth)  +'__NCut'+ str(args.NCut)+ '__BLR_' + str(args.BoostLearningRate)+ '__BF_'+str(args.BaggedFrac) + "_Seed_"+str(args.Seed) + "_Etabin_"+str(args.EtaBin)
+MasterJobDir = BDTRunlogDir+'/TS_'+timestamp+'__'+str_RandomNumber+"__Classifier_"+args.Classifier+ '_' + args.BkgType +  '__Macro_'+ args.Analyzer+'__Era_'+'Era'+args.Era+"__Channel_"+args.Channel + '__Signal'+str(args.SignalMode) +'__Var' +str(args.VarMode)+'__NTrees'+ str(args.NTree)+'__Norm_'+ str(args.NormMode)+'__MinNS_'+ str(args.MinNodeSize) +'__MD_'+ str(args.MaxDepth)  +'__NCut'+ str(args.NCut)+ '__BLR_' + str(args.BoostLearningRate)+ '__BF_'+str(args.BaggedFrac) + "_Seed_"+str(args.Seed) + "_Etabin_"+str(args.EtaBin)
 
 
 MasterJobDir += '__'+HOSTNAME+'/'
@@ -164,14 +165,14 @@ for TMVADir in TMVADirs:
   base_rundir = MasterJobDir+"/"+args.Tag
   os.mkdir(base_rundir)
   macroname = args.Analyzer+".C"
-  submitMacro = args.Analyzer+".C(\""+str(args.Classifier)+"\",\""+str(args.BkgType)+"\",\""+str(args.Era)+"\",\""+str(args.Channel)+"\", "+str(args.SignalMode)+", \""+str(args.NTree)+"\" , \""+str(args.NormMode)+"\",  \""+str(args.MinNodeSize)+"\",  \""+str(args.MaxDepth)+"\", \""+str(args.NCut)+"\",  \""+str(args.BoostLearningRate)+ "\",   \""+str(args.BaggedFrac)+ "\",  \""+str(args.Seed)+ "\","+str(args.EtaBin)+")"
+  submitMacro = args.Analyzer+".C(\""+str(args.Classifier)+"\",\""+str(args.BkgType)+"\",\""+str(args.Era)+"\",\""+str(args.Channel)+"\", "+str(args.SignalMode) + ", "+str(args.VarMode)  +", \""+str(args.NTree)+"\" , \""+str(args.NormMode)+"\",  \""+str(args.MinNodeSize)+"\",  \""+str(args.MaxDepth)+"\", \""+str(args.NCut)+"\",  \""+str(args.BoostLearningRate)+ "\",   \""+str(args.BaggedFrac)+ "\",  \""+str(args.Seed)+ "\","+str(args.EtaBin)+")" 
 
   os.system('cp ' + TMVADir + '/'+ macroname+' ' + base_rundir)
 
   commandsfilename = args.Analyzer+'-'+args.BkgType+'-'+args.Tag
   run_commands = open(base_rundir+'/'+commandsfilename+'.sh','w')
 
-  signalName = "SignalMode_"+str(args.SignalMode)
+  signalName = "SignalMode_"+str(args.SignalMode) + "_"+str(args.VarMode)
 
   outName = 'output_'+args.Classifier + '_'+args.BkgType + '_'+ signalName+'_'+args.Channel+'__NTrees_'+ str(args.NTree)+'__NormMode_'+ str(args.NormMode)+'__MinNodeSize_'+ str(args.MinNodeSize) +'__MaxDepth_'+ str(args.MaxDepth) +'__NCut_'+ str(args.NCut)  +'__BoostLearningRate_'+ str(args.BoostLearningRate) + '__BaggedFrac_'+args.BaggedFrac  + "_Seed_"+str(args.Seed) + "_EtaBin_"+str(args.EtaBin)
 

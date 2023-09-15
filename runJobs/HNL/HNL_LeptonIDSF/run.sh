@@ -7,13 +7,6 @@ nmax=200
 skim=' '
 declare  -a era_list=("2016postVFP" "2016preVFP" "2017" "2018")
 
-if [[ $1 == "DY" ]]; then
-    
-    for i in "${era_list[@]}"
-    do
-        SKFlat.py -a $analyzer  -l $mcpath/MC.txt        -n 400  --nmax 400  -e ${i} --skim SkimTree_DileptonBDT &
-    done
-fi
 
 
 if [[ $1 == "" ]]; then
