@@ -237,7 +237,7 @@ void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq,
     //if(RunFake&& IsData){
     if(RunFake){ //FIXME need this even in MC to perform the closure test
       //weight_channel = GetFakeWeight(leps, param_channel, true);
-      weight_channel *= GetFakeWeight(LeptonUsePtParton(leps), param_channel, false); //FIXME tentatively pr = 1. note PtParton is used here
+      weight_channel *= GetFakeWeight(leps, param_channel, false); //FIXME tentatively pr = 1. note PtParton is used here
       FillWeightHist(param_channel.Name+"/FakeWeight",weight_channel);
       FillWeightHist(param_channel.Name+"/FakeWeightonly",GetFakeWeight(LeptonUsePtParton(leps), param_channel, false));
     }

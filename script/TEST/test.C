@@ -4,9 +4,9 @@ R__LOAD_LIBRARY(/cvmfs/cms.cern.ch/slc7_amd64_gcc900/cms/cmssw/CMSSW_11_2_5/exte
 
 void test(TString era, bool isdata, TString sample, TString skim, TString flag){ //echo -e ".L test.C\n test(\"2017\",false,\"DYTypeI_M500\",\"\");" | root -l 2>&1 | tee my.log
 
-  //HNL_LeptonFakeRate m;
+  HNL_LeptonFakeRate m;
   //HNL_ControlRegionPlotter m;
-  HNL_SignalRegionPlotter m;
+  //HNL_SignalRegionPlotter m;
 
   m.SetTreeName("recoTree/SKFlat");
 
@@ -96,7 +96,7 @@ void test(TString era, bool isdata, TString sample, TString skim, TString flag){
     if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_HNMultiLepBDT/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/2023_05_16_104322/SKFlatNtuple_2017_MC_0.root")) exit(EIO);
   }
   else if(era=="2017" && !isdata && sample=="QCD_Mu_300" && skim=="FakeEventSkimBDT"){
-    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_FakeEventSkimBDT/QCD_Pt-300To470_MuEnrichedPt5_TuneCP5_13TeV-pythia8/2023_05_19_153135/SKFlatNtuple_2017_MC_0.root")) exit(EIO);
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_FakeEventSkimBDT/QCD_Pt-300To470_MuEnrichedPt5_TuneCP5_13TeV-pythia8/2023_09_01_042228/SKFlatNtuple_2017_MC_0.root")) exit(EIO);
   }
   else if(era=="2017" && !isdata && sample=="WJets" && skim=="HNFakeBDT"){
     if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_HNFakeBDT/WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/2023_05_18_102358/SKFlatNtuple_2017_MC_0.root")) exit(EIO);

@@ -301,15 +301,13 @@ bool Muon::PassID(TString ID) const {
 
 
   /////////// FINAL UL HNL Type-1 ID                                                                                                                                                                                                                                                                                          
-  if(ID.Contains("HNL_ULID_2016_Fake")){
+  if(ID.Contains("HNL_ULID_Fake")){
     
     if(!PassID("MVALoose")) return false;
-    if(MVA() < 0.72)  return false;
     if(fabs(IP3D()/IP3Derr()) > 7) return false;
 
     return true;
   }
-
 
   if(ID=="HNL_ULID_2016"){
 
@@ -328,7 +326,6 @@ bool Muon::PassID(TString ID) const {
 
     return true;
   }
-
 
   if(ID=="HNL_ULID_2018")  {
 
