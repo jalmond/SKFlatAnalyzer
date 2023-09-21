@@ -20,8 +20,13 @@ void HNL_SignalRegionPlotter::executeEvent(){
     TriggerPrintOut(GetEvent());
   }
   
-  AnalyzerParameter param_signal = HNL_LeptonCore::InitialiseHNLParameter("MVAUL","_UL");
-  if(RunFakeClosurePred)     param_signal.Muon_FR_Key = "PtPartonQCD_eta_TriLepQCD"; //JH
+  //AnalyzerParameter param_signal = HNL_LeptonCore::InitialiseHNLParameter("MVAUL","_UL");
+  AnalyzerParameter param_signal = HNL_LeptonCore::InitialiseHNLParameter("MVAUL","_TriLep");
+  //AnalyzerParameter param_signal = HNL_LeptonCore::InitialiseHNLParameter("MVAUL","_LFvsHF");
+  if(RunFakeClosurePred){
+    if(param_signal.Name.Contains("TriLep")) param_signal.Muon_FR_Key = "PtPartonQCD_eta_TriLepQCD";
+    else if(param_signal.Name.Contains("LFvsHF")) param_signal.Muon_FR_Key = "FLAVOR_pt_eta_AwayJetPt40"; //FIXME replace FLAVOR with LF or HF later
+  }
   else if(RunFakeClosureObs) param_signal.FakeMethod = "MC"; //JH
   RunULAnalysis(param_signal);
 

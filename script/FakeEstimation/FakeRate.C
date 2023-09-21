@@ -1,60 +1,75 @@
-void GetFR2D(TFile *outfile){
+void GetFR2D(TFile *outfile, TString tag){ // tag : LF, HF (when to use flavor-dep fake rate method), or TriLep
   TString fake_data = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_LeptonFakeRate/2017/DATA/HNL_LeptonFakeRate_SkimTree_HNFakeBDT_FakeRate.root";
-  TString fake_W    = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_LeptonFakeRate/2017/FakeRateTruth__/HNL_LeptonFakeRate_SkimTree_HNFakeBDT_WJets_MG.root";
-  TString fake_Z    = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_LeptonFakeRate/2017/FakeRateTruth__/HNL_LeptonFakeRate_SkimTree_HNFakeBDT_DYJets.root";
-  TString fake_TT   = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_LeptonFakeRate/2017/FakeRateTruth__/HNL_LeptonFakeRate_SkimTree_HNFakeBDT_TTLJ_powheg.root";
-  TString fake_QCD  = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_LeptonFakeRate/2017/FakeRateTruth__/HNL_LeptonFakeRate_SkimTree_FakeEventSkimBDT_QCD_MuEnriched.root";
+  TString fake_W    = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_LeptonFakeRate/2017/HNL_LeptonFakeRate_SkimTree_HNFakeBDT_WJets_MG.root";
+  TString fake_Z    = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_LeptonFakeRate/2017/HNL_LeptonFakeRate_SkimTree_HNFakeBDT_DYJets.root";
+  TString fake_TT   = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_LeptonFakeRate/2017/HNL_LeptonFakeRate_SkimTree_HNFakeBDT_TTLJ_powheg.root";
+  //TString fake_W    = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_LeptonFakeRate/2017/FakeRateTruth__/HNL_LeptonFakeRate_SkimTree_HNFakeBDT_WJets_MG.root";
+  //TString fake_Z    = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_LeptonFakeRate/2017/FakeRateTruth__/HNL_LeptonFakeRate_SkimTree_HNFakeBDT_DYJets.root";
+  //TString fake_TT   = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_LeptonFakeRate/2017/FakeRateTruth__/HNL_LeptonFakeRate_SkimTree_HNFakeBDT_TTLJ_powheg.root";
+  //TString fake_QCD  = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_LeptonFakeRate/2017/FakeRateTruth__/HNL_LeptonFakeRate_SkimTree_FakeEventSkimBDT_QCD_MuEnriched.root";
   
-  //TFile *f_fake_data = new TFile(fake_data);
+  TFile *f_fake_data = new TFile(fake_data);
   TFile *f_fake_W    = new TFile(fake_W);
   TFile *f_fake_Z    = new TFile(fake_Z);
   TFile *f_fake_TT   = new TFile(fake_TT);
-  TFile *f_fake_QCD  = new TFile(fake_QCD);
-  
-  //TH2D *h_loose_data = (TH2D*)f_fake_data->Get("Fake_Loose_MuMu_HNL_ULID_2017_V1_40_PtPartonUncorr_eta");
-  //TH2D *h_loose_W    = (TH2D*)f_fake_W   ->Get("Fake_Loose_MuMu_HNL_ULID_2017_V1_40_PtPartonUncorr_eta");
-  //TH2D *h_loose_Z    = (TH2D*)f_fake_Z   ->Get("Fake_Loose_MuMu_HNL_ULID_2017_V1_40_PtPartonUncorr_eta");
-  //TH2D *h_loose_TT   = (TH2D*)f_fake_TT  ->Get("Fake_Loose_MuMu_HNL_ULID_2017_V1_40_PtPartonUncorr_eta");
-  //TH2D *h_tight_data = (TH2D*)f_fake_data->Get("Fake_Tight_MuMu_HNL_ULID_2017_V1_40_PtPartonUncorr_eta");
-  //TH2D *h_tight_W    = (TH2D*)f_fake_W   ->Get("Fake_Tight_MuMu_HNL_ULID_2017_V1_40_PtPartonUncorr_eta");
-  //TH2D *h_tight_Z    = (TH2D*)f_fake_Z   ->Get("Fake_Tight_MuMu_HNL_ULID_2017_V1_40_PtPartonUncorr_eta");
-  //TH2D *h_tight_TT   = (TH2D*)f_fake_TT  ->Get("Fake_Tight_MuMu_HNL_ULID_2017_V1_40_PtPartonUncorr_eta");
-  TH2D *h_loose_QCD_2D_Uncorr = (TH2D*)f_fake_QCD->Get("Fake_Loose_MuMu_HNL_ULID_2017_TriLep_40_PtPartonUncorr_eta");
-  TH2D *h_tight_QCD_2D_Uncorr = (TH2D*)f_fake_QCD->Get("Fake_Tight_MuMu_HNL_ULID_2017_TriLep_40_PtPartonUncorr_eta");
-  TH2D *h_loose_QCD_2D_Corr   = (TH2D*)f_fake_QCD->Get("Fake_Loose_MuMu_HNL_ULID_2017_TriLep_40_PtPartonQCD_eta");
-  TH2D *h_tight_QCD_2D_Corr   = (TH2D*)f_fake_QCD->Get("Fake_Tight_MuMu_HNL_ULID_2017_TriLep_40_PtPartonQCD_eta");
-  TH1D *h_loose_QCD_1D_Uncorr = (TH1D*)f_fake_QCD->Get("Fake_Loose_MuMu_HNL_ULID_2017_TriLep_40_PtPartonUncorr");
-  TH1D *h_tight_QCD_1D_Uncorr = (TH1D*)f_fake_QCD->Get("Fake_Tight_MuMu_HNL_ULID_2017_TriLep_40_PtPartonUncorr");
-  TH1D *h_loose_QCD_1D_Corr   = (TH1D*)f_fake_QCD->Get("Fake_Loose_MuMu_HNL_ULID_2017_TriLep_40_PtPartonQCD");
-  TH1D *h_tight_QCD_1D_Corr   = (TH1D*)f_fake_QCD->Get("Fake_Tight_MuMu_HNL_ULID_2017_TriLep_40_PtPartonQCD");
+  //TFile *f_fake_QCD  = new TFile(fake_QCD);
 
-  //h_loose_data->Add(h_loose_W,-1.);
-  //h_loose_data->Add(h_loose_Z,-1.);
-  //h_loose_data->Add(h_loose_TT,-1.);
-  //h_tight_data->Add(h_tight_W,-1.);
-  //h_tight_data->Add(h_tight_Z,-1.);
-  //h_tight_data->Add(h_tight_TT,-1.);
-  //h_tight_data->Divide(h_loose_data);
-  //h_tight_data->SetName("Fake_MuMu_HNL_ULID_2017_V1_40_PtPartonUncorr_eta");
+  TString histname_loose, histname_tight;
+  if(tag=="LF"||tag=="HF"){
+    histname_loose = tag+"_Fake_Loose_MuMu_HNL_ULID_2017_LFvsHF_40_pt_eta";
+    histname_tight = tag+"_Fake_Tight_MuMu_HNL_ULID_2017_LFvsHF_40_pt_eta";
+  }
+  else{
+    histname_loose = "Fake_Loose_MuMu_HNL_ULID_2017_40_pt_eta";
+    histname_tight = "Fake_Tight_MuMu_HNL_ULID_2017_40_pt_eta";
+  }
 
-  h_tight_QCD_2D_Uncorr->Divide(h_loose_QCD_2D_Uncorr);
-  h_tight_QCD_2D_Uncorr->SetName("HNL_ULID_2017_PtPartonUncorr_eta_TriLepQCD");
-  h_tight_QCD_2D_Corr  ->Divide(h_loose_QCD_2D_Corr);
-  h_tight_QCD_2D_Corr  ->SetName("HNL_ULID_2017_PtPartonQCD_eta_TriLepQCD");
-  h_tight_QCD_1D_Uncorr->Divide(h_loose_QCD_1D_Uncorr);
-  h_tight_QCD_1D_Uncorr->SetName("HNL_ULID_2017_PtPartonUncorr_TriLepQCD");
-  h_tight_QCD_1D_Corr  ->Divide(h_loose_QCD_1D_Corr);
-  h_tight_QCD_1D_Corr  ->SetName("HNL_ULID_2017_PtPartonQCD_TriLepQCD");
+  TH2D *h_loose_data = (TH2D*)f_fake_data->Get(histname_loose);
+  TH2D *h_loose_W    = (TH2D*)f_fake_W   ->Get(histname_loose);
+  TH2D *h_loose_Z    = (TH2D*)f_fake_Z   ->Get(histname_loose);
+  TH2D *h_loose_TT   = (TH2D*)f_fake_TT  ->Get(histname_loose);
+  TH2D *h_tight_data = (TH2D*)f_fake_data->Get(histname_tight);
+  TH2D *h_tight_W    = (TH2D*)f_fake_W   ->Get(histname_tight);
+  TH2D *h_tight_Z    = (TH2D*)f_fake_Z   ->Get(histname_tight);
+  TH2D *h_tight_TT   = (TH2D*)f_fake_TT  ->Get(histname_tight);
+  //TH2D *h_loose_QCD_2D_Uncorr = (TH2D*)f_fake_QCD->Get("Fake_Loose_MuMu_HNL_ULID_2017_TriLep_40_PtPartonUncorr_eta");
+  //TH2D *h_tight_QCD_2D_Uncorr = (TH2D*)f_fake_QCD->Get("Fake_Tight_MuMu_HNL_ULID_2017_TriLep_40_PtPartonUncorr_eta");
+  //TH2D *h_loose_QCD_2D_Corr   = (TH2D*)f_fake_QCD->Get("Fake_Loose_MuMu_HNL_ULID_2017_TriLep_40_PtPartonQCD_eta");
+  //TH2D *h_tight_QCD_2D_Corr   = (TH2D*)f_fake_QCD->Get("Fake_Tight_MuMu_HNL_ULID_2017_TriLep_40_PtPartonQCD_eta");
+  //TH1D *h_loose_QCD_1D_Uncorr = (TH1D*)f_fake_QCD->Get("Fake_Loose_MuMu_HNL_ULID_2017_TriLep_40_PtPartonUncorr");
+  //TH1D *h_tight_QCD_1D_Uncorr = (TH1D*)f_fake_QCD->Get("Fake_Tight_MuMu_HNL_ULID_2017_TriLep_40_PtPartonUncorr");
+  //TH1D *h_loose_QCD_1D_Corr   = (TH1D*)f_fake_QCD->Get("Fake_Loose_MuMu_HNL_ULID_2017_TriLep_40_PtPartonQCD");
+  //TH1D *h_tight_QCD_1D_Corr   = (TH1D*)f_fake_QCD->Get("Fake_Tight_MuMu_HNL_ULID_2017_TriLep_40_PtPartonQCD");
+
+  h_loose_data->Add(h_loose_W,-1.);
+  h_loose_data->Add(h_loose_Z,-1.);
+  h_loose_data->Add(h_loose_TT,-1.);
+  h_tight_data->Add(h_tight_W,-1.);
+  h_tight_data->Add(h_tight_Z,-1.);
+  h_tight_data->Add(h_tight_TT,-1.);
+
+  h_tight_data->Divide(h_loose_data);
+  if(tag=="LF"||tag=="HF") h_tight_data->SetName("HNL_ULID_2017_"+tag+"_pt_eta_AwayJetPt40");
+  else h_tight_data->SetName("HNL_ULID_2017_pt_eta_AwayJetPt40");
+
+  //h_tight_QCD_2D_Uncorr->Divide(h_loose_QCD_2D_Uncorr);
+  //h_tight_QCD_2D_Uncorr->SetName("HNL_ULID_2017_PtPartonUncorr_eta_TriLepQCD");
+  //h_tight_QCD_2D_Corr  ->Divide(h_loose_QCD_2D_Corr);
+  //h_tight_QCD_2D_Corr  ->SetName("HNL_ULID_2017_PtPartonQCD_eta_TriLepQCD");
+  //h_tight_QCD_1D_Uncorr->Divide(h_loose_QCD_1D_Uncorr);
+  //h_tight_QCD_1D_Uncorr->SetName("HNL_ULID_2017_PtPartonUncorr_TriLepQCD");
+  //h_tight_QCD_1D_Corr  ->Divide(h_loose_QCD_1D_Corr);
+  //h_tight_QCD_1D_Corr  ->SetName("HNL_ULID_2017_PtPartonQCD_TriLepQCD");
 
   outfile->cd();
-  //h_tight_data->Write();
-  h_tight_QCD_2D_Uncorr->Write();
-  h_tight_QCD_2D_Corr->Write();
-  h_tight_QCD_1D_Uncorr->Write();
-  h_tight_QCD_1D_Corr->Write();
+  h_tight_data->Write();
+  //h_tight_QCD_2D_Uncorr->Write();
+  //h_tight_QCD_2D_Corr->Write();
+  //h_tight_QCD_1D_Uncorr->Write();
+  //h_tight_QCD_1D_Corr->Write();
 }
 
-void GetFR1D(TFile *outfile){
+void GetFR1D(TFile *outfile, TString tag, TString var){ // tag : LF, HF (when to use flavor-dep fake rate method), or TriLep
   TString fake_data = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_LeptonFakeRate/2017/DATA/HNL_LeptonFakeRate_SkimTree_HNFakeBDT_FakeRate.root";
   TString fake_W    = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_LeptonFakeRate/2017/HNL_LeptonFakeRate_SkimTree_HNFakeBDT_WJets_MG.root";
   TString fake_Z    = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_LeptonFakeRate/2017/HNL_LeptonFakeRate_SkimTree_HNFakeBDT_DYJets.root";
@@ -64,36 +79,45 @@ void GetFR1D(TFile *outfile){
   TFile *f_fake_W    = new TFile(fake_W);
   TFile *f_fake_Z    = new TFile(fake_Z);
   TFile *f_fake_TT   = new TFile(fake_TT);
-  
-  TH2D *h_loose_data = (TH2D*)f_fake_data->Get("Fake_Loose_MuMu_HNL_ULID_2017_V1_40_PtPartonUncorr_eta");
-  TH2D *h_loose_W    = (TH2D*)f_fake_W   ->Get("Fake_Loose_MuMu_HNL_ULID_2017_V1_40_PtPartonUncorr_eta");
-  TH2D *h_loose_Z    = (TH2D*)f_fake_Z   ->Get("Fake_Loose_MuMu_HNL_ULID_2017_V1_40_PtPartonUncorr_eta");
-  TH2D *h_loose_TT   = (TH2D*)f_fake_TT  ->Get("Fake_Loose_MuMu_HNL_ULID_2017_V1_40_PtPartonUncorr_eta");
-  TH2D *h_tight_data = (TH2D*)f_fake_data->Get("Fake_Tight_MuMu_HNL_ULID_2017_V1_40_PtPartonUncorr_eta");
-  TH2D *h_tight_W    = (TH2D*)f_fake_W   ->Get("Fake_Tight_MuMu_HNL_ULID_2017_V1_40_PtPartonUncorr_eta");
-  TH2D *h_tight_Z    = (TH2D*)f_fake_Z   ->Get("Fake_Tight_MuMu_HNL_ULID_2017_V1_40_PtPartonUncorr_eta");
-  TH2D *h_tight_TT   = (TH2D*)f_fake_TT  ->Get("Fake_Tight_MuMu_HNL_ULID_2017_V1_40_PtPartonUncorr_eta");
+ 
+  TString histname_loose, histname_tight;
+  if(tag=="LF"||tag=="HF"){
+    histname_loose = tag+"_Fake_Loose_MuMu_HNL_ULID_2017_LFvsHF_40_"+var;
+    histname_tight = tag+"_Fake_Tight_MuMu_HNL_ULID_2017_LFvsHF_40_"+var;
+  }
+  else{
+    histname_loose = "Fake_Loose_MuMu_HNL_ULID_2017_40_"+var;
+    histname_tight = "Fake_Tight_MuMu_HNL_ULID_2017_40_"+var;
+  }
 
-  TH1D *h_loose_data_1D = h_loose_data->ProjectionX("Fake_Loose_Data_MuMu_HNL_ULID_2017_V1_40_PtPartonUncorr",0,-1,"e");
-  TH1D *h_loose_W_1D    = h_loose_W   ->ProjectionX("Fake_Loose_W_MuMu_HNL_ULID_2017_V1_40_PtPartonUncorr",0,-1,"e");
-  TH1D *h_loose_Z_1D    = h_loose_Z   ->ProjectionX("Fake_Loose_Z_MuMu_HNL_ULID_2017_V1_40_PtPartonUncorr",0,-1,"e");
-  TH1D *h_loose_TT_1D   = h_loose_TT  ->ProjectionX("Fake_Loose_TT_MuMu_HNL_ULID_2017_V1_40_PtPartonUncorr",0,-1,"e");
-  TH1D *h_tight_data_1D = h_tight_data->ProjectionX("Fake_Tight_Data_MuMu_HNL_ULID_2017_V1_40_PtPartonUncorr",0,-1,"e");
-  TH1D *h_tight_W_1D    = h_tight_W   ->ProjectionX("Fake_Tight_W_MuMu_HNL_ULID_2017_V1_40_PtPartonUncorr",0,-1,"e");
-  TH1D *h_tight_Z_1D    = h_tight_Z   ->ProjectionX("Fake_Tight_Z_MuMu_HNL_ULID_2017_V1_40_PtPartonUncorr",0,-1,"e");
-  TH1D *h_tight_TT_1D   = h_tight_TT  ->ProjectionX("Fake_Tight_TT_MuMu_HNL_ULID_2017_V1_40_PtPartonUncorr",0,-1,"e");
+  TH1D *h_loose_data_1D = (TH1D*)f_fake_data->Get(histname_loose);
+  TH1D *h_loose_W_1D    = (TH1D*)f_fake_W   ->Get(histname_loose);
+  TH1D *h_loose_Z_1D    = (TH1D*)f_fake_Z   ->Get(histname_loose);
+  TH1D *h_loose_TT_1D   = (TH1D*)f_fake_TT  ->Get(histname_loose);
+  TH1D *h_tight_data_1D = (TH1D*)f_fake_data->Get(histname_tight);
+  TH1D *h_tight_W_1D    = (TH1D*)f_fake_W   ->Get(histname_tight);
+  TH1D *h_tight_Z_1D    = (TH1D*)f_fake_Z   ->Get(histname_tight);
+  TH1D *h_tight_TT_1D   = (TH1D*)f_fake_TT  ->Get(histname_tight);
 
   // Show the stacked histo
-  TCanvas *c1 = new TCanvas("loose_PtPartonUncorr","",800,800);
-  TCanvas *c2 = new TCanvas("tight_PtPartonUncorr","",800,800);
+  TCanvas *c1 = new TCanvas(tag+"_loose_"+var,"",800,800);
+  TCanvas *c2 = new TCanvas(tag+"_tight_"+var,"",800,800);
 
-  // Loose PtPartonUncorr
+  // Loose
   c1->cd();
 
   h_loose_data_1D->SetMarkerStyle(20);
   h_loose_data_1D->SetMarkerColor(kBlack);
 
-  THStack *hs_loose = new THStack("hs_loose", "");
+  TH1D *h_loose_MC_1D = (TH1D*)h_loose_W_1D->Clone();
+  h_loose_MC_1D->Add(h_loose_Z_1D);
+  h_loose_MC_1D->Add(h_loose_TT_1D);
+  h_loose_MC_1D->SetMarkerSize(0);
+  h_loose_MC_1D->SetLineWidth(0);
+  h_loose_MC_1D->SetFillStyle(3144);
+  h_loose_MC_1D->SetFillColor(kBlack);
+
+  THStack *hs_loose = new THStack(tag+"_hs_loose", "");
   h_loose_TT_1D->SetLineWidth(0);
   h_loose_TT_1D->SetFillColor(kRed);
   hs_loose->Add(h_loose_TT_1D);
@@ -111,8 +135,21 @@ void GetFR1D(TFile *outfile){
   hs_loose->SetMaximum(max_loose_tot*1.1);
 
   hs_loose->Draw("hist");
-  h_loose_data_1D->Draw("same");
-  gPad->SetLogx();
+
+  hs_loose->SetTitle(tag+"_Loose");
+  hs_loose->GetXaxis()->SetLabelOffset(0.001);
+  hs_loose->GetXaxis()->SetLabelSize(0.04);
+  hs_loose->GetXaxis()->SetTitleOffset(1);
+  hs_loose->GetXaxis()->SetTitleSize(0.04);
+  hs_loose->GetXaxis()->SetTitle(var);
+  hs_loose->GetYaxis()->SetLabelSize(0.04);
+  hs_loose->GetYaxis()->SetTitleOffset(1.25);
+  hs_loose->GetYaxis()->SetTitle("Nevents");
+
+  h_loose_MC_1D->Draw("e2 same");
+
+  h_loose_data_1D->Draw("ep same");
+  if(var=="pt") gPad->SetLogx();
   gPad->SetLogy();
 
   TLegend *lg_loose = new TLegend(0.6, 0.67, 0.8, 0.87);
@@ -123,13 +160,21 @@ void GetFR1D(TFile *outfile){
   lg_loose->SetBorderSize(0);
   lg_loose->Draw("same");
 
-  // Tight PtPartonUncorr
+  // Tight
   c2->cd();
 
   h_tight_data_1D->SetMarkerStyle(20);
   h_tight_data_1D->SetMarkerColor(kBlack);
 
-  THStack *hs_tight = new THStack("hs_tight", "");
+  TH1D *h_tight_MC_1D = (TH1D*)h_tight_W_1D->Clone();
+  h_tight_MC_1D->Add(h_tight_Z_1D);
+  h_tight_MC_1D->Add(h_tight_TT_1D);
+  h_tight_MC_1D->SetMarkerSize(0);
+  h_tight_MC_1D->SetLineWidth(0);
+  h_tight_MC_1D->SetFillStyle(3144);
+  h_tight_MC_1D->SetFillColor(kBlack);
+
+  THStack *hs_tight = new THStack(tag+"_hs_tight", "");
   h_tight_TT_1D->SetLineWidth(0);
   h_tight_TT_1D->SetFillColor(kRed);
   hs_tight->Add(h_tight_TT_1D);
@@ -147,8 +192,21 @@ void GetFR1D(TFile *outfile){
   hs_tight->SetMaximum(max_tight_tot*1.1);
 
   hs_tight->Draw("hist");
-  h_tight_data_1D->Draw("same");
-  gPad->SetLogx();
+
+  hs_tight->SetTitle(tag+"_Tight");
+  hs_tight->GetXaxis()->SetLabelOffset(0.001);
+  hs_tight->GetXaxis()->SetLabelSize(0.04);
+  hs_tight->GetXaxis()->SetTitleOffset(1);
+  hs_tight->GetXaxis()->SetTitleSize(0.04);
+  hs_tight->GetXaxis()->SetTitle(var);
+  hs_tight->GetYaxis()->SetLabelSize(0.04);
+  hs_tight->GetYaxis()->SetTitleOffset(1.25);
+  hs_tight->GetYaxis()->SetTitle("Nevents");
+
+  h_tight_MC_1D->Draw("e2 same");
+
+  h_tight_data_1D->Draw("ep same");
+  if(var=="pt") gPad->SetLogx();
   gPad->SetLogy();
 
   TLegend *lg_tight = new TLegend(0.6, 0.67, 0.8, 0.87);
@@ -160,19 +218,28 @@ void GetFR1D(TFile *outfile){
   lg_tight->Draw("same");
 
   // Now get the FR after prompt subtraction
-  h_loose_data_1D->Add(h_loose_W_1D,-1.);
-  h_loose_data_1D->Add(h_loose_Z_1D,-1.);
-  h_loose_data_1D->Add(h_loose_TT_1D,-1.);
-  h_tight_data_1D->Add(h_tight_W_1D,-1.);
-  h_tight_data_1D->Add(h_tight_Z_1D,-1.);
-  h_tight_data_1D->Add(h_tight_TT_1D,-1.);
-  TH1D *h_FR_1D = (TH1D*)h_tight_data_1D->Clone();
-  h_FR_1D->Divide(h_loose_data_1D);
-  h_FR_1D->SetName("Fake_MuMu_HNL_ULID_2017_V1_40_PtPartonUncorr");
+  TH1D *h_loose_data_sub_1D = (TH1D*)h_loose_data_1D->Clone();
+  TH1D *h_tight_data_sub_1D = (TH1D*)h_tight_data_1D->Clone();
+  h_loose_data_sub_1D->Add(h_loose_W_1D,-1.);
+  h_loose_data_sub_1D->Add(h_loose_Z_1D,-1.);
+  h_loose_data_sub_1D->Add(h_loose_TT_1D,-1.);
+  h_tight_data_sub_1D->Add(h_tight_W_1D,-1.);
+  h_tight_data_sub_1D->Add(h_tight_Z_1D,-1.);
+  h_tight_data_sub_1D->Add(h_tight_TT_1D,-1.);
+  //for(int i=1; i<=h_loose_data_1D->GetNbinsX(); i++){
+  //  cout << i << "th bin loose : " << h_loose_data_sub_1D->GetBinContent(i) << endl;
+  //  cout << i << "th bin tight : " << h_tight_data_sub_1D->GetBinContent(i) << endl;
+  //}
+
+  TH1D *h_FR_1D = (TH1D*)h_tight_data_sub_1D->Clone();
+  h_FR_1D->Divide(h_loose_data_sub_1D);
+  if(tag=="LF"||tag=="HF") h_FR_1D->SetName("HNL_ULID_2017_"+tag+"_"+var+"_AwayJetPt40");
+  else h_FR_1D->SetName("HNL_ULID_2017_"+tag+"_"+var+"_AwayJetPt40");
+  //h_FR_1D->SetName(histname_loose.ReplaceAll("Loose_",""));
   outfile->cd();
-  h_FR_1D->Write();
   c1->Write();
   c2->Write();
+  h_FR_1D->Write();
 
 }
 
@@ -329,33 +396,49 @@ void GetPtPartonSF(TString year, TString channel){ //FIXME add lepton channel la
 void FakeRate(){
   //TFile *outfileQCDFakeRate = new TFile("FakeRate_Mu_2017_QCD.root","RECREATE");
   //GetFR2D(outfileQCDFakeRate);
-  //GetFR1D(outfileQCDFakeRate);
-  TFile *outfile = new TFile("FakeRate_Mu_2017_IDopt.root","RECREATE");
-  GetMCTruthFRratio("TT","2017","MuMu","TriLep"  ,"PtPartonUncorr",outfile);
+  TFile *outfile2D = new TFile("FakeRate_Mu_2017_LFvsHF_2D.root","RECREATE");
+  GetFR2D(outfile2D,"LF");
+  GetFR2D(outfile2D,"HF");
+  TFile *outfile1D = new TFile("FakeRate_Mu_2017_LFvsHF_1D.root","RECREATE");
+  GetFR1D(outfile1D,"LF","pt");
+  GetFR1D(outfile1D,"HF","pt");
+  GetFR1D(outfile1D,"LF","eta");
+  GetFR1D(outfile1D,"LF","reliso");
+  GetFR1D(outfile1D,"LF","mva");
+  GetFR1D(outfile1D,"LF","IP3D");
+  GetFR1D(outfile1D,"LF","dXY");
+  //GetFR1D(outfile1D,"LF","LFvsHF");
+  GetFR1D(outfile1D,"HF","eta");
+  GetFR1D(outfile1D,"HF","reliso");
+  GetFR1D(outfile1D,"HF","mva");
+  GetFR1D(outfile1D,"HF","IP3D");
+  GetFR1D(outfile1D,"HF","dXY");
+  //GetFR1D(outfile1D,"HF","LFvsHF");
+  //GetMCTruthFRratio("TT","2017","MuMu","TriLep"  ,"PtPartonUncorr",outfile);
   //GetMCTruthFRratio("TT","2017","MuMu","TriLep"  ,"PtPartonQCD"   ,outfile);
-  GetMCTruthFRratio("TT","2017","MuMu","MVALoose","PtPartonUncorr",outfile);
+  //GetMCTruthFRratio("TT","2017","MuMu","MVALoose","PtPartonUncorr",outfile);
   //GetMCTruthFRratio("TT","2017","MuMu","MVALoose","PtPartonQCD"   ,outfile);
-  GetMCTruthFRratio("TT","2017","MuMu","Blt0p01"   ,"PtPartonUncorr",outfile);
+  //GetMCTruthFRratio("TT","2017","MuMu","Blt0p01"   ,"PtPartonUncorr",outfile);
   //GetMCTruthFRratio("TT","2017","MuMu","Blt0p01"   ,"PtPartonQCD"   ,outfile);
-  GetMCTruthFRratio("TT","2017","MuMu","Blt0p015"  ,"PtPartonUncorr",outfile);
+  //GetMCTruthFRratio("TT","2017","MuMu","Blt0p015"  ,"PtPartonUncorr",outfile);
   //GetMCTruthFRratio("TT","2017","MuMu","Blt0p015"  ,"PtPartonQCD"   ,outfile);
-  GetMCTruthFRratio("TT","2017","MuMu","Blt0p02"   ,"PtPartonUncorr",outfile);
+  //GetMCTruthFRratio("TT","2017","MuMu","Blt0p02"   ,"PtPartonUncorr",outfile);
   //GetMCTruthFRratio("TT","2017","MuMu","Blt0p02"   ,"PtPartonQCD"   ,outfile);
-  GetMCTruthFRratio("TT","2017","MuMu","Blt0p025"  ,"PtPartonUncorr",outfile);
+  //GetMCTruthFRratio("TT","2017","MuMu","Blt0p025"  ,"PtPartonUncorr",outfile);
   //GetMCTruthFRratio("TT","2017","MuMu","Blt0p025"  ,"PtPartonQCD"   ,outfile);
-  GetMCTruthFRratio("TT","2017","MuMu","Blt0p03"   ,"PtPartonUncorr",outfile);
+  //GetMCTruthFRratio("TT","2017","MuMu","Blt0p03"   ,"PtPartonUncorr",outfile);
   //GetMCTruthFRratio("TT","2017","MuMu","Blt0p03"   ,"PtPartonQCD"   ,outfile);
-  GetMCTruthFRratio("TT","2017","MuMu","Blt0p035"  ,"PtPartonUncorr",outfile);
+  //GetMCTruthFRratio("TT","2017","MuMu","Blt0p035"  ,"PtPartonUncorr",outfile);
   //GetMCTruthFRratio("TT","2017","MuMu","Blt0p035"  ,"PtPartonQCD"   ,outfile);
-  GetMCTruthFRratio("TT","2017","MuMu","Pgt0p45"  ,"PtPartonUncorr",outfile);
+  //GetMCTruthFRratio("TT","2017","MuMu","Pgt0p45"  ,"PtPartonUncorr",outfile);
   //GetMCTruthFRratio("TT","2017","MuMu","Pgt0p45"  ,"PtPartonQCD"   ,outfile);
-  GetMCTruthFRratio("TT","2017","MuMu","Plt0p45"  ,"PtPartonUncorr",outfile);
+  //GetMCTruthFRratio("TT","2017","MuMu","Plt0p45"  ,"PtPartonUncorr",outfile);
   //GetMCTruthFRratio("TT","2017","MuMu","Plt0p45"  ,"PtPartonQCD"   ,outfile);
-  GetMCTruthFRratio("TT","2017","MuMu","Blt0p01_Pgt0p45"  ,"PtPartonUncorr",outfile);
+  //GetMCTruthFRratio("TT","2017","MuMu","Blt0p01_Pgt0p45"  ,"PtPartonUncorr",outfile);
   //GetMCTruthFRratio("TT","2017","MuMu","Blt0p01_Pgt0p45"  ,"PtPartonQCD"   ,outfile);
-  GetMCTruthFRratio("TT","2017","MuMu","Blt0p01_Plt0p45"  ,"PtPartonUncorr",outfile);
+  //GetMCTruthFRratio("TT","2017","MuMu","Blt0p01_Plt0p45"  ,"PtPartonUncorr",outfile);
   //GetMCTruthFRratio("TT","2017","MuMu","Blt0p01_Plt0p45"  ,"PtPartonQCD"   ,outfile);
-  GetMCTruthFRratio("TT","2017","MuMu","TagLF"  ,"PtPartonUncorr"   ,outfile);
-  GetMCTruthFRratio("TT","2017","MuMu","TagHF"  ,"PtPartonUncorr"   ,outfile);
+  //GetMCTruthFRratio("TT","2017","MuMu","TagLF"  ,"PtPartonUncorr"   ,outfile);
+  //GetMCTruthFRratio("TT","2017","MuMu","TagHF"  ,"PtPartonUncorr"   ,outfile);
   //GetPtPartonSF("2017","MuMu");
 }

@@ -1,6 +1,6 @@
 #include "HNL_GenStudy.h"
 
-void HNL_GenStudy::executeEvent(Long64_t Nentry){
+void HNL_GenStudy::executeEvent(){
 
   double weight = MCweight(true, false); //use sign only, not xsec
   int nmu(0), nel(0);
@@ -102,7 +102,7 @@ void HNL_GenStudy::executeEvent(Long64_t Nentry){
     if(ee) FillHist("DY_ee",DYlabels,this_mass,weight);
     if(mm) FillHist("DY_mm",DYlabels,this_mass,weight);
     if(em) FillHist("DY_em",DYlabels,this_mass,weight);
-    if(Nentry%2==0){
+    if(_jentry%2==0){
       FillHist("DY_half_tot",DYlabels,this_mass,weight);
       if(ee) FillHist("DY_half_ee",DYlabels,this_mass,weight);
       if(mm) FillHist("DY_half_mm",DYlabels,this_mass,weight);

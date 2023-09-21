@@ -179,12 +179,6 @@ public:
   inline double UncorrectedPt() const { return j_unCorrPt;}
   void SetUncorrectedPt(double d);
 
-  /// UncorrectedPx, Py for MET propagation of energy systematics //JH
-  inline double UncorrectedPx() const { return j_unCorrPx;}
-  void SetUncorrectedPx(double d);
-  inline double UncorrectedPy() const { return j_unCorrPy;}
-  void SetUncorrectedPy(double d);
-
   inline double ElScEta() const {return j_elSCeta;};
   void SetElSCEta(double sceta);
   
@@ -464,6 +458,8 @@ public:
   void SetLeptonType(int t);
 
   void SetLeptonIsCF(bool t);
+
+  TString FakeFlavourString(); //JH
 
   inline Flavour LeptonFlavour() const {return j_LeptonFlavour;}
   void SetLeptonFlavour(Flavour f);

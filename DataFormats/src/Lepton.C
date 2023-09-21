@@ -293,14 +293,6 @@ void Lepton::SetUncorrectedPt(double uncorrPt){
   j_unCorrPt = uncorrPt;
 }
 
-void Lepton::SetUncorrectedPx(double uncorrPx){
-  j_unCorrPx = uncorrPx;
-}
-
-void Lepton::SetUncorrectedPy(double uncorrPy){
-  j_unCorrPy = uncorrPy;
-}
-
 void Lepton::SetElSCEta(double sceta){
   j_elSCeta=sceta;
 }
@@ -361,6 +353,10 @@ void Lepton::SetLeptonIsCF(bool t){
   j_LeptonIsCF= t;
 }
 
+TString Lepton::FakeFlavourString(){ //JH
+  if(this->HNL_MVA_Fake("QCD_LFvsHF_v5") > 0) return "LF";
+	else return "HF";
+}
 
 void Lepton::SetID(){
   j_IDSet = true;

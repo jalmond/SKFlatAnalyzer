@@ -17,9 +17,11 @@ void HNL_ControlRegionPlotter::executeEvent(){
 
   Event ev = GetEvent();
 
-  AnalyzerParameter param_signal = HNL_LeptonCore::InitialiseHNLParameter("HNL");
-  //RunControlRegions(param_signal , {"CR_OS_Z","CR_OS_Top","CR_WZ"});
+  //AnalyzerParameter param_signal = HNL_LeptonCore::InitialiseHNLParameter("HNL");
+  AnalyzerParameter param_signal = HNL_LeptonCore::InitialiseHNLParameter("MVAUL","_LFvsHF");
+  RunControlRegions(param_signal , {"CR_OS_Z","CR_OS_Top","CR_WZ"});
 
+/*
   vector<TString> IDs = {};//"HNL_ULID_Baseline";
   
   TString param_signal_name = param_signal.Name;
@@ -59,6 +61,7 @@ void HNL_ControlRegionPlotter::executeEvent(){
   }
   
   return;
+*/
 
 }
 
@@ -69,7 +72,6 @@ void HNL_ControlRegionPlotter::RunControlRegions(AnalyzerParameter param, vector
   
  
   if(run_Debug) {
-      
     if(RunFake)  cout << "HNL_ControlRegionPlotter::RunControlRegions [RunFake]" << endl;
     else if(RunCF)  cout << "HNL_ControlRegionPlotter::RunControlRegions [RunCF]" << endl;
     else if(RunConv)  cout << "HNL_ControlRegionPlotter::RunControlRegions [RunConv]" << endl;
@@ -88,6 +90,12 @@ void HNL_ControlRegionPlotter::RunControlRegions(AnalyzerParameter param, vector
 
   TString el_ID = (RunFake) ?  param.Electron_FR_ID  : param.Electron_Tight_ID ;
   TString mu_ID = (RunFake) ?  param.Muon_FR_ID      : param.Muon_Tight_ID ;
+  if(run_Debug) {
+    if(RunFake){
+      cout << "param.Muon_FR_ID = "  << param.Muon_FR_ID  << endl;
+      cout << "param.Muon_FR_Key = " << param.Muon_FR_Key << endl;
+    }
+  }
 
   //// OS CHECK TMP FAKE
   //  el_ID= param.Electron_Tight_ID;
@@ -99,7 +107,6 @@ void HNL_ControlRegionPlotter::RunControlRegions(AnalyzerParameter param, vector
   if(run_Debug) {
     cout << "Min_Muon_Pt = " << Min_Muon_Pt << endl;
     cout << "Min_Electron_Pt = " << Min_Electron_Pt << endl;
-						
   }
 
   // 3 Methods to run MC
@@ -109,14 +116,14 @@ void HNL_ControlRegionPlotter::RunControlRegions(AnalyzerParameter param, vector
   // std::vector<Muon>       MuonCollT     = GetLepCollByRunType    ( GetMuons    ( param,mu_ID, Min_Muon_Pt, 2.4, RunFake)      ,gens,param,"");
   //std::vector<Electron>   ElectronCollT = GetLepCollByRunType    ( GetElectrons( param,el_ID, Min_Electron_Pt, 2.5, RunFake)  ,gens,param,"");
 
-  std::vector<Muon>       MuonCollTInit = GetMuons        ( param,mu_ID, Min_Muon_Pt,     2.4, false);
-  std::vector<Electron>   ElectronCollTInit = GetElectrons( param,el_ID, Min_Electron_Pt, 2.5, false)  ;
+  std::vector<Muon>       MuonCollTInit = GetMuons        ( param,mu_ID, Min_Muon_Pt,     2.4, false); // false : No replacement with PtCone
+  std::vector<Electron>   ElectronCollTInit = GetElectrons( param,el_ID, Min_Electron_Pt, 2.5, false);
 
   if(run_Debug) {
     cout << "MuonCollTInit size = " << MuonCollTInit.size() << endl;
     cout << "ElectronCollTInit size = " << ElectronCollTInit.size() << endl;
   }
-  std::vector<Muon>       MuonCollT     = GetLepCollByRunType    ( MuonCollTInit, param);  
+  std::vector<Muon>       MuonCollT     = GetLepCollByRunType    ( MuonCollTInit, param); // prompt + conversion
   std::vector<Electron>   ElectronCollT  =  GetLepCollByRunType   ( ElectronCollTInit,param);
 
   std::vector<Lepton *> leps_veto  = MakeLeptonPointerVector(MuonCollV,ElectronCollV);
@@ -136,7 +143,7 @@ void HNL_ControlRegionPlotter::RunControlRegions(AnalyzerParameter param, vector
   std::vector<Jet>    AK4_BJetColl                = GetHNLJets("BJetM",     param);
   std::vector<Jet>    AK4_BJetCollSR1             = GetHNLJets("BJetT",     param);
 
-  Particle METv = GetvMET("PuppiT1xyCorr", param, AK4_VBF_JetColl, AK8_JetColl, MuonCollT, ElectronCollT); // returns MET with systematic correction; run this after all object selection done; NOTE that VBF jet is used here
+  Particle METv = GetvMET("PuppiT1xyULCorr", param, AK4_VBF_JetColl, AK8_JetColl, MuonCollT, ElectronCollT); // returns MET with systematic correction; run this after all object selection done; NOTE that VBF jet is used here //JH FIXME what's the difference between GetvMETs?????
   if(run_Debug) cout << "PuppiT1xyULCorr = " << METv.Pt() << endl;
 
   TString PUIDWP="";

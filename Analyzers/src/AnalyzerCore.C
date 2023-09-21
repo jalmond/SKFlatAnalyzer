@@ -398,8 +398,6 @@ std::vector<Muon> AnalyzerCore::GetAllMuons(){
     mu.SetUncorrectedPt(muon_pt->at(i));
     Muon mu_tmp;
     mu_tmp.SetPtEtaPhiM(muon_pt->at(i), muon_eta->at(i), muon_phi->at(i), muon_mass->at(i));
-    mu.SetUncorrectedPx(mu_tmp.Px());
-    mu.SetUncorrectedPy(mu_tmp.Py()); //JH
     mu.SetMiniAODPt(muon_pt->at(i));
     mu.SetMiniAODTunePPt(muon_TuneP_pt->at(i));
 
@@ -454,9 +452,9 @@ std::vector<Muon> AnalyzerCore::GetAllMuons(){
     if(fChain->GetBranch("muon_mva_fake_ed_v4"))  mu.SetHNL_FakeLepMVAMuon_EtaDependantV4(muon_mva_fake_ed_v4->at(i));
     if(fChain->GetBranch("muon_mva_fake_QCD_LFvsHF_v5")) {
       mu.SetHNL_FakeFlavourLepMVA_V5( muon_mva_fake_QCD_LFvsHF_v5->at(i),
-				      muon_mva_fake_QCD_HFBvsHFC_v5->at(i),
-				      muon_mva_fake_QCD_LF1_v5->at(i),
-				      muon_mva_fake_QCD_LF2_v5->at(i));
+              muon_mva_fake_QCD_HFBvsHFC_v5->at(i),
+              muon_mva_fake_QCD_LF1_v5->at(i),
+              muon_mva_fake_QCD_LF2_v5->at(i));
     }
 
     if(iSetupLeptonBDTv4) {
@@ -467,12 +465,12 @@ std::vector<Muon> AnalyzerCore::GetAllMuons(){
     if(iSetupLeptonBDTv5) {
       
       if(!fChain->GetBranch("muon_mva_fake_QCD_LFvsHF_v5")){
-	
-	mu.SetHNL_FakeFlavourLepMVA_V5( GetBDTScoreMuon(mu,AnalyzerCore::FakeRate,  "BDTGv5_QCD_LFvsHF"),
-					GetBDTScoreMuon(mu,AnalyzerCore::FakeRate,  "BDTGv5_QCD_HFBvsHFC"),
-					GetBDTScoreMuon(mu,AnalyzerCore::FakeRate,  "BDTGv5_LF1"),
-					GetBDTScoreMuon(mu,AnalyzerCore::FakeRate,  "BDTGv5_LF2"));
-	
+  
+  mu.SetHNL_FakeFlavourLepMVA_V5( GetBDTScoreMuon(mu,AnalyzerCore::FakeRate,  "BDTGv5_QCD_LFvsHF"),
+          GetBDTScoreMuon(mu,AnalyzerCore::FakeRate,  "BDTGv5_QCD_HFBvsHFC"),
+          GetBDTScoreMuon(mu,AnalyzerCore::FakeRate,  "BDTGv5_LF1"),
+          GetBDTScoreMuon(mu,AnalyzerCore::FakeRate,  "BDTGv5_LF2"));
+  
       }
     }
     
@@ -506,17 +504,17 @@ std::vector<Muon> AnalyzerCore::GetAllMuons(){
         if(dR1<mindR1){ mindR1=dR1; IdxMatchJet=ij; }
       }
       if(IdxMatchJet!=-1)    {
-	JetDiscCJ     = AK4_JetAllColl.at(IdxMatchJet).GetTaggerResult(JetTagging::DeepJet);
-	JetDiscCJ_CvsB     = AK4_JetAllColl.at(IdxMatchJet).GetTaggerResult(JetTagging::DeepJet_CvsB);
-	JetDiscCJ_CvsL     = AK4_JetAllColl.at(IdxMatchJet).GetTaggerResult(JetTagging::DeepJet_CvsL);
+  JetDiscCJ     = AK4_JetAllColl.at(IdxMatchJet).GetTaggerResult(JetTagging::DeepJet);
+  JetDiscCJ_CvsB     = AK4_JetAllColl.at(IdxMatchJet).GetTaggerResult(JetTagging::DeepJet_CvsB);
+  JetDiscCJ_CvsL     = AK4_JetAllColl.at(IdxMatchJet).GetTaggerResult(JetTagging::DeepJet_CvsL);
 
-	JetHadFlavour = AK4_JetAllColl.at(IdxMatchJet).hadronFlavour();
+  JetHadFlavour = AK4_JetAllColl.at(IdxMatchJet).hadronFlavour();
       }
       else {
-	JetDiscCJ=0.1; //// These are low pt ; value chosen to match peak in prompt leptons
-	JetDiscCJ_CvsB=0.4;
-	JetDiscCJ_CvsL=0.1;
-	JetHadFlavour=0;
+  JetDiscCJ=0.1; //// These are low pt ; value chosen to match peak in prompt leptons
+  JetDiscCJ_CvsB=0.4;
+  JetDiscCJ_CvsL=0.1;
+  JetHadFlavour=0;
       }
 
       mu.SetJetPtRel(JetLeptonPtRelLepAware(mu));
@@ -677,7 +675,7 @@ void AnalyzerCore::InitializeIDTreeVars(){
 }
 
 void AnalyzerCore::PrintBDTVariables(Electron el,TString label){
-			
+      
   if(!el.IsPrompt()) return;
   if(!el.IsEC()) return;
 
@@ -828,9 +826,9 @@ void AnalyzerCore::FillBDTHists(Electron el,TString cut, double w, bool SplitFak
       if(jet.Pt() < 10) continue; //// Make consistent with data cut
       
       if (lep->DeltaR(jet) < mindR) {
-	UnCorrJet=jet;
-	closejet = GetCorrectedJetCloseToLepton(*lep,jet);
-	mindR = lep->DeltaR(jet);
+  UnCorrJet=jet;
+  closejet = GetCorrectedJetCloseToLepton(*lep,jet);
+  mindR = lep->DeltaR(jet);
       }
     }
     
@@ -1398,15 +1396,15 @@ void AnalyzerCore::SetupIDMVAReaderMuon(){
   if(iSetupLeptonBDTv5){
 
     if(GetYear() == 2016){
-      //MuonIDv5_FakeMVAReader->BookMVA("BDTGv5_LFvsHF_Fake", 		      MVAPathMuonFakeV5+"BDTG_version12_MuonFakeBkg_TypeI_MuMu_SignalMuonFake_LFvsHF_2016_NTrees300_NormMode_EqualNumEvents_MinNodeSize_1.0_MaxDepth_2_nCuts_200_Shrinkage_0.1_BaggedFrac_0.5_Seed_100_BDT"+xmlpf);  
+      //MuonIDv5_FakeMVAReader->BookMVA("BDTGv5_LFvsHF_Fake",           MVAPathMuonFakeV5+"BDTG_version12_MuonFakeBkg_TypeI_MuMu_SignalMuonFake_LFvsHF_2016_NTrees300_NormMode_EqualNumEvents_MinNodeSize_1.0_MaxDepth_2_nCuts_200_Shrinkage_0.1_BaggedFrac_0.5_Seed_100_BDT"+xmlpf);  
 
       //MuonIDv5_FakeMVAReader->BookMVA("BDTGv5_HFBvsHFC_Fake",     MVAPathMuonFakeV5+"BDTG_version12_MuonFakeBkg_TypeI_MuMu_SignalMuonFake_HFBvsHFC_2016_NTrees300_NormMode_EqualNumEvents_MinNodeSize_1.0_MaxDepth_3_nCuts_200_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);  
 
       MuonIDv5_FakeMVAReader->BookMVA("BDTGv5_QCD_LFvsHF_Fake", 
-				      MVAPathMuonFakeV5+"BDTG_version12_MuonFakeBkg_TypeI_MuMu_SignalMuonFake_QCD_LFvsHF_2016_NTrees700_NormMode_EqualNumEvents_MinNodeSize_1.0_MaxDepth_4_nCuts_200_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);  
+              MVAPathMuonFakeV5+"BDTG_version12_MuonFakeBkg_TypeI_MuMu_SignalMuonFake_QCD_LFvsHF_2016_NTrees700_NormMode_EqualNumEvents_MinNodeSize_1.0_MaxDepth_4_nCuts_200_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);  
 
       MuonIDv5_FakeMVAReader->BookMVA("BDTGv5_QCD_HFBvsHFC_Fake", 
-				      MVAPathMuonFakeV5+"BDTG_version12_MuonFakeBkg_TypeI_MuMu_SignalMuonFake_QCD_HFBvsHFC_2016_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_1.0_MaxDepth_2_nCuts_200_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT"+xmlpf);  
+              MVAPathMuonFakeV5+"BDTG_version12_MuonFakeBkg_TypeI_MuMu_SignalMuonFake_QCD_HFBvsHFC_2016_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_1.0_MaxDepth_2_nCuts_200_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT"+xmlpf);  
 
       //----> 0.812412822248: ['0.81', '0.118', 'BDTG_version12_MuonFakeBkg_TypeI_MuMu_SignalMuonFake_QCD_HFBvsHFC_2016_NTrees1000_NormMode_EqualNumEvents_MinNodeSize_1.0_MaxDepth_2_nCuts_200_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT.root']
       //----> 0.857725962924: ['0.131', '0.191', 'BDTG_version12_MuonFakeBkg_TypeI_MuMu_SignalMuonFake_HFBvsHFC_2016_NTrees300_NormMode_EqualNumEvents_MinNodeSize_1.0_MaxDepth_3_nCuts_200_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT.root']
@@ -1426,15 +1424,15 @@ void AnalyzerCore::SetupIDMVAReaderMuon(){
 
     }
     if(GetYear() == 2017){
-      ///MuonIDv5_FakeMVAReader->BookMVA("BDTGv5_LFvsHF_Fake",        		      MVAPathMuonFakeV5+"BDTG_version12_MuonFakeBkg_TypeI_MuMu_SignalMuonFake_LFvsHF_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_4_nCuts_200_Shrinkage_0.1_BaggedFrac_0.5_Seed_100_BDT"+xmlpf);   
+      ///MuonIDv5_FakeMVAReader->BookMVA("BDTGv5_LFvsHF_Fake",                  MVAPathMuonFakeV5+"BDTG_version12_MuonFakeBkg_TypeI_MuMu_SignalMuonFake_LFvsHF_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_5.0_MaxDepth_4_nCuts_200_Shrinkage_0.1_BaggedFrac_0.5_Seed_100_BDT"+xmlpf);   
 
       ///MuonIDv5_FakeMVAReader->BookMVA("BDTGv5_HFBvsHFC_Fake",     MVAPathMuonFakeV5+"BDTG_version12_MuonFakeBkg_TypeI_MuMu_SignalMuonFake_HFBvsHFC_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_1.0_MaxDepth_4_nCuts_200_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT"+xmlpf);   
 
       MuonIDv5_FakeMVAReader->BookMVA("BDTGv5_QCD_LFvsHF_Fake",
-				      MVAPathMuonFakeV5+"BDTG_version12_MuonFakeBkg_TypeI_MuMu_SignalMuonFake_QCD_LFvsHF_2017_NTrees700_NormMode_EqualNumEvents_MinNodeSize_1.0_MaxDepth_4_nCuts_200_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);   
+              MVAPathMuonFakeV5+"BDTG_version12_MuonFakeBkg_TypeI_MuMu_SignalMuonFake_QCD_LFvsHF_2017_NTrees700_NormMode_EqualNumEvents_MinNodeSize_1.0_MaxDepth_4_nCuts_200_Shrinkage_0.05_BaggedFrac_0.8_Seed_100_BDT"+xmlpf);   
 
       MuonIDv5_FakeMVAReader->BookMVA("BDTGv5_QCD_HFBvsHFC_Fake",
-				      MVAPathMuonFakeV5+"BDTG_version12_MuonFakeBkg_TypeI_MuMu_SignalMuonFake_QCD_HFBvsHFC_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_1.0_MaxDepth_3_nCuts_200_Shrinkage_0.1_BaggedFrac_0.5_Seed_100_BDT"+xmlpf);   
+              MVAPathMuonFakeV5+"BDTG_version12_MuonFakeBkg_TypeI_MuMu_SignalMuonFake_QCD_HFBvsHFC_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_1.0_MaxDepth_3_nCuts_200_Shrinkage_0.1_BaggedFrac_0.5_Seed_100_BDT"+xmlpf);   
 
       //----> 0.819748332215: ['0.386', '0.102', 'BDTG_version12_MuonFakeBkg_TypeI_MuMu_SignalMuonFake_QCD_HFBvsHFC_2017_NTrees300_NormMode_EqualNumEvents_MinNodeSize_1.0_MaxDepth_3_nCuts_200_Shrinkage_0.1_BaggedFrac_0.5_Seed_100_BDT.root']
       //----> 0.872141270213: ['0.436', '0.11', 'BDTG_version12_MuonFakeBkg_TypeI_MuMu_SignalMuonFake_HFBvsHFC_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_1.0_MaxDepth_4_nCuts_200_Shrinkage_0.05_BaggedFrac_0.5_Seed_100_BDT.root']
@@ -1445,7 +1443,7 @@ void AnalyzerCore::SetupIDMVAReaderMuon(){
 
 
       //----> 0.860615816119: ['0.139', '0.885', 'BDTG_version12_MuonFakeBkg_TypeI_MuMu_SignalMuonFake_QCD_LFMother1_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_1.0_MaxDepth_2_nCuts_200_Shrinkage_0.1_BaggedFrac_0.8_Seed_100_BDT.root']
-	      
+        
 
       //----> 0.824113180693: ['0.174', '0.107', 'BDTG_version12_MuonFakeBkg_TypeI_MuMu_SignalMuonFake_QCD_LFMother2_2017_NTrees500_NormMode_EqualNumEvents_MinNodeSize_1.0_MaxDepth_2_nCuts_200_Shrinkage_0.1_BaggedFrac_0.8_Seed_100_BDT.root']
 
@@ -1651,14 +1649,14 @@ void AnalyzerCore::SetupIDMVAReaderElectronUpdate(){
     //----> 0.959983970767: ['0.327', '0.105', 'BDTG_version11_FakeBkg_TypeI_EE_SignalFakeBkg_IP_EC_2016_NTrees2000_NormMode_EqualNumEvents_MinNodeSize_0.5_MaxDepth_3_nCuts_200_Shrinkage_0.1_BaggedFrac_0.6_Seed_100_BDT.root']
 
     //// Falvour Fake
-    //ElectronIDv5_FakeMVAReader->BookMVA("BDTGv5_LFvsHF_Fake", 	MVAPathFake+ "BDTG_version12_FakeBkg_TypeI_EE_SignalElectronFake_IP_LFvsHF_2016_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_200_Shrinkage_0.1_BaggedFrac_0.5_Seed_100_BDT"+ xmlpf);  
-    //ElectronIDv5_FakeMVAReader->BookMVA("BDTGv5_HFBvsHFC_Fake", 				MVAPathFake+ "BDTG_version12_FakeBkg_TypeI_EE_SignalElectronFake_IP_HFBvsHFC_2016_NTrees300_NormMode_EqualNumEvents_MinNodeSize_1.0_MaxDepth_2_nCuts_200_Shrinkage_0.1_BaggedFrac_0.8_Seed_200_BDT"+ xmlpf);  
+    //ElectronIDv5_FakeMVAReader->BookMVA("BDTGv5_LFvsHF_Fake",   MVAPathFake+ "BDTG_version12_FakeBkg_TypeI_EE_SignalElectronFake_IP_LFvsHF_2016_NTrees500_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_4_nCuts_200_Shrinkage_0.1_BaggedFrac_0.5_Seed_100_BDT"+ xmlpf);  
+    //ElectronIDv5_FakeMVAReader->BookMVA("BDTGv5_HFBvsHFC_Fake",         MVAPathFake+ "BDTG_version12_FakeBkg_TypeI_EE_SignalElectronFake_IP_HFBvsHFC_2016_NTrees300_NormMode_EqualNumEvents_MinNodeSize_1.0_MaxDepth_2_nCuts_200_Shrinkage_0.1_BaggedFrac_0.8_Seed_200_BDT"+ xmlpf);  
     
     ElectronIDv5_FakeMVAReader->BookMVA("BDTGv5_QCD_LFvsHF_Fake", 
-					MVAPathFake +"BDTG_version12_FakeBkg_TypeI_EE_SignalElectronFake_IP_QCD_LFvsHF_2016_NTrees500_NormMode_EqualNumEvents_MinNodeSize_1.0_MaxDepth_4_nCuts_200_Shrinkage_0.05_BaggedFrac_0.5_Seed_200_BDT"+ xmlpf);  
+          MVAPathFake +"BDTG_version12_FakeBkg_TypeI_EE_SignalElectronFake_IP_QCD_LFvsHF_2016_NTrees500_NormMode_EqualNumEvents_MinNodeSize_1.0_MaxDepth_4_nCuts_200_Shrinkage_0.05_BaggedFrac_0.5_Seed_200_BDT"+ xmlpf);  
     
     ElectronIDv5_FakeMVAReader->BookMVA("BDTGv5_QCD_HFBvsHFC_Fake",
-					MVAPathFake+ "BDTG_version12_FakeBkg_TypeI_EE_SignalElectronFake_IP_QCD_HFBvsHFC_2016_NTrees700_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_200_Shrinkage_0.1_BaggedFrac_0.5_Seed_100_BDT"+ xmlpf);  
+          MVAPathFake+ "BDTG_version12_FakeBkg_TypeI_EE_SignalElectronFake_IP_QCD_HFBvsHFC_2016_NTrees700_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_200_Shrinkage_0.1_BaggedFrac_0.5_Seed_100_BDT"+ xmlpf);  
     
 
     //----> 0.820222557836: ['0.45', '0.108', 'BDTG_version12_FakeBkg_TypeI_EE_SignalElectronFake_IP_QCD_HFBvsHFC_2016_NTrees700_NormMode_EqualNumEvents_MinNodeSize_2.5_MaxDepth_3_nCuts_200_Shrinkage_0.1_BaggedFrac_0.5_Seed_100_BDT.root']
@@ -1774,18 +1772,18 @@ void AnalyzerCore::SetupIDMVAReaderElectron(){
   if(!( iSetupLeptonBDTv4)) return;
   
   /*                     
-			 
-			 electron_v1:                                                                                                                                                                                                  
-			 - sets up for legacy purposes the first of the BDT ID. This was in Dec 2022. This tuned out buggy since 3 variables were set as ints/floats incorrectly.                                                      
-			 This also had more variables in the training.                                                                                                                                                                 
-			 
-			 electron_v2plus:                                                                                                                                                                                              
-			 - This is all versions after and including version2.                                                                                                                                                          
-			 - These all share the training variables, hense why they can be grouped together and use the same Reader class variable.                                                                                      
-			 -  Version 2 of the training had issues in regards to ptbinned variable being set wrong and so was scrpped                                                                                                    
-			 -  Version 3 had issues in miniiso and so Fakes were scrapped                                                                                                                                                 
-			 -  Version 4 saw poor training in LF and so the LF was retrained removiong pi+                                                                                                                                
-			 
+       
+       electron_v1:                                                                                                                                                                                                  
+       - sets up for legacy purposes the first of the BDT ID. This was in Dec 2022. This tuned out buggy since 3 variables were set as ints/floats incorrectly.                                                      
+       This also had more variables in the training.                                                                                                                                                                 
+       
+       electron_v2plus:                                                                                                                                                                                              
+       - This is all versions after and including version2.                                                                                                                                                          
+       - These all share the training variables, hense why they can be grouped together and use the same Reader class variable.                                                                                      
+       -  Version 2 of the training had issues in regards to ptbinned variable being set wrong and so was scrpped                                                                                                    
+       -  Version 3 had issues in miniiso and so Fakes were scrapped                                                                                                                                                 
+       -  Version 4 saw poor training in LF and so the LF was retrained removiong pi+                                                                                                                                
+       
   */
   
 
@@ -2638,8 +2636,6 @@ std::vector<Electron> AnalyzerCore::GetAllElectrons(){
     double el_pt = electron_Energy->at(i) * TMath::Sin( el_theta );
     el.SetPtEtaPhiE( el_pt, electron_eta->at(i), electron_phi->at(i), electron_Energy->at(i));
     el.SetUncorrectedPt(electron_EnergyUnCorr->at(i) * TMath::Sin( el_theta ));
-    el.SetUncorrectedPx(el.Px());
-    el.SetUncorrectedPy(el.Py()); //JH
 
     el.SetUncorrE(electron_EnergyUnCorr->at(i));
     el.SetSC(electron_scEta->at(i), electron_scPhi->at(i), electron_scEnergy->at(i));
@@ -2747,22 +2743,22 @@ std::vector<Electron> AnalyzerCore::GetAllElectrons(){
     
 
     if(fChain->GetBranch("electron_mva_conv_ed_v5")) el.SetHNL_ConvLepMVA_EtaDependantV5(electron_mva_conv_ed_v5->at(i));
-											 
+                       
 
     if(fChain->GetBranch("electron_mva_cf_ed_v5"))  el.SetHNL_CFLepMVA_EtaDependantV5(electron_mva_cf_ed_v5->at(i), 
-										      electron_mva_cf_ed_v5pt->at(i));
+                          electron_mva_cf_ed_v5pt->at(i));
 
     if(fChain->GetBranch("electron_mva_fake_ed_v5")) {
       
       el.SetHNL_FakeLepMVA_EtaDependantV5(electron_mva_fake_ed_v5->at(i),
-					  electron_mva_fakeHFB_v5->at(i),
-					  electron_mva_fakeHFC_v5->at(i),
-					  electron_mva_fakeLF_v5->at(i));
+            electron_mva_fakeHFB_v5->at(i),
+            electron_mva_fakeHFC_v5->at(i),
+            electron_mva_fakeLF_v5->at(i));
       
       el.SetHNL_FakeFlavourLepMVA_V5(electron_mva_fake_QCD_LFvsHF_v5->at(i),
-				     electron_mva_fake_QCD_HFBvsHFC_v5->at(i),
-				     electron_mva_fake_QCD_LF1_v5->at(i),
-				     electron_mva_fake_QCD_LF2_v5->at(i));
+             electron_mva_fake_QCD_HFBvsHFC_v5->at(i),
+             electron_mva_fake_QCD_LF1_v5->at(i),
+             electron_mva_fake_QCD_LF2_v5->at(i));
 
 
 
@@ -2775,20 +2771,20 @@ std::vector<Electron> AnalyzerCore::GetAllElectrons(){
 
       if(!fChain->GetBranch("electron_mva_conv_ed_v5"))      el.SetHNL_ConvLepMVA_EtaDependantV5( GetBDTScoreEl_EtaDependant(el,AnalyzerCore::Conv,  "BDTGv5"));
       if(!fChain->GetBranch("electron_mva_fake_ed_v5"))      el.SetHNL_FakeLepMVA_EtaDependantV5(GetBDTScoreEl_EtaDependant(el,AnalyzerCore::Fake,  "BDTGv5" ), 
-												 GetBDTScoreEl(el,AnalyzerCore::Fake,  "BDTGv5_HFB" ) , 
-												 GetBDTScoreEl(el,AnalyzerCore::Fake,  "BDTGv5_HFC" ),  
-												 GetBDTScoreEl(el,AnalyzerCore::Fake,  "BDTGv5_LF" ));
+                         GetBDTScoreEl(el,AnalyzerCore::Fake,  "BDTGv5_HFB" ) , 
+                         GetBDTScoreEl(el,AnalyzerCore::Fake,  "BDTGv5_HFC" ),  
+                         GetBDTScoreEl(el,AnalyzerCore::Fake,  "BDTGv5_LF" ));
       
       
       if(!fChain->GetBranch("electron_mva_cf_ed_v5"))      el.SetHNL_CFLepMVA_EtaDependantV5  (GetBDTScoreEl_EtaDependant(el,AnalyzerCore::CF, "BDTGv5" ), 
-											       GetBDTScoreEl_EtaDependant(el,AnalyzerCore::CF, "BDTGv5Pt" ));
+                             GetBDTScoreEl_EtaDependant(el,AnalyzerCore::CF, "BDTGv5Pt" ));
       
       if(!fChain->GetBranch("electron_mva_fake_QCD_LFvsHF_v5")) {
-	
-        el.SetHNL_FakeFlavourLepMVA_V5(	GetBDTScoreEl(el,AnalyzerCore::FakeRate,  "BDTGv5_QCD_LFvsHF"),
-					GetBDTScoreEl(el,AnalyzerCore::FakeRate,  "BDTGv5_QCD_HFBvsHFC"),
-					GetBDTScoreEl(el,AnalyzerCore::FakeRate,  "BDTGv5_LF1"),
-					GetBDTScoreEl(el,AnalyzerCore::FakeRate,  "BDTGv5_LF2"));
+  
+        el.SetHNL_FakeFlavourLepMVA_V5(  GetBDTScoreEl(el,AnalyzerCore::FakeRate,  "BDTGv5_QCD_LFvsHF"),
+          GetBDTScoreEl(el,AnalyzerCore::FakeRate,  "BDTGv5_QCD_HFBvsHFC"),
+          GetBDTScoreEl(el,AnalyzerCore::FakeRate,  "BDTGv5_LF1"),
+          GetBDTScoreEl(el,AnalyzerCore::FakeRate,  "BDTGv5_LF2"));
       }
     }
 
@@ -2844,17 +2840,17 @@ std::vector<Electron> AnalyzerCore::GetAllElectrons(){
   if(dR1<mindR1){ mindR1=dR1; IdxMatchJet=ij; }
       }
       if(IdxMatchJet!=-1) {
-	JetDiscCJ        = AK4_JetAllColl.at(IdxMatchJet).GetTaggerResult(JetTagging::DeepJet);
+  JetDiscCJ        = AK4_JetAllColl.at(IdxMatchJet).GetTaggerResult(JetTagging::DeepJet);
         JetDiscCJ_CvsB   = AK4_JetAllColl.at(IdxMatchJet).GetTaggerResult(JetTagging::DeepJet_CvsB);
         JetDiscCJ_CvsL    = AK4_JetAllColl.at(IdxMatchJet).GetTaggerResult(JetTagging::DeepJet_CvsL);
 
-	JetHadFlavour  = AK4_JetAllColl.at(IdxMatchJet).hadronFlavour();
+  JetHadFlavour  = AK4_JetAllColl.at(IdxMatchJet).hadronFlavour();
       }
       else {
         JetDiscCJ=0.1; //// These are low pt ; value chosen to match peak in prompt leptons                                                                                
         JetDiscCJ_CvsB=0.4;
         JetDiscCJ_CvsL=0.1;
-	JetHadFlavour = 0;
+  JetHadFlavour = 0;
       }
 
       el.SetJetPtRel(JetLeptonPtRelLepAware(el));
@@ -3466,8 +3462,8 @@ std::vector<Jet> AnalyzerCore::GetAllJets(bool applySmear){
     jet.SetEnShift( jet_shiftedEnUp->at(i), jet_shiftedEnDown->at(i) );
     if(!IsDATA){
       if(applySmear){
-	jet *= jet_smearedRes->at(i);
-	jet.SetIsSmeared(true);
+  jet *= jet_smearedRes->at(i);
+  jet.SetIsSmeared(true);
       }
       jet.SetResShift( jet_smearedResUp->at(i)/jet_smearedRes->at(i), jet_smearedResDown->at(i)/jet_smearedRes->at(i) );
       jet.SetRes(jet_smearedRes->at(i));
@@ -4521,7 +4517,7 @@ double AnalyzerCore::GetMuonSFEventWeight(std::vector<Muon> muons,AnalyzerParame
 
       double this_recosf = mcCorr->MuonReco_SF(param.Muon_RECO_SF_Key, this_eta, reco_pt,SystDir_MuonRecoSF);
 
-      this_weight *= this_recosf;		      
+      this_weight *= this_recosf;          
 
       FillWeightHist(param.Name+"/RecoMuWeight_"+param.Name,this_recosf); 
       FillWeightHist(param.Name+"/IDMuWeight_"+param.Name,this_idsf);
@@ -4708,7 +4704,7 @@ double AnalyzerCore::GetFakeWeight(std::vector<Lepton *> leps, AnalyzerParameter
   
   double this_weight = -1.;
   if(leps.size() == 1){
-    TString fr_key1 = (leps[0]->LeptonFlavour() == Lepton::ELECTRON) ?  _param.Electron_FR_Key : _param.Muon_FR_Key;
+    TString fr_key1 = (leps[0]->LeptonFlavour() == Lepton::ELECTRON) ? _param.Electron_FR_Key : _param.Muon_FR_Key;
     TString pr_key1 = (leps[0]->LeptonFlavour() == Lepton::ELECTRON) ? _param.Electron_PR_Key : _param.Muon_PR_Key;
 
     if(!leps[0]->LepIDSet()) {
@@ -4738,12 +4734,20 @@ double AnalyzerCore::GetFakeWeight(std::vector<Lepton *> leps, AnalyzerParameter
       exit(EXIT_FAILURE);
     }
 
-    TString fr_key1 = (leps[0]->LeptonFlavour() == Lepton::ELECTRON) ?  _param.Electron_FR_Key : _param.Muon_FR_Key;
-    TString fr_key2 = (leps[1]->LeptonFlavour() == Lepton::ELECTRON) ?  _param.Electron_FR_Key : _param.Muon_FR_Key;
-    TString pr_key1 =  (leps[0]->LeptonFlavour() == Lepton::ELECTRON) ?  _param.Electron_PR_Key : _param.Muon_PR_Key;
-    TString pr_key2 =  (leps[0]->LeptonFlavour() == Lepton::ELECTRON) ?  _param.Electron_PR_Key : _param.Muon_PR_Key;
+    TString fr_key1;
+    TString fr_key2;
+    if(_param.Name.Contains("LFvsHF")){
+      fr_key1 = (leps[0]->LeptonFlavour() == Lepton::ELECTRON) ? _param.Electron_FR_Key : leps[0]->FakeFlavourString()+"_pt_eta_AwayJetPt40";
+      fr_key2 = (leps[1]->LeptonFlavour() == Lepton::ELECTRON) ? _param.Electron_FR_Key : leps[1]->FakeFlavourString()+"_pt_eta_AwayJetPt40";
+    }
+    else{
+      fr_key1 = (leps[0]->LeptonFlavour() == Lepton::ELECTRON) ? _param.Electron_FR_Key : _param.Muon_FR_Key;
+      fr_key2 = (leps[1]->LeptonFlavour() == Lepton::ELECTRON) ? _param.Electron_FR_Key : _param.Muon_FR_Key;
+    } //FIXME tmp test for LFvsHF method
+    TString  pr_key1 = (leps[0]->LeptonFlavour() == Lepton::ELECTRON) ? _param.Electron_PR_Key : _param.Muon_PR_Key;
+    TString  pr_key2 = (leps[1]->LeptonFlavour() == Lepton::ELECTRON) ? _param.Electron_PR_Key : _param.Muon_PR_Key;
 
-    double this_fr1 =  (leps[0]->LeptonFlavour() == Lepton::ELECTRON) ? fakeEst->GetElectronFakeRate(_param.Electron_Tight_ID, fr_key1, fabs(leps[0]->Eta()), leps[0]->Pt()) : fakeEst->GetMuonFakeRate(_param.Muon_Tight_ID, fr_key1, fabs(leps[0]->Eta()), leps[0]->Pt()); 
+    double this_fr1 = (leps[0]->LeptonFlavour() == Lepton::ELECTRON) ? fakeEst->GetElectronFakeRate(_param.Electron_Tight_ID, fr_key1, fabs(leps[0]->Eta()), leps[0]->Pt()) : fakeEst->GetMuonFakeRate(_param.Muon_Tight_ID, fr_key1, fabs(leps[0]->Eta()), leps[0]->Pt()); 
     double this_fr2 = (leps[1]->LeptonFlavour() == Lepton::ELECTRON) ? fakeEst->GetElectronFakeRate(_param.Electron_Tight_ID, fr_key2, fabs(leps[1]->Eta()), leps[1]->Pt()) : fakeEst->GetMuonFakeRate(_param.Muon_Tight_ID, fr_key2, fabs(leps[1]->Eta()), leps[1]->Pt()); 
 
     double this_pr1 = 1.;
@@ -4776,7 +4780,12 @@ double AnalyzerCore::GetFakeWeight(std::vector<Lepton *> leps, AnalyzerParameter
 
       if( lep->PassLepID() ) continue;
       
-      this_fr =  (lep->LeptonFlavour() == Lepton::ELECTRON) ? fakeEst->GetElectronFakeRate(_param.Electron_Tight_ID, _param.Electron_FR_Key, fabs(lep->Eta()), lep->Pt()) : fakeEst->GetMuonFakeRate(_param.Muon_Tight_ID, _param.Muon_FR_Key, fabs(lep->Eta()), lep->Pt()); 
+      if(_param.Name.Contains("LFvsHF")){
+        this_fr =  (lep->LeptonFlavour() == Lepton::ELECTRON) ? fakeEst->GetElectronFakeRate(_param.Electron_Tight_ID, _param.Electron_FR_Key, fabs(lep->Eta()), lep->Pt()) : fakeEst->GetMuonFakeRate(_param.Muon_Tight_ID, lep->FakeFlavourString()+"_pt_eta_AwayJetPt40", fabs(lep->Eta()), lep->Pt()); 
+      }
+      else{
+        this_fr =  (lep->LeptonFlavour() == Lepton::ELECTRON) ? fakeEst->GetElectronFakeRate(_param.Electron_Tight_ID, _param.Electron_FR_Key, fabs(lep->Eta()), lep->Pt()) : fakeEst->GetMuonFakeRate(_param.Muon_Tight_ID, _param.Muon_FR_Key, fabs(lep->Eta()), lep->Pt()); 
+      } //FIXME tmp test for LFvsHF method
       this_weight *= -1.*this_fr/(1.-this_fr);
       FRs.push_back(this_fr);
       
@@ -6364,9 +6373,9 @@ double  AnalyzerCore::JetLeptonPtRatioLepAwareMuon(Lepton lep, bool smearjet, bo
   if(corrMu){
     for(auto imu : LooseMuons){
       if(UncorJet.DeltaR(imu) < 0.4){
-	if (imu.PassID("POGLoose")) {
-	  OverlapLeps.push_back(imu);
-	}
+  if (imu.PassID("POGLoose")) {
+    OverlapLeps.push_back(imu);
+  }
       }
     }
   }
@@ -6628,7 +6637,7 @@ vector<TString> AnalyzerCore::GetGenList(){
                             "D0",
                             "D+",
                             "B",
-			    "B0",
+          "B0",
                             "B+",
                             "D0_K+",
                             "B0_K+",
@@ -6641,7 +6650,7 @@ vector<TString> AnalyzerCore::GetGenList(){
                             "BBaryon",
                             "proton",
                             "conv",
-			    "__"};
+          "__"};
 
   return lables;
 
@@ -6714,22 +6723,22 @@ TString AnalyzerCore::MatchGenDef(std::vector<Gen>& gens,const Lepton& Lep, bool
 
       if(Lep.DeltaR(gen) < 0.4)  {
         if(fabs(gen.Pt() - Lep.Pt() ) / Lep.Pt() < 0.25) {
-	  
-	  if(MatchGenPID(fabs(gen.PID()), gens, gen) != "") {
-	    return MatchGenPID(fabs(gen.PID()),gens,  gen);
-	  }
-	  MatchedGensID.push_back(i);
-	}
-	//cout << "CloseGensID.push_back " << i << endl;
-	CloseGensID.push_back(i);
+    
+    if(MatchGenPID(fabs(gen.PID()), gens, gen) != "") {
+      return MatchGenPID(fabs(gen.PID()),gens,  gen);
+    }
+    MatchedGensID.push_back(i);
+  }
+  //cout << "CloseGensID.push_back " << i << endl;
+  CloseGensID.push_back(i);
       }
       
       if(Lep.DeltaR(gen) < mindR ){
-	mindR=Lep.DeltaR(gen) ;
-	closest_pid= fabs(gen.PID());
-	Mclosest_pid= fabs(gens[gen.MotherIndex()].PID());
-	
-	closest_id = i;
+  mindR=Lep.DeltaR(gen) ;
+  closest_pid= fabs(gen.PID());
+  Mclosest_pid= fabs(gens[gen.MotherIndex()].PID());
+  
+  closest_id = i;
       }
     }
     
@@ -6750,16 +6759,16 @@ TString AnalyzerCore::MatchGenDef(std::vector<Gen>& gens,const Lepton& Lep, bool
       if(fabs(gens.at(mind).PID()) <= 6)  break;
             if(fabs(gens.at(mind).PID()) == 2212)  break;
 
-	    pdid = mind;
-	    mind = gens.at(mind).MotherIndex();
-	  }
-	  
+      pdid = mind;
+      mind = gens.at(mind).MotherIndex();
+    }
+    
           if(fabs(gens[pdid].PID()) == 423) return "D";
-	  if(fabs(gens[pdid].PID()) == 421) return "D0";
-	  if(fabs(gens[pdid].PID()) == 431) return "D";
-	  if(fabs(gens[pdid].PID()) == 433) return "D";
-	  if(fabs(gens[pdid].PID()) == 413) return "D";
-	  if(fabs(gens[pdid].PID()) == 411) return "D+";
+    if(fabs(gens[pdid].PID()) == 421) return "D0";
+    if(fabs(gens[pdid].PID()) == 431) return "D";
+    if(fabs(gens[pdid].PID()) == 433) return "D";
+    if(fabs(gens[pdid].PID()) == 413) return "D";
+    if(fabs(gens[pdid].PID()) == 411) return "D+";
           if(fabs(gens[pdid].PID()) == 511) return "B0";
           if(fabs(gens[pdid].PID()) == 531) return "B";
           if(fabs(gens[pdid].PID()) == 533) return "B";
@@ -6767,7 +6776,7 @@ TString AnalyzerCore::MatchGenDef(std::vector<Gen>& gens,const Lepton& Lep, bool
           if(fabs(gens[pdid].PID()) == 521) return "B+";
           if(fabs(gens[pdid].PID()) == 523) return "B";
 
-	}
+  }
       }
     }
     
@@ -6864,8 +6873,8 @@ TString AnalyzerCore::MatchGenDef(std::vector<Gen>& gens,const Lepton& Lep, bool
       if(Lep.LeptonFlavour()==Lepton::ELECTRON && Lep.PIDToString(gens.at(ig).PID()) == "electron") continue;
       
       if(Lep.PIDToString(gens.at(ig).PID()) != "NULL") {
-	if(Lep.PIDToString(gens.at(ig).PID()) == "D")  return Lep.PIDToString(gens.at(ig).PID());
-	if(Lep.PIDToString(gens.at(ig).PID()) == "B")  return Lep.PIDToString(gens.at(ig).PID());
+  if(Lep.PIDToString(gens.at(ig).PID()) == "D")  return Lep.PIDToString(gens.at(ig).PID());
+  if(Lep.PIDToString(gens.at(ig).PID()) == "B")  return Lep.PIDToString(gens.at(ig).PID());
       }
     }
 
@@ -7186,7 +7195,7 @@ std::vector<Lepton *> AnalyzerCore::LeptonUsePtParton(std::vector<Lepton *> leps
     //==== muons is a const vector. So in this function, we have to copy the elements like below
     Lepton *this_lepton = leps.at(i);
     if(this_lepton->LeptonFlavour()==Lepton::MUON) this_lepton->SetPtEtaPhiM( leps.at(i)->PtParton(0.697,0.64,0.64), leps.at(i)->Eta(), leps.at(i)->Phi(), leps.at(i)->M() ); //FIXME JH : year, sample dependent...
-		else if(this_lepton->LeptonFlavour()==Lepton::ELECTRON) this_lepton->SetPtEtaPhiM( leps.at(i)->PtParton(1,0.15,0.2), leps.at(i)->Eta(), leps.at(i)->Phi(), leps.at(i)->M() ); //FIXME JH : year, sample dependent...
+    else if(this_lepton->LeptonFlavour()==Lepton::ELECTRON) this_lepton->SetPtEtaPhiM( leps.at(i)->PtParton(1,0.15,0.2), leps.at(i)->Eta(), leps.at(i)->Phi(), leps.at(i)->M() ); //FIXME JH : year, sample dependent...
     out.push_back( this_lepton );
   }
 
@@ -7856,10 +7865,10 @@ void AnalyzerCore::FillHist(TString histname,
 }
 
 void AnalyzerCore::FillHist(TString histname,
-			    double value_x, double value_y,
-			    double weight,
-			    int n_binx, double *xbins,
-			    int n_biny, double y_min, double y_max){
+          double value_x, double value_y,
+          double weight,
+          int n_binx, double *xbins,
+          int n_biny, double y_min, double y_max){
 
 
   TH2D *this_hist = GetHist2D(histname);

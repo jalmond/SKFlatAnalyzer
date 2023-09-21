@@ -199,10 +199,8 @@ double FakeBackgroundEstimator::GetMuonFakeRate(TString ID, TString key, double 
   double error = 0.;
 
   eta = fabs(eta);
-  //if(pt>=60) pt = 59; //FIXME
-  //if(pt < 7) pt=7; //FIXME
-  if(pt>=1000) pt = 1000; // FIXME JH
-  if(pt < 10) pt=10; //FIXME JH
+  if(pt>=100) pt=99.; //FIXME
+  if(pt < 10) pt=10.; //FIXME JH
 
   ID = ID.ReplaceAll("ElOpt_","");
   ID = ID.ReplaceAll("MuOpt_","");

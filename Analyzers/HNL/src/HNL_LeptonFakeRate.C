@@ -100,7 +100,7 @@ void HNL_LeptonFakeRate::executeEvent(){
   paramnames.push_back("HNL_ULID_"+era+"_MVALoose"  );
 */  
 
-  MuIDs.push_back(make_pair("HNL_ULID_"+era, "HNL_ULID_Fake")); //JH : Tight --> HF MVA, Loose --> Tight without MVA (MVALoose + SIP3D < 7)
+  MuIDs.push_back(make_pair("HNL_ULID_"+era, "HNL_ULID_Fake_LFvsHF")); //JH : Tight --> HF MVA, Loose --> Tight without MVA (MVALoose + SIP3D < 7)
   paramnames.push_back("HNL_ULID_"+era+"_LFvsHF");
 
   // MUON IDS
@@ -1442,9 +1442,10 @@ void HNL_LeptonFakeRate::GetFakeRates(std::vector<Lepton *> leps,std::vector<boo
   }
   float lep_eta    = fabs(leps[0]->Eta());
   float lep_reliso = leps[0]->RelIso();
-  float lep_ip3d   = fabs(leps[0]->IP3D()/leps[0]->IP3Derr());
+  float lep_sip3d  = fabs(leps[0]->IP3D()/leps[0]->IP3Derr());
   float lep_mva    = leps[0]->LepMVA();
   float lep_dxy    = fabs(leps[0]->dXY());
+  float lep_dz     = fabs(leps[0]->dZ());
   float lep_LFvsHF = leps[0]->HNL_MVA_Fake("QCD_LFvsHF_v5");
   
   //if(lep_pt > 60.) lep_pt = 59;
@@ -1544,9 +1545,11 @@ void HNL_LeptonFakeRate::GetFakeRates(std::vector<Lepton *> leps,std::vector<boo
     
     if(fill_plot) {
       FillHist((prefix + "_reliso").Data(), lep_reliso, weight_pt, 50, 0., 1.);
-      FillHist((prefix + "_dXY").Data(),    lep_dxy, weight_pt, 50, 0., 1.);
-      FillHist((prefix + "_IP3D").Data(),   lep_ip3d, weight_pt, 50, 0., 10.);
+      FillHist((prefix + "_dXY").Data(),    lep_dxy, weight_pt, 50, 0., 0.1);
+      FillHist((prefix + "_dZ").Data(),     lep_dz, weight_pt, 50, 0., 0.1);
+      FillHist((prefix + "_SIP3D").Data(),  lep_sip3d, weight_pt, 50, 0., 10.);
       FillHist((prefix + "_mva").Data(),    lep_mva, weight_pt, 50, -1., 1.);
+      FillHist((prefix + "_LFvsHF").Data(), lep_LFvsHF, weight_pt, 200, -1, 1);
       FillHist((prefix + "_pt_eta").Data(), lep_pt, lep_eta,weight_pt, nbin_pt, ptbins, nbin_eta , etabins);
       FillHist((prefix + "_pt").Data(),     lep_pt, weight_pt, nbin_pt, ptbins, "p_{T} (GeV)");
       FillHist((prefix + "_eta").Data(),    lep_eta, weight_pt , nbin_eta, etabins,"#eta");
@@ -1682,7 +1685,7 @@ void HNL_LeptonFakeRate::FillRegionPlots( TString plot_dir, TString region,  std
 
   float lep_reliso  = lep1.RelIso();
   float lep_minireliso  = lep1.MiniRelIso();
-  float lep_ip3d    = fabs(lep1.IP3D()/lep1.IP3Derr());
+  float lep_sip3d    = fabs(lep1.IP3D()/lep1.IP3Derr());
   float lep_mva     =  lep1.LepMVA();
   float lep_dxy     = fabs(lep1.dXY());
 
@@ -1692,7 +1695,7 @@ void HNL_LeptonFakeRate::FillRegionPlots( TString plot_dir, TString region,  std
   FillHist( plot_dir +  "/RegionPlots_"+ region+ "/Reliso", lep_reliso, w, 50, 0., 1.);
   FillHist( plot_dir +  "/RegionPlots_"+ region+ "/MiniReliso", lep_minireliso, w, 50, 0., 1.);
   FillHist( plot_dir +  "/RegionPlots_"+ region+ "/dXY",    lep_dxy, w, 100, 0., 0.5);
-  FillHist( plot_dir +  "/RegionPlots_"+ region+ "/IP3D",   lep_ip3d, w, 50, 0., 10.);
+  FillHist( plot_dir +  "/RegionPlots_"+ region+ "/SIP3D",  lep_sip3d, w, 50, 0., 10.);
   FillHist( plot_dir +  "/RegionPlots_"+ region+ "/Mva",    lep_mva, w, 50, -1., 1.);
 
 
