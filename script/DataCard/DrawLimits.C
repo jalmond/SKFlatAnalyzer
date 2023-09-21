@@ -27,8 +27,8 @@ void DrawLimits(TString year="", TString channel=""){
   //vector<TString> myWPs = {"AddSyst_DividedBy1p87"};
   //vector<TString> myWPs = {"KPS23Spr"};
   //vector<TString> myWPs = {"SR3l2pt"};
-  //vector<TString> myWPs = {"SR2HT_SR3l2pt"};
-  vector<TString> myWPs = {"SR2HT_SR3l2pt_ChargeSplit"};
+  vector<TString> myWPs = {"SR2HT_SR3l2pt"};
+  //vector<TString> myWPs = {"SR2HT_SR3l2pt_ChargeSplit"};
   for(int i=0; i<myWPs.size(); i++){
     TString myWP = myWPs.at(i);
     TString this_filepath = filepath+myWP+"/"+year+"_"+channel+"_"+tag+"_"+method+"_limit.txt";
@@ -169,7 +169,7 @@ void DrawLimits(TString year="", TString channel=""){
         60.1695, 116.721, 15.8605, 25.8407,
         38.43, 64.346, 100.265, 151.699,
         247.709, 340.424, 1340.34
-      } ;
+      }; // these are the DYTypeI results
       scales_17028 = {
         0.001, 0.01, 0.01,0.01,
         0.01,0.01,0.1, 0.1,
@@ -177,13 +177,20 @@ void DrawLimits(TString year="", TString channel=""){
         1,1,1,1,
         1,1,1,1
       };
+      //tempvec_obs_17028 = {
+      //  215.218, 23.0424,41.8101,49.4399,
+      //  57.1134,84.404,39.6932,44.5303,
+      //  81.4561,195.31,16.3137,42.605,
+      //  61.6358,103.589,150.295,220.286,
+      //  365.037, 516.2, 1408.5
+      //}; // these are the DYTypeI results
       tempvec_obs_17028 = {
-        215.218, 23.0424,41.8101,49.4399,
-        57.1134,84.404,39.6932,44.5303,
-        81.4561,195.31,16.3137,42.605,
-        61.6358,103.589,150.295,220.286,
-        365.037, 516.2, 1408.5
-      };
+        215.218, 23.0424, 41.8101, 49.4399,
+        57.1134, 81.2452, 36.7668, 40.1455,
+        56.0452, 122.926, 8.8852,  21.2021,
+        27.1287, 38.7571, 48.9324, 63.9919,
+        91.9852, 116.982, 142.081
+      }; // DY+VBF TypeI results
     }
     else   if(channel=="EE"){
       //https://github.com/jedori0228/HiggsAnalysis-CombinedLimit/blob/2016Data_HNDilepton_Limit/data/2016_HNDiLepton/Outputs_Tool/EE_Combined/result.txt
@@ -191,24 +198,49 @@ void DrawLimits(TString year="", TString channel=""){
         467.448, 65.4099, 90.4068, 159.838,216.957, 284.563, 59.74, 94.6793, 
         104.302, 183.121, 30.189, 47.1442, 72.0759, 117.305, 183.214,
         285.811, 434.08, 644.258, 2506.94
+      }; // these are the DYTypeI only results;
+      scales_17028 = {
+        0.001, 0.01, 0.01,0.01,0.01,0.01,0.1, 0.1,0.1,0.1,1,1,1,1,1,1,1,1,1,1
       };
+      //tempvec_obs_17028 = {
+      //  368.924, 63.3389, 61.9159, 151.2,
+      //  206.654, 254.261, 68.8604, 95.9664, 
+      //  123.0, 274.57, 24.8148, 46.0243,
+      //  95.1426, 164.011, 252.706, 379.988,
+      //  419.316, 631.767, 2486.31
+      //}; // these are the DYTypeI only results;
+      tempvec_obs_17028 = {
+        368.924, 63.3389, 61.9159, 151.2,
+        206.654, 235.791, 63.261,  79.9909, 
+        91.403,  174.955, 14.6124, 23.4109,
+        43.3134, 64.2114, 86.8003, 117.953,
+        112.79,  143.465, 276.02
+      }; // DY+VBF TypeI results
+    }
+    else   if(channel=="EMu"){
+      //https://github.com/jedori0228/HiggsAnalysis-CombinedLimit/blob/2016Data_HNDilepton_Limit/data/2016_HNDiLepton/Outputs_Tool/EE_Combined/result.txt
+      tempvec_exp_17028 = {
+        410.683, 55.9408, 82.975,  136.932,
+        178.214, 218.714, 39.6317, 46.813, 
+        88.4598, 123.904, 14.4261, 17.8333,
+        26.8884, 33.8577, 46.471,  61.5947,
+        82.8097, 124.842, 257.358
+      }; // DY+VBF
       scales_17028 = {
         0.001, 0.01, 0.01,0.01,0.01,0.01,0.1, 0.1,0.1,0.1,1,1,1,1,1,1,1,1,1,1
       };
       tempvec_obs_17028 = {
-        368.924, 63.3389, 61.9159, 151.2,
-        206.654, 254.261, 68.8604, 95.9664, 
-        123.0, 274.57, 24.8148, 46.0243,
-        95.1426, 164.011, 252.706, 379.988,
-        419.316, 631.767, 2486.31
-        
-      };
+        290.008, 33.6466, 62.3902, 187.344,
+        168.976, 257.416, 51.8467, 45.2587, 
+        90.0862, 134.809, 22.2963, 18.1025,
+        28.0044, 34.4163, 46.4722, 61.1279,
+        83.0085, 123.863, 245.571
+      }; // DY+VBF TypeI results
     }
     cout << "Channel : " << channel << endl;
     for(unsigned int j=0; j<tempvec_obs_17028.size(); j++){
-      
-      obs_17028[j] = scales_17028[j]*tempvec_obs_17028.at(j)*0.01;
-      exp_17028[j] = scales_17028[j]*tempvec_exp_17028.at(j)*0.01;
+      obs_17028[j] = (channel=="EMu") ? scales_17028[j]*tempvec_obs_17028.at(j)*0.01*0.5 : scales_17028[j]*tempvec_obs_17028.at(j)*0.01;
+      exp_17028[j] = (channel=="EMu") ? scales_17028[j]*tempvec_exp_17028.at(j)*0.01*0.5 : scales_17028[j]*tempvec_exp_17028.at(j)*0.01;
       //cout << "mN = " << mass_17028[j] << " 17028 obs limit = " <<  scales_17028[j]*tempvec_obs_17028.at(j)*0.01 << endl;
     }
 
@@ -798,14 +830,15 @@ void DrawLimits(TString year="", TString channel=""){
       lg_Alt->AddEntry(gr_trilepLimit, "CMS 13 TeV trilepton", "l");
       lg_Alt->AddEntry(gr_EWPD_ee, "EWPD", "l");
     }
-    //if(channel=="EMu"){ //FIXME add 17028 results
+    if(channel=="EMu"){ //FIXME add 17028 results
     //  lg_Alt->AddEntry(gr_8TeV_exp, "CMS 8 TeV", "l");
     //  lg_Alt->AddEntry(hist_emptylegend,"#color[0]{CMS 13 TeV trilepton}","l");
     //  lg_Alt->AddEntry(hist_emptylegend,"#color[0]{CMS 13 TeV trilepton}","l");
     //  lg_Alt->AddEntry(hist_emptylegend,"#color[0]{CMS 13 TeV trilepton}","l");
     //  lg_Alt->AddEntry(hist_emptylegend,"#color[0]{CMS 13 TeV trilepton}","l");
     //  lg_Alt->AddEntry(hist_emptylegend,"#color[0]{CMS 13 TeV trilepton}","l");
-    //}
+      lg_Alt->AddEntry(gr_17028_obs, "CMS 13 TeV dilepton", "l");
+    }
 
     TCanvas *c_Dilep = new TCanvas("c_Dilep", "", 900, 800);
     canvas_margin(c_Dilep);
@@ -875,7 +908,7 @@ void DrawLimits(TString year="", TString channel=""){
     latex_title.DrawLatex(0.25, 0.88, "#font[62]{CMS}");
 
     dummy->Draw("axissame");
-    //c_Dilep->SaveAs(this_plotpath+"/"+year+"_"+channel+"_13TeV_mixing_"+channel+"_"+myWP+".png");
+    c_Dilep->SaveAs(this_plotpath+"/"+year+"_"+channel+"_13TeV_mixing_"+channel+"_"+myWP+".png");
   }
 
   return;
