@@ -1223,7 +1223,7 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
     // Treat using pt cit method
     if(ConversionSplitting(LepsT,RunConv,3)){
       
-      AnalyzerParameter paramTMP=param;
+      AnalyzerParameter paramTMP=paramTrilep;
       paramTMP.Name=param.Name+"_ConvMethodPt";
       if(FillWGCRPlots( trilep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTMP, weight_channel)) passed.push_back("WG_Method2_CR");
       if(FillZGCRPlots( trilep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTMP, weight_channel)) passed.push_back("ZG_Method2_CR");

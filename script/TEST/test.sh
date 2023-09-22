@@ -20,4 +20,4 @@ flag=$5
 #echo -e ".L test.C\n test(\"2017\",false,\"TTLJ\",\"HNMultiLepBDT\",\"RunFakeClosureObs\");" | root -l 2>&1 | tee "TTLJ_ClosObs".log
 
 # HNL_ControlRegionPlotter
-echo -e ".L test.C\n test(\"2017\",true,\"DoubleMuon\",\"HNMultiLepBDT\",\"RunFake\");" | root -l 2>&1 | tee "Data_RunFake".log
+echo -e ".L test.C\n test(\"2017\",true,\"DoubleMuon\",\"HNMultiLepBDT\",\"RunFake\");" | root -l 2>&1 | tee "data_RunFake".log
