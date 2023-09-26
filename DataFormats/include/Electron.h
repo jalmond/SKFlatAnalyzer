@@ -110,11 +110,11 @@ public:
   }
 
   bool PassMVABaseLine() const;
-  bool PassHNLMVA(double fake_cut,double cf_cut, double conv_cut) const;
-  bool PassMVA_UL_BB(double mva1, double mva2, double mva3) const ;
-  bool PassMVA_UL_EB(double mva1, double mva2, double mva3) const ;
-  bool PassMVA_UL_EE(double mva1, double mva2, double mva3) const ;
-  bool PassMVA(double mva1, double mva2, double mva3) const;
+
+  bool PassMVA_POGUL_BB(double mva1, double mva2, double mva3) const ;
+  bool PassMVA_POGUL_EB(double mva1, double mva2, double mva3) const ;
+  bool PassMVA_POGUL_EE(double mva1, double mva2, double mva3) const ;
+  bool PassMVA_2016(double mva1, double mva2, double mva3) const;
 
 
   //// Uncorrected Energy variables
@@ -223,7 +223,7 @@ public:
   inline bool passHEEPID() const {return PassSelector(POG_HEEP); }
 
 
-  bool Pass_CB_Opt(TString ID) const;
+  bool Pass_MultiFunction_Opt(TString ID) const;
   bool Pass_LepMVAID() const ;
   bool Pass_LepMVATopID() const ;
   bool passLooseHEEPID() const;
@@ -299,8 +299,6 @@ public:
 
   int  PassLooseIDOpt(TString  trigger, TString dxy_method, TString sel_methodB,TString sel_methodEC, TString conv_method, TString chg_method, TString iso_methodB,TString iso_methodEC ) const;
 
-  int  PassIDOptMulti(map<TString,double>  BarrelMVAMap, map<TString,double>  EndcapMVAMap ,  TString pog_method,  TString conv_method, TString chg_method, TString iso_methodB,TString iso_methodEC ) const;
-
 
   bool passIDHN(int ID, double dxy_b, double dxy_e, double dz_b,double dz_e, double sip_b, double sip_e, double iso_b,double iso_e, double miso_b, double miso_e) const;
   bool PassIDOpt(TString ID, bool cc, double dx_b ,double dx_e,double dz_b,double dz_e, double iso_b, double iso_e) const;
@@ -312,6 +310,8 @@ public:
   int  PassIDTight(TString ID) const;
   int  PassIDStudy(TString ID) const;
 
+  // Jiwhan functio
+  bool Pass_CaloIdL_TrackIdL_IsoVL(TString Option="") const;
 
   bool Pass_TESTID() const;
 

@@ -36,11 +36,6 @@ void HNL_LeptonFakeRate::executeEvent(){
   //paramnames.push_back("HNL_ULID_"+era  );                                                                                                                    
 
 
-  //for (auto i: ElIDs) {
-  //  channel.push_back(EE);
-  //  MuIDs.push_back(make_pair("HNVeto2016","HNLoose_17028")); //JH : Mu Tight (never used) + Mu Loose (to veto muon in El fake mearuement)
-  //}
-   
 /*
   MuIDs.push_back(make_pair("HNL_ULID_"+era, "HNL_ULID_2017_TagHF")); //JH : test
   paramnames.push_back("HNL_ULID_"+era+"_TagHF"  );
@@ -100,7 +95,12 @@ void HNL_LeptonFakeRate::executeEvent(){
   paramnames.push_back("HNL_ULID_"+era+"_MVALoose"  );
 */  
 
-  MuIDs.push_back(make_pair("HNL_ULID_"+era, "HNL_ULID_Fake_LFvsHF")); //JH : Tight --> HF MVA, Loose --> Tight without MVA (MVALoose + SIP3D < 7)
+  //for (auto i: ELIDs) {
+  //  channel.push_back(EE);
+  //  MuIDs.push_back(make_pair("HNVetoMVA","HNLoose_17028"));
+  //}
+    
+  MuIDs.push_back(make_pair("HNL_ULID_"+era, "HNL_ULID_FO")); //JH : Tight --> HF MVA, Loose --> Tight without MVA (MVALoose + SIP3D < 7)
   paramnames.push_back("HNL_ULID_"+era+"_LFvsHF");
 
   // MUON IDS

@@ -16,7 +16,7 @@ njobs=25
 nLargejobs=50
 njobs_sig=30
 njobs_data=10
-nmax=350
+nmax=400
 
 
 if [[ $1 == "" ]]; then
@@ -26,14 +26,14 @@ if [[ $1 == "" ]]; then
 fi
 
 
-if [[ $1 == "ELECTRON_Conv_Scan" ]]; then
+if [[ $1 == "ELECTRON_FinalScan" ]]; then
 
-    declare  -a era_list=("2018" "2016postVFP" "2016preVFP"  "2017")
-
+    #declare  -a era_list=("2018" "2016postVFP" "2016preVFP"  "2017")
+    declare  -a era_list=("2016preVFP")
     for i in "${era_list[@]}"
     do
 
-        Flag='RunEE,ELID_ConvScan'
+        Flag='RunEE,ELID_ULScan'
         source ${runPATH}/run_hnl.sh Electron ${Flag} ${i}
     done
 fi
@@ -78,17 +78,17 @@ fi
 if [[ $1 == "Electron" ]]; then
 
     # If no inut then this is ran                                                                                                                        
-    source ${runPATH}/run_hnl.sh SignalsID ${3} ${2} &
+    #source ${runPATH}/run_hnl.sh SignalsID ${3} ${2} &
     
     CFFlag=${2}',RunCF'
-    source ${runPATH}/run_hnl.sh CF ${3} ${CFFlag}  &
+    #source ${runPATH}/run_hnl.sh CF ${3} ${CFFlag}  &
     ConvFlag=${2}',RunConv'
-    source ${runPATH}/run_hnl.sh Conv ${3} ${ConvFlag}  &
+    #source ${runPATH}/run_hnl.sh Conv ${3} ${ConvFlag}  &
    
     FakeFlag=${2}',RunFake'
     source ${runPATH}/run_hnl.sh Fake  ${3} ${FakeFlag}  &
     PromptFlag=${2}',RunPrompt'
-    source ${runPATH}/run_hnl.sh Prompt  ${3} ${PromptFlag}  
+    #source ${runPATH}/run_hnl.sh Prompt  ${3} ${PromptFlag}  &
 
 
 fi
@@ -117,8 +117,8 @@ fi
 
 if [[ $1 == "Fake" ]]; then
 
-    SKFlat.py -a $analyzer  -l $mcpath/FakeOptAll.txt     -n $njobs       --nmax ${nmax}   -e ${2}  --userflags ${3} --skim SkimTree_HNMultiLepBDT &
-    SKFlat.py -a $analyzer  -l $mcpath/FakeOptLarge.txt  -n $nLargejobs  --nmax ${nmax}   -e ${2}  --userflags ${3} --skim SkimTree_HNMultiLepBDT &
+    #SKFlat.py -a $analyzer  -l $mcpath/FakeOptAll.txt     -n $njobs       --nmax ${nmax}   -e ${2}  --userflags ${3} --skim SkimTree_HNMultiLepBDT &
+    #SKFlat.py -a $analyzer  -l $mcpath/FakeOptLarge.txt  -n $nLargejobs  --nmax ${nmax}   -e ${2}  --userflags ${3} --skim SkimTree_HNMultiLepBDT &
     SKFlat.py -a $analyzer  -l $mcpath/FakeOptXLarge.txt -n 100          --nmax ${nmax}   -e ${2}  --userflags ${3} --skim SkimTree_HNMultiLepBDT &
 
 fi

@@ -57,26 +57,24 @@ public:
     ME0Muon = 1<<8
   };
 
+
+  ////// ID VARIABLES
+
+  void SetPOGMediumHIP(bool ismedium_hip, bool ismedium_nohip);
+ 
   inline bool PassSelector( unsigned int s ) const { return (j_IDBit & s)==s; }
   inline bool IsType( unsigned int t ) const { return (j_TypeBit & t); }
-
   inline bool isPOGTight() const {return PassSelector(CutBasedIdTight);}
   inline bool isPOGMedium() const {return PassSelector(CutBasedIdMedium);}
   inline bool isPOGLoose() const {return PassSelector(CutBasedIdLoose);}
-
-
-  void SetPOGMediumHIP(bool ismedium_hip, bool ismedium_nohip);
-  inline bool isPOGMedium_hip() const {return j_ismedium_hip;} //hip mitigated ID. Default for 2016preVFP data                                   
+  inline bool isPOGMedium_hip() const {return j_ismedium_hip;} //hip mitigated ID. Default for 2016preVFP data                                
   inline bool isPOGMedium_nohip() const {return j_ismedium_nohip;} //ordinary medium ID. Default for 2016 MC                                     
-
 
   //==== TODO isOLDPOGHighPt returns values from bit, which is before the update
   //==== In UltraLegacy, this should be removed
   inline bool isOLDPOGHighPt() const {return PassSelector(CutBasedIdGlobalHighPt);}
   void SetisPOGHighPt(bool b);
   inline bool isPOGHighPt() const {return j_isPOGHighPt;}
-
-
   inline bool isMvaTight() const {return PassSelector(MvaTight);}
 
   void SetIso(double ch04, double nh04, double ph04, double pu04, double trkiso);
@@ -113,6 +111,8 @@ public:
 
   inline double MuonSetSegmentCompatibility() const { return j_museg_comp;}
   void SetMuonSegmentCompatibility(double d);
+
+
   //==== ID
   bool PassID(TString ID) const;
   bool Pass_POGTightWithTightIso() const;
@@ -127,29 +127,11 @@ public:
 
   bool passIDHN(int ID, double dxy_b, double dxy_e, double dz_b,double dz_e, double sip_b, double sip_e, double iso_b,double iso_e, double miso_b, double miso_e) const;
 
-  bool Pass_CB_Opt(TString ID) const;
+  bool Pass_MultiFunction_Opt(TString ID) const;
 
-  int  PassLooseIDOpt( ) const;
+
   int PassIDOptMulti(TString fake_method, TString sel_methodB,TString sel_methodEC, TString mva_methodBB,  TString mva_methodEC,  TString mva_methodLFBB,  TString mva_methodLFEC, TString iso_methodB,TString iso_methodEC ) const;
 			    
-    
-
-  bool PassMVA(double mva1, double mva2, double mva3) const;
-  bool PassMVA(double mva1, double mva2) const;
-
-  inline bool PassFakeMVA(double mva1, double mva2, double mva3, double mva4) {
-    if(fabs(this->Eta()) < 1.5){
-      if(this->Pt() < 20 && j_MVA > mva1) return true;
-      if(this->Pt() >= 20 && j_MVA > mva2) return true;
-    }
-    else{
-      if(this->Pt() < 20 && j_MVA > mva3) return true;
-      if(this->Pt() >= 20 && j_MVA > mva4) return true;
-
-    }
-    return false;
-    
-  }
 
   bool PassSoftMVA(double mva1, double mva2, double mva3) const;
 
@@ -170,6 +152,8 @@ public:
 
   //==== HN ID
   bool Pass_HNVeto2016() const;
+  bool Pass_HNVetoUL() const;
+
   bool Pass_HNLoose2016(double relisoCut, double dxyCut, double dzCut, double sipCut) const;
   bool Pass_HNTight2016() const;
 

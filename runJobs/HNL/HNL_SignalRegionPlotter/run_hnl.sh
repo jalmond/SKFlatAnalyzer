@@ -37,6 +37,7 @@ fi
 if [[ $1 == "DY" ]]; then
 
     SKFlat.py -a $analyzer  -i DYTypeI_DF_M100_private  -n 10  --nmax ${nmax}   -e 2017 --skim SkimTree_HNMultiLepBDT&
+    SKFlat.py -a $analyzer  -i DYTypeI_DF_M1000_private  -n 10  --nmax ${nmax}   -e 2017 --skim SkimTree_HNMultiLepBDT&
 
 fi
 
@@ -76,13 +77,14 @@ if [[ $1 == "FAKE" ]]; then
 fi
 
 
-if [[ $1 == "Merge" ]]; then
+if [[ $1 == "CF" ]]; then
     
 
     for i in "${era_list[@]}"
     do
-        SKFlat.py -a $analyzer  -l $mcpath/CFDY.txt  -n $njobs  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLepBDT  --userflags RunCF &
-	SKFlat.py -a $analyzer  -l $mcpath/MCMerge.txt  -n 20  --nmax ${nmax}   -e ${i}   --skim SkimTree_HNMultiLepBDT &
+        SKFlat.py -a $analyzer  -l $mcpath/CF.txt  -n 10  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLepBDT  --userflags RunCF &
+
+	#SKFlat.py -a $analyzer  -l $mcpath/MCMerge.txt  -n 20  --nmax ${nmax}   -e ${i}   --skim SkimTree_HNMultiLepBDT &
 
 
     done
@@ -91,6 +93,7 @@ fi
 
 if [[ $1 == "" ]]; then
 
+    declare  -a era_list=("2018")
 
     for i in "${era_list[@]}"
     do

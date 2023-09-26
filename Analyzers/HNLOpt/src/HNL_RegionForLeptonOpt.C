@@ -103,13 +103,13 @@ void HNL_RegionForLeptonOpt::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq,
 
     // Run PRESEL + SR1-3                                                                                                                                                                                                                    
     //bool run_ORTrigger = false;                                                                                                                                                                                                            
-    HNL_LeptonCore::SearchRegion LimitRegions = HNL_LeptonCore::MuonSR;
-    if (dilep_channel == EE) LimitRegions =HNL_LeptonCore::ElectronSR;
-    if (dilep_channel == EMu) LimitRegions =HNL_LeptonCore::ElectronMuonSR;
+    HNL_LeptonCore::SearchRegion LimitRegions = HNL_LeptonCore::MuonSROpt;
+    if (dilep_channel == EE) LimitRegions =HNL_LeptonCore::ElectronSROpt;
+    if (dilep_channel == EMu) LimitRegions =HNL_LeptonCore::ElectronMuonSROpt;
 
-    HNL_LeptonCore::SearchRegion LimitRegionsBDT = HNL_LeptonCore::MuonSRBDT;
-    if (dilep_channel == EE) LimitRegionsBDT =HNL_LeptonCore::ElectronSRBDT;
-    if (dilep_channel == EMu) LimitRegionsBDT =HNL_LeptonCore::ElectronMuonSRBDT;
+    HNL_LeptonCore::SearchRegion LimitRegionsBDT = HNL_LeptonCore::MuonSRBDTOpt;
+    if (dilep_channel == EE) LimitRegionsBDT =HNL_LeptonCore::ElectronSRBDTOpt;
+    if (dilep_channel == EMu) LimitRegionsBDT =HNL_LeptonCore::ElectronMuonSRBDTOpt;
 
     
     if(!PassPreselection(dilep_channel,qq, leps, leps_veto, TauColl, JetColl, VBF_JetColl, AK8_JetColl, B_JetColl,ev, METv ,param_channel,"", weight_channel)) continue;
@@ -352,8 +352,8 @@ TString HNL_RegionForLeptonOpt::RunSignalRegionAK8String(TString mass, HNL_Lepto
   }
   
   
-  int nSRbins=8;
-  double ml1jbins[nSRbins] = { 0., 500, 600.,700.,850, 1000.,1400, 2000.};
+  int nSRbins=4;
+  double ml1jbins[nSRbins] = { 0., 500, 750., 2000.};
   for(int ibin=1; ibin < nSRbins; ibin++){
     if(MN1 < ml1jbins[ibin]) return "SR1_MNbin"+to_string(ibin+1);
   }
@@ -392,9 +392,7 @@ TString HNL_RegionForLeptonOpt::RunSignalRegionAK4StringBDT(TString mN, HNL_Lept
     else if(MVAvalue< 0.15) return LabelPrefix+"_BDTbin4";
     else if(MVAvalue< 0.2) return LabelPrefix+"_BDTbin5";
     else if(MVAvalue< 0.225) return LabelPrefix+"_BDTbin6";
-    else if(MVAvalue< 0.25) return LabelPrefix+"_BDTbin7";
-    else if(MVAvalue< 0.275) return LabelPrefix+"_BDTbin8";
-    else  return LabelPrefix+"_BDTbin9";
+    else  return LabelPrefix+"_BDTbin7";
 
   }
   
@@ -405,9 +403,7 @@ TString HNL_RegionForLeptonOpt::RunSignalRegionAK4StringBDT(TString mN, HNL_Lept
     else if(MVAvalue< 0.15) return LabelPrefix+"_BDTbin4";
     else if(MVAvalue< 0.2) return LabelPrefix+"_BDTbin5";
     else if(MVAvalue< 0.225) return LabelPrefix+"_BDTbin6";
-    else if(MVAvalue< 0.25) return LabelPrefix+"_BDTbin7";
-    else if(MVAvalue< 0.275) return LabelPrefix+"_BDTbin8";
-    else  return LabelPrefix+"_BDTbin9";
+    else  return LabelPrefix+"_BDTbin7";
   }
 
   if(DataYear==2018){
@@ -417,9 +413,7 @@ TString HNL_RegionForLeptonOpt::RunSignalRegionAK4StringBDT(TString mN, HNL_Lept
     else if(MVAvalue< 0.15) return LabelPrefix+"_BDTbin4";
     else if(MVAvalue< 0.2) return LabelPrefix+"_BDTbin5";
     else if(MVAvalue< 0.225) return LabelPrefix+"_BDTbin6";
-    else if(MVAvalue< 0.25) return LabelPrefix+"_BDTbin7";
-    else if(MVAvalue< 0.275) return LabelPrefix+"_BDTbin8";
-    else  return LabelPrefix+"_BDTbin9";
+    else  return LabelPrefix+"_BDTbin7";
 
   }
   return "true";

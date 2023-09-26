@@ -62,153 +62,157 @@ void HNL_SignalLeptonOpt::executeEvent(){
     
   /////// SCANS FOR ID
   
+  if(HasFlag("ELID_ULScan")){
+    vector<TString> List1a = {"_CV1_","_CV2_","_CV3_","_CV4_","_CV5_"} ;
+    vector<TString> List1b = {"_CV1_","_CV2_","_CV3_","_CV4_","_CV5_","_CV6_","_CV7_","_CV8_","_CV9_","_CV10_"};
+    vector<TString> List1;
+    if(GetYearString() == "2016") List1=List1a;
+    else List1=List1b;
 
+    vector<TString> List2 = {"_NP1_","_NP2_","_NP3_","_NP4_","_NP5_","_NP6_","_NP7_","_NP8_","_NP9_"};
+    vector<TString> List3 = {"","_LFNP1_","_LFNP2_"};
+    vector<TString> List4 = {"_CF1_","_CF2_","_CF3_","_CF4_","_CF5_"};
+    for(auto id1 : List1){
+      for(auto id2 : List2){
+        for(auto id3 : List3){
+          for(auto id4 : List4){
+	    ElectronsIDs.push_back("HNL_ULID_Ver"+GetYearString()+"_"+id1+id2+id3+id4);
+	  }
+	}
+      }
+    }
+  }
+  if(HasFlag("ELID_FinalScan")){
+    
+    vector<TString> List1 = {"_CONV1_","_CONV2_","_CONV3_","_CONV4_","_CONV5_","_CONV6_","_CONV7_","_CONV8_","_CONV9_","_CONV10_","_CONV11_","_CONV12_","_CONV13_","_CONV14_"};
+    vector<TString> List2 = {"_BNP1_","_BNP2_","_BNP3_"};
+    vector<TString> List3 = {"_ENP1_","_ENP2_","_ENP3_","_ENP4_"};
+    vector<TString> List4 = {"_BCF1_","_BCF2_","_BCF3_","_BCF4_"};
+    vector<TString> List5 = {"_ECF1_","_ECF2_","_ECF3","_ECF4"};
+    
+    for(auto id1 : List1){
+      for(auto id2 : List2){
+	for(auto id3 : List3){
+	  for(auto id4 : List4){
+	    for(auto id5 : List5){
+	      ElectronsIDs.push_back("HNL_ULID_FINAL_Opt_"+id1+id2+id3+id4+id5);
+	    }
+	  }
+	}
+      }
+    }
+  }
 
   if(HasFlag("ELID_FullScan")){
     
-    if(HasFlag("ScanEC")){
-
-      vector<TString> vMVACFEC;
-      vector<TString> vMVANPEC;
-      vector<TString> vMVACVEC;
-
-      //// First Include 1D cuts                                                                                                                                                     
-      for(int imva=0 ; imva < 7 ; imva++){
-        double mva_d=  0.5 + double(imva)*.025;
-        TString mvaTS= DoubleToString(mva_d);
-        vMVACFEC.push_back("MVAECF"+mvaTS+"_");
-      }
-      
-      for(int imva=0 ; imva < 10 ; imva++){
-        double mva_d=  0.2 + double(imva)*.025;
-        TString mvaTS= DoubleToString(mva_d);
-	vMVANPEC.push_back("MVAENP"+mvaTS+"_");
-      }
-
-      for(int imva=0 ; imva < 8 ; imva++){
-	double mva_d=  -0.7 + double(imva)*.1;
-	TString mvaTS= DoubleToString(mva_d);
-        TString mvaTS2= DoubleToString(-0.35);
-        TString mvaTS3= DoubleToString(0.0);
-
-	
-	vMVACVEC.push_back("MVAECV1"+mvaTS+"_"+"MVAECV2"+mvaTS+"_");
-	if (imva < 4) 	vMVACVEC.push_back("MVAECV1"+mvaTS+"_"+"MVAECV2"+mvaTS2+"_");
-	if (imva < 7)   vMVACVEC.push_back("MVAECV1"+mvaTS+"_"+"MVAECV2"+mvaTS3+"_");
-      }
-
-      for(auto id1 : vMVACFEC) {
-	for(auto id2 : vMVANPEC) {
-	  for(auto id3 : vMVACVEC) {
-	    ElectronsIDs.push_back("HNLUL_LTrig_BarrelSel_"+id1+id2+id3);
-	  }
-	}
-      }
-    }
-    if(HasFlag("ScanBB")){
-
-      vector<TString> vMVACFBB;
-      vector<TString> vMVANPBB;
-      vector<TString> vMVACVBB;
-
-      //// First Include 1D cuts                                                                                                                                                                                                            
-      for(int imva=0 ; imva < 7 ; imva++){
-        double mva_d=  0.5 + double(imva)*.025;
-        TString mvaTS= DoubleToString(mva_d);
-        vMVACFBB.push_back("MVABCF"+mvaTS+"_");
-      }
-
-      for(int imva=0 ; imva < 9 ; imva++){
-        double mva_d=  0.15 + double(imva)*.025;
-        TString mvaTS= DoubleToString(mva_d);
-        vMVANPBB.push_back("MVABNP"+mvaTS+"_");
-      }
-
-      for(int imva=0 ; imva < 8 ; imva++){
-        double mva_d=  -0.7 + double(imva)*.1;
-        TString mvaTS= DoubleToString(mva_d);
-        TString mvaTS2= DoubleToString(-0.35);
-        TString mvaTS3= DoubleToString(0.0);
-
-
-        vMVACVBB.push_back("MVABCV1"+mvaTS+"_"+"MVABCV2"+mvaTS+"_");
-	if (imva < 4)   vMVACVBB.push_back("MVABCV1"+mvaTS+"_"+"MVABCV2"+mvaTS2+"_");
-        if (imva < 7)   vMVACVBB.push_back("MVABCV1"+mvaTS+"_"+"MVABCV2"+mvaTS3+"_");
-
-      }
-
-      for(auto id1 : vMVACFBB) {
-        for(auto id2 : vMVANPBB) {
-          for(auto id3 : vMVACVBB) {
-            ElectronsIDs.push_back("HNLUL_LTrig_EndCapSel_"+id1+id2+id3);
-          }
-        }
-      }
-    }
-  }
-
-  if(HasFlag("ELID_NPScan")){
-
-    vector<TString> vMVANPBB;
-    vector<TString> vMVANPEC;
-
-    //// First Include 1D cuts                                                                                                               
-    for(int imva=0 ; imva < 13 ; imva++){
-      double mva_d=  0.2 + double(imva)*.025;
-      TString mvaTS= DoubleToString(mva_d);
-
-      vMVANPBB.push_back("MVABNP"+mvaTS+"_");
-      vMVANPEC.push_back("MVAENP"+mvaTS+"_");
-
-    }
-
-    for(auto id1 : vMVANPBB) {
-      for(auto id2 : vMVANPEC) {
-        ElectronsIDs.push_back("HNLUL_LTrig_NPScanID"+GetYearString()+"_"+id1+id2);
-      }
-    }
-  }
-
-
-
-
-  if(HasFlag("ELID_ConvScan")){
-    
-    vector<TString> vMVAConvBB;
-    vector<TString> vMVAConvEC;
-    vector<TString> vMVANPBB;
-    vector<TString> vMVANPEC;
-    //// First Include 1D cuts                                                                                                 
-    for(int imva=0 ; imva < 5 ; imva++){
-      double mva_d=  -0.8 + double(imva)*.2;
-      TString mvaTS= DoubleToString(mva_d);
-      TString mvaTS3= DoubleToString(0.0);
-      
-      vMVAConvBB.push_back("MVABCV1"+mvaTS+"_"+"MVABCV2"+mvaTS+"_");
-      if (imva < 4)   vMVAConvBB.push_back("MVABCV1"+mvaTS+"_"+"MVABCV2"+mvaTS3+"_");
-      vMVAConvEC.push_back("MVAECV1"+mvaTS+"_"+"MVAECV2"+mvaTS+"_");
-      if (imva < 4)       vMVAConvEC.push_back("MVAECV1"+mvaTS+"_"+"MVAECV2"+mvaTS3+"_");
-    }
-    
+    vector<TString> vMVANP;
+    //// First Include 1D cuts                                                                                                                                                                                                   
     for(int imva=0 ; imva < 7 ; imva++){
       double mva_d=  0.2 + double(imva)*.05;
       TString mvaTS= DoubleToString(mva_d);
-      if(imva < 4)vMVANPBB.push_back("MVABNP"+mvaTS+"_");
-      vMVANPEC.push_back("MVAENP"+mvaTS+"_");
-
+      TString mvaTS2= DoubleToString(mva_d+0.05);
+      TString mvaTS3= DoubleToString(mva_d+0.1);
+      vMVANP.push_back("MVABNP"+mvaTS+"_"+"MVAENP"+mvaTS+"_");
+      vMVANP.push_back("MVABNP"+mvaTS+"_"+"MVAENP"+mvaTS2+"_");
+      vMVANP.push_back("MVABNP"+mvaTS+"_"+"MVAENP"+mvaTS3+"_");
     }
-
-
-    for(auto id1 : vMVAConvBB) {
-      for(auto id2 : vMVAConvEC) {
-	for(auto id3 : vMVANPBB) {
-	  for(auto id4 : vMVANPEC) {
-	    ElectronsIDs.push_back("HNLUL_LTrig_ConvScanID_"+id1+id2+id3+id4);
-	  }
-	}
+    
+    vector<TString> vMVACF;
+    
+    for(int imva=0 ; imva < 11 ; imva++){
+      double mva_d=  0.2 + double(imva)*.05;
+      TString mvaTS= DoubleToString(mva_d);
+      TString mvaTS2= DoubleToString(mva_d-0.1);
+      vMVACF.push_back("MVABCF"+mvaTS+"_"+"MVAECF"+mvaTS+"_");
+      vMVACF.push_back("MVABCF"+mvaTS+"_"+"MVAECF"+mvaTS2+"_");
+    }
+    for(auto id1 : vMVANP){
+      for(auto id2 : vMVACF){
+	ElectronsIDs.push_back("HNLUL_LTrig_ScanCFNP"+GetYearString()+"_"+id1+id2);
       }
     }
   }
+  if(HasFlag("ELID_FullScan_Region")){
+
+    vector<TString> vMVANPEC;
+    //// First Include 1D cuts                                                                                                                                                     
+    for(int imva=0 ; imva < 76 ; imva++){
+      double mva_d=  -1 + double(imva)*.02;
+      TString mvaTS= DoubleToString(mva_d);
+      vMVANPEC.push_back("MVAENP"+mvaTS+"_");
+    }
+    
+    for(auto id1 : vMVANPEC)      ElectronsIDs.push_back("HNLUL_LTrig_EndcapScanNP_"+id1);
+
+    vector<TString> vMVANPBB;
+    for(int imva=0 ; imva < 76 ; imva++){
+      double mva_d=  -1 + double(imva)*.02;
+      TString mvaTS= DoubleToString(mva_d);
+      vMVANPBB.push_back("MVABNP"+mvaTS+"_");
+    }
+    
+    for(auto id1 : vMVANPBB) ElectronsIDs.push_back("HNLUL_LTrig_BarrelScanNP_"+id1);
+
+    
+    vector<TString> vMVACFEC;
+    //// First Include 1D cuts                                                                                                                                                                                                   
+    for(int imva=0 ; imva < 91 ; imva++){
+      double mva_d=  -1 + double(imva)*.02;
+      TString mvaTS= DoubleToString(mva_d);
+      vMVACFEC.push_back("MVAECF"+mvaTS+"_");
+    }
+    
+    for(auto id1 : vMVACFEC)     ElectronsIDs.push_back("HNLUL_LTrig_EndcapScanCF_"+id1);
+
+    vector<TString> vMVACFBB;
+    for(int imva=0 ; imva < 91 ; imva++){
+      double mva_d=  -1 + double(imva)*.02;
+      TString mvaTS= DoubleToString(mva_d);
+      vMVACFBB.push_back("MVABCF"+mvaTS+"_");
+    }
+    
+    for(auto id1 : vMVACFBB)         ElectronsIDs.push_back("HNLUL_LTrig_BarrelScanCF_"+id1);
+    
+
+
+
+    vector<TString> vMVACFEC2D;
+    for(int imva=0 ; imva < 15 ; imva++){
+      double mva_d=  0 + double(imva)*.05;
+      TString mvaTS= DoubleToString(mva_d);
+
+      for(int imva2=0 ; imva2 < 15 ; imva2++){
+	double mva_d2=  0 + double(imva2)*.05;
+	TString mvaTS2= DoubleToString(mva_d2);
+	
+	vMVACFEC2D.push_back("MVAECF1"+mvaTS+"_"+"MVAECF2"+mvaTS2+"_");
+      }
+    }
+
+    for(auto id1 : vMVACFEC2D)     ElectronsIDs.push_back("HNLUL_LTrig_EndcapScanCF_"+id1);
+    
+
+    
+    vector<TString> vMVACFBB2D;
+    for(int imva=0 ; imva < 15 ; imva++){
+      double mva_d=  0 + double(imva)*.05;
+      TString mvaTS= DoubleToString(mva_d);
+
+      for(int imva2=0 ; imva2 < 15 ; imva2++){
+        double mva_d2=  0 + double(imva2)*.05;
+        TString mvaTS2= DoubleToString(mva_d2);
+
+        vMVACFBB2D.push_back("MVABCF1"+mvaTS+"_"+"MVABCF2"+mvaTS2+"_");
+      }
+    }
+    
+    for(auto id1 : vMVACFBB2D)     ElectronsIDs.push_back("HNLUL_LTrig_BarrelScanCF_"+id1);
+
+
+
+   
+  }
+
 
 
   if(HasFlag("ELID_POGScan")){
@@ -254,10 +258,7 @@ void HNL_SignalLeptonOpt::executeEvent(){
 
   /////// ULIDs for HNL 
   ElectronsIDs.push_back("HNL_ULID_Run2");
-
   ElectronsIDs.push_back("HNL_ULID_2017"); 
-  ElectronsIDs.push_back("HNL_ULIDv2_2016");
-  ElectronsIDs.push_back("HNL_ULIDv2_2017");
   ElectronsIDs.push_back("HNL_ULID_2018");
   
   
@@ -267,7 +268,10 @@ void HNL_SignalLeptonOpt::executeEvent(){
   
 
   if(_jentry%10000==0) cout << "ElectronsIDs size = " << ElectronsIDs.size() << endl;
-
+  if(_jentry== 1000){
+    cout << "ElectronsIDs size = " << ElectronsIDs.size() << endl;
+    for(auto id : ElectronsIDs)   cout << id << endl; 
+  }
   
   
   for(auto id : ElectronsIDs){

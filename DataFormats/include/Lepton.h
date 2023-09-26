@@ -265,6 +265,7 @@ public:
     return _map;
   }
 
+
   inline double HNL_MVA_Fake(TString vers) const {
 
     ///// v5 is July 23 MVA Trained                                                                                                                                                                                                       
@@ -376,6 +377,23 @@ public:
     exit(ENODATA);
   }
 
+  inline double MVAKey (TString idkey) const {
+
+    if(j_LeptonFlavour==ELECTRON){
+      if(idkey == "Conv_EDv5")  return j_lep_mva_hnl_conv_ed_v5;
+      if(idkey == "CF_EDv5")    return j_lep_mva_hnl_ed_cf_v5;
+      if(idkey == "CFPt_EDv5")  return j_lep_mva_hnl_ed_cf_v5Pt;
+      if(idkey == "Fake_EDv5")  return j_lep_mva_hnl_fake_ed_v5;
+      if(idkey == "FakeLF_EDv5")  return j_lep_mva_hnl_fake_v5_lf;
+    }
+    if(j_LeptonFlavour==MUON){
+      if(idkey=="HFTop")          return  j_lep_mva;
+    }
+    
+    cout<<"[Lepton::MVAKey ERROR] " << idkey << endl;
+    exit(ENODATA);
+  }
+
 
   //// Close jet functionality  NOT IN SKFLAT ADDED in ANALYZERCORE OR IN BDT SKIM
   void SetJetPtRel(double ptrel);
@@ -441,8 +459,10 @@ public:
 
   inline double fEta() const {return fabs(defEta());}
 
-  bool PassULMVA(double mva1, double cut, TString s_mva) const;
+  bool Pass_MVA(double mva1, double cut, TString s_mva) const;
+  bool Pass_MVA_BBEC(TString MVALabel , double cut_b, double cut_ec, TString s_helper) const ;
 
+  
   inline double GetPtSlopeCut(double MinPt, double MaxPt, double MinCut, double MaxCut) const{
 
     double cutSlope  = (MaxCut-MinCut) / (MaxPt-MinPt);

@@ -252,13 +252,11 @@ void HNL_LeptonIDSF::MeasureElectronIDSF(AnalyzerParameter param){
   if(!PassTriggerSelection(dilep_channel, ev, LeptonColl,"POG")) return;
   if(!CheckLeptonFlavourForChannel(dilep_channel, LeptonColl)) return; // Check if EE cahnnel has 2 el...                                                                                                         
   
-  vector<TString> IDs = {};//  "HNL_ULID_2016",  "HNL_ULID_2017",      "HNL_ULID_2018",  "HNL_LID_2016",    "HNL_ULID_Run2",  "HNL_ULID_Run2v2", "HNTightV2","HNL_ULID_Run2v3","HNL_ULID_Run2v4","HNL_ULID_Run2NoConv","HNL_ULID_Run2NoFake","HNL_ULID_Run2NoCF"};
+  vector<TString> IDs = {};
   IDs.push_back("passProbeIDTight");
   IDs.push_back("MVALoose");
   IDs.push_back("passMVAID_noIso_WP90Opt");
   IDs.push_back("passMVAID_noIso_WP90");
-  //  IDs.push_back("HNL_ULID_Run2");
-  //  IDs.push_back("HNL_ULID_Run2IP")
 
   for(auto id : IDs)    MeasureIDSF(param ,dilep_channel, ProbeEl, id, weight);
   
@@ -288,26 +286,23 @@ void HNL_LeptonIDSF::MeasureElectronIDSF(AnalyzerParameter param){
 			    "HNL_ULID_ScanCONVM_BDTG",
 			    "HNL_ULID_ScanCONVL_BDTG",
 
-			    "HNL_ULID_Run2",
+			    "HNL_ULID_Run2T",
+			    "HNL_ULID_Run2L",
 			    "HNL_ULID_Run2_CF",
 			    "HNL_ULID_Run2_CFPt",
 			    "HNL_ULID_Run2_Conv",
 			    "HNL_ULID_Run2_Fake",
-			    "HNL_LID_Run2",
-			    "HNL_LID_Run2_CF",
-			    "HNL_LID_Run2_Conv",
-			    "HNL_LID_Run2_Fake",
+			    "HNL_ULID_2016",
+			    "HNL_ULID_2017",
+			    "HNL_ULID_2018",
 			    "HNTightV2",
+			    "TopHNSST",
 			    "HNL_Peking_2016","HNL_Peking_2017",
 			    "passHEEPID","passMediumID","passTightID","passMVAID_Iso_WP80","passMVAID_Iso_WP90","passMVAID_noIso_WP80","passMVAID_noIso_WP90"};
 
 
   for(auto mvaid : MVAIDs){
 
-    
-    //bool passID1 = ProbeEl[0].PassID("passMVAID_noIso_WP90Opt") && ProbeEl[0].PassID(mvaid);
-    //bool passID2 = ProbeEl[1].PassID("passMVAID_noIso_WP90Opt") && ProbeEl[1].PassID(mvaid);
-    
     bool passID1 = ProbeEl[0].PassID(mvaid);                                                                                  
     bool passID2 = ProbeEl[1].PassID(mvaid);                                                                                  
 

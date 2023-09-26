@@ -94,7 +94,7 @@ void HNL_FakeRateOpt::executeEvent(){
     }
     for (auto i: ELIDs) {
       channel.push_back(EE);
-      MuIDs.push_back(make_pair("HNVeto2016","HNLoose_17028"));
+      MuIDs.push_back(make_pair("HNVetoMVA","HNLoose_17028"));
     }
     
     if( paramnames.size() != ELIDs.size()) return;
@@ -151,7 +151,7 @@ void HNL_FakeRateOpt::executeEvent(){
   int iel= MuIDs.size() - channel.size();
   for (int i =0; i < iel; i++){
     channel.push_back(MuMu);
-    ELIDs.push_back(make_pair("HNVeto2016","HNLoose_17028"));
+    ELIDs.push_back(make_pair("HNVetoMVA","HNLoose_17028"));
   }
 
   if( paramnames.size() != ELIDs.size()) return;

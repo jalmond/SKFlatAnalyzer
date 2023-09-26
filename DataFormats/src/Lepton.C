@@ -144,10 +144,23 @@ Lepton::~Lepton(){
 
 }
 
+bool Lepton::Pass_MVA_BBEC(TString MVALabel , double cut_b, double cut_ec, TString s_helper) const {
+  
+  double mva_value = MVAKey(MVALabel);
+    
+  if( IsBB()){
+    if(!Pass_MVA(mva_value, cut_b,  s_helper))   return false;
+    
+  }
+  else{
+    if(!Pass_MVA(mva_value, cut_ec, s_helper))   return false;
+  }
+  return true;
 
+}
 
-bool Lepton::PassULMVA(double mva, double cut, TString s_mva) const {
-
+bool Lepton::Pass_MVA(double mva, double cut, TString s_mva) const {
+  
   if(mva == -999){
 
     cout<<"[Electron::PassMVA] mva value not set "<< s_mva<<endl;

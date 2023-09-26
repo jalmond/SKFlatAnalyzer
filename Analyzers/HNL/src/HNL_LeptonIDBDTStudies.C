@@ -6,9 +6,9 @@ void HNL_LeptonIDBDTStudies::initializeAnalyzer(){
 
   HNL_LeptonCore::initializeAnalyzer();
   if(HasFlag("FakeSplit")) SetupIDMVAReaderDefault(false,false);  //set v3 true
-  if(HasFlag("NewBDT")) SetupIDMVAReaderDefault(false,true);  //set v3 true                                                                                                                                                                                                    
+  if(HasFlag("NewBDT")) SetupIDMVAReaderDefault(false,true);  //set v3 true                                                                                                                                                                                                   
   if(HasFlag("SSBreakdown")) SetupIDMVAReaderDefault(false,true); 
-
+  SetupIDMVAReaderDefault(false,true);
 }
 
 
@@ -85,7 +85,7 @@ void HNL_LeptonIDBDTStudies::executeEvent(){
       FillHist("FakeSplit/"+ ilep.GetFlavour()+ "/"+LepType+"_CvsLscore", cvsl_score  , weight, 200, -1., 1);
 
       map<TString, double> mapBDT = ilep.MAPBDT();
-      for(auto imap : mapBDT )  FillHist("BDTVariable/"+ ilep.GetFlavour()+ "/"+ LepType+"_"+imap.first, imap.second  , weight, 200, -1., 1);
+      for(auto imap : mapBDT )  FillHist("BDTVariableFS/"+ ilep.GetFlavour()+ "/"+ LepType+"_"+imap.first, imap.second  , weight, 200, -1., 1);
 
       if (bvsl_score < 0.3 && cvsl_score < 0.1 )       FillHist("FakeSplit/"+ ilep.GetFlavour()+ "/JetTaggerBin_"+LepType, 1  , weight, 5, 0., 5);
       if (bvsl_score > 0.3 && cvsb_score < 0.3 )       FillHist("FakeSplit/"+ ilep.GetFlavour()+ "/JetTaggerBin_"+LepType, 2  , weight, 5, 0., 5);
@@ -114,7 +114,7 @@ void HNL_LeptonIDBDTStudies::executeEvent(){
       FillHist("FakeSplit/"+ ilep.GetFlavour()+ "/"+LepType+"_CvsLscore", cvsl_score  , weight, 200, -1., 1);
 
       map<TString, double> mapBDT = ilep.MAPBDT();
-      for(auto imap : mapBDT )  FillHist("BDTVariable/"+ ilep.GetFlavour()+ "/"+ LepType+"_"+imap.first, imap.second  , weight, 200, -1., 1);
+      for(auto imap : mapBDT )  FillHist("BDTVariableFS/"+ ilep.GetFlavour()+ "/"+ LepType+"_"+imap.first, imap.second  , weight, 200, -1., 1);
 
       if (bvsl_score < 0.3 && cvsl_score < 0.1 )       FillHist("FakeSplit/"+ ilep.GetFlavour()+ "/JetTaggerBin_"+LepType, 1  , weight, 5, 0., 5);
       if (bvsl_score > 0.3 && cvsb_score < 0.3 )       FillHist("FakeSplit/"+ ilep.GetFlavour()+ "/JetTaggerBin_"+LepType, 2  , weight, 5, 0., 5);
@@ -131,63 +131,72 @@ void HNL_LeptonIDBDTStudies::executeEvent(){
     return;
   }
   
-
-
-  for(auto ilep : ElectronCollProbe){
-    TString  LepType = "";
-    if ( FindHEMElectron (ilep )) continue;
-   
-    if (ilep.IsConv())  LepType = "Conv";
-    if (ilep.IsFake())  LepType = "Fake"+ilep.CloseJet_Flavour();
-    if (ilep.IsFake() && ilep.CloseJet_Flavour() == "Pileup") continue;
-    if (ilep.LeptonIsCF())  LepType = "CF";
-    else if (ilep.IsPrompt()) LepType = "Prompt";
-    if(ilep.IsEWtau()) continue;
-    if (LepType == "") continue;
-    
-    TString ptstring = "Pt1";
-    if(ilep.Pt() < 30 ) ptstring = "Pt1";
-    else if(ilep.Pt() < 150 ) ptstring = "Pt2";
-    else ptstring = "Pt3";
-
-    TString etastring = ilep.sEtaRegion();
-    
-    FillBDTHists(ilep,LepType+"/"+ptstring+"_"+etastring,weight);
-  }
   
-  
-  for(auto ilep : MuonCollProbe){
+  if(HasFlag("BDTPlots")){
     
-    TString  LepType = "";
-    if (ilep.IsConv())  LepType = "Conv";
-    if (ilep.IsFake())  LepType = "Fake"+ilep.CloseJet_Flavour();
-    if (ilep.IsFake() && ilep.CloseJet_Flavour() == "Pileup") continue;
-    if (ilep.LeptonIsCF())  LepType = "CF";
-    else if (ilep.IsPrompt()) LepType = "Prompt";
-    if(ilep.IsEWtau()) continue;
-    if (LepType == "") continue;
+    
+    for(auto ilep : ElectronCollProbe){
+      TString  LepType = "";
+      if ( FindHEMElectron (ilep )) continue;
+      
+      if (ilep.IsConv())  LepType = "Conv";
+      if (ilep.IsFake())  LepType = "Fake"+ilep.CloseJet_Flavour();
+      if (ilep.IsFake() && ilep.CloseJet_Flavour() == "Pileup") continue;
+      if (ilep.LeptonIsCF())  LepType = "CF";
+      else if (ilep.IsPrompt()) LepType = "Prompt";
+      if(ilep.IsEWtau()) continue;
+      if (LepType == "") continue;
+      
+      TString ptstring = "Pt1";
+      if(ilep.Pt() < 30 ) ptstring = "Pt1";
+      else if(ilep.Pt() < 150 ) ptstring = "Pt2";
+      else ptstring = "Pt3";
+      
+      TString etastring = ilep.sEtaRegion();
+      
+      FillBDTHists(ilep,LepType+"/"+ptstring+"_"+etastring,weight);
+    }
+  
+    
+    for(auto ilep : MuonCollProbe){
+      
+      TString  LepType = "";
+      if (ilep.IsConv())  LepType = "Conv";
+      if (ilep.IsFake())  LepType = "Fake"+ilep.CloseJet_Flavour();
+      if (ilep.IsFake() && ilep.CloseJet_Flavour() == "Pileup") continue;
+      if (ilep.LeptonIsCF())  LepType = "CF";
+      else if (ilep.IsPrompt()) LepType = "Prompt";
+      if(ilep.IsEWtau()) continue;
+      if (LepType == "") continue;
+      
+      
+      FillBDTHists(ilep,LepType+"/Muon",weight);
+      
+  
+    }
 
-
-    FillBDTHists(ilep,LepType+"/Muon",weight);
-
+    
+    for(auto ilep : ElectronCollProbe){
+      
+      TString  LepType = "";
+      if (ilep.IsConv())  LepType = "Conv";
+      if (ilep.IsFake())  LepType = "Fake"+ilep.CloseJet_Flavour();
+      if (ilep.IsFake() && ilep.CloseJet_Flavour() == "Pileup") continue;
+      if (ilep.LeptonIsCF())  LepType = "CF";
+      else if (ilep.IsPrompt()) LepType = "Prompt";
+      if(ilep.IsEWtau()) continue;
+      if (LepType == "") continue;
+      
+      
+      FillBDTHists(ilep,LepType+"/Electron",weight);
+      
+    }
+    return;
   }
-  for(auto ilep : ElectronCollProbe){
-
-    TString  LepType = "";
-    if (ilep.IsConv())  LepType = "Conv";
-    if (ilep.IsFake())  LepType = "Fake"+ilep.CloseJet_Flavour();
-    if (ilep.IsFake() && ilep.CloseJet_Flavour() == "Pileup") continue;
-    if (ilep.LeptonIsCF())  LepType = "CF";
-    else if (ilep.IsPrompt()) LepType = "Prompt";
-    if(ilep.IsEWtau()) continue;
-    if (LepType == "") continue;
 
 
-    FillBDTHists(ilep,LepType+"/Electron",weight);
-
-  }
-
-  return;
+  bool SSMM = SameCharge(MuonCollProbe) && (ElectronCollProbe.size()==0) && PassTriggerSelection(MuMu, ev, LeptonCollProbe,"Dilep");
+  bool SSEE = SameCharge(ElectronCollProbe) && (MuonCollProbe.size()==0) && PassTriggerSelection(EE, ev, LeptonCollProbe,"Dilep");
 
   for(auto ilep : LeptonCollProbe){
 
@@ -200,12 +209,15 @@ void HNL_LeptonIDBDTStudies::executeEvent(){
       if(ilep->Pt() < 15) ptbin = "Ptlt15_";
       else if(ilep->Pt() < 20) ptbin = "Ptlt20_";
       else if(ilep->Pt() < 50) ptbin = "Ptlt50_";
+      else if(ilep->Pt() < 80) ptbin = "Ptlt80_";
       else if(ilep->Pt() < 100) ptbin = "Ptlt100_";
       else  ptbin = "Ptgt100_";
     }
     else{
-      if(ilep->Pt() < 20) ptbin = "Ptlt20_";
+      if(ilep->Pt() < 15) ptbin = "Ptlt15_";
+      else if(ilep->Pt() < 20) ptbin = "Ptlt20_";
       else if(ilep->Pt() < 50) ptbin = "Ptlt50_";
+      else if(ilep->Pt() < 80) ptbin = "Ptlt80_";
       else if(ilep->Pt() < 100) ptbin = "Ptlt100_";
       else  ptbin = "Ptgt100_";
 
@@ -226,10 +238,13 @@ void HNL_LeptonIDBDTStudies::executeEvent(){
       if(i.Contains("IsFake") && HasBjet) continue;
       map<TString, double> mapBDT = ilep->MAPBDT();
       for(auto imap : mapBDT )  FillHist("BDTVariable/"+ ilep->GetFlavour()+ "/"+ i+"_"+imap.first, imap.second  , weight, 200, -1., 1);
-      
+      //if(SSMM||SSEE) {
+	//	for(auto imap : mapBDT )FillHist("SSBDTVariables/"+ ilep->GetFlavour()+ "/"+ i+"_"+imap.first, imap.second  , SSWeight, 200, -1., 1);
+
+      //}
+
     }
   }
-  return;
 
   for(auto imuon : MuonCollProbe){
     
@@ -240,9 +255,9 @@ void HNL_LeptonIDBDTStudies::executeEvent(){
     if(imuon.Pt() < 15) ptbin = "Ptlt15_";
     else if(imuon.Pt() < 20) ptbin = "Ptlt20_";
     else if(imuon.Pt() < 50) ptbin = "Ptlt50_";
+    else if(imuon.Pt() < 80) ptbin = "Ptlt80_";
     else if(imuon.Pt() < 100) ptbin = "Ptlt100_";
     else  ptbin = "Ptgt100_";
-
 
     vector<TString> Tags = {
                             tag+etabin+"/MVA_",
@@ -250,7 +265,7 @@ void HNL_LeptonIDBDTStudies::executeEvent(){
                             tag+ptbin+etabin+"/MVA_",
 
     };
-
+  
     for(auto i  : Tags){
 
       if(i.Contains("Pileup")) continue;
@@ -275,7 +290,7 @@ void HNL_LeptonIDBDTStudies::executeEvent(){
         if(imuon.HNL_MVA_Fake("EDv4")  > 0.6)  FillHist("BDTVariablesNP4/"  + imuon.GetFlavour()+ "/"+ i+"_"+imap.first, imap.second  , weight, 200, -1., 1);
       }
 
-      vector<TString> IDs = {"HNTightV2","HNL_Peking","HNTight_17028","HNL_HN3L","HNL_ULID_LF","HNL_ULID_"+GetYearString(), "HNL_HF_v1","HNL_HF_v2","HNL_HF_v3","HNL_HF_v4", "HNL_LF_v1","HNL_LF_v2","HNL_LF_v3","HNL_LF_v4","HNL_ULIDv1_2016","HNL_ULIDv1_2017"};
+      vector<TString> IDs = {"HNTightV2","HNL_Peking","HNTight_17028","HNL_HN3L","HNL_ULID_"+GetYearString()};
 
       int nbin_pt    =10;
       double ptbins    [nbin_pt    +1] = { 10.,15.,20.,30.,35., 40.,50., 60., 80., 100.,200.};
@@ -304,6 +319,7 @@ void HNL_LeptonIDBDTStudies::executeEvent(){
     if(iel.Pt() < 15) ptbin = "Ptlt15_";
     else if(iel.Pt() < 20) ptbin = "Ptlt20_";
     else if(iel.Pt() < 50) ptbin = "Ptlt50_";
+    else if(iel.Pt() < 80) ptbin = "Ptlt80_";
     else if(iel.Pt() < 100) ptbin = "Ptlt100_";
     else  ptbin = "Ptgt100_";
 
@@ -337,33 +353,43 @@ void HNL_LeptonIDBDTStudies::executeEvent(){
       
       map<TString, double> mapBDT = iel.MAPBDT();
       for(auto imap : mapBDT )  {
-	
-	if(iel.IsBB() && iel.HNL_MVA_Fake("EDv4") > 0.2)                                                 FillHist("BDTVariablesNPBB1/"+ iel.GetFlavour()+ "/"+ i+"_"+imap.first, imap.second  , weight, 200, -1., 1);
-	if(iel.IsBB() && iel.PassID("HNL_ULID_Conv_"+GetYearString()) && iel.HNL_MVA_Fake("EDv4") > 0.2) FillHist("BDTVariablesNPBB2/"+ iel.GetFlavour()+ "/"+ i+"_"+imap.first, imap.second  , weight, 200, -1., 1);
-	if(iel.IsEC() && iel.HNL_MVA_Fake("EDv4") > 0.2) FillHist("BDTVariablesNPEC1/"+ iel.GetFlavour()+ "/"+ i+"_"+imap.first, imap.second  , weight, 200, -1., 1);
-	if(iel.IsEC() && iel.HNL_MVA_Fake("EDv4") > 0.2 && iel.PassID("HNL_ULID_Conv_"+GetYearString())) FillHist("BDTVariablesNPEC2/"+ iel.GetFlavour()+ "/"+ i+"_"+imap.first, imap.second  , weight, 200, -1., 1);
-	
-	if(iel.IsBB() && iel.HNL_MVA_CF("v2")   >0.2) FillHist("BDTVariablesCFBB1/"+ iel.GetFlavour()+ "/"+ i+"_"+imap.first, imap.second  , weight, 200, -1., 1);
-	if(iel.IsEC() && iel.HNL_MVA_CF("EDv2") >0.2)  FillHist("BDTVariablesCFEC1/"+ iel.GetFlavour()+ "/"+ i+"_"+imap.first, imap.second  , weight, 200, -1., 1);
-        if(iel.IsBB() && iel.HNL_MVA_CF("v2")   >0.4) FillHist("BDTVariablesCFBB2/"+ iel.GetFlavour()+ "/"+ i+"_"+imap.first, imap.second  , weight, 200, -1., 1);
-        if(iel.IsEC() && iel.HNL_MVA_CF("EDv2") >0.4)  FillHist("BDTVariablesCFEC2/"+ iel.GetFlavour()+ "/"+ i+"_"+imap.first, imap.second  , weight, 200, -1., 1);
 
-	if(iel.IsBB() && iel.HNL_MVA_Fake("EDv4") > 0.2  && iel.HNL_MVA_CF("v2") >0.2) FillHist("BDTVariablesNPCFBB1/"+ iel.GetFlavour()+ "/"+ i+"_"+imap.first, imap.second  , weight, 200, -1., 1);
-	if(iel.IsEC() && iel.HNL_MVA_Fake("EDv4") > 0.2  && iel.HNL_MVA_CF("EDv2") >0.2)  FillHist("BDTVariablesNPCFEC1/"+ iel.GetFlavour()+ "/"+ i+"_"+imap.first, imap.second  , weight, 200, -1., 1);
-        if(iel.IsBB() && iel.HNL_MVA_Fake("EDv4") > 0.2  && iel.HNL_MVA_CF("v2") >0.4) FillHist("BDTVariablesNPCFBB2/"+ iel.GetFlavour()+ "/"+ i+"_"+imap.first, imap.second  , weight, 200, -1., 1);
-        if(iel.IsEC() && iel.HNL_MVA_Fake("EDv4") > 0.2  && iel.HNL_MVA_CF("EDv2") >0.4)  FillHist("BDTVariablesNPCFEC2/"+ iel.GetFlavour()+ "/"+ i+"_"+imap.first, imap.second  , weight, 200, -1., 1);
-
-	if(iel.IsBB() && iel.HNL_MVA_CF("v2") >0.2 &&  iel.PassID("HNL_ULID_Conv_"+GetYearString()))      FillHist("BDTVariablesConvCFBB1/"+ iel.GetFlavour()+ "/"+ i+"_"+imap.first, imap.second  , weight, 200, -1., 1);
-	if(iel.IsBB() && iel.HNL_MVA_CF("v2") >0.4 &&  iel.PassID("HNL_ULID_Conv_"+GetYearString()))      FillHist("BDTVariablesConvCFBB2/"+ iel.GetFlavour()+ "/"+ i+"_"+imap.first, imap.second  , weight, 200, -1., 1);
-	if(iel.IsBB() && iel.HNL_MVA_CF("v2") >0.7 &&  iel.PassID("HNL_ULID_Conv_"+GetYearString()))      FillHist("BDTVariablesConvCFBB3/"+ iel.GetFlavour()+ "/"+ i+"_"+imap.first, imap.second  , weight, 200, -1., 1);
+	FillHist("BDTVariablesInc/"+ iel.GetFlavour()+ "/"+ i+"_"+imap.first, imap.second  , weight, 200, -1., 1);
 	
-	if(iel.IsEC() && iel.HNL_MVA_CF("EDv2") >0.3 &&  iel.PassID("HNL_ULID_Conv_"+GetYearString())) FillHist("BDTVariablesConvCFEC1/"+ iel.GetFlavour()+ "/"+ i+"_"+imap.first, imap.second  , weight, 200, -1., 1);
-	if(iel.IsEC() && iel.HNL_MVA_CF("EDv2") >0.5 &&  iel.PassID("HNL_ULID_Conv_"+GetYearString())) FillHist("BDTVariablesConvCFEC2/"+ iel.GetFlavour()+ "/"+ i+"_"+imap.first, imap.second  , weight, 200, -1., 1);
+	/////// BARREL ELECTRON SCAN
+	TString EtaRegion = (iel.IsBB()) ? "BB" : "EC";
+
+	if(iel.HNL_MVA_Fake("EDv5") > 0.2) {
+	  FillHist("BDTVariablesNP"+EtaRegion+"1/"+ iel.GetFlavour()+ "/"+ i+"_"+imap.first, imap.second  , weight, 200, -1., 1);
+	  
+	  if(iel.PassID("HNL_ULID_Conv_2016")) FillHist("BDTVariablesConvNP"+EtaRegion+"1/"+ iel.GetFlavour()+ "/"+ i+"_"+imap.first, imap.second  , weight, 200, -1., 1);
+          if(iel.HNL_MVA_Conv("EDv5")   > -0.7) FillHist("BDTVariablesConvNP"+EtaRegion+"2/"+ iel.GetFlavour()+ "/"+ i+"_"+imap.first, imap.second  , weight, 200, -1., 1);
+          if(iel.HNL_MVA_Conv("EDv5")   > 0.) FillHist("BDTVariablesConvNP"+EtaRegion+"3/"+ iel.GetFlavour()+ "/"+ i+"_"+imap.first, imap.second  , weight, 200, -1., 1);
+	  
+	}
+
+	if(iel.PassID("HNL_ULID_Conv_2016")) FillHist("BDTVariablesConv"+EtaRegion+"1/"+ iel.GetFlavour()+ "/"+ i+"_"+imap.first, imap.second  , weight, 200, -1., 1);
+	if(iel.HNL_MVA_Conv("EDv5")   > -0.7) FillHist("BDTVariablesConv"+EtaRegion+"2/"+ iel.GetFlavour()+ "/"+ i+"_"+imap.first, imap.second  , weight, 200, -1., 1);
+	if(iel.HNL_MVA_Conv("EDv5")   > 0.) FillHist("BDTVariablesConv"+EtaRegion+"3/"+ iel.GetFlavour()+ "/"+ i+"_"+imap.first, imap.second  , weight, 200, -1., 1);
+
+	
+	if(iel.HNL_MVA_CF("EDv5")   >0.4) FillHist("BDTVariablesCF"+EtaRegion+"1/"+ iel.GetFlavour()+ "/"+ i+"_"+imap.first, imap.second  , weight, 200, -1., 1);
+	if(iel.HNL_MVA_CF("EDv5")   >0.6) FillHist("BDTVariablesCF"+EtaRegion+"2/"+ iel.GetFlavour()+ "/"+ i+"_"+imap.first, imap.second  , weight, 200, -1., 1);
+	
+	if(iel.HNL_MVA_Fake("EDv5") > 0.2  && iel.HNL_MVA_CF("EDv5") >0.4)  FillHist("BDTVariablesNPCF"+EtaRegion+"1/"+ iel.GetFlavour()+ "/"+ i+"_"+imap.first, imap.second  , weight, 200, -1., 1);
+        if(iel.HNL_MVA_Fake("EDv5") > 0.2  && iel.HNL_MVA_CF("EDv5") >0.6) FillHist("BDTVariablesNPCF"+EtaRegion+"2/"+ iel.GetFlavour()+ "/"+ i+"_"+imap.first, imap.second  , weight, 200, -1., 1);
+	if(iel.HNL_MVA_Fake("EDv5") > 0.3  && iel.HNL_MVA_CF("EDv5") >0.65) FillHist("BDTVariablesNPCF"+EtaRegion+"3/"+ iel.GetFlavour()+ "/"+ i+"_"+imap.first, imap.second  , weight, 200, -1., 1);
+
+	if(iel.HNL_MVA_CF("EDv5") >0.4 &&  iel.PassID("HNL_ULID_Conv_2016"))      FillHist("BDTVariablesConvCF"+EtaRegion+"1/"+ iel.GetFlavour()+ "/"+ i+"_"+imap.first, imap.second  , weight, 200, -1., 1);
+	
+	if(iel.HNL_MVA_CF("EDv5") >0.65 &&  iel.PassID("HNL_ULID_Conv_2016"))      FillHist("BDTVariablesConvCF"+EtaRegion+"2/"+ iel.GetFlavour()+ "/"+ i+"_"+imap.first, imap.second  , weight, 200, -1., 1);
+	if(iel.HNL_MVA_CF("EDv5") >0.65 &&  iel.HNL_MVA_Conv("EDv5")   > -0.7)      FillHist("BDTVariablesConvCF"+EtaRegion+"3/"+ iel.GetFlavour()+ "/"+ i+"_"+imap.first, imap.second  , weight, 200, -1., 1);
 	
       }
       
 
-      vector<TString> IDs = {"HNTightV2","HNL_Peking_"+GetYearString(),  "HNTight_17028","HNL_ULID_"+GetYearString() , "HNL_ULID_Conv_"+GetYearString(),  "HNL_ULID_Fake1","HNL_ULID_Fake2","HNL_ULID_Fake3","HNL_ULID_Fake4" , "HNL_ULID_CF1","HNL_ULID_CF2","HNL_ULID_CF3","HNL_ULID_CF4","HNL_ULID_Conv1","HNL_ULID_Conv2"};
+      vector<TString> IDs = {"HNTightV2","HNL_Peking_"+GetYearString(),  "HNTight_17028","HNL_ULID_"+GetYearString() , "HNL_ULID_Conv_"+GetYearString()};
+
 
       int nbin_pt    =10;
       double ptbins    [nbin_pt    +1] = { 10.,15.,20.,30.,35., 40.,50., 60., 80., 100.,200.};
