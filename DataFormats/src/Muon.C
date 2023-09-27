@@ -168,7 +168,7 @@ bool Muon::PassID(TString ID) const {
     if(!( fabs(dXY()) < 0.2 && fabs(dZ())< 0.5) ) return false;
     if(!(fabs(IP3D()/IP3Derr())< 10 )) return false;
     if(!( RelIso()< 0.4 )) return false;
-    if(!( Chi2()<50. ))    return false;
+    //if(!( Chi2()<50. ))    return false;
     return true;
   }
   if(ID=="HNLoosePOG") {

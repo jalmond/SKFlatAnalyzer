@@ -110,10 +110,11 @@ if [[ $1 == "" ]]; then
     do
 #SKFlat.py -a $analyzer  -l $datapath/2017_DiLepton_MuMu.txt   -n ${njobs_data}  --nmax ${nmax}   -e ${i}  --skim SkimTree_HNMultiLepBDT &
 #SKFlat.py -a $analyzer  -l $datapath/2017_DiLepton_MuMu.txt   -n ${njobs_data}  --nmax ${nmax}   -e ${i}  --skim SkimTree_HNMultiLepBDT  --userflags RunFake &
-SKFlat.py -a $analyzer  -l $mcpath/PromptSS.txt  -n 20  --nmax ${nmax}   -e ${i}   --skim SkimTree_HNMultiLepBDT &
-SKFlat.py -a $analyzer  -l $mcpath/PromptOS.txt  -n 20  --nmax ${nmax}   -e ${i}   --skim SkimTree_Dilepton &
-SKFlat.py -a $analyzer  -l $mcpath/Conv.txt  -n 10  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLepBDT  --userflags RunConv &
-SKFlat.py -a $analyzer  -l $mcpath/CF.txt  -n $njobs  --nmax ${nmax}   -e ${i} --skim SkimTree_Dilepton  --userflags RunCF &
+#SKFlat.py -a $analyzer  -l $mcpath/PromptSS.txt  -n 20  --nmax ${nmax}   -e ${i}   --skim SkimTree_HNMultiLepBDT &
+SKFlat.py -a $analyzer  -i WZTo3LNu_amcatnlo  -n 20  --nmax ${nmax}   -e ${i}   --skim SkimTree_HNMultiLepBDT &
+#SKFlat.py -a $analyzer  -l $mcpath/PromptOS.txt  -n 20  --nmax ${nmax}   -e ${i}   --skim SkimTree_Dilepton &
+#SKFlat.py -a $analyzer  -l $mcpath/Conv.txt  -n 10  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLepBDT  --userflags RunConv &
+#SKFlat.py -a $analyzer  -l $mcpath/CF.txt  -n $njobs  --nmax ${nmax}   -e ${i} --skim SkimTree_Dilepton  --userflags RunCF &
 #SKFlat.py -a $analyzer  -l $sigpath/SSWW.txt  -n $njobs_sig  --nmax ${nmax}  -e ${i}    &
 #SKFlat.py -a $analyzer  -l $sigpath/DY.txt    -n $njobs_sig  --nmax ${nmax}   -e ${i}  &
 #SKFlat.py -a $analyzer  -l $sigpath/VBF.txt   -n $njobs_sig  --nmax ${nmax}   -e ${i}  &

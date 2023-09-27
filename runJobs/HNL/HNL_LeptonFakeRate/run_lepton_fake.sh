@@ -34,6 +34,8 @@ if [[ $1 == "" ]]; then
 #SKFlat.py -a $analyzer  -l $mcpath/MC.txt  -n ${njobs}  --nmax ${nmax}  -e ${i}   --skim SkimTree_FakeEventSkimBDT &
 #SKFlat.py -a $analyzer  -l $mcpath/QCD_mu.txt  -n ${njobs}  --nmax ${nmax}  -e ${i} --skim SkimTree_FakeEventSkimBDT &
 
+#SKFlat.py -a $analyzer  -i TTLJ_powheg  -n ${njobs}  --nmax ${nmax}  -e ${i}   --skim SkimTree_HNFakeBDT &
+
 #### Measuring the data-driven fake rates (MC : prompt subtraction) ####
 SKFlat.py -a $analyzer  -l $datapath/DATA_${i}_mu.txt  -n ${njobs_data}  --nmax ${nmax}  -e ${i} --skim SkimTree_HNFakeBDT&
 #SKFlat.py -a $analyzer  -l $datapath/DATA_${i}_el.txt  -n ${njobs_data}  --nmax ${nmax}  -e ${i} --skim SkimTree_HNFakeBDT&
