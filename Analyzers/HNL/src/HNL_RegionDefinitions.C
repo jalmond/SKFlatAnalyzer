@@ -1079,7 +1079,7 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
     }
    
 
-    weight_channel *= FillWeightHist(param.Name+"_HNLZvtxSF", HNLZvtxSF(dilep_channel));
+    weight_channel *= FillWeightHist(param.Name+"_HNLZvtxSF", HNLZvtxSF(dilep_channel)); // this fills the weight hist and return the weight(HNLZvtxSF here). If data, HNLZvtxSF returns 1.
     
     double Fake_weight_OS = weight_channel;
 
@@ -1097,8 +1097,13 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
       }
       
       if(IsData){
-	      weight_channel = GetFakeWeight(LepsT, param , false);
-	      FillWeightHist(param.Name+"/FakeWeight",weight_channel);
+        weight_channel = GetFakeWeight(LepsT, param , false);
+        FillWeightHist(param.Name+"/FakeWeight",weight_channel);
+        if(LepsT.size()==2){
+          if     ( (LepsT[0]->PassLepID()) && (!LepsT[1]->PassLepID()) )  FillWeightHist(param.Name+"/FakeWeight_TL", GetFakeWeight(LepsT, param , false));
+          else if( (!LepsT[0]->PassLepID()) && (LepsT[1]->PassLepID()) )  FillWeightHist(param.Name+"/FakeWeight_LT", GetFakeWeight(LepsT, param , false));
+          else if( (!LepsT[0]->PassLepID()) && (!LepsT[1]->PassLepID()) ) FillWeightHist(param.Name+"/FakeWeight_LL", GetFakeWeight(LepsT, param , false));
+        }
       }
       if(!IsData)  Fake_weight_OS*=-1;
 
@@ -1117,37 +1122,37 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
 
 
       if(LepsV.size() ==2){
-	
-	Particle  ll = (*LepsV[0]) + (*LepsV[1]);
-	
-	if(!IsData && ll.Charge() != 0) return;
-	if(IsData  && ll.Charge() != 0) BDTweight_channel = -1;
-	
-	if (fabs(ll.M()-90.) <  10) {
-	    
-	  for(auto ilep : electrons) {
-	    if(!IsData && !ilep.IsPrompt()) continue;
-	    if(!IsData && ilep.LeptonIsCF()) continue;
-	    
-	    /// dont subtract SS for high pt 
-	    if(IsData  && ll.Charge() != 0 && ilep.Pt() > 100) continue;
+  
+  Particle  ll = (*LepsV[0]) + (*LepsV[1]);
+  
+  if(!IsData && ll.Charge() != 0) return;
+  if(IsData  && ll.Charge() != 0) BDTweight_channel = -1;
+  
+  if (fabs(ll.M()-90.) <  10) {
+      
+    for(auto ilep : electrons) {
+      if(!IsData && !ilep.IsPrompt()) continue;
+      if(!IsData && ilep.LeptonIsCF()) continue;
+      
+      /// dont subtract SS for high pt 
+      if(IsData  && ll.Charge() != 0 && ilep.Pt() > 100) continue;
 
-	    TString CFMVA = "";
-	    TString ConvMVA = "";
-	    TString FakeMVA = "";
-	    if( FindHEMElectron (ilep)) FillBDTHists(ilep,"HEM",BDTweight_channel);
-	    if( FindHEMElectron (ilep))  continue;
-	    
-	    TString ptstring = "Pt1";
-	    if(ilep.Pt() < 30 ) ptstring = "Pt1";
-	    else if(ilep.Pt() < 150 ) ptstring = "Pt2";
-	    else ptstring = "Pt3";
+      TString CFMVA = "";
+      TString ConvMVA = "";
+      TString FakeMVA = "";
+      if( FindHEMElectron (ilep)) FillBDTHists(ilep,"HEM",BDTweight_channel);
+      if( FindHEMElectron (ilep))  continue;
+      
+      TString ptstring = "Pt1";
+      if(ilep.Pt() < 30 ) ptstring = "Pt1";
+      else if(ilep.Pt() < 150 ) ptstring = "Pt2";
+      else ptstring = "Pt3";
 
-	    TString etastring = ilep.sEtaRegion();
-	    FillBDTHists(ilep,ptstring+"_"+etastring,BDTweight_channel);
-	    
-	  }
-	}
+      TString etastring = ilep.sEtaRegion();
+      FillBDTHists(ilep,ptstring+"_"+etastring,BDTweight_channel);
+      
+    }
+  }
       }
       
       return;
@@ -1216,17 +1221,16 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
     if(run_Debug)cout << "Conv split "  <<  ConversionVeto(LepsT,All_Gens) << " " << ConversionSplitting(LepsT ,RunConv,3) << endl;
     
     // Treat conversions using GENT MEthod
-    //if(ConversionVeto(LepsT,All_Gens)){
-    //  if(FillWGCRPlots( trilep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTrilep, weight_channel)) passed.push_back("WG_CR");
-    //  if(FillZGCRPlots( trilep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTrilep, weight_channel)) passed.push_back("ZG_CR");
-    //}
-    // Treat using pt cit method
-    if(ConversionSplitting(LepsT,RunConv,3)){
-      
+    if(ConversionVeto(LepsT,All_Gens)){
       AnalyzerParameter paramTMP=paramTrilep;
-      paramTMP.Name=param.Name+"_ConvMethodPt";
-      if(FillWGCRPlots( trilep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTMP, weight_channel)) passed.push_back("WG_Method2_CR");
-      if(FillZGCRPlots( trilep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTMP, weight_channel)) passed.push_back("ZG_Method2_CR");
+      paramTMP.Name=param.Name+"_GentMethod";
+      if(FillWGCRPlots( trilep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTMP, weight_channel)) passed.push_back("WG_CR");
+      if(FillZGCRPlots( trilep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTMP, weight_channel)) passed.push_back("ZG_CR");
+    }
+    // JH : Doing nothing for now
+    if(ConversionSplitting(LepsT,RunConv,3)){
+      if(FillWGCRPlots( trilep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTrilep, weight_channel)) passed.push_back("WG_Method2_CR");
+      if(FillZGCRPlots( trilep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTrilep, weight_channel)) passed.push_back("ZG_Method2_CR");
 
     }
     

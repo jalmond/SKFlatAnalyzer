@@ -123,10 +123,8 @@ void HNL_ControlRegionPlotter::RunControlRegions(AnalyzerParameter param, vector
     cout << "MuonCollTInit size = " << MuonCollTInit.size() << endl;
     cout << "ElectronCollTInit size = " << ElectronCollTInit.size() << endl;
   }
-  std::vector<Muon>       MuonCollT     = GetLepCollByRunType    ( MuonCollTInit, param); // prompt + conversion
+  std::vector<Muon>       MuonCollT     = GetLepCollByRunType    ( MuonCollTInit, param); // prompt + conversion, do nothing for data
   std::vector<Electron>   ElectronCollT  =  GetLepCollByRunType   ( ElectronCollTInit,param);
-
-  std::vector<Lepton *> leps_veto  = MakeLeptonPointerVector(MuonCollV,ElectronCollV);
 
   if(run_Debug) {
     cout << "Number of Tight Muons = " << MuonCollT.size() << endl;

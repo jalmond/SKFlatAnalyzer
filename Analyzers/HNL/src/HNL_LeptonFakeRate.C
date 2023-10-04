@@ -523,7 +523,7 @@ void HNL_LeptonFakeRate::GetMCFakeRates(std::vector<Muon> loose_muons, AnalyzerP
               //FillHist((prefix+"_"+LepTypeLabelMap[LepTypeLabel[i]]+"_PtPartonUncorr_eta").Data(), PtPartonUncorr, lep_eta,  weight, nbin_pt, ptbins, nbin_eta , etabins);
               //FillHist((prefix+"_"+LepTypeLabelMap[LepTypeLabel[i]]+"_PtPartonUncorr").Data(), PtPartonUncorr, weight, nbin_pt, ptbins);
               //FillHist((prefix+"_"+LepTypeLabelMap[LepTypeLabel[i]]+"_PtPartonQCD").Data(), PtPartonQCD, weight, nbin_pt, ptbins);
-              FillHist((prefix+"_"+LepTypeLabelMap[LepTypeLabel[i]]+"_reliso").Data(), lep_reliso, weight, 50, 0., 1.);
+              FillHist((prefix+"_"+LepTypeLabelMap[LepTypeLabel[i]]+"_reliso").Data(), lep_reliso, weight, 100, 0., 1.);
               FillHist((prefix+"_"+LepTypeLabelMap[LepTypeLabel[i]]+"_dXY").Data(),    lep_dxy, weight, 50, 0., 0.1);
               FillHist((prefix+"_"+LepTypeLabelMap[LepTypeLabel[i]]+"_dZ").Data(),     lep_dz, weight, 50, 0., 0.1);
               FillHist((prefix+"_"+LepTypeLabelMap[LepTypeLabel[i]]+"_SIP3D").Data(),  lep_sip3d, weight, 50, 0., 10.);
@@ -539,7 +539,7 @@ void HNL_LeptonFakeRate::GetMCFakeRates(std::vector<Muon> loose_muons, AnalyzerP
                   FillHist((prefix+"_fakeHF_pt").Data(),     lep_pt, weight, nbin_pt, ptbins, "p_{T} (GeV)");
                   FillHist((prefix+"_fakeHF_etaFine").Data(),lep_eta, weight , 50, -2.5, 2.5);
                   FillHist((prefix+"_fakeHF_LFvsHF").Data(), lep_LFvsHF, weight, 200, -1, 1);
-                  FillHist((prefix+"_fakeHF_reliso").Data(), lep_reliso, weight, 50, 0., 1.);
+                  FillHist((prefix+"_fakeHF_reliso").Data(), lep_reliso, weight, 100, 0., 1.);
                   FillHist((prefix+"_fakeHF_dXY").Data(),    lep_dxy, weight, 50, 0., 0.1);
                   FillHist((prefix+"_fakeHF_dZ").Data(),     lep_dz, weight, 50, 0., 0.1);
                   FillHist((prefix+"_fakeHF_SIP3D").Data(),  lep_sip3d, weight, 50, 0., 10.);
@@ -550,7 +550,7 @@ void HNL_LeptonFakeRate::GetMCFakeRates(std::vector<Muon> loose_muons, AnalyzerP
                   FillHist((prefix+"_fakeLF_pt").Data(),     lep_pt, weight, nbin_pt, ptbins, "p_{T} (GeV)");
                   FillHist((prefix+"_fakeLF_etaFine").Data(),lep_eta, weight , 50, -2.5, 2.5);
                   FillHist((prefix+"_fakeLF_LFvsHF").Data(), lep_LFvsHF, weight, 200, -1, 1);
-                  FillHist((prefix+"_fakeLF_reliso").Data(), lep_reliso, weight, 50, 0., 1.);
+                  FillHist((prefix+"_fakeLF_reliso").Data(), lep_reliso, weight, 100, 0., 1.);
                   FillHist((prefix+"_fakeLF_dXY").Data(),    lep_dxy, weight, 50, 0., 0.1);
                   FillHist((prefix+"_fakeLF_dZ").Data(),     lep_dz, weight, 50, 0., 0.1);
                   FillHist((prefix+"_fakeLF_SIP3D").Data(),  lep_sip3d, weight, 50, 0., 10.);
@@ -1599,7 +1599,7 @@ void HNL_LeptonFakeRate::GetFakeRates(std::vector<Lepton *> leps,std::vector<boo
       if((ilep==1) && !(blepsT[0])) continue;
       
       if(fill_plot) {
-        FillHist((prefix + "_reliso").Data(), lep_reliso, weight_pt, 50, 0., 1.);
+        FillHist((prefix + "_reliso").Data(), lep_reliso, weight_pt, 100, 0., 1.);
         FillHist((prefix + "_dXY").Data(),    lep_dxy, weight_pt, 50, 0., 0.1);
         FillHist((prefix + "_dZ").Data(),     lep_dz, weight_pt, 50, 0., 0.1);
         FillHist((prefix + "_SIP3D").Data(),  lep_sip3d, weight_pt, 50, 0., 10.);
@@ -1752,8 +1752,8 @@ void HNL_LeptonFakeRate::FillRegionPlots( TString plot_dir, TString region,  std
   if(els.size() > 0)   FillHist( plot_dir +  "/RegionPlots_"+ region+ "/NMissingHits", els[0].NMissingHits(), w, 5, 0., 5.);
 
 
-  FillHist( plot_dir +  "/RegionPlots_"+ region+ "/Reliso", lep_reliso, w, 50, 0., 1.);
-  FillHist( plot_dir +  "/RegionPlots_"+ region+ "/MiniReliso", lep_minireliso, w, 50, 0., 1.);
+  FillHist( plot_dir +  "/RegionPlots_"+ region+ "/Reliso", lep_reliso, w, 100, 0., 1.);
+  FillHist( plot_dir +  "/RegionPlots_"+ region+ "/MiniReliso", lep_minireliso, w, 100, 0., 1.);
   FillHist( plot_dir +  "/RegionPlots_"+ region+ "/dXY",    lep_dxy, w, 100, 0., 0.5);
   FillHist( plot_dir +  "/RegionPlots_"+ region+ "/SIP3D",  lep_sip3d, w, 50, 0., 10.);
   FillHist( plot_dir +  "/RegionPlots_"+ region+ "/Mva",    lep_mva, w, 50, -1., 1.);

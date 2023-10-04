@@ -7734,7 +7734,7 @@ TH3D* AnalyzerCore::GetHist3D(TString histname){
 
 double AnalyzerCore::FillWeightHist(TString label, double _weight){
   
-  if(!label.Contains("Syst_"))   FillHist( "weights/"+ label , _weight ,1., 200, -5., 5,"ev weight");
+  if(!label.Contains("Syst_"))   FillHist( "weights/"+ label , _weight ,1., 1000, -5., 5,"ev weight");
     
   return _weight;
 }

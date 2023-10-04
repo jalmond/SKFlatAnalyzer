@@ -22,7 +22,7 @@ if [[ $1 == "" ]]; then
 #SKFlat.py -a $analyzer  -i QCD_Pt-120To170_MuEnriched  -n ${njobs}  --nmax ${nmax}  -e ${i} --skim SkimTree_FakeEventSkimBDT --userflags FakeRateTruth &
 
 SKFlat.py -a $analyzer  -l $mcpath/MC.txt  -n ${njobs}  --nmax ${nmax}  -e ${i} --skim SkimTree_FakeEventSkimBDT --userflags FakeRateTruth &
-SKFlat.py -a $analyzer  -l $mcpath/QCD_mu.txt  -n ${njobs}  --nmax ${nmax}  -e ${i} --skim SkimTree_FakeEventSkimBDT --userflags FakeRateTruth &
+#SKFlat.py -a $analyzer  -l $mcpath/QCD_mu.txt  -n ${njobs}  --nmax ${nmax}  -e ${i} --skim SkimTree_FakeEventSkimBDT --userflags FakeRateTruth &
 
 #### Measure truth fake rates from MCs *in the measurement region* to make use of it for the MC closure test (QCD), to get PtParton SF (QCD) ####
 
