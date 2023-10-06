@@ -1,8 +1,8 @@
-void GetFR2D(TFile *outfile, TString tag){ // tag : LF, HF (when to use flavor-dep fake rate method), or TriLep
-  TString fake_data = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_LeptonFakeRate/2017/DATA/HNL_LeptonFakeRate_SkimTree_HNFakeBDT_FakeRate.root";
-  TString fake_W    = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_LeptonFakeRate/2017/HNL_LeptonFakeRate_SkimTree_HNFakeBDT_WJets_MG.root";
-  TString fake_Z    = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_LeptonFakeRate/2017/HNL_LeptonFakeRate_SkimTree_HNFakeBDT_DYJets.root";
-  TString fake_TT   = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_LeptonFakeRate/2017/HNL_LeptonFakeRate_SkimTree_HNFakeBDT_TTLJ_powheg.root";
+void GetFR2D(TFile *outfile, TString year, TString tag, TString channel, TString ID){ // tag : LF, HF (when to use flavor-dep fake rate method), or "" for No flavor separation, or TriLep, ...
+  TString fake_data = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_LeptonFakeRate/"+year+"/DATA/HNL_LeptonFakeRate_SkimTree_HNFakeBDT_Muon.root";
+  TString fake_W    = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_LeptonFakeRate/"+year+"/HNL_LeptonFakeRate_SkimTree_HNFakeBDT_WJets_MG.root";
+  TString fake_Z    = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_LeptonFakeRate/"+year+"/HNL_LeptonFakeRate_SkimTree_HNFakeBDT_DYJets.root";
+  TString fake_TT   = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_LeptonFakeRate/"+year+"/HNL_LeptonFakeRate_SkimTree_HNFakeBDT_TTLJ_powheg.root";
   //TString fake_W    = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_LeptonFakeRate/2017/FakeRateTruth__/HNL_LeptonFakeRate_SkimTree_HNFakeBDT_WJets_MG.root";
   //TString fake_Z    = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_LeptonFakeRate/2017/FakeRateTruth__/HNL_LeptonFakeRate_SkimTree_HNFakeBDT_DYJets.root";
   //TString fake_TT   = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_LeptonFakeRate/2017/FakeRateTruth__/HNL_LeptonFakeRate_SkimTree_HNFakeBDT_TTLJ_powheg.root";
@@ -14,15 +14,10 @@ void GetFR2D(TFile *outfile, TString tag){ // tag : LF, HF (when to use flavor-d
   TFile *f_fake_TT   = new TFile(fake_TT);
   //TFile *f_fake_QCD  = new TFile(fake_QCD);
 
-  TString histname_loose, histname_tight;
-  if(tag=="LF"||tag=="HF"){
-    histname_loose = tag+"_Fake_Loose_MuMu_HNL_ULID_2017_LFvsHF_40_pt_eta";
-    histname_tight = tag+"_Fake_Tight_MuMu_HNL_ULID_2017_LFvsHF_40_pt_eta";
-  }
-  else{
-    histname_loose = "Fake_Loose_MuMu_HNL_ULID_2017_40_pt_eta";
-    histname_tight = "Fake_Tight_MuMu_HNL_ULID_2017_40_pt_eta";
-  }
+  TString nametag = (tag!="") ? tag+"_" : "";
+
+  TString histname_loose = nametag+"Fake_Loose_"+channel+"_"+ID+"_LFvsHF_40_pt_eta";
+  TString histname_tight = nametag+"Fake_Tight_"+channel+"_"+ID+"_LFvsHF_40_pt_eta";
 
   TH2D *h_loose_data = (TH2D*)f_fake_data->Get(histname_loose);
   TH2D *h_loose_W    = (TH2D*)f_fake_W   ->Get(histname_loose);
@@ -49,8 +44,7 @@ void GetFR2D(TFile *outfile, TString tag){ // tag : LF, HF (when to use flavor-d
   h_tight_data->Add(h_tight_TT,-1.);
 
   h_tight_data->Divide(h_loose_data);
-  if(tag=="LF"||tag=="HF") h_tight_data->SetName("HNL_ULID_2017_"+tag+"_pt_eta_AwayJetPt40");
-  else h_tight_data->SetName("HNL_ULID_2017_pt_eta_AwayJetPt40");
+  h_tight_data->SetName(ID+"_"+nametag+"pt_eta_AwayJetPt40");
 
   //h_tight_QCD_2D_Uncorr->Divide(h_loose_QCD_2D_Uncorr);
   //h_tight_QCD_2D_Uncorr->SetName("HNL_ULID_2017_PtPartonUncorr_eta_TriLepQCD");
@@ -69,33 +63,28 @@ void GetFR2D(TFile *outfile, TString tag){ // tag : LF, HF (when to use flavor-d
   //h_tight_QCD_1D_Corr->Write();
 }
 
-void GetFR1D(TFile *outfile, TString tag, TString var){ // tag : LF, HF (when using flavor-dep fake rate method), or TriLep
-  TString fake_data = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_LeptonFakeRate/2017/DATA/HNL_LeptonFakeRate_SkimTree_HNFakeBDT_FakeRate.root";
-  TString fake_W    = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_LeptonFakeRate/2017/HNL_LeptonFakeRate_SkimTree_HNFakeBDT_WJets_MG.root";
-  TString fake_Z    = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_LeptonFakeRate/2017/HNL_LeptonFakeRate_SkimTree_HNFakeBDT_DYJets.root";
-  TString fake_TT   = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_LeptonFakeRate/2017/HNL_LeptonFakeRate_SkimTree_HNFakeBDT_TTLJ_powheg.root";
+void GetFR1D(TFile *outfile, TString year, TString tag, TString channel, TString ID, TString var){ // tag : LF, HF (when using flavor-dep fake rate method), or TriLep
+  TString fake_data = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_LeptonFakeRate/"+year+"/DATA/HNL_LeptonFakeRate_SkimTree_HNFakeBDT_Muon.root";
+  TString fake_W    = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_LeptonFakeRate/"+year+"/HNL_LeptonFakeRate_SkimTree_HNFakeBDT_WJets_MG.root";
+  TString fake_Z    = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_LeptonFakeRate/"+year+"/HNL_LeptonFakeRate_SkimTree_HNFakeBDT_DYJets.root";
+  TString fake_TT   = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_LeptonFakeRate/"+year+"/HNL_LeptonFakeRate_SkimTree_HNFakeBDT_TTLJ_powheg.root";
   
   TFile *f_fake_data = new TFile(fake_data);
   TFile *f_fake_W    = new TFile(fake_W);
   TFile *f_fake_Z    = new TFile(fake_Z);
   TFile *f_fake_TT   = new TFile(fake_TT);
  
-  //TString histname_loose, histname_tight;
+  TString nametag = (tag!="") ? tag+"_" : "";
+
+  TString histname_loose = nametag+"Fake_Loose_"+channel+"_"+ID+"_LFvsHF_40_"+var;
+  TString histname_tight = nametag+"Fake_Tight_"+channel+"_"+ID+"_LFvsHF_40_"+var;
+
+  //TString histname_loose = "Fake_Loose_"+channel+"_"+ID+"_LFvsHF_40_"+var;
+  //TString histname_tight = "Fake_Tight_"+channel+"_"+ID+"_LFvsHF_40_"+var;
   //if(tag=="LF"||tag=="HF"){
-  //  histname_loose = tag+"_Fake_Loose_MuMu_HNL_ULID_2017_LFvsHF_40_"+var;
-  //  histname_tight = tag+"_Fake_Tight_MuMu_HNL_ULID_2017_LFvsHF_40_"+var;
+  //  histname_loose = tag+"_"+histname_loose;
+  //  histname_tight = tag+"_"+histname_tight;
   //}
-  //else{
-  //  histname_loose = "Fake_Loose_MuMu_HNL_ULID_2017_40_"+var;
-  //  histname_tight = "Fake_Tight_MuMu_HNL_ULID_2017_40_"+var;
-  //}
- 
-  TString histname_loose = "Fake_Loose_MuMu_HNL_ULID_2017_40_"+var;
-  TString histname_tight = "Fake_Tight_MuMu_HNL_ULID_2017_40_"+var;
-  if(tag=="LF"||tag=="HF"){
-    histname_loose = tag+"_"+histname_loose;
-    histname_tight = tag+"_"+histname_tight;
-  }
 
   TH1D *h_loose_data_1D = (TH1D*)f_fake_data->Get(histname_loose);
   TH1D *h_loose_W_1D    = (TH1D*)f_fake_W   ->Get(histname_loose);
@@ -107,8 +96,8 @@ void GetFR1D(TFile *outfile, TString tag, TString var){ // tag : LF, HF (when us
   TH1D *h_tight_TT_1D   = (TH1D*)f_fake_TT  ->Get(histname_tight);
 
   // Show the stacked histo
-  TCanvas *c1 = new TCanvas(tag+"_loose_"+var,"",800,800);
-  TCanvas *c2 = new TCanvas(tag+"_tight_"+var,"",800,800);
+  TCanvas *c1 = new TCanvas(nametag+"loose_"+ID+"_"+var,"",800,800);
+  TCanvas *c2 = new TCanvas(nametag+"tight_"+ID+"_"+var,"",800,800);
 
   // Loose
   c1->cd();
@@ -143,7 +132,7 @@ void GetFR1D(TFile *outfile, TString tag, TString var){ // tag : LF, HF (when us
 
   hs_loose->Draw("hist");
 
-  hs_loose->SetTitle(tag+"_Loose");
+  hs_loose->SetTitle(nametag+"Loose_"+ID);
   hs_loose->GetXaxis()->SetLabelOffset(0.001);
   hs_loose->GetXaxis()->SetLabelSize(0.04);
   hs_loose->GetXaxis()->SetTitleOffset(1);
@@ -200,7 +189,7 @@ void GetFR1D(TFile *outfile, TString tag, TString var){ // tag : LF, HF (when us
 
   hs_tight->Draw("hist");
 
-  hs_tight->SetTitle(tag+"_Tight");
+  hs_tight->SetTitle(nametag+"Tight_"+ID);
   hs_tight->GetXaxis()->SetLabelOffset(0.001);
   hs_tight->GetXaxis()->SetLabelSize(0.04);
   hs_tight->GetXaxis()->SetTitleOffset(1);
@@ -240,9 +229,7 @@ void GetFR1D(TFile *outfile, TString tag, TString var){ // tag : LF, HF (when us
 
   TH1D *h_FR_1D = (TH1D*)h_tight_data_sub_1D->Clone();
   h_FR_1D->Divide(h_loose_data_sub_1D);
-  if(tag=="LF"||tag=="HF") h_FR_1D->SetName("HNL_ULID_2017_"+tag+"_"+var+"_AwayJetPt40");
-  else h_FR_1D->SetName("HNL_ULID_2017_"+tag+"_"+var+"_AwayJetPt40");
-  //h_FR_1D->SetName(histname_loose.ReplaceAll("Loose_",""));
+  h_FR_1D->SetName(ID+"_"+nametag+var+"_AwayJetPt40");
   outfile->cd();
   c1->Write();
   c2->Write();
@@ -342,7 +329,7 @@ void GetMCTruthFR(TFile *outfile, TString sample, TString year, TString tag, TSt
 
   h_tight->Divide(h_tight,h_loose,1,1,"B"); // unweighted, Binomial error
 
-  TString histname_FR = histname_loose.ReplaceAll("Loose_","");
+  TString histname_FR = sample+"_"+histname_loose.ReplaceAll("Loose_","");
   TCanvas *c1  = new TCanvas(histname_FR,"",900,800);
 
   c1->cd();
@@ -387,6 +374,11 @@ void GetMCTruthFR(TFile *outfile, TString sample, TString year, TString tag, TSt
   outfile->cd();
   c1->Write();
 
+  // store png
+  gSystem->Exec("mkdir -p FakeRateTruth/"+channel+"/"+ID+"/"+sample+"/"+var);
+  if(tag!="") c1->SaveAs("FakeRateTruth/"+channel+"/"+ID+"/"+sample+"/"+var+"/"+sample+"_"+tag+"_"+ID+"_"+leptype+"_"+var+".png");
+  else        c1->SaveAs("FakeRateTruth/"+channel+"/"+ID+"/"+sample+"/"+var+"/"+sample+"_"+"NoSep_"+ID+"_"+leptype+"_"+var+".png");
+
 }
 
 void GetPtPartonSF(TString year, TString channel){ //FIXME add lepton channel later
@@ -422,52 +414,46 @@ void GetPtPartonSF(TString year, TString channel){ //FIXME add lepton channel la
 void FakeRate(){
   //TFile *outfileQCDFakeRate = new TFile("FakeRate_Mu_2017_QCD.root","RECREATE");
   //GetFR2D(outfileQCDFakeRate);
-  //TFile *outfile2D = new TFile("FakeRate_Mu_2017_LFvsHF_2D.root","RECREATE");
-  //GetFR2D(outfile2D,"LF");
-  //GetFR2D(outfile2D,"HF");
-  //TFile *outfile1D = new TFile("FakeRate_Mu_2017_LFvsHF_1D.root","RECREATE");
-  //GetFR1D(outfile1D,"LF","pt");
-  //GetFR1D(outfile1D,"HF","pt");
-  //GetFR1D(outfile1D,"LF","eta");
-  //GetFR1D(outfile1D,"LF","reliso");
-  //GetFR1D(outfile1D,"LF","mva");
-  //GetFR1D(outfile1D,"LF","IP3D");
-  //GetFR1D(outfile1D,"LF","dXY");
-  //GetFR1D(outfile1D,"LF","LFvsHF");
-  //GetFR1D(outfile1D,"HF","eta");
-  //GetFR1D(outfile1D,"HF","reliso");
-  //GetFR1D(outfile1D,"HF","mva");
-  //GetFR1D(outfile1D,"HF","IP3D");
-  //GetFR1D(outfile1D,"HF","dXY");
-  //GetFR1D(outfile1D,"HF","LFvsHF");
-  TFile *outfile1D = new TFile("FakeRateTruth_Mu_2017_LFvsHF_1D.root","RECREATE");
-  GetMCTruthFR(outfile1D, "QCD", "2017", "",   "MuMu", "HNL_ULID_2017", "fake",   "pt");
-  GetMCTruthFR(outfile1D, "QCD", "2017", "HF", "MuMu", "HNL_ULID_2017", "fake",   "pt");
-  GetMCTruthFR(outfile1D, "QCD", "2017", "LF", "MuMu", "HNL_ULID_2017", "fake",   "pt");
-  GetMCTruthFR(outfile1D, "QCD", "2017", "",   "MuMu", "HNL_ULID_2017", "fakeHF", "pt");
-  GetMCTruthFR(outfile1D, "QCD", "2017", "HF", "MuMu", "HNL_ULID_2017", "fakeHF", "pt");
-  GetMCTruthFR(outfile1D, "QCD", "2017", "LF", "MuMu", "HNL_ULID_2017", "fakeHF", "pt");
-  GetMCTruthFR(outfile1D, "QCD", "2017", "",   "MuMu", "HNL_ULID_2017", "fakeLF", "pt");
-  GetMCTruthFR(outfile1D, "QCD", "2017", "HF", "MuMu", "HNL_ULID_2017", "fakeLF", "pt");
-  GetMCTruthFR(outfile1D, "QCD", "2017", "LF", "MuMu", "HNL_ULID_2017", "fakeLF", "pt");
-  GetMCTruthFR(outfile1D, "QCD", "2017", "",   "MuMu", "HNTightV2", "fake",   "pt");
-  GetMCTruthFR(outfile1D, "QCD", "2017", "HF", "MuMu", "HNTightV2", "fake",   "pt");
-  GetMCTruthFR(outfile1D, "QCD", "2017", "LF", "MuMu", "HNTightV2", "fake",   "pt");
-  GetMCTruthFR(outfile1D, "QCD", "2017", "",   "MuMu", "HNTightV2", "fakeHF", "pt");
-  GetMCTruthFR(outfile1D, "QCD", "2017", "HF", "MuMu", "HNTightV2", "fakeHF", "pt");
-  GetMCTruthFR(outfile1D, "QCD", "2017", "LF", "MuMu", "HNTightV2", "fakeHF", "pt");
-  GetMCTruthFR(outfile1D, "QCD", "2017", "",   "MuMu", "HNTightV2", "fakeLF", "pt");
-  GetMCTruthFR(outfile1D, "QCD", "2017", "HF", "MuMu", "HNTightV2", "fakeLF", "pt");
-  GetMCTruthFR(outfile1D, "QCD", "2017", "LF", "MuMu", "HNTightV2", "fakeLF", "pt");
-  GetMCTruthFR(outfile1D, "QCD", "2017", "",   "MuMu", "HNTightV2", "fake",   "reliso");
-  GetMCTruthFR(outfile1D, "QCD", "2017", "HF", "MuMu", "HNTightV2", "fake",   "reliso");
-  GetMCTruthFR(outfile1D, "QCD", "2017", "LF", "MuMu", "HNTightV2", "fake",   "reliso");
-  GetMCTruthFR(outfile1D, "QCD", "2017", "",   "MuMu", "HNTightV2", "fakeHF", "reliso");
-  GetMCTruthFR(outfile1D, "QCD", "2017", "HF", "MuMu", "HNTightV2", "fakeHF", "reliso");
-  GetMCTruthFR(outfile1D, "QCD", "2017", "LF", "MuMu", "HNTightV2", "fakeHF", "reliso");
-  GetMCTruthFR(outfile1D, "QCD", "2017", "",   "MuMu", "HNTightV2", "fakeLF", "reliso");
-  GetMCTruthFR(outfile1D, "QCD", "2017", "HF", "MuMu", "HNTightV2", "fakeLF", "reliso");
-  GetMCTruthFR(outfile1D, "QCD", "2017", "LF", "MuMu", "HNTightV2", "fakeLF", "reliso");
+
+  // GetFR2D
+  TFile *outfile2D = new TFile("FakeRate_Mu_2017_LFvsHF_2D.root","RECREATE");
+  GetFR2D(outfile2D,"2017","LF","MuMu","HNL_ULID_2017");
+  GetFR2D(outfile2D,"2017","HF","MuMu","HNL_ULID_2017");
+  GetFR2D(outfile2D,"2017",""  ,"MuMu","HNL_ULID_2017");
+  GetFR2D(outfile2D,"2017","LF","MuMu","HNTightV2");
+  GetFR2D(outfile2D,"2017","HF","MuMu","HNTightV2");
+  GetFR2D(outfile2D,"2017",""  ,"MuMu","HNTightV2");
+
+  // GetFR1D
+  TFile *outfile1D = new TFile("FakeRate_Mu_2017_LFvsHF_1D_test.root","RECREATE");
+  GetFR1D(outfile1D,"2017","LF","MuMu","HNL_ULID_2017","pt");
+  GetFR1D(outfile1D,"2017","HF","MuMu","HNL_ULID_2017","pt");
+  GetFR1D(outfile1D,"2017",""  ,"MuMu","HNL_ULID_2017","pt");
+  GetFR1D(outfile1D,"2017","LF","MuMu","HNTightV2","pt");
+  GetFR1D(outfile1D,"2017","HF","MuMu","HNTightV2","pt");
+  GetFR1D(outfile1D,"2017",""  ,"MuMu","HNTightV2","pt");
+
+  // GetMCTruthFR
+  //TFile *outfile1D = new TFile("FakeRateTruth_Mu_2017_LFvsHF_1D.root","RECREATE");
+  //vector<TString> samples  = {"QCD", "W", "Z", "TT"};
+  //vector<TString> tags     = {"", "HF", "LF"};
+  ////vector<TString> eras     = {"2016preVFP", "2016postVFP", "2017", "2018"};
+  ////vector<TString> flavors  = {"MuMu", "EE"};
+  //vector<TString> IDs      = {"HNL_ULID_2017", "HNTightV2"};
+  //vector<TString> LepTypes = {"fake", "fakeHF", "fakeLF"};
+  //vector<TString> vars     = {"pt", "etaFine", "reliso", "dXY", "dZ", "SIP3D", "mva", "LFvsHF"};
+  //for(unsigned int i=0; i<samples.size(); i++){
+  //  for(unsigned int j=0; j<tags.size(); j++){
+  //    for(unsigned int k=0; k<IDs.size(); k++){
+  //      for(unsigned int l=0; l<LepTypes.size(); l++){
+  //        for(unsigned int m=0; m<vars.size(); m++){
+  //          GetMCTruthFR(outfile1D, samples.at(i), "2017", tags.at(j), "MuMu", IDs.at(k), LepTypes.at(l), vars.at(m));
+  //        }
+  //      }
+  //    }
+  //  }
+  //}
+
   //GetMCTruthFRratio("TT","2017","MuMu","TriLep"  ,"PtPartonUncorr",outfile);
   //GetMCTruthFRratio("TT","2017","MuMu","TriLep"  ,"PtPartonQCD"   ,outfile);
   //GetMCTruthFRratio("TT","2017","MuMu","MVALoose","PtPartonUncorr",outfile);
