@@ -425,7 +425,7 @@ void FakeRate(){
   GetFR2D(outfile2D,"2017",""  ,"MuMu","HNTightV2");
 
   // GetFR1D
-  TFile *outfile1D = new TFile("FakeRate_Mu_2017_LFvsHF_1D_test.root","RECREATE");
+  TFile *outfile1D = new TFile("FakeRate_Mu_2017_LFvsHF_1D.root","RECREATE");
   GetFR1D(outfile1D,"2017","LF","MuMu","HNL_ULID_2017","pt");
   GetFR1D(outfile1D,"2017","HF","MuMu","HNL_ULID_2017","pt");
   GetFR1D(outfile1D,"2017",""  ,"MuMu","HNL_ULID_2017","pt");
