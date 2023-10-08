@@ -1173,10 +1173,8 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
     // LLL+ 
     if(RunCR("CR_ZZ",CRs)        &&FillZZCRPlots(  fourlep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramQuadlep, weight_channel)) passed.push_back("ZZ_CR");
     if(RunCR("CR_ZZLoose",CRs)   &&FillZZ2CRPlots( fourlep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramQuadlep, weight_channel)) passed.push_back("ZZLoose_CR"); 
-    if(RunCR("CR_WZ",CRs)    &&FillWZCRPlots( trilep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTrilep, weight_channel)) {
-      passed.push_back("WZ_CR");
-    }
-    if(RunCR("CR_ZNP",CRs)   &&FillZNPCRPlots(trilep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTrilep, weight_channel)) passed.push_back("ZNP_CR");                                                                                                                                                                        
+    if(RunCR("CR_WZ",CRs)        &&FillWZCRPlots( trilep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTrilep, weight_channel))    passed.push_back("WZ_CR");
+    if(RunCR("CR_ZNP",CRs)       &&FillZNPCRPlots(trilep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTrilep, weight_channel)) passed.push_back("ZNP_CR");                                                                                                                                                                        
     //return;
     
     //if(run_Debug) cout << "FillTopCRPlots " << endl;

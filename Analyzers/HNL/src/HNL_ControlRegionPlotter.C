@@ -17,9 +17,23 @@ void HNL_ControlRegionPlotter::executeEvent(){
 
   Event ev = GetEvent();
 
-  //AnalyzerParameter param_signal = HNL_LeptonCore::InitialiseHNLParameter("HNL");
-  AnalyzerParameter param_signal = HNL_LeptonCore::InitialiseHNLParameter("MVAUL","_LFvsHF");
-  RunControlRegions(param_signal , {"CR_OS_Z","CR_OS_Top","CR_WZ"});
+  vector<TString> LooseIDs = {"HNL_ULID_FO",   "HNLooseV1"};
+  vector<TString> TightIDs = {"HNL_ULID_2017", "HNTightV2"};
+
+  for(int i=0; i<LooseIDs.size(); i++){
+    for(int doSep = 0; doSep < 2; doSep++){
+
+      AnalyzerParameter param_signal = doSep ? HNL_LeptonCore::InitialiseHNLParameter("MVAUL","_LFvsHF") : HNL_LeptonCore::InitialiseHNLParameter("MVAUL","");
+      //redefine FR ID, FR key, Tight IDs
+      param_signal.Name          = param_signal.Name+"_"+TightIDs.at(i);
+      param_signal.DefName       = param_signal.DefName+"_"+TightIDs.at(i);
+      param_signal.Muon_FR_ID    = LooseIDs.at(i);
+      param_signal.Muon_FR_Key   = "pt_eta_AwayJetPt40"; // add ptcone later with HNTightV2
+      param_signal.Muon_Tight_ID = TightIDs.at(i);
+      RunControlRegions(param_signal , {"CR_OS_Z","CR_OS_ZAk8","CR_OS_Top","CR_OS_TopAk8","CR_WZ","CR_ZZ"});
+
+    }
+  }
 
 /*
   vector<TString> IDs = {};//"HNL_ULID_Baseline";
