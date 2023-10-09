@@ -42,7 +42,7 @@ class HNL_LeptonFakeRate  : public HNL_LeptonCore {
   void MakePromptRatePlots(TString label, TString mutag,AnalyzerParameter param,  std::vector<Lepton *> leps , std::vector<bool> lepsT, std::vector<Jet> jets,float event_weight, float isocut, Particle MET);
 			   
   
-  bool UseEvent(std::vector<Lepton *> leps,   std::vector< Jet> jets, float awayjetcut, Particle MET, float wt);
+  bool UseEvent(AnalyzerParameter param, std::vector<Lepton *> leps,   std::vector< Jet> jets, float awayjetcut, Particle MET, float wt);
 
 
   //==== pileup

@@ -680,7 +680,7 @@ void HNL_LeptonFakeRate::RunM(std::vector<Electron> loose_el,  std::vector<Muon>
   }
 
   
-  bool useevent40 = UseEvent(leps , jets, 40., METv, event_weight);
+  bool useevent40 = UseEvent(param, leps, jets, 40., METv, event_weight);
   if(useevent40){
     if (blepsT[0] && jets.size() >= 1)FillRegionPlots("MuMu","TightMu40_notm_"+param.Name, jets,  loose_el,loose_mu, METv, event_weight);
     if (jets.size() >= 1)FillRegionPlots("MuMu","LooseMu40_notm_"+param.Name, jets,  loose_el,loose_mu, METv, event_weight);
@@ -812,7 +812,7 @@ void HNL_LeptonFakeRate::RunE( std::vector<Electron> loose_el, std::vector<Muon>
   
 
 
-  bool useevent40 = UseEvent(leps , jets, 40., METv,event_weight);
+  bool useevent40 = UseEvent(param, leps, jets, 40., METv,event_weight);
   if(useevent40){
     if (blepsT[0] && jets.size() >= 1)FillRegionPlots("EE","TightEl40_notm_"+param.Name, jets,  loose_el,loose_mu, METv, event_weight);
     if (jets.size() >= 1)FillRegionPlots("EE","LooseEl40_notm_"+param.Name, jets,  loose_el,loose_mu, METv, event_weight);
@@ -1355,10 +1355,10 @@ void HNL_LeptonFakeRate::MakeFakeRatePlots(TString label, TString mutag,Analyzer
   //else truth_match=true;
   //if(!truth_match) return; //JH : to compare fake rates from heavy/light jets, I need non-prompt leptons as well
 
-  //bool useevent20 = UseEvent(leps , jets, 20.,  MET, event_weight);
-  //bool useevent30 = UseEvent(leps , jets, 30.,  MET, event_weight);
-  bool useevent40 = UseEvent(leps , jets, 40.,  MET, event_weight);
-  //bool useevent60 = UseEvent(leps , jets, 60.,  MET, event_weight);
+  //bool useevent20 = UseEvent(param, leps, jets, 20.,  MET, event_weight);
+  //bool useevent30 = UseEvent(param, leps, jets, 30.,  MET, event_weight);
+  bool useevent40 = UseEvent(param, leps, jets, 40.,  MET, event_weight); //JH : added param here
+  //bool useevent60 = UseEvent(param, leps, jets, 60.,  MET, event_weight);
 
   label= mutag;
   if(jets.size() >= 1){
@@ -1371,12 +1371,12 @@ void HNL_LeptonFakeRate::MakeFakeRatePlots(TString label, TString mutag,Analyzer
 }
 
 
-bool HNL_LeptonFakeRate::UseEvent(std::vector<Lepton *> leps ,  std::vector< Jet> jets, float awayjetcut, Particle MET, float wt){
+bool HNL_LeptonFakeRate::UseEvent(AnalyzerParameter param, std::vector<Lepton *> leps ,  std::vector< Jet> jets, float awayjetcut, Particle MET, float wt){
 
-  FillHist("UseEvent_Njet", jets.size(), wt, 10, 0, 10);
-  FillHist("UseEvent_MET", MET.Pt() , wt, 200., 0, 2000);
+  FillHist("UseEvent_Njet_"+param.Name, jets.size(), wt, 10, 0, 10);
+  FillHist("UseEvent_MET_"+param.Name, MET.Pt() , wt, 200., 0, 2000);
   vector<TString> cutflows = {"Start","MET","MT","AwayJetPt","JetEMfrac","Jetdphi","PtRatio","Mu3","Mu8","Mu17"};
-  FillHist("UseEvent_Cutflow", cutflows , "Start", wt);
+  FillHist("UseEvent_Cutflow_"+param.Name, cutflows , "Start", wt);
 
   bool useevent = false;
   if(leps.size() != 1) return false;
@@ -1387,11 +1387,11 @@ bool HNL_LeptonFakeRate::UseEvent(std::vector<Lepton *> leps ,  std::vector< Jet
     METdphi = TVector2::Phi_mpi_pi(leps.at(w)->Phi()-MET.Phi());
     MT = sqrt(2.* leps.at(w)->Et()*MET.Pt() * (1 - cos( METdphi)));
 
-    if(MET.Pt() < 40) FillHist("UseEvent_Cutflow", cutflows , "MET", wt); 
+    if(MET.Pt() < 40) FillHist("UseEvent_Cutflow_"+param.Name, cutflows , "MET", wt); 
     
     if(( (MET.Pt() < 40) && (MT < 25.)) ) {
 
-      FillHist("UseEvent_Cutflow", cutflows , "MT", wt);
+      FillHist("UseEvent_Cutflow_"+param.Name, cutflows , "MT", wt);
       vector<Jet> jetpt;
       vector<Jet> jetEMfrac;
       vector<Jet> jetdphi;
@@ -1400,26 +1400,26 @@ bool HNL_LeptonFakeRate::UseEvent(std::vector<Lepton *> leps ,  std::vector< Jet
         if(jets.at(ij).Pt() > awayjetcut) jetpt.push_back(jets.at(ij));
       }
       if(jetpt.size()>0){
-        FillHist("UseEvent_Cutflow", cutflows , "AwayJetPt", wt);
+        FillHist("UseEvent_Cutflow_"+param.Name, cutflows , "AwayJetPt", wt);
         for(unsigned int ij=0; ij < jetpt.size(); ij++){
           if(jetpt.at(ij).ChargedEmEnergyFraction() < 0.65) jetEMfrac.push_back(jetpt.at(ij));
         }
       }
       if(jetEMfrac.size()>0){
-        FillHist("UseEvent_Cutflow", cutflows , "JetEMfrac", wt);
+        FillHist("UseEvent_Cutflow_"+param.Name, cutflows , "JetEMfrac", wt);
         for(unsigned int ij=0; ij < jetEMfrac.size(); ij++){
           float dphi =fabs(TVector2::Phi_mpi_pi(leps.at(0)->Phi() - jetEMfrac.at(ij).Phi()));
           if(dphi > 2.5) jetdphi.push_back(jetEMfrac.at(ij));
         }
       }
       if(jetdphi.size()>0){
-        FillHist("UseEvent_Cutflow", cutflows , "Jetdphi", wt);
+        FillHist("UseEvent_Cutflow_"+param.Name, cutflows , "Jetdphi", wt);
         for(unsigned int ij=0; ij < jetdphi.size(); ij++){
           if(jetdphi.at(ij).Pt() / leps.at(0)->Pt() > 1.2) jetPtratio.push_back(jetdphi.at(ij));
         }
       }
       if(jetPtratio.size()>0){
-        FillHist("UseEvent_Cutflow", cutflows , "PtRatio", wt);
+        FillHist("UseEvent_Cutflow_"+param.Name, cutflows , "PtRatio", wt);
       }
         
 
@@ -1522,15 +1522,15 @@ void HNL_LeptonFakeRate::GetFakeRates(std::vector<Lepton *> leps,std::vector<boo
     
     if(lep_pt < 5) return;
     else if(lep_pt <10){
-      if(Mu3PD&&ev.PassTrigger(triggerslist_3)) { fill_plot=true; FillHist("UseEvent_Cutflow", cutflows , "Mu3", event_weight); if(!IsDATA)weight_pt = event_weight * ev.GetTriggerLumi(triggerslist_3);}
+      if(Mu3PD&&ev.PassTrigger(triggerslist_3)) { fill_plot=true; FillHist("UseEvent_Cutflow_"+param.Name, cutflows , "Mu3", event_weight); if(!IsDATA)weight_pt = event_weight * ev.GetTriggerLumi(triggerslist_3);}
       else { fill_plot=false;weight_pt = 0.;  }
     }
     else  if(lep_pt < 20) {
-      if(Mu8PD&&ev.PassTrigger(triggerslist_8)) { fill_plot=true; FillHist("UseEvent_Cutflow", cutflows , "Mu8", event_weight); if(!IsDATA)weight_pt= event_weight * ev.GetTriggerLumi(triggerslist_8); }
+      if(Mu8PD&&ev.PassTrigger(triggerslist_8)) { fill_plot=true; FillHist("UseEvent_Cutflow_"+param.Name, cutflows , "Mu8", event_weight); if(!IsDATA)weight_pt= event_weight * ev.GetTriggerLumi(triggerslist_8); }
       else{ fill_plot=false;weight_pt = 0.;      }
     }
     else {
-      if(Mu17PD && ev.PassTrigger(triggerslist_17)) { fill_plot=true; FillHist("UseEvent_Cutflow", cutflows , "Mu17", event_weight); if(!IsDATA) weight_pt= event_weight * ev.GetTriggerLumi(triggerslist_17);}
+      if(Mu17PD && ev.PassTrigger(triggerslist_17)) { fill_plot=true; FillHist("UseEvent_Cutflow_"+param.Name, cutflows , "Mu17", event_weight); if(!IsDATA) weight_pt= event_weight * ev.GetTriggerLumi(triggerslist_17);}
       else{ fill_plot=false;weight_pt = 0.;      }
     }
     
