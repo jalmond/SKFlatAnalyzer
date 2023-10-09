@@ -1221,7 +1221,7 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
     // Treat conversions using GENT MEthod
     if(ConversionVeto(LepsT,All_Gens)){
       AnalyzerParameter paramTMP=paramTrilep;
-      paramTMP.Name=param.Name+"_GentMethod";
+      paramTMP.Name=paramTMP.Name+"_GentMethod";
       if(FillWGCRPlots( trilep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTMP, weight_channel)) passed.push_back("WG_CR");
       if(FillZGCRPlots( trilep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTMP, weight_channel)) passed.push_back("ZG_CR");
     }
