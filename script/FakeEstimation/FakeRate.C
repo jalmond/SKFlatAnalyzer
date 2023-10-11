@@ -92,9 +92,10 @@ void GetFR1D(TFile *outfile, TString year, TString tag, TString channel, TString
   TH1D *h_tight_TT_1D   = (TH1D*)f_fake_TT  ->Get(histname_tight);
   TH1D *h_tight_QCD_1D  = DrawQCD ? (TH1D*)f_fake_QCD ->Get(histname_tight) : new TH1D();
 
-  // Show the stacked histo
-  TCanvas *c1 = new TCanvas(nametag+"loose_"+ID+"_"+var,"",800,800);
-  TCanvas *c2 = new TCanvas(nametag+"tight_"+ID+"_"+var,"",800,800);
+  // Show the stacked histo & fake rates
+  TCanvas *c1 = new TCanvas(nametag+"Loose_"+ID+"_"+var,"",800,800);
+  TCanvas *c2 = new TCanvas(nametag+"Tight_"+ID+"_"+var,"",800,800);
+  TCanvas *c3 = new TCanvas(nametag+"FR_"+ID+"_"+var,"",900,800);
 
   // Loose
   c1->cd();
@@ -247,11 +248,50 @@ void GetFR1D(TFile *outfile, TString year, TString tag, TString channel, TString
   outfile->cd();
   h_FR_1D->Write();
 
+  // Draw the 1D fake rates on a canvas
+  c3->cd();
+
+  c3->SetRightMargin(0.05);
+  c3->SetLeftMargin(0.14);
+
+  std::map<TString, TString> var_latex;
+  var_latex["PtPartonUncorr"] = "p_{T}^{parton, uncorr} (GeV)";
+  var_latex["PtPartonQCD"]    = "p_{T}^{parton, corr} (GeV)";
+  var_latex["pt"]             = "p_{T} (GeV)";
+  var_latex["eta"]            = "#eta";
+  var_latex["etaFine"]        = "#eta";
+  var_latex["dXY"]            = "d_{xy} (cm)";
+  var_latex["dZ"]             = "d_{z} (cm)";
+  var_latex["SIP3D"]          = "SIP_{3D}";
+  var_latex["mva"]            = "MVA_{HFvsPr}";
+  var_latex["LFvsHF"]         = "MVA_{LFvsHF}";
+  var_latex["reliso"]         = "PFRelIso";
+  h_FR_1D->GetXaxis()->SetTitleOffset(1.2);
+  h_FR_1D->GetXaxis()->SetTitle(var_latex[var]);
+  h_FR_1D->GetXaxis()->SetLabelOffset(0);
+  h_FR_1D->GetYaxis()->SetTitle("#frac{Tight}{Loose}");
+  h_FR_1D->SetLineColor(kRed);
+  h_FR_1D->SetStats(0);
+  h_FR_1D->Draw();
+  if(var.Contains("pt")) gPad->SetLogx();
+
+  TLegend *lg = new TLegend(0.6, 0.77, 0.95, 0.88);
+  lg->AddEntry(h_FR_1D,"#bf{"+tag+"} "+ID+" (p_{T}^{j} = 40 GeV)","lpe"); // show line, polymarker, error bar
+  lg->SetBorderSize(0);
+  lg->Draw("same");
+
+  TText *t = new TText(.95,.91,"Data ("+year+")");
+  t->SetNDC(); // set this or the text will show at x, y w.r.t x, y-axis of the histogram (not pad)
+  t->SetTextSize(0.04);
+  t->SetTextAlign(31);
+  t->Draw();
+
   // Save the loose, tight plots in directories
   TString DrawQCDtxt = (DrawQCD) ? "_DrawQCD" : "";
   gSystem->Exec("mkdir -p FakeRate1D/"+channel+"/"+ID+"/"+tag);
-  c1->SaveAs("FakeRate1D/"+channel+"/"+ID+"/"+tag+"/"+nametag+ID+"_"+var+DrawQCDtxt+".png");
-  c2->SaveAs("FakeRate1D/"+channel+"/"+ID+"/"+tag+"/"+nametag+ID+"_"+var+DrawQCDtxt+".png");
+  c1->SaveAs("FakeRate1D/"+channel+"/"+ID+"/"+tag+"/"+nametag+"Loose_"+ID+"_"+var+DrawQCDtxt+".png");
+  c2->SaveAs("FakeRate1D/"+channel+"/"+ID+"/"+tag+"/"+nametag+"Tight_"+ID+"_"+var+DrawQCDtxt+".png");
+  c3->SaveAs("FakeRate1D/"+channel+"/"+ID+"/"+tag+"/"+nametag+"FR_"+ID+"_"+var+".png");
 
 }
 
