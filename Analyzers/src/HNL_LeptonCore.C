@@ -3151,9 +3151,7 @@ double  HNL_LeptonCore::GetMass(TString type , std::vector<Jet> jets, std::vecto
     double dijetmass=99990000.;
     int m=-999;
     int n=-999;
-    double ST(0.);
     for(UInt_t emme=0; emme<jets.size(); emme++){
-      ST += jets[emme].Pt(); //JH : ???
       for(UInt_t enne=1; enne<jets.size(); enne++) {
 
         dijetmass_tmp = (jets[emme]+jets[enne]).M();

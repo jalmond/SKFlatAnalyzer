@@ -40,12 +40,14 @@ if [[ $1 == "" ]]; then
 #SKFlat.py -a $analyzer  -l $datapath/DATA_${i}_el.txt  -n ${njobs_data}  --nmax ${nmax}  -e ${i} --skim SkimTree_HNFakeBDT&
 #SKFlat.py -a $analyzer  -l $mcpath/MC.txt  -n ${njobs}  --nmax ${nmax}  -e ${i}   --skim SkimTree_HNFakeBDT &
 # But how much the QCD describe the data?
-SKFlat.py -a $analyzer  -l $mcpath/QCD_mu.txt  -n ${njobs}  --nmax ${nmax}  -e ${i} --skim SkimTree_FakeEventSkimBDT & # w/o BDT skim, you can't do LFvsHF separation
+#SKFlat.py -a $analyzer  -l $mcpath/QCD_mu.txt  -n ${njobs}  --nmax ${nmax}  -e ${i} --skim SkimTree_FakeEventSkimBDT & # w/o BDT skim, you can't do LFvsHF separation
 # And how much TTLL, TTJJ contribute to the fake measurement region?
 #SKFlat.py -a $analyzer  -i TTLL_powheg  -n ${njobs}  --nmax ${nmax}  -e ${i} & # checked this is negligible
 #SKFlat.py -a $analyzer  -i TTJJ_powheg  -n ${njobs}  --nmax ${nmax}  -e ${i} & # this is actually fake source, not prompt
 # And does HNFakeBDT skim really cover all fake measurement region?
-#SKFlat.py -a $analyzer  -i TTLJ_powheg  -n ${njobs}  --nmax ${nmax}  -e ${i} & # not really.. because the skim cuts out prompt lepton w/ pt < 25 GeV. but that 25 was determined carefully after checking the distribution in fake measurement region and confirming that prompt contributions are negligible in that low pt region
+#SKFlat.py -a $analyzer  -i TTLJ_powheg  -n ${njobs}  --nmax ${nmax}  -e ${i} &
+SKFlat.py -a $analyzer  -i DYJets  -n ${njobs}  --nmax ${nmax}  -e ${i} &
+SKFlat.py -a $analyzer  -i WJets_MG  -n ${njobs}  --nmax ${nmax}  -e ${i} &
 
     done
 

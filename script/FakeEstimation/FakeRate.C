@@ -243,7 +243,8 @@ void GetFR1D(TFile *outfile, TString year, TString tag, TString channel, TString
 
   // Store 1D fake rates in the root file
   TH1D *h_FR_1D = (TH1D*)h_tight_data_sub_1D->Clone();
-  h_FR_1D->Divide(h_loose_data_sub_1D);
+  //h_FR_1D->Divide(h_loose_data_sub_1D); // simple Poisson error
+  h_FR_1D->Divide(h_FR_1D,h_loose_data_sub_1D,1,1,"B"); // unweighted, Binomial error
   h_FR_1D->SetName(ID+"_"+nametag+var+"_AwayJetPt40");
   outfile->cd();
   h_FR_1D->Write();
@@ -496,6 +497,30 @@ void FakeRate(){
   GetFR1D(outfile1D,"2017","LF","MuMu","HNTightV2","pt",true);
   GetFR1D(outfile1D,"2017","HF","MuMu","HNTightV2","pt",true);
   GetFR1D(outfile1D,"2017",""  ,"MuMu","HNTightV2","pt",true);
+  GetFR1D(outfile1D,"2017","LF","MuMu","HNL_ULID_2017","eta",false);
+  GetFR1D(outfile1D,"2017","HF","MuMu","HNL_ULID_2017","eta",false);
+  GetFR1D(outfile1D,"2017",""  ,"MuMu","HNL_ULID_2017","eta",false);
+  GetFR1D(outfile1D,"2017","LF","MuMu","HNL_ULID_2017","eta",true);
+  GetFR1D(outfile1D,"2017","HF","MuMu","HNL_ULID_2017","eta",true);
+  GetFR1D(outfile1D,"2017",""  ,"MuMu","HNL_ULID_2017","eta",true);
+  GetFR1D(outfile1D,"2017","LF","MuMu","HNTightV2","eta",false);
+  GetFR1D(outfile1D,"2017","HF","MuMu","HNTightV2","eta",false);
+  GetFR1D(outfile1D,"2017",""  ,"MuMu","HNTightV2","eta",false);
+  GetFR1D(outfile1D,"2017","LF","MuMu","HNTightV2","eta",true);
+  GetFR1D(outfile1D,"2017","HF","MuMu","HNTightV2","eta",true);
+  GetFR1D(outfile1D,"2017",""  ,"MuMu","HNTightV2","eta",true);
+  GetFR1D(outfile1D,"2017","LF","MuMu","HNL_ULID_2017","reliso",false);
+  GetFR1D(outfile1D,"2017","HF","MuMu","HNL_ULID_2017","reliso",false);
+  GetFR1D(outfile1D,"2017",""  ,"MuMu","HNL_ULID_2017","reliso",false);
+  GetFR1D(outfile1D,"2017","LF","MuMu","HNL_ULID_2017","reliso",true);
+  GetFR1D(outfile1D,"2017","HF","MuMu","HNL_ULID_2017","reliso",true);
+  GetFR1D(outfile1D,"2017",""  ,"MuMu","HNL_ULID_2017","reliso",true);
+  GetFR1D(outfile1D,"2017","LF","MuMu","HNTightV2","reliso",false);
+  GetFR1D(outfile1D,"2017","HF","MuMu","HNTightV2","reliso",false);
+  GetFR1D(outfile1D,"2017",""  ,"MuMu","HNTightV2","reliso",false);
+  GetFR1D(outfile1D,"2017","LF","MuMu","HNTightV2","reliso",true);
+  GetFR1D(outfile1D,"2017","HF","MuMu","HNTightV2","reliso",true);
+  GetFR1D(outfile1D,"2017",""  ,"MuMu","HNTightV2","reliso",true);
 
   // GetMCTruthFR
   //TFile *outfile1D = new TFile("FakeRateTruth_Mu_2017_LFvsHF_1D.root","RECREATE");

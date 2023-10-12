@@ -1179,7 +1179,7 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
     
     //if(run_Debug) cout << "FillTopCRPlots " << endl;
 
-    if(RunCF){    
+    if(RunCF){
       if(LepsT.size() == 2){
 
   if(dilep_channel == MuMu) continue;
