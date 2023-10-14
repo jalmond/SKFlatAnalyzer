@@ -10,12 +10,11 @@ skim=' '
 
 declare  -a era_list=("2018" "2017"  "2016preVFP" "2016postVFP")
 
-if [[ $1 == "More" ]]; then
+if [[ $1 == "" ]]; then
 
-    declare  -a era_list=( "2016preVFP" "2016postVFP")
     for i in "${era_list[@]}"
     do
-        SKFlat.py -a $analyzer  -l $mcpath/MC_Additional.txt   --nmax 300           -e ${i} &
+        SKFlat.py -a $analyzer  -i DYJetsToEE_MiNNLO   -n 2000  --nmax 400           -e ${i} &
       done
 
 fi
