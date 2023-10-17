@@ -13,6 +13,25 @@ skim=' '
 
 declare  -a era_list=("2017")
 
+if [[ $1 == "TEST" ]]; then
+
+    declare  -a era_list=("2017")
+    declare  -a flag_list=("SS_CR")
+
+    for i in "${era_list[@]}"
+    do
+        for j in "${flag_list[@]}"
+        do
+            FLAG=$j
+            SKFlat.py -a $analyzer  -i DYTypeI_DF_M100_private   -n 1 --nmax 1   -e ${i}  --skim SkimTree_HNMultiLepBDT --userflags $FLAG  &
+	    
+        done
+    done
+fi
+
+
+
+
 if [[ $1 == "Full" ]]; then
 
     declare  -a era_list=("2017")
@@ -44,6 +63,24 @@ if [[ $1 == "Full" ]]; then
     done
 
 fi
+
+if [[ $1 == "WZ" ]]; then
+
+    declare  -a era_list=("2017")
+    declare  -a flag_list=("VV_VR")
+
+    for i in "${era_list[@]}"
+    do
+        for j in "${flag_list[@]}"
+        do
+            FLAG=$j
+            SKFlat.py -a $analyzer  -i WZTo3LNu_amcatnlo   -n 100 --nmax 600   -e ${i}  --skim SkimTree_HNMultiLepBDT --userflags $FLAG,RunPrompt  &
+	    SKFlat.py -a $analyzer  -i WZTo3LNu_amcatnlo   -n 100 --nmax 600   -e ${i}  --skim SkimTree_HNMultiLepBDT --userflags $FLAG &
+
+        done
+    done
+fi
+
 
 if [[ $1 == "" ]]; then
 

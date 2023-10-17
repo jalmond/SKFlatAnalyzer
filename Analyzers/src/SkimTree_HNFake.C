@@ -2,6 +2,8 @@
 
 void SkimTree_HNFake::initializeAnalyzer(){
 
+  AnalyzerCore::initializeAnalyzer();
+
   outfile->cd();
   cout << "[SkimTree_HNFake::initializeAnalyzer()] gDirectory = " << gDirectory->GetName() << endl;
   newtree = fChain->CloneTree(0);

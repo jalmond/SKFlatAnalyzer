@@ -2,6 +2,8 @@
 
 void HNL_LeptonCore::initializeAnalyzer(){
 
+  AnalyzerCore::initializeAnalyzer();
+
   //=== VERBOSE                                                                                                                                        
   run_Debug = HasFlag("DEBUG");
 
@@ -26,12 +28,6 @@ void HNL_LeptonCore::initializeAnalyzer(){
 
   SetupTriggerLists();
   
-  IsDYSample=false;
-  IsTTSample=false;
-  if(MCSample.Contains("DYJets")||MCSample.Contains("ZToEE")||MCSample.Contains("ZToMuMu")||MCSample.Contains(TRegexp("DY[0-9]Jets"))) IsDYSample=true;
-  if(MCSample.Contains(TRegexp("TT[LJ][LJ]"))) IsTTSample=true;
-  if(IsSignal()) IsDYSample=false;
-
   if(IsDYSample) SetupZptWeight();
 
 
@@ -234,6 +230,10 @@ AnalyzerParameter HNL_LeptonCore::SetupHNLParameter(TString s_setup_version, TSt
   param.FakeRateMethod   = "PtCone";
   param.k.Muon_FR        = "AwayJetPt40";
   param.k.Electron_FR    = "AwayJetPt40";
+
+  param.Jet_ID                     = "tight";
+  param.FatJet_ID                  = "tight";
+
 
   //// Weights
 

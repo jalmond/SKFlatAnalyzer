@@ -620,8 +620,10 @@ bool AnalyzerCore::ConversionVeto(std::vector<Lepton *> leps,const std::vector<G
 
 void AnalyzerCore::GetAFBGenParticles(const vector<Gen>& gens,Gen& parton0,Gen& parton1,Gen& l0,Gen& l1,int mode){
   //mode 0:bare 1:dressed01 2:dressed04 3:beforeFSR
+
   if(!IsDYSample&&!MCSample.Contains("GamGamToLL")&&!MCSample.Contains("TTLL")){
     cout <<"[SMPAnalyzerCore::GetAFBGenParticles] this is only for dilepton event"<<endl;
+    cout << "IsDYSample = " << IsDYSample << " MCSample = " << MCSample << endl;
     exit(EXIT_FAILURE);
   }
   parton0=Gen();
@@ -718,6 +720,7 @@ void AnalyzerCore::GetAFBGenParticles(const vector<Gen>& gens,Gen& parton0,Gen& 
 }
 
 void  AnalyzerCore::GetAFBLHEParticles(const vector<LHE>& lhes,LHE& p0,LHE& p1,LHE& l0,LHE& l1,LHE& j0){
+
   if(!IsDYSample&&!MCSample.Contains("GamGamToLL")&&!MCSample.Contains("TTLL")){
     cout <<"[AFBAnalyzer::GetAFBLHEParticles] this is only for dilepton event"<<endl;
     exit(EXIT_FAILURE);

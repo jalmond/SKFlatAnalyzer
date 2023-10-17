@@ -2,6 +2,8 @@
 
 void SkimTree_ConvEventSkim::initializeAnalyzer(){
 
+  AnalyzerCore::initializeAnalyzer();
+
   outfile->cd();
   cout << "[SkimTree_ConvEventSkim::initializeAnalyzer()] gDirectory = " << gDirectory->GetName() << endl;
   newtree = fChain->CloneTree(0);

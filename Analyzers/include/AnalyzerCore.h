@@ -48,6 +48,15 @@ public:
 
   virtual void initializeAnalyzer(){
 
+    IsDYSample=false;
+    IsTTSample=false;
+    if(MCSample.Contains("DYJets")||MCSample.Contains("ZToEE")||MCSample.Contains("ZToMuMu")||MCSample.Contains(TRegexp("DY[0-9]Jets"))) IsDYSample=true;
+    if(MCSample.Contains(TRegexp("TT[LJ][LJ]"))) IsTTSample=true;
+    if(IsSignal()) IsDYSample=false;
+  
+    cout << "AnalyzerCore::initializeAnalyzer IsDYSample=" << IsDYSample << endl;
+    cout << "AnalyzerCore::initializeAnalyzer IsTTSample=" << IsTTSample << endl;
+
   };
 
   virtual void executeEvent(){

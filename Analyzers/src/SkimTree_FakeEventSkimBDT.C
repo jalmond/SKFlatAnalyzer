@@ -2,6 +2,8 @@
 
 void SkimTree_FakeEventSkimBDT::initializeAnalyzer(){
 
+  AnalyzerCore::initializeAnalyzer();
+
   outfile->cd();
   cout << "[SkimTree_FakeEventSkimBDT::initializeAnalyzer()] gDirectory = " << gDirectory->GetName() << endl;
   newtree = fChain->CloneTree(0);

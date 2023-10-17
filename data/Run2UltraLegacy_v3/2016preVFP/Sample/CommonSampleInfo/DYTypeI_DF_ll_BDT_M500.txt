@@ -1,0 +1,2 @@
+# alias PD xsec nmc sumsign sumw
+DYTypeI_DF_ll_BDT_M500	DYTypeI_DF_ll_BDT_M500	0.08102106455	101865	95435.0	0.414476244794 

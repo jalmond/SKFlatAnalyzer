@@ -2,6 +2,9 @@
 
 void SkimTree_DileptonBDT::initializeAnalyzer(){
 
+  AnalyzerCore::initializeAnalyzer();
+
+
   outfile->cd();
   cout << "[SkimTree_DileptonBDT::initializeAnalyzer()] gDirectory = " << gDirectory->GetName() << endl;
   newtree = fChain->CloneTree(0);

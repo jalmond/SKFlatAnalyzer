@@ -2,6 +2,8 @@
 
 void SkimTree_BDT::initializeAnalyzer(){
 
+  AnalyzerCore::initializeAnalyzer();
+
   outfile->cd();
   cout << "[SkimTree_BDT::initializeAnalyzer()] gDirectory = " << gDirectory->GetName() << endl;
   newtree = fChain->CloneTree(0);

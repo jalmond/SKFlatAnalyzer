@@ -2,6 +2,9 @@
 
 void SkimTree_HNMultiLep::initializeAnalyzer(){
 
+  AnalyzerCore::initializeAnalyzer();
+
+
   outfile->cd();
   cout << "[SkimTree_HNMultiLep::initializeAnalyzer()] gDirectory = " << gDirectory->GetName() << endl;
   newtree = fChain->CloneTree(0);
