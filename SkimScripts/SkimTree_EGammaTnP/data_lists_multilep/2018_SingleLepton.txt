@@ -1,4 +1,4 @@
-SingleMuon:A
-SingleMuon:B
-SingleMuon:C
-SingleMuon:D
+EGamma:A
+EGamma:B
+EGamma:C
+EGamma:D

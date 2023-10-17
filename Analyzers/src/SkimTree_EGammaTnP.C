@@ -99,18 +99,19 @@ void SkimTree_EGammaTnP::initializeAnalyzer(){
 }
 void SkimTree_EGammaTnP::executeEvent(){
 
+
   if(!IsDATA||DataStream.Contains("SingleElectron")||DataStream.Contains("EGamma")){
 
-    Event ev;
+    Event ev = GetEvent();
     vector<Electron> electrons= GetAllElectrons();
-    
-    AnalyzerParameter p = HNL_LeptonCore::InitialiseHNLParameter("Basic");
 
+    AnalyzerParameter p = HNL_LeptonCore::InitialiseHNLParameter("Basic");
 
     if(! (ev.PassTrigger({"HLT_Ele27_WPTight_Gsf_v","HLT_Ele28_WPTight_Gsf_v","HLT_Ele32_WPTight_Gsf_L1DoubleEG_v","HLT_Ele32_WPTight_Gsf_v","HLT_Ele35_WPTight_Gsf_v"})) ) return;
     
-    if(!PassMETFilter()) return;
 
+    if(!PassMETFilter()) return;
+    
 
     map<Electron*,Gen*> genmatching;
     if(!IsDATA){
