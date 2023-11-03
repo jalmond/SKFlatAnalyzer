@@ -126,14 +126,14 @@ public:
     }
     else{
       if(Year=="2016"){
-	if( this->Pt() > 10 && this->Pt() < 20 ) return "PtBin1";
-	else  if( this->Pt()  < 35 ) return "PtBin2";
-	else  if( this->Pt()  < 50 ) return "PtBin3";
-	else  if( this->Pt()  < 100 ) return "PtBin4";
-	else   return "PtBin5";
+  if( this->Pt() > 10 && this->Pt() < 20 ) return "PtBin1";
+  else  if( this->Pt()  < 35 ) return "PtBin2";
+  else  if( this->Pt()  < 50 ) return "PtBin3";
+  else  if( this->Pt()  < 100 ) return "PtBin4";
+  else   return "PtBin5";
       }
       else{
-	if( this->Pt() > 10 && this->Pt() < 20 ) return "PtBin1";
+  if( this->Pt() > 10 && this->Pt() < 20 ) return "PtBin1";
         else  if( this->Pt()  < 35 ) return "PtBin2";
         else  if( this->Pt()  < 50 ) return "PtBin3";
         else  if( this->Pt()  < 100 ) return "PtBin4";
@@ -315,13 +315,13 @@ public:
   inline int TagHF() const {
     if(j_LeptonFlavour==ELECTRON){
       if(HNL_MVA_Fake("EDv4HF")<HNL_MVA_Fake("EDv4LF")) return 1;
-			else return 0;
-		}
-		else{
+      else return 0;
+    }
+    else{
       if(LepMVA()<HNL_MVA_Fake("EDv4")) return 1;
-			else return 0;
-		}
-	}
+      else return 0;
+    }
+  }
 
   inline double HNL_MVA_Conv(TString vers="EDv5") const {
  
@@ -474,12 +474,14 @@ public:
   inline bool PassLepID()  const {return j_passID;}
   inline bool LepIDSet()  const {return j_IDSet;}
 
+  inline TString FakeFlavourString()  const {return j_FakeFlavour;} //JH
+  void SetFakeFlavour(double cut);
+  TString CutString(double cut);
+
   inline int LeptonGenType() const {return j_LeptonType;}
   void SetLeptonType(int t);
 
   void SetLeptonIsCF(bool t);
-
-  TString FakeFlavourString(); //JH
 
   inline Flavour LeptonFlavour() const {return j_LeptonFlavour;}
   void SetLeptonFlavour(Flavour f);
@@ -569,11 +571,10 @@ private:
   int j_LeptonType;
   bool j_LeptonIsCF;
 
-  bool j_passID;
-  
+  bool j_passID;  
   bool j_IDSet;
 
-
+  TString j_FakeFlavour;
 
   ClassDef(Lepton,1)
 

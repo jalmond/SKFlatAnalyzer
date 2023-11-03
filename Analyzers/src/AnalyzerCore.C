@@ -3354,6 +3354,7 @@ std::vector<Lepton *> AnalyzerCore::MakeLeptonPointerVector(const std::vector<Mu
     }
     l->SetPassID(muons[i].PassID(param_.Muon_Tight_ID));
     //cout << "MakeLeptonPointerVector Muon " << param_.Muon_Tight_ID << " " <<  l->Pt() << endl;
+    l->SetFakeFlavour(param_.Muon_LFcut); //JH
     out.push_back(l);
   }
 
@@ -3372,8 +3373,8 @@ std::vector<Lepton *> AnalyzerCore::MakeLeptonPointerVector(const std::vector<Mu
 
     }
     l->SetPassID(electrons[i].PassID(param_.Electron_Tight_ID));
-
     //cout << "MakeLeptonPointerVector Electron " << param_.Electron_Tight_ID <<" " <<  l->Pt() << endl;
+    l->SetFakeFlavour(param_.Electron_LFcut); //JH
 
     out.push_back(l);
   }
@@ -4736,19 +4737,28 @@ double AnalyzerCore::GetFakeWeight(std::vector<Lepton *> leps, AnalyzerParameter
 
     TString fr_key1;
     TString fr_key2;
+    double this_fr1; 
+    double this_fr2; 
     if(_param.Name.Contains("LFvsHF")){
       fr_key1 = (leps[0]->LeptonFlavour() == Lepton::ELECTRON) ? _param.Electron_FR_Key : leps[0]->FakeFlavourString()+"_pt_eta_AwayJetPt40";
       fr_key2 = (leps[1]->LeptonFlavour() == Lepton::ELECTRON) ? _param.Electron_FR_Key : leps[1]->FakeFlavourString()+"_pt_eta_AwayJetPt40";
+      this_fr1 = (leps[0]->LeptonFlavour() == Lepton::ELECTRON) ? fakeEst->GetElectronFakeRate(_param.Electron_Tight_ID, fr_key1, fabs(leps[0]->Eta()), leps[0]->Pt()) : fakeEst->GetMuonFakeRate(_param.Muon_Tight_ID, fr_key1, fabs(leps[0]->Eta()), leps[0]->Pt()); 
+      this_fr2 = (leps[1]->LeptonFlavour() == Lepton::ELECTRON) ? fakeEst->GetElectronFakeRate(_param.Electron_Tight_ID, fr_key2, fabs(leps[1]->Eta()), leps[1]->Pt()) : fakeEst->GetMuonFakeRate(_param.Muon_Tight_ID, fr_key2, fabs(leps[1]->Eta()), leps[1]->Pt()); 
     }
+    else if(_param.Muon_UsePtCone||_param.Electron_UsePtCone){
+      fr_key1 = (leps[0]->LeptonFlavour() == Lepton::ELECTRON) ? _param.Electron_FR_Key : _param.Muon_FR_Key;
+      fr_key2 = (leps[1]->LeptonFlavour() == Lepton::ELECTRON) ? _param.Electron_FR_Key : _param.Muon_FR_Key;
+      this_fr1 = (leps[0]->LeptonFlavour() == Lepton::ELECTRON) ? fakeEst->GetElectronFakeRate(_param.Electron_Tight_ID, fr_key1, fabs(leps[0]->Eta()), leps[0]->PtCone()) : fakeEst->GetMuonFakeRate(_param.Muon_Tight_ID, fr_key1, fabs(leps[0]->Eta()), leps[0]->PtCone()); 
+      this_fr2 = (leps[1]->LeptonFlavour() == Lepton::ELECTRON) ? fakeEst->GetElectronFakeRate(_param.Electron_Tight_ID, fr_key2, fabs(leps[1]->Eta()), leps[1]->PtCone()) : fakeEst->GetMuonFakeRate(_param.Muon_Tight_ID, fr_key2, fabs(leps[1]->Eta()), leps[1]->PtCone()); 
+		}
     else{
       fr_key1 = (leps[0]->LeptonFlavour() == Lepton::ELECTRON) ? _param.Electron_FR_Key : _param.Muon_FR_Key;
       fr_key2 = (leps[1]->LeptonFlavour() == Lepton::ELECTRON) ? _param.Electron_FR_Key : _param.Muon_FR_Key;
-    } //FIXME tmp test for LFvsHF method
+      this_fr1 = (leps[0]->LeptonFlavour() == Lepton::ELECTRON) ? fakeEst->GetElectronFakeRate(_param.Electron_Tight_ID, fr_key1, fabs(leps[0]->Eta()), leps[0]->Pt()) : fakeEst->GetMuonFakeRate(_param.Muon_Tight_ID, fr_key1, fabs(leps[0]->Eta()), leps[0]->Pt()); 
+      this_fr2 = (leps[1]->LeptonFlavour() == Lepton::ELECTRON) ? fakeEst->GetElectronFakeRate(_param.Electron_Tight_ID, fr_key2, fabs(leps[1]->Eta()), leps[1]->Pt()) : fakeEst->GetMuonFakeRate(_param.Muon_Tight_ID, fr_key2, fabs(leps[1]->Eta()), leps[1]->Pt()); 
+    } //FIXME any ways to simplify
     TString  pr_key1 = (leps[0]->LeptonFlavour() == Lepton::ELECTRON) ? _param.Electron_PR_Key : _param.Muon_PR_Key;
     TString  pr_key2 = (leps[1]->LeptonFlavour() == Lepton::ELECTRON) ? _param.Electron_PR_Key : _param.Muon_PR_Key;
-
-    double this_fr1 = (leps[0]->LeptonFlavour() == Lepton::ELECTRON) ? fakeEst->GetElectronFakeRate(_param.Electron_Tight_ID, fr_key1, fabs(leps[0]->Eta()), leps[0]->Pt()) : fakeEst->GetMuonFakeRate(_param.Muon_Tight_ID, fr_key1, fabs(leps[0]->Eta()), leps[0]->Pt()); 
-    double this_fr2 = (leps[1]->LeptonFlavour() == Lepton::ELECTRON) ? fakeEst->GetElectronFakeRate(_param.Electron_Tight_ID, fr_key2, fabs(leps[1]->Eta()), leps[1]->Pt()) : fakeEst->GetMuonFakeRate(_param.Muon_Tight_ID, fr_key2, fabs(leps[1]->Eta()), leps[1]->Pt()); 
 
     double this_pr1 = 1.;
     //if(apply_pr) this_pr1 = (leps[0]->LeptonFlavour() == Lepton::ELECTRON) ? fakeEst->GetElectronPromptRate(_param.Electron_Tight_ID,pr_key1 , fabs(leps[0]->Eta()), leps[0]->Pt()) :fakeEst->GetMuonPromptRate(_param.Muon_Tight_ID, pr_key1 , fabs(leps[0]->Eta()), leps[0]->Pt()) ;
@@ -4783,9 +4793,12 @@ double AnalyzerCore::GetFakeWeight(std::vector<Lepton *> leps, AnalyzerParameter
       if(_param.Name.Contains("LFvsHF")){
         this_fr =  (lep->LeptonFlavour() == Lepton::ELECTRON) ? fakeEst->GetElectronFakeRate(_param.Electron_Tight_ID, _param.Electron_FR_Key, fabs(lep->Eta()), lep->Pt()) : fakeEst->GetMuonFakeRate(_param.Muon_Tight_ID, lep->FakeFlavourString()+"_pt_eta_AwayJetPt40", fabs(lep->Eta()), lep->Pt()); 
       }
+      else if(_param.Muon_UsePtCone||_param.Electron_UsePtCone){
+        this_fr =  (lep->LeptonFlavour() == Lepton::ELECTRON) ? fakeEst->GetElectronFakeRate(_param.Electron_Tight_ID, _param.Electron_FR_Key, fabs(lep->Eta()), lep->Pt()) : fakeEst->GetMuonFakeRate(_param.Muon_Tight_ID, _param.Muon_FR_Key, fabs(lep->Eta()), lep->PtCone()); 
+      }
       else{
         this_fr =  (lep->LeptonFlavour() == Lepton::ELECTRON) ? fakeEst->GetElectronFakeRate(_param.Electron_Tight_ID, _param.Electron_FR_Key, fabs(lep->Eta()), lep->Pt()) : fakeEst->GetMuonFakeRate(_param.Muon_Tight_ID, _param.Muon_FR_Key, fabs(lep->Eta()), lep->Pt()); 
-      } //FIXME tmp test for LFvsHF method
+      }
       this_weight *= -1.*this_fr/(1.-this_fr);
       FRs.push_back(this_fr);
       

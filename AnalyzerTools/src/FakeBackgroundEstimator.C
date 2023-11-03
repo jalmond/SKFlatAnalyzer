@@ -199,7 +199,7 @@ double FakeBackgroundEstimator::GetMuonFakeRate(TString ID, TString key, double 
   double error = 0.;
 
   eta = fabs(eta);
-  if(pt>=100) pt=99.; //FIXME
+  if(pt>=1000) pt=999.; //FIXME
   if(pt < 10) pt=10.; //FIXME JH
 
   ID = ID.ReplaceAll("ElOpt_","");
@@ -329,7 +329,7 @@ float FakeBackgroundEstimator::CalculateLepWeight(float r1, float fr1, bool lep1
 
 }
 
-float FakeBackgroundEstimator::CalculateDilepWeight(float r1, float fr1, float r2, float fr2, bool lep1Tight, bool lep2Tight, int eventtype){
+float FakeBackgroundEstimator::CalculateDilepWeight(float r1, float fr1, float r2, float fr2, bool lep1Tight, bool lep2Tight, int eventtype){ // eventtype = 0 as def
 
   // Function calculates event weight given r/f of two lepons in the event
   double alpha = 1./((r1- fr1)*(r2- fr2));

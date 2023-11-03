@@ -347,6 +347,13 @@ bool Muon::PassID(TString ID) const {
     return true;
   }
 
+  if(ID == "HNL_ULID_2017_Looser" )  { //JH : same with HNL_ULID_2017 ID; but w/ looser Loose ID (HNL_ULID_Baseline)
+    if(!PassID("MVALoose")) return false;
+    if(MVA() < 0.64)  return false;
+    if(fabs(IP3D()/IP3Derr()) > 7) return false;
+    return true;
+  }
+
   // IDs to test TriLep method
   if(ID=="HNL_ULID_2017_TagHF") {
     if(!PassID("MVALoose")) return false;

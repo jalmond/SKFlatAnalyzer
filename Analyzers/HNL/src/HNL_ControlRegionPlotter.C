@@ -17,20 +17,40 @@ void HNL_ControlRegionPlotter::executeEvent(){
 
   Event ev = GetEvent();
 
-  vector<TString> LooseIDs = {"HNL_ULID_FO",   "HNLooseV1"};
-  vector<TString> TightIDs = {"HNL_ULID_2017", "HNTightV2"};
+  vector<TString> LooseIDs = {"HNL_ULID_Baseline",    "HNL_ULID_FO",   "HNLooseV1"};
+  vector<TString> TightIDs = {"HNL_ULID_2017_Looser", "HNL_ULID_2017", "HNTightV2"};
+  std::map<int, TString> LFcutmap;
+  LFcutmap[1] = "0";
+  LFcutmap[2] = "0p8";
 
   for(int i=0; i<LooseIDs.size(); i++){
-    for(int doSep = 0; doSep < 2; doSep++){
 
-      AnalyzerParameter param_signal = doSep ? HNL_LeptonCore::InitialiseHNLParameter("MVAUL","_LFvsHF") : HNL_LeptonCore::InitialiseHNLParameter("MVAUL","");
+    if(TightIDs.at(i).Contains("HNTight")){
+
+      AnalyzerParameter param_signal = HNL_LeptonCore::InitialiseHNLParameter("MVAUL","_PtCone");
+      //redefine FR ID, FR key, Tight IDs + ptcone setting
+      param_signal.Name           = param_signal.Name+"_"+TightIDs.at(i);
+      param_signal.DefName        = param_signal.DefName+"_"+TightIDs.at(i);
+      param_signal.Muon_FR_ID     = LooseIDs.at(i);
+      param_signal.Muon_FR_Key    = "ptcone_eta_AwayJetPt40";
+      param_signal.Muon_UsePtCone = true;
+      param_signal.Muon_Tight_ID  = TightIDs.at(i);
+      //RunControlRegions(param_signal , {"CR_OS_Z","CR_OS_ZAk8","CR_OS_Top","CR_OS_TopAk8","CR_WZ","CR_ZZ"});
+      RunControlRegions(param_signal , {"CR_WZ","CR_ZZ"}); // JH : OS later
+
+    }
+
+    for(int doSep = 0; doSep < 3; doSep++){
+
+      AnalyzerParameter param_signal = doSep ? HNL_LeptonCore::InitialiseHNLParameter("MVAUL","_LFvsHF_cut"+LFcutmap[doSep]) : HNL_LeptonCore::InitialiseHNLParameter("MVAUL","");
       //redefine FR ID, FR key, Tight IDs
       param_signal.Name          = param_signal.Name+"_"+TightIDs.at(i);
       param_signal.DefName       = param_signal.DefName+"_"+TightIDs.at(i);
       param_signal.Muon_FR_ID    = LooseIDs.at(i);
-      param_signal.Muon_FR_Key   = "pt_eta_AwayJetPt40"; // add ptcone later with HNTightV2
+      param_signal.Muon_FR_Key   = "pt_eta_AwayJetPt40";
       param_signal.Muon_Tight_ID = TightIDs.at(i);
-      RunControlRegions(param_signal , {"CR_OS_Z","CR_OS_ZAk8","CR_OS_Top","CR_OS_TopAk8","CR_WZ","CR_ZZ"});
+      //RunControlRegions(param_signal , {"CR_OS_Z","CR_OS_ZAk8","CR_OS_Top","CR_OS_TopAk8","CR_WZ","CR_ZZ"});
+      RunControlRegions(param_signal , {"CR_WZ","CR_ZZ"}); // JH : OS later
 
     }
   }

@@ -1,4 +1,5 @@
-all: DataFormats AnalyzerTools GEScaleSyst Analyzers AnalyzersHNL AnalyzersHNLExternal AnalyzersHNLOpt Archive
+#all: DataFormats AnalyzerTools GEScaleSyst Analyzers AnalyzersHNL AnalyzersHNLExternal AnalyzersHNLOpt Archive
+all: DataFormats AnalyzerTools GEScaleSyst Analyzers AnalyzersHNL AnalyzersHNLExternal Archive
 
 DataFormats::
 	(cd DataFormats; make)
@@ -30,10 +31,10 @@ AnalyzersHNLExternal::
 	(mvexist.sh Analyzers/HNLExternal/src/HNLExternalAnalyzers_Dict_rdict.pcm lib/)
 	(mvexist.sh Analyzers/HNLExternal/libHNLExternalAnalyzers.rootmap lib/)
 
-AnalyzersHNLOpt::
-	(cd Analyzers/HNLOpt; make)
-	(mvexist.sh Analyzers/HNLOpt/src/HNLOptAnalyzers_Dict_rdict.pcm lib/)
-	(mvexist.sh Analyzers/HNLOpt/libHNLOptAnalyzers.rootmap lib/)
+#AnalyzersHNLOpt:: #JH : don't need it now
+#	(cd Analyzers/HNLOpt; make)
+#	(mvexist.sh Analyzers/HNLOpt/src/HNLOptAnalyzers_Dict_rdict.pcm lib/)
+#	(mvexist.sh Analyzers/HNLOpt/libHNLOptAnalyzers.rootmap lib/)
 
 
 Archive::

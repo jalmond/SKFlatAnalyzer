@@ -1,4 +1,4 @@
-void GetFR2D(TFile *outfile, TString year, TString tag, TString channel, TString ID){ // tag : LF, HF (when to use flavor-dep fake rate method), or "" for No flavor separation, or TriLep, ...
+void GetFR2D(TFile *outfile, TString year, TString tag, TString channel, TString ID, bool UsePtCone){ // tag : LF, HF (when to use flavor-dep fake rate method), or "" for No flavor separation, or TriLep, ...
   TString fake_data = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_LeptonFakeRate/"+year+"/DATA/HNL_LeptonFakeRate_SkimTree_HNFakeBDT_Muon.root";
   TString fake_W    = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_LeptonFakeRate/"+year+"/HNL_LeptonFakeRate_SkimTree_HNFakeBDT_WJets_MG.root";
   TString fake_Z    = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_LeptonFakeRate/"+year+"/HNL_LeptonFakeRate_SkimTree_HNFakeBDT_DYJets.root";
@@ -16,8 +16,8 @@ void GetFR2D(TFile *outfile, TString year, TString tag, TString channel, TString
 
   TString nametag = (tag!="") ? tag+"_" : "";
 
-  TString histname_loose = nametag+"Fake_Loose_"+channel+"_"+ID+"_LFvsHF_40_pt_eta";
-  TString histname_tight = nametag+"Fake_Tight_"+channel+"_"+ID+"_LFvsHF_40_pt_eta";
+  TString histname_loose = (UsePtCone) ? nametag+"Fake_Loose_"+channel+"_"+ID+"_LFvsHF_40_ptcone_eta" : nametag+"Fake_Loose_"+channel+"_"+ID+"_LFvsHF_40_pt_eta";
+  TString histname_tight = (UsePtCone) ? nametag+"Fake_Tight_"+channel+"_"+ID+"_LFvsHF_40_ptcone_eta" : nametag+"Fake_Tight_"+channel+"_"+ID+"_LFvsHF_40_pt_eta";
 
   TH2D *h_loose_data = (TH2D*)f_fake_data->Get(histname_loose);
   TH2D *h_loose_W    = (TH2D*)f_fake_W   ->Get(histname_loose);
@@ -44,7 +44,8 @@ void GetFR2D(TFile *outfile, TString year, TString tag, TString channel, TString
   h_tight_data->Add(h_tight_TT,-1.);
 
   h_tight_data->Divide(h_loose_data);
-  h_tight_data->SetName(ID+"_"+nametag+"pt_eta_AwayJetPt40");
+  if(UsePtCone) h_tight_data->SetName(ID+"_"+nametag+"ptcone_eta_AwayJetPt40");
+  else h_tight_data->SetName(ID+"_"+nametag+"pt_eta_AwayJetPt40");
 
   //h_tight_QCD_2D_Uncorr->Divide(h_loose_QCD_2D_Uncorr);
   //h_tight_QCD_2D_Uncorr->SetName("HNL_ULID_2017_PtPartonUncorr_eta_TriLepQCD");
@@ -259,6 +260,7 @@ void GetFR1D(TFile *outfile, TString year, TString tag, TString channel, TString
   var_latex["PtPartonUncorr"] = "p_{T}^{parton, uncorr} (GeV)";
   var_latex["PtPartonQCD"]    = "p_{T}^{parton, corr} (GeV)";
   var_latex["pt"]             = "p_{T} (GeV)";
+  var_latex["ptcone"]         = "p_{T}^{cone} (GeV)";
   var_latex["eta"]            = "#eta";
   var_latex["etaFine"]        = "#eta";
   var_latex["dXY"]            = "d_{xy} (cm)";
@@ -475,52 +477,94 @@ void FakeRate(){
   //GetFR2D(outfileQCDFakeRate);
 
   // GetFR2D
-  //TFile *outfile2D = new TFile("FakeRate_Mu_2017_LFvsHF_2D.root","RECREATE");
-  //GetFR2D(outfile2D,"2017","LF","MuMu","HNL_ULID_2017");
-  //GetFR2D(outfile2D,"2017","HF","MuMu","HNL_ULID_2017");
-  //GetFR2D(outfile2D,"2017",""  ,"MuMu","HNL_ULID_2017");
-  //GetFR2D(outfile2D,"2017","LF","MuMu","HNTightV2");
-  //GetFR2D(outfile2D,"2017","HF","MuMu","HNTightV2");
-  //GetFR2D(outfile2D,"2017",""  ,"MuMu","HNTightV2");
+  TFile *outfile2D = new TFile("New_FakeRate_Mu_2017_LFvsHF_2D.root","RECREATE");
+  GetFR2D(outfile2D,"2017","LF_cut0",  "MuMu","HNL_ULID_2017",false);
+  GetFR2D(outfile2D,"2017","HF_cut0",  "MuMu","HNL_ULID_2017",false);
+  GetFR2D(outfile2D,"2017","LF_cut0p8","MuMu","HNL_ULID_2017",false);
+  GetFR2D(outfile2D,"2017","HF_cut0p8","MuMu","HNL_ULID_2017",false);
+  GetFR2D(outfile2D,"2017",""         ,"MuMu","HNL_ULID_2017",false);
+  GetFR2D(outfile2D,"2017","LF_cut0",  "MuMu","HNL_ULID_2017_Looser",false);
+  GetFR2D(outfile2D,"2017","HF_cut0",  "MuMu","HNL_ULID_2017_Looser",false);
+  GetFR2D(outfile2D,"2017","LF_cut0p8","MuMu","HNL_ULID_2017_Looser",false);
+  GetFR2D(outfile2D,"2017","HF_cut0p8","MuMu","HNL_ULID_2017_Looser",false);
+  GetFR2D(outfile2D,"2017",""         ,"MuMu","HNL_ULID_2017_Looser",false);
+  GetFR2D(outfile2D,"2017","LF_cut0",  "MuMu","HNTightV2",false);
+  GetFR2D(outfile2D,"2017","HF_cut0",  "MuMu","HNTightV2",false);
+  GetFR2D(outfile2D,"2017","LF_cut0p8","MuMu","HNTightV2",false);
+  GetFR2D(outfile2D,"2017","HF_cut0p8","MuMu","HNTightV2",false);
+  GetFR2D(outfile2D,"2017",""         ,"MuMu","HNTightV2",false);
+  GetFR2D(outfile2D,"2017","LF_cut0",  "MuMu","HNTightV2",true);
+  GetFR2D(outfile2D,"2017","HF_cut0",  "MuMu","HNTightV2",true);
+  GetFR2D(outfile2D,"2017","LF_cut0p8","MuMu","HNTightV2",true);
+  GetFR2D(outfile2D,"2017","HF_cut0p8","MuMu","HNTightV2",true);
+  GetFR2D(outfile2D,"2017",""         ,"MuMu","HNTightV2",true);
 
   // GetFR1D
-  TFile *outfile1D = new TFile("FakeRate_Mu_2017_LFvsHF_1D.root","RECREATE");
-  GetFR1D(outfile1D,"2017","LF","MuMu","HNL_ULID_2017","pt",false);
-  GetFR1D(outfile1D,"2017","HF","MuMu","HNL_ULID_2017","pt",false);
-  GetFR1D(outfile1D,"2017",""  ,"MuMu","HNL_ULID_2017","pt",false);
-  GetFR1D(outfile1D,"2017","LF","MuMu","HNL_ULID_2017","pt",true);
-  GetFR1D(outfile1D,"2017","HF","MuMu","HNL_ULID_2017","pt",true);
-  GetFR1D(outfile1D,"2017",""  ,"MuMu","HNL_ULID_2017","pt",true);
-  GetFR1D(outfile1D,"2017","LF","MuMu","HNTightV2","pt",false);
-  GetFR1D(outfile1D,"2017","HF","MuMu","HNTightV2","pt",false);
-  GetFR1D(outfile1D,"2017",""  ,"MuMu","HNTightV2","pt",false);
-  GetFR1D(outfile1D,"2017","LF","MuMu","HNTightV2","pt",true);
-  GetFR1D(outfile1D,"2017","HF","MuMu","HNTightV2","pt",true);
-  GetFR1D(outfile1D,"2017",""  ,"MuMu","HNTightV2","pt",true);
-  GetFR1D(outfile1D,"2017","LF","MuMu","HNL_ULID_2017","eta",false);
-  GetFR1D(outfile1D,"2017","HF","MuMu","HNL_ULID_2017","eta",false);
-  GetFR1D(outfile1D,"2017",""  ,"MuMu","HNL_ULID_2017","eta",false);
-  GetFR1D(outfile1D,"2017","LF","MuMu","HNL_ULID_2017","eta",true);
-  GetFR1D(outfile1D,"2017","HF","MuMu","HNL_ULID_2017","eta",true);
-  GetFR1D(outfile1D,"2017",""  ,"MuMu","HNL_ULID_2017","eta",true);
-  GetFR1D(outfile1D,"2017","LF","MuMu","HNTightV2","eta",false);
-  GetFR1D(outfile1D,"2017","HF","MuMu","HNTightV2","eta",false);
-  GetFR1D(outfile1D,"2017",""  ,"MuMu","HNTightV2","eta",false);
-  GetFR1D(outfile1D,"2017","LF","MuMu","HNTightV2","eta",true);
-  GetFR1D(outfile1D,"2017","HF","MuMu","HNTightV2","eta",true);
-  GetFR1D(outfile1D,"2017",""  ,"MuMu","HNTightV2","eta",true);
-  GetFR1D(outfile1D,"2017","LF","MuMu","HNL_ULID_2017","reliso",false);
-  GetFR1D(outfile1D,"2017","HF","MuMu","HNL_ULID_2017","reliso",false);
-  GetFR1D(outfile1D,"2017",""  ,"MuMu","HNL_ULID_2017","reliso",false);
-  GetFR1D(outfile1D,"2017","LF","MuMu","HNL_ULID_2017","reliso",true);
-  GetFR1D(outfile1D,"2017","HF","MuMu","HNL_ULID_2017","reliso",true);
-  GetFR1D(outfile1D,"2017",""  ,"MuMu","HNL_ULID_2017","reliso",true);
-  GetFR1D(outfile1D,"2017","LF","MuMu","HNTightV2","reliso",false);
-  GetFR1D(outfile1D,"2017","HF","MuMu","HNTightV2","reliso",false);
-  GetFR1D(outfile1D,"2017",""  ,"MuMu","HNTightV2","reliso",false);
-  GetFR1D(outfile1D,"2017","LF","MuMu","HNTightV2","reliso",true);
-  GetFR1D(outfile1D,"2017","HF","MuMu","HNTightV2","reliso",true);
-  GetFR1D(outfile1D,"2017",""  ,"MuMu","HNTightV2","reliso",true);
+  //TFile *outfile1D = new TFile("New_FakeRate_Mu_2017_LFvsHF_1D.root","RECREATE");
+  //GetFR1D(outfile1D,"2017","LF_cut0",  "MuMu","HNL_ULID_2017","LFvsHF",false);
+  //GetFR1D(outfile1D,"2017","HF_cut0",  "MuMu","HNL_ULID_2017","LFvsHF",false);
+  //GetFR1D(outfile1D,"2017","LF_cut0p8","MuMu","HNL_ULID_2017","LFvsHF",false);
+  //GetFR1D(outfile1D,"2017","HF_cut0p8","MuMu","HNL_ULID_2017","LFvsHF",false);
+  //GetFR1D(outfile1D,"2017",""         ,"MuMu","HNL_ULID_2017","LFvsHF",false);
+  //GetFR1D(outfile1D,"2017","LF_cut0",  "MuMu","HNL_ULID_2017","pt",false);
+  //GetFR1D(outfile1D,"2017","HF_cut0",  "MuMu","HNL_ULID_2017","pt",false);
+  //GetFR1D(outfile1D,"2017","LF_cut0p8","MuMu","HNL_ULID_2017","pt",false);
+  //GetFR1D(outfile1D,"2017","HF_cut0p8","MuMu","HNL_ULID_2017","pt",false);
+  //GetFR1D(outfile1D,"2017",""         ,"MuMu","HNL_ULID_2017","pt",false);
+  //GetFR1D(outfile1D,"2017","LF_cut0",  "MuMu","HNL_ULID_2017_Looser","pt",false);
+  //GetFR1D(outfile1D,"2017","HF_cut0",  "MuMu","HNL_ULID_2017_Looser","pt",false);
+  //GetFR1D(outfile1D,"2017","LF_cut0p8","MuMu","HNL_ULID_2017_Looser","pt",false);
+  //GetFR1D(outfile1D,"2017","HF_cut0p8","MuMu","HNL_ULID_2017_Looser","pt",false);
+  //GetFR1D(outfile1D,"2017",""         ,"MuMu","HNL_ULID_2017_Looser","pt",false);
+  //GetFR1D(outfile1D,"2017","LF_cut0",  "MuMu","HNTightV2","pt",false);
+  //GetFR1D(outfile1D,"2017","HF_cut0",  "MuMu","HNTightV2","pt",false);
+  //GetFR1D(outfile1D,"2017","LF_cut0p8","MuMu","HNTightV2","pt",false);
+  //GetFR1D(outfile1D,"2017","HF_cut0p8","MuMu","HNTightV2","pt",false);
+  //GetFR1D(outfile1D,"2017",""         ,"MuMu","HNTightV2","pt",false);
+  //GetFR1D(outfile1D,"2017","LF_cut0",  "MuMu","HNTightV2","ptcone",false);
+  //GetFR1D(outfile1D,"2017","HF_cut0",  "MuMu","HNTightV2","ptcone",false);
+  //GetFR1D(outfile1D,"2017","LF_cut0p8","MuMu","HNTightV2","ptcone",false);
+  //GetFR1D(outfile1D,"2017","HF_cut0p8","MuMu","HNTightV2","ptcone",false);
+  //GetFR1D(outfile1D,"2017",""         ,"MuMu","HNTightV2","ptcone",false);
+
+
+
+  //GetFR1D(outfile1D,"2017","LF","MuMu","HNL_ULID_2017","pt",false);
+  //GetFR1D(outfile1D,"2017","HF","MuMu","HNL_ULID_2017","pt",false);
+  //GetFR1D(outfile1D,"2017",""  ,"MuMu","HNL_ULID_2017","pt",false);
+  //GetFR1D(outfile1D,"2017","LF","MuMu","HNL_ULID_2017","pt",true);
+  //GetFR1D(outfile1D,"2017","HF","MuMu","HNL_ULID_2017","pt",true);
+  //GetFR1D(outfile1D,"2017",""  ,"MuMu","HNL_ULID_2017","pt",true);
+  //GetFR1D(outfile1D,"2017","LF","MuMu","HNTightV2","pt",false);
+  //GetFR1D(outfile1D,"2017","HF","MuMu","HNTightV2","pt",false);
+  //GetFR1D(outfile1D,"2017",""  ,"MuMu","HNTightV2","pt",false);
+  //GetFR1D(outfile1D,"2017","LF","MuMu","HNTightV2","pt",true);
+  //GetFR1D(outfile1D,"2017","HF","MuMu","HNTightV2","pt",true);
+  //GetFR1D(outfile1D,"2017",""  ,"MuMu","HNTightV2","pt",true);
+  //GetFR1D(outfile1D,"2017","LF","MuMu","HNL_ULID_2017","eta",false);
+  //GetFR1D(outfile1D,"2017","HF","MuMu","HNL_ULID_2017","eta",false);
+  //GetFR1D(outfile1D,"2017",""  ,"MuMu","HNL_ULID_2017","eta",false);
+  //GetFR1D(outfile1D,"2017","LF","MuMu","HNL_ULID_2017","eta",true);
+  //GetFR1D(outfile1D,"2017","HF","MuMu","HNL_ULID_2017","eta",true);
+  //GetFR1D(outfile1D,"2017",""  ,"MuMu","HNL_ULID_2017","eta",true);
+  //GetFR1D(outfile1D,"2017","LF","MuMu","HNTightV2","eta",false);
+  //GetFR1D(outfile1D,"2017","HF","MuMu","HNTightV2","eta",false);
+  //GetFR1D(outfile1D,"2017",""  ,"MuMu","HNTightV2","eta",false);
+  //GetFR1D(outfile1D,"2017","LF","MuMu","HNTightV2","eta",true);
+  //GetFR1D(outfile1D,"2017","HF","MuMu","HNTightV2","eta",true);
+  //GetFR1D(outfile1D,"2017",""  ,"MuMu","HNTightV2","eta",true);
+  //GetFR1D(outfile1D,"2017","LF","MuMu","HNL_ULID_2017","reliso",false);
+  //GetFR1D(outfile1D,"2017","HF","MuMu","HNL_ULID_2017","reliso",false);
+  //GetFR1D(outfile1D,"2017",""  ,"MuMu","HNL_ULID_2017","reliso",false);
+  //GetFR1D(outfile1D,"2017","LF","MuMu","HNL_ULID_2017","reliso",true);
+  //GetFR1D(outfile1D,"2017","HF","MuMu","HNL_ULID_2017","reliso",true);
+  //GetFR1D(outfile1D,"2017",""  ,"MuMu","HNL_ULID_2017","reliso",true);
+  //GetFR1D(outfile1D,"2017","LF","MuMu","HNTightV2","reliso",false);
+  //GetFR1D(outfile1D,"2017","HF","MuMu","HNTightV2","reliso",false);
+  //GetFR1D(outfile1D,"2017",""  ,"MuMu","HNTightV2","reliso",false);
+  //GetFR1D(outfile1D,"2017","LF","MuMu","HNTightV2","reliso",true);
+  //GetFR1D(outfile1D,"2017","HF","MuMu","HNTightV2","reliso",true);
+  //GetFR1D(outfile1D,"2017",""  ,"MuMu","HNTightV2","reliso",true);
 
   // GetMCTruthFR
   //TFile *outfile1D = new TFile("FakeRateTruth_Mu_2017_LFvsHF_1D.root","RECREATE");

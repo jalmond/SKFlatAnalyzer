@@ -38,6 +38,8 @@ Lepton::Lepton() : Particle() {
   j_passID = false;
   j_IDSet= false;
 
+  j_FakeFlavour = ""; //JH
+
   j_lep_map_mva_hnl.clear();
   j_lep_mva_hnl_fake_v4=-999;
   j_lep_mva_hnl_fake_v4_hf=-999;
@@ -106,39 +108,6 @@ void Lepton::PrintObject(TString label){
   
   return;
 }
-
-/*
-Lepton::Lepton(const Lepton& lep) : Particle() {
-  j_dXY =  lep.dXY();
-  j_dXYerr = lep.dXYerr();
-  j_dZ = lep.dZ();
-  j_dZerr = lep.dZerr();
-  j_IP3D = lep.IP3D();
-  j_IP3Derr = lep.IP3Derr();
-  j_RelIso = lep.RelIso();
-  j_MiniRelIso = lep.MiniRelIso();
-  j_ptcone = lep.PtCone();
-  j_lep_jetptrel=lep.lep_jet_ptrel();
-  j_lep_jetptrelDef=lep.lep_jet_ptrelDef();
-  j_lep_jetptratio=lep.lep_jet_ptratio();
-  j_lep_jetptratioDef=lep.lep_jet_ptratioDef();
-  j_LeptonFlavour = lep.LeptonFlavour();
-  j_MiniIso_ChHad = lep.MiniIsoChHad();
-  j_MiniIso_NHad = lep.MiniIsoNHad();
-  j_MiniIso_PhHad = lep.MiniIsoPhHad();
-  j_Iso_ChHad = lep.IsoChHad();
-  j_Iso_NHad = lep.IsoNHad();
-  j_Iso_PhHad = lep.IsoPhHad();
-  j_jetntracks =lep.JetNTracks();
-  j_jetntracks_mva = lep.JetNTracksMVA();
-
-  j_LeptonType = lep.LeptonType();
-  j_passID = lep.PassLepID();
-  j_IDSet= lep.LepIDSet();
-
-  j_lep_mva= lep.lep_mva();
-}
-*/
 
 Lepton::~Lepton(){
 
@@ -366,9 +335,15 @@ void Lepton::SetLeptonIsCF(bool t){
   j_LeptonIsCF= t;
 }
 
-TString Lepton::FakeFlavourString(){ //JH
-  if(this->HNL_MVA_Fake("QCD_LFvsHF_v5") > 0) return "LF";
-	else return "HF";
+TString Lepton::CutString(double cut){ //JH
+  TString cut_str = (cut == 0.) ? "0" : Form("%.1f",cut);
+  cut_str.ReplaceAll(".","p");
+  return cut_str;
+}
+
+void Lepton::SetFakeFlavour(double cut){ //JH
+  if(this->HNL_MVA_Fake("QCD_LFvsHF_v5") > cut) j_FakeFlavour = "LF_cut"+CutString(cut);
+  else j_FakeFlavour = "HF_cut"+CutString(cut);
 }
 
 void Lepton::SetID(){

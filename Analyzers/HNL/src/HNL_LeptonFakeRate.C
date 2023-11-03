@@ -102,6 +102,8 @@ void HNL_LeptonFakeRate::executeEvent(){
     
   MuIDs.push_back(make_pair("HNL_ULID_"+era, "HNL_ULID_FO")); //JH : Tight --> HF MVA, Loose --> Tight without MVA (MVALoose + SIP3D < 7)
   paramnames.push_back("HNL_ULID_"+era+"_LFvsHF");
+  MuIDs.push_back(make_pair("HNL_ULID_2017_Looser", "HNL_ULID_Baseline")); //JH : Tight --> HF MVA, Loose --> FO without SIP, POG Medium
+  paramnames.push_back("HNL_ULID_2017_Looser_LFvsHF");
   MuIDs.push_back(make_pair("HNTightV2", "HNLooseV1"));
   paramnames.push_back("HNTightV2_LFvsHF");
 
@@ -423,7 +425,12 @@ void HNL_LeptonFakeRate::executeEventFromParameter(AnalyzerParameter param, TStr
       }
     }
 */
+
+    TString this_paramName = param.Name;
+    param.Name = this_paramName+"_EventSign";
     GetMCFakeRates(loose_muons, param, eventSign);
+    param.Name = this_paramName+"_EventWeight";
+    GetMCFakeRates(loose_muons, param, weight);
     return;
   }
 
@@ -498,6 +505,7 @@ void HNL_LeptonFakeRate::GetMCFakeRates(std::vector<Muon> loose_muons, AnalyzerP
       //double PtPartonQCD = mu.PtParton(PtPartonSFmap[param.Muon_Loose_ID],0.64,0.64);
       //double PtPartonUncorr = mu.PtParton(1,0.64,0.64);
       double lep_pt     = mu.Pt();
+      double lep_ptcone = mu.CalcPtCone(mu.RelIso(), 0.07); //HNTightV2
       double lep_eta    = fabs(mu.Eta());
       double lep_reliso = mu.RelIso();
       double lep_sip3d  = fabs(mu.IP3D()/mu.IP3Derr());
@@ -509,15 +517,23 @@ void HNL_LeptonFakeRate::GetMCFakeRates(std::vector<Muon> loose_muons, AnalyzerP
       bool passT = false;
       if(mu.PassID(param.Muon_Tight_ID)) passT = true;
 
-      for(int doSep = 0; doSep < 2; doSep++){
+      for(int doSep = 0; doSep < 3; doSep++){
         for(int ilep = 0 ; ilep < 2; ilep++){
+
           TString prefix = (ilep==0) ? L_prefix : T_prefix;
           if(doSep){
-            if(lep_LFvsHF > 0) prefix = "LF_"+prefix;
-            else prefix = "HF_"+prefix;
+            if(doSep==1){
+              if(lep_LFvsHF > 0) prefix = "LF_cut0_"+prefix;
+              else prefix = "HF_cut0_"+prefix;
+            }
+            else if(doSep==2){
+              if(lep_LFvsHF > 0.8) prefix = "LF_cut0p8_"+prefix;
+              else prefix = "HF_cut0p8_"+prefix;
+            }
           }
           if(ilep==1 && !passT) continue;
 
+          TString i_ptbinStr;
           for(unsigned int i=0; i<LepTypeLabel.size(); i++){
             if(mu.LepGenTypeString()==LepTypeLabel[i]){
               //FillHist((prefix+"_"+LepTypeLabelMap[LepTypeLabel[i]]+"_PtPartonUncorr_eta").Data(), PtPartonUncorr, lep_eta,  weight, nbin_pt, ptbins, nbin_eta , etabins);
@@ -529,16 +545,32 @@ void HNL_LeptonFakeRate::GetMCFakeRates(std::vector<Muon> loose_muons, AnalyzerP
               FillHist((prefix+"_"+LepTypeLabelMap[LepTypeLabel[i]]+"_SIP3D").Data(),  lep_sip3d, weight, 50, 0., 10.);
               FillHist((prefix+"_"+LepTypeLabelMap[LepTypeLabel[i]]+"_mva").Data(),    lep_mva, weight, 50, -1., 1.);
               FillHist((prefix+"_"+LepTypeLabelMap[LepTypeLabel[i]]+"_LFvsHF").Data(), lep_LFvsHF, weight, 200, -1, 1);
+              for(int i_ptbin=0; i_ptbin<vptbins.size()-1; i_ptbin++){
+                i_ptbinStr = Form("%d",i_ptbin+1);
+                if( (vptbins.at(i_ptbin)<lep_pt) && (lep_pt<=vptbins.at(i_ptbin+1)) ){
+                  FillHist((prefix+"_"+LepTypeLabelMap[LepTypeLabel[i]]+"_LFvsHF_ptbin"+i_ptbinStr).Data(), lep_LFvsHF, weight, 200, -1, 1);
+                }
+              }
               FillHist((prefix+"_"+LepTypeLabelMap[LepTypeLabel[i]]+"_pt_eta").Data(), lep_pt, lep_eta,weight, nbin_pt, ptbins, nbin_eta , etabins);
+              FillHist((prefix+"_"+LepTypeLabelMap[LepTypeLabel[i]]+"_ptcone_eta").Data(), lep_ptcone, lep_eta,weight, nbin_pt, ptbins, nbin_eta , etabins);
               FillHist((prefix+"_"+LepTypeLabelMap[LepTypeLabel[i]]+"_pt").Data(),     lep_pt, weight, nbin_pt, ptbins, "p_{T} (GeV)");
+              FillHist((prefix+"_"+LepTypeLabelMap[LepTypeLabel[i]]+"_ptcone").Data(), lep_ptcone, weight, nbin_pt, ptbins, "p_{T}^{cone} (GeV)");
               FillHist((prefix+"_"+LepTypeLabelMap[LepTypeLabel[i]]+"_eta").Data(),    lep_eta, weight , nbin_eta, etabins,"#eta");
               FillHist((prefix+"_"+LepTypeLabelMap[LepTypeLabel[i]]+"_etaFine").Data(),lep_eta, weight , 50, -2.5, 2.5);
               if(mu.LepGenTypeString()=="IsFake"){
                 if(mu.CloseJet_Flavour().Contains("HF")){
                   FillHist((prefix+"_fakeHF_pt_eta").Data(), lep_pt, lep_eta,weight, nbin_pt, ptbins, nbin_eta , etabins);
+                  FillHist((prefix+"_fakeHF_ptcone_eta").Data(), lep_ptcone, lep_eta,weight, nbin_pt, ptbins, nbin_eta , etabins);
                   FillHist((prefix+"_fakeHF_pt").Data(),     lep_pt, weight, nbin_pt, ptbins, "p_{T} (GeV)");
+                  FillHist((prefix+"_fakeHF_ptcone").Data(), lep_ptcone, weight, nbin_pt, ptbins, "p_{T}^{cone} (GeV)");
                   FillHist((prefix+"_fakeHF_etaFine").Data(),lep_eta, weight , 50, -2.5, 2.5);
                   FillHist((prefix+"_fakeHF_LFvsHF").Data(), lep_LFvsHF, weight, 200, -1, 1);
+                  for(int i_ptbin=0; i_ptbin<vptbins.size()-1; i_ptbin++){
+                    i_ptbinStr = Form("%d",i_ptbin+1);
+                    if( (vptbins.at(i_ptbin)<lep_pt) && (lep_pt<=vptbins.at(i_ptbin+1)) ){
+                      FillHist((prefix+"_"+LepTypeLabelMap[LepTypeLabel[i]]+"_LFvsHF_ptbin"+i_ptbinStr).Data(), lep_LFvsHF, weight, 200, -1, 1);
+                    }
+                  }
                   FillHist((prefix+"_fakeHF_reliso").Data(), lep_reliso, weight, 100, 0., 1.);
                   FillHist((prefix+"_fakeHF_dXY").Data(),    lep_dxy, weight, 50, 0., 0.1);
                   FillHist((prefix+"_fakeHF_dZ").Data(),     lep_dz, weight, 50, 0., 0.1);
@@ -547,9 +579,17 @@ void HNL_LeptonFakeRate::GetMCFakeRates(std::vector<Muon> loose_muons, AnalyzerP
                 }
                 else if(mu.CloseJet_Flavour().Contains("LF")){
                   FillHist((prefix+"_fakeLF_pt_eta").Data(), lep_pt, lep_eta,weight, nbin_pt, ptbins, nbin_eta , etabins);
+                  FillHist((prefix+"_fakeLF_ptcone_eta").Data(), lep_pt, lep_eta,weight, nbin_pt, ptbins, nbin_eta , etabins);
                   FillHist((prefix+"_fakeLF_pt").Data(),     lep_pt, weight, nbin_pt, ptbins, "p_{T} (GeV)");
+                  FillHist((prefix+"_fakeLF_ptcone").Data(), lep_pt, weight, nbin_pt, ptbins, "p_{T}^{cone} (GeV)");
                   FillHist((prefix+"_fakeLF_etaFine").Data(),lep_eta, weight , 50, -2.5, 2.5);
                   FillHist((prefix+"_fakeLF_LFvsHF").Data(), lep_LFvsHF, weight, 200, -1, 1);
+                  for(int i_ptbin=0; i_ptbin<vptbins.size()-1; i_ptbin++){
+                    i_ptbinStr = Form("%d",i_ptbin+1);
+                    if( (vptbins.at(i_ptbin)<lep_pt) && (lep_pt<=vptbins.at(i_ptbin+1)) ){
+                      FillHist((prefix+"_"+LepTypeLabelMap[LepTypeLabel[i]]+"_LFvsHF_ptbin"+i_ptbinStr).Data(), lep_LFvsHF, weight, 200, -1, 1);
+                    }
+                  }
                   FillHist((prefix+"_fakeLF_reliso").Data(), lep_reliso, weight, 100, 0., 1.);
                   FillHist((prefix+"_fakeLF_dXY").Data(),    lep_dxy, weight, 50, 0., 0.1);
                   FillHist((prefix+"_fakeLF_dZ").Data(),     lep_dz, weight, 50, 0., 0.1);
@@ -601,7 +641,7 @@ void HNL_LeptonFakeRate::RunM(std::vector<Electron> loose_el,  std::vector<Muon>
 
   
   if(fabs(param.WriteOutVerbose) > 1 ){
-    GetFakeRateAndPromptRates(param, leps,blepsT,jets,label,event_weight,-999.); //JH : MuMu_HNL_ULID_2017_V1
+    GetFakeRateAndPromptRates(param, leps,blepsT,jets,label,event_weight, 0.07); //JH : 0.07 --> HNTightV2 isocut
     return;
   }
 
@@ -1468,7 +1508,7 @@ void HNL_LeptonFakeRate::GetFakeRates(std::vector<Lepton *> leps,std::vector<boo
   Event ev = GetEvent();
 
   float lep_pt = leps[0]->Pt();
-  //float lep_pt_corr =  leps[0]->CalcPtCone(leps[0]->RelIso(), isocut);
+  float lep_ptcone = leps[0]->CalcPtCone(leps[0]->RelIso(), isocut); //HNTightV2
   float PtPartonUncorr;
   float PtPartonQCD;
   float PtPartonData;
@@ -1588,13 +1628,19 @@ void HNL_LeptonFakeRate::GetFakeRates(std::vector<Lepton *> leps,std::vector<boo
   LepTypeLabelMap["IsEWtau"]  = "tau";
   LepTypeLabelMap["IsConv"]   = "conv";
 
-  for(int doSep = 0; doSep < 2; doSep++){
+  for(int doSep = 0; doSep < 3; doSep++){
     for(int ilep = 0 ; ilep < 2; ilep++)  {
 
       TString prefix = (ilep==0) ? L_prefix : T_prefix;
       if(doSep){
-        if(leps[0]->HNL_MVA_Fake("QCD_LFvsHF_v5") > 0) prefix = "LF_"+prefix;
-        else prefix = "HF_"+prefix;
+        if(doSep==1){
+          if(leps[0]->HNL_MVA_Fake("QCD_LFvsHF_v5") > 0) prefix = "LF_cut0_"+prefix;
+          else prefix = "HF_cut0_"+prefix;
+        }
+        if(doSep==2){
+          if(leps[0]->HNL_MVA_Fake("QCD_LFvsHF_v5") > 0.8) prefix = "LF_cut0p8_"+prefix;
+          else prefix = "HF_cut0p8_"+prefix;
+        }
       }
       if((ilep==1) && !(blepsT[0])) continue;
       
@@ -1607,6 +1653,8 @@ void HNL_LeptonFakeRate::GetFakeRates(std::vector<Lepton *> leps,std::vector<boo
         FillHist((prefix + "_LFvsHF").Data(), lep_LFvsHF, weight_pt, 200, -1, 1);
         FillHist((prefix + "_pt_eta").Data(), lep_pt, lep_eta,weight_pt, nbin_pt, ptbins, nbin_eta , etabins);
         FillHist((prefix + "_pt").Data(),     lep_pt, weight_pt, nbin_pt, ptbins, "p_{T} (GeV)");
+        FillHist((prefix + "_ptcone_eta").Data(), lep_ptcone, lep_eta,weight_pt, nbin_pt, ptbins, nbin_eta , etabins);
+        FillHist((prefix + "_ptcone").Data(),     lep_ptcone, weight_pt, nbin_pt, ptbins, "p_{T}^{cone} (GeV)");
         FillHist((prefix + "_eta").Data(),    lep_eta, weight_pt , nbin_eta, etabins,"#eta");
         FillHist((prefix + "_etaFine").Data(),lep_eta, weight_pt , 50, -2.5, 2.5);
         //if(BJetColl.size()==0){
@@ -1618,23 +1666,42 @@ void HNL_LeptonFakeRate::GetFakeRates(std::vector<Lepton *> leps,std::vector<boo
         //  FillHist((prefix + "_BJet_eta").Data(),    lep_eta, weight_pt , nbin_eta, etabins,"#eta");
         //}
         if(!IsDATA){
+          TString i_ptbinStr;
           for(unsigned int i=0; i<LepTypeLabel.size(); i++){
             if(leps[0]->LepGenTypeString()==LepTypeLabel[i]){
               FillHist((prefix + "_"+LepTypeLabelMap[LepTypeLabel[i]]+"_pt_eta").Data(), lep_pt, lep_eta,weight_pt, nbin_pt, ptbins, nbin_eta , etabins);
               FillHist((prefix + "_"+LepTypeLabelMap[LepTypeLabel[i]]+"_pt").Data(),     lep_pt, weight_pt, nbin_pt, ptbins, "p_{T} (GeV)");
+              FillHist((prefix + "_"+LepTypeLabelMap[LepTypeLabel[i]]+"_ptcone_eta").Data(), lep_ptcone, lep_eta,weight_pt, nbin_pt, ptbins, nbin_eta , etabins);
+              FillHist((prefix + "_"+LepTypeLabelMap[LepTypeLabel[i]]+"_ptcone").Data(),     lep_ptcone, weight_pt, nbin_pt, ptbins, "p_{T}^{cone} (GeV)");
               FillHist((prefix + "_"+LepTypeLabelMap[LepTypeLabel[i]]+"_etaFine").Data(), lep_eta, weight_pt , 50, -2.5, 2.5);
               if(leps[0]->LepGenTypeString()=="IsFake"){
                 if(leps[0]->CloseJet_Flavour().Contains("HF")){
                   FillHist((prefix + "_fakeHF_pt_eta").Data(), lep_pt, lep_eta,weight_pt, nbin_pt, ptbins, nbin_eta , etabins);
                   FillHist((prefix + "_fakeHF_pt").Data(),     lep_pt, weight_pt, nbin_pt, ptbins, "p_{T} (GeV)");
+                  FillHist((prefix + "_fakeHF_ptcone_eta").Data(), lep_ptcone, lep_eta,weight_pt, nbin_pt, ptbins, nbin_eta , etabins);
+                  FillHist((prefix + "_fakeHF_ptcone").Data(),     lep_ptcone, weight_pt, nbin_pt, ptbins, "p_{T}^{cone} (GeV)");
                   FillHist((prefix + "_fakeHF_etaFine").Data(),lep_eta, weight_pt , 50, -2.5, 2.5);
                   FillHist((prefix + "_fakeHF_LFvsHF").Data(), lep_LFvsHF, weight_pt, 200, -1, 1);
+                  for(int i_ptbin=0; i_ptbin<nbin_pt; i_ptbin++){
+                    i_ptbinStr = Form("%d",i_ptbin+1);
+                    if( (ptbins[i_ptbin]<lep_pt) && (lep_pt<=ptbins[i_ptbin+1]) ){
+                      FillHist((prefix+"_"+LepTypeLabelMap[LepTypeLabel[i]]+"_LFvsHF_ptbin"+i_ptbinStr).Data(), lep_LFvsHF, weight_pt, 200, -1, 1);
+                    }
+                  }
                 }
                 else if(leps[0]->CloseJet_Flavour().Contains("LF")){
                   FillHist((prefix + "_fakeLF_pt_eta").Data(), lep_pt, lep_eta,weight_pt, nbin_pt, ptbins, nbin_eta , etabins);
                   FillHist((prefix + "_fakeLF_pt").Data(),     lep_pt, weight_pt, nbin_pt, ptbins, "p_{T} (GeV)");
+                  FillHist((prefix + "_fakeLF_ptcone_eta").Data(), lep_ptcone, lep_eta,weight_pt, nbin_pt, ptbins, nbin_eta , etabins);
+                  FillHist((prefix + "_fakeLF_ptcone").Data(),     lep_ptcone, weight_pt, nbin_pt, ptbins, "p_{T}^{cone} (GeV)");
                   FillHist((prefix + "_fakeLF_etaFine").Data(),lep_eta, weight_pt , 50, -2.5, 2.5);
                   FillHist((prefix + "_fakeLF_LFvsHF").Data(), lep_LFvsHF, weight_pt, 200, -1, 1);
+                  for(int i_ptbin=0; i_ptbin<nbin_pt; i_ptbin++){
+                    i_ptbinStr = Form("%d",i_ptbin+1);
+                    if( (ptbins[i_ptbin]<lep_pt) && (lep_pt<=ptbins[i_ptbin+1]) ){
+                      FillHist((prefix+"_"+LepTypeLabelMap[LepTypeLabel[i]]+"_LFvsHF_ptbin"+i_ptbinStr).Data(), lep_LFvsHF, weight_pt, 200, -1, 1);
+                    }
+                  }
                 }
               }
             }

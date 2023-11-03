@@ -30,6 +30,7 @@ void AnalyzerParameter::Clear(){
   Electron_UseMini = false;
   Electron_UsePtCone = false;
   Electron_MinPt = 10.;
+  Electron_LFcut = 0.;
 
 
   
@@ -58,6 +59,7 @@ void AnalyzerParameter::Clear(){
   Muon_UsePtCone = false;
   Muon_UseTuneP = false;
   Muon_MinPt = 10.;
+  Muon_LFcut = 0.;
 
   SystDir_PU=0;
   SystDir_BTag="central";
@@ -90,7 +92,7 @@ AnalyzerParameter::AnalyzerParameter(){
   Electron_ID_SF_Key = "Default";
   Electron_Trigger_NameForSF = "Default";
   Electron_Trigger_SF_Key = "Default";
-
+  Electron_LFcut = 0.;
 
   Tau_Tight_ID = "Default";
   Tau_Loose_ID = "Default";
@@ -104,8 +106,7 @@ AnalyzerParameter::AnalyzerParameter(){
   Muon_ISO_SF_Key = "Default";
   Muon_Trigger_SF_Key = "Default";
   Muon_Trigger_NameForSF = "Default";
-    
-
+  Muon_LFcut = 0.;
 
   SystDir_PU=0;
   SystDir_BTag="Default";

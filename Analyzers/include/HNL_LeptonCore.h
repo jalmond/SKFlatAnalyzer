@@ -372,11 +372,6 @@ class HNL_LeptonCore : public AnalyzerCore {
   void Fill_RegionPlots(HNL_LeptonCore::Channel channel, int plotCR,TString label_1, TString label_2, std::vector<Tau> Taus, std::vector<Jet> jets, std::vector<FatJet> fatjets, std::vector<Jet> bjets, std::vector<Lepton *> leps, std::vector<Lepton *> leps_veto, Particle  met, double nvtx, double w,int verbose_level=0);
   void Fill_RegionPlots(HNL_LeptonCore::Channel channel,TString label_1, TString label_2,std::vector<Tau> Taus, std::vector<Jet> jets, std::vector<FatJet> fatjets, std::vector<Jet> bjets, std::vector<Lepton *> leps, std::vector<Lepton *> leps_veto, Particle met, double nvtx, double w,int verbose_level=0);
 
-  void Fill_RegionPlots(HNL_LeptonCore::Channel channel, int plotCR,TString label_1, TString label_2, std::vector<Jet> jets, std::vector<FatJet> fatjets, std::vector<Lepton *> leps, Particle  met, double nvtx, double w, int verbose_level=0);
-  void Fill_RegionPlots(HNL_LeptonCore::Channel channel, int plotCR,TString label_1, TString label_2, std::vector<Tau> Taus, std::vector<Jet> jets, std::vector<FatJet> fatjets, std::vector<Lepton *> leps, Particle  met, double nvtx, double w,int verbose_level=0);
-  void Fill_RegionPlots(HNL_LeptonCore::Channel channel,TString label_1, TString label_2,std::vector<Tau> Taus, std::vector<Jet> jets, std::vector<FatJet> fatjets, std::vector<Lepton *> leps, Particle met, double nvtx, double w,int verbose_level=0); //JH : these cause symbol lookup error
-
-
 
   void FillAK8Plots(HNL_LeptonCore::Channel channel, TString label_1, TString label_2,  std::vector<Tau> Taus, std::vector<Jet> jets,  std::vector<FatJet> fatjets,  std::vector<Lepton *> leps, Particle  met, double nvtx, double w);
 

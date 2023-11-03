@@ -22,6 +22,7 @@ public:
   double Electron_Tight_RelIso, Electron_Loose_RelIso, Electron_Veto_RelIso;
   bool Electron_UseMini, Electron_UsePtCone;
   double Electron_MinPt, Electron_MaxEta ;
+  double Electron_LFcut; //JH
 
   TString Muon_Tight_ID, Muon_Loose_ID, Muon_Veto_ID;
   TString Muon_RECO_SF_Key, Muon_ID_SF_Key, Muon_ISO_SF_Key, Muon_Trigger_SF_Key,Muon_Trigger_NameForSF;
@@ -30,6 +31,7 @@ public:
   double Muon_Tight_RelIso, Muon_Loose_RelIso, Muon_Veto_RelIso;
   bool Muon_UseMini, Muon_UsePtCone, Muon_UseTuneP;
   double Muon_MinPt, Muon_MaxEta ;
+  double Muon_LFcut; //JH
 
   TString JetPUID;
   double Jet_MinPt, Jet_MaxEta ;
