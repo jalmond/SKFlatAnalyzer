@@ -15,8 +15,6 @@ void HNL_ControlRegionPlotter::executeEvent(){
   if(!(_jentry%10000)) run_Debug=true;
   else run_Debug=false;
 
-  Event ev = GetEvent();
-
   vector<TString> LooseIDs = {"HNL_ULID_Baseline",    "HNL_ULID_FO",   "HNLooseV1"};
   vector<TString> TightIDs = {"HNL_ULID_2017_Looser", "HNL_ULID_2017", "HNTightV2"};
   std::map<int, TString> LFcutmap;

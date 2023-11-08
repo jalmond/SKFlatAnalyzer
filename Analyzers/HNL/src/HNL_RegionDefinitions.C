@@ -175,8 +175,8 @@ void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq,
     if(MCSample.Contains("Type")&& !SelectChannel(dilep_channel)) continue;
   
     //cout << "ParamName = " << param.Name << endl;
-    std::vector<Lepton *> leps       = MakeLeptonPointerVector(muons,electrons,param);
-    if(RunFake || RunFakeClosure) leps = LeptonUsePtParton(leps); //JH : FIXME if you want to go back, just remove this line
+    std::vector<Lepton *> leps       = MakeLeptonPointerVector(muons,electrons,param,0.07); //PtCone for HNTightV2
+    if(param.Name.Contains("TriLep") && (RunFake || RunFakeClosure)) leps = LeptonUsePtParton(leps); //JH : Replace pt with ptparton with TriLep method
     //if(electrons.size()>1)cout << "leps defined;" << endl;
     //if(electrons.size()>1)cout << "leps size : " << leps.size() << endl;
 
@@ -185,7 +185,7 @@ void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq,
 
     FillEventCutflow(HNL_LeptonCore::ChannelDepPresel, weight_channel, GetChannelString(dilep_channel) +"_NoCut", "ChannelCutFlow/"+param.DefName,param.WriteOutVerbose); //JH
 
-    if(!PassGenMatchFilter(leps,param)) continue;
+    if(!PassGenMatchFilter(leps,param)) continue; //JH : NOTE THIS IS where the lepton is filtered by gen info. If data or RunFakeClosurePred, then return true. If RunFakeClosureObs, it sees if the MC Nfake > 0 (true) or not (false)
     FillEventCutflow(HNL_LeptonCore::ChannelDepPresel, weight_channel, GetChannelString(dilep_channel) +"_GenFilter", "ChannelCutFlow/"+param.DefName,param.WriteOutVerbose); //JH
 
     //if(!ConversionSplitting(leps,RunConv,2)) continue; //JH This doesn't do anything for now
@@ -235,11 +235,11 @@ void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq,
     FillEventCutflow(HNL_LeptonCore::ChannelDepPresel, weight_channel, GetChannelString(dilep_channel) +"_SameCharge", "ChannelCutFlow/"+param.DefName,param.WriteOutVerbose); //JH
 
     //if(RunFake&& IsData){
-    if(RunFake){ //FIXME need this even in MC to perform the closure test
+    if(RunFake){ //FIXME need this even with MC to perform the closure test. Note that RunFake = HasFlag("RunFake") || HasFlag("RunFakeClosurePred");
       //weight_channel = GetFakeWeight(leps, param_channel, true);
-      weight_channel *= GetFakeWeight(leps, param_channel, false); //FIXME tentatively pr = 1. note PtParton is used here
+      weight_channel *= GetFakeWeight(leps, param_channel, false); //FIXME tentatively pr = 1.
       FillWeightHist(param_channel.Name+"/FakeWeight",weight_channel);
-      FillWeightHist(param_channel.Name+"/FakeWeightonly",GetFakeWeight(LeptonUsePtParton(leps), param_channel, false));
+      FillWeightHist(param_channel.Name+"/FakeWeightonly",GetFakeWeight(leps, param_channel, false));
     }
     
     // Run PRESEL + SR1-3                                                                                                                                                           

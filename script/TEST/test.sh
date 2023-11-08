@@ -16,8 +16,8 @@ flag=$5
 #echo -e ".L test.C\n test(\"2017\",false,\"WJets\",\"HNFakeBDT\",\"\");" | root -l 2>&1 | tee "WJets".log
 
 # HNL_SignalRegionPlotter (fake closure)
-#echo -e ".L test.C\n test(\"2017\",false,\"TTLJ\",\"HNMultiLepBDT\",\"RunFakeClosurePred\");" | root -l 2>&1 | tee "TTLJ_ClosPred".log
-#echo -e ".L test.C\n test(\"2017\",false,\"TTLJ\",\"HNMultiLepBDT\",\"RunFakeClosureObs\");" | root -l 2>&1 | tee "TTLJ_ClosObs".log
+echo -e ".L test.C\n test(\"2017\",false,\"TTLJ\",\"HNMultiLepBDT\",\"RunFakeClosurePred\");" | root -l 2>&1 | tee "TTLJ_ClosPred".log
+echo -e ".L test.C\n test(\"2017\",false,\"TTLJ\",\"HNMultiLepBDT\",\"RunFakeClosureObs\");" | root -l 2>&1 | tee "TTLJ_ClosObs".log
 
 # HNL_ControlRegionPlotter
-echo -e ".L test.C\n test(\"2017\",true,\"DoubleMuon\",\"HNMultiLepBDT\",\"RunFake\");" | root -l 2>&1 | tee "data_RunFake".log
+#echo -e ".L test.C\n test(\"2017\",true,\"DoubleMuon\",\"HNMultiLepBDT\",\"RunFake\");" | root -l 2>&1 | tee "data_RunFake".log

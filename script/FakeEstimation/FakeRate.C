@@ -368,7 +368,7 @@ void GetMCTruthFRratio(TString sample, TString year, TString channel, TString ID
 
 }
 
-void GetMCTruthFR(TFile *outfile, TString sample, TString year, TString tag, TString channel, TString ID, TString leptype, TString var){ // W, Z, TT
+void GetMCTruthFR(TFile *outfile, TString sample, TString year, TString tag, TString channel, TString ID, TString WeightType, TString leptype, TString var){ // LF_cut0p8_Fake_Tight_MuMu_HNTightV2_LFvsHF_EventWeight_NoSel_fakeHF_LFvsHF
 
   TString sample_full;
   if(sample=="W") sample_full = "WJets_MG";
@@ -378,9 +378,11 @@ void GetMCTruthFR(TFile *outfile, TString sample, TString year, TString tag, TSt
   TString fake_MC = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_LeptonFakeRate/"+year+"/FakeRateTruth__/HNL_LeptonFakeRate_SkimTree_FakeEventSkimBDT_"+sample_full+".root";
   TFile *f_fake_MC = new TFile(fake_MC);
 
-  TString histname_loose = "Fake_Loose_"+channel+"_"+ID+"_LFvsHF_NoSel_"+leptype+"_"+var;
-  TString histname_tight = "Fake_Tight_"+channel+"_"+ID+"_LFvsHF_NoSel_"+leptype+"_"+var;
-  if(tag=="LF"||tag=="HF"){
+  TString this_WeightType = (WeightType=="") ? "" : "_"+WeightType;
+
+  TString histname_loose = "Fake_Loose_"+channel+"_"+ID+"_LFvsHF"+this_WeightType+"_NoSel_"+leptype+"_"+var;
+  TString histname_tight = "Fake_Tight_"+channel+"_"+ID+"_LFvsHF"+this_WeightType+"_NoSel_"+leptype+"_"+var;
+  if(tag.Contains("LF")||tag.Contains("HF")){
     histname_loose = tag+"_"+histname_loose;
     histname_tight = tag+"_"+histname_tight;
   }
@@ -388,17 +390,7 @@ void GetMCTruthFR(TFile *outfile, TString sample, TString year, TString tag, TSt
   TH1D *h_loose = (TH1D*)f_fake_MC->Get(histname_loose);
   TH1D *h_tight = (TH1D*)f_fake_MC->Get(histname_tight);
 
-  h_tight->Divide(h_tight,h_loose,1,1,"B"); // unweighted, Binomial error
-
-  TString histname_FR = sample+"_"+histname_loose.ReplaceAll("Loose_","");
-  TCanvas *c1  = new TCanvas(histname_FR,"",900,800);
-
-  c1->cd();
-
-  c1->SetRightMargin(0.05);
-  c1->SetLeftMargin(0.14);
-
-  h_tight->SetName(histname_FR);
+  // Draw loose, tight distribution
   std::map<TString, TString> var_latex;
   var_latex["PtPartonUncorr"] = "p_{T}^{parton, uncorr} (GeV)";
   var_latex["PtPartonQCD"]    = "p_{T}^{parton, corr} (GeV)";
@@ -411,6 +403,80 @@ void GetMCTruthFR(TFile *outfile, TString sample, TString year, TString tag, TSt
   var_latex["mva"]            = "MVA_{HFvsPr}";
   var_latex["LFvsHF"]         = "MVA_{LFvsHF}";
   var_latex["reliso"]         = "PFRelIso";
+
+  TCanvas *c1  = new TCanvas(sample+"_"+histname_loose,"",900,800);
+  TCanvas *c2  = new TCanvas(sample+"_"+histname_tight,"",900,800);
+
+  // Loose
+  c1->cd();
+
+  c1->SetRightMargin(0.05);
+  c1->SetLeftMargin(0.14);
+
+  h_loose->SetName(sample+"_"+histname_loose);
+  h_loose->GetXaxis()->SetTitleOffset(1.2);
+  h_loose->GetXaxis()->SetTitle(var_latex[var]);
+  h_loose->GetXaxis()->SetLabelOffset(0);
+  h_loose->GetYaxis()->SetTitleOffset(1.3);
+  h_loose->GetYaxis()->SetTitleSize(0.05);
+  h_loose->GetYaxis()->SetTitle("Loose ("+WeightType+")");
+  h_loose->SetLineColor(kRed);
+  h_loose->SetStats(0);
+  h_loose->Draw();
+  if(var.Contains("pt")) gPad->SetLogx();
+
+  TLegend *lg1 = new TLegend(0.6, 0.77, 0.95, 0.88);
+  lg1->AddEntry(h_loose,"#bf{"+tag+"} "+ID+" ("+leptype+")","lpe"); // show line, polymarker, error bar
+  lg1->SetBorderSize(0);
+  lg1->Draw("same");
+
+  TText *t1 = new TText(.95,.91,sample_full+" ("+year+")");
+  t1->SetNDC(); // set this or the text will show at x, y w.r.t x, y-axis of the histogram (not pad)
+  t1->SetTextSize(0.04);
+  t1->SetTextAlign(31);
+  t1->Draw();
+
+  // Tight
+  c2->cd();
+
+  c2->SetRightMargin(0.05);
+  c2->SetLeftMargin(0.14);
+
+  h_tight->SetName(sample+"_"+histname_tight);
+  h_tight->GetXaxis()->SetTitleOffset(1.2);
+  h_tight->GetXaxis()->SetTitle(var_latex[var]);
+  h_tight->GetXaxis()->SetLabelOffset(0);
+  h_tight->GetYaxis()->SetTitleOffset(1.3);
+  h_tight->GetYaxis()->SetTitleSize(0.05);
+  h_tight->GetYaxis()->SetTitle("Tight ("+WeightType+")");
+  h_tight->SetLineColor(kRed);
+  h_tight->SetStats(0);
+  h_tight->Draw();
+  if(var.Contains("pt")) gPad->SetLogx();
+
+  TLegend *lg2 = new TLegend(0.6, 0.77, 0.95, 0.88);
+  lg2->AddEntry(h_tight,"#bf{"+tag+"} "+ID+" ("+leptype+")","lpe"); // show line, polymarker, error bar
+  lg2->SetBorderSize(0);
+  lg2->Draw("same");
+
+  TText *t2 = new TText(.95,.91,sample_full+" ("+year+")");
+  t2->SetNDC(); // set this or the text will show at x, y w.r.t x, y-axis of the histogram (not pad)
+  t2->SetTextSize(0.04);
+  t2->SetTextAlign(31);
+  t2->Draw();
+
+  // FakeRates
+  h_tight->Divide(h_tight,h_loose,1,1,"B"); // unweighted, Binomial error
+
+  TString histname_FR = sample+"_"+histname_loose.ReplaceAll("Loose_","");
+  TCanvas *c3  = new TCanvas(histname_FR,"",900,800);
+
+  c3->cd();
+
+  c3->SetRightMargin(0.05);
+  c3->SetLeftMargin(0.14);
+
+  h_tight->SetName(histname_FR);
   h_tight->GetXaxis()->SetTitleOffset(1.2);
   h_tight->GetXaxis()->SetTitle(var_latex[var]);
   h_tight->GetXaxis()->SetLabelOffset(0);
@@ -420,25 +486,29 @@ void GetMCTruthFR(TFile *outfile, TString sample, TString year, TString tag, TSt
   h_tight->Draw();
   if(var.Contains("pt")) gPad->SetLogx();
 
-  TLegend *lg = new TLegend(0.6, 0.77, 0.95, 0.88);
-  lg->AddEntry(h_tight,"#bf{"+tag+"} "+ID+" ("+leptype+")","lpe"); // show line, polymarker, error bar
-  lg->SetBorderSize(0);
-  lg->Draw("same");
+  TLegend *lg3 = new TLegend(0.6, 0.77, 0.95, 0.88);
+  lg3->AddEntry(h_tight,"#bf{"+tag+"} "+ID+" ("+leptype+")","lpe"); // show line, polymarker, error bar
+  lg3->SetBorderSize(0);
+  lg3->Draw("same");
 
-  TText *t = new TText(.95,.91,sample_full+" ("+year+")");
-  t->SetNDC(); // set this or the text will show at x, y w.r.t x, y-axis of the histogram (not pad)
-  t->SetTextSize(0.04);
-  t->SetTextAlign(31);
-  t->Draw();
+  TText *t3 = new TText(.95,.91,sample_full+" ("+year+")");
+  t3->SetNDC(); // set this or the text will show at x, y w.r.t x, y-axis of the histogram (not pad)
+  t3->SetTextSize(0.04);
+  t3->SetTextAlign(31);
+  t3->Draw();
 
   // create root file
   outfile->cd();
-  c1->Write();
+  c3->Write();
 
   // store png
+  TString this_tag = (tag!="") ? tag : "NoSep";
   gSystem->Exec("mkdir -p FakeRateTruth/"+channel+"/"+ID+"/"+sample+"/"+var);
-  if(tag!="") c1->SaveAs("FakeRateTruth/"+channel+"/"+ID+"/"+sample+"/"+var+"/"+sample+"_"+tag+"_"+ID+"_"+leptype+"_"+var+".png");
-  else        c1->SaveAs("FakeRateTruth/"+channel+"/"+ID+"/"+sample+"/"+var+"/"+sample+"_"+"NoSep_"+ID+"_"+leptype+"_"+var+".png");
+  gSystem->Exec("mkdir -p FakeRateTruth/"+channel+"/"+ID+"/"+sample+"/"+var+"/"+"Loose");
+  gSystem->Exec("mkdir -p FakeRateTruth/"+channel+"/"+ID+"/"+sample+"/"+var+"/"+"Tight");
+  c1->SaveAs("FakeRateTruth/"+channel+"/"+ID+"/"+sample+"/"+var+"/Loose/"+sample+"_"+this_tag+"_"+ID+"_"+leptype+"_"+var+this_WeightType+".png");
+  c2->SaveAs("FakeRateTruth/"+channel+"/"+ID+"/"+sample+"/"+var+"/Tight/"+sample+"_"+this_tag+"_"+ID+"_"+leptype+"_"+var+this_WeightType+".png");
+  c3->SaveAs("FakeRateTruth/"+channel+"/"+ID+"/"+sample+"/"+var+"/"+sample+"_"+this_tag+"_"+ID+"_"+leptype+"_"+var+this_WeightType+".png");
 
 }
 
@@ -477,27 +547,27 @@ void FakeRate(){
   //GetFR2D(outfileQCDFakeRate);
 
   // GetFR2D
-  TFile *outfile2D = new TFile("New_FakeRate_Mu_2017_LFvsHF_2D.root","RECREATE");
-  GetFR2D(outfile2D,"2017","LF_cut0",  "MuMu","HNL_ULID_2017",false);
-  GetFR2D(outfile2D,"2017","HF_cut0",  "MuMu","HNL_ULID_2017",false);
-  GetFR2D(outfile2D,"2017","LF_cut0p8","MuMu","HNL_ULID_2017",false);
-  GetFR2D(outfile2D,"2017","HF_cut0p8","MuMu","HNL_ULID_2017",false);
-  GetFR2D(outfile2D,"2017",""         ,"MuMu","HNL_ULID_2017",false);
-  GetFR2D(outfile2D,"2017","LF_cut0",  "MuMu","HNL_ULID_2017_Looser",false);
-  GetFR2D(outfile2D,"2017","HF_cut0",  "MuMu","HNL_ULID_2017_Looser",false);
-  GetFR2D(outfile2D,"2017","LF_cut0p8","MuMu","HNL_ULID_2017_Looser",false);
-  GetFR2D(outfile2D,"2017","HF_cut0p8","MuMu","HNL_ULID_2017_Looser",false);
-  GetFR2D(outfile2D,"2017",""         ,"MuMu","HNL_ULID_2017_Looser",false);
-  GetFR2D(outfile2D,"2017","LF_cut0",  "MuMu","HNTightV2",false);
-  GetFR2D(outfile2D,"2017","HF_cut0",  "MuMu","HNTightV2",false);
-  GetFR2D(outfile2D,"2017","LF_cut0p8","MuMu","HNTightV2",false);
-  GetFR2D(outfile2D,"2017","HF_cut0p8","MuMu","HNTightV2",false);
-  GetFR2D(outfile2D,"2017",""         ,"MuMu","HNTightV2",false);
-  GetFR2D(outfile2D,"2017","LF_cut0",  "MuMu","HNTightV2",true);
-  GetFR2D(outfile2D,"2017","HF_cut0",  "MuMu","HNTightV2",true);
-  GetFR2D(outfile2D,"2017","LF_cut0p8","MuMu","HNTightV2",true);
-  GetFR2D(outfile2D,"2017","HF_cut0p8","MuMu","HNTightV2",true);
-  GetFR2D(outfile2D,"2017",""         ,"MuMu","HNTightV2",true);
+  //TFile *outfile2D = new TFile("New_FakeRate_Mu_2017_LFvsHF_2D.root","RECREATE");
+  //GetFR2D(outfile2D,"2017","LF_cut0",  "MuMu","HNL_ULID_2017",false);
+  //GetFR2D(outfile2D,"2017","HF_cut0",  "MuMu","HNL_ULID_2017",false);
+  //GetFR2D(outfile2D,"2017","LF_cut0p8","MuMu","HNL_ULID_2017",false);
+  //GetFR2D(outfile2D,"2017","HF_cut0p8","MuMu","HNL_ULID_2017",false);
+  //GetFR2D(outfile2D,"2017",""         ,"MuMu","HNL_ULID_2017",false);
+  //GetFR2D(outfile2D,"2017","LF_cut0",  "MuMu","HNL_ULID_2017_Looser",false);
+  //GetFR2D(outfile2D,"2017","HF_cut0",  "MuMu","HNL_ULID_2017_Looser",false);
+  //GetFR2D(outfile2D,"2017","LF_cut0p8","MuMu","HNL_ULID_2017_Looser",false);
+  //GetFR2D(outfile2D,"2017","HF_cut0p8","MuMu","HNL_ULID_2017_Looser",false);
+  //GetFR2D(outfile2D,"2017",""         ,"MuMu","HNL_ULID_2017_Looser",false);
+  //GetFR2D(outfile2D,"2017","LF_cut0",  "MuMu","HNTightV2",false);
+  //GetFR2D(outfile2D,"2017","HF_cut0",  "MuMu","HNTightV2",false);
+  //GetFR2D(outfile2D,"2017","LF_cut0p8","MuMu","HNTightV2",false);
+  //GetFR2D(outfile2D,"2017","HF_cut0p8","MuMu","HNTightV2",false);
+  //GetFR2D(outfile2D,"2017",""         ,"MuMu","HNTightV2",false);
+  //GetFR2D(outfile2D,"2017","LF_cut0",  "MuMu","HNTightV2",true);
+  //GetFR2D(outfile2D,"2017","HF_cut0",  "MuMu","HNTightV2",true);
+  //GetFR2D(outfile2D,"2017","LF_cut0p8","MuMu","HNTightV2",true);
+  //GetFR2D(outfile2D,"2017","HF_cut0p8","MuMu","HNTightV2",true);
+  //GetFR2D(outfile2D,"2017",""         ,"MuMu","HNTightV2",true);
 
   // GetFR1D
   //TFile *outfile1D = new TFile("New_FakeRate_Mu_2017_LFvsHF_1D.root","RECREATE");
@@ -567,25 +637,32 @@ void FakeRate(){
   //GetFR1D(outfile1D,"2017",""  ,"MuMu","HNTightV2","reliso",true);
 
   // GetMCTruthFR
-  //TFile *outfile1D = new TFile("FakeRateTruth_Mu_2017_LFvsHF_1D.root","RECREATE");
-  //vector<TString> samples  = {"QCD", "W", "Z", "TT"};
-  //vector<TString> tags     = {"", "HF", "LF"};
-  ////vector<TString> eras     = {"2016preVFP", "2016postVFP", "2017", "2018"};
-  ////vector<TString> flavors  = {"MuMu", "EE"};
-  //vector<TString> IDs      = {"HNL_ULID_2017", "HNTightV2"};
-  //vector<TString> LepTypes = {"fake", "fakeHF", "fakeLF"};
-  //vector<TString> vars     = {"pt", "etaFine", "reliso", "dXY", "dZ", "SIP3D", "mva", "LFvsHF"};
-  //for(unsigned int i=0; i<samples.size(); i++){
-  //  for(unsigned int j=0; j<tags.size(); j++){
-  //    for(unsigned int k=0; k<IDs.size(); k++){
-  //      for(unsigned int l=0; l<LepTypes.size(); l++){
-  //        for(unsigned int m=0; m<vars.size(); m++){
-  //          GetMCTruthFR(outfile1D, samples.at(i), "2017", tags.at(j), "MuMu", IDs.at(k), LepTypes.at(l), vars.at(m));
-  //        }
-  //      }
-  //    }
-  //  }
-  //}
+  TFile *outfile1D = new TFile("New_FakeRateTruth_Mu_2017_LFvsHF_1D.root","RECREATE");
+  //vector<TString> samples     = {"QCD", "W", "Z", "TT"};
+  vector<TString> samples     = {"TT"};
+  vector<TString> tags        = {"", "HF_cut0p8", "LF_cut0p8", "HF_cut0", "LF_cut0"};
+  //vector<TString> eras        = {"2016preVFP", "2016postVFP", "2017", "2018"};
+  //vector<TString> flavors     = {"MuMu", "EE"};
+  vector<TString> IDs         = {"HNL_ULID_2017_Looser", "HNL_ULID_2017", "HNTightV2"};
+  vector<TString> WeightTypes = {"EventSign", "EventWeight"};
+  vector<TString> LepTypes    = {"fake", "fakeHF", "fakeLF"};
+  vector<TString> vars        = {"pt", "ptcone", "etaFine", "reliso", "dXY", "dZ", "SIP3D", "mva", "LFvsHF"};
+  for(unsigned int i=0; i<samples.size(); i++){
+    for(unsigned int j=0; j<tags.size(); j++){
+      for(unsigned int k=0; k<IDs.size(); k++){
+        for(unsigned int l=0; l<WeightTypes.size(); l++){
+          for(unsigned int m=0; m<LepTypes.size(); m++){
+            for(unsigned int n=0; n<vars.size(); n++){
+              GetMCTruthFR(outfile1D, samples.at(i), "2017", tags.at(j), "MuMu", IDs.at(k), WeightTypes.at(l), LepTypes.at(m), vars.at(n));
+            }
+          }
+        }
+      }
+    }
+  }
+  //TEST
+  //GetMCTruthFR(outfile1D, "QCD", "2017", "HF_cut0", "MuMu", "HNL_ULID_2017", "EventWeight", "fakeLF", "pt");
+  //GetMCTruthFR(outfile1D, "QCD", "2017", "HF_cut0", "MuMu", "HNL_ULID_2017", "EventSign", "fakeLF", "pt");
 
   //GetMCTruthFRratio("TT","2017","MuMu","TriLep"  ,"PtPartonUncorr",outfile);
   //GetMCTruthFRratio("TT","2017","MuMu","TriLep"  ,"PtPartonQCD"   ,outfile);

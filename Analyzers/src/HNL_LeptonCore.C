@@ -4417,6 +4417,10 @@ void HNL_LeptonCore::Fill_RegionPlots(HNL_LeptonCore::Channel channel, TString p
   FillHist( plot_dir+"/RegionPlots_"+ region+ "/Lep_2_ptcone", leps[1]->PtCone()  ,  w, 2000, 0, 2000,"1_{2} p_{T}^{cone} GeV"); //JH
   FillHist( plot_dir+"/RegionPlots_"+ region+ "/Lep_1_eta", leps[0]->Eta()  , w, 60, -3., 3,"l_{1} #eta");
   FillHist( plot_dir+"/RegionPlots_"+ region+ "/Lep_2_eta", leps[1]->Eta()  , w, 60, -3., 3.,"l_{2} #eta");
+  FillHist( plot_dir+"/RegionPlots_"+ region+ "/Lep_1_mva", leps[0]->LepMVA()  ,  w, 50, -1, 1,"l_{1} MVA"); //JH
+  FillHist( plot_dir+"/RegionPlots_"+ region+ "/Lep_2_mva", leps[1]->LepMVA()  ,  w, 50, -1, 1,"1_{2} MVA"); //JH
+  FillHist( plot_dir+"/RegionPlots_"+ region+ "/Lep_1_LFvsHF", leps[0]->HNL_MVA_Fake("QCD_LFvsHF_v5")  ,  w, 50, -1, 1,"l_{1} LFvsHF"); //JH
+  FillHist( plot_dir+"/RegionPlots_"+ region+ "/Lep_2_LFvsHF", leps[1]->HNL_MVA_Fake("QCD_LFvsHF_v5")  ,  w, 50, -1, 1,"1_{2} LFvsHF"); //JH
 
   double ll_dphi = fabs(TVector2::Phi_mpi_pi( ( (*leps[0]).Phi() - (*leps[1]).Phi() )) );
   double ll_deta = fabs((*leps[0]).Eta() - (*leps[1]).Eta());

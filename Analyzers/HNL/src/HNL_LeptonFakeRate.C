@@ -1398,14 +1398,16 @@ void HNL_LeptonFakeRate::MakeFakeRatePlots(TString label, TString mutag,Analyzer
   //bool useevent20 = UseEvent(param, leps, jets, 20.,  MET, event_weight);
   //bool useevent30 = UseEvent(param, leps, jets, 30.,  MET, event_weight);
   bool useevent40 = UseEvent(param, leps, jets, 40.,  MET, event_weight); //JH : added param here
-  //bool useevent60 = UseEvent(param, leps, jets, 60.,  MET, event_weight);
+  bool useevent50 = UseEvent(param, leps, jets, 50.,  MET, event_weight); //JH : added param here
+  bool useevent60 = UseEvent(param, leps, jets, 60.,  MET, event_weight);
 
   label= mutag;
   if(jets.size() >= 1){
     //if(useevent20)GetFakeRates(leps, blepsT, param, label, jets,  label+"_20",(event_weight),isocut);
     //if(useevent30)GetFakeRates(leps, blepsT,param, label, jets,   label+"_30",(event_weight),isocut);
     if(useevent40)GetFakeRates(leps, blepsT,param, label, jets,  label+"_40",(event_weight),isocut); //JH : MuMu_HNL_ULID_2017_V1_40
-    //if(useevent60)GetFakeRates(leps, blepsT,param, label,jets,   label+"_60",(event_weight),isocut); //JH
+    if(useevent50)GetFakeRates(leps, blepsT,param, label, jets,  label+"_50",(event_weight),isocut); 
+    if(useevent60)GetFakeRates(leps, blepsT,param, label,jets,   label+"_60",(event_weight),isocut); 
   }
   return;
 }

@@ -21,15 +21,50 @@ void HNL_SignalRegionPlotter::executeEvent(){
   }
   
   //AnalyzerParameter param_signal = HNL_LeptonCore::InitialiseHNLParameter("MVAUL","_UL");
-  AnalyzerParameter param_signal = HNL_LeptonCore::InitialiseHNLParameter("MVAUL","_TriLep");
+  //AnalyzerParameter param_signal = HNL_LeptonCore::InitialiseHNLParameter("MVAUL","_TriLep");
   //AnalyzerParameter param_signal = HNL_LeptonCore::InitialiseHNLParameter("MVAUL","_LFvsHF");
-  if(RunFakeClosurePred){
-    if(param_signal.Name.Contains("TriLep")) param_signal.Muon_FR_Key = "PtPartonQCD_eta_TriLepQCD";
-    else if(param_signal.Name.Contains("LFvsHF")) param_signal.Muon_FR_Key = "FLAVOR_pt_eta_AwayJetPt40"; //FIXME replace FLAVOR with LF or HF later
-  }
-  else if(RunFakeClosureObs) param_signal.FakeMethod = "MC"; //JH
-  RunULAnalysis(param_signal);
 
+  //if(param_signal.Name.Contains("TriLep")) param_signal.Muon_FR_Key = "PtPartonQCD_eta_TriLepQCD"; //JH : implement later
+
+  vector<TString> LooseIDs = {"HNL_ULID_Baseline",    "HNL_ULID_FO",   "HNLooseV1"};
+  vector<TString> TightIDs = {"HNL_ULID_2017_Looser", "HNL_ULID_2017", "HNTightV2"};
+  std::map<int, TString> LFcutmap;
+  LFcutmap[1] = "0";
+  LFcutmap[2] = "0p8";
+
+  for(int i=0; i<LooseIDs.size(); i++){
+
+    if(TightIDs.at(i).Contains("HNTight")){
+
+      AnalyzerParameter param_signal = HNL_LeptonCore::InitialiseHNLParameter("MVAUL","_PtCone");
+      //redefine FR ID, FR key, Tight IDs + ptcone setting
+      param_signal.Name           = param_signal.Name+"_"+TightIDs.at(i);
+      param_signal.DefName        = param_signal.DefName+"_"+TightIDs.at(i);
+      param_signal.Muon_FR_ID     = LooseIDs.at(i);
+      param_signal.Muon_FR_Key    = "ptcone_eta_AwayJetPt40";
+      param_signal.Muon_UsePtCone = true;
+      param_signal.Muon_Tight_ID  = TightIDs.at(i);
+      if(RunFakeClosureObs) param_signal.FakeMethod = "MC"; //JH : this is true fakes
+      RunULAnalysis(param_signal);
+
+    }
+
+    for(int doSep = 0; doSep < 3; doSep++){
+
+      AnalyzerParameter param_signal = doSep ? HNL_LeptonCore::InitialiseHNLParameter("MVAUL","_LFvsHF_cut"+LFcutmap[doSep]) : HNL_LeptonCore::InitialiseHNLParameter("MVAUL","");
+      //redefine FR ID, FR key, Tight IDs
+      param_signal.Name          = param_signal.Name+"_"+TightIDs.at(i);
+      param_signal.DefName       = param_signal.DefName+"_"+TightIDs.at(i);
+      param_signal.Muon_FR_ID    = LooseIDs.at(i);
+      param_signal.Muon_FR_Key   = "pt_eta_AwayJetPt40";
+      param_signal.Muon_Tight_ID = TightIDs.at(i);
+      if(RunFakeClosureObs) param_signal.FakeMethod = "MC"; //JH : this is true fakes
+      RunULAnalysis(param_signal);
+
+    }
+  }
+
+/*
   //if(!IsData) RunSyst=true;
   if(!IsData) RunSyst=false; //FIXME later
   if(RunSyst){
@@ -45,9 +80,10 @@ void HNL_SignalRegionPlotter::executeEvent(){
       param_signal.DefName = "Syst_"+param_signal.GetSystType()+param_signal_name;
       RunULAnalysis(param_signal);
     }
-  }    
+  }
+*/ //JH : Revive this later when to estimate systematics
 
-  FillTimer("END_EV");
+  //FillTimer("END_EV");
 
   return ;
 }
