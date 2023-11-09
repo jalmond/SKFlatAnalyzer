@@ -1442,20 +1442,7 @@ AnalyzerParameter HNL_LeptonCore::InitialiseHNLParameter(TString s_setup, TStrin
     param.Electron_Tight_ID = "HNL_ULID_"+GetYearString();
     param.Electron_ID_SF_Key = "TmpHNL_ULID_"+GetYearString();
     param.Muon_ID_SF_Key = "TmpHNL_ULID_"+GetYearString();
-    //param.Muon_FR_ID = "HNL_ULID_FO_"+GetYearString();
-    if(tag.Contains("TriLep")) param.Muon_FR_ID = "HNL_TopMVA_FO_MM";
-    else if(tag.Contains("LFvsHF")){ //JH
-      param.Muon_FR_ID = "HNL_ULID_FO";
-      param.Electron_FR_ID = "HNL_ULID_FO_"+GetYearString();
-      if(tag=="_LFvsHF_cut0"){
-        param.Muon_LFcut = 0.;
-        param.Electron_LFcut = 0.;
-      }
-      else if(tag=="_LFvsHF_cut0p8"){
-        param.Muon_LFcut = 0.8;
-        param.Electron_LFcut = 0.8;
-      }
-    }
+    //param.Muon_FR_ID = "HNL_ULID_FO_"+GetYearString(); //JH : this should be defined in the ControlRegionPlotter
     param.Muon_RECO_SF_Key = "MuonRecoSF";
     return param;
   }

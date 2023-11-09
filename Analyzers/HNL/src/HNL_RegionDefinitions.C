@@ -380,10 +380,7 @@ bool  HNL_RegionDefinitions::PassPreselection(HNL_LeptonCore::Channel channel,HN
   //int njets     = JetColl.size() + AK8_JetColl.size() + VBF_JetColl.size();
 
   Fill_RegionPlots(channel, 0, param.Name,"Preselection" , TauColl, JetColl, AK8_JetColl, B_JetColl, leps, leps_veto, METv, nPV, w,param.WriteOutVerbose);
-  if(RunFake || RunFakeClosureObs){
-    //leps = LeptonUsePtParton(leps); //JH : FIXME if you want to go back, uncomment this line
-    Fill_RegionPlots(channel, 0, param.Name,"Preselection_PtParton" , TauColl, JetColl, AK8_JetColl, B_JetColl, leps, leps_veto, METv, nPV, w,param.WriteOutVerbose);
-  }
+
   FillEventCutflow(HNL_LeptonCore::ChannelDepPresel, w, GetChannelString(channel) +"_Presel", "ChannelCutFlow/"+param.DefName,param.WriteOutVerbose);
  
   //cout << "end presel;" << endl; //JH
@@ -1018,6 +1015,7 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
  
   //cout << "----------------   RunAllControlRegions [Tight]  ----------------------------------------------------------------------------------------------------------------" << endl;
   std::vector<Lepton *> LepsT  = MakeLeptonPointerVector(muons,electrons,param,0.07); //PtCone for HNTightV2
+  if(param.Name.Contains("TriLep") && RunFake) LepsT = LeptonUsePtParton(LepsT); //PtParton for TriLep
   //cout << "----------------   RunAllControlRegions  [Veto ]----------------------------------------------------------------------------------------------------------------" << endl;
   std::vector<Lepton *> LepsV  = MakeLeptonPointerVector(muons_veto,electrons_veto,param);
 

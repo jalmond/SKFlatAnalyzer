@@ -15,13 +15,28 @@ void HNL_ControlRegionPlotter::executeEvent(){
   if(!(_jentry%10000)) run_Debug=true;
   else run_Debug=false;
 
-  vector<TString> LooseIDs = {"HNL_ULID_Baseline",    "HNL_ULID_FO",   "HNLooseV1"};
-  vector<TString> TightIDs = {"HNL_ULID_2017_Looser", "HNL_ULID_2017", "HNTightV2"};
+  vector<TString> LooseIDs = {"HNL_ULID_Baseline",    "HNL_ULID_FO",   "HNLooseV1", "HNL_TopMVA_FO_MM"};
+  vector<TString> TightIDs = {"HNL_ULID_2017_Looser", "HNL_ULID_2017", "HNTightV2", "HNL_ULID_2017"   };
   std::map<int, TString> LFcutmap;
   LFcutmap[1] = "0";
   LFcutmap[2] = "0p8";
 
   for(int i=0; i<LooseIDs.size(); i++){
+
+    if(LooseIDs.at(i).Contains("TopMVA")){
+
+      AnalyzerParameter param_signal = HNL_LeptonCore::InitialiseHNLParameter("MVAUL","_TriLep");
+      //redefine FR ID, FR key, Tight IDs + ptcone setting
+      param_signal.Name           = param_signal.Name+"_"+TightIDs.at(i);
+      param_signal.DefName        = param_signal.DefName+"_"+TightIDs.at(i);
+      param_signal.Muon_FR_ID     = LooseIDs.at(i);
+      param_signal.Muon_FR_Key    = "PtPartonQCD_eta_TriLepQCD";
+      param_signal.Muon_Tight_ID  = TightIDs.at(i);
+      //RunControlRegions(param_signal , {"CR_OS_Z","CR_OS_ZAk8","CR_OS_Top","CR_OS_TopAk8","CR_WZ","CR_ZZ"});
+      RunControlRegions(param_signal , {"CR_WZ","CR_ZZ"}); // JH : OS later
+      continue; //JH : Don't need to separate fake flavor with TriLep method
+
+    }
 
     if(TightIDs.at(i).Contains("HNTight")){
 
@@ -47,6 +62,16 @@ void HNL_ControlRegionPlotter::executeEvent(){
       param_signal.Muon_FR_ID    = LooseIDs.at(i);
       param_signal.Muon_FR_Key   = "pt_eta_AwayJetPt40";
       param_signal.Muon_Tight_ID = TightIDs.at(i);
+
+      if(param_signal.Name.Contains("cut0")){
+        param_signal.Muon_LFcut = 0.;
+        param_signal.Electron_LFcut = 0.;
+      }
+      else if(param_signal.Name.Contains("cut0p8")){
+        param_signal.Muon_LFcut = 0.8;
+        param_signal.Electron_LFcut = 0.8;
+      }
+
       //RunControlRegions(param_signal , {"CR_OS_Z","CR_OS_ZAk8","CR_OS_Top","CR_OS_TopAk8","CR_WZ","CR_ZZ"});
       RunControlRegions(param_signal , {"CR_WZ","CR_ZZ"}); // JH : OS later
 
