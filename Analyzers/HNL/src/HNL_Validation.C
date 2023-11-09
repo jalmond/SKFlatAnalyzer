@@ -19,18 +19,18 @@ void HNL_Validation::executeEvent(){
   if(ValPOG)  TriggerConfig="POG";
 
 
-  AnalyzerParameter param_signal = HNL_LeptonCore::InitialiseHNLParameter(ParamSetup,"_UL");
+  AnalyzerParameter param = HNL_LeptonCore::InitialiseHNLParameter("POG");
   
 
   if((_jentry==0)){
     // Print out trigger info in HNL_LeptonCore::initializeAnalyzer                                                                                            
     TriggerPrintOut(GetEvent());
-    PrintParam(param_signal);
+    param.PrintParameters();
   }
   if(run_Debug) cout << "HNL_Validation::executeEvent " << endl;
   
   Event ev = GetEvent();
-  //double weight =SetupWeight(ev,param_signal);
+  //double weight =SetupWeight(ev,param);
 
   double weight = 1.;
   double weight_pu (1.);
@@ -50,48 +50,43 @@ void HNL_Validation::executeEvent(){
   }
 
   // HL ID                                                                                                                                                                                                
-  std::vector<Electron>   ElectronCollV = GetElectrons(param_signal.Electron_Veto_ID, 10., 2.5);
-  std::vector<Muon>       MuonCollV     = GetMuons    (param_signal.Muon_Veto_ID, 5., 2.4);
+  std::vector<Electron>   ElectronCollV = GetElectrons(param.Electron_Veto_ID, 10., 2.5);
+  std::vector<Muon>       MuonCollV     = GetMuons    (param.Muon_Veto_ID, 5., 2.4);
 
-  TString el_ID = (RunFake) ?  param_signal.Electron_FR_ID : param_signal.Electron_Tight_ID ;
-  TString mu_ID = (RunFake) ?  param_signal.Muon_FR_ID :  param_signal.Muon_Tight_ID ;
+  TString el_ID = (RunFake) ?  param.Electron_FR_ID : param.Electron_Tight_ID ;
+  TString mu_ID = (RunFake) ?  param.Muon_FR_ID :  param.Muon_Tight_ID ;
 
-  std::vector<Muon>       MuonCollT     = MuonPromptOnly    ( GetMuons    ( param_signal,mu_ID, 5, 2.4, RunFake)      ,All_Gens,param_signal);
-  std::vector<Electron>   ElectronCollT = ElectronPromptOnly( GetElectrons( param_signal,el_ID, 10, 2.5, RunFake) ,All_Gens,param_signal);
+  std::vector<Muon>       MuonCollT     = MuonPromptOnly    ( SelectMuons    ( param,mu_ID, 5, 2.4)      ,All_Gens,param);
+  std::vector<Electron>   ElectronCollT = ElectronPromptOnly( SelectElectrons( param,el_ID, 10, 2.5) ,All_Gens,param);
  
   std::vector<Muon>       MuonCollTM     = MuonPromptOnly( MuonCollT,All_Gens);
   std::vector<Electron>   ElectronCollTM = ElectronPromptOnly( ElectronCollT,All_Gens);
   
-  std::vector<Tau>        mytaus        = GetTaus     (param_signal.Tau_Veto_ID,20., 2.3); 
+  std::vector<Tau>        mytaus        = SelectTaus     (param.Tau_Veto_ID,20., 2.3); 
 
   // Creat Lepton vector to have lepton blind codes 
 
-  std::vector<Lepton *> LepsT       = MakeLeptonPointerVector(MuonCollT,ElectronCollT,param_signal);
-  std::vector<Lepton *> LepsTM      = MakeLeptonPointerVector(MuonCollTM,ElectronCollTM,param_signal);
+  std::vector<Lepton *> LepsT       = MakeLeptonPointerVector(MuonCollT,ElectronCollT,param);
+  std::vector<Lepton *> LepsTM      = MakeLeptonPointerVector(MuonCollTM,ElectronCollTM,param);
   
   std::vector<Lepton *> LepsV  = MakeLeptonPointerVector(MuonCollV,ElectronCollV);
   
   // JET COLLECTION
-  std::vector<FatJet> AK8_JetColl                 = GetHNLAK8Jets("",param_signal);
-  std::vector<Jet> AK4_JetAllColl                 = GetHNLJets("NoCut_Eta3",param_signal);
-  std::vector<Jet> JetColl                        = GetHNLJets("Tight",param_signal);
-  std::vector<Jet> JetCollLoose                   = GetHNLJets("Loose",param_signal);
-  std::vector<Jet> VBF_JetColl                    = GetHNLJets("VBFTight",param_signal);
-  std::vector<Jet> BJetColl                       = GetHNLJets("BJetM",param_signal);
-  std::vector<Jet> BJetCollSR1                    = GetHNLJets("BJetT",param_signal);
 
-  JetTagging::Parameters param_jets = JetTagging::Parameters(JetTagging::DeepJet, JetTagging::Medium, JetTagging::incl, JetTagging::mujets);
-  double sf_btag               = GetBJetSF(param_signal, JetColl, param_jets);
-  if(!IsData) FillWeightHist(param_signal.Name+"/BJetSF", sf_btag);
+  std::vector<FatJet> AK8_JetColl                 = GetHNLAK8Jets(param.AK8JetColl,param);
+  std::vector<Jet>    AK4_JetColl                 = GetHNLJets(param.AK4JetColl,     param);
+  std::vector<Jet>    AK4_JetAllColl              = GetHNLJets("NoCut_Eta3",param);
+  std::vector<Jet>    AK4_JetCollLoose            = GetHNLJets("Loose",     param);
+  std::vector<Jet>    AK4_VBF_JetColl             = GetHNLJets("VBFTight",  param);
+  std::vector<Jet>    AK4_BJetColl                = GetHNLJets("BJet", param);
 
-  
-  if(IsData) sf_btag=1;
+  EvalJetWeight(AK4_JetColl, AK8_JetColl, weight, param);
 
   // Chose Typ1 Phi corr MET + smear jets 
 
-  map<TString, Particle> MapOfMET = METMap(param_signal);
+  map<TString, Particle> MapOfMET = METMap(param);
 
-  Particle PuppiMETv = GetvMET("PuppiT1xyULCorr",param_signal,true);
+  Particle PuppiMETv = GetvMET("PuppiT1xyULCorr",param,true);
   if(!PassMETFilter()) return;
   
   vector<HNL_LeptonCore::Channel> channels = {MuMu, EMu};
@@ -108,7 +103,7 @@ void HNL_Validation::executeEvent(){
     
     if(run_Debug) cout << "HNL_RegionDefinitions::PassTriggerSelection " << endl;
 
-    AnalyzerParameter param_channel = param_signal;
+    AnalyzerParameter param_channel = param;
         
     TString channel_string = GetChannelString(dilep_channel);
     param_channel.Name =  channel_string + "/" + param_channel.DefName;
@@ -116,13 +111,13 @@ void HNL_Validation::executeEvent(){
     float weight_channel = weight;
 
     double weight_Lep = 1.;
-    if(!IsDATA && dilep_channel != MuMu)  weight_Lep*= GetElectronSFEventWeight(ElectronCollT, param_channel);
-    if(!IsDATA && dilep_channel != EE)    weight_Lep*= GetMuonSFEventWeight(MuonCollT, param_channel);
+    if(!IsDATA && dilep_channel != MuMu)  EvalElectronIDWeight(ElectronCollT, param_channel,weight_Lep);
+    if(!IsDATA && dilep_channel != EE)    EvalMuonIDWeight(MuonCollT, param_channel,weight_Lep);
 
     if(SameCharge(LepsT)) continue;
 
     if(RunFake){
-      weight_channel = GetFakeWeight(LepsT, param_channel, true);
+      weight_channel = GetFakeWeight(LepsT, param_channel);
       FillWeightHist(param_channel.Name+"/FakeWeight",weight_channel);
     }
 
@@ -148,9 +143,9 @@ void HNL_Validation::executeEvent(){
     std::map< TString, bool > map_Region_to_Bool;
 
     map_Region_to_Bool.clear();
-    map_Region_to_Bool["ZPeak"]     =  (BJetColl.size() == 0 && LepsT[1]->Pt() > 15 && fabs(llCand.M() - 90) < 10) && (LepsTM.size()==2);
-    map_Region_to_Bool["ZPeakPt50"] =  (BJetColl.size() == 0 && LepsT[1]->Pt() > 50 && fabs(llCand.M() - 90) < 10) && (LepsTM.size()==2);
-    map_Region_to_Bool["BJetCR"]    =  (BJetColl.size() >= 1 && LepsT[1]->Pt() > 20 && JetColl.size() >= 2);
+    map_Region_to_Bool["ZPeak"]     =  (AK4_BJetColl.size() == 0 && LepsT[1]->Pt() > 15 && fabs(llCand.M() - M_Z) < 10) && (LepsTM.size()==2);
+    map_Region_to_Bool["ZPeakPt50"] =  (AK4_BJetColl.size() == 0 && LepsT[1]->Pt() > 50 && fabs(llCand.M() - M_Z) < 10) && (LepsTM.size()==2);
+    map_Region_to_Bool["BJetCR"]    =  (AK4_BJetColl.size() >= 1 && LepsT[1]->Pt() > 20 && AK4_JetColl.size() >= 2);
     
     std::map< TString, double > map_Region_to_Weight;
     map_Region_to_Weight.clear();
@@ -158,9 +153,9 @@ void HNL_Validation::executeEvent(){
     map_Region_to_Weight["PileUpWight"] = weight_channel*weight_pu;
     map_Region_to_Weight["LeptonID"]    = weight_channel*weight_pu*weight_Lep;
     map_Region_to_Weight["DYReweight"]  = weight_channel*weight_pu*weight_Lep*weight_dy;
-    map_Region_to_Weight["BTagSF"]      = weight_channel*weight_pu*weight_Lep*sf_btag;
-    map_Region_to_Weight["TopRW"]       = weight_channel*weight_pu*weight_Lep*sf_btag*w_topptrw;
-    map_Region_to_Weight["TopRWPUM"]    = weight_channel*weight_puM*weight_Lep*sf_btag*w_topptrw;
+    map_Region_to_Weight["BTagSF"]      = weight_channel*weight_pu*weight_Lep*param.w.btagSF;
+    map_Region_to_Weight["TopRW"]       = weight_channel*weight_pu*weight_Lep*param.w.btagSF*w_topptrw;
+    map_Region_to_Weight["TopRWPUM"]    = weight_channel*weight_puM*weight_Lep*param.w.btagSF*w_topptrw;
     
 
     for(std::map< TString, bool >::iterator it = map_Region_to_Bool.begin(); it != map_Region_to_Bool.end(); it++){
@@ -175,8 +170,8 @@ void HNL_Validation::executeEvent(){
 	  //double pt2bins[6] = {10., 15., 20., 40., 100., 2000.};
 
 	  FillHist( param_channel.Name+"/RegionPlots_"+ region+ "/LLMass",  llCand.M() , _weight, 40, 0., 200.);
-	  FillHist( param_channel.Name+"/RegionPlots_"+ region+ "/NJets",   JetColl.size() , _weight, 10, 0., 10.);
-	  FillHist( param_channel.Name+"/RegionPlots_"+ region+ "/NBJets",   BJetColl.size() , _weight, 5, 0., 5.);
+	  FillHist( param_channel.Name+"/RegionPlots_"+ region+ "/NJets",   AK4_JetColl.size() , _weight, 10, 0., 10.);
+	  FillHist( param_channel.Name+"/RegionPlots_"+ region+ "/NBJets",   AK4_BJetColl.size() , _weight, 5, 0., 5.);
 	  FillHist( param_channel.Name+"/RegionPlots_"+ region+ "/nPV",  nPV , _weight, 120, 0., 120.);
 	  FillHist( param_channel.Name+"/RegionPlots_"+ region+ "/nPileUp",  nPileUp , _weight, 120, 0., 120.);
 

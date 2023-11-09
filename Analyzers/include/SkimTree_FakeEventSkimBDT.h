@@ -1,9 +1,9 @@
 #ifndef SkimTree_FakeEventSkimBDT_h
 #define SkimTree_FakeEventSkimBDT_h
 
-#include "AnalyzerCore.h"
+#include "HNL_LeptonCore.h"
 
-class SkimTree_FakeEventSkimBDT : public AnalyzerCore {
+class SkimTree_FakeEventSkimBDT : public HNL_LeptonCore {
 
 public:
 

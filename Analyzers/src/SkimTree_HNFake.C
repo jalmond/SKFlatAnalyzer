@@ -2,6 +2,8 @@
 
 void SkimTree_HNFake::initializeAnalyzer(){
 
+  HNL_LeptonCore::initializeAnalyzer(false,false);
+
   outfile->cd();
   cout << "[SkimTree_HNFake::initializeAnalyzer()] gDirectory = " << gDirectory->GetName() << endl;
   newtree = fChain->CloneTree(0);
@@ -162,15 +164,11 @@ void SkimTree_HNFake::executeEvent(){
 
   if(!(ev.PassTrigger(triggers))) return;
 
-  double mu_pt = (IsData) ? 4: 25;
-  double el_pt = (IsData) ? 8: 25;
-
-  Particle METv = GetvMET("PuppiT1xyULCorr");
-  if(METv.Pt() > 40.) return;
+  double mu_pt = (IsData) ? 4: 4;
+  double el_pt = (IsData) ? 8: 8;
 
   vector<Muon> allmuons = GetMuons("HNLoosest", mu_pt, 2.4);
   vector<Electron> allel = GetElectrons("HNLoosest", el_pt, 2.5);
-
   
   int NLep = allmuons.size() + allel.size();
   

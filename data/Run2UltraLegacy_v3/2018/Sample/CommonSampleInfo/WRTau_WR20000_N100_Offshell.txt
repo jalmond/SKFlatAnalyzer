@@ -1,0 +1,2 @@
+# alias PD xsec nmc sumsign sumw
+WRTau_WR20000_N100_Offshell	WRTau_WR20000_N100_Offshell	1.64E-06	159000	159000.0	159000.0 

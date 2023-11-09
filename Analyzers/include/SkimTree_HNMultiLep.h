@@ -1,9 +1,9 @@
 #ifndef SkimTree_HNMultiLep_h
 #define SkimTree_HNMultiLep_h
 
-#include "AnalyzerCore.h"
+#include "HNL_LeptonCore.h"
 
-class SkimTree_HNMultiLep : public AnalyzerCore {
+class SkimTree_HNMultiLep : public HNL_LeptonCore {
 
  public:
 

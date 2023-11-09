@@ -1,6 +1,9 @@
 DYJets
 DYJets10to50_MG
 TTLL_powheg
-WW_pythia
 WZ_pythia
 ZZ_pythia
+WWTo2L2Nu_powheg
+WWW
+WWZ
+ZZZ

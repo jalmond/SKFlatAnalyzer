@@ -42,20 +42,22 @@ public:
   std::map< TString, TH2D* > map_hist_Electron;
   std::map< TString, TH2D* > map_hist_Muon;
 
-  double GetElectronFakeRate(TString ID, TString key, double eta, double pt, int sys=0);
-  double GetMuonFakeRate(TString ID, TString key, double eta, double pt, int sys=0);
+  double GetFakeRate(bool isMuon,TString ID, TString key, TString BinningMethod,TString BinningParam,    double eta, double pt, TString FakeTagger, int sys=0);
+  double GetElectronFakeRate(TString ID, TString key, TString BinningMethod,TString BinningParam, double eta, double pt, TString FakeTagger, int sys=0);
+  double GetMuonFakeRate    (TString ID, TString key, TString BinningMethod,TString BinningParam,    double eta, double pt, TString FakeTagger, int sys=0);
 
+
+  double GetPromptRate(bool ApplyR,bool isMuon, TString ID, TString key, double eta, double pt, int sys=0);
   double GetElectronPromptRate(TString ID, TString key, double eta, double pt, int sys=0);
   double GetMuonPromptRate(TString ID, TString key, double eta, double pt, int sys=0);
 
 
   bool HasLooseLepton;
-  double GetWeight(vector<Lepton *> lepptrs, AnalyzerParameter param, int sys=0);
-  double GetFullWeight(vector<Lepton *> lepptrs, AnalyzerParameter param, int sys=0);
 
   float CalculateLepWeight(float r1, float fr1, bool lep1Tight);
   float CalculateDilepWeight(float r1, float fr1, float r2, float fr2, bool lep1Tight, bool lep2Tight, int eventtype);
-						       
+  
+  vector<TString> MissingHists;
 
 
 };

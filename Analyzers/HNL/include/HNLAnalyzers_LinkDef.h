@@ -6,10 +6,11 @@
 #pragma link C++ nestedclasses;
 
 #pragma link C++ class HNL_LeptonFakeRate+;
+#pragma link C++ class HNL_LeptonFakeRateMC+;
 #pragma link C++ class HNL_LeptonFakeStudy+;
+#pragma link C++ class HNL_ChargeFlip+;
+#pragma link C++ class HNL_LeptonConversionStudy+;
 #pragma link C++ class HNL_LeptonIDBDTStudies+;
-#pragma link C++ class HNL_Validation+;
-#pragma link C++ class HNL_ConversionStudy+;
 #pragma link C++ class HNL_LeptonIDSF+;
 #pragma link C++ class HNL_RegionDefinitions+;
 #pragma link C++ class HNL_SignalStudies+;
@@ -19,6 +20,6 @@
 #pragma link C++ class HNL_ControlRegionPlotter+;
 #pragma link C++ class HNL_SignalRegionPlotter+;
 #pragma link C++ class HNL_SignalEfficiency+;
-#pragma link C++ class HNL_GenStudy+;
+#pragma link C++ class HNL_Validation+;
 
 #endif

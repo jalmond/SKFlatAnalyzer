@@ -139,48 +139,49 @@ double FatJet::GetTaggerSF(JetTagging::Tagger tg, TString era, int Sys) const{
 
   /// SF from https://indico.cern.ch/event/1152827/contributions/4840404/attachments/2428856/4162159/ParticleNet_SFs_ULNanoV9_JMAR_25April2022_PK.pdf
   //// Only coded for 5% mis tag rate
+  //https://twiki.cern.ch/twiki/bin/view/CMS/ParticleNetSFs#Top_Tagger_Nominal
 
   if(tg==JetTagging::particleNet_WvsQCD){
     if(era == "2016preVFP"){
       if (this->Pt()  < 300) {
 	double SF=1.07;
 	if(Sys==0) return SF;
-	if(Sys==1) return (SF+0.03);
+	if(Sys==1) return (SF+0.26);
 	if(Sys==-1) return (SF-0.03);
       }
       else  if (this->Pt() < 400) {
-	double SF=0.99;
-        if(Sys==0) return SF;
-        if(Sys==1) return (SF+0.09);
-        if(Sys==-1) return (SF-0.08);
+	double SF=0.96;
+        if(Sys==0)  return SF;
+        if(Sys==1)  return (SF+0.08);
+        if(Sys==-1) return (SF-0.07);
       } 
       else{
 	double SF=1.17;
         if(Sys==0) return SF;
-        if(Sys==1) return (SF+0.08);
-	if(Sys==-1) return (SF-0.08);
+        if(Sys==1) return (SF+0.07);
+	if(Sys==-1) return (SF-0.07);
       }
       return -999999;
     }
     
     if(era == "2016postVFP"){
       if (this->Pt()  < 300) {
-	double SF=1.18;
+	double SF=1.33;
         if(Sys==0) return SF;
-        if(Sys==1) return (SF+0.2);
-        if(Sys==-1) return (SF-0.1);
+        if(Sys==1) return (SF+0.37);
+        if(Sys==-1) return (SF-0.26);
       }
       else  if (this->Pt() < 400) {
-	double SF=1.03;
+	double SF=1.04;
         if(Sys==0) return SF;
-        if(Sys==1) return (SF+0.19);
+        if(Sys==1) return (SF+0.23);
 	if(Sys==-1) return (SF-0.13);
       } 
       else{
-	double SF=1.04;
+	double SF=1.06;
         if(Sys==0) return SF;
-        if(Sys==1) return (SF+0.25);
-        if(Sys==-1) return (SF-0.21);
+        if(Sys==1) return (SF+0.13);
+        if(Sys==-1) return (SF-0.14);
       }
       return -999999;
     }
@@ -188,43 +189,43 @@ double FatJet::GetTaggerSF(JetTagging::Tagger tg, TString era, int Sys) const{
 
     if(era == "2017"){
       if (this->Pt()  < 300) {
-	double SF=1.07;
-        if(Sys==0) return SF;
-        if(Sys==1) return (SF+0.12);
-        if(Sys==-1) return (SF-0.05);
-      }
-      else  if (this->Pt() < 400) {
 	double SF=1.06;
         if(Sys==0) return SF;
-        if(Sys==1) return (SF+0.1);
-	if(Sys==-1) return (SF-0.08);
+        if(Sys==1) return (SF+0.05);
+        if(Sys==-1) return (SF-0.06);
+      }
+      else  if (this->Pt() < 400) {
+	double SF=1.07;
+        if(Sys==0) return SF;
+        if(Sys==1) return (SF+0.11);
+	if(Sys==-1) return (SF-0.07);
       } 
       else{
-	double SF=0.92;
+	double SF=1.11;
         if(Sys==0) return SF;
-        if(Sys==1) return (SF+0.1);
-        if(Sys==-1) return (SF-0.1);
+        if(Sys==1) return (SF+0.16);
+        if(Sys==-1) return (SF-0.17);
       }
       return -999999;
     }
 
     if(era == "2018"){
       if (this->Pt()  < 300) {
-	double SF=1.05;
+	double SF=1.02;
         if(Sys==0) return SF;
-        if(Sys==1) return (SF+0.11);
-        if(Sys==-1) return (SF-0.06);
+        if(Sys==1) return (SF+0.03);
+        if(Sys==-1) return (SF-0.07);
       }
       else  if (this->Pt() < 400) {
-	double SF=1.00;
+	double SF=1.03;
         if(Sys==0) return SF;
-        if(Sys==1) return (SF+0.08);
+        if(Sys==1) return (SF+0.09);
 	if(Sys==-1) return (SF-0.08);
       } 
       else{
 	double SF=1.16;
         if(Sys==0) return SF;
-        if(Sys==1) return (SF+0.12);
+        if(Sys==1) return (SF+0.16);
         if(Sys==-1) return (SF-0.14);
       }
       return -999999;
@@ -241,10 +242,11 @@ bool FatJet::PassTagger(JetTagging::Tagger tg, TString era) const{
   
   if(tg==JetTagging::particleNet_WvsQCD){
     double WP = -1.;
-    if(era == "2016preVFP") WP = 0.68;
-    if(era == "2016postVFP") WP = 0.67;
-    if(era == "2017") WP = 0.71;
-    if(era == "2018") WP = 0.70;
+
+    if(era == "2016preVFP")  WP = 0.677;
+    if(era == "2016postVFP") WP = 0.668;
+    if(era == "2017")        WP = 0.709;
+    if(era == "2018")        WP = 0.70;
 
     //https://indico.cern.ch/event/1152827/contributions/4840404/attachments/2428856/4162159/ParticleNet_SFs_ULNanoV9_JMAR_25April2022_PK.pdf
     //https://cms-talk.web.cern.ch/t/questions-regarding-the-deepak8-scale-factors/2743/9

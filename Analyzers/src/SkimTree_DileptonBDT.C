@@ -6,6 +6,8 @@ void SkimTree_DileptonBDT::initializeAnalyzer(){
   cout << "[SkimTree_DileptonBDT::initializeAnalyzer()] gDirectory = " << gDirectory->GetName() << endl;
   newtree = fChain->CloneTree(0);
 
+  HNL_LeptonCore::initializeAnalyzer();
+  InitialiseLeptonBDTSKFlat();
 
   double_triggers.clear();
   single_electron_triggers.clear();
@@ -81,8 +83,7 @@ void SkimTree_DileptonBDT::initializeAnalyzer(){
     cout << "[SkimTree_Dilepton::initializeAnalyzer]   " << single_electron_triggers.at(i) << endl;
   }
 
-  SetupIDMVAReaderDefault();
-  InitialiseLeptonBDTSKFlat();
+
 
   ///// ELECTRON BRANCHES                                                                                                                                                                                                                             
   if(!fChain->GetBranch("electron_mva_cf_v2")){

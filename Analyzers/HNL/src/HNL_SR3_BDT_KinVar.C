@@ -128,7 +128,7 @@ void HNL_SR3_BDT_KinVar::initializeAnalyzer(){
 
 void HNL_SR3_BDT_KinVar::executeEvent(){
   
-  AnalyzerParameter param_bdt = HNL_LeptonCore::InitialiseHNLParameter("BDT", "");
+  AnalyzerParameter param_bdt = HNL_LeptonCore::InitialiseHNLParameter("BDT");
   
   Event ev = GetEvent();
   double weight =SetupWeight(ev,param_bdt);
@@ -141,8 +141,8 @@ void HNL_SR3_BDT_KinVar::executeEvent(){
   
   for(auto dilep_channel : channels){
 
-    std::vector<Muon>       MuonCollT     = GetLepCollByRunType    ( GetMuons    ( param_bdt,param_bdt.Muon_Tight_ID, 10., 2.4, RunFake)    , param_bdt, "NoSel");
-    std::vector<Electron>   ElectronCollT = GetLepCollByRunType    ( GetElectrons( param_bdt,param_bdt.Electron_Tight_ID, 10., 2.5, RunFake), param_bdt, "NoSel");
+    std::vector<Muon>       MuonCollT     = GetLepCollByRunType    ( SelectMuons    ( param_bdt,param_bdt.Muon_Tight_ID, 10., 2.4,weight)    , param_bdt, "NoSel");
+    std::vector<Electron>   ElectronCollT = GetLepCollByRunType    ( SelectElectrons( param_bdt,param_bdt.Electron_Tight_ID, 10., 2.5,weight), param_bdt, "NoSel");
     
     std::vector<Electron>   ElectronCollV = GetElectrons(param_bdt.Electron_Veto_ID, 10., 2.5);
     std::vector<Muon>       MuonCollV     = GetMuons    (param_bdt.Muon_Veto_ID, 5., 2.4);
@@ -159,16 +159,15 @@ void HNL_SR3_BDT_KinVar::executeEvent(){
     }
 
     std::vector<Tau>    mytaus         = GetTaus("HNVeto",20., 2.3);
- 
     std::vector<FatJet> fatjets_tmp    = GetFatJets("tight", 200., 5);
     std::vector<Jet>    jets_tmp       = GetJets("tight", 15., 5);
 
     std::vector<Jet>    AK4_JetAllColl = GetJets("NoID", 10., 3.0);
-    std::vector<FatJet> AK8_JetColl    = SelectAK8Jets(fatjets_tmp, 200., 2.7, true, 1., false, -999, false, 40., 130., ElectronCollV, MuonCollV);
+    std::vector<FatJet> AK8_JetColl    = SelectAK8Jets(fatjets_tmp, 200., 2.7, true, 1., false, -999, false, 40., 130., "", ElectronCollV, MuonCollV);
     std::vector<Jet>    AK4_JetColl    = SelectAK4Jets(jets_tmp,     20., 2.7, true, 0.4, 0.8, "", ElectronCollV, MuonCollV, AK8_JetColl);
     std::vector<Jet>    AK4_JetVBFColl = SelectAK4Jets(jets_tmp,     30., 4.7, true, 0.4, 0.8, "", ElectronCollV, MuonCollV, AK8_JetColl);
 
-    Particle METv = GetvMET("PuppiT1xyULCorr");
+    Particle METv = GetMiniAODvMET("PuppiT1xyULCorr");
  
     std::vector<Jet> bjets_tmp                  = SelectAK4Jets(jets_tmp,     20., 2.4, true, 0.4, 0.8, "", ElectronCollV, MuonCollV, AK8_JetColl);
 
@@ -225,7 +224,7 @@ void HNL_SR3_BDT_KinVar::MakeTreeSS2L(HNL_LeptonCore::Channel lep_channel,vector
   //if(!(LepTColl[0]->Pt()>20 && LepTColl[1]->Pt()>10)) return;
 
   float Mll = GetLLMass(LepTColl);
-  if (lep_channel==EE && (fabs(Mll-90.) < 10.)) return;
+  if (lep_channel==EE && (fabs(Mll-M_Z) < 10.)) return;
   
   InitializeTreeVars();
   

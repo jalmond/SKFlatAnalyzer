@@ -1,0 +1,15 @@
+Log of updates in Tags of HNL_Run2UltraLegacy-shared branch
+
+------------------------------------------------------------
+
+                                                                                          
+Log of updates in Tags of [ HNL_Run2UltraLegacy-Version1.1 ]
+
+Changes since Previous Tag [NONE]
+
+-  ChannelsToRun added to RunControlRegions and GetTriLeptonChannel/GetQuadLeptonChannel added to set LLL/LLLL channels
+-  IgnoreNoHist added for 1D CFRate function CFBackgroundEstimator::GetElectronCFRate
+-  HasFlag("MuonCF") removed from HNL_ChargeFlip
+-  GetShiftCFEl() function updated to include 4 Eta bins using iel.etaRegionString() and 6 Pt bins
+-  M_Z used instead of 90. in all files
+- 2016/2018 CF Rates added

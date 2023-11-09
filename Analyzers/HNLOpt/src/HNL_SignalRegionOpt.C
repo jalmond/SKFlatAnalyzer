@@ -18,7 +18,7 @@ void HNL_SignalRegionOpt::executeEvent(){
     TriggerPrintOut(GetEvent());
   }
   
-  AnalyzerParameter param_signal = HNL_LeptonCore::InitialiseHNLParameter("HNLSROpt","_UL");
+  AnalyzerParameter param_signal = HNL_LeptonCore::InitialiseHNLParameter("HNLSROpt");
   
   ///HNLSROpt sets Fake to use data and CF to use MC ..... 
   /// HNLOpt sets all bkg to use MC
@@ -79,7 +79,7 @@ void HNL_SignalRegionOpt::RunULAnalysis(AnalyzerParameter param){
   //// ID set based on if running Fake or normal setup
   TString el_ID = (RunFake) ?  param.Electron_FR_ID : param.Electron_Tight_ID ;
   TString mu_ID = (RunFake) ?  param.Muon_FR_ID :  param.Muon_Tight_ID ;
-
+  
   
   ///  Set pt lower if using fakes due to ptcone 
   double Min_Muon_Pt     = (RunFake) ? 7. : 10.;
@@ -87,12 +87,12 @@ void HNL_SignalRegionOpt::RunULAnalysis(AnalyzerParameter param){
   
   
   //// Set initial lepton vectors : Passes RunFake to set pt == ptcone
-  std::vector<Muon>       MuonCollTInit = GetMuons    ( param,mu_ID, Min_Muon_Pt, 2.4, RunFake);
-  std::vector<Electron>   ElectronCollTInit = GetElectrons( param,el_ID, Min_Electron_Pt, 2.5, RunFake)  ;
+  std::vector<Muon>       MuonCollTInit     = SelectMuons    ( param,mu_ID, Min_Muon_Pt, 2.4);
+  std::vector<Electron>   ElectronCollTInit = SelectElectrons( param,el_ID, Min_Electron_Pt, 2.5)  ;
   
   //// Select leptons that pass gen cuts based on fakes/cf....
-  std::vector<Muon>       MuonCollT     = GetLepCollByRunType    ( MuonCollTInit,param);
-  std::vector<Electron>   ElectronCollT  =  GetLepCollByRunType   ( ElectronCollTInit,param);
+  std::vector<Muon>       MuonCollT     = GetLepCollByRunType    ( MuonCollTInit,param,weight);
+  std::vector<Electron>   ElectronCollT  =  GetLepCollByRunType   ( ElectronCollTInit,param,weight);
   
   //cout << "---------------------- " << endl;
   //cout << "ElectronCollT " << ElectronCollT.size() << " ID = " << el_ID << endl;
@@ -103,22 +103,22 @@ void HNL_SignalRegionOpt::RunULAnalysis(AnalyzerParameter param){
   std::vector<Lepton *> leps_veto  = MakeLeptonPointerVector(MuonCollV,ElectronCollV);
 
   /// Get Taus 
-  std::vector<Tau>        TauColl        = GetTaus     (leps_veto,param.Tau_Veto_ID,25., 2.3);
+  std::vector<Tau>        TauColl        = SelectTaus    (leps_veto,param.Tau_Veto_ID,25., 2.3);
 
 
   
   /// Get MET for PUPPPI TYPE 1
-  Particle METv = GetvMET("PuppiT1xyCorr"); // returns MET with systematic correction
+  Particle METv = GetMiniAODvMET("PuppiT1xyCorr"); // returns MET with systematic correction
 
   
   
   // JET COLLECTION
 
   if(HasFlag("CheckJetOpt")){
-    std::vector<FatJet> fatjets_tmp  = GetFatJets(param, param.FatJet_ID, 200., 5.);
+    std::vector<FatJet> fatjets_tmp  = SelectFatJets(param, param.FatJet_ID, 200., 5.);
     
     // 
-    std::vector<FatJet> FatjetColl_1                  = SelectAK8Jetsv2(fatjets_tmp, 200., 2.7, true,  1., true, -999, true, 40., 130.,"", ElectronCollV, MuonCollV);
+    std::vector<FatJet> FatjetColl_1                  = SelectAK8Jets(fatjets_tmp, 200., 2.7, true,  1., true, -999, true, 40., 130.,"", ElectronCollV, MuonCollV);
 
     vector<double> etabins = {};//{2.7,4.7};
     vector<bool> LepVeto = {true, false};
@@ -153,9 +153,9 @@ void HNL_SignalRegionOpt::RunULAnalysis(AnalyzerParameter param){
     //HNL_ULak8_etabin2_NoLV_SDMassCut_PNTagger06_ak4_type1PuL_ak4_vbf_type1_ak4_b_type2_M                                                          
     //HNL_ULak8_etabin2_NoLV_tau21_LP_SDMassCut__ak4_type1PuL_ak4_vbf_type1_ak4_b_type2_M
     // AK4 JET
-    std::vector<Jet> jets_tmp     = GetJets   ( param, param.Jet_ID, 15., 5.);
+    std::vector<Jet> jets_tmp     = SelectJets   ( param, param.Jet_ID, 15., 5.);
     
-    std::vector<Jet> AllJetColl                      = GetJets   (param, "NoID",10, 3.);
+    std::vector<Jet> AllJetColl                      = SelectJets   (param, "NoID",10, 3.);
 
     std::vector<Jet> JetCollLoose                    = SelectAK4Jets(jets_tmp,     15., 4.7, true,  0.4,0.8, "",   ElectronCollV,MuonCollV, FatjetColl_1);
 
@@ -287,11 +287,11 @@ void HNL_SignalRegionOpt::RunULAnalysis(AnalyzerParameter param){
 
   //// NOW make some jet selection to use in other studies
 
-  std::vector<FatJet> AK8Jet_TMP  = GetFatJets(param, param.FatJet_ID, 200., 5.);
-  std::vector<FatJet> AK8Jet                  = SelectAK8Jetsv2(AK8Jet_TMP, 200., 2.7, true,  1., true, -999, true, 40., 130.,"", ElectronCollV, MuonCollV);
-  std::vector<Jet> AK4Jet_TMP     = GetJets   ( param, param.Jet_ID, 20., 5.);
+  std::vector<FatJet> AK8Jet_TMP  = SelectFatJets(param, param.FatJet_ID, 200., 5.);
+  std::vector<FatJet> AK8Jet                  = SelectAK8Jets(AK8Jet_TMP, 200., 2.7, true,  1., true, -999, true, 40., 130.,"", ElectronCollV, MuonCollV);
+  std::vector<Jet> AK4Jet_TMP     = SelectJets   ( param, param.Jet_ID, 20., 5.);
 
-  std::vector<Jet> AllJetColl                      = GetJets   (param, "NoID",10, 3.);
+  std::vector<Jet> AllJetColl                      = SelectJets   (param, "NoID",10, 3.);
   std::vector<Jet> JetCollLoose                    = SelectAK4Jets(AK4Jet_TMP,    15., 4.7, true,  0.4,0.8, "",   ElectronCollV,MuonCollV, AK8Jet);
   std::vector<Jet> BJetCollNLV                    = SelectAK4Jets(AK4Jet_TMP,     20., 2.4, false,  0.4,0.8, "",   ElectronCollV,MuonCollV, AK8Jet);
   std::vector<Jet> JetColl                        = SelectAK4Jets(AK4Jet_TMP,     20., 2.7, true,  0.4,0.8, "",   ElectronCollV,MuonCollV, AK8Jet);

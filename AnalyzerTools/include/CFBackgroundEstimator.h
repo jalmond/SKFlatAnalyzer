@@ -48,6 +48,8 @@ public:
 
   double GetWeight(vector<Lepton *> lepptrs, AnalyzerParameter param, int sys=0);
 
+  vector<TString> MissingHists;
+
 };
 
 #endif

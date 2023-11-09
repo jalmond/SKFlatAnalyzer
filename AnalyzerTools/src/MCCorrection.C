@@ -4,11 +4,14 @@ MCCorrection::MCCorrection() :
 IgnoreNoHist(false)
 {
 
+  MissingHists.clear();
+
   histDir = TDirectoryHelper::GetTempDirectory("MCCorrection");
 
   genFinderDY = new GenFinderForDY();
 
 }
+
 vector<TString> MCCorrection::Split(TString s,TString del){
   TObjArray* array=s.Tokenize(del);
   vector<TString> out;
@@ -16,6 +19,7 @@ vector<TString> MCCorrection::Split(TString s,TString del){
   array->Delete();
   return out;
 }
+
 void MCCorrection::ReadHistograms(){
 
   TString datapath = getenv("DATA_DIR");
@@ -175,6 +179,11 @@ void MCCorrection::ReadHistograms(){
 }
 
 MCCorrection::~MCCorrection(){
+
+  if(MissingHists.size() > 0){
+    cout << "MCCorrection Missing Hists " << endl;
+    for(auto iMissing : MissingHists) cout << "Missing : " << iMissing << endl;
+  }
 
   delete genFinderDY;
 
@@ -3432,9 +3441,9 @@ double MCCorrection::MuonReco_SF(TString key, double eta, double p, int sys){
 
   eta = fabs(eta);
 
-  if(key=="HighPtMuonRecoSF"){
-    
-    
+  
+  if(key=="HighPtMuonRecoSF" || (key=="MuonRecoSF" && p > 200) ){
+        
     //==== XXX this histogram uses P not Pt    
 
     //==== boundaries
@@ -4682,7 +4691,9 @@ double MCCorrection::MuonReco_SF(TString key, double eta, double p, int sys){
       }
     }
   }
-  else{
+
+
+  else if(key == "MuonRecoSF"){
   
       //==== boundaries                                                                                                                                                
     if(p<10.) p = 10.;
@@ -4804,7 +4815,13 @@ double MCCorrection::MuonReco_SF(TString key, double eta, double p, int sys){
 
   TH2F *this_hist = map_hist_Muon["RECO_SF_"+key];
   if(!this_hist){
-    if(IgnoreNoHist) return 1.;
+    if(IgnoreNoHist) {
+
+      TString MapK = "RECO_SF_"+key;
+      if (std::find(MissingHists.begin(), MissingHists.end(), MapK ) == MissingHists.end())   MissingHists.push_back(MapK);
+      return 1.;
+
+    }
     else{
       cerr << "[MCCorrection::MuonReco_SF] No "<<"RECO_SF_"+key<<endl;
       exit(ENODATA);
@@ -4821,6 +4838,36 @@ double MCCorrection::MuonReco_SF(TString key, double eta, double p, int sys){
 
 }
 
+double MCCorrection::MuonTracker_SF(TString ID, double eta, double pt, int sys){
+
+  if(ID=="Default") return 1.;
+  double value = 1.;  double error = 0.;
+
+  if (pt < 25) pt = 25.1;
+  if (pt > 65) pt = 64.1;
+  
+  TH2F *this_hist = map_hist_Muon["Tracker_SF_"+ID];
+  if(!this_hist){
+    if(IgnoreNoHist) {
+
+      TString MapK = "Tracker_SF_"+ID;
+      if (std::find(MissingHists.begin(), MissingHists.end(), MapK ) == MissingHists.end())   MissingHists.push_back(MapK);
+      return 1.;
+
+    }
+    else{
+      exit(ENODATA);
+    }
+  }
+  
+  int this_bin = this_hist->FindBin(eta,pt);
+  value = this_hist->GetBinContent(this_bin);
+  error = this_hist->GetBinError(this_bin);
+  
+  return value+double(sys)*error;
+  
+}
+
 double MCCorrection::MuonID_SF(TString ID, double eta, double pt, int sys){
 
   if(ID=="Default") return 1.;
@@ -4834,7 +4881,7 @@ double MCCorrection::MuonID_SF(TString ID, double eta, double pt, int sys){
 
   eta = fabs(eta);
 
-  if(ID.Contains("HNL_ULID")){
+  if(ID.Contains("HN")){
     if(pt<10.) pt = 10.1;
     if(pt>=120.) pt = 119.9;
     if(eta>=2.4) eta = 2.39;
@@ -4847,26 +4894,25 @@ double MCCorrection::MuonID_SF(TString ID, double eta, double pt, int sys){
   }
   else{
     if(pt<15.) pt = 15.1;
-    if(pt>=2000.) pt = 1999.9;
+    if(pt>=2000.) pt = 199.9;
     if(eta>=2.4) eta = 2.39;
   }
   TH2F *this_hist = map_hist_Muon["ID_SF_"+ID];
   if(!this_hist){
-    if(IgnoreNoHist) return 1.;
+    if(IgnoreNoHist) {
+
+      TString MapK = "ID_SF_"+ID;
+      if (std::find(MissingHists.begin(), MissingHists.end(), MapK ) == MissingHists.end())   MissingHists.push_back(MapK);
+      return 1.;
+
+    }
     else{
       cerr << "[MCCorrection::MuonID_SF] No "<<"ID_SF_"+ID<<endl;
       exit(ENODATA);
     }
   }
 
-  int this_bin(-999);
-
-  if(ID=="NUM_TightID_DEN_TrackerMuons" || ID=="NUM_MediumID_DEN_TrackerMuons" || ID=="NUM_HighPtID_DEN_TrackerMuons"){
-
-    this_bin = this_hist->FindBin(eta,pt);
-  }
-  else this_bin = this_hist->FindBin(pt,eta);
-
+  int this_bin = this_hist->FindBin(eta,pt);
   value = this_hist->GetBinContent(this_bin);
   error = this_hist->GetBinError(this_bin);
 
@@ -4901,7 +4947,11 @@ double MCCorrection::MuonISO_SF(TString ID, double eta, double pt, int sys){
   }
   TH2F *this_hist = map_hist_Muon["ISO_SF_"+ID];
   if(!this_hist){
-    if(IgnoreNoHist) return 1.;
+    if(IgnoreNoHist) {
+      TString MapK = "ISO_SF_"+ID;
+      if (std::find(MissingHists.begin(), MissingHists.end(), MapK ) == MissingHists.end())   MissingHists.push_back(MapK);
+      return 1.;
+    }
     else{
       cerr << "[MCCorrection::MuonISO_SF] No "<<"ISO_SF_"+ID<<endl;
       exit(ENODATA);
@@ -4910,9 +4960,7 @@ double MCCorrection::MuonISO_SF(TString ID, double eta, double pt, int sys){
 
   int this_bin(-999);
 
-  this_bin = this_hist->FindBin(pt,eta);
-  if(!ID.Contains("Tmp")) this_bin = this_hist->FindBin(eta,pt);
-
+  this_bin = this_hist->FindBin(eta,pt);
   value = this_hist->GetBinContent(this_bin);
   error = this_hist->GetBinError(this_bin);
 
@@ -4997,7 +5045,11 @@ double MCCorrection::MuonTrigger_Eff(TString ID, TString trig, int DataOrMC, dou
   //cout << "[MCCorrection::MuonTrigger_Eff] histkey = " << histkey << endl;
   TH2F *this_hist = map_hist_Muon[histkey];
   if(!this_hist){
-    if(IgnoreNoHist) return 1.;
+    if(IgnoreNoHist) {
+      TString MapK = histkey;
+      if (std::find(MissingHists.begin(), MissingHists.end(), MapK ) == MissingHists.end())   MissingHists.push_back(MapK);
+      return 1.;
+    }
     else{
       cerr << "[MCCorrection::MuonTrigger_Eff] No "<<histkey<<endl;
       exit(ENODATA);
@@ -5166,9 +5218,15 @@ double MCCorrection::ElectronID_SF(TString ID, double sceta, double pt, int sys)
   }
   else{
 
+    if(ID.Contains("HN") && pt < 15.)  pt = 15.1;
+
     TH2F *this_hist = map_hist_Electron["ID_SF_"+ID];
     if(!this_hist){
-      if(IgnoreNoHist) return 1.;
+      if(IgnoreNoHist) {
+	TString MapK = "ID_SF_"+ID;
+	if (std::find(MissingHists.begin(), MissingHists.end(), MapK ) == MissingHists.end())   MissingHists.push_back(MapK);
+	return 1.;	
+      }
       else{
         cerr << "[MCCorrection::ElectronID_SF] (Hist) No "<<"ID_SF_"+ID<<endl;
         exit(ENODATA);
@@ -5178,9 +5236,7 @@ double MCCorrection::ElectronID_SF(TString ID, double sceta, double pt, int sys)
     // TMP ID variables
     sceta = fabs(sceta);
 
-    int this_bin = this_hist->FindBin(pt,sceta);
-
-    if(!ID.Contains("Tmp")) this_bin = this_hist->FindBin(sceta,pt);
+    int this_bin = this_hist->FindBin(sceta,pt);
 
     value = this_hist->GetBinContent(this_bin);
     error = this_hist->GetBinError(this_bin);
@@ -5191,37 +5247,75 @@ double MCCorrection::ElectronID_SF(TString ID, double sceta, double pt, int sys)
 
 }
 
-double MCCorrection::ElectronReco_SF(double sceta, double pt, int sys){
+double MCCorrection::ElectronReco_SF(TString key, double sceta, double pt, int sys){
 
   double value = 1.;
   double error = 0.;
+  
+  if(key == "Default") return 1.;
 
-  TString ptrange = "ptgt20";
-  if(pt<20.) ptrange = "ptlt20";
-
-  if(pt<10.) pt = 10.;
-  if(pt>=500.) pt = 499.;
-  if(sceta>=2.5) sceta = 2.49;
-  if(sceta<-2.5) sceta = -2.5;
-
-  TH2F *this_hist = map_hist_Electron["RECO_SF_"+ptrange];
-  if(!this_hist){
-    if(IgnoreNoHist) return 1.;
-    else{
-      cerr << "[MCCorrection::ElectronReco_SF] No "<<"RECO_SF_"+ptrange<<endl;
-      exit(ENODATA);
+  if(key == "RECO_SF") {
+    TString ptrange = "ptgt20";
+    if(pt<20.) ptrange = "ptlt20";
+    
+    if(pt<10.) pt = 10.;
+    if(pt>=500.) pt = 499.;
+    if(sceta>=2.5) sceta = 2.49;
+    if(sceta<-2.5) sceta = -2.5;
+    
+    TH2F *this_hist = map_hist_Electron["RECO_SF_"+ptrange];
+    if(!this_hist){
+      if(IgnoreNoHist) {
+	TString MapK = "RECO_SF_"+ptrange;
+        if (std::find(MissingHists.begin(), MissingHists.end(), MapK ) == MissingHists.end())   MissingHists.push_back(MapK);
+        return 1.;
+      }
+      else{
+	cerr << "[MCCorrection::ElectronReco_SF] No "<<"RECO_SF_"+ptrange<<endl;
+	exit(ENODATA);
+      }
     }
+    int this_bin = this_hist->FindBin(sceta,pt);
+    value = this_hist->GetBinContent(this_bin);
+    error = this_hist->GetBinError(this_bin);
+
+    return value+double(sys)*error;
   }
 
-  //cout << "[MCCorrection::ElectronReco_SF] " << this_hist->GetBinContent(1,1) << endl;
+  if(key == "RECO_SF_AFB") {
 
-  int this_bin = this_hist->FindBin(sceta,pt);
-  value = this_hist->GetBinContent(this_bin);
-  error = this_hist->GetBinError(this_bin);
+    TString ptrange = "ptgt20";
+
+    if(pt<20.) pt = 20.;
+    if(pt>=500.) pt = 499.;
+    if(sceta>=2.5) sceta = 2.49;
+    if(sceta<-2.5) sceta = -2.5;
+
+    TH2F *this_hist = map_hist_Electron["RECO_AFB_SF_"+ptrange];
+    if(!this_hist){
+      if(IgnoreNoHist) {
+	TString MapK = "RECO_AFB_SF_"+ptrange;
+        if (std::find(MissingHists.begin(), MissingHists.end(), MapK ) == MissingHists.end())   MissingHists.push_back(MapK);
+        return 1.;	
+      }
+      else{
+        cerr << "[MCCorrection::ElectronReco_SF] No "<<"RECO_AFB_SF_"+ptrange<<endl;
+        exit(ENODATA);
+      }
+    }
+
+
+    int this_bin = this_hist->FindBin(sceta,pt);
+    value = this_hist->GetBinContent(this_bin);
+    error = this_hist->GetBinError(this_bin);
+
+    return value+double(sys)*error;
+  }
+
 
   return value+double(sys)*error;
-
-  }
+  
+}
 
 double MCCorrection::ElectronTrigger_Eff(TString ID, TString trig, int DataOrMC, double sceta, double pt, int sys){
 
@@ -5251,7 +5345,11 @@ double MCCorrection::ElectronTrigger_Eff(TString ID, TString trig, int DataOrMC,
     //cout << "[MCCorrection::ElectronTrigger_Eff] histkey = " << histkey << endl;
     TH2F *this_hist = map_hist_Electron[histkey];
     if(!this_hist){
-      if(IgnoreNoHist) return 1.;
+      if(IgnoreNoHist) {
+	TString MapK = histkey;
+        if (std::find(MissingHists.begin(), MissingHists.end(), MapK ) == MissingHists.end())   MissingHists.push_back(MapK);
+        return 1.;
+      }
       else{
         cerr << "[MCCorrection::ElectronTrigger_Eff] No "<<histkey<<endl;
         exit(ENODATA);

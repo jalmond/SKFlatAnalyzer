@@ -16,7 +16,7 @@ void HNL_SignalRegionPlotter21003::executeEvent(){
     TriggerPrintOut(GetEvent());
   }
   
-  AnalyzerParameter param_signal = HNL_LeptonCore::InitialiseHNLParameter("Peking","_UL");
+  AnalyzerParameter param_signal = HNL_LeptonCore::InitialiseHNLParameter("Peking");
   RunULAnalysis(param_signal);
 
 
@@ -41,25 +41,25 @@ void HNL_SignalRegionPlotter21003::RunULAnalysis(AnalyzerParameter param){
   double Min_Muon_Pt     = (RunFake) ? 30. : 30.;
   double Min_Electron_Pt = (RunFake) ? 30  : 30.;
 
-  std::vector<Muon>       MuonCollTInit     = GetMuons    ( param,mu_ID, Min_Muon_Pt,     2.4, RunFake);
-  std::vector<Electron>   ElectronCollTInit = GetElectrons( param,el_ID, Min_Electron_Pt, 2.5, RunFake)  ;
+  std::vector<Muon>       MuonCollTInit     = SelectMuons    ( param,mu_ID, Min_Muon_Pt,     2.4);
+  std::vector<Electron>   ElectronCollTInit = SelectElectrons( param,el_ID, Min_Electron_Pt, 2.5)  ;
 
   std::vector<Muon>       MuonCollT      =  GetLepCollByRunType   ( MuonCollTInit,param);
   std::vector<Electron>   ElectronCollT  =  GetLepCollByRunType   ( ElectronCollTInit,param);
 
   std::vector<Lepton *> leps_veto  = MakeLeptonPointerVector(MuonCollV,ElectronCollV);
 
-  std::vector<Tau>        TauColl        = GetTaus     (leps_veto,param.Tau_Veto_ID,20., 2.3);
+  std::vector<Tau>        TauColl        = SelectTaus     (leps_veto,param.Tau_Veto_ID,20., 2.3);
 
   // Creat Lepton vector to have lepton blind codes 
 
-  Particle METv = GetvMET("T1xyCorr"); // returns MET with systematic correction
+  Particle METv = GetMiniAODvMET("T1xyCorr"); // returns MET with systematic correction
 
   
   std::vector<FatJet> AK8_JetColl;
   
   // AK4 JET                                                                                                                                                                              
-  std::vector<Jet> jets_tmp     = GetJets   ( param, param.Jet_ID, 15., 5.);
+  std::vector<Jet> jets_tmp     = SelectJets   ( param, param.Jet_ID, 15., 5.);
 
   
   std::vector<Jet> JetCollLoose                      = SelectAK4Jets(jets_tmp,     15., 4.7, true,  0.4,0.8, "",   ElectronCollV,MuonCollV, AK8_JetColl);
@@ -88,7 +88,7 @@ void HNL_SignalRegionPlotter21003::RunULAnalysis(AnalyzerParameter param){
     
     if(run_Debug) cout << "HNL_RegionDefinitions::RunAllSignalRegions " << GetChannelString(dilep_channel) <<  endl;
     
-    float weight_channel = weight;
+    double  weight_channel = weight;
     if(MCSample.Contains("Type")) {
       if (!SelectChannel(dilep_channel)) continue;
     }
@@ -98,10 +98,10 @@ void HNL_SignalRegionPlotter21003::RunULAnalysis(AnalyzerParameter param){
 
     AnalyzerParameter param_channel = param;
 
-    if(!IsDATA && dilep_channel != MuMu)  weight_channel*= GetElectronSFEventWeight(ElectronCollT, param_channel);
-    if(!IsDATA && dilep_channel != EE)    weight_channel*= GetMuonSFEventWeight(MuonCollT, param_channel);
+    if(!IsDATA && dilep_channel != MuMu)  EvalElectronIDWeight(ElectronCollT, param_channel,weight_channel);
+    if(!IsDATA && dilep_channel != EE)    EvalMuonIDWeight(MuonCollT, param_channel,weight_channel);
 
-    FillEventCutflow(HNL_LeptonCore::ChannelDepInc, weight_channel, GetChannelString(dilep_channel) +"_NoCut", "ChannelCutFlow/"+param.DefName, param.WriteOutVerbose);
+    FillCutflow(HNL_LeptonCore::ChannelDepInc, weight_channel, GetChannelString(dilep_channel) +"_NoCut", param);
 
     if(!PassMETFilter()) continue;
     
@@ -130,14 +130,15 @@ void HNL_SignalRegionPlotter21003::RunULAnalysis(AnalyzerParameter param){
 								  
     weight_channel *= HNLZvtxSF(dilep_channel);
     
-    if(!PassHEMVeto(dilep_channel, leps)) continue;
+    if(!PassHEMVeto( leps)) continue;
     
     Particle ll =  (*leps[0]) + (*leps[1]);
     if(ll.M() < 20)  continue;
-    FillEventCutflow(HNL_LeptonCore::SR2,weight_channel, "Presel",param.Name,param.WriteOutVerbose);
+    FillCutflow(HNL_LeptonCore::SR2,weight_channel, "Presel",param);
     
     
-    bool passSSWW  = RunSignalRegionWW (dilep_channel,Inclusive, leps, leps_veto, TauColl, JetCollLoose, VBF_JetColl, BJetColl, ev, METv ,param_channel,weight_channel);
+    RunSignalRegionWW (dilep_channel,Inclusive, leps, leps_veto, TauColl, JetCollLoose, VBF_JetColl, BJetColl, ev, METv ,param_channel,weight_channel);
+    
     
   }// channel loop 
  

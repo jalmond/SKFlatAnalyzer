@@ -9,7 +9,7 @@ class HNL_LeptonFakeRate  : public HNL_LeptonCore {
  public:
 
   void initializeAnalyzer();
-  void executeEventFromParameter(AnalyzerParameter param, TString El_ID, HNL_LeptonCore::Channel channel);
+  void executeEventFromParameter(AnalyzerParameter param);
   void RunE(std::vector<Electron> electrons, std::vector<Muon> muons, std::vector<Jet> jets,AnalyzerParameter param,  float w);
   void RunM(std::vector<Electron> electrons, std::vector<Muon> muons, std::vector<Jet> jets, AnalyzerParameter param,  float w);
 
@@ -25,11 +25,10 @@ class HNL_LeptonFakeRate  : public HNL_LeptonCore {
   double ApplyNvtxReweight(int Nvtx, TString Key);
   void MakeNVertexDistPrescaledTrig(HNL_LeptonCore::Channel channel, AnalyzerParameter param, Event ev,std::vector<Lepton *> leps,std::vector<bool> blepsT,  TString label, float event_weight);				  
 	
-  void GetMCFakeRates(std::vector<Muon> loose_muons, AnalyzerParameter param,  float weight);
-
-  void GetFakeRates(std::vector<Lepton *> leps,std::vector<bool> blepsT,  AnalyzerParameter param,TString tightlabel,  std::vector<Jet> jets,  TString tag,float event_weight, float isocut);
+  void GetMuFakeRates(TString Method, std::vector<Lepton *> leps,std::vector<bool> blepsT,  AnalyzerParameter param,  std::vector<Jet> jets,  TString tag,float event_weight);
+  void GetElFakeRates(TString Method, std::vector<Lepton *> leps,std::vector<bool> blepsT,  AnalyzerParameter param,  std::vector<Jet> jets,  TString tag,float event_weight);
 					   
-  void GetFakeRateAndPromptRates(AnalyzerParameter param, std::vector<Lepton *> leps,std::vector<bool> blepsT, std::vector<Jet>    jetCollTight, TString label, float event_weight, float isocut);
+  void GetFakeRateAndPromptRates(AnalyzerParameter param, std::vector<Lepton *> leps,std::vector<bool> blepsT, std::vector<Jet>    jetCollTight, TString label, float event_weight);
 
   
   void MakeDiLepPlots(HNL_LeptonCore::Channel channel, AnalyzerParameter param, Event ev, std::vector<Lepton *> leps,std::vector<bool> blepsT,  TString label, float event_weight);
@@ -37,12 +36,12 @@ class HNL_LeptonFakeRate  : public HNL_LeptonCore {
     
   float GetPrescale( std::vector<Lepton *> leps);
 
-  void MakeFakeRatePlots(TString label, TString mutag,AnalyzerParameter param,  std::vector<Lepton *> leps , std::vector<bool> blepsT, std::vector<Jet> jets,  float event_weight, float isocut, Particle MET);
+  void MakeFakeRatePlots(TString label, TString mutag,AnalyzerParameter param,  std::vector<Lepton *> leps , std::vector<bool> blepsT, std::vector<Jet> jets,  float event_weight,  Particle MET);
 			 
-  void MakePromptRatePlots(TString label, TString mutag,AnalyzerParameter param,  std::vector<Lepton *> leps , std::vector<bool> lepsT, std::vector<Jet> jets,float event_weight, float isocut, Particle MET);
+  void MakePromptRatePlots(TString label, TString mutag,AnalyzerParameter param,  std::vector<Lepton *> leps , std::vector<bool> lepsT, std::vector<Jet> jets,float event_weight, Particle MET);
 			   
   
-  bool UseEvent(AnalyzerParameter param, std::vector<Lepton *> leps,   std::vector< Jet> jets, float awayjetcut, Particle MET, float wt);
+  bool UseEvent(std::vector<Lepton *> leps,   std::vector< Jet> jets, float awayjetcut, Particle MET, float wt);
 
 
   //==== pileup

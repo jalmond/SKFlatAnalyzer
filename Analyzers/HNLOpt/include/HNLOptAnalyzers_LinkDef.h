@@ -5,7 +5,6 @@
 #pragma link off all functions;
 #pragma link C++ nestedclasses;
 
-#pragma link C++ class HNL_FakeRateOpt+;
 #pragma link C++ class HNL_RegionDefinitionsOpt+;
 #pragma link C++ class HNL_RegionForLeptonOpt+;
 #pragma link C++ class HNL_SignalRegionOpt+;

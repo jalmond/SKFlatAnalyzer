@@ -11,7 +11,7 @@ void HNL_LeptonFakeStudy::executeEvent(){
 
   Event ev = GetEvent();
 
-  AnalyzerParameter param;
+  AnalyzerParameter param = InitialiseHNLParameter("MCStudy");
 
   //************************************************///
   // setup list of IDs
@@ -24,509 +24,328 @@ void HNL_LeptonFakeStudy::executeEvent(){
   if(DataYear==2017)era="2017";
   if(DataYear==2018)era="2018";
   
-  
-  double weight =1;
+  param.Apply_Weight_LumiNorm=false;
+  double weight =SetupWeight(ev,param);
+
   
   if(!PassMETFilter()) return;
 
-  
-  
-  std::vector<Electron> loose_electrons     = GetElectrons( param,"HNLooseV4" , 10, 2.5,false) ;
-  std::vector<Muon>     loose_muons         = GetMuons    ( param,"HNLooseV1", 5, 2.4, false);
-  
-  std::vector<Jet> jets_tmp     = GetJets   ( param, "tight", 30., 2.7);
+  std::vector<Electron> loose_electrons     = SelectElectrons( param,"MVAID" , 10, 2.5) ;
+  std::vector<Muon>     loose_muonsPOG      = SelectMuons    ( param,"HNLoosePOG", 10, 2.4);
 
-  std::vector<Lepton *> leps = MakeLeptonPointerVector(loose_electrons);
+  std::vector<Muon>     loose_muonsMVA      = SelectMuons    ( param,"MVAID",    10, 2.4);
+  std::vector<Muon>     loose_muonsMVAT     = SelectMuons    ( param,"MVALoose", 10, 2.4);
+  std::vector<Jet>      AK4_JetColl         = GetHNLJets(param.AK4JetColl,     param);
 
-  Particle METv = GetvMET("PuppiT1xyULCorr");
 
-  std::vector<Jet> jets; 
-  for(unsigned int ijet =0; ijet < jets_tmp.size(); ijet++){
-    bool jetok=true;
+  std::vector<Lepton *> leps = MakeLeptonPointerVector(loose_muonsMVA);
+
+  Particle METv = GetvMET("PuppiT1xyULCorr",param);
+
+  param.SplitPlot = "PtBin_Type_";
+
+  //  FillMuonCollPlots(param, "HNL_MuonFakeStudy_LooseMVA",  loose_muonsMVA, param.Weight("Full") );
+
+  bool useevent40 = UseEvent(leps , AK4_JetColl, 40.,  METv, weight);                                                                                                                                          
+  
+  for(auto imu : loose_muonsMVA){
+    FillMuonPlots(useevent40, "40_Data" ,param, "FakeCR",  imu, param.Weight("Full") );
+  }
+
+  if(SameCharge(loose_muonsMVA)){
     
-    for(unsigned int iel=0 ; iel < loose_electrons.size(); iel++){
-      if(jets_tmp[ijet].DeltaR(loose_electrons[iel]) < 0.4) jetok = false;
+    TString JetLabel = "";
+    if(AK4_JetColl.size() == 0)        JetLabel = "0j";
+    else  if(AK4_JetColl.size() == 0)  JetLabel = "1j";
+    else JetLabel = "2j";
+
+    if(loose_muonsMVA[0].PassID(param.Muon_Tight_ID) && loose_muonsMVA[1].PassID(param.Muon_Tight_ID)) {
+      FillHistogram(("Plots/"+JetLabel+"/TT/Pt"), loose_muonsMVA[1].Pt() , param.Weight("Full"), "Pt");
+      goto Part1;
     }
-    for(unsigned int iel=0 ; iel < loose_muons.size(); iel++){
-      if(jets_tmp[ijet].DeltaR(loose_muons[iel]) < 0.4) jetok = false;
+    
+    if(!loose_muonsMVA[0].PassID(param.Muon_Tight_ID) && !loose_muonsMVA[1].PassID(param.Muon_Tight_ID)) {
+      FillHistogram(("Plots/"+JetLabel+"/LL/Pt"), loose_muonsMVA[1].Pt()  , param.Weight("Full"), "Pt");
+      goto Part1;
+
     }
-    if(jetok) jets.push_back(jets_tmp[ijet]);
+    if(loose_muonsMVA[0].PassID(param.Muon_Tight_ID)) FillHistogram(("Plots/"+JetLabel+"/TL/Pt"), loose_muonsMVA[1].Pt()  , param.Weight("Full"), "Pt");
+    else FillHistogram(("Plots/"+JetLabel+"/LT/Pt"), loose_muonsMVA[1].Pt() , param.Weight("Full"), "Pt");
+
+
+    /// Look at TL events
+    for(auto imu : loose_muonsMVA){
+      if(!IsData && !imu.IsFake()) continue;
+      
+      if(imu.PassID(param.Muon_Tight_ID))continue;
+      
+      FillHist("SS"+JetLabel+"_Flavour_cat/SS"+JetLabel+"Lep/Flavour_cat", imu.CloseJet_FlavourInt() , param.Weight("Full"), 10, 0., 10., "Jet Hadron flavour");
+      
+      if( imu.HNL_MVA_Fake("QCD_LFvsHF_v5") > 0.80)FillHist("SS"+JetLabel+"_Flavour_cat/LFTagged/Flavour_cat", imu.CloseJet_FlavourInt() , param.Weight("Full"), 10, 0., 10., "Jet Hadron flavour");
+      else       if( imu.HNL_MVA_Fake("QCD_BvsC_v5") > 0.) FillHist("SS"+JetLabel+"_Flavour_cat/BTagged/Flavour_cat", imu.CloseJet_FlavourInt() , param.Weight("Full"), 10, 0., 10., "Jet Hadron flavour");
+      else FillHist("SS"+JetLabel+"_Flavour_cat/CTagged/Flavour_cat", imu.CloseJet_FlavourInt() , param.Weight("Full"), 10, 0., 10., "Jet Hadron flavour");
+      
+      TString label = imu.sLepGenType() +"_" + imu.GetPtLabel();
+      if(IsData) label =  imu.GetPtLabel();
+      
+      FillHist("FlavourCat/SS"+JetLabel+"Lep/" + label+ "_Muon/Pt", imu.Pt() , param.Weight("Full"), 40, 0., 200.);
+      FillHist("FlavourCat/SS"+JetLabel+"Lep/" + label+ "_Muon/PtRatio", imu.CloseJet_Ptratio() , param.Weight("Full"), 100, 0., 2.);
+      FillHist("FlavourCat/SS"+JetLabel+"Lep/" + label+ "_Muon/HFTop", imu.HNL_MVA_Fake("HFTop") , param.Weight("Full"), 200, -1., 1.);
+      FillHist("FlavourCat/SS"+JetLabel+"Lep/" + label+ "_Muon/QCD_BvsC_v5", imu.HNL_MVA_Fake("QCD_BvsC_v5") , param.Weight("Full"), 200, -1., 1.);
+      FillHist("FlavourCat/SS"+JetLabel+"Lep/" + label+ "_Muon/QCD_LF1_v5", imu.HNL_MVA_Fake("QCD_LF1_v5") , param.Weight("Full"), 200, -1., 1.);
+      FillHist("FlavourCat/SS"+JetLabel+"Lep/" + label+ "_Muon/QCD_LF2_v5", imu.HNL_MVA_Fake("QCD_LF2_v5") , param.Weight("Full"), 200, -1., 1.);
+      FillHist("FlavourCat/SS"+JetLabel+"Lep/" + label+ "_Muon/QCD_LFvsHF_v5", imu.HNL_MVA_Fake("QCD_LFvsHF_v5") , param.Weight("Full"), 200, -1., 1.);
+      FillHist("FlavourCat/SS"+JetLabel+"Lep/" + label+ "_Muon/CloseJet_BScore", imu.CloseJet_BScore() , param.Weight("Full"), 300, -1., 2.);
+      FillHist("FlavourCat/SS"+JetLabel+"Lep/" + label+ "_Muon/CloseJet_CvsBScore", imu.CloseJet_CvsBScore() , param.Weight("Full"), 300, -1., 2.);
+      FillHist("FlavourCat/SS"+JetLabel+"Lep/" + label+ "_Muon/CloseJet_CvsLScore", imu.CloseJet_CvsLScore() , param.Weight("Full"), 300, -1., 2.);
+
+
+      FillHist("Flavour_cat/SS"+JetLabel+"Lep/SS"+JetLabel+"Lep_Flavour_cat", imu.CloseJet_FlavourInt() , param.Weight("Full"), 10, 0., 10., "Jet Hadron flavour");
+
+      TString lep_fake_tag = MatchGenDef(All_Gens, Lepton(imu));
+      vector<TString> lables = GetGenList();
+      if (std::find(lables.begin(), lables.end(), lep_fake_tag) == lables.end()) return;
+      FillCutflow(param, "Lep_Fake_type_"+JetLabel, weight, lables,lep_fake_tag);
+    }
   }
 
+ Part1:
+  
+  if(IsData) return;
 
-  bool useevent40 = UseEvent(leps , jets, 40.,  METv, weight);
 
-  /*
-  bool UnkiStudy=true;
-  if(UnkiStudy){
 
-    ////// check 1 mu / 2 mu events 
-    ////// 1 muon events use SL trigger prescaled
-    ////// 2 muon use 1 prescaled SL trigger
-    ////// select back to back jets (b/non b) 
-
-    if(useevent40){
+  vector<TString> IDType = {"Loose","Tight"};
+  for(int i = 0 ; i < 2; i++){
+    for(auto imu : loose_muonsMVA){
+      if(i==1 && !imu.PassID(param.Muon_Tight_ID)) continue;
+      if(!imu.IsFake()) continue;
       
-      float prescale_trigger = GetPrescale(leps);
-      if(prescale_trigger == 0.) return;
-      event_weight*=prescale_trigger;
+      FillMuonPlots((imu.CloseJet_FlavourInt() ==5), "HF_B" ,param, IDType[i],  imu, param.Weight("Full") );
+      FillMuonPlots((imu.CloseJet_FlavourInt() ==4), "HF_C" ,param, IDType[i],  imu, param.Weight("Full") );
+      FillMuonPlots((imu.CloseJet_FlavourInt() ==5), "HF" ,param, IDType[i],  imu, param.Weight("Full") );
+      FillMuonPlots((imu.CloseJet_FlavourInt() ==4), "HF" ,param, IDType[i],  imu, param.Weight("Full") );
+      FillMuonPlots((imu.CloseJet_FlavourInt() ==0), "LF" ,param, IDType[i],  imu, param.Weight("Full") );
 
-      for(int ilep = 0 ; ilep < 2; ilep++)  {
+      TString lep_fake_tag = MatchGenDef(All_Gens, Lepton(imu));
+      vector<TString> lables = GetGenList();
+      if (std::find(lables.begin(), lables.end(), lep_fake_tag) == lables.end()) return;
 
-	TString L_prefix = "Fake_Loose"+tag;
-	TString T_prefix = "Fake_Tight"+tag;
-	TString prefix = (ilep==0) ? L_prefix : T_prefix;
-	
-	float lep_pt = ->Pt();
+      vector<TString> Methods = {"_NoSelection"};
 
-	FillHist((prefix + "_pt").Data(),     lep_pt, weight_pt*prescale_lep, nbin_pt, ptbins, "p_{T} (GeV)");
-	FillHist((prefix + "_eta").Data(),    lep_eta, weight_pt*prescale_lep , nbin_eta, etabins,"#eta");
+      if(imu.PassID(param.Muon_Tight_ID) || (!imu.PassID(param.Muon_Tight_ID) && imu.CloseJet_BScore() < 0.01)) Methods.push_back("_TriLepLoose10");
+      if(imu.PassID(param.Muon_Tight_ID) || (!imu.PassID(param.Muon_Tight_ID) && imu.CloseJet_BScore() < 0.015)) Methods.push_back("_TriLepLoose15");
+      if(imu.PassID(param.Muon_Tight_ID) || (!imu.PassID(param.Muon_Tight_ID) && imu.CloseJet_BScore() < 0.02)) Methods.push_back("_TriLepLoose20");
+      if(imu.PassID(param.Muon_Tight_ID) || (!imu.PassID(param.Muon_Tight_ID) && imu.CloseJet_BScore() < 0.025)) Methods.push_back("_TriLepLoose25");
+      if(imu.PassID(param.Muon_Tight_ID) || (!imu.PassID(param.Muon_Tight_ID) && imu.CloseJet_BScore() < 0.03)) Methods.push_back("_TriLepLoose30");
+      if( imu.HNL_MVA_Fake("QCD_LFvsHF_v5") > 0.95)  Methods.push_back("_MVATagged_LFReg0");
+      if( imu.HNL_MVA_Fake("QCD_LFvsHF_v5") > 0.90)  Methods.push_back("_MVATagged_LFReg1");
+      if( imu.HNL_MVA_Fake("QCD_LFvsHF_v5") > 0.85)  Methods.push_back("_MVATagged_LFReg2");
+      if( imu.HNL_MVA_Fake("QCD_LFvsHF_v5") > 0.80)  Methods.push_back("_MVATagged_LFReg3");
+      if( imu.HNL_MVA_Fake("QCD_LFvsHF_v5") > 0.75)  Methods.push_back("_MVATagged_LFReg4");
+      if( imu.HNL_MVA_Fake("QCD_LFvsHF_v5") > 0.70)  Methods.push_back("_MVATagged_LFReg5");
+      if( imu.HNL_MVA_Fake("QCD_LFvsHF_v5") > 0.65)  Methods.push_back("_MVATagged_LFReg6");
+      if( imu.HNL_MVA_Fake("QCD_LFvsHF_v5") > 0.60)  Methods.push_back("_MVATagged_LFReg7");
+      
+      if( imu.HNL_MVA_Fake("QCD_LFvsHF_v5") < 0.8 && imu.HNL_MVA_Fake("QCD_BvsC_v5") > 0.4) Methods.push_back("_MVATagged_HFBReg1");
+      else if( imu.HNL_MVA_Fake("QCD_LFvsHF_v5") < 0.8 && imu.HNL_MVA_Fake("QCD_BvsC_v5") > -0.4) Methods.push_back("_MVATagged_HFBReg2");
+      else if( imu.HNL_MVA_Fake("QCD_LFvsHF_v5") < 0.8 && imu.HNL_MVA_Fake("QCD_BvsC_v5") > -1.) Methods.push_back("_MVATagged_HFBReg3");
+
+      for(auto im : Methods){
+	FillHistogram(("LeptonFakeRates/"+IDType[i]+im+"/Inc/Pt_Inclusive").Data(), imu.Pt() , param.Weight("Full"), "Pt");
+        if(AK4_JetColl.size() == 0)    FillHistogram(("LeptonFakeRates/"+IDType[i]+im+"/0j/Pt_Inclusive").Data(), imu.Pt() , param.Weight("Full"), "Pt");
+        if(AK4_JetColl.size() >1)      FillHistogram(("LeptonFakeRates/"+IDType[i]+im+"/2j/Pt_Inclusive").Data(), imu.Pt() , param.Weight("Full"), "Pt");
+
+	FillHistogram(("LeptonFakeRates/"+IDType[i]+im+"/Inc/Pt_"+imu.sLepGenType()).Data(), imu.Pt() , param.Weight("Full"), "Pt");
+	if(AK4_JetColl.size() == 0)    FillHistogram(("LeptonFakeRates/"+IDType[i]+im+"/0j/Pt_"+imu.sLepGenType()).Data(), imu.Pt() , param.Weight("Full"), "Pt");
+	if(AK4_JetColl.size() >1)      FillHistogram(("LeptonFakeRates/"+IDType[i]+im+"/2j/Pt_"+imu.sLepGenType()).Data(), imu.Pt() , param.Weight("Full"), "Pt");
+      }
+
+      
+      if(SameCharge(loose_muonsMVA)) {
+	FillHist("SS_Flavour_cat/"+IDType[i]+"/Flavour_cat", imu.CloseJet_FlavourInt() , param.Weight("Full"), 10, 0., 10., "Jet Hadron flavour");
+	if( imu.HNL_MVA_Fake("QCD_LFvsHF_v5") > 0.80)FillHist("SS_Flavour_cat/"+IDType[i]+"_LFTagged/Flavour_cat", imu.CloseJet_FlavourInt() , param.Weight("Full"), 10, 0., 10., "Jet Hadron flavour");
+	else       if( imu.HNL_MVA_Fake("QCD_BvsC_v5") > 0.) FillHist("SS_Flavour_cat/"+IDType[i]+"_BTagged/Flavour_cat", imu.CloseJet_FlavourInt() , param.Weight("Full"), 10, 0., 10., "Jet Hadron flavour");
+	else FillHist("SS_Flavour_cat/"+IDType[i]+"_CTagged/Flavour_cat", imu.CloseJet_FlavourInt() , param.Weight("Full"), 10, 0., 10., "Jet Hadron flavour");
+
+
+	FillHist("FlavourCat/SSLep_"+IDType[i]+"/" + imu.sLepGenType() + "_Muon/Pt", imu.Pt() , param.Weight("Full"), 40, 0., 200.);
+        FillHist("FlavourCat/SSLep_"+IDType[i]+"/" + imu.sLepGenType() + "_Muon/PtRatio", imu.CloseJet_Ptratio() , param.Weight("Full"), 100, 0., 2.);
+        FillHist("FlavourCat/SSLep_"+IDType[i]+"/" + imu.sLepGenType() + "_Muon/HFTop", imu.HNL_MVA_Fake("HFTop") , param.Weight("Full"), 200, -1., 1.);
+        FillHist("FlavourCat/SSLep_"+IDType[i]+"/" + imu.sLepGenType() + "_Muon/QCD_BvsC_v5", imu.HNL_MVA_Fake("QCD_BvsC_v5") , param.Weight("Full"), 200, -1., 1.);
+        FillHist("FlavourCat/SSLep_"+IDType[i]+"/" + imu.sLepGenType() + "_Muon/QCD_LF1_v5", imu.HNL_MVA_Fake("QCD_LF1_v5") , param.Weight("Full"), 200, -1., 1.);
+        FillHist("FlavourCat/SSLep_"+IDType[i]+"/" + imu.sLepGenType() + "_Muon/QCD_LF2_v5", imu.HNL_MVA_Fake("QCD_LF2_v5") , param.Weight("Full"), 200, -1., 1.);
+        FillHist("FlavourCat/SSLep_"+IDType[i]+"/" + imu.sLepGenType() + "_Muon/QCD_LFvsHF_v5", imu.HNL_MVA_Fake("QCD_LFvsHF_v5") , param.Weight("Full"), 200, -1., 1.);
+        FillHist("FlavourCat/SSLep_"+IDType[i]+"/" + imu.sLepGenType() + "_Muon/CloseJet_BScore", imu.CloseJet_BScore() , param.Weight("Full"), 300, -1., 2.);
+        FillHist("FlavourCat/SSLep_"+IDType[i]+"/" + imu.sLepGenType() + "_Muon/CloseJet_CvsBScore", imu.CloseJet_CvsBScore() , param.Weight("Full"), 300, -1., 2.);
+        FillHist("FlavourCat/SSLep_"+IDType[i]+"/" + imu.sLepGenType() + "_Muon/CloseJet_CvsLScore", imu.CloseJet_CvsLScore() , param.Weight("Full"), 300, -1., 2.);
+        FillCutflow(param, "SSLep_Fake_type_"+IDType[i], weight, lables,lep_fake_tag);
+        FillHist("Flavour_cat/"+IDType[i]+"/SSLep_Flavour_cat", imu.CloseJet_FlavourInt() , param.Weight("Full"), 10, 0., 10., "Jet Hadron flavour");
 
       }
-    }
-    return;
-  }
+      continue;
 
+      if(imu.PassID(param.Muon_Tight_ID) || (!imu.PassID(param.Muon_Tight_ID) && imu.CloseJet_BScore() < 0.025)){
+        FillHist("FlavourCat/TopReg_"+IDType[i]+"/" + imu.sLepGenType() + "_Muon/Pt", imu.Pt() , param.Weight("Full"), 40, 0., 200.);
+        FillHist("FlavourCat/TopReg_"+IDType[i]+"/" + imu.sLepGenType() + "_Muon/PtRatio", imu.CloseJet_Ptratio() , param.Weight("Full"), 100, 0., 2.);
+        FillHist("FlavourCat/TopReg_"+IDType[i]+"/" + imu.sLepGenType() + "_Muon/HFTop", imu.HNL_MVA_Fake("HFTop") , param.Weight("Full"), 200, -1., 1.);
+        FillHist("FlavourCat/TopReg_"+IDType[i]+"/" + imu.sLepGenType() + "_Muon/QCD_BvsC_v5", imu.HNL_MVA_Fake("QCD_BvsC_v5") , param.Weight("Full"), 200, -1., 1.);
+        FillHist("FlavourCat/TopReg_"+IDType[i]+"/" + imu.sLepGenType() + "_Muon/QCD_LF1_v5", imu.HNL_MVA_Fake("QCD_LF1_v5") , param.Weight("Full"), 200, -1., 1.);
+        FillHist("FlavourCat/TopReg_"+IDType[i]+"/" + imu.sLepGenType() + "_Muon/QCD_LF2_v5", imu.HNL_MVA_Fake("QCD_LF2_v5") , param.Weight("Full"), 200, -1., 1.);
+        FillHist("FlavourCat/TopReg_"+IDType[i]+"/" + imu.sLepGenType() + "_Muon/QCD_LFvsHF_v5", imu.HNL_MVA_Fake("QCD_LFvsHF_v5") , param.Weight("Full"), 200, -1., 1.);
+        FillHist("FlavourCat/TopReg_"+IDType[i]+"/" + imu.sLepGenType() + "_Muon/CloseJet_BScore", imu.CloseJet_BScore() , param.Weight("Full"), 300, -1., 2.);
+        FillHist("FlavourCat/TopReg_"+IDType[i]+"/" + imu.sLepGenType() + "_Muon/CloseJet_CvsBScore", imu.CloseJet_CvsBScore() , param.Weight("Full"), 300, -1., 2.);
+        FillHist("FlavourCat/TopReg_"+IDType[i]+"/" + imu.sLepGenType() + "_Muon/CloseJet_CvsLScore", imu.CloseJet_CvsLScore() , param.Weight("Full"), 300, -1., 2.);
+        FillCutflow(param, "TopReg_Fake_type_"+IDType[i], weight, lables,lep_fake_tag);
+        FillHist("Flavour_cat/"+IDType[i]+"/TopReg_Flavour_cat", imu.CloseJet_FlavourInt() , param.Weight("Full"), 10, 0., 10., "Jet Hadron flavour");
+      }
 
-  */
-
-  vector<TString> lables = GetGenList();
-
-
-  if(SameCharge(loose_electrons)) {
-    if(loose_electrons[0].IsFake() || loose_electrons[1].IsFake()  ) {
-      if(loose_electrons[0].Pt() > 25 && loose_electrons[1].Pt() > 15){
+      if( imu.HNL_MVA_Fake("QCD_LFvsHF_v5") > 0.80){
 	
-	for (auto el : loose_electrons) {
-	  if(!el.IsFake()) continue;
-	  
-	  TString lep_fake_tag=MatchGenDef(All_Gens, el);
-	  
-	  
-	  if(el.IsBB()){
-
-	    if(el.HNL_MVA_Fake("v4LF") > el.HNL_MVA_Fake("v4HFB") && el.HNL_MVA_Fake("v4LF") > el.HNL_MVA_Fake("v4HFC")) {
-	      if(el.HNL_MVA_Fake("v4HFB") > el.HNL_MVA_Fake("v4HFC")) FillHist( "SSMVA_match/Matched_Type_"+el.CloseJet_Flavour() , 0 , weight, 10, 0., 10);
-	      else FillHist( "SSMVA_match/Matched_Type_"+el.CloseJet_Flavour() , 1 , weight, 10, 0., 10);
-	    }
-	    else if(el.HNL_MVA_Fake("v4HFB") > el.HNL_MVA_Fake("v4LF") && el.HNL_MVA_Fake("v4HFB") > el.HNL_MVA_Fake("v4HFC")) {
-	      if(el.HNL_MVA_Fake("v4LF") > el.HNL_MVA_Fake("v4HFC")) FillHist( "SSMVA_match/Matched_Type_"+el.CloseJet_Flavour() , 2 , weight, 10, 0., 10);
-	      else FillHist( "SSMVA_match/Matched_Type_"+el.CloseJet_Flavour() , 3 , weight, 10, 0., 10);
-	    }
-	    else {
-	      if(el.HNL_MVA_Fake("v4LF") > el.HNL_MVA_Fake("v4HFB")) FillHist( "SSMVA_match/Matched_Type_"+el.CloseJet_Flavour() , 4 , weight, 10, 0., 10);
-	      else FillHist( "SSMVA_match/Matched_Type_"+el.CloseJet_Flavour() , 5 , weight, 10, 0., 10);
-
-	    }
-
-
-
-	    if(el.HNL_MVA_Fake("v4LF") > el.HNL_MVA_Fake("v4HF"))           FillHist( "SSMVA_match/Type_LF_HF_"+el.CloseJet_Flavour() , 2 , weight, 5, 0., 5);
-	    else  FillHist( "SSMVA_match/Type_LF_HF_"+el.CloseJet_Flavour() , 1 , weight, 5, 0., 5);
-	    
-	    
-	    if(el.HNL_MVA_Fake("v4LF") > el.HNL_MVA_Fake("v4HFB"))           FillHist( "SSMVA_match/Type_LF_HFB_"+el.CloseJet_Flavour() , 2 , weight, 5, 0., 5);
-	    else FillHist( "SSMVA_match/Type_LF_HFB_"+el.CloseJet_Flavour() , 1 , weight, 5, 0., 5);
-	    
-	    if(el.HNL_MVA_Fake("v4LF") > el.HNL_MVA_Fake("v4HFC"))           FillHist( "SSMVA_match/Type_LF_HFC_"+el.CloseJet_Flavour() , 2 , weight, 5, 0., 5);
-	    else FillHist( "SSMVA_match/Type_LF_HFC_"+el.CloseJet_Flavour() , 1 , weight, 5, 0., 5);
-	    
-	    FillHist( "SSMVA_Loose/Lepton_MVA"   , el.HNL_MVA_Fake("v4") , weight, 100, -1., 1, "BDT score");
-	    //FillHist( "SSMVA_Loose/Lepton_MVA_"+MatchGenDef(All_Gens,el)   , el.HNL_MVA_Fake("v4") , weight, 100, -1., 1, "BDT score");                                                                         
-	    FillHist( "SSMVA_Loose/Lepton_MVA_"+el.CloseJet_Flavour() , el.HNL_MVA_Fake("EDv4") , weight, 100, -1., 1, "BDT score");
-	  }
-	  else{
-	    
-
-	    if(el.HNL_MVA_Fake("EDv4LF") > el.HNL_MVA_Fake("EDv4HFB") && el.HNL_MVA_Fake("EDv4LF") > el.HNL_MVA_Fake("EDv4HFC")) {
-	      if(el.HNL_MVA_Fake("EDv4HFB") > el.HNL_MVA_Fake("EDv4HFC")) FillHist( "SSMVA_match/EDMatched_Type_"+el.CloseJet_Flavour() , 0 , weight, 10, 0., 10);
-	      else FillHist( "SSMVA_match/EDMatched_Type_"+el.CloseJet_Flavour() , 1 , weight, 10, 0., 10);
-	    }
-	    else if(el.HNL_MVA_Fake("EDv4HFB") > el.HNL_MVA_Fake("EDv4LF") && el.HNL_MVA_Fake("EDv4HFB") > el.HNL_MVA_Fake("EDv4HFC")) {
-	      if(el.HNL_MVA_Fake("EDv4LF") > el.HNL_MVA_Fake("EDv4HFC")) FillHist( "SSMVA_match/EDMatched_Type_"+el.CloseJet_Flavour() , 2 , weight, 10, 0., 10);
-	      else FillHist( "SSMVA_match/EDMatched_Type_"+el.CloseJet_Flavour() , 3 , weight, 10, 0., 10);
-	    }
-	    else {
-	      if(el.HNL_MVA_Fake("EDv4LF") > el.HNL_MVA_Fake("EDv4HFB")) FillHist( "SSMVA_match/EDMatched_Type_"+el.CloseJet_Flavour() , 4 , weight, 10, 0., 10);
-	      else FillHist( "SSMVA_match/EDMatched_Type_"+el.CloseJet_Flavour() , 5 , weight, 10, 0., 10);
-	    }
-
-
-
-	    if(el.HNL_MVA_Fake("EDv4LF") > el.HNL_MVA_Fake("EDv4HF"))           FillHist( "SSMVA_match/EDType_LF_HF_"+el.CloseJet_Flavour() , 2 , weight, 5, 0., 5);
-	    else FillHist( "SSMVA_match/EDType_LF_HF_"+el.CloseJet_Flavour() , 1 , weight, 5, 0., 5);
-	    
-	    
-	    if(el.HNL_MVA_Fake("EDv4LF") > el.HNL_MVA_Fake("EDv4HFB"))           FillHist( "SSMVA_match/EDType_LF_HFB_"+el.CloseJet_Flavour() , 2 , weight, 5, 0., 5);
-	    else FillHist( "SSMVA_match/EDType_LF_HFB_"+el.CloseJet_Flavour() , 1 , weight, 5, 0., 5);
-	    
-	    if(el.HNL_MVA_Fake("EDv4LF") > el.HNL_MVA_Fake("EDv4HFC"))           FillHist( "SSMVA_match/EDType_LF_HFC_"+el.CloseJet_Flavour() , 2 , weight, 5, 0., 5);
-	    else FillHist( "SSMVA_match/EDType_LF_HFC_"+el.CloseJet_Flavour() , 1 , weight, 5, 0., 5);
-	    
-	    FillHist( "SSMVA_Loose/Lepton_EDMVA"   , el.HNL_MVA_Fake("EDv4") , weight, 100, -1., 1, "BDT score");
-	    //FillHist( "SSMVA_Loose/Lepton_EDMVA_"+MatchGenDef(All_Gens,el)   , el.HNL_MVA_Fake("EDv4") , weight, 100, -1., 1, "BDT score");
-	    FillHist( "SSMVA_Loose/Lepton_EDMVA_"+el.CloseJet_Flavour()   , el.HNL_MVA_Fake("EDv4") , weight, 100, -1., 1, "BDT score");
-	  }
-	  
-	  /*
-	    
-	    if (std::find(lables.begin(), lables.end(), lep_fake_tag) == lables.end()){
-	    cout <<"lep_fake_tag = " << lep_fake_tag << " missing "<< endl;
-	    PrintMatchedGen(All_Gens, el);
-	    
-	    }
-	    
-	    else{
-	    
-	    if(el.CloseJet_FlavourInt()==0) FillEventCutflowAll("SSElectron", "LF_Fake_type", weight, lables,lep_fake_tag);
-	    if(el.CloseJet_FlavourInt()==4) FillEventCutflowAll("SSElectron", "HFC_Fake_type", weight, lables,lep_fake_tag);
-	    if(el.CloseJet_FlavourInt()==5) FillEventCutflowAll("SSElectron", "HFB_Fake_type", weight, lables,lep_fake_tag);
-	    if(el.CloseJet_FlavourInt()==4) FillEventCutflowAll("SSElectron", "HF_Fake_type", weight, lables,lep_fake_tag);
-	    if(el.CloseJet_FlavourInt()==5) FillEventCutflowAll("SSElectron", "HF_Fake_type", weight, lables,lep_fake_tag);
-	    
-	    if(jets.size() == 0) {
-	    if(el.CloseJet_FlavourInt()==0) FillEventCutflowAll("SSElectron0j", "LF_Fake_type", weight, lables,lep_fake_tag);
-	    if(el.CloseJet_FlavourInt()==4) FillEventCutflowAll("SSElectron0j", "HFC_Fake_type", weight, lables,lep_fake_tag);
-	    if(el.CloseJet_FlavourInt()==5) FillEventCutflowAll("SSElectron0j", "HFB_Fake_type", weight, lables,lep_fake_tag);
-	    if(el.CloseJet_FlavourInt()==4) FillEventCutflowAll("SSElectron0j", "HF_Fake_type", weight, lables,lep_fake_tag);
-	    if(el.CloseJet_FlavourInt()==5) FillEventCutflowAll("SSElectron0j", "HF_Fake_type", weight, lables,lep_fake_tag);
-	    }
-	    else if(jets.size() == 1) {
-	    if(el.CloseJet_FlavourInt()==0) FillEventCutflowAll("SSElectron1j", "LF_Fake_type", weight, lables,lep_fake_tag);
-	    if(el.CloseJet_FlavourInt()==4) FillEventCutflowAll("SSElectron1j", "HFC_Fake_type", weight, lables,lep_fake_tag);
-	    if(el.CloseJet_FlavourInt()==5) FillEventCutflowAll("SSElectron1j", "HFB_Fake_type", weight, lables,lep_fake_tag);
-	    if(el.CloseJet_FlavourInt()==4) FillEventCutflowAll("SSElectron1j", "HF_Fake_type", weight, lables,lep_fake_tag);
-	    if(el.CloseJet_FlavourInt()==5) FillEventCutflowAll("SSElectron1j", "HF_Fake_type", weight, lables,lep_fake_tag);
-	  }
-	  else{
-	  if(el.CloseJet_FlavourInt()==0) FillEventCutflowAll("SSElectron2j", "LF_Fake_type", weight, lables,lep_fake_tag);
-	  if(el.CloseJet_FlavourInt()==4) FillEventCutflowAll("SSElectron2j", "HFC_Fake_type", weight, lables,lep_fake_tag);
-	    if(el.CloseJet_FlavourInt()==5) FillEventCutflowAll("SSElectron2j", "HFB_Fake_type", weight, lables,lep_fake_tag);
-	    if(el.CloseJet_FlavourInt()==4) FillEventCutflowAll("SSElectron2j", "HF_Fake_type", weight, lables,lep_fake_tag);
-	    if(el.CloseJet_FlavourInt()==5) FillEventCutflowAll("SSElectron2j", "HF_Fake_type", weight, lables,lep_fake_tag);
-	  }
-	  
-	  if(el.IsBB()){
-	    FillHist( "SSMVA_Loose/Lepton_MVA"   , el.HNL_MVA_Fake("v4") , weight, 100, -1., 1, "BDT score");
-	    //FillHist( "SSMVA_Loose/Lepton_MVA_"+MatchGenDef(All_Gens,el)   , el.HNL_MVA_Fake("v4") , weight, 100, -1., 1, "BDT score");
-	    FillHist( "SSMVA_Loose/Lepton_MVA_"+el.CloseJet_Flavour() , el.HNL_MVA_Fake("EDv4") , weight, 100, -1., 1, "BDT score");
-	  }
-	  else{
-	    FillHist( "SSMVA_Loose/Lepton_EDMVA"   , el.HNL_MVA_Fake("EDv4") , weight, 100, -1., 1, "BDT score");
-	    FillHist( "SSMVA_Loose/Lepton_EDMVA_"+MatchGenDef(All_Gens,el)   , el.HNL_MVA_Fake("EDv4") , weight, 100, -1., 1, "BDT score");
-	    FillHist( "SSMVA_Loose/Lepton_EDMVA_"+el.CloseJet_Flavour()+"_"+MatchGenDef(All_Gens,el)   , el.HNL_MVA_Fake("EDv4") , weight, 100, -1., 1, "BDT score");
-	  }
-	  }*/
+        FillHist("FlavourCat/LFTaggedReg_"+IDType[i]+"/" + imu.sLepGenType() + "_Muon/Pt", imu.Pt() , param.Weight("Full"), 40, 0., 200.);
+        FillHist("FlavourCat/LFTaggedReg_"+IDType[i]+"/" + imu.sLepGenType() + "_Muon/PtRatio", imu.CloseJet_Ptratio() , param.Weight("Full"), 100, 0., 2.);
+        FillHist("FlavourCat/LFTaggedReg_"+IDType[i]+"/" + imu.sLepGenType() + "_Muon/HFTop", imu.HNL_MVA_Fake("HFTop") , param.Weight("Full"), 200, -1., 1.);
+        FillHist("FlavourCat/LFTaggedReg_"+IDType[i]+"/" + imu.sLepGenType() + "_Muon/QCD_BvsC_v5", imu.HNL_MVA_Fake("QCD_BvsC_v5") , param.Weight("Full"), 200, -1., 1.);
+        FillHist("FlavourCat/LFTaggedReg_"+IDType[i]+"/" + imu.sLepGenType() + "_Muon/QCD_LF1_v5", imu.HNL_MVA_Fake("QCD_LF1_v5") , param.Weight("Full"), 200, -1., 1.);
+        FillHist("FlavourCat/LFTaggedReg_"+IDType[i]+"/" + imu.sLepGenType() + "_Muon/QCD_LF2_v5", imu.HNL_MVA_Fake("QCD_LF2_v5") , param.Weight("Full"), 200, -1., 1.);
+        FillHist("FlavourCat/LFTaggedReg_"+IDType[i]+"/" + imu.sLepGenType() + "_Muon/QCD_LFvsHF_v5", imu.HNL_MVA_Fake("QCD_LFvsHF_v5") , param.Weight("Full"), 200, -1., 1.);
+        FillHist("FlavourCat/LFTaggedReg_"+IDType[i]+"/" + imu.sLepGenType() + "_Muon/CloseJet_BScore", imu.CloseJet_BScore() , param.Weight("Full"), 300, -1., 2.);
+        FillHist("FlavourCat/LFTaggedReg_"+IDType[i]+"/" + imu.sLepGenType() + "_Muon/CloseJet_CvsBScore", imu.CloseJet_CvsBScore() , param.Weight("Full"), 300, -1., 2.);
+        FillHist("FlavourCat/LFTaggedReg_"+IDType[i]+"/" + imu.sLepGenType() + "_Muon/CloseJet_CvsLScore", imu.CloseJet_CvsLScore() , param.Weight("Full"), 300, -1., 2.);
+	FillCutflow(param, "LFTaggedReg_Fake_type_"+IDType[i], weight, lables,lep_fake_tag);
+	FillHist("Flavour_cat/"+IDType[i]+"/LFTaggedReg_Flavour_cat", imu.CloseJet_FlavourInt() , param.Weight("Full"), 10, 0., 10., "Jet Hadron flavour");
+      }
+      else{
+	FillHist("FlavourCat/AntiLFTaggedReg_"+IDType[i]+"/" + imu.sLepGenType() + "_Muon/Pt", imu.Pt() , param.Weight("Full"), 40, 0., 200.);
+        FillHist("FlavourCat/AntiLFTaggedReg_"+IDType[i]+"/" + imu.sLepGenType() + "_Muon/PtRatio", imu.CloseJet_Ptratio() , param.Weight("Full"), 100, 0., 2.);
+        FillHist("FlavourCat/AntiLFTaggedReg_"+IDType[i]+"/" + imu.sLepGenType() + "_Muon/HFTop", imu.HNL_MVA_Fake("HFTop") , param.Weight("Full"), 200, -1., 1.);
+        FillHist("FlavourCat/AntiLFTaggedReg_"+IDType[i]+"/" + imu.sLepGenType() + "_Muon/QCD_BvsC_v5", imu.HNL_MVA_Fake("QCD_BvsC_v5") , param.Weight("Full"), 200, -1., 1.);
+        FillHist("FlavourCat/AntiLFTaggedReg_"+IDType[i]+"/" + imu.sLepGenType() + "_Muon/QCD_LF1_v5", imu.HNL_MVA_Fake("QCD_LF1_v5") , param.Weight("Full"), 200, -1., 1.);
+        FillHist("FlavourCat/AntiLFTaggedReg_"+IDType[i]+"/" + imu.sLepGenType() + "_Muon/QCD_LF2_v5", imu.HNL_MVA_Fake("QCD_LF2_v5") , param.Weight("Full"), 200, -1., 1.);
+        FillHist("FlavourCat/AntiLFTaggedReg_"+IDType[i]+"/" + imu.sLepGenType() + "_Muon/QCD_LFvsHF_v5", imu.HNL_MVA_Fake("QCD_LFvsHF_v5") , param.Weight("Full"), 200, -1., 1.);
+        FillHist("FlavourCat/AntiLFTaggedReg_"+IDType[i]+"/" + imu.sLepGenType() + "_Muon/CloseJet_BScore", imu.CloseJet_BScore() , param.Weight("Full"), 300, -1., 2.);
+        FillHist("FlavourCat/AntiLFTaggedReg_"+IDType[i]+"/" + imu.sLepGenType() + "_Muon/CloseJet_CvsBScore", imu.CloseJet_CvsBScore() , param.Weight("Full"), 300, -1., 2.);
+        FillHist("FlavourCat/AntiLFTaggedReg_"+IDType[i]+"/" + imu.sLepGenType() + "_Muon/CloseJet_CvsLScore", imu.CloseJet_CvsLScore() , param.Weight("Full"), 300, -1., 2.);
+        FillCutflow(param, "AntiLFTaggedReg_Fake_type_"+IDType[i], weight, lables,lep_fake_tag);
+        FillHist("Flavour_cat/"+IDType[i]+"/AntiLFTaggedReg_Flavour_cat", imu.CloseJet_FlavourInt() , param.Weight("Full"), 10, 0., 10., "Jet Hadron flavour");
+	
+	if(imu.PassID(param.Muon_Tight_ID) || (!imu.PassID(param.Muon_Tight_ID) && imu.CloseJet_CvsBScore() > 0.1)){
+	  FillHist("FlavourCat/Reg3_"+IDType[i]+"/" + imu.sLepGenType() + "_Muon/Pt", imu.Pt() , param.Weight("Full"), 40, 0., 200.);
+	  FillHist("FlavourCat/Reg3_"+IDType[i]+"/" + imu.sLepGenType() + "_Muon/PtRatio", imu.CloseJet_Ptratio() , param.Weight("Full"), 100, 0., 2.);
+	  FillHist("FlavourCat/Reg3_"+IDType[i]+"/" + imu.sLepGenType() + "_Muon/HFTop", imu.HNL_MVA_Fake("HFTop") , param.Weight("Full"), 200, -1., 1.);
+	  FillHist("FlavourCat/Reg3_"+IDType[i]+"/" + imu.sLepGenType() + "_Muon/QCD_BvsC_v5", imu.HNL_MVA_Fake("QCD_BvsC_v5") , param.Weight("Full"), 200, -1., 1.);
+	  FillHist("FlavourCat/Reg3_"+IDType[i]+"/" + imu.sLepGenType() + "_Muon/QCD_LF1_v5", imu.HNL_MVA_Fake("QCD_LF1_v5") , param.Weight("Full"), 200, -1., 1.);
+	  FillHist("FlavourCat/Reg3_"+IDType[i]+"/" + imu.sLepGenType() + "_Muon/QCD_LF2_v5", imu.HNL_MVA_Fake("QCD_LF2_v5") , param.Weight("Full"), 200, -1., 1.);
+	  FillHist("FlavourCat/Reg3_"+IDType[i]+"/" + imu.sLepGenType() + "_Muon/QCD_LFvsHF_v5", imu.HNL_MVA_Fake("QCD_LFvsHF_v5") , param.Weight("Full"), 200, -1., 1.);
+	  FillHist("FlavourCat/Reg3_"+IDType[i]+"/" + imu.sLepGenType() + "_Muon/CloseJet_BScore", imu.CloseJet_BScore() , param.Weight("Full"), 300, -1., 2.);
+	  FillHist("FlavourCat/Reg3_"+IDType[i]+"/" + imu.sLepGenType() + "_Muon/CloseJet_CvsBScore", imu.CloseJet_CvsBScore() , param.Weight("Full"), 300, -1., 2.);
+	  FillHist("FlavourCat/Reg3_"+IDType[i]+"/" + imu.sLepGenType() + "_Muon/CloseJet_CvsLScore", imu.CloseJet_CvsLScore() , param.Weight("Full"), 300, -1., 2.);
+	  FillCutflow(param, "Reg3_Fake_type_"+IDType[i], weight, lables,lep_fake_tag);
+	  FillHist("Flavour_cat/"+IDType[i]+"/Reg3_Flavour_cat", imu.CloseJet_FlavourInt() , param.Weight("Full"), 10, 0., 10., "Jet Hadron flavour");
 	}
       }
+
+      FillHist("Flavour_cat/"+IDType[i]+"/Flavour_cat", imu.CloseJet_FlavourInt() , param.Weight("Full"), 10, 0., 10., "Jet Hadron flavour");
+      if(SameCharge(loose_muonsMVA))   FillHist("SS_Flavour_cat/"+IDType[i]+"/Flavour_cat", imu.CloseJet_FlavourInt() , param.Weight("Full"), 10, 0., 10., "Jet Hadron flavour");
+      if(loose_muonsMVA.size() ==2)       FillHist("Dilep_Flavour_cat/"+IDType[i]+"/Flavour_cat", imu.CloseJet_FlavourInt() , param.Weight("Full"), 10, 0., 10., "Jet Hadron flavour");
+      if(useevent40) FillHist("FakeCR_Flavour_cat/"+IDType[i]+"/Flavour_cat", imu.CloseJet_FlavourInt() , param.Weight("Full"), 10, 0., 10., "Jet Hadron flavour");
+      
+      FillMuonPlots(useevent40,    "FakeCR40", param, IDType[i],  imu, param.Weight("Full") );
+      FillMuonPlots((imu.CloseJet_BScore() > 0.7), "DeepJetM_Pass", param, IDType[i],  imu, param.Weight("Full") );
+      FillMuonPlots((imu.CloseJet_BScore() < 0.2), "DeepJet_Fail", param, IDType[i],  imu, param.Weight("Full") );
+    
+      FillMuonPlots((imu.HNL_MVA_Fake("QCD_LFvsHF_v5") > 0.85), "LFvsHF_Pass", param, IDType[i],  imu, param.Weight("Full") );
+      FillMuonPlots((imu.HNL_MVA_Fake("QCD_LFvsHF_v5") < 0.85), "LFvsHF_Fail", param, IDType[i],  imu, param.Weight("Full") );
+      
+      FillCutflow(param, imu.sLepGenType() + "_Fake_type_"+IDType[i], weight, lables,lep_fake_tag);
+      if(AK4_JetColl.size() == 0)    FillCutflow(param, imu.sLepGenType() + "_0j_Fake_type_"+IDType[i], weight, lables,lep_fake_tag);
+      if(AK4_JetColl.size() > 1)     FillCutflow(param, imu.sLepGenType() + "_2j_Fake_type_"+IDType[i], weight, lables,lep_fake_tag);
+      if(SameCharge(loose_muonsMVA)){
+	if(AK4_JetColl.size() == 0)       FillCutflow(param, "SS_"+imu.sLepGenType() + "_0j_Fake_type_"+IDType[i], weight, lables,lep_fake_tag);
+	if(AK4_JetColl.size() > 1)      FillCutflow(param, "SS_"+imu.sLepGenType() + "_2j_Fake_type_"+IDType[i], weight, lables,lep_fake_tag);
+      }
+      
+      FillHist("FlavourCat/"+IDType[i]+"/"+imu.sLepGenType() + "_Muon/Pt", imu.Pt() , param.Weight("Full"), 40, 0., 200.);
+      FillHist("FlavourCat/"+IDType[i]+"/"+imu.sLepGenType() + "_Muon/HFTop", imu.HNL_MVA_Fake("HFTop") , param.Weight("Full"), 200, -1., 1.);
+      FillHist("FlavourCat/"+IDType[i]+"/"+imu.sLepGenType() + "_Muon/QCD_BvsC_v5", imu.HNL_MVA_Fake("QCD_BvsC_v5") , param.Weight("Full"), 200, -1., 1.);
+      FillHist("FlavourCat/"+IDType[i]+"/"+imu.sLepGenType() + "_Muon/QCD_LF1_v5", imu.HNL_MVA_Fake("QCD_LF1_v5") , param.Weight("Full"), 200, -1., 1.);
+      FillHist("FlavourCat/"+IDType[i]+"/"+imu.sLepGenType() + "_Muon/QCD_LF2_v5", imu.HNL_MVA_Fake("QCD_LF2_v5") , param.Weight("Full"), 200, -1., 1.);
+      FillHist("FlavourCat/"+IDType[i]+"/"+imu.sLepGenType() + "_Muon/QCD_LFvsHF_v5", imu.HNL_MVA_Fake("QCD_LFvsHF_v5") , param.Weight("Full"), 200, -1., 1.);
+      FillHist("FlavourCat/"+IDType[i]+"/"+imu.sLepGenType() + "_Muon/CloseJet_BScore", imu.CloseJet_BScore() , param.Weight("Full"), 300, -1., 2.);
+      FillHist("FlavourCat/"+IDType[i]+"/"+imu.sLepGenType() + "_Muon/CloseJet_CvsBScore", imu.CloseJet_CvsBScore() , param.Weight("Full"), 300, -1., 2.);
+      FillHist("FlavourCat/"+IDType[i]+"/"+imu.sLepGenType() + "_Muon/CloseJet_CvsLScore", imu.CloseJet_CvsLScore() , param.Weight("Full"), 300, -1., 2.);
+      
+    
+      FillCutflow(param, imu.sLepGenType() + "_"+imu.GetPtLabel()+"Fake_type_"+IDType[i], weight, lables,lep_fake_tag);
+	
+      FillHist("FlavourCat/"+IDType[i]+"/"+imu.sLepGenType() + "_Muon/"+imu.GetPtLabel()+"/HFTop", imu.HNL_MVA_Fake("HFTop") , param.Weight("Full"), 200, -1., 1.);
+      FillHist("FlavourCat/"+IDType[i]+"/"+imu.sLepGenType() + "_Muon/"+imu.GetPtLabel()+"/QCD_BvsC_v5", imu.HNL_MVA_Fake("QCD_BvsC_v5") , param.Weight("Full"), 200, -1., 1.);
+      FillHist("FlavourCat/"+IDType[i]+"/"+imu.sLepGenType() + "_Muon/"+imu.GetPtLabel()+"/QCD_LF1_v5", imu.HNL_MVA_Fake("QCD_LF1_v5") , param.Weight("Full"), 200, -1., 1.);
+      FillHist("FlavourCat/"+IDType[i]+"/"+imu.sLepGenType() + "_Muon/"+imu.GetPtLabel()+"/QCD_LF2_v5", imu.HNL_MVA_Fake("QCD_LF2_v5") , param.Weight("Full"), 200, -1., 1.);
+      FillHist("FlavourCat/"+IDType[i]+"/"+imu.sLepGenType() + "_Muon/"+imu.GetPtLabel()+"/QCD_LFvsHF_v5", imu.HNL_MVA_Fake("QCD_LFvsHF_v5") , param.Weight("Full"), 200, -1., 1.);
+      FillHist("FlavourCat/"+IDType[i]+"/"+imu.sLepGenType() + "_Muon/"+imu.GetPtLabel()+"/CloseJet_BScore", imu.CloseJet_BScore() , param.Weight("Full"), 300, -1., 2.);
+      FillHist("FlavourCat/"+IDType[i]+"/"+imu.sLepGenType() + "_Muon/"+imu.GetPtLabel()+"/CloseJet_CvsBScore", imu.CloseJet_CvsBScore() , param.Weight("Full"), 300, -1., 2.);
+      FillHist("FlavourCat/"+IDType[i]+"/"+imu.sLepGenType() + "_Muon/"+imu.GetPtLabel()+"/CloseJet_CvsLScore", imu.CloseJet_CvsLScore() , param.Weight("Full"), 300, -1., 2.);
+
+      FillCutflow(param, imu.sLepGenType() + "_"+imu.GetMotherPtLabel()+"Fake_type_"+IDType[i], weight, lables,lep_fake_tag);
+      FillHist("FlavourCat/"+IDType[i]+"/"+imu.sLepGenType() + "_Muon/"+imu.GetMotherPtLabel()+"/HFTop", imu.HNL_MVA_Fake("HFTop") , param.Weight("Full"), 200, -1., 1.);
+      FillHist("FlavourCat/"+IDType[i]+"/"+imu.sLepGenType() + "_Muon/"+imu.GetMotherPtLabel()+"/QCD_BvsC_v5", imu.HNL_MVA_Fake("QCD_BvsC_v5") , param.Weight("Full"), 200, -1., 1.);
+      FillHist("FlavourCat/"+IDType[i]+"/"+imu.sLepGenType() + "_Muon/"+imu.GetMotherPtLabel()+"/QCD_LF1_v5", imu.HNL_MVA_Fake("QCD_LF1_v5") , param.Weight("Full"), 200, -1., 1.);
+      FillHist("FlavourCat/"+IDType[i]+"/"+imu.sLepGenType() + "_Muon/"+imu.GetMotherPtLabel()+"/QCD_LF2_v5", imu.HNL_MVA_Fake("QCD_LF2_v5") , param.Weight("Full"), 200, -1., 1.);
+      FillHist("FlavourCat/"+IDType[i]+"/"+imu.sLepGenType() + "_Muon/"+imu.GetMotherPtLabel()+"/QCD_LFvsHF_v5", imu.HNL_MVA_Fake("QCD_LFvsHF_v5") , param.Weight("Full"), 200, -1., 1.);
+      FillHist("FlavourCat/"+IDType[i]+"/"+imu.sLepGenType() + "_Muon/"+imu.GetMotherPtLabel()+"/CloseJet_BScore", imu.CloseJet_BScore() , param.Weight("Full"), 300, -1., 2.);
+      FillHist("FlavourCat/"+IDType[i]+"/"+imu.sLepGenType() + "_Muon/"+imu.GetMotherPtLabel()+"/CloseJet_CvsBScore", imu.CloseJet_CvsBScore() , param.Weight("Full"), 300, -1., 2.);
+      FillHist("FlavourCat/"+IDType[i]+"/"+imu.sLepGenType() + "_Muon/"+imu.GetMotherPtLabel()+"/CloseJet_CvsLScore", imu.CloseJet_CvsLScore() , param.Weight("Full"), 300, -1., 2.);
     }
   }
   
-  if(useevent40){
+  return;
+  param.SplitPlot = "PtBin_Type_";
 
-    std::vector<Jet> jets_tmp     = GetJets   ( param, "tight", 20., 5.);
-
-    JetTagging::Parameters param_jets = JetTagging::Parameters(JetTagging::DeepJet, JetTagging::Medium, JetTagging::incl, JetTagging::mujets);
-    std::vector<Jet> BJetColl    = SelectBJets(param, jets_tmp , param_jets);
-    std::vector<Jet> CJetColl;
-    for(auto i : jets_tmp) {
-      if( i.GetTaggerResult(JetTagging::DeepJet_CvsL) <= mcCorr->GetJetTaggingCutValue(JetTagging::DeepCSV_CvsL,JetTagging::Medium ) ) continue;
-      CJetColl.push_back(i);
-    }
-
-    for (auto el : loose_electrons) {
+  if(SameCharge(loose_muonsMVA)){
+    
+    if(loose_muonsMVA[0].Pt() < 20) return;
+    
+    for(auto imu : loose_muonsMVA){
       
-
-      float lep_pt = el.Pt();
-      if(lep_pt > 100.) lep_pt = 99;
-
-      int nbin_pt    = 9;
-      double ptbins      [nbin_pt+1];
-      vector<double> vptbins     = { 10., 15.,20.,25.,30., 35.,40.,50.,60.,100.};
-      std::copy(vptbins.begin(), vptbins.end(), ptbins);
-
-      if(!el.IsFake()) continue;
-
-      if(el.IsBB()){
-	
-	if(el.HNL_MVA_Fake("v4LF") < el.HNL_MVA_Fake("v4HFB") && el.HNL_MVA_Fake("v4LF") < el.HNL_MVA_Fake("v4HFC")) {
-	  if(el.HNL_MVA_Fake("v4HFB") < el.HNL_MVA_Fake("v4HFC")) FillHist( "MVA_match/Matched_Type_"+el.CloseJet_Flavour() , 0 , weight, 10, 0., 10);
-	  else FillHist( "MVA_match/Matched_Type_"+el.CloseJet_Flavour() , 1 , weight, 10, 0., 10);
-	}
-	else if(el.HNL_MVA_Fake("v4HFB") < el.HNL_MVA_Fake("v4LF") && el.HNL_MVA_Fake("v4HFB") < el.HNL_MVA_Fake("v4HFC")) {
-	  if(el.HNL_MVA_Fake("v4LF") < el.HNL_MVA_Fake("v4HFC")) FillHist( "MVA_match/Matched_Type_"+el.CloseJet_Flavour() , 2 , weight, 10, 0., 10);
-          else FillHist( "MVA_match/Matched_Type_"+el.CloseJet_Flavour() , 3 , weight, 10, 0., 10);
-	}
-	else {
-	  if(el.HNL_MVA_Fake("v4LF") < el.HNL_MVA_Fake("v4HFB")) FillHist( "MVA_match/Matched_Type_"+el.CloseJet_Flavour() , 4 , weight, 10, 0., 10);
-          else FillHist( "MVA_match/Matched_Type_"+el.CloseJet_Flavour() , 5 , weight, 10, 0., 10);
-
-	}
-
-	
-	FillHist("Fakerates/LooseEl_BB_pt",     lep_pt, 1, nbin_pt, ptbins, "p_{T} (GeV)");
-	if(el.HNL_MVA_Fake("v4") > 0.2) FillHist("Fakerates/TightEl_BB_pt",     lep_pt, 1, nbin_pt, ptbins, "p_{T} (GeV)");
-	if(BJetColl.size() == 0) {
-	  FillHist("Fakerates/0b_LooseEl_BB_pt",     lep_pt, 1, nbin_pt, ptbins, "p_{T} (GeV)");
-	  if(el.HNL_MVA_Fake("v4") > 0.2) FillHist("Fakerates/0b_TightEl_BB_pt",     lep_pt, 1, nbin_pt, ptbins, "p_{T} (GeV)");
-	}
-	else{
-	  FillHist("Fakerates/b_LooseEl_BB_pt",    lep_pt, 1, nbin_pt, ptbins, "p_{T} (GeV)");
-	    if(el.HNL_MVA_Fake("v4") > 0.2) FillHist("Fakerates/b_TightEl_BB_pt",     lep_pt, 1, nbin_pt, ptbins, "p_{T} (GeV)");
-	    
-	}
-	
-	if(el.HNL_MVA_Fake("v4LF") < el.HNL_MVA_Fake("v4HF")){
-	  FillHist("Fakerates/LFTagged_LooseEl_BB_pt",    lep_pt, 1, nbin_pt, ptbins, "p_{T} (GeV)");
-	  if(el.HNL_MVA_Fake("v4") > 0.2) FillHist("Fakerates/LFTagged_TightEl_BB_pt",     lep_pt, 1, nbin_pt, ptbins, "p_{T} (GeV)");
-	}
-	else if(el.HNL_MVA_Fake("v4HFB") < el.HNL_MVA_Fake("v4HFC")){
-	  FillHist("Fakerates/HFBTagged_LooseEl_BB_pt",    lep_pt, 1, nbin_pt, ptbins, "p_{T} (GeV)");
-	  if(el.HNL_MVA_Fake("v4") > 0.2) FillHist("Fakerates/HFBTagged_TightEl_BB_pt",     lep_pt, 1, nbin_pt, ptbins, "p_{T} (GeV)");
-	}
-	else {
-          FillHist("Fakerates/HFCTagged_LooseEl_BB_pt",    lep_pt, 1, nbin_pt, ptbins, "p_{T} (GeV)");
-          if(el.HNL_MVA_Fake("v4") > 0.2) FillHist("Fakerates/HFCTagged_TightEl_BB_pt",     lep_pt, 1, nbin_pt, ptbins, "p_{T} (GeV)");
-	}
-	
-	FillHist("Fakerates/"+el.CloseJet_Flavour()+"Gen_LooseEl_BB_pt",    lep_pt, 1, nbin_pt, ptbins, "p_{T} (GeV)");
-	if(el.HNL_MVA_Fake("v4") > 0.2) FillHist("Fakerates/"+el.CloseJet_Flavour()+"Gen_TightEl_BB_pt",     lep_pt, 1, nbin_pt, ptbins, "p_{T} (GeV)");
-		
-	
-	if(el.HNL_MVA_Fake("v4LF") < el.HNL_MVA_Fake("v4HF")) {
-
-	  for(auto i : jets_tmp) {
-	    if(i.DeltaR(el) < 0.4){
-	      FillHist( "MVA_matchLF/BB_CLScore", i.GetTaggerResult(JetTagging::DeepJet_CvsL) , weight, 100, -1., 1);
-	      FillHist( "MVA_matchLF/BB_CBScore", i.GetTaggerResult(JetTagging::DeepJet_CvsB) , weight, 100, -1., 1);
-	      FillHist( "MVA_matchLF/BB_BScore", i.GetTaggerResult(JetTagging::DeepJet) , weight, 100, -1., 1);
-	    }
-	  }
-	  FillHist( "MVA_matchLF/BB_NBJet",BJetColl.size(), weight, 5, 0., 5); 
-	  FillHist( "MVA_matchLF/BB_NCJet",CJetColl.size(), weight, 5, 0., 5); 
-	  FillHist( "MVA_matchLF/BB_HFC_MVA", el.HNL_MVA_Fake("v4HFC"), weight, 100, -1., 1);
-	  FillHist( "MVA_matchLF/BB_HFB_MVA", el.HNL_MVA_Fake("v4HFB"), weight, 100, -1., 1);
-	  FillHist( "MVA_matchLF/BB_LF_MVA", el.HNL_MVA_Fake("v4LF"), weight, 100, -1., 1);
-	  for(auto ibj : BJetColl)           FillHist( "MVA_matchLF/BB_BJetDR_",el.DeltaR(ibj), weight, 100, 0., 2);
-	  for(auto icj : CJetColl)           FillHist( "MVA_matchLF/BB_CJetDR_",el.DeltaR(icj), weight, 100, 0., 2);
-	}
-	else{
-
-
-	  for(auto i : jets_tmp) {
-            if(i.DeltaR(el) < 0.4){
-              FillHist( "MVA_matchHF/BB_CLScore", i.GetTaggerResult(JetTagging::DeepJet_CvsL) , weight, 100, -1., 1);
-              FillHist( "MVA_matchHF/BB_CBScore", i.GetTaggerResult(JetTagging::DeepJet_CvsB) , weight, 100, -1., 1);
-              FillHist( "MVA_matchHF/BB_BScore", i.GetTaggerResult(JetTagging::DeepJet) , weight, 100, -1., 1);
-            }
-          }
-
-	  FillHist( "MVA_matchHF/BB_NBJet",BJetColl.size(), weight, 5, 0., 5);
-          FillHist( "MVA_matchHF/BB_NCJet",CJetColl.size(), weight, 5, 0., 5);
-          FillHist( "MVA_matchHF/BB_HFC_MVA", el.HNL_MVA_Fake("v4HFC"), weight, 100, -1., 1);
-          FillHist( "MVA_matchHF/BB_HFB_MVA", el.HNL_MVA_Fake("v4HFB"), weight, 100, -1., 1);
-          FillHist( "MVA_matchHF/BB_HF_MVA", el.HNL_MVA_Fake("v4HF"), weight, 100, -1., 1);
-          for(auto ibj : BJetColl)           FillHist( "MVA_matchHF/BB_BJetDR_",el.DeltaR(ibj), weight, 100, 0., 2);
-          for(auto icj : CJetColl)           FillHist( "MVA_matchHF/BB_CJetDR_",el.DeltaR(icj), weight, 100, 0., 2);
-	}
-
-	for(auto i : jets_tmp) {
-	  if(i.DeltaR(el) < 0.4){
-	    FillHist( "MVA_matchGen/"+el.CloseJet_Flavour()+"_BB_CLScore", i.GetTaggerResult(JetTagging::DeepJet_CvsL) , weight, 100, -1., 1);
-	    FillHist( "MVA_matchGen/"+el.CloseJet_Flavour()+"_BB_CBScore", i.GetTaggerResult(JetTagging::DeepJet_CvsB) , weight, 100, -1., 1);
-	    FillHist( "MVA_matchGen/"+el.CloseJet_Flavour()+"_BB_BScore", i.GetTaggerResult(JetTagging::DeepJet) , weight, 100, -1., 1);
-	  }
-	}
-
-
-	FillHist( "MVA_matchGen/"+el.CloseJet_Flavour()+"_BB_NBJet",BJetColl.size(), weight, 5, 0., 5);
-	FillHist( "MVA_matchGen/"+el.CloseJet_Flavour()+"_BB_NCJet",CJetColl.size(), weight, 5, 0., 5);
-	FillHist( "MVA_matchGen/"+el.CloseJet_Flavour()+"_BB_HFC_MVA", el.HNL_MVA_Fake("v4HFC"), weight, 100, -1., 1);
-	FillHist( "MVA_matchGen/"+el.CloseJet_Flavour()+"_BB_HFB_MVA", el.HNL_MVA_Fake("v4HFB"), weight, 100, -1., 1);
-	FillHist( "MVA_matchGen/"+el.CloseJet_Flavour()+"_BB_LF_MVA", el.HNL_MVA_Fake("v4LF"), weight, 100, -1., 1);
-	for(auto ibj : BJetColl)           FillHist( "MVA_matchGen/"+el.CloseJet_Flavour()+"_BB_BJetDR_",el.DeltaR(ibj), weight, 100, 0., 2);
-	for(auto icj : CJetColl)           FillHist( "MVA_matchGen/"+el.CloseJet_Flavour()+"_BB_CJetDR_",el.DeltaR(icj), weight, 100, 0., 2);
-
-	
-
-	if(el.HNL_MVA_Fake("v4LF") < el.HNL_MVA_Fake("v4HF")) {
-          FillHist( "MVA_match/Type_LF_HF_"+el.CloseJet_Flavour() , 1 , weight, 5, 0., 5);
-	  if(el.HNL_MVA_Fake("v4LF") > -0.7)           FillHist( "MVA_match/Type_LF_HF_"+el.CloseJet_Flavour() , 2 , weight, 5, 0., 5);
-	}
-	else  {
-	  FillHist( "MVA_match/Type_LF_HF_"+el.CloseJet_Flavour() , 3 , weight, 5, 0., 5);
-	  if(el.HNL_MVA_Fake("v4HF")  > -0.7)           FillHist( "MVA_match/Type_LF_HF_"+el.CloseJet_Flavour() , 4 , weight, 5, 0., 5);
-	  
-	}
-	
-	if(el.HNL_MVA_Fake("v4LF") < el.HNL_MVA_Fake("v4HFB"))  {
-	  FillHist( "MVA_match/Type_LF_HFB_"+el.CloseJet_Flavour() , 1 , weight, 5, 0., 5);
-	  if(el.HNL_MVA_Fake("v4LF") > -0.7)           FillHist( "MVA_match/Type_LF_HFB_"+el.CloseJet_Flavour() , 2 , weight, 5, 0., 5);
-	}
-	else {
-	  FillHist( "MVA_match/Type_LF_HFB_"+el.CloseJet_Flavour() , 3 , weight, 5, 0., 5);
-	  if(el.HNL_MVA_Fake("v4HFB")  > -0.7)             FillHist( "MVA_match/Type_LF_HFB_"+el.CloseJet_Flavour() , 4 , weight, 5, 0., 5);
-	}
-	
-	if(el.HNL_MVA_Fake("v4LF") < el.HNL_MVA_Fake("v4HFC")) {
-          FillHist( "MVA_match/Type_LF_HFC_"+el.CloseJet_Flavour() , 1 , weight, 5, 0., 5);
-	  if(el.HNL_MVA_Fake("v4LF") > -0.7)            FillHist( "MVA_match/Type_LF_HFC_"+el.CloseJet_Flavour() , 2 , weight, 5, 0., 5);
-	}
-	else {
-	  FillHist( "MVA_match/Type_LF_HFC_"+el.CloseJet_Flavour() , 3 , weight, 5, 0., 5);
-	  if(el.HNL_MVA_Fake("v4HFC")  > -0.7)           FillHist( "MVA_match/Type_LF_HFC_"+el.CloseJet_Flavour() , 4 , weight, 5, 0., 5);
-	}
-      }
-      else{
-
-	FillHist("Fakerates/LooseEl_EC_pt",    lep_pt, 1, nbin_pt, ptbins, "p_{T} (GeV)");
-	if(el.HNL_MVA_Fake("EDv4") > 0.2) FillHist("Fakerates/TightEl_EC_pt",     lep_pt, 1, nbin_pt, ptbins, "p_{T} (GeV)");
-	if(BJetColl.size() == 0) {
-	  FillHist("Fakerates/0b_LooseEl_EC_pt",    lep_pt, 1, nbin_pt, ptbins, "p_{T} (GeV)");
-	  if(el.HNL_MVA_Fake("EDv4") > 0.2) FillHist("Fakerates/0b_TightEl_EC_pt",     lep_pt, 1, nbin_pt, ptbins, "p_{T} (GeV)");
-	}
-	else{
-	  FillHist("Fakerates/b_LooseEl_EC_pt",    lep_pt, 1, nbin_pt, ptbins, "p_{T} (GeV)");
-	  if(el.HNL_MVA_Fake("EDv4") > 0.2) FillHist("Fakerates/b_TightEl_EC_pt",     lep_pt, 1, nbin_pt, ptbins, "p_{T} (GeV)");
-	  
-	}
-
-	if(el.HNL_MVA_Fake("v4LF") < el.HNL_MVA_Fake("v4HF")) {
-
-	  for(auto i : jets_tmp) {
-            if(i.DeltaR(el) < 0.4){
-              FillHist( "MVA_matchLF/EC_CLScore", i.GetTaggerResult(JetTagging::DeepJet_CvsL) , weight, 100, -1., 1);
-              FillHist( "MVA_matchLF/EC_CBScore", i.GetTaggerResult(JetTagging::DeepJet_CvsB) , weight, 100, -1., 1);
-              FillHist( "MVA_matchLF/EC_BScore", i.GetTaggerResult(JetTagging::DeepJet) , weight, 100, -1., 1);
-            }
-          }
-
-          FillHist( "MVA_matchLF/EC_NBJet",BJetColl.size(), weight, 5, 0., 5);
-          FillHist( "MVA_matchLF/EC_NCJet",CJetColl.size(), weight, 5, 0., 5);
-          FillHist( "MVA_matchLF/EC_HFC_MVA", el.HNL_MVA_Fake("EDv4HFC"), weight, 100, -1., 1);
-          FillHist( "MVA_matchLF/EC_HFB_MVA", el.HNL_MVA_Fake("EDv4HFB"), weight, 100, -1., 1);
-          FillHist( "MVA_matchLF/EC_LF_MVA", el.HNL_MVA_Fake("EDv4LF"), weight, 100, -1., 1);
-          for(auto ibj : BJetColl)           FillHist( "MVA_matchLF/EC_BJetDR_",el.DeltaR(ibj), weight, 100, 0., 2);
-          for(auto icj : CJetColl)           FillHist( "MVA_matchLF/EC_CJetDR_",el.DeltaR(icj), weight, 100, 0., 2);
-        }
-
-	else{
-
-          for(auto i : jets_tmp) {
-            if(i.DeltaR(el) < 0.4){
-              FillHist( "MVA_matchHF/EC_CLScore", i.GetTaggerResult(JetTagging::DeepJet_CvsL) , weight, 100, -1., 1);
-              FillHist( "MVA_matchHF/EC_CBScore", i.GetTaggerResult(JetTagging::DeepJet_CvsB) , weight, 100, -1., 1);
-              FillHist( "MVA_matchHF/EC_BScore", i.GetTaggerResult(JetTagging::DeepJet) , weight, 100, -1., 1);
-            }
-          }
-
-          FillHist( "MVA_matchHF/EC_NBJet",BJetColl.size(), weight, 5, 0., 5);
-          FillHist( "MVA_matchHF/EC_NCJet",CJetColl.size(), weight, 5, 0., 5);
-          FillHist( "MVA_matchHF/EC_HFC_MVA", el.HNL_MVA_Fake("EDv4HFC"), weight, 100, -1., 1);
-          FillHist( "MVA_matchHF/EC_HFB_MVA", el.HNL_MVA_Fake("EDv4HFB"), weight, 100, -1., 1);
-          FillHist( "MVA_matchHF/EC_HF_MVA", el.HNL_MVA_Fake("EDv4HF"), weight, 100, -1., 1);
-          for(auto ibj : BJetColl)           FillHist( "MVA_matchHF/EC_BJetDR_",el.DeltaR(ibj), weight, 100, 0., 2);
-          for(auto icj : CJetColl)           FillHist( "MVA_matchHF/EC_CJetDR_",el.DeltaR(icj), weight, 100, 0., 2);
-	}
-
-        for(auto i : jets_tmp) {
-          if(i.DeltaR(el) < 0.4){
-            FillHist( "MVA_matchGen/"+el.CloseJet_Flavour()+"_EC_CLScore", i.GetTaggerResult(JetTagging::DeepJet_CvsL) , weight, 100, -1., 1);
-            FillHist( "MVA_matchGen/"+el.CloseJet_Flavour()+"_EC_CBScore", i.GetTaggerResult(JetTagging::DeepJet_CvsB) , weight, 100, -1., 1);
-            FillHist( "MVA_matchGen/"+el.CloseJet_Flavour()+"_EC_BScore", i.GetTaggerResult(JetTagging::DeepJet) , weight, 100, -1., 1);
-          }
-        }
-
-
-	FillHist( "MVA_matchGen/"+el.CloseJet_Flavour()+"_EC_NBJet",BJetColl.size(), weight, 5, 0., 5);
-	FillHist( "MVA_matchGen/"+el.CloseJet_Flavour()+"_EC_NCJet",CJetColl.size(), weight, 5, 0., 5);
-        FillHist( "MVA_matchGen/"+el.CloseJet_Flavour()+"_EC_HFC_MVA", el.HNL_MVA_Fake("EDv4HFC"), weight, 100, -1., 1);
-        FillHist( "MVA_matchGen/"+el.CloseJet_Flavour()+"_EC_HFB_MVA", el.HNL_MVA_Fake("EDv4HFB"), weight, 100, -1., 1);
-        FillHist( "MVA_matchGen/"+el.CloseJet_Flavour()+"_EC_LF_MVA", el.HNL_MVA_Fake("EDv4LF"), weight, 100, -1., 1);
-        for(auto ibj : BJetColl)           FillHist( "MVA_matchGen/"+el.CloseJet_Flavour()+"_EC_BJetDR_",el.DeltaR(ibj), weight, 100, 0., 2);
-        for(auto icj : CJetColl)           FillHist( "MVA_matchGen/"+el.CloseJet_Flavour()+"_EC_CJetDR_",el.DeltaR(icj), weight, 100, 0., 2);
-
-
-
-	
-	if(el.HNL_MVA_Fake("v4LF") < el.HNL_MVA_Fake("v4HFB") ){
-	  FillHist("Fakerates/LFTagged_LooseEl_EC_pt",    lep_pt, 1, nbin_pt, ptbins, "p_{T} (GeV)");
-	  if(el.HNL_MVA_Fake("EDv4") > 0.2) FillHist("Fakerates/LFTagged_TightEl_EC_pt",     lep_pt, 1, nbin_pt, ptbins, "p_{T} (GeV)");
-	}
-	else  if(el.HNL_MVA_Fake("v4HFB") < el.HNL_MVA_Fake("v4HFC") ){
-	  FillHist("Fakerates/HFBTagged_LooseEl_EC_pt",    lep_pt, 1, nbin_pt, ptbins, "p_{T} (GeV)");
-	  if(el.HNL_MVA_Fake("EDv4") > 0.2) FillHist("Fakerates/HFBTagged_TightEl_EC_pt",     lep_pt, 1, nbin_pt, ptbins, "p_{T} (GeV)");
-	}
-	else  if(el.HNL_MVA_Fake("v4HFC") < el.HNL_MVA_Fake("v4HFB") && el.HNL_MVA_Fake("v4HFC") < el.HNL_MVA_Fake("v4LF")){
-	  FillHist("Fakerates/HFCTagged_LooseEl_EC_pt",    lep_pt, 1, nbin_pt, ptbins, "p_{T} (GeV)");
-	  if(el.HNL_MVA_Fake("EDv4") > 0.2) FillHist("Fakerates/HFCTagged_TightEl_EC_pt",     lep_pt, 1, nbin_pt, ptbins, "p_{T} (GeV)");
-	}	
-	
-	FillHist("Fakerates/"+el.CloseJet_Flavour()+"Gen_LooseEl_EC_pt",    lep_pt, 1, nbin_pt, ptbins, "p_{T} (GeV)");
-	if(el.HNL_MVA_Fake("EDv4") > 0.2) FillHist("Fakerates/"+el.CloseJet_Flavour()+"Gen_TightEl_EC_pt",     lep_pt, 1, nbin_pt, ptbins, "p_{T} (GeV)");
-	
-	
-	if(el.HNL_MVA_Fake("EDv4LF") < el.HNL_MVA_Fake("EDv4HFB") && el.HNL_MVA_Fake("EDv4LF") < el.HNL_MVA_Fake("EDv4HFC")) {
-          if(el.HNL_MVA_Fake("EDv4HFB") > el.HNL_MVA_Fake("EDv4HFC")) FillHist( "MVA_match/EDMatched_Type_"+el.CloseJet_Flavour() , 0 , weight, 10, 0., 10);
-          else FillHist( "MVA_match/Matched_Type_"+el.CloseJet_Flavour() , 1 , weight, 10, 0., 10);
-	}
-	else if(el.HNL_MVA_Fake("EDv4HFB") < el.HNL_MVA_Fake("EDv4LF") && el.HNL_MVA_Fake("EDv4HFB") < el.HNL_MVA_Fake("EDv4HFC")) {
-          if(el.HNL_MVA_Fake("EDv4LF") < el.HNL_MVA_Fake("EDv4HFC")) FillHist( "MVA_match/EDMatched_Type_"+el.CloseJet_Flavour() , 2 , weight, 10, 0., 10);
-          else FillHist( "MVA_match/Matched_Type_"+el.CloseJet_Flavour() , 3 , weight, 10, 0., 10);
-	}
-	else {
-	  if(el.HNL_MVA_Fake("EDv4LF") < el.HNL_MVA_Fake("EDv4HFB")) FillHist( "MVA_match/EDMatched_Type_"+el.CloseJet_Flavour() , 4 , weight, 10, 0., 10);
-          else FillHist( "MVA_match/Matched_Type_"+el.CloseJet_Flavour() , 5 , weight, 10, 0., 10);
-	  
-	}
-	if(el.HNL_MVA_Fake("EDv4LF") < el.HNL_MVA_Fake("EDv4HF"))           FillHist( "MVA_match/EDType_LF_HF_"+el.CloseJet_Flavour() , 2 , weight, 5, 0., 5);
-	else FillHist( "MVA_match/EDType_LF_HF_"+el.CloseJet_Flavour() , 1 , weight, 5, 0., 5);
-
-
-	if(el.HNL_MVA_Fake("EDv4LF") < el.HNL_MVA_Fake("EDv4HFB"))           FillHist( "MVA_match/EDType_LF_HFB_"+el.CloseJet_Flavour() , 2 , weight, 5, 0., 5);
-	else FillHist( "MVA_match/EDType_LF_HFB_"+el.CloseJet_Flavour() , 1 , weight, 5, 0., 5);
-
-	if(el.HNL_MVA_Fake("EDv4LF") < el.HNL_MVA_Fake("EDv4HFC"))           FillHist( "MVA_match/EDType_LF_HFC_"+el.CloseJet_Flavour() , 2 , weight, 5, 0., 5);
-	else FillHist( "MVA_match/EDType_LF_HFC_"+el.CloseJet_Flavour() , 1 , weight, 5, 0., 5);
-
-      }
-
-
-
-      TString lep_fake_tag=MatchGenDef(All_Gens, el);
-
-      if (std::find(lables.begin(), lables.end(), lep_fake_tag) == lables.end()){
-	PrintMatchedGen(All_Gens, el);
-	
-      }
+      FillMuonPlots((AK4_JetColl.size()==0), "0j", param, "SS_All_HNL_MuonFakeStudy_LooseMVA",  imu, param.Weight("Full") );
+      FillMuonPlots((AK4_JetColl.size()==1), "1j", param, "SS_All_HNL_MuonFakeStudy_LooseMVA",  imu, weight );
+      FillMuonPlots((AK4_JetColl.size()>2),  "2j", param, "SS_All_HNL_MuonFakeStudy_LooseMVA",  imu, weight );
       
-      else{
-	
-	if(el.CloseJet_FlavourInt()==0) FillEventCutflowAll("QCDReg_Electron", "LF_Fake_type", weight, lables,lep_fake_tag);
-	if(el.CloseJet_FlavourInt()==4) FillEventCutflowAll("QCDReg_Electron", "HFC_Fake_type", weight, lables,lep_fake_tag);
-	if(el.CloseJet_FlavourInt()==5) FillEventCutflowAll("QCDReg_Electron", "HFB_Fake_type", weight, lables,lep_fake_tag);
-	if(el.CloseJet_FlavourInt()==4) FillEventCutflowAll("QCDReg_Electron", "HF_Fake_type", weight, lables,lep_fake_tag);
-	if(el.CloseJet_FlavourInt()==5) FillEventCutflowAll("QCDReg_Electron", "HF_Fake_type", weight, lables,lep_fake_tag);
-	
-	if(el.IsBB()){
-	  FillHist( "MVA_Loose/Lepton_MVA"   , el.HNL_MVA_Fake("v4") , weight, 100, -1., 1, "BDT score");
-	  FillHist( "MVA_Loose/Lepton_MVA_"+MatchGenDef(All_Gens,el)   , el.HNL_MVA_Fake("v4") , weight, 100, -1., 1, "BDT score");
-	  FillHist( "MVA_Loose/Lepton_MVA_"+el.CloseJet_Flavour()+"_"+MatchGenDef(All_Gens,el)   , el.HNL_MVA_Fake("EDv4") , weight, 100, -1., 1, "BDT score");
-	}
-	else{
-	  FillHist( "MVA_Loose/Lepton_EDMVA"   , el.HNL_MVA_Fake("EDv4") , weight, 100, -1., 1, "BDT score");
-	  FillHist( "MVA_Loose/Lepton_EDMVA_"+MatchGenDef(All_Gens,el)   , el.HNL_MVA_Fake("EDv4") , weight, 100, -1., 1, "BDT score");
-	  FillHist( "MVA_Loose/Lepton_EDMVA_"+el.CloseJet_Flavour()+"_"+MatchGenDef(All_Gens,el)   , el.HNL_MVA_Fake("EDv4") , weight, 100, -1., 1, "BDT score");
-	}
+      if(loose_muonsMVA[0].PassID(param.Muon_Tight_ID) && loose_muonsMVA[1].PassID(param.Muon_Tight_ID)){
+	FillMuonPlots((AK4_JetColl.size()==0), "0j", param, "SS_TT_HNL_MuonFakeStudy_LooseMVA",  imu, weight );
+	FillMuonPlots((AK4_JetColl.size()==1), "1j", param, "SS_TT_HNL_MuonFakeStudy_LooseMVA",  imu, weight );
+	FillMuonPlots((AK4_JetColl.size()>2),  "2j", param, "SS_TT_HNL_MuonFakeStudy_LooseMVA",  imu, weight );
+      }
+      else if(!imu.PassID(param.Muon_Tight_ID)){
+	FillMuonPlots((AK4_JetColl.size()==0), "0j", param, "SS_L_HNL_MuonFakeStudy_LooseMVA",  imu, weight );
+        FillMuonPlots((AK4_JetColl.size()==1), "1j", param, "SS_L_HNL_MuonFakeStudy_LooseMVA",  imu, weight );
+        FillMuonPlots((AK4_JetColl.size()>2),  "2j", param, "SS_L_HNL_MuonFakeStudy_LooseMVA",  imu, weight );
       }
 
+      if(loose_muonsMVA[0].PassID(param.Muon_Tight_ID) && !loose_muonsMVA[1].PassID(param.Muon_Tight_ID)){
+        FillMuonPlots((AK4_JetColl.size()==0), "0j", param, "SS_TL_HNL_MuonFakeStudy_LooseMVA",  imu, weight );
+	FillMuonPlots((AK4_JetColl.size()==1), "1j", param, "SS_TL_HNL_MuonFakeStudy_LooseMVA",  imu, weight );
+	FillMuonPlots((AK4_JetColl.size()>2),  "2j", param, "SS_TL_HNL_MuonFakeStudy_LooseMVA",  imu, weight );
+      }
+
+      if(!loose_muonsMVA[0].PassID(param.Muon_Tight_ID) && loose_muonsMVA[1].PassID(param.Muon_Tight_ID)){
+        FillMuonPlots((AK4_JetColl.size()==0), "0j", param, "SS_LT_HNL_MuonFakeStudy_LooseMVA",  imu, weight );
+	FillMuonPlots((AK4_JetColl.size()==1), "1j", param, "SS_LT_HNL_MuonFakeStudy_LooseMVA",  imu, weight );
+	FillMuonPlots((AK4_JetColl.size()>2),  "2j", param, "SS_LT_HNL_MuonFakeStudy_LooseMVA",  imu, weight );
+      }
+
+      
     }
   }
+
+  
+  //  bool useevent40 = UseEvent(leps , jets, 40.,  METv, weight);
+  
+  return;
   
 }
-
-
-
+ 
 
 HNL_LeptonFakeStudy::HNL_LeptonFakeStudy(){
   

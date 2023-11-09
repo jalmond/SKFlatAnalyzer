@@ -24,10 +24,10 @@ void HNL_RegionDefinitions17028::RunEXO17028SignalRegions( std::vector<Electron>
     float weight_channel = weight_ll;
 
 
-    if(!IsDATA && dilep_channel != MuMu)  weight_channel*= GetElectronSFEventWeight(electrons, param_channel);                                             
-    if(!IsDATA && dilep_channel != EE)    weight_channel*= GetMuonSFEventWeight(muons, param_channel);                                                     
+    if(!IsDATA && dilep_channel != MuMu)  weight_channel*= GetElectronIDWeight(electrons, param_channel);                                             
+    if(!IsDATA && dilep_channel != EE)    weight_channel*= GetMuonIDWeight(muons, param_channel);                                                     
 
-    FillEventCutflow(HNL_LeptonCore::ChannelDepInc, weight_channel, GetChannelString(dilep_channel) +"_NoCut", "ChannelCutFlow/"+param.DefName);
+    FillCutflow(HNL_LeptonCore::ChannelDepInc, weight_channel, GetChannelString(dilep_channel) +"_NoCut",param);
     FillHist( GetChannelString(dilep_channel)+"_NoCut"  , 1.,  weight_channel, 2, 0.,2. , "N cut");
 
     std::vector<Lepton *> leps       = MakeLeptonPointerVector(muons,electrons,param_channel);
@@ -48,7 +48,7 @@ void HNL_RegionDefinitions17028::RunEXO17028SignalRegions( std::vector<Electron>
     }
 
     if(RunFake){
-      weight_channel = GetFakeWeight(leps, param_channel, false);
+      weight_channel = GetFakeWeight(leps, param_channel);
       FillWeightHist(param.Name+"/FakeWeight",weight_channel);
     }
 
@@ -105,11 +105,11 @@ bool  HNL_RegionDefinitions17028::PassPreselection(HNL_LeptonCore::Channel chann
   if (leps_veto.size() != 2) return false;
 
 
-  FillEventCutflow(HNL_LeptonCore::ChannelDepDilep, w, GetChannelString(channel) +"_Dilepton", "ChannelCutFlow/"+param.DefName);
+  FillCutflow(HNL_LeptonCore::ChannelDepDilep, w, GetChannelString(channel) +"_Dilepton",param);
 
   if (!PassTriggerSelection(channel, ev, leps,"Dilep")) return false;
 
-  FillEventCutflow(HNL_LeptonCore::ChannelDepTrigger, w, GetChannelString(channel) +"_Trigger", "ChannelCutFlow/"+param.DefName);
+  FillCutflow(HNL_LeptonCore::ChannelDepTrigger, w, GetChannelString(channel) +"_Trigger",param);
 
 
   // Make sure correct leptons are used
@@ -129,7 +129,7 @@ bool  HNL_RegionDefinitions17028::PassPreselection(HNL_LeptonCore::Channel chann
   Particle ll =  (*leps[0]) + (*leps[1]);
   
   // VETO Z PEAK IN EE CHANNEL
-  if (channel==EE  && (fabs(ll.M()-90.) < 15)) return false;
+  if (channel==EE  && (fabs(ll.M()-M_Z) < 15)) return false;
 
   if(ll.M() < 10) return false; // TO_CHECK: IS 20 BEST OPTION
 
@@ -138,7 +138,7 @@ bool  HNL_RegionDefinitions17028::PassPreselection(HNL_LeptonCore::Channel chann
   int njets     = JetColl.size() + AK8_JetColl.size();
   
   if(njets == 0 )  return false;
-  FillEventCutflow(HNL_LeptonCore::ChannelDepPresel, w, GetChannelString(channel) +"_Presel", "ChannelCutFlow/"+param.DefName);
+  FillCutflow(HNL_LeptonCore::ChannelDepPresel, w, GetChannelString(channel) +"_Presel",param);
 
   
   return true;
@@ -175,12 +175,12 @@ bool  HNL_RegionDefinitions17028::RunSignalRegionAK8(HNL_LeptonCore::Channel cha
   FillWeightHist(param.Name+"/fatjet_ak8_type1_sf_"+param.Name,FatJetTau21_SF);
   if(!IsData)w*=  FatJetTau21_SF;
   
-  if (GetMass(signal_region1,JetColl, AK8_JetColl,  leps) < UpperMassSR1WmassCut) {
+  if (GetRecoObjMass(signal_region1,JetColl, AK8_JetColl,  leps) < UpperMassSR1WmassCut) {
     
     
     
     if(PassHMMet&&PassBJetMVeto) {
-      //FillEventCutflow(HNL_LeptonCore::ChannelDepSR2, w, GetChannelString(channel) +"_SR2", "ChannelCutFlow/"+param.DefName);
+      //FillCutflow(HNL_LeptonCore::ChannelDepSR2, w, GetChannelString(channel) +"_SR2",param);
       Fill_All_SignalRegion2(channel, signal_region1, IsData, "SS",  param.Name,  JetColl, AK8_JetColl, leps, METv , nPV , w   );
 
       return true;
@@ -206,7 +206,7 @@ bool  HNL_RegionDefinitions17028::RunSignalRegionAK4(HNL_LeptonCore::Channel cha
 
 
   Particle ll =  (*leps[0]) + (*leps[1]);
-  if (channel==EE  && (fabs(ll.M()-90.) < 15)) return false;
+  if (channel==EE  && (fabs(ll.M()-M_Z) < 15)) return false;
 
   double ST = GetST(leps, JetColl, AK8_JetColl, METv);
   double met2_st = pow(METv.Pt(),2.)/ ST;
@@ -221,7 +221,7 @@ bool  HNL_RegionDefinitions17028::RunSignalRegionAK4(HNL_LeptonCore::Channel cha
 
   if(JetColl.size() < 2) return false;
 
-  if(!(GetMass("HNL_SR3", JetColl, AK8_JetColl,leps) < UpperMassSR3WmassCut && GetMass("HNL_SR3", JetColl, AK8_JetColl,leps) > LowerMassSR3WmassCut)) {
+  if(!(GetRecoObjMass("HNL_SR3", JetColl, AK8_JetColl,leps) < UpperMassSR3WmassCut && GetRecoObjMass("HNL_SR3", JetColl, AK8_JetColl,leps) > LowerMassSR3WmassCut)) {
     return false;
   }
 							   
@@ -239,7 +239,7 @@ bool  HNL_RegionDefinitions17028::RunSignalRegionAK4(HNL_LeptonCore::Channel cha
 
 
   
-  FillEventCutflow(HNL_LeptonCore::ChannelDepSR1, w, GetChannelString(channel) +"_SR1", "ChannelCutFlow/"+param.DefName);
+  FillCutflow(HNL_LeptonCore::ChannelDepSR1, w, GetChannelString(channel) +"_SR1",param);
 
   TString signal_region = "HNL_SR1_17028";
 
@@ -443,7 +443,7 @@ void HNL_RegionDefinitions17028::Fill_SigRegionPlots2(HNL_LeptonCore::Channel ch
   if(met2/ST > var7) return;
 
   FillHist( label_anid+"/"+label_sr+ "/"+ label_mass +  "_nevent"  , 1.,  w, 2, 0.,2. , "N cut");
-  FillEventCutflowSR(label_anid,cutflow_SR_index,w, label_sr+"_"+label_mass);
+  //  FillCutflowSR(label_anid,cutflow_SR_index,w, label_sr+"_"+label_mass);
 
   return;
 
@@ -501,7 +501,7 @@ void   HNL_RegionDefinitions17028::Fill_SigRegionPlots1(HNL_LeptonCore::Channel 
   if(N1cand.M()  > var10 && N2cand.M()  > var10) return;
   if(met2/ST > var11) return;
   
-  FillEventCutflowSR(label_anid,cutflow_SR_index,w, label_sr+"_"+label_mass);
+  //  FillCutflowSR(label_anid,cutflow_SR_index,w, label_sr+"_"+label_mass);
   
   FillHist( label_anid+"/"+label_sr+ "/"+label_mass +  "_nevent" ,  1.,  w, 2, 0.,2. );
   return;

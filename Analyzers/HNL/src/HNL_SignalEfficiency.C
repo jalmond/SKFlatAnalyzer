@@ -11,7 +11,7 @@ void HNL_SignalEfficiency::executeEvent(){
 
   
   //==== Gen for genmatching
-  AnalyzerParameter param  = InitialiseHNLParameter("SignalStudy","UL");
+  AnalyzerParameter param  = InitialiseHNLParameter("SignalStudy");
   Event ev = GetEvent();
   double weight =  (gen_weight > 0) ? 1. : -1. ; //SetupWeight(ev,param);
   
@@ -24,8 +24,8 @@ void HNL_SignalEfficiency::executeEvent(){
 
     vector<TString> labels ={"Inclusive","OS_ElEl", "SS_El-El-", "SS_El+El+","OS_MuMu", "SS_Mu-Mu-" , "SS_Mu+Mu+","OS_ElMu","SS_El-Mu-" ,"SS_El+Mu+", "OS_MuEl","SS_Mu-El-","SS_Mu+El+"};
 
-    HNL_LeptonCore::FillEventCutflowAll("SignalProcess","SplitChannel",weight, labels, process);
-    HNL_LeptonCore::FillEventCutflowAll("SignalProcess","SplitChannel",weight, labels, "Inclusive");
+    HNL_LeptonCore::FillCutflow("SignalProcess","SplitChannel",weight, labels, process);
+    HNL_LeptonCore::FillCutflow("SignalProcess","SplitChannel",weight, labels, "Inclusive");
     
 
     if(_jentry% 10000==0){

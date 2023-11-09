@@ -2,11 +2,12 @@
 
 void SkimTree_CFEventSkim::initializeAnalyzer(){
 
+  AnalyzerCore::initializeAnalyzer();
+
   outfile->cd();
   cout << "[SkimTree_CFEventSkim::initializeAnalyzer()] gDirectory = " << gDirectory->GetName() << endl;
   newtree = fChain->CloneTree(0);
-
-
+  
 }
 
 void SkimTree_CFEventSkim::executeEvent(){

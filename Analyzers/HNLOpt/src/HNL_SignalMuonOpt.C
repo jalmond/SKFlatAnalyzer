@@ -21,7 +21,7 @@ void HNL_SignalMuonOpt::executeEvent(){
   OutCutFlow("CutFlow_All_Events", 1);
 
 
-  AnalyzerParameter param_signal = HNL_LeptonCore::InitialiseHNLParameter("HNLOpt","_UL");
+  AnalyzerParameter param_signal = HNL_LeptonCore::InitialiseHNLParameter("HNLOpt");
     
   //cout << "########################################################" << endl;
   
@@ -37,9 +37,9 @@ void HNL_SignalMuonOpt::executeEvent(){
   std::vector<FatJet> FatjetColl                  = GetHNLAK8Jets("HNL_PNL",param_signal);
 
   Event ev = GetEvent();
-  Particle METv = GetvMET("PuppiT1xyULCorr");
+  Particle METv = GetMiniAODvMET("PuppiT1xyULCorr");
 
-  std::vector<Tau> TauColl                        = GetTaus     (LepsVeto,param_signal.Tau_Veto_ID,20., 2.3);
+  std::vector<Tau> TauColl                        = SelectTaus    (LepsVeto,param_signal.Tau_Veto_ID,20., 2.3);
   
   std::vector<Jet> AllJetColl                     = GetHNLJets("NoCut_Eta3",param_signal);
   std::vector<Jet> JetCollLoose                   = GetHNLJets("Loose",param_signal);
@@ -447,8 +447,8 @@ void HNL_SignalMuonOpt::RunULAnalysis(AnalyzerParameter param, vector<Electron> 
     if(ilep.PassID(mu_ID)) MuonCollTInit.push_back(ilep);
   }
 
-  std::vector<Muon>       MuonCollT     = GetLepCollByRunType    ( MuonCollTInit,param);
-  std::vector<Electron>   ElectronCollT  =  GetLepCollByRunType   ( ElectronCollTInit,param);
+  std::vector<Muon>       MuonCollT     = GetLepCollByRunType    ( MuonCollTInit,param,weight);
+  std::vector<Electron>   ElectronCollT  =  GetLepCollByRunType   ( ElectronCollTInit,param,weight);
   
   Particle METv = GetvMET("PuppiT1xyULCorr",param); // returns MET with systematic correction                                                                                                                      
 
@@ -458,8 +458,8 @@ void HNL_SignalMuonOpt::RunULAnalysis(AnalyzerParameter param, vector<Electron> 
   if(param.Name== "HNLOpt_ULHNTightV2") OutCutFlow(param.Name+"_pre", weight);
 
   if(param.Name.Contains("HNL_ULID_2018")){
-    for(auto iel: ElectronCollT) FillElectronKinematicPlots(el_ID + "_"+iel.GetFlavour(),"Tight"+iel.GetFlavour(), iel, weight);
-    for(auto imu: MuonCollT)     FillMuonKinematicPlots(mu_ID + "_"+imu.GetFlavour(),"Tight"+imu.GetFlavour(), imu, weight);
+    for(auto iel: ElectronCollT) FillElectronKinematicPlots(param,el_ID + "_Tight"+iel.GetFlavour(), iel, weight);
+    for(auto imu: MuonCollT)     FillMuonKinematicPlots(param,mu_ID + "_Tight"+imu.GetFlavour(), imu, weight);
   }
 
   RunAllSignalRegions(Inclusive, ElectronCollT,ElectronCollV,MuonCollT,MuonCollV, TauColl, AllJetColl,JetCollLoose, JetColl, VBF_JetColl,AK8_JetColl , B_JetColl,B_JetCollSR1, ev,METv, param,weight);

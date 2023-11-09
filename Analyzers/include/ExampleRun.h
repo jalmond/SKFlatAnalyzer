@@ -1,9 +1,9 @@
 #ifndef ExampleRun_h
 #define ExampleRun_h
 
-#include "AnalyzerCore.h"
+#include "HNL_LeptonCore.h"
 
-class ExampleRun : public AnalyzerCore {
+class ExampleRun : public HNL_LeptonCore {
 
 public:
 

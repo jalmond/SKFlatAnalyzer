@@ -3,7 +3,6 @@
 
 #include "HNL_LeptonCore.h"
 
-
 class SkimTree_HNFakeBDT : public HNL_LeptonCore {
 
 public:

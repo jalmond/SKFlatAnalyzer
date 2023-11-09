@@ -47,6 +47,12 @@ public:
       if(fabs(pid) == 6) return "t";
 
     }
+ 
+    if(pid == -11) return "e+";
+    if(pid == 11)  return "e-";
+
+    if(pid == -13) return "mu+";
+    if(pid == 13)  return "mu-";
 
     if(fabs(pid) == 11) return "electron";
     if(fabs(pid) == 12) return "nue";

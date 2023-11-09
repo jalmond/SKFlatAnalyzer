@@ -8,9 +8,9 @@ bool  HNL_RegionDefinitions21003::RunSignalRegionWW(HNL_LeptonCore::Channel chan
   if(qq==Plus && leps[0]->Charge() < 0) return false;
   if(qq==Minus && leps[0]->Charge() > 0) return false;
 
-  FillEventCutflow(HNL_LeptonCore::SR2,w, "SR2_lep_charge",param.Name,param.WriteOutVerbose);
+  FillCutflow(HNL_LeptonCore::SR2,w, "SR2_lep_charge",param);
 
-  FillEventCutflow(HNL_LeptonCore::SR2, w, "SR2_lep_pt",param.Name,param.WriteOutVerbose);
+  FillCutflow(HNL_LeptonCore::SR2, w, "SR2_lep_pt",param);
 
   //if(!PassVBF(JetColl,leps,750., true)) return false;
   bool use_leadjets=true;
@@ -18,11 +18,11 @@ bool  HNL_RegionDefinitions21003::RunSignalRegionWW(HNL_LeptonCore::Channel chan
     
     double ll_dphi = fabs(TVector2::Phi_mpi_pi( ( (*leps[0]).Phi() - (*leps[1]).Phi() )) );
     if(ll_dphi < 2.) return false;
-    FillEventCutflow(HNL_LeptonCore::SR2, w, "SR2_DPhi",param.Name,param.WriteOutVerbose);
+    FillCutflow(HNL_LeptonCore::SR2, w, "SR2_DPhi",param);
 
     if( ( (*leps[0]) + (*leps[1]) ).M() < 20.) return false;
     if(JetColl.size() < 2) return false;
-    FillEventCutflow(HNL_LeptonCore::SR2, w, "SR2_DiJet",param.Name,param.WriteOutVerbose);
+    FillCutflow(HNL_LeptonCore::SR2, w, "SR2_DiJet",param);
 
     double maxDiJetDeta=0.;
     int ijet1(-1), ijet2(-1);
@@ -40,10 +40,10 @@ bool  HNL_RegionDefinitions21003::RunSignalRegionWW(HNL_LeptonCore::Channel chan
     if(use_leadjets){ijet1=0;ijet2=1;}
 
     if(maxDiJetDeta < 2.5) return false;
-    FillEventCutflow(HNL_LeptonCore::SR2, w, "SR2_DiJetEta",param.Name,param.WriteOutVerbose);
+    FillCutflow(HNL_LeptonCore::SR2, w, "SR2_DiJetEta",param);
 
     Particle JJ = JetColl[ijet1] + JetColl[ijet2];
-    FillEventCutflow(HNL_LeptonCore::SR2, w, "SR2_DiJetMass",param.Name,param.WriteOutVerbose);
+    FillCutflow(HNL_LeptonCore::SR2, w, "SR2_DiJetMass",param);
     if(JJ.M() < 750) return false;
 
     double Av_JetEta= 0.5*(JetColl[ijet1].Eta()+ JetColl[ijet2].Eta());
@@ -54,7 +54,7 @@ bool  HNL_RegionDefinitions21003::RunSignalRegionWW(HNL_LeptonCore::Channel chan
   }
 
   
-  FillEventCutflow(HNL_LeptonCore::SR2, w, "SR2_VBF",param.Name,param.WriteOutVerbose);
+  FillCutflow(HNL_LeptonCore::SR2, w, "SR2_VBF",param);
 
   bool PassBJetMVeto = (B_JetColl.size()==0);
 
@@ -64,18 +64,18 @@ bool  HNL_RegionDefinitions21003::RunSignalRegionWW(HNL_LeptonCore::Channel chan
   }
   
   
-  FillEventCutflow(HNL_LeptonCore::SR2, w, "SR2_ht_lt1",param.Name,param.WriteOutVerbose);
+  FillCutflow(HNL_LeptonCore::SR2, w, "SR2_ht_lt1",param);
   
   if(PassBJetMVeto){
     
-    FillEventCutflow(HNL_LeptonCore::SR2, w, "SR2_bveto",param.Name,param.WriteOutVerbose);
+    FillCutflow(HNL_LeptonCore::SR2, w, "SR2_bveto",param);
     
     double HTLT[5] = { 0.,1., 2, 5., 10};
     double ht_lt = (HT/leps[0]->Pt() > 10.) ? 9. : HT/leps[0]->Pt();
     
     FillHist( "LimitSR2/"+param.Name+"/HT_LT1_Central",  ht_lt,  w, 4, HTLT, "Reco HT/LT1");
     
-    FillEventCutflow(HNL_LeptonCore::ChannelDepSR2, w, GetChannelString(channel) +"_SR2", "ChannelCutFlow/"+param.DefName,param.WriteOutVerbose);
+    FillCutflow(HNL_LeptonCore::ChannelDepSR2, w, GetChannelString(channel) +"_SR2",param);
     
     return true;
     

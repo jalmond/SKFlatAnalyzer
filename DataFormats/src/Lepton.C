@@ -4,6 +4,27 @@ ClassImp(Lepton)
 
 Lepton::Lepton() : Particle() {
 
+  
+  mu_mva_cut_fake_2016 = 0.64;
+  mu_mva_cut_fake_2017 = 0.72;
+  mu_mva_cut_fake_2018 = 0.72;
+
+  el_mva_cut_fake_2016_B = 0.25;
+  el_mva_cut_fake_2017_B = 0.4;
+  el_mva_cut_fake_2018_B = 0.4;
+  el_mva_cut_fake_2016_EC = 0.4;
+  el_mva_cut_fake_2017_EC = 0.45;
+  el_mva_cut_fake_2018_EC = 0.5;
+
+  el_mva_cut_cf_2016_B = 0.6;
+  el_mva_cut_cf_2017_B = 0.6;
+  el_mva_cut_cf_2018_B = 0.6;
+  el_mva_cut_cf_2016_EC = 0.6;
+  el_mva_cut_cf_2017_EC = 0.6;
+  el_mva_cut_cf_2018_EC = 0.6;
+
+  TopMVA_cut = 0.64;
+  
   j_dXY = -999.;
   j_dXYerr = -999.;
   j_dZ = -999.;
@@ -37,6 +58,7 @@ Lepton::Lepton() : Particle() {
   j_LeptonIsCF = false;
   j_passID = false;
   j_IDSet= false;
+  j_TIDName="";
 
   j_FakeFlavour = ""; //JH
 
@@ -350,10 +372,11 @@ void Lepton::SetID(){
   j_IDSet = true;
 }
 
-void Lepton::SetPassID(bool p){
+void Lepton::SetPassID(bool p, TString IDName){
 
   j_IDSet= true;
   j_passID = p;
+  j_TIDName = IDName;
 }
 
 

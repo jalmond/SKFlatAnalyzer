@@ -1,10 +1,10 @@
 #ifndef MeasureJetTaggingEfficiency_h
 #define MeasureJetTaggingEfficiency_h
 
-#include "AnalyzerCore.h"
+#include "HNL_LeptonCore.h"
 
 
-class MeasureJetTaggingEfficiency : public AnalyzerCore {
+class MeasureJetTaggingEfficiency : public HNL_LeptonCore {
 
 public:
 

@@ -1,3 +1,4 @@
+
 #include "Electron.h"
 #include <iostream>
 #include <sstream>
@@ -722,23 +723,6 @@ int  Electron::PassIDStudy(TString ID) const{
 
     return 1;
   }
-
-
-
-  if(ID == "HNL_ULID_Conv_2016" ){
-    
-    if(!Pass_MVA_BBEC("Conv_EDv5", GetPtSlopeCut(20,80,-0.8,0.2) , GetPtSlopeCut(20,80,-0.8,0.2) ,   "conv_v5")) return 0;
-    return 1;
-
-
-  }
-  if(ID == "HNL_ULID_Conv_2017" || ID == "HNL_ULID_Conv_2018" || ID == "HNL_ULID_Conv_Run2"){
-    
-    if(!Pass_MVA_BBEC("Conv_EDv5", GetPtSlopeCut(20,80,-0.8,0.3) , GetPtSlopeCut(20,80,-0.8,0.3) ,   "conv_v5")) return 0;
-    
-    return 1;
-  }
-
 
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1739,26 +1723,6 @@ int  Electron::PassIDTight(TString ID) const{
   if(ID=="HNL_ULID_Baseline") return PassMVABaseLine() ? 1 : 0 ;
 
 
-  //////////////////////////////////////////////////////////////////////////////////// 
-  ////////// HNLH Legacy ID (HNL_LID)  v4 of MVA (Preceded by v5)
-  //////////////////////////////////////////////////////////////////////////////////// 
-  if(ID == "HNL_LID_Run2"){
-    
-    if(!PassMVABaseLine()) return 0;
-    if( IsBB()){
-      if(!Pass_MVA(HNL_MVA_CF("v4"),   0.7,  "j_lep_mva_hnl_cf_v5"))   return 0;
-      if(!Pass_MVA(HNL_MVA_Conv("v4"), -0.7,"j_lep_mva_hnl_conv_v5")) return 0;
-      if(!Pass_MVA(HNL_MVA_Fake("v4"), 0.2,"j_lep_mva_hnl_fake_v5")) return 0;
-    }
-    else{
-      if(!Pass_MVA(HNL_MVA_Conv("EDv4"), -0.7, "j_lep_mva_hnl_conv_ed_v5")) return 0;
-      if(!Pass_MVA(HNL_MVA_CF("EDv4"),   0.65, "j_lep_mva_hnl_cf_ed_v5"))   return 0;
-      if(!Pass_MVA(HNL_MVA_Fake("EDv4"), 0.2,  "j_lep_mva_hnl_fake_ed_v5")) return 0;
-    }
-
-    return 1;
-  }
-
 
 
 
@@ -1767,117 +1731,112 @@ int  Electron::PassIDTight(TString ID) const{
   ////// HNL UltraLegacy ID (HNL_ULID)
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
-
-
-  ////////////////////////////////////////////////////////////////////////////////////   
-  //#########   RUN2 Opt
-  ////////////////////////////////////////////////////////////////////////////////////
-  
-  //// General ID that is checked merging all Run2
-  if(ID == "HNL_ULID_Run2L" ){
-    if(!PassMVABaseLine()) return 0;
-    if(!Pass_MVA_BBEC("CF_EDv5",   0.5 ,0.5 ,   "CF_v5")) return 0;
-    if(!Pass_MVA_BBEC("Conv_EDv5", GetPtSlopeCut(20,80, -0.7,0.), GetPtSlopeCut(20,80, -0.7,0.) , "Run2_Conv_v5")) return 0;
-    if(!Pass_MVA_BBEC("Fake_EDv5", 0.25 ,0.35 ,   "Fake_v5")) return 0;
-    return 1;
-  }
-
-  if(ID == "HNL_ULID_FO_Run2L" ){
-    if(!PassMVABaseLine()) return 0;
-    if(!Pass_MVA_BBEC("CF_EDv5",   0.5 ,0.5 ,   "CF_v5")) return 0;
-    if(!Pass_MVA_BBEC("Conv_EDv5", GetPtSlopeCut(20,80, -0.7,0.), GetPtSlopeCut(20,80, -0.7,0.) , "Run2_Conv_v5")) return 0;
-    return 1;
-  }
-  if(ID == "HNL_ULID_Run2T" ){
-    if(!PassMVABaseLine()) return 0;
-    if(!Pass_MVA_BBEC("CF_EDv5",   0.75 ,0.6 ,   "CF_v5")) return 0;
-    if(!Pass_MVA_BBEC("Conv_EDv5", GetPtSlopeCut(20,50, -0.4,0.3), GetPtSlopeCut(20,50, -0.4,0.3) , "Run2_Conv_v5")) return 0;
-    if(!Pass_MVA_BBEC("Fake_EDv5", 0.5 ,0.5 ,   "Fake_v5")) return 0;
-    return 1;
-  }
-
-  if(ID == "HNL_ULID_FO_Run2T" ){
-    if(!PassMVABaseLine()) return 0;
-    if(!Pass_MVA_BBEC("CF_EDv5",   0.75 ,0.6 ,   "CF_v5")) return 0;
-    if(!Pass_MVA_BBEC("Conv_EDv5", GetPtSlopeCut(20,50, -0.4,0.3), GetPtSlopeCut(20,50, -0.4,0.3) , "Run2_Conv_v5")) return 0;
-    return 1;
-  }
-
+ 
   //////////////////////////////////////////////////////////////////////////////////// 
   ///  Era Scanned ID
   //////////////////////////////////////////////////////////////////////////////////// 
+  TString Year = "";
+  if(ID.Contains("2016")) Year = "2016";
+  else if(ID.Contains("2017")) Year = "2017";
+  else if(ID.Contains("2018")) Year = "2018";
 
-  if(ID == "HNL_ULID_FO_2016" ){
-    if(!PassMVABaseLine()) return 0;
-    if(!Pass_MVA_BBEC("Conv_EDv5", GetPtSlopeCut(20,60, -0.7,0.) , GetPtSlopeCut(20,60,-0.7,0.) ,   "Conv_v5")) return 0;
-    if(!Pass_MVA_BBEC("CF_EDv5",   0.6,  0.6,   "CF_v5"))   return 0;
-    return 1;
+  if(ID == "HNL_ULID_"     +Year)   return (PassID("HNL_ULID_FO_"+Year)     && PassID("HNL_ULID_Fake_"+Year));
+  if(ID == "HNL_ULIDv2_"   +Year)   return (PassID("HNL_ULIDv2_FO_"+Year)   && PassID("HNL_ULIDv2_Fake_"+Year));
+
+  // Loose Fake IDs
+  if(ID == "HNL_ULID_FO_"  +Year)   return (PassID("HNL_ULID_Conv_"+Year)   && PassID("HNL_ULID_CF_"+Year));
+  if(ID == "HNL_ULIDv2_FO_"+Year)   return (PassID("HNL_ULIDv2_Conv_"+Year) && PassID("HNL_ULIDv2_CF_"+Year));
+
+
+  if(ID == "HNL_ULID_FOv2_"+Year) {
+    if(!PassID("HNL_ULID_FO_"+Year)) return false;
+    if(!PassID("HNL_ULID_Fake_"+Year)){
+      if(CloseJet_BScore() > 0.1) return false;
+    }
+    return true;
+  }
+  if(ID  == "HNL_ULID_FOv3_"+Year){
+    if(!PassID("HNL_ULID_FO_"+Year)) return false;
+    if(!PassID("HNL_ULID_Fake_"+Year)){
+      if(Year=="2016"){
+	if(CloseJet_Ptratio() < 0.5) return false;
+      }
+      else         if(CloseJet_Ptratio() < 0.4) return false;
+      if(CloseJet_BScore() > 0.1) return false;
+    }
+    return true;
   }
 
-  if(ID == "HNL_ULID_2016" ){
-    if(!PassMVABaseLine()) return 0;
-    if(!Pass_MVA_BBEC("Conv_EDv5", GetPtSlopeCut(20,60, -0.7,0.) , GetPtSlopeCut(20,60,-0.7,0.) ,   "Conv_v5")) return 0;
-    if(!Pass_MVA_BBEC("Fake_EDv5", 0.25, 0.5,   "Fake_v5")) return 0;
-    if(!Pass_MVA_BBEC("CF_EDv5",   0.6,  0.6,   "CF_v5"))   return 0;
-    return 1;
+  if(ID=="HNL_ULID_FOv4_"+Year)  return (PassID("HNL_ULID_FO_"+Year) && (HNL_MVA_Fake("EDv5") > -0.9));
+  if(ID=="HNL_ULID_FOv5_"+Year)  return (PassID("HNL_ULID_FO_"+Year) && (HNL_MVA_Fake("QCD_BvsC_v5") < 0.));
+  if(ID=="HNL_ULID_FOv6_"+Year) {
+    if(!PassID("HNL_ULID_FO_"+Year)) return false;
+    if(!PassID("HNL_ULID_Fake_"+Year)){
+      if( fabs(this->Eta())<= 1.479 ){
+        if(CloseJet_BScore() > 0.27) return false;
+      }
+      else         if(CloseJet_BScore() > 0.05) return false;
+    }
+    return true;
   }
 
-  if(ID == "HNL_ULID_FO_2017" ){
-    if(!PassMVABaseLine()) return 0;
-    if(!Pass_MVA_BBEC("Conv_EDv5", GetPtSlopeCut(20,50, -0.4,0.) , GetPtSlopeCut(20,50,-0.4,0.2) ,   "Conv_v5")) return 0;
-    if(!Pass_MVA_BBEC("CF_EDv5",     0.6, 0.6,    "CF_v5"))   return 0;
-    return 1;
-  }
-  if(ID == "HNL_ULID_2017" ){
-    if(!PassMVABaseLine()) return 0;
-    if(!Pass_MVA_BBEC("Conv_EDv5", GetPtSlopeCut(20,50, -0.4,0.) , GetPtSlopeCut(20,50,-0.4,0.2) ,   "Conv_v5")) return 0;
-    if(!Pass_MVA_BBEC("Fake_EDv5",   0.4, 0.45,   "Fake_v5")) return 0;
-    if(!Pass_MVA_BBEC("CF_EDv5",     0.6, 0.6,    "CF_v5"))   return 0;
-    return 1;
-  }
+ 
 
-  if(ID == "HNL_ULID_FO_2018" ){
-    if(!PassMVABaseLine()) return 0;
-    if(!Pass_MVA_BBEC("Conv_EDv5", GetPtSlopeCut(20,50, -0.4,0.2) , GetPtSlopeCut(20,50,-0.4,0.2) ,   "Conv_v5")) return 0;
-    if(!Pass_MVA_BBEC("CF_EDv5",   0.6 ,0.6 , "CF_v5")) return 0;
-    return 1;
-  }
-  if(ID == "HNL_ULID_2018" ){
-    if(!PassMVABaseLine()) return 0;
-    if(!Pass_MVA_BBEC("Conv_EDv5", GetPtSlopeCut(20,50, -0.4,0.2) , GetPtSlopeCut(20,50,-0.4,0.2) ,   "Conv_v5")) return 0;
-    if(!Pass_MVA_BBEC("Fake_EDv5", 0.4 ,0.5 ,   "Fake_v5")) return 0;
-    if(!Pass_MVA_BBEC("CF_EDv5",   0.6 ,0.6 , "CF_v5")) return 0;
-    return 1;
-  }
+  ////////////// SINGLE MVA [Split for ID SF]
+
+  /// 2016
+  if(ID == "HNL_ULID_Conv_2016" ) return (PassMVABaseLine() && Pass_MVA_BBEC("Conv_EDv5", GetPtSlopeCut(20,60, -0.7,0.) , GetPtSlopeCut(20,60,-0.7,0.) ,   "Conv_v5"));
+  if(ID == "HNL_ULID_CF_2016"   ) return (PassMVABaseLine() && Pass_MVA_BBEC("CF_EDv5",   el_mva_cut_cf_2016_B,   el_mva_cut_cf_2016_EC,     "CF_v5"));
+  if(ID == "HNL_ULID_Fake_2016" ) return (PassMVABaseLine() && Pass_MVA_BBEC("Fake_EDv5", el_mva_cut_fake_2016_B, el_mva_cut_fake_2016_EC,   "Fake_v5"));
+  /// 2017
+  if(ID == "HNL_ULID_Conv_2017" ) return (PassMVABaseLine() && Pass_MVA_BBEC("Conv_EDv5", GetPtSlopeCut(20,50, -0.4,0.) , GetPtSlopeCut(20,50,-0.4,0.2) ,   "Conv_v5"));
+  if(ID == "HNL_ULID_CF_2017"   ) return (PassMVABaseLine() && Pass_MVA_BBEC("CF_EDv5",   el_mva_cut_cf_2017_B,   el_mva_cut_cf_2017_EC,     "CF_v5"));
+  if(ID == "HNL_ULID_Fake_2017" ) return (PassMVABaseLine() && Pass_MVA_BBEC("Fake_EDv5", el_mva_cut_fake_2017_B, el_mva_cut_fake_2017_EC,   "Fake_v5"));
+  /// 2018
+  if(ID == "HNL_ULID_Conv_2018" ) return (PassMVABaseLine() && Pass_MVA_BBEC("Conv_EDv5", GetPtSlopeCut(20,50, -0.4,0.2) , GetPtSlopeCut(20,50,-0.4,0.2) ,   "Conv_v5"));
+  if(ID == "HNL_ULID_CF_2018"   ) return (PassMVABaseLine() && Pass_MVA_BBEC("CF_EDv5",   el_mva_cut_cf_2018_B ,  el_mva_cut_cf_2018_EC ,     "CF_v5")) ;
+  if(ID == "HNL_ULID_Fake_2018" ) return (PassMVABaseLine() && Pass_MVA_BBEC("Fake_EDv5", el_mva_cut_fake_2018_B, el_mva_cut_fake_2018_EC ,   "Fake_v5"));
+  /// V2
+  if(ID == "HNL_ULIDv2_CF_2018" )  return (PassMVABaseLine() && Pass_MVA_BBEC("CF_EDv5",   0.5 ,0.5 , "CF_v5")) ;
+  if(ID == "HNL_ULIDv2_Fake_2018") return (PassMVABaseLine() && Pass_MVA_BBEC("Fake_EDv5",0.4 ,0.4 ,   "Fake_v5"));
+
 
 
   //////////////////////////////////////////////////////////////////////////////////// 
   //// OTHER ANALYSES IDs / POG IDs
   //////////////////////////////////////////////////////////////////////////////////// 
 
-  if(ID=="HNL_Peking_2016") {
+  if(ID=="Peking_2016") {
     if(! (passTightID()) ) return 0;
     if( IsBB()){
       if( !(fabs(dXY()) < 0.05 && fabs(dZ())< 0.1)) return 0;
-
       if(  (NMissingHits()>1) ) return 0;
-
     }
     else {
       if( !(fabs(dXY()) < 0.1 && fabs(dZ())< 0.2)) return 0;
-      
       if(  (NMissingHits()>1) ) return 0;
-
     }
-
     if(! IsGsfCtfScPixChargeConsistent())  return 0;
     if(! (Pass_TriggerEmulation()) ) return 0;
     return 1;
-
   }
 
-  if(ID=="HNL_Peking_2017" || ID=="HNL_Peking_2018") {
+  if(ID=="Peking_FO_2016") {
+    if(! (passLooseID()) ) return 0;
+    if( IsBB()){
+      if( !(fabs(dXY()) < 0.05 && fabs(dZ())< 0.1)) return 0;
+      if(  (NMissingHits()>1) ) return 0;
+    }
+    else {
+      if( !(fabs(dXY()) < 0.1 && fabs(dZ())< 0.2)) return 0;
+      if(  (NMissingHits()>1) ) return 0;
+    }
+    if(! IsGsfCtfScPixChargeConsistent())  return 0;
+    if(! (Pass_TriggerEmulation()) ) return 0;
+    return 1;
+  }
 
+  if(ID=="Peking_2017" || ID=="Peking_2018") {
     if(!passMVAID_Iso_WP90()) return 0;
     if(! IsGsfCtfScPixChargeConsistent())  return 0;
     if(! (Pass_TriggerEmulation()) ) return 0;
@@ -1885,14 +1844,21 @@ int  Electron::PassIDTight(TString ID) const{
       if(! (RelIso() < 0.0571 )) return 0;
     }
     else       if(! (RelIso() < 0.05880 )) return 0;
-
-
     return 1;
-    
+  }
+  if(ID=="Peking_FO_2017" || ID=="Peking_FO_2018") {
+    if(!passMVAID_noiso_WPLoose()) return 0;
+    if(! IsGsfCtfScPixChargeConsistent())  return 0;
+    if(! (Pass_TriggerEmulation()) ) return 0;
+    if(IsBB()){
+      if(! (RelIso() < 0.4 )) return 0;
+    }
+    else       if(! (RelIso() < 0.4 )) return 0;
+    return 1;
   }
 
   
-  if(ID=="TopHN17SST" or ID=="TopHNSST"){
+  if(ID=="TopHNT"){
     if(! passMVAID_noIso_WP90()          ) return false;
     if(! (MiniRelIso()<0.1)              ) return false;
     if(! (SIP3D()<4)                     ) return false;
@@ -1902,6 +1868,25 @@ int  Electron::PassIDTight(TString ID) const{
     if(! (NMissingHits()<2)              ) return false;
     if(! (fabs(Eta())<2.5)               ) return false;
     if(! IsGsfCtfScPixChargeConsistent() ) return false;
+    return true;
+  }
+
+
+  if(ID.Contains("TopHNSSLFixLMVAIsop4NoSIP_201") or ID.Contains("TopHNSSL_201")){
+    if(! (MiniRelIso()<0.4)              ) return false;
+    if(! (fabs(dZ())<0.1)                ) return false;
+    if(! Pass_CaloIdL_TrackIdL_IsoVL()   ) return false;
+    if(! PassConversionVeto()            ) return false;
+    if(! (NMissingHits()<=1)             ) return false;
+    if(! (fabs(Eta())<2.5)               ) return false;
+    if(! IsGsfCtfScPixChargeConsistent() ) return false;
+    float MVACut=-1, fEta=fabs(Eta());
+    if     (ID.Contains("2016a")) MVACut=fEta<0.8? 0.96:fEta<1.5? 0.93:0.85;
+    else if(ID.Contains("2016b")) MVACut=fEta<0.8? 0.96:fEta<1.5? 0.93:0.85;
+    else if(ID.Contains("2017") ) MVACut=fEta<0.8? 0.94:fEta<1.5? 0.79:0.5;
+    else if(ID.Contains("2018") ) MVACut=fEta<0.8? 0.94:fEta<1.5? 0.79:0.5;
+
+    if(! (MVANoIso()>MVACut or passMVAID_noIso_WP90()) ) return false;
     return true;
   }
 
@@ -1916,14 +1901,12 @@ int  Electron::PassIDTight(TString ID) const{
   if(ID=="MVALooseNoIso") return passMVAID_noiso_WPLoose()? 1 : 0 ;
   if(ID=="CutBasedVetoNoIso") return Pass_CutBasedVetoNoIso()? 1 : 0 ;
   
-
   //=== POG
   if(ID=="passPOGTight")             return passTightID_NoCC()? 1 : 0 ;
   if(ID=="passPOGMedium")            return passMediumID_NoCC()? 1 : 0 ;
-
   if(ID=="passMediumID") return passMediumID()? 1 : 0 ;
   if(ID=="passTightID") return passTightID()? 1 : 0 ;
-  //=== HEEP IDS                                                                                                                                                                                        
+  //=== HEEP IDS                                                                                                                                                                                       
   if(ID=="passHEEPID") return passHEEPID()? 1 : 0 ;
   if(ID=="passHEEPID2018Prompt") return passHEEP2018Prompt()? 1 : 0 ;
 

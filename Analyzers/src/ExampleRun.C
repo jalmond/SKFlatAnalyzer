@@ -151,7 +151,7 @@ void ExampleRun::executeEvent(){
 
     //==== You can define lepton ID string here
     param.Muon_Tight_ID = MuonID;
-    param.Muon_ID_SF_Key = MuonIDSFKey;
+    param.k.Muon_ID_SF = MuonIDSFKey;
 
     //==== And, Jet ID
     param.Jet_ID = "tight";

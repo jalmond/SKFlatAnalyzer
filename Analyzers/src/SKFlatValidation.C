@@ -2,6 +2,8 @@
 
 void SKFlatValidation::initializeAnalyzer(){
 
+  HNL_LeptonCore::initializeAnalyzer();
+
 
   //==== Triggers
 
@@ -147,13 +149,13 @@ void SKFlatValidation::executeEvent(){
   param.Name = "POG";
 
   param.Electron_Tight_ID = "passMediumID";
-  param.Electron_ID_SF_Key = "passMediumID";
-  param.Electron_Trigger_SF_Key = "Default";
+  param.k.Electron_ID_SF = "passMediumID";
+  param.k.Electron_Trigger_SF = "Default";
 
   param.Muon_Tight_ID = "POGTightWithTightIso";
-  param.Muon_ID_SF_Key = "NUM_TightID_DEN_genTracks";
-  param.Muon_ISO_SF_Key = "NUM_TightRelIso_DEN_TightIDandIPCut";
-  param.Muon_Trigger_SF_Key = "POGTight";
+  param.k.Muon_ID_SF = "NUM_TightID_DEN_genTracks";
+  param.k.Muon_ISO_SF = "NUM_TightRelIso_DEN_TightIDandIPCut";
+  param.k.Muon_Trigger_SF = "POGTight";
 
   param.Jet_ID = "HN";
 
@@ -166,13 +168,13 @@ void SKFlatValidation::executeEvent(){
   param.Name = "POGHighPt";
 
   param.Electron_Tight_ID = "passHEEPID";
-  param.Electron_ID_SF_Key = "HEEP";
-  param.Electron_Trigger_SF_Key = "HEEP";
+  param.k.Electron_ID_SF = "HEEP";
+  param.k.Electron_Trigger_SF = "HEEP";
 
   param.Muon_Tight_ID = "POGHighPtWithLooseTrkIso";
-  param.Muon_ID_SF_Key = "NUM_HighPtID_DEN_genTracks";
-  param.Muon_ISO_SF_Key = "NUM_LooseRelTkIso_DEN_HighPtIDandIPCut";
-  param.Muon_Trigger_SF_Key = "POGHighPtLooseTrkIso";
+  param.k.Muon_ID_SF = "NUM_HighPtID_DEN_genTracks";
+  param.k.Muon_ISO_SF = "NUM_LooseRelTkIso_DEN_HighPtIDandIPCut";
+  param.k.Muon_Trigger_SF = "POGHighPtLooseTrkIso";
   param.Muon_UseTuneP = true;
 
   param.Jet_ID = "HN";
@@ -325,9 +327,9 @@ void SKFlatValidation::executeEventFromParameter(AnalyzerParameter param){
           double this_pt = muons.at(i).MiniAODPt();
           double this_eta = muons.at(i).Eta();
 
-          double this_idsf  = mcCorr->MuonID_SF (param.Muon_ID_SF_Key,  this_eta, this_pt);
-          double this_isosf = mcCorr->MuonISO_SF(param.Muon_ISO_SF_Key, this_eta, this_pt);
-          double this_trigsf = mcCorr->MuonTrigger_SF(param.Muon_Trigger_SF_Key, TriggerNameForSF_Muon, muons);
+          double this_idsf  = mcCorr->MuonID_SF (param.k.Muon_ID_SF,  this_eta, this_pt);
+          double this_isosf = mcCorr->MuonISO_SF(param.k.Muon_ISO_SF, this_eta, this_pt);
+          double this_trigsf = mcCorr->MuonTrigger_SF(param.k.Muon_Trigger_SF, TriggerNameForSF_Muon, muons);
 
           weight *= this_idsf*this_isosf*this_trigsf;
 
@@ -341,9 +343,9 @@ void SKFlatValidation::executeEventFromParameter(AnalyzerParameter param){
       }
       if( Suffix.Contains("DiElectron") || Suffix.Contains("SingleElectron") || Suffix.Contains("DiPhoton") ){
         for(unsigned int i=0; i<electrons.size(); i++){
-          double this_recosf = mcCorr->ElectronReco_SF(electrons.at(i).scEta(),electrons.at(i).Pt());
-          double this_idsf = mcCorr->ElectronID_SF(param.Electron_ID_SF_Key, electrons.at(i).scEta(), electrons.at(i).Pt());
-          double this_trigsf = mcCorr->ElectronTrigger_SF(param.Electron_Trigger_SF_Key, TriggerNameForSF_Electron, electrons);
+          double this_recosf = mcCorr->ElectronReco_SF("RECO_SF",electrons.at(i).scEta(),electrons.at(i).Pt());
+          double this_idsf = mcCorr->ElectronID_SF(param.k.Electron_ID_SF, electrons.at(i).scEta(), electrons.at(i).Pt());
+          double this_trigsf = mcCorr->ElectronTrigger_SF(param.k.Electron_Trigger_SF, TriggerNameForSF_Electron, electrons);
 
           weight *= this_recosf*this_idsf*this_trigsf;
 
@@ -427,7 +429,7 @@ void SKFlatValidation::executeEventFromParameter(AnalyzerParameter param){
           FillHist(this_region+"/Jet_"+this_itoa+"_DeepCSV_Scaled_"+this_region, this_discr, weight*btagWeight_1d, 120, 0., 1.2);
         }
 
-        FillLeptonPlots(leps, this_region, weight);
+        FillLeptonPlots(param,leps, this_region, weight);
 
         if(n_lepton==1){
           FillHist(this_region+"/MT_"+this_region, this_MT, weight, 500, 0., 500.);

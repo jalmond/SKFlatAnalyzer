@@ -1,9 +1,9 @@
 #ifndef SkimTree_BDT_h
 #define SkimTree_BDT_h
 
-#include "AnalyzerCore.h"
+#include "HNL_LeptonCore.h"
 
-class SkimTree_BDT : public AnalyzerCore {
+class SkimTree_BDT : public HNL_LeptonCore {
 
  public:
 

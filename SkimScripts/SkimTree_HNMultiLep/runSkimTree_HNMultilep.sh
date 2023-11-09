@@ -11,8 +11,11 @@ skim=' '
 declare  -a era_list=("2016postVFP" "2016preVFP"  "2017" "2018")
 
 
-if [[ $1 == "TEST" ]]; then
-    SKFlat.py -a $analyzer -i SSWWTypeI_SF_M1000_private -n  100  -e 2017&
+if [[ $1 == "SL" ]]; then
+    for i in "${era_list[@]}"
+    do
+	SKFlat.py -a $analyzer  -l $datapath/DATA_mu_${i}.txt   -n ${njobs_data}  --nmax 500    -e ${i} &
+    done
 fi
 
 

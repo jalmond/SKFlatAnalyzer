@@ -6,7 +6,8 @@ void SkimTree_HNMultiLepBDT::initializeAnalyzer(){
   cout << "[SkimTree_HNMultiLepBDT::initializeAnalyzer()] gDirectory = " << gDirectory->GetName() << endl;
   newtree = fChain->CloneTree(0);
 
-  SetupIDMVAReaderDefault();
+  HNL_LeptonCore::initializeAnalyzer(false,true);
+
   InitialiseLeptonBDTSKFlat();
 
 
@@ -255,7 +256,7 @@ void SkimTree_HNMultiLepBDT::executeEvent(){
   if(this->DataStream == "SingleMuon" && (ev.PassTrigger(triggers_dimu))) return;
   if(this->DataStream == "SingleElectron" && (ev.PassTrigger(triggers_di_el))) return;
 
-  std::vector<Muon>     muonPreColl     = GetMuons("HNLoosest", 7., 2.4);
+  std::vector<Muon>     muonPreColl     = GetMuons("HNLoosest", 5., 2.4);
   std::vector<Electron> electronPreColl = GetElectrons("HNLoosest", 8., 2.5);
 
   std::sort(muonPreColl.begin(), muonPreColl.end(), PtComparing);

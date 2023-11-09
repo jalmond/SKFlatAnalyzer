@@ -16,7 +16,7 @@ void HNL_SignalRegionPlotter17028::executeEvent(){
     TriggerPrintOut(GetEvent());
   }
   
-  AnalyzerParameter param_signal = HNL_LeptonCore::InitialiseHNLParameter("HNL","_UL");
+  AnalyzerParameter param_signal = HNL_LeptonCore::InitialiseHNLParameter("HNL");
   RunEXO17028Analysis(param_signal);
 
   return ;
@@ -43,25 +43,25 @@ void HNL_SignalRegionPlotter17028::RunEXO17028Analysis(AnalyzerParameter param){
   double Min_Electron_Pt = (RunFake) ? 8. : 10.;
 
 
-  std::vector<Muon>       MuonCollTInit = GetMuons    ( param,mu_ID, Min_Muon_Pt, 2.4, RunFake);
-  std::vector<Electron>   ElectronCollTInit = GetElectrons( param,el_ID, Min_Electron_Pt, 2.5, RunFake)  ;
+  std::vector<Muon>       MuonCollTInit     = SelectMuons    ( param,mu_ID, Min_Muon_Pt, 2.4);
+  std::vector<Electron>   ElectronCollTInit = SelectElectrons( param,el_ID, Min_Electron_Pt, 2.5)  ;
 
-  std::vector<Muon>       MuonCollT     = GetLepCollByRunType    ( MuonCollTInit,param);
+  std::vector<Muon>       MuonCollT      = GetLepCollByRunType    ( MuonCollTInit,param);
   std::vector<Electron>   ElectronCollT  =  GetLepCollByRunType   ( ElectronCollTInit,param);
 
   std::vector<Tau>        mytaus        = GetTaus     (param.Tau_Veto_ID,20., 2.3); 
 
   // Creat Lepton vector to have lepton blind codes 
 
-  Particle METv = GetvMET("T1xyCorr"); // reyturns MET with systematic correction
+  Particle METv = GetMiniAODvMET("T1xyCorr"); // reyturns MET with systematic correction
 
   
-  std::vector<FatJet> fatjets_tmp                 = GetFatJets(param, param.FatJet_ID, 200., 5.);
-  std::vector<FatJet> AK8_JetColl                  = SelectAK8Jets(fatjets_tmp, 200., 5., true,  1., true, -999, true, 60., 130., ElectronCollV, MuonCollV);
+  std::vector<FatJet> fatjets_tmp                 = SelectFatJets(param, param.FatJet_ID, 200., 5.);
+  std::vector<FatJet> AK8_JetColl                  = SelectAK8Jets(fatjets_tmp, 200., 5., true,  1., true, -999, true, 60., 130., "",ElectronCollV, MuonCollV);
     
   
   // AK4 JET                                                                                                                                                                              
-  std::vector<Jet> jets_tmp     = GetJets   ( param, param.Jet_ID, 20., 5.);
+  std::vector<Jet> jets_tmp     = SelectJets   ( param, param.Jet_ID, 20., 5.);
   
   TString PUIDWP="loose";
   std::vector<Jet> JetColl                           = SelectAK4Jets(jets_tmp,     20., 2.7, true,  0.4,0.8, PUIDWP,   ElectronCollV,MuonCollV, AK8_JetColl);

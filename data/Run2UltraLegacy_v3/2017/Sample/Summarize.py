@@ -18,7 +18,7 @@ for line in lines:
 
   infoline = open(line).readlines()[1]
   
-  if "Type" in alias or "private" in alias :
+  if "Type" in alias or "private" in alias or "WR" in alias:
     out_Sig_Type1.write(infoline)
   else:
     out_MC.write(infoline)

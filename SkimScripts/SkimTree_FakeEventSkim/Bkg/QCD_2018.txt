@@ -18,7 +18,3 @@ QCD_Pt-600To800_MuEnriched
 QCD_Pt-800To1000_MuEnriched
 QCD_Pt-80To120_MuEnriched
 QCD_Pt-1000_MuEnriched
-QCD_Pt_20to30_bcToE
-QCD_Pt_30to80_bcToE
-QCD_Pt_80to170_bcToE
-QCD_Pt_170to250_bcToE

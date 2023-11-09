@@ -16,7 +16,6 @@ class HNL_ControlRegionPlotter : public HNL_RegionDefinitions {
 
   void RunControlRegions(AnalyzerParameter param, vector<TString> CRs);
 
-
 };
 
 

@@ -5,6 +5,9 @@ MeasureJetTaggingEfficiency::MeasureJetTaggingEfficiency(){
 
 void MeasureJetTaggingEfficiency::initializeAnalyzer(){
 
+  HNL_LeptonCore::initializeAnalyzer();
+
+
   TString datapath = getenv("DATA_DIR");
   TString btagpath = datapath+"/"+DataEra+"/BTag/";
 

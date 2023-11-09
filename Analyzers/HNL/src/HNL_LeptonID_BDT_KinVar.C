@@ -159,7 +159,7 @@ void HNL_LeptonID_BDT_KinVar::executeEvent(){
     if(!HasFlag("NoBJet") && (r > 0.12)) return;
   }
   
-  AnalyzerParameter param_bdt = HNL_LeptonCore::InitialiseHNLParameter("BDT", "");
+  AnalyzerParameter param_bdt = HNL_LeptonCore::InitialiseHNLParameter("BDT");
   
   Event ev = GetEvent();
 
@@ -172,7 +172,7 @@ void HNL_LeptonID_BDT_KinVar::executeEvent(){
   if(SeperateConv || SeperateCF)weight *= MergeMultiMC(MCMergeList,"CombineAll");
 
   if(weight <= 0) {
-    std::vector<Electron>   ElectronCollTMP =  GetElectrons( param_bdt,"MVAID", 10., 2.5, RunFake);
+    std::vector<Electron>   ElectronCollTMP =  SelectElectrons( param_bdt,"MVAID", 10., 2.5);
     for(auto ilep : ElectronCollTMP)   FillHist( "fEtaElZeroW", fabs(ilep.Eta()) ,weight, 300., 0., 3);
     ////  Remove -v2 weights for training 
     return;
@@ -195,8 +195,8 @@ void HNL_LeptonID_BDT_KinVar::executeEvent(){
   
   for(auto dilep_channel : channels){
 
-    std::vector<Muon>       MuonCollTAll     =  GetMuons    ( param_bdt,"MVAID", 10., 2.4, RunFake);
-    std::vector<Electron>   ElectronCollTAll =  GetElectrons( param_bdt,"MVAID", 10., 2.5, RunFake);
+    std::vector<Muon>       MuonCollTAll     =  SelectMuons    ( param_bdt,"MVAID", 10., 2.4);
+    std::vector<Electron>   ElectronCollTAll =  SelectElectrons( param_bdt,"MVAID", 10., 2.5);
  
     bool HasHEM(false);
     for(auto i: ElectronCollTAll) {
@@ -299,7 +299,7 @@ void HNL_LeptonID_BDT_KinVar::executeEvent(){
     if(weight < 0) continue;
 
     if(HasFlag("NoBJet") && SeperatePrompt){
-      std::vector<Jet>    AK4_BJetColl                = GetHNLJets("BJetM",     param_bdt);
+      std::vector<Jet>    AK4_BJetColl                = GetHNLJets("BJet",     param_bdt);
       if(AK4_BJetColl.size() > 0) return;
     }
     
@@ -325,10 +325,6 @@ void HNL_LeptonID_BDT_KinVar::MakeTreeSS2L(HNL_LeptonCore::Channel lep_channel,v
     
     float weight_lep = weight;
 
-    if(SeperateFakes && HasFlag("SSWeight")){
-      bool ismuon = (lep->LeptonFlavour() == Lepton::MUON);
-      weight_lep *= ScaleLepToSS("Fake",ismuon, lep->LeptonGenType());
-    }
 
     TString lep_fake_tag= "";
     if(SeperateFakes) lep_fake_tag=  MatchGenDef(All_Gens, *lep);

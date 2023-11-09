@@ -20,7 +20,7 @@ void HNL_SignalLeptonOpt::executeEvent(){
   OutCutFlow("CutFlow_All_Events", 1);
 
 
-  AnalyzerParameter param_signal = HNL_LeptonCore::InitialiseHNLParameter("HNLOpt","_UL");
+  AnalyzerParameter param_signal = HNL_LeptonCore::InitialiseHNLParameter("HNLOpt");
     
   //cout << "########################################################" << endl;
 
@@ -36,11 +36,11 @@ void HNL_SignalLeptonOpt::executeEvent(){
   std::vector<FatJet> FatjetColl                  = GetHNLAK8Jets("HNL_PNL",param_signal);
 
   Event ev = GetEvent();
-  Particle METv = GetvMET("PuppiT1xyULCorr");
+  Particle METv = GetMiniAODvMET("PuppiT1xyULCorr");
 
 
   ///// Initialise non lepton obj
-  std::vector<Tau> TauColl                        = GetTaus     (LepsVeto,param_signal.Tau_Veto_ID,20., 2.3);
+  std::vector<Tau> TauColl                        = SelectTaus     (LepsVeto,param_signal.Tau_Veto_ID,20., 2.3);
   std::vector<Jet> AllJetColl                     = GetHNLJets("NoCut_Eta3",param_signal);
   std::vector<Jet> JetCollLoose                   = GetHNLJets("Loose",param_signal);
   std::vector<Jet> VBF_JetColl                    = GetHNLJets("VBFTight",param_signal);
@@ -313,7 +313,6 @@ void HNL_SignalLeptonOpt::RunULAnalysis(AnalyzerParameter param, vector<Electron
   double weight =SetupWeight(ev,param);
 
   JetTagging::Parameters param_jetsM = JetTagging::Parameters(JetTagging::DeepJet, JetTagging::Medium, JetTagging::incl, JetTagging::mujets);
-  JetTagging::Parameters param_jetsT = JetTagging::Parameters(JetTagging::DeepJet, JetTagging::Tight, JetTagging::incl, JetTagging::mujets);
 
   double sf_btagM_NLV                 = GetBJetSF(param, B_JetColl,    param_jetsM);
   
@@ -360,8 +359,8 @@ void HNL_SignalLeptonOpt::RunULAnalysis(AnalyzerParameter param, vector<Electron
     if(ilep.PassID(mu_ID)) MuonCollTInit.push_back(ilep);
   }
 
-  std::vector<Muon>       MuonCollT       = GetLepCollByRunType    ( MuonCollTInit,param);
-  std::vector<Electron>   ElectronCollT   = GetLepCollByRunType   ( ElectronCollTInit,param);
+  std::vector<Muon>       MuonCollT       = GetLepCollByRunType    ( MuonCollTInit,param,weight);
+  std::vector<Electron>   ElectronCollT   = GetLepCollByRunType   ( ElectronCollTInit,param,weight);
   
   Particle METv = GetvMET("PuppiT1xyULCorr",param); 
 
@@ -372,8 +371,8 @@ void HNL_SignalLeptonOpt::RunULAnalysis(AnalyzerParameter param, vector<Electron
   param.WriteOutVerbose=1;
 
   if(param.Name.Contains("HNL_ULID_"+GetYearString())){
-    for(auto iel: ElectronCollT) FillElectronKinematicPlots(el_ID + "_"+iel.GetFlavour(),"Tight"+iel.GetFlavour(), iel, weight);
-    for(auto imu: MuonCollT)     FillMuonKinematicPlots(mu_ID + "_"+imu.GetFlavour(),"Tight"+imu.GetFlavour(), imu, weight);
+    for(auto iel: ElectronCollT) FillElectronKinematicPlots(param,el_ID + "_Tight"+iel.GetFlavour(), iel, weight);
+    for(auto imu: MuonCollT)     FillMuonKinematicPlots(param,mu_ID + "_Tight"+imu.GetFlavour(), imu, weight);
   }
 
   RunAllSignalRegions(Inclusive, ElectronCollT,ElectronCollV,MuonCollT,MuonCollV, TauColl, AllJetColl,JetCollLoose, JetColl, VBF_JetColl,AK8_JetColl , B_JetColl,B_JetColl, ev,METv, param,weight);

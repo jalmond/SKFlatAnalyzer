@@ -5,10 +5,7 @@ void HNL_LeptonIDBDTStudies::initializeAnalyzer(){
   // All default settings like trigger/ PD/ BJet are decalred in HNL_LeptonCore::initializeAnalyzer to make them consistent for all HNL codes
 
   HNL_LeptonCore::initializeAnalyzer();
-  if(HasFlag("FakeSplit")) SetupIDMVAReaderDefault(false,false);  //set v3 true
-  if(HasFlag("NewBDT")) SetupIDMVAReaderDefault(false,true);  //set v3 true                                                                                                                                                                                                   
-  if(HasFlag("SSBreakdown")) SetupIDMVAReaderDefault(false,true); 
-  SetupIDMVAReaderDefault(false,true);
+
 }
 
 
@@ -19,9 +16,7 @@ void HNL_LeptonIDBDTStudies::executeEvent(){
     TriggerPrintOut(GetEvent());
   }
   
-  TString ID = "POG";
-
-  AnalyzerParameter param  = HNL_LeptonCore::InitialiseHNLParameter(ID,"");
+  AnalyzerParameter param  = HNL_LeptonCore::InitialiseHNLParameter("POGTight");
   
   Event ev = GetEvent();
   double weight = SetupWeight(ev,param);
@@ -195,9 +190,6 @@ void HNL_LeptonIDBDTStudies::executeEvent(){
   }
 
 
-  bool SSMM = SameCharge(MuonCollProbe) && (ElectronCollProbe.size()==0) && PassTriggerSelection(MuMu, ev, LeptonCollProbe,"Dilep");
-  bool SSEE = SameCharge(ElectronCollProbe) && (MuonCollProbe.size()==0) && PassTriggerSelection(EE, ev, LeptonCollProbe,"Dilep");
-
   for(auto ilep : LeptonCollProbe){
 
     TString tag= ilep->LepGenTypeString();
@@ -238,10 +230,6 @@ void HNL_LeptonIDBDTStudies::executeEvent(){
       if(i.Contains("IsFake") && HasBjet) continue;
       map<TString, double> mapBDT = ilep->MAPBDT();
       for(auto imap : mapBDT )  FillHist("BDTVariable/"+ ilep->GetFlavour()+ "/"+ i+"_"+imap.first, imap.second  , weight, 200, -1., 1);
-      //if(SSMM||SSEE) {
-	//	for(auto imap : mapBDT )FillHist("SSBDTVariables/"+ ilep->GetFlavour()+ "/"+ i+"_"+imap.first, imap.second  , SSWeight, 200, -1., 1);
-
-      //}
 
     }
   }
@@ -276,7 +264,7 @@ void HNL_LeptonIDBDTStudies::executeEvent(){
       
       if(i.Contains("IsFake") && HasBjet) continue;
 
-      if(imuon.PassID("HNL_ULID_"+GetYearString()))FillMuonKinematicPlots("TightUL_"+imuon.GetFlavour()+i,"Tight"+imuon.GetFlavour(), imuon, weight);
+      if(imuon.PassID("HNL_ULID_"+GetYearString()))FillMuonKinematicPlots( param, "Tight"+imuon.GetFlavour(), imuon, weight);
       
       map<TString, double> mapBDT = imuon.MAPBDT();
       for(auto imap : mapBDT )  {
@@ -347,8 +335,8 @@ void HNL_LeptonIDBDTStudies::executeEvent(){
       if(i.Contains("IsFake") && HasBjet) continue;
       
 
-      if(iel.PassID("HNL_ULID_"+GetYearString()))FillElectronKinematicPlots("TightUL_"+iel.GetFlavour()+i,"Tight"+iel.GetFlavour(), iel, weight);
-      FillElectronKinematicPlots("LooseUL_"+iel.GetFlavour()+i,"Tight"+iel.GetFlavour(), iel, weight);
+      if(iel.PassID("HNL_ULID_"+GetYearString()))FillElectronKinematicPlots(param, "Tight"+iel.GetFlavour(), iel, weight);
+      FillElectronKinematicPlots(param,"LooseUL_"+iel.GetFlavour()+i , iel, weight);
 
       
       map<TString, double> mapBDT = iel.MAPBDT();
@@ -410,10 +398,6 @@ void HNL_LeptonIDBDTStudies::executeEvent(){
     } // Tags
   }
   
-  
-
- 
-
   HNL_LeptonCore::Channel dilep_channel= EE;
   if(MuonCollProbe.size() > 0) return;
   if(HasFlag("BDT"))MakeBDTPlots(param,dilep_channel, ElectronCollProbe, param.Electron_Tight_ID, weight);
@@ -430,7 +414,7 @@ void HNL_LeptonIDBDTStudies::MakeJetDiscPlots(TString label, AnalyzerParameter p
 
   std::vector<Lepton *> LeptonColl      = MakeLeptonPointerVector(MuonColl, ElectronColl);
 
-  if(label.Contains("Tight"))  weight_ll*=GetLeptonSFEventWeight(LeptonColl,param);
+  if(label.Contains("Tight")) EvalLeptonIDWeight(LeptonColl,param, weight_ll);
   
   std::vector<Electron>   ElectronCollV = GetElectrons(param.Electron_Veto_ID, 10., 2.5);
   std::vector<Muon>       MuonCollV     = GetMuons    (param.Muon_Veto_ID, 5., 2.4);
@@ -448,7 +432,7 @@ void HNL_LeptonIDBDTStudies::MakeJetDiscPlots(TString label, AnalyzerParameter p
     if(SameCharge(LeptonColl)) return;
   }
 
-  Particle METv = GetvMET("PuppiT1xyCorr"); // reyturns MET with systematic correction                                                                                                 
+  Particle METv = GetMiniAODvMET("PuppiT1xyCorr"); // reyturns MET with systematic correction                                                                                                 
 
   std::vector<Jet>      JetColl     = GetHNLJets("Tight", param);
   std::vector<Jet> BJetColl  = GetHNLJets("BJetM", param);                                                                                                                
@@ -471,14 +455,14 @@ void HNL_LeptonIDBDTStudies::MakeJetDiscPlots(TString label, AnalyzerParameter p
 	      vector<Jet> JetAllColl = GetAllJets();
 	      TString cut = "TopJets_TightMu";
 	      
-	      FillHist(cut +"/MET_"+channel_string, GetvMET("PuppiT1xyCorr").Pt(), weight_ll, 200, 0., 200);
+	      FillHist(cut +"/MET_"+channel_string, GetMiniAODvMET("PuppiT1xyCorr").Pt(), weight_ll, 200, 0., 200);
 	      if(JetColl.size() < 6) FillHist(cut +"/NJet_"+channel_string, JetColl.size(), weight_ll, 8, 0., 8);
 	      else FillHist(cut +"/NJet_"+channel_string, 6., weight_ll, 8, 0., 8);
 
 	      FillHist(cut +"/MuonPt_"+channel_string+"_"+label, MuonColl[0].Pt(), weight_ll, 40, 0., 200);
 	      FillHist(cut +"/ElectronPt_"+channel_string+"_"+label, ElectronColl[0].Pt(), weight_ll, 40, 0., 200);
 	      
-              FillHist(cut +"/MET_"+channel_string+"_"+label, GetvMET("PuppiT1xyCorr").Pt(), weight_ll, 200, 0., 200);
+              FillHist(cut +"/MET_"+channel_string+"_"+label, GetMiniAODvMET("PuppiT1xyCorr").Pt(), weight_ll, 200, 0., 200);
               if(JetColl.size() < 6) FillHist(cut +"/NJet_"+channel_string+"_"+label, JetColl.size(), weight_ll, 8, 0., 8);
               else FillHist(cut +"/NJet_"+channel_string+"_"+label, 6., weight_ll, 8, 0., 8);
 
@@ -569,13 +553,13 @@ void HNL_LeptonIDBDTStudies::MakeJetDiscPlots(TString label, AnalyzerParameter p
 	      vector<Jet> JetAllColl = GetAllJets();
 	      TString cut = "TopJets_TightEl";
 
-	      FillHist(cut +"/MET_"+channel_string, GetvMET("PuppiT1xyCorr").Pt(), weight_ll, 200, 0., 200);
+	      FillHist(cut +"/MET_"+channel_string, GetMiniAODvMET("PuppiT1xyCorr").Pt(), weight_ll, 200, 0., 200);
 	      if(JetColl.size() < 6) FillHist(cut +"/NJet_"+channel_string, JetColl.size(), weight_ll, 8, 0., 8);
 	      else FillHist(cut +"/NJet_"+channel_string, 6., weight_ll, 8, 0., 8);
 
 	      FillHist(cut +"/MuonPt_"+channel_string+"_"+label, MuonColl[0].Pt(), weight_ll, 40, 0., 200);
 	      FillHist(cut +"/ElectronPt_"+channel_string+"_"+label, ElectronColl[0].Pt(), weight_ll, 40, 0., 200);
-	      FillHist(cut +"/MET_"+channel_string+"_"+label, GetvMET("PuppiT1xyCorr").Pt(), weight_ll, 200, 0., 200);
+	      FillHist(cut +"/MET_"+channel_string+"_"+label, GetMiniAODvMET("PuppiT1xyCorr").Pt(), weight_ll, 200, 0., 200);
               if(JetColl.size() < 6) FillHist(cut +"/NJet_"+channel_string+"_"+label, JetColl.size(), weight_ll, 8, 0., 8);
               else FillHist(cut +"/NJet_"+channel_string+"_"+label, 6., weight_ll, 8, 0., 8);
 
@@ -694,7 +678,7 @@ void HNL_LeptonIDBDTStudies::MakeJetDiscPlots(TString label, AnalyzerParameter p
     // Z peak 
     
 
-    if(fabs(GetLLMass(LeptonColl)- 90.1) < 10 && METv.Pt() < 30) {
+    if(fabs(GetLLMass(LeptonColl)- M_Z) < 10 && METv.Pt() < 30) {
      
       vector<Jet> JetAllColl = GetAllJets();
       TString cut = "ZJets_"+channel_string;
@@ -702,12 +686,12 @@ void HNL_LeptonIDBDTStudies::MakeJetDiscPlots(TString label, AnalyzerParameter p
       if(dilep_channel==MuMu)FillHist(cut +"/MuonPt_"+channel_string+"_"+label, MuonColl[1].Pt(), weight_ll, 40, 0., 200);
       if(dilep_channel==EE)  FillHist(cut +"/ElectronPt_"+channel_string+"_"+label, ElectronColl[1].Pt(), weight_ll, 40, 0., 200);
 
-      FillHist(cut +"/MET_"+channel_string, GetvMET("PuppiT1xyCorr").Pt(), weight_ll, 200, 0., 200);
+      FillHist(cut +"/MET_"+channel_string, GetMiniAODvMET("PuppiT1xyCorr").Pt(), weight_ll, 200, 0., 200);
       if(JetColl.size() < 6) FillHist(cut +"/NJet_"+channel_string, JetColl.size(), weight_ll, 8, 0., 8);
       else FillHist(cut +"/NJet_"+channel_string, 6., weight_ll, 8, 0., 8);
 
 
-      FillHist(cut +"/MET_"+channel_string+"_"+label, GetvMET("PuppiT1xyCorr").Pt(), weight_ll, 200, 0., 200);
+      FillHist(cut +"/MET_"+channel_string+"_"+label, GetMiniAODvMET("PuppiT1xyCorr").Pt(), weight_ll, 200, 0., 200);
       if(JetColl.size() < 6) FillHist(cut +"/NJet_"+channel_string+"_"+label, JetColl.size(), weight_ll, 8, 0., 8);
       else FillHist(cut +"/NJet_"+channel_string+"_"+label, 6., weight_ll, 8, 0., 8);
 
@@ -857,11 +841,11 @@ void HNL_LeptonIDBDTStudies::CheckSSFakeBreakDown(AnalyzerParameter param,HNL_Le
 	
       }
       else {
-	if(iel.CloseJet_FlavourInt()==0) FillEventCutflowAll("Electron", "LF_Fake_type", weight_ll, lables,lep_fake_tag);
-	if(iel.CloseJet_FlavourInt()==4) FillEventCutflowAll("Electron", "HFC_Fake_type", weight_ll, lables,lep_fake_tag);
-	if(iel.CloseJet_FlavourInt()==5) FillEventCutflowAll("Electron", "HFB_Fake_type", weight_ll, lables,lep_fake_tag);
-	if(iel.CloseJet_FlavourInt()==4) FillEventCutflowAll("Electron", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
-        if(iel.CloseJet_FlavourInt()==5) FillEventCutflowAll("Electron", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
+	if(iel.CloseJet_FlavourInt()==0) FillCutflow("Electron", "LF_Fake_type", weight_ll, lables,lep_fake_tag);
+	if(iel.CloseJet_FlavourInt()==4) FillCutflow("Electron", "HFC_Fake_type", weight_ll, lables,lep_fake_tag);
+	if(iel.CloseJet_FlavourInt()==5) FillCutflow("Electron", "HFB_Fake_type", weight_ll, lables,lep_fake_tag);
+	if(iel.CloseJet_FlavourInt()==4) FillCutflow("Electron", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
+        if(iel.CloseJet_FlavourInt()==5) FillCutflow("Electron", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
 
        	
 	if(ElectronCollFake.size()==1){
@@ -892,11 +876,11 @@ void HNL_LeptonIDBDTStudies::CheckSSFakeBreakDown(AnalyzerParameter param,HNL_Le
 	      else FillHist( "ElectronCR/"+iel.MotherJetFlavour()+"/EC_Pt4_"+i.first+"_"+channel_string+"_"+lep_fake_tag  , i.second, weight_ll, 100, -1., 1., "MVA");
 
             }
-	    if(iel.CloseJet_FlavourInt()==0) FillEventCutflowAll("CRElectron", "LF_Fake_type", weight_ll, lables,lep_fake_tag);
-	    if(iel.CloseJet_FlavourInt()==4) FillEventCutflowAll("CRElectron", "HFC_Fake_type", weight_ll, lables,lep_fake_tag);
-	    if(iel.CloseJet_FlavourInt()==5) FillEventCutflowAll("CRElectron", "HFB_Fake_type", weight_ll, lables,lep_fake_tag);
-	    if(iel.CloseJet_FlavourInt()==4) FillEventCutflowAll("CRElectron", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
-	    if(iel.CloseJet_FlavourInt()==5) FillEventCutflowAll("CRElectron", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
+	    if(iel.CloseJet_FlavourInt()==0) FillCutflow("CRElectron", "LF_Fake_type", weight_ll, lables,lep_fake_tag);
+	    if(iel.CloseJet_FlavourInt()==4) FillCutflow("CRElectron", "HFC_Fake_type", weight_ll, lables,lep_fake_tag);
+	    if(iel.CloseJet_FlavourInt()==5) FillCutflow("CRElectron", "HFB_Fake_type", weight_ll, lables,lep_fake_tag);
+	    if(iel.CloseJet_FlavourInt()==4) FillCutflow("CRElectron", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
+	    if(iel.CloseJet_FlavourInt()==5) FillCutflow("CRElectron", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
 
 	  }
 	}
@@ -906,60 +890,60 @@ void HNL_LeptonIDBDTStudies::CheckSSFakeBreakDown(AnalyzerParameter param,HNL_Le
 	    
 	    FillBDTHists(iel, "SSEl_Fake/"+iel.MotherJetFlavour()+"/"+lep_fake_tag,weight_ll);
 	    
-	    if(iel.CloseJet_FlavourInt()==0) FillEventCutflowAll("SSElectron", "LF_Fake_type", weight_ll, lables,lep_fake_tag);
-	    if(iel.CloseJet_FlavourInt()==4) FillEventCutflowAll("SSElectron", "HFC_Fake_type", weight_ll, lables,lep_fake_tag);	  
-	    if(iel.CloseJet_FlavourInt()==5) FillEventCutflowAll("SSElectron", "HFB_Fake_type", weight_ll, lables,lep_fake_tag);
-	    if(iel.CloseJet_FlavourInt()==4) FillEventCutflowAll("SSElectron", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
-	    if(iel.CloseJet_FlavourInt()==5) FillEventCutflowAll("SSElectron", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
+	    if(iel.CloseJet_FlavourInt()==0) FillCutflow("SSElectron", "LF_Fake_type", weight_ll, lables,lep_fake_tag);
+	    if(iel.CloseJet_FlavourInt()==4) FillCutflow("SSElectron", "HFC_Fake_type", weight_ll, lables,lep_fake_tag);	  
+	    if(iel.CloseJet_FlavourInt()==5) FillCutflow("SSElectron", "HFB_Fake_type", weight_ll, lables,lep_fake_tag);
+	    if(iel.CloseJet_FlavourInt()==4) FillCutflow("SSElectron", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
+	    if(iel.CloseJet_FlavourInt()==5) FillCutflow("SSElectron", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
 	    if(JetColl.size() == 0){
-	      if(iel.CloseJet_FlavourInt()==0) FillEventCutflowAll("SSElectron_0j", "LF_Fake_type", weight_ll, lables,lep_fake_tag);
-	      if(iel.CloseJet_FlavourInt()==4) FillEventCutflowAll("SSElectron_0j", "HFC_Fake_type", weight_ll, lables,lep_fake_tag);
-	      if(iel.CloseJet_FlavourInt()==5) FillEventCutflowAll("SSElectron_0j", "HFB_Fake_type", weight_ll, lables,lep_fake_tag);
-	      if(iel.CloseJet_FlavourInt()==4) FillEventCutflowAll("SSElectron_0j", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
-	      if(iel.CloseJet_FlavourInt()==5) FillEventCutflowAll("SSElectron_0j", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
+	      if(iel.CloseJet_FlavourInt()==0) FillCutflow("SSElectron_0j", "LF_Fake_type", weight_ll, lables,lep_fake_tag);
+	      if(iel.CloseJet_FlavourInt()==4) FillCutflow("SSElectron_0j", "HFC_Fake_type", weight_ll, lables,lep_fake_tag);
+	      if(iel.CloseJet_FlavourInt()==5) FillCutflow("SSElectron_0j", "HFB_Fake_type", weight_ll, lables,lep_fake_tag);
+	      if(iel.CloseJet_FlavourInt()==4) FillCutflow("SSElectron_0j", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
+	      if(iel.CloseJet_FlavourInt()==5) FillCutflow("SSElectron_0j", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
 	    }
 	    else     if(JetColl.size() == 1){
-	      if(iel.CloseJet_FlavourInt()==0) FillEventCutflowAll("SSElectron_1j", "LF_Fake_type", weight_ll, lables,lep_fake_tag);
-	      if(iel.CloseJet_FlavourInt()==4) FillEventCutflowAll("SSElectron_1j", "HFC_Fake_type", weight_ll, lables,lep_fake_tag);
-	      if(iel.CloseJet_FlavourInt()==5) FillEventCutflowAll("SSElectron_1j", "HFB_Fake_type", weight_ll, lables,lep_fake_tag);
-	      if(iel.CloseJet_FlavourInt()==4) FillEventCutflowAll("SSElectron_1j", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
-	      if(iel.CloseJet_FlavourInt()==5) FillEventCutflowAll("SSElectron_1j", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
+	      if(iel.CloseJet_FlavourInt()==0) FillCutflow("SSElectron_1j", "LF_Fake_type", weight_ll, lables,lep_fake_tag);
+	      if(iel.CloseJet_FlavourInt()==4) FillCutflow("SSElectron_1j", "HFC_Fake_type", weight_ll, lables,lep_fake_tag);
+	      if(iel.CloseJet_FlavourInt()==5) FillCutflow("SSElectron_1j", "HFB_Fake_type", weight_ll, lables,lep_fake_tag);
+	      if(iel.CloseJet_FlavourInt()==4) FillCutflow("SSElectron_1j", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
+	      if(iel.CloseJet_FlavourInt()==5) FillCutflow("SSElectron_1j", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
 	    }
 	    else{
-	      if(iel.CloseJet_FlavourInt()==0) FillEventCutflowAll("SSElectron_2j", "LF_Fake_type", weight_ll, lables,lep_fake_tag);
-	      if(iel.CloseJet_FlavourInt()==4) FillEventCutflowAll("SSElectron_2j", "HFC_Fake_type", weight_ll, lables,lep_fake_tag);
-	      if(iel.CloseJet_FlavourInt()==5) FillEventCutflowAll("SSElectron_2j", "HFB_Fake_type", weight_ll, lables,lep_fake_tag);
-	      if(iel.CloseJet_FlavourInt()==4) FillEventCutflowAll("SSElectron_2j", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
-	      if(iel.CloseJet_FlavourInt()==5) FillEventCutflowAll("SSElectron_2j", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
+	      if(iel.CloseJet_FlavourInt()==0) FillCutflow("SSElectron_2j", "LF_Fake_type", weight_ll, lables,lep_fake_tag);
+	      if(iel.CloseJet_FlavourInt()==4) FillCutflow("SSElectron_2j", "HFC_Fake_type", weight_ll, lables,lep_fake_tag);
+	      if(iel.CloseJet_FlavourInt()==5) FillCutflow("SSElectron_2j", "HFB_Fake_type", weight_ll, lables,lep_fake_tag);
+	      if(iel.CloseJet_FlavourInt()==4) FillCutflow("SSElectron_2j", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
+	      if(iel.CloseJet_FlavourInt()==5) FillCutflow("SSElectron_2j", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
 	      
 	    }
 	  }
 	  else{
-	    if(iel.CloseJet_FlavourInt()==0) FillEventCutflowAll("OSElectron", "LF_Fake_type", weight_ll, lables,lep_fake_tag);
-            if(iel.CloseJet_FlavourInt()==4) FillEventCutflowAll("OSElectron", "HFC_Fake_type", weight_ll, lables,lep_fake_tag);
-            if(iel.CloseJet_FlavourInt()==5) FillEventCutflowAll("OSElectron", "HFB_Fake_type", weight_ll, lables,lep_fake_tag);
-            if(iel.CloseJet_FlavourInt()==4) FillEventCutflowAll("OSElectron", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
-            if(iel.CloseJet_FlavourInt()==5) FillEventCutflowAll("OSElectron", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
+	    if(iel.CloseJet_FlavourInt()==0) FillCutflow("OSElectron", "LF_Fake_type", weight_ll, lables,lep_fake_tag);
+            if(iel.CloseJet_FlavourInt()==4) FillCutflow("OSElectron", "HFC_Fake_type", weight_ll, lables,lep_fake_tag);
+            if(iel.CloseJet_FlavourInt()==5) FillCutflow("OSElectron", "HFB_Fake_type", weight_ll, lables,lep_fake_tag);
+            if(iel.CloseJet_FlavourInt()==4) FillCutflow("OSElectron", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
+            if(iel.CloseJet_FlavourInt()==5) FillCutflow("OSElectron", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
             if(JetColl.size() == 0){
-              if(iel.CloseJet_FlavourInt()==0) FillEventCutflowAll("OSElectron_0j", "LF_Fake_type", weight_ll, lables,lep_fake_tag);
-              if(iel.CloseJet_FlavourInt()==4) FillEventCutflowAll("OSElectron_0j", "HFC_Fake_type", weight_ll, lables,lep_fake_tag);
-              if(iel.CloseJet_FlavourInt()==5) FillEventCutflowAll("OSElectron_0j", "HFB_Fake_type", weight_ll, lables,lep_fake_tag);
-              if(iel.CloseJet_FlavourInt()==4) FillEventCutflowAll("OSElectron_0j", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
-              if(iel.CloseJet_FlavourInt()==5) FillEventCutflowAll("OSElectron_0j", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
+              if(iel.CloseJet_FlavourInt()==0) FillCutflow("OSElectron_0j", "LF_Fake_type", weight_ll, lables,lep_fake_tag);
+              if(iel.CloseJet_FlavourInt()==4) FillCutflow("OSElectron_0j", "HFC_Fake_type", weight_ll, lables,lep_fake_tag);
+              if(iel.CloseJet_FlavourInt()==5) FillCutflow("OSElectron_0j", "HFB_Fake_type", weight_ll, lables,lep_fake_tag);
+              if(iel.CloseJet_FlavourInt()==4) FillCutflow("OSElectron_0j", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
+              if(iel.CloseJet_FlavourInt()==5) FillCutflow("OSElectron_0j", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
             }
             else     if(JetColl.size() == 1){
-              if(iel.CloseJet_FlavourInt()==0) FillEventCutflowAll("OSElectron_1j", "LF_Fake_type", weight_ll, lables,lep_fake_tag);
-              if(iel.CloseJet_FlavourInt()==4) FillEventCutflowAll("OSElectron_1j", "HFC_Fake_type", weight_ll, lables,lep_fake_tag);
-              if(iel.CloseJet_FlavourInt()==5) FillEventCutflowAll("OSElectron_1j", "HFB_Fake_type", weight_ll, lables,lep_fake_tag);
-              if(iel.CloseJet_FlavourInt()==4) FillEventCutflowAll("OSElectron_1j", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
-              if(iel.CloseJet_FlavourInt()==5) FillEventCutflowAll("OSElectron_1j", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
+              if(iel.CloseJet_FlavourInt()==0) FillCutflow("OSElectron_1j", "LF_Fake_type", weight_ll, lables,lep_fake_tag);
+              if(iel.CloseJet_FlavourInt()==4) FillCutflow("OSElectron_1j", "HFC_Fake_type", weight_ll, lables,lep_fake_tag);
+              if(iel.CloseJet_FlavourInt()==5) FillCutflow("OSElectron_1j", "HFB_Fake_type", weight_ll, lables,lep_fake_tag);
+              if(iel.CloseJet_FlavourInt()==4) FillCutflow("OSElectron_1j", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
+              if(iel.CloseJet_FlavourInt()==5) FillCutflow("OSElectron_1j", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
             }
             else{
-              if(iel.CloseJet_FlavourInt()==0) FillEventCutflowAll("OSElectron_2j", "LF_Fake_type", weight_ll, lables,lep_fake_tag);
-              if(iel.CloseJet_FlavourInt()==4) FillEventCutflowAll("OSElectron_2j", "HFC_Fake_type", weight_ll, lables,lep_fake_tag);
-              if(iel.CloseJet_FlavourInt()==5) FillEventCutflowAll("OSElectron_2j", "HFB_Fake_type", weight_ll, lables,lep_fake_tag);
-              if(iel.CloseJet_FlavourInt()==4) FillEventCutflowAll("OSElectron_2j", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
-              if(iel.CloseJet_FlavourInt()==5) FillEventCutflowAll("OSElectron_2j", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
+              if(iel.CloseJet_FlavourInt()==0) FillCutflow("OSElectron_2j", "LF_Fake_type", weight_ll, lables,lep_fake_tag);
+              if(iel.CloseJet_FlavourInt()==4) FillCutflow("OSElectron_2j", "HFC_Fake_type", weight_ll, lables,lep_fake_tag);
+              if(iel.CloseJet_FlavourInt()==5) FillCutflow("OSElectron_2j", "HFB_Fake_type", weight_ll, lables,lep_fake_tag);
+              if(iel.CloseJet_FlavourInt()==4) FillCutflow("OSElectron_2j", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
+              if(iel.CloseJet_FlavourInt()==5) FillCutflow("OSElectron_2j", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
 	      
             }
 
@@ -1034,11 +1018,11 @@ void HNL_LeptonIDBDTStudies::CheckSSFakeBreakDown(AnalyzerParameter param,HNL_Le
 
       //      }
       else{
-	if(imu.CloseJet_FlavourInt()==0) FillEventCutflowAll("Muon", "LF_Fake_type", weight_ll, lables,lep_fake_tag);
-	if(imu.CloseJet_FlavourInt()==4) FillEventCutflowAll("Muon", "HFC_Fake_type", weight_ll, lables,lep_fake_tag);
-	if(imu.CloseJet_FlavourInt()==5) FillEventCutflowAll("Muon", "HFB_Fake_type", weight_ll, lables,lep_fake_tag);
-        if(imu.CloseJet_FlavourInt()==4) FillEventCutflowAll("Muon", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
-        if(imu.CloseJet_FlavourInt()==5) FillEventCutflowAll("Muon", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
+	if(imu.CloseJet_FlavourInt()==0) FillCutflow("Muon", "LF_Fake_type", weight_ll, lables,lep_fake_tag);
+	if(imu.CloseJet_FlavourInt()==4) FillCutflow("Muon", "HFC_Fake_type", weight_ll, lables,lep_fake_tag);
+	if(imu.CloseJet_FlavourInt()==5) FillCutflow("Muon", "HFB_Fake_type", weight_ll, lables,lep_fake_tag);
+        if(imu.CloseJet_FlavourInt()==4) FillCutflow("Muon", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
+        if(imu.CloseJet_FlavourInt()==5) FillCutflow("Muon", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
 
 
 	if(MuonCollFake.size()==1){
@@ -1069,42 +1053,42 @@ void HNL_LeptonIDBDTStudies::CheckSSFakeBreakDown(AnalyzerParameter param,HNL_Le
 
 	    }
 	    
-            if(imu.CloseJet_FlavourInt()==0) FillEventCutflowAll("CRMuon", "LF_Fake_type", weight_ll, lables,lep_fake_tag);
-            if(imu.CloseJet_FlavourInt()==4) FillEventCutflowAll("CRMuon", "HFC_Fake_type", weight_ll, lables,lep_fake_tag);
-            if(imu.CloseJet_FlavourInt()==5) FillEventCutflowAll("CRMuon", "HFB_Fake_type", weight_ll, lables,lep_fake_tag);
-            if(imu.CloseJet_FlavourInt()==4) FillEventCutflowAll("CRMuon", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
-            if(imu.CloseJet_FlavourInt()==5) FillEventCutflowAll("CRMuon", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
+            if(imu.CloseJet_FlavourInt()==0) FillCutflow("CRMuon", "LF_Fake_type", weight_ll, lables,lep_fake_tag);
+            if(imu.CloseJet_FlavourInt()==4) FillCutflow("CRMuon", "HFC_Fake_type", weight_ll, lables,lep_fake_tag);
+            if(imu.CloseJet_FlavourInt()==5) FillCutflow("CRMuon", "HFB_Fake_type", weight_ll, lables,lep_fake_tag);
+            if(imu.CloseJet_FlavourInt()==4) FillCutflow("CRMuon", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
+            if(imu.CloseJet_FlavourInt()==5) FillCutflow("CRMuon", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
 
           }
         }
 	if(SameCharge(LeptonColl))  {
 
-	  if(imu.CloseJet_FlavourInt()==0) FillEventCutflowAll("SSMuon", "LF_Fake_type", weight_ll, lables,lep_fake_tag);
-	  if(imu.CloseJet_FlavourInt()==4) FillEventCutflowAll("SSMuon", "HFC_Fake_type", weight_ll, lables,lep_fake_tag);	  
-	  if(imu.CloseJet_FlavourInt()==5) FillEventCutflowAll("SSMuon", "HFB_Fake_type", weight_ll, lables,lep_fake_tag);
-	  if(imu.CloseJet_FlavourInt()==4) FillEventCutflowAll("SSMuon", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
-          if(imu.CloseJet_FlavourInt()==5) FillEventCutflowAll("SSMuon", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
+	  if(imu.CloseJet_FlavourInt()==0) FillCutflow("SSMuon", "LF_Fake_type", weight_ll, lables,lep_fake_tag);
+	  if(imu.CloseJet_FlavourInt()==4) FillCutflow("SSMuon", "HFC_Fake_type", weight_ll, lables,lep_fake_tag);	  
+	  if(imu.CloseJet_FlavourInt()==5) FillCutflow("SSMuon", "HFB_Fake_type", weight_ll, lables,lep_fake_tag);
+	  if(imu.CloseJet_FlavourInt()==4) FillCutflow("SSMuon", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
+          if(imu.CloseJet_FlavourInt()==5) FillCutflow("SSMuon", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
 	  if(JetColl.size() == 0){
-	    if(imu.CloseJet_FlavourInt()==0) FillEventCutflowAll("SSMuon_0j", "LF_Fake_type", weight_ll, lables,lep_fake_tag);
-	    if(imu.CloseJet_FlavourInt()==4) FillEventCutflowAll("SSMuon_0j", "HFC_Fake_type", weight_ll, lables,lep_fake_tag);
-	    if(imu.CloseJet_FlavourInt()==5) FillEventCutflowAll("SSMuon_0j", "HFB_Fake_type", weight_ll, lables,lep_fake_tag);
-	    if(imu.CloseJet_FlavourInt()==4) FillEventCutflowAll("SSMuon_0j", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
-	    if(imu.CloseJet_FlavourInt()==5) FillEventCutflowAll("SSMuon_0j", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
+	    if(imu.CloseJet_FlavourInt()==0) FillCutflow("SSMuon_0j", "LF_Fake_type", weight_ll, lables,lep_fake_tag);
+	    if(imu.CloseJet_FlavourInt()==4) FillCutflow("SSMuon_0j", "HFC_Fake_type", weight_ll, lables,lep_fake_tag);
+	    if(imu.CloseJet_FlavourInt()==5) FillCutflow("SSMuon_0j", "HFB_Fake_type", weight_ll, lables,lep_fake_tag);
+	    if(imu.CloseJet_FlavourInt()==4) FillCutflow("SSMuon_0j", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
+	    if(imu.CloseJet_FlavourInt()==5) FillCutflow("SSMuon_0j", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
     	  }
 	  else           if(JetColl.size() == 1){
-            if(imu.CloseJet_FlavourInt()==0) FillEventCutflowAll("SSMuon_1j", "LF_Fake_type", weight_ll, lables,lep_fake_tag);
-            if(imu.CloseJet_FlavourInt()==4) FillEventCutflowAll("SSMuon_1j", "HFC_Fake_type", weight_ll, lables,lep_fake_tag);
-            if(imu.CloseJet_FlavourInt()==5) FillEventCutflowAll("SSMuon_1j", "HFB_Fake_type", weight_ll, lables,lep_fake_tag);
-            if(imu.CloseJet_FlavourInt()==4) FillEventCutflowAll("SSMuon_1j", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
-            if(imu.CloseJet_FlavourInt()==5) FillEventCutflowAll("SSMuon_1j", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
+            if(imu.CloseJet_FlavourInt()==0) FillCutflow("SSMuon_1j", "LF_Fake_type", weight_ll, lables,lep_fake_tag);
+            if(imu.CloseJet_FlavourInt()==4) FillCutflow("SSMuon_1j", "HFC_Fake_type", weight_ll, lables,lep_fake_tag);
+            if(imu.CloseJet_FlavourInt()==5) FillCutflow("SSMuon_1j", "HFB_Fake_type", weight_ll, lables,lep_fake_tag);
+            if(imu.CloseJet_FlavourInt()==4) FillCutflow("SSMuon_1j", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
+            if(imu.CloseJet_FlavourInt()==5) FillCutflow("SSMuon_1j", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
           }
 
 	  else{
-	    if(imu.CloseJet_FlavourInt()==0) FillEventCutflowAll("SSMuon_2j", "LF_Fake_type", weight_ll, lables,lep_fake_tag);
-            if(imu.CloseJet_FlavourInt()==4) FillEventCutflowAll("SSMuon_2j", "HFC_Fake_type", weight_ll, lables,lep_fake_tag);
-            if(imu.CloseJet_FlavourInt()==5) FillEventCutflowAll("SSMuon_2j", "HFB_Fake_type", weight_ll, lables,lep_fake_tag);
-            if(imu.CloseJet_FlavourInt()==4) FillEventCutflowAll("SSMuon_2j", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
-            if(imu.CloseJet_FlavourInt()==5) FillEventCutflowAll("SSMuon_2j", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
+	    if(imu.CloseJet_FlavourInt()==0) FillCutflow("SSMuon_2j", "LF_Fake_type", weight_ll, lables,lep_fake_tag);
+            if(imu.CloseJet_FlavourInt()==4) FillCutflow("SSMuon_2j", "HFC_Fake_type", weight_ll, lables,lep_fake_tag);
+            if(imu.CloseJet_FlavourInt()==5) FillCutflow("SSMuon_2j", "HFB_Fake_type", weight_ll, lables,lep_fake_tag);
+            if(imu.CloseJet_FlavourInt()==4) FillCutflow("SSMuon_2j", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
+            if(imu.CloseJet_FlavourInt()==5) FillCutflow("SSMuon_2j", "HF_Fake_type", weight_ll, lables,lep_fake_tag);
 	  }
 	}
       }
@@ -1113,8 +1097,8 @@ void HNL_LeptonIDBDTStudies::CheckSSFakeBreakDown(AnalyzerParameter param,HNL_Le
     return;
     if(!SameCharge(LeptonColl))return;
 
-    FillAllMuonPlots("SS_FakeMuon","MC"+channel_string,MuonCollFake,weight_ll);
-    FillAllMuonPlots("SS_PromptMuon","MC"+channel_string,MuonCollPrompt,weight_ll);
+    FillMuonCollPlots(param,"SS_FakeMuon_"+channel_string,MuonCollFake,weight_ll);
+    FillMuonCollPlots(param,"SS_PromptMuon_"+channel_string,MuonCollPrompt,weight_ll);
         
   }
   
@@ -1133,16 +1117,16 @@ void HNL_LeptonIDBDTStudies::MakeBDTPlots(AnalyzerParameter param,HNL_LeptonCore
   if(!IsData){
 
     vector<Electron> ElectronCollFake     = SkimLepColl(ElectronColl, param, "HFake");
-    FillAllElectronPlots("FakeElectron","MC"+channel_string,ElectronCollFake,weight_ll);
+    FillAllElectronPlots(param,"FakeElectron_"+channel_string,ElectronCollFake,weight_ll);
 
     vector<Electron> ElectronCollCF     = SkimLepColl(ElectronColl,  param, "CF");
-    FillAllElectronPlots("CFElectron","MC"+channel_string,ElectronCollCF,weight_ll);
+    FillAllElectronPlots(param,"CFElectron_"+channel_string,ElectronCollCF,weight_ll);
 
     vector<Electron> ElectronCollConv     = SkimLepColl(ElectronColl, param, "NHConv");
-    FillAllElectronPlots("ConvElectron","MC"+channel_string,ElectronCollConv,weight_ll);
+    FillAllElectronPlots(param,"ConvElectron_"+channel_string,ElectronCollConv,weight_ll);
 
     vector<Electron> ElectronCollPrompt   = SkimLepColl(ElectronColl, param, "PromptNoCF");
-    FillAllElectronPlots("PromptElectron","MC"+channel_string,ElectronCollPrompt,weight_ll);
+    FillAllElectronPlots(param,"PromptElectron_"+channel_string,ElectronCollPrompt,weight_ll);
   }
   
 
@@ -1153,20 +1137,21 @@ void HNL_LeptonIDBDTStudies::MakeBDTPlots(AnalyzerParameter param,HNL_LeptonCore
 
   if(LeptonColl.size() != 2) return;
  
-  Particle METv = GetvMET("PuppiT1xyCorr"); // reyturns MET with systematic correction                                            
+  Particle METv = GetMiniAODvMET("PuppiT1xyCorr"); // reyturns MET with systematic correction                                            
 
   std::vector<Jet> BJetColl  = GetHNLJets("BJetM", param);
   // use Z peak                                                                                                                              
-  if(fabs(GetLLMass(LeptonColl)- 90.1) < 10 && METv.Pt() < 30&& BJetColl.size()==0) {
+  if(fabs(GetLLMass(LeptonColl)- M_Z) < 10 && METv.Pt() < 30&& BJetColl.size()==0) {
     
     if(ElectronColl[0].PassID("passPOGTight") && ElectronColl[1].PassID("passPOGTight") ){
       AnalyzerParameter paramPOG=param;
-      paramPOG.Electron_ID_SF_Key = "passTightID";
-      double POGSF = GetElectronSFEventWeight(ElectronColl,paramPOG);
-      if(!IsData)  POGSF*= 0.95;
+      paramPOG.k.Electron_ID_SF = "passTightID";
+      double POGSF = 1.;
+      EvalElectronIDWeight(ElectronColl,paramPOG, POGSF);
+
       FillHist(channel_string+"/"+ID+"/llmass_"+channel_string, GetLLMass(LeptonColl), weight_ll*POGSF, 70, 50., 120);
       FillHist(channel_string+"/"+ID+"/NVTX_"+channel_string, nPileUp, weight_ll*POGSF, 100, 0., 100);
-      FillHist(channel_string+"/"+ID+"/MET_"+channel_string, GetvMET("PuppiT1xyCorr").Pt(), weight_ll*POGSF, 100, 0., 100);
+      FillHist(channel_string+"/"+ID+"/MET_"+channel_string, GetMiniAODvMET("PuppiT1xyCorr").Pt(), weight_ll*POGSF, 100, 0., 100);
     }
     
     for(auto iel : ElectronColl) {
@@ -1188,7 +1173,7 @@ void HNL_LeptonIDBDTStudies::MakeBDTPlots(AnalyzerParameter param,HNL_LeptonCore
     if(METv.Pt() > 30) return;
     if(!ZmassOSSFWindowCheck(LeptonColl, 10.)) return;
 
-    FillAllElectronPlots("OSElectron","Z",ElectronColl,weight_ll);
+    FillAllElectronPlots(param,"OSElectronZ",ElectronColl,weight_ll);
 
     vector<Electron> ElectronCollDATATight;
     vector<Electron> ElectronCollDATAFake;
@@ -1196,8 +1181,8 @@ void HNL_LeptonIDBDTStudies::MakeBDTPlots(AnalyzerParameter param,HNL_LeptonCore
       if(iel.IsGsfCtfScPixChargeConsistent() && iel.SIP3D() < 3) ElectronCollDATATight.push_back(iel);
       if( iel.SIP3D() > 5) ElectronCollDATAFake.push_back(iel);
     }
-    FillAllElectronPlots("OSElectron","ZTight",ElectronCollDATATight,weight_ll);
-    FillAllElectronPlots("OSElectron","ZFake" ,ElectronCollDATAFake,weight_ll);
+    FillAllElectronPlots(param,"OSElectron_ZTight",ElectronCollDATATight,weight_ll);
+    FillAllElectronPlots(param,"OSElectron_ZFake" ,ElectronCollDATAFake,weight_ll);
 
     
     std::vector<Electron>   ElectronCollV = GetElectrons(param.Electron_Veto_ID, 10., 2.5);
@@ -1207,7 +1192,7 @@ void HNL_LeptonIDBDTStudies::MakeBDTPlots(AnalyzerParameter param,HNL_LeptonCore
     
     std::vector<Tau> TauColl;
 
-    Fill_RegionPlots(dilep_channel, 0, param.Name,"ZPeak" ,  TauColl, JetColl, AK8_JetColl, BJetColl, LeptonColl, LeptonCollV, GetvMET("PuppiT1xyCorr"), nPV, weight_ll,param.WriteOutVerbose);
+    Fill_RegionPlots(param,"ZPeak" ,  TauColl, JetColl, AK8_JetColl, LeptonColl,  GetMiniAODvMET("PuppiT1xyCorr"), nPV, weight_ll);
   }
 
   return;

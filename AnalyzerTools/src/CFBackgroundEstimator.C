@@ -3,6 +3,8 @@
 CFBackgroundEstimator::CFBackgroundEstimator()
 {
 
+  MissingHists.clear();
+
   IgnoreNoHist = false;
     
   histDir = TDirectoryHelper::GetTempDirectory("CFBackgroundEstimator");
@@ -65,6 +67,10 @@ void CFBackgroundEstimator::ReadHistograms(){
 
 CFBackgroundEstimator::~CFBackgroundEstimator(){
 
+  if(MissingHists.size() > 0){
+    cout << "CFBackgroundEstimator Missing Hists " << endl;
+    for(auto iMissing : MissingHists) cout << "Missing : " << iMissing << endl;
+  }
 }
 
 double CFBackgroundEstimator::GetElectronCFRate(TString ID, TString key, double eta, double pt, int sys){
@@ -77,26 +83,49 @@ double CFBackgroundEstimator::GetElectronCFRate(TString ID, TString key, double 
 
   eta = fabs(eta);
   if(eta>=2.5) eta = 2.49;
+  
+  
+  if(pt < 15) pt = 15;
+  if(key.Contains("PtInv")){
+    if(pt > 500) pt = 499;
+  }
+  else{
+    if(pt > 200) pt = 199;
+  }
+  
+  TString EtaRegion = "EtaRegion1";
+  if(eta<0.8) EtaRegion = "EtaRegion1";
+  else if(eta<1.2)   EtaRegion = "EtaRegion2";
+  else if(eta<1.47) EtaRegion = "EtaRegion3";
+  else if(eta<1.9) EtaRegion = "EtaRegion4";
+  else if(eta<2.1) EtaRegion = "EtaRegion5";
+  else if(eta<2.2) EtaRegion = "EtaRegion6";
+  else if(eta<2.3) EtaRegion = "EtaRegion7";
+  else if(eta<2.4) EtaRegion = "EtaRegion8";
+  else EtaRegion = "EtaRegion9";
 
-
-  TString EtaRegion = "InnerBarrel";
-  if(eta<0.8) EtaRegion = "InnerBarrel";
-  else if(eta<1.479) EtaRegion = "OuterBarrel";
-  else EtaRegion = "EndCap";
-
+  key = key.ReplaceAll("EtaRegion",EtaRegion);
   std::map< TString, TH1D* >::const_iterator mapit;
-  mapit = map_hist_Electron.find(ID+"_"+key+"_"+EtaRegion+"_InvGenPt");
+
+  mapit = map_hist_Electron.find(key );
 
   if(mapit==map_hist_Electron.end()){
-    cout << "[CFBackgroundEstimator::GetElectronCFRate] No"<< ID+"_"+key+"_"+EtaRegion+"_InvGenPt" <<endl;
+    cout << "[CFBackgroundEstimator::GetElectronCFRate] No"<< key  <<endl;
+    if(IgnoreNoHist) {
+      TString MapK = key;
+      if (std::find(MissingHists.begin(), MissingHists.end(), MapK ) == MissingHists.end())   MissingHists.push_back(MapK);
+      return 1.;
+    }
+
     exit(ENODATA);
   }
 
-  int this_bin = (mapit->second)->FindBin(1./pt);
+  int this_bin = (key.Contains("PtInv")) ? (mapit->second)->FindBin(1./pt) : (mapit->second)->FindBin(pt);
+
   value = (mapit->second)->GetBinContent(this_bin);
   error = (mapit->second)->GetBinError(this_bin);
 
-  //cout << "[CFBackgroundEstimator::CFBackgroundEstimator] value = " << value << endl;
+  //  cout << "[CFBackgroundEstimator::CFBackgroundEstimator] value = " << value << endl;
 
   return value+double(sys)*error;
 
@@ -119,14 +148,22 @@ double CFBackgroundEstimator::GetElectronCFRate2D(TString ID, TString key, doubl
   mapit = map_hist_Electron.find("Rate_" + ID+"_"+key);
   
   if(mapit==map_hist_Electron.end()){
-    if(IgnoreNoHist) return 1.;
+    if(IgnoreNoHist) {
+      TString MapK = "Rate_" + ID+"_"+key;
+      if (std::find(MissingHists.begin(), MissingHists.end(), MapK ) == MissingHists.end())   MissingHists.push_back(MapK);
+      return 1.;
+    }
     
     cout << "[CFBackgroundEstimator::GetElectronCFRate] No"<< ID+"_"+key+"_pteta" <<endl;
     exit(ENODATA);
   }
 
   if(!mapit->second) {
-    if(IgnoreNoHist) return 1.;
+    if(IgnoreNoHist) {
+      TString MapK = "Rate_" + ID+"_"+key;
+      if (std::find(MissingHists.begin(), MissingHists.end(), MapK ) == MissingHists.end())   MissingHists.push_back(MapK);
+      return 1.;
+    }
   }
   int this_bin = (mapit->second)->FindBin(pt,eta);
   value = (mapit->second)->GetBinContent(this_bin);
@@ -184,14 +221,14 @@ double CFBackgroundEstimator::GetWeight(vector<Lepton *> lepptrs, AnalyzerParame
 
       Electron *el = (Electron *)( lepptrs.at(i) );
 
-      this_cf = GetElectronCFRate(param.Electron_CF_ID, param.Electron_CF_Key, fabs(el->scEta()), el->Pt(), sys);
+      this_cf = GetElectronCFRate(param.Electron_CF_ID, param.k.Electron_CF, fabs(el->scEta()), el->Pt(), sys);
 
     }
     else{
 
       Muon *mu = (Muon *)( lepptrs.at(i) );
 
-      this_cf = GetMuonCFRate(param.Muon_CF_ID, param.Muon_CF_Key, fabs(mu->Eta()), mu->Pt(), sys);
+      this_cf = GetMuonCFRate(param.Muon_CF_ID, param.k.Muon_CF, fabs(mu->Eta()), mu->Pt(), sys);
 
     }
 

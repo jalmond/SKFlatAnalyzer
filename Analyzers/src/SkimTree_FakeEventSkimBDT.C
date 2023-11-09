@@ -6,7 +6,7 @@ void SkimTree_FakeEventSkimBDT::initializeAnalyzer(){
   cout << "[SkimTree_FakeEventSkimBDT::initializeAnalyzer()] gDirectory = " << gDirectory->GetName() << endl;
   newtree = fChain->CloneTree(0);
 
-  SetupIDMVAReaderDefault();
+  HNL_LeptonCore::initializeAnalyzer();
   InitialiseLeptonBDTSKFlat();
   ///// ELECTRON BRANCHES                                                                                                                                                                                                                                                               
     
