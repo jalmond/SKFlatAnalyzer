@@ -14,9 +14,9 @@ void HNL_ControlRegionPlotter::executeEvent(){
   if(!(_jentry%10000)) run_Debug=true;
   else run_Debug=false;
 
-  vector<TString> LepIDs = {"HNL_ULID","HNTightV2"};//,"TopHN", "DefaultPOGTight"};
+  vector<TString> LepIDs = {"HNL_ULID","HNTightV2"};//,"TopHN", "DefaultPOGTight";
 
-  vector<HNL_LeptonCore::Channel> ChannelsToRun = {MuMu};//EE,MuMu,EMu,MuE};
+  vector<HNL_LeptonCore::Channel> ChannelsToRun = {MuMu};//EE,MuMu,EMu,MuE;
   for (auto id: LepIDs){
     for(auto channel : ChannelsToRun){
      
@@ -28,41 +28,41 @@ void HNL_ControlRegionPlotter::executeEvent(){
       if(HasFlag("VBF_CR"))  CRToRun.push_back("VBF_CR");
       
       if(id=="HNL_ULID"){
-	vector<TString> MuFakeIDs = {"HNL_ULID_FO","HNL_ULID_FOv2_"+GetYearString(), "HNL_ULID_FOv3_"+GetYearString(), "HNL_ULID_FOv4","HNL_ULID_FOv5", "HNL_ULID_FOv6_"+GetYearString()};
-	vector<TString> FakeTag   = {"HNL_ULID_FO","HNL_ULID_FOv2", "HNL_ULID_FOv3", "HNL_ULID_FOv4","HNL_ULID_FOv5", "HNL_ULID_FOv6"};
-	vector<TString> FakeParam = {"Pt","PtCorr","PtParton","MotherJetPt"};
-	vector<TString> FakeMethod= {"BDTFlavour","Standard"};
-	
-	for(unsigned int i= 0 ; i < FakeTag.size(); i++){
-	  for(unsigned int j= 0 ; j < FakeParam.size(); j++){
-	    for(unsigned int k= 0 ; k < FakeMethod.size(); k++){
-	      for(int m = 0 ; m < 2 ; m++){
-		if(FakeMethod[k] == "BDTFlavour" && FakeTag[i] !=  "HNL_ULID_FO") continue;
-		AnalyzerParameter param_signal = HNL_LeptonCore::InitialiseHNLParameter(id,channel);
-		param_signal.PlottingVerbose = -1;
-		param_signal.FakeRateMethod = FakeMethod[k]; 
-		param_signal.FakeRateParam  = FakeParam[j]; 
-		param_signal.Muon_FR_ID     = MuFakeIDs[i] ; 
-		param_signal.k.Muon_PR      = "pt_eta_"+FakeTag[i]+"_PR_cent";
-		param_signal.k.Muon_FR      = FakeTag[i]+"_FR_cent";
-		if(m==0) {
-		  param_signal.ApplyPR        = false;
-		  param_signal.Name           = param_signal.DefName+"_"+FakeTag[i]+"_"+param_signal.FakeRateName()+"_NoPR";
-		}		
-		else{
+        vector<TString> MuFakeIDs = {"HNL_ULID_FO","HNL_ULID_FOv2_"+GetYearString(), "HNL_ULID_FOv3_"+GetYearString(), "HNL_ULID_FOv4","HNL_ULID_FOv5", "HNL_ULID_FOv6_"+GetYearString()};
+        vector<TString> FakeTag   = {"HNL_ULID_FO","HNL_ULID_FOv2", "HNL_ULID_FOv3", "HNL_ULID_FOv4","HNL_ULID_FOv5", "HNL_ULID_FOv6"};
+        vector<TString> FakeParam = {"Pt","PtCorr","PtParton","MotherJetPt"};
+        vector<TString> FakeMethod= {"BDTFlavour","Standard"};
+        
+        for(unsigned int i= 0 ; i < FakeTag.size(); i++){
+          for(unsigned int j= 0 ; j < FakeParam.size(); j++){
+            for(unsigned int k= 0 ; k < FakeMethod.size(); k++){
+              for(int m = 0 ; m < 2 ; m++){
+                if(FakeMethod[k] == "BDTFlavour" && FakeTag[i] !=  "HNL_ULID_FO") continue;
+                AnalyzerParameter param_signal = HNL_LeptonCore::InitialiseHNLParameter(id,channel);
+                param_signal.PlottingVerbose = -1;
+                param_signal.FakeRateMethod = FakeMethod[k];
+                param_signal.FakeRateParam  = FakeParam[j];
+                param_signal.Muon_FR_ID     = MuFakeIDs[i] ;
+                param_signal.k.Muon_PR      = "pt_eta_"+FakeTag[i]+"_PR_cent";
+                param_signal.k.Muon_FR      = FakeTag[i]+"_FR_cent";
+                if(m==0) {
+                  param_signal.ApplyPR        = false;
+                  param_signal.Name           = param_signal.DefName+"_"+FakeTag[i]+"_"+param_signal.FakeRateName()+"_NoPR";
+                }    
+                else{
                   param_signal.ApplyPR        = true;
                   param_signal.Name           = param_signal.DefName+"_"+FakeTag[i]+"_"+param_signal.FakeRateName()+"_PR";
-		}
-		//		cout << "param_signal.Name = " << param_signal.Name << endl;
-		RunControlRegions(param_signal , CRToRun );
-	      }
-	    }
-	  }
-	}
+                }
+                //    cout << "param_signal.Name = " << param_signal.Name << endl;
+                RunControlRegions(param_signal , CRToRun );
+              }
+            }
+          }
+        }
       }
       else {
-	AnalyzerParameter param_signal = HNL_LeptonCore::InitialiseHNLParameter(id,channel);
-	RunControlRegions(param_signal , CRToRun );
+        AnalyzerParameter param_signal = HNL_LeptonCore::InitialiseHNLParameter(id,channel);
+        RunControlRegions(param_signal , CRToRun );
       }
     }
   }
@@ -141,8 +141,8 @@ void HNL_ControlRegionPlotter::RunControlRegions(AnalyzerParameter param, vector
   if(CRs.size() == 0) return;
 
   RunAllControlRegions(ElectronTightColl,ElectronVetoColl,MuonTightColl,MuonVetoColl, 
-		       AK4_JetAllColl, AK4_JetColl,AK4_VBF_JetColl,AK8_JetColl, AK4_BJetColl, 
-		       ev,METv, param, CRs,weight);
+           AK4_JetAllColl, AK4_JetColl,AK4_VBF_JetColl,AK8_JetColl, AK4_BJetColl, 
+           ev,METv, param, CRs,weight);
   
 
 }
