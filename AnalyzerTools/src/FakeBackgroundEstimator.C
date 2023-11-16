@@ -20,9 +20,10 @@ void FakeBackgroundEstimator::ReadHistograms(bool IsData){
   
   TDirectory* origDir = gDirectory;
 
-  vector<TString> FakeHMaps = {   DataFakePath+"/ElFR/histmap_Electron.txt",
+  vector<TString> FakeHMaps = {
+					DataFakePath+"/ElFR/histmap_Electron.txt",
 				  DataFakePath+"/MuFR/histmap_Muon.txt",
-				  DataFakePath+"/MuFR/scan_histmap_Muon.txt"};
+	};
 
   if(!IsData){
     cout << "Setting up MC Hists" << endl;
@@ -104,7 +105,7 @@ double FakeBackgroundEstimator::GetElectronFakeRate(TString ID, TString key, TSt
   if(BinningParam == "PtCorr")   PtType= "ptcorr_eta_";
   if(BinningParam == "MotherPt") PtType= "mjpt_eta_";
 
-  if(BinningMethod == "BDTFlavour" )   key =  PtType+  + key;
+  if(BinningMethod != "BDTFlavour" )   key =  PtType+key;
   else key = FakeTagger+"_"+ PtType+  key;
   
   if(BinningMethod == "BDTFlavour" && FakeTagger == ""){

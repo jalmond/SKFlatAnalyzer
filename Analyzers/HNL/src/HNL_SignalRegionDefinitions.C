@@ -115,7 +115,7 @@ void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq,
 
     }
     else{
-      if(!SameCharge(leps)) continue;
+      if(!SameCharge(leps)) continue; //JH : this checks Nlep == 2
     }
  
     if(RunFake&& IsData){
@@ -147,7 +147,7 @@ void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq,
     if (dilep_channel == EMu) LimitRegionsBDTQ =HNL_LeptonCore::ElectronMuonSRBDTQQ;
     */
     
-    if (!PassTriggerSelection(dilep_channel, ev, leps,param.TriggerSelection)) continue;
+    if (!PassTriggerSelection(dilep_channel, ev, leps,param.TriggerSelection)) continue; //JH : this synchronize correct PD name && lepton channel
     EvalTrigWeight(dilep_channel, muons,electrons,param, weight_channel);
 
     //// Apply Trigger SF and correction
