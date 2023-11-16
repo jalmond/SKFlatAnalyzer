@@ -53,11 +53,11 @@ void HNL_LeptonCore::Fill_PlotsAK8(AnalyzerParameter param, TString region, TStr
 
     for(auto itau : TauColl){
       if(fatjets[i].DeltaR(itau) < minDRTauAK8) minDRTauAK8 = fatjets[i].DeltaR(itau) ;
-      FillHist( plot_dir+region+ "/AK8J_dR_Tau",   fatjets[i].DeltaR(itau) ,  w, 50, 0, 5, "#DeltaR (WAK8,Tau)");
+      if(DrawLevel3)FillHist( plot_dir+region+ "/AK8J_dR_Tau",   fatjets[i].DeltaR(itau) ,  w, 50, 0, 5, "#DeltaR (WAK8,Tau)");
     }
     for(auto ilep : leps){
       if(fatjets[i].DeltaR(*ilep) < minDRLepAK8) minDRLepAK8 = fatjets[i].DeltaR(*ilep) ;
-      FillHist( plot_dir+region+ "/AK8Jet_dR_"+ilep->GetFlavour(),   fatjets[i].DeltaR(*ilep) ,  w, 50, 0, 5, "#DeltaR (WAK8,"+ilep->GetFlavour()+")");
+      if(DrawLevel3)FillHist( plot_dir+region+ "/AK8Jet_dR_"+ilep->GetFlavour(),   fatjets[i].DeltaR(*ilep) ,  w, 50, 0, 5, "#DeltaR (WAK8,"+ilep->GetFlavour()+")");
     }
 
     if(DrawLevel1)FillHist( plot_dir+region+ "/AK8J_Eta",          fatjets[i].Eta()       , w, 100, -5., 5.   , "AK8 Jet #eta");

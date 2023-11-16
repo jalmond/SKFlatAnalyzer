@@ -282,21 +282,32 @@ bool Muon::PassID(TString ID) const {
   if(ID.Contains("HNL_ULID_FOv2_")) {
     if(!PassID("HNL_ULID_FO")) return false;
     if(MVA() < MVACut) {
-      if(CloseJet_BScore() > 0.025) return false;
+      if(this->HasCloseJet() && CloseJet_BScore() > 0.025) return false;
     }
     return true;
   }
   if(ID.Contains("HNL_ULID_FOv3_")){
     if(!PassID("HNL_ULID_FO")) return false;
     if(MVA() < MVACut) {
-      if(CloseJet_Ptratio() < 0.45) return false;
-      if(CloseJet_BScore() > 0.025) return false;
+      if(this->HasCloseJet()){
+	if(CloseJet_Ptratio() < 0.45) return false;
+	if(CloseJet_BScore() > 0.025) return false;
+      }
     }
     return true;
   }
 
-  if(ID=="HNL_ULID_FOv4")  return (PassID("HNL_ULID_FO") && (MVA() > -0.9));
-  if(ID=="HNL_ULID_FOv5")  return (PassID("HNL_ULID_FO") && (HNL_MVA_Fake("QCD_BvsC_v5") < 0.));
+  if(ID.Contains("HNL_ULID_FOv4_"))  return (PassID("HNL_ULID_FO") && (MVA() > -0.9));
+  if(ID.Contains("HNL_ULID_FOv5_")) {
+    if(!PassID("HNL_ULID_FO")) return false;
+    if(MVA() < MVACut) {
+      if(CloseJet_BScore() > 0.2) return false;
+      if(HNL_MVA_Fake("QCD_LFvsHF_v5") > 0.9)  return false;
+    }
+    return true;
+
+  }
+
   if(ID.Contains("HNL_ULID_FOv6_")) {
     if(!PassID("HNL_ULID_FO")) return false;
     if(MVA() < MVACut) {
@@ -308,208 +319,17 @@ bool Muon::PassID(TString ID) const {
     return true;
   }
 
-  if(ID == "HNL_ULID_2017_Looser" )  { //JH : same with HNL_ULID_2017 ID; but w/ looser Loose ID (HNL_ULID_Baseline)
-    if(!PassID("MVALoose")) return false;
-    if(MVA() < 0.64)  return false;
-    if(fabs(IP3D()/IP3Derr()) > 7) return false;
-    return true;
-  }
-
-  // IDs to test TriLep method
-  if(ID=="HNL_ULID_2017_TagHF") {
-    if(!PassID("MVALoose")) return false;
-    if(MVA() < 0.64) {
-      if(TagHF() == 0) return false;
-    }
-    return true;
-  }
-  if(ID=="HNL_ULID_2017_TagLF") {
-    if(!PassID("MVALoose")) return false;
-    if(MVA() < 0.64) {
-      if(TagHF() == 1) return false;
-    }
-    return true;
-  }
-  if(ID=="HNL_ULID_2017_Pgt0p45") {
-    if(!PassID("MVALoose")) return false;
-    if(MVA() < 0.64) {
-      if(CloseJet_Ptratio() < 0.45) return false;
-    }
-    return true;
-  }
-  if(ID=="HNL_ULID_2017_Plt0p45") {
-    if(!PassID("MVALoose")) return false;
-    if(MVA() < 0.64) {
-      if(CloseJet_Ptratio() > 0.45) return false;
-    }
-    return true;
-  }
-  if(ID=="HNL_ULID_2017_Blt0p01") {
-    if(!PassID("MVALoose")) return false;
-    if(MVA() < 0.64) {
-      if(CloseJet_BScore() > 0.01) return false;
-    }
-    return true;
-  }
-  if(ID=="HNL_ULID_2017_Blt0p01_Pgt0p45") {
-    if(!PassID("MVALoose")) return false;
-    if(MVA() < 0.64) {
-      if(CloseJet_BScore() > 0.01) return false;
-      if(CloseJet_Ptratio() < 0.45) return false;
-    }
-    return true;
-  }
-  if(ID=="HNL_ULID_2017_Blt0p01_Plt0p45") {
-    if(!PassID("MVALoose")) return false;
-    if(MVA() < 0.64) {
-      if(CloseJet_BScore() > 0.01) return false;
-      if(CloseJet_Ptratio() > 0.45) return false;
-    }
-    return true;
-  }
-  if(ID=="HNL_ULID_2017_Blt0p01_TagHF") {
-    if(!PassID("MVALoose")) return false;
-    if(MVA() < 0.64) {
-      if(CloseJet_BScore() > 0.01) return false;
-      if(TagHF() == 0) return false;
-    }
-    return true;
-  }
-  if(ID=="HNL_ULID_2017_Blt0p01_TagLF") {
-    if(!PassID("MVALoose")) return false;
-    if(MVA() < 0.64) {
-      if(CloseJet_BScore() > 0.01) return false;
-      if(TagHF() == 1) return false;
-    }
-    return true;
-  }
-  if(ID=="HNL_ULID_2017_Blt0p015") {
-    if(!PassID("MVALoose")) return false;
-    if(MVA() < 0.64) {
-      if(CloseJet_BScore() > 0.015) return false;
-    }
-    return true;
-  }
-  if(ID=="HNL_ULID_2017_Blt0p02") {
-    if(!PassID("MVALoose")) return false;
-    if(MVA() < 0.64) {
-      if(CloseJet_BScore() > 0.02) return false;
-    }
-    return true;
-  }
-  if(ID=="HNL_ULID_2017_Blt0p025") {
-    if(!PassID("MVALoose")) return false;
-    if(MVA() < 0.64) {
-      if(CloseJet_BScore() > 0.025) return false;
-    }
-    return true;
-  }
-  if(ID=="HNL_ULID_2017_Blt0p025_Pgt0p45") {
-    if(!PassID("MVALoose")) return false;
-    if(MVA() < 0.64) {
-      if(CloseJet_BScore() > 0.025) return false;
-      if(CloseJet_Ptratio() < 0.45) return false;
-    }
-    return true;
-  }
-  if(ID=="HNL_ULID_2017_Blt0p025_Plt0p45") {
-    if(!PassID("MVALoose")) return false;
-    if(MVA() < 0.64) {
-      if(CloseJet_BScore() > 0.025) return false;
-      if(CloseJet_Ptratio() > 0.45) return false;
-    }
-    return true;
-  }
-  if(ID=="HNL_ULID_2017_Blt0p025_TagHF") {
-    if(!PassID("MVALoose")) return false;
-    if(MVA() < 0.64) {
-      if(CloseJet_BScore() > 0.025) return false;
-      if(TagHF() == 0) return false;
-    }
-    return true;
-  }
-  if(ID=="HNL_ULID_2017_Blt0p025_TagLF") {
-    if(!PassID("MVALoose")) return false;
-    if(MVA() < 0.64) {
-      if(CloseJet_BScore() > 0.025) return false;
-      if(TagHF() == 1) return false;
-    }
-    return true;
-  }
-  if(ID=="HNL_ULID_2017_Blt0p025_Pgt0p45_TagHF") {
-    if(!PassID("MVALoose")) return false;
-    if(MVA() < 0.64) {
-      if(CloseJet_BScore() > 0.025) return false;
-      if(CloseJet_Ptratio() < 0.45) return false;
-      if(TagHF() == 0) return false;
-    }
-    return true;
-  }
-  if(ID=="HNL_ULID_2017_Blt0p025_Pgt0p45_TagLF") {
-    if(!PassID("MVALoose")) return false;
-    if(MVA() < 0.64) {
-      if(CloseJet_BScore() > 0.025) return false;
-      if(CloseJet_Ptratio() < 0.45) return false;
-      if(TagHF() == 1) return false;
-    }
-    return true;
-  }
-  if(ID=="HNL_ULID_2017_Blt0p03") {
-    if(!PassID("MVALoose")) return false;
-    if(MVA() < 0.64) {
-      if(CloseJet_BScore() > 0.03) return false;
-    }
-    return true;
-  }
-  if(ID=="HNL_ULID_2017_Blt0p035") {
-    if(!PassID("MVALoose")) return false;
-    if(MVA() < 0.64) {
-      if(CloseJet_BScore() > 0.035) return false;
-    }
-    return true;
-  }
-  if(ID=="HNL_ULID_2017_Blt0p04") {
-    if(!PassID("MVALoose")) return false;
-    if(MVA() < 0.64) {
-      if(CloseJet_BScore() > 0.04) return false;
-    }
-    return true;
-  }
-  if(ID=="HNL_ULID_2017_Blt0p045") {
-    if(!PassID("MVALoose")) return false;
-    if(MVA() < 0.64) {
-      if(CloseJet_BScore() > 0.045) return false;
-    }
-    return true;
-  }
-  if(ID=="HNL_ULID_2017_Blt0p05") {
-    if(!PassID("MVALoose")) return false;
-    if(MVA() < 0.64) {
-      if(CloseJet_BScore() > 0.05) return false;
-    }
-    return true;
-  }
-  if(ID=="HNL_ULID_2017_Blt0p055") {
-    if(!PassID("MVALoose")) return false;
-    if(MVA() < 0.64) {
-      if(CloseJet_BScore() > 0.055) return false;
-    }
-    return true;
-  }
-  if(ID=="HNL_ULID_2017_Blt0p1") {
-    if(!PassID("MVALoose")) return false;
-    if(MVA() < 0.64) {
-      if(CloseJet_BScore() > 0.1) return false;
-    }
-    return true;
-  }
-  if(ID=="HNL_ULID_2017_Blt0p2") {
-    if(!PassID("MVALoose")) return false;
-    if(MVA() < 0.64) {
+  if(ID.Contains("HNL_ULID_FOv7_")) {
+    if(!PassID("HNL_ULID_FO")) return false;
+    if(MVA() < MVACut) {
       if(CloseJet_BScore() > 0.2) return false;
+      if(HNL_MVA_Fake("QCD_BvsC_v5") < -0.9)  return false;
+      if(HNL_MVA_Fake("QCD_BvsC_v5") > 0.9)  return false;
+      if(HNL_MVA_Fake("QCD_LFvsHF_v5") < -0.9)  return false;
+      if(HNL_MVA_Fake("QCD_LFvsHF_v5") > 0.9)  return false;
     }
     return true;
-  }
+ }
   
   if(ID == "HNL_ULID_2016")   return (PassID("MVALooseTrgSafe") && (MVA() >  MVACut) && (fabs(IP3D()/IP3Derr()) < 7) );
   if(ID == "HNL_ULID_2017")   return (PassID("MVALooseTrgSafe") && (MVA() >  MVACut) && (fabs(IP3D()/IP3Derr()) < 7) );

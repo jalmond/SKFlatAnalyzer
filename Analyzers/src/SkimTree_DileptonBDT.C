@@ -6,7 +6,7 @@ void SkimTree_DileptonBDT::initializeAnalyzer(){
   cout << "[SkimTree_DileptonBDT::initializeAnalyzer()] gDirectory = " << gDirectory->GetName() << endl;
   newtree = fChain->CloneTree(0);
 
-  HNL_LeptonCore::initializeAnalyzer();
+  HNL_LeptonCore::initializeAnalyzer(false,false);
   InitialiseLeptonBDTSKFlat();
 
   double_triggers.clear();

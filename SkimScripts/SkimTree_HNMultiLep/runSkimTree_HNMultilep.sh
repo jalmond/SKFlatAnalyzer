@@ -27,9 +27,12 @@ if [[ $1 == "DATA" ]]; then
     done
 
 fi
-if [[ $1 == "MC" ]]; then
-    SKFlat.py -a $analyzer  -l ${mcpath}/2016postVFP/QCD.txt -n 2  --nmax ${nmax}   -e ${i} 
+if [[ $1 == "W" ]]; then
 
+    for i in "${era_list[@]}"
+    do
+	SKFlat.py -a $analyzer  -i WJets_Sherpa  -n 4000  --nmax 500   -e ${i} 
+    done
 fi
 
 

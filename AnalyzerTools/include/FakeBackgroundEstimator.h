@@ -26,7 +26,8 @@ public:
   ~FakeBackgroundEstimator();
 
   TDirectory *histDir;
-  void ReadHistograms();
+
+  void ReadHistograms(bool IsData);
 
   bool IgnoreNoHist;
 

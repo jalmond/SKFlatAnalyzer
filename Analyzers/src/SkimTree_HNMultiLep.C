@@ -2,7 +2,7 @@
 
 void SkimTree_HNMultiLep::initializeAnalyzer(){
 
-  AnalyzerCore::initializeAnalyzer();
+  HNL_LeptonCore::initializeAnalyzer(false,false);
 
   outfile->cd();
   cout << "[SkimTree_HNMultiLep::initializeAnalyzer()] gDirectory = " << gDirectory->GetName() << endl;
@@ -165,7 +165,7 @@ void SkimTree_HNMultiLep::executeEvent(){
   //==== Skim 1 ) trigger
   if(! (ev.PassTrigger(triggers)) ) return;
 
-  if(this->DataStream == "SingleMuon" && (ev.PassTrigger(triggers_dimu))) return;
+
   if(this->DataStream == "SingleElectron" && (ev.PassTrigger(triggers_di_el))) return;
 
   std::vector<Muon>     muonPreColl     = GetMuons("HNLoosest", 5., 2.4);
@@ -173,6 +173,16 @@ void SkimTree_HNMultiLep::executeEvent(){
 
   std::sort(muonPreColl.begin(), muonPreColl.end(), PtComparing);
   std::sort(electronPreColl.begin(), electronPreColl.end(), PtComparing);
+
+
+  if(this->DataStream == "SingleMuon" && (ev.PassTrigger(triggers_dimu))) {
+    int imuPt15=0;
+    for(auto imu : muonPreColl){
+      if(imu.Pt() > 15.) imuPt15++;
+    }
+    if(imuPt15 > 1) return;
+  }
+
   
   int NEl  = electronPreColl.size();
   int NMu  = muonPreColl.size();

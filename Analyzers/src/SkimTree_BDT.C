@@ -5,8 +5,9 @@ void SkimTree_BDT::initializeAnalyzer(){
   outfile->cd();
   cout << "[SkimTree_BDT::initializeAnalyzer()] gDirectory = " << gDirectory->GetName() << endl;
   newtree = fChain->CloneTree(0);
-  
-  HNL_LeptonCore::initializeAnalyzer();
+
+  HNL_LeptonCore::initializeAnalyzer(false,true);
+
   InitialiseLeptonBDTSKFlat();
 
   ///// ELECTRON BRANCHES                                                                                                                                                                                                                                                                                                                                                                                                                

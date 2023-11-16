@@ -9,14 +9,16 @@ double HNL_LeptonCore::GetPtPartonSF(Lepton  Lep, TString LooseID){
   bool IsMuon=(Lep.LeptonFlavour() == Lepton::MUON);
   
   if(DataYear == 2016){
+
     if(IsMuon){
       if(LooseID == "HNL_ULID_FO")      return 0.741;
       if(LooseID == "HNL_ULID_POGM_FO") return 0.741;
       if(LooseID == "HNL_ULID_FOv2_"+GetYearString()) return 0.670;
       if(LooseID == "HNL_ULID_FOv3_"+GetYearString()) return 0.682;
-      if(LooseID == "HNL_ULID_FOv4")   return 0.741;
-      if(LooseID == "HNL_ULID_FOv5")   return 0.747;
+      if(LooseID == "HNL_ULID_FOv4_"+GetYearString()) return 0.741;
+      if(LooseID == "HNL_ULID_FOv5_"+GetYearString()) return 0.747;
       if(LooseID == "HNL_ULID_FOv6_"+GetYearString()) return 0.737;
+      if(LooseID == "HNL_ULID_FOv7_"+GetYearString()) return 0.737; 
     }
     else{
       if(Lep.IsBB()){
@@ -39,14 +41,32 @@ double HNL_LeptonCore::GetPtPartonSF(Lepton  Lep, TString LooseID){
     }
   }
   if(DataYear == 2017){
+
     if(IsMuon){
+      if(!IsData){
+	if(Lep.IsBB()){
+	  double SFPt = 1.;
+	  if(LooseID == "HNL_ULID_FO") return 0.802;
+	  if(LooseID == "HNL_ULID_FOv2_"+GetYearString()) return 0.641;
+	  if(LooseID == "HNL_ULID_FOv7_"+GetYearString()) return 0.806;
+	}
+	else{
+	  double SFPt = 1.;
+	  if(LooseID == "HNL_ULID_FO") return 0.777;
+          if(LooseID == "HNL_ULID_FOv2_"+GetYearString()) return 0.616;
+	  if(LooseID == "HNL_ULID_FOv7_"+GetYearString()) return 0.779;
+
+	}
+      }
+      
       if(LooseID == "HNL_ULID_FO") return 0.732;
       if(LooseID == "HNL_ULID_POGM_FO") return 0.728;
       if(LooseID == "HNL_ULID_FOv2_"+GetYearString()) return 0.683;
       if(LooseID == "HNL_ULID_FOv3_"+GetYearString()) return 0.680;
-      if(LooseID == "HNL_ULID_FOv4") return 0.732;
-      if(LooseID == "HNL_ULID_FOv5") return 0.740;
+      if(LooseID == "HNL_ULID_FOv4_"+GetYearString()) return 0.732;
+      if(LooseID == "HNL_ULID_FOv5_"+GetYearString()) return 0.740;
       if(LooseID == "HNL_ULID_FOv6_"+GetYearString()) return 0.730;
+      if(LooseID == "HNL_ULID_FOv7_"+GetYearString()) return 0.730; /// Update
     }
     else{
       if(Lep.IsBB()){
@@ -74,9 +94,10 @@ double HNL_LeptonCore::GetPtPartonSF(Lepton  Lep, TString LooseID){
       if(LooseID == "HNL_ULID_POGM_FO") return 0.735;
       if(LooseID == "HNL_ULID_FOv2_"+GetYearString()) return 0.689;
       if(LooseID == "HNL_ULID_FOv3_"+GetYearString()) return 0.687;
-      if(LooseID == "HNL_ULID_FOv4") return 0.736;
-      if(LooseID == "HNL_ULID_FOv5") return 0.744;
+      if(LooseID == "HNL_ULID_FOv4_"+GetYearString()) return 0.736;
+      if(LooseID == "HNL_ULID_FOv5_"+GetYearString()) return 0.744;
       if(LooseID == "HNL_ULID_FOv6_"+GetYearString()) return 0.737;
+      if(LooseID == "HNL_ULID_FOv7_"+GetYearString()) return 0.737;
     }
     else{
       if(Lep.IsBB()){

@@ -6,14 +6,12 @@ njobs=400
 njobs_data=100
 nmax=500
 declare  -a era_list=("2016postVFP" "2016preVFP" "2017" "2018")
+declare  -a joblist=("CheckProfile" "CheckProfileEE" "RatesMuon" "RatesMuon2" "RatesEl" "RatesEl2")
 
 for i in "${era_list[@]}"
 
 do
-    if [[ $1 == "MCFakes" ]]; then
-	SKFlat.py -a $analyzer  -l ${mcpath}/QCD_${i}.txt  -n ${njobs}  --nmax ${nmax}  -e ${i}   --skim SkimTree_FakeEventSkimBDT --userflags MCFakes&
-        SKFlat.py -a $analyzer  -l $mcpath/MC.txt              -n ${njobs}       --nmax ${nmax}  -e ${i}   --skim SkimTree_FakeEventSkimBDT --userflags MCFakes&
-    fi
+
     if [[ $1 == "CheckProfile" ]]; then
 	SKFlat.py -a $analyzer  -l ${mcpath}/QCD_${i}.txt  -n ${njobs}  --nmax ${nmax}  -e ${i}   --skim SkimTree_FakeEventSkimBDT --userflags CheckProfile&
         SKFlat.py -a $analyzer  -l $mcpath/MC.txt              -n ${njobs}       --nmax ${nmax}  -e ${i}   --skim SkimTree_FakeEventSkimBDT --userflags CheckProfile&
@@ -49,3 +47,10 @@ do
     fi
 
 done
+echo "List of Job Options are:"
+for i in "${joblist[@]}"
+
+do
+    echo $i
+done
+
