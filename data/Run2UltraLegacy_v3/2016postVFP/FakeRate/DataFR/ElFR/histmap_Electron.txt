@@ -1,5 +1,5 @@
-FakeRate	HNTightV2	ptcone_eta  AwayJetPt40	FR_EGamma_Version1_2018.root
-FakeRate 	passPOGTight	ptcone_eta  AwayJetPt40	FR_EGamma_Version1_2018.root
+FakeRate	HNTightV2	ptcone_eta  AwayJetPt40	FR_EGamma_Version1_2016b.root
+FakeRate 	passPOGTight	ptcone_eta  AwayJetPt40	FR_EGamma_Version1_2016b.root
 FakeRate 	TopHNT          ptcone_eta  FR_cent     FR_EGamma_2016b_Top.root
 FakeRate 	Peking          ptcone_eta  FR_cent     FR_EGamma_2016b_HNL_PtCone.root
 FakeRate 	HNTightV2       ptcone_eta  FR_cent     FR_EGamma_2016b_HNL_PtCone.root
