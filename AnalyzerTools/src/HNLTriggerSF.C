@@ -232,7 +232,7 @@ float MCCorrection::TriggerEfficiency(vector<Electron>& EleColl, vector<Muon>& M
   else if(DiElTrig){
     if(NEl==2){
       float pt1  = EleColl.at(0).Pt(), pt2 = EleColl.at(1).Pt();
-      float eta1 = EleColl.at(0).Eta(), eta2 = EleColl.at(1).Eta();
+      float eta1 = fabs(EleColl.at(0).Eta()), eta2 = fabs(EleColl.at(1).Eta());
       pt1 = min(max(pt1,MinPt1),MaxPt1), pt2 = min(max(pt2,MinPt2),MaxPt2);
       eta1 = min(max(eta1,((float)-1.)*MaxfEta1),MaxfEta1), eta2 = min(max(eta2,((float)-1.)*MaxfEta1),MaxfEta1);
 
@@ -246,7 +246,7 @@ float MCCorrection::TriggerEfficiency(vector<Electron>& EleColl, vector<Muon>& M
     }
     if(NEl==3 || NEl==4){
       float pt1  = EleColl.at(0).Pt(), pt2 = EleColl.at(1).Pt(), pt3 = EleColl.at(2).Pt();
-      float eta1 = EleColl.at(0).Eta(), eta2 = EleColl.at(1).Eta(), eta3 = EleColl.at(2).Eta();
+      float eta1 = fabs(EleColl.at(0).Eta()), eta2 = fabs(EleColl.at(1).Eta()), eta3 = fabs(EleColl.at(2).Eta());
       pt1 = min(max(pt1,MinPt1),MaxPt1), pt2 = min(max(pt2,MinPt2),MaxPt2), pt3 = min(max(pt3,MinPt2),MaxPt2);
       eta1 = min(max(eta1,((float)-1.)*MaxfEta1),MaxfEta1), eta2 = min(max(eta2,((float)-1.)*MaxfEta1),MaxfEta1);
       eta3 = min(max(eta3,((float)-1.)*MaxfEta1),MaxfEta1);
@@ -364,7 +364,7 @@ float MCCorrection::TriggerEfficiency(vector<Electron>& EleColl, vector<Muon>& M
     }
     else if(NEl==3){
       float pt1  = EleColl.at(0).Pt(), pt2 = EleColl.at(1).Pt(), pt3 = EleColl.at(2).Pt();
-      float eta1 = EleColl.at(0).Eta(), eta2 = EleColl.at(1).Eta(), eta3 = EleColl.at(2).Eta();
+      float eta1 = fabs(EleColl.at(0).Eta()), eta2 = fabs(EleColl.at(1).Eta()), eta3 = fabs(EleColl.at(2).Eta());
       eta1 = min(max(eta1,((float)-1.)*MaxfEta1),MaxfEta1), eta2 = min(max(eta2,((float)-1.)*MaxfEta1),MaxfEta1);
       eta3 = min(max(eta3,((float)-1.)*MaxfEta1),MaxfEta1);
       float EffLeg1_El1 = HistEff3->GetBinContent(HistEff3->FindBin(eta1, min(pt1,MaxPt3)));

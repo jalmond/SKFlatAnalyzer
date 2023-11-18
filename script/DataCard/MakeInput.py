@@ -9,17 +9,18 @@ eras = ["2016","2017","2018"]
 eras = ["2017"]
 masses = ["M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000"]
 masses = ["M5000","M7500","M10000","M15000","M20000"]
-masses = ["M100","M200","M300","M400","M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M10000","M15000","M20000"]
+masses = ["M85","M90","M95","M100","M125","M150","M200","M250","M300","M400","M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M10000","M15000","M20000"]
 #masses = ["M100","M200","M300","M400","M500"]
 #masses = ["M500"]
-channels = ["MuMu","EE","EMu"]
-#channels = ["MuMu","EE"]
+#channels = ["MuMu","EE","EMu"]
+channels = ["MuMu","EE"]
 
 InputPath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegionPlotter/"
 #OutputPath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegionPlotter/InputForCombine/"
 #OutputPath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegionPlotter/AddSyst/"
-OutputPath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegionPlotter/SR2HT_SR3l2pt/"
-OutputPath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegionPlotter/SR2HT_SR3l2pt_ChargeSplit/"
+#OutputPath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegionPlotter/SR2HT_SR3l2pt/"
+#OutputPath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegionPlotter/SR2HT_SR3l2pt_ChargeSplit/"
+OutputPath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegionPlotter/HNL_ULID/"
 Analyzer = "HNL_SignalRegionPlotter"
 
 DataSkim = ""
@@ -39,8 +40,8 @@ MergeSignal = False
 #MergeSSWW  = True
 
 Blinded = True
-AddSyst = True
-ChargeSplit = True
+AddSyst = False
+ChargeSplit = False
 if ChargeSplit:
   ChargeSplit = "ChargeSplit"
 else:
@@ -83,7 +84,8 @@ if MergeConv:
 if MergeMC:
 
   for era in eras:
-    OutFile=InputPath + era + "/"+Analyzer+MCSkim+"MC.root"
+    #OutFile=InputPath + era + "/"+Analyzer+MCSkim+"MC.root"
+    OutFile=InputPath + era + "/RunPrompt__/"+Analyzer+MCSkim+"MC.root"
     if os.path.exists(OutFile):
       os.system("rm " + OutFile)
     MClist = cmd.getoutput('ls '+InputPath+era+' | grep -v private | grep -v Run').replace("\n"," ").replace("HNL_SignalRegionPlotter",InputPath+era+"/HNL_SignalRegionPlotter") # remove signals, directories

@@ -176,7 +176,6 @@ bool HNL_LeptonCore::PassTriggerSelection(HNL_LeptonCore::Channel channel,Event 
   bool PassTrigger(false);
   bool apply_ptcut(true);
 
-
   std::vector<Lepton *> leps_eg;
   std::vector<Lepton *> leps_muon;
 
@@ -192,7 +191,7 @@ bool HNL_LeptonCore::PassTriggerSelection(HNL_LeptonCore::Channel channel,Event 
     else  if(selection == "HighPt")     return PassTriggerAndCheckStream(apply_ptcut,leps_muon,ev,TrigList_HNL_HighPtMu,check_pd);
     else  if(selection == "Full")       return PassTriggerAndCheckStream(apply_ptcut,leps_muon,ev,TrigList_Full_Mu,check_pd);
     else {
-      cout << "[HNL_LeptonCore::PassTriggerSelection ] selection " << selection <<  "not found.." << endl;
+      cout << "[HNL_LeptonCore::PassTriggerSelection] selection " << selection <<  "not found.." << endl;
       exit(EXIT_FAILURE);
     }
   }
@@ -207,7 +206,7 @@ bool HNL_LeptonCore::PassTriggerSelection(HNL_LeptonCore::Channel channel,Event 
     else if(selection == "HighPt")    return  PassTriggerAndCheckStream(apply_ptcut,leps_eg,ev,TrigList_HNL_HighPtEG,check_pd);
     else if(selection == "Full")      return  PassTriggerAndCheckStream(apply_ptcut,leps_eg,ev,TrigList_Full_EG,check_pd);
     else {
-      cout << "[HNL_LeptonCore::PassTriggerSelection ] selection " << selection << "  not found.." << endl;
+      cout << "[HNL_LeptonCore::PassTriggerSelection] selection " << selection << "  not found.." << endl;
       exit(EXIT_FAILURE);
     }
   }
@@ -223,9 +222,9 @@ bool HNL_LeptonCore::PassTriggerSelection(HNL_LeptonCore::Channel channel,Event 
     if(selection == "Dilep")     return  PassTriggerAndCheckStream(apply_ptcut,leps,     ev,TrigList_HNL_EGMu,check_pd);
     if(selection == "POGSglEl")  return  PassTriggerAndCheckStream(apply_ptcut,leps_eg,  ev,TrigList_POG_EG,check_pd);
     if(selection == "POGSglMu")  return  PassTriggerAndCheckStream(apply_ptcut,leps_muon,ev,TrigList_POG_Mu,check_pd);
-    if(selection == "Full") return  PassTriggerAndCheckStream(apply_ptcut,leps,     ev,TrigList_Full_EGMu,check_pd);
+    if(selection == "Full")      return  PassTriggerAndCheckStream(apply_ptcut,leps,     ev,TrigList_Full_EGMu,check_pd);
 
-    cout << "[HNL_LeptonCore::PassTriggerSelection ] selection " <<  selection << " not found.." << endl;
+    cout << "[HNL_LeptonCore::PassTriggerSelection] selection " <<  selection << " not found.." << endl;
     exit(EXIT_FAILURE);
   
   }
@@ -237,14 +236,14 @@ bool HNL_LeptonCore::PassTriggerSelection(HNL_LeptonCore::Channel channel,Event 
       if(ilep->LeptonFlavour() == Lepton::ELECTRON) leps_eg.push_back(ilep);
     }
 
-    if(selection == "Dilep")       return   PassTriggerAndCheckStream(apply_ptcut,leps,     ev,TrigList_HNL_MuEG,check_pd);
-    if(selection == "POGSglEl")    return   PassTriggerAndCheckStream(apply_ptcut,leps_eg,  ev,TrigList_POG_EG,check_pd);
-    if(selection == "POGSglMu")    return   PassTriggerAndCheckStream(apply_ptcut,leps_muon,ev,TrigList_POG_Mu,check_pd);
+    if(selection == "Dilep")     return   PassTriggerAndCheckStream(apply_ptcut,leps,     ev,TrigList_HNL_MuEG,check_pd);
+    if(selection == "POGSglEl")  return   PassTriggerAndCheckStream(apply_ptcut,leps_eg,  ev,TrigList_POG_EG,check_pd);
+    if(selection == "POGSglMu")  return   PassTriggerAndCheckStream(apply_ptcut,leps_muon,ev,TrigList_POG_Mu,check_pd);
 
     else    if(selection == "Full") return  PassTriggerAndCheckStream(apply_ptcut,leps,     ev,TrigList_Full_MuEG,check_pd);
 
     else {
-      cout << "[HNL_LeptonCore::PassTriggerSelection ] selection " <<  selection << " not found.." << endl;
+      cout << "[HNL_LeptonCore::PassTriggerSelection] selection " <<  selection << " not found.." << endl;
       exit(EXIT_FAILURE);
     }
   }

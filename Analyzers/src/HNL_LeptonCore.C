@@ -502,9 +502,9 @@ AnalyzerParameter HNL_LeptonCore::SetupHNLParameter(TString s_setup_version, TSt
 
     if(IsDYSample){
       if((abs(lhe_l0.ID())==11||abs(lhe_l0.ID())==13)) {
-	TLorentzVector genZ=(gen_l0+gen_l1);
-	param.w.zptweight =GetZptWeight(genZ.M(),genZ.Rapidity(),genZ.Pt());
-	param.w.weakweight=GetDYWeakWeight(genZ.M());
+  TLorentzVector genZ=(gen_l0+gen_l1);
+  param.w.zptweight =GetZptWeight(genZ.M(),genZ.Rapidity(),genZ.Pt());
+  param.w.weakweight=GetDYWeakWeight(genZ.M());
       }
       else param.hprefix+="tau_";
     }
@@ -541,7 +541,10 @@ AnalyzerParameter HNL_LeptonCore::SetupHNLParameter(TString s_setup_version, TSt
     param.Apply_Weight_TriggerSF= true;
 
     /// Set Bkg config
-    param.FakeMethod = "DATA";    param.CFMethod   = "DATA";    param.ConvMethod = "MC";
+    param.FakeMethod = "DATA";
+    //param.CFMethod   = "DATA";
+    param.CFMethod   = "MC";
+    param.ConvMethod = "MC";
     /// ID config
     param.Muon_Veto_ID     = "HNVeto_17028";   param.Electron_Veto_ID  = "HNVeto";         
     param.Muon_Tight_ID    = "HNTightV2";     param.Electron_Tight_ID = "HNTightV2";
@@ -600,7 +603,8 @@ AnalyzerParameter HNL_LeptonCore::SetupHNLParameter(TString s_setup_version, TSt
     param.Apply_Weight_TriggerSF= true;
 
     param.FakeMethod = "DATA";
-    param.CFMethod   = "DATA";
+    //param.CFMethod   = "DATA";
+    param.CFMethod   = "MC"; //JH FIXME later
     param.ConvMethod = "MC";
 
     param.Muon_Veto_ID      = "HNVetoMVA";   
@@ -1360,14 +1364,14 @@ double  HNL_LeptonCore::GetRecoObjMass(TString METHOD , std::vector<Jet> jets, s
       ST += jets[emme].Pt();
       for(UInt_t enne=1; enne<jets.size(); enne++) {
 
-	dijetmass_tmp = (jets[emme]+jets[enne]).M();
+  dijetmass_tmp = (jets[emme]+jets[enne]).M();
         if(emme == enne) continue;
 
         if ( fabs(dijetmass_tmp-80.4) < fabs(dijetmass-80.4) ) {
           dijetmass = dijetmass_tmp;
           m = emme;
           n = enne;
-	}
+  }
       }
     }
     Particle Wcand = jets[m] + jets[n]+*leps[0] + *leps[1];
