@@ -18,10 +18,7 @@ void HNL_LeptonCore::initializeAnalyzer(bool READBKGHISTS, bool SETUPIDBDT){
 
   //=== bkg flags                                                                                                                                      
   RunPrompt  = HasFlag("RunPrompt");
-  RunFake    = HasFlag("RunFake") || HasFlag("RunFakeClosurePred"); //JH
-  RunFakeClosure     = HasFlag("RunFakeClosurePred") || HasFlag("RunFakeClosureObs"); //JH : this makes the analyzer return at the presel level
-  RunFakeClosurePred = HasFlag("RunFakeClosurePred"); //JH : closure predicted using QCD MC fake rates
-  RunFakeClosureObs  = HasFlag("RunFakeClosureObs"); //JH : closure observed from MC info
+  RunFake    = HasFlag("RunFake");
   RunCF      = HasFlag("RunCF");
   RunConv    = HasFlag("RunConv");
   RunPromptTLRemoval = HasFlag("RunPromptTLRemoval");
@@ -542,8 +539,8 @@ AnalyzerParameter HNL_LeptonCore::SetupHNLParameter(TString s_setup_version, TSt
 
     /// Set Bkg config
     param.FakeMethod = "DATA";
-    //param.CFMethod   = "DATA";
-    param.CFMethod   = "MC";
+    param.CFMethod   = "DATA";
+    //param.CFMethod   = "MC";
     param.ConvMethod = "MC";
     /// ID config
     param.Muon_Veto_ID     = "HNVeto_17028";   param.Electron_Veto_ID  = "HNVeto";         
@@ -603,8 +600,8 @@ AnalyzerParameter HNL_LeptonCore::SetupHNLParameter(TString s_setup_version, TSt
     param.Apply_Weight_TriggerSF= true;
 
     param.FakeMethod = "DATA";
-    //param.CFMethod   = "DATA";
-    param.CFMethod   = "MC"; //JH FIXME later
+    param.CFMethod   = "DATA";
+    //param.CFMethod   = "MC"; //JH FIXME later
     param.ConvMethod = "MC";
 
     param.Muon_Veto_ID      = "HNVetoMVA";   

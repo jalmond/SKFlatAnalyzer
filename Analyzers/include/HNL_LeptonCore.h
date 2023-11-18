@@ -423,7 +423,6 @@ nvtx,  double w);
 
   /// global var for user flags
   bool RunPrompt,RunFake, RunCF,  RunConv, RunSyst,RunPromptTLRemoval,run_ORTrigger;
-  bool RunFakeClosure, RunFakeClosurePred, RunFakeClosureObs; //JH: for closure test
   bool IsSkimmed, Signal, HEM1516 ,BeforeRun319077;
   bool DEBUG,IsCentral, RunFullAnalysis;
   TRandom3* rand_;
