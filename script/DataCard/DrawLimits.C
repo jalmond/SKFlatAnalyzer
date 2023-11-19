@@ -29,7 +29,8 @@ void DrawLimits(TString year="", TString channel=""){
   //vector<TString> myWPs = {"SR3l2pt"};
   //vector<TString> myWPs = {"SR2HT_SR3l2pt"};
   //vector<TString> myWPs = {"SR2HT_SR3l2pt_ChargeSplit"};
-  vector<TString> myWPs = {"HNL_ULID","HNTightV2"};
+  //vector<TString> myWPs = {"HNL_ULID","HNTightV2"};
+  vector<TString> myWPs = {"NewOpt_HNL_ULID","NewOpt_HNTightV2"};
   for(int i=0; i<myWPs.size(); i++){
     TString myWP = myWPs.at(i);
     TString this_filepath = filepath+myWP+"/"+year+"_"+channel+tag+"_"+method+"_limit.txt";

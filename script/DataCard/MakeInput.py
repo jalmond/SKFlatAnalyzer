@@ -13,8 +13,9 @@ masses = ["M90","M100","M150","M200","M300","M400","M500","M600","M700","M800","
 #masses = ["M100","M200","M300","M400","M500"]
 #masses = ["M500"]
 channels = ["MuMu","EE","EMu"]
-#channels = ["MuMu","EE"]
+channels = ["MuMu","EE"]
 tags = ["HNL_ULID","HNTightV2"]
+tags = ["NewOpt/HNL_ULID","NewOpt/HNTightV2"]
 
 InputPath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegionPlotter/"
 Analyzer = "HNL_SignalRegionPlotter"
@@ -28,10 +29,10 @@ MCSkim = "_SkimTree_HNMultiLepBDT_"
 SignalSkim = "_SkimTree_HNMultiLepBDT_"
 
 MergeData   = False
-MergeFake   = False
-MergeCF     = False
-MergeConv   = False
-MergeMC     = False
+MergeFake   = True
+MergeCF     = True
+MergeConv   = True
+MergeMC     = True
 MergeSignal = True
 #MergeDYVBF = True
 #MergeSSWW  = True

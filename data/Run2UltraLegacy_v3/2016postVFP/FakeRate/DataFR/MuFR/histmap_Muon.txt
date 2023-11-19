@@ -3,5 +3,4 @@ FakeRate      POGTightWithTightIso ptcone_eta      AwayJetPt40   	   FR_Mu_2016b
 FakeRate      TopHNT	           ptcone_eta      FR_cent       	   FR_Mu_2016b_Top.root
 FakeRate      Peking		   ptcone_eta	   FR_cent		   FR_Mu_2016b_HNL_PtCone.root
 FakeRate      HNTightV2		   ptcone_eta	   FR_cent		   FR_Mu_2016b_HNL_PtCone.root
-FakeRate      HNL_3L		   ptparton_eta	   FR_cent		   FR_Mu_2016b_HNL_PtParton.root
 FakeRate      HNL_ULID_2016        ptparton_eta    HNL_ULID_FOv3_FR_cent       FR_Mu_2016b_HNL_ULID_PtParton.root

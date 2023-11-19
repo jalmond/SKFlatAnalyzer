@@ -15,7 +15,7 @@ years = ["2016","2017","2018"]
 years = ["Run2"]
 years = ["2017"]
 channels = ["MuMu","EE","EMu"]
-#channels = ["MuMu","EE"]
+channels = ["MuMu","EE"]
 #channels = ["MuMu"]
 masses = ["100","200","300","400","500","600","700","800","900","1000","1100","1200","1300","1500","1700","2000","2500","3000"]
 masses = ["90","100","200","300","400","500","600","700","800","900","1000","1100","1200","1300","1500","1700","2000","2500","3000","5000","7500","10000","15000","20000"]
@@ -31,7 +31,8 @@ tags = [""] #["_DYVBF"]
 #myWPs = ["SR3l2pt"]
 #myWPs = ["SR2HT_SR3l2pt"]
 #myWPs = ["SR2HT_SR3l2pt_ChargeSplit"]
-myWPs = ["HNL_ULID","HNTightV2"]
+#myWPs = ["HNL_ULID","HNTightV2"]
+myWPs = ["NewOpt_HNL_ULID","NewOpt_HNTightV2"]
 
 for WP in myWPs:
   this_workdir = workdir+WP
