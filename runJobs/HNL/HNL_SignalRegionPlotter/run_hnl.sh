@@ -93,7 +93,7 @@ fi
 
 if [[ $1 == "" ]]; then
 
-    declare  -a era_list=("2017")
+    declare  -a era_list=("2016preVFP")
 
     for i in "${era_list[@]}"
     do
@@ -104,11 +104,11 @@ if [[ $1 == "" ]]; then
 #SKFlat.py -a $analyzer  -l $sigpath/SSWW.txt  -n $njobs_sig  --nmax ${nmax}  -e ${i}  --skim SkimTree_HNMultiLepBDT  &
 #SKFlat.py -a $analyzer  -l $sigpath/DY.txt    -n $njobs_sig  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLepBDT &
 #SKFlat.py -a $analyzer  -l $sigpath/VBF.txt   -n $njobs_sig  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLepBDT &
-#SKFlat.py -a $analyzer  -l $mcpath/Conv.txt  -n 10  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLepBDT  --userflags RunConv &
+SKFlat.py -a $analyzer  -l $mcpath/Conv.txt  -n 10  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLepBDT  --userflags RunConv &
+#SKFlat.py -a $analyzer  -l $datapath/${i}_DiLepton.txt  -n ${njobs_data}  --nmax ${nmax}   -e ${i}  --skim SkimTree_DileptonBDT --userflags RunCF &
 #SKFlat.py -a $analyzer  -l $mcpath/CF.txt  -n $njobs  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLepBDT  --userflags RunCF &
-SKFlat.py -a $analyzer  -l $datapath/${i}_DiLepton.txt  -n ${njobs_data}  --nmax ${nmax}   -e ${i}  --skim SkimTree_DileptonBDT --userflags RunCF &
-#SKFlat.py -a $analyzer  -l $mcpath/Fake.txt  -n 10  --nmax 300   -e ${i}  --skim SkimTree_HNMultiLepBDT --userflags RunFake  &
 #SKFlat.py -a $analyzer  -l $datapath/${i}_DiLepton.txt  -n ${njobs_data}  --nmax ${nmax}   -e ${i}  --skim SkimTree_HNMultiLepBDT --userflags RunFake &
+#SKFlat.py -a $analyzer  -l $mcpath/Fake.txt  -n 10  --nmax 300   -e ${i}  --skim SkimTree_HNMultiLepBDT --userflags RunFake  &
 #SKFlat.py -a $analyzer  -l $mcpath/PromptSS.txt  -n 100  --nmax ${nmax}   -e ${i}   --skim SkimTree_HNMultiLepBDT --userflags RunPrompt &
 
 ########### MC closrue test ############

@@ -18,10 +18,10 @@ channels = ["MuMu","EE","EMu"]
 #channels = ["MuMu","EE"]
 #channels = ["MuMu"]
 masses = ["100","200","300","400","500","600","700","800","900","1000","1100","1200","1300","1500","1700","2000","2500","3000"]
-masses = ["100","200","300","400","500","600","700","800","900","1000","1100","1200","1300","1500","1700","2000","2500","3000","5000","7500","10000","15000","20000"]
+masses = ["90","100","200","300","400","500","600","700","800","900","1000","1100","1200","1300","1500","1700","2000","2500","3000","5000","7500","10000","15000","20000"]
 #masses = ["100","1000","10000"]
 #masses = ["500",]
-IDs = ["HNL_UL"]
+IDs = [""] #["_ID"]
 tags = [""] #["_DYVBF"]
 #myWPs = ["Workshop", "InputForCombine"]
 #myWPs = ["InputForCombine"]
@@ -30,7 +30,8 @@ tags = [""] #["_DYVBF"]
 #myWPs = ["KPS23Spr"]
 #myWPs = ["SR3l2pt"]
 #myWPs = ["SR2HT_SR3l2pt"]
-myWPs = ["SR2HT_SR3l2pt_ChargeSplit"]
+#myWPs = ["SR2HT_SR3l2pt_ChargeSplit"]
+myWPs = ["HNL_ULID","HNTightV2"]
 
 for WP in myWPs:
   this_workdir = workdir+WP
@@ -38,38 +39,30 @@ for WP in myWPs:
   for year, channel, ID, tag in [[year, channel, ID, tag] for year in years for channel in channels for ID in IDs for tag in tags]:
     
     if args.Asymptotic:
-      with open("out/"+WP+"/"+year+"_"+channel+"_"+ID+tag+"_"+"Asym_limit.txt", 'w') as f:
+      with open("out/"+WP+"/"+year+"_"+channel+ID+tag+"_Asym_limit.txt", 'w') as f:
   
         for mass in masses:
-          this_name = year+"_"+channel+"_M"+mass+"_"+ID+tag
+          this_name = year+"_"+channel+"_M"+mass+ID+tag
           path = this_workdir+"/Asymptotic/"+this_name+"/output/"+this_name+"_Asymptotic.root"
   
           f_Asym = TFile.Open(path)
           tree_Asym = f_Asym.Get("limit")
   
           tree_Asym.GetEntry(2) # substitute for obs. limit for now
-          #f.write(mass+"\t"+str(round(tree_Asym.limit,3))+"\t")
-          f.write(mass+"\t"+str(round(tree_Asym.limit/1.87,3))+"\t") # For estimating full Run2 from 2017
-          #if 500 <= int(mass) and int(mass) <= 1500:
-          #  f.write(mass+"\t"+str(round((tree_Asym.limit/(2.-0.0005*int(mass))),3))+"\t") # For estimating bkg reduction in SR1 (5-->0.x) <-- FIXED!
-          #else:
-          #  f.write(mass+"\t"+str(round(tree_Asym.limit,3))+"\t")
+          f.write(mass+"\t"+str(round(tree_Asym.limit,3))+"\t")
+          #f.write(mass+"\t"+str(round(tree_Asym.limit/1.87,3))+"\t") # FIXME estimating full Run2 from 2017
   
           for i in range(5): # expected limits
             tree_Asym.GetEntry(i)
-            #f.write(str(round(tree_Asym.limit,3))+"\t")
-            f.write(str(round(tree_Asym.limit/1.87,3))+"\t") # For estimating full Run2 from 2017
-            #if 500 <= int(mass) and int(mass) <= 1500:
-            #  f.write(str(round((tree_Asym.limit/(2.-0.0005*int(mass))),3))+"\t") # For estimating bkg reduction in SR1 (5-->0.x) <-- Fixed!
-            #else:
-            #  f.write(str(round(tree_Asym.limit,3))+"\t")
+            f.write(str(round(tree_Asym.limit,3))+"\t")
+            #f.write(str(round(tree_Asym.limit/1.87,3))+"\t") # FIXME estimating full Run2 from 2017
           f.write("\n")
   
     if args.Full:
-      with open("out/"+WP+"/"+year+"_"+channel+"_"+ID+tag+"_"+"Full_limit.txt", 'w') as f:
+      with open("out/"+WP+"/"+year+"_"+channel+ID+tag+"_Full_limit.txt", 'w') as f:
   
         for mass in masses:
-          this_name = year+"_"+channel+"_M"+mass+"_"+ID+tag
+          this_name = year+"_"+channel+"_M"+mass+ID+tag
           paths = [
                   this_workdir+"/full_CLs/"+this_name+"/output/"+this_name+"_Q1.root",
                   this_workdir+"/full_CLs/"+this_name+"/output/"+this_name+"_Q2.root",

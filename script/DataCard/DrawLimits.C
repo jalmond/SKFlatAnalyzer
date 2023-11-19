@@ -20,18 +20,19 @@ void DrawLimits(TString year="", TString channel=""){
 
   //gStyle->SetOptStat(0);
 
-  TString tag = "HNL_UL";
+  TString tag = ""; //"_HNL_UL";
   TString method = "Asym"; //"Full";
   //vector<TString> myWPs = {"InputForCombine","InputForCombine_beforeFixLowMass","Workshop","Workshop_FullRun2","Workshop_FullRun2_beforeFixLowMass"};
   //vector<TString> myWPs = {"Workshop_FixedSR1"};
   //vector<TString> myWPs = {"AddSyst_DividedBy1p87"};
   //vector<TString> myWPs = {"KPS23Spr"};
   //vector<TString> myWPs = {"SR3l2pt"};
-  vector<TString> myWPs = {"SR2HT_SR3l2pt"};
+  //vector<TString> myWPs = {"SR2HT_SR3l2pt"};
   //vector<TString> myWPs = {"SR2HT_SR3l2pt_ChargeSplit"};
+  vector<TString> myWPs = {"HNL_ULID","HNTightV2"};
   for(int i=0; i<myWPs.size(); i++){
     TString myWP = myWPs.at(i);
-    TString this_filepath = filepath+myWP+"/"+year+"_"+channel+"_"+tag+"_"+method+"_limit.txt";
+    TString this_filepath = filepath+myWP+"/"+year+"_"+channel+tag+"_"+method+"_limit.txt";
     TString this_plotpath = plotpath+myWP;
 
     if( !gSystem->mkdir(this_plotpath, kTRUE) ){
@@ -73,7 +74,7 @@ void DrawLimits(TString year="", TString channel=""){
       is >> onesig_right[dummyint];
       is >> twosig_right[dummyint];
 
-      //==== skip points
+      //==== skip points below 0
       if(obs[dummyint]<=0 || limit[dummyint]<=0 || onesig_left[dummyint]<=0 || onesig_right[dummyint]<=0 || twosig_left[dummyint]<=0 || twosig_right[dummyint]<=0){
         n_central--;
         continue;
@@ -94,11 +95,11 @@ void DrawLimits(TString year="", TString channel=""){
       twosig_left[dummyint] *= scale;
       twosig_right[dummyint] *= scale;
 
-      //==== skip points
-      if(obs[dummyint]>1.0 || limit[dummyint]>1.0){
-        n_central--;
-        continue;
-      }
+      //==== skip points over 1
+      //if(obs[dummyint]>1.0 || limit[dummyint]>1.0){
+      //  n_central--;
+      //  continue;
+      //}
 
       onesig_left[dummyint] = limit[dummyint]-onesig_left[dummyint];
       onesig_right[dummyint] = onesig_right[dummyint] - limit[dummyint];

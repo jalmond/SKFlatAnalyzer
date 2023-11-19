@@ -26,8 +26,8 @@ Trigger Eff_DATA  DiElIsoEl12_HNTightV2  TrigEff_Ele12_HNTightV2_2016a.root     
 Trigger Eff_MC    DiElIsoEl12_HNTightV2  TrigEff_Ele12_HNTightV2_2016a.root              sim                             TH2F
 Trigger Eff_DATA  EMuIsoEl23_HNL_ULID   TrigEl23_TopHNT_TopHNSST_2016a.root              hEff_TrigEl23_Data_ALL      TH2F
 Trigger Eff_MC    EMuIsoEl23_HNL_ULID   TrigEl23_TopHNT_TopHNSST_2016a.root              hEff_TrigEl23_MC_ALL        TH2F
-Trigger Eff_DATA  EMuIsoEl12_HNL_ULID   TrigEl8_TopHNT_TopHNSST_2016a.root               hEff_TrigEl8_Data_ALL      TH2F
-Trigger Eff_MC    EMuIsoEl12_HNL_ULID   TrigEl8_TopHNT_TopHNSST_2016a.root               hEff_TrigEl8_MC_ALL        TH2F
+Trigger Eff_DATA  EMuIsoEl8_HNL_ULID   TrigEl8_TopHNT_TopHNSST_2016a.root               hEff_TrigEl8_Data_ALL      TH2F
+Trigger Eff_MC    EMuIsoEl8_HNL_ULID   TrigEl8_TopHNT_TopHNSST_2016a.root               hEff_TrigEl8_MC_ALL        TH2F
 Trigger Eff_DATA  DiElIsoEl23_TopHNSST  TrigEff_Ele23_TopHNSST_2016a.root                EGamma_EffData2D            TH2F
 Trigger Eff_MC    DiElIsoEl23_TopHNSST  TrigEff_Ele23_TopHNSST_2016a.root                EGamma_EffMC2D              TH2F
 Trigger Eff_DATA  DiElIsoEl12_TopHNSST  TrigEff_Ele12_TopHNSST_2016a.root                EGamma_EffData2D            TH2F

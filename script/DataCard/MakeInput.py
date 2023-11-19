@@ -32,7 +32,7 @@ MergeFake   = False
 MergeCF     = False
 MergeConv   = False
 MergeMC     = False
-MergeSignal = False
+MergeSignal = True
 #MergeDYVBF = True
 #MergeSSWW  = True
 

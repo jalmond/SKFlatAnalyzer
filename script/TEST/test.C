@@ -160,8 +160,11 @@ void test(TString era, bool isdata, TString sample, TString skim, TString flag){
   else if(era=="2017" && !isdata && sample=="VBFTypeI_M500" && skim==""){
     if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC/VBFTypeI_NLO_DF_M500/220712_175932/0000/SKFlatNtuple_2017_MC_1.root")) exit(EIO);
   }
-  else if(era=="2017" && !isdata && sample=="SSWWTypeI_M1000"){
+  else if(era=="2017" && !isdata && sample=="SSWWTypeI_SF_M1000"){
     if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_HNMultiLepBDT/SSWWTypeI_NLO_SF_M1000/2023_09_04_164552/SKFlatNtuple_2017_MC_0.root")) exit(EIO);
+  }
+  else if(era=="2017" && !isdata && sample=="SSWWTypeI_DF_M1000"){
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_HNMultiLepBDT/SSWWTypeI_NLO_DF_M1000/2023_09_04_164552/SKFlatNtuple_2017_MC_0.root")) exit(EIO);
   }
   if(flag.Length()>0) m.SetOutfilePath("hists_"+sample+flagOutname+".root");
   else m.SetOutfilePath("hists_"+sample+".root");
