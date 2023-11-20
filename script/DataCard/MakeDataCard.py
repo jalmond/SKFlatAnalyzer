@@ -19,6 +19,7 @@ input_path = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegi
 #input_path = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/Before_Merge_230119/HNL_SignalRegionPlotter/"
 eras = ["2016","2017","2018"]
 eras = ["2017"]
+eras = ["2016preVFP","2016postVFP","2018"]
 channels = ["MuMu","EE","EMu"]
 channels = ["MuMu","EE"]
 masses = ["M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000"]
@@ -38,7 +39,7 @@ myWPs = ["SR2HT_SR3l2pt_ChargeSplit"]
 myWPs = ["HNL_ULID","HNTightV2"]
 myWPs = ["NewOpt_HNL_ULID","NewOpt_HNTightV2"]
 
-doCombine = False
+doCombine = True
 
 lines_orig = lines[:]
 
@@ -74,7 +75,10 @@ for WP in myWPs:
               f.write(line)
   else:
     os.chdir(WP)
+    os.system('echo \'Currently combining cards at...\'')
+    os.system('pwd')
     for channel in channels:
       for mass in masses:
-        os.system("combineCards.py year16=card_2016_"+channel+"_"+mass+".txt year17=card_2017_"+channel+"_"+mass+".txt year18=card_2018_"+channel+"_"+mass+".txt > card_Run2_"+channel+"_"+mass+".txt")
+        os.system("combineCards.py year16a=card_2016preVFP_"+channel+"_"+mass+".txt year16b=card_2016postVFP_"+channel+"_"+mass+".txt year17=card_2017_"+channel+"_"+mass+".txt year18=card_2018_"+channel+"_"+mass+".txt > card_Run2_"+channel+"_"+mass+".txt")
+    os.system('echo \'Done.\'')
     os.chdir(pwd)

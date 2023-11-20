@@ -54,7 +54,7 @@ void DrawLimits(TString year="", TString channel=""){
     cout << "Reading "+this_filepath+" ..." << endl;
     ifstream in;
     in.open(this_filepath);
-    int n_central = 23;
+    int n_central = 24; //FIXME depending on the bins
     double mass[n_central], obs[n_central], limit[n_central], onesig_left[n_central], onesig_right[n_central], twosig_left[n_central], twosig_right[n_central];
 
     int dummyint=0;
@@ -151,27 +151,33 @@ void DrawLimits(TString year="", TString channel=""){
 
 
     //=== EXO-17-028 overlay
-    const int nm_17028 = 19;
+    const int nm_17028 = 20;
     double mass_17028[nm_17028] = {
       100, 125, 150,200,
       250, 300, 400, 500,
       600, 700, 800, 900,
       1000, 1100, 1200, 1300,
-      1400, 1500, 1700
+      1400, 1500, 1700, 2000,
     };
 
-    
     double obs_17028[nm_17028], exp_17028[nm_17028];
     vector<double> tempvec_obs_17028, tempvec_exp_17028;
     vector<double> scales_17028;
     if(channel=="MuMu"){
+      //tempvec_exp_17028 = {
+      //  175.333, 21.5041, 32.925, 56.3397,
+      //  70.8081, 99.3095, 20.4264, 42.5126,
+      //  60.1695, 116.721, 15.8605, 25.8407,
+      //  38.43, 64.346, 100.265, 151.699,
+      //  247.709, 340.424, 1340.34
+      //}; // these are the DYTypeI results
       tempvec_exp_17028 = {
         175.333, 21.5041, 32.925, 56.3397,
-        70.8081, 99.3095, 20.4264, 42.5126,
-        60.1695, 116.721, 15.8605, 25.8407,
-        38.43, 64.346, 100.265, 151.699,
-        247.709, 340.424, 1340.34
-      }; // these are the DYTypeI results
+        70.8081, 95.0624, 18.8665, 38.4947,
+        42.8618, 74.4406, 8.4652, 12.594,
+        16.3718, 23.4646, 32.9925, 43.0679,
+        61.6472, 74.073,  135.185, 304.058
+      }; // DY+VBF TypeI results
       scales_17028 = {
         0.001, 0.01, 0.01,0.01,
         0.01,0.01,0.1, 0.1,
@@ -191,16 +197,25 @@ void DrawLimits(TString year="", TString channel=""){
         57.1134, 81.2452, 36.7668, 40.1455,
         56.0452, 122.926, 8.8852,  21.2021,
         27.1287, 38.7571, 48.9324, 63.9919,
-        91.9852, 116.982, 142.081
+        91.9852, 116.982, 142.081, 311.967
       }; // DY+VBF TypeI results
     }
     else   if(channel=="EE"){
-      //https://github.com/jedori0228/HiggsAnalysis-CombinedLimit/blob/2016Data_HNDilepton_Limit/data/2016_HNDiLepton/Outputs_Tool/EE_Combined/result.txt
+      //https://github.com/jedori0228/HiggsAnalysis-CombinedLimit/blob/2016Data_HNDilepton_Limit/data/2016_HNDiLepton/Outputs_Tool/ElEl_Combined/result.txt
+      //tempvec_exp_17028 = {
+      //  467.448, 65.4099, 90.4068, 159.838,
+      //  216.957, 284.563, 59.74, 94.6793, 
+      //  104.302, 183.121, 30.189, 47.1442,
+      //  72.0759, 117.305, 183.214, 285.811,
+      //  434.08, 644.258, 2506.94
+      //}; // these are the DYTypeI only results;
       tempvec_exp_17028 = {
-        467.448, 65.4099, 90.4068, 159.838,216.957, 284.563, 59.74, 94.6793, 
-        104.302, 183.121, 30.189, 47.1442, 72.0759, 117.305, 183.214,
-        285.811, 434.08, 644.258, 2506.94
-      }; // these are the DYTypeI only results;
+        467.448, 65.4099, 90.4068, 159.838,
+        216.957, 268.406, 53.8654, 78.1765, 
+        76.2341, 118.242, 17.2123, 24.2464,
+        31.61,   46.3963, 64.5734, 89.4366,
+        115.964, 147.772, 279.822, 632.318
+      }; // DY+VBF TypeI results;
       scales_17028 = {
         0.001, 0.01, 0.01,0.01,0.01,0.01,0.1, 0.1,0.1,0.1,1,1,1,1,1,1,1,1,1,1
       };
@@ -216,7 +231,7 @@ void DrawLimits(TString year="", TString channel=""){
         206.654, 235.791, 63.261,  79.9909, 
         91.403,  174.955, 14.6124, 23.4109,
         43.3134, 64.2114, 86.8003, 117.953,
-        112.79,  143.465, 276.02
+        112.79,  143.465, 276.02,  626.971
       }; // DY+VBF TypeI results
     }
     else   if(channel=="EMu"){
@@ -226,7 +241,7 @@ void DrawLimits(TString year="", TString channel=""){
         178.214, 218.714, 39.6317, 46.813, 
         88.4598, 123.904, 14.4261, 17.8333,
         26.8884, 33.8577, 46.471,  61.5947,
-        82.8097, 124.842, 257.358
+        82.8097, 124.842, 257.358, 512.365
       }; // DY+VBF
       scales_17028 = {
         0.001, 0.01, 0.01,0.01,0.01,0.01,0.1, 0.1,0.1,0.1,1,1,1,1,1,1,1,1,1,1
@@ -236,7 +251,7 @@ void DrawLimits(TString year="", TString channel=""){
         168.976, 257.416, 51.8467, 45.2587, 
         90.0862, 134.809, 22.2963, 18.1025,
         28.0044, 34.4163, 46.4722, 61.1279,
-        83.0085, 123.863, 245.571
+        83.0085, 123.863, 245.571, 508.857
       }; // DY+VBF TypeI results
     }
     cout << "Channel : " << channel << endl;
@@ -295,10 +310,13 @@ void DrawLimits(TString year="", TString channel=""){
     double twolow_21003[n_mass_21003] = {0.0487,0.0100,0.0060,0.0048,0.0048,0.0050,0.0053,0.0057,0.0071,0.0081,0.0092,0.0111,0.0154,0.0438,0.0877,0.1552,0.3264,0.6055,0.9196};
     double onelow_21003[n_mass_21003] = {0.0668,0.0141,0.0076,0.0072,0.0068,0.0075,0.0071,0.0086,0.0102,0.0113,0.0132,0.0152,0.0213,0.0609,0.1220,0.2158,0.4540,0.8421,1.2790};
     double exp_21003[n_mass_21003] = {0.0981,0.0200,0.0112,0.0103,0.0103,0.0107,0.0112,0.0122,0.0142,0.0161,0.0190,0.0229,0.0317,0.0903,0.1812,0.3203,0.6738,1.2500,1.8984};
+    double exp_21003_sqrt[n_mass_21003] = { 0.31320920, 0.14142136, 0.10583005, 0.10148892, 0.10148892, 0.10344080, 0.10583005, 0.11045361, 0.11916375, 0.12688578, 0.13784049, 0.15132746, 0.17804494, 0.30049958, 0.42567593, 0.56595053, 0.82085321, 1.1180340, 1.3778244 };
     double onehigh_21003[n_mass_21003] = {0.1459,0.0306,0.0173,0.0152,0.0152,0.0166,0.0166,0.0188,0.0218,0.0251,0.0297,0.0343,0.0477,0.1368,0.2757,0.4863,1.0257,1.9027,2.8822};
     double twohigh_21003[n_mass_21003] = {0.2096,0.0443,0.0255,0.0224,0.0224,0.0239,0.0243,0.0274,0.0321,0.0367,0.0433,0.0501,0.0702,0.2014,0.4058,0.7168,1.5094,2.8000,4.2485};
 
-    //TGraph *gr_21003_obs = new TGraph(n_mass_21003, mass_21003, obs_21003);
+    TGraph *gr_21003_exp = new TGraph(n_mass_21003, mass_21003, exp_21003_sqrt); // the 21003 must be sqrt-ed.
+    gr_21003_exp->SetLineWidth(3);
+    gr_21003_exp->SetLineColor(kBlue);
     TGraph *gr_21003_obs = new TGraph(n_mass_21003, mass_21003, obs_21003_sqrt); // the 21003 must be sqrt-ed.
     gr_21003_obs->SetLineWidth(3);
     gr_21003_obs->SetLineColor(kBlue);
@@ -815,11 +833,12 @@ void DrawLimits(TString year="", TString channel=""){
       //lg_Alt->AddEntry(gr_L3Limit, "L3", "l");
       //lg_Alt->AddEntry(gr_EWPD_mm, "EWPD (90% CL)", "l");
       //lg_Alt->AddEntry(gr_ATLAS_MuMu, "ATLAS 8 TeV", "l");
-      //lg_Alt->AddEntry(gr_17028_exp, "CMS 13 TeV dilepton", "l");
-      lg_Alt->AddEntry(gr_17028_obs, "CMS 13 TeV dilepton", "l");
-      lg_Alt->AddEntry(gr_trilepLimit, "CMS 13 TeV trilepton", "l");
-      lg_Alt->AddEntry(gr_21003_obs, "CMS 13 TeV SSWW", "l");
-      lg_Alt->AddEntry(gr_EWPD_mm, "EWPD", "l");
+      lg_Alt->AddEntry(gr_17028_exp, "CMS 13 TeV dilepton (exp)", "l");
+      lg_Alt->AddEntry(gr_21003_exp, "CMS 13 TeV SSWW (exp)", "l");
+      //lg_Alt->AddEntry(gr_17028_obs, "CMS 13 TeV dilepton", "l");
+      //lg_Alt->AddEntry(gr_trilepLimit, "CMS 13 TeV trilepton", "l");
+      //lg_Alt->AddEntry(gr_21003_obs, "CMS 13 TeV SSWW", "l");
+      //lg_Alt->AddEntry(gr_EWPD_mm, "EWPD", "l");
     }
     if(channel=="EE"){
       //lg_Alt->AddEntry(gr_DELPHILimit, "DELPHI prompt", "l");
@@ -828,18 +847,20 @@ void DrawLimits(TString year="", TString channel=""){
       //lg_Alt->AddEntry(gr_ATLAS_EE, "ATLAS 8 TeV", "l");
       //lg_Alt->AddEntry(gr_17028_exp, "CMS 13 TeV dilepton", "l");
       //lg_Alt->AddEntry(gr_dbeta, "Neutrino-less double beta dacay", "l");
-      lg_Alt->AddEntry(gr_17028_obs, "CMS 13 TeV dilepton", "l");
-      lg_Alt->AddEntry(gr_trilepLimit, "CMS 13 TeV trilepton", "l");
-      lg_Alt->AddEntry(gr_EWPD_ee, "EWPD", "l");
+      lg_Alt->AddEntry(gr_17028_exp, "CMS 13 TeV dilepton (exp)", "l");
+      //lg_Alt->AddEntry(gr_17028_obs, "CMS 13 TeV dilepton", "l");
+      //lg_Alt->AddEntry(gr_trilepLimit, "CMS 13 TeV trilepton", "l");
+      //lg_Alt->AddEntry(gr_EWPD_ee, "EWPD", "l");
     }
     if(channel=="EMu"){ //FIXME add 17028 results
-    //  lg_Alt->AddEntry(gr_8TeV_exp, "CMS 8 TeV", "l");
-    //  lg_Alt->AddEntry(hist_emptylegend,"#color[0]{CMS 13 TeV trilepton}","l");
-    //  lg_Alt->AddEntry(hist_emptylegend,"#color[0]{CMS 13 TeV trilepton}","l");
-    //  lg_Alt->AddEntry(hist_emptylegend,"#color[0]{CMS 13 TeV trilepton}","l");
-    //  lg_Alt->AddEntry(hist_emptylegend,"#color[0]{CMS 13 TeV trilepton}","l");
-    //  lg_Alt->AddEntry(hist_emptylegend,"#color[0]{CMS 13 TeV trilepton}","l");
-      lg_Alt->AddEntry(gr_17028_obs, "CMS 13 TeV dilepton", "l");
+      //lg_Alt->AddEntry(gr_8TeV_exp, "CMS 8 TeV", "l");
+      //lg_Alt->AddEntry(hist_emptylegend,"#color[0]{CMS 13 TeV trilepton}","l");
+      //lg_Alt->AddEntry(hist_emptylegend,"#color[0]{CMS 13 TeV trilepton}","l");
+      //lg_Alt->AddEntry(hist_emptylegend,"#color[0]{CMS 13 TeV trilepton}","l");
+      //lg_Alt->AddEntry(hist_emptylegend,"#color[0]{CMS 13 TeV trilepton}","l");
+      //lg_Alt->AddEntry(hist_emptylegend,"#color[0]{CMS 13 TeV trilepton}","l");
+      lg_Alt->AddEntry(gr_17028_exp, "CMS 13 TeV dilepton (exp)", "l");
+      //lg_Alt->AddEntry(gr_17028_obs, "CMS 13 TeV dilepton", "l");
     }
 
     TCanvas *c_Dilep = new TCanvas("c_Dilep", "", 900, 800);
@@ -860,30 +881,32 @@ void DrawLimits(TString year="", TString channel=""){
       dummy->GetYaxis()->SetTitleSize(0.04);
     }
     dummy->GetXaxis()->SetTitle("m_{N} (GeV)");
-    dummy->GetXaxis()->SetRangeUser(90., 25000); //JH
-    dummy->GetYaxis()->SetRangeUser(1e-4, 1.);
+    dummy->GetXaxis()->SetRangeUser(90., 25000); //FIXME
+    dummy->GetYaxis()->SetRangeUser(1e-4, 1.); //FIXME
     dummy->SetTitle("");
     dummy->Draw("hist");
 
+    // Now draw limits
     gr_band_2sigma->Draw("3same");
     gr_band_1sigma->Draw("3same");
     gr_13TeV_exp->Draw("lsame");
-    //gr_17028_exp->Draw("lsame");
-    gr_17028_obs->Draw("lsame");
+    gr_17028_exp->Draw("lsame");
+    //gr_17028_obs->Draw("lsame");
     //gr_8and13TeV_obs->Draw("lsame");
     if(channel=="MuMu"){
       //gr_L3Limit->Draw("lsame");
       //gr_DELPHILimit->Draw("lsame");
-      gr_21003_obs->Draw("lsame");
-      gr_trilepLimit->Draw("lsame");
-      gr_EWPD_mm->Draw("lsame");
+      gr_21003_exp->Draw("lsame");
+      //gr_21003_obs->Draw("lsame");
+      //gr_trilepLimit->Draw("lsame");
+      //gr_EWPD_mm->Draw("lsame");
       //gr_ATLAS_MuMu->Draw("lsame");
     }
     if(channel=="EE"){
       //gr_L3_2Limit->Draw("lsame");
       //gr_DELPHILimit->Draw("lsame");
-      gr_trilepLimit->Draw("lsame");
-      gr_EWPD_ee->Draw("lsame");
+      //gr_trilepLimit->Draw("lsame");
+      //gr_EWPD_ee->Draw("lsame");
       //gr_dbeta->Draw("lsame");
       //gr_ATLAS_EE->Draw("lsame");
     }
@@ -897,8 +920,10 @@ void DrawLimits(TString year="", TString channel=""){
     latex_Lumi.SetTextFont(42);
     TString lumi;
     if(year=="2016") lumi = "36.5";
+    else if(year=="2016preVFP") lumi = "19.5";
+    else if(year=="2016postVFP") lumi = "16.8";
     else if(year=="2017") lumi = "41.5";
-    else if(year=="2018") lumi = "59.9";
+    else if(year=="2018") lumi = "59.8";
     else if(year=="Run2") lumi = "137.9";
     
     latex_CMSPreliminary.DrawLatex(0.16, 0.96, "#scale[0.8]{CMS #bf{#it{Preliminary}}}");
@@ -910,7 +935,7 @@ void DrawLimits(TString year="", TString channel=""){
     latex_title.DrawLatex(0.25, 0.88, "#font[62]{CMS}");
 
     dummy->Draw("axissame");
-    c_Dilep->SaveAs(this_plotpath+"/"+year+"_"+channel+"_13TeV_mixing_"+channel+"_"+myWP+".png");
+    //c_Dilep->SaveAs(this_plotpath+"/"+year+"_"+channel+"_13TeV_mixing_"+channel+"_"+myWP+".png");
   }
 
   return;
@@ -921,8 +946,9 @@ void CompareLimits(TString channel=""){
   setTDRStyle();
 
   vector<TString> files;
-  files.push_back(filepath+"/SR2HT_SR3l2pt_ChargeSplit/2017_"+channel+"_HNL_UL_Asym_limit.txt");
-  files.push_back(filepath+"/SR2HT_SR3l2pt/2017_"+channel+"_HNL_UL_Asym_limit.txt");
+  //files.push_back(filepath+"/SR2HT_SR3l2pt_ChargeSplit/2017_"+channel+"_HNL_UL_Asym_limit.txt");
+  //files.push_back(filepath+"/SR2HT_SR3l2pt/2017_"+channel+"_HNL_UL_Asym_limit.txt");
+  files.push_back(filepath+"/NewOpt_HNL_ULID/Run2_"+channel+"_Asym_limit.txt");
 
   vector<vector<double>> masses, obss, limits, onesig_lefts, onesig_rights, twosig_lefts, twosig_rights;
   vector<int> n_centrals;
@@ -934,7 +960,7 @@ void CompareLimits(TString channel=""){
     cout << "Reading "+files.at(i)+" ..." << endl;
     ifstream in;
     in.open(files.at(i));
-    int n_central = 23;
+    int n_central = 24; //FIXME depending on the bins
     vector<double> mass, obs, limit, onesig_left, onesig_right, twosig_left, twosig_right;
 
     int dummyint=0;
@@ -1024,64 +1050,119 @@ void CompareLimits(TString channel=""){
 
 
   //=== EXO-17-028 overlay
-  const int nm_17028 = 19;
+  const int nm_17028 = 20;
   double mass_17028[nm_17028] = {
     100, 125, 150,200,
     250, 300, 400, 500,
     600, 700, 800, 900,
     1000, 1100, 1200, 1300,
-    1400, 1500, 1700
+    1400, 1500, 1700, 2000,
   };
 
   double obs_17028[nm_17028], exp_17028[nm_17028];
   vector<double> tempvec_obs_17028, tempvec_exp_17028;
   vector<double> scales_17028;
   if(channel=="MuMu"){
+    //tempvec_exp_17028 = {
+    //  175.333, 21.5041, 32.925, 56.3397,
+    //  70.8081, 99.3095, 20.4264, 42.5126,
+    //  60.1695, 116.721, 15.8605, 25.8407,
+    //  38.43, 64.346, 100.265, 151.699,
+    //  247.709, 340.424, 1340.34
+    //}; // these are the DYTypeI results
     tempvec_exp_17028 = {
       175.333, 21.5041, 32.925, 56.3397,
-      70.8081, 99.3095, 20.4264, 42.5126,
-      60.1695, 116.721, 15.8605, 25.8407,
-      38.43, 64.346, 100.265, 151.699,
-      247.709, 340.424, 1340.34
-    } ;
+      70.8081, 95.0624, 18.8665, 38.4947,
+      42.8618, 74.4406, 8.4652, 12.594,
+      16.3718, 23.4646, 32.9925, 43.0679,
+      61.6472, 74.073,  135.185, 304.058
+    }; // DY+VBF TypeI results
     scales_17028 = {
-      0.001, 0.01, 0.01,0.01,0.01,0.01,0.1, 0.1,0.1,0.1,1,1,1,1,1,1,1,1,1,1
+      0.001, 0.01, 0.01,0.01,
+      0.01,0.01,0.1, 0.1,
+      0.1,0.1,1,1,
+      1,1,1,1,
+      1,1,1,1
     };
+    //tempvec_obs_17028 = {
+    //  215.218, 23.0424,41.8101,49.4399,
+    //  57.1134,84.404,39.6932,44.5303,
+    //  81.4561,195.31,16.3137,42.605,
+    //  61.6358,103.589,150.295,220.286,
+    //  365.037, 516.2, 1408.5
+    //}; // these are the DYTypeI results
     tempvec_obs_17028 = {
-      215.218, 23.0424,41.8101,49.4399,57.1134,84.404,39.6932,
-      44.5303,81.4561,195.31,16.3137,42.605,61.6358,103.589,150.295,
-      220.286, 365.037, 516.2, 1408.5
-
-    };
+      215.218, 23.0424, 41.8101, 49.4399,
+      57.1134, 81.2452, 36.7668, 40.1455,
+      56.0452, 122.926, 8.8852,  21.2021,
+      27.1287, 38.7571, 48.9324, 63.9919,
+      91.9852, 116.982, 142.081, 311.967
+    }; // DY+VBF TypeI results
   }
-  else if(channel=="EE"){
-    //https://github.com/jedori0228/HiggsAnalysis-CombinedLimit/blob/2016Data_HNDilepton_Limit/data/2016_HNDiLepton/Outputs_Tool/EE_Combined/result.txt
+  else   if(channel=="EE"){
+    //https://github.com/jedori0228/HiggsAnalysis-CombinedLimit/blob/2016Data_HNDilepton_Limit/data/2016_HNDiLepton/Outputs_Tool/ElEl_Combined/result.txt
+    //tempvec_exp_17028 = {
+    //  467.448, 65.4099, 90.4068, 159.838,
+    //  216.957, 284.563, 59.74, 94.6793, 
+    //  104.302, 183.121, 30.189, 47.1442,
+    //  72.0759, 117.305, 183.214, 285.811,
+    //  434.08, 644.258, 2506.94
+    //}; // these are the DYTypeI only results;
     tempvec_exp_17028 = {
-      467.448, 65.4099, 90.4068, 159.838,216.957, 284.563, 59.74, 94.6793,
-      104.302, 183.121, 30.189, 47.1442, 72.0759, 117.305, 183.214,
-      285.811, 434.08, 644.258, 2506.94
-    };
+      467.448, 65.4099, 90.4068, 159.838,
+      216.957, 268.406, 53.8654, 78.1765, 
+      76.2341, 118.242, 17.2123, 24.2464,
+      31.61,   46.3963, 64.5734, 89.4366,
+      115.964, 147.772, 279.822, 632.318
+    }; // DY+VBF TypeI results;
     scales_17028 = {
       0.001, 0.01, 0.01,0.01,0.01,0.01,0.1, 0.1,0.1,0.1,1,1,1,1,1,1,1,1,1,1
     };
+    //tempvec_obs_17028 = {
+    //  368.924, 63.3389, 61.9159, 151.2,
+    //  206.654, 254.261, 68.8604, 95.9664, 
+    //  123.0, 274.57, 24.8148, 46.0243,
+    //  95.1426, 164.011, 252.706, 379.988,
+    //  419.316, 631.767, 2486.31
+    //}; // these are the DYTypeI only results;
     tempvec_obs_17028 = {
       368.924, 63.3389, 61.9159, 151.2,
-      206.654, 254.261, 68.8604, 95.9664,
-      123.0, 274.57, 24.8148, 46.0243,
-      95.1426, 164.011, 252.706, 379.988,
-      419.316, 631.767, 2486.31
-
-    };
+      206.654, 235.791, 63.261,  79.9909, 
+      91.403,  174.955, 14.6124, 23.4109,
+      43.3134, 64.2114, 86.8003, 117.953,
+      112.79,  143.465, 276.02,  626.971
+    }; // DY+VBF TypeI results
   }
+  else   if(channel=="EMu"){
+    //https://github.com/jedori0228/HiggsAnalysis-CombinedLimit/blob/2016Data_HNDilepton_Limit/data/2016_HNDiLepton/Outputs_Tool/EE_Combined/result.txt
+    tempvec_exp_17028 = {
+      410.683, 55.9408, 82.975,  136.932,
+      178.214, 218.714, 39.6317, 46.813, 
+      88.4598, 123.904, 14.4261, 17.8333,
+      26.8884, 33.8577, 46.471,  61.5947,
+      82.8097, 124.842, 257.358, 512.365
+    }; // DY+VBF
+    scales_17028 = {
+      0.001, 0.01, 0.01,0.01,0.01,0.01,0.1, 0.1,0.1,0.1,1,1,1,1,1,1,1,1,1,1
+    };
+    tempvec_obs_17028 = {
+      290.008, 33.6466, 62.3902, 187.344,
+      168.976, 257.416, 51.8467, 45.2587, 
+      90.0862, 134.809, 22.2963, 18.1025,
+      28.0044, 34.4163, 46.4722, 61.1279,
+      83.0085, 123.863, 245.571, 508.857
+    }; // DY+VBF TypeI results
+  }
+  cout << "Channel : " << channel << endl;
   for(unsigned int j=0; j<tempvec_obs_17028.size(); j++){
-    obs_17028[j] = scales_17028[j]*tempvec_obs_17028.at(j)*0.01;
-    //exp_17028[j] = scales_17028[j]*tempvec_exp_17028.at(j)*0.01;
+    obs_17028[j] = (channel=="EMu") ? scales_17028[j]*tempvec_obs_17028.at(j)*0.01*0.5 : scales_17028[j]*tempvec_obs_17028.at(j)*0.01;
+    exp_17028[j] = (channel=="EMu") ? scales_17028[j]*tempvec_exp_17028.at(j)*0.01*0.5 : scales_17028[j]*tempvec_exp_17028.at(j)*0.01;
     //cout << "mN = " << mass_17028[j] << " 17028 obs limit = " <<  scales_17028[j]*tempvec_obs_17028.at(j)*0.01 << endl;
   }
 
-  //TGraph *gr_17028_exp = new TGraph(nm_17028, mass_17028, exp_17028);
-  //gr_17028_exp->SetLineColor(kRed);
-  //gr_17028_exp->SetLineWidth(3);
+  TGraph *gr_17028_exp = new TGraph(nm_17028, mass_17028, exp_17028);
+  gr_17028_exp->SetLineColor(kRed);
+  gr_17028_exp->SetLineWidth(3);
   TGraph *gr_17028_obs = new TGraph(nm_17028, mass_17028, obs_17028);
   gr_17028_obs->SetLineColor(kRed);
   gr_17028_obs->SetLineWidth(3);
@@ -1094,44 +1175,45 @@ void CompareLimits(TString channel=""){
   double twolow_21003[n_mass_21003] = {0.0487,0.0100,0.0060,0.0048,0.0048,0.0050,0.0053,0.0057,0.0071,0.0081,0.0092,0.0111,0.0154,0.0438,0.0877,0.1552,0.3264,0.6055,0.9196};
   double onelow_21003[n_mass_21003] = {0.0668,0.0141,0.0076,0.0072,0.0068,0.0075,0.0071,0.0086,0.0102,0.0113,0.0132,0.0152,0.0213,0.0609,0.1220,0.2158,0.4540,0.8421,1.2790};
   double exp_21003[n_mass_21003] = {0.0981,0.0200,0.0112,0.0103,0.0103,0.0107,0.0112,0.0122,0.0142,0.0161,0.0190,0.0229,0.0317,0.0903,0.1812,0.3203,0.6738,1.2500,1.8984};
+  double exp_21003_sqrt[n_mass_21003] = { 0.31320920, 0.14142136, 0.10583005, 0.10148892, 0.10148892, 0.10344080, 0.10583005, 0.11045361, 0.11916375, 0.12688578, 0.13784049, 0.15132746, 0.17804494, 0.30049958, 0.42567593, 0.56595053, 0.82085321, 1.1180340, 1.3778244 };
   double onehigh_21003[n_mass_21003] = {0.1459,0.0306,0.0173,0.0152,0.0152,0.0166,0.0166,0.0188,0.0218,0.0251,0.0297,0.0343,0.0477,0.1368,0.2757,0.4863,1.0257,1.9027,2.8822};
   double twohigh_21003[n_mass_21003] = {0.2096,0.0443,0.0255,0.0224,0.0224,0.0239,0.0243,0.0274,0.0321,0.0367,0.0433,0.0501,0.0702,0.2014,0.4058,0.7168,1.5094,2.8000,4.2485};
 
-  TGraph *gr_21003_obs = new TGraph(n_mass_21003, mass_21003, obs_21003_sqrt);
+  TGraph *gr_21003_exp = new TGraph(n_mass_21003, mass_21003, exp_21003_sqrt); // the 21003 must be sqrt-ed.
+  gr_21003_exp->SetLineWidth(3);
+  gr_21003_exp->SetLineColor(kBlue);
+  TGraph *gr_21003_obs = new TGraph(n_mass_21003, mass_21003, obs_21003_sqrt); // the 21003 must be sqrt-ed.
   gr_21003_obs->SetLineWidth(3);
   gr_21003_obs->SetLineColor(kBlue);
 
   // ratio for charge split vs inclusive
-  double ratio_ChargeSplit[23];
-  for(int i=0; i<23; i++) ratio_ChargeSplit[i] = limits[1][i]/limits[0][i];
+  //double ratio_ChargeSplit[23];
+  //for(int i=0; i<23; i++) ratio_ChargeSplit[i] = limits[1][i]/limits[0][i];
 
-  // ratio with EXO-17-028
-  double mass_comp_17028[15] = {100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1500, 1700};
-  vector<double> tempvec_obs_comp_17028 = {215.218, 49.4399,84.404,39.6932,44.5303,81.4561,195.31,16.3137,42.605,61.6358,103.589,150.295,220.286,516.2,1408.5};
-  vector<double> scales_comp_17028 = {0.001,0.01,0.01,0.1,0.1,0.1,0.1,1,1,1,1,1,1,1,1,1,1};
-  double obs_comp_17028[15];
-  for(unsigned int j=0; j<tempvec_obs_comp_17028.size(); j++){
-    obs_comp_17028[j] = scales_comp_17028[j]*tempvec_obs_comp_17028.at(j)*0.01;
-  }
-  double ratio_17028[15];
-  for(int i=0; i<15; i++) ratio_17028[i] = obs_comp_17028[i]/limits[0][i];
+  // ratio with EXO-17-028 expected
+  double mass_comp_17028[16] = {100,200,300,400,500,600,700,800,900,1000,1100,1200,1300,1500,1700,2000};
+  int index_comp_17028[16] = {0,3,5,6,7,8,9,10,11,12,13,14,15,17,18,19};
+  int index_comp_limit[16] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};
+  double ratio_17028[16];
+  for(int i=0; i<16; i++) ratio_17028[i] = exp_17028[index_comp_17028[i]]/limits[0][index_comp_limit[i]];
 
-  // ratio with EXO-21-003
+  // ratio with EXO-21-003 expected
   double mass_comp_21003[12] = {300,600,900,1000,1500,2000,2500,5000,7500,10000,15000,20000};
   double obs_comp_21003[12] = {0.0837, 0.0775, 0.0819, 0.0866, 0.099, 0.1166, 0.1375, 0.2322, 0.3288, 0.4368, 0.6341, 0.8621}; //xcheck with https://www.hepdata.net/record/131287
+  double exp_comp_21003[12] = {0.10583005, 0.10148892, 0.10583005, 0.11045361, 0.12688578, 0.15132746, 0.17804494, 0.30049958, 0.42567593, 0.56595053, 0.82085321, 1.1180340 };
   double ratio_21003[12];
-  ratio_21003[0] = obs_comp_21003[0]/limits[0][2];
-  ratio_21003[1] = obs_comp_21003[1]/limits[0][5];
-  ratio_21003[2] = obs_comp_21003[2]/limits[0][8];
-  ratio_21003[3] = obs_comp_21003[3]/limits[0][9];
-  ratio_21003[4] = obs_comp_21003[4]/limits[0][13];
-  ratio_21003[5] = obs_comp_21003[5]/limits[0][15];
-  ratio_21003[6] = obs_comp_21003[6]/limits[0][16];
-  ratio_21003[7] = obs_comp_21003[7]/limits[0][18];
-  ratio_21003[8] = obs_comp_21003[8]/limits[0][19];
-  ratio_21003[9] = obs_comp_21003[9]/limits[0][20];
-  ratio_21003[10] = obs_comp_21003[10]/limits[0][21];
-  ratio_21003[11] = obs_comp_21003[11]/limits[0][22];
+  ratio_21003[0] = exp_comp_21003[0]/limits[0][2+1];
+  ratio_21003[1] = exp_comp_21003[1]/limits[0][5+1];
+  ratio_21003[2] = exp_comp_21003[2]/limits[0][8+1];
+  ratio_21003[3] = exp_comp_21003[3]/limits[0][9+1];
+  ratio_21003[4] = exp_comp_21003[4]/limits[0][13+1];
+  ratio_21003[5] = exp_comp_21003[5]/limits[0][15+1];
+  ratio_21003[6] = exp_comp_21003[6]/limits[0][16+1];
+  ratio_21003[7] = exp_comp_21003[7]/limits[0][18+1];
+  ratio_21003[8] = exp_comp_21003[8]/limits[0][19+1];
+  ratio_21003[9] = exp_comp_21003[9]/limits[0][20+1];
+  ratio_21003[10] = exp_comp_21003[10]/limits[0][21+1];
+  ratio_21003[11] = exp_comp_21003[11]/limits[0][22+1];
 
   //==== CANVAS
   TCanvas *c1 = new TCanvas("c1", "", 1000, 1000);
@@ -1151,11 +1233,12 @@ void CompareLimits(TString channel=""){
   TH1D *dummy = new TH1D("hist", "", 100000, 0., 100000.);
   hist_axis(dummy);
   dummy->GetYaxis()->SetTitleSize(0.06);
-  dummy->GetYaxis()->SetTitle("#||{V_{#muN}}^{2}");
+  if(channel=="MuMu") dummy->GetYaxis()->SetTitle("#||{V_{#muN}}^{2}");
+	else if(channel=="EE") dummy->GetYaxis()->SetTitle("#||{V_{eN}}^{2}");
   dummy->GetXaxis()->SetTitle("m_{N} (GeV)");
   dummy->GetXaxis()->SetLabelSize(0);
   dummy->GetXaxis()->SetRangeUser(90., 25000);
-  dummy->GetYaxis()->SetRangeUser(5e-5, 1.);
+  dummy->GetYaxis()->SetRangeUser(1e-4, 1.); //FIXME
   dummy->SetTitle("");
   dummy->Draw("hist");
 
@@ -1163,8 +1246,10 @@ void CompareLimits(TString channel=""){
   lg->SetBorderSize(0);
   lg->SetFillStyle(0);
 
-  lg->AddEntry(gr_exp0,"2017 Expected #mu#mu ChargeSpl.", "l");
-  lg->AddEntry((TObject*)0,"(scaled to Run2 lumi)", "");
+  if(channel=="MuMu") lg->AddEntry(gr_exp0,"2017 Expected #mu#mu", "l");
+  else if(channel=="EE") lg->AddEntry(gr_exp0,"2017 Expected ee", "l");
+  //lg->AddEntry(gr_exp0,"2017 Expected #mu#mu ChargeSpl.", "l");
+  //lg->AddEntry((TObject*)0,"(scaled to Run2 lumi)", "");
   lg->AddEntry(gr_band_1sigma0,"68% expected", "f");
   lg->AddEntry(gr_band_2sigma0,"95% expected", "f");
 
@@ -1172,21 +1257,28 @@ void CompareLimits(TString channel=""){
   lg_Alt->SetBorderSize(0);
   lg_Alt->SetFillStyle(0);
 
-  lg_Alt->AddEntry((TObject*)0,"", "");
-  lg_Alt->AddEntry(gr_exp1, "2017 Expected #mu#mu ChargeInc.", "l");
+  //lg_Alt->AddEntry((TObject*)0,"", "");
+  //lg_Alt->AddEntry(gr_exp1, "2017 Expected #mu#mu ChargeInc.", "l");
   //lg_Alt->AddEntry(gr_exp2, "2017 Expected ee", "l");
   //lg_Alt->AddEntry(gr_exp3, "2017 Expected e#mu", "l");
-  lg_Alt->AddEntry(gr_17028_obs, "CMS 13 TeV dilepton", "l");
-  lg_Alt->AddEntry(gr_21003_obs, "CMS 13 TeV SSWW", "l");
+  lg_Alt->AddEntry(gr_17028_exp, "CMS 13 TeV dilepton (exp)", "l");
+  if(channel=="MuMu") lg_Alt->AddEntry(gr_21003_exp, "CMS 13 TeV SSWW (exp)", "l");
+  //lg_Alt->AddEntry(gr_17028_obs, "CMS 13 TeV dilepton", "l");
+  //lg_Alt->AddEntry(gr_21003_obs, "CMS 13 TeV SSWW", "l");
 
   gr_band_2sigma0->Draw("3same");
   gr_band_1sigma0->Draw("3same");
   gr_exp0->Draw("lsame");
-  gr_exp1->Draw("lsame");
+  //gr_exp1->Draw("lsame");
   //gr_exp2->Draw("lsame");
   //gr_exp3->Draw("lsame");
-  gr_17028_obs->Draw("lsame");
-  gr_21003_obs->Draw("lsame");
+  gr_17028_exp->Draw("lsame");
+  if(channel=="MuMu") gr_21003_exp->Draw("lsame");
+  //gr_17028_obs->Draw("lsame");
+  //gr_21003_obs->Draw("lsame");
+
+  // Axis, tickles
+  dummy->Draw("axissame");
 
   lg->Draw();
   lg_Alt->Draw();
@@ -1198,7 +1290,8 @@ void CompareLimits(TString channel=""){
 
   latex_Lumi.SetTextSize(0.035);
   latex_Lumi.SetTextFont(42);
-  TString lumi = "41.5";
+  //TString lumi = "41.5"; //FIXME
+  TString lumi = "137.9"; //FIXME
   
   latex_CMSPreliminary.DrawLatex(0.14, 0.93, "#scale[0.8]{CMS #bf{#it{Preliminary}}}");
   latex_Lumi.DrawLatex(0.78, 0.93, lumi+" fb^{-1} (13 TeV)");
@@ -1227,7 +1320,8 @@ void CompareLimits(TString channel=""){
   TH1D *dummy2 = new TH1D("hist2", "", 100000, 0., 100000.);
   dummy2->GetYaxis()->SetTitleSize(0.1);
   dummy2->GetYaxis()->SetTitleOffset(0.5);
-  dummy2->GetYaxis()->SetTitle("#frac{limits}{2017 scaled #mu#mu}");
+  if(channel=="MuMu") dummy2->GetYaxis()->SetTitle("#frac{limits}{Run2 #mu#mu}");
+  else if(channel=="EE") dummy2->GetYaxis()->SetTitle("#frac{limits}{Run2 ee}");
   dummy2->GetYaxis()->SetLabelSize(0.07);
   dummy2->GetXaxis()->SetTitleSize(0.1);
   dummy2->GetXaxis()->SetTitleOffset(0.4);
@@ -1262,12 +1356,14 @@ void CompareLimits(TString channel=""){
   TGraph *gr_ratio_17028 = new TGraph(15,mass_comp_17028,ratio_17028);
   gr_ratio_17028->SetMarkerColor(kRed);
   gr_ratio_17028->Draw("psame");
-  TGraph *gr_ratio_21003 = new TGraph(12,mass_comp_21003,ratio_21003);
-  gr_ratio_21003->SetMarkerColor(kBlue);
-  gr_ratio_21003->Draw("psame");
-  TGraph *gr_ratio_ChargeSplit = new TGraph(23,&masses[0][0],ratio_ChargeSplit);
-  gr_ratio_ChargeSplit->SetMarkerColor(kViolet);
-  gr_ratio_ChargeSplit->Draw("psame");
+  if(channel=="MuMu"){
+    TGraph *gr_ratio_21003 = new TGraph(12,mass_comp_21003,ratio_21003);
+    gr_ratio_21003->SetMarkerColor(kBlue);
+    gr_ratio_21003->Draw("psame");
+  }
+  //TGraph *gr_ratio_ChargeSplit = new TGraph(23,&masses[0][0],ratio_ChargeSplit);
+  //gr_ratio_ChargeSplit->SetMarkerColor(kViolet);
+  //gr_ratio_ChargeSplit->Draw("psame");
 
 
 }

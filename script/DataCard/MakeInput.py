@@ -7,6 +7,7 @@ from ROOT import *
 eras = ["2016preVFP", "2016postVFP", "2017", "2018"]
 eras = ["2016","2017","2018"]
 eras = ["2017"]
+eras = ["2018"]
 masses = ["M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000"]
 masses = ["M5000","M7500","M10000","M15000","M20000"]
 masses = ["M90","M100","M150","M200","M300","M400","M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M10000","M15000","M20000"]
@@ -15,7 +16,7 @@ masses = ["M90","M100","M150","M200","M300","M400","M500","M600","M700","M800","
 channels = ["MuMu","EE","EMu"]
 channels = ["MuMu","EE"]
 tags = ["HNL_ULID","HNTightV2"]
-tags = ["NewOpt/HNL_ULID","NewOpt/HNTightV2"]
+outputTag = "NewOpt_"
 
 InputPath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegionPlotter/"
 Analyzer = "HNL_SignalRegionPlotter"
@@ -105,7 +106,7 @@ if MergeSignal:
 
 for tag in tags:
   for era in eras:
-    OutputPath = InputPath+'/LimitInputs/'+tag+'/'
+    OutputPath = InputPath+'/LimitInputs/'+outputTag+tag+'/'
     os.system('mkdir -p '+OutputPath + era)
   
     f_path_data        = InputPath + era + "/DATA/"+Analyzer+DataSkim+"DATA.root"

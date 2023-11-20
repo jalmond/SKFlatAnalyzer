@@ -14,6 +14,7 @@ workdir = "/data6/Users/jihkim/CombineTool/CMSSW_10_2_13/src/DataCardsShape/HNL_
 years = ["2016","2017","2018"]
 years = ["Run2"]
 years = ["2017"]
+years = ["2016preVFP","2016postVFP","2017","2018","Run2"]
 channels = ["MuMu","EE","EMu"]
 channels = ["MuMu","EE"]
 #channels = ["MuMu"]
