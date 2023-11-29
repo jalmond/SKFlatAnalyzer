@@ -40,7 +40,7 @@ for RunList in args.RunLists:
     skel.write("getenv   = True\n")
     skel.write("should_transfer_files = YES\n")
     skel.write("when_to_transfer_output = ON_EXIT\n")
-    skel.write("request_memory = 12000\n")
+    skel.write("request_memory = 24000\n")
   
   for i in range(0,NCARD):
   
