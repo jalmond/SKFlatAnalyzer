@@ -15,6 +15,7 @@ years = ["2016","2017","2018"]
 years = ["Run2"]
 years = ["2017"]
 years = ["2016preVFP","2016postVFP","2017","2018","Run2"]
+years = ["Run2"]
 channels = ["MuMu","EE","EMu"]
 channels = ["MuMu","EE"]
 #channels = ["MuMu"]
@@ -34,6 +35,7 @@ tags = [""] #["_DYVBF"]
 #myWPs = ["SR2HT_SR3l2pt_ChargeSplit"]
 #myWPs = ["HNL_ULID","HNTightV2"]
 myWPs = ["NewOpt_HNL_ULID","NewOpt_HNTightV2"]
+myWPs = ["NewOpt_HNL_ULID_FullCLs"]
 
 for WP in myWPs:
   this_workdir = workdir+WP

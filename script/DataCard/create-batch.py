@@ -45,6 +45,7 @@ for RunList in args.RunLists:
   for i in range(0,NCARD):
   
     card = cards[i].strip('\n')
+    if '#' in card: continue
     shortcard = card.split('/')[-1].replace(".root","").replace("card_","")
   
     os.system('mkdir -p Batch/'+WP+'/full_CLs/'+shortcard+'/output/')
