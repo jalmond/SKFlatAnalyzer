@@ -15,6 +15,7 @@ parser.add_argument('--Q2', action='store_true')
 parser.add_argument('--Q3', action='store_true')
 parser.add_argument('--Q4', action='store_true')
 parser.add_argument('--Q5', action='store_true')
+parser.add_argument('-t', dest='Ntoy', default='1000', help='N of toys when running full CLs')
 parser.add_argument('--Asymptotic', action='store_true')
 args = parser.parse_args()
 
@@ -60,7 +61,7 @@ for RunList in args.RunLists:
     if args.Full or args.Q1:
       with open("Batch/"+WP+"/full_CLs/"+shortcard+"/run_Q1.sh",'w') as runfile:
         runfile.write("#!/bin/bash\n")
-        runfile.write("combine -M HybridNew --LHCmode LHC-limits "+card+" -n "+shortcard+" --saveHybridResult --expectedFromGrid 0.025 -T 1000\n")
+        runfile.write("combine -M HybridNew --LHCmode LHC-limits "+card+" -n "+shortcard+" --saveHybridResult --expectedFromGrid 0.025 -T "+args.Ntoy+"\n")
       with open("Batch/"+WP+"/full_CLs/"+shortcard+"/submit_Q1.sh",'a') as submitfile:
         submitfile.write("executable = run_Q1.sh\n")
         submitfile.write("log = "+shortcard+"_Q1.log\n")
@@ -75,7 +76,7 @@ for RunList in args.RunLists:
     if args.Full or args.Q2:
       with open("Batch/"+WP+"/full_CLs/"+shortcard+"/run_Q2.sh",'w') as runfile:
         runfile.write("#!/bin/bash\n")
-        runfile.write("combine -M HybridNew --LHCmode LHC-limits "+card+" -n "+shortcard+" --saveHybridResult --expectedFromGrid 0.160 -T 1000\n")
+        runfile.write("combine -M HybridNew --LHCmode LHC-limits "+card+" -n "+shortcard+" --saveHybridResult --expectedFromGrid 0.160 -T "+args.Ntoy+"\n")
       with open("Batch/"+WP+"/full_CLs/"+shortcard+"/submit_Q2.sh",'a') as submitfile:
         submitfile.write("executable = run_Q2.sh\n")
         submitfile.write("log = "+shortcard+"_Q2.log\n")
@@ -90,7 +91,7 @@ for RunList in args.RunLists:
     if args.Full or args.Q3:
       with open("Batch/"+WP+"/full_CLs/"+shortcard+"/run_Q3.sh",'w') as runfile:
         runfile.write("#!/bin/bash\n")
-        runfile.write("combine -M HybridNew --LHCmode LHC-limits "+card+" -n "+shortcard+" --saveHybridResult --expectedFromGrid 0.500 -T 1000\n")
+        runfile.write("combine -M HybridNew --LHCmode LHC-limits "+card+" -n "+shortcard+" --saveHybridResult --expectedFromGrid 0.500 -T "+args.Ntoy+"\n")
       with open("Batch/"+WP+"/full_CLs/"+shortcard+"/submit_Q3.sh",'a') as submitfile:
         submitfile.write("executable = run_Q3.sh\n")
         submitfile.write("log = "+shortcard+"_Q3.log\n")
@@ -105,7 +106,7 @@ for RunList in args.RunLists:
     if args.Full or args.Q4:
       with open("Batch/"+WP+"/full_CLs/"+shortcard+"/run_Q4.sh",'w') as runfile:
         runfile.write("#!/bin/bash\n")
-        runfile.write("combine -M HybridNew --LHCmode LHC-limits "+card+" -n "+shortcard+" --saveHybridResult --expectedFromGrid 0.840 -T 1000\n")
+        runfile.write("combine -M HybridNew --LHCmode LHC-limits "+card+" -n "+shortcard+" --saveHybridResult --expectedFromGrid 0.840 -T "+args.Ntoy+"\n")
       with open("Batch/"+WP+"/full_CLs/"+shortcard+"/submit_Q4.sh",'a') as submitfile:
         submitfile.write("executable = run_Q4.sh\n")
         submitfile.write("log = "+shortcard+"_Q4.log\n")
@@ -120,7 +121,7 @@ for RunList in args.RunLists:
     if args.Full or args.Q5:
       with open("Batch/"+WP+"/full_CLs/"+shortcard+"/run_Q5.sh",'w') as runfile:
         runfile.write("#!/bin/bash\n")
-        runfile.write("combine -M HybridNew --LHCmode LHC-limits "+card+" -n "+shortcard+" --saveHybridResult --expectedFromGrid 0.975 -T 1000\n")
+        runfile.write("combine -M HybridNew --LHCmode LHC-limits "+card+" -n "+shortcard+" --saveHybridResult --expectedFromGrid 0.975 -T "+args.Ntoy+"\n")
       with open("Batch/"+WP+"/full_CLs/"+shortcard+"/submit_Q5.sh",'a') as submitfile:
         submitfile.write("executable = run_Q5.sh\n")
         submitfile.write("log = "+shortcard+"_Q5.log\n")
