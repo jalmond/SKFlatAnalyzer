@@ -376,9 +376,9 @@ std::vector<Electron> AnalyzerCore::GetAllElectrons(){
 
 
     /////// USE NEW Branches to set lepton variables
+    if(fChain->GetBranch("electron_ptrel"))         el.SetJetPtRel(electron_ptrel->at(i));
+    if(fChain->GetBranch("electron_ptratio"))       el.SetJetPtRatio(electron_ptratio->at(i));
     if(fChain->GetBranch("electron_v2_cj_flavour")) el.SetCloseJetFlavour(electron_v2_cj_flavour->at(i));
-    if(fChain->GetBranch("electron_ptrel"))      el.SetJetPtRel(electron_ptrel->at(i));
-    if(fChain->GetBranch("electron_ptratio"))    el.SetJetPtRatio(electron_ptratio->at(i));
     if(fChain->GetBranch("electron_v2_cj_bjetdisc"))    el.SetCloseJetBScore(electron_v2_cj_bjetdisc->at(i));
     if(fChain->GetBranch("electron_v2_cj_cvsbjetdisc")) el.SetCloseJetCvsBScore(electron_v2_cj_cvsbjetdisc->at(i));
     if(fChain->GetBranch("electron_v2_cj_cvsljetdisc")) el.SetCloseJetCvsLScore(electron_v2_cj_cvsljetdisc->at(i));
@@ -538,12 +538,11 @@ std::vector<Electron> AnalyzerCore::GetAllElectrons(){
     if(!fChain->GetBranch("electron_lepton_type") ||  !fChain->GetBranch("electron_is_cf"))  {
       int lep_type = GetLeptonType_JH(el, All_Gens);
       el.SetLeptonType(lep_type);
-      //el.SetLeptonIsCF(IsCF(el, All_Gens) );
     }
     else {
       if(fChain->GetBranch("electron_lepton_type")) el.SetLeptonType(electron_lepton_type->at(i));
-      //if(fChain->GetBranch("electron_is_cf")) el.SetLeptonIsCF(electron_is_cf->at(i));
     }
+
     el.SetLeptonIsCF(IsCF(el, All_Gens,true) );                                                                                                               
 
     out.push_back(el);

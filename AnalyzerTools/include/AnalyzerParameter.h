@@ -57,6 +57,7 @@ class AnalyzerParameter{
   TString BTagger;
   TString BWP;
   TString AK4JetColl;
+  TString AK4VBFJetColl;
   TString AK8JetColl;
   TString BJetColl;
 
@@ -95,7 +96,7 @@ class AnalyzerParameter{
   Weight w;
   enum Syst{
     Central,
-    FRAJ20,FRAJ30,FRAJ50,FRAJ60,
+    FRAJ25,FRAJ30, FRAJ40,FRAJ50,FRAJ60,
     JetResUp, JetResDown,    JetEnUp, JetEnDown,
     JetMassUp,JetMassDown,    JetMassSmearUp,JetMassSmearDown,
     MuonRecoSFUp,MuonRecoSFDown,    MuonEnUp,MuonEnDown,    MuonIDSFUp,MuonIDSFDown,    MuonISOSFUp,MuonISOSFDown,
@@ -133,7 +134,7 @@ class AnalyzerParameter{
   }
 
   TString ChannelType();
-
+  void SetChannel(TString inch);
   TString InclusiveChannelName();
   TString CutFlowDirChannel();
   TString CutFlowDirIncChannel();

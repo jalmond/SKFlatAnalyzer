@@ -1,6 +1,7 @@
 analyzer=HNL_SignalEfficiency
 rundir=HNL_SignalEfficiency
-mcpath=${SKFlat_WD}/runJobs/HNL/${analyzer}/Signals/
+sigpath=${SKFlat_WD}/runJobs/HNL/${analyzer}/Signals/
+mcpath=${SKFlat_WD}/runJobs/HNL/${analyzer}/Bkg/
 
 njobs=5
 nmax=300
@@ -12,20 +13,14 @@ if [[ $1 == "" ]]; then
 
     for i in "${era_list[@]}"
     do
-        SKFlat.py -a $analyzer  -l $mcpath/DY.txt  -n $njobs  --nmax ${nmax}   -e ${i} &
-        SKFlat.py -a $analyzer  -l $mcpath/VBF.txt  -n $njobs  --nmax ${nmax}   -e ${i} &
-        SKFlat.py -a $analyzer  -l $mcpath/SSWW.txt  -n $njobs  --nmax ${nmax}   -e ${i}
+        SKFlat.py -a $analyzer  -l $sigpath/DY.txt  -n $njobs  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLepBDT&
+        SKFlat.py -a $analyzer  -l $sigpath/VBF.txt  -n $njobs  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLepBDT&
+        SKFlat.py -a $analyzer  -l $sigpath/SSWW.txt  -n $njobs  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLepBDT&
+	SKFlat.py -a $analyzer  -l ${mcpath}/Conv.txt    -n 100  --nmax 400  -e ${i}  --skim SkimTree_ConvEventSkim&
+        SKFlat.py -a $analyzer  -l ${mcpath}/Fake.txt    -n 100  --nmax 400  -e ${i}  --skim SkimTree_FakeEventSkimBDT&
+	SKFlat.py -a $analyzer  -i TTLL_powheg    -n 100  --nmax 400  -e ${i}  --skim SkimTree_HNMultiLepBDT &
+	SKFlat.py -a $analyzer  -i DYJets         -n 100  --nmax 400  -e ${i}  --skim SkimTree_HNMultiLepBDT &
+
     done
     
-    SKFlat.py -a $analyzer  -i TTLJ_powheg  -n 300  --nmax ${nmax}   -e ${i}
-    
-
-fi
-
-
-if [[ $1 == "Fake" ]]; then
-
-    SKFlat.py -a $analyzer  -l ${SKFlat_WD}/runJobs/SampleLists/Bkg/FakeMuon.txt  -n 300  --nmax ${nmax}   -e 2017 &
-    
-
 fi

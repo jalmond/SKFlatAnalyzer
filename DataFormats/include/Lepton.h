@@ -222,7 +222,7 @@ public:
   }
 
   inline TString GetEtaLabel(){
-    double eta = defEta();
+    double eta = fEta();
     if(fabs(eta) < 0.8 ) return "eta1";
     if(fabs(eta) < 1.5 ) return "eta2";
     if(fabs(eta) < 2.5 ) return "eta3";
@@ -248,7 +248,6 @@ public:
     if(ptshift > 200) return 1/200.;
     else return (1/ptshift);
   }
-
 
   inline double PtParton(double Corr, double MVACut, double UpperValue=1.5){
     double mva_val = j_lep_mva;
@@ -312,6 +311,24 @@ public:
   void SetHNL_CFLepMVA_EtaDependantV5( double mvacf,double mvacfpt);
 
   
+  map<TString, double> MAPBDTFake() const {
+    map<TString, double> _map;
+    if(j_LeptonFlavour==ELECTRON){
+      _map["El_ED_Fake_v5"]        = j_lep_mva_hnl_fake_ed_v5;
+      _map["El_Fake_QCD_LFvsHF_v5"]= j_lep_mva_hnl_fake_QCD_LFvsHF_v5;
+      _map["El_Fake_QCD_BvsC_v5"]  = j_lep_mva_hnl_fake_QCD_BvsC_v5;
+    }
+    else{
+      _map["Mu_Fake_QCD_LFvsHF_v5"] = j_lep_mva_hnl_fake_QCD_LFvsHF_v5;
+      _map["Mu_Fake_QCD_BvsC_v5"]   = j_lep_mva_hnl_fake_QCD_BvsC_v5;
+      _map["Mu_HF_Fake_POG"]        = j_lep_mva;
+    }
+    return _map;
+  }
+
+
+
+
   map<TString, double> MAPBDT() const {
 
     map<TString, double> _map;
@@ -439,7 +456,7 @@ public:
       else if(vers=="EDv4")return j_lep_mva_hnl_conv_ed_v4;
       else if(vers=="EDv5")return j_lep_mva_hnl_conv_ed_v5;
     }
-    
+    else return 1;
     cout<<"[Lepton::HNL_MVA_CONV]"<< endl;
     exit(ENODATA);
 
@@ -455,6 +472,7 @@ public:
       else if(vers=="EDv5Pt")return j_lep_mva_hnl_ed_cf_v5Pt;
 
     }
+    else return 1;
     cout<<"[Lepton::HNL_MVA_CF] " << vers << endl;
     exit(ENODATA);
 
@@ -604,14 +622,10 @@ public:
    
 
   inline TString LeptonFakeTagger() const {
-    if (j_lep_mva_hnl_fake_QCD_LFvsHF_v5 > 0.8) return "LF1";
-    else{
-      if(j_lep_mva_hnl_fake_QCD_BvsC_v5 > 0.7) return "HF1";
-      if(j_lep_mva_hnl_fake_QCD_BvsC_v5 > 0.1) return "HF2";
-      if(j_lep_mva_hnl_fake_QCD_BvsC_v5 > -0.3) return "HF3";
-      if(j_lep_mva_hnl_fake_QCD_BvsC_v5 > -0.7) return "HF4";
-      return "HF5";
-    }
+    if (j_lep_jetbscore > 0.2) return "HF1";
+    if (j_lep_jetbscore > 0.05) return "HF2";
+    if (j_lep_jetbscore > 0.025) return "HF3";
+    return "HF4";
   }
 
 

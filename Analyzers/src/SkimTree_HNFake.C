@@ -167,33 +167,53 @@ void SkimTree_HNFake::executeEvent(){
   double mu_pt = (IsData) ? 4: 4;
   double el_pt = (IsData) ? 8: 8;
 
-  vector<Muon> allmuons = GetMuons("HNLoosest", mu_pt, 2.4);
+  vector<Muon> allmuons  = GetMuons("HNLoosest",     mu_pt, 2.4);
   vector<Electron> allel = GetElectrons("HNLoosest", el_pt, 2.5);
   
   int NLep = allmuons.size() + allel.size();
-  
-  if( NLep == 0 ) return;
 
-  vector<Jet> alljet = GetJets("tight", 30., 2.7);
+  if( NLep == 0 ) return;  
+
+  vector<Lepton*> Leptons = MakeLeptonPointerVector(allmuons,allel);
+  bool HasOSZCand = (ZmassOSSFWindowCheck(Leptons,20)); 
+
+  Particle METv = GetMiniAODvMET("PuppiT1xyULCorr"); // returns MET with systematic correction                                                                      
+  bool HighMET = false;
+
+  vector<Jet> alljet = GetJets("tight", 20., 2.7);
   bool dphi_lj(false);
+  bool dR_lj(false);
+
   for(unsigned int imu=0; imu < allmuons.size(); imu++){
-    for(unsigned int ij=0; ij <alljet.size(); ij++){
-      float dphi =fabs(TVector2::Phi_mpi_pi(allmuons[imu].Phi()- alljet.at(ij).Phi()));
-      if(dphi > 2.5) dphi_lj=true;
+    if((METv.Pt() > 25) && MT(allmuons[imu], METv) > 60) HighMET = true;
+    else{
+      for(unsigned int ij=0; ij <alljet.size(); ij++){
+	float dphi =fabs(TVector2::Phi_mpi_pi(allmuons[imu].Phi()- alljet.at(ij).Phi()));
+	float dR = allmuons[imu].DeltaR(alljet.at(ij));
+	if(dphi > 2.5) dphi_lj=true;
+	if(dR > 0.7) dR_lj=true;
+      }
     }
   }
   
   for(unsigned int iel=0; iel <allel.size(); iel++){
-    for(unsigned int ij=0; ij <alljet.size(); ij++){
-      float dphi =fabs(TVector2::Phi_mpi_pi(allel[iel].Phi()- alljet.at(ij).Phi()));
-      if(dphi >2.5) dphi_lj=true;
+    if((METv.Pt() > 25) && MT(allel[iel], METv) > 60) HighMET = true;
+    else{ 
+      for(unsigned int ij=0; ij <alljet.size(); ij++){
+	float dphi =fabs(TVector2::Phi_mpi_pi(allel[iel].Phi()- alljet.at(ij).Phi()));
+	float dR = allel[iel].DeltaR(alljet.at(ij));
+	if(dR > 0.7) dR_lj=true;
+	if(dphi >2.5) dphi_lj=true;
+      }
     }
   }
 
-  if( !dphi_lj ) return;
-  
+  /// Fill If it is either QCD Back-to-back , Z peak, or Prompt Norm cand
+  if( dphi_lj )   newtree->Fill();
+  else if(dR_lj)  newtree->Fill();
+  else if(HasOSZCand) newtree->Fill();
+  else if(HighMET) newtree->Fill();
 
-  newtree->Fill();
   return;
 
 

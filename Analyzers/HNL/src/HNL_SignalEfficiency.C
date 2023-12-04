@@ -17,17 +17,17 @@ void HNL_SignalEfficiency::executeEvent(){
   
   FillHist ("NoCut", 1, weight, 2, 0., 2.,"");
 
-  TString process="";
-  if(!IsData){
+  TString process="BKG";
+  if(IsSignal()){
     
     process = GetProcess();
-
+    
     vector<TString> labels ={"Inclusive","OS_ElEl", "SS_El-El-", "SS_El+El+","OS_MuMu", "SS_Mu-Mu-" , "SS_Mu+Mu+","OS_ElMu","SS_El-Mu-" ,"SS_El+Mu+", "OS_MuEl","SS_Mu-El-","SS_Mu+El+"};
-
+    
     HNL_LeptonCore::FillCutflow("SignalProcess","SplitChannel",weight, labels, process);
     HNL_LeptonCore::FillCutflow("SignalProcess","SplitChannel",weight, labels, "Inclusive");
     
-
+    
     if(_jentry% 10000==0){
       cout << "process = " << process << endl;
       
@@ -50,13 +50,32 @@ void HNL_SignalEfficiency::executeEvent(){
   /// Require leptons to match 
 
   vector<Electron> InputElectrons = GetSignalLeptons(_InputElectrons, All_Gens);
+
+  for(auto  iel : InputElectrons ) {
+    // cout << "El HNTight = " << iel.PassID("HNTightV2") << " ULID 17 = " << iel.PassID("HNL_ULID_2017") << endl;
+    if(iel.PassID("HNTightV2"))     FillHist( "HNTightvsULID_EE", 1., weight, 4,0., 4);
+    if(iel.PassID("HNL_ULID_2017")) FillHist( "HNTightvsULID_EE", 2., weight, 4,0., 4);
+  }
+	
+  FillHist( process + "/NoCut", 1., weight, 4,0., 4);
+  
+  vector<Muon>     HNLMuons = SelectMuons (InputMuons, "HNL_ULID_"+GetYearString(), 10., 2.4);
+  vector<Electron> HNLElectrons = SelectElectrons (InputElectrons, "HNL_ULID_"+GetYearString(), 15., 2.4);
+  vector<Muon>     HNMuons = SelectMuons (InputMuons, "HNTightV2", 10., 2.4);
+  vector<Electron> HNElectrons = SelectElectrons (InputElectrons, "HNTightV2", 15., 2.4);
+
+  
+  if(SameCharge(HNLMuons) && (InputMuons[0].Pt() > 20) )     FillHist( process + "/SS_Muon_HNL", 1., weight, 4,0., 4);
+  if(SameCharge(HNMuons)  && (InputMuons[0].Pt() > 20) )      FillHist( process + "/SS_Muon_HNTight", 1., weight, 4,0., 4);
+
+  if(SameCharge(HNLElectrons) && (InputElectrons[0].Pt() > 25) ) FillHist( process + "/SS_Electron_HNL", 1., weight, 4,0., 4);
+  if(SameCharge(HNElectrons)  && (InputElectrons[0].Pt() > 25))  FillHist( process + "/SS_Electron_HNTight", 1., weight, 4,0., 4);
   
   vector<HNL_LeptonCore::Channel> channels = {EE,MuMu};//, EMu};
   
-
-  vector<TString> ElectronIDs = {"NoCut","HNVetoMVA","HNVeto","CutBasedLooseNoIso","CutBasedMediumNoIso","CutBasedTightNoIso","MVALooseNoIso","CutBasedVetoNoIso","HNTightV2","HNTight_17028","passPOGTight","passPOGMedium","passHEEPID","passMVAID_noIso_WP80","passMVAID_noIso_WP90","passMVAID_Iso_WP80","passMVAID_Iso_WP90","HNHEEPID","SUSYTight","HN2016MVA","HN2016MVA2","HN2016MVA2CC","HN2016POG","TriggerTight","TriggerLoose","TightTriggerTight","TightTriggerLoose","HNL_ULID_2016","HNL_ULID_2017","HNL_ULID_2018","HNL_ULID_2016_Trigger","HNL_ULID_2016_CF","HNL_ULID_2016_Fake","HNL_ULID_2016_Conv","MVALoose"};
+  vector<TString> ElectronIDs = {"NoCut","HNVetoMVA","CutBasedLooseNoIso","CutBasedMediumNoIso","CutBasedTightNoIso","MVALooseNoIso","CutBasedVetoNoIso","HNTightV2","passPOGTight","passPOGMedium","passHEEPID","passMVAID_noIso_WP80","passMVAID_noIso_WP90","passMVAID_Iso_WP80","passMVAID_Iso_WP90","HNHEEPID","Peking_2016", "Peking_2017","HNL_ULID_2016","HNL_ULID_2017","HNL_ULID_2018","MVALoose"};
   
-  vector<TString> MuonIDs = {"NoCut","POGTight","POGHighPt","POGMedium","POGLoose","POGTightWithTightIso","POGHighPtWithLooseTrkIso","POGHighPtTight","POGHighPtMixTight","HNLoosest","HNLoose_17028","HNTight_17028","HNLooseMVA","HNLooseV1","HNLoosePOG","HNTightV1","HNTightV2","HNTightPFIsoLoose", "HNTightPFIsoMedium","HNTightPFIsoTight","HNTightPFIsoVeryTight","HNTightPFIsoVeryVeryTight","HNL_TopMVA_MM","HNL_TopMVA_TT","HNL_TopMVA_TM","HNL_TopMVA_MT","HNL_Peking","HNL_ULID_2016","HNL_ULID_2018","HNL_ULID_2017","MVALoose","MVALooseCut1","MVALooseCut2","MVALooseCut3","MVALooseCut4"};  
+  vector<TString> MuonIDs = {"NoCut","POGTight","POGHighPt","POGMedium","POGLoose","POGTightWithTightIso","HNLoosePOG","HNTightV2","HNTightPFIsoLoose", "HNTightPFIsoMedium","HNTightPFIsoTight","HNTightPFIsoVeryTight","HNTightPFIsoVeryVeryTight","HNL_HN3L","Peking","HNL_ULID_2016","HNL_ULID_2018","HNL_ULID_2017","MVALoose"};  
   
   vector<pair<HNL_LeptonCore::Channel , TString > > LeptonIDMap;
   for(auto el_id : ElectronIDs) LeptonIDMap.push_back(make_pair( EE,  el_id));
@@ -72,9 +91,8 @@ void HNL_SignalEfficiency::executeEvent(){
     TString channel = GetChannelString(dilep_channel) ;
     FillHist( "NoCut_"+ channel, 1., weight, 2,0., 2);
     
-    double ptbins[11] = { 0., 10.,15., 20., 30., 40.,50., 100.,500. ,1000.,2000.};
-    
-    
+    double ptbins[11] = { 0., 10.,15., 20., 30., 40.,50., 100.,250.,500. ,1000.};
+        
     for(auto imap : LeptonIDMap){
 
       if(imap.first != dilep_channel) continue;
@@ -88,7 +106,7 @@ void HNL_SignalEfficiency::executeEvent(){
       std::vector<Lepton *> leps       = MakeLeptonPointerVector(vecSelectedMuons,vecSelectedElectrons ,param);
       
       for(auto ilep:  leps)  {
-	double pt = (ilep->Pt() > 2000) ? 1999 : ilep->Pt();
+	double pt = (ilep->Pt() > 1000) ? 999 : ilep->Pt();
 	
 	TString lepton_label=ilep->GetFlavour();
 	TString eta_label   = ilep->GetEtaRegion();
@@ -107,7 +125,7 @@ void HNL_SignalEfficiency::executeEvent(){
       if(imap.first == EE)  {
 	for(auto iel : vecSelectedElectrons){
 
-	  double pt = (iel.Pt() > 2000) ? 1999 : iel.Pt();
+	  double pt = (iel.Pt() > 1000) ? 999 : iel.Pt();
 
 	  if (iel.IsPrompt()) {
 	    FillHist( "Prompt_"+channel+"/Electron_pt_"+iel.GetEtaRegion()+"_"+imap.second, pt, weight, 10, ptbins);
@@ -132,7 +150,7 @@ void HNL_SignalEfficiency::executeEvent(){
 
         for(auto imu : vecSelectedMuons){
 	  
-	  double pt = (imu.Pt() > 2000) ? 1999 : imu.Pt();
+	  double pt = (imu.Pt() > 1000) ? 999 : imu.Pt();
 	  
 	  if (imu.IsPrompt()) {
 	    FillHist( "Prompt_"+channel+"/Muon_pt_"+imu.GetEtaRegion()+"_"+imap.second, pt, weight, 10, ptbins);

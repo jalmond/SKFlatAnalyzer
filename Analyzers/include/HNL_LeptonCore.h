@@ -132,10 +132,9 @@ class HNL_LeptonCore : public AnalyzerCore {
   double GetFakeRateMuon(Muon mu, AnalyzerParameter param);
   double GetFakeWeight(std::vector<Lepton *> leps,  AnalyzerParameter param);
   double GetIsoFromID(Lepton lep, TString id);
-  double GetCFSF(AnalyzerParameter param, std::vector<Electron> electrons) ;
+  double GetCFSF(AnalyzerParameter param, std::vector<Lepton* > leps) ;
   double GetCFWeightElectron(std::vector<Electron> electrons ,  AnalyzerParameter param,bool ApplySF=true);
   double GetCFWeightElectron(std::vector<Lepton* > leps ,  AnalyzerParameter param,bool ApplySF=true);
-  double GetCFWeightElectron(vector<double> el_pt, vector<double> el_eta ,  AnalyzerParameter param, bool ApplySF=true);
   double GetShiftCFEl(Electron el) ;
   double GetZMassShift(vector<Electron> Electrons) ;
 

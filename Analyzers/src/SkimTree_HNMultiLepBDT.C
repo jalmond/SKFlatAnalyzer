@@ -13,28 +13,9 @@ void SkimTree_HNMultiLepBDT::initializeAnalyzer(){
 
   ///// ELECTRON BRANCHES                                                                                                                                                                                                                
   if(!fChain->GetBranch("electron_mva_cf_v2")){
-    newtree->Branch("electron_mva_cf_v2",     &velectron_mva_cf_v2);
-    newtree->Branch("electron_mva_cf_ed_v2",  &velectron_mva_cf_ed_v2);
-    newtree->Branch("electron_mva_conv_v2",   &velectron_mva_conv_v2);
-    newtree->Branch("electron_mva_conv_ed_v2",&velectron_mva_conv_ed_v2);
-
-    newtree->Branch("electron_mva_fake_v4",   &velectron_mva_fake_v4);
-    newtree->Branch("electron_mva_fakeHF_v4", &velectron_mva_fakeHF_v4);
-    newtree->Branch("electron_mva_fakeHFB_v4",&velectron_mva_fakeHFB_v4);
-    newtree->Branch("electron_mva_fakeHFC_v4",&velectron_mva_fakeHFC_v4);
-    newtree->Branch("electron_mva_fakeLF_v4", &velectron_mva_fakeLF_v4);
-    newtree->Branch("electron_mva_fakeTop_v4",&velectron_mva_fakeTop_v4);
-
-    newtree->Branch("electron_mva_fake_ed_v4",   &velectron_mva_fake_ed_v4);
-    newtree->Branch("electron_mva_fakeHF_ed_v4", &velectron_mva_fakeHF_ed_v4);
-    newtree->Branch("electron_mva_fakeHFB_ed_v4",&velectron_mva_fakeHFB_ed_v4);
-    newtree->Branch("electron_mva_fakeHFC_ed_v4",&velectron_mva_fakeHFC_ed_v4);
-    newtree->Branch("electron_mva_fakeLF_ed_v4", &velectron_mva_fakeLF_ed_v4);
-    newtree->Branch("electron_mva_fakeTop_ed_v4",&velectron_mva_fakeTop_ed_v4);
     newtree->Branch("electron_ptrel",      &velectron_ptrel);
     newtree->Branch("electron_ptratio",    &velectron_ptratio);
     newtree->Branch("electron_lepton_type",&velectron_lepton_type);
-    newtree->Branch("electron_is_cf",      &velectron_is_cf);
   }
 
   newtree->Branch("electron_mva_fake_ed_v5",&velectron_mva_fake_ed_v5);
@@ -58,12 +39,9 @@ void SkimTree_HNMultiLepBDT::initializeAnalyzer(){
   //// MUON BRANCH                                                                                                                                                                                                                                                                                                                                                          
 
   if(!fChain->GetBranch("muon_mva_fake_ed_v4")){
-    newtree->Branch("muon_mva_fake_v4",   &vmuon_mva_fake_v4);
-    newtree->Branch("muon_mva_fake_ed_v4",&vmuon_mva_fake_ed_v4);
     newtree->Branch("muon_ptrel",         &vmuon_ptrel);
     newtree->Branch("muon_ptratio",       &vmuon_ptratio);
     newtree->Branch("muon_lepton_type",   &vmuon_lepton_type);
-    newtree->Branch("muon_is_cf",         &vmuon_is_cf);
     newtree->Branch("SKWeight", &vSKWeight);
   }
 
@@ -230,100 +208,20 @@ void SkimTree_HNMultiLepBDT::initializeAnalyzer(){
 void SkimTree_HNMultiLepBDT::executeEvent(){
 
 
-  Event ev;
-  ev.SetTrigger(*HLT_TriggerName);
+
   if(!fChain->GetBranch("electron_mva_cf_v2"))  ResetLeptonBDTSKFlat();
   ResetLeptonBDTSKFlatV5();
 
   vSKWeight=MCweight(true,true);
 
   if(!fChain->GetBranch("electron_mva_cf_v2"))SetupLeptonBDTSKFlat();
-
   SetupLeptonBDTSKFlatV5();
 
-  
-  if(MCSample.Contains("Type")){
-    
-    newtree->Fill();
-    
-    return;
-  }
-  
-
-  //==== Skim 1 ) trigger
-  if(! (ev.PassTrigger(triggers)) ) return;
-
-  if(this->DataStream == "SingleMuon" && (ev.PassTrigger(triggers_dimu))) return;
-  if(this->DataStream == "SingleElectron" && (ev.PassTrigger(triggers_di_el))) return;
-
-  std::vector<Muon>     muonPreColl     = GetMuons("HNLoosest", 5., 2.4);
-  std::vector<Electron> electronPreColl = GetElectrons("HNLoosest", 8., 2.5);
-
-  std::sort(muonPreColl.begin(), muonPreColl.end(), PtComparing);
-  std::sort(electronPreColl.begin(), electronPreColl.end(), PtComparing);
-  
-  int NEl  = electronPreColl.size();
-  int NMu  = muonPreColl.size();
-  int NLep = NEl+NMu;
-  bool HasSS2lOR3l = false;
-  bool LeadLepPt = false;
-
-  bool HasFatJet(false);
-  
-  vector<FatJet> allfatjets = puppiCorr->Correct( GetFatJets("tight", 200., 2.7) ); //==== corret SDMass                                                     
-
-  HasFatJet = (allfatjets.size() > 0);
-
-  std::vector<Lepton *> leps;
-  for(unsigned int i=0; i<electronPreColl.size(); i++){
-    Electron& el = electronPreColl.at(i);
-    leps.push_back( &el );
-  }
-  for(unsigned int i=0; i<muonPreColl.size(); i++){
-    Muon& mu = muonPreColl.at(i);
-    leps.push_back( &mu );
-  }
-
-  if      ( NLep >= 3 ){ 
-    HasSS2lOR3l = true; 
-    if(NMu==0 ){
-      if(electronPreColl.at(0).Pt() > 23.) LeadLepPt = true;
-    }  
-    else if(NEl==0){
-      if(muonPreColl.at(0).Pt() > 17.) LeadLepPt = true;
-    }
-    else if((electronPreColl.at(0).Pt() > 23.) || (muonPreColl.at(0).Pt() > 17.))LeadLepPt = true;
-    
-  }
-  else if ( NLep == 2 ){
-    if(muonPreColl.size()==2){
-      if (muonPreColl[0].Charge() == muonPreColl[1].Charge())   HasSS2lOR3l = true;
-      else if (HasFatJet) HasSS2lOR3l = true;
-    }
-    else if(electronPreColl.size()==2){
-      
-      if( electronPreColl[0].Charge() == electronPreColl[1].Charge() ) HasSS2lOR3l = true;
-      else if (HasFatJet) HasSS2lOR3l = true;
-    }
-
-    else if(electronPreColl.size() == 1 &&  muonPreColl.size() == 1){
-      if( electronPreColl[0].Charge() ==  muonPreColl[0].Charge()) HasSS2lOR3l = true;
-      else if (HasFatJet) HasSS2lOR3l = true;
-    }
-    
-    if(NMu==2 && muonPreColl.at(0).Pt()>  17.    ) LeadLepPt = true;
-    if(NEl==2 && electronPreColl.at(0).Pt()>23 ) LeadLepPt = true;
-    if(NMu==1 && NEl==1 && electronPreColl.at(0).Pt()>23 ) LeadLepPt = true;
-    if(NMu==1 && NEl==1 && muonPreColl.at(0).Pt()>23 ) LeadLepPt = true;
-  }
-
-  if( !(HasSS2lOR3l && LeadLepPt) ) return;
-
-  //=============================
-  //==== If survived, fill tree
-  //=============================
-
   newtree->Fill();
+
+
+  return;
+
 
 }
 

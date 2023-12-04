@@ -16,11 +16,14 @@ void HNL_LeptonCore::FillCutflowDef(TString cutflow_dirname,TString cutflow_hist
   if( !this_hist ){
     TString cf_name="FillEventCutflow";
 
-    if(cutflow_histname.Contains("SR")) cf_name="LimitBins/";
-    if(cutflow_histname.Contains("Limit")) cf_name="LimitBins/";
+    if(cutflow_histname.Contains("SR")) cf_name="LimitBins";
+    if(cutflow_histname.Contains("SR_Cut")) cf_name="SignalCutFlow";
+
+    if(cutflow_histname.Contains("Limit")) cf_name="LimitBins";
     if(!cutflow_dirname.Contains("ChannelCutFlow"))  cf_name = cutflow_dirname + "/"+cf_name;
     else cf_name = cutflow_dirname;
 
+    cout << "cf_name+cutflow_histname = " << cf_name+"/"+cutflow_histname << endl;
     this_hist = new TH1D(cf_name+"/"+cutflow_histname, "", bin_lables.size(), 0, bin_lables.size());
     for (unsigned int i=0 ; i < bin_lables.size(); i++)  this_hist->GetXaxis()->SetBinLabel(i+1,bin_lables[i]);
     this_hist->SetDirectory(NULL);
@@ -40,11 +43,11 @@ void HNL_LeptonCore::FillCutflow(TString analysis_dir_name,TString histname, dou
 
 void HNL_LeptonCore::FillCutflow(AnalyzerParameter param,TString histname, double weight, vector<TString> lables, TString label){
   
-  FillCutflowDef(param.CutFlowDirChannel(),   histname, weight,lables, label);
   if(param.Channel!="Default")FillCutflowDef(param.CutFlowDirIncChannel(),histname, weight,lables, label);
-  
-  FillCutflowDef(param.CutFlowDirChannel(),   histname+"_unweighted",1,lables, label);
-  if(param.Channel!="Default")FillCutflowDef(param.CutFlowDirIncChannel(),histname+"_unweighted", 1,lables, label);
+  FillCutflowDef(param.CutFlowDirChannel(),   histname, weight,lables, label);
+
+  //FillCutflowDef(param.CutFlowDirChannel(),   histname+"_unweighted",1,lables, label);
+  //if(param.Channel!="Default")FillCutflowDef(param.CutFlowDirIncChannel(),histname+"_unweighted", 1,lables, label);
 
 }
 
@@ -77,8 +80,8 @@ void HNL_LeptonCore::FillCutflow(HNL_LeptonCore::SearchRegion sr, double event_w
   FillCutflowDef(OutputDir,   histname, event_weight,lables, label);
   if(param.Channel!="Default") FillCutflowDef(param.CutFlowDirIncChannel(),   histname, event_weight,lables, label);
 
-  FillCutflowDef(OutputDir,   histname+"_unweighted", 1,lables, label);
-  if(param.Channel!="Default") FillCutflowDef(param.CutFlowDirIncChannel(),   histname+"_unweighted", 1,lables, label);
+  //  FillCutflowDef(OutputDir,   histname+"_unweighted", 1,lables, label);
+  //  if(param.Channel!="Default") FillCutflowDef(param.CutFlowDirIncChannel(),   histname+"_unweighted", 1,lables, label);
 
 
   return;
@@ -160,11 +163,12 @@ TString HNL_LeptonCore::GetCutFlowNameFromRegion(HNL_LeptonCore::SearchRegion sr
   if(sr==ElectronSR     || sr==ElectronSRBDT     || sr==ElectronSROpt     || sr==ElectronSRBDTOpt)     EVHistName ="ElectronSR";
   if(sr==ElectronMuonSR || sr==ElectronMuonSRBDT || sr==ElectronMuonSROpt || sr==ElectronMuonSRBDTOpt) EVHistName ="ElectronMuonSR";
   if(sr==CR)    EVHistName ="ControlRegions";
-  if(sr==sigmm) EVHistName ="SR_Summary";
-  if(sr==sigee) EVHistName ="SR_Summary";
-  if(sr==sigem) EVHistName ="SR_Summary";
-  if(sr==sigmm_17028) EVHistName ="SR_Summary_17028";
-  
+  if(sr==sigmm) EVHistName ="SR_CutFlow";
+  if(sr==sigee) EVHistName ="SR_CutFlow";
+  if(sr==sigem) EVHistName ="SR_CutFlow";
+  if(sr==sigmm_17028) EVHistName ="SR_CutFlow_17028";
+  if(sr==sigee_17028) EVHistName ="SR_CutFlow_17028";
+
   return EVHistName;
 }
 
@@ -173,7 +177,7 @@ vector<TString>  HNL_LeptonCore::GetLabelsFromRegion(HNL_LeptonCore::SearchRegio
   
   vector<TString> labels;
   
-  if(sr==SR1 )   labels = {  "SR1_Init","SR1_lep_charge","SR1_lep_pt","SR1_dilep_mass" ,"SR1_1AK8" ,"SR1_MET" ,"SR1_Wmass","SR1_bveto","SR1_Lep2Pt","SR1_PNTagger","SR1_LepPt","SR1_DphiN_Wlep","SR1_TauVeto","SR1_HTPt","SR1_masscuts" };
+  if(sr==SR1 )   labels = {  "SR1_Init","SR1_lep_charge","SR1_lep_pt","SR1_dilep_mass" , "SR1_tauveto","SR1_1AK8" ,"SR1_MET" ,"SR1_Wmass","SR1_bveto","SR1_Lep2Pt","SR1_PNTagger","SR1_LepPt","SR1_DphiN_Wlep","SR1_TauVeto","SR1_HTPt","SR1_masscuts" };
   
   if(sr==SR2)  labels = {  "SR2_lep_charge",  "SR2_lep_pt",  "SR2_DPhi",  "SR2_LLMass", "SR2_DiJet", "SR2_DiJetEta", "SR2_DiJetMass","SR2_VBF","SR2_met","SR2_ht_lt1","SR2_bveto",  "SR2_Final"};
   
@@ -251,13 +255,13 @@ vector<TString>  HNL_LeptonCore::GetLabelsFromRegion(HNL_LeptonCore::SearchRegio
 			  "SSPresel"};
   
   
-  if(sr==sigmm)  labels = {"SSNoCut", "SSGen", "SSGen2", "SSMuMuTrig", "SSMuMuTrig2", "SSMuMuTrig2L", "SSMuMu", "SSMuMu_Pt", "SSMuMu_HEMVeto","SSMuMu_LepVeto", "SSMuMu_LLMass",  "SSMuMu_vTau","SSMuMu_Jet","SSMuMu_BJet", "SSMuMu_DiJet",  "SSMuMu_SR1","SSMuMu_SR1Fail", "SSMuMu_SR2","SSMuMu_SR3","SSMuMu_SR4","SSMuMu_SR5","SSMuMu_SR3Fail"};
+  if(sr==sigmm)  labels = {"SSNoCut", "SSGen", "SSGen2", "SSMuMuTrig", "SSMuMuTrig2", "SSMuMuTrig2L", "SSMuMu", "SSMuMu_Pt", "SSMuMu_HEMVeto","SSMuMu_LepVeto", "SSMuMu_LLMass",  "SSMuMu_vTau","SSMuMu_Jet","SSMuMu_BJet", "SSMuMu_DiJet",  "SSMuMu_SR1", "SSMuMu_SR2","SSMuMu_SR3Inclusive","SSMuMu_SR3","SSMuMu_SR4","SSMuMu_SRFail"};
   
-  if(sr==sigmm_17028) labels = {"SSNoCut", "SSGen","SSGen2", "SSMuMuTrig", "SSMuMuTrig2","SSMuMuTrig2L" , "SSMuMu","SSMuMu_Pt", "SSMuMu_HEMVeto","SSMuMu_LepVeto", "SSMuMu_LLMass", "SSMuMu_Jet", "SSMuMu_BJet", "SSMuMu_DiJet",  "SSMuMu_SR1","SSMuMu_SR1Fail","SSMuMu_SR3","SSMuMu_SR3Fail"};
+  if(sr==sigmm_17028) labels = {"SSNoCut", "SSGen","SSGen2", "SSMuMuTrig", "SSMuMuTrig2","SSMuMuTrig2L" , "SSMuMu","SSMuMu_Pt", "SSMuMu_HEMVeto","SSMuMu_LepVeto", "SSMuMu_LLMass", "SSMuMu_Jet", "SSMuMu_BJet", "SSMuMu_DiJet",  "SSMuMu_SR1","SSMuMu_SR3", "SSMuMu_SRFail"};
 
-  if(sr==sigee) labels = {"SSNoCut", "SSGen", "SSGen2", "SSEETrig", "SSEETrig2", "SSEETrig2L","SSEE", "SSEE_Pt","SSEE_LepVeto", "SSEE_HEMVeto","SSEE_LLMass",  "SSEE_vTau","SSEE_Jet","SSEE_BJet", "SSEE_DiJet",  "SSEE_SR1","SSEE_SR1Fail", "SSEE_SR2","SSEE_SR3","SSEE_SR4","SSEE_SR5","SSEE_SR3Fail"};
+  if(sr==sigee) labels = {"SSNoCut", "SSGen", "SSGen2", "SSEETrig", "SSEETrig2", "SSEETrig2L","SSEE", "SSEE_Pt","SSEE_LepVeto", "SSEE_HEMVeto","SSEE_LLMass",  "SSEE_vTau","SSEE_Jet","SSEE_BJet", "SSEE_DiJet",  "SSEE_SR1","SSEE_SR2","SSEE_SR3Inclusive","SSEE_SR3","SSEE_SR4", "SSEE_SRFail"};
   
-  if(sr==sigee_17028) labels = {"SSNoCut", "SSGen","SSGen2", "SSEETrig", "SSEETrig2", "SSEETrig2L", "SSEE","SSEE_Pt", "SSEE_HEMVeto", "SSEE_LepVeto", "SSEE_LLMass", "SSEE_Jet", "SSEE_BJet", "SSEE_DiJet",  "SSEE_SR1","SSEE_SR1Fail","SSEE_SR3","SSEE_SR3Fail"};
+  if(sr==sigee_17028) labels = {"SSNoCut", "SSGen","SSGen2", "SSEETrig", "SSEETrig2", "SSEETrig2L", "SSEE","SSEE_Pt", "SSEE_HEMVeto", "SSEE_LepVeto", "SSEE_LLMass", "SSEE_Jet", "SSEE_BJet", "SSEE_DiJet",  "SSEE_SR1","SSEE_SR3","SSEE_SRFail"};
     
   if(sr==sigem)   labels = {"SSNoCut", "SSGen", "SSGen2", "SSEMuTrig", "SSEMuTrig2","SSEMuTrig2L","SSEMu", "SSEMu_Pt","SSEMu_LepVeto", "SSEMu_LLMass",  "SSEMu_vTau","SSEMu_Jet","SSEMu_BJet", "SSEMu_DiJet",  "SSEMu_SR1","SSEMu_SR1Fail", "SSEMu_SR2","SSEMu_SR3","SSEMu_SR4","SSEMu_SR5","SSEMu_SR3Fail"};
   

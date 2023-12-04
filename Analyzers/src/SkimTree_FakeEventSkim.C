@@ -26,6 +26,40 @@ void SkimTree_FakeEventSkim::executeEvent(){
     if(imu.IsFake()) HasFakeLep=true;
   }
   
+  if(MCSample.Contains("Sherpa")) {
+    HasFakeLep=false;
+    std::vector<Lepton *> leps = MakeLeptonPointerVector(muonPreColl,electronPreColl);
+    
+    for(auto ilep : leps){
+      bool LepPrompt=false;
+      for(unsigned int i=2; i<All_Gens.size(); i++){
+	Gen gen = All_Gens.at(i);
+	
+	if(gen.Status() != 1) continue;
+	int mindex = All_Gens.at(i).MotherIndex();
+	int MotherPID = fabs(All_Gens.at(mindex).PID());
+	bool PromptLepMu = (MotherPID == 13)  || (MotherPID == 15);
+	bool PromptLepEl = (MotherPID == 11) || (MotherPID == 15);
+	
+	while (MotherPID > 10 && MotherPID < 16){
+	  mindex = All_Gens.at(mindex).MotherIndex();
+	  MotherPID= fabs(All_Gens.at(mindex).PID());
+	}
+	
+	bool PromptLepMuFull = PromptLepMu &&  ((MotherPID == 21)  || (MotherPID < 6));
+	bool PromptLepElFull = PromptLepEl &&  ((MotherPID == 21)  || (MotherPID < 6));
+	
+	if(fabs(gen.PID()) == 13){
+	  if(PromptLepMuFull && ilep->LeptonFlavour() == Lepton::MUON && ilep->DeltaR(gen) < 0.1) LepPrompt=true;
+	}
+	if(fabs(gen.PID()) == 11){
+	  if(PromptLepElFull &&ilep->LeptonFlavour() != Lepton::MUON && ilep->DeltaR(gen) < 0.1) LepPrompt=true;
+	}
+      }
+      if (!LepPrompt) HasFakeLep=true;
+    }
+  }
+
   if(!HasFakeLep) return;
   newtree->Fill();
   //if(newtree->Fill()<0) exit(EIO);

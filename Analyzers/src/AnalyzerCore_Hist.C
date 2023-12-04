@@ -38,27 +38,32 @@ void AnalyzerCore::SetHistBins(){
   map_hist_nbins.clear();
 
   AddHistBinning("Pt",     {10.,15.,20.,30.,35., 40.,50., 60., 80., 100.,200.,500.});
-  AddHistBinning("Pt5", {5,6,7,8,9,10.,11,12,13,14,15.,17.5,20.,22.5,25,30.,35., 40.,50.,80., 200.});
-  AddHistBinning("Eta4", {0.,0.8,  1.479, 2.,  2.5});
-  AddHistBinning("Pt80",     {10.,15.,20.,30.,35., 40.,50., 60., 80.});
-  AddHistBinning("Pt50",     {10.,15.,20.,30.,35., 40.,50.});
+  AddHistBinning("Pt5",    {5,6,7,8,9,10.,11,12,13,14,15.,17.5,20.,22.5,25,30.,35., 40.,50.,80., 200.});
+  AddHistBinning("Eta4",   {0.,0.8,  1.479, 2.,  2.5});
+  AddHistBinning("Pt80",   {10.,15.,20.,30.,35., 40.,50., 60., 80.});
+  AddHistBinning("Pt50",   {10.,15.,20.,30.,35., 40.,50.});
   
   AddHistBinning("PR_pt",     {10.,15.,20.,30.,35., 40.,50., 60., 80., 100.,200.,500.});
   AddHistBinning("PR_ptcone", {10.,15.,23.,30.,35., 40.,50., 60., 80., 100.,200.,500.});
   AddHistBinning("FR_pt", {10., 15.,20.,25.,30.,35.,40.,50.,60.,80});
 
+  //// Fake rate Binnings
+  AddHistBinning("FR_MC_eta", {0.,0.25, 1.479, 2.5});
+  AddHistBinning("FR_Eta", {0., 0.8, 1.479,2., 2.5});
+  AddHistBinning("FR_Etav2", {0., 1.479,2., 2.5});
+  AddHistBinning("FR_Etav3", {0., 1.479,2.2, 2.5});
+  AddHistBinning("FR_Eta2Bin", {0.,1.479, 2.5});
+  AddHistBinning("FR_FB_Muon_pt", {6.,10.,12., 15.,20.,25.,30.,35.,40.,60.,80});
+  AddHistBinning("FR_Muon_pt",    {6.,10., 15.,20.,25.,30.,35.,40.,60.,80});
+  AddHistBinning("FR_Muon_ptcone",{6.,10., 15.,20.,25.,30.,35.,40.,60.,80.});
+  AddHistBinning("FR_Electron_ptcone",{10., 15.,23.,30.,35., 40.,60.,80.});
+  AddHistBinning("FR_Electron_ptcone2",{10., 15.,20.,30.,40., 50.,60.,80.});
+
+  AddHistBinning("FR_Electron_pt",{10., 15.,20.,25.,30., 35.,40.,60.,80.});
+
+  AddHistBinning("FR_FB_Electron_ptcone",{10., 15.,18.,23.,30.,35., 40.,60.,80.});
+  AddHistBinning("FR_FB_Electron_pt",{10., 15.,18., 20.,25.,30., 35.,40.,60.,80.});
   AddHistBinning("FR_BDT", {-1.,-0.8, -0.6,-0.4,-0.2,0, 0.2,0.4,0.6,0.8,1});
-
-  AddHistBinning("FR_eta", {0.,0.25, 1.479, 2.5});
-  AddHistBinning("FR_eta2", {0.,1.479, 2.5});
-  AddHistBinning("FR_FB_Muon_pt", {6.,10.,12., 15.,20.,25.,30.,35.,40.,50.,60.,80});
-  AddHistBinning("FR_Muon_pt",    {6.,10., 15.,20.,25.,30.,35.,40.,50.,60.,80});
-  AddHistBinning("FR_Muon_ptcone",{6.,10., 15.,20.,25.,30.,35.,40.,50., 60.,80.});
-  AddHistBinning("FR_Electron_ptcone",{10., 15.,23.,30.,35., 40.,50.,60.,80.});
-  AddHistBinning("FR_Electron_pt",{10., 15.,20.,25.,30., 35.,40.,50.,60.,80.});
-  AddHistBinning("FR_FB_Electron_ptcone",{10., 15.,18.,23.,30.,35., 40.,50.,60.,80.});
-  AddHistBinning("FR_FB_Electron_pt",{10., 15.,18., 20.,25.,30., 35.,40.,50.,60.,80.});
-
   AddHistBinning("PrescaledTriggerPt",{0.,5., 10., 20., 30., 50., 200. });
 
 

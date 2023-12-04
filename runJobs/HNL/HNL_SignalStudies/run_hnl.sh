@@ -1,6 +1,7 @@
 analyzer=HNL_SignalStudies
 rundir=HNL_SignalStudies
 mcpath=${SKFlat_WD}/runJobs/HNL/${analyzer}/Bkg/
+sigpath=${SKFlat_WD}/runJobs/SampleLists/Signals/
 datapath=${SKFlat_WD}/runJobs/HNL/${analyzer}/DATA/
 njobs=20
 njobs_data=20
@@ -10,15 +11,22 @@ declare  -a era_list=("2016postVFP" "2016preVFP" "2017" "2018")
 
 declare  -a era_list=( "2018")
 
+
+if [[ $1 == "WR" ]]; then
+
+    SKFlat.py -a $analyzer  -l $sigpath/WROffshell.txt -n 10  --nmax ${nmax}   -e 2018  --skim SkimTree_HNMultiLepBDT&
+
+fi
+
 if [[ $1 == "Sig" ]]; then
 
     declare  -a era_list=("2017")
 
     for i in "${era_list[@]}"
     do
-	SKFlat.py -a $analyzer  -l $mcpath/SSWW.txt  -n $njobs  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLepBDT&
-	SKFlat.py -a $analyzer  -l $mcpath/DY.txt  -n $njobs  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLepBDT&
-	SKFlat.py -a $analyzer  -l $mcpath/VBF.txt  -n $njobs  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLepBDT&
+	SKFlat.py -a $analyzer  -l $sigpath/SSWW.txt  -n $njobs  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLepBDT&
+	SKFlat.py -a $analyzer  -l $sigpath/DY.txt  -n $njobs  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLepBDT&
+	SKFlat.py -a $analyzer  -l $sigpath/VBF.txt  -n $njobs  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLepBDT&
 	
 
     done
@@ -41,7 +49,7 @@ fi
 if [[ $1 == "1000" ]]; then
 
     #SKFlat.py -a $analyzer  -i DYTypeI_DF_M100_private  -n 10  --nmax 10   -e 2018 --skim SkimTree_HNMultiLepBDT &
-    SKFlat.py -a $analyzer  -i DYTypeI_DF_M1000_private  -n 10  --nmax 10   -e 2018 --skim SkimTree_HNMultiLepBDT &
+    SKFlat.py -a $analyzer  -i DYTypeI_DF_M1000_private  -n 10  --nmax 10   -e 2017 --skim SkimTree_HNMultiLepBDT &
     #SKFlat.py -a $analyzer  -i VBFTypeI_DF_M1000_private  -n 10  --nmax 10   -e 2018 --skim SkimTree_HNMultiLepBDT &
     #SKFlat.py -a $analyzer  -i SSWWTypeI_SF_M1000_private  -n 10  --nmax ${nmax}   -e 2018 --skim SkimTree_HNMultiLepBDT&
     

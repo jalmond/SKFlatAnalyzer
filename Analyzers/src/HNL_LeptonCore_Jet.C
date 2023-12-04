@@ -50,7 +50,7 @@ void  HNL_LeptonCore::EvalJetWeight(std::vector<Jet>    AK4_JetColl, std::vector
 }
 
 std::vector<FatJet> HNL_LeptonCore::GetHNLAK8Jets(TString JetType, AnalyzerParameter param){
-
+  
   std::vector<FatJet>   AK8JetColl  = SelectFatJets(param, param.FatJet_ID, param.FatJet_MinPt, param.FatJet_MaxEta);
   if(JetType=="Loose")  return AK8JetColl;
 
@@ -84,6 +84,11 @@ std::vector<Jet> HNL_LeptonCore::GetHNLJets(TString JetType, AnalyzerParameter p
   if(JetType=="Loose")    return SelectAK4Jets(AK4_Loose,     15., 4.7, true,  0.4,0.8, "",   ElectronCollV,MuonCollV, AK8_JetColl);
   if(JetType=="Tight")    return SelectAK4Jets(AK4_Loose,     20., 2.7, true,  0.4,0.8, "",   ElectronCollV,MuonCollV, AK8_JetColl);
   if(JetType=="VBFTight") return SelectAK4Jets(AK4_Loose,     30., 4.7, true,  0.4,0.8, "",   ElectronCollV,MuonCollV, AK8_JetColl);
+  if(JetType=="TightPUL") return SelectAK4Jets(AK4_Loose,     20., 2.7, true,  0.4,0.8, "Loose",   ElectronCollV,MuonCollV, AK8_JetColl);
+  if(JetType=="VBFTightPUL") return SelectAK4Jets(AK4_Loose,     30., 4.7, true,  0.4,0.8, "Loose",   ElectronCollV,MuonCollV, AK8_JetColl);
+
+
+
 
   /// BJET                                                                                                                                                                 
   JetTagging::Parameters param_jets = GetParamJetTagger(param);

@@ -92,8 +92,8 @@ void HNL_LeptonCore::EvalLeptonIDWeight(std::vector<Lepton *> leps, AnalyzerPara
 
     for (auto lep: leps){
       if(lep->LeptonFlavour() == Lepton::ELECTRON){
-        double this_recosf  = mcCorr->ElectronReco_SF(param.k.Electron_RECO_SF,lep->Eta(),lep->Pt(), SystDir_ElectronRecoSF);
-        double this_idsf    = mcCorr->ElectronID_SF(param.k.Electron_ID_SF, lep->Eta(), lep->Pt(), SystDir_ElectronIDSF);
+        double this_recosf  = mcCorr->ElectronReco_SF(param.k.Electron_RECO_SF,lep->defEta(),lep->Pt(), SystDir_ElectronRecoSF);
+        double this_idsf    = mcCorr->ElectronID_SF(param.k.Electron_ID_SF, lep->defEta(), lep->Pt(), SystDir_ElectronIDSF);
 
 	this_weight *= this_recosf*this_idsf;
       }

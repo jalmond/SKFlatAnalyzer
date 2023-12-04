@@ -75,7 +75,7 @@ void HNL_SignalRegionPlotter::RunULAnalysis(AnalyzerParameter param){
   std::vector<Jet>    AK4_JetColl                 = GetHNLJets(param.AK4JetColl,     param);
   std::vector<Jet>    AK4_JetAllColl              = GetHNLJets("NoCut_Eta3",param);
   std::vector<Jet>    AK4_JetCollLoose            = GetHNLJets("Loose",     param);
-  std::vector<Jet>    AK4_VBF_JetColl             = GetHNLJets("VBFTight",  param);
+  std::vector<Jet>    AK4_VBF_JetColl             = GetHNLJets("VBFTightPUL",  param);
   std::vector<Jet>    AK4_BJetColl                = GetHNLJets("BJet", param);
  
   Particle METv = GetvMET("PuppiT1xyULCorr",param); // returns MET with systematic correction; run this after all object selection done; NOTE that VBF jet is used here
@@ -83,7 +83,7 @@ void HNL_SignalRegionPlotter::RunULAnalysis(AnalyzerParameter param){
   EvalJetWeight(AK4_JetColl, AK8_JetColl, weight, param);
 
   FillTimer("START_SR");
-
+  
   RunAllSignalRegions(Inclusive,
           ElectronCollT,ElectronCollV,MuonCollT,MuonCollV,  TauColl,
           AK4_JetCollLoose, AK4_JetAllColl, AK4_JetColl,AK4_VBF_JetColl,AK8_JetColl, AK4_BJetColl, 

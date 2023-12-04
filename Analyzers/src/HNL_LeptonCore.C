@@ -35,7 +35,6 @@ void HNL_LeptonCore::initializeAnalyzer(bool READBKGHISTS, bool SETUPIDBDT){
 
   SetupTriggerLists();
 
-
   if(IsDYSample) SetupZptWeight();
 
   //==== MCCorrection                                                                                                                                       
@@ -51,7 +50,7 @@ void HNL_LeptonCore::initializeAnalyzer(bool READBKGHISTS, bool SETUPIDBDT){
 
   //// Read Histograms Moved from Initialise Tools
   if(!IsDATA){
-    mcCorr->ReadHistograms();
+    if(!Analyzer.Contains("SkimTree")) mcCorr->ReadHistograms();
     mcCorr->SetupJetTagging();
   }
 
@@ -59,18 +58,17 @@ void HNL_LeptonCore::initializeAnalyzer(bool READBKGHISTS, bool SETUPIDBDT){
   puppiCorr->ReadHistograms();
 
   //==== FakeBackgroundEstimator                                                                                                                                            
-  if(RunFake&&READBKGHISTS){
-    fakeEst->SetEra(GetEra());
-    fakeEst->ReadHistograms(IsDATA);
-  }
+  fakeEst->SetEra(GetEra());
+  if(RunFake&&READBKGHISTS)     fakeEst->ReadHistograms(IsDATA,true); /// For now when checking                                                                                                                    
+  else if(Analyzer.Contains("Fake") && !Analyzer.Contains("SkimTree") ) fakeEst->ReadHistograms(IsDATA,true); ///
 
   //==== CFBackgroundEstimator                                                                                                                                              
-  if(RunCF&&READBKGHISTS){
-    cfEst->SetEra(GetEra());
-    cfEst->ReadHistograms();
-  }
+  cfEst->SetEra(GetEra());
+  if(RunCF&&READBKGHISTS)     cfEst->ReadHistograms();
+  else if (Analyzer.Contains("ChargeFlip"))  cfEst->ReadHistograms();
 
-  if(SETUPIDBDT) SetupIDMVAReaderDefault();
+
+  if(SETUPIDBDT) SetupIDMVAReaderDefault(false,false);
 
 }
 
@@ -292,7 +290,7 @@ AnalyzerParameter HNL_LeptonCore::SetupFakeParameter(AnalyzerParameter::Syst Sys
 
   AnalyzerParameter param  ;
   param.Clear();
-  param.Channel  = GetChannelString(channel);
+  param.SetChannel(GetChannelString(channel));
   param.Name     = GetChannelString(channel)+"_"+PNAME;
   param.DefName  = PNAME;
   param.CutFlowDir = "CutFlowDir";
@@ -331,7 +329,7 @@ AnalyzerParameter HNL_LeptonCore::SetupFakeParameter(AnalyzerParameter::Syst Sys
   // Default settings if NOT s_setup_version is set                                                                                                                                                       
 
   param.syst_ = SystType;
-  param.MCCorrrectionIgnoreNoHist = true;
+  param.MCCorrrectionIgnoreNoHist = false;
 
   /// Lepton ID DEFAULT                                                                                                                                                                                   
   param.k.Electron_RECO_SF   = "RECO_SF";  // RECO_SF_AFB is alternative SF                                                                                                                               
@@ -367,7 +365,8 @@ AnalyzerParameter HNL_LeptonCore::SetupFakeParameter(AnalyzerParameter::Syst Sys
   param.BTagger = "DeepJet";  param.BWP ="M";
   param.JetPUID = "Loose";
 
-  param.AK4JetColl       = "Tight";
+  param.AK4JetColl       = "TightPUL";
+  param.AK4VBFJetColl    = "VBFTightPUL";
   param.AK8JetColl       = "HNL_PN";
   param.BJetColl         = "Tight";
 
@@ -402,7 +401,7 @@ AnalyzerParameter HNL_LeptonCore::SetupHNLParameter(TString s_setup_version, TSt
   
   AnalyzerParameter param  ;
   param.Clear();
-  param.Channel  = channel_st;
+  param.SetChannel(channel_st);
   param.Name     = s_setup_version;
   param.DefName  = s_setup_version;
   param.CutFlowDir = "CutFlowDir";
@@ -432,7 +431,7 @@ AnalyzerParameter HNL_LeptonCore::SetupHNLParameter(TString s_setup_version, TSt
   // Default settings if NOT s_setup_version is set
 
   param.syst_ = AnalyzerParameter::Central;
-  param.MCCorrrectionIgnoreNoHist = true;
+  param.MCCorrrectionIgnoreNoHist = false;
 
   /// Lepton ID DEFAULT
   param.k.Electron_RECO_SF   = "RECO_SF";  // RECO_SF_AFB is alternative SF 
@@ -459,9 +458,10 @@ AnalyzerParameter HNL_LeptonCore::SetupHNLParameter(TString s_setup_version, TSt
   param.BTagger = "DeepJet"; 
   param.BWP ="M"; 
   param.JetPUID = "Loose";
-  param.AK4JetColl       = "Tight";
+
+  param.AK4JetColl       = "TightPUL";
+  param.AK4VBFJetColl    = "VBFTightPUL";
   param.AK8JetColl       = "HNL_PN";
-  //param.AK8JetColl       = "HNL";
   param.BJetColl         = "Tight";
 
   //// Weights
@@ -616,9 +616,9 @@ AnalyzerParameter HNL_LeptonCore::SetupHNLParameter(TString s_setup_version, TSt
     param.k.Muon_PR            = "pt_eta_HNL_ULID_FOv3_PR_cent";
     param.k.Muon_FR            = "HNL_ULID_FOv3_FR_cent";
     param.k.Electron_FR        = "HNL_ULID_FOv3_FR_cent";
-    param.k.Muon_ID_SF      = "NUM_HNL_ULID_"+GetYearString();
-    param.k.Muon_ISO_SF     = "Default";
-    param.k.Electron_ID_SF  = "passHNL_ULID_"+GetYearString();
+    param.k.Muon_ID_SF         = "NUM_HNL_ULID_"+GetYearString();
+    param.k.Muon_ISO_SF        = "Default";
+    param.k.Electron_ID_SF     = "passHNL_ULID_"+GetYearString();
 
     param.k.Electron_CF  = "CFRate_PtInv_EtaRegion_" + param.Electron_Tight_ID;
     param.TriggerSelection = "Dilep";
@@ -1041,17 +1041,17 @@ TString HNL_LeptonCore::GetChannelString(HNL_LeptonCore::Channel channel, HNL_Le
   if (channel == EE) channel_string="EE";
   if (channel == MuMu) channel_string="MuMu";
   if (channel == EMu) channel_string="EMu";
-  if (channel == MuE) channel_string="MuE";
+  if (channel == MuE) channel_string="EMu";
 
   if (channel == EEE) channel_string="EEE";
   if (channel == EMuL) channel_string="EMuL";
-  if (channel == MuEL) channel_string="MuEL";
+  if (channel == MuEL) channel_string="EMuL";
   if (channel == MuMuMu) channel_string="MuMuMu";
 
   if (channel == EEEE) channel_string="EEEE";
   if (channel == MuMuMuMu) channel_string="MuMuMuMu";
   if (channel == EMuLL) channel_string="EMuLL";
-  if (channel == MuELL) channel_string="MuELL";
+  if (channel == MuELL) channel_string="EMuLL";
 
 
   if (q == Plus) channel_string+="_+";
@@ -1137,13 +1137,9 @@ bool HNL_LeptonCore::SelectChannel(HNL_LeptonCore::Channel channel){
   if(channel == MuMu && process.Contains("SS_Mu-Mu-")) return true;
   if(channel == EE   && process.Contains("SS_El+El+")) return true;
   if(channel == EE   && process.Contains("SS_El-El-")) return true;
-  //if(channel == EMu  && process.Contains("SS_El+Mu+")) return true;
-  //if(channel == EMu  && process.Contains("SS_El-Mu-")) return true;
-  //if(channel == MuE  && process.Contains("SS_Mu+El+")) return true;
-  //if(channel == MuE  && process.Contains("SS_Mu-El-")) return true;
-  if( (channel == EMu||channel == MuE) && (process.Contains("SS_El+Mu+")||process.Contains("SS_Mu+El+")) ) return true;
-  if( (channel == EMu||channel == MuE) && (process.Contains("SS_El-Mu-")||process.Contains("SS_Mu-El-")) ) return true; //JH
 
+  if( (channel == EMu||channel == MuE) && (process.Contains("SS_El+Mu+")||process.Contains("SS_Mu+El+")) ) return true;
+  if( (channel == EMu||channel == MuE) && (process.Contains("SS_El-Mu-")||process.Contains("SS_Mu-El-")) ) return true;
 
   return false;
 }

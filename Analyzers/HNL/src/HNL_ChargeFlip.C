@@ -21,7 +21,7 @@ void HNL_ChargeFlip::initializeAnalyzer(){
 void HNL_ChargeFlip::executeEvent(){
   
   
-  vector<TString> LepIDs = {"HNL_ULID_"+GetYearString(),"HNTightV2","TopHN", "POGTight"};
+  vector<TString> LepIDs = {"HNL_ULID_"+GetYearString(),"HNTightV2", "POGTight"};
   vector<TString> CFMethods ={};
   //"CFRate_PtInv","CFRate_Pt"};    
   //if(HasFlag("ShiftEnergy")) LepIDs = { "POGTight"};
@@ -185,6 +185,9 @@ void HNL_ChargeFlip::executeEventFromParameter(AnalyzerParameter param){
 
       if(HasFlag("RateNoShift")) PtShift = 1.;
       
+      FillHist(param.Name+"/CFrate/EtaRegion_Denom",ElectronColl.at(i).InvPt(), EvWeight, nbins_invpt, invptbins,"#pT^{-1}");
+      if(IsCF)  FillHist(param.Name+"/CFrate/EtaRegion_Num",ElectronColl.at(i).InvPt(PtShift), EvWeight, nbins_invpt, invptbins,"#pT^{-1}");
+
       if(abs(ElectronColl.at(i).scEta())<0.8){
 	FillHist(param.Name+"/CFrate/EtaRegion1_Denom",ElectronColl.at(i).InvPt(), EvWeight, nbins_invpt, invptbins,"#pT^{-1}");
 	if(IsCF)  FillHist(param.Name+"/CFrate/EtaRegion1_Num",ElectronColl.at(i).InvPt(PtShift), EvWeight, nbins_invpt, invptbins,"#pT^{-1}");
@@ -233,8 +236,16 @@ void HNL_ChargeFlip::executeEventFromParameter(AnalyzerParameter param){
       }
       
       double pTbin[13] = {0.,20.,30.,35., 40.,45., 50.,65., 80.,  100., 150., 200.,500.};
+      double pTbin2[7] = {15.,40.,65.,  100., 150., 200.,500.};
+
       int nbin = 12;//pTbin.size()-1;
       
+      FillHist(param.Name+"/CFratePt/EtaRegion_Denom", ElectronColl.at(i).PtMaxed(500), EvWeight,nbin, pTbin,"pT");
+      if(IsCF)   FillHist(param.Name+"/CFratePt/EtaRegion_Num", ElectronColl.at(i).PtMaxed(500)*PtShift, EvWeight,nbin, pTbin,"pT");
+
+      FillHist(param.Name+"/CFratePt2/EtaRegion_Denom", ElectronColl.at(i).PtMaxed(500), EvWeight,6, pTbin2,"pT");
+      if(IsCF)   FillHist(param.Name+"/CFratePt2/EtaRegion_Num", ElectronColl.at(i).PtMaxed(500)*PtShift, EvWeight,6, pTbin2,"pT");
+
       if(abs(ElectronColl.at(i).scEta())<0.8){
 	FillHist(param.Name+"/CFratePt/EtaRegion1_Denom", ElectronColl.at(i).PtMaxed(500), EvWeight,nbin, pTbin,"pT");
 	if(IsCF)   FillHist(param.Name+"/CFratePt/EtaRegion1_Num", ElectronColl.at(i).PtMaxed(500)*PtShift, EvWeight,nbin, pTbin,"pT");
@@ -280,6 +291,29 @@ void HNL_ChargeFlip::executeEventFromParameter(AnalyzerParameter param){
     return;
   }
 
+  if(HasFlag("ShiftCFStudy")){
+
+    for(auto iel : ElectronColl){
+      Gen MatchedGen = GetGenMatchedLepton(iel, All_Gens);
+      
+      if(iel.LeptonIsCF()) {
+
+	FillHist(param.Name+"/CFStudy/CF_El_Eta", iel.scEta() /MatchedGen.Eta() , EvWeight ,100, 0 , 5);
+	FillHist(param.Name+"/CFStudy/CF_El_Phi", iel.Phi() /MatchedGen.Phi() , EvWeight ,100, 0 , 5);
+        FillHist(param.Name+"/CFStudy/CF_El_E",   iel.E() /MatchedGen.E() , EvWeight ,100, 0 , 5);
+        FillHist(param.Name+"/CFStudy/CF_El_Pt",  iel.Pt() /MatchedGen.Pt() , EvWeight ,100, 0 , 5);
+      }
+      else{
+	FillHist(param.Name+"/CFStudy/Prompt_El_Eta", iel.scEta() /MatchedGen.Eta() , EvWeight ,100, 0 , 5);
+        FillHist(param.Name+"/CFStudy/Prompt_El_Phi", iel.Phi() /MatchedGen.Phi() , EvWeight ,100, 0 , 5);
+        FillHist(param.Name+"/CFStudy/Prompt_El_E",   iel.E() /MatchedGen.E() , EvWeight ,100, 0 , 5);
+        FillHist(param.Name+"/CFStudy/Prompt_El_Pt",  iel.Pt() /MatchedGen.Pt() , EvWeight ,100, 0 , 5);
+      }
+    }   
+    
+    return;
+  }
+
 
   
   if(HasFlag("ShiftEnergyZ")){
@@ -312,16 +346,16 @@ void HNL_ChargeFlip::executeEventFromParameter(AnalyzerParameter param){
 	    if(ElectronColl[0].IsBB() && ElectronColl[1].IsBB()) {
 	      FillHist(param.Name+"/Z/SS_BB_LepPt",  ElectronColl[0].PtMaxed(200) ,         EvWeight , nbinNeg, pTbinNeg,"pT");
 	      FillHist(param.Name+"/Z/SS_BB_LepPt", -1*ElectronColl[1].PtMaxed(200) ,      EvWeight , nbinNeg, pTbinNeg,"pT");
-	      FillHist(param.Name+"/Z/SS_BB_LepEta",  (ElectronColl[0].Eta()+2.5) , EvWeight, 100., -5., 5., "Eta");
-	      FillHist(param.Name+"/Z/SS_BB_LepEta",  -1*(ElectronColl[1].Eta()+2.5) , EvWeight, 100., -5., 5., "Eta");
+	      FillHist(param.Name+"/Z/SS_BB_LepEta",  (ElectronColl[0].scEta()+2.5) , EvWeight, 100., -5., 5., "Eta");
+	      FillHist(param.Name+"/Z/SS_BB_LepEta",  -1*(ElectronColl[1].scEta()+2.5) , EvWeight, 100., -5., 5., "Eta");
 
 	    }
 	    
 	    if(ElectronColl[0].IsEC() && ElectronColl[1].IsEC()) {
               FillHist(param.Name+"/Z/SS_EC_LepPt", ElectronColl[0].PtMaxed(200) ,         EvWeight , nbinNeg, pTbinNeg,"pT");
               FillHist(param.Name+"/Z/SS_EC_LepPt", -1*ElectronColl[1].PtMaxed(200) ,      EvWeight , nbinNeg, pTbinNeg,"pT");
-	      FillHist(param.Name+"/Z/SS_EC_LepEta",  (ElectronColl[0].Eta()+2.5) , EvWeight, 100., -5., 5., "Eta");
-	      FillHist(param.Name+"/Z/SS_EC_LepEta",  -1*(ElectronColl[1].Eta()+2.5) , EvWeight, 100., -5., 5., "Eta");
+	      FillHist(param.Name+"/Z/SS_EC_LepEta",  (ElectronColl[0].scEta()+2.5) , EvWeight, 100., -5., 5., "Eta");
+	      FillHist(param.Name+"/Z/SS_EC_LepEta",  -1*(ElectronColl[1].scEta()+2.5) , EvWeight, 100., -5., 5., "Eta");
 
 	    } // EC
 	  } /// Non Conv
@@ -370,16 +404,16 @@ void HNL_ChargeFlip::executeEventFromParameter(AnalyzerParameter param){
 	    FillHist(param.Name+"/ZMass/OS_BB_Weighted_EnergyShift_"+shift_string,  ZShiftedmass             , weight_shifted*EvWeight ,70 , 130, 30);
 	    FillHist(param.Name+"/Z/OS_BB_Weighted_EnergyShift_Pt_"+shift_string,   this_el1.PtMaxed(200)    , weight_shifted*EvWeight , nbinNeg, pTbinNeg,"pT");
 	    FillHist(param.Name+"/Z/OS_BB_Weighted_EnergyShift_Pt_"+shift_string,   -1*this_el2.PtMaxed(200) , weight_shifted*EvWeight , nbinNeg, pTbinNeg,"pT");
-            FillHist(param.Name+"/Z/OS_BB_Weighted_EnergyShift_Eta_"+shift_string,  (this_el1.Eta()+2.5)     , weight_shifted*EvWeight ,100., -5, 5, "Eta");
-            FillHist(param.Name+"/Z/OS_BB_Weighted_EnergyShift_Eta_"+shift_string,  -1*(this_el2.Eta()+2.5)  , weight_shifted*EvWeight ,100., -5, 5, "Eta");
+            FillHist(param.Name+"/Z/OS_BB_Weighted_EnergyShift_Eta_"+shift_string,  (this_el1.scEta()+2.5)     , weight_shifted*EvWeight ,100., -5, 5, "Eta");
+            FillHist(param.Name+"/Z/OS_BB_Weighted_EnergyShift_Eta_"+shift_string,  -1*(this_el2.scEta()+2.5)  , weight_shifted*EvWeight ,100., -5, 5, "Eta");
 
 	  }
           if(ElectronColl[0].IsEC() && ElectronColl[1].IsEC()){
 	    FillHist(param.Name+"/ZMass/OS_EC_Weighted_EnergyShift_"+shift_string, ZShiftedmass            , weight_shifted*EvWeight ,70 , 130, 30);
             FillHist(param.Name+"/Z/OS_EC_Weighted_EnergyShift_Pt_"+shift_string,  this_el1.PtMaxed(200)   , weight_shifted*EvWeight , nbinNeg, pTbinNeg,"pT");
             FillHist(param.Name+"/Z/OS_EC_Weighted_EnergyShift_Pt_"+shift_string, -1*this_el2.PtMaxed(200) , weight_shifted*EvWeight , nbinNeg, pTbinNeg,"pT");
-            FillHist(param.Name+"/Z/OS_EC_Weighted_EnergyShift_Eta_"+shift_string, (this_el1.Eta()+2.5)    , weight_shifted*EvWeight ,100., -5, 5, "Eta");
-            FillHist(param.Name+"/Z/OS_EC_Weighted_EnergyShift_Eta_"+shift_string, -1*(this_el2.Eta()+2.5) , weight_shifted*EvWeight ,100., -5, 5, "Eta");
+            FillHist(param.Name+"/Z/OS_EC_Weighted_EnergyShift_Eta_"+shift_string, (this_el1.scEta()+2.5)    , weight_shifted*EvWeight ,100., -5, 5, "Eta");
+            FillHist(param.Name+"/Z/OS_EC_Weighted_EnergyShift_Eta_"+shift_string, -1*(this_el2.scEta()+2.5) , weight_shifted*EvWeight ,100., -5, 5, "Eta");
 	  }
 	}
 
@@ -431,16 +465,16 @@ void HNL_ChargeFlip::executeEventFromParameter(AnalyzerParameter param){
 	    FillHist(param.Name+"/ZMass/OS_BB_Weighted_ZEnergyShift_"+shift_string, ZShiftedmass            , weight_shifted*EvWeight ,70 , 130, 30);
             FillHist(param.Name+"/Z/OS_BB_Weighted_ZEnergyShift_Pt_"+shift_string, this_el1.PtMaxed(200)    , weight_shifted*EvWeight , nbinNeg, pTbinNeg,"pT");
             FillHist(param.Name+"/Z/OS_BB_Weighted_ZEnergyShift_Pt_"+shift_string, -1*this_el2.PtMaxed(200) , weight_shifted*EvWeight , nbinNeg, pTbinNeg,"pT");
-            FillHist(param.Name+"/Z/OS_BB_Weighted_ZEnergyShift_Eta_"+shift_string, (this_el1.Eta()+2.5)    , weight_shifted*EvWeight ,100., -5, 5, "Eta");
-            FillHist(param.Name+"/Z/OS_BB_Weighted_ZEnergyShift_Eta_"+shift_string, -1*(this_el2.Eta()+2.5) , weight_shifted*EvWeight ,100., -5, 5, "Eta");
+            FillHist(param.Name+"/Z/OS_BB_Weighted_ZEnergyShift_Eta_"+shift_string, (this_el1.scEta()+2.5)    , weight_shifted*EvWeight ,100., -5, 5, "Eta");
+            FillHist(param.Name+"/Z/OS_BB_Weighted_ZEnergyShift_Eta_"+shift_string, -1*(this_el2.scEta()+2.5) , weight_shifted*EvWeight ,100., -5, 5, "Eta");
 
 	  }
           if(ElectronColl[0].IsEC() && ElectronColl[1].IsEC()){
 	    FillHist(param.Name+"/ZMass/OS_EC_Weighted_ZEnergyShift_"+shift_string, ZShiftedmass            , weight_shifted*EvWeight ,70 , 130, 30);
             FillHist(param.Name+"/Z/OS_EC_Weighted_ZEnergyShift_Pt_"+shift_string, this_el1.PtMaxed(200)    , weight_shifted*EvWeight , nbinNeg, pTbinNeg,"pT");
             FillHist(param.Name+"/Z/OS_EC_Weighted_ZEnergyShift_Pt_"+shift_string, -1*this_el2.PtMaxed(200) , weight_shifted*EvWeight , nbinNeg, pTbinNeg,"pT");
-	    FillHist(param.Name+"/Z/OS_EC_Weighted_ZEnergyShift_Eta_"+shift_string, (this_el1.Eta()+2.5)    , weight_shifted*EvWeight ,100., -5, 5, "Eta");
-            FillHist(param.Name+"/Z/OS_EC_Weighted_ZEnergyShift_Eta_"+shift_string, -1*(this_el2.Eta()+2.5) , weight_shifted*EvWeight ,100., -5, 5, "Eta");
+	    FillHist(param.Name+"/Z/OS_EC_Weighted_ZEnergyShift_Eta_"+shift_string, (this_el1.scEta()+2.5)    , weight_shifted*EvWeight ,100., -5, 5, "Eta");
+            FillHist(param.Name+"/Z/OS_EC_Weighted_ZEnergyShift_Eta_"+shift_string, -1*(this_el2.scEta()+2.5) , weight_shifted*EvWeight ,100., -5, 5, "Eta");
 
 	  }
         } /// Z shift
@@ -577,8 +611,8 @@ void HNL_ChargeFlip::executeEventFromParameter(AnalyzerParameter param){
         FillHist(param.Name+"/ScaleFactor/BB_ZMass_SS", ZCand.M(), EvWeight, NBin, MllLeft, MllRight);
 	FillHist(param.Name+"/ScaleFactor/BB_LepPt_SS", this_el1.PtMaxed(200) , EvWeight , nbinNeg, pTbinNeg,"pT");
 	FillHist(param.Name+"/ScaleFactor/BB_LepPt_SS", -1*this_el2.PtMaxed(200) , EvWeight , nbinNeg, pTbinNeg,"pT");
-	FillHist(param.Name+"/ScaleFactor/BB_LepEta_SS", (this_el1.Eta()+2.5)    , EvWeight ,100., -5, 5, "Eta");
-	FillHist(param.Name+"/ScaleFactor/BB_LepEta_SS", -1*(this_el2.Eta()+2.5)    , EvWeight ,100., -5, 5, "Eta");
+	FillHist(param.Name+"/ScaleFactor/BB_LepEta_SS", (this_el1.scEta()+2.5)    , EvWeight ,100., -5, 5, "Eta");
+	FillHist(param.Name+"/ScaleFactor/BB_LepEta_SS", -1*(this_el2.scEta()+2.5)    , EvWeight ,100., -5, 5, "Eta");
 	
       }
       if(ElectronColl.at(0).Charge()*ElectronColl.at(1).Charge()<0){
@@ -591,8 +625,8 @@ void HNL_ChargeFlip::executeEventFromParameter(AnalyzerParameter param){
         FillHist(param.Name+"/ScaleFactor/BE_ZMass_SS", ZCand.M(), EvWeight, NBin, MllLeft, MllRight);
         FillHist(param.Name+"/ScaleFactor/BE_LepPt_SS", this_el1.PtMaxed(200) , EvWeight , nbinNeg, pTbinNeg,"pT");
 	FillHist(param.Name+"/ScaleFactor/BE_LepPt_SS", -1*this_el2.PtMaxed(200) , EvWeight , nbinNeg, pTbinNeg,"pT");
-	FillHist(param.Name+"/ScaleFactor/BE_LepEta_SS", (this_el1.Eta()+2.5)    , EvWeight ,100., -5, 5, "Eta");
-	FillHist(param.Name+"/ScaleFactor/BE_LepEta_SS", -1*(this_el2.Eta()+2.5)    , EvWeight ,100., -5, 5, "Eta");
+	FillHist(param.Name+"/ScaleFactor/BE_LepEta_SS", (this_el1.scEta()+2.5)    , EvWeight ,100., -5, 5, "Eta");
+	FillHist(param.Name+"/ScaleFactor/BE_LepEta_SS", -1*(this_el2.scEta()+2.5)    , EvWeight ,100., -5, 5, "Eta");
 
       }
       if(ElectronColl.at(0).Charge()*ElectronColl.at(1).Charge()<0){
@@ -605,8 +639,8 @@ void HNL_ChargeFlip::executeEventFromParameter(AnalyzerParameter param){
         FillHist(param.Name+"/ScaleFactor/EE_ZMass_SS", ZCand.M(), EvWeight, NBin, MllLeft, MllRight);
         FillHist(param.Name+"/ScaleFactor/EE_LepPt_SS", this_el1.PtMaxed(200) , EvWeight , nbinNeg, pTbinNeg,"pT");
 	FillHist(param.Name+"/ScaleFactor/EE_LepPt_SS", -1*this_el2.PtMaxed(200) , EvWeight , nbinNeg, pTbinNeg,"pT");
-	FillHist(param.Name+"/ScaleFactor/EE_LepEta_SS", (this_el1.Eta()+2.5)    , EvWeight ,100., -5, 5, "Eta");
-	FillHist(param.Name+"/ScaleFactor/EE_LepEta_SS", -1*(this_el2.Eta()+2.5)    , EvWeight ,100., -5, 5, "Eta");
+	FillHist(param.Name+"/ScaleFactor/EE_LepEta_SS", (this_el1.scEta()+2.5)    , EvWeight ,100., -5, 5, "Eta");
+	FillHist(param.Name+"/ScaleFactor/EE_LepEta_SS", -1*(this_el2.scEta()+2.5)    , EvWeight ,100., -5, 5, "Eta");
       }
       if(ElectronColl.at(0).Charge()*ElectronColl.at(1).Charge()<0){
         FillHist(param.Name+"/ScaleFactor/EE_ZMass_OS", ZCand.M(), EvWeight, NBin, MllLeft, MllRight);
@@ -652,7 +686,10 @@ void HNL_ChargeFlip::executeEventFromParameter(AnalyzerParameter param){
     double weight_shifted = GetCFWeightElectron(ElectronColl_shifted, param , false);
     weight_shifted *= EvWeight;
     double weight_shiftedSF = weight_shifted;
-    weight_shiftedSF *= GetCFSF(param,ElectronColl);
+
+    std::vector<Lepton *> EL_Leptons = MakeLeptonPointerVector(ElectronColl,param);
+
+    weight_shiftedSF *= GetCFSF(param,EL_Leptons);
     
     
     //Particle METv_shifted;
@@ -666,8 +703,8 @@ void HNL_ChargeFlip::executeEventFromParameter(AnalyzerParameter param){
           FillHist(param.Name+"/ScaleFactor/BB_ZMass_OS_CFweighted_shifted_"+X_string, ZCand_shifted.M(),         weight_shifted, NBin, MllLeft, MllRight);
 	  FillHist(param.Name+"/ScaleFactor/BB_LepPt_OS_CFweighted_shifted_"+X_string, this_el1.PtMaxed(200) ,    weight_shifted, nbinNeg, pTbinNeg,"pT");
 	  FillHist(param.Name+"/ScaleFactor/BB_LepPt_OS_CFweighted_shifted_"+X_string, -1*this_el2.PtMaxed(200) , weight_shifted, nbinNeg, pTbinNeg,"pT");
-	  FillHist(param.Name+"/ScaleFactor/BB_LepEta_OS_CFweighted_shifted_"+X_string, (this_el1.Eta()+2.5)    , weight_shifted, 100., -5, 5, "Eta");
-	  FillHist(param.Name+"/ScaleFactor/BB_LepEta_OS_CFweighted_shifted_"+X_string, -1*(this_el2.Eta()+2.5) , weight_shifted, 100., -5, 5, "Eta");
+	  FillHist(param.Name+"/ScaleFactor/BB_LepEta_OS_CFweighted_shifted_"+X_string, (this_el1.scEta()+2.5)    , weight_shifted, 100., -5, 5, "Eta");
+	  FillHist(param.Name+"/ScaleFactor/BB_LepEta_OS_CFweighted_shifted_"+X_string, -1*(this_el2.scEta()+2.5) , weight_shifted, 100., -5, 5, "Eta");
 	}
 
         // BE
@@ -676,8 +713,8 @@ void HNL_ChargeFlip::executeEventFromParameter(AnalyzerParameter param){
           FillHist(param.Name+"/ScaleFactor/BE_ZMass_OS_CFSFweighted_shifted_"+X_string, ZCand_shifted.M(),       weight_shiftedSF, NBin, MllLeft, MllRight);
           FillHist(param.Name+"/ScaleFactor/BE_LepPt_OS_CFweighted_shifted_"+X_string, this_el1.PtMaxed(200) ,    weight_shiftedSF, nbinNeg, pTbinNeg,"pT");
           FillHist(param.Name+"/ScaleFactor/BE_LepPt_OS_CFweighted_shifted_"+X_string, -1*this_el2.PtMaxed(200) , weight_shiftedSF, nbinNeg, pTbinNeg,"pT");
-          FillHist(param.Name+"/ScaleFactor/BE_LepEta_OS_CFweighted_shifted_"+X_string, (this_el1.Eta()+2.5)    , weight_shiftedSF ,100., -5, 5, "Eta");
-          FillHist(param.Name+"/ScaleFactor/BE_LepEta_OS_CFweighted_shifted_"+X_string, -1*(this_el2.Eta()+2.5) , weight_shiftedSF ,100., -5, 5, "Eta");
+          FillHist(param.Name+"/ScaleFactor/BE_LepEta_OS_CFweighted_shifted_"+X_string, (this_el1.scEta()+2.5)    , weight_shiftedSF ,100., -5, 5, "Eta");
+          FillHist(param.Name+"/ScaleFactor/BE_LepEta_OS_CFweighted_shifted_"+X_string, -1*(this_el2.scEta()+2.5) , weight_shiftedSF ,100., -5, 5, "Eta");
 
         }
 
@@ -686,8 +723,8 @@ void HNL_ChargeFlip::executeEventFromParameter(AnalyzerParameter param){
           FillHist(param.Name+"/ScaleFactor/EE_ZMass_OS_CFweighted_shifted_"+X_string, ZCand_shifted.M(), weight_shifted, NBin, MllLeft, MllRight);
 	  FillHist(param.Name+"/ScaleFactor/EE_LepPt_OS_CFweighted_shifted_"+X_string, this_el1.PtMaxed(200) ,    weight_shifted, nbinNeg, pTbinNeg,"pT");
           FillHist(param.Name+"/ScaleFactor/EE_LepPt_OS_CFweighted_shifted_"+X_string, -1*this_el2.PtMaxed(200) , weight_shifted, nbinNeg, pTbinNeg,"pT");
-          FillHist(param.Name+"/ScaleFactor/EE_LepEta_OS_CFweighted_shifted_"+X_string, (this_el1.Eta()+2.5)    , weight_shifted ,100., -5, 5, "Eta");
-          FillHist(param.Name+"/ScaleFactor/EE_LepEta_OS_CFweighted_shifted_"+X_string, -1*(this_el2.Eta()+2.5) , weight_shifted ,100., -5, 5, "Eta");
+          FillHist(param.Name+"/ScaleFactor/EE_LepEta_OS_CFweighted_shifted_"+X_string, (this_el1.scEta()+2.5)    , weight_shifted ,100., -5, 5, "Eta");
+          FillHist(param.Name+"/ScaleFactor/EE_LepEta_OS_CFweighted_shifted_"+X_string, -1*(this_el2.scEta()+2.5) , weight_shifted ,100., -5, 5, "Eta");
 
         }
       }

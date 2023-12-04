@@ -11,9 +11,6 @@ public:
   Electron();
   ~Electron();
 
-  void  PrintObject(TString label);
-  
-
   void SetEnShift(double en_up, double en_down);
   inline double EnShift(int s) const {
     if(s==0) return 1.;
@@ -303,7 +300,10 @@ public:
   bool passIDHN(int ID, double dxy_b, double dxy_e, double dz_b,double dz_e, double sip_b, double sip_e, double iso_b,double iso_e, double miso_b, double miso_e) const;
   bool PassIDOpt(TString ID, bool cc, double dx_b ,double dx_e,double dz_b,double dz_e, double iso_b, double iso_e) const;
   //==== ID
+
   bool PassID(TString ID) const;
+  bool PassIDForOpt(TString ID) const;
+
   int  PassIDOptLoose(TString ID) const;
   int  PassIDOpt(TString ID) const;
   int  PassIDLoose(TString ID) const;

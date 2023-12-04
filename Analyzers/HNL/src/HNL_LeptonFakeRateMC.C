@@ -171,13 +171,42 @@ void HNL_LeptonFakeRateMC::RunM(std::vector<Electron> loose_el,  std::vector<Muo
 
       bool Lep1Prompt=false;
       bool Lep2Prompt=false;
+      
       for(unsigned int i=2; i<All_Gens.size(); i++){   
 	Gen gen = All_Gens.at(i);
-
-	if(fabs(gen.PID()) == 13 || fabs(gen.PID()) == 11){
-	  if(leps[0]->DeltaR(gen) < 0.4) Lep1Prompt=true;	    
-	  if(leps[1]->DeltaR(gen) < 0.4) Lep2Prompt=true;	    
-	}	
+	
+	if(gen.Status() != 1) continue;
+	int mindex = All_Gens.at(i).MotherIndex();
+	int MotherPID = fabs(All_Gens.at(mindex).PID());
+	bool PromptLepMu = (MotherPID == 13)  || (MotherPID == 15);
+	bool PromptLepEl = (MotherPID == 11) || (MotherPID == 15);
+	
+	while (MotherPID > 10 && MotherPID < 16){
+	  mindex = All_Gens.at(mindex).MotherIndex();
+	  MotherPID= fabs(All_Gens.at(mindex).PID());
+	}
+	
+	bool PromptLepMuFull = PromptLepMu &&  ((MotherPID == 21)  || (MotherPID < 6));
+	bool PromptLepElFull = PromptLepEl &&  ((MotherPID == 21)  || (MotherPID < 6));
+	
+	if(fabs(gen.PID()) == 13){
+	  if(PromptLepMuFull && leps[0]->LeptonFlavour() == Lepton::MUON && leps[0]->DeltaR(gen) < 0.1) Lep1Prompt=true;	    
+	  if(PromptLepMuFull &&leps[1]->LeptonFlavour() == Lepton::MUON && leps[1]->DeltaR(gen) < 0.1) Lep2Prompt=true;	    
+	}
+	if(fabs(gen.PID()) == 11){
+          if(PromptLepElFull &&leps[0]->LeptonFlavour() != Lepton::MUON && leps[0]->DeltaR(gen) < 0.1) Lep1Prompt=true;
+          if(PromptLepElFull &&leps[1]->LeptonFlavour() != Lepton::MUON && leps[1]->DeltaR(gen) < 0.1) Lep2Prompt=true;
+        }
+      }
+      
+      if(MCSample.Contains("Sherpa")) {
+	
+	if(Lep1Prompt&&Lep2Prompt){
+	  cout << leps[0]->LeptonFlavour() << " " << leps[1]->LeptonFlavour() << endl;
+	  cout << "leps[0]->IsPrompt() = " << leps[0]->IsPrompt()  << " leps[1]->IsPrompt() = " << leps[0]->IsPrompt()  << " Lep1Prompt = " <<  Lep1Prompt  <<  " Lep2Prompt= " << Lep2Prompt << endl;
+	  cout << "leps[0] " << leps[0]->Pt() << " " << leps[0]->Eta() << "  Leps1 "  << leps[1]->Pt() << " " <<leps[1]->Eta() << endl;
+	  PrintGen(All_Gens);
+	}
       }
 
       if(!MCSample.Contains("Sherpa")) Lep1Prompt = (leps[0]->IsPrompt() && leps[0]->PassLepID() && leps[1]->LeptonFlavour() == Lepton::MUON &&  leps[1]->IsFake());
@@ -396,21 +425,6 @@ void HNL_LeptonFakeRateMC::RunM(std::vector<Electron> loose_el,  std::vector<Muo
 	}
 
       }      
-
-      if(leps[1]->IsPrompt() && leps[1]->PassLepID() && leps[0]->LeptonFlavour() == Lepton::MUON &&  leps[0]->IsFake()){
-
-        double PTPartonSF    = GetPtPartonSF(*leps[0],param.Muon_Loose_ID);
-        double MVACut        = leps[0]->MVAFakeCut(param.Muon_Tight_ID,GetYearString());
-        double PtCorr        = (leps[0]->CalcMVACone(MVACut)  < 80 )       ? leps[0]->CalcMVACone( MVACut)  : 79;
-        double lep_ptparton  = (leps[0]->PtParton(PTPartonSF,MVACut) < 80) ? leps[0]->PtParton(PTPartonSF,MVACut) : 79;
-
-
-        TString FRKey = "MC_"+param.Muon_Loose_ID+"_J25_FR_cent";
-	FRKey = FRKey.ReplaceAll("_"+GetYearString(),"");
-	FRKey = FRKey.ReplaceAll("_ULID","_ID");
-
-
-      } 
 
     }
     return;
@@ -783,7 +797,7 @@ bool HNL_LeptonFakeRateMC::UseEvent(std::vector<Lepton *> leps ,  std::vector< J
       for (unsigned int ielT=0; ielT < leps.size(); ielT++){
         for(unsigned int ij=0; ij < jets.size(); ij++){
           if(jets.at(ij).Pt() < awayjetcut) continue;
-          float dphi =fabs(TVector2::Phi_mpi_pi(leps.at(ielT)->Phi()- jets.at(ij).Phi()));
+	  //       float dphi =fabs(TVector2::Phi_mpi_pi(leps.at(ielT)->Phi()- jets.at(ij).Phi()));
 	  if( (jets.at(ij).ChargedEmEnergyFraction()) > 0.65)  continue;
 
           if(leps.at(ielT)->DeltaR(jets.at(ij))> 0.7){
@@ -968,12 +982,12 @@ void HNL_LeptonFakeRateMC::GetElFakeRates(TString Method, Lepton* lep,bool bleps
     TString Ptlab = "p_{T} (GeV)";
 
     if(lep_pt >10){
-      FillHistogram((prefix + "_"+ptname).Data(),            lep_pt, lep_eta,  weight_ptcorr, "FR_"+lep->GetFlavour()+"_"+ PtHist , "FR_eta", Ptlab);
-      FillHistogram((prefix + "_FinerBins_"+ptname).Data(),            lep_pt, lep_eta,  weight_ptcorr, "FR_FB_"+lep->GetFlavour()+"_"+ PtHist , "FR_eta", Ptlab);
+      FillHistogram((prefix + "_"+ptname).Data(),            lep_pt, lep_eta,  weight_ptcorr, "FR_"+lep->GetFlavour()+"_"+ PtHist , "FR_Eta", Ptlab);
+      FillHistogram((prefix + "_FinerBins_"+ptname).Data(),            lep_pt, lep_eta,  weight_ptcorr, "FR_FB_"+lep->GetFlavour()+"_"+ PtHist , "FR_Eta", Ptlab);
       FillHistogram((prefix + "_pt").Data(),                 lep_pt,  weight_ptcorr, "FR_"+lep->GetFlavour()+"_"+ PtHist, Ptlab);
       FillHistogram((prefix + "_pt_"+ lepEtaRegion).Data(),  lep_pt,  weight_ptcorr, "FR_"+lep->GetFlavour()+"_"+ PtHist, Ptlab);
       FillHistogram((prefix + "_pt_"+ lepRegion).Data(),     lep_pt,  weight_ptcorr, "FR_"+lep->GetFlavour()+"_"+ PtHist, Ptlab);
-      FillHistogram((prefix + "_eta").Data(),                lep_eta, weight_ptcorr ,"FR_eta","#eta");
+      FillHistogram((prefix + "_eta").Data(),                lep_eta, weight_ptcorr ,"FR_Eta","#eta");
       FillHist((prefix + "_eta_fine").Data(),           lep_eta, weight_ptcorr , 50, 0, 2.5,"#eta");
       FillHist((prefix + "_lep_mva_lfvshf").Data(),   lep_mva_lfvshf,  weight_ptcorr, 50, -1., 1.);
       FillHist((prefix + "_lep_mva_bvsc").Data(),   lep_mva_bvsc,  weight_ptcorr, 50, -1., 1.);
@@ -1020,12 +1034,12 @@ void HNL_LeptonFakeRateMC::GetElFakeRates(TString Method, Lepton* lep,bool bleps
         else TaggerLabel = "LF5_HF4";
       }
             
-      FillHistogram((prefix + "_"+TaggerLabel+"_"+ptname).Data(),             lep_pt, lep_eta,  weight_ptcorr, "FR_"+lep->GetFlavour()+"_"+ PtHist , "FR_eta", Ptlab);
-      FillHistogram((prefix + "_"+TaggerLabel+"_FinerBins_"+ptname).Data(),             lep_pt, lep_eta,  weight_ptcorr, "FR_FB_"+lep->GetFlavour()+"_"+ PtHist , "FR_eta", Ptlab);
+      FillHistogram((prefix + "_"+TaggerLabel+"_"+ptname).Data(),             lep_pt, lep_eta,  weight_ptcorr, "FR_"+lep->GetFlavour()+"_"+ PtHist , "FR_Eta", Ptlab);
+      FillHistogram((prefix + "_"+TaggerLabel+"_FinerBins_"+ptname).Data(),             lep_pt, lep_eta,  weight_ptcorr, "FR_FB_"+lep->GetFlavour()+"_"+ PtHist , "FR_Eta", Ptlab);
       FillHistogram((prefix + "_"+TaggerLabel+"_pt").Data(),                 lep_pt,  weight_ptcorr, "FR_"+lep->GetFlavour()+"_"+ PtHist, Ptlab);
       FillHistogram((prefix + "_"+TaggerLabel+"_pt_"+ lepEtaRegion).Data(),  lep_pt,  weight_ptcorr, "FR_"+lep->GetFlavour()+"_"+ PtHist, Ptlab);
       FillHistogram((prefix + "_"+TaggerLabel+"_pt_"+ lepRegion).Data(),     lep_pt,  weight_ptcorr, "FR_"+lep->GetFlavour()+"_"+ PtHist, Ptlab);
-      FillHistogram((prefix + "_"+TaggerLabel+"_eta").Data(),                lep_eta, weight_ptcorr ,"FR_eta","#eta");
+      FillHistogram((prefix + "_"+TaggerLabel+"_eta").Data(),                lep_eta, weight_ptcorr ,"FR_Eta","#eta");
       FillHist((prefix + "_"+TaggerLabel+"_eta_fine").Data(),           lep_eta, weight_ptcorr , 50, 0, 2.5,"#eta");
 
       FillHistogram((prefix + "_LF_"+ptname).Data(),             lep_pt, lep_mva_lfvshf,  weight_ptcorr, "FR_"+lep->GetFlavour()+"_"+ PtHist , "FR_BDT", Ptlab);
@@ -1255,12 +1269,12 @@ void HNL_LeptonFakeRateMC::GetMuFakeRates(TString Method, Lepton*  lep, bool ble
     TString Ptlab = "p_{T} (GeV)";
 
     if(lep_pt >10){
-      FillHistogram((prefix + "_"+ptname+"_eta").Data(),            lep_pt, lep_eta,  weight_ptcorr, "FR_"+lep->GetFlavour()+"_"+PtHist , "FR_eta", Ptlab);
-      FillHistogram((prefix + "_FinerBins_"+ptname+"_eta").Data(),            lep_pt, lep_eta,  weight_ptcorr, "FR_FB_"+lep->GetFlavour()+"_"+PtHist , "FR_eta", Ptlab);
+      FillHistogram((prefix + "_"+ptname+"_eta").Data(),            lep_pt, lep_eta,  weight_ptcorr, "FR_"+lep->GetFlavour()+"_"+PtHist , "FR_Eta", Ptlab);
+      FillHistogram((prefix + "_FinerBins_"+ptname+"_eta").Data(),            lep_pt, lep_eta,  weight_ptcorr, "FR_FB_"+lep->GetFlavour()+"_"+PtHist , "FR_Eta", Ptlab);
       
       FillHistogram((prefix + "_"+ptname).Data(),                 lep_pt,  weight_ptcorr, "FR_"+lep->GetFlavour()+"_"+PtHist, Ptlab);
       FillHistogram((prefix + "_"+ptname+"_"+ lepRegion).Data(),     lep_pt,  weight_ptcorr, "FR_"+lep->GetFlavour()+"_"+PtHist, Ptlab);
-      FillHistogram((prefix + "_eta").Data(),                lep_eta, weight_ptcorr ,"FR_eta","#eta");
+      FillHistogram((prefix + "_eta").Data(),                lep_eta, weight_ptcorr ,"FR_Eta","#eta");
       FillHist((prefix + "_eta_fine").Data(),           lep_eta, weight_ptcorr , 50, 0, 2.5,"#eta");
       FillHist((prefix + "_lep_mva_lfvshf").Data(),   lep_mva_lfvshf,  weight_ptcorr, 50, -1., 1.);
       FillHist((prefix + "_lep_mva_bvsc").Data(),   lep_mva_bvsc,  weight_ptcorr, 50, -1., 1.);
@@ -1274,8 +1288,8 @@ void HNL_LeptonFakeRateMC::GetMuFakeRates(TString Method, Lepton*  lep, bool ble
       else  if(lep_blscore > 0.1) BTaggerLabel = "BJet2";
       else  BTaggerLabel = "BJet3";
 
-      if(BTaggerLabel == "BJet3") FillHistogram((prefix + "_"+BTaggerLabel+"_"+ptname+"_eta").Data(),          lep_pt, lep_eta,  weight_ptcorr, "FR_"+lep->GetFlavour()+"_"+PtHist , "FR_eta", Ptlab);
-      else FillHistogram((prefix + "_"+BTaggerLabel+"_"+ptname+"_eta").Data(),          lep_pt, lep_eta,  weight_ptcorr, "FR_"+lep->GetFlavour()+"_"+PtHist , "FR_eta2", Ptlab);
+      if(BTaggerLabel == "BJet3") FillHistogram((prefix + "_"+BTaggerLabel+"_"+ptname+"_eta").Data(),          lep_pt, lep_eta,  weight_ptcorr, "FR_"+lep->GetFlavour()+"_"+PtHist , "FR_Eta", Ptlab);
+      else FillHistogram((prefix + "_"+BTaggerLabel+"_"+ptname+"_eta").Data(),          lep_pt, lep_eta,  weight_ptcorr, "FR_"+lep->GetFlavour()+"_"+PtHist , "FR_Eta2", Ptlab);
       
       FillHistogram((prefix + "_"+BTaggerLabel+"_"+ptname).Data(),                 lep_pt,  weight_ptcorr, "FR_"+lep->GetFlavour()+"_"+PtHist, Ptlab);
       

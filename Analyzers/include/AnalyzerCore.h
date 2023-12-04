@@ -521,23 +521,6 @@ public:
   vector<float>* velectron_v2_cj_cvsljetdisc;
   vector<float>* velectron_v2_cj_flavour;
 
-  vector<float>* velectron_mva_fake_v4;
-  vector<float>* velectron_mva_fakeHF_v4;
-  vector<float>* velectron_mva_fakeHFB_v4;
-  vector<float>* velectron_mva_fakeHFC_v4;
-  vector<float>* velectron_mva_fakeLF_v4;
-  vector<float>* velectron_mva_fakeTop_v4;
-  vector<float>* velectron_mva_fake_ed_v4;
-  vector<float>* velectron_mva_fakeHF_ed_v4;
-  vector<float>* velectron_mva_fakeHFB_ed_v4;
-  vector<float>* velectron_mva_fakeHFC_ed_v4;
-  vector<float>* velectron_mva_fakeLF_ed_v4;
-  vector<float>* velectron_mva_fakeTop_ed_v4;
-  vector<float>* velectron_mva_conv_v2;
-  vector<float>* velectron_mva_conv_ed_v2;
-  vector<float>* velectron_mva_cf_v2;
-  vector<float>* velectron_mva_cf_ed_v2;
-
   ///// MVA V5
   vector<float>* velectron_mva_cf_ed_v5;
   vector<float>* velectron_mva_cf_ed_v5pt;
@@ -551,9 +534,7 @@ public:
   vector<float>* velectron_mva_fake_QCD_LF1_v5;
   vector<float>* velectron_mva_fake_QCD_LF2_v5;
 
-  ///// MUON
-  vector<float>* vmuon_mva_fake_v4;
-  vector<float>* vmuon_mva_fake_ed_v4;
+
   ///// MVA V5                                                                                                                                                                                                                                                                                                                
   vector<float>* vmuon_mva_fake_QCD_LFvsHF_v5;
   vector<float>* vmuon_mva_fake_QCD_HFBvsHFC_v5;
@@ -568,8 +549,7 @@ public:
   vector<float>* vmuon_v2_cj_flavour;
   vector<int>*   vmuon_lepton_type;
   vector<int>*   velectron_lepton_type;
-  vector<bool>*  velectron_is_cf;
-  vector<bool>*  vmuon_is_cf;
+
 
   ///// MISCLILLANEOUS VARIABLES
   bool run_Debug,  PtOrderObj, TESTBDT;

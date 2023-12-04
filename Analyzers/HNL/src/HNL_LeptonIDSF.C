@@ -535,7 +535,7 @@ void HNL_LeptonIDSF::FilllHistBins(Lepton lep, bool passID,  TString Channel_str
   double Mu_ptbins [nbin_Mupt  + 1]    = {10., 15.,20.,25., 30.,40.,50., 60., 120.};
   double Mu_etabins[nbin_Mueta + 1]    = {0, 0.9, 1.2, 2.1, 2.4};
 
-  int lepType = (IsData) ? 1 : lep.LeptonGenType();
+  //  int lepType = (IsData) ? 1 : lep.LeptonGenType();
   TString TypeLable="";
 
   if(!IsData && !lep.IsPrompt()) return;

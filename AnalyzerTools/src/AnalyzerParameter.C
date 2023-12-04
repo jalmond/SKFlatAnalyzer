@@ -37,6 +37,7 @@ void AnalyzerParameter::Clear(){
   Jet_ID            = "Default";
   FatJet_ID         = "Default";
   AK4JetColl        = "Default";
+  AK4VBFJetColl     = "Default";
   AK8JetColl        = "Default";
   BJetColl          = "Default";
   BTagger           = "Default";
@@ -144,6 +145,7 @@ AnalyzerParameter::AnalyzerParameter(){
   FatJet_ID        = "tight";  
   BTagger           = "Default";
   BWP               = "Default";
+  AK4VBFJetColl     = "Default";
   AK4JetColl        = "Default";
   AK8JetColl        = "Default";
   BJetColl          = "Default";
@@ -368,6 +370,13 @@ bool AnalyzerParameter::HasFlag(TString JobName) {
 }
 
 
+void  AnalyzerParameter::SetChannel(TString inch){
+
+  if (inch == "MuE") Channel = "EMu";
+  else Channel = inch;
+  return;
+}
+
 TString  AnalyzerParameter::ChannelType(){
 
   if(Channel == "EE"   || Channel =="MuMu"       || Channel == "EMu"   || Channel == "MuE" ) return "Dilepton";
@@ -474,6 +483,7 @@ void AnalyzerParameter::PrintParameters(){
   cout << "Jet_ID            = " << Jet_ID << endl;
   cout << "FatJet_ID         = " << FatJet_ID << endl;
   cout << "AK4JetColl        = " << AK4JetColl << endl;
+  cout << "AK4VBFJetColl     = " << AK4VBFJetColl << endl;
   cout << "AK8JetColl        = " << AK8JetColl << endl;
   cout << "BJetColl          = " << BJetColl << endl;
   cout << "BTagger           = " << BTagger << endl;
@@ -545,8 +555,9 @@ TString AnalyzerParameter::GetSystType(){
   if(syst_==Syst::Central){
     return "Central";
   }
+  else if(syst_==Syst::FRAJ25)   return "AJ25";
   else if(syst_==Syst::FRAJ30)   return "AJ30";
-  else if(syst_==Syst::FRAJ50)   return "AJ50";
+  else if(syst_==Syst::FRAJ40)   return "AJ40";
   else if(syst_==Syst::FRAJ60)   return "AJ60";
   else if(syst_==Syst::JetResUp) return "JetResUp";
   else if(syst_==Syst::JetResDown) return "JetResDown";

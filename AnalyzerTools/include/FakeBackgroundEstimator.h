@@ -27,7 +27,7 @@ public:
 
   TDirectory *histDir;
 
-  void ReadHistograms(bool IsData);
+  void ReadHistograms(bool IsData, bool ScanIDs);
 
   bool IgnoreNoHist;
 

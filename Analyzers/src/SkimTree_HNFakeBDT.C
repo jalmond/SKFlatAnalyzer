@@ -11,28 +11,9 @@ void SkimTree_HNFakeBDT::initializeAnalyzer(){
 
   ///// ELECTRON BRANCHES                                                                                                                                                                                                                                                                                                     
   if(!fChain->GetBranch("electron_mva_cf_v2")){
-    newtree->Branch("electron_mva_cf_v2",     &velectron_mva_cf_v2);
-    newtree->Branch("electron_mva_cf_ed_v2",  &velectron_mva_cf_ed_v2);
-    newtree->Branch("electron_mva_conv_v2",   &velectron_mva_conv_v2);
-    newtree->Branch("electron_mva_conv_ed_v2",&velectron_mva_conv_ed_v2);
-
-    newtree->Branch("electron_mva_fake_v4",   &velectron_mva_fake_v4);
-    newtree->Branch("electron_mva_fakeHF_v4", &velectron_mva_fakeHF_v4);
-    newtree->Branch("electron_mva_fakeHFB_v4",&velectron_mva_fakeHFB_v4);
-    newtree->Branch("electron_mva_fakeHFC_v4",&velectron_mva_fakeHFC_v4);
-    newtree->Branch("electron_mva_fakeLF_v4", &velectron_mva_fakeLF_v4);
-    newtree->Branch("electron_mva_fakeTop_v4",&velectron_mva_fakeTop_v4);
-
-    newtree->Branch("electron_mva_fake_ed_v4",   &velectron_mva_fake_ed_v4);
-    newtree->Branch("electron_mva_fakeHF_ed_v4", &velectron_mva_fakeHF_ed_v4);
-    newtree->Branch("electron_mva_fakeHFB_ed_v4",&velectron_mva_fakeHFB_ed_v4);
-    newtree->Branch("electron_mva_fakeHFC_ed_v4",&velectron_mva_fakeHFC_ed_v4);
-    newtree->Branch("electron_mva_fakeLF_ed_v4", &velectron_mva_fakeLF_ed_v4);
-    newtree->Branch("electron_mva_fakeTop_ed_v4",&velectron_mva_fakeTop_ed_v4);
     newtree->Branch("electron_ptrel",      &velectron_ptrel);
     newtree->Branch("electron_ptratio",    &velectron_ptratio);
     newtree->Branch("electron_lepton_type",&velectron_lepton_type);
-    newtree->Branch("electron_is_cf",      &velectron_is_cf);
   }
 
   newtree->Branch("electron_mva_fake_ed_v5",&velectron_mva_fake_ed_v5);
@@ -55,12 +36,9 @@ void SkimTree_HNFakeBDT::initializeAnalyzer(){
   //// MUON BRANCH                                                                                                                                                                                                                                                                                                                                                          
 
   if(!fChain->GetBranch("muon_mva_fake_ed_v4")){
-    newtree->Branch("muon_mva_fake_v4",   &vmuon_mva_fake_v4);
-    newtree->Branch("muon_mva_fake_ed_v4",&vmuon_mva_fake_ed_v4);
     newtree->Branch("muon_ptrel",         &vmuon_ptrel);
     newtree->Branch("muon_ptratio",       &vmuon_ptratio);
     newtree->Branch("muon_lepton_type",   &vmuon_lepton_type);
-    newtree->Branch("muon_is_cf",         &vmuon_is_cf);
     newtree->Branch("SKWeight", &vSKWeight);
   }
 
@@ -226,59 +204,19 @@ void SkimTree_HNFakeBDT::initializeAnalyzer(){
 
 void SkimTree_HNFakeBDT::executeEvent(){
 
-  Event ev;
-  ev.SetTrigger(*HLT_TriggerName);
-
-  if(!(ev.PassTrigger(triggers))) return;
-
 
   if(!fChain->GetBranch("electron_mva_cf_v2"))  ResetLeptonBDTSKFlat();
   ResetLeptonBDTSKFlatV5();
-
 
   vSKWeight=MCweight(true,true);
 
   if(!fChain->GetBranch("electron_mva_cf_v2"))SetupLeptonBDTSKFlat();
   SetupLeptonBDTSKFlatV5();
 
-  //// NOW Apply skim
-  
-
-  double mu_pt = (IsData) ? 4: 4;
-  double el_pt = (IsData) ? 8: 8;
-
-  vector<Muon> allmuons = GetMuons("HNLoosest", mu_pt, 2.4);
-  vector<Electron> allel = GetElectrons("HNLoosest", el_pt, 2.5);
-  
-  int NLep = allmuons.size() + allel.size();
-  
-  if( NLep == 0 ) return;
-
-  vector<Jet> alljet = GetJets("tight", 30., 2.7);
-  bool dphi_lj(false);
-  for(unsigned int imu=0; imu < allmuons.size(); imu++){
-    for(unsigned int ij=0; ij <alljet.size(); ij++){
-      float dphi =fabs(TVector2::Phi_mpi_pi(allmuons[imu].Phi()- alljet.at(ij).Phi()));
-      if(dphi > 2.5) dphi_lj=true;
-    }
-  }
-  
-  for(unsigned int iel=0; iel <allel.size(); iel++){
-    for(unsigned int ij=0; ij <alljet.size(); ij++){
-      float dphi =fabs(TVector2::Phi_mpi_pi(allel[iel].Phi()- alljet.at(ij).Phi()));
-      if(dphi >2.5) dphi_lj=true;
-    }
-  }
-
-  if( !dphi_lj ) return;
-  
-
   newtree->Fill();
+
+  
   return;
-
-
-
-
 
 }
 

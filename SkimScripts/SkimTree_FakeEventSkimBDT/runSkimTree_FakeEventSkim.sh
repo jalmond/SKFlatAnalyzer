@@ -1,21 +1,22 @@
 analyzer=SkimTree_FakeEventSkimBDT
 rundir=runSkims
-mcpath=${SKFlat_WD}/SkimScripts/${analyzer}/Bkg/
+mcpath=${SKFlat_WD}/SkimScripts/SampleLists/Bkg/
 njobs=600
 njobs_data=600
 nmax=500
-skim=' '
+
 declare  -a era_list=("2018" "2017"  "2016preVFP" "2016postVFP")
-declare  -a era_list=("2017")
+declare  -a era_list=( "2016preVFP" "2016postVFP")
 
 if [[ $1 == "" ]]; then
     for i in "${era_list[@]}"
     do
-	
-        SKFlat.py -a $analyzer  -l  $mcpath/QCD_${i}Mu.txt  -n 400  --nmax ${nmax}   -e ${i} --skim SkimTree_FakeEventSkim  &
-        SKFlat.py -a $analyzer  -l  $mcpath/MC.txt  -n       400  --nmax ${nmax}   -e ${i} --skim SkimTree_FakeEventSkim&
-        SKFlat.py -a $analyzer  -l  $mcpath/QCD_BEnriched.txt -n 400  --nmax ${nmax}   -e ${i} --skim SkimTree_FakeEventSkim &
-
+	#SKFlat.py -a $analyzer  -i WJets_Sherpa                -n 4000 --nmax ${nmax}   -e ${i} --skim SkimTree_FakeEventSkim   &
+	#	SKFlat.py -a $analyzer  -l  $mcpath/QCD_${i}El.txt     -n 400  --nmax ${nmax}   -e ${i} --skim SkimTree_FakeEventSkim  &
+	SKFlat.py -a $analyzer  -l  $mcpath/QCD_${i}Mu.txt     -n 400  --nmax ${nmax}   -e ${i} --skim SkimTree_FakeEventSkim  &
+	SKFlat.py -a $analyzer  -l  $mcpath/QCD_BEnriched.txt  -n 400  --nmax ${nmax}   -e ${i} --skim SkimTree_FakeEventSkim  &
+	SKFlat.py -a $analyzer  -l  $mcpath/FakeEventMC.txt    -n 400  --nmax ${nmax}   -e ${i} --skim SkimTree_FakeEventSkim  &
+	#SKFlat.py -a $analyzer  -l  $mcpath/FakeEventHaneolList.txt   -n 400  --nmax ${nmax}   -e ${i} --skim SkimTree_FakeEventSkim  &
     done
 
 fi

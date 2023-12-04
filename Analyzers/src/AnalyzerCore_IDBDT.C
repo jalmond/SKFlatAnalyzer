@@ -455,6 +455,16 @@ void AnalyzerCore::PrintBDTInput(){
 
 
 double AnalyzerCore::GetBDTScoreMuon(Muon mu ,BkgType bkg, TString BDTTag){
+  
+  TString MVATagStr = BDTTag;
+
+  /// return def val if iSetupLeptonBDTv is not set
+  if(MVATagStr.Contains("v4")) {
+    if(!iSetupLeptonBDTv4) return -1;
+  }
+  if(MVATagStr.Contains("v5")) {
+    if(!iSetupLeptonBDTv5) return -1;
+  }
 
   InitializeIDTreeVars();
 
@@ -462,8 +472,6 @@ double AnalyzerCore::GetBDTScoreMuon(Muon mu ,BkgType bkg, TString BDTTag){
   SetBDTIDVar(lep);
   SetBDTIDVariablesMuon(mu);
 
-
-  TString MVATagStr = BDTTag;
   if (bkg == BkgType::Fake) MVATagStr += "_Fake";
   if (bkg == BkgType::FakeRate) MVATagStr += "_Fake";
 
@@ -699,11 +707,15 @@ void AnalyzerCore::SetBDTIDVar(Lepton*  lep){
 
 void AnalyzerCore::SetupIDMVAReaderDefault(bool ForceSetupV4, bool ForceSetupV5){
 
-  bool SkimContainsVersion4 = (fChain->GetBranch("electron_mva_fake_ed_v4"));
+  //  bool SkimContainsVersion4 = (fChain->GetBranch("electron_mva_fake_ed_v4"));
   bool SkimContainsVersion5 = (fChain->GetBranch("electron_mva_fake_ed_v5"));
 
-  bool SetupVersion4 = (!SkimContainsVersion4 || ForceSetupV4);
+  bool SetupVersion4 = ForceSetupV4;
   bool SetupVersion5 = (!SkimContainsVersion5 || ForceSetupV5);
+
+  if(iSetupLeptonBDTv4) SetupVersion4=false;
+  if(iSetupLeptonBDTv5) SetupVersion5=false;
+
 
   SetupLeptonBDT(SetupVersion4,SetupVersion5); /// This initialises MVAReaders and sets iSetupLeptonBDTvX bools   
 
@@ -724,8 +736,7 @@ void AnalyzerCore::SetupIDMVAReaderDefault(bool ForceSetupV4, bool ForceSetupV5)
     SetupIDMVAReaderElectronUpdate();
   }
 
-  if(SetupVersion4 || SetupVersion5) SetupIDMVAReaderMuon();
-
+  if(SetupVersion5) SetupIDMVAReaderMuon();
 
   return ;
 }
@@ -802,8 +813,8 @@ void AnalyzerCore::SetupIDMVAReaderMuon(){
 
   TString AnalyzerPath=std::getenv("SKFlat_WD");
 
-  TString MVAPathMuonFakeV4="/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeIMuonFake/Version6/"+GetYearString()+"/dataset/weights/";
-  TString MVAPathMuonFakeV5="/data6/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeIMuonFake/Version12/"+GetYearString()+"/dataset/weights/";
+  TString MVAPathMuonFakeV4="/gv0/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeIMuonFake/Version6/"+GetYearString()+"/dataset/weights/";
+  TString MVAPathMuonFakeV5="/gv0/Users/jalmond/BDTOutput/Run2UltraLegacy_v3/runIDBDT_HNtypeIMuonFake/Version12/"+GetYearString()+"/dataset/weights/";
 
   TString xmlpf = "_TMVAClassification_BDTG.weights.xml";
 
@@ -1742,6 +1753,13 @@ void AnalyzerCore::SetBDTIDVariablesElectron(Electron el){
 double AnalyzerCore::GetBDTScoreMuon_EtaDependant(Muon mu ,BkgType bkg, TString BDTTag){
 
   TString  MVATagStr = BDTTag;
+  if(MVATagStr.Contains("v4"))  {
+    if(!iSetupLeptonBDTv4) return -9999;
+  }
+  if(MVATagStr.Contains("v5"))  {
+    if(!iSetupLeptonBDTv5) return -9999;
+  }
+  
   int Version=1;
   if(MVATagStr.Contains("BDTGv4"))Version=4;
   if(MVATagStr.Contains("BDTGv5"))Version=5;
@@ -1770,14 +1788,23 @@ double AnalyzerCore::GetBDTScoreMuon_EtaDependant(Muon mu ,BkgType bkg, TString 
   if(MVATagStr.Contains("v4"))   return  MuonIDv4_FakeMVAReader->EvaluateMVA(MVATagStr);
   if(MVATagStr.Contains("v5"))   return  MuonIDv5_FakeMVAReader->EvaluateMVA(MVATagStr);
 
-  return -1.;
+  return -9999.;
 }
 
 
 
 double AnalyzerCore::GetBDTScoreEl_EtaDependant(Electron el ,BkgType bkg, TString BDTTag){
 
+
   TString  MVATagStr = BDTTag;
+
+  if(MVATagStr.Contains("BDTGv4")){
+    if(!iSetupLeptonBDTv4) return -9999;
+  }
+  if(MVATagStr.Contains("BDTGv5")){
+    if(!iSetupLeptonBDTv5) return -9999;
+  }
+
   int Version=1;
   if(MVATagStr.Contains("BDTGv4"))Version=4;
   if(MVATagStr.Contains("BDTGv5"))Version=5;
@@ -1808,9 +1835,9 @@ double AnalyzerCore::GetBDTScoreEl_EtaDependant(Electron el ,BkgType bkg, TStrin
 
 
   if(MVATagStr.Contains("BDTGv4")){
-
-    if(!iSetupLeptonBDTv4) {   cout << "iSetupLeptonBDTv2 not set.." << MVATagStr<< endl;     exit(EXIT_FAILURE);}
-
+    
+    //{   cout << "iSetupLeptonBDTv2 not set.." << MVATagStr<< endl;     exit(EXIT_FAILURE);}
+    
     if (bkg == BkgType::CF)    return  ElectronIDv4_CFMVAReader->EvaluateMVA(MVATagStr);
 
     if (bkg == BkgType::Conv) return  ElectronIDv4_ConvMVAReader->EvaluateMVA(MVATagStr);
@@ -1831,7 +1858,7 @@ double AnalyzerCore::GetBDTScoreEl_EtaDependant(Electron el ,BkgType bkg, TStrin
     }
   }
 
-  return -1.;
+  return -9999.;
 }
 
 
@@ -1932,6 +1959,13 @@ double AnalyzerCore::GetBDTScoreElV1(Electron el ,BkgType bkg, TString BDTTag){
 double AnalyzerCore::GetBDTScoreEl(Electron el ,BkgType bkg, TString BDTTag){
 
   TString  MVATagStr = BDTTag;
+
+  if(MVATagStr.Contains("BDTGv4")){
+    if(!iSetupLeptonBDTv4) return -999;
+  }
+  if(MVATagStr.Contains("BDTGv5")){
+    if(!iSetupLeptonBDTv5) return -999;
+  }
   int Version=1;
   if(MVATagStr.Contains("BDTGv4"))Version=4;
   if(MVATagStr.Contains("BDTGv5"))Version=5;
@@ -1954,9 +1988,6 @@ double AnalyzerCore::GetBDTScoreEl(Electron el ,BkgType bkg, TString BDTTag){
   if (bkg == BkgType::CF)   MVATagStr += "_CF";
 
   if(MVATagStr.Contains("BDTGv4")){
-
-    if(!iSetupLeptonBDTv4) {   cout << "iSetupLeptonBDTv2 not set.." << MVATagStr<< endl;     exit(EXIT_FAILURE);}
-
 
     if (bkg == BkgType::CF){
 
@@ -1987,7 +2018,7 @@ double AnalyzerCore::GetBDTScoreEl(Electron el ,BkgType bkg, TString BDTTag){
   }
 
 
-  return -1.;
+  return -9999.;
 }
 
 
@@ -2110,54 +2141,23 @@ void AnalyzerCore::SetupLeptonBDTSKFlatV5(){
 
 void AnalyzerCore::SetupLeptonBDTSKFlat(){
 
-  // BUG IN PT ORDERING                                                                                                                                                                                                                                                                                                                                                                                                                  
   /// Originally used GetALl* which orders pt,                                                                                                                                                                                                                                                                                                                                                                                           
-  /// Then if order changes the pushed vector has a mis match in lepton index                                                                                                                                                                                                                                                                                                                                                            
+  /// Then if order changes the pushed vector has a mis match in lepton index                                                                                                                                                                                                                                                                                                                                                    
 
   std::vector<Muon>     AllmuonColl     = All_Muons;
   std::vector<Electron> AllelectronColl = All_Electrons;
   std::vector<Jet>      AK4_JetAllColl  = All_Jets;
 
   for(auto i: AllmuonColl){
-    vmuon_mva_fake_v4->push_back(GetBDTScoreMuon(i,AnalyzerCore::Fake,  "BDTGv4"));
-    vmuon_mva_fake_ed_v4->push_back(GetBDTScoreMuon_EtaDependant(i,AnalyzerCore::Fake,  "BDTGv4"));
-
     vmuon_ptratio->push_back(JetLeptonPtRatioLepAware(i));
     vmuon_ptrel->push_back(JetLeptonPtRelLepAware(i));
     vmuon_lepton_type->push_back(GetLeptonType_JH(i, All_Gens));
-    vmuon_is_cf->push_back(IsCF(i, All_Gens));
-
   }
 
   for(auto i: AllelectronColl){
-
-    velectron_mva_fake_v4->push_back(GetBDTScoreEl(i,AnalyzerCore::Fake,  "BDTGv4"));
-    velectron_mva_fakeHF_v4->push_back(GetBDTScoreEl(i,AnalyzerCore::Fake,  "BDTGv4_HF"));
-    velectron_mva_fakeHFB_v4->push_back(GetBDTScoreEl(i,AnalyzerCore::Fake,  "BDTGv4_HFB"));
-    velectron_mva_fakeHFC_v4->push_back(GetBDTScoreEl(i,AnalyzerCore::Fake,  "BDTGv4_HFC"));
-    velectron_mva_fakeLF_v4->push_back(GetBDTScoreEl(i,AnalyzerCore::Fake,  "BDTGv4_LF"));
-    velectron_mva_fakeTop_v4->push_back(GetBDTScoreEl(i,AnalyzerCore::Fake,  "BDTGv4_Top"));
-
-    velectron_mva_fake_ed_v4->push_back(GetBDTScoreEl_EtaDependant(i,AnalyzerCore::Fake,  "BDTGv4"));
-    velectron_mva_fakeHF_ed_v4->push_back(GetBDTScoreEl_EtaDependant(i,AnalyzerCore::Fake,  "BDTGv4_HF"));
-    velectron_mva_fakeHFB_ed_v4->push_back(GetBDTScoreEl_EtaDependant(i,AnalyzerCore::Fake,  "BDTGv4_HFB"));
-    velectron_mva_fakeHFC_ed_v4->push_back(GetBDTScoreEl_EtaDependant(i,AnalyzerCore::Fake,  "BDTGv4_HFC"));
-    velectron_mva_fakeLF_ed_v4->push_back(GetBDTScoreEl_EtaDependant(i,AnalyzerCore::Fake,  "BDTGv4_LF"));
-    velectron_mva_fakeTop_ed_v4->push_back(GetBDTScoreEl_EtaDependant(i,AnalyzerCore::Fake,  "BDTGv4_Top"));
-
-    velectron_mva_conv_v2->push_back(GetBDTScoreEl(i,AnalyzerCore::Conv,  "BDTGv4"));
-    velectron_mva_conv_ed_v2->push_back(GetBDTScoreEl_EtaDependant(i,AnalyzerCore::Conv,  "BDTGv4"));
-
-    velectron_mva_cf_v2->push_back(GetBDTScoreEl(i,AnalyzerCore::CF,  "BDTGv4"));
-    velectron_mva_cf_ed_v2->push_back(GetBDTScoreEl_EtaDependant(i,AnalyzerCore::CF,  "BDTGv4"));
-
-
     velectron_ptratio->push_back(JetLeptonPtRatioLepAware(i));
     velectron_ptrel->push_back(JetLeptonPtRelLepAware(i));
     velectron_lepton_type->push_back(GetLeptonType_JH(i, All_Gens));
-    velectron_is_cf->push_back(IsCF(i, All_Gens,true));
-
-
   }
 
   return;
@@ -2208,38 +2208,14 @@ void AnalyzerCore::ResetLeptonBDTSKFlatV5(){
 
 void AnalyzerCore::ResetLeptonBDTSKFlat(){
 
-  //// V4 variables (some removed from original BDT skim code                                                                                                                                                                                                                                                                                                                                                                            
-  //  cout << "V4 variables (some removed from original BDT skim code     " << endl;                                                                                                                                                                                                                                                                                                                                                     
-
   velectron_ptrel->clear();
   velectron_ptratio->clear();
   vmuon_ptrel->clear();
   vmuon_ptratio->clear();
   velectron_lepton_type->clear();
-  velectron_is_cf->clear();
   vmuon_lepton_type->clear();
-  vmuon_is_cf->clear();
 
-  velectron_mva_cf_v2->clear();
-  velectron_mva_cf_ed_v2->clear();
-  velectron_mva_conv_v2->clear();
-  velectron_mva_conv_ed_v2->clear();
-  velectron_mva_fake_v4->clear();
-  velectron_mva_fakeHF_v4->clear();
-  velectron_mva_fakeHFB_v4->clear();
-  velectron_mva_fakeHFC_v4->clear();
-  velectron_mva_fakeLF_v4->clear();
-  velectron_mva_fakeTop_v4->clear();
-  velectron_mva_fake_ed_v4->clear();
-  velectron_mva_fakeHF_ed_v4->clear();
-  velectron_mva_fakeHFB_ed_v4->clear();
-  velectron_mva_fakeHFC_ed_v4->clear();
-  velectron_mva_fakeLF_ed_v4->clear();
-  velectron_mva_fakeTop_ed_v4->clear();
-  vmuon_mva_fake_ed_v4->clear();
-  vmuon_mva_fake_v4->clear();
-
-  //  cout << "END V4 variables (some removed from original BDT skim code     "<< endl;                                                                                                                                                                                                                                                                                                                                                  
+  //  cout << "END V4 variables (some removed from original BDT skim code     "<< endl;                                                                                                                                                                                                                                                                                                                                            
 
   return;
 }
@@ -2254,27 +2230,10 @@ void AnalyzerCore::InitialiseLeptonBDTSKFlat(){
   velectron_v2_cj_cvsbjetdisc = 0;
   velectron_v2_cj_cvsljetdisc = 0;
   velectron_v2_cj_flavour = 0;
+  velectron_lepton_type=0;
 
-  velectron_mva_cf_v2 = 0;
-  velectron_mva_cf_ed_v2 = 0;
-  velectron_mva_conv_ed_v2 = 0;
-  velectron_mva_conv_v2 = 0;
-
-  velectron_mva_fake_v4 = 0 ;
-  velectron_mva_fakeHF_v4 = 0 ;
-  velectron_mva_fakeHFB_v4 = 0 ;
-  velectron_mva_fakeHFC_v4 = 0 ;
-  velectron_mva_fakeLF_v4 = 0 ;
-  velectron_mva_fakeTop_v4 = 0 ;
-  velectron_mva_fake_ed_v4 = 0 ;
-  velectron_mva_fakeHF_ed_v4 = 0 ;
-  velectron_mva_fakeHFB_ed_v4 = 0 ;
-  velectron_mva_fakeHFC_ed_v4 = 0 ;
-  velectron_mva_fakeLF_ed_v4 = 0 ;
-  velectron_mva_fakeTop_ed_v4 = 0 ;
-
-  ///// BDT V5                                                                                                                                                                                                                                                                                                                                                                                                                           
-  /// ELECTRON                                                                                                                                                                                                                                                                                                                                                                                                                           
+  /// ELECTRON 
+  ///// BDT V5                                                                                                                                                                                                                                                                                                                                                                                                                        
   velectron_mva_fake_ed_v5 = 0 ;
   velectron_mva_fakeHFB_v5 = 0 ;
   velectron_mva_fakeHFC_v5 = 0 ;
@@ -2287,14 +2246,10 @@ void AnalyzerCore::InitialiseLeptonBDTSKFlat(){
   velectron_mva_fake_QCD_LF1_v5 = 0 ;
   velectron_mva_fake_QCD_LF2_v5 = 0 ;
 
-  velectron_lepton_type=0;
-  velectron_is_cf=0;
 
-  vmuon_mva_fake_v4 = 0;
-  vmuon_mva_fake_ed_v4 = 0;
 
-  ///// BDT V5                                                                                                                                                                                                                                                                                                                                                                                                                           
-  /// MUON                                                                                                                                                                                                                                                                                                                                                                                                                               
+  /// MUON                                                                                                                                                                                                           ///// BDT V5                                                                                                                                                                                                     
+
   vmuon_mva_fake_QCD_LFvsHF_v5 = 0 ;
   vmuon_mva_fake_QCD_HFBvsHFC_v5 = 0 ;
   vmuon_mva_fake_QCD_LF1_v5 = 0 ;
@@ -2307,7 +2262,6 @@ void AnalyzerCore::InitialiseLeptonBDTSKFlat(){
   vmuon_v2_cj_cvsljetdisc = 0;
   vmuon_v2_cj_flavour = 0;
   vmuon_lepton_type=0;
-  vmuon_is_cf=0;
 
   return;
 }
