@@ -53,14 +53,14 @@ for WP in myWPs:
         for mass in masses:
           lines[4] = "shapes * *  "+input_path+WP+"/"+era+"/"+mass+"_"+channel+"_card_input.root $PROCESS $PROCESS_$SYSTEMATIC\n"
           if int(mass.replace("M","")) < 500:
-            if "Mu" in channel: lines[17] = "rate           -1      -1     0     -1           0\n"  # no cf
-            else: lines[17] = "rate           -1      -1    -1     -1           0\n"                  # no SSWW
+            if "Mu" in channel: lines[17] = "rate          -1      -1    0     -1    -1           0\n"  # no cf
+            else: lines[17] = "rate          -1      -1    -1    -1    -1           0\n"                  # no SSWW
           if 500 <= int(mass.replace("M","")) and int(mass.replace("M","")) <= 3000:
-            if "Mu" in channel: lines[17] = "rate           -1      -1     0     -1           -1\n"
-            else: lines[17] = "rate           -1      -1    -1     -1           -1\n"
+            if "Mu" in channel: lines[17] = "rate          -1      -1    0     -1    -1           -1\n"
+            else: lines[17] = "rate          -1      -1    -1    -1    -1           -1\n"
           elif 3000 < int(mass.replace("M","")):
-            if "Mu" in channel: lines[17] = "rate           -1      -1     0     0           -1\n"
-            else: lines[17] = "rate           -1      -1    -1     0           -1\n"                  # no DYVBF
+            if "Mu" in channel: lines[17] = "rate          -1      -1    0     -1    0            -1\n"
+            else: lines[17] = "rate          -1      -1    -1    -1    0            -1\n"                  # no DYVBF
           for i in range(len(lines)): # lepton SF syst
             if channel == "MuMu":
               if "Muon" in lines[i]: lines[i] = lines_orig[i]
