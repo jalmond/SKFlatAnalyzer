@@ -1,10 +1,11 @@
 # Make Datacards
-# Place this at /data6/Users/jihkim/CombineTool/CMSSW_10_2_13/src/DataCardsShape/HNL_SignalRegionPlotter/Workspace
+# Place this at CombineTool/CMSSW_10_2_13/src/DataCardsShape/HNL_SignalRegionPlotter/Workspace
+# You need to place card_skeletons already
 
 import os
 
 pwd = os.getcwd()
-AddSyst = False
+AddSyst = False # Add systematics
 
 if AddSyst:
   with open("/data6/Users/jihkim/CombineTool/CMSSW_10_2_13/src/DataCardsShape/HNL_SignalRegionPlotter/Workspace/card_skeleton_syst.txt",'r') as f:
@@ -16,7 +17,6 @@ else:
 #print lines
 
 input_path = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegionPlotter/LimitInputs/"
-#input_path = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/Before_Merge_230119/HNL_SignalRegionPlotter/"
 eras = ["2016","2017","2018"]
 eras = ["2017"]
 eras = ["2016preVFP","2016postVFP","2018"]

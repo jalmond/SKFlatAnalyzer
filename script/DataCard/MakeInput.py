@@ -1,4 +1,4 @@
-# Place it in /data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegionPlotter
+# Place it in SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegionPlotter
 
 import os, sys
 import commands as cmd
@@ -7,20 +7,21 @@ from ROOT import *
 eras = ["2016preVFP", "2016postVFP", "2017", "2018"]
 eras = ["2016","2017","2018"]
 eras = ["2017"]
-eras = ["2018"]
+#eras = ["2018"]
 masses = ["M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000"]
 masses = ["M5000","M7500","M10000","M15000","M20000"]
 masses = ["M90","M100","M150","M200","M300","M400","M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M10000","M15000","M20000"]
 #masses = ["M100","M200","M300","M400","M500"]
-#masses = ["M500"]
+masses = ["M500"]
 channels = ["MuMu","EE","EMu"]
-channels = ["MuMu","EE"]
-tags = ["HNL_ULID","HNTightV2"]
-outputTag = "NewOpt_"
+#channels = ["MuMu","EE"]
+tags = ["HNL_ULID","HNTightV2"] # HNLParameter Name
+outputTag = "231227_KCMS_WS" # tag the output as you wish
 
 InputPath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegionPlotter/"
 Analyzer = "HNL_SignalRegionPlotter"
 
+# Skim
 DataSkim = ""
 FakeSkim = "_SkimTree_HNMultiLepBDT_"
 #CFSkim = "_SkimTree_HNMultiLepBDT_" #FIXME MC CF
@@ -29,16 +30,17 @@ ConvSkim = "_SkimTree_HNMultiLepBDT_"
 MCSkim = "_SkimTree_HNMultiLepBDT_"
 SignalSkim = "_SkimTree_HNMultiLepBDT_"
 
+# This will do necessary hadd for you.
 MergeData   = False
-MergeFake   = True
-MergeCF     = True
-MergeConv   = True
-MergeMC     = True
+MergeFake   = True  # RunFake
+MergeCF     = False  # RunCF
+MergeConv   = True  # RunConv
+MergeMC     = True  # RunPrompt
 MergeSignal = True
 #MergeDYVBF = True
 #MergeSSWW  = True
 
-Blinded = True
+Blinded = True # Blinded --> the total background will be used as data_obs
 AddSyst = False
 ChargeSplit = False
 if ChargeSplit:
@@ -106,7 +108,7 @@ if MergeSignal:
 
 for tag in tags:
   for era in eras:
-    OutputPath = InputPath+'/LimitInputs/'+outputTag+tag+'/'
+    OutputPath = InputPath+'/LimitInputs/'+outputTag+'_'+tag+'/'
     os.system('mkdir -p '+OutputPath + era)
   
     f_path_data        = InputPath + era + "/DATA/"+Analyzer+DataSkim+"DATA.root"
@@ -151,7 +153,7 @@ for tag in tags:
         
         if Blinded:
           print "##### This analysis is blinded."
-          print "##### Creating fake data..."
+          print "##### Creating pseudo data..."
           print "Adding prompt..."
           h_data = h_prompt.Clone()
         
@@ -268,7 +270,7 @@ for tag in tags:
           print "##### Systematics done."
   
   
-        print "##### Now creating an output root file..."
+        print "##### Now creating a limit input root file..."
         outfile = TFile.Open(OutputPath+era+"/"+mass+"_"+channel+"_card_input.root","RECREATE")
         
         outfile.cd() # Move into it

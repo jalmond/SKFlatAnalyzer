@@ -16,12 +16,12 @@ flag=$5
 #echo -e ".L test.C\n test(\"2017\",false,\"WJets\",\"HNFakeBDT\",\"\");" | root -l 2>&1 | tee "WJets".log
 
 # HNL_SignalRegionPlotter
-#echo -e ".L test.C\n test(\"2017\",true,\"DoubleMuon\",\"HNMultiLepBDT\",\"RunFake\");" | root -l 2>&1 | tee "DoubleMuon_RunFake".log
+echo -e ".L test.C\n test(\"2017\",true,\"DoubleMuon\",\"HNMultiLepBDT\",\"RunFake\");" | root -l 2>&1 | tee "DoubleMuon_RunFake".log
 #echo -e ".L test.C\n test(\"2017\",true,\"DoubleEG\",\"HNMultiLepBDT\",\"RunFake\");" | root -l 2>&1 | tee "DoubleEG_RunFake".log
 #echo -e ".L test.C\n test(\"2017\",true,\"MuonEG\",\"HNMultiLepBDT\",\"RunFake\");" | root -l 2>&1 | tee "MuonEG_RunFake".log
 #echo -e ".L test.C\n test(\"2017\",false,\"DYJets\",\"HNMultiLepBDT\",\"RunCF\");" | root -l 2>&1 | tee "DYJets_RunCF".log
 #echo -e ".L test.C\n test(\"2017\",true,\"DoubleEG\",\"DileptonBDT\",\"RunCF\");" | root -l 2>&1 | tee "DoubleEG_RunCF".log
-echo -e ".L test.C\n test(\"2017\",false,\"SSWWTypeI_DF_M1000\",\"HNMultiLepBDT\",\"\");" | root -l 2>&1 | tee "SSWWTypeI_DF_M1000".log
+#echo -e ".L test.C\n test(\"2017\",false,\"SSWWTypeI_DF_M1000\",\"HNMultiLepBDT\",\"\");" | root -l 2>&1 | tee "SSWWTypeI_DF_M1000".log
 
 # HNL_SignalRegionPlotter (fake closure)
 #echo -e ".L test.C\n test(\"2017\",false,\"TTLJ\",\"HNMultiLepBDT\",\"RunFakeClosurePred\");" | root -l 2>&1 | tee "TTLJ_ClosPred".log

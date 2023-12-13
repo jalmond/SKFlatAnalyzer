@@ -16,7 +16,7 @@ void HNL_SignalRegionPlotter::executeEvent(){
   FillTimer("START_EV");
   
   vector<TString> LepIDs = {"HNL_ULID","HNTightV2"};//,"TopHN", "DefaultPOGTight"};
-  vector<HNL_LeptonCore::Channel> ChannelsToRun = {EE,MuMu,EMu}; //,EMu,MuE};
+  vector<HNL_LeptonCore::Channel> ChannelsToRun = {EE,MuMu,EMu,MuE}; //,EMu,MuE};
 
   for (auto id: LepIDs){
     for(auto channel : ChannelsToRun){
@@ -26,17 +26,17 @@ void HNL_SignalRegionPlotter::executeEvent(){
       
       if(!IsData) RunSyst=true;
       if(RunSyst){
-  TString param_name = param.Name;
-  vector<AnalyzerParameter::Syst> SystList;// = GetSystList("Initial");
-  
-  for(auto isyst : SystList){
-    param.syst_ = AnalyzerParameter::Syst(isyst);
-    
-    param.Name = "Syst_"+param.GetSystType()+param_name;
-    param.DefName = "Syst_"+param.GetSystType()+param_name;
-    RunULAnalysis(param);
-  }
-      }    
+        TString param_name = param.Name;
+        vector<AnalyzerParameter::Syst> SystList;// = GetSystList("Initial");
+        
+        for(auto isyst : SystList){
+          param.syst_ = AnalyzerParameter::Syst(isyst);
+          
+          param.Name = "Syst_"+param.GetSystType()+param_name;
+          param.DefName = "Syst_"+param.GetSystType()+param_name;
+          RunULAnalysis(param);
+        }
+      }
       
     }
   }

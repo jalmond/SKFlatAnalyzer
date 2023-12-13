@@ -328,10 +328,13 @@ double HNL_LeptonCore::GetCFWeightElectron(std::vector<Lepton* > leps ,  Analyze
   }
   
   if(leps.size()  != 2) return 1.;
-  if(el_pt.size()  != 2) return 1.;
+  //if(el_pt.size()  != 2) return 1.; //FIXME this was original
+  if(el_pt.size() == 0) return 0.; //FIXME JH : to check CF contribution to EMu
 
   double el1_cf_rate =   cfEst->GetElectronCFRate(param.Electron_Tight_ID, param.k.Electron_CF,el_eta[0], el_pt[0], 0);
   double el2_cf_rate =   cfEst->GetElectronCFRate(param.Electron_Tight_ID, param.k.Electron_CF,el_eta[1], el_pt[1], 0);
+  if(el_pt.size() == 1) el2_cf_rate = 0.; //FIXME JH : to check CF contribution to EMu
+
 
   //if(ApplySF){
   el1_cf_rate *= GetCFSF(param,leps);
