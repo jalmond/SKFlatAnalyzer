@@ -15,8 +15,8 @@ void HNL_SignalRegionPlotter::executeEvent(){
 
   FillTimer("START_EV");
   
-  vector<TString> LepIDs = {"HNL_ULID","HNTightV2"};//,"TopHN", "DefaultPOGTight"};
-  vector<HNL_LeptonCore::Channel> ChannelsToRun = {EE,MuMu,EMu,MuE}; //,EMu,MuE};
+  vector<TString> LepIDs = {"HNL_ULID","HNTightV2","TopHN", "DefaultPOGTight"};                                             
+  vector<HNL_LeptonCore::Channel> ChannelsToRun = {MuMu,EE,EMu,MuE};                                                    
 
   for (auto id: LepIDs){
     for(auto channel : ChannelsToRun){
@@ -59,8 +59,8 @@ void HNL_SignalRegionPlotter::RunULAnalysis(AnalyzerParameter param){
   TString el_ID = SetLeptonID("Electron",param);
   TString mu_ID = SetLeptonID("Muon", param);
 
-  double Min_Muon_Pt     = (RunFake) ? 3. : 5.;
-  double Min_Electron_Pt = (RunFake) ? 7. : 10.;
+  double Min_Muon_Pt     = (RunFake) ? 6. : 10.;
+  double Min_Electron_Pt = (RunFake) ? 10. : 15.;
 
   std::vector<Muon>       MuonCollTInit     = SelectMuons    ( param,mu_ID, Min_Muon_Pt,     2.4, weight);
   std::vector<Electron>   ElectronCollTInit = SelectElectrons( param,el_ID, Min_Electron_Pt, 2.5, weight);
@@ -73,9 +73,9 @@ void HNL_SignalRegionPlotter::RunULAnalysis(AnalyzerParameter param){
 
   std::vector<FatJet> AK8_JetColl                 = GetHNLAK8Jets(param.AK8JetColl,param);
   std::vector<Jet>    AK4_JetColl                 = GetHNLJets(param.AK4JetColl,     param);
+  std::vector<Jet>    AK4_VBF_JetColl             = GetHNLJets(param.AK4VBFJetColl,  param);
   std::vector<Jet>    AK4_JetAllColl              = GetHNLJets("NoCut_Eta3",param);
   std::vector<Jet>    AK4_JetCollLoose            = GetHNLJets("Loose",     param);
-  std::vector<Jet>    AK4_VBF_JetColl             = GetHNLJets("VBFTightPUL",  param);
   std::vector<Jet>    AK4_BJetColl                = GetHNLJets("BJet", param);
  
   Particle METv = GetvMET("PuppiT1xyULCorr",param); // returns MET with systematic correction; run this after all object selection done; NOTE that VBF jet is used here

@@ -608,14 +608,15 @@ AnalyzerParameter HNL_LeptonCore::SetupHNLParameter(TString s_setup_version, TSt
     param.Muon_Tight_ID     = "HNL_ULID_"+GetYearString();
     param.Electron_Veto_ID  = "HNVetoMVA";  
     param.Electron_Tight_ID = "HNL_ULID_"+GetYearString();
-    param.Muon_FR_ID        = "HNL_ULID_FOv3_"+GetYearString();
-    param.Electron_FR_ID    = "HNL_ULID_FOv3_"+GetYearString();
+    param.Muon_FR_ID        = "HNL_ULID_FOv2_"+GetYearString();
+    param.Electron_FR_ID    = "HNL_ULID_FOv2_"+GetYearString();
     param.FakeRateMethod    = "Standard";
-    param.FakeRateParam     = "PtParton";
+    param.FakeRateParam   = "PtParton";
 
     param.k.Muon_PR            = "pt_eta_HNL_ULID_FOv3_PR_cent";
-    param.k.Muon_FR            = "HNL_ULID_FOv3_AJ40";
-    param.k.Electron_FR        = "HNL_ULID_FOv3_AJ40";
+    param.k.Muon_FR            = "HNL_ULID_FOv2_AJ30";
+    param.k.Electron_FR        = "HNL_ULID_FOv2_AJ30";
+
     param.k.Muon_ID_SF         = "NUM_HNL_ULID_"+GetYearString();
     param.k.Muon_ISO_SF        = "Default";
     param.k.Electron_ID_SF     = "passHNL_ULID_"+GetYearString();

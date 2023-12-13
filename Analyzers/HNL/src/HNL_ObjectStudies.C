@@ -1000,7 +1000,7 @@ void HNL_ObjectStudies::RunLeptonChannel(HNL_LeptonCore::Channel channel_ID, std
 	
 	if(FatjetColl.size() > 0){
 	  
-	  if(RunSignalRegionAK8( channel_ID, Inclusive, LepsT, LepsV, TauColl,JetColl, FatjetColl, BJetColl, Ev, METv, param,  "", _weight ))  
+	  if(RunSignalRegionAK8(true, channel_ID, Inclusive, LepsT, LepsV, TauColl,JetColl, FatjetColl, BJetColl, Ev, METv, param,  "", _weight ))  
 	    {
 	      FillCutflow(Region1,_weight, "SS"+GetChannelString(channel_ID)+"_SR1",param);
 	      
@@ -1010,14 +1010,14 @@ void HNL_ObjectStudies::RunLeptonChannel(HNL_LeptonCore::Channel channel_ID, std
 	}
 	else{
 	  
-	  if(PassVBFInitial(VBFJetColl)&&RunSignalRegionWW(channel_ID, Inclusive, LepsT, LepsV, TauColl,  JetCollLoose, VBFJetColl, FatjetColl, BJetColl, Ev,  METv, param,  "", _weight )){
+	  if(PassVBFInitial(VBFJetColl)&&RunSignalRegionWW(true,channel_ID, Inclusive, LepsT, LepsV, TauColl,  JetCollLoose, VBFJetColl, FatjetColl, BJetColl, Ev,  METv, param,  "", _weight )){
 	    FillCutflow(Region1,_weight, "SS"+GetChannelString(channel_ID)+"_SR2",param);
 	    
 	    
 	  }
 	  else{
 	    
-	    if(RunSignalRegionAK4(channel_ID, Inclusive, LepsT, LepsV ,TauColl, JetColl, FatjetColl, BJetColl, Ev, METv, param, "", _weight ))             FillCutflow(Region1,_weight, "SS"+GetChannelString(channel_ID)+"_SR3",param);
+	    if(RunSignalRegionAK4(true,channel_ID, Inclusive, LepsT, LepsV ,TauColl, JetColl, FatjetColl, BJetColl, Ev, METv, param, "", _weight ))             FillCutflow(Region1,_weight, "SS"+GetChannelString(channel_ID)+"_SR3",param);
 	    
 	    
 	    else if(JetColl.size() < 2 && LepsT[1]->Pt() >80.)             FillCutflow(Region1,_weight, "SS"+GetChannelString(channel_ID)+"_SR4",param);

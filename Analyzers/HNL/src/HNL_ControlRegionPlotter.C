@@ -16,7 +16,7 @@ void HNL_ControlRegionPlotter::executeEvent(){
 
   vector<TString> LepIDs = {"HNL_ULID","HNTightV2"};//,"TopHN"};//, "DefaultPOGTight"};
 
-  vector<HNL_LeptonCore::Channel> ChannelsToRun = {EE, MuMu};//,EMu,MuE};
+  vector<HNL_LeptonCore::Channel> ChannelsToRun = {EE,MuMu,EMu,MuE};
 
   for (auto id: LepIDs){
     for(auto channel : ChannelsToRun){
@@ -148,7 +148,7 @@ void HNL_ControlRegionPlotter::RunControlRegions(AnalyzerParameter param, vector
   
   // HL ID                                                                                                                                                   
   std::vector<Electron>   ElectronVetoColl = GetElectrons(param.Electron_Veto_ID, 10.,  2.5);
-  std::vector<Muon>       MuonVetoColl     = GetMuons    (param.Muon_Veto_ID,     10.,  2.4);
+  std::vector<Muon>       MuonVetoColl     = GetMuons    (param.Muon_Veto_ID,     5.,  2.4);
 
   /// IF ruunning fake then use FR_ID not Tight
   TString Electron_ID = SetLeptonID("Electron",param);

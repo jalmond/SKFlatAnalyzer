@@ -40,7 +40,7 @@ myWPs = ["HNL_ULID","HNTightV2"]
 myWPs = ["NewOpt_HNL_ULID","NewOpt_HNTightV2"]
 myWPs = ["231227_KCMS_WS_HNL_ULID","231227_KCMS_WS_HNTightV2"]
 
-doCombine = False
+doCombine = False #True --> merge all era's datacards into a single Run2 datacard. Run False first.
 
 lines_orig = lines[:]
 

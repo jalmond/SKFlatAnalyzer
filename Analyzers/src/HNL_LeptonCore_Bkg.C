@@ -271,36 +271,56 @@ double HNL_LeptonCore::GetCFSF(AnalyzerParameter param, std::vector<Lepton* > le
   for(auto i : leps) {
     if(i->IsBB()) {
       if(DataEra=="2016preVFP"){
-	if(param.Electron_Tight_ID == "HNL_ULID_2016") _SF*= 0.81;
+        if(param.Electron_Tight_ID == "POGTight")      _SF*= 0.884205 ;
+        if(param.Electron_Tight_ID == "HNTightV2")     _SF*= 0.655483 ;
+        if(param.Electron_Tight_ID == "HNL_ULID_2017") _SF*= 1.27854 ;
+        if(param.Electron_Tight_ID == "TopHNSST")      _SF*= 0.80 ;
       }
       else  if(DataEra=="2016postVFP"){
-        if(param.Electron_Tight_ID == "HNL_ULID_2016") _SF*= 0.78;
+	if(param.Electron_Tight_ID == "POGTight")      _SF*= 0.859094 ;
+	if(param.Electron_Tight_ID == "HNTightV2")     _SF*= 0.742084 ;
+	if(param.Electron_Tight_ID == "HNL_ULID_2017") _SF*= 1.34035 ;
+	if(param.Electron_Tight_ID == "TopHNSST")      _SF*= 0.79 ;
       }
       else if(GetYearString() == "2017"){
-        if(param.Electron_Tight_ID == "POGTight") _SF*= 1.217 ;
-        if(param.Electron_Tight_ID == "HNTightV2") _SF*=1.030 ;
-        if(param.Electron_Tight_ID == "HNL_ULID_2017") _SF*= 1.119;
-        if(param.Electron_Tight_ID == "TopHNSST") _SF*=1.162 ;
+        if(param.Electron_Tight_ID == "POGTight")       _SF*= 1.208 ;
+        if(param.Electron_Tight_ID == "HNTightV2")      _SF*= 1.026 ;
+        if(param.Electron_Tight_ID == "HNL_ULID_2017")  _SF*= 1.110;
+        if(param.Electron_Tight_ID == "TopHNSST")       _SF*= 1.162 ;
       }
       else{
-	if(param.Electron_Tight_ID == "HNL_ULID_2018") _SF*= 1.22;
+        if(param.Electron_Tight_ID == "POGTight")      _SF*=  1.34367;
+        if(param.Electron_Tight_ID == "HNTightV2")     _SF*=  1.18759;
+        if(param.Electron_Tight_ID == "HNL_ULID_2017") _SF*=  0.754886;
+        if(param.Electron_Tight_ID == "TopHNSST")      _SF*=  1.47;
       } 
     }
     else{
       if(DataEra=="2016preVFP"){
-        if(param.Electron_Tight_ID == "HNL_ULID_2016") _SF*= 0.78;
+	if(param.Electron_Tight_ID == "POGTight")      _SF*= 0.771518 ;
+        if(param.Electron_Tight_ID == "HNTightV2")     _SF*=0.659254  ;
+        if(param.Electron_Tight_ID == "HNL_ULID_2017") _SF*= 1.23574 ;
+        if(param.Electron_Tight_ID == "TopHNSST")      _SF*= 0.78 ;
       }
       else  if(DataEra=="2016postVFP"){
-        if(param.Electron_Tight_ID == "HNL_ULID_2016") _SF*= 0.83;
+        if(param.Electron_Tight_ID == "POGTight")      _SF*= 0.76695 ;
+        if(param.Electron_Tight_ID == "HNTightV2")     _SF*= 0.683188 ;
+        if(param.Electron_Tight_ID == "HNL_ULID_2017") _SF*= 1.10426 ;
+        if(param.Electron_Tight_ID == "TopHNSST")      _SF*= 0.83 ;
+
       }
       else if(GetYearString() == "2017"){
         if(param.Electron_Tight_ID == "POGTight")     _SF*= 1.026;
         if(param.Electron_Tight_ID == "HNTightV2")    _SF*= 1.060;
         if(param.Electron_Tight_ID == "HNL_ULID_2017") _SF*= 1.111 ;
-        if(param.Electron_Tight_ID == "TopHNSST") _SF*= 1.052;
+        if(param.Electron_Tight_ID == "TopHNSST") _SF*= 1.31;
       }
       else{
-	if(param.Electron_Tight_ID == "HNL_ULID_2018") _SF*= 1.14;
+        if(param.Electron_Tight_ID == "POGTight")      _SF*= 1.06369 ;
+        if(param.Electron_Tight_ID == "HNTightV2")     _SF*= 1.12502 ;
+        if(param.Electron_Tight_ID == "HNL_ULID_2017") _SF*= 0.78659 ;
+        if(param.Electron_Tight_ID == "TopHNSST")      _SF*= 1.28;
+
       } 
     }
   }

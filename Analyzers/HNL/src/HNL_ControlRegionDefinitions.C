@@ -4,6 +4,8 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
   
   vector<HNL_LeptonCore::Channel> channels = {GetChannelENum(param.Channel)};
  
+  vector<Tau> TauColl;
+
   if(GetChannelENum(param.Channel) == HNL_LeptonCore::NONE){
     cout << "CHANNEL NOT SET" << endl;
     exit(EXIT_FAILURE);
@@ -26,7 +28,6 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
     HNL_LeptonCore::SearchRegion CutFlow_Region = ControlRegion;
 
     TString channel_string = GetChannelString(dilep_channel);
-    param.Channel    =  channel_string;
     param.CutFlowDir = "CutFlow";
     
     param.Name = channel_string + "/" + param.Name ;
@@ -178,7 +179,7 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
       }      
       return;
     }
-    
+
 
     vector<TString> passed;
     if(HasFlag("OS_VR")){
@@ -255,6 +256,58 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
       if(FillHighMass1JetCRPlots(dilep_channel, LepsT, LepsV, JetColl,    AK8_JetColl, B_JetColl, ev, METv, param, weight_channel)) passed.push_back("HighMass1Jet_CR");
       if(FillHighMassBJetCRPlots(dilep_channel, LepsT, LepsV, JetColl,    AK8_JetColl, B_JetColl, ev, METv, param, weight_channel)) passed.push_back("HighMassBJet_CR");
       if(FillHighMassNPCRPlots(dilep_channel, LepsT, LepsV, JetColl,      AK8_JetColl, B_JetColl, ev, METv, param, weight_channel)) passed.push_back("HighMassNP_CR");
+
+      /// ADD CR FOR LIMIT INOUT                                                                                                  
+      bool FillCRForHC(true);
+      if(FillCRForHC){
+	HNL_LeptonCore::SearchRegion LimitRegions = HNL_LeptonCore::MuonCR;
+	if (dilep_channel == EE)  LimitRegions =HNL_LeptonCore::ElectronCR;
+	if (dilep_channel == EMu) LimitRegions =HNL_LeptonCore::ElectronMuonCR;
+	if (dilep_channel == MuE) LimitRegions =HNL_LeptonCore::ElectronMuonCR;
+
+	HNL_LeptonCore::SearchRegion LimitRegionsBDT = HNL_LeptonCore::MuonCRBDT;
+	if (dilep_channel == EE) LimitRegionsBDT =HNL_LeptonCore::ElectronCRBDT;
+	if (dilep_channel == EMu) LimitRegionsBDT =HNL_LeptonCore::ElectronMuonCRBDT;
+	if (dilep_channel == MuE) LimitRegionsBDT =HNL_LeptonCore::ElectronMuonCRBDT;
+
+	if(PassPreselection(dilep_channel,Inclusive, LepsT, LepsV, TauColl, JetColl, VBF_JetColl, AK8_JetColl, B_JetColl,ev, METv ,param,"", weight_channel)){
+	  if(AK8_JetColl.size() > 0) {
+	    
+	    TString CRbin= RunSignalRegionAK8String (false,dilep_channel,Inclusive, LepsT, LepsV, TauColl, JetColl, AK8_JetColl,B_JetColl,ev, METv ,param,"", weight_channel) ;
+	    
+	    if(CRbin != "false") FillLimitInput(LimitRegions, weight_channel,   CRbin,  "LimitInput/"+param.Name);
+	    
+	    for(unsigned int im=0; im<MNStrList.size(); im++){
+	      if(CRbin != "false") FillLimitInput(LimitRegionsBDT, weight_channel, CRbin,"LimitInputBDT/"+param.Name+"/M"+MNStrList[im]);
+	    }
+	    
+	  }
+	  else{
+	    TString CRbin = RunSignalRegionWWString(false, dilep_channel,Inclusive, LepsT, LepsV,  TauColl, JetAllColl, VBF_JetColl,  AK8_JetColl, B_JetColl,ev, METv, param,  "", weight_channel);
+
+
+	    if(CRbin != "false"){
+	      FillLimitInput(LimitRegions, weight_channel, CRbin,"LimitInput/"+param.Name);
+
+	      for(unsigned int im=0; im<MNStrList.size(); im++){
+		if(CRbin != "false") FillLimitInput(LimitRegionsBDT, weight_channel, CRbin,"LimitInputBDT/"+param.Name+"/M"+MNStrList[im]);
+	      }
+
+	    }
+	    else{
+
+	      for(auto imapHP :FinalBDTHyperParamMap){
+		TString CRBDT = RunSignalRegionAK4StringBDT(false,imapHP.first , imapHP.second.first, imapHP.second.second, dilep_channel,Inclusive, LepsT, JetColl,  B_JetColl, ev, METv ,param,"", weight_channel);
+		if(CRBDT != "false") FillLimitInput(LimitRegionsBDT, weight_channel, CRBDT,"LimitInputBDT/"+param.Name+"/M"+imapHP.first);
+	      }
+
+	      CRbin  = RunSignalRegionAK4String (false,dilep_channel,Inclusive, LepsT, LepsV, TauColl, JetColl, AK8_JetColl, B_JetColl, ev, METv ,param,"", weight_channel);
+	      if(CRbin != "false") FillLimitInput(LimitRegions, weight_channel, CRbin,"LimitInput/"+param.Name);
+
+	    }
+	  }
+	}
+      }
     }
         
     TString ControlLabel = "";
