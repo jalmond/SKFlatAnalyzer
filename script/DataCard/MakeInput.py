@@ -33,7 +33,7 @@ SignalSkim = "_SkimTree_HNMultiLepBDT_"
 # This will do necessary hadd for you.
 MergeData   = False
 MergeFake   = True  # RunFake
-MergeCF     = False  # RunCF
+MergeCF     = True  # RunCF
 MergeConv   = True  # RunConv
 MergeMC     = True  # RunPrompt
 MergeSignal = True
