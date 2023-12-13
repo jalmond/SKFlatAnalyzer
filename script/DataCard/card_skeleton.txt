@@ -12,12 +12,12 @@ observation -1
 # the second 'process' line must have a positive number for backgrounds, and 0 for signal
 # then we list the independent sources of uncertainties, and give their effect (syst. error)
 # on each process and bin
-bin           bin1    bin1  bin1  bin1         bin1  
-process       prompt  fake  cf    signalDYVBF  signalSSWW
-process       1       2     3     -1           0
-rate          -1      -1    -1    -1           -1
-Lumi     lnN  1.05    1.05  1.05  1.05  1.05
-Fake     lnN  -       1.3   -     -     -
-BkgNorm  lnN  1.2     -     -     -     -
-CF       lnN  -       -     1.2   -     -
+bin           bin1    bin1  bin1  bin1  bin1         bin1  
+process       prompt  fake  cf    conv  signalDYVBF  signalSSWW
+process       1       2     3     4     -1           0
+rate          -1      -1    -1    -1    -1           -1
+Lumi     lnN  1.05    1.05  1.05  1.05  1.05  1.05
+Fake     lnN  -       1.3   -     -     -     -
+BkgNorm  lnN  1.2     -     -     1.2   -     -
+CF       lnN  -       -     1.2   -     -     -
 * autoMCStats 0 0 1
