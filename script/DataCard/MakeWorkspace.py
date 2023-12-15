@@ -26,4 +26,7 @@ for year in years:
     for mass in masses:
       card = "card_"+year+"_"+channel+"_"+mass+".txt"
       card_name = card.replace(".txt","")
-      print cmd.getoutput("text2workspace.py -P HiggsAnalysis.CombinedLimit.MyModel:myModel "+card+" -o "+card_name+".root")
+      log = cmd.getoutput("text2workspace.py -P HiggsAnalysis.CombinedLimit.MyModel:myModel "+card+" -o "+card_name+".root")
+      print log
+      with open(card_name+".log",'w') as f:
+        f.write(log)
