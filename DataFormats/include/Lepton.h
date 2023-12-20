@@ -55,10 +55,12 @@ public:
   inline TString LepGenTypeString() const {
     //// return TString based on Gen type
     if(j_LeptonIsCF) {
+      if(j_LeptonIsPromptConv)  return "IsPromptConvCF";
       if((j_LeptonType==1 || j_LeptonType==2))         return "IsPromptCF";
       else if ((j_LeptonType>=4 || j_LeptonType<-4 ))  return "IsConvCF";
       else return "IsFakeCF";
     }
+    if(j_LeptonIsPromptConv) return "IsPromptConv";
     if((j_LeptonType==1 || j_LeptonType==2))  return "IsPrompt";
     if( (j_LeptonType<0 && j_LeptonType>=-4)) return "IsFake";
     if(j_LeptonType==3) return "IsEWtau";
@@ -73,6 +75,7 @@ public:
       if(j_lep_jetflavour == 4) return "FakeHF_C";
       if(j_lep_jetflavour == 0) return "FakeLF";
     }
+    if(j_LeptonIsPromptConv) return "Conv";
     if(j_LeptonIsCF) return "CF";
     if(j_LeptonType==1) return "Prompt";
     if( j_LeptonType==2) return "Signal";
@@ -103,10 +106,13 @@ public:
 
   inline bool IsConv() const {
     if((j_LeptonType>=4 || j_LeptonType<-4 )) return true;
+    if(j_LeptonIsPromptConv) return true;
     else return false;
   }
 
   inline bool LeptonIsCF() const {return j_LeptonIsCF;}
+  inline bool LeptonIsPromptConv() const {return j_LeptonIsPromptConv;}
+
 
 
   enum Flavour{
@@ -653,6 +659,7 @@ public:
   void SetLeptonType(int t);
 
   void SetLeptonIsCF(bool t);
+  void SetLeptonIsPromptConv(bool t);
 
   inline Flavour LeptonFlavour() const {return j_LeptonFlavour;}
   void SetLeptonFlavour(Flavour f);
@@ -799,6 +806,7 @@ private:
 
   int j_LeptonType;
   bool j_LeptonIsCF;
+  bool j_LeptonIsPromptConv;
 
   bool j_passID;  
   bool j_IDSet;

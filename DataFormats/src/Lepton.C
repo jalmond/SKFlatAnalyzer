@@ -57,6 +57,7 @@ Lepton::Lepton() : Particle() {
   j_lep_mva=-999;
   j_LeptonType = -999;
   j_LeptonIsCF = false;
+  j_LeptonIsPromptConv = false;
   j_passID = false;
   j_IDSet= false;
   j_TIDName="";
@@ -357,16 +358,8 @@ void Lepton::SetLeptonType(int t){
 void Lepton::SetLeptonIsCF(bool t){
   j_LeptonIsCF= t;
 }
-
-TString Lepton::CutString(double cut){ //JH
-  TString cut_str = (cut == 0.) ? "0" : Form("%.1f",cut);
-  cut_str.ReplaceAll(".","p");
-  return cut_str;
-}
-
-void Lepton::SetFakeFlavour(double cut){ //JH
-  if(this->HNL_MVA_Fake("QCD_LFvsHF_v5") > cut) j_FakeFlavour = "LF_cut"+CutString(cut);
-  else j_FakeFlavour = "HF_cut"+CutString(cut);
+void Lepton::SetLeptonIsPromptConv(bool t){
+  j_LeptonIsPromptConv= t;
 }
 
 void Lepton::SetID(){

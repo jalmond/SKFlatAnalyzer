@@ -8,6 +8,9 @@ bool HNL_LeptonCore::PassGenMatchFilter(vector<Lepton *> leps, AnalyzerParameter
   /// If user used Data driven method for Fake/CF then function returns for Fake/F bkf true for data and false for MC
   /// If user used Data driven method for Fake/CF then for Conv function requires at least one conv lepton is present
   
+  bool DEBUG = false;
+  if(DEBUG) cout << "RunFake = " << RunFake << " RunCF = " << RunCF << " RunConv = " << RunConv << endl;
+  if(DEBUG) cout << "param.FakeMethod = " << param.FakeMethod << " param.CFMethod = " << param.CFMethod << " param.ConvMethod " << param.ConvMethod << endl;
   if(IsData) return true;
   if(RunFake && param.FakeMethod != "MC") return false;
   if(RunCF   && param.CFMethod   != "MC") return false;
@@ -23,12 +26,12 @@ bool HNL_LeptonCore::PassGenMatchFilter(vector<Lepton *> leps, AnalyzerParameter
   unsigned int nPrompt(0);
   for(auto ilep: leps){
     //int LepType= GetLeptonType_JH(*ilep, gens);                                  
-    if( ilep->IsConv())     nConv++;
-    if( ilep->LeptonIsCF()) nCF++;
-    if( ilep->IsFake())     nFake++;
-    if( ilep->IsPrompt())   nPrompt++;
+    if( ilep->IsConv())     nConv++; /// Add Prompt Conv to IsConv Fnct
+    else if( ilep->LeptonIsCF()) nCF++;
+    else if( ilep->IsFake())     nFake++;
+    else if( ilep->IsPrompt())   nPrompt++;
   }
-
+  if(DEBUG) cout << "nConv = " << nConv << " nCF = " << nCF << " nFake = " << nFake << " nPrompt = " << nPrompt << endl;
   if(RunPrompt && (nPrompt == leps.size())) return true;
   if(RunPrompt && (nPrompt != leps.size())) return false;
 

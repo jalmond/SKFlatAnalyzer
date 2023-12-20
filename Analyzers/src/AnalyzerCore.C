@@ -542,7 +542,7 @@ std::vector<Electron> AnalyzerCore::GetAllElectrons(){
     else {
       if(fChain->GetBranch("electron_lepton_type")) el.SetLeptonType(electron_lepton_type->at(i));
     }
-
+    el.SetLeptonIsPromptConv(HasPromptConv(el));
     el.SetLeptonIsCF(IsCF(el, All_Gens,true) );                                                                                                               
 
     out.push_back(el);

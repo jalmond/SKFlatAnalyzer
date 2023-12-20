@@ -338,6 +338,7 @@ bool AnalyzerCore::HasPromptConv(Electron el){
   int nSt1el(0);
   for(unsigned int i=2; i < All_Gens.size(); i++){
     if(TruthIdx == int(i)) continue;
+    if(TruthIdx < 0) continue;
     if(fabs(All_Gens.at(TruthIdx).Eta()-All_Gens.at(i).Eta())>0.1) continue;
     if(All_Gens.at(TruthIdx).DeltaPhi(All_Gens.at(i))>0.3) continue;
     if(All_Gens[TruthIdx].MotherIndex() == All_Gens[i].MotherIndex()){

@@ -19,7 +19,9 @@ if [[ $1 == "TEST" ]]; then
 
     for i in "${era_list[@]}"
     do
-        SKFlat.py -a $analyzer  -l $datapath/${i}_DiLepton_MuMu.txt  -n ${njobs_data}  --nmax ${nmax}   -e ${i}  --skim SkimTree_HNMultiLepBDT --userflags RunFake,SS_CR  &
+        #SKFlat.py -a $analyzer  -i WGToLNuG  -n 20  --nmax ${nmax}   -e ${i}  --skim SkimTree_HNMultiLepBDT --userflags RunConv,LLL_VR  &
+        SKFlat.py -a $analyzer  -l $datapath/${i}_DiLepton.txt      -n 100    --nmax ${nmax}   -e ${i}  --skim SkimTree_DileptonBDT  --userflags LLL_VR  &
+
     done
 fi
 

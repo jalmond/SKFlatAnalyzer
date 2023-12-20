@@ -65,7 +65,10 @@ class HNL_LeptonCore : public AnalyzerCore {
     SR,    sigmm,    sigee,    sigem,
     sigmm_17028,    sigee_17028,    sigem_17028,
     ControlRegion,
-    ChannelDepCR1,    ChannelDepCR2,    ChannelDepCR3, CR };
+    WGCR,    ZGCR, WZCR, ZZCR, WZBCR,WZCR2,ZZCR2,HMCR1,HMCR2,HMCR3,HMBDTCR3,HMNPCR,HMBCR,HM1JCR,PreselVBF,
+    WWNP1CR, WWNP2CR, WWNP3CR, WWCR1,WWCR2,ZAK8CR,ZCR,ZNPElCR,ZNPMuCR,TopCR,TopNPCR,TopAK8NPCR,TopNPCR2,
+    ChannelDepCR1,    ChannelDepCR2,    ChannelDepCR3, CR 
+  };
 
   enum LeptonType
   {

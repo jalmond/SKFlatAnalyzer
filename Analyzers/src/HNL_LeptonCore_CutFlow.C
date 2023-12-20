@@ -57,7 +57,7 @@ void HNL_LeptonCore::FillLimitInput(HNL_LeptonCore::SearchRegion sr, double even
   TString histname = GetCutFlowNameFromRegion(sr);
 
   FillCutflowDef(hist_path,   histname, event_weight,lables, label);
-  FillCutflowDef(hist_path,   histname+"_unweighted", 1,lables, label);
+  //FillCutflowDef(hist_path,   histname+"_unweighted", 1,lables, label);
 
 }
 void HNL_LeptonCore::FillCutflow(HNL_LeptonCore::SearchRegion sr, double event_weight, TString label,  TString hist_path){
@@ -66,7 +66,7 @@ void HNL_LeptonCore::FillCutflow(HNL_LeptonCore::SearchRegion sr, double event_w
   TString histname = GetCutFlowNameFromRegion(sr);
 
   FillCutflowDef(hist_path,   histname, event_weight,lables, label);
-  FillCutflowDef(hist_path,   histname+"_unweighted", 1,lables, label);
+  //FillCutflowDef(hist_path,   histname+"_unweighted", 1,lables, label);
 
 }
 
@@ -134,6 +134,39 @@ void HNL_LeptonCore::FillCutFlow(bool IsCentral, TString suffix, TString histnam
 TString HNL_LeptonCore::GetCutFlowNameFromRegion(HNL_LeptonCore::SearchRegion sr){
   
   TString EVHistName = "";
+  if(sr==WZCR)   EVHistName= "WZCR";
+  if(sr==WZBCR)   EVHistName= "WZBCR";
+  if(sr==ZZCR)   EVHistName= "ZZCR";
+  if(sr==ZZCR2)  EVHistName= "ZZCR2";
+  if(sr==WGCR)   EVHistName= "WGCR";
+  if(sr==ZGCR)   EVHistName= "ZGCR";
+  if(sr==WZBCR)   EVHistName= "WZBCR";
+  if(sr==WZCR2)   EVHistName= "WZCR2";
+  if(sr==HMCR1)   EVHistName= "HMCR1";
+  if(sr==HMCR2)   EVHistName= "HMCR2";
+  if(sr==HMCR3)   EVHistName= "HMCR3";
+  if(sr==HMNPCR)   EVHistName= "HMNPCR";
+  if(sr==HMBCR)   EVHistName= "HMBCR";
+  if(sr==HM1JCR)   EVHistName= "HM1JCR";
+  if(sr==PreselVBF)   EVHistName= "PreselVBF";
+  if(sr==Presel)   EVHistName= "Presel";
+  if(sr==WWNP1CR)   EVHistName= "WWNP1CR";
+  if(sr==WWNP2CR)   EVHistName= "WWNP2CR";
+  if(sr==WWNP3CR)   EVHistName= "WWNP3CR";
+  if(sr==WWCR1)   EVHistName= "WWCR1";
+  if(sr==WWCR2)   EVHistName= "WWCR2";
+  if(sr==ZAK8CR)   EVHistName= "ZAK8CR";
+  if(sr==ZCR)   EVHistName= "ZCR";
+  if(sr==ZNPElCR)   EVHistName= "ZNPElCR";
+  if(sr==ZNPMuCR)   EVHistName= "ZNPMuCR";
+  if(sr==TopCR)   EVHistName= "TopCR";
+  if(sr==TopNPCR)   EVHistName= "TopNPCR";
+  if(sr==TopAK8NPCR)   EVHistName= "TopAK8NPCR";
+  if(sr==TopNPCR2)   EVHistName= "TopNPCR2";
+
+
+  /////
+
   if(sr==SR1)    EVHistName= "Cutflow_SR1";
   if(sr==SR2)    EVHistName= "Cutflow_SR2";
   if(sr==SR3Fail)EVHistName= "Cutflow_SR3Fail";
@@ -179,6 +212,47 @@ TString HNL_LeptonCore::GetCutFlowNameFromRegion(HNL_LeptonCore::SearchRegion sr
 vector<TString>  HNL_LeptonCore::GetLabelsFromRegion(HNL_LeptonCore::SearchRegion sr){
   
   vector<TString> labels;
+  
+  int nstep(0);
+  if(sr==WGCR)  nstep = 10;
+  if(sr==ZGCR)  nstep = 10;
+  if(sr==WZCR)  nstep = 11;
+  if(sr==ZZCR)  nstep = 5;
+  if(sr==ZZCR2)  nstep = 8;
+  if(sr==WZBCR)   nstep = 10; 
+  if(sr==ZZCR)   nstep = 10;
+  if(sr==ZZCR2)  nstep = 10;
+  if(sr==WGCR)   nstep = 10;
+  if(sr==ZGCR)   nstep = 10;
+  if(sr==WZBCR)   nstep = 10;
+  if(sr==WZCR2)   nstep = 10;
+  if(sr==HMCR1)   nstep = 10;
+  if(sr==HMCR2)   nstep = 10;
+  if(sr==HMCR3)   nstep = 10;
+  if(sr==HMNPCR)   nstep = 10;
+  if(sr==HMBCR)   nstep = 10;
+  if(sr==HM1JCR)   nstep = 10;
+  if(sr==PreselVBF)   nstep = 10;
+  if(sr==Presel)   nstep = 10; 
+  if(sr==WWNP1CR)   nstep = 10; 
+  if(sr==WWNP2CR)   nstep = 10; 
+  if(sr==WWNP3CR)   nstep = 10; 
+  if(sr==WWCR1)   nstep = 10; 
+  if(sr==WWCR2)   nstep = 10;
+  if(sr==ZAK8CR)   nstep = 10;
+  if(sr==ZCR)   nstep = 10; 
+  if(sr==ZNPElCR)   nstep = 10; 
+  if(sr==ZNPMuCR)   nstep = 10;
+  if(sr==TopNPCR)   nstep = 10; 
+  if(sr==TopCR)   nstep = 10; 
+  if(sr==TopAK8NPCR)   nstep = 10; 
+  if(sr==TopNPCR2)   nstep = 10;
+
+  if(nstep > 0) {
+    for(int i=0; i < nstep; i++) labels.push_back("Step"+to_string(i));
+    return labels;
+  }
+  
   
   if(sr==SR1 )   labels = {  "SR1_Init","SR1_lep_charge","SR1_lep_pt","SR1_dilep_mass" , "SR1_tauveto","SR1_1AK8" ,"SR1_MET" ,"SR1_Wmass","SR1_bveto","SR1_Lep2Pt","SR1_PNTagger","SR1_LepPt","SR1_DphiN_Wlep","SR1_TauVeto","SR1_HTPt","SR1_masscuts" };
   if(sr==CR1 )   labels = {  "CR1_Init","CR1_lep_charge","CR1_lep_pt","CR1_dilep_mass" , "CR1_tauveto","CR1_1AK8" ,"CR1_MET" ,"CR1_Wmass","CR1_bveto","CR1_Lep2Pt","CR1_PNTagger","CR1_LepPt","CR1_DphiN_Wlep","CR1_TauVeto","CR1_HTPt","CR1_masscuts" };

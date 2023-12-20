@@ -1448,6 +1448,7 @@ double  HNL_LeptonCore::GetRecoObjMass(TString METHOD , std::vector<Jet> jets, s
 
 vector<Muon> HNL_LeptonCore::GetLepCollByRunType(const std::vector<Muon>& MuColl, AnalyzerParameter& param,TString Option){
 
+  if(MCSample.Contains("Sherpa")) return MuColl;
 
   /// Empty Option means  param is used to configure
   if(Option == ""){
@@ -1464,9 +1465,10 @@ vector<Muon> HNL_LeptonCore::GetLepCollByRunType(const std::vector<Muon>& MuColl
 
   if(Option.Contains("HFake"))           GetHadFake   =true;
   if(Option.Contains("NHConv"))         {GetNHIntConv =true; GetNHExtConv=true;}
-  else{ if(Option.Contains("NHIntConv")) GetNHIntConv =true;
-    if(Option.Contains("NHExtConv")) GetNHExtConv =true; }
-
+  else{ 
+    if(Option.Contains("NHIntConv")) GetNHIntConv =true;
+    if(Option.Contains("NHExtConv")) GetNHExtConv =true;
+  }
   if(     Option=="Fake"     )          {GetHadFake   =true; GetNHExtConv=true;}
 
 
@@ -1485,10 +1487,11 @@ vector<Muon> HNL_LeptonCore::GetLepCollByRunType(const std::vector<Muon>& MuColl
     else {
       int LepType= MuColl.at(i).LeptonGenType();
       bool PassSel=false;
-      if( LepType > 0 && LepType < 4) PassSel=true;
-      if( GetHadFake    && (LepType<0 && LepType>=-4) ) PassSel=true;
-      if( GetNHIntConv &&         LepType>=4         ) PassSel=true;
-      if( GetNHExtConv &&         LepType<-4         ) PassSel=true;
+
+      if( LepType > 0  && LepType < 4) PassSel=true;
+      if( GetHadFake   && (LepType<0 && LepType>=-4) ) PassSel=true;
+      if( GetNHIntConv && LepType>=4 ) PassSel=true;
+      if( GetNHExtConv && LepType<-4 ) PassSel=true;
       if( PassSel ) ReturnVec.push_back(MuColl.at(i));
     }
   }
@@ -1549,26 +1552,27 @@ vector<Muon> HNL_LeptonCore::GetSignalLeptons(const std::vector<Muon>& MuColl, v
 
 vector<Electron> HNL_LeptonCore::GetLepCollByRunType(const vector<Electron>& ElColl, AnalyzerParameter& param, TString Option){
 
+  if(MCSample.Contains("Sherpa")) return ElColl;
 
   if(Option == ""){
     if(param.FakeMethod == "MC") Option+="HFake";
     if(param.ConvMethod == "MC") Option+="NHConv";
-    if(param.CFMethod == "MC")   Option+="CF";
+    if(param.CFMethod   == "MC") Option+="CF";
   }
 
 
   //cout << "AnalyzerCore::GetLepCollByRunType Electron  Option = " << Option << endl;                                                                                                                                                                                                                     
   bool GetHadFake=false,  GetNHIntConv=false, GetNHExtConv=false, GetCF=false;
 
-  if(Option.Contains("HFake"))           GetHadFake   =true;
-  if(Option.Contains("CF"))              GetCF   =true;
-  if(Option.Contains("NHConv"))         {GetNHIntConv =true; GetNHExtConv=true;}
-  else{ if(Option.Contains("NHIntConv")) GetNHIntConv =true;
-    if(Option.Contains("NHExtConv")) GetNHExtConv =true; }
-
-  if(     Option=="Fake"     )          {GetHadFake   =true; GetNHExtConv=true;}
-
-
+  if(Option.Contains("HFake"))           GetHadFake   = true;
+  if(Option.Contains("CF"))              GetCF        = true;
+  if(Option.Contains("NHConv"))         {GetNHIntConv = true; GetNHExtConv=true;}
+  else{
+    if(Option.Contains("NHIntConv"))   GetNHIntConv = true;
+    if(Option.Contains("NHExtConv"))   GetNHExtConv = true; 
+  }
+  if(Option=="Fake")                   {GetHadFake  = true; GetNHExtConv=true;}
+  
   if(IsData)  return ElColl;
   if(MCSample.Contains("Type")) return ElColl;
 
@@ -1579,12 +1583,13 @@ vector<Electron> HNL_LeptonCore::GetLepCollByRunType(const vector<Electron>& ElC
       int LepType= ElColl.at(i).LeptonGenType();
 
       bool PassSel=false;
-      if( LepType > 0 && LepType < 4) PassSel=true;
-      if( GetHadFake    && (LepType<0 && LepType>=-4) ) PassSel=true;
-      if( GetNHIntConv &&         LepType>=4         ) PassSel=true;
-      if( GetNHExtConv &&         LepType<-4         ) PassSel=true;
-      if( GetCF   && ElColl.at(i).LeptonIsCF() ) PassSel=true;
-      if( !GetCF && ElColl.at(i).LeptonIsCF() ) PassSel=false;
+      if( LepType > 0   && LepType < 4 )                PassSel=true;
+
+      if( GetCF         && ElColl.at(i).LeptonIsCF() )  PassSel=true;
+      //if( !GetCF        && ElColl.at(i).LeptonIsCF() )  PassSel=false;
+      if( GetHadFake    && (LepType<0 && LepType>=-4))  PassSel=true;
+      if( GetNHIntConv  && (LepType>=4 || ElColl.at(i).LeptonIsPromptConv()) ) PassSel=true;
+      if( GetNHExtConv  && (LepType<-4 || ElColl.at(i).LeptonIsPromptConv()) ) PassSel=true;
       if( PassSel ) ReturnVec.push_back(ElColl.at(i));
     }
   }
