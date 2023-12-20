@@ -16,7 +16,8 @@ else:
 
 #print lines
 
-input_path = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegionPlotter/LimitInputs/"
+#input_path = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegionPlotter/LimitInputs/"
+input_path = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegionPlotter_BeforeCRinput/LimitInputs/"
 eras = ["2016","2017","2018"]
 eras = ["2017"]
 #eras = ["2016preVFP","2016postVFP","2018"]
@@ -26,7 +27,7 @@ masses = ["M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1
 masses = ["M5000","M7500","M10000","M15000","M20000"]
 masses = ["M90","M100","M200","M300","M400","M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M10000","M15000","M20000"]
 #masses = ["M100","M200","M300","M400","M500"]
-masses = ["M500"]
+masses = ["M100","M200","M500"]
 
 myWPs = ["Workshop", "InputForCombine"]
 myWPs = ["InputForCombine"]

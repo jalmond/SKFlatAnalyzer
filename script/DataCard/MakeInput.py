@@ -12,13 +12,14 @@ masses = ["M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1
 masses = ["M5000","M7500","M10000","M15000","M20000"]
 masses = ["M90","M100","M150","M200","M300","M400","M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M10000","M15000","M20000"]
 #masses = ["M100","M200","M300","M400","M500"]
-masses = ["M500"]
+masses = ["M100","M200","M500"]
 channels = ["MuMu","EE","EMu"]
 #channels = ["MuMu","EE"]
 tags = ["HNL_ULID","HNTightV2"] # HNLParameter Name
 outputTag = "231227_KCMS_WS" # tag the output as you wish
 
-InputPath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegionPlotter/"
+#InputPath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegionPlotter/"
+InputPath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegionPlotter_BeforeCRinput/"
 Analyzer = "HNL_SignalRegionPlotter"
 
 # Skim
@@ -196,7 +197,7 @@ for tag in tags:
         f_signalSSWW  = TFile.Open(f_path_signalSSWW)
   
         scaler = 0.01 # Set the signal scaler
-        #if int(mass.replace("M","")) < 1000: scaler = 0.01
+        if int(mass.replace("M","")) <= 100: scaler = 0.001
         #else: scaler = 0.1
         try:
           h_signalDYVBF = f_signalDYVBF.Get(input_hist)
