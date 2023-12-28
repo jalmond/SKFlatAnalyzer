@@ -262,9 +262,9 @@ void HNL_SignalLeptonOpt::executeEvent(){
   ElectronsIDs.push_back("HNL_ULID_2018");
   
   
-  ev.SetMVA("EE",100, EvaluateEventMVA("100", "300","850", EE,  LepsVeto,ev, METv ,param_signal));
-  ev.SetMVA("EE",400, EvaluateEventMVA("400", "300","850", EE,  LepsVeto,ev, METv ,param_signal));
-  ev.SetMVA("EE",500, EvaluateEventMVA("500", "300","850", EE,  LepsVeto,ev, METv ,param_signal));
+  ev.SetMVA("EE",100, EvaluateEventMVA("100", "Incl", "300", "850", EE, LepsVeto, ev, METv, param_signal));
+  ev.SetMVA("EE",400, EvaluateEventMVA("400", "Incl", "300", "850", EE, LepsVeto, ev, METv, param_signal));
+  ev.SetMVA("EE",500, EvaluateEventMVA("500", "Incl", "300", "850", EE, LepsVeto, ev, METv, param_signal));
   
 
   if(_jentry%10000==0) cout << "ElectronsIDs size = " << ElectronsIDs.size() << endl;

@@ -550,24 +550,57 @@ TString HNL_RegionDefinitions::RunSignalRegionAK4StringBDT(bool ApplyForSR, TStr
 
   if(ApplyForSR)  FillCutflow(Reg, w, RegionTag+"_dilep_mass",param);
 
-  float MVAvalue = EvaluateEventMVA(mN, NCut,NTree, channel,  LepTColl,ev, METv,param);
+  //float MVAvalue = EvaluateEventMVA(mN, NCut,NTree, channel,  LepTColl,ev, METv,param);
   //cout << "Summary of BDT " << mN << endl;
   //cout << "Predetermined value = " << MVAvalue << " " <<  ev.HNL_MVA_Event(GetChannelString(channel)+"_"+mN) << endl;
-  
-  if(ApplyForSR)FillHist(param.Name+"/LimitShape_SR3BDT/SignalBins_M"+mN+"_NCut"+NCut+"_NTree"+NTree, MVAvalue, w, 40, -1., 1.);
+
+  float MVAvalueIncl    = EvaluateEventMVA(mN, "Incl", NCut, NTree, channel, LepTColl, ev, METv, param);
+  float MVAvalueFake    = EvaluateEventMVA(mN, "Fake", NCut, NTree, channel, LepTColl, ev, METv, param);
+  float MVAvalueNonFake = EvaluateEventMVA(mN, "NonFake", NCut, NTree, channel, LepTColl, ev, METv, param);
+
+  //if(ApplyForSR)FillHist(param.Name+"/LimitShape_SR3BDT/SignalBins_M"+mN+"_NCut"+NCut+"_NTree"+NTree, MVAvalue, w, 40, -1., 1.);
+  if(ApplyForSR){
+    FillHist(param.Name+"/LimitShape_SR3BDT/MVA1D_Incl_M"+mN+"_NTrees"+NTree+"_NCuts"+NCut+"_MaxDepth3", MVAvalueIncl, w, 80, -1., 1.);
+    FillHist(param.Name+"/LimitShape_SR3BDT/MVA2D_M"+mN+"_NTrees"+NTree+"_NCuts"+NCut+"_MaxDepth3", MVAvalueFake, MVAvalueNonFake, w, 80, -1., 1., 80, -1., 1.);
+  }
 
   std::vector<FatJet> FatJetColl;
 
   if(!PassRegionReq)  return "false";
-  
-  if(MVAvalue< 0.0)        return RegionTag+"_BDTbin1";
-  else if(MVAvalue< 0.10)  return RegionTag+"_BDTbin2";
-  else if(MVAvalue< 0.125) return RegionTag+"_BDTbin3";
-  else if(MVAvalue< 0.15)  return RegionTag+"_BDTbin4";
-  else if(MVAvalue< 0.175) return RegionTag+"_BDTbin5";
-  else if(MVAvalue< 0.2)   return RegionTag+"_BDTbin6";
-  else if(MVAvalue< 0.225) return RegionTag+"_BDTbin7";
-  else  return RegionTag+"_BDTbin8";
+
+  if(channel == MuMu){ 
+    if(MVAvalueIncl< -0.2)       return RegionTag+"_BDTbin1";
+    else if(MVAvalueIncl< 0.0)   return RegionTag+"_BDTbin2";
+    else if(MVAvalueIncl< 0.025) return RegionTag+"_BDTbin3";
+    else if(MVAvalueIncl< 0.05)  return RegionTag+"_BDTbin4";
+    else if(MVAvalueIncl< 0.075) return RegionTag+"_BDTbin5";
+    else if(MVAvalueIncl< 0.10)  return RegionTag+"_BDTbin6";
+    else if(MVAvalueIncl< 0.125) return RegionTag+"_BDTbin7";
+    else if(MVAvalueIncl< 0.15)  return RegionTag+"_BDTbin8";
+    else if(MVAvalueIncl< 0.175) return RegionTag+"_BDTbin9";
+    else if(MVAvalueIncl< 0.2)   return RegionTag+"_BDTbin10";
+    else if(MVAvalueIncl< 0.225) return RegionTag+"_BDTbin11";
+    else if(MVAvalueIncl< 0.25)  return RegionTag+"_BDTbin12";
+    else if(MVAvalueIncl< 0.275) return RegionTag+"_BDTbin13";
+    else  return RegionTag+"_BDTbin14";
+  }
+  else{
+    if(MVAvalueIncl< -0.2)       return RegionTag+"_BDTbin1";
+    else if(MVAvalueIncl< 0.0)   return RegionTag+"_BDTbin2";
+    else if(MVAvalueIncl< 0.025) return RegionTag+"_BDTbin3";
+    else if(MVAvalueIncl< 0.05)  return RegionTag+"_BDTbin4";
+    else if(MVAvalueIncl< 0.075) return RegionTag+"_BDTbin5";
+    else if(MVAvalueIncl< 0.10)  return RegionTag+"_BDTbin6";
+    else if(MVAvalueIncl< 0.125) return RegionTag+"_BDTbin7";
+    else if(MVAvalueIncl< 0.15)  return RegionTag+"_BDTbin8";
+    else if(MVAvalueIncl< 0.175) return RegionTag+"_BDTbin9";
+    else if(MVAvalueIncl< 0.2)   return RegionTag+"_BDTbin10";
+    else if(MVAvalueIncl< 0.225) return RegionTag+"_BDTbin11";
+    else if(MVAvalueIncl< 0.25)  return RegionTag+"_BDTbin12";
+    else if(MVAvalueIncl< 0.275) return RegionTag+"_BDTbin13";
+    else if(MVAvalueIncl< 0.3)   return RegionTag+"_BDTbin14";
+    else  return RegionTag+"_BDTbin15";
+  }
 
   return "true";
 }

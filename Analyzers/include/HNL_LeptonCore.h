@@ -311,14 +311,15 @@ nvtx,  double w);
   map<TString, std::pair<TString,TString> > FinalBDTHyperParamMap;
   TMVA::Reader *MVAReader;
   TMVA::Reader *MVAReaderMM, *MVAReaderEE, *MVAReaderEM;
+  TMVA::Reader *MVAReaderMMFake, *MVAReaderEEFake, *MVAReaderEMFake, *MVAReaderMMNonFake, *MVAReaderEENonFake, *MVAReaderEMNonFake;
 
   /// Event BDT var 
   void InitializeTreeVars();
   void SetupEventBDTVariables(std::vector<Lepton *> LepTColl,    std::vector<Jet> JetAllColl,std::vector<Jet> JetColl, std::vector<Jet> JetVBFColl, std::vector<Jet> B_JetColl, Event  ev, Particle METv, AnalyzerParameter param);
 
-  double EvaluateEventMVA(TString mN, TString NCut, TString NTree,HNL_LeptonCore::Channel channel ,
+  double EvaluateEventMVA(TString mN, TString bkgType, TString NCut, TString NTree, HNL_LeptonCore::Channel channel,
                           std::vector<Lepton *> LepTColl,
-                          Event  ev, Particle METv, AnalyzerParameter param);
+                          Event ev, Particle METv, AnalyzerParameter param);
 
   Float_t ev_bdt_Nj, ev_bdt_Nvbfj, ev_bdt_Nb, ev_bdt_LQ;
   Float_t ev_bdt_Ptl1, ev_bdt_Ptl2, ev_bdt_Ptj1, ev_bdt_Ptj2, ev_bdt_Ptj3, ev_bdt_MET, ev_bdt_HT, ev_bdt_LT, ev_bdt_HTLT, ev_bdt_HTLT1, ev_bdt_HTLT2, ev_bdt_MET2ST, ev_bdt_MET2HT, ev_bdt_Etal1, ev_bdt_Etal2;
@@ -334,7 +335,7 @@ nvtx,  double w);
   Float_t ev_bdt_Mljj212, ev_bdt_Mljj213, ev_bdt_Mljj214, ev_bdt_Mljj223, ev_bdt_Mljj224, ev_bdt_Mljj234;
   Float_t ev_bdt_Mjj12, ev_bdt_Mjj13, ev_bdt_Mjj14, ev_bdt_Mjj23, ev_bdt_Mjj24, ev_bdt_Mjj34;
   Float_t ev_bdt_PtWj1, ev_bdt_PtWj2;
-  Float_t ev_bdt_dRWjj, ev_bdt_dRlW12, ev_bdt_dRlW22;
+  Float_t ev_bdt_dRWjj, ev_bdt_dRlW12, ev_bdt_dRlW22, ev_bdt_dRlN12, ev_bdt_dRlN21;
   Float_t ev_bdt_M_W2_jj, ev_bdt_M_N1_l1jj, ev_bdt_M_N2_l2jj, ev_bdt_M_W1_lljj;
   Float_t w_tot;
 

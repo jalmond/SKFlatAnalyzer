@@ -5,14 +5,15 @@ void HNL_LeptonCore::SetupEventMVAReader(bool ee, bool mm, bool emu){
   InitializeTreeVars();
 
   TString AnalyzerPath=std::getenv("SKFlat_WD");
-  TString MVAPath = "/data/Run2UltraLegacy_v3/Run2/BDTClassifier/results_xml/";
-  MNStrList = {"90", "100", "150", "200", "300", "400","500"};
-  NCutList  = {"300"};
+  TString MVAPath = "/data/Run2UltraLegacy_v3/Run2/BDTClassifier/results_xml/HNL_ULID/";
+  MNStrList = {"90", "100", "150", "200", "300", "400", "500"};
+  NCutList  = {"200"};
   NTreeList = {"850"};
 
 
   if(mm){
-    MVAReaderMM->AddVariable("Nvbfj", &ev_bdt_Nvbfj);
+
+    /*MVAReaderMM->AddVariable("Nvbfj", &ev_bdt_Nvbfj);
     MVAReaderMM->AddVariable("Ptl1", &ev_bdt_Ptl1);
     MVAReaderMM->AddVariable("Ptl2", &ev_bdt_Ptl2);
     MVAReaderMM->AddVariable("Ptj1", &ev_bdt_Ptj1);
@@ -48,12 +49,125 @@ void HNL_LeptonCore::SetupEventMVAReader(bool ee, bool mm, bool emu){
     MVAReaderMM->AddVariable("Nb", &ev_bdt_Nb);
     MVAReaderMM->AddVariable("MuFracAJl1", &ev_bdt_MuFracAJl1);
     MVAReaderMM->AddVariable("M_N1_l1jj", &ev_bdt_M_N1_l1jj);
+    MVAReaderMM->AddSpectator("w_tot", &w_tot);*/
+
+    MVAReaderMM->AddVariable("Nvbfj", &ev_bdt_Nvbfj);
+    MVAReaderMM->AddVariable("Nb", &ev_bdt_Nb);
+    MVAReaderMM->AddVariable("Ptl1", &ev_bdt_Ptl1);
+    MVAReaderMM->AddVariable("Ptl2", &ev_bdt_Ptl2);
+    MVAReaderMM->AddVariable("Ptj1", &ev_bdt_Ptj1);
+    MVAReaderMM->AddVariable("MET2ST", &ev_bdt_MET2ST);
+    MVAReaderMM->AddVariable("HTLT1", &ev_bdt_HTLT1);
+    MVAReaderMM->AddVariable("HTLT2", &ev_bdt_HTLT2);
+    MVAReaderMM->AddVariable("Etal1", &ev_bdt_Etal1);
+    MVAReaderMM->AddVariable("Etal2", &ev_bdt_Etal2);
+    MVAReaderMM->AddVariable("NEMFracAJl2", &ev_bdt_NEMFracAJl2);
+    MVAReaderMM->AddVariable("CHFracAJl1", &ev_bdt_CHFracAJl1);
+    MVAReaderMM->AddVariable("CHFracAJl2", &ev_bdt_CHFracAJl2);
+    MVAReaderMM->AddVariable("MuFracAJl1", &ev_bdt_MuFracAJl1);
+    MVAReaderMM->AddVariable("MuFracAJl2", &ev_bdt_MuFracAJl2);
+    MVAReaderMM->AddVariable("JetDiscAJl1", &ev_bdt_JetDiscAJl1);
+    MVAReaderMM->AddVariable("JetDiscAJl2", &ev_bdt_JetDiscAJl2);
+    MVAReaderMM->AddVariable("dRll", &ev_bdt_dRll);
+    MVAReaderMM->AddVariable("dRlj11", &ev_bdt_dRlj11);
+    MVAReaderMM->AddVariable("dRlj21", &ev_bdt_dRlj21);
+    MVAReaderMM->AddVariable("dRlj22", &ev_bdt_dRlj22);
+    MVAReaderMM->AddVariable("MSSSF", &ev_bdt_MSSSF);
+    MVAReaderMM->AddVariable("Mlj11", &ev_bdt_Mlj11);
+    MVAReaderMM->AddVariable("Mlj12", &ev_bdt_Mlj12);
+    MVAReaderMM->AddVariable("Mlj21", &ev_bdt_Mlj21);
+    MVAReaderMM->AddVariable("Mlj22", &ev_bdt_Mlj22);
+    MVAReaderMM->AddVariable("MTvl1", &ev_bdt_MTvl1);
+    MVAReaderMM->AddVariable("MTvl2", &ev_bdt_MTvl2);
+    MVAReaderMM->AddVariable("Mllj1", &ev_bdt_Mllj1);
+    MVAReaderMM->AddVariable("dRWjj", &ev_bdt_dRWjj);
+    MVAReaderMM->AddVariable("dRlN12", &ev_bdt_dRlN12);
+    MVAReaderMM->AddVariable("dRlN21", &ev_bdt_dRlN21);
+    MVAReaderMM->AddVariable("M_W2_jj", &ev_bdt_M_W2_jj);
+    MVAReaderMM->AddVariable("M_N1_l1jj", &ev_bdt_M_N1_l1jj);
+    MVAReaderMM->AddVariable("M_N2_l2jj", &ev_bdt_M_N2_l2jj);
     MVAReaderMM->AddSpectator("w_tot", &w_tot);
+
+    MVAReaderMMFake->AddVariable("Nvbfj", &ev_bdt_Nvbfj);
+    MVAReaderMMFake->AddVariable("Nb", &ev_bdt_Nb);
+    MVAReaderMMFake->AddVariable("Ptl1", &ev_bdt_Ptl1);
+    MVAReaderMMFake->AddVariable("Ptl2", &ev_bdt_Ptl2);
+    MVAReaderMMFake->AddVariable("Ptj1", &ev_bdt_Ptj1);
+    MVAReaderMMFake->AddVariable("MET2ST", &ev_bdt_MET2ST);
+    MVAReaderMMFake->AddVariable("HTLT1", &ev_bdt_HTLT1);
+    MVAReaderMMFake->AddVariable("HTLT2", &ev_bdt_HTLT2);
+    MVAReaderMMFake->AddVariable("Etal1", &ev_bdt_Etal1);
+    MVAReaderMMFake->AddVariable("Etal2", &ev_bdt_Etal2);
+    MVAReaderMMFake->AddVariable("PtRatioAJl1", &ev_bdt_PtRatioAJl1);
+    MVAReaderMMFake->AddVariable("NEMFracAJl2", &ev_bdt_NEMFracAJl2);
+    MVAReaderMMFake->AddVariable("CHFracAJl1", &ev_bdt_CHFracAJl1);
+    MVAReaderMMFake->AddVariable("CHFracAJl2", &ev_bdt_CHFracAJl2);
+    MVAReaderMMFake->AddVariable("NHFracAJl1", &ev_bdt_NHFracAJl1);
+    MVAReaderMMFake->AddVariable("NHFracAJl2", &ev_bdt_NHFracAJl2);
+    MVAReaderMMFake->AddVariable("JetDiscAJl1", &ev_bdt_JetDiscAJl1);
+    MVAReaderMMFake->AddVariable("JetDiscAJl2", &ev_bdt_JetDiscAJl2);
+    MVAReaderMMFake->AddVariable("dRll", &ev_bdt_dRll);
+    MVAReaderMMFake->AddVariable("dRlj11", &ev_bdt_dRlj11);
+    MVAReaderMMFake->AddVariable("dRlj12", &ev_bdt_dRlj12);
+    MVAReaderMMFake->AddVariable("dRlj21", &ev_bdt_dRlj21);
+    MVAReaderMMFake->AddVariable("dRlj22", &ev_bdt_dRlj22);
+    MVAReaderMMFake->AddVariable("MSSSF", &ev_bdt_MSSSF);
+    MVAReaderMMFake->AddVariable("Mlj11", &ev_bdt_Mlj11);
+    MVAReaderMMFake->AddVariable("Mlj12", &ev_bdt_Mlj12);
+    MVAReaderMMFake->AddVariable("Mlj21", &ev_bdt_Mlj21);
+    MVAReaderMMFake->AddVariable("Mlj22", &ev_bdt_Mlj22);
+    MVAReaderMMFake->AddVariable("MTvl1", &ev_bdt_MTvl1);
+    MVAReaderMMFake->AddVariable("MTvl2", &ev_bdt_MTvl2);
+    MVAReaderMMFake->AddVariable("Mllj1", &ev_bdt_Mllj1);
+    MVAReaderMMFake->AddVariable("dRWjj", &ev_bdt_dRWjj);
+    MVAReaderMMFake->AddVariable("M_W2_jj", &ev_bdt_M_W2_jj);
+    MVAReaderMMFake->AddVariable("M_N1_l1jj", &ev_bdt_M_N1_l1jj);
+    MVAReaderMMFake->AddVariable("M_N2_l2jj", &ev_bdt_M_N2_l2jj);
+    MVAReaderMMFake->AddSpectator("w_tot", &w_tot);
+
+    MVAReaderMMNonFake->AddVariable("Nvbfj", &ev_bdt_Nvbfj);
+    MVAReaderMMNonFake->AddVariable("Nb", &ev_bdt_Nb);
+    MVAReaderMMNonFake->AddVariable("Ptl1", &ev_bdt_Ptl1);
+    MVAReaderMMNonFake->AddVariable("Ptl2", &ev_bdt_Ptl2);
+    MVAReaderMMNonFake->AddVariable("Ptj1", &ev_bdt_Ptj1);
+    MVAReaderMMNonFake->AddVariable("Ptj2", &ev_bdt_Ptj2);
+    MVAReaderMMNonFake->AddVariable("MET2ST", &ev_bdt_MET2ST);
+    MVAReaderMMNonFake->AddVariable("HTLT1", &ev_bdt_HTLT1);
+    MVAReaderMMNonFake->AddVariable("HTLT2", &ev_bdt_HTLT2);
+    MVAReaderMMNonFake->AddVariable("Etal1", &ev_bdt_Etal1);
+    MVAReaderMMNonFake->AddVariable("Etal2", &ev_bdt_Etal2);
+    MVAReaderMMNonFake->AddVariable("PtRatioAJl1", &ev_bdt_PtRatioAJl1);
+    MVAReaderMMNonFake->AddVariable("NEMFracAJl1", &ev_bdt_NEMFracAJl1);
+    MVAReaderMMNonFake->AddVariable("CHFracAJl1", &ev_bdt_CHFracAJl1);
+    MVAReaderMMNonFake->AddVariable("CHFracAJl2", &ev_bdt_CHFracAJl2);
+    MVAReaderMMNonFake->AddVariable("MuFracAJl1", &ev_bdt_MuFracAJl1);
+    MVAReaderMMNonFake->AddVariable("MuFracAJl2", &ev_bdt_MuFracAJl2);
+    MVAReaderMMNonFake->AddVariable("JetDiscAJl1", &ev_bdt_JetDiscAJl1);
+    MVAReaderMMNonFake->AddVariable("JetDiscAJl2", &ev_bdt_JetDiscAJl2);
+    MVAReaderMMNonFake->AddVariable("dRll", &ev_bdt_dRll);
+    MVAReaderMMNonFake->AddVariable("dRlj11", &ev_bdt_dRlj11);
+    MVAReaderMMNonFake->AddVariable("dRlj21", &ev_bdt_dRlj21);
+    MVAReaderMMNonFake->AddVariable("MSSSF", &ev_bdt_MSSSF);
+    MVAReaderMMNonFake->AddVariable("Mlj11", &ev_bdt_Mlj11);
+    MVAReaderMMNonFake->AddVariable("Mlj21", &ev_bdt_Mlj21);
+    MVAReaderMMNonFake->AddVariable("Mlj22", &ev_bdt_Mlj22);
+    MVAReaderMMNonFake->AddVariable("MTvl1", &ev_bdt_MTvl1);
+    MVAReaderMMNonFake->AddVariable("MTvl2", &ev_bdt_MTvl2);
+    MVAReaderMMNonFake->AddVariable("Mllj1", &ev_bdt_Mllj1);
+    MVAReaderMMNonFake->AddVariable("dRWjj", &ev_bdt_dRWjj);
+    MVAReaderMMNonFake->AddVariable("dRlN12", &ev_bdt_dRlN12);
+    MVAReaderMMNonFake->AddVariable("dRlN21", &ev_bdt_dRlN21);
+    MVAReaderMMNonFake->AddVariable("M_W2_jj", &ev_bdt_M_W2_jj);
+    MVAReaderMMNonFake->AddVariable("M_N1_l1jj", &ev_bdt_M_N1_l1jj);
+    MVAReaderMMNonFake->AddVariable("M_N2_l2jj", &ev_bdt_M_N2_l2jj);
+    MVAReaderMMNonFake->AddSpectator("w_tot", &w_tot);
+
   }
 
 
   if(ee){
-    MVAReaderEE->AddVariable("Nvbfj", &ev_bdt_Nvbfj);
+
+    /*MVAReaderEE->AddVariable("Nvbfj", &ev_bdt_Nvbfj);
     MVAReaderEE->AddVariable("Ptl1", &ev_bdt_Ptl1);
     MVAReaderEE->AddVariable("Ptl2", &ev_bdt_Ptl2);
     MVAReaderEE->AddVariable("Ptj1", &ev_bdt_Ptj1);
@@ -89,12 +203,125 @@ void HNL_LeptonCore::SetupEventMVAReader(bool ee, bool mm, bool emu){
     MVAReaderEE->AddVariable("dRlj12", &ev_bdt_dRlj12);
     MVAReaderEE->AddVariable("dRlj22", &ev_bdt_dRlj22);
     MVAReaderEE->AddVariable("Mllj2", &ev_bdt_Mllj2);
+    MVAReaderEE->AddSpectator("w_tot", &w_tot);*/
+
+    MVAReaderEE->AddVariable("Nvbfj", &ev_bdt_Nvbfj);
+    MVAReaderEE->AddVariable("Nb", &ev_bdt_Nb);
+    MVAReaderEE->AddVariable("Ptl1", &ev_bdt_Ptl1);
+    MVAReaderEE->AddVariable("Ptl2", &ev_bdt_Ptl2);
+    MVAReaderEE->AddVariable("Ptj1", &ev_bdt_Ptj1);
+    MVAReaderEE->AddVariable("MET2ST", &ev_bdt_MET2ST);
+    MVAReaderEE->AddVariable("HTLT1", &ev_bdt_HTLT1);
+    MVAReaderEE->AddVariable("HTLT2", &ev_bdt_HTLT2);
+    MVAReaderEE->AddVariable("Etal1", &ev_bdt_Etal1);
+    MVAReaderEE->AddVariable("Etal2", &ev_bdt_Etal2);
+    MVAReaderEE->AddVariable("PtRatioAJl1", &ev_bdt_PtRatioAJl1);
+    MVAReaderEE->AddVariable("CEMFracAJl2", &ev_bdt_CEMFracAJl2);
+    MVAReaderEE->AddVariable("NEMFracAJl1", &ev_bdt_NEMFracAJl1);
+    MVAReaderEE->AddVariable("NEMFracAJl2", &ev_bdt_NEMFracAJl2);
+    MVAReaderEE->AddVariable("CHFracAJl1", &ev_bdt_CHFracAJl1);
+    MVAReaderEE->AddVariable("CHFracAJl2", &ev_bdt_CHFracAJl2);
+    MVAReaderEE->AddVariable("JetDiscAJl1", &ev_bdt_JetDiscAJl1);
+    MVAReaderEE->AddVariable("JetDiscAJl2", &ev_bdt_JetDiscAJl2);
+    MVAReaderEE->AddVariable("dRll", &ev_bdt_dRll);
+    MVAReaderEE->AddVariable("dRlj11", &ev_bdt_dRlj11);
+    MVAReaderEE->AddVariable("dRlj21", &ev_bdt_dRlj21);
+    MVAReaderEE->AddVariable("dRlj22", &ev_bdt_dRlj22);
+    MVAReaderEE->AddVariable("MSSSF", &ev_bdt_MSSSF);
+    MVAReaderEE->AddVariable("Mlj11", &ev_bdt_Mlj11);
+    MVAReaderEE->AddVariable("Mlj12", &ev_bdt_Mlj12);
+    MVAReaderEE->AddVariable("Mlj21", &ev_bdt_Mlj21);
+    MVAReaderEE->AddVariable("Mlj22", &ev_bdt_Mlj22);
+    MVAReaderEE->AddVariable("MTvl1", &ev_bdt_MTvl1);
+    MVAReaderEE->AddVariable("MTvl2", &ev_bdt_MTvl2);
+    MVAReaderEE->AddVariable("Mllj1", &ev_bdt_Mllj1);
+    MVAReaderEE->AddVariable("dRWjj", &ev_bdt_dRWjj);
+    MVAReaderEE->AddVariable("dRlN21", &ev_bdt_dRlN21);
+    MVAReaderEE->AddVariable("M_W2_jj", &ev_bdt_M_W2_jj);
+    MVAReaderEE->AddVariable("M_N1_l1jj", &ev_bdt_M_N1_l1jj);
+    MVAReaderEE->AddVariable("M_N2_l2jj", &ev_bdt_M_N2_l2jj);
     MVAReaderEE->AddSpectator("w_tot", &w_tot);
+
+    MVAReaderEEFake->AddVariable("Nvbfj", &ev_bdt_Nvbfj);
+    MVAReaderEEFake->AddVariable("Nb", &ev_bdt_Nb);
+    MVAReaderEEFake->AddVariable("Ptl1", &ev_bdt_Ptl1);
+    MVAReaderEEFake->AddVariable("Ptl2", &ev_bdt_Ptl2);
+    MVAReaderEEFake->AddVariable("Ptj1", &ev_bdt_Ptj1);
+    MVAReaderEEFake->AddVariable("MET2ST", &ev_bdt_MET2ST);
+    MVAReaderEEFake->AddVariable("HTLT1", &ev_bdt_HTLT1);
+    MVAReaderEEFake->AddVariable("HTLT2", &ev_bdt_HTLT2);
+    MVAReaderEEFake->AddVariable("Etal1", &ev_bdt_Etal1);
+    MVAReaderEEFake->AddVariable("Etal2", &ev_bdt_Etal2);
+    MVAReaderEEFake->AddVariable("NEMFracAJl1", &ev_bdt_NEMFracAJl1);
+    MVAReaderEEFake->AddVariable("NEMFracAJl2", &ev_bdt_NEMFracAJl2);
+    MVAReaderEEFake->AddVariable("CHFracAJl1", &ev_bdt_CHFracAJl1);
+    MVAReaderEEFake->AddVariable("CHFracAJl2", &ev_bdt_CHFracAJl2);
+    MVAReaderEEFake->AddVariable("NHFracAJl1", &ev_bdt_NHFracAJl1);
+    MVAReaderEEFake->AddVariable("NHFracAJl2", &ev_bdt_NHFracAJl2);
+    MVAReaderEEFake->AddVariable("JetDiscAJl1", &ev_bdt_JetDiscAJl1);
+    MVAReaderEEFake->AddVariable("JetDiscAJl2", &ev_bdt_JetDiscAJl2);
+    MVAReaderEEFake->AddVariable("dRll", &ev_bdt_dRll);
+    MVAReaderEEFake->AddVariable("dRlj11", &ev_bdt_dRlj11);
+    MVAReaderEEFake->AddVariable("dRlj12", &ev_bdt_dRlj12);
+    MVAReaderEEFake->AddVariable("dRlj21", &ev_bdt_dRlj21);
+    MVAReaderEEFake->AddVariable("dRlj22", &ev_bdt_dRlj22);
+    MVAReaderEEFake->AddVariable("MSSSF", &ev_bdt_MSSSF);
+    MVAReaderEEFake->AddVariable("Mlj11", &ev_bdt_Mlj11);
+    MVAReaderEEFake->AddVariable("Mlj21", &ev_bdt_Mlj21);
+    MVAReaderEEFake->AddVariable("Mlj22", &ev_bdt_Mlj22);
+    MVAReaderEEFake->AddVariable("MTvl1", &ev_bdt_MTvl1);
+    MVAReaderEEFake->AddVariable("MTvl2", &ev_bdt_MTvl2);
+    MVAReaderEEFake->AddVariable("Mllj1", &ev_bdt_Mllj1);
+    MVAReaderEEFake->AddVariable("dRWjj", &ev_bdt_dRWjj);
+    MVAReaderEEFake->AddVariable("dRlN21", &ev_bdt_dRlN21);
+    MVAReaderEEFake->AddVariable("M_W2_jj", &ev_bdt_M_W2_jj);
+    MVAReaderEEFake->AddVariable("M_N1_l1jj", &ev_bdt_M_N1_l1jj);
+    MVAReaderEEFake->AddVariable("M_N2_l2jj", &ev_bdt_M_N2_l2jj);
+    MVAReaderEEFake->AddSpectator("w_tot", &w_tot);
+
+    MVAReaderEENonFake->AddVariable("Nvbfj", &ev_bdt_Nvbfj);
+    MVAReaderEENonFake->AddVariable("Nb", &ev_bdt_Nb);
+    MVAReaderEENonFake->AddVariable("Ptl1", &ev_bdt_Ptl1);
+    MVAReaderEENonFake->AddVariable("Ptl2", &ev_bdt_Ptl2);
+    MVAReaderEENonFake->AddVariable("Ptj1", &ev_bdt_Ptj1);
+    MVAReaderEENonFake->AddVariable("Ptj2", &ev_bdt_Ptj2);
+    MVAReaderEENonFake->AddVariable("MET2ST", &ev_bdt_MET2ST);
+    MVAReaderEENonFake->AddVariable("HTLT1", &ev_bdt_HTLT1);
+    MVAReaderEENonFake->AddVariable("HTLT2", &ev_bdt_HTLT2);
+    MVAReaderEENonFake->AddVariable("Etal1", &ev_bdt_Etal1);
+    MVAReaderEENonFake->AddVariable("Etal2", &ev_bdt_Etal2);
+    MVAReaderEENonFake->AddVariable("CEMFracAJl1", &ev_bdt_CEMFracAJl1);
+    MVAReaderEENonFake->AddVariable("CEMFracAJl2", &ev_bdt_CEMFracAJl2);
+    MVAReaderEENonFake->AddVariable("NEMFracAJl1", &ev_bdt_NEMFracAJl1);
+    MVAReaderEENonFake->AddVariable("NEMFracAJl2", &ev_bdt_NEMFracAJl2);
+    MVAReaderEENonFake->AddVariable("CHFracAJl1", &ev_bdt_CHFracAJl1);
+    MVAReaderEENonFake->AddVariable("CHFracAJl2", &ev_bdt_CHFracAJl2);
+    MVAReaderEENonFake->AddVariable("JetDiscAJl1", &ev_bdt_JetDiscAJl1);
+    MVAReaderEENonFake->AddVariable("JetDiscAJl2", &ev_bdt_JetDiscAJl2);
+    MVAReaderEENonFake->AddVariable("dRll", &ev_bdt_dRll);
+    MVAReaderEENonFake->AddVariable("dRlj11", &ev_bdt_dRlj11);
+    MVAReaderEENonFake->AddVariable("dRlj21", &ev_bdt_dRlj21);
+    MVAReaderEENonFake->AddVariable("MSSSF", &ev_bdt_MSSSF);
+    MVAReaderEENonFake->AddVariable("Mlj11", &ev_bdt_Mlj11);
+    MVAReaderEENonFake->AddVariable("Mlj21", &ev_bdt_Mlj21);
+    MVAReaderEENonFake->AddVariable("Mlj22", &ev_bdt_Mlj22);
+    MVAReaderEENonFake->AddVariable("MTvl1", &ev_bdt_MTvl1);
+    MVAReaderEENonFake->AddVariable("MTvl2", &ev_bdt_MTvl2);
+    MVAReaderEENonFake->AddVariable("Mllj1", &ev_bdt_Mllj1);
+    MVAReaderEENonFake->AddVariable("dRWjj", &ev_bdt_dRWjj);
+    MVAReaderEENonFake->AddVariable("dRlN12", &ev_bdt_dRlN12);
+    MVAReaderEENonFake->AddVariable("dRlN21", &ev_bdt_dRlN21);
+    MVAReaderEENonFake->AddVariable("M_W2_jj", &ev_bdt_M_W2_jj);
+    MVAReaderEENonFake->AddVariable("M_N1_l1jj", &ev_bdt_M_N1_l1jj);
+    MVAReaderEENonFake->AddVariable("M_N2_l2jj", &ev_bdt_M_N2_l2jj);
+    MVAReaderEENonFake->AddSpectator("w_tot", &w_tot);
+
   }
 
 
   if(emu){
-    MVAReaderEM->AddVariable("Nvbfj", &ev_bdt_Nvbfj);
+
+    /*MVAReaderEM->AddVariable("Nvbfj", &ev_bdt_Nvbfj);
     MVAReaderEM->AddVariable("Ptl1", &ev_bdt_Ptl1);
     MVAReaderEM->AddVariable("Ptl2", &ev_bdt_Ptl2);
     MVAReaderEM->AddVariable("Ptj1", &ev_bdt_Ptj1);
@@ -130,19 +357,131 @@ void HNL_LeptonCore::SetupEventMVAReader(bool ee, bool mm, bool emu){
     MVAReaderEM->AddVariable("Nb", &ev_bdt_Nb);
     MVAReaderEM->AddVariable("dRlj12", &ev_bdt_dRlj12);
     MVAReaderEM->AddVariable("M_N1_l1jj", &ev_bdt_M_N1_l1jj);
+    MVAReaderEM->AddSpectator("w_tot", &w_tot);*/
+
+    MVAReaderEM->AddVariable("Nvbfj", &ev_bdt_Nvbfj);
+    MVAReaderEM->AddVariable("Nb", &ev_bdt_Nb);
+    MVAReaderEM->AddVariable("Ptl1", &ev_bdt_Ptl1);
+    MVAReaderEM->AddVariable("Ptl2", &ev_bdt_Ptl2);
+    MVAReaderEM->AddVariable("Ptj1", &ev_bdt_Ptj1);
+    MVAReaderEM->AddVariable("Ptj2", &ev_bdt_Ptj2);
+    MVAReaderEM->AddVariable("MET2ST", &ev_bdt_MET2ST);
+    MVAReaderEM->AddVariable("HTLT1", &ev_bdt_HTLT1);
+    MVAReaderEM->AddVariable("HTLT2", &ev_bdt_HTLT2);
+    MVAReaderEM->AddVariable("Etal1", &ev_bdt_Etal1);
+    MVAReaderEM->AddVariable("Etal2", &ev_bdt_Etal2);
+    MVAReaderEM->AddVariable("PtRatioAJl1", &ev_bdt_PtRatioAJl1);
+    MVAReaderEM->AddVariable("NEMFracAJl1", &ev_bdt_NEMFracAJl1);
+    MVAReaderEM->AddVariable("CHFracAJl1", &ev_bdt_CHFracAJl1);
+    MVAReaderEM->AddVariable("CHFracAJl2", &ev_bdt_CHFracAJl2);
+    MVAReaderEM->AddVariable("JetDiscAJl1", &ev_bdt_JetDiscAJl1);
+    MVAReaderEM->AddVariable("JetDiscAJl2", &ev_bdt_JetDiscAJl2);
+    MVAReaderEM->AddVariable("dRll", &ev_bdt_dRll);
+    MVAReaderEM->AddVariable("dRlj11", &ev_bdt_dRlj11);
+    MVAReaderEM->AddVariable("dRlj12", &ev_bdt_dRlj12);
+    MVAReaderEM->AddVariable("dRlj21", &ev_bdt_dRlj21);
+    MVAReaderEM->AddVariable("dRlj22", &ev_bdt_dRlj22);
+    MVAReaderEM->AddVariable("MSSSF", &ev_bdt_MSSSF);
+    MVAReaderEM->AddVariable("Mlj11", &ev_bdt_Mlj11);
+    MVAReaderEM->AddVariable("Mlj12", &ev_bdt_Mlj12);
+    MVAReaderEM->AddVariable("Mlj21", &ev_bdt_Mlj21);
+    MVAReaderEM->AddVariable("Mlj22", &ev_bdt_Mlj22);
+    MVAReaderEM->AddVariable("MTvl1", &ev_bdt_MTvl1);
+    MVAReaderEM->AddVariable("MTvl2", &ev_bdt_MTvl2);
+    MVAReaderEM->AddVariable("Mllj1", &ev_bdt_Mllj1);
+    MVAReaderEM->AddVariable("dRWjj", &ev_bdt_dRWjj);
+    MVAReaderEM->AddVariable("dRlN21", &ev_bdt_dRlN21);
+    MVAReaderEM->AddVariable("M_W2_jj", &ev_bdt_M_W2_jj);
+    MVAReaderEM->AddVariable("M_N1_l1jj", &ev_bdt_M_N1_l1jj);
+    MVAReaderEM->AddVariable("M_N2_l2jj", &ev_bdt_M_N2_l2jj);
     MVAReaderEM->AddSpectator("w_tot", &w_tot);
+
+    MVAReaderEMFake->AddVariable("Nvbfj", &ev_bdt_Nvbfj);
+    MVAReaderEMFake->AddVariable("Nb", &ev_bdt_Nb);
+    MVAReaderEMFake->AddVariable("Ptl1", &ev_bdt_Ptl1);
+    MVAReaderEMFake->AddVariable("Ptl2", &ev_bdt_Ptl2);
+    MVAReaderEMFake->AddVariable("Ptj1", &ev_bdt_Ptj1);
+    MVAReaderEMFake->AddVariable("MET2ST", &ev_bdt_MET2ST);
+    MVAReaderEMFake->AddVariable("HTLT1", &ev_bdt_HTLT1);
+    MVAReaderEMFake->AddVariable("HTLT2", &ev_bdt_HTLT2);
+    MVAReaderEMFake->AddVariable("Etal1", &ev_bdt_Etal1);
+    MVAReaderEMFake->AddVariable("Etal2", &ev_bdt_Etal2);
+    MVAReaderEMFake->AddVariable("PtRatioAJl1", &ev_bdt_PtRatioAJl1);
+    MVAReaderEMFake->AddVariable("NEMFracAJl1", &ev_bdt_NEMFracAJl1);
+    MVAReaderEMFake->AddVariable("NEMFracAJl2", &ev_bdt_NEMFracAJl2);
+    MVAReaderEMFake->AddVariable("CHFracAJl1", &ev_bdt_CHFracAJl1);
+    MVAReaderEMFake->AddVariable("CHFracAJl2", &ev_bdt_CHFracAJl2);
+    MVAReaderEMFake->AddVariable("NHFracAJl2", &ev_bdt_NHFracAJl2);
+    MVAReaderEMFake->AddVariable("JetDiscAJl1", &ev_bdt_JetDiscAJl1);
+    MVAReaderEMFake->AddVariable("JetDiscAJl2", &ev_bdt_JetDiscAJl2);
+    MVAReaderEMFake->AddVariable("dRll", &ev_bdt_dRll);
+    MVAReaderEMFake->AddVariable("dRlj11", &ev_bdt_dRlj11);
+    MVAReaderEMFake->AddVariable("dRlj12", &ev_bdt_dRlj12);
+    MVAReaderEMFake->AddVariable("dRlj21", &ev_bdt_dRlj21);
+    MVAReaderEMFake->AddVariable("dRlj22", &ev_bdt_dRlj22);
+    MVAReaderEMFake->AddVariable("MSSSF", &ev_bdt_MSSSF);
+    MVAReaderEMFake->AddVariable("Mlj11", &ev_bdt_Mlj11);
+    MVAReaderEMFake->AddVariable("Mlj21", &ev_bdt_Mlj21);
+    MVAReaderEMFake->AddVariable("MTvl1", &ev_bdt_MTvl1);
+    MVAReaderEMFake->AddVariable("MTvl2", &ev_bdt_MTvl2);
+    MVAReaderEMFake->AddVariable("Mllj1", &ev_bdt_Mllj1);
+    MVAReaderEMFake->AddVariable("dRWjj", &ev_bdt_dRWjj);
+    MVAReaderEMFake->AddVariable("dRlN12", &ev_bdt_dRlN12);
+    MVAReaderEMFake->AddVariable("dRlN21", &ev_bdt_dRlN21);
+    MVAReaderEMFake->AddVariable("M_W2_jj", &ev_bdt_M_W2_jj);
+    MVAReaderEMFake->AddVariable("M_N1_l1jj", &ev_bdt_M_N1_l1jj);
+    MVAReaderEMFake->AddVariable("M_N2_l2jj", &ev_bdt_M_N2_l2jj);
+    MVAReaderEMFake->AddSpectator("w_tot", &w_tot);
+
+    MVAReaderEMNonFake->AddVariable("Nvbfj", &ev_bdt_Nvbfj);
+    MVAReaderEMNonFake->AddVariable("Nb", &ev_bdt_Nb);
+    MVAReaderEMNonFake->AddVariable("Ptl1", &ev_bdt_Ptl1);
+    MVAReaderEMNonFake->AddVariable("Ptl2", &ev_bdt_Ptl2);
+    MVAReaderEMNonFake->AddVariable("Ptj1", &ev_bdt_Ptj1);
+    MVAReaderEMNonFake->AddVariable("Ptj2", &ev_bdt_Ptj2);
+    MVAReaderEMNonFake->AddVariable("MET2ST", &ev_bdt_MET2ST);
+    MVAReaderEMNonFake->AddVariable("HTLT1", &ev_bdt_HTLT1);
+    MVAReaderEMNonFake->AddVariable("HTLT2", &ev_bdt_HTLT2);
+    MVAReaderEMNonFake->AddVariable("Etal1", &ev_bdt_Etal1);
+    MVAReaderEMNonFake->AddVariable("Etal2", &ev_bdt_Etal2);
+    MVAReaderEMNonFake->AddVariable("PtRatioAJl1", &ev_bdt_PtRatioAJl1);
+    MVAReaderEMNonFake->AddVariable("CEMFracAJl2", &ev_bdt_CEMFracAJl2);
+    MVAReaderEMNonFake->AddVariable("NEMFracAJl1", &ev_bdt_NEMFracAJl1);
+    MVAReaderEMNonFake->AddVariable("CHFracAJl1", &ev_bdt_CHFracAJl1);
+    MVAReaderEMNonFake->AddVariable("CHFracAJl2", &ev_bdt_CHFracAJl2);
+    MVAReaderEMNonFake->AddVariable("JetDiscAJl1", &ev_bdt_JetDiscAJl1);
+    MVAReaderEMNonFake->AddVariable("JetDiscAJl2", &ev_bdt_JetDiscAJl2);
+    MVAReaderEMNonFake->AddVariable("dRll", &ev_bdt_dRll);
+    MVAReaderEMNonFake->AddVariable("dRlj11", &ev_bdt_dRlj11);
+    MVAReaderEMNonFake->AddVariable("dRlj21", &ev_bdt_dRlj21);
+    MVAReaderEMNonFake->AddVariable("dRlj22", &ev_bdt_dRlj22);
+    MVAReaderEMNonFake->AddVariable("MSSSF", &ev_bdt_MSSSF);
+    MVAReaderEMNonFake->AddVariable("Mlj11", &ev_bdt_Mlj11);
+    MVAReaderEMNonFake->AddVariable("Mlj12", &ev_bdt_Mlj12);
+    MVAReaderEMNonFake->AddVariable("Mlj21", &ev_bdt_Mlj21);
+    MVAReaderEMNonFake->AddVariable("Mlj22", &ev_bdt_Mlj22);
+    MVAReaderEMNonFake->AddVariable("MTvl1", &ev_bdt_MTvl1);
+    MVAReaderEMNonFake->AddVariable("MTvl2", &ev_bdt_MTvl2);
+    MVAReaderEMNonFake->AddVariable("Mllj1", &ev_bdt_Mllj1);
+    MVAReaderEMNonFake->AddVariable("dRWjj", &ev_bdt_dRWjj);
+    MVAReaderEMNonFake->AddVariable("dRlN21", &ev_bdt_dRlN21);
+    MVAReaderEMNonFake->AddVariable("M_W2_jj", &ev_bdt_M_W2_jj);
+    MVAReaderEMNonFake->AddVariable("M_N1_l1jj", &ev_bdt_M_N1_l1jj);
+    MVAReaderEMNonFake->AddVariable("M_N2_l2jj", &ev_bdt_M_N2_l2jj);
+    MVAReaderEMNonFake->AddSpectator("w_tot", &w_tot);
+
   }
 
   for(unsigned int im=0; im<MNStrList.size(); im++){
 
     //// This can be changed after checking Hyper paramters                                                                                                                                                                                                                                                                   
     //FinalBDTHyperParamMap settings are whats used in limit for SR/CR                                                                                                                                                                                                                                                        
-    FinalBDTHyperParamMap[MNStrList.at(im)] = make_pair("300","850");
+    FinalBDTHyperParamMap[MNStrList.at(im)] = make_pair("200","850");
 
     for(unsigned int ic=0; ic<NCutList.size(); ic++){
       for(unsigned int it=0; it<NTreeList.size(); it++){
 
-        TString FileNameMM  = "output_DY_MuMu_M"+MNStrList.at(im)+"_Mode100_NTree"+NTreeList.at(it)+"_Run2_BDT.weights.xml";
+        /*TString FileNameMM  = "output_DY_MuMu_M"+MNStrList.at(im)+"_Mode100_NTree"+NTreeList.at(it)+"_Run2_BDT.weights.xml";
         TString MVATagStrMM = "BDT_M"+MNStrList.at(im)+"_NCut"+NCutList.at(ic)+"_NTree"+NTreeList.at(it)+"_MuMu";
 
         if(mm)MVAReaderMM->BookMVA(MVATagStrMM, AnalyzerPath+MVAPath+"NCuts"+NCutList.at(ic)+"/"+FileNameMM);
@@ -155,7 +494,49 @@ void HNL_LeptonCore::SetupEventMVAReader(bool ee, bool mm, bool emu){
         TString FileNameEM  = "output_DY_EMu_M"+MNStrList.at(im)+"_Mode100_NTree"+NTreeList.at(it)+"_Run2_BDT.weights.xml";
         TString MVATagStrEM = "BDT_M"+MNStrList.at(im)+"_NCut"+NCutList.at(ic)+"_NTree"+NTreeList.at(it)+"_EMu";
 
-        if(emu)MVAReaderEM->BookMVA(MVATagStrEM, AnalyzerPath+MVAPath+"NCuts"+NCutList.at(ic)+"/"+FileNameEM);
+        if(emu)MVAReaderEM->BookMVA(MVATagStrEM, AnalyzerPath+MVAPath+"NCuts"+NCutList.at(ic)+"/"+FileNameEM);*/
+
+        TString FileNameMM        = "output_DY_MuMu_M"+MNStrList.at(im)+"_Incl_Run2_NTrees"+NTreeList.at(it)+"_NCuts"+NCutList.at(ic)+"_MaxDepth3_BDT.weights.xml";
+        TString FileNameMMFake    = "output_DY_MuMu_M"+MNStrList.at(im)+"_Fake_Run2_NTrees"+NTreeList.at(it)+"_NCuts"+NCutList.at(ic)+"_MaxDepth3_BDT.weights.xml";
+        TString FileNameMMNonFake = "output_DY_MuMu_M"+MNStrList.at(im)+"_NonFake_Run2_NTrees"+NTreeList.at(it)+"_NCuts"+NCutList.at(ic)+"_MaxDepth3_BDT.weights.xml";
+
+        TString MVATagStrMM        = "BDT_MuMu_M"+MNStrList.at(im)+"_Incl_NTrees"+NTreeList.at(it)+"_NCuts"+NCutList.at(ic)+"_MaxDepth3";
+        TString MVATagStrMMFake    = "BDT_MuMu_M"+MNStrList.at(im)+"_Fake_NTrees"+NTreeList.at(it)+"_NCuts"+NCutList.at(ic)+"_MaxDepth3";
+        TString MVATagStrMMNonFake = "BDT_MuMu_M"+MNStrList.at(im)+"_NonFake_NTrees"+NTreeList.at(it)+"_NCuts"+NCutList.at(ic)+"_MaxDepth3";
+
+        if(mm){
+          MVAReaderMM->BookMVA(MVATagStrMM, AnalyzerPath+MVAPath+FileNameMM);
+          MVAReaderMMFake->BookMVA(MVATagStrMMFake, AnalyzerPath+MVAPath+FileNameMMFake);
+          MVAReaderMMNonFake->BookMVA(MVATagStrMMNonFake, AnalyzerPath+MVAPath+FileNameMMNonFake);
+        }
+
+        TString FileNameEE        = "output_DY_EE_M"+MNStrList.at(im)+"_Incl_Run2_NTrees"+NTreeList.at(it)+"_NCuts"+NCutList.at(ic)+"_MaxDepth3_BDT.weights.xml";
+        TString FileNameEEFake    = "output_DY_EE_M"+MNStrList.at(im)+"_Fake_Run2_NTrees"+NTreeList.at(it)+"_NCuts"+NCutList.at(ic)+"_MaxDepth3_BDT.weights.xml";
+        TString FileNameEENonFake = "output_DY_EE_M"+MNStrList.at(im)+"_NonFake_Run2_NTrees"+NTreeList.at(it)+"_NCuts"+NCutList.at(ic)+"_MaxDepth3_BDT.weights.xml";
+
+        TString MVATagStrEE        = "BDT_EE_M"+MNStrList.at(im)+"_Incl_NTrees"+NTreeList.at(it)+"_NCuts"+NCutList.at(ic)+"_MaxDepth3";
+        TString MVATagStrEEFake    = "BDT_EE_M"+MNStrList.at(im)+"_Fake_NTrees"+NTreeList.at(it)+"_NCuts"+NCutList.at(ic)+"_MaxDepth3";
+        TString MVATagStrEENonFake = "BDT_EE_M"+MNStrList.at(im)+"_NonFake_NTrees"+NTreeList.at(it)+"_NCuts"+NCutList.at(ic)+"_MaxDepth3";
+
+        if(ee){
+          MVAReaderEE->BookMVA(MVATagStrEE, AnalyzerPath+MVAPath+FileNameEE);
+          MVAReaderEEFake->BookMVA(MVATagStrEEFake, AnalyzerPath+MVAPath+FileNameEEFake);
+          MVAReaderEENonFake->BookMVA(MVATagStrEENonFake, AnalyzerPath+MVAPath+FileNameEENonFake);
+        }
+
+        TString FileNameEM        = "output_DY_EMu_M"+MNStrList.at(im)+"_Incl_Run2_NTrees"+NTreeList.at(it)+"_NCuts"+NCutList.at(ic)+"_MaxDepth3_BDT.weights.xml";
+        TString FileNameEMFake    = "output_DY_EMu_M"+MNStrList.at(im)+"_Fake_Run2_NTrees"+NTreeList.at(it)+"_NCuts"+NCutList.at(ic)+"_MaxDepth3_BDT.weights.xml";
+        TString FileNameEMNonFake = "output_DY_EMu_M"+MNStrList.at(im)+"_NonFake_Run2_NTrees"+NTreeList.at(it)+"_NCuts"+NCutList.at(ic)+"_MaxDepth3_BDT.weights.xml";
+
+        TString MVATagStrEM        = "BDT_EMu_M"+MNStrList.at(im)+"_Incl_NTrees"+NTreeList.at(it)+"_NCuts"+NCutList.at(ic)+"_MaxDepth3";
+        TString MVATagStrEMFake    = "BDT_EMu_M"+MNStrList.at(im)+"_Fake_NTrees"+NTreeList.at(it)+"_NCuts"+NCutList.at(ic)+"_MaxDepth3";
+        TString MVATagStrEMNonFake = "BDT_EMu_M"+MNStrList.at(im)+"_NonFake_NTrees"+NTreeList.at(it)+"_NCuts"+NCutList.at(ic)+"_MaxDepth3";
+
+        if(emu){
+          MVAReaderEM->BookMVA(MVATagStrEM, AnalyzerPath+MVAPath+FileNameEM);
+          MVAReaderEMFake->BookMVA(MVATagStrEMFake, AnalyzerPath+MVAPath+FileNameEMFake);
+          MVAReaderEMNonFake->BookMVA(MVATagStrEMNonFake, AnalyzerPath+MVAPath+FileNameEMNonFake);
+        }
 
       }
     }
@@ -230,7 +611,7 @@ void HNL_LeptonCore::InitializeTreeVars(){
   ev_bdt_MTvl1=-1, ev_bdt_MTvl2=-1,   ev_bdt_Mllj1=-1, ev_bdt_Mllj2=-1;
 
   ev_bdt_PtWj1=-1, ev_bdt_PtWj2=-1;
-  ev_bdt_dRWjj=-1, ev_bdt_dRlW12=-1, ev_bdt_dRlW22=-1;
+  ev_bdt_dRWjj=-1, ev_bdt_dRlW12=-1, ev_bdt_dRlW22=-1, ev_bdt_dRlN12=-1, ev_bdt_dRlN21=-1;
   ev_bdt_M_W2_jj=-1, ev_bdt_M_W1_lljj=-1, ev_bdt_M_N1_l1jj=-1, ev_bdt_M_N2_l2jj=-1;
 
   w_tot=-1.;
@@ -396,6 +777,8 @@ void HNL_LeptonCore::SetupEventBDTVariables(std::vector<Lepton *> LepTColl,
   ev_bdt_dRWjj     = JetColl.size() > 1 ? JetColl[m].DeltaR(JetColl[n]) : -1.;
   ev_bdt_dRlW12    = JetColl.size() > 1 ? LepTColl.at(0)->DeltaR(JetColl[m] + JetColl[n]) : -1.;
   ev_bdt_dRlW22    = JetColl.size() > 1 ? LepTColl.at(1)->DeltaR(JetColl[m] + JetColl[n]) : -1.;
+  ev_bdt_dRlN12    = JetColl.size() > 1 ? LepTColl.at(0)->DeltaR(*LepTColl.at(1) + JetColl[m] + JetColl[n]) : -1.;
+  ev_bdt_dRlN21    = JetColl.size() > 1 ? LepTColl.at(1)->DeltaR(*LepTColl.at(0) + JetColl[m] + JetColl[n]) : -1.;
   ev_bdt_M_W2_jj   = JetColl.size() > 1 ? (JetColl[m] + JetColl[n]).M() : -1.;
   ev_bdt_M_W1_lljj = JetColl.size() > 1 ? (JetColl[m] + JetColl[n] + *LepTColl.at(0) + *LepTColl.at(1)).M() : -1.;
   ev_bdt_M_N1_l1jj = JetColl.size() > 1 ? (JetColl[m] + JetColl[n] + *LepTColl.at(0)).M() : -1.;
@@ -407,25 +790,44 @@ void HNL_LeptonCore::SetupEventBDTVariables(std::vector<Lepton *> LepTColl,
 }
 
 
-double HNL_LeptonCore::EvaluateEventMVA(TString mN, TString NCut, TString NTree,HNL_LeptonCore::Channel channel ,
-                                        std::vector<Lepton *> LepTColl, Event  ev, Particle METv, AnalyzerParameter param){
+double HNL_LeptonCore::EvaluateEventMVA(TString mN, TString bkgType, TString NCut, TString NTree, HNL_LeptonCore::Channel channel,
+                                        std::vector<Lepton *> LepTColl, Event ev, Particle METv, AnalyzerParameter param){
 
-  std::vector<FatJet> FatjetColl                  = GetHNLAK8Jets("BDT",param);
+  /*std::vector<FatJet> FatjetColl                  = GetHNLAK8Jets("BDT",param);
   std::vector<Jet> All_JetColl                    = GetHNLJets("NoCut_Eta3",param);
   std::vector<Jet> B_JetColl                      = GetHNLJets("BJetM",param);
   std::vector<Jet> JetColl                        = GetHNLJets("Tight",param);
-  std::vector<Jet> VBF_JetColl                    = GetHNLJets("VBFTight",param);
+  std::vector<Jet> VBF_JetColl                    = GetHNLJets("VBFTight",param);*/
+
+  std::vector<FatJet> FatjetColl                  = GetHNLAK8Jets("HNL_PN",param);
+  std::vector<Jet> All_JetColl                    = GetHNLJets("TightPUL",param);
+  std::vector<Jet> B_JetColl                      = GetHNLJets("BJetM",param);
+  std::vector<Jet> JetColl                        = GetHNLJets("TightPUL",param);
+  std::vector<Jet> VBF_JetColl                    = GetHNLJets("VBFTightPUL",param);
 
   SetupEventBDTVariables(LepTColl,
                          All_JetColl, JetColl,VBF_JetColl,B_JetColl,
                          ev,METv,param);
 
-  TString MVATagStr = "BDT_M"+mN+"_NCut"+NCut+"_NTree"+NTree+"_"+GetChannelString(channel);
+  //TString MVATagStr = "BDT_M"+mN+"_NCut"+NCut+"_NTree"+NTree+"_"+GetChannelString(channel);
+  TString MVATagStr = "BDT_"+GetChannelString(channel)+"_M"+mN+"_"+bkgType+"_NTrees"+NTree+"_NCuts"+NCut+"_MaxDepth3";
   float MVAvalue = -99999.;
-  if(GetChannelString(channel) == "MuMu") MVAvalue = MVAReaderMM->EvaluateMVA(MVATagStr);
-  if(GetChannelString(channel) == "EE")   MVAvalue = MVAReaderEE->EvaluateMVA(MVATagStr);
-  if(GetChannelString(channel) == "EMu")  MVAvalue = MVAReaderEM->EvaluateMVA(MVATagStr);
 
+  if(bkgType == "Incl"){
+    if(GetChannelString(channel) == "MuMu") MVAvalue = MVAReaderMM->EvaluateMVA(MVATagStr);
+    if(GetChannelString(channel) == "EE")   MVAvalue = MVAReaderEE->EvaluateMVA(MVATagStr);
+    if(GetChannelString(channel) == "EMu")  MVAvalue = MVAReaderEM->EvaluateMVA(MVATagStr);
+  }
+  if(bkgType == "Fake"){
+    if(GetChannelString(channel) == "MuMu") MVAvalue = MVAReaderMMFake->EvaluateMVA(MVATagStr);
+    if(GetChannelString(channel) == "EE")   MVAvalue = MVAReaderEEFake->EvaluateMVA(MVATagStr);
+    if(GetChannelString(channel) == "EMu")  MVAvalue = MVAReaderEMFake->EvaluateMVA(MVATagStr);
+  }
+  if(bkgType == "NonFake"){
+    if(GetChannelString(channel) == "MuMu") MVAvalue = MVAReaderMMNonFake->EvaluateMVA(MVATagStr);
+    if(GetChannelString(channel) == "EE")   MVAvalue = MVAReaderEENonFake->EvaluateMVA(MVATagStr);
+    if(GetChannelString(channel) == "EMu")  MVAvalue = MVAReaderEMNonFake->EvaluateMVA(MVATagStr);
+  }
 
   return MVAvalue;
 }

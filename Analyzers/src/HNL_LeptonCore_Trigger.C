@@ -83,7 +83,7 @@ void HNL_LeptonCore::SetupTriggerLists(){
   else if(DataYear==2017){
 
 
-    TrigList_HNL_DblMu = { "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v",
+    TrigList_HNL_DblMu = { //"HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v",
 			   "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v",
                            "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_v" };
     TrigList_HNL_Mu = {  "HLT_IsoMu27_v"};

@@ -1,5 +1,7 @@
 #include "HNL_SR3_BDT_KinVar.h"
 
+const float MZ = 91.1876, MW = 80.379;
+
 void HNL_SR3_BDT_KinVar::initializeAnalyzer(){
 
   HNL_LeptonCore::initializeAnalyzer();
@@ -27,14 +29,14 @@ void HNL_SR3_BDT_KinVar::initializeAnalyzer(){
   tree_mm->Branch("Etal1", &Etal1, "Etal1/F");                     tree_ee->Branch("Etal1", &Etal1, "Etal1/F");                     tree_em->Branch("Etal1", &Etal1, "Etal1/F");
   tree_mm->Branch("Etal2", &Etal2, "Etal2/F");                     tree_ee->Branch("Etal2", &Etal2, "Etal2/F");                     tree_em->Branch("Etal2", &Etal2, "Etal2/F");
 
-  tree_mm->Branch("PtRatiol1", &PtRatiol1, "PtRatiol1/F");         tree_ee->Branch("PtRatiol1", &PtRatiol1, "PtRatiol1/F");         tree_em->Branch("PtRatiol1", &PtRatiol1, "PtRatiol1/F");
-  tree_mm->Branch("PtRatiol2", &PtRatiol2, "PtRatiol2/F");         tree_ee->Branch("PtRatiol2", &PtRatiol2, "PtRatiol2/F");         tree_em->Branch("PtRatiol2", &PtRatiol2, "PtRatiol2/F");
+  //tree_mm->Branch("PtRatiol1", &PtRatiol1, "PtRatiol1/F");         tree_ee->Branch("PtRatiol1", &PtRatiol1, "PtRatiol1/F");         tree_em->Branch("PtRatiol1", &PtRatiol1, "PtRatiol1/F");
+  //tree_mm->Branch("PtRatiol2", &PtRatiol2, "PtRatiol2/F");         tree_ee->Branch("PtRatiol2", &PtRatiol2, "PtRatiol2/F");         tree_em->Branch("PtRatiol2", &PtRatiol2, "PtRatiol2/F");
   tree_mm->Branch("PtRatioAJl1", &PtRatioAJl1, "PtRatioAJl1/F");   tree_ee->Branch("PtRatioAJl1", &PtRatioAJl1, "PtRatioAJl1/F");   tree_em->Branch("PtRatioAJl1", &PtRatioAJl1, "PtRatioAJl1/F");
   tree_mm->Branch("PtRatioAJl2", &PtRatioAJl2, "PtRatioAJl2/F");   tree_ee->Branch("PtRatioAJl2", &PtRatioAJl2, "PtRatioAJl2/F");   tree_em->Branch("PtRatioAJl2", &PtRatioAJl2, "PtRatioAJl2/F");
-  tree_mm->Branch("PtRelv0l1", &PtRelv0l1, "PtRelv0l1/F");         tree_ee->Branch("PtRelv0l1", &PtRelv0l1, "PtRelv0l1/F");         tree_em->Branch("PtRelv0l1", &PtRelv0l1, "PtRelv0l1/F");
-  tree_mm->Branch("PtRelv0l2", &PtRelv0l2, "PtRelv0l2/F");         tree_ee->Branch("PtRelv0l2", &PtRelv0l2, "PtRelv0l2/F");         tree_em->Branch("PtRelv0l2", &PtRelv0l2, "PtRelv0l2/F");
-  tree_mm->Branch("PtRelv1l1", &PtRelv1l1, "PtRelv1l1/F");         tree_ee->Branch("PtRelv1l1", &PtRelv1l1, "PtRelv1l1/F");         tree_em->Branch("PtRelv1l1", &PtRelv1l1, "PtRelv1l1/F");
-  tree_mm->Branch("PtRelv1l2", &PtRelv1l2, "PtRelv1l2/F");         tree_ee->Branch("PtRelv1l2", &PtRelv1l2, "PtRelv1l2/F");         tree_em->Branch("PtRelv1l2", &PtRelv1l2, "PtRelv1l2/F");
+  //tree_mm->Branch("PtRelv0l1", &PtRelv0l1, "PtRelv0l1/F");         tree_ee->Branch("PtRelv0l1", &PtRelv0l1, "PtRelv0l1/F");         tree_em->Branch("PtRelv0l1", &PtRelv0l1, "PtRelv0l1/F");
+  //tree_mm->Branch("PtRelv0l2", &PtRelv0l2, "PtRelv0l2/F");         tree_ee->Branch("PtRelv0l2", &PtRelv0l2, "PtRelv0l2/F");         tree_em->Branch("PtRelv0l2", &PtRelv0l2, "PtRelv0l2/F");
+  //tree_mm->Branch("PtRelv1l1", &PtRelv1l1, "PtRelv1l1/F");         tree_ee->Branch("PtRelv1l1", &PtRelv1l1, "PtRelv1l1/F");         tree_em->Branch("PtRelv1l1", &PtRelv1l1, "PtRelv1l1/F");
+  //tree_mm->Branch("PtRelv1l2", &PtRelv1l2, "PtRelv1l2/F");         tree_ee->Branch("PtRelv1l2", &PtRelv1l2, "PtRelv1l2/F");         tree_em->Branch("PtRelv1l2", &PtRelv1l2, "PtRelv1l2/F");
   tree_mm->Branch("CEMFracAJl1", &CEMFracAJl1, "CEMFracAJl1/F");   tree_ee->Branch("CEMFracAJl1", &CEMFracAJl1, "CEMFracAJl1/F");   tree_em->Branch("CEMFracAJl1", &CEMFracAJl1, "CEMFracAJl1/F");
   tree_mm->Branch("CEMFracAJl2", &CEMFracAJl2, "CEMFracAJl2/F");   tree_ee->Branch("CEMFracAJl2", &CEMFracAJl2, "CEMFracAJl2/F");   tree_em->Branch("CEMFracAJl2", &CEMFracAJl2, "CEMFracAJl2/F");
   tree_mm->Branch("NEMFracAJl1", &NEMFracAJl1, "NEMFracAJl1/F");   tree_ee->Branch("NEMFracAJl1", &NEMFracAJl1, "NEMFracAJl1/F");   tree_em->Branch("NEMFracAJl1", &NEMFracAJl1, "NEMFracAJl1/F");
@@ -47,18 +49,18 @@ void HNL_SR3_BDT_KinVar::initializeAnalyzer(){
   tree_mm->Branch("MuFracAJl2", &MuFracAJl2, "MuFracAJl2/F");      tree_ee->Branch("MuFracAJl2", &MuFracAJl2, "MuFracAJl2/F");      tree_em->Branch("MuFracAJl2", &MuFracAJl2, "MuFracAJl2/F");
   tree_mm->Branch("JetDiscAJl1", &JetDiscAJl1, "JetDiscAJl1/F");   tree_ee->Branch("JetDiscAJl1", &JetDiscAJl1, "JetDiscAJl1/F");   tree_em->Branch("JetDiscAJl1", &JetDiscAJl1, "JetDiscAJl1/F");
   tree_mm->Branch("JetDiscAJl2", &JetDiscAJl2, "JetDiscAJl2/F");   tree_ee->Branch("JetDiscAJl2", &JetDiscAJl2, "JetDiscAJl2/F");   tree_em->Branch("JetDiscAJl2", &JetDiscAJl2, "JetDiscAJl2/F");
-  tree_mm->Branch("CEMFracCJl1", &CEMFracCJl1, "CEMFracCJl1/F");   tree_ee->Branch("CEMFracCJl1", &CEMFracCJl1, "CEMFracCJl1/F");   tree_em->Branch("CEMFracCJl1", &CEMFracCJl1, "CEMFracCJl1/F");
-  tree_mm->Branch("CEMFracCJl2", &CEMFracCJl2, "CEMFracCJl2/F");   tree_ee->Branch("CEMFracCJl2", &CEMFracCJl2, "CEMFracCJl2/F");   tree_em->Branch("CEMFracCJl2", &CEMFracCJl2, "CEMFracCJl2/F");
-  tree_mm->Branch("NEMFracCJl1", &NEMFracCJl1, "NEMFracCJl1/F");   tree_ee->Branch("NEMFracCJl1", &NEMFracCJl1, "NEMFracCJl1/F");   tree_em->Branch("NEMFracCJl1", &NEMFracCJl1, "NEMFracCJl1/F");
-  tree_mm->Branch("NEMFracCJl2", &NEMFracCJl2, "NEMFracCJl2/F");   tree_ee->Branch("NEMFracCJl2", &NEMFracCJl2, "NEMFracCJl2/F");   tree_em->Branch("NEMFracCJl2", &NEMFracCJl2, "NEMFracCJl2/F");
-  tree_mm->Branch("CHFracCJl1", &CHFracCJl1, "CHFracCJl1/F");      tree_ee->Branch("CHFracCJl1", &CHFracCJl1, "CHFracCJl1/F");      tree_em->Branch("CHFracCJl1", &CHFracCJl1, "CHFracCJl1/F");
-  tree_mm->Branch("CHFracCJl2", &CHFracCJl2, "CHFracCJl2/F");      tree_ee->Branch("CHFracCJl2", &CHFracCJl2, "CHFracCJl2/F");      tree_em->Branch("CHFracCJl2", &CHFracCJl2, "CHFracCJl2/F");
-  tree_mm->Branch("NHFracCJl1", &NHFracCJl1, "NHFracCJl1/F");      tree_ee->Branch("NHFracCJl1", &NHFracCJl1, "NHFracCJl1/F");      tree_em->Branch("NHFracCJl1", &NHFracCJl1, "NHFracCJl1/F");
-  tree_mm->Branch("NHFracCJl2", &NHFracCJl2, "NHFracCJl2/F");      tree_ee->Branch("NHFracCJl2", &NHFracCJl2, "NHFracCJl2/F");      tree_em->Branch("NHFracCJl2", &NHFracCJl2, "NHFracCJl2/F");
-  tree_mm->Branch("MuFracCJl1", &MuFracCJl1, "MuFracCJl1/F");      tree_ee->Branch("MuFracCJl1", &MuFracCJl1, "MuFracCJl1/F");      tree_em->Branch("MuFracCJl1", &MuFracCJl1, "MuFracCJl1/F");
-  tree_mm->Branch("MuFracCJl2", &MuFracCJl2, "MuFracCJl2/F");      tree_ee->Branch("MuFracCJl2", &MuFracCJl2, "MuFracCJl2/F");      tree_em->Branch("MuFracCJl2", &MuFracCJl2, "MuFracCJl2/F");
-  tree_mm->Branch("JetDiscCJl1", &JetDiscCJl1, "JetDiscCJl1/F");   tree_ee->Branch("JetDiscCJl1", &JetDiscCJl1, "JetDiscCJl1/F");   tree_em->Branch("JetDiscCJl1", &JetDiscCJl1, "JetDiscCJl1/F");
-  tree_mm->Branch("JetDiscCJl2", &JetDiscCJl2, "JetDiscCJl2/F");   tree_ee->Branch("JetDiscCJl2", &JetDiscCJl2, "JetDiscCJl2/F");   tree_em->Branch("JetDiscCJl2", &JetDiscCJl2, "JetDiscCJl2/F");
+  //tree_mm->Branch("CEMFracCJl1", &CEMFracCJl1, "CEMFracCJl1/F");   tree_ee->Branch("CEMFracCJl1", &CEMFracCJl1, "CEMFracCJl1/F");   tree_em->Branch("CEMFracCJl1", &CEMFracCJl1, "CEMFracCJl1/F");
+  //tree_mm->Branch("CEMFracCJl2", &CEMFracCJl2, "CEMFracCJl2/F");   tree_ee->Branch("CEMFracCJl2", &CEMFracCJl2, "CEMFracCJl2/F");   tree_em->Branch("CEMFracCJl2", &CEMFracCJl2, "CEMFracCJl2/F");
+  //tree_mm->Branch("NEMFracCJl1", &NEMFracCJl1, "NEMFracCJl1/F");   tree_ee->Branch("NEMFracCJl1", &NEMFracCJl1, "NEMFracCJl1/F");   tree_em->Branch("NEMFracCJl1", &NEMFracCJl1, "NEMFracCJl1/F");
+  //tree_mm->Branch("NEMFracCJl2", &NEMFracCJl2, "NEMFracCJl2/F");   tree_ee->Branch("NEMFracCJl2", &NEMFracCJl2, "NEMFracCJl2/F");   tree_em->Branch("NEMFracCJl2", &NEMFracCJl2, "NEMFracCJl2/F");
+  //tree_mm->Branch("CHFracCJl1", &CHFracCJl1, "CHFracCJl1/F");      tree_ee->Branch("CHFracCJl1", &CHFracCJl1, "CHFracCJl1/F");      tree_em->Branch("CHFracCJl1", &CHFracCJl1, "CHFracCJl1/F");
+  //tree_mm->Branch("CHFracCJl2", &CHFracCJl2, "CHFracCJl2/F");      tree_ee->Branch("CHFracCJl2", &CHFracCJl2, "CHFracCJl2/F");      tree_em->Branch("CHFracCJl2", &CHFracCJl2, "CHFracCJl2/F");
+  //tree_mm->Branch("NHFracCJl1", &NHFracCJl1, "NHFracCJl1/F");      tree_ee->Branch("NHFracCJl1", &NHFracCJl1, "NHFracCJl1/F");      tree_em->Branch("NHFracCJl1", &NHFracCJl1, "NHFracCJl1/F");
+  //tree_mm->Branch("NHFracCJl2", &NHFracCJl2, "NHFracCJl2/F");      tree_ee->Branch("NHFracCJl2", &NHFracCJl2, "NHFracCJl2/F");      tree_em->Branch("NHFracCJl2", &NHFracCJl2, "NHFracCJl2/F");
+  //tree_mm->Branch("MuFracCJl1", &MuFracCJl1, "MuFracCJl1/F");      tree_ee->Branch("MuFracCJl1", &MuFracCJl1, "MuFracCJl1/F");      tree_em->Branch("MuFracCJl1", &MuFracCJl1, "MuFracCJl1/F");
+  //tree_mm->Branch("MuFracCJl2", &MuFracCJl2, "MuFracCJl2/F");      tree_ee->Branch("MuFracCJl2", &MuFracCJl2, "MuFracCJl2/F");      tree_em->Branch("MuFracCJl2", &MuFracCJl2, "MuFracCJl2/F");
+  //tree_mm->Branch("JetDiscCJl1", &JetDiscCJl1, "JetDiscCJl1/F");   tree_ee->Branch("JetDiscCJl1", &JetDiscCJl1, "JetDiscCJl1/F");   tree_em->Branch("JetDiscCJl1", &JetDiscCJl1, "JetDiscCJl1/F");
+  //tree_mm->Branch("JetDiscCJl2", &JetDiscCJl2, "JetDiscCJl2/F");   tree_ee->Branch("JetDiscCJl2", &JetDiscCJl2, "JetDiscCJl2/F");   tree_em->Branch("JetDiscCJl2", &JetDiscCJl2, "JetDiscCJl2/F");
 
   tree_mm->Branch("dEtall", &dEtall, "dEtall/F");                  tree_ee->Branch("dEtall", &dEtall, "dEtall/F");                  tree_em->Branch("dEtall", &dEtall, "dEtall/F");
   tree_mm->Branch("dRll", &dRll, "dRll/F");                        tree_ee->Branch("dRll", &dRll, "dRll/F");                        tree_em->Branch("dRll", &dRll, "dRll/F");
@@ -70,7 +72,10 @@ void HNL_SR3_BDT_KinVar::initializeAnalyzer(){
   tree_mm->Branch("dRlj13", &dRlj13, "dRlj13/F");                  tree_ee->Branch("dRlj13", &dRlj13, "dRlj13/F");                  tree_em->Branch("dRlj13", &dRlj13, "dRlj13/F");
   tree_mm->Branch("dRlj21", &dRlj21, "dRlj21/F");                  tree_ee->Branch("dRlj21", &dRlj21, "dRlj21/F");                  tree_em->Branch("dRlj21", &dRlj21, "dRlj21/F");
   tree_mm->Branch("dRlj22", &dRlj22, "dRlj22/F");                  tree_ee->Branch("dRlj22", &dRlj22, "dRlj22/F");                  tree_em->Branch("dRlj22", &dRlj22, "dRlj22/F");
-  tree_mm->Branch("dRlj23", &dRlj23, "dRlj23/F");                  tree_ee->Branch("dRlj23", &dRlj23, "dRlj23/F");                  tree_em->Branch("dRlj23", &dRlj23, "dRlj23/F");
+  tree_mm->Branch("dRlj23", &dRlj23, "dRlj23/F");                  tree_ee->Branch("dRlj23", &dRlj23, "dRlj23/F");                  tree_em->Branch("dRlj23", &dRlj23, "dRlj23/F");  
+  //tree_mm->Branch("dRlv1", &dRlv1, "dRlv1/F");                     tree_ee->Branch("dRlv1", &dRlv1, "dRlv1/F");                     tree_em->Branch("dRlv1", &dRlv1, "dRlv1/F");
+  //tree_mm->Branch("dRlv2", &dRlv2, "dRlv2/F");                     tree_ee->Branch("dRlv2", &dRlv2, "dRlv2/F");                     tree_em->Branch("dRlv2", &dRlv2, "dRlv2/F");
+  
   tree_mm->Branch("MSSSF", &MSSSF, "MSSSF/F");                     tree_ee->Branch("MSSSF", &MSSSF, "MSSSF/F");                     tree_em->Branch("MSSSF", &MSSSF, "MSSSF/F");
   tree_mm->Branch("Mlj11", &Mlj11, "Mlj11/F");                     tree_ee->Branch("Mlj11", &Mlj11, "Mlj11/F");                     tree_em->Branch("Mlj11", &Mlj11, "Mlj11/F");
   tree_mm->Branch("Mlj12", &Mlj12, "Mlj12/F");                     tree_ee->Branch("Mlj12", &Mlj12, "Mlj12/F");                     tree_em->Branch("Mlj12", &Mlj12, "Mlj12/F");
@@ -114,6 +119,8 @@ void HNL_SR3_BDT_KinVar::initializeAnalyzer(){
   tree_mm->Branch("dRWjj", &dRWjj, "dRWjj/F");                     tree_ee->Branch("dRWjj", &dRWjj, "dRWjj/F");                     tree_em->Branch("dRWjj", &dRWjj, "dRWjj/F");
   tree_mm->Branch("dRlW12", &dRlW12, "dRlW12/F");                  tree_ee->Branch("dRlW12", &dRlW12, "dRlW12/F");                  tree_em->Branch("dRlW12", &dRlW12, "dRlW12/F");
   tree_mm->Branch("dRlW22", &dRlW22, "dRlW22/F");                  tree_ee->Branch("dRlW22", &dRlW22, "dRlW22/F");                  tree_em->Branch("dRlW22", &dRlW22, "dRlW22/F");
+  tree_mm->Branch("dRlN12", &dRlN12, "dRlN12/F");                  tree_ee->Branch("dRlN12", &dRlN12, "dRlN12/F");                  tree_em->Branch("dRlN12", &dRlN12, "dRlN12/F");
+  tree_mm->Branch("dRlN21", &dRlN21, "dRlN21/F");                  tree_ee->Branch("dRlN21", &dRlN21, "dRlN21/F");                  tree_em->Branch("dRlN21", &dRlN21, "dRlN21/F");
   tree_mm->Branch("M_W2_jj", &M_W2_jj, "M_W2_jj/F");               tree_ee->Branch("M_W2_jj", &M_W2_jj, "M_W2_jj/F");               tree_em->Branch("M_W2_jj", &M_W2_jj, "M_W2_jj/F");
   tree_mm->Branch("M_W1_lljj", &M_W1_lljj, "M_W1_lljj/F");         tree_ee->Branch("M_W1_lljj", &M_W1_lljj, "M_W1_lljj/F");         tree_em->Branch("M_W1_lljj", &M_W1_lljj, "M_W1_lljj/F");
   tree_mm->Branch("M_N1_l1jj", &M_N1_l1jj, "M_N1_l1jj/F");         tree_ee->Branch("M_N1_l1jj", &M_N1_l1jj, "M_N1_l1jj/F");         tree_em->Branch("M_N1_l1jj", &M_N1_l1jj, "M_N1_l1jj/F");
@@ -129,67 +136,136 @@ void HNL_SR3_BDT_KinVar::initializeAnalyzer(){
 void HNL_SR3_BDT_KinVar::executeEvent(){
   
   AnalyzerParameter param_bdt = HNL_LeptonCore::InitialiseHNLParameter("BDT");
-  
+
   Event ev = GetEvent();
   double weight =SetupWeight(ev,param_bdt);
   
-  FillHist("CutFlow", 0., weight, 20, 0., 20.);
-  
+  //FillHist("CutFlow", 0., weight, 20, 0., 20.);
+  FillHist("CutFlow_MuMu", 0.5, 1., 10, 0., 10.);
+  FillHist("CutFlow_EE", 0.5, 1., 10, 0., 10.);
+  FillHist("CutFlow_EMu", 0.5, 1., 10, 0., 10.);
+  FillHist("CutFlow_MuE", 0.5, 1., 10, 0., 10.);
+
   if(!PassMETFilter()) return;
 
-  vector<HNL_LeptonCore::Channel> channels = {EE,MuMu, EMu};
-  
+  FillHist("CutFlow_MuMu", 1.5, 1., 10, 0., 10.);
+  FillHist("CutFlow_EE", 1.5, 1., 10, 0., 10.);
+  FillHist("CutFlow_EMu", 1.5, 1., 10, 0., 10.);
+  FillHist("CutFlow_MuE", 1.5, 1., 10, 0., 10.);
+
+  //vector<HNL_LeptonCore::Channel> channels = {EE,MuMu, EMu};
+  vector<HNL_LeptonCore::Channel> channels = {MuMu, EE, EMu, MuE};
+
+  std::vector<Muon>       MuonCollT     = GetLepCollByRunType    ( GetMuons    (param_bdt.Muon_Tight_ID, 10., 2.4)    , param_bdt, "");
+  std::vector<Electron>   ElectronCollT = GetLepCollByRunType    ( GetElectrons(param_bdt.Electron_Tight_ID, 10., 2.5), param_bdt, "");
+
+  std::vector<Electron>   ElectronCollV = GetElectrons(param_bdt.Electron_Veto_ID, 10., 2.5);
+  std::vector<Muon>       MuonCollV     = GetMuons    (param_bdt.Muon_Veto_ID, 5., 2.4);
+
+  std::vector<Lepton *> LepsT  = MakeLeptonPointerVector(MuonCollT,ElectronCollT);
+  std::vector<Lepton *> LepsV  = MakeLeptonPointerVector(MuonCollV,ElectronCollV);
+
+  if(!(LepsT.size() == 2)) return;
+
+  if(!PassGenMatchFilter(LepsT, param_bdt)) return;
+
   for(auto dilep_channel : channels){
 
-    std::vector<Muon>       MuonCollT     = GetLepCollByRunType    ( SelectMuons    ( param_bdt,param_bdt.Muon_Tight_ID, 10., 2.4,weight)    , param_bdt, "NoSel");
-    std::vector<Electron>   ElectronCollT = GetLepCollByRunType    ( SelectElectrons( param_bdt,param_bdt.Electron_Tight_ID, 10., 2.5,weight), param_bdt, "NoSel");
+    //std::vector<Muon>       MuonCollT     = GetLepCollByRunType    ( GetMuons    ( param_bdt,param_bdt.Muon_Tight_ID, 10., 2.4, RunFake)    , param_bdt, "NoSel");
+    //std::vector<Electron>   ElectronCollT = GetLepCollByRunType    ( GetElectrons( param_bdt,param_bdt.Electron_Tight_ID, 10., 2.5, RunFake), param_bdt, "NoSel");
     
+    //std::vector<Electron>   ElectronCollV = GetElectrons(param_bdt.Electron_Veto_ID, 10., 2.5);
+    //std::vector<Muon>       MuonCollV     = GetMuons    (param_bdt.Muon_Veto_ID, 5., 2.4);
     
-    std::vector<Electron>   ElectronCollV = GetElectrons(param_bdt.Electron_Veto_ID, 10., 2.5);
-    std::vector<Muon>       MuonCollV     = GetMuons    (param_bdt.Muon_Veto_ID, 5., 2.4);
-    
-    std::vector<Lepton *> LepsT  = MakeLeptonPointerVector(MuonCollT,ElectronCollT);
-    std::vector<Lepton *> LepsV  = MakeLeptonPointerVector(MuonCollV,ElectronCollV);
+    //std::vector<Lepton *> LepsT  = MakeLeptonPointerVector(MuonCollT,ElectronCollT);
+    //std::vector<Lepton *> LepsV  = MakeLeptonPointerVector(MuonCollV,ElectronCollV);
 
     if (!PassTriggerSelection(dilep_channel, ev, LepsT, "Dilep")) continue;
 
     if(DataEra=="2017" && dilep_channel==MuMu){
       
-      if(ev.PassTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v") && !ev.PassTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v")) weight = weight*4803.366325775/ev.GetTriggerLumi("Full");
+      //if(ev.PassTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v") && !ev.PassTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v")) weight = weight*4803.366325775/ev.GetTriggerLumi("Full");
+      //if(!ev.PassTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_v")) continue;
+      if(ev.PassTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v") && !ev.PassTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_v")) weight = weight*36674.511073518/ev.GetTriggerLumi("Full");
 
     }
 
-    std::vector<Tau>    mytaus         = GetTaus("HNVeto",20., 2.3);
+    if(dilep_channel == MuMu) FillHist("CutFlow_MuMu", 2.5, 1., 10, 0., 10.);
+    if(dilep_channel == EE) FillHist("CutFlow_EE", 2.5, 1., 10, 0., 10.);
+    if(dilep_channel == EMu) FillHist("CutFlow_EMu", 2.5, 1., 10, 0., 10.);
+    if(dilep_channel == MuE) FillHist("CutFlow_MuE", 2.5, 1., 10, 0., 10.);
+
+    //std::vector<Tau>    mytaus         = GetTaus("HNVeto",20., 2.3);
+ 
     std::vector<FatJet> fatjets_tmp    = GetFatJets("tight", 200., 5);
     std::vector<Jet>    jets_tmp       = GetJets("tight", 15., 5);
 
-    std::vector<Jet>    AK4_JetAllColl = GetJets("NoID", 10., 3.0);
-    std::vector<FatJet> AK8_JetColl    = SelectAK8Jets(fatjets_tmp, 200., 2.7, true, 1., false, -999, false, 40., 130., "", ElectronCollV, MuonCollV);
-    std::vector<Jet>    AK4_JetColl    = SelectAK4Jets(jets_tmp,     20., 2.7, true, 0.4, 0.8, "", ElectronCollV, MuonCollV, AK8_JetColl);
-    std::vector<Jet>    AK4_JetVBFColl = SelectAK4Jets(jets_tmp,     30., 4.7, true, 0.4, 0.8, "", ElectronCollV, MuonCollV, AK8_JetColl);
+    //std::vector<Jet>    AK4_JetAllColl = GetJets("NoID", 10., 3.0);
+    //std::vector<FatJet> AK8_JetColl    = SelectAK8Jets(fatjets_tmp, 200., 2.7, true, 1., false, -999, false, 40., 130., ElectronCollV, MuonCollV);
+    //std::vector<Jet>    AK4_JetColl    = SelectAK4Jets(jets_tmp,     20., 2.7, true, 0.4, 0.8, "", ElectronCollV, MuonCollV, AK8_JetColl);
+    //std::vector<Jet>    AK4_JetVBFColl = SelectAK4Jets(jets_tmp,     30., 4.7, true, 0.4, 0.8, "", ElectronCollV, MuonCollV, AK8_JetColl);
+
+    std::vector<FatJet> AK8_JetColl    = SelectAK8Jets(fatjets_tmp, 200., 2.7, true, 1., false, -999, true, 40., 130., "particleNet_WvsQCD", ElectronCollV, MuonCollV);
+    std::vector<Jet>    AK4_JetColl    = SelectAK4Jets(jets_tmp,      20., 2.7, true, 0.4, 0.8, "Loose",  ElectronCollV, MuonCollV, AK8_JetColl);
+    std::vector<Jet>    AK4_JetVBFColl = SelectAK4Jets(jets_tmp,      30., 4.7, true, 0.4, 0.8, "Loose",  ElectronCollV, MuonCollV, AK8_JetColl);
+    std::vector<Jet>    AK4_JetAllColl = SelectAK4Jets(jets_tmp,      20., 2.7, true, 0.4, 0.8, "Loose",  ElectronCollV, MuonCollV, AK8_JetColl);
 
     Particle METv = GetMiniAODvMET("PuppiT1xyULCorr");
  
-    std::vector<Jet> bjets_tmp                  = SelectAK4Jets(jets_tmp,     20., 2.4, true, 0.4, 0.8, "", ElectronCollV, MuonCollV, AK8_JetColl);
+    std::vector<Jet> bjets_tmp         = SelectAK4Jets(jets_tmp,      20., 2.4, true, 0.4, 0.8, "", ElectronCollV, MuonCollV, AK8_JetColl);
 
     JetTagging::Parameters param_jets = JetTagging::Parameters(JetTagging::DeepJet, JetTagging::Medium, JetTagging::incl, JetTagging::mujets);
     std::vector<Jet> BJetColl         = SelectBJets(param_bdt, bjets_tmp, param_jets);
     double sf_btag                    = GetBJetSF(param_bdt, bjets_tmp, param_jets);
     if(!IsData )weight*= sf_btag;
-    
+
+    //==== Merging OS+SS for signal    
     bool passCharge = false;
     if(MCSample.Contains("TypeI")) passCharge = true;
+    if(RunFake) passCharge = true;
     else{
       if(SameCharge(LepsT)) passCharge = true;
     }
 
+    //==== Merging multiple datasets for signal and DY Z
+    double weightCharge = 1., weightDYZ = 1.;
+
+    if(RunFake || MCSample.Contains("DYTypeI")) weightCharge = 0.5;
+    weight *= weightCharge;
+
+    if(MCSample.Contains("DYJets")) weightDYZ = 0.5;
+    weight *= weightDYZ;
+
+    //==== Event selection : SR3
     bool EventCand = false;
 
-    if (passCharge && LepsV.size()==2){
-      if (GetLLMass(LepsT) > 10.){
-	if (AK8_JetColl.size() ==0) {
+    if(passCharge && LepsV.size()==2){
 
-	  if(!PassVBFInitial(AK4_JetVBFColl)) {
+      if(dilep_channel == MuMu) FillHist("CutFlow_MuMu", 3.5, 1., 10, 0., 10.);
+      if(dilep_channel == EE) FillHist("CutFlow_EE", 3.5, 1., 10, 0., 10.);
+      if(dilep_channel == EMu) FillHist("CutFlow_EMu", 3.5, 1., 10, 0., 10.);
+      if(dilep_channel == MuE) FillHist("CutFlow_MuE", 3.5, 1., 10, 0., 10.);
+
+      if(GetLLMass(LepsT) > 10.){
+
+        if(dilep_channel == MuMu) FillHist("CutFlow_MuMu", 4.5, 1., 10, 0., 10.);
+        if(dilep_channel == EE) FillHist("CutFlow_EE", 4.5, 1., 10, 0., 10.);
+        if(dilep_channel == EMu) FillHist("CutFlow_EMu", 4.5, 1., 10, 0., 10.);
+        if(dilep_channel == MuE) FillHist("CutFlow_MuE", 4.5, 1., 10, 0., 10.);
+
+	if(AK8_JetColl.size() == 0){
+
+          if(dilep_channel == MuMu) FillHist("CutFlow_MuMu", 5.5, 1., 10, 0., 10.);
+          if(dilep_channel == EE) FillHist("CutFlow_EE", 5.5, 1., 10, 0., 10.);
+          if(dilep_channel == EMu) FillHist("CutFlow_EMu", 5.5, 1., 10, 0., 10.);
+          if(dilep_channel == MuE) FillHist("CutFlow_MuE", 5.5, 1., 10, 0., 10.);
+
+	  if(!PassVBFInitial(AK4_JetVBFColl)){
+
+            if(dilep_channel == MuMu) FillHist("CutFlow_MuMu", 6.5, 1., 10, 0., 10.);
+            if(dilep_channel == EE) FillHist("CutFlow_EE", 6.5, 1., 10, 0., 10.);
+            if(dilep_channel == EMu) FillHist("CutFlow_EMu", 6.5, 1., 10, 0., 10.);
+            if(dilep_channel == MuE) FillHist("CutFlow_MuE", 6.5, 1., 10, 0., 10.);
 
 	    EventCand=true;
 
@@ -199,9 +275,9 @@ void HNL_SR3_BDT_KinVar::executeEvent(){
       }
     }
 
-    if(!EventCand) return;
+    //if(!EventCand) return;
 
-    MakeTreeSS2L(dilep_channel, LepsT, AK4_JetAllColl, AK4_JetColl, AK4_JetVBFColl, BJetColl, METv, weight, "");
+    if(EventCand) MakeTreeSS2L(dilep_channel, LepsT, AK4_JetAllColl, AK4_JetColl, AK4_JetVBFColl, BJetColl, METv, weight, "");
 
   }
 
@@ -219,14 +295,21 @@ void HNL_SR3_BDT_KinVar::MakeTreeSS2L(HNL_LeptonCore::Channel lep_channel,vector
   //if(!SameCharge(LepTColl)) return;
   
   // CorrectChannelStream checks EE channel has only EE events
-  if(!CheckLeptonFlavourForChannel(lep_channel, LepTColl)) return;
+  //if(!CheckLeptonFlavourForChannel(lep_channel, LepTColl)) return;
+  if(CheckLeptonFlavourForChannel(lep_channel, LepTColl)){
 
   // Pt cut is set in CheckLeptonFlavourForChannel
   //if(!(LepTColl[0]->Pt()>20 && LepTColl[1]->Pt()>10)) return;
 
   float Mll = GetLLMass(LepTColl);
-  if (lep_channel==EE && (fabs(Mll-M_Z) < 10.)) return;
-  
+  //if (lep_channel==EE && (fabs(Mll-90.) < 10.)) return;
+  if(lep_channel==EE && (fabs(Mll-MZ)<10.)) return;
+
+  if(lep_channel == MuMu) FillHist("CutFlow_MuMu", 7.5, 1., 10, 0., 10.);
+  if(lep_channel == EE) FillHist("CutFlow_EE", 7.5, 1., 10, 0., 10.);
+  if(lep_channel == EMu) FillHist("CutFlow_EMu", 7.5, 1., 10, 0., 10.);
+  if(lep_channel == MuE) FillHist("CutFlow_MuE", 7.5, 1., 10, 0., 10.);
+
   InitializeTreeVars();
   
   Nj      = JetColl.size();
@@ -297,16 +380,18 @@ void HNL_SR3_BDT_KinVar::MakeTreeSS2L(HNL_LeptonCore::Channel lep_channel,vector
   Mjj34   = JetColl.size()<4? -1.:(JetColl.at(2)+JetColl.at(3)).M();
 
   //==== Vars for non-prompt lepton bkg
-  int IdxMatchJetl1=-1, IdxMatchAwayJetl1=-1, IdxMatchJetl2=-1, IdxMatchAwayJetl2=-1;
-  float mindR1=999., maxdPhi1=-999., mindR2=999., maxdPhi2=-999.;
+  //int IdxMatchJetl1=-1, IdxMatchAwayJetl1=-1, IdxMatchJetl2=-1, IdxMatchAwayJetl2=-1;
+  //float mindR1=999., maxdPhi1=-999., mindR2=999., maxdPhi2=-999.;
+  int IdxMatchAwayJetl1=-1, IdxMatchAwayJetl2=-1;
+  float maxdPhi1=-999., maxdPhi2=-999.;
 
   for(unsigned int ij=0; ij<JetAllColl.size(); ij++){
 
     float dPhi1 = fabs(TVector2::Phi_mpi_pi(LepTColl.at(0)->Phi() - JetAllColl.at(ij).Phi()));
     if(dPhi1>maxdPhi1){ maxdPhi1=dPhi1; IdxMatchAwayJetl1=ij; }
-    float dR1=LepTColl.at(0)->DeltaR(JetAllColl.at(ij));
-    if(dR1>0.4) continue;
-    if(dR1<mindR1){ mindR1=dR1; IdxMatchJetl1=ij; }
+    //float dR1=LepTColl.at(0)->DeltaR(JetAllColl.at(ij));
+    //if(dR1>0.4) continue;
+    //if(dR1<mindR1){ mindR1=dR1; IdxMatchJetl1=ij; }
 
   }
 
@@ -314,13 +399,13 @@ void HNL_SR3_BDT_KinVar::MakeTreeSS2L(HNL_LeptonCore::Channel lep_channel,vector
 
     float dPhi2 = fabs(TVector2::Phi_mpi_pi(LepTColl.at(1)->Phi() - JetAllColl.at(ij).Phi()));
     if(dPhi2>maxdPhi2){ maxdPhi2=dPhi2; IdxMatchAwayJetl2=ij; }
-    float dR2=LepTColl.at(1)->DeltaR(JetAllColl.at(ij));
-    if(dR2>0.4) continue;
-    if(dR2<mindR2){ mindR2=dR2; IdxMatchJetl2=ij; }
+    //float dR2=LepTColl.at(1)->DeltaR(JetAllColl.at(ij));
+    //if(dR2>0.4) continue;
+    //if(dR2<mindR2){ mindR2=dR2; IdxMatchJetl2=ij; }
 
   }
 
-  if(IdxMatchJetl1!=-1){
+  /*if(IdxMatchJetl1!=-1){
 
     PtRatiol1   = LepTColl.at(0)->Pt()/JetAllColl.at(IdxMatchJetl1).Pt();
     TLorentzVector JetNoLep1(JetAllColl.at(IdxMatchJetl1));
@@ -360,7 +445,7 @@ void HNL_SR3_BDT_KinVar::MakeTreeSS2L(HNL_LeptonCore::Channel lep_channel,vector
 
     PtRatiol2=-1., PtRelv0l2=-1., PtRelv1l2=-1., CEMFracCJl2=-1., NEMFracCJl2=-1., CHFracCJl2=-1., NHFracCJl2=-1., MuFracCJl2=-1., JetDiscCJl2=-1.;
 
-  }
+  }*/
 
   if(IdxMatchAwayJetl1!=-1){
 
@@ -411,7 +496,7 @@ void HNL_SR3_BDT_KinVar::MakeTreeSS2L(HNL_LeptonCore::Channel lep_channel,vector
   MET2HT = JetColl.size()<1? -1.:pow(MET,2.)/HT;
   MET2ST = pow(MET,2.)/ST;
   
-  const float MW = 80.379;
+  //const float MW = 80.379;
   float dijetmass_tmp=9999.;
   float dijetmass=99990000.;
   int m=-999;
@@ -436,16 +521,36 @@ void HNL_SR3_BDT_KinVar::MakeTreeSS2L(HNL_LeptonCore::Channel lep_channel,vector
   dRWjj     = JetColl.size() > 1 ? JetColl[m].DeltaR(JetColl[n]) : -1.;
   dRlW12    = JetColl.size() > 1 ? LepTColl.at(0)->DeltaR(JetColl[m] + JetColl[n]) : -1.;
   dRlW22    = JetColl.size() > 1 ? LepTColl.at(1)->DeltaR(JetColl[m] + JetColl[n]) : -1.;
+  dRlN12    = JetColl.size() > 1 ? LepTColl.at(0)->DeltaR(*LepTColl.at(1) + JetColl[m] + JetColl[n]) : -1.;
+  dRlN21    = JetColl.size() > 1 ? LepTColl.at(1)->DeltaR(*LepTColl.at(0) + JetColl[m] + JetColl[n]) : -1.;
   M_W2_jj   = JetColl.size() > 1 ? (JetColl[m] + JetColl[n]).M() : -1.;
   M_W1_lljj = JetColl.size() > 1 ? (JetColl[m] + JetColl[n] + *LepTColl.at(0) + *LepTColl.at(1)).M() : -1.;
   M_N1_l1jj = JetColl.size() > 1 ? (JetColl[m] + JetColl[n] + *LepTColl.at(0)).M() : -1.;
   M_N2_l2jj = JetColl.size() > 1 ? (JetColl[m] + JetColl[n] + *LepTColl.at(1)).M() : -1.;
   
   w_tot     = !IsDATA? weight:-1.;
-  if(lep_channel == MuMu) tree_mm->Fill();
-  if(lep_channel == EE)   tree_ee->Fill();
-  if(lep_channel == EMu)  tree_em->Fill();
-  
+  //if(lep_channel == MuMu) tree_mm->Fill();
+  //if(lep_channel == EE)   tree_ee->Fill();
+  //if(lep_channel == EMu)  tree_em->Fill();
+
+  if(lep_channel == MuMu){
+    tree_mm->Fill();
+    FillHist("sumw_MuMu", 0.5, w_tot, 2, 0., 2.);
+  }
+  if(lep_channel == EE){
+    tree_ee->Fill();
+    FillHist("sumw_EE", 0.5, w_tot, 2, 0., 2.);
+  }
+  if(lep_channel == EMu){
+    tree_em->Fill();
+    FillHist("sumw_EMu", 0.5, w_tot, 2, 0., 2.);
+  }
+  if(lep_channel == MuE){
+    tree_em->Fill();
+    FillHist("sumw_MuE", 0.5, w_tot, 2, 0., 2.);
+  }
+
+  }
 
 }
 
@@ -474,7 +579,7 @@ void HNL_SR3_BDT_KinVar::InitializeTreeVars(){
   Mjj12=-1, Mjj13=-1, Mjj14=-1, Mjj23=-1, Mjj24=-1, Mjj34=-1;
 
   PtWj1=-1, PtWj2=-1;
-  dRWjj=-1, dRlW12=-1, dRlW22=-1;
+  dRWjj=-1, dRlW12=-1, dRlW22=-1, dRlN12=-1, dRlN21=-1;
   M_W2_jj=-1, M_W1_lljj=-1, M_N1_l1jj=-1, M_N2_l2jj=-1;
 
   w_tot=-1;
