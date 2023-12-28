@@ -737,7 +737,6 @@ void AnalyzerCore::SetupIDMVAReaderDefault(bool ForceSetupV4, bool ForceSetupV5)
   }
 
   if(SetupVersion5) SetupIDMVAReaderMuon();
-
   return ;
 }
 
@@ -2274,9 +2273,8 @@ void AnalyzerCore::SetupLeptonBDT( bool version4, bool version5){
 
   iSetupLeptonBDTv4=version4;
   iSetupLeptonBDTv5=version5;
-
   TMVA::Tools::Instance();
-  //ElectronIDv3ConvMVAReader = new TMVA::Reader();                                                                                                                                                                                                                                                                                                                                                                                      
+  //ElectronIDv3ConvMVAReader = new TMVA::Reader();
 
   if(version4) SetupLeptonBDTv4();
   if(version5) SetupLeptonBDTv5();

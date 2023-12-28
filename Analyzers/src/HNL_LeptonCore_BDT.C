@@ -1,7 +1,6 @@
 #include "HNL_LeptonCore.h"
 
 void HNL_LeptonCore::SetupEventMVAReader(bool ee, bool mm, bool emu){
-
   InitializeTreeVars();
 
   TString AnalyzerPath=std::getenv("SKFlat_WD");
@@ -9,7 +8,6 @@ void HNL_LeptonCore::SetupEventMVAReader(bool ee, bool mm, bool emu){
   MNStrList = {"90", "100", "150", "200", "300", "400", "500"};
   NCutList  = {"200"};
   NTreeList = {"850"};
-
 
   if(mm){
 
@@ -164,7 +162,6 @@ void HNL_LeptonCore::SetupEventMVAReader(bool ee, bool mm, bool emu){
 
   }
 
-
   if(ee){
 
     /*MVAReaderEE->AddVariable("Nvbfj", &ev_bdt_Nvbfj);
@@ -317,7 +314,6 @@ void HNL_LeptonCore::SetupEventMVAReader(bool ee, bool mm, bool emu){
     MVAReaderEENonFake->AddSpectator("w_tot", &w_tot);
 
   }
-
 
   if(emu){
 

@@ -79,16 +79,32 @@ void HNL_LeptonCore::SetupEvMVA(){
   MVAReaderMM = new TMVA::Reader();
   MVAReaderEE = new TMVA::Reader();
   MVAReaderEM = new TMVA::Reader();
+  MVAReaderMMFake = new TMVA::Reader();
+  MVAReaderEEFake = new TMVA::Reader();
+  MVAReaderEMFake = new TMVA::Reader();
+  MVAReaderMMNonFake = new TMVA::Reader();
+  MVAReaderEENonFake = new TMVA::Reader();
+  MVAReaderEMNonFake = new TMVA::Reader();
   cout << MVAReaderMM << "  " << MVAReaderEE <<" " << MVAReaderEM << endl;
+  cout << MVAReaderMMFake << "  " << MVAReaderEEFake <<" " << MVAReaderEMFake << endl;
+  cout << MVAReaderMMNonFake << "  " << MVAReaderEENonFake <<" " << MVAReaderEMNonFake << endl;
 
 }
 
 void HNL_LeptonCore::DeleteEvMVA(){
   
   cout << MVAReaderMM << "  " << MVAReaderEE << " " << MVAReaderEM << endl;
+  cout << MVAReaderMMFake << "  " << MVAReaderEEFake << " " << MVAReaderEMFake << endl;
+  cout << MVAReaderMMNonFake << "  " << MVAReaderEENonFake << " " << MVAReaderEMNonFake << endl;
   delete MVAReaderMM;
   delete MVAReaderEE;
   delete MVAReaderEM;
+  delete MVAReaderMMFake;
+  delete MVAReaderEEFake;
+  delete MVAReaderEMFake;
+  delete MVAReaderMMNonFake;
+  delete MVAReaderEENonFake;
+  delete MVAReaderEMNonFake;
 
 }
 
