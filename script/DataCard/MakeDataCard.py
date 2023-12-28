@@ -2,12 +2,19 @@
 # Place this at CombineTool/CMSSW_10_2_13/src/DataCardsShape/HNL_SignalRegionPlotter/Workspace
 # You need to place card_skeletons already
 
-import os
+import os, sys, argparse
+
+parser = argparse.ArgumentParser(description='option')
+parser.add_argument('--CR', action='store_true')
+parser.add_argument('--SR', action='store_true')
+parser.add_argument('--Syst', action='store_true')
+parser.add_argument('--Combine')
+args = parser.parse_args()
 
 pwd = os.getcwd()
-AddSyst = False # Add systematics
 
-if AddSyst:
+
+if args.Syst:
   with open("/data6/Users/jihkim/CombineTool/CMSSW_10_2_13/src/DataCardsShape/HNL_SignalRegionPlotter/Workspace/card_skeleton_syst.txt",'r') as f:
     lines = f.readlines()
 else:
@@ -16,8 +23,18 @@ else:
 
 #print lines
 
-#input_path = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegionPlotter/LimitInputs/"
-input_path = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegionPlotter_BeforeCRinput/LimitInputs/"
+if args.SR:
+  input_path = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegionPlotter/LimitInputs/"
+  binName = "sr"
+elif args.CR:
+  input_path = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegionPlotter/LimitInputs/"
+  binName = "sr_inv"
+else:
+  print "Please set SR or CR:"
+  print "python MakeDataCard.py --SR[--CR] [--Syst]"
+  print "Exiting ..."
+  sys.exit(1)
+
 eras = ["2016","2017","2018"]
 eras = ["2017"]
 #eras = ["2016preVFP","2016postVFP","2018"]
@@ -43,15 +60,19 @@ myWPs = ["231227_KCMS_WS_HNL_ULID","231227_KCMS_WS_HNTightV2"]
 
 doCombine = False #True --> merge all era's datacards into a single Run2 datacard. Run False first.
 
+for i in range(len(lines)):
+  lines[i] = lines[i].replace('bin1',binName)
+
 lines_orig = lines[:]
 
 for WP in myWPs:
-  if not doCombine:
+  if not args.Combine:
     os.system("mkdir -p "+WP)
     os.system("ln -s /data6/Users/jihkim/SKFlatAnalyzer/script/DataCard/MakeWorkspace.py "+WP)
     for era in eras:
       for channel in channels:
         for mass in masses:
+          # Setup the input root file
           lines[4] = "shapes * *  "+input_path+WP+"/"+era+"/"+mass+"_"+channel+"_card_input.root $PROCESS $PROCESS_$SYSTEMATIC\n"
           if int(mass.replace("M","")) < 500:
             if "Mu" in channel: lines[17] = "rate          -1      -1    0     -1    -1           0\n"  # no cf
@@ -72,7 +93,7 @@ for WP in myWPs:
             elif channel == "EMu":
               if "Muon" in lines[i]: lines[i] = lines_orig[i]
               if "Electron" in lines[i]: lines[i] = lines_orig[i]
-          with open(WP+"/card_"+era+"_"+channel+"_"+mass+".txt",'w') as f:
+          with open(WP+"/card_"+era+"_"+channel+"_"+mass+"_"+binName+".txt",'w') as f:
             for line in lines:
               f.write(line)
   else:
@@ -81,6 +102,12 @@ for WP in myWPs:
     os.system('pwd')
     for channel in channels:
       for mass in masses:
-        os.system("combineCards.py year16a=card_2016preVFP_"+channel+"_"+mass+".txt year16b=card_2016postVFP_"+channel+"_"+mass+".txt year17=card_2017_"+channel+"_"+mass+".txt year18=card_2018_"+channel+"_"+mass+".txt > card_Run2_"+channel+"_"+mass+".txt")
+        if args.Combine == "CR":
+          for era in eras:
+            os.system("combineCards.py sr=card_"+era+"_"+channel+"_"+mass+"_sr.txt sr_inv=card_"+era+"_"+channel+"_"+mass+"_sr_inv.txt > card_"+era+"_"+channel+"_"+mass+".txt")
+        elif args.Combine == "SR":
+          for era in eras:
+            os.system("combineCards.py year16a=card_2016preVFP_"+channel+"_"+mass+"_sr.txt year16b=card_2016postVFP_"+channel+"_"+mass+"_sr.txt year17=card_2017_"+channel+"_"+mass+"_sr.txt year18=card_2018_"+channel+"_"+mass+"_sr.txt > card_Run2_"+channel+"_"+mass+"_sr.txt")
+				else: os.system("combineCards.py year16a=card_2016preVFP_"+channel+"_"+mass+".txt year16b=card_2016postVFP_"+channel+"_"+mass+".txt year17=card_2017_"+channel+"_"+mass+".txt year18=card_2018_"+channel+"_"+mass+".txt > card_Run2_"+channel+"_"+mass+".txt")
     os.system('echo \'Done.\'')
     os.chdir(pwd)

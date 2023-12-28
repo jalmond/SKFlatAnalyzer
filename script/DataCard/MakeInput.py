@@ -12,18 +12,14 @@ masses = ["M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1
 masses = ["M5000","M7500","M10000","M15000","M20000"]
 masses = ["M90","M100","M150","M200","M300","M400","M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M10000","M15000","M20000"]
 #masses = ["M100","M200","M300","M400","M500"]
-masses = ["M100","M200","M500"]
+masses = ["M100","M200","M500","M600","M1000"]
 channels = ["MuMu","EE","EMu"]
 #channels = ["MuMu","EE"]
 tags = ["HNL_ULID","HNTightV2"] # HNLParameter Name
 outputTag = "231227_KCMS_WS" # tag the output as you wish
 
-#InputPath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegionPlotter/"
-InputPath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegionPlotter_BeforeCRinput/"
-Analyzer = "HNL_SignalRegionPlotter"
-
 # Skim
-DataSkim = ""
+DataSkim = "_SkimTree_HNMultiLepBDT_"
 FakeSkim = "_SkimTree_HNMultiLepBDT_"
 #CFSkim = "_SkimTree_HNMultiLepBDT_" #FIXME MC CF
 CFSkim = "_SkimTree_DileptonBDT_" #FIXME Data CF
@@ -41,83 +37,97 @@ MergeSignal = False
 #MergeDYVBF = True
 #MergeSSWW  = True
 
-Blinded = True # Blinded --> the total background will be used as data_obs
 AddSyst = False
+AddCR = True
+if AddCR:
+  Blinded = False # Blinded --> the total background will be used as data_obs
+  CRflag = "SS_CR__"
+  Analyzer = "HNL_ControlRegionPlotter"
+  Region = "CR"
+else:
+  Blinded = True # Blinded --> the total background will be used as data_obs
+  CRflag = ""
+  Analyzer = "HNL_SignalRegionPlotter"
+  Region = "SR"
 ChargeSplit = False
 if ChargeSplit:
   ChargeSplit = "ChargeSplit"
 else:
   ChargeSplit = ""
 
+InputPath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/"+Analyzer+"/"
+
 if MergeData:
 
   for era in eras:
-    OutFile=InputPath + era + "/DATA/"+Analyzer+DataSkim+"DATA.root"
+    OutFile=InputPath + era + "/" + CRflag + "/DATA/"+Analyzer+DataSkim+"DATA.root"
     if os.path.exists(OutFile):
       os.system("rm " + OutFile)
-    os.system("hadd " + OutFile + " " + InputPath + "/"+era+"/DATA/*")
+    os.system("hadd " + OutFile + " " + InputPath + "/"+era+"/" + CRflag + "/DATA/*")
 
 if MergeFake:
 
   for era in eras:
-    OutFile=InputPath + era + "/RunFake__/DATA/"+Analyzer+FakeSkim+"Fake.root"
+    OutFile=InputPath + era + "/" + CRflag + "RunFake__/DATA/"+Analyzer+FakeSkim+"Fake.root"
     if os.path.exists(OutFile):
       os.system("rm " + OutFile)
-    os.system("hadd " + OutFile + " " + InputPath + "/"+era+"/RunFake__/DATA/*")
+    os.system("hadd " + OutFile + " " + InputPath + "/"+era+"/" + CRflag + "RunFake__/DATA/*")
 
 if MergeCF:
 
   for era in eras:
-    OutFile=InputPath + era + "/RunCF__/DATA/"+Analyzer+CFSkim+"CF.root" #FIXME Data CF
-    #OutFile=InputPath + era + "/RunCF__/"+Analyzer+CFSkim+"CF.root" #FIXME MC CF
+    OutFile=InputPath + era + "/" + CRflag + "RunCF__/DATA/"+Analyzer+CFSkim+"CF.root" #FIXME Data CF
+    #OutFile=InputPath + era + "/" + CRflag + "RunCF__/"+Analyzer+CFSkim+"CF.root" #FIXME MC CF
     if os.path.exists(OutFile):
       os.system("rm " + OutFile)
-    os.system("hadd " + OutFile + " " + InputPath + "/"+era+"/RunCF__/DATA/*") #FIXME Data CF
-    #os.system("hadd " + OutFile + " " + InputPath + "/"+era+"/RunCF__/*") #FIXME MC CF
+    os.system("hadd " + OutFile + " " + InputPath + "/"+era+"/" + CRflag + "RunCF__/DATA/*") #FIXME Data CF
+    #os.system("hadd " + OutFile + " " + InputPath + "/"+era+"/" + CRflag + "RunCF__/*") #FIXME MC CF
 
 if MergeConv:
 
   for era in eras:
-    OutFile=InputPath + era + "/RunConv__/"+Analyzer+ConvSkim+"Conv.root"
+    OutFile=InputPath + era + "/" + CRflag + "RunConv__/"+Analyzer+ConvSkim+"Conv.root"
     if os.path.exists(OutFile):
       os.system("rm " + OutFile)
-    os.system("hadd " + OutFile + " " + InputPath + "/"+era+"/RunConv__/*")
+    os.system("hadd " + OutFile + " " + InputPath + "/"+era+"/" + CRflag + "RunConv__/*")
 
 if MergeMC:
 
   for era in eras:
     #OutFile=InputPath + era + "/"+Analyzer+MCSkim+"MC.root"
-    OutFile=InputPath + era + "/RunPrompt__/"+Analyzer+MCSkim+"MC.root"
+    OutFile=InputPath + era + "/" + CRflag + "RunPrompt__/"+Analyzer+MCSkim+"MC.root"
     if os.path.exists(OutFile):
       os.system("rm " + OutFile)
-    MClist = cmd.getoutput('ls '+InputPath+era+'/RunPrompt__/ | grep -v private | grep -v Run').replace("\n"," ").replace("HNL_SignalRegionPlotter",InputPath+era+"/RunPrompt__/HNL_SignalRegionPlotter") # remove signals, directories
+    MClist = cmd.getoutput('ls '+InputPath+era+'/' + CRflag + 'RunPrompt__/ | grep -v private | grep -v Run').replace("\n"," ").replace(Analyzer,InputPath+era+"/" + CRflag + "RunPrompt__/"+Analyzer) # remove signals, directories
     os.system("hadd " + OutFile + " " + MClist)
 
 if MergeSignal:
 
-  for era in eras:
-    for mass in masses:
-      OutFileDYVBF=InputPath + era + "/"+Analyzer+"_signalDYVBF_"+mass+".root"
-      OutFileSSWW =InputPath + era + "/"+Analyzer+"_signalSSWW_"+mass+".root"
-      if int(mass.replace("M","")) < 500: # DY only
-        os.system("hadd -f " + OutFileDYVBF + "  " + InputPath+"/"+era+"/*DYTypeI*"+mass+"*.root")
-      elif 500 <= int(mass.replace("M","")) and int(mass.replace("M","")) <= 3000: # DY+VBF+SSWW
-        os.system("hadd -f " + OutFileDYVBF + "  " + InputPath+"/"+era+"/*DYTypeI*"+mass+"*.root" + " " + InputPath+"/"+era+"/*VBFTypeI*"+mass+"*.root")
-        os.system("hadd -f " + OutFileSSWW  + "  " + InputPath+"/"+era+"/*SSWWTypeI*"+mass+"*.root")
-      elif 3000 < int(mass.replace("M","")): # SSWW only
-        os.system("hadd -f " + OutFileSSWW  + "  " + InputPath+"/"+era+"/*SSWWTypeI*"+mass+"*.root")
+  if AddCR: pass
+  else:
+    for era in eras:
+      for mass in masses:
+        OutFileDYVBF=InputPath + era + "/"+Analyzer+"_signalDYVBF_"+mass+".root"
+        OutFileSSWW =InputPath + era + "/"+Analyzer+"_signalSSWW_"+mass+".root"
+        if int(mass.replace("M","")) < 500: # DY only
+          os.system("hadd -f " + OutFileDYVBF + "  " + InputPath+"/"+era+"/*DYTypeI*"+mass+"*.root")
+        elif 500 <= int(mass.replace("M","")) and int(mass.replace("M","")) <= 3000: # DY+VBF+SSWW
+          os.system("hadd -f " + OutFileDYVBF + "  " + InputPath+"/"+era+"/*DYTypeI*"+mass+"*.root" + " " + InputPath+"/"+era+"/*VBFTypeI*"+mass+"*.root")
+          os.system("hadd -f " + OutFileSSWW  + "  " + InputPath+"/"+era+"/*SSWWTypeI*"+mass+"*.root")
+        elif 3000 < int(mass.replace("M","")): # SSWW only
+          os.system("hadd -f " + OutFileSSWW  + "  " + InputPath+"/"+era+"/*SSWWTypeI*"+mass+"*.root")
 
 for tag in tags:
   for era in eras:
     OutputPath = InputPath+'/LimitInputs/'+outputTag+'_'+tag+'/'
     os.system('mkdir -p '+OutputPath + era)
   
-    f_path_data        = InputPath + era + "/DATA/"+Analyzer+DataSkim+"DATA.root"
-    f_path_fake        = InputPath + era + "/RunFake__/DATA/"+Analyzer+FakeSkim+"Fake.root"
-    f_path_cf          = InputPath + era + "/RunCF__/DATA/"+Analyzer+CFSkim+"CF.root"
-    #f_path_cf          = InputPath + era + "/RunCF__/"+Analyzer+CFSkim+"CF.root" #FIXME MC CF
-    f_path_conv        = InputPath + era + "/RunConv__/"+Analyzer+ConvSkim+"Conv.root"
-    f_path_prompt      = InputPath + era + "/RunPrompt__/"+Analyzer+MCSkim+"MC.root"
+    f_path_data        = InputPath + era + "/" + CRflag + "/DATA/"+Analyzer+DataSkim+"DATA.root"
+    f_path_fake        = InputPath + era + "/" + CRflag + "RunFake__/DATA/"+Analyzer+FakeSkim+"Fake.root"
+    f_path_cf          = InputPath + era + "/" + CRflag + "RunCF__/DATA/"+Analyzer+CFSkim+"CF.root"
+    #f_path_cf          = InputPath + era + "/" + CRflag + "RunCF__/"+Analyzer+CFSkim+"CF.root" #FIXME MC CF
+    f_path_conv        = InputPath + era + "/" + CRflag + "RunConv__/"+Analyzer+ConvSkim+"Conv.root"
+    f_path_prompt      = InputPath + era + "/" + CRflag + "RunPrompt__/"+Analyzer+MCSkim+"MC.root"
     
     if not Blinded: f_data        = TFile.Open(f_path_data)
     f_fake        = TFile.Open(f_path_fake)
@@ -128,13 +138,13 @@ for tag in tags:
     for mass in masses: #iterate for signals
       for channel in channels:
         if int(mass.replace("M","")) <= 500:
-          if channel == "MuMu": input_hist =  "LimitInputBDT/"+channel+"_Channel/"+tag+"/"+mass+"/LimitBins/MuonSR" #path to the input histogram
-          elif channel == "EE": input_hist =  "LimitInputBDT/"+channel+"_Channel/"+tag+"/"+mass+"/LimitBins/ElectronSR" #path to the input histogram
-          elif channel == "EMu": input_hist = "LimitInputBDT/"+channel+"_Channel/"+tag+"/"+mass+"/LimitBins/ElectronMuonSR" #path to the input histogram
+          if channel == "MuMu": input_hist =  "LimitInputBDT/"+channel+"/"+tag+"/"+mass+"/LimitBins/Muon"+Region #path to the input histogram
+          elif channel == "EE": input_hist =  "LimitInputBDT/"+channel+"/"+tag+"/"+mass+"/LimitBins/Electron"+Region #path to the input histogram
+          elif channel == "EMu": input_hist = "LimitInputBDT/"+channel+"/"+tag+"/"+mass+"/LimitBins/ElectronMuon"+Region #path to the input histogram
         elif int(mass.replace("M","")) > 500:
-          if channel == "MuMu": input_hist =  "LimitInput/"+channel+"_Channel/"+tag+"/LimitBins/Muon"+ChargeSplit+"SR" #path to the input histogram
-          elif channel == "EE": input_hist =  "LimitInput/"+channel+"_Channel/"+tag+"/LimitBins/Electron"+ChargeSplit+"SR" #path to the input histogram
-          elif channel == "EMu": input_hist = "LimitInput/"+channel+"_Channel/"+tag+"/LimitBins/ElectronMuon"+ChargeSplit+"SR" #path to the input histogram
+          if channel == "MuMu": input_hist =  "LimitInput/"+channel+"/"+tag+"/LimitBins/Muon"+ChargeSplit+Region #path to the input histogram
+          elif channel == "EE": input_hist =  "LimitInput/"+channel+"/"+tag+"/LimitBins/Electron"+ChargeSplit+Region #path to the input histogram
+          elif channel == "EMu": input_hist = "LimitInput/"+channel+"/"+tag+"/LimitBins/ElectronMuon"+ChargeSplit+Region #path to the input histogram
         
         print "##### Initiating",mass,channel,"..."
         if not Blinded: h_data        = f_data.Get(input_hist)
@@ -143,7 +153,7 @@ for tag in tags:
         h_conv        = f_conv.Get(input_hist)
         h_prompt      = f_prompt.Get(input_hist)
         print "##### histo done."
-        
+ 
         # Make list of [file path, histogram, histo name]
         input_list = [
                       [f_path_fake, h_fake, "fake"],
@@ -190,36 +200,40 @@ for tag in tags:
         print "##### Data done."
   
         # Now list has bkg, (pseudo) data. Finally let's add signals
-        f_path_signalDYVBF = InputPath + era + "/"+Analyzer+"_signalDYVBF_"+mass+".root"
-        f_path_signalSSWW  = InputPath + era + "/"+Analyzer+"_signalSSWW_"+mass+".root"
-  
-        f_signalDYVBF = TFile.Open(f_path_signalDYVBF)
-        f_signalSSWW  = TFile.Open(f_path_signalSSWW)
-  
-        scaler = 0.01 # Set the signal scaler
-        if int(mass.replace("M","")) <= 100: scaler = 0.001
-        #else: scaler = 0.1
-        try:
-          h_signalDYVBF = f_signalDYVBF.Get(input_hist)
-        except ReferenceError:
-          print("[!!WARNING!!] There is no signal file "+f_path_signalDYVBF+".")
-          print "Skipping..."
+        if AddCR:
+          print "##### This is CR setting."
+          print "##### Skipping signal ..."
         else:
-          h_signalDYVBF.Scale(scaler) # Scaling the signal due to Combine fitting
-          input_list.append([f_path_signalDYVBF, h_signalDYVBF, "signalDYVBF"])
-          print "Scaled signalDYVBF :", h_signalDYVBF.Integral()
+          f_path_signalDYVBF = InputPath + era + "/"+Analyzer+"_signalDYVBF_"+mass+".root"
+          f_path_signalSSWW  = InputPath + era + "/"+Analyzer+"_signalSSWW_"+mass+".root"
   
-        try:
-          h_signalSSWW  = f_signalSSWW.Get(input_hist)
-        except ReferenceError:
-          print("[!!WARNING!!] There is no signal file "+f_path_signalSSWW+".")
-          print "Skipping..."
-        else:
-          h_signalSSWW.Scale(scaler*scaler) # To be consistent when calculating mixing limits
-          print "Scaled signalSSWW :", h_signalSSWW.Integral()
-          input_list.append([f_path_signalSSWW, h_signalSSWW, "signalSSWW"])
+          f_signalDYVBF = TFile.Open(f_path_signalDYVBF)
+          f_signalSSWW  = TFile.Open(f_path_signalSSWW)
   
-        print "##### Signal done."
+          scaler = 0.01 # Set the signal scaler
+          if int(mass.replace("M","")) <= 100: scaler = 0.001
+          #else: scaler = 0.1
+          try:
+            h_signalDYVBF = f_signalDYVBF.Get(input_hist)
+          except ReferenceError:
+            print("[!!WARNING!!] There is no signal file "+f_path_signalDYVBF+".")
+            print "Skipping..."
+          else:
+            h_signalDYVBF.Scale(scaler) # Scaling the signal due to Combine fitting
+            input_list.append([f_path_signalDYVBF, h_signalDYVBF, "signalDYVBF"])
+            print "Scaled signalDYVBF :", h_signalDYVBF.Integral()
+  
+          try:
+            h_signalSSWW  = f_signalSSWW.Get(input_hist)
+          except ReferenceError:
+            print("[!!WARNING!!] There is no signal file "+f_path_signalSSWW+".")
+            print "Skipping..."
+          else:
+            h_signalSSWW.Scale(scaler*scaler) # To be consistent when calculating mixing limits
+            print "Scaled signalSSWW :", h_signalSSWW.Integral()
+            input_list.append([f_path_signalSSWW, h_signalSSWW, "signalSSWW"])
+  
+          print "##### Signal done."
   
   
         if AddSyst:
@@ -250,13 +264,13 @@ for tag in tags:
           Nproc = len(input_list) # The number of processes = the length of the input list before adding systematics
           for this_syst in syst_list: # Define new input_hist with each syst name
             if int(mass.replace("M","")) <= 500:
-              if channel == "MuMu": input_hist =  "LimitInputBDT/"+"Syst_"+this_syst+"MVAUL_UL/"+mass+"/FillEventCutflow/MuonSR"
-              elif channel == "EE": input_hist =  "LimitInputBDT/"+"Syst_"+this_syst+"MVAUL_UL/"+mass+"/FillEventCutflow/ElectronSR"
-              elif channel == "EMu": input_hist = "LimitInputBDT/"+"Syst_"+this_syst+"MVAUL_UL/"+mass+"/FillEventCutflow/ElectronMuonSR"
+              if channel == "MuMu": input_hist =  "LimitInputBDT/"+"Syst_"+this_syst+"MVAUL_UL/"+mass+"/FillEventCutflow/Muon"+Region
+              elif channel == "EE": input_hist =  "LimitInputBDT/"+"Syst_"+this_syst+"MVAUL_UL/"+mass+"/FillEventCutflow/Electron"+Region
+              elif channel == "EMu": input_hist = "LimitInputBDT/"+"Syst_"+this_syst+"MVAUL_UL/"+mass+"/FillEventCutflow/ElectronMuon"+Region
             elif int(mass.replace("M","")) > 500:
-              if channel == "MuMu": input_hist =  "LimitInput/"+"Syst_"+this_syst+"MVAUL_UL/FillEventCutflow/Muon"+ChargeSplit+"SR"
-              elif channel == "EE": input_hist =  "LimitInput/"+"Syst_"+this_syst+"MVAUL_UL/FillEventCutflow/Electron"+ChargeSplit+"SR"
-              elif channel == "EMu": input_hist = "LimitInput/"+"Syst_"+this_syst+"MVAUL_UL/FillEventCutflow/ElectronMuon"+ChargeSplit+"SR"
+              if channel == "MuMu": input_hist =  "LimitInput/"+"Syst_"+this_syst+"MVAUL_UL/FillEventCutflow/Muon"+ChargeSplit+Region
+              elif channel == "EE": input_hist =  "LimitInput/"+"Syst_"+this_syst+"MVAUL_UL/FillEventCutflow/Electron"+ChargeSplit+Region
+              elif channel == "EMu": input_hist = "LimitInput/"+"Syst_"+this_syst+"MVAUL_UL/FillEventCutflow/ElectronMuon"+ChargeSplit+Region
   
             for i in range(Nproc):
               if not "fake_data_path" in input_list[i][0]: # There is no file like "fake_data_path" ...

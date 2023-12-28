@@ -101,7 +101,7 @@ void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq,
          
     
     TString channel_string = GetChannelString(dilep_channel);
-    param_channel.Name =  channel_string + "_Channel/" + param_channel.DefName; 
+    param_channel.Name =  channel_string + "/" + param_channel.DefName; 
 
 
     if(leps.size() ==2)  FillCutflow(HNL_LeptonCore::ChannelDepDilep, weight_channel, GetChannelString(dilep_channel) +"_Dilep",param_channel);

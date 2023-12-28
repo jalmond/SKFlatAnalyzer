@@ -16,7 +16,7 @@ void HNL_LeptonCore::FillCutflowDef(TString cutflow_dirname,TString cutflow_hist
   if( !this_hist ){
     TString cf_name="FillEventCutflow";
 
-    if(cutflow_histname.Contains("SR")) cf_name="LimitBins";
+    if(cutflow_histname.Contains("SR")||cutflow_histname.Contains("MuonCR")||cutflow_histname.Contains("ElectronCR")) cf_name="LimitBins";
     if(cutflow_histname.Contains("SR_Cut")) cf_name="SignalCutFlow";
 
     if(cutflow_histname.Contains("Limit")) cf_name="LimitBins";
