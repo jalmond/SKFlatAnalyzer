@@ -38,10 +38,10 @@ void HNL_RegionDefinitions::RunSR3BDT(HNL_LeptonCore::ChargeType qq, std::vector
     
     for(unsigned int im=0; im<MNStrList.size(); im++){
       for(unsigned int ic=0; ic<NCutList.size(); ic++){
-	for(unsigned int it=0; it<NTreeList.size(); it++){
-	  RunSignalRegionAK4StringBDT(true,MNStrList[im], NCutList[ic], NTreeList[it], dilep_channel,qq, leps, JetColl,B_JetColl, ev, METv ,param,"", weight_ll);
-	  
-	}
+  for(unsigned int it=0; it<NTreeList.size(); it++){
+    RunSignalRegionAK4StringBDT(true,MNStrList[im], NCutList[ic], NTreeList[it], dilep_channel,qq, leps, JetColl,B_JetColl, ev, METv ,param,"", weight_ll);
+    
+  }
       }
     }
   }
@@ -53,9 +53,9 @@ void HNL_RegionDefinitions::RunSR3BDT(HNL_LeptonCore::ChargeType qq, std::vector
 
 
 void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq, 
-						std::vector<Electron> electrons, std::vector<Electron> electrons_veto, std::vector<Muon> muons, std::vector<Muon> muons_veto, std::vector<Tau> TauColl, 
-						std::vector<Jet> JetCollLoose, std::vector<Jet> JetAllColl, std::vector<Jet> JetColl, std::vector<Jet> VBF_JetColl,std::vector<FatJet>  AK8_JetColl, std::vector<Jet> B_JetColl, 
-						Event ev,   Particle METv, AnalyzerParameter param,   float weight_ll){
+            std::vector<Electron> electrons, std::vector<Electron> electrons_veto, std::vector<Muon> muons, std::vector<Muon> muons_veto, std::vector<Tau> TauColl, 
+            std::vector<Jet> JetCollLoose, std::vector<Jet> JetAllColl, std::vector<Jet> JetColl, std::vector<Jet> VBF_JetColl,std::vector<FatJet>  AK8_JetColl, std::vector<Jet> B_JetColl, 
+            Event ev,   Particle METv, AnalyzerParameter param,   float weight_ll){
 
   vector<HNL_LeptonCore::Channel> channels = {GetChannelENum(param.Channel)};
 
@@ -67,8 +67,9 @@ void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq,
 
   for(auto dilep_channel : channels){
     
-    // Make channel speciific AnalyzerParameter                                                                                                                             
     double  weight_channel = weight_ll;
+    // DYTypeI, VBFTypeI EMu or MuE xsec should be a half of that of EE or MuMu.
+    if ( ((MCSample.Contains("DYTypeI")||MCSample.Contains("VBFTypeI")) && MCSample.Contains("private")) && ((dilep_channel == EMu)||(dilep_channel == MuE)) ) weight_channel *= 0.5;
 
     //// Select CHannel used for Signals to check if signal is EE/MM/Emu using gen info
     if(MCSample.Contains("Type")&& !SelectChannel(dilep_channel)) continue;
@@ -93,9 +94,9 @@ void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq,
       vector<Gen> SigGens = GetGenLepronsSignal();
       if (SigGens.size()==2){
 
-	if(SigGens[0].PID() > 0 && SigGens[1].PID()  > 0 )     FillCutflow(HNL_LeptonCore::ChannelDepIncQ, weight_channel, GetChannelString(dilep_channel) +"_MMQ_NoCut",param_channel);
-	else if(SigGens[0].PID()  < 0 && SigGens[1].PID()  < 0 )     FillCutflow(HNL_LeptonCore::ChannelDepIncQ, weight_channel, GetChannelString(dilep_channel) +"_PPQ_NoCut",param_channel);
-	
+        if(SigGens[0].PID() > 0 && SigGens[1].PID()  > 0 )     FillCutflow(HNL_LeptonCore::ChannelDepIncQ, weight_channel, GetChannelString(dilep_channel) +"_MMQ_NoCut",param_channel);
+        else if(SigGens[0].PID()  < 0 && SigGens[1].PID()  < 0 )     FillCutflow(HNL_LeptonCore::ChannelDepIncQ, weight_channel, GetChannelString(dilep_channel) +"_PPQ_NoCut",param_channel);
+  
       }
     }
          
@@ -125,7 +126,7 @@ void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq,
  
     if(RunFake&& IsData){
       if(_jentry%nLog==0){
-	cout << "Running Fakes... " <<  GetFakeWeight(leps, param_channel) << "  " << GetFakeWeight(leps, param_channel) << endl;
+  cout << "Running Fakes... " <<  GetFakeWeight(leps, param_channel) << "  " << GetFakeWeight(leps, param_channel) << endl;
       }
 
       weight_channel = GetFakeWeight(leps, param_channel);
@@ -172,7 +173,7 @@ void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq,
       if(SRbin != "false") FillLimitInput(LimitRegionsQ, weight_channel, lep_charge+SRbin,"LimitInput/"+param_channel.Name);
       
       for(unsigned int im=0; im<MNStrList.size(); im++){
-	if(SRbin != "false") FillLimitInput(LimitRegionsBDT, weight_channel, SRbin,"LimitInputBDT/"+param_channel.Name+"/M"+MNStrList[im]);
+  if(SRbin != "false") FillLimitInput(LimitRegionsBDT, weight_channel, SRbin,"LimitInputBDT/"+param_channel.Name+"/M"+MNStrList[im]);
       }
     }
     else{
@@ -181,41 +182,41 @@ void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq,
             
 
       if(SRbin != "false"){
-	FillLimitInput(LimitRegions, weight_channel, SRbin,"LimitInput/"+param_channel.Name);
-	FillLimitInput(LimitRegionsQ, weight_channel, lep_charge+SRbin,"LimitInput/"+param_channel.Name);
+  FillLimitInput(LimitRegions, weight_channel, SRbin,"LimitInput/"+param_channel.Name);
+  FillLimitInput(LimitRegionsQ, weight_channel, lep_charge+SRbin,"LimitInput/"+param_channel.Name);
 
-	for(unsigned int im=0; im<MNStrList.size(); im++){
-	  if(SRbin != "false") FillLimitInput(LimitRegionsBDT, weight_channel, SRbin,"LimitInputBDT/"+param_channel.Name+"/M"+MNStrList[im]);
-	}
+  for(unsigned int im=0; im<MNStrList.size(); im++){
+    if(SRbin != "false") FillLimitInput(LimitRegionsBDT, weight_channel, SRbin,"LimitInputBDT/"+param_channel.Name+"/M"+MNStrList[im]);
+  }
 
       }
       else{
 
-	for(auto imapHP :FinalBDTHyperParamMap){
-	  TString SRBDT = RunSignalRegionAK4StringBDT(true,imapHP.first , imapHP.second.first, imapHP.second.second, dilep_channel,qq, leps, JetColl,  B_JetColl, ev, METv ,param_channel,"", weight_channel);
-	  if(SRBDT != "false") FillLimitInput(LimitRegionsBDT, weight_channel, SRBDT,"LimitInputBDT/"+param_channel.Name+"/M"+imapHP.first);
-	}
+  for(auto imapHP :FinalBDTHyperParamMap){
+    TString SRBDT = RunSignalRegionAK4StringBDT(true,imapHP.first , imapHP.second.first, imapHP.second.second, dilep_channel,qq, leps, JetColl,  B_JetColl, ev, METv ,param_channel,"", weight_channel);
+    if(SRBDT != "false") FillLimitInput(LimitRegionsBDT, weight_channel, SRBDT,"LimitInputBDT/"+param_channel.Name+"/M"+imapHP.first);
+  }
 
-	SRbin  = RunSignalRegionAK4String (true,dilep_channel,qq, leps, leps_veto, TauColl, JetColl, AK8_JetColl, B_JetColl, ev, METv ,param_channel,"", weight_channel);
-	
+  SRbin  = RunSignalRegionAK4String (true,dilep_channel,qq, leps, leps_veto, TauColl, JetColl, AK8_JetColl, B_JetColl, ev, METv ,param_channel,"", weight_channel);
+  
 
 
-	if(SRbin != "false"){
-	  FillLimitInput(LimitRegions, weight_channel, SRbin,"LimitInput/"+param_channel.Name);
-	  FillLimitInput(LimitRegionsQ, weight_channel, lep_charge+SRbin,"LimitInput/"+param_channel.Name);
+  if(SRbin != "false"){
+    FillLimitInput(LimitRegions, weight_channel, SRbin,"LimitInput/"+param_channel.Name);
+    FillLimitInput(LimitRegionsQ, weight_channel, lep_charge+SRbin,"LimitInput/"+param_channel.Name);
 
-	}
-	else{
-	  if(JetColl.size() == 0)Fill_RegionPlots(param,"FailZeroJet" ,  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, weight_channel);
-	  if(JetColl.size() == 1)Fill_RegionPlots(param,"Fail1Jet" ,  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, weight_channel);
-	  if(JetColl.size() > 1)Fill_RegionPlots(param,"FailDiJet" ,  JetColl, AK8_JetColl, leps,  METv, nPV, weight_channel);
-	  
-	  
-	  if(JetColl.size() == 0) FillCutflow(HNL_LeptonCore::ChannelDepFAILSR3, weight_channel, GetChannelString(dilep_channel) +"_SR3Fail_0j",param_channel);
-	  else if(JetColl.size() == 1)FillCutflow(HNL_LeptonCore::ChannelDepFAILSR3, weight_channel, GetChannelString(dilep_channel) +"_SR3Fail_1j",param_channel);
-	  else FillCutflow(HNL_LeptonCore::ChannelDepFAILSR3, weight_channel, GetChannelString(dilep_channel) +"_SR3Fail_2j",param_channel);
-	  
-	}
+  }
+  else{
+    if(JetColl.size() == 0)Fill_RegionPlots(param,"FailZeroJet" ,  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, weight_channel);
+    if(JetColl.size() == 1)Fill_RegionPlots(param,"Fail1Jet" ,  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, weight_channel);
+    if(JetColl.size() > 1)Fill_RegionPlots(param,"FailDiJet" ,  JetColl, AK8_JetColl, leps,  METv, nPV, weight_channel);
+    
+    
+    if(JetColl.size() == 0) FillCutflow(HNL_LeptonCore::ChannelDepFAILSR3, weight_channel, GetChannelString(dilep_channel) +"_SR3Fail_0j",param_channel);
+    else if(JetColl.size() == 1)FillCutflow(HNL_LeptonCore::ChannelDepFAILSR3, weight_channel, GetChannelString(dilep_channel) +"_SR3Fail_1j",param_channel);
+    else FillCutflow(HNL_LeptonCore::ChannelDepFAILSR3, weight_channel, GetChannelString(dilep_channel) +"_SR3Fail_2j",param_channel);
+    
+  }
       }
     }
   }
@@ -289,10 +290,10 @@ bool  HNL_RegionDefinitions::RunSignalRegionAK8(bool ApplyForSR,HNL_LeptonCore::
 /// Return TString for Limit bin
 
 TString HNL_RegionDefinitions::RunSignalRegionAK8String(bool ApplyForSR, 
-							HNL_LeptonCore::Channel channel, HNL_LeptonCore::ChargeType qq , 
-							std::vector<Lepton *> leps, std::vector<Lepton *> leps_veto , std::vector<Tau> TauColl,
-							std::vector<Jet> JetColl, std::vector<FatJet>  AK8_JetColl, std::vector<Jet> B_JetColl, 
-							Event ev, Particle METv, AnalyzerParameter param, TString PostLabel ,  float w){
+              HNL_LeptonCore::Channel channel, HNL_LeptonCore::ChargeType qq , 
+              std::vector<Lepton *> leps, std::vector<Lepton *> leps_veto , std::vector<Tau> TauColl,
+              std::vector<Jet> JetColl, std::vector<FatJet>  AK8_JetColl, std::vector<Jet> B_JetColl, 
+              Event ev, Particle METv, AnalyzerParameter param, TString PostLabel ,  float w){
    
   TString RegionTag                = ApplyForSR ? "SR1" : "CR1";
   HNL_LeptonCore::SearchRegion Reg = ApplyForSR ? HNL_LeptonCore::SR1 : HNL_LeptonCore::CR1;
@@ -451,9 +452,9 @@ TString HNL_RegionDefinitions::RunSignalRegionWWString(bool ApplyForSR,HNL_Lepto
 
       double deta = fabs(JetColl[ij].Eta() - JetColl[ij2].Eta());
       if(deta > maxDiJetDeta) {
-	maxDiJetDeta=deta;
-      	ijet1=ij;
-	ijet2=ij2;
+  maxDiJetDeta=deta;
+        ijet1=ij;
+  ijet2=ij2;
       }
     }
   }

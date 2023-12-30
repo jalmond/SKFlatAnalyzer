@@ -151,11 +151,11 @@ void test(TString era, bool isdata, TString sample, TString skim, TString flag){
     //if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC/DYTypeIHeavyN-DFmix_Dilepton_MN500_TuneCP5_13TeV-amcatnlo-pythia8/220801_130040/0000/SKFlatNtuple_2017_MC_1.root")) exit(EIO); //JH : this is an old one
     if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_HNMultiLepBDT/DYTypeI_NLO_DF_M500/2023_03_28_191053/SKFlatNtuple_2017_MC_0.root")) exit(EIO);
   }
-  else if(era=="2017" && !isdata && sample=="DYTypeI_M1000"){
-    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_HNMultiLepBDT/DYTypeI_NLO_DF_M1000/2023_05_16_170426/SKFlatNtuple_2017_MC_0.root")) exit(EIO);
+  else if(era=="2017" && !isdata && sample=="DYTypeI_DF_M1000"){
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_HNMultiLepBDT/DYTypeI_NLO_DF_M1000/2023_09_04_164552/SKFlatNtuple_2017_MC_0.root")) exit(EIO);
   }
-  else if(era=="2017" && !isdata && sample=="VBFTypeI_M1000"){
-    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_HNMultiLepBDT/VBFTypeI_NLO_DF_M1000/2023_05_16_170426/SKFlatNtuple_2017_MC_0.root")) exit(EIO);
+  else if(era=="2017" && !isdata && sample=="VBFTypeI_DF_M1000"){
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_HNMultiLepBDT/VBFTypeI_NLO_DF_M1000/2023_09_04_164552/SKFlatNtuple_2017_MC_0.root")) exit(EIO);
   }
   else if(era=="2017" && !isdata && sample=="VBFTypeI_M500" && skim==""){
     if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC/VBFTypeI_NLO_DF_M500/220712_175932/0000/SKFlatNtuple_2017_MC_1.root")) exit(EIO);
