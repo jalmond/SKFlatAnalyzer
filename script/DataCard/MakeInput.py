@@ -16,7 +16,7 @@ masses = ["M100","M200","M500","M600","M1000"]
 channels = ["MuMu","EE","EMu"]
 #channels = ["MuMu","EE"]
 tags = ["HNL_ULID","HNTightV2"] # HNLParameter Name
-outputTag = "231227_KCMS_WS" # tag the output as you wish
+outputTag = "CRtest" # tag the output as you wish
 
 # Skim
 DataSkim = "_SkimTree_HNMultiLepBDT_"
@@ -29,17 +29,17 @@ SignalSkim = "_SkimTree_HNMultiLepBDT_"
 
 # This will do necessary hadd for you.
 MergeData   = False
-MergeFake   = False  # RunFake
-MergeCF     = False  # RunCF
-MergeConv   = False  # RunConv
-MergeMC     = False  # RunPrompt
-MergeSignal = False
+MergeFake   = True  # RunFake
+MergeCF     = True  # RunCF
+MergeConv   = True  # RunConv
+MergeMC     = True  # RunPrompt
+MergeSignal = True
 #MergeDYVBF = True
 #MergeSSWW  = True
 
 AddSyst = False
-AddCR = True
-if AddCR:
+IsCR = False
+if IsCR:
   Blinded = False # Blinded --> the total background will be used as data_obs
   CRflag = "SS_CR__"
   Analyzer = "HNL_ControlRegionPlotter"
@@ -103,7 +103,10 @@ if MergeMC:
 
 if MergeSignal:
 
-  if AddCR: pass
+  if IsCR:
+    print "##### This is CR setting."
+    print "##### Skipping signal merging ..."
+    pass
   else:
     for era in eras:
       for mass in masses:
@@ -200,7 +203,7 @@ for tag in tags:
         print "##### Data done."
   
         # Now list has bkg, (pseudo) data. Finally let's add signals
-        if AddCR:
+        if IsCR:
           print "##### This is CR setting."
           print "##### Skipping signal ..."
         else:
