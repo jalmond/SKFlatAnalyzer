@@ -13,31 +13,74 @@ args = parser.parse_args()
 
 pwd = os.getcwd()
 
+#####################################################
+#
+# args.CR --> sr, sr_inv connected via rateParam
+# args.SR --> sr only, bkg norm uncert. treated by lnN
+# args.syst --> postpone
+#
+#####################################################
 
+def CardSetting(isCR, era, channel, mass):
+
+  with open("/data6/Users/jihkim/CombineTool/CMSSW_10_2_13/src/DataCardsShape/HNL_SignalRegionPlotter/Workspace/card_skeleton_new.txt",'r') as f:
+    lines = f.readlines()
+
+  SRpath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegionPlotter/LimitInputs/"
+  CRpath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegionPlotter/LimitInputs/"
+
+  # skip the lepton SF syst for now ...
+  for i in range(len(lines)):
+    if channel == "MuMu":
+      if "Muon" in lines[i]: lines[i] = lines_orig[i]
+      if "Electron" in lines[i]: lines[i] = lines[i].replace("1","-")
+    elif channel == "EE":
+      if "Muon" in lines[i]: lines[i] = lines[i].replace("1","-")
+      if "Electron" in lines[i]: lines[i] = lines_orig[i]
+    elif channel == "EMu":
+      if "Muon" in lines[i]: lines[i] = lines_orig[i]
+      if "Electron" in lines[i]: lines[i] = lines_orig[i]
+
+  # sr_inv setting
+  lines_cr = lines[:]
+  lines_cr[4] = "shapes * *  "+CRpath+WP+"/"+era+"/"+mass+"_"+channel+"_card_input.root $PROCESS $PROCESS_$SYSTEMATIC\n"
+  if "Mu" in channel: lines_cr[17] = "rate                       -1      -1    0     -1    0            0\n"  # no cf
+  else: lines_cr[17] = "rate                      -1      -1    -1    -1     0            0\n"                  # no signal
+  lines_cr[20] = ""
+  for i in range(len(lines_cr)):
+    lines_cr[i] = lines_cr[i].replace('bin1','sr_inv')
+
+  # sr setting
+  lines[4] = "shapes * *  "+SRpath+WP+"/"+era+"/"+mass+"_"+channel+"_card_input.root $PROCESS $PROCESS_$SYSTEMATIC\n"
+  if int(mass.replace("M","")) < 500:
+    if "Mu" in channel: lines[17] = "rate                       -1      -1    0     -1    -1           0\n"  # no cf
+    else: lines[17] = "rate                       -1      -1    -1    -1    -1           0\n"                  # no SSWW
+  if 500 <= int(mass.replace("M","")) and int(mass.replace("M","")) <= 3000:
+    if "Mu" in channel: lines[17] = "rate                       -1      -1    0     -1    -1           -1\n"
+    else: lines[17] = "rate                       -1      -1    -1    -1    -1           -1\n"
+  elif 3000 < int(mass.replace("M","")):
+    if "Mu" in channel: lines[17] = "rate                       -1      -1    0     -1    0            -1\n"
+    else: lines[17] = "rate                       -1      -1    -1    -1    0            -1\n"                  # no DYVBF
+  for i in range(len(lines)):
+    lines[i] = lines[i].replace('bin1','sr')
+
+  lines_sr = lines[:]
+  lines_sr[20] = ""
+
+  lines_sronly = lines[:]
+  lines_sronly[23] = ""
+  lines_sronly[24] = ""
+
+  if isCR:
+    return (lines_sr, lines_cr)
+  else:
+    return lines_sronly
+  
+###############################################################################################################################################
 if args.Syst:
   with open("/data6/Users/jihkim/CombineTool/CMSSW_10_2_13/src/DataCardsShape/HNL_SignalRegionPlotter/Workspace/card_skeleton_syst.txt",'r') as f:
     lines = f.readlines() #FIXME LATER
-
-if args.SR:
-  input_path = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegionPlotter/LimitInputs/"
-  binName = "sr"
-  with open("/data6/Users/jihkim/CombineTool/CMSSW_10_2_13/src/DataCardsShape/HNL_SignalRegionPlotter/Workspace/card_skeleton.txt",'r') as f:
-    lines = f.readlines()
-elif args.CR:
-  input_path = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegionPlotter/LimitInputs/"
-  binName = "sr_inv"
-  with open("/data6/Users/jihkim/CombineTool/CMSSW_10_2_13/src/DataCardsShape/HNL_SignalRegionPlotter/Workspace/card_skeleton_cr.txt",'r') as f:
-    lines = f.readlines()
-elif args.Combine:
-  binName = "" #dummy
-  lines = [] #dummy
-else:
-  print "Please set SR or CR or Combine:"
-  print "python MakeDataCard.py [--SR[--CR]] [--Combine] [--Syst]"
-  print "Exiting ..."
-  sys.exit(1)
-
-#print lines
+###############################################################################################################################################
 
 eras = ["2016","2017","2018"]
 eras = ["2017"]
@@ -63,58 +106,36 @@ myWPs = ["NewOpt_HNL_ULID","NewOpt_HNTightV2"]
 myWPs = ["231227_KCMS_WS_HNL_ULID","231227_KCMS_WS_HNTightV2"]
 myWPs = ["CRtest_HNL_ULID"]
 
-for i in range(len(lines)):
-  lines[i] = lines[i].replace('bin1',binName)
-
-lines_orig = lines[:]
-
 for WP in myWPs:
   if not args.Combine:
     os.system("mkdir -p "+WP)
     os.system("ln -s /data6/Users/jihkim/SKFlatAnalyzer/script/DataCard/MakeWorkspace.py "+WP)
-    for era in eras:
-      for channel in channels:
-        for mass in masses:
-          # Setup the input root file
-          lines[4] = "shapes * *  "+input_path+WP+"/"+era+"/"+mass+"_"+channel+"_card_input.root $PROCESS $PROCESS_$SYSTEMATIC\n"
-          if args.CR:
-            if "Mu" in channel: lines[17] = "rate          -1      -1    0     -1    0            0\n"  # no cf
-            else: lines[17] = "rate          -1      -1    -1    -1    0            0\n"                  # no signal
-          elif args.SR:
-            if int(mass.replace("M","")) < 500:
-              if "Mu" in channel: lines[17] = "rate          -1      -1    0     -1    -1           0\n"  # no cf
-              else: lines[17] = "rate          -1      -1    -1    -1    -1           0\n"                  # no SSWW
-            if 500 <= int(mass.replace("M","")) and int(mass.replace("M","")) <= 3000:
-              if "Mu" in channel: lines[17] = "rate          -1      -1    0     -1    -1           -1\n"
-              else: lines[17] = "rate          -1      -1    -1    -1    -1           -1\n"
-            elif 3000 < int(mass.replace("M","")):
-              if "Mu" in channel: lines[17] = "rate          -1      -1    0     -1    0            -1\n"
-              else: lines[17] = "rate          -1      -1    -1    -1    0            -1\n"                  # no DYVBF
-          for i in range(len(lines)): # lepton SF syst
-            if channel == "MuMu":
-              if "Muon" in lines[i]: lines[i] = lines_orig[i]
-              if "Electron" in lines[i]: lines[i] = lines[i].replace("1","-")
-            elif channel == "EE":
-              if "Muon" in lines[i]: lines[i] = lines[i].replace("1","-")
-              if "Electron" in lines[i]: lines[i] = lines_orig[i]
-            elif channel == "EMu":
-              if "Muon" in lines[i]: lines[i] = lines_orig[i]
-              if "Electron" in lines[i]: lines[i] = lines_orig[i]
-          with open(WP+"/card_"+era+"_"+channel+"_"+mass+"_"+binName+".txt",'w') as f:
-            for line in lines:
-              f.write(line)
+
+    for era, channel, mass in [(era, channel, mass) for era in eras for channel in channels for mass in masses]:
+      this_card = CardSetting(args.CR, era, channel, mass)
+      if args.CR:
+        with open(WP+"/card_"+era+"_"+channel+"_"+mass+"_sr.txt",'w') as f:
+          for line in this_card[0]:
+            f.write(line)
+        with open(WP+"/card_"+era+"_"+channel+"_"+mass+"_sr_inv.txt",'w') as f:
+          for line in this_card[1]:
+            f.write(line)
+      else:
+        with open(WP+"/card_"+era+"_"+channel+"_"+mass+"_sronly.txt",'w') as f:
+          for line in this_card:
+            f.write(line)
+
   else:
     os.chdir(WP)
     os.system('echo \'Currently combining cards at...\'')
     os.system('pwd')
-    for channel in channels:
-      for mass in masses:
-        if args.Combine == "CR":
-          for era in eras:
-            os.system("combineCards.py sr=card_"+era+"_"+channel+"_"+mass+"_sr.txt sr_inv=card_"+era+"_"+channel+"_"+mass+"_sr_inv.txt > card_"+era+"_"+channel+"_"+mass+".txt")
-        elif args.Combine == "SR":
-          for era in eras:
-            os.system("combineCards.py year16a=card_2016preVFP_"+channel+"_"+mass+"_sr.txt year16b=card_2016postVFP_"+channel+"_"+mass+"_sr.txt year17=card_2017_"+channel+"_"+mass+"_sr.txt year18=card_2018_"+channel+"_"+mass+"_sr.txt > card_Run2_"+channel+"_"+mass+"_sr.txt")
-        else: os.system("combineCards.py year16a=card_2016preVFP_"+channel+"_"+mass+".txt year16b=card_2016postVFP_"+channel+"_"+mass+".txt year17=card_2017_"+channel+"_"+mass+".txt year18=card_2018_"+channel+"_"+mass+".txt > card_Run2_"+channel+"_"+mass+".txt")
+    for channel, mass in [(channel, mass) for channel in channels for mass in masses]:
+      if args.Combine == "CR":
+        for era in eras:
+          os.system("combineCards.py sr=card_"+era+"_"+channel+"_"+mass+"_sr.txt sr_inv=card_"+era+"_"+channel+"_"+mass+"_sr_inv.txt > card_"+era+"_"+channel+"_"+mass+".txt")
+      elif args.Combine == "SR":
+        os.system("combineCards.py year16a=card_2016preVFP_"+channel+"_"+mass+"_sronly.txt year16b=card_2016postVFP_"+channel+"_"+mass+"_sronly.txt year17=card_2017_"+channel+"_"+mass+"_sronly.txt year18=card_2018_"+channel+"_"+mass+"_sronly.txt > card_Run2_"+channel+"_"+mass+"_sronly.txt")
+      else:
+        os.system("combineCards.py year16a=card_2016preVFP_"+channel+"_"+mass+".txt year16b=card_2016postVFP_"+channel+"_"+mass+".txt year17=card_2017_"+channel+"_"+mass+".txt year18=card_2018_"+channel+"_"+mass+".txt > card_Run2_"+channel+"_"+mass+".txt")
     os.system('echo \'Done.\'')
     os.chdir(pwd)
