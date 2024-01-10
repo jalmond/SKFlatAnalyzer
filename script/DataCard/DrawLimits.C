@@ -81,12 +81,10 @@ void DrawLimits(TString year="", TString channel=""){
         continue;
       }
       
-      double scale=0.01; //mixing squared is 0.01 now
-      //if(mass[dummyint]<=60) scale *= 0.01;
-      //else if(mass[dummyint]<=200) scale *= 0.001;
-      //else if(mass[dummyint]<=600) scale *= 0.1;
-      //else if(mass[dummyint]<=1000) scale *= 1.;
-      //else scale *= 10.;
+      double scale = 0.01;
+      //double scale=1.;
+      //if(mass[dummyint]<=100) scale *= 0.001; // 0.001 only for low mass (https://cms-talk.web.cern.ch/t/too-large-error-with-hybridnew/32844)
+      //else scale *= 0.01; // input signal scaled as V^2 = 0.01 by default
 
       obs[dummyint] *= scale;
 
@@ -976,7 +974,10 @@ void CompareLimits(TString channel=""){
       if (is >> this_onesig_right) onesig_right.push_back(this_onesig_right);
       if (is >> this_twosig_right) twosig_right.push_back(this_twosig_right);
 
-      double scale=0.01;
+      double scale = 0.01;
+      //double scale=1.;
+      //if(mass[dummyint]<=100) scale *= 0.001; // 0.001 only for low mass (https://cms-talk.web.cern.ch/t/too-large-error-with-hybridnew/32844)
+      //else scale *= 0.01; // input signal scaled as V^2 = 0.01 by default
 
       obs[dummyint] *= scale;
 

@@ -2,7 +2,14 @@
 
 import os, sys
 import commands as cmd
+import argparse
 from ROOT import *
+
+parser = argparse.ArgumentParser(description='script for creating input root file.',formatter_class=argparse.RawTextHelpFormatter)
+parser.add_argument('--CR', action='store_true', help='Make HNL_ControlRegionPlotter input (default : HNL_SignalRegionPlotter)')
+parser.add_argument('--Syst', action='store_true', help='Add systematics')
+args = parser.parse_args()
+
 
 eras = ["2016preVFP", "2016postVFP", "2017", "2018"]
 eras = ["2016","2017","2018"]
@@ -12,11 +19,11 @@ masses = ["M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1
 masses = ["M5000","M7500","M10000","M15000","M20000"]
 masses = ["M90","M100","M150","M200","M300","M400","M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M10000","M15000","M20000"]
 #masses = ["M100","M200","M300","M400","M500"]
-masses = ["M100","M200","M500","M600","M1000"]
+#masses = ["M100","M200","M500","M600","M1000"]
 channels = ["MuMu","EE","EMu"]
 #channels = ["MuMu","EE"]
 tags = ["HNL_ULID","HNTightV2"] # HNLParameter Name
-outputTag = "CRtest" # tag the output as you wish
+outputTag = "CRtest" # tag the output directory name as you wish
 
 # Skim
 DataSkim = "_SkimTree_HNMultiLepBDT_"
@@ -29,17 +36,15 @@ SignalSkim = "_SkimTree_HNMultiLepBDT_"
 
 # This will do necessary hadd for you.
 MergeData   = False
-MergeFake   = True  # RunFake
-MergeCF     = True  # RunCF
-MergeConv   = True  # RunConv
-MergeMC     = True  # RunPrompt
-MergeSignal = True
+MergeFake   = False  # RunFake
+MergeCF     = False  # RunCF
+MergeConv   = False  # RunConv
+MergeMC     = False  # RunPrompt
+MergeSignal = False
 #MergeDYVBF = True
 #MergeSSWW  = True
 
-AddSyst = False
-IsCR = False
-if IsCR:
+if args.CR:
   Blinded = False # Blinded --> the total background will be used as data_obs
   CRflag = "SS_CR__"
   Analyzer = "HNL_ControlRegionPlotter"
@@ -103,7 +108,7 @@ if MergeMC:
 
 if MergeSignal:
 
-  if IsCR:
+  if args.CR:
     print "##### This is CR setting."
     print "##### Skipping signal merging ..."
     pass
@@ -203,7 +208,7 @@ for tag in tags:
         print "##### Data done."
   
         # Now list has bkg, (pseudo) data. Finally let's add signals
-        if IsCR:
+        if args.CR:
           print "##### This is CR setting."
           print "##### Skipping signal ..."
         else:
@@ -214,7 +219,7 @@ for tag in tags:
           f_signalSSWW  = TFile.Open(f_path_signalSSWW)
   
           scaler = 0.01 # Set the signal scaler
-          if int(mass.replace("M","")) <= 100: scaler = 0.001
+          #if int(mass.replace("M","")) <= 100: scaler = 0.001 # if you want to use HybridNew without additional options, see https://cms-talk.web.cern.ch/t/too-large-error-with-hybridnew/32844
           #else: scaler = 0.1
           try:
             h_signalDYVBF = f_signalDYVBF.Get(input_hist)
@@ -239,7 +244,7 @@ for tag in tags:
           print "##### Signal done."
   
   
-        if AddSyst:
+        if args.Syst:
           print "##### Systematics activated."
           syst_list = [
                        "JetResUp","JetResDown",

@@ -21,9 +21,35 @@ pwd = os.getcwd()
 #
 #####################################################
 
+eras = ["2016","2017","2018"]
+eras = ["2017"]
+#eras = ["2016preVFP","2016postVFP","2018"]
+channels = ["MuMu","EE","EMu"]
+#channels = ["MuMu","EE"]
+masses = ["M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000"]
+masses = ["M5000","M7500","M10000","M15000","M20000"]
+masses = ["M90","M100","M150","M200","M300","M400","M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M10000","M15000","M20000"]
+#masses = ["M100","M200","M300","M400","M500"]
+#masses = ["M100","M200","M500","M600","M1000"]
+
+myWPs = ["Workshop", "InputForCombine"]
+myWPs = ["InputForCombine"]
+myWPs = ["Workshop"]
+myWPs = ["AddSyst"]
+myWPs = ["KPS23Spr"]
+myWPs = ["KPS23Spr_woBDT"]
+myWPs = ["SR2HT_SR3l2pt"]
+myWPs = ["SR2HT_SR3l2pt_ChargeSplit"]
+myWPs = ["HNL_ULID","HNTightV2"]
+myWPs = ["NewOpt_HNL_ULID","NewOpt_HNTightV2"]
+myWPs = ["231227_KCMS_WS_HNL_ULID","231227_KCMS_WS_HNTightV2"]
+myWPs = ["CRtest_HNL_ULID"]
+
+################################################################################################################################################
+
 def CardSetting(isCR, era, channel, mass):
 
-  with open("/data6/Users/jihkim/CombineTool/CMSSW_10_2_13/src/DataCardsShape/HNL_SignalRegionPlotter/Workspace/card_skeleton_new.txt",'r') as f:
+  with open("/data6/Users/jihkim/CombineTool/CMSSW_10_2_13/src/DataCardsShape/HNL_SignalRegionPlotter/Workspace/card_skeleton.txt",'r') as f:
     lines = f.readlines()
 
   SRpath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegionPlotter/LimitInputs/"
@@ -82,34 +108,17 @@ if args.Syst:
     lines = f.readlines() #FIXME LATER
 ###############################################################################################################################################
 
-eras = ["2016","2017","2018"]
-eras = ["2017"]
-#eras = ["2016preVFP","2016postVFP","2018"]
-channels = ["MuMu","EE","EMu"]
-#channels = ["MuMu","EE"]
-masses = ["M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000"]
-masses = ["M5000","M7500","M10000","M15000","M20000"]
-masses = ["M90","M100","M200","M300","M400","M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M10000","M15000","M20000"]
-#masses = ["M100","M200","M300","M400","M500"]
-masses = ["M100","M200","M500","M600","M1000"]
-
-myWPs = ["Workshop", "InputForCombine"]
-myWPs = ["InputForCombine"]
-myWPs = ["Workshop"]
-myWPs = ["AddSyst"]
-myWPs = ["KPS23Spr"]
-myWPs = ["KPS23Spr_woBDT"]
-myWPs = ["SR2HT_SR3l2pt"]
-myWPs = ["SR2HT_SR3l2pt_ChargeSplit"]
-myWPs = ["HNL_ULID","HNTightV2"]
-myWPs = ["NewOpt_HNL_ULID","NewOpt_HNTightV2"]
-myWPs = ["231227_KCMS_WS_HNL_ULID","231227_KCMS_WS_HNTightV2"]
-myWPs = ["CRtest_HNL_ULID"]
+#########################################
+#
+# MAIN
+#
+#########################################
 
 for WP in myWPs:
   if not args.Combine:
     os.system("mkdir -p "+WP)
     os.system("ln -s /data6/Users/jihkim/SKFlatAnalyzer/script/DataCard/MakeWorkspace.py "+WP)
+    os.system("ln -s /data6/Users/jihkim/SKFlatAnalyzer/script/DataCard/CheckNuisance.py "+WP)
 
     for era, channel, mass in [(era, channel, mass) for era in eras for channel in channels for mass in masses]:
       this_card = CardSetting(args.CR, era, channel, mass)
