@@ -22,8 +22,8 @@ channels = ["MuMu","EE","EMu"]
 tags = ["_sronly",""]
 
 masses = ["M100"]
-channels = ["EMu"]
-tags = ["_sronly"]
+channels = ["EE"]
+tags = ["_sr_syst","_syst",""]
 
 pwd = os.getcwd()
 
