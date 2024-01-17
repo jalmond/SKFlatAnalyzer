@@ -19,44 +19,39 @@ masses = ["M90","M100","M150","M200","M300","M400","M500","M600","M700","M800","
 #masses = ["M100","M200","M300","M400","M500"]
 #masses = ["M100","M200","M500","M600","M1000"]
 channels = ["MuMu","EE","EMu"]
+tags = ["_sronly",""]
 
 masses = ["M100"]
-channels = ["EE"]
+channels = ["EMu"]
+tags = ["_sronly"]
 
 pwd = os.getcwd()
 
 for year in years:
   for channel in channels:
     for mass in masses:
-      #ws = "card_"+year+"_"+channel+"_"+mass+"_sr.root"
-      #ws = "card_"+year+"_"+channel+"_"+mass+"_sr_inv.root"
-      ws = "card_"+year+"_"+channel+"_"+mass+"_sronly.root"
-      #ws = "card_"+year+"_"+channel+"_"+mass+".root"
-      ws_name = ws.replace(".root","").replace("card_","")
+      for tag in tags:
+        ws = "card_"+year+"_"+channel+"_"+mass+tag+".root"
+        ws_name = ws.replace(".root","").replace("card_","")
 
-      os.system("mkdir -p "+pwd+"/"+ws_name)
-      os.chdir(pwd+"/"+ws_name)
-      os.system("cp "+pwd+"/"+ws+" .")
+        os.system("mkdir -p "+pwd+"/"+ws_name)
+        os.chdir(pwd+"/"+ws_name)
+        os.system("cp "+pwd+"/"+ws+" .")
 
-      print "Processing",ws_name,"..."
+        print "Processing",ws_name,"..."
 
-      dict_log = {}
-      dict_log["FitDiag"] = cmd.getstatusoutput("combine -M FitDiagnostics "+ws+" --rMin -1 --rMax 2 -n "+ws_name+" --plots")
-      dict_log["iniFit"]  = cmd.getstatusoutput("combineTool.py -M Impacts -d "+ws+" -m "+mass.replace("M","")+" --rMin -1 --rMax 2 --robustFit 1 --doInitialFit --name "+ws_name)
-      dict_log["actFit"]  = cmd.getstatusoutput("combineTool.py -M Impacts -d "+ws+" -m "+mass.replace("M","")+" --rMin -1 --rMax 2 --robustFit 1 --doFits --name "+ws_name)
-      dict_log["Impjson"] = cmd.getstatusoutput("combineTool.py -M Impacts -d "+ws+" -m "+mass.replace("M","")+" --rMin -1 --rMax 2 --robustFit 1 --output "+ws_name+"_impacts.json --name "+ws_name)
-      dict_log["Impplot"] = cmd.getstatusoutput("plotImpacts.py -i "+ws_name+"_impacts.json -o "+ws_name)
-      #print log_FitDiag
-      #print log_iniFit
-      #print log_actFit
-      #print log_json
-      #print log_plot
-      for key, value in dict_log.items():
-        with open(key+".log",'w') as f:
-          f.write(value[1]) # actual output
-        if value[0] != 0:
-          print "**********The status code with",key,"is not zero :",value[0]
-          print "**********Please read the log carefully and fix it."
+        dict_log = {}
+        dict_log["FitDiag"] = cmd.getstatusoutput("combine -M FitDiagnostics "+ws+" --rMin -1 --rMax 2 -n "+ws_name+" --plots")
+        dict_log["iniFit"]  = cmd.getstatusoutput("combineTool.py -M Impacts -d "+ws+" -m "+mass.replace("M","")+" --rMin -1 --rMax 2 --robustFit 1 --doInitialFit --name "+ws_name)
+        dict_log["actFit"]  = cmd.getstatusoutput("combineTool.py -M Impacts -d "+ws+" -m "+mass.replace("M","")+" --rMin -1 --rMax 2 --robustFit 1 --doFits --name "+ws_name)
+        dict_log["Impjson"] = cmd.getstatusoutput("combineTool.py -M Impacts -d "+ws+" -m "+mass.replace("M","")+" --rMin -1 --rMax 2 --robustFit 1 --output "+ws_name+"_impacts.json --name "+ws_name)
+        dict_log["Impplot"] = cmd.getstatusoutput("plotImpacts.py -i "+ws_name+"_impacts.json -o "+ws_name)
+        for key, value in dict_log.items():
+          with open(key+".log",'w') as f:
+            f.write(value[1]) # output log
+          if value[0] != 0:
+            print "**********The status code with",key,"is not zero :",value[0]
+            print "**********Please read the log carefully and fix it."
 
-      os.chdir(pwd+"/"+ws_name)
-      print "Done."
+        os.chdir(pwd+"/"+ws_name)
+        print "Done."

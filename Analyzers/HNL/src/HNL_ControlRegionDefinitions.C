@@ -29,8 +29,9 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
 
     TString channel_string = GetChannelString(dilep_channel);
     param.CutFlowDir = "CutFlow";
-    
-    param.Name = channel_string + "/" + param.Name ;
+   
+    TString init_Name = param.Name;
+    param.Name = channel_string + "/" + init_Name;
 
     std::vector<Lepton *> LepsT       = MakeLeptonPointerVector(muons,     electrons,     param);
     std::vector<Lepton *> LepsV       = MakeLeptonPointerVector(muons_veto,electrons_veto,param);
@@ -60,9 +61,9 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
     AnalyzerParameter paramTrilep  = param;
     AnalyzerParameter paramQuadlep = param;
     paramTrilep.Channel  = GetChannelString(trilep_channel);
-    paramTrilep.Name     = GetChannelString(trilep_channel)  + "/" + param.Name ;
+    paramTrilep.Name     = GetChannelString(trilep_channel)  + "/" + init_Name ;
     paramQuadlep.Channel = GetChannelString(fourlep_channel);
-    paramQuadlep.Name    = GetChannelString(fourlep_channel) + "/" + param.Name ;
+    paramQuadlep.Name    = GetChannelString(fourlep_channel) + "/" + init_Name ;
     
     double weight_channel = weight_ll;
    

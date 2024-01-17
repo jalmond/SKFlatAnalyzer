@@ -20,19 +20,18 @@ masses = ["M90","M100","M150","M200","M300","M400","M500","M600","M700","M800","
 #masses = ["M100","M200","M300","M400","M500"]
 #masses = ["M100","M200","M500","M600","M1000"]
 channels = ["MuMu","EE","EMu"]
+tags = ["_sr","_sr_inv","_sronly",""]
 
 for year in years:
   for channel in channels:
     for mass in masses:
-      #card = "card_"+year+"_"+channel+"_"+mass+"_sr.txt"
-      #card = "card_"+year+"_"+channel+"_"+mass+"_sr_inv.txt"
-      card = "card_"+year+"_"+channel+"_"+mass+"_sronly.txt"
-      #card = "card_"+year+"_"+channel+"_"+mass+".txt"
-      card_name = card.replace(".txt","")
-      if channel == "EMu":
-        log = cmd.getoutput("text2workspace.py -P HiggsAnalysis.CombinedLimit.MyModel_EMu:myModel_EMu "+card+" -o "+card_name+".root")
-      else:
-        log = cmd.getoutput("text2workspace.py -P HiggsAnalysis.CombinedLimit.MyModel:myModel "+card+" -o "+card_name+".root")
-      print log
-      with open(card_name+".log",'w') as f:
-        f.write(log)
+      for tag in tags:
+        card = "card_"+year+"_"+channel+"_"+mass+tag+".txt"
+        card_name = card.replace(".txt","")
+        if channel == "EMu":
+          log = cmd.getoutput("text2workspace.py -P HiggsAnalysis.CombinedLimit.HNDilepModel:hnDilepModel_EMu "+card+" -o "+card_name+".root")
+        else:
+          log = cmd.getoutput("text2workspace.py -P HiggsAnalysis.CombinedLimit.HNDilepModel:hnDilepModel "+card+" -o "+card_name+".root")
+        print log
+        with open(card_name+".log",'w') as f:
+          f.write(log)

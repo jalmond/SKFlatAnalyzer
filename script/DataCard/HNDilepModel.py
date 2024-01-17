@@ -2,7 +2,21 @@
 
 from HiggsAnalysis.CombinedLimit.PhysicsModel import *
 
-class MyModel_EMu(PhysicsModel):
+class HNDilepModel(PhysicsModel):
+    def doParametersOfInterest(self):
+        self.modelBuilder.doVar("r[0,0,10]")
+        self.modelBuilder.doSet("POI", ",".join(['r']))
+        self.modelBuilder.factory_("expr::r2(\"(@0)*(@0)\", r)")
+
+    def getYieldScale(self, bin, process):
+        if "signalDYVBF" in process:
+            return 'r'
+        elif "signalSSWW" in process:
+            return 'r2'
+        else:
+            return 1
+
+class HNDilepModel_EMu(PhysicsModel):
     def doParametersOfInterest(self):
         self.modelBuilder.doVar("r[0,0,10]")
         self.modelBuilder.doSet("POI", ",".join(['r']))
@@ -16,4 +30,5 @@ class MyModel_EMu(PhysicsModel):
         else:
             return 1
 
-myModel_EMu = MyModel_EMu()
+hnDilepModel_EMu = HNDilepModel_EMu()
+hnDilepModel = HNDilepModel()
