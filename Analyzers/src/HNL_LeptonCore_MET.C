@@ -24,8 +24,8 @@ Particle HNL_LeptonCore::GetvCorrMET(TString METType, AnalyzerParameter param, P
      bool overlap_mu(false);
      for(auto imu : loose_muons) {
        if(imu.DeltaR(ij) < 0.4) {
-	 overlap_mu=true;
-	 break;
+   overlap_mu=true;
+   break;
        }
      }
      if(overlap_mu) continue;
@@ -115,35 +115,68 @@ Particle HNL_LeptonCore::GetvMET(TString METType, AnalyzerParameter param,
   bool IsxyCorr     = METType.Contains("xyCorr");
 
   int IdxSyst = -1;
-  if(param.syst_ == AnalyzerParameter::METUnclUp)     IdxSyst = 10;
-  if(param.syst_ == AnalyzerParameter::METUnclDown)   IdxSyst = 11;
-  if(param.syst_ == AnalyzerParameter::JetResUp)      IdxSyst = 0;
-  if(param.syst_ == AnalyzerParameter::JetResDown)    IdxSyst = 1;
-  if(param.syst_ == AnalyzerParameter::JetEnUp)       IdxSyst = 2;
-  if(param.syst_ == AnalyzerParameter::JetEnDown)     IdxSyst = 3;
-  if(param.syst_ == AnalyzerParameter::MuonEnUp)      IdxSyst = 4;
-  if(param.syst_ == AnalyzerParameter::MuonEnDown)    IdxSyst = 5;
-  if(param.syst_ == AnalyzerParameter::ElectronEnUp)  IdxSyst = 6;
-  if(param.syst_ == AnalyzerParameter::ElectronEnDown)IdxSyst = 7;
+  if(param.syst_ == AnalyzerParameter::METUnclUp)             IdxSyst = 10;
+  if(param.syst_ == AnalyzerParameter::METUnclDown)           IdxSyst = 11;
+  if(param.syst_ == AnalyzerParameter::JetResUp)              IdxSyst = 0;
+  if(param.syst_ == AnalyzerParameter::JetResDown)            IdxSyst = 1;
+  if(param.syst_ == AnalyzerParameter::JetEnUp)               IdxSyst = 2;
+  if(param.syst_ == AnalyzerParameter::JetEnDown)             IdxSyst = 3;
+  if(param.syst_ == AnalyzerParameter::MuonEnUp)              IdxSyst = 4;
+  if(param.syst_ == AnalyzerParameter::MuonEnDown)            IdxSyst = 5;
+  if(param.syst_ == AnalyzerParameter::ElectronEnUp)          IdxSyst = 6;
+  if(param.syst_ == AnalyzerParameter::ElectronEnDown)        IdxSyst = 7;
+  // syst source not defined in CMSSW
+  if(param.syst_ == AnalyzerParameter::JetMassUp)             IdxSyst = 20;
+  if(param.syst_ == AnalyzerParameter::JetMassDown)           IdxSyst = 21;
+  if(param.syst_ == AnalyzerParameter::JetMassSmearUp)        IdxSyst = 22;
+  if(param.syst_ == AnalyzerParameter::JetMassSmearDown)      IdxSyst = 23;
+  if(param.syst_ == AnalyzerParameter::MuonRecoSFUp)          IdxSyst = 24;
+  if(param.syst_ == AnalyzerParameter::MuonRecoSFDown)        IdxSyst = 25;
+  if(param.syst_ == AnalyzerParameter::MuonIDSFUp)            IdxSyst = 26;
+  if(param.syst_ == AnalyzerParameter::MuonIDSFDown)          IdxSyst = 27;
+  if(param.syst_ == AnalyzerParameter::MuonISOSFUp)           IdxSyst = 28;
+  if(param.syst_ == AnalyzerParameter::MuonISOSFDown)         IdxSyst = 29;
+  if(param.syst_ == AnalyzerParameter::MuonTriggerSFUp)       IdxSyst = 30;
+  if(param.syst_ == AnalyzerParameter::MuonTriggerSFDown)     IdxSyst = 31;
+  if(param.syst_ == AnalyzerParameter::ElectronRecoSFUp)      IdxSyst = 32;
+  if(param.syst_ == AnalyzerParameter::ElectronRecoSFDown)    IdxSyst = 33;
+  if(param.syst_ == AnalyzerParameter::ElectronResUp)         IdxSyst = 34;
+  if(param.syst_ == AnalyzerParameter::ElectronResDown)       IdxSyst = 35;
+  if(param.syst_ == AnalyzerParameter::ElectronIDSFUp)        IdxSyst = 36;
+  if(param.syst_ == AnalyzerParameter::ElectronIDSFDown)      IdxSyst = 37;
+  if(param.syst_ == AnalyzerParameter::ElectronTriggerSFUp)   IdxSyst = 38;
+  if(param.syst_ == AnalyzerParameter::ElectronTriggerSFDown) IdxSyst = 39;
+  if(param.syst_ == AnalyzerParameter::BTagSFHTagUp)          IdxSyst = 40;
+  if(param.syst_ == AnalyzerParameter::BTagSFHTagDown)        IdxSyst = 41;
+  if(param.syst_ == AnalyzerParameter::BTagSFLTagUp)          IdxSyst = 42;
+  if(param.syst_ == AnalyzerParameter::BTagSFLTagDown)        IdxSyst = 43;
+  if(param.syst_ == AnalyzerParameter::PrefireUp)             IdxSyst = 44;
+  if(param.syst_ == AnalyzerParameter::PrefireDown)           IdxSyst = 45;
+  if(param.syst_ == AnalyzerParameter::PUUp)                  IdxSyst = 46;
+  if(param.syst_ == AnalyzerParameter::PUDown)                IdxSyst = 47;
 
-  Particle vMETSyst;
 
-  if(IdxSyst < 10 )  vMETSyst = UpdateMETSyst(param, vStandMET, jets, fatjets, muons, electrons);
+  Particle vMETSyst = PropSmearing ? GetvCorrMET(METType,param,vStandMET) : vStandMET;
+
+  if(IdxSyst >= 20 )  vMETSyst = UpdateMETSyst(param, vStandMET, jets, fatjets, muons, electrons);
   else if(IdxSyst>=0){
 
     if(UsePuppi) {
       if(isfinite(PuppiMET_Type1_pt_shifts->at(IdxSyst))){
         vMETSyst = UpdateMETSyst(PuppiMET_Type1_pt, PuppiMET_Type1_phi, PuppiMET_Type1_pt_shifts->at(IdxSyst),PuppiMET_Type1_phi_shifts->at(IdxSyst), vStandMET);
       }
-      else return vStandMET;
     }
     else {
       if(isfinite(pfMET_Type1_PhiCor_pt_shifts->at(IdxSyst))){
         if(IsxyCorr) vMETSyst = UpdateMETSyst(pfMET_Type1_PhiCor_pt, pfMET_Type1_PhiCor_phi, pfMET_Type1_PhiCor_pt_shifts->at(IdxSyst), pfMET_Type1_PhiCor_phi_shifts->at(IdxSyst), vStandMET);
         else         vMETSyst = UpdateMETSyst(pfMET_Type1_pt, pfMET_Type1_phi, pfMET_Type1_pt_shifts->at(IdxSyst), pfMET_Type1_phi_shifts->at(IdxSyst), vStandMET);
       }
-      else return vStandMET;
     }
+  }
+  else{
+    cout << "[HNL_LeptonCore::GetvMET] There is no matched syst type;" << endl;
+    cout << "[HNL_LeptonCore::GetvMET] Current syst index : " << IdxSyst << endl;
+    exit(EXIT_FAILURE);
   }
 
   return vMETSyst;

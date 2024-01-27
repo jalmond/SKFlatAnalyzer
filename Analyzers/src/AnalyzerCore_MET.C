@@ -88,15 +88,6 @@ Particle AnalyzerCore::UpdateMETSyst(AnalyzerParameter param, const Particle& ME
       px_corrected += jets.at(i).Px();
       py_corrected += jets.at(i).Py();
     }
-  }
-
-  if(param.syst_ == AnalyzerParameter::JetResUp ||
-     param.syst_ == AnalyzerParameter::JetResDown ||
-     param.syst_ == AnalyzerParameter::JetEnUp ||
-     param.syst_ == AnalyzerParameter::JetEnDown ||
-     param.syst_ == AnalyzerParameter::JetMassSmearUp ||
-     param.syst_ == AnalyzerParameter::JetMassSmearDown){
-
     for(unsigned int i=0; i<fatjets.size(); i++){
       px_orig += fatjets.at(i).PxUnSmeared();
       py_orig += fatjets.at(i).PyUnSmeared();

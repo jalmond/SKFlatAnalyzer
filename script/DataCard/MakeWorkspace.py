@@ -20,10 +20,9 @@ masses = ["M90","M100","M150","M200","M300","M400","M500","M600","M700","M800","
 channels = ["MuMu","EE","EMu"]
 tags = ["_sr","_sr_inv","_sronly",""]
 
-masses = ["M100"]
-channels = ["EE"]
-#tags = ["_sr_syst","_syst",""]
-tags = ["_sr"]
+masses = ["M100","M1000","M10000"]
+channels = ["EE","MuMu"]
+tags = ["_syst"]
 
 for year in years:
   for channel in channels:

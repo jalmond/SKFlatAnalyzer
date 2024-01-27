@@ -84,10 +84,19 @@ void test(TString era, bool isdata, TString sample, TString skim, TString flag){
   }
   else if(era=="2017" && isdata && sample=="MuonEG" && skim=="HNMultiLepBDT"){
     if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/DATA_SkimTree_HNMultiLepBDT/MuonEG/periodB/2023_09_04_143241/SKFlatNtuple_2017_DATA_0.root")) exit(EIO);
-    //if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/DATA_SkimTree_HNMultiLepBDT/MuonEG/periodB/2023_09_04_143241/SKFlatNtuple_2017_DATA_1.root")) exit(EIO);
-    //if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/DATA_SkimTree_HNMultiLepBDT/MuonEG/periodB/2023_09_04_143241/SKFlatNtuple_2017_DATA_2.root")) exit(EIO);
-    //if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/DATA_SkimTree_HNMultiLepBDT/MuonEG/periodB/2023_09_04_143241/SKFlatNtuple_2017_DATA_3.root")) exit(EIO);
-    //if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/DATA_SkimTree_HNMultiLepBDT/MuonEG/periodB/2023_09_04_143241/SKFlatNtuple_2017_DATA_4.root")) exit(EIO);
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/DATA_SkimTree_HNMultiLepBDT/MuonEG/periodB/2023_09_04_143241/SKFlatNtuple_2017_DATA_1.root")) exit(EIO);
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/DATA_SkimTree_HNMultiLepBDT/MuonEG/periodB/2023_09_04_143241/SKFlatNtuple_2017_DATA_2.root")) exit(EIO);
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/DATA_SkimTree_HNMultiLepBDT/MuonEG/periodB/2023_09_04_143241/SKFlatNtuple_2017_DATA_3.root")) exit(EIO);
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/DATA_SkimTree_HNMultiLepBDT/MuonEG/periodB/2023_09_04_143241/SKFlatNtuple_2017_DATA_4.root")) exit(EIO);
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/DATA_SkimTree_HNMultiLepBDT/MuonEG/periodB/2023_09_04_143241/SKFlatNtuple_2017_DATA_5.root")) exit(EIO);
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/DATA_SkimTree_HNMultiLepBDT/MuonEG/periodB/2023_09_04_143241/SKFlatNtuple_2017_DATA_6.root")) exit(EIO);
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/DATA_SkimTree_HNMultiLepBDT/MuonEG/periodB/2023_09_04_143241/SKFlatNtuple_2017_DATA_7.root")) exit(EIO);
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/DATA_SkimTree_HNMultiLepBDT/MuonEG/periodB/2023_09_04_143241/SKFlatNtuple_2017_DATA_8.root")) exit(EIO);
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/DATA_SkimTree_HNMultiLepBDT/MuonEG/periodB/2023_09_04_143241/SKFlatNtuple_2017_DATA_9.root")) exit(EIO);
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/DATA_SkimTree_HNMultiLepBDT/MuonEG/periodB/2023_09_04_143241/SKFlatNtuple_2017_DATA_10.root")) exit(EIO);
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/DATA_SkimTree_HNMultiLepBDT/MuonEG/periodB/2023_09_04_143241/SKFlatNtuple_2017_DATA_11.root")) exit(EIO);
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/DATA_SkimTree_HNMultiLepBDT/MuonEG/periodB/2023_09_04_143241/SKFlatNtuple_2017_DATA_12.root")) exit(EIO);
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/DATA_SkimTree_HNMultiLepBDT/MuonEG/periodB/2023_09_04_143241/SKFlatNtuple_2017_DATA_13.root")) exit(EIO);
   }
   else if(era=="2017" && isdata && sample=="SingleElectron"){ //JH : test fake rate measurement
     if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/DATA_SkimTree_HNFakeBDT/SingleElectron/periodC/2023_05_18_102358/SKFlatNtuple_2017_DATA_0.root")) exit(EIO);
@@ -138,11 +147,10 @@ void test(TString era, bool isdata, TString sample, TString skim, TString flag){
     if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_HNMultiLepBDT/TTToHadronic_TuneCP5_13TeV-powheg-pythia8/2023_05_16_033011/SKFlatNtuple_2017_MC_0.root")) exit(EIO);
   }
   else if(era=="2017" && !isdata && sample=="WZ"){
-    //if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC/WZTo3LNu_TuneCP5_13TeV-amcatnloFXFX-pythia8/220614_141057/0000/SKFlatNtuple_2017_MC_1.root")) exit(EIO);
     if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_HNMultiLepBDT/WZTo3LNu_TuneCP5_13TeV-amcatnloFXFX-pythia8/2023_03_29_184218/SKFlatNtuple_2017_MC_0.root")) exit(EIO);
   }
   else if(era=="2017" && !isdata && sample=="ZZ"){
-    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC/ZZTo4L_TuneCP5_13TeV_powheg_pythia8/220614_141827/0000/SKFlatNtuple_2017_MC_1.root")) exit(EIO);
+    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_HNMultiLepBDT/ZZTo4L_TuneCP5_13TeV_powheg_pythia8/2023_09_04_165251/SKFlatNtuple_2017_MC_0.root")) exit(EIO);
   }
   else if(era=="2017" && !isdata && sample=="DYTypeI_M100"){
     if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_HNMultiLepBDT/DYTypeI_NLO_DF_M100/2023_03_28_191053/SKFlatNtuple_2017_MC_0.root")) exit(EIO);

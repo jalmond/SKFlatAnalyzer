@@ -73,7 +73,6 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
         || CheckLeptonFlavourForChannel(trilep_channel, LepsT) 
         || CheckLeptonFlavourForChannel(fourlep_channel, LepsT))) continue;
 
-
     FillCutflow(CutFlow_Region, weight_channel, "LeptonFlavour",param);
 
     if(run_Debug) {cout <<"RunAllControlRegions ["<< nlog<< "] pass Lep Flavour" << endl;nlog++;}
@@ -94,7 +93,7 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
     EvalTrigWeight(dilep_channel, muons,electrons,param, weight_channel);
 
     FillCutflow(CutFlow_Region, weight_channel, "Trigger",param);
-
+ 
     double weight_OS = weight_channel;
 
     /// For OS Fakes use SS TT events - VV , but RunFake uses LL so need to apply Tight ID 

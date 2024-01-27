@@ -16,7 +16,7 @@ void HNL_SignalRegionPlotter::executeEvent(){
   FillTimer("START_EV");
   
   vector<TString> LepIDs = {"HNL_ULID","HNTightV2"}; //,"TopHN", "DefaultPOGTight"};                                             
-  vector<HNL_LeptonCore::Channel> ChannelsToRun = {MuMu,EE,EMu,MuE};                                                    
+  vector<HNL_LeptonCore::Channel> ChannelsToRun = {MuMu,EE,EMu}; //MuE is optional, you must fix CheckLeptonFlavour in this case.
 
   for (auto id: LepIDs){
     for(auto channel : ChannelsToRun){
@@ -27,8 +27,8 @@ void HNL_SignalRegionPlotter::executeEvent(){
       if(!IsData) RunSyst=true;
       if(RunSyst){
         TString param_name = param.Name;
-        //vector<AnalyzerParameter::Syst> SystList;// = GetSystList("Initial");
-        vector<AnalyzerParameter::Syst> SystList = GetSystList("All");
+        vector<AnalyzerParameter::Syst> SystList = GetSystList("Initial");
+        //vector<AnalyzerParameter::Syst> SystList = GetSystList("All");
         
         for(auto isyst : SystList){
           param.syst_ = AnalyzerParameter::Syst(isyst);
@@ -79,7 +79,7 @@ void HNL_SignalRegionPlotter::RunULAnalysis(AnalyzerParameter param){
   std::vector<Jet>    AK4_JetCollLoose            = GetHNLJets("Loose",     param);
   std::vector<Jet>    AK4_BJetColl                = GetHNLJets("BJet", param);
  
-  Particle METv = GetvMET("PuppiT1xyULCorr",param); // returns MET with systematic correction; run this after all object selection done; NOTE that VBF jet is used here
+  Particle METv = GetvMET("PuppiT1xyULCorr", param, AK4_VBF_JetColl, AK8_JetColl, MuonCollT, ElectronCollT); // returns MET with systematic correction; run this after all object selection done; NOTE that VBF jet is used here
   
   EvalJetWeight(AK4_JetColl, AK8_JetColl, weight, param);
 

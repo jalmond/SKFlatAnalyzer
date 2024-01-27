@@ -16,7 +16,7 @@ void HNL_ControlRegionPlotter::executeEvent(){
 
   vector<TString> LepIDs = {"HNL_ULID","HNTightV2"};//,"TopHN", "DefaultPOGTight"};
 
-  vector<HNL_LeptonCore::Channel> ChannelsToRun = {EE,MuMu,EMu,MuE};
+  vector<HNL_LeptonCore::Channel> ChannelsToRun = {EE,MuMu,EMu}; //MuE is optional, you should modify CheckLeptonFlavour in this case.
 
   
   if(HasFlag("TestFakes")){

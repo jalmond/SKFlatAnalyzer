@@ -247,10 +247,22 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
     SystList.push_back(AnalyzerParameter::JetMassSmearDown);
     SystList.push_back(AnalyzerParameter::JetEnUp);
     SystList.push_back(AnalyzerParameter::JetEnDown);
-    //SystList.push_back(AnalyzerParameter::PUUp);
-    //SystList.push_back(AnalyzerParameter::PUDown);
-    //SystList.push_back(AnalyzerParameter::FRUp);
-    //SystList.push_back(AnalyzerParameter::FRDown);
+    SystList.push_back(AnalyzerParameter::MuonEnUp);
+    SystList.push_back(AnalyzerParameter::MuonEnDown);
+    SystList.push_back(AnalyzerParameter::ElectronResUp);
+    SystList.push_back(AnalyzerParameter::ElectronResDown);
+    SystList.push_back(AnalyzerParameter::ElectronEnUp);
+    SystList.push_back(AnalyzerParameter::ElectronEnDown);
+    SystList.push_back(AnalyzerParameter::BTagSFHTagUp);
+    SystList.push_back(AnalyzerParameter::BTagSFHTagDown);
+    SystList.push_back(AnalyzerParameter::BTagSFLTagUp);
+    SystList.push_back(AnalyzerParameter::BTagSFLTagDown);
+    SystList.push_back(AnalyzerParameter::METUnclUp);
+    SystList.push_back(AnalyzerParameter::METUnclDown);
+    SystList.push_back(AnalyzerParameter::PrefireUp);
+    SystList.push_back(AnalyzerParameter::PrefireDown);
+    SystList.push_back(AnalyzerParameter::PUUp);
+    SystList.push_back(AnalyzerParameter::PUDown);
   }
   
   if(SystType == "All"){
@@ -262,6 +274,7 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
     AnalyzerParameter::MuonEnUp,AnalyzerParameter::MuonEnDown,                                                                                       
     AnalyzerParameter::MuonIDSFUp,AnalyzerParameter::MuonIDSFDown,                                                                                   
     AnalyzerParameter::MuonISOSFUp,AnalyzerParameter::MuonISOSFDown,                                                                                 
+    AnalyzerParameter::MuonTriggerSFUp,AnalyzerParameter::MuonTriggerSFDown,                                                                                 
     AnalyzerParameter::ElectronRecoSFUp,AnalyzerParameter::ElectronRecoSFDown,                                                                       
     AnalyzerParameter::ElectronResUp,AnalyzerParameter::ElectronResDown,                                                                             
     AnalyzerParameter::ElectronEnUp,AnalyzerParameter::ElectronEnDown,                                                                               
@@ -876,8 +889,9 @@ bool HNL_LeptonCore::CheckLeptonFlavourForChannel(HNL_LeptonCore::Channel channe
 
     if (channel==EE     && !(leps[0]->LeptonFlavour() == Lepton::ELECTRON && leps[1]->LeptonFlavour() == Lepton::ELECTRON)) return false;
     if (channel==MuMu   && !(leps[0]->LeptonFlavour() == Lepton::MUON     && leps[1]->LeptonFlavour() == Lepton::MUON))    return false;
-    if (channel==EMu    && !(leps[0]->LeptonFlavour() == Lepton::ELECTRON && leps[1]->LeptonFlavour() == Lepton::MUON))    return false;
-    if (channel==MuE    && !(leps[1]->LeptonFlavour() == Lepton::ELECTRON && leps[0]->LeptonFlavour() == Lepton::MUON))    return false; 
+    //if (channel==EMu    && !(leps[0]->LeptonFlavour() == Lepton::ELECTRON && leps[1]->LeptonFlavour() == Lepton::MUON))    return false;
+    //if (channel==MuE    && !(leps[1]->LeptonFlavour() == Lepton::ELECTRON && leps[0]->LeptonFlavour() == Lepton::MUON))    return false; 
+    if ((channel==EMu||channel==MuE) && (n_el == 2 || n_mu == 2))    return false;  //JH
   
     double lep1_ptcut= (channel==EE) ?   25. : 20.;
     double lep2_ptcut= (channel==EE) ?   10. : 10.;
@@ -897,8 +911,8 @@ bool HNL_LeptonCore::CheckLeptonFlavourForChannel(HNL_LeptonCore::Channel channe
     if(channel==EMuL&&  (n_el == 3  || n_mu == 3)) return false;
     if(channel==MuEL&&  (n_el == 3  || n_mu == 3)) return false;
     
-    if(channel==EMuL&&  !(leps[0]->LeptonFlavour() == Lepton::ELECTRON)) return false;
-    if(channel==MuEL&&  !(leps[0]->LeptonFlavour() == Lepton::MUON))     return false;
+    //if(channel==EMuL&&  !(leps[0]->LeptonFlavour() == Lepton::ELECTRON)) return false;
+    //if(channel==MuEL&&  !(leps[0]->LeptonFlavour() == Lepton::MUON))     return false;
     
     double lep1_ptcut= (channel==MuMuMu) ?   20.  : 25.;
     double lep2_ptcut= (channel==MuMuMu) ?   10   : 10.;
@@ -916,8 +930,8 @@ bool HNL_LeptonCore::CheckLeptonFlavourForChannel(HNL_LeptonCore::Channel channe
     if( channel==EEEE && n_el != 4) return false;
     if( channel == EMuLL && !(n_mu == 2 && n_mu == 2)) return false;
     if( channel == MuELL && !(n_mu == 2 && n_mu == 2)) return false;
-    if(channel==EMuLL&&  !(leps[0]->LeptonFlavour() == Lepton::ELECTRON)) return false;
-    if(channel==MuELL&&  !(leps[0]->LeptonFlavour() == Lepton::MUON))     return false;
+    //if(channel==EMuLL&&  !(leps[0]->LeptonFlavour() == Lepton::ELECTRON)) return false;
+    //if(channel==MuELL&&  !(leps[0]->LeptonFlavour() == Lepton::MUON))     return false;
     
     double lep1_ptcut= (channel==MuMuMuMu) ?   20. : 25.;
     double lep2_ptcut= (channel==MuMuMuMu) ?   10. : 10.;
@@ -1058,17 +1072,17 @@ TString HNL_LeptonCore::GetChannelString(HNL_LeptonCore::Channel channel, HNL_Le
   if (channel == EE) channel_string="EE";
   if (channel == MuMu) channel_string="MuMu";
   if (channel == EMu) channel_string="EMu";
-  if (channel == MuE) channel_string="EMu";
+  if (channel == MuE) channel_string="MuE";
 
   if (channel == EEE) channel_string="EEE";
   if (channel == EMuL) channel_string="EMuL";
-  if (channel == MuEL) channel_string="EMuL";
+  if (channel == MuEL) channel_string="MuEL";
   if (channel == MuMuMu) channel_string="MuMuMu";
 
   if (channel == EEEE) channel_string="EEEE";
   if (channel == MuMuMuMu) channel_string="MuMuMuMu";
   if (channel == EMuLL) channel_string="EMuLL";
-  if (channel == MuELL) channel_string="EMuLL";
+  if (channel == MuELL) channel_string="MuELL";
 
 
   if (q == Plus) channel_string+="_+";

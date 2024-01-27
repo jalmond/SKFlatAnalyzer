@@ -349,6 +349,39 @@ float MCCorrection::TriggerEfficiency(vector<Electron>& EleColl, vector<Muon>& M
       }
       TriggerEff = Eff_e*Eff_m*Eff_DZ;
     }
+    if(NEl==2 && NMu==2){
+      float pt_m1 = MuColl.at(0).Pt(), pt_m2 = MuColl.at(1).Pt(), pt_e1 = EleColl.at(0).Pt(), pt_e2 = EleColl.at(1).Pt();
+      float feta_m1 = fabs(MuColl.at(0).Eta()), feta_m2 = fabs(MuColl.at(1).Eta()), feta_e1 = fabs(EleColl.at(0).scEta()), feta_e2 = fabs(EleColl.at(1).scEta());
+      feta_m1 = min(feta_m1,MaxfEta2), feta_m2 = min(feta_m2,MaxfEta2), feta_e1 = min(feta_e1,MaxfEta1), feta_e2 = min(feta_e2,MaxfEta1);
+      float Eff_e = 0., Eff_m = 0., Eff_DZ = 0., Eff_ElLeg_El1 = 0., Eff_ElLeg_El2 = 0., Eff_MuLeg_Mu1 = 0., Eff_MuLeg_Mu2 = 0.;
+
+      Eff_DZ = DZEfficiency(SFKey, ReturnDataEff, "");
+      if(pt_m1<MinPt3&&pt_m2<MinPt3){
+        pt_e1 = min(pt_e1,MaxPt1), pt_e2 = min(pt_e2,MaxPt1);
+        Eff_ElLeg_El1 = HistEff1->GetBinContent(HistEff1->FindBin(pt_e1, feta_e1));
+        Eff_ElLeg_El2 = HistEff1->GetBinContent(HistEff1->FindBin(pt_e2, feta_e2));
+        Eff_e = Eff_ElLeg_El1 + (1.-Eff_ElLeg_El1)*Eff_ElLeg_El2;
+      }
+      else{
+        pt_e1 = min(pt_e1,MaxPt2), pt_e2 = min(pt_e2,MaxPt2);
+        Eff_ElLeg_El1 = HistEff2->GetBinContent(HistEff2->FindBin(pt_e1, feta_e1));
+        Eff_ElLeg_El2 = HistEff2->GetBinContent(HistEff2->FindBin(pt_e2, feta_e2));
+        Eff_e = Eff_ElLeg_El1 + (1.-Eff_ElLeg_El1)*Eff_ElLeg_El2;
+      }
+      if(pt_e1<MinPt1&&pt_e2<MinPt1){
+        pt_m1 = min(pt_m1,MaxPt3), pt_m2 = min(pt_m2,MaxPt3);
+        Eff_MuLeg_Mu1 = HistEff3->GetBinContent(HistEff3->FindBin(pt_m1, feta_m1));
+        Eff_MuLeg_Mu2 = HistEff3->GetBinContent(HistEff3->FindBin(pt_m2, feta_m2));
+        Eff_m = Eff_MuLeg_Mu1 + (1.-Eff_MuLeg_Mu1)*Eff_MuLeg_Mu2;
+      }
+      else{
+        pt_m1 = min(pt_m1,MaxPt4), pt_m2 = min(pt_m2,MaxPt4);
+        Eff_MuLeg_Mu1 = HistEff4->GetBinContent(HistEff4->FindBin(pt_m1, feta_m1));
+        Eff_MuLeg_Mu2 = HistEff4->GetBinContent(HistEff4->FindBin(pt_m2, feta_m2));
+        Eff_m = Eff_MuLeg_Mu1 + (1.-Eff_MuLeg_Mu1)*Eff_MuLeg_Mu2;
+      }
+      TriggerEff = Eff_e*Eff_m*Eff_DZ;
+    }
   }
   else if(TrigSoup2L){
     if(NMu==3){
