@@ -20,7 +20,8 @@ void DrawLimits(TString year="", TString channel=""){
 
   //gStyle->SetOptStat(0);
 
-  TString tag = ""; //"_HNL_UL";
+  //TString tag = "_syst"; //"_HNL_UL";
+  TString tag = "_syst_Run2Scaled"; //"_HNL_UL";
   TString method = "Asym"; //"Full";
   //vector<TString> myWPs = {"InputForCombine","InputForCombine_beforeFixLowMass","Workshop","Workshop_FullRun2","Workshop_FullRun2_beforeFixLowMass"};
   //vector<TString> myWPs = {"Workshop_FixedSR1"};
@@ -30,7 +31,8 @@ void DrawLimits(TString year="", TString channel=""){
   //vector<TString> myWPs = {"SR2HT_SR3l2pt"};
   //vector<TString> myWPs = {"SR2HT_SR3l2pt_ChargeSplit"};
   //vector<TString> myWPs = {"HNL_ULID","HNTightV2"};
-  vector<TString> myWPs = {"NewOpt_HNL_ULID","NewOpt_HNTightV2"};
+  //vector<TString> myWPs = {"NewOpt_HNL_ULID","NewOpt_HNTightV2"};
+  vector<TString> myWPs = {"CRtest_HNL_ULID_Syst"};
   for(int i=0; i<myWPs.size(); i++){
     TString myWP = myWPs.at(i);
     TString this_filepath = filepath+myWP+"/"+year+"_"+channel+tag+"_"+method+"_limit.txt";
@@ -923,6 +925,7 @@ void DrawLimits(TString year="", TString channel=""){
     else if(year=="2017") lumi = "41.5";
     else if(year=="2018") lumi = "59.8";
     else if(year=="Run2") lumi = "137.9";
+    if(tag.Contains("Run2")) lumi = "137.9";
     
     latex_CMSPreliminary.DrawLatex(0.16, 0.96, "#scale[0.8]{CMS #bf{#it{Preliminary}}}");
     latex_Lumi.DrawLatex(0.735, 0.96, lumi+" fb^{-1} (13 TeV)");
@@ -946,7 +949,8 @@ void CompareLimits(TString channel=""){
   vector<TString> files;
   //files.push_back(filepath+"/SR2HT_SR3l2pt_ChargeSplit/2017_"+channel+"_HNL_UL_Asym_limit.txt");
   //files.push_back(filepath+"/SR2HT_SR3l2pt/2017_"+channel+"_HNL_UL_Asym_limit.txt");
-  files.push_back(filepath+"/NewOpt_HNL_ULID/Run2_"+channel+"_Asym_limit.txt");
+  //files.push_back(filepath+"/NewOpt_HNL_ULID/Run2_"+channel+"_Asym_limit.txt");
+  files.push_back(filepath+"/CRtest_HNL_ULID_Syst/2017_"+channel+"_syst_Run2Scaled_Asym_limit.txt");
 
   vector<vector<double>> masses, obss, limits, onesig_lefts, onesig_rights, twosig_lefts, twosig_rights;
   vector<int> n_centrals;
@@ -1034,10 +1038,11 @@ void CompareLimits(TString channel=""){
   gr_band_2sigma0->SetLineColor(kOrange);
   gr_band_2sigma0->SetMarkerColor(kOrange);
 
-  TGraph *gr_exp1 = new TGraph(n_centrals[1],&masses[1][0],&limits[1][0]);
-  gr_exp1->SetLineWidth(3);
-  gr_exp1->SetLineStyle(2);
-  gr_exp1->SetLineColor(kViolet);
+  // Use when there are more than two input limits to compare
+  //TGraph *gr_exp1 = new TGraph(n_centrals[1],&masses[1][0],&limits[1][0]);
+  //gr_exp1->SetLineWidth(3);
+  //gr_exp1->SetLineStyle(2);
+  //gr_exp1->SetLineColor(kViolet);
 
   //TGraph *gr_exp2 = new TGraph(n_centrals[2],&masses[2][0],&limits[2][0]);
   //gr_exp2->SetLineWidth(3);
@@ -1191,30 +1196,31 @@ void CompareLimits(TString channel=""){
   //double ratio_ChargeSplit[23];
   //for(int i=0; i<23; i++) ratio_ChargeSplit[i] = limits[1][i]/limits[0][i];
 
-  // ratio with EXO-17-028 expected
-  double mass_comp_17028[16] = {100,200,300,400,500,600,700,800,900,1000,1100,1200,1300,1500,1700,2000};
-  int index_comp_17028[16] = {0,3,5,6,7,8,9,10,11,12,13,14,15,17,18,19};
-  int index_comp_limit[16] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};
-  double ratio_17028[16];
-  for(int i=0; i<16; i++) ratio_17028[i] = exp_17028[index_comp_17028[i]]/limits[0][index_comp_limit[i]];
+  // ratio with EXO-17-028 expected //FIXME this is mass dependent.
+  double mass_comp_17028[17] = {100,150,200,300,400,500,600,700,800,900,1000,1100,1200,1300,1500,1700,2000};
+  int index_comp_17028[17] = {0,2,3,5,6,7,8,9,10,11,12,13,14,15,17,18,19};
+  int index_comp_limit[17] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};
+  double ratio_17028[17];
+  for(int i=0; i<17; i++) ratio_17028[i] = exp_17028[index_comp_17028[i]]/limits[0][index_comp_limit[i]];
 
-  // ratio with EXO-21-003 expected
-  double mass_comp_21003[12] = {300,600,900,1000,1500,2000,2500,5000,7500,10000,15000,20000};
-  double obs_comp_21003[12] = {0.0837, 0.0775, 0.0819, 0.0866, 0.099, 0.1166, 0.1375, 0.2322, 0.3288, 0.4368, 0.6341, 0.8621}; //xcheck with https://www.hepdata.net/record/131287
-  double exp_comp_21003[12] = {0.10583005, 0.10148892, 0.10583005, 0.11045361, 0.12688578, 0.15132746, 0.17804494, 0.30049958, 0.42567593, 0.56595053, 0.82085321, 1.1180340 };
-  double ratio_21003[12];
-  ratio_21003[0] = exp_comp_21003[0]/limits[0][2+1];
-  ratio_21003[1] = exp_comp_21003[1]/limits[0][5+1];
-  ratio_21003[2] = exp_comp_21003[2]/limits[0][8+1];
-  ratio_21003[3] = exp_comp_21003[3]/limits[0][9+1];
-  ratio_21003[4] = exp_comp_21003[4]/limits[0][13+1];
-  ratio_21003[5] = exp_comp_21003[5]/limits[0][15+1];
-  ratio_21003[6] = exp_comp_21003[6]/limits[0][16+1];
-  ratio_21003[7] = exp_comp_21003[7]/limits[0][18+1];
-  ratio_21003[8] = exp_comp_21003[8]/limits[0][19+1];
-  ratio_21003[9] = exp_comp_21003[9]/limits[0][20+1];
-  ratio_21003[10] = exp_comp_21003[10]/limits[0][21+1];
-  ratio_21003[11] = exp_comp_21003[11]/limits[0][22+1];
+  // ratio with EXO-21-003 expected //FIXME this is mass dependent.
+  double mass_comp_21003[13] = {150,300,600,900,1000,1500,2000,2500,5000,7500,10000,15000,20000};
+  double obs_comp_21003[13] = {0.1118, 0.0837, 0.0775, 0.0819, 0.0866, 0.099, 0.1166, 0.1375, 0.2322, 0.3288, 0.4368, 0.6341, 0.8621}; //xcheck with https://www.hepdata.net/record/131287
+  double exp_comp_21003[13] = {0.14142136, 0.10583005, 0.10148892, 0.10583005, 0.11045361, 0.12688578, 0.15132746, 0.17804494, 0.30049958, 0.42567593, 0.56595053, 0.82085321, 1.1180340 };
+  double ratio_21003[13];
+  ratio_21003[0] = exp_comp_21003[0]/limits[0][1];
+  ratio_21003[1] = exp_comp_21003[1]/limits[0][3];
+  ratio_21003[2] = exp_comp_21003[2]/limits[0][6];
+  ratio_21003[3] = exp_comp_21003[3]/limits[0][9];
+  ratio_21003[4] = exp_comp_21003[4]/limits[0][10];
+  ratio_21003[5] = exp_comp_21003[5]/limits[0][14];
+  ratio_21003[6] = exp_comp_21003[6]/limits[0][16];
+  ratio_21003[7] = exp_comp_21003[7]/limits[0][17];
+  ratio_21003[8] = exp_comp_21003[8]/limits[0][19];
+  ratio_21003[9] = exp_comp_21003[9]/limits[0][20];
+  ratio_21003[10] = exp_comp_21003[10]/limits[0][21];
+  ratio_21003[11] = exp_comp_21003[11]/limits[0][22];
+  ratio_21003[12] = exp_comp_21003[12]/limits[0][23];
 
   //==== CANVAS
   TCanvas *c1 = new TCanvas("c1", "", 1000, 1000);
@@ -1235,7 +1241,12 @@ void CompareLimits(TString channel=""){
   hist_axis(dummy);
   dummy->GetYaxis()->SetTitleSize(0.06);
   if(channel=="MuMu") dummy->GetYaxis()->SetTitle("#||{V_{#muN}}^{2}");
-	else if(channel=="EE") dummy->GetYaxis()->SetTitle("#||{V_{eN}}^{2}");
+  else if(channel=="EE") dummy->GetYaxis()->SetTitle("#||{V_{eN}}^{2}");
+  else if(channel=="EMu"){
+    dummy->GetYaxis()->SetTitle("#scale[0.8]{#frac{#||{ V_{eN}V_{#muN}^{*}}^{2}}{#||{ V_{eN} }^{2} + #||{ V_{#muN} }^{2}}}");
+    dummy->GetYaxis()->SetTitleOffset(1.5);
+    dummy->GetYaxis()->SetTitleSize(0.04);
+  }
   dummy->GetXaxis()->SetTitle("m_{N} (GeV)");
   dummy->GetXaxis()->SetLabelSize(0);
   dummy->GetXaxis()->SetRangeUser(90., 25000);
@@ -1295,7 +1306,7 @@ void CompareLimits(TString channel=""){
   TString lumi = "137.9"; //FIXME
   
   latex_CMSPreliminary.DrawLatex(0.14, 0.93, "#scale[0.8]{CMS #bf{#it{Preliminary}}}");
-  latex_Lumi.DrawLatex(0.78, 0.93, lumi+" fb^{-1} (13 TeV)");
+  latex_Lumi.DrawLatex(0.76, 0.93, lumi+" fb^{-1} (13 TeV)");
   latex_title.SetTextSize(0.04);
   latex_title.SetLineWidth(2);
   latex_title.DrawLatex(0.25, 0.79, "#font[41]{95% CL upper limit}");
@@ -1323,6 +1334,7 @@ void CompareLimits(TString channel=""){
   dummy2->GetYaxis()->SetTitleOffset(0.5);
   if(channel=="MuMu") dummy2->GetYaxis()->SetTitle("#frac{limits}{Run2 #mu#mu}");
   else if(channel=="EE") dummy2->GetYaxis()->SetTitle("#frac{limits}{Run2 ee}");
+  else if(channel=="EMu") dummy2->GetYaxis()->SetTitle("#frac{limits}{Run2 e#mu}");
   dummy2->GetYaxis()->SetLabelSize(0.07);
   dummy2->GetXaxis()->SetTitleSize(0.1);
   dummy2->GetXaxis()->SetTitleOffset(0.4);
@@ -1366,5 +1378,6 @@ void CompareLimits(TString channel=""){
   //gr_ratio_ChargeSplit->SetMarkerColor(kViolet);
   //gr_ratio_ChargeSplit->Draw("psame");
 
-
+  gSystem->mkdir(plotpath+"/CRtest_HNL_ULID_Syst/", kTRUE); // recursive option
+  c1->SaveAs(plotpath+"/CRtest_HNL_ULID_Syst/2017_"+channel+"_syst_Run2Scaled_Asym_limit_comp.png");
 }

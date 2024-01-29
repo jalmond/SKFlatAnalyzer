@@ -19,11 +19,13 @@ years = ["2017"]
 channels = ["MuMu","EE","EMu"]
 #channels = ["MuMu","EE"]
 #channels = ["MuMu"]
-masses = ["100","200","300","400","500","600","700","800","900","1000","1100","1200","1300","1500","1700","2000","2500","3000"]
-masses = ["90","100","150","200","300","400","500","600","700","800","900","1000","1100","1200","1300","1500","1700","2000","2500","3000","5000","7500","10000","15000","20000"]
+#masses = ["100","200","300","400","500","600","700","800","900","1000","1100","1200","1300","1500","1700","2000","2500","3000"]
+#masses = ["90","100","150","200","300","400","500","600","700","800","900","1000","1100","1200","1300","1500","1700","2000","2500","3000","5000","7500","10000","15000","20000"]
+masses = ["100","150","200","300","400","500","600","700","800","900","1000","1100","1200","1300","1500","1700","2000","2500","3000","5000","7500","10000","15000","20000"]
 #masses = ["90","100","200","300","400","1000","10000"]
 IDs = [""] #["_ID"]
-tags = ["","_sronly"] #["_DYVBF"]
+#tags = ["","_sronly"] #["_DYVBF"]
+tags = ["_syst"] #["_DYVBF"]
 #myWPs = ["Workshop", "InputForCombine"]
 #myWPs = ["InputForCombine"]
 #myWPs = ["Workshop"]
@@ -36,7 +38,8 @@ tags = ["","_sronly"] #["_DYVBF"]
 #myWPs = ["NewOpt_HNL_ULID","NewOpt_HNTightV2"]
 #myWPs = ["NewOpt_HNL_ULID_FullCLs"]
 #myWPs = ["231227_KCMS_WS_HNL_ULID","231227_KCMS_WS_HNTightV2"]
-myWPs = ["CRtest_HNL_ULID"]
+#myWPs = ["CRtest_HNL_ULID"]
+myWPs = ["CRtest_HNL_ULID_Syst"]
 
 for WP in myWPs:
   this_workdir = workdir+WP
@@ -44,7 +47,8 @@ for WP in myWPs:
   for year, channel, ID, tag in [[year, channel, ID, tag] for year in years for channel in channels for ID in IDs for tag in tags]:
     
     if args.Asymptotic:
-      with open("out/"+WP+"/"+year+"_"+channel+ID+tag+"_Asym_limit.txt", 'w') as f:
+      #with open("out/"+WP+"/"+year+"_"+channel+ID+tag+"_Asym_limit.txt", 'w') as f:
+      with open("out/"+WP+"/"+year+"_"+channel+ID+tag+"_Run2Scaled_Asym_limit.txt", 'w') as f:
   
         for mass in masses:
           this_name = year+"_"+channel+"_M"+mass+ID+tag
@@ -54,13 +58,13 @@ for WP in myWPs:
           tree_Asym = f_Asym.Get("limit")
   
           tree_Asym.GetEntry(2) # substitute for obs. limit for now
-          f.write(mass+"\t"+str(round(tree_Asym.limit,3))+"\t")
-          #f.write(mass+"\t"+str(round(tree_Asym.limit/1.87,3))+"\t") # FIXME estimating full Run2 from 2017
+          #f.write(mass+"\t"+str(round(tree_Asym.limit,3))+"\t")
+          f.write(mass+"\t"+str(round(tree_Asym.limit/1.87,3))+"\t") # FIXME estimating full Run2 from 2017
   
           for i in range(5): # expected limits
             tree_Asym.GetEntry(i)
-            f.write(str(round(tree_Asym.limit,3))+"\t")
-            #f.write(str(round(tree_Asym.limit/1.87,3))+"\t") # FIXME estimating full Run2 from 2017
+            #f.write(str(round(tree_Asym.limit,3))+"\t")
+            f.write(str(round(tree_Asym.limit/1.87,3))+"\t") # FIXME estimating full Run2 from 2017
           f.write("\n")
   
     if args.Full:

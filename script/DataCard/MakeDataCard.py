@@ -23,10 +23,11 @@ pwd = os.getcwd()
 eras = ["2016","2017","2018"]
 eras = ["2017"]
 #eras = ["2016preVFP","2016postVFP","2018"]
-#channels = ["MuMu","EE","EMu"]
-channels = ["MuMu","EE"]
+channels = ["MuMu","EE","EMu"]
+#channels = ["MuMu","EE"]
 #masses = ["M90","M100","M150","M200","M300","M400","M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M10000","M15000","M20000"]
-masses = ["M100","M1000","M10000"]
+#masses = ["M100","M1000","M10000"]
+masses = ["M100","M150","M200","M300","M400","M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M10000","M15000","M20000"]
 
 myWPs = ["Workshop", "InputForCombine"]
 myWPs = ["InputForCombine"]
@@ -76,7 +77,8 @@ def CardSetting(isCR, era, channel, mass):
 
   # sr_inv setting
   lines_sr_inv = lines[:]
-  lines_sr_inv[4] = "shapes * *  "+CRpath+WP+"/"+era+"/SS_CR__/"+mass+"_"+channel+"_card_input.root $PROCESS $PROCESS_$SYSTEMATIC\n"
+  #lines_sr_inv[4] = "shapes * *  "+CRpath+WP+"/"+era+"/SS_CR__/"+mass+"_"+channel+"_card_input.root $PROCESS $PROCESS_$SYSTEMATIC\n"
+  lines_sr_inv[4] = "shapes * *  "+CRpath+WP+"/"+era+"/"+mass+"_"+channel+"_card_input.root $PROCESS $PROCESS_$SYSTEMATIC\n"
   if "Mu" in channel: lines_sr_inv[17] = "rate                       -1      -1    0     -1    0            0\n"  # no cf
   else: lines_sr_inv[17] = "rate                      -1      -1    -1    -1     0            0\n"                  # no signal FIXME will add signal in CRs
   lines_sr_inv[20] = "" # remove lnN bkg normalization uncert.

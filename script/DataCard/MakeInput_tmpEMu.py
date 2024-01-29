@@ -15,11 +15,11 @@ eras = ["2016preVFP", "2016postVFP", "2017", "2018"]
 eras = ["2016","2017","2018"]
 eras = ["2017"]
 #eras = ["2018"]
-#masses = ["M90","M100","M150","M200","M300","M400","M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M10000","M15000","M20000"]
+masses = ["M90","M100","M150","M200","M300","M400","M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M10000","M15000","M20000"]
 #masses = ["M100","M1000","M10000"]
-masses = ["M90","M150","M200","M300","M400","M500","M600","M700","M800","M900","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M15000","M20000"]
-#channels = ["MuMu","EE","EMu"]
-channels = ["MuMu","EE"]
+#masses = ["M90","M150","M200","M300","M400","M500","M600","M700","M800","M900","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M15000","M20000"]
+channels = ["MuMu","EE","EMu"]
+#channels = ["MuMu","EE"]
 #tags = ["HNL_ULID","HNTightV2"] # HNLParameter Name
 tags = ["HNL_ULID"] # HNLParameter Name
 outputTag = "CRtest" # tag the output directory name as you wish
@@ -34,12 +34,12 @@ MCSkim = "_SkimTree_HNMultiLepBDT_"
 SignalSkim = "_SkimTree_HNMultiLepBDT_"
 
 # This will do necessary hadd for you.
-MergeData   = True
-MergeFake   = True  # RunFake
-MergeCF     = True  # RunCF
-MergeConv   = True  # RunConv
-MergeMC     = True  # RunPrompt
-MergeSignal = True
+MergeData   = False
+MergeFake   = False  # RunFake
+MergeCF     = False  # RunCF
+MergeConv   = False  # RunConv
+MergeMC     = False  # RunPrompt
+MergeSignal = False
 #MergeDYVBF = True
 #MergeSSWW  = True
 
@@ -166,18 +166,28 @@ for tag in tags:
           if int(mass.replace("M","")) <= 500:
             if channel == "MuMu": input_hist =  "LimitInputBDT/"+channel+"/"+tag+"/"+mass+"/LimitBins/Muon"+Region #path to the input histogram
             elif channel == "EE": input_hist =  "LimitInputBDT/"+channel+"/"+tag+"/"+mass+"/LimitBins/Electron"+Region #path to the input histogram
-            elif channel == "EMu": input_hist = "LimitInputBDT/"+channel+"/"+tag+"/"+mass+"/LimitBins/ElectronMuon"+Region #path to the input histogram
+            elif channel == "EMu":
+              input_hist = "LimitInputBDT/"+channel+"/"+tag+"/"+mass+"/LimitBins/ElectronMuon"+Region #path to the input histogram
+              input_hist_MuE = "LimitInputBDT/MuE/"+tag+"/"+mass+"/LimitBins/ElectronMuon"+Region #path to the input histogram
           elif int(mass.replace("M","")) > 500:
             if channel == "MuMu": input_hist =  "LimitInput/"+channel+"/"+tag+"/LimitBins/Muon"+ChargeSplit+Region #path to the input histogram
             elif channel == "EE": input_hist =  "LimitInput/"+channel+"/"+tag+"/LimitBins/Electron"+ChargeSplit+Region #path to the input histogram
-            elif channel == "EMu": input_hist = "LimitInput/"+channel+"/"+tag+"/LimitBins/ElectronMuon"+ChargeSplit+Region #path to the input histogram
+            elif channel == "EMu":
+              input_hist = "LimitInput/"+channel+"/"+tag+"/LimitBins/ElectronMuon"+ChargeSplit+Region #path to the input histogram
+              input_hist_MuE = "LimitInput/MuE/"+tag+"/LimitBins/ElectronMuon"+ChargeSplit+Region #path to the input histogram
           
           print "##### Initiating",mass,channel,"..."
           if not Blinded: h_data        = f_data.Get(input_hist)
           h_fake        = f_fake.Get(input_hist)
           h_cf          = f_cf.Get(input_hist)
           h_conv        = f_conv.Get(input_hist)
+          if channel == "EMu":
+            h_conv_MuE    = f_conv.Get(input_hist_MuE)
+            h_conv.Add(h_conv_MuE)
           h_prompt      = f_prompt.Get(input_hist)
+          if channel == "EMu":
+            h_prompt_MuE  = f_prompt.Get(input_hist_MuE)
+            h_prompt.Add(h_prompt_MuE)
           print "##### histo done."
  
           # Make list of [file path, histogram, histo name]
@@ -243,6 +253,9 @@ for tag in tags:
               print("[!!WARNING!!] There is no signal file "+f_path_signalDYVBF+".")
               print "Skipping..."
             else:
+              if channel == "EMu":
+                h_signalDYVBF_MuE = f_signalDYVBF.Get(input_hist_MuE)
+                h_signalDYVBF.Add(h_signalDYVBF_MuE)
               h_signalDYVBF.Scale(DYVBFscaler) # Scaling the signal due to Combine fitting
               input_list.append([f_path_signalDYVBF, h_signalDYVBF, "signalDYVBF"])
               print "Scaled signalDYVBF :", h_signalDYVBF.Integral()
@@ -253,6 +266,9 @@ for tag in tags:
               print("[!!WARNING!!] There is no signal file "+f_path_signalSSWW+".")
               print "Skipping..."
             else:
+              if channel == "EMu":
+                h_signalSSWW_MuE = f_signalSSWW.Get(input_hist_MuE)
+                h_signalSSWW.Add(h_signalSSWW_MuE)
               h_signalSSWW.Scale(SSWWscaler) # To be consistent when calculating mixing limits
               print "Scaled signalSSWW :", h_signalSSWW.Integral()
               input_list.append([f_path_signalSSWW, h_signalSSWW, "signalSSWW"])
@@ -290,11 +306,15 @@ for tag in tags:
               if int(mass.replace("M","")) <= 500:
                 if channel == "MuMu": input_hist =  "LimitInputBDT/"+channel+"/Syst_"+this_syst+tag+"/"+mass+"/LimitBins/Muon"+Region
                 elif channel == "EE": input_hist =  "LimitInputBDT/"+channel+"/Syst_"+this_syst+tag+"/"+mass+"/LimitBins/Electron"+Region
-                elif channel == "EMu": input_hist = "LimitInputBDT/"+channel+"/Syst_"+this_syst+tag+"/"+mass+"/LimitBins/ElectronMuon"+Region
+                elif channel == "EMu":
+                  input_hist = "LimitInputBDT/"+channel+"/Syst_"+this_syst+tag+"/"+mass+"/LimitBins/ElectronMuon"+Region
+                  input_hist_MuE = "LimitInputBDT/MuE/Syst_"+this_syst+tag+"/"+mass+"/LimitBins/ElectronMuon"+Region
               elif int(mass.replace("M","")) > 500:
                 if channel == "MuMu": input_hist =  "LimitInput/"+channel+"/Syst_"+this_syst+tag+"/LimitBins/Muon"+ChargeSplit+Region
                 elif channel == "EE": input_hist =  "LimitInput/"+channel+"/Syst_"+this_syst+tag+"/LimitBins/Electron"+ChargeSplit+Region
-                elif channel == "EMu": input_hist = "LimitInput/"+channel+"/Syst_"+this_syst+tag+"/LimitBins/ElectronMuon"+ChargeSplit+Region
+                elif channel == "EMu":
+                  input_hist = "LimitInput/"+channel+"/Syst_"+this_syst+tag+"/LimitBins/ElectronMuon"+ChargeSplit+Region
+                  input_hist_MuE = "LimitInput/MuE/Syst_"+this_syst+tag+"/LimitBins/ElectronMuon"+ChargeSplit+Region
   
               for i in range(Nproc):
                 if not "fake_data_path" in input_list[i][0]: # There is no file like "fake_data_path" ...
@@ -302,6 +322,9 @@ for tag in tags:
                   h_syst = f_syst.Get(input_hist)
                   try: h_syst.SetDirectory(0) # Store h_syst in memory so that it cannot be deleted during the iteration
                   except AttributeError: continue
+                  if channel == "EMu":
+                    h_syst_MuE = f_syst.Get(input_hist_MuE)
+                    h_syst.Add(h_syst_MuE)
                   name_syst = input_list[i][2]+"_"+this_syst # Define syst histo name
                   if "DYVBF" in input_list[i][2]: # Scale the syst variated signals
                     h_syst.Scale(DYVBFscaler)
