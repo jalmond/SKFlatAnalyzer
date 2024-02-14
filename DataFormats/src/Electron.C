@@ -1662,6 +1662,11 @@ int  Electron::PassIDTight(TString ID) const{
   if(ID == "HNL_ULID_FO_"  +Year)   return (PassID("HNL_ULID_Conv_"+Year)   && PassID("HNL_ULID_CF_"+Year));
   if(ID == "HNL_ULLID_FO")         return (PassID("HNL_ULLID_Conv") && PassID("HNL_ULLID_CF"));
 
+
+  double CloseJet_PtratioCut = 0.4;
+  if(Year=="2016") CloseJet_PtratioCut = 0.5;
+
+  /// Iteration 1
   if(ID == "HNL_ULID_FOv2_"+Year) {
     if(!PassID("HNL_ULID_FO_"+Year)) return false;
     if(!PassID("HNL_ULID_Fake_"+Year)){
@@ -1674,49 +1679,82 @@ int  Electron::PassIDTight(TString ID) const{
     if(!PassID("HNL_ULID_FO_"+Year)) return false;
     if(!PassID("HNL_ULID_Fake_"+Year)){
       if(this->HasCloseJet()){
-	if(Year=="2016"){
-	  if(CloseJet_Ptratio() < 0.5) return false;
-	}
-	else         if(CloseJet_Ptratio() < 0.4) return false;
+        if(CloseJet_Ptratio() <CloseJet_PtratioCut) return false;
 	if(CloseJet_BScore() > 0.1) return false;
       }
     }
     return true;
   }
 
-  if(ID  == "HNL_ULLID_FOv3"){
-    if(!PassID("HNL_ULLID_FO")) return false;
-    if(!PassID("HNL_ULLID_Fake")){
+  /// Iteration 2
+
+  if(ID  == "HNL_ULID_FO_v1_"+Year){
+    if(!PassID("HNL_ULID_FO_"+Year)) return false;
+    if(!PassID("HNL_ULID_Fake_"+Year)){
       if(this->HasCloseJet()){
-	if(Year=="2016"){
-	  if(CloseJet_Ptratio() < 0.5) return false;
-	}
-	else         if(CloseJet_Ptratio() < 0.4) return false;
-	if(CloseJet_BScore() > 0.1) return false;
+	if(CloseJet_Ptratio() <CloseJet_PtratioCut) return false;
+	if(this->CloseJet_BScore()  >  0.1)   return false;
       }
     }
     return true;
   }
 
-  if(ID=="HNL_ULID_FOv4_"+Year)  return (PassID("HNL_ULID_FO_"+Year) && (HNL_MVA_Fake("EDv5") > -0.9));
-
-  if(ID=="HNL_ULID_FOv5_"+Year)  {
-    if(!PassID("HNL_ULID_FO_"+Year)) return false;
+  if(ID == "HNL_ULID_FO_v2_"+Year){
+   if(!PassID("HNL_ULID_FO_"+Year)) return false;
     if(!PassID("HNL_ULID_Fake_"+Year)){
-      if(this->HasCloseJet() && CloseJet_BScore() > 0.2) return false;
-      if(this->HasCloseJet() && CloseJet_CvsLScore() > 0.25) return false;
+      if(this->HasCloseJet()){
+	if(CloseJet_Ptratio() <CloseJet_PtratioCut) return false;
+	if(this->CloseJet_BScore()  >  0.9) return false;
+        if(this->CloseJet_CvsBScore() < 0.1 ) return false;
+        if(this->CloseJet_CvsLScore() > 0.6)return false;
+      }
     }
     return true;
   }
 
-  if(ID=="HNL_ULID_FOv6_"+Year) {
-    if(!PassID("HNL_ULID_FO_"+Year)) return false;
+
+  if(ID == "HNL_ULID_FO_v3_"+Year){
+   if(!PassID("HNL_ULID_FO_"+Year)) return false;
     if(!PassID("HNL_ULID_Fake_"+Year)){
-      if(this->HasCloseJet() && CloseJet_BScore() > 0.5) return false;
-      if(this->HasCloseJet() && CloseJet_CvsLScore() > 0.25) return false;
+
+      if(this->HasCloseJet()){
+        if(CloseJet_Ptratio() <CloseJet_PtratioCut) return false;
+        if(this->CloseJet_BScore()  >  0.4) return false;
+        if(this->CloseJet_CvsBScore() < 0.1 ) return false;
+        if(this->CloseJet_CvsLScore() > 0.8)return false;
+      }
     }
     return true;
   }
+  if(ID == "HNL_ULID_FO_v4_"+Year){
+   if(!PassID("HNL_ULID_FO_"+Year)) return false;
+    if(!PassID("HNL_ULID_Fake_"+Year)){
+
+      if(this->HasCloseJet()){
+        if(CloseJet_Ptratio() <CloseJet_PtratioCut) return false;
+
+        if(this->CloseJet_BScore()  >  0.2) return false;
+        if(this->CloseJet_CvsBScore() < 0.1 ) return false;
+        if(this->CloseJet_CvsLScore() > 0.8)return false;
+      }
+    }
+    return true;
+  }
+  if(ID == "HNL_ULID_FO_v5_"+Year){
+   if(!PassID("HNL_ULID_FO_"+Year)) return false;
+    if(!PassID("HNL_ULID_Fake_"+Year)){
+
+      if(this->HasCloseJet()){
+        if(CloseJet_Ptratio() <CloseJet_PtratioCut) return false;
+        if(this->CloseJet_BScore()  >  0.1)   return false;
+        if(this->CloseJet_CvsBScore() < 0.1 ) return false;
+        if(this->CloseJet_CvsLScore() > 0.8)  return false;
+      }
+    }
+    return true;
+  }
+
+
 
  
 
@@ -1796,7 +1834,7 @@ int  Electron::PassIDTight(TString ID) const{
   }
 
   
-  if(ID=="TopHN"){
+  if(ID=="TopHNSST"){
     if(! passMVAID_noIso_WP90()          ) return false;
     if(! (MiniRelIso()<0.1)              ) return false;
     if(! (SIP3D()<4)                     ) return false;

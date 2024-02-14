@@ -5,21 +5,22 @@
 #pragma link off all functions;
 #pragma link C++ nestedclasses;
 
-#pragma link C++ class HNL_LeptonFakeRate+;
-#pragma link C++ class HNL_LeptonFakeRateMC+;
-#pragma link C++ class HNL_LeptonFakeStudy+;
-#pragma link C++ class HNL_ChargeFlip+;
-#pragma link C++ class HNL_LeptonConversionStudy+;
-#pragma link C++ class HNL_LeptonIDBDTStudies+;
-#pragma link C++ class HNL_LeptonIDSF+;
+#pragma link C++ class HNL_Lepton_FakeRate+;
+#pragma link C++ class HNL_Lepton_FakeRate_MC+;
+#pragma link C++ class HNL_Lepton_Fake_Studies+;
+#pragma link C++ class HNL_Lepton_ChargeFlip_Studies+;
+#pragma link C++ class HNL_Lepton_Conversion_Studies+;
+#pragma link C++ class HNL_Lepton_ID_BDT_Studies+;
+#pragma link C++ class HNL_Lepton_ID_SF+;
+#pragma link C++ class HNL_Lepton_ID_BDT_KinVar+;
 #pragma link C++ class HNL_RegionDefinitions+;
-#pragma link C++ class HNL_SignalStudies+;
-#pragma link C++ class HNL_ObjectStudies+;
+#pragma link C++ class HNL_ControlRegion_Plotter+;
+#pragma link C++ class HNL_ControlRegion+;
+#pragma link C++ class HNL_SignalRegion_Plotter+;
 #pragma link C++ class HNL_SR3_BDT_KinVar+;
-#pragma link C++ class HNL_LeptonID_BDT_KinVar+;
-#pragma link C++ class HNL_ControlRegionPlotter+;
-#pragma link C++ class HNL_SignalRegionPlotter+;
-#pragma link C++ class HNL_SignalEfficiency+;
+#pragma link C++ class HNL_Signal_Efficiency+;
+#pragma link C++ class HNL_Signal_Studies+;
+#pragma link C++ class HNL_GenericObject_Studies+;
 #pragma link C++ class HNL_Validation+;
 
 #endif

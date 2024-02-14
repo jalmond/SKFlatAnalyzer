@@ -397,14 +397,14 @@ TString  AnalyzerParameter::ChannelDir(){
 
 TString  AnalyzerParameter::CutFlowDirChannel(){
 
-  if(Channel == "Default")  return CutFlowDir+"/"+Name;
-  return "Channel"+CutFlowDir+"/"+Name+"/"+Channel;
+  if(Channel == "Default")  return CutFlowDir+"/"+DefName;
+  return "Channel"+CutFlowDir+"/"+DefName+"/"+Channel;
 }
 
 TString  AnalyzerParameter::CutFlowDirIncChannel(){
 
-  if(Channel =="Default")  return CutFlowDir+"/"+Name;
-  return "Channel"+CutFlowDir+"/"+Name+"/"+InclusiveChannelName();
+  if(Channel =="Default")  return CutFlowDir+"/"+DefName;
+  return "Channel"+CutFlowDir+"/"+DefName+"/"+InclusiveChannelName();
 }
 
 

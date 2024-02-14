@@ -13,6 +13,7 @@ HasLooseLepton(false)
 
 void FakeBackgroundEstimator::ReadHistograms(bool IsData, bool ScanIDs){
   
+  cout << "FakeBackgroundEstimator::ReadHistograms Scan IDs=" << ScanIDs << endl;
   TString datapath = getenv("DATA_DIR");
   
   TString DataFakePath = datapath+"/"+GetEra()+"/FakeRate/DataFR/";
@@ -54,7 +55,7 @@ void FakeBackgroundEstimator::ReadHistograms(bool IsData, bool ScanIDs){
       TList *histlist = file->GetListOfKeys();
       for(int i=0;i<histlist->Capacity();i++){
 	TString this_frname = histlist->At(i)->GetName();
-	
+	//cout << "Check " <<  this_frname <<  " " << b+"_"+c << " " << d << endl;
 	if (!b.Contains("Top")) {
 	  if (!this_frname.Contains(b+"_"+c)) continue;
 	  //if (!this_frname.Contains(c)) continue;
@@ -64,6 +65,7 @@ void FakeBackgroundEstimator::ReadHistograms(bool IsData, bool ScanIDs){
 	  if (!this_frname.Contains(b)) continue;
           if (!this_frname.Contains(d)) continue;
 	}
+	//cout << "Pass" << endl;
 	histDir->cd();
 	
 	if(ihmap.Contains("Electron")) map_hist_Electron[a+"_"+b+"_"+c+"_"+d] = (TH2D *)file->Get(this_frname)->Clone(a+"_"+b+"_"+c+"_"+d);
@@ -222,21 +224,8 @@ double FakeBackgroundEstimator::GetMuonFakeRate(TString ID, TString key, TString
 
   /// For Flvour bins binning is differen                                                                                                                                                   
 
-  if(BinningMethod == "BDTFlavour" ) {
-    if(pt < 10)  pt=10;
-    if(FakeTagger == "LF"){
-      if(pt >= 50) pt = 49;
-    }
-    if(FakeTagger == "HFB"){
-      if(pt>=60) pt = 59;
-    }
-    if(FakeTagger == "HFC"){
-      if(pt>=60) pt = 59;
-    }
-  }
-
   std::map< TString, TH2D* >::const_iterator mapit;
-  //  cout << "KEY FakeRate_"+ID+"_"+key << endl;
+  //cout << "KEY FakeRate_"+ID+" _ "+key << endl;
   mapit = map_hist_Muon.find("FakeRate_"+ID+"_"+key);
 
   if(mapit==map_hist_Muon.end()){

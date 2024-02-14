@@ -14,39 +14,59 @@ void HNL_LeptonCore::FillFakeHistograms(AnalyzerParameter param, TString plot_di
   
   int nlep = 0;
   for(auto ilep : Leptons){
-    nlep++;
-    if(nlep == 1) continue;
+
+    if(!IsData && !ilep->IsFake()) continue;
 
     TString LorT = (ilep->PassLepID()) ? "Tight" : "LooseNotTight";
     TString MotherJetFlavour = (IsData) ? "Data" :  ilep->MotherJetFlavour();
 
-    FillHist((plot_dir+LorT+"/HF_MVA_"+MotherJetFlavour+"_"+param.Name +"_"+LorT).Data(),ilep->HNL_MVA_Fake("HF") ,  w, 200, -1, 1 );
-    FillHist((plot_dir+LorT+"/HNL_Fake_MVA_"+MotherJetFlavour+"_"+param.Name +"_"+LorT).Data(),ilep->HNL_MVA_Fake("HNL") ,  w, 200, -1, 1 );
-    FillHist((plot_dir+LorT+"/HNL_CF_MVA_"  +MotherJetFlavour+"_"+param.Name +"_"+LorT).Data(),ilep->HNL_MVA_CF("EDv5") ,  w, 200, -1, 1 );
-    FillHist((plot_dir+LorT+"/HNL_Conv_MVA_"+MotherJetFlavour+"_"+param.Name +"_"+LorT).Data(),ilep->HNL_MVA_Conv("EDv5") ,  w, 200, -1, 1 );
+    vector<TString> PassLabels;
+    PassLabels.push_back(plot_dir+"/"+ilep->GetFlavour());
+    if(ilep->Pt() < 15)           PassLabels.push_back(plot_dir+"/Pt0to15_"+ilep->GetFlavour());
+    else if(ilep->Pt() < 25)      PassLabels.push_back(plot_dir+"/Pt15to25_"+ilep->GetFlavour());
+    else     PassLabels.push_back(plot_dir+"/Pt25toInf_"+ilep->GetFlavour());
 
-    FillHist((plot_dir+LorT+"/HF_MVA_"+MotherJetFlavour+"_"+ilep->sRegion()+"_"+param.Name +"_"+LorT).Data(),ilep->HNL_MVA_Fake("HF") ,  w, 200, -1, 1 );
-    FillHist((plot_dir+LorT+"/HNL_Fake_MVA_"+MotherJetFlavour+"_"+ilep->sRegion()+"_"+param.Name +"_"+LorT).Data(),ilep->HNL_MVA_Fake("HNL") ,  w, 200, -1, 1 );
-    FillHist((plot_dir+LorT+"/HNL_CF_MVA_"  +MotherJetFlavour+"_"+ilep->sRegion()+"_"+param.Name +"_"+LorT).Data(),ilep->HNL_MVA_CF("EDv5") ,  w, 200, -1, 1 );
-    FillHist((plot_dir+LorT+"/HNL_Conv_MVA_"+MotherJetFlavour+"_"+ilep->sRegion()+"_"+param.Name +"_"+LorT).Data(),ilep->HNL_MVA_Conv("EDv5") ,  w, 200, -1, 1 );
-    FillHist((plot_dir+LorT+"/LF_MVA_"+MotherJetFlavour+"_"+ilep->sRegion()+"_"+param.Name +"_"+LorT).Data(),ilep->HNL_MVA_Fake("LF") ,  w, 200, -1, 1 );
-    FillHist((plot_dir+LorT+"/ISO_"+   MotherJetFlavour+"_"+ilep->sRegion()+"_"+param.Name +"_"+LorT).Data(), ilep->RelIso() ,  w, 60, 0, 0.6 );
-    FillHist((plot_dir+LorT+"/QCD_LFvsHF_"+MotherJetFlavour+"_"+ilep->sRegion()+"_"+param.Name +"_"+LorT).Data(), ilep->HNL_MVA_Fake("QCD_LFvsHF_v5") ,  w, 200,-1, 1);
-    FillHist((plot_dir+LorT+"/QCD_BvsC_"+  MotherJetFlavour+"_"+ilep->sRegion()+"_"+param.Name +"_"+LorT).Data(), ilep->HNL_MVA_Fake("QCD_BvsC_v5") ,  w, 200, -1, 1 );
-    FillHist((plot_dir+LorT+"/BScore_"+    MotherJetFlavour+"_"+ilep->sRegion()+"_"+param.Name +"_"+LorT).Data(), ilep->CloseJet_BScore() ,  w, 200, -1, 1 );
-    FillHist((plot_dir+LorT+"/CvsB_"+      MotherJetFlavour+"_"+ilep->sRegion()+"_"+param.Name +"_"+LorT).Data(), ilep->CloseJet_CvsBScore() ,  w, 200, -1, 1 );
-    FillHist((plot_dir+LorT+"/CvsL_"+      MotherJetFlavour+"_"+ilep->sRegion()+"_"+param.Name +"_"+LorT).Data(), ilep->CloseJet_CvsLScore() ,  w, 200, -1, 1);
-    FillHist((plot_dir+LorT+"/PtRatio_"+   MotherJetFlavour+"_"+ilep->sRegion()+"_"+param.Name +"_"+LorT).Data(), ilep->CloseJet_Ptratio() ,   w, 200, 0, 5 );
-    FillHist((plot_dir+LorT+"/PtRel_"+     MotherJetFlavour+"_"+ilep->sRegion()+"_"+param.Name +"_"+LorT).Data(), ilep->CloseJet_Ptrel() ,     w, 50, 0, 200  );
+    if(ilep->CloseJet_BScore()  <  0.02)  PassLabels.push_back(plot_dir+"/BScore0to0p02_"+ilep->GetFlavour());
+    else if(ilep->CloseJet_BScore()  <  0.05)  PassLabels.push_back(plot_dir+"/BScore0p02to0p05_"+ilep->GetFlavour());
+    else if(ilep->CloseJet_BScore()  <  0.2)  PassLabels.push_back(plot_dir+"/BScore0p05to0p2_"+ilep->GetFlavour());
+    else  PassLabels.push_back(plot_dir+"/BScore0p2toInf_"+ilep->GetFlavour());
 
-    FillHist((plot_dir+"/HF_MVA_"+MotherJetFlavour+"_"+param.Name +"_").Data(),ilep->HNL_MVA_Fake("HF") ,  w, 200, -1, 1 );
-    FillHist((plot_dir+"/HNL_Fake_MVA_"+MotherJetFlavour+"_"+param.Name +"_").Data(),ilep->HNL_MVA_Fake("HNL") ,  w, 200, -1, 1 );
-    FillHist((plot_dir+"/HNL_CF_MVA_"  +MotherJetFlavour+"_"+param.Name +"_").Data(),ilep->HNL_MVA_CF("EDv5") ,  w, 200, -1, 1 );
-    FillHist((plot_dir+"/HNL_Conv_MVA_"+MotherJetFlavour+"_"+param.Name +"_").Data(),ilep->HNL_MVA_Conv("EDv5") ,  w, 200, -1, 1 );
-    FillHist((plot_dir+"/BScore_"+    MotherJetFlavour+"_"+ilep->sRegion()+"_"+param.Name +"_").Data(), ilep->CloseJet_BScore() ,  w, 200, -1, 1 );
-    FillHist((plot_dir+"/CvsB_"+      MotherJetFlavour+"_"+ilep->sRegion()+"_"+param.Name +"_").Data(), ilep->CloseJet_CvsBScore() ,  w, 200, -1, 1 );
-    FillHist((plot_dir+"/CvsL_"+      MotherJetFlavour+"_"+ilep->sRegion()+"_"+param.Name +"_").Data(), ilep->CloseJet_CvsLScore() ,  w, 200, -1, 1);
+    if(ilep->CloseJet_BScore()  <  0.9 && ilep->CloseJet_CvsBScore() > 0.1 && ilep->CloseJet_CvsLScore() < 0.6)  PassLabels.push_back(plot_dir+"/DeepJetCuts_"+ilep->GetFlavour());
+    
 
+    for(auto ilab : PassLabels){
+      
+      if(ilep->GetFlavour() == "Electron"){
+	FillHist((ilab+"_HF_MVA_"+MotherJetFlavour+"_"+param.Name +"_"+LorT).Data(),ilep->HNL_MVA_Fake("HF") ,  w, 200, -1, 1 );
+	FillHist((ilab+"_HNL_Fake_MVA_"+MotherJetFlavour+"_"+param.Name +"_"+LorT).Data(),ilep->HNL_MVA_Fake("HNL") ,  w, 200, -1, 1 );
+	FillHist((ilab+"_HNL_CF_MVA_"  +MotherJetFlavour+"_"+param.Name +"_"+LorT).Data(),ilep->HNL_MVA_CF("EDv5") ,  w, 200, -1, 1 );
+	FillHist((ilab+"_HNL_Conv_MVA_"+MotherJetFlavour+"_"+param.Name +"_"+LorT).Data(),ilep->HNL_MVA_Conv("EDv5") ,  w, 200, -1, 1 );
+      }
+      
+      
+      FillHist((ilab+"_LF_MVA_"+MotherJetFlavour+"_"+ilep->sRegion()+"_"+param.Name +"_"+LorT).Data(),ilep->HNL_MVA_Fake("LF") ,  w, 200, -1, 1 );
+      FillHist((ilab+"_ISO_"+   MotherJetFlavour+"_"+ilep->sRegion()+"_"+param.Name +"_"+LorT).Data(), ilep->RelIso() ,  w, 60, 0, 0.6 );
+      FillHist((ilab+"_QCD_LFvsHF_"+MotherJetFlavour+"_"+ilep->sRegion()+"_"+param.Name +"_"+LorT).Data(), ilep->HNL_MVA_Fake("QCD_LFvsHF_v5") ,  w, 200,-1, 1);
+      FillHist((ilab+"_QCD_BvsC_"+  MotherJetFlavour+"_"+ilep->sRegion()+"_"+param.Name +"_"+LorT).Data(), ilep->HNL_MVA_Fake("QCD_BvsC_v5") ,  w, 200, -1, 1 );
+      FillHist((ilab+"_BScore_"+    MotherJetFlavour+"_"+ilep->sRegion()+"_"+param.Name +"_"+LorT).Data(), ilep->CloseJet_BScore() ,  w, 200, -1, 1 );
+      FillHist((ilab+"_CvsB_"+      MotherJetFlavour+"_"+ilep->sRegion()+"_"+param.Name +"_"+LorT).Data(), ilep->CloseJet_CvsBScore() ,  w, 200, -1, 1 );
+      FillHist((ilab+"_CvsL_"+      MotherJetFlavour+"_"+ilep->sRegion()+"_"+param.Name +"_"+LorT).Data(), ilep->CloseJet_CvsLScore() ,  w, 200, -1, 1);
+      FillHist((ilab+"_PtRatio_"+   MotherJetFlavour+"_"+ilep->sRegion()+"_"+param.Name +"_"+LorT).Data(), ilep->CloseJet_Ptratio() ,   w, 200, 0, 5 );
+      FillHist((ilab+"_PtRel_"+     MotherJetFlavour+"_"+ilep->sRegion()+"_"+param.Name +"_"+LorT).Data(), ilep->CloseJet_Ptrel() ,     w, 50, 0, 200  );
+      FillHist((ilab+"_Pt_"+   MotherJetFlavour+"_"+ilep->sRegion()+"_"+param.Name +"_"+LorT).Data(), ilep->PtMaxed(200.) ,  w, 100, 0, 200);
+      
+      FillHist((ilab+"_LF_MVA_"+param.Name +"_"+LorT).Data(),ilep->HNL_MVA_Fake("LF") ,  w, 200, -1, 1 );
+      FillHist((ilab+"_ISO_"+   param.Name +"_"+LorT).Data(), ilep->RelIso() ,  w, 60, 0, 0.6 );
+      FillHist((ilab+"_QCD_LFvsHF_"+param.Name +"_"+LorT).Data(), ilep->HNL_MVA_Fake("QCD_LFvsHF_v5") ,  w, 200,-1, 1);
+      FillHist((ilab+"_QCD_BvsC_"+  param.Name +"_"+LorT).Data(), ilep->HNL_MVA_Fake("QCD_BvsC_v5") ,  w, 200, -1, 1 );
+      FillHist((ilab+"_BScore_"+    param.Name +"_"+LorT).Data(), ilep->CloseJet_BScore() ,  w, 200, -1, 1 );
+      FillHist((ilab+"_CvsB_"+      param.Name +"_"+LorT).Data(), ilep->CloseJet_CvsBScore() ,  w, 200, -1, 1 );
+      FillHist((ilab+"_CvsL_"+      param.Name +"_"+LorT).Data(), ilep->CloseJet_CvsLScore() ,  w, 200, -1, 1);
+      FillHist((ilab+"_PtRatio_"+   param.Name +"_"+LorT).Data(), ilep->CloseJet_Ptratio() ,   w, 200, 0, 5 );
+      FillHist((ilab+"_PtRel_"+     param.Name +"_"+LorT).Data(), ilep->CloseJet_Ptrel() ,     w, 50, 0, 200  );
+      FillHist((ilab+"_Pt_"+   param.Name +"_"+LorT).Data(), ilep->PtMaxed(200.) ,  w, 100, 0, 200);
+
+    }
   }
   
   return;
@@ -58,12 +78,13 @@ void HNL_LeptonCore::Fill_PlotsAK8(AnalyzerParameter param, TString region, TStr
 
   if(fatjets.size() == 0) return;
   if((leps.size()  == 1) && !(param.ChannelType() == "Lepton"))     return;
-  if((leps.size()  == 2) && !(param.ChannelType() == "DiLepton"))   return;
-  if((leps.size()  == 3) && !(param.ChannelType() == "TriLepton"))  return;
-  if((leps.size()  == 4) && !(param.ChannelType() == "QuadLepton")) return;
+  if((leps.size()  == 2) && !(param.ChannelType() == "Dilepton"))   return;
+  if((leps.size()  == 3) && !(param.ChannelType() == "Trilepton"))  return;
+  if((leps.size()  == 4) && !(param.ChannelType() == "Quadlepton")) return;
 
 
-  bool DrawLevel1 = true; // Always gets drawn                                                                                                                                                                                             
+
+  bool DrawLevel1 = true; // Always gets drawn                                                                                                              
   bool DrawLevel2 = (param.PlottingVerbose >= 1);
   bool DrawLevel3 = (param.PlottingVerbose >= 2);
 
@@ -71,6 +92,7 @@ void HNL_LeptonCore::Fill_PlotsAK8(AnalyzerParameter param, TString region, TStr
   double minDRTauAK8=9999.;
   double minDRLepAK8=9999.;
   int nBJetAK8(0);
+
   for(unsigned int i=0; i < fatjets.size(); i++){
 
     for(auto itau : TauColl){
@@ -85,10 +107,8 @@ void HNL_LeptonCore::Fill_PlotsAK8(AnalyzerParameter param, TString region, TStr
     if(DrawLevel1)FillHist( plot_dir+region+ "/AK8J_Eta",          fatjets[i].Eta()       , w, 100, -5., 5.   , "AK8 Jet #eta");
     if(DrawLevel1)FillHist( plot_dir+region+ "/AK8J_Pt",           fatjets[i].Pt()        , w, 100, 0., 2000. , "AK8 Jet p_{T} GeV");
     if(DrawLevel1)FillHist( plot_dir+region+ "/AK8J_SDMass",       fatjets[i].SDMass()    , w, 100, 0., 500.  , "Mass_{softdrop} GeV");
-    if(DrawLevel3)FillHist( plot_dir+region+ "/AK8J_tau21",        fatjets[i].PuppiTau21(), w, 200, 0., 1.    , "#tau_{21}");
+    if(DrawLevel1)FillHist( plot_dir+region+ "/AK8J_tau21",        fatjets[i].PuppiTau21(), w, 200, 0., 1.    , "#tau_{21}");
     if(DrawLevel2)FillHist( plot_dir+region+ "/AK8J_MET_dR",       fatjets[i].DeltaR(met) , w, 50,  0., 5     ,"#DeltaR(FJ,met)");
-    if(DrawLevel2)FillHist( plot_dir+region+ "/AK8J_Tagger_DeepCSV" , fatjets[i].GetTaggerResult(JetTagging::DeepCSV), w, 50, 0, 1., "JetTagging::DeepCSV");
-    if(DrawLevel2)FillHist( plot_dir+region+ "/AK8J_Tagger_DeepJet" , fatjets[i].GetTaggerResult(JetTagging::DeepJet), w, 50, 0, 1., "JetTagging::DeepCSV");
     
     vector<JetTagging::Tagger> Taggers = {    JetTagging::DeepCSV, JetTagging::DeepCSV_CvsL, JetTagging::DeepCSV_CvsB,
                                               JetTagging::particleNet_TvsQCD, JetTagging::particleNet_WvsQCD, JetTagging::particleNet_ZvsQCD,
@@ -197,7 +217,7 @@ void HNL_LeptonCore::Fill_RegionPlots(AnalyzerParameter param, TString plot_dir,
 
 void HNL_LeptonCore::Fill_RegionPlots(AnalyzerParameter param, TString plot_dir, vector<Tau> Taus,  std::vector<Jet> jets,    std::vector<FatJet> fatjets, std::vector<Lepton *> leps , Particle  met, double nvtx,  double w){
 
-  TString region ="/"+param.Name + param.hprefix+"/RegionPlots_"+ param.Channel ;
+  TString region ="/"+param.Name + param.hprefix;
   
   Fill_Plots(param, region,plot_dir , Taus,jets,fatjets, leps, met, nvtx, w);
 
@@ -212,10 +232,8 @@ void HNL_LeptonCore::Fill_Plots(AnalyzerParameter param, TString region,  TStrin
 				vector<Tau> TauColl,  std::vector<Jet> jets, std::vector<FatJet> fatjets, std::vector<Lepton *> leps , 
 				Particle  met, double nvtx,  double w){
 
-  TString regionAK8 = region;
-  regionAK8 = regionAK8.ReplaceAll("RegionPlots_","RegionPlotsAK8_");
-  TString lepregion= region;
-  lepregion = lepregion.ReplaceAll("RegionPlots_","LeptonMVARegionPlots_");
+  TString regionAK8 = region+"/AK8";
+  TString lepregion= region + "/LeptonMVA";
 
   if((leps.size()  == 1) && !(param.ChannelType() == "Lepton"))     return;
   if((leps.size()  == 2) && !(param.ChannelType() == "Dilepton"))   return;
@@ -230,16 +248,18 @@ void HNL_LeptonCore::Fill_Plots(AnalyzerParameter param, TString region,  TStrin
     if(ilep->LeptonFlavour() == Lepton::MUON) nmu++;
   }
     
-  Fill_PlotsAK8(param, plot_dir, regionAK8, TauColl,jets , fatjets, leps, met, nvtx,w);
+  Fill_PlotsAK8(param, regionAK8, plot_dir,TauColl,jets , fatjets, leps, met, nvtx,w);
   
   bool DrawLevel1 = true; // Always gets drawn
   bool DrawLevel2 = (param.PlottingVerbose >= 1);
   bool DrawLevel3 = (param.PlottingVerbose >= 2);
 
   /// Draw N leptons                                                                                                                                                                                                                                                             
+  //  cout << plot_dir+ region << endl; // JOHN
   if(DrawLevel1) FillHist( plot_dir+ region+ "/NObj/N_El", nel,  w, 5, 0, 5, "El size");
   if(DrawLevel1) FillHist( plot_dir+ region+ "/NObj/N_Mu", nmu,  w, 5, 0, 5, "Mu size");
-  // Draw N jets                                                                                                                                                                                                                           
+  // Draw N jets                                                                                                        
+
   if(DrawLevel1) FillHist( plot_dir+ region+ "/NObj/N_AK4J", jets.size() , w, 10, 0., 10., "N_{AK4 jets}");
 
   if(leps.size() < 2) return;
@@ -257,6 +277,7 @@ void HNL_LeptonCore::Fill_Plots(AnalyzerParameter param, TString region,  TStrin
     }
     nlepMVA++;
   }
+
 
   if(DrawLevel3)FillHist( plot_dir+ region+ "/Leptons/SumQ", leps[0]->Charge() + leps[1]->Charge(),  w, 10, -5, 5, "Q size");
 
@@ -367,8 +388,8 @@ void HNL_LeptonCore::Fill_Plots(AnalyzerParameter param, TString region,  TStrin
 
     if(DrawLevel3) FillHist( plot_dir+ region+ "/Mass/DiJet_M_l1W_M_W",         MN1, MllW,  w, 100, 0., 2000., 100, 0., 2000.);
     if(DrawLevel2)FillHist( plot_dir+ region+ "/Mass/DiJet_M_l1W_multibins",   MN1,        w, 200, 0, 2000, "Reco M_{l1jj}");
-    if(DrawLevel1)FillHist( plot_dir+ region+ "/Mass/DiJet_M_l1W",             MN1,        w, 7, mljbins , "Reco M_{l1jj}");
-    if(DrawLevel1)FillHist( plot_dir+ region+ "/Mass/DiJet_M_l2W",             MN2,        w, 7, mljbins , "Reco M_{l2jj} ");
+    if(DrawLevel1)FillHist( plot_dir+ region+ "/Mass/DiJet_M_l1W",             MN1,        w, 9, mljbins , "Reco M_{l1jj}");
+    if(DrawLevel1)FillHist( plot_dir+ region+ "/Mass/DiJet_M_l2W",             MN2,        w, 9, mljbins , "Reco M_{l2jj} ");
     if(DrawLevel3) FillHist( plot_dir+ region+ "/Mass/DiJet_M_lAv12W", (N1Cand.M()+  N2Cand.M())/2.,  w,  500, 0., 2000., "Reco M_{l1_2jj} ");
     if(DrawLevel1)FillHist( plot_dir+ region+ "/Mass/DiJet_M_llW",  MllW ,  w, 7, mljbins , "Reco M_{lljj}");
     if(DrawLevel2)FillHist( plot_dir+ region+ "/Mass/DiJet_M_llW_multibins",  MllW ,  w,  200, 0, 2000, "Reco M_{lljj}");
@@ -501,7 +522,7 @@ void HNL_LeptonCore::Fill_Plots(AnalyzerParameter param, TString region,  TStrin
   Particle METunsmearedv = ev.GetMETVector();
   
   if(DrawLevel2)FillHist( plot_dir+ region+ "/SKEvent/MET_uncorr", METunsmearedv.Pt()  , w, 200, 0., 400.,"MET GeV");
-  if(DrawLevel2)FillHist( plot_dir+ region+ "/Mass/M_ll",  llCand.M(), w, 400, 0., 2000., "M_{ll} GeV");
+  if(DrawLevel1)FillHist( plot_dir+ region+ "/Mass/M_ll",  llCand.M(), w, 400, 0., 2000., "M_{ll} GeV");
 
   double mindRlepj1(99999.);
   double mindRlepj2(99999.);

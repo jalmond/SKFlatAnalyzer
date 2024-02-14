@@ -5,3 +5,5 @@ WWG
 WZG
 TG
 TTG
+WJets_MG
+DYJets_MG

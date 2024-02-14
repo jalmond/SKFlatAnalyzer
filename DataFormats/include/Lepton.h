@@ -255,13 +255,13 @@ public:
     else return (1/ptshift);
   }
 
-  inline double PtParton(double Corr, double MVACut, double UpperValue=1.5){
+  inline double PtParton(double Corr, double MVACut, double UpperValue=2.){
     double mva_val = j_lep_mva;
     if(j_LeptonFlavour!=MUON) mva_val=j_lep_mva_hnl_fake_ed_v5; 
       
     if (mva_val > MVACut)  return this->Pt();
     double ptpart = ( this->Pt() /j_lep_jetptratio ) * Corr;
-    if(ptpart > UpperValue*this->Pt() ) return UpperValue*this->Pt() ;
+    //    if(ptpart > UpperValue*this->Pt() ) return UpperValue*this->Pt() ;
     return ptpart;
   }
 

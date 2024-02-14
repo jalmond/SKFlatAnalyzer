@@ -8,7 +8,7 @@ ID	SF	passTightID		egammaEffi.txt_Ele_Tight_postVFP_EGM2D.root		EGamma_SF2D	TH2F
 ID	SF	passMediumID		egammaEffi.txt_Ele_Medium_postVFP_EGM2D.root		EGamma_SF2D	TH2F
 ID	SF	passLooseID		egammaEffi.txt_Ele_Loose_postVFP_EGM2D.root		EGamma_SF2D	TH2F
 ID	SF	passVetoID		egammaEffi.txt_Ele_Veto_postVFP_EGM2D.root		EGamma_SF2D	TH2F
-ID      SF      passHTopHNSST           IDEff_TopHNSST_2016b.root                        	EGamma_SF2D     TH2F
+ID      SF      passTopHNSST           IDEff_TopHNSST_2016b.root                        	EGamma_SF2D     TH2F
 ID      SF      passHNTightV2           IDEff_HNTightV2_v1_2016b.root                      	sf              TH2F
 ID      SF      passHNL_ULID_2016       IDEff_HNL_v1_2016b.root                          	sf              TH2F
 ### RECO SF

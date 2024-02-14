@@ -50,6 +50,7 @@ void AnalyzerCore::SetHistBins(){
   //// Fake rate Binnings
   AddHistBinning("FR_MC_eta", {0.,0.25, 1.479, 2.5});
   AddHistBinning("FR_Eta", {0., 0.8, 1.479,2., 2.5});
+  AddHistBinning("FR_Eta1", {0.,  2.5});
   AddHistBinning("FR_Etav2", {0., 1.479,2., 2.5});
   AddHistBinning("FR_Etav3", {0., 1.479,2.2, 2.5});
   AddHistBinning("FR_Eta2Bin", {0.,1.479, 2.5});

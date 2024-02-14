@@ -797,7 +797,7 @@ double HNL_LeptonCore::EvaluateEventMVA(TString mN, TString bkgType, TString NCu
 
   std::vector<FatJet> FatjetColl                  = GetHNLAK8Jets("HNL_PN",param);
   std::vector<Jet> All_JetColl                    = GetHNLJets("TightPUL",param);
-  std::vector<Jet> B_JetColl                      = GetHNLJets("BJetM",param);
+  std::vector<Jet> B_JetColl                      = GetHNLJets("BJet",param);
   std::vector<Jet> JetColl                        = GetHNLJets("TightPUL",param);
   std::vector<Jet> VBF_JetColl                    = GetHNLJets("VBFTightPUL",param);
 

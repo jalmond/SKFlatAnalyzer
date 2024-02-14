@@ -601,7 +601,7 @@ AnalyzerParameter HNL_LeptonCore::SetupHNLParameter(TString s_setup_version, TSt
     param.CFMethod   = "DATA";
     param.ConvMethod = "MC";
     param.Muon_Veto_ID     = "HNVeto_17028";  param.Muon_Tight_ID     = "TopHN";
-    param.Electron_Veto_ID = "HNVeto";        param.Electron_Tight_ID = "TopHN";
+    param.Electron_Veto_ID = "HNVeto";        param.Electron_Tight_ID = "TopHNSST";
     param.Muon_FR_ID        = "TopHNL";
     param.Electron_FR_ID    = "TopHNSSL_"+GetEraShort();
 
@@ -611,12 +611,12 @@ AnalyzerParameter HNL_LeptonCore::SetupHNLParameter(TString s_setup_version, TSt
     param.k.Muon_FR            = "FR_cent";
     param.k.Electron_FR        = "FR_cent";
 
-    param.k.Electron_ID_SF     = "passTopHN";
-    param.k.Muon_ID_SF         = "NUM_TopHN";
+    param.k.Electron_ID_SF     = "passTopHNSST";
+    param.k.Muon_ID_SF         = "NUM_TopHNT";
     param.k.Muon_RECO_SF       = "MuonRecoSF";
 
-    param.k.Electron_CF  = "CFRate_PtInv_EtaRegion_" + param.Electron_Tight_ID;
-    
+    param.k.Electron_CF  = "CFRate_PtInv_EtaRegion_TopHN";
+
     param.TriggerSelection = "Dilep";
     if(channel_st.Contains("EE"))   param.k.Electron_Trigger_SF = "DiElIso_HNL_ULID";
     if(channel_st.Contains("MuMu")) param.k.Muon_Trigger_SF = "DiMuIso_HNL_ULID";
@@ -637,14 +637,19 @@ AnalyzerParameter HNL_LeptonCore::SetupHNLParameter(TString s_setup_version, TSt
     param.Muon_Tight_ID     = "HNL_ULID_"+GetYearString();
     param.Electron_Veto_ID  = "HNVetoMVA";  
     param.Electron_Tight_ID = "HNL_ULID_"+GetYearString();
-    param.Muon_FR_ID        = "HNL_ULID_FOv2_"+GetYearString();
-    param.Electron_FR_ID    = "HNL_ULID_FOv2_"+GetYearString();
+
+    ///Fakes
+    param.Muon_FR_ID        = "HNL_ULID_FO_v2_"+GetYearString();
+    param.Electron_FR_ID    = "HNL_ULID_FO_v2_"+GetYearString();
     param.FakeRateMethod    = "Standard";
     param.FakeRateParam   = "PtParton";
 
-    param.k.Muon_PR            = "pt_eta_HNL_ULID_FOv3_PR_cent";
-    param.k.Muon_FR            = "HNL_ULID_FOv2_AJ30";
-    param.k.Electron_FR        = "HNL_ULID_FOv2_AJ30";
+    param.k.Muon_FR            = "HNL_ULID_FO_v2_AJ30";
+    param.k.Electron_FR        = "HNL_ULID_FO_v2_AJ30";
+    if(GetYearString() == "2017"){
+      param.k.Muon_FR            = "HNL_ULID_FO_v3_AJ30";
+      param.Muon_FR_ID        = "HNL_ULID_FO_v3_"+GetYearString();
+    }
 
     param.k.Muon_ID_SF         = "NUM_HNL_ULID_"+GetYearString();
     param.k.Muon_ISO_SF        = "Default";
@@ -679,7 +684,7 @@ AnalyzerParameter HNL_LeptonCore::SetupHNLParameter(TString s_setup_version, TSt
 
     param.k.Muon_FR            = "AwayJetPt40";
     param.k.Electron_FR        = "AwayJetPt40";
-    param.k.Electron_CF  = "CFRate_PtInv_EtaRegion_" + param.Electron_Tight_ID;
+    param.k.Electron_CF  = "CFRate_PtInv_EtaRegion_POGTight";
 
 
     if(channel_st.Contains("EE"))   param.k.Electron_Trigger_SF = "Default";
@@ -705,6 +710,48 @@ AnalyzerParameter HNL_LeptonCore::SetupHNLParameter(TString s_setup_version, TSt
     }
     return param;
   }
+
+
+  else if (s_setup_version=="Peking"){
+    param.Apply_Weight_TriggerSF = false;
+    param.Apply_Weight_IDSF      = false;
+    param.CFMethod     = "Data";
+    param.FakeMethod   = "MC";
+    param.ConvMethod   = "MC";
+    param.Muon_Tight_ID = "Peking";
+    param.Electron_Tight_ID = "Peking_"+GetYearString();
+
+    param.FakeRateMethod       = "Standard";
+    param.FakeRateParam        = "PtCone";
+    param.k.Muon_FR            = "FR_cent";
+    param.k.Electron_FR        = "FR_cent";
+    param.k.Electron_CF  = "CFRate_PtInv_EtaRegion_TopHN"; //// FIX
+    
+    return param;
+  }
+  else if (s_setup_version=="EXO17028"){
+    param.Apply_Weight_TriggerSF = false;
+    param.Apply_Weight_IDSF      = false;
+    param.CFMethod           = "MC";
+    param.FakeMethod   = "MC";
+    param.ConvMethod   = "MC";
+    param.Muon_Tight_ID      = "HNTight_17028";
+    param.Electron_Tight_ID  = "HNTight_17028";
+    param.Muon_FR_ID         = "HNLoose_17028";
+    param.Electron_FR_ID     = "HNLoose_17028";
+    return param;
+  }
+  else if (s_setup_version=="MVAUL"){
+    param.FakeMethod = "DATA";    param.CFMethod   = "DATA";    param.ConvMethod = "MC";
+    param.Muon_Tight_ID      = "HNL_ULID_"+GetYearString();
+    param.Electron_Tight_ID  = "HNL_ULID_"+GetYearString();
+    param.k.Electron_ID_SF = "TmpHNL_ULID_"+GetYearString();
+    param.k.Muon_ID_SF     = "TmpHNL_ULID_"+GetYearString();
+    param.Muon_FR_ID         = "HNL_ULID_FO_"+GetYearString();
+    param.Electron_FR_ID     = "HNL_ULID_FO_"+GetYearString();
+    return param;
+  }
+
   else if (s_setup_version=="HNL_Opt"){
     param.Apply_Weight_TriggerSF = false;
     param.Apply_Weight_IDSF      = false;
@@ -731,63 +778,6 @@ AnalyzerParameter HNL_LeptonCore::SetupHNLParameter(TString s_setup_version, TSt
     param.k.Muon_ID_SF = "NUM_HNTightV2";
     param.Muon_FR_ID = "HNLooseV1";
     param.Electron_FR_ID = "HNLooseV4";
-    return param;
-  }
-  else if (s_setup_version=="MVAUL"){
-    param.FakeMethod = "DATA";    param.CFMethod   = "DATA";    param.ConvMethod = "MC";
-    param.Muon_Tight_ID      = "HNL_ULID_"+GetYearString();
-    param.Electron_Tight_ID  = "HNL_ULID_"+GetYearString();
-    param.k.Electron_ID_SF = "TmpHNL_ULID_"+GetYearString();
-    param.k.Muon_ID_SF     = "TmpHNL_ULID_"+GetYearString();
-    param.Muon_FR_ID         = "HNL_ULID_FO_"+GetYearString();
-    param.Electron_FR_ID     = "HNL_ULID_FO_"+GetYearString();
-    return param;
-  }
-
-  else if (s_setup_version=="EXO17028"){
-    param.Apply_Weight_TriggerSF = false;
-    param.Apply_Weight_IDSF      = false;
-    param.CFMethod           = "MC";
-    param.FakeMethod   = "MC";
-    param.ConvMethod   = "MC";
-    param.Muon_Tight_ID      = "HNTight_17028";
-    param.Electron_Tight_ID  = "HNTight_17028";
-    param.Muon_FR_ID         = "HNLoose_17028";
-    param.Electron_FR_ID     = "HNLoose_17028";
-    return param;
-  }
-  else if (s_setup_version=="Peking"){
-    param.Apply_Weight_TriggerSF = false;
-    param.Apply_Weight_IDSF      = false;
-    param.CFMethod     = "MC";
-    param.FakeMethod   = "MC";
-    param.ConvMethod   = "MC";
-    param.Muon_Tight_ID = "HNL_Peking";
-    param.Electron_Tight_ID = "HNL_Peking_"+GetYearString();
-    return param;
-  }
-  else if (s_setup_version=="POGTight"){
-
-    param.Apply_Weight_IDSF     = true;
-    param.Apply_Weight_TriggerSF= true;
-
-    param.FakeMethod = "DATA";
-    param.CFMethod   = "DATA";
-    param.ConvMethod = "MC";
-
-    param.Muon_Tight_ID      = "POGTightWithTightIso";
-    param.Electron_Tight_ID  = "passPOGTight";
-    param.Muon_FR_ID     = "HNLooseV1";
-    param.Electron_FR_ID = "HNLoosePOG";
-    param.TriggerSelection   = "POGSglLep";
-    param.k.Muon_ID_SF       = "NUM_TightID_DEN_TrackerMuons";
-    param.k.Muon_ISO_SF      = "NUM_TightRelIso_DEN_TightIDandIPCut";
-    param.k.Electron_ID_SF   = "passTightID";
-    param.FakeRateMethod       = "Standard";
-    param.FakeRateParam        = "PtCone";
-
-    param.k.Muon_FR            = "AwayJetPt40";
-    param.k.Electron_FR        = "AwayJetPt40";
     return param;
   }
 
@@ -891,8 +881,7 @@ bool HNL_LeptonCore::CheckLeptonFlavourForChannel(HNL_LeptonCore::Channel channe
     if (channel==MuMu   && !(leps[0]->LeptonFlavour() == Lepton::MUON     && leps[1]->LeptonFlavour() == Lepton::MUON))    return false;
     //if (channel==EMu    && !(leps[0]->LeptonFlavour() == Lepton::ELECTRON && leps[1]->LeptonFlavour() == Lepton::MUON))    return false;
     //if (channel==MuE    && !(leps[1]->LeptonFlavour() == Lepton::ELECTRON && leps[0]->LeptonFlavour() == Lepton::MUON))    return false; 
-    if ((channel==EMu||channel==MuE) && (n_el == 2 || n_mu == 2))    return false;  //JH
-  
+    if(( channel == EMu || channel == MuE) && (n_el != n_mu) ) return false;
     double lep1_ptcut= (channel==EE) ?   25. : 20.;
     double lep2_ptcut= (channel==EE) ?   10. : 10.;
     //

@@ -77,7 +77,7 @@ Particle HNL_LeptonCore::GetvMET(TString METType, AnalyzerParameter param,bool P
 
   Particle vMETSyst;
 
-  if(IdxSyst>=0){
+  if(IdxSyst>=0 && IdxSyst < 8){
 
     if(UsePuppi){
       if( isfinite(PuppiMET_Type1_pt_shifts->at(IdxSyst)))  vMETSyst = UpdateMETSyst(PuppiMET_Type1_pt, PuppiMET_Type1_phi, PuppiMET_Type1_pt_shifts->at(IdxSyst),PuppiMET_Type1_phi_shifts->at(IdxSyst), vStandMET);
