@@ -21,7 +21,8 @@ void DrawLimits(TString year="", TString channel=""){
   //gStyle->SetOptStat(0);
 
   //TString tag = "_syst"; //"_HNL_UL";
-  TString tag = "_syst_Run2Scaled"; //"_HNL_UL";
+  //TString tag = "_syst_Run2Scaled"; //"_HNL_UL";
+  TString tag = "_syst_Run23Scaled"; //"_HNL_UL";
   TString method = "Asym"; //"Full";
   //vector<TString> myWPs = {"InputForCombine","InputForCombine_beforeFixLowMass","Workshop","Workshop_FullRun2","Workshop_FullRun2_beforeFixLowMass"};
   //vector<TString> myWPs = {"Workshop_FixedSR1"};
@@ -56,7 +57,8 @@ void DrawLimits(TString year="", TString channel=""){
     cout << "Reading "+this_filepath+" ..." << endl;
     ifstream in;
     in.open(this_filepath);
-    int n_central = 24; //FIXME depending on the bins
+    //int n_central = 24; //FIXME depending on the bins
+    int n_central = 28; //FIXME depending on the bins
     double mass[n_central], obs[n_central], limit[n_central], onesig_left[n_central], onesig_right[n_central], twosig_left[n_central], twosig_right[n_central];
 
     int dummyint=0;
@@ -833,8 +835,10 @@ void DrawLimits(TString year="", TString channel=""){
       //lg_Alt->AddEntry(gr_L3Limit, "L3", "l");
       //lg_Alt->AddEntry(gr_EWPD_mm, "EWPD (90% CL)", "l");
       //lg_Alt->AddEntry(gr_ATLAS_MuMu, "ATLAS 8 TeV", "l");
-      lg_Alt->AddEntry(gr_17028_exp, "CMS 13 TeV dilepton (exp)", "l");
-      lg_Alt->AddEntry(gr_21003_exp, "CMS 13 TeV SSWW (exp)", "l");
+      //lg_Alt->AddEntry(gr_17028_exp, "CMS 13 TeV dilepton (exp)", "l");
+      lg_Alt->AddEntry(gr_17028_exp, "Ref [1]   ", "l");
+      //lg_Alt->AddEntry(gr_21003_exp, "CMS 13 TeV SSWW (exp)", "l");
+      lg_Alt->AddEntry(gr_21003_exp, "Ref [5]   ", "l");
       //lg_Alt->AddEntry(gr_17028_obs, "CMS 13 TeV dilepton", "l");
       //lg_Alt->AddEntry(gr_trilepLimit, "CMS 13 TeV trilepton", "l");
       //lg_Alt->AddEntry(gr_21003_obs, "CMS 13 TeV SSWW", "l");
@@ -847,7 +851,8 @@ void DrawLimits(TString year="", TString channel=""){
       //lg_Alt->AddEntry(gr_ATLAS_EE, "ATLAS 8 TeV", "l");
       //lg_Alt->AddEntry(gr_17028_exp, "CMS 13 TeV dilepton", "l");
       //lg_Alt->AddEntry(gr_dbeta, "Neutrino-less double beta dacay", "l");
-      lg_Alt->AddEntry(gr_17028_exp, "CMS 13 TeV dilepton (exp)", "l");
+      //lg_Alt->AddEntry(gr_17028_exp, "CMS 13 TeV dilepton (exp)", "l");
+      lg_Alt->AddEntry(gr_17028_exp, "Ref [1]   ", "l");
       //lg_Alt->AddEntry(gr_17028_obs, "CMS 13 TeV dilepton", "l");
       //lg_Alt->AddEntry(gr_trilepLimit, "CMS 13 TeV trilepton", "l");
       //lg_Alt->AddEntry(gr_EWPD_ee, "EWPD", "l");
@@ -881,7 +886,8 @@ void DrawLimits(TString year="", TString channel=""){
       dummy->GetYaxis()->SetTitleSize(0.04);
     }
     dummy->GetXaxis()->SetTitle("m_{N} (GeV)");
-    dummy->GetXaxis()->SetRangeUser(90., 25000); //FIXME
+    //dummy->GetXaxis()->SetRangeUser(90., 25000); //FIXME
+    dummy->GetXaxis()->SetRangeUser(90., 65000); //FIXME
     dummy->GetYaxis()->SetRangeUser(1e-4, 1.); //FIXME
     dummy->SetTitle("");
     dummy->Draw("hist");
@@ -926,14 +932,16 @@ void DrawLimits(TString year="", TString channel=""){
     else if(year=="2018") lumi = "59.8";
     else if(year=="Run2") lumi = "137.9";
     if(tag.Contains("Run2")) lumi = "137.9";
+    if(tag.Contains("Run23")) lumi = "400";
     
-    latex_CMSPreliminary.DrawLatex(0.16, 0.96, "#scale[0.8]{CMS #bf{#it{Preliminary}}}");
-    latex_Lumi.DrawLatex(0.735, 0.96, lumi+" fb^{-1} (13 TeV)");
+    //latex_CMSPreliminary.DrawLatex(0.16, 0.96, "#scale[0.8]{CMS #bf{#it{Preliminary}}}");
+    if(tag.Contains("Run23")) latex_Lumi.DrawLatex(0.734, 0.96, lumi+" fb^{-1} (13.6 TeV)");
+    else latex_Lumi.DrawLatex(0.736, 0.96, lumi+" fb^{-1} (13 TeV)");
     latex_title.SetTextSize(0.04);
     latex_title.SetLineWidth(2);
     latex_title.DrawLatex(0.25, 0.84, "#font[41]{95% CL upper limit}");
     latex_title.SetTextSize(0.05);
-    latex_title.DrawLatex(0.25, 0.88, "#font[62]{CMS}");
+    //latex_title.DrawLatex(0.25, 0.88, "#font[62]{CMS}");
 
     dummy->Draw("axissame");
     //c_Dilep->SaveAs(this_plotpath+"/"+year+"_"+channel+"_13TeV_mixing_"+channel+"_"+myWP+".png");
@@ -985,6 +993,15 @@ void CompareLimits(TString channel=""){
 
       obs[dummyint] *= scale;
 
+      if(channel=="EMu"){
+        if(dummyint < 6){
+          limit[dummyint] *= 0.5;
+          onesig_left[dummyint]  *= 0.5;
+          onesig_right[dummyint] *= 0.5;
+          twosig_left[dummyint]  *= 0.5;
+          twosig_right[dummyint] *= 0.5;
+        } //FIXME This is because the MuE histograms are wrong in BDT Limit input. After fixing the issue, remove these lines.
+      }
       limit[dummyint] *= scale;
       onesig_left[dummyint] *= scale;
       onesig_right[dummyint] *= scale;

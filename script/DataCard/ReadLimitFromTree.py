@@ -48,7 +48,8 @@ for WP in myWPs:
     
     if args.Asymptotic:
       #with open("out/"+WP+"/"+year+"_"+channel+ID+tag+"_Asym_limit.txt", 'w') as f:
-      with open("out/"+WP+"/"+year+"_"+channel+ID+tag+"_Run2Scaled_Asym_limit.txt", 'w') as f:
+      #with open("out/"+WP+"/"+year+"_"+channel+ID+tag+"_Run2Scaled_Asym_limit.txt", 'w') as f:
+      with open("out/"+WP+"/"+year+"_"+channel+ID+tag+"_Run23Scaled_Asym_limit.txt", 'w') as f:
   
         for mass in masses:
           this_name = year+"_"+channel+"_M"+mass+ID+tag
@@ -59,12 +60,14 @@ for WP in myWPs:
   
           tree_Asym.GetEntry(2) # substitute for obs. limit for now
           #f.write(mass+"\t"+str(round(tree_Asym.limit,3))+"\t")
-          f.write(mass+"\t"+str(round(tree_Asym.limit/1.87,3))+"\t") # FIXME estimating full Run2 from 2017
+          #f.write(mass+"\t"+str(round(tree_Asym.limit/1.87,3))+"\t") # FIXME estimating full Run2 from 2017
+          f.write(mass+"\t"+str(round(tree_Asym.limit/3.16,3))+"\t") # FIXME estimating full Run2+3 from 2017
   
           for i in range(5): # expected limits
             tree_Asym.GetEntry(i)
             #f.write(str(round(tree_Asym.limit,3))+"\t")
-            f.write(str(round(tree_Asym.limit/1.87,3))+"\t") # FIXME estimating full Run2 from 2017
+            #f.write(str(round(tree_Asym.limit/1.87,3))+"\t") # FIXME estimating full Run2 from 2017
+            f.write(str(round(tree_Asym.limit/3.16,3))+"\t") # FIXME estimating full Run2+3 from 2017
           f.write("\n")
   
     if args.Full:
