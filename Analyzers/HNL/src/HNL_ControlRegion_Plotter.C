@@ -33,11 +33,11 @@ void HNL_ControlRegion_Plotter::executeEvent(){
   if(StandardProcess){
     for (auto id: LepIDs){
       for(auto channel : ChannelsToRun){
-	AnalyzerParameter param_signal = HNL_LeptonCore::InitialiseHNLParameter(id,channel);
-	
-	if(channel == MuMu && id == "HNL_ULID") param_signal.FakeRateParam  = "Pt";
-	if(channel == MuMu && id == "HNL_ULID") param_signal.Muon_FR_ID = "HNL_ULID_FO";
-	for(auto iCR : CRToRun) RunControlRegions(param_signal , {iCR} );
+        AnalyzerParameter param_signal = HNL_LeptonCore::InitialiseHNLParameter(id,channel);
+        
+        if(channel == MuMu && id == "HNL_ULID") param_signal.FakeRateParam  = "Pt";
+        if(channel == MuMu && id == "HNL_ULID") param_signal.Muon_FR_ID = "HNL_ULID_FO";
+        for(auto iCR : CRToRun) RunControlRegions(param_signal , {iCR} );
       }
     }
     return;
@@ -87,8 +87,8 @@ void HNL_ControlRegion_Plotter::RunControlRegions(AnalyzerParameter param, vecto
   
   EvalJetWeight(AK4_JetColl, AK8_JetColl, weight, param);
 
-  bool DrawBasicPlotsL (true);
-  bool DrawBasicPlotsT (true);
+  bool DrawBasicPlotsL (false);
+  bool DrawBasicPlotsT (false); //JH : FIXME later
   if(DrawBasicPlotsL){
     std::vector<Lepton *> LepsAll       = MakeLeptonPointerVector(MuonVetoColl,ElectronVetoColl,param);
     
@@ -161,36 +161,36 @@ void HNL_ControlRegion_Plotter::RunControlRegions(AnalyzerParameter param, vecto
 
   if(CRs.size() == 0) return;
   
-  if(RunFake) {
-    vector<Muon> MuonTightCollMedium;
-    for(auto imu : MuonTightColl) if( imu.PassID("POGMedium")) MuonTightCollMedium.push_back(imu);
+  //if(RunFake) {
+  //  vector<Muon> MuonTightCollMedium;
+  //  for(auto imu : MuonTightColl) if( imu.PassID("POGMedium")) MuonTightCollMedium.push_back(imu);
 
-    std::vector<Lepton *> LepsAll       = MakeLeptonPointerVector(MuonTightColl,ElectronTightColl,param);
-    std::vector<Lepton *> LepsAll2       = MakeLeptonPointerVector(MuonTightCollMedium,ElectronTightColl,param);
-    if(SameCharge(LepsAll)) {
-      if(LepsAll[0]->Pt() > 20 && LepsAll[1]->Pt() > 10){
-	FillFakeHistograms(param, "SSFakePlots" ,LepsAll, AK4_JetColl,AK8_JetColl, AK4_BJetColl, METv,   1);
-	if(AK4_JetColl.size()==0)       FillFakeHistograms(param, "SS1JetFakePlots" ,  LepsAll, AK4_JetColl,AK8_JetColl, AK4_BJetColl, METv,   1);
-	if(AK4_BJetColl.size()==0)       FillFakeHistograms(param, "SS0BJetFakePlots" ,  LepsAll, AK4_JetColl,AK8_JetColl, AK4_BJetColl, METv,   1);
-	else  FillFakeHistograms(param, "SSBJetFakePlots" ,  LepsAll, AK4_JetColl,AK8_JetColl, AK4_BJetColl, METv,   1);
-      }
-    }
-    if(SameCharge(LepsAll2)) {
-      if(LepsAll2[0]->Pt() > 20 && LepsAll2[1]->Pt() > 10){
-	FillFakeHistograms(param, "SS2FakePlots" ,LepsAll2, AK4_JetColl,AK8_JetColl, AK4_BJetColl, METv,   1);
-	if(AK4_JetColl.size()==0)       FillFakeHistograms(param, "SS21JetFakePlots" ,  LepsAll2, AK4_JetColl,AK8_JetColl, AK4_BJetColl, METv,   1);
-	if(AK4_BJetColl.size()==0)       FillFakeHistograms(param, "SS20BJetFakePlots" ,  LepsAll2, AK4_JetColl,AK8_JetColl, AK4_BJetColl, METv,   1);
-	else  FillFakeHistograms(param, "SS2BJetFakePlots" ,  LepsAll2, AK4_JetColl,AK8_JetColl, AK4_BJetColl, METv,   1);
-      }
-    }
-    
-    return;
-  }
+  //  std::vector<Lepton *> LepsAll       = MakeLeptonPointerVector(MuonTightColl,ElectronTightColl,param);
+  //  std::vector<Lepton *> LepsAll2       = MakeLeptonPointerVector(MuonTightCollMedium,ElectronTightColl,param);
+  //  if(SameCharge(LepsAll)) {
+  //    if(LepsAll[0]->Pt() > 20 && LepsAll[1]->Pt() > 10){
+  //      FillFakeHistograms(param, "SSFakePlots" ,LepsAll, AK4_JetColl,AK8_JetColl, AK4_BJetColl, METv,   1);
+  //      if(AK4_JetColl.size()==0)       FillFakeHistograms(param, "SS1JetFakePlots" ,  LepsAll, AK4_JetColl,AK8_JetColl, AK4_BJetColl, METv,   1);
+  //      if(AK4_BJetColl.size()==0)       FillFakeHistograms(param, "SS0BJetFakePlots" ,  LepsAll, AK4_JetColl,AK8_JetColl, AK4_BJetColl, METv,   1);
+  //      else  FillFakeHistograms(param, "SSBJetFakePlots" ,  LepsAll, AK4_JetColl,AK8_JetColl, AK4_BJetColl, METv,   1);
+  //    }
+  //  }
+  //  if(SameCharge(LepsAll2)) {
+  //    if(LepsAll2[0]->Pt() > 20 && LepsAll2[1]->Pt() > 10){
+  //      FillFakeHistograms(param, "SS2FakePlots" ,LepsAll2, AK4_JetColl,AK8_JetColl, AK4_BJetColl, METv,   1);
+  //      if(AK4_JetColl.size()==0)       FillFakeHistograms(param, "SS21JetFakePlots" ,  LepsAll2, AK4_JetColl,AK8_JetColl, AK4_BJetColl, METv,   1);
+  //      if(AK4_BJetColl.size()==0)       FillFakeHistograms(param, "SS20BJetFakePlots" ,  LepsAll2, AK4_JetColl,AK8_JetColl, AK4_BJetColl, METv,   1);
+  //      else  FillFakeHistograms(param, "SS2BJetFakePlots" ,  LepsAll2, AK4_JetColl,AK8_JetColl, AK4_BJetColl, METv,   1);
+  //    }
+  //  }
+  //  
+  //  return;
+  //}
 
 
   RunAllControlRegions(ElectronTightColl,ElectronVetoColl,MuonTightColl,MuonVetoColl, 
-		       AK4_JetAllColl, AK4_JetColl,AK4_VBF_JetColl,AK8_JetColl, AK4_BJetColl, 
-		       ev,METv, param, CRs,weight);
+           AK4_JetAllColl, AK4_JetColl,AK4_VBF_JetColl,AK8_JetColl, AK4_BJetColl, 
+           ev,METv, param, CRs,weight);
   
 
 }

@@ -5,8 +5,10 @@ R__LOAD_LIBRARY(/cvmfs/cms.cern.ch/slc7_amd64_gcc900/cms/cmssw/CMSSW_11_2_5/exte
 void test(TString era, bool isdata, TString sample, TString skim, TString flag){ //echo -e ".L test.C\n test(\"2017\",false,\"DYTypeI_M500\",\"\");" | root -l 2>&1 | tee my.log
 
   //HNL_LeptonFakeRate m;
-  HNL_ControlRegionPlotter m;
+  //HNL_ControlRegionPlotter m;
   //HNL_SignalRegionPlotter m;
+  //HNL_SignalRegion_Plotter m;
+  HNL_ControlRegion_Plotter m;
 
   m.SetTreeName("recoTree/SKFlat");
 
@@ -174,8 +176,8 @@ void test(TString era, bool isdata, TString sample, TString skim, TString flag){
   else if(era=="2017" && !isdata && sample=="SSWWTypeI_DF_M1000"){
     if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/MC_SkimTree_HNMultiLepBDT/SSWWTypeI_NLO_DF_M1000/2023_09_04_164552/SKFlatNtuple_2017_MC_0.root")) exit(EIO);
   }
-  if(flag.Length()>0) m.SetOutfilePath("hists_"+sample+flagOutname+".root");
-  else m.SetOutfilePath("hists_"+sample+".root");
+  if(flag.Length()>0) m.SetOutfilePath("hists_Newname_"+sample+flagOutname+".root");
+  else m.SetOutfilePath("hists_Newname_"+sample+".root");
   m.Init();
   m.initializeAnalyzer();
   m.initializeAnalyzerTools();

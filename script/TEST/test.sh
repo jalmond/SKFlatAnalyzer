@@ -31,9 +31,10 @@ flag=$5
 #echo -e ".L test.C\n test(\"2017\",false,\"TTLJ\",\"HNMultiLepBDT\",\"RunFakeClosureObs\");" | root -l 2>&1 | tee "TTLJ_ClosObs".log
 
 # HNL_ControlRegionPlotter
-#echo -e ".L test.C\n test(\"2017\",true,\"DoubleMuon\",\"HNMultiLepBDT\",\"RunFake\");" | root -l 2>&1 | tee "DoubleMuon_RunFake".log
-#echo -e ".L test.C\n test(\"2017\",true,\"DoubleMuon\",\"HNMultiLepBDT\",\"SS_CR\");" | root -l 2>&1 | tee "DoubleMuon_SS_CR".log
+#echo -e ".L test.C\n test(\"2017\",true,\"DoubleMuon\",\"HNMultiLepBDT\",\"SSMultiLep,RunFake\");" | root -l 2>&1 | tee "DoubleMuon_RunFake".log
+#echo -e ".L test.C\n test(\"2017\",true,\"DoubleMuon\",\"HNMultiLepBDT\",\"SSMultiLep\");" | root -l 2>&1 | tee "DoubleMuon_SSMultiLep".log
+echo -e ".L test.C\n test(\"2017\",true,\"DoubleEG\",\"HNMultiLepBDT\",\"SSMultiLep\");" | root -l 2>&1 | tee "DoubleEG_SSMultiLep".log
 #echo -e ".L test.C\n test(\"2017\",true,\"DoubleMuon\",\"HNMultiLepBDT\",\"RunFake,TestFakes,SS_CR\");" | root -l 2>&1 | tee "DoubleMuon_RunFake".log
 #echo -e ".L test.C\n test(\"2017\",true,\"DoubleMuon\",\"HNMultiLepBDT\",\"LLL_VR\");" | root -l 2>&1 | tee "DoubleMuon_LLL_VR".log
 #echo -e ".L test.C\n test(\"2017\",true,\"MuonEG\",\"HNMultiLepBDT\",\"LLL_VR\");" | root -l 2>&1 | tee "MuonEG_LLL_VR".log
-echo -e ".L test.C\n test(\"2017\",false,\"ZZ\",\"HNMultiLepBDT\",\"LLL_VR\");" | root -l 2>&1 | tee "ZZ_LLL_VR".log
+#echo -e ".L test.C\n test(\"2017\",false,\"ZZ\",\"HNMultiLepBDT\",\"LLL_VR\");" | root -l 2>&1 | tee "ZZ_LLL_VR".log

@@ -126,16 +126,20 @@ void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq,
 
 
     HNL_LeptonCore::SearchRegion LimitRegionSR1 = HNL_LeptonCore::MuonSR1;
-    if (dilep_channel == EE) LimitRegionSR1 =HNL_LeptonCore::ElectronSR1;
+    if (dilep_channel == EE) LimitRegionSR1 = HNL_LeptonCore::ElectronSR1;
+    if (dilep_channel == EMu) LimitRegionSR1 = HNL_LeptonCore::ElectronMuonSR1;
     
     HNL_LeptonCore::SearchRegion LimitRegionSR2 = HNL_LeptonCore::MuonSR2;
-    if (dilep_channel == EE) LimitRegionSR2 =HNL_LeptonCore::ElectronSR2;
+    if (dilep_channel == EE) LimitRegionSR2 = HNL_LeptonCore::ElectronSR2;
+    if (dilep_channel == EMu) LimitRegionSR2 = HNL_LeptonCore::ElectronMuonSR2;
 
     HNL_LeptonCore::SearchRegion LimitRegionSR3 = HNL_LeptonCore::MuonSR3;
-    if (dilep_channel == EE) LimitRegionSR3 =HNL_LeptonCore::ElectronSR3;
+    if (dilep_channel == EE) LimitRegionSR3 = HNL_LeptonCore::ElectronSR3;
+    if (dilep_channel == EMu) LimitRegionSR3 = HNL_LeptonCore::ElectronMuonSR3;
 
     HNL_LeptonCore::SearchRegion LimitRegionsBDTSR3 = HNL_LeptonCore::MuonSR3BDT;
-    if (dilep_channel == EE) LimitRegionsBDTSR3 =HNL_LeptonCore::ElectronSR3BDT;
+    if (dilep_channel == EE) LimitRegionsBDTSR3 = HNL_LeptonCore::ElectronSR3BDT;
+    if (dilep_channel == EMu) LimitRegionsBDTSR3 = HNL_LeptonCore::ElectronMuonSR3BDT;
 
 
     if(!PassPreselection(dilep_channel,Inclusive, LepsT, LepsV, TauColl, JetColl, VBF_JetColl, AK8_JetColl, B_JetColl,ev, METv ,param,"", weight_channel)) continue;
