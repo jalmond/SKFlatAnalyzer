@@ -372,9 +372,7 @@ bool AnalyzerParameter::HasFlag(TString JobName) {
 
 void  AnalyzerParameter::SetChannel(TString inch){
 
-  //if (inch == "MuE") Channel = "EMu";
-  //else Channel = inch;
-  Channel = inch; //JH
+  Channel = inch;
   return;
 }
 

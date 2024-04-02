@@ -27,16 +27,16 @@ void HNL_SignalRegion_Plotter::executeEvent(){
       
       if(!IsData) RunSyst=true;
       if(RunSyst){
-	TString param_name = param.Name;
-	vector<AnalyzerParameter::Syst> SystList = GetSystList("Initial");
-	
-	for(auto isyst : SystList){
-	  param.syst_ = AnalyzerParameter::Syst(isyst);
-	  
-	  param.Name = "Syst_"+param.GetSystType()+param_name;
-	  param.DefName = "Syst_"+param.GetSystType()+param_name;
-	  RunULAnalysis(param);
-	}
+        TString param_name = param.Name;
+        vector<AnalyzerParameter::Syst> SystList = GetSystList("Initial");
+        
+        for(auto isyst : SystList){
+          param.syst_ = AnalyzerParameter::Syst(isyst);
+          
+          param.Name = "Syst_"+param.GetSystType()+param_name;
+          param.DefName = "Syst_"+param.GetSystType()+param_name;
+          RunULAnalysis(param);
+        }
       }    
       
     }
