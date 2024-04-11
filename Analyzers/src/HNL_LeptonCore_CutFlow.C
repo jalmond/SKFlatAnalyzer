@@ -28,7 +28,7 @@ void HNL_LeptonCore::FillCutflowDef(TString cutflow_dirname,TString cutflow_hist
     if(!cutflow_dirname.Contains("ChannelCutFlow"))  cf_name = cutflow_dirname + "/"+cf_name;
     else cf_name = cutflow_dirname;
 
-    cout << "cf_name+cutflow_histname = " << cf_name+"/"+cutflow_histname << endl;
+    //cout << "cf_name+cutflow_histname = " << cf_name+"/"+cutflow_histname << endl;
     this_hist = new TH1D(cf_name+"/"+cutflow_histname, "", bin_lables.size(), 0, bin_lables.size());
     for (unsigned int i=0 ; i < bin_lables.size(); i++)  this_hist->GetXaxis()->SetBinLabel(i+1,bin_lables[i]);
     this_hist->SetDirectory(NULL);
@@ -290,6 +290,7 @@ vector<TString>  HNL_LeptonCore::GetLabelsFromRegion(HNL_LeptonCore::SearchRegio
   if(sr==MuonSRSummary) labels = {"Inclusive", "GenMatch", "CheckLeptonFlavourForChannel","METFilter", "CFCut", "Preselection", "AK8","SigReg1", "SigReg1Fail",  "SigReg2",  "SigReg3", "SigReg3Pass", "SigReg3Fail"};
   
   if( sr==SR3BDT)  labels = {  "SR3_lep_charge" , "SR3_lep_pt",  "SR3_dilep_mass", "SR3_MET", "SR3_bveto"};//, "SR3_jet", "SR3_dijet","SR3_Wmass",  "SR3_J1Pt", "SR3_MET", "SR3_bveto"};
+  if( sr==CR3BDT)  labels = {  "CR3_lep_charge" , "CR3_lep_pt",  "CR3_dilep_mass", "CR3_MET", "CR3_bveto"};//, "CR3_jet", "CR3_dijet","CR3_Wmass",  "CR3_J1Pt", "CR3_MET", "CR3_bveto"};
   
   if(sr==PreselSS || sr==Presel )   labels = {"NoCut", "METFilter", "Trigger", "Dilepton","SS_Dilep" ,"SS_lep_veto", "SS_Dilep_mass", "SS_Presel"};
   

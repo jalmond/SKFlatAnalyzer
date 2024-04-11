@@ -243,9 +243,9 @@ bool  HNL_RegionDefinitions::PassPreselection(HNL_LeptonCore::Channel channel,HN
   Particle ll =  (*leps[0]) + (*leps[1]);
   
   // VETO Z PEAK IN EE CHANNEL
-  if (channel==EE  && (fabs(ll.M()-M_Z) < 10)) return false;
+  if (channel==EE  && (fabs(ll.M()-M_Z) < M_ZWINDOW_VETO)) return false;
 
-  if(ll.M() < 10) return false; // TO_CHECK: IS 20 BEST OPTION
+  if(ll.M() < M_CUT_LL) return false; // TO_CHECK: IS 20 BEST OPTION
 
   Fill_RegionPlots(param,"Preselection" , TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);
   FillCutflow(HNL_LeptonCore::ChannelDepPresel, w, GetChannelString(channel) +"_Presel",param);
@@ -286,14 +286,14 @@ TString HNL_RegionDefinitions::RunSignalRegionAK8String(bool ApplyForSR,
 
   double LowerMassSR1WmassCut = 450.;
 
-  bool HasTightTau=false;
-  for(auto itau: TauColl){
-    bool HasTightTau_n=true;
-    for (auto ilep : leps)        if (ilep->DeltaR(itau) < 0.4) HasTightTau_n=false;
-    for (auto ijet : AK8_JetColl) if (ijet.DeltaR(itau) < 1.)   HasTightTau_n=false;
-    for (auto ijet : JetColl)     if (ijet.DeltaR(itau) < 0.5)  HasTightTau_n=false;
-    if(HasTightTau_n) HasTightTau=true;
-  }
+  //bool HasTightTau=false;
+  //for(auto itau: TauColl){
+  //  bool HasTightTau_n=true;
+  //  for (auto ilep : leps)        if (ilep->DeltaR(itau) < 0.4) HasTightTau_n=false;
+  //  for (auto ijet : AK8_JetColl) if (ijet.DeltaR(itau) < 1.)   HasTightTau_n=false;
+  //  for (auto ijet : JetColl)     if (ijet.DeltaR(itau) < 0.5)  HasTightTau_n=false;
+  //  if(HasTightTau_n) HasTightTau=true;
+  //}
   
   if(ApplyForSR) FillCutflow(Reg, w, RegionTag+"_Init",param);
 
@@ -308,9 +308,10 @@ TString HNL_RegionDefinitions::RunSignalRegionAK8String(bool ApplyForSR,
   if(ApplyForSR)FillCutflow(Reg, w, RegionTag+"_lep_pt",param);
   
   Particle ll =  (*leps[0]) + (*leps[1]);
+  if(ll.M() < M_CUT_LL) return false;
   if(ApplyForSR)FillCutflow(Reg, w, RegionTag+"_dilep_mass",param);
 
-  if(HasTightTau) return "false";
+  //if(HasTightTau) return "false";
   if(ApplyForSR)FillCutflow(Reg, w, RegionTag+"_tauveto",param);
     
   if(AK8_JetColl.size() != 1)  return "false";
@@ -349,8 +350,6 @@ TString HNL_RegionDefinitions::RunSignalRegionAK8String(bool ApplyForSR,
 
   Particle N1cand = AK8_JetColl[m] + *leps[0];
   double MN1 = (N1cand.M() > 2000.) ? 1999. : N1cand.M();
-
-  TString R1Bin=RegionTag+"_MNbin1";
 
   if(MN1 > 225){
     if(leps[0]->Pt() < pt_cut)  return RegionTag+"_MNbin1";
@@ -420,7 +419,7 @@ TString HNL_RegionDefinitions::RunSignalRegionWWString(bool ApplyForSR,HNL_Lepto
   if(ll_dphi < 2.) return "false";
   if(ApplyForSR)  FillCutflow(Reg, w, RegionTag+"_DPhi",param);
   
-  if( ( (*leps[0]) + (*leps[1]) ).M() < 20.) return "false";
+  if( ( (*leps[0]) + (*leps[1]) ).M() < M_CUT_LL) return "false";
   if(ApplyForSR)  FillCutflow(Reg, w, RegionTag+"_LLMass",param);
 
   if(JetColl.size() < 2) return "false";
@@ -529,10 +528,9 @@ TString HNL_RegionDefinitions::RunSignalRegionAK4StringBDT(bool ApplyForSR, TStr
 
   if (LepTColl.size() != 2) return "false";
 
-
   Particle ll =  (*LepTColl[0]) + (*LepTColl[1]);
-  if (channel==EE  && (fabs(ll.M()-M_Z) < 10)) return "false";
-
+  if (channel==EE  && (fabs(ll.M()-M_Z) < M_ZWINDOW_VETO)) return "false";
+  if(ll.M() < M_CUT_LL) return false;
   if(ApplyForSR)  FillCutflow(Reg, w, RegionTag+"_dilep_mass",param);
 
   //float MVAvalue = EvaluateEventMVA(mN, NCut,NTree, channel,  LepTColl,ev, METv,param);
@@ -551,8 +549,8 @@ TString HNL_RegionDefinitions::RunSignalRegionAK4StringBDT(bool ApplyForSR, TStr
 
   std::vector<FatJet> FatJetColl;
   
-  if(PassHMMet) FillCutflow(Reg, w, RegionTag+"_MET",param);
-  if(PassHMMet&& PassBJetMVeto)  FillCutflow(Reg, w, RegionTag+"_bveto",param);
+  if(PassHMMet && ApplyForSR) FillCutflow(Reg, w, RegionTag+"_MET",param);
+  if(PassHMMet && PassBJetMVeto && ApplyForSR) FillCutflow(Reg, w, RegionTag+"_bveto",param);
 
   if(!PassRegionReq)  return "false";
 
@@ -622,11 +620,12 @@ TString HNL_RegionDefinitions::RunSignalRegionAK4String(bool ApplyForSR,HNL_Lept
   if (leps_veto.size() != 2) return "false";
 
   Particle ll =  (*leps[0]) + (*leps[1]);
-  if (channel==EE  && (fabs(ll.M()-M_Z) < 10)) {
+  if (channel==EE  && (fabs(ll.M()-M_Z) < M_ZWINDOW_VETO)) {
     if(ApplyForSR)Fill_RegionPlots(param,RegionTag+"ZPeak" ,TauColl,  JetColl, AK8_JetColl, leps,  METv, nPV, w);
     return "false";
   }
 
+  if(ll.M() < M_CUT_LL) return false;
   if(ApplyForSR)FillCutflow(Reg, w, RegionTag+"_dilep_mass",param);
 
   if(ApplyForSR&&PassRegionReq){

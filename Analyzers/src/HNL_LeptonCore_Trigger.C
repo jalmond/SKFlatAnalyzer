@@ -31,10 +31,12 @@ void HNL_LeptonCore::SetupTriggerLists(){
     //2016a run period 278808 
     // MU  
     TrigList_HNL_DblMu = {"HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v",     "HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v"};
-    TrigList_HNL_MuEG  = {"HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_v"};
     TrigList_POG_MuEG  = {"HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_v"};
-    TrigList_HNL_EGMu  = {"HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v"};
     TrigList_POG_EGMu  = {"HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v"};
+    //TrigList_HNL_EGMu  = {"HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v"};
+    //TrigList_HNL_MuEG  = {"HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_v"};
+    TrigList_HNL_EGMu  = {"HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v","HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_v"};
+    TrigList_HNL_MuEG  = {"HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_v","HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v"}; //JH
     
     // 278806 and 278807 should be removed frmo thsi dataset 
     // REF https://twiki.cern.ch/twiki/bin/view/CMS/PdmVDatasetsUL2016
@@ -46,10 +48,12 @@ void HNL_LeptonCore::SetupTriggerLists(){
     // Lumi=16.8 /fb.
     // MU 
     TrigList_HNL_DblMu = {"HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v","HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v"};// "HLT_TkMu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v"};               
-    TrigList_HNL_MuEG  = {"HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v"};
     TrigList_POG_MuEG  = {"HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v"};
-    TrigList_HNL_EGMu  = {"HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v"};
     TrigList_POG_EGMu  = {"HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v"};
+    //TrigList_HNL_EGMu  = {"HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v"};
+    //TrigList_HNL_MuEG  = {"HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v"};
+    TrigList_HNL_EGMu  = {"HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v","HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v"};
+    TrigList_HNL_MuEG  = {"HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v","HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v"}; //JH
 
     //https://twiki.cern.ch/twiki/bin/view/CMS/MuonHLT2016                                                                                                                     
     // Do we include HLT_TkMu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v which is only in periodH                                                                                         
@@ -61,7 +65,8 @@ void HNL_LeptonCore::SetupTriggerLists(){
     TrigList_HNL_HighPtMu = {"HLT_Mu50_v",   "HLT_TkMu50_v"};
     TrigList_HNL_Mu = {    "HLT_IsoMu24_v",   "HLT_IsoTkMu24_v",};
     // EG
-    TrigList_HNL_DblEG = {  "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v","HLT_Photon175_v"};
+    //TrigList_HNL_DblEG = {  "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v","HLT_Photon175_v"};
+    TrigList_HNL_DblEG = {  "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v"}; //JH
     TrigList_HNL_EG    = {  "HLT_Ele27_WPTight_Gsf_v" ,
                             "HLT_Ele25_eta2p1_WPTight_Gsf_v" ,
                             "HLT_Ele115_CaloIdVT_GsfTrkIdT_v",
@@ -84,13 +89,14 @@ void HNL_LeptonCore::SetupTriggerLists(){
 
 
     TrigList_HNL_DblMu = { //"HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v",
-			   "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v",
+         "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v",
                            "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_v" };
     TrigList_HNL_Mu = {  "HLT_IsoMu27_v"};
     TrigList_POG_Mu = {  "HLT_IsoMu27_v"};
     TrigList_HNL_HighPtMu = {"HLT_Mu50_v"};
 
-    TrigList_HNL_DblEG = { "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v","HLT_Photon200_v"};
+    //TrigList_HNL_DblEG = { "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v","HLT_Photon200_v"};
+    TrigList_HNL_DblEG = { "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v"}; //JH
     TrigList_HNL_EG = { "HLT_Ele32_WPTight_Gsf_v",
                         "HLT_Ele32_WPTight_Gsf_L1DoubleEG_v",
                         "HLT_Ele115_CaloIdVT_GsfTrkIdT_v",
@@ -101,8 +107,10 @@ void HNL_LeptonCore::SetupTriggerLists(){
     TrigList_POG_EG = {"HLT_Ele32_WPTight_Gsf_v", "HLT_Ele32_WPTight_Gsf_L1DoubleEG_v","HLT_Photon200_v"};
     TrigList_HNL_HighPtEG = {"HLT_Photon200_v","HLT_DoublePhoton70_v"};
 
-    TrigList_HNL_MuEG  = {"HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v"};
-    TrigList_HNL_EGMu  = {"HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v"};
+    //TrigList_HNL_MuEG  = {"HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v"};
+    //TrigList_HNL_EGMu  = {"HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v"};
+    TrigList_HNL_MuEG  = {"HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v","HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v"};
+    TrigList_HNL_EGMu  = {"HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v","HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v"}; //JH
     
   } // end of 2017 triggers    
 
@@ -125,8 +133,10 @@ void HNL_LeptonCore::SetupTriggerLists(){
 
     TrigList_HNL_HighPtEG = { "HLT_Photon200_v", "HLT_DoublePhoton70_v"};
 
-    TrigList_HNL_MuEG  = {"HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v"};
-    TrigList_HNL_EGMu  = {"HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v"};
+    //TrigList_HNL_MuEG  = {"HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v"};
+    //TrigList_HNL_EGMu  = {"HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v"};
+    TrigList_HNL_MuEG  = {"HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v","HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v"};
+    TrigList_HNL_EGMu  = {"HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v","HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v"}; //JH
 
   }
 
@@ -260,7 +270,7 @@ double HNL_LeptonCore::GetPtCutTrigger(TString trigname, int nlep, TString flavo
   if(flavour == "Muon"){
     if(trigname.Contains("HLT_Mu17") ||  trigname.Contains("HLT_TkMu17")) {
       if(trigname.Contains("Mu8") || trigname.Contains("TkMu8")) {
-	if(nlep==0) return 20;
+        if(nlep==0) return 20;
         if(nlep==1) return 10;
         if(nlep>1) return 0.;
       }

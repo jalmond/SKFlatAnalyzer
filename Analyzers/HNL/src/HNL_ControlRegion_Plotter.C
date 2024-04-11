@@ -17,7 +17,7 @@ void HNL_ControlRegion_Plotter::executeEvent(){
   ///// LIST IDs to run
   vector<TString> LepIDs = {"HNL_ULID"};//"TopHN","HNL_ULID","HNTightV2"};//,"TopHN", "DefaultPOGTight"};
   //// List Channels to run
-  vector<HNL_LeptonCore::Channel> ChannelsToRun = {MuMu};//,EE,EMu,MuE };
+  vector<HNL_LeptonCore::Channel> ChannelsToRun = {MuMu,EE,EMu};//,EE,EMu,MuE };
   
   vector<TString> RegionsToPlot = {"SSMultiLep","Dilepton"}; 
   
@@ -25,10 +25,15 @@ void HNL_ControlRegion_Plotter::executeEvent(){
 
   vector<TString> CRToRun;
   bool StandardProcess = true;
-  if(HasFlag("Dilepton"))        CRToRun = {"OS_VR","SS_CR","VBF_CR","LLL_VR"};
+  //if(HasFlag("Dilepton"))        CRToRun = {"OS_VR","SS_CR","VBF_CR","LLL_VR"};
+  if(HasFlag("OS_VR"))             CRToRun = {"OS_VR"}; //JH
+  else if(HasFlag("SS_CR"))        CRToRun = {"SS_CR"}; //JH
+  else if(HasFlag("VBF_CR"))       CRToRun = {"VBF_CR"}; //JH
+  else if(HasFlag("LLL_VR"))       CRToRun = {"LLL_VR"}; //JH
+  else if(HasFlag("Dilepton"))     CRToRun = {"OS_VR","SS_CR","VBF_CR","LLL_VR"};
   else if(HasFlag("SSMultiLep")) CRToRun = {"SS_CR","VBF_CR","LLL_VR"};
   else if(HasFlag("TestFakes"))  { StandardProcess=false ; CRToRun = {"SS_CR","VBF_CR","LLL_VR"};}
-  else CRToRun = {"SS_CR"};
+  //else CRToRun = {"SS_CR"}; //JH
 
   if(StandardProcess){
     for (auto id: LepIDs){
