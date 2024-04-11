@@ -1493,7 +1493,7 @@ bool HNL_RegionDefinitions::FillHighMassSR2CRPlots(HNL_LeptonCore::Channel chann
     if (HT/leps[0]->Pt() > 2)  return false;
     FillCutflow(Reg, w, "Step6",param);
 
-    Fill_RegionPlots(param,"HNL_HighMassCR2_TwoLepton_CR"  ,  JetColl,  AK8_JetColl,  leps,  METv, nPV, w);
+    Fill_RegionPlots(param,"HNL_HighMassSR2_TwoLepton_CR"  ,  JetColl,  AK8_JetColl,  leps,  METv, nPV, w);
     
   
     double HTLT[2] = { 0., 2};
