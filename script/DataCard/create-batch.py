@@ -1,6 +1,6 @@
-# Place it at CombineTool/CMSSW_10_2_13/src/DataCardsShape/HNL_SignalRegionPlotter
+# Place it at CombineTool/CMSSW_10_2_13/src/DataCardsShape/HNL_SignalRegion_Plotter
 # python create-batch.py -l RunList1.txt [RunList2.txt] --Asymptotic[--Full][--Q*]
-# RunList.txt contains paths of results from text2workspace.py e.g. /data6/Users/jihkim/CombineTool/CMSSW_10_2_13/src/DataCardsShape/HNL_SignalRegionPlotter/Workspace/card_2017_MuMu_M500_HNL_UL.root
+# RunList.txt contains paths of results from text2workspace.py e.g. /data6/Users/jihkim/CombineTool/CMSSW_10_2_13/src/DataCardsShape/HNL_SignalRegion_Plotter/Workspace/card_2017_MuMu_M500_HNL_UL.root
 
 import os, sys
 import commands as cmd

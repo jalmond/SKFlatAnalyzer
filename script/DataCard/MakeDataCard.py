@@ -1,11 +1,11 @@
 # Make Datacards
-# Place this at CombineTool/CMSSW_10_2_13/src/DataCardsShape/HNL_SignalRegionPlotter/Workspace
+# Place this at CombineTool/CMSSW_10_2_13/src/<your working directory>
 # You need to place card_skeletons already
 
 import os, sys, argparse
 
 parser = argparse.ArgumentParser(description='script for creating or merging data cards.',formatter_class=argparse.RawTextHelpFormatter)
-parser.add_argument('--CR', action='store_true', help='Make datacards named sr with HNL_SignalRegionPlotter and sr_inv with HNL_ControlRegionPlotter input. (Default : SR only)')
+parser.add_argument('--CR', action='store_true', help='Make datacards named sr with HNL_SignalRegion_Plotter and sr_inv with HNL_ControlRegion_Plotter input. (Default : SR only)')
 parser.add_argument('--Syst', action='store_true', help='Add systematics into the datacards')
 parser.add_argument('--Combine', choices=['CR','SR','Era'], help='CR --> Merge CR and SR datacards in one era,\nEra --> Merge pre-processed (CR+SR) over the Run2,\nSR --> Merge SR only datacards over the Run2')
 args = parser.parse_args()
@@ -27,30 +27,19 @@ channels = ["MuMu","EE","EMu"]
 #channels = ["MuMu","EE"]
 #masses = ["M90","M100","M150","M200","M300","M400","M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M10000","M15000","M20000"]
 #masses = ["M100","M1000","M10000"]
-masses = ["M100","M150","M200","M300","M400","M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M10000","M15000","M20000"]
+masses = ["M90","M100","M150","M200","M300","M400","M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M10000","M15000","M20000"]
 
-myWPs = ["Workshop", "InputForCombine"]
-myWPs = ["InputForCombine"]
-myWPs = ["Workshop"]
-myWPs = ["AddSyst"]
-myWPs = ["KPS23Spr"]
-myWPs = ["KPS23Spr_woBDT"]
-myWPs = ["SR2HT_SR3l2pt"]
-myWPs = ["SR2HT_SR3l2pt_ChargeSplit"]
-myWPs = ["HNL_ULID","HNTightV2"]
-myWPs = ["NewOpt_HNL_ULID","NewOpt_HNTightV2"]
-myWPs = ["231227_KCMS_WS_HNL_ULID","231227_KCMS_WS_HNTightV2"]
-myWPs = ["CRtest_HNL_ULID"]
+myWPs = ["240422_HNL_ULID"]
 
 ################################################################################################################################################
 
 def CardSetting(isCR, era, channel, mass):
 
-  with open("/data6/Users/jihkim/CombineTool/CMSSW_10_2_13/src/DataCardsShape/HNL_SignalRegionPlotter/Workspace/card_skeleton.txt",'r') as f:
+  with open("/data6/Users/jihkim/CombineTool/CMSSW_10_2_13/src/DataCardsShape/HNL_SignalRegion_Plotter/card_skeleton.txt",'r') as f: # your workspace
     lines = f.readlines()
 
-  SRpath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegionPlotter/LimitInputs/"
-  CRpath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegionPlotter/LimitInputs/"
+  SRpath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegion_Plotter/LimitInputs/"
+  CRpath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/LimitInputs/"
 
   # skip the lepton SF syst for now ...
   #for i in range(len(lines)):

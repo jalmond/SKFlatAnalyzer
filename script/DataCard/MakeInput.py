@@ -1,4 +1,4 @@
-# Place it in SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegionPlotter
+# Place it in SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegion_Plotter
 
 import os, sys
 import commands as cmd
@@ -6,7 +6,7 @@ import argparse
 from ROOT import *
 
 parser = argparse.ArgumentParser(description='script for creating input root file.',formatter_class=argparse.RawTextHelpFormatter)
-parser.add_argument('--CR', action='store_true', help='Make HNL_ControlRegionPlotter input (default : HNL_SignalRegionPlotter)')
+parser.add_argument('--CR', action='store_true', help='Make HNL_ControlRegion_Plotter input (default : HNL_SignalRegion_Plotter)')
 parser.add_argument('--Syst', action='store_true', help='Add systematics')
 args = parser.parse_args()
 
@@ -17,12 +17,12 @@ eras = ["2017"]
 #eras = ["2018"]
 #masses = ["M90","M100","M150","M200","M300","M400","M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M10000","M15000","M20000"]
 #masses = ["M100","M1000","M10000"]
-masses = ["M90","M150","M200","M300","M400","M500","M600","M700","M800","M900","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M15000","M20000"]
-#channels = ["MuMu","EE","EMu"]
-channels = ["MuMu","EE"]
+masses = ["M90","M100","M150","M200","M300","M400","M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M10000","M15000","M20000"]
+channels = ["MuMu","EE","EMu"]
+#channels = ["MuMu","EE"]
 #tags = ["HNL_ULID","HNTightV2"] # HNLParameter Name
 tags = ["HNL_ULID"] # HNLParameter Name
-outputTag = "CRtest" # tag the output directory name as you wish
+outputTag = "240422" # tag the output directory name as you wish
 
 # Skim
 DataSkim = "_SkimTree_HNMultiLepBDT_"
@@ -34,11 +34,11 @@ MCSkim = "_SkimTree_HNMultiLepBDT_"
 SignalSkim = "_SkimTree_HNMultiLepBDT_"
 
 # This will do necessary hadd for you.
-MergeData   = True
-MergeFake   = True  # RunFake
-MergeCF     = True  # RunCF
-MergeConv   = True  # RunConv
-MergeMC     = True  # RunPrompt
+MergeData   = False
+MergeFake   = False  # RunFake
+MergeCF     = False  # RunCF
+MergeConv   = False  # RunConv
+MergeMC     = False  # RunPrompt
 MergeSignal = True
 #MergeDYVBF = True
 #MergeSSWW  = True
@@ -47,12 +47,12 @@ if args.CR:
   Blinded = False # Blinded --> the total background will be used as data_obs
   CRflags = ["SS_CR__","LLL_VR__"]
   #CRflags = ["LLL_VR__"]
-  Analyzer = "HNL_ControlRegionPlotter"
+  Analyzer = "HNL_ControlRegion_Plotter"
   Region = "CR"
 else:
   Blinded = True # Blinded --> the total background will be used as data_obs
   CRflags = [""]
-  Analyzer = "HNL_SignalRegionPlotter"
+  Analyzer = "HNL_SignalRegion_Plotter"
   Region = "SR"
 ChargeSplit = False
 if ChargeSplit:
@@ -164,13 +164,13 @@ for tag in tags:
             SSWWscaler = DYVBFscaler*DYVBFscaler # Set the signalSSWW scaler
 
           if int(mass.replace("M","")) <= 500:
-            if channel == "MuMu": input_hist =  "LimitInputBDT/"+channel+"/"+tag+"/"+mass+"/LimitBins/Muon"+Region #path to the input histogram
-            elif channel == "EE": input_hist =  "LimitInputBDT/"+channel+"/"+tag+"/"+mass+"/LimitBins/Electron"+Region #path to the input histogram
-            elif channel == "EMu": input_hist = "LimitInputBDT/"+channel+"/"+tag+"/"+mass+"/LimitBins/ElectronMuon"+Region #path to the input histogram
+            if channel == "MuMu": input_hist =  "LimitInputBDT/"+tag+"/"+channel+"/"+mass+"/LimitBins/Muon"+Region #path to the input histogram
+            elif channel == "EE": input_hist =  "LimitInputBDT/"+tag+"/"+channel+"/"+mass+"/LimitBins/Electron"+Region #path to the input histogram
+            elif channel == "EMu": input_hist = "LimitInputBDT/"+tag+"/"+channel+"/"+mass+"/LimitBins/ElectronMuon"+Region #path to the input histogram
           elif int(mass.replace("M","")) > 500:
-            if channel == "MuMu": input_hist =  "LimitInput/"+channel+"/"+tag+"/LimitBins/Muon"+ChargeSplit+Region #path to the input histogram
-            elif channel == "EE": input_hist =  "LimitInput/"+channel+"/"+tag+"/LimitBins/Electron"+ChargeSplit+Region #path to the input histogram
-            elif channel == "EMu": input_hist = "LimitInput/"+channel+"/"+tag+"/LimitBins/ElectronMuon"+ChargeSplit+Region #path to the input histogram
+            if channel == "MuMu": input_hist =  "LimitInput/"+tag+"/"+channel+"/LimitBins/Muon"+ChargeSplit+Region #path to the input histogram
+            elif channel == "EE": input_hist =  "LimitInput/"+tag+"/"+channel+"/LimitBins/Electron"+ChargeSplit+Region #path to the input histogram
+            elif channel == "EMu": input_hist = "LimitInput/"+tag+"/"+channel+"/LimitBins/ElectronMuon"+ChargeSplit+Region #path to the input histogram
           
           print "##### Initiating",mass,channel,"..."
           if not Blinded: h_data        = f_data.Get(input_hist)
@@ -288,13 +288,13 @@ for tag in tags:
             Nproc = len(input_list) # The number of processes = the length of the input list before adding systematics
             for this_syst in syst_list: # Define new input_hist with each syst name
               if int(mass.replace("M","")) <= 500:
-                if channel == "MuMu": input_hist =  "LimitInputBDT/"+channel+"/Syst_"+this_syst+tag+"/"+mass+"/LimitBins/Muon"+Region
-                elif channel == "EE": input_hist =  "LimitInputBDT/"+channel+"/Syst_"+this_syst+tag+"/"+mass+"/LimitBins/Electron"+Region
-                elif channel == "EMu": input_hist = "LimitInputBDT/"+channel+"/Syst_"+this_syst+tag+"/"+mass+"/LimitBins/ElectronMuon"+Region
+                if channel == "MuMu": input_hist =  "LimitInputBDT/Syst_"+this_syst+tag+"/"+channel+"/"+mass+"/LimitBins/Muon"+Region
+                elif channel == "EE": input_hist =  "LimitInputBDT/Syst_"+this_syst+tag+"/"+channel+"/"+mass+"/LimitBins/Electron"+Region
+                elif channel == "EMu": input_hist = "LimitInputBDT/Syst_"+this_syst+tag+"/"+channel+"/"+mass+"/LimitBins/ElectronMuon"+Region
               elif int(mass.replace("M","")) > 500:
-                if channel == "MuMu": input_hist =  "LimitInput/"+channel+"/Syst_"+this_syst+tag+"/LimitBins/Muon"+ChargeSplit+Region
-                elif channel == "EE": input_hist =  "LimitInput/"+channel+"/Syst_"+this_syst+tag+"/LimitBins/Electron"+ChargeSplit+Region
-                elif channel == "EMu": input_hist = "LimitInput/"+channel+"/Syst_"+this_syst+tag+"/LimitBins/ElectronMuon"+ChargeSplit+Region
+                if channel == "MuMu": input_hist =  "LimitInput/Syst_"+this_syst+tag+"/"+channel+"/LimitBins/Muon"+ChargeSplit+Region
+                elif channel == "EE": input_hist =  "LimitInput/Syst_"+this_syst+tag+"/"+channel+"/LimitBins/Electron"+ChargeSplit+Region
+                elif channel == "EMu": input_hist = "LimitInput/Syst_"+this_syst+tag+"/"+channel+"/LimitBins/ElectronMuon"+ChargeSplit+Region
   
               for i in range(Nproc):
                 if not "fake_data_path" in input_list[i][0]: # There is no file like "fake_data_path" ...
