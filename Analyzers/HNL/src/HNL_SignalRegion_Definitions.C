@@ -61,7 +61,7 @@ void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq,
     
     double  weight_channel = weight_ll;
     // DYTypeI, VBFTypeI EMu or MuE xsec should be a half of that of EE or MuMu.
-    if ( ((MCSample.Contains("DYTypeI")||MCSample.Contains("VBFTypeI")) && MCSample.Contains("private")) && ((dilep_channel == EMu)||(dilep_channel == MuE)) ) weight_channel *= 0.5;
+    if ( ((MCSample.Contains("DYTypeI")||MCSample.Contains("VBFTypeI")) && MCSample.Contains("private")) && (dilep_channel == EMu) ) weight_channel *= 0.5;
 
     //// Select CHannel used for Signals to check if signal is EE/MM/Emu using gen info
     if(MCSample.Contains("Type")&& !SelectChannel(dilep_channel)) continue;
