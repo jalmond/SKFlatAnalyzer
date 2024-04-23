@@ -242,16 +242,17 @@ public:
   inline bool IsBB() const { return (Region() < 3); }
 
   //// HNL UL Funtions
-  inline double PtMaxed(double ptmax=200) const { 
-    if(this->Pt() < ptmax) return this->Pt() ;
-    else return (ptmax - 1.);
+  inline double PtMaxed(double ptmax=2000, double shift=1.) const { 
+    double ptshift = this->Pt()*shift;
+    if(ptshift < ptmax) return ptshift;
+    else return (ptshift - 0.00001);
   }
 
 
   
   inline double InvPt(double shift=1.) const {
     double ptshift = this->Pt()*shift;
-    if(ptshift > 200) return 1/200.;
+    if(ptshift > 2000) return 1/2000.;
     else return (1/ptshift);
   }
 

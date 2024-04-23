@@ -3,3 +3,13 @@ FakeRate      POGTightWithTightIso ptcone_eta      AwayJetPt40   	   FR_Mu_2018_
 FakeRate      TopHN	           ptcone_eta      FR_cent       	   FR_Mu_2018_Top.root
 FakeRate      Peking		   ptcone_eta	   FR_cent		   FR_Mu_2018_HNL_PtCone.root
 FakeRate      HNTightV2		   ptcone_eta	   FR_cent		   FR_Mu_2018_HNL_PtCone.root
+FakeRate     HNL_ULID_2018     ptparton_eta   HNL_ULID_FO_v3_b_AJ30     FR_Mu_2018_HNL_ULID_PtParton_v6.root
+FakeRate     HNL_ULID_2018     ptparton_eta   HNL_ULID_FO_v3_b_AJ40     FR_Mu_2018_HNL_ULID_PtParton_v6.root
+FakeRate     HNL_ULID_2018     ptparton_eta   HNL_ULID_FO_v3_b_AJ25     FR_Mu_2018_HNL_ULID_PtParton_v6.root
+FakeRate     HNL_ULID_2018     ptparton_eta   HNL_ULID_FO_v1_a_AJ30     FR_Mu_2018_HNL_ULID_PtParton_v6.root
+FakeRate     HNL_ULID_2018     ptparton_eta   HNL_ULID_FO_v0_AJ30     FR_Mu_2018_HNL_ULID_PtParton_v6.root
+FakeRate     HNL_ULID_2018     ptparton_eta   HNL_ULID_FO_v3_b_AJ30b     FR_Mu_2018_HNL_ULID_PtParton_v5.root
+FakeRate     HNL_ULID_2018     ptparton_eta   HNL_ULID_FO_v3_b_AJ40b     FR_Mu_2018_HNL_ULID_PtParton_v5.root
+FakeRate     HNL_ULID_2018     ptparton_eta   HNL_ULID_FO_v3_b_AJ25b     FR_Mu_2018_HNL_ULID_PtParton_v5.root
+FakeRate     HNL_ULID_2018     ptparton_eta   HNL_ULID_FO_v1_a_AJ30b     FR_Mu_2018_HNL_ULID_PtParton_v5.root
+FakeRate     HNL_ULID_2018     ptparton_eta   HNL_ULID_FO_v0_AJ30b     FR_Mu_2018_HNL_ULID_PtParton_v5.root

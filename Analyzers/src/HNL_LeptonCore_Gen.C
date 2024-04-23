@@ -18,6 +18,8 @@ bool HNL_LeptonCore::PassGenMatchFilter(vector<Lepton *> leps, AnalyzerParameter
 
   if(MCSample.Contains("Type")) return true;
 
+  if(RunPromptTLRemoval) return true;
+
   //// Function filters events when using MC based on if they are Fake/CF/Conv
 
   int nConv(0);

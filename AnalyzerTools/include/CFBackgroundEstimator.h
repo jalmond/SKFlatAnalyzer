@@ -37,7 +37,7 @@ public:
   TString GetEra() const { return DataEra; }
   int GetYear() const { return DataYear; } 
 
-  std::map< TString, TH1D* > map_hist_Electron;
+  std::map< TString, TH2D* > map_hist_Electron;
   std::map< TString, TH1D* > map_hist_Muon;
 
   bool IgnoreNoHist;

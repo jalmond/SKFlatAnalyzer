@@ -63,19 +63,14 @@ void HNL_SignalRegion_Plotter::RunULAnalysis(AnalyzerParameter param){
   double Min_Muon_Pt     = (RunFake) ? 6. : 10.;
   double Min_Electron_Pt = (RunFake) ? 10. : 15.;
 
-  std::vector<Muon>       MuonCollTInit     = SelectMuons    ( param,mu_ID, Min_Muon_Pt,     2.4, weight);
-  std::vector<Electron>   ElectronCollTInit = SelectElectrons( param,el_ID, Min_Electron_Pt, 2.5, weight);
+  std::vector<Muon>       MuonCollT     = SelectMuons    ( param,mu_ID, Min_Muon_Pt,     2.4, weight);
+  std::vector<Electron>   ElectronCollT = SelectElectrons( param,el_ID, Min_Electron_Pt, 2.5, weight);
  
-  std::vector<Muon>       MuonCollT      =  GetLepCollByRunType   ( MuonCollTInit ,   param);
-  std::vector<Electron>   ElectronCollT  =  GetLepCollByRunType   ( ElectronCollTInit,param);
 
   std::vector<Lepton *> leps_veto  = MakeLeptonPointerVector(MuonCollV,ElectronCollV);
   std::vector<Tau>        TauColl        = SelectTaus   (leps_veto,param.Tau_Veto_ID,20., 2.3);
 
   std::vector<FatJet> AK8_JetColl                 = GetHNLAK8Jets(param.AK8JetColl,param);
-
-  if(HasFlag("PNET")) AK8_JetColl                 = GetHNLAK8Jets("HNL_NoMass",param);
-
   std::vector<Jet>    AK4_JetColl                 = GetHNLJets(param.AK4JetColl,     param);
   std::vector<Jet>    AK4_VBF_JetColl             = GetHNLJets(param.AK4VBFJetColl,  param);
   std::vector<Jet>    AK4_JetAllColl              = GetHNLJets("NoCut_Eta3",param);
@@ -88,10 +83,16 @@ void HNL_SignalRegion_Plotter::RunULAnalysis(AnalyzerParameter param){
 
   FillTimer("START_SR");
   
-  RunAllSignalRegions(Inclusive,
-          ElectronCollT,ElectronCollV,MuonCollT,MuonCollV,  TauColl,
-          AK4_JetCollLoose, AK4_JetAllColl, AK4_JetColl,AK4_VBF_JetColl,AK8_JetColl, AK4_BJetColl, 
-          ev,METv, param, weight);
+  vector<int> RunEl ;
+  if(RunCF) RunEl =  {0,1} ;
+  else RunEl = {-1};
+
+  for(auto ir : RunEl){
+    RunAllSignalRegions(Inclusive,
+			ElectronCollT,ElectronCollV,MuonCollT,MuonCollV,  TauColl,
+			AK4_JetCollLoose, AK4_JetAllColl, AK4_JetColl,AK4_VBF_JetColl,AK8_JetColl, AK4_BJetColl, 
+			ev,METv, param, ir, weight);
+  }
 
   FillTimer("END_SR");
 

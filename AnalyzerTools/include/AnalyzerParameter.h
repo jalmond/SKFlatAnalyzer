@@ -88,7 +88,7 @@ class AnalyzerParameter{
     double EventSetupWeight=1;
   };
   struct Key{
-    TString Muon_RECO_SF,Electron_RECO_SF,Electron_ID_SF,Muon_ID_SF, Muon_ISO_SF,Muon_FR,Muon_PR, Electron_FR,Electron_PR, Electron_CF,EMu_Trigger_SF,Electron_Trigger_SF,Muon_Trigger_SF,Muon_CF;
+    TString Muon_RECO_SF,Electron_RECO_SF,Electron_ID_SF,Muon_ID_SF, Muon_ISO_SF,Muon_FR,Muon_PR, Electron_FR,Electron_PR, Electron_CF,EMu_Trigger_SF,Electron_Trigger_SF,Muon_Trigger_SF,Muon_CF,Muon_EC_FR,Muon_BB_FR;
     vector<TString> triggerSF;
   };
 

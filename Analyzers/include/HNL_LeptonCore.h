@@ -43,38 +43,26 @@ class HNL_LeptonCore : public AnalyzerCore {
     E=0,    EE=1,    EEE=2,    EEEE=3,
     Mu=10,    MuMu=11,    MuMuMu=12,    MuMuMuMu=13,
     EMu=15,     EMuL=16,    EMuLL=17,
-    MuE=18, MuEL = 19, MuELL = 20,
-    LL=21,NONE=22
+    LL=18,NONE=19
 
   };
   enum SearchRegion
   {
-    ChannelDepPresel,    ChannelDepSR1,    ChannelDepSR2,     ChannelDepSR3,    ChannelDepSR3HM,ChannelDepFAILSR3,    ChannelDepDilep,    ChannelDepTrigger,    ChannelDepInc,    ChannelDepIncQ,
+    ChannelDepPresel,    ChannelDepSR1,    ChannelDepSR2,     ChannelDepSR3,    ChannelDepSR3HM,ChannelDepFAILSR3,    ChannelDepDilep,    ChannelDepTrigger,    ChannelDepInc,ChannelDepIncQ,
+    ChannelDepCR1,    ChannelDepCR2,    ChannelDepCR3,
     MuonSRSummary,    ElectronSRSummary,    ElectronMuonSRSummary,
-    MuonSR1,    ElectronSR1,    ElectronMuonSR1,
-    MuonSR2,    ElectronSR2,    ElectronMuonSR2,
-    MuonSR3,    ElectronSR3,    ElectronMuonSR3,
-    MuonSR3BDT,    ElectronSR3BDT,    ElectronMuonSR3BDT,
-    MuonCR3BDT,    ElectronCR3BDT,    ElectronMuonCR3BDT,
-
-    MuonSR,    ElectronSR,    ElectronMuonSR,
-    MuonCR,    ElectronCR,    ElectronMuonCR,
-    MuonSRQQ,    ElectronSRQQ,    ElectronMuonSRQQ,
-    MuonSRBDT,    ElectronSRBDT,    ElectronMuonSRBDT,
-    MuonCRBDT,    ElectronCRBDT,    ElectronMuonCRBDT,
-    MuonSRBDTQQ,    ElectronSRBDTQQ,    ElectronMuonSRBDTQQ,
-    MuonSROpt,    ElectronSROpt,    ElectronMuonSROpt,
-    MuonSRBDTOpt,    ElectronSRBDTOpt,    ElectronMuonSRBDTOpt,
-    SR1,    SR2,    SR3,    SR3Fail,    SR3BDT,    SR4,
-    CR1,    CR2,    CR3,CR3BDT, 
+    MuonSR1,    ElectronSR1,    ElectronMuonSR1,    MuonSR2,    ElectronSR2,    ElectronMuonSR2,    MuonSR3,    ElectronSR3,    ElectronMuonSR3,
+    MuonSR3BDT,    ElectronSR3BDT,    ElectronMuonSR3BDT,    MuonCR3BDT,    ElectronCR3BDT,    ElectronMuonCR3BDT,
+    MuonSR,    ElectronSR,    ElectronMuonSR,    MuonCR,    ElectronCR,    ElectronMuonCR,
+    MuonSRBDT,    ElectronSRBDT,    ElectronMuonSRBDT,    MuonCRBDT,    ElectronCRBDT,    ElectronMuonCRBDT,
+    MuonSROpt,    ElectronSROpt,    ElectronMuonSROpt,    MuonSRBDTOpt,    ElectronSRBDTOpt,    ElectronMuonSRBDTOpt,
+    SR1,    SR2,    SR3,    SR3Fail,    SR3BDT,    SR4,    CR1,    CR2,    CR3,CR3BDT, 
     Presel,    PreselSS,    PreselOS,
-    SR,    sigmm,    sigee,    sigem,
-    sigmm_17028,    sigee_17028,    sigem_17028,
-    ControlRegion,
-    SignalRegion,
+    sigmm,    sigee,    sigem,   sigmm_17028,    sigee_17028,    sigem_17028,
+    ControlRegion,    SignalRegion,  SR,  CR,
     WGCR,    ZGCR, WZCR, ZZCR, WZBCR,WZCR2,ZZCR2,HMCR1,HMCR2,HMCR3,HMBDTCR3,HMNPCR,HMBCR,HM1JCR,PreselVBF,
     WWNP1CR, WWNP2CR, WWNP3CR, WWCR1,WWCR2,ZAK8CR,ZCR,ZNPElCR,ZNPMuCR,TopCR,TopNPCR,TopAK8NPCR,TopNPCR2,
-    ChannelDepCR1,    ChannelDepCR2,    ChannelDepCR3, CR 
+
   };
 
   enum LeptonType
@@ -106,6 +94,9 @@ class HNL_LeptonCore : public AnalyzerCore {
 
   map<TString, Particle> METMap(AnalyzerParameter param);
 
+
+  double ReturnCFWeight(vector<double> CFRates);
+  double ReturnCFWeight(double CFRates);
 
   /// Jet Functions   HNL_LeptonCore_Jet                                                                                                                           
   JetTagging::Parameters GetParamJetTagger(AnalyzerParameter param);
@@ -145,10 +136,12 @@ class HNL_LeptonCore : public AnalyzerCore {
   double GetFakeRateMuon(Muon mu, AnalyzerParameter param);
   double GetFakeWeight(std::vector<Lepton *> leps,  AnalyzerParameter param);
   double GetIsoFromID(Lepton lep, TString id);
-  double GetCFSF(AnalyzerParameter param, std::vector<Lepton* > leps) ;
+  double GetCFSF(AnalyzerParameter param, Lepton*  lep, bool ApplySF=true) ;
+  double GetCFSF(AnalyzerParameter param, Lepton  lep, bool ApplySF=true) ;
+  double GetCFSF(AnalyzerParameter param, TString EtaReg, bool ApplySF=true) ;
   double GetCFWeightElectron(std::vector<Electron> electrons ,  AnalyzerParameter param,bool ApplySF=true);
-  double GetCFWeightElectron(std::vector<Lepton* > leps ,  AnalyzerParameter param,bool ApplySF=true);
-  double GetShiftCFEl(Electron el) ;
+  double GetCFWeightElectron(std::vector<Lepton* > leps ,  AnalyzerParameter param,int nEl,bool ApplySF=true);
+  double GetShiftCFEl(Electron el , TString ID,  TString Method = "minChi2") ;
   double GetZMassShift(vector<Electron> Electrons) ;
 
   int  GetFakeLepSrcType(const Lepton& Lep, vector<Jet>& JetColl);

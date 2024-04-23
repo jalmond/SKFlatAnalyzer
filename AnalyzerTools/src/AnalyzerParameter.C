@@ -56,6 +56,8 @@ void AnalyzerParameter::Clear(){
   k.Muon_ISO_SF = "Default";
   k.Muon_Trigger_SF = "Default";
   k.Muon_FR = "Default";
+  k.Muon_BB_FR = "Default";
+  k.Muon_EC_FR = "Default";
   k.Muon_PR = "Default";
   k.Muon_CF = "Default";
   k.EMu_Trigger_SF = "Default";
@@ -163,6 +165,8 @@ AnalyzerParameter::AnalyzerParameter(){
   k.Muon_ISO_SF = "Default";
   k.Muon_Trigger_SF = "Default";
   k.Muon_FR = "Default";
+  k.Muon_BB_FR = "Default";
+  k.Muon_EC_FR = "Default";
   k.Muon_PR = "Default";
   k.Muon_CF = "Default";
   k.EMu_Trigger_SF = "Default";

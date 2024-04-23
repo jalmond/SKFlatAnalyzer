@@ -84,8 +84,6 @@ void AnalyzerCore::initializeAnalyzer(){
 
 
 
-
-
 //==== Attach the historams to ai different direcotry, not outfile
 //==== We will write these histograms in WriteHist() to outfile
 void AnalyzerCore::SwitchToTempDir(){

@@ -11,7 +11,34 @@ public:
   Muon();
   ~Muon();
 
-  void  PrintObject(TString label);
+
+  void PrintObject(TString label){
+
+    cout << "PrintObject " << label << endl;
+    Lepton::PrintObject(label);
+
+    cout << "Muon ------ " << endl;
+    cout << "Chi2 " << j_chi2  << endl;
+    cout << "PFCH04 " << j_PFCH04 << endl;
+    cout << "PFNH04 " << j_PFNH04 << endl;
+    cout << "PFPH04 " << j_PFPH04 << endl;
+    cout << "PU04 " << j_PU04  << endl;
+    cout << "TrikIso " << j_trkiso << endl;
+    cout << "MiniAODPt " << j_MiniAODPt << endl;
+    cout << "MomentumScaleUp " << j_MomentumScaleUp << endl;
+    cout << "MomentumScaleDown " << j_MomentumScaleDown << endl;
+    cout << "TunePPtError " << j_TunePPtError << endl;
+    cout << "MVA " << j_MVA << endl;
+    cout << "lowptMVA " << j_lowptMVA << endl;
+    cout << "softMVA " << j_softMVA << endl;
+    cout << "validmuonhits " << j_validmuonhits << endl;
+    cout << "matchedstations " << j_matchedstations << endl;
+    cout << "pixelHits " << j_pixelHits << endl;
+    cout << "trackerLayers " << j_trackerLayers << endl;
+    cout << "museg_comp " << j_museg_comp<< endl;
+
+  }
+  //void  PrintObject(TString label);
 
   void SetTypeBit(unsigned int typebit);
   void SetIDBit(unsigned int idbit);
@@ -116,6 +143,7 @@ public:
   //==== ID
   bool PassID(TString ID) const;
   bool Pass_POGTightWithTightIso() const;
+  bool Pass_POGHighPtWithVLooseTrkIso() const;
   bool Pass_POGHighPtWithLooseTrkIso() const;
   bool Pass_POGHighPtTight() const;
   bool Pass_POGHighPtTightOR() const;

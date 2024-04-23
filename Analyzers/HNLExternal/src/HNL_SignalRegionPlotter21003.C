@@ -114,7 +114,7 @@ void HNL_SignalRegionPlotter21003::RunULAnalysis(AnalyzerParameter param){
       if(IsData && SameCharge(leps)) continue;
       if(!IsData && !SameCharge(leps)) continue;
 
-      if(IsData)weight_channel = GetCFWeightElectron(leps, param_channel);
+      if(IsData)weight_channel = GetCFWeightElectron(leps, param_channel,-1);
       if(IsData)FillWeightHist(param.Name+"/CFWeight",weight_channel);
 
     }

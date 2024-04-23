@@ -144,17 +144,15 @@ void HNL_SR3_BDT_KinVar::executeEvent(){
   FillHist("CutFlow_MuMu", 0.5, 1., 10, 0., 10.);
   FillHist("CutFlow_EE", 0.5, 1., 10, 0., 10.);
   FillHist("CutFlow_EMu", 0.5, 1., 10, 0., 10.);
-  FillHist("CutFlow_MuE", 0.5, 1., 10, 0., 10.);
 
   if(!PassMETFilter()) return;
 
   FillHist("CutFlow_MuMu", 1.5, 1., 10, 0., 10.);
   FillHist("CutFlow_EE", 1.5, 1., 10, 0., 10.);
   FillHist("CutFlow_EMu", 1.5, 1., 10, 0., 10.);
-  FillHist("CutFlow_MuE", 1.5, 1., 10, 0., 10.);
 
-  //vector<HNL_LeptonCore::Channel> channels = {EE,MuMu, EMu};
-  vector<HNL_LeptonCore::Channel> channels = {MuMu, EE, EMu, MuE};
+  vector<HNL_LeptonCore::Channel> channels = {EE,MuMu, EMu};
+
 
   std::vector<Muon>       MuonCollT     = GetLepCollByRunType    ( GetMuons    (param_bdt.Muon_Tight_ID, 10., 2.4)    , param_bdt, "");
   std::vector<Electron>   ElectronCollT = GetLepCollByRunType    ( GetElectrons(param_bdt.Electron_Tight_ID, 10., 2.5), param_bdt, "");
@@ -193,7 +191,7 @@ void HNL_SR3_BDT_KinVar::executeEvent(){
     if(dilep_channel == MuMu) FillHist("CutFlow_MuMu", 2.5, 1., 10, 0., 10.);
     if(dilep_channel == EE) FillHist("CutFlow_EE", 2.5, 1., 10, 0., 10.);
     if(dilep_channel == EMu) FillHist("CutFlow_EMu", 2.5, 1., 10, 0., 10.);
-    if(dilep_channel == MuE) FillHist("CutFlow_MuE", 2.5, 1., 10, 0., 10.);
+
 
     //std::vector<Tau>    mytaus         = GetTaus("HNVeto",20., 2.3);
  
@@ -244,28 +242,25 @@ void HNL_SR3_BDT_KinVar::executeEvent(){
       if(dilep_channel == MuMu) FillHist("CutFlow_MuMu", 3.5, 1., 10, 0., 10.);
       if(dilep_channel == EE) FillHist("CutFlow_EE", 3.5, 1., 10, 0., 10.);
       if(dilep_channel == EMu) FillHist("CutFlow_EMu", 3.5, 1., 10, 0., 10.);
-      if(dilep_channel == MuE) FillHist("CutFlow_MuE", 3.5, 1., 10, 0., 10.);
+
 
       if(GetLLMass(LepsT) > 10.){
 
         if(dilep_channel == MuMu) FillHist("CutFlow_MuMu", 4.5, 1., 10, 0., 10.);
         if(dilep_channel == EE) FillHist("CutFlow_EE", 4.5, 1., 10, 0., 10.);
         if(dilep_channel == EMu) FillHist("CutFlow_EMu", 4.5, 1., 10, 0., 10.);
-        if(dilep_channel == MuE) FillHist("CutFlow_MuE", 4.5, 1., 10, 0., 10.);
 
 	if(AK8_JetColl.size() == 0){
 
           if(dilep_channel == MuMu) FillHist("CutFlow_MuMu", 5.5, 1., 10, 0., 10.);
           if(dilep_channel == EE) FillHist("CutFlow_EE", 5.5, 1., 10, 0., 10.);
           if(dilep_channel == EMu) FillHist("CutFlow_EMu", 5.5, 1., 10, 0., 10.);
-          if(dilep_channel == MuE) FillHist("CutFlow_MuE", 5.5, 1., 10, 0., 10.);
 
 	  if(!PassVBFInitial(AK4_JetVBFColl)){
 
             if(dilep_channel == MuMu) FillHist("CutFlow_MuMu", 6.5, 1., 10, 0., 10.);
             if(dilep_channel == EE) FillHist("CutFlow_EE", 6.5, 1., 10, 0., 10.);
             if(dilep_channel == EMu) FillHist("CutFlow_EMu", 6.5, 1., 10, 0., 10.);
-            if(dilep_channel == MuE) FillHist("CutFlow_MuE", 6.5, 1., 10, 0., 10.);
 
 	    EventCand=true;
 
@@ -308,7 +303,6 @@ void HNL_SR3_BDT_KinVar::MakeTreeSS2L(HNL_LeptonCore::Channel lep_channel,vector
   if(lep_channel == MuMu) FillHist("CutFlow_MuMu", 7.5, 1., 10, 0., 10.);
   if(lep_channel == EE) FillHist("CutFlow_EE", 7.5, 1., 10, 0., 10.);
   if(lep_channel == EMu) FillHist("CutFlow_EMu", 7.5, 1., 10, 0., 10.);
-  if(lep_channel == MuE) FillHist("CutFlow_MuE", 7.5, 1., 10, 0., 10.);
 
   InitializeTreeVars();
   
@@ -545,14 +539,9 @@ void HNL_SR3_BDT_KinVar::MakeTreeSS2L(HNL_LeptonCore::Channel lep_channel,vector
     tree_em->Fill();
     FillHist("sumw_EMu", 0.5, w_tot, 2, 0., 2.);
   }
-  if(lep_channel == MuE){
-    tree_em->Fill();
-    FillHist("sumw_MuE", 0.5, w_tot, 2, 0., 2.);
   }
-
-  }
-
 }
+  
 
 
 

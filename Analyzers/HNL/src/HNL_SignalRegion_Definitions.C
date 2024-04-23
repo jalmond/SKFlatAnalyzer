@@ -27,9 +27,26 @@
 
 
 void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq, 
-            std::vector<Electron> electrons, std::vector<Electron> electrons_veto, std::vector<Muon> muons, std::vector<Muon> muons_veto, std::vector<Tau> TauColl, 
-            std::vector<Jet> JetCollLoose, std::vector<Jet> JetAllColl, std::vector<Jet> JetColl, std::vector<Jet> VBF_JetColl,std::vector<FatJet>  AK8_JetColl, std::vector<Jet> B_JetColl, 
-            Event ev,   Particle METv, AnalyzerParameter param,   float weight_ll){
+						std::vector<Electron> electronsInitial, std::vector<Electron> electrons_veto, std::vector<Muon> muons, std::vector<Muon> muons_veto, std::vector<Tau> TauColl, 
+						std::vector<Jet> JetCollLoose, std::vector<Jet> JetAllColl, std::vector<Jet> JetColl, std::vector<Jet> VBF_JetColl,std::vector<FatJet>  AK8_JetColl, std::vector<Jet> B_JetColl, 
+						Event ev,   Particle METv, AnalyzerParameter param, int nElForRunCF,   float weight_ll){
+
+
+
+  std::vector<Electron> electrons;
+  if(RunCF) {
+    /// Add code to smear individual electron for CF Bkg                                                                                                                                                                                                                                   
+    for(unsigned int i=0; i<electronsInitial.size(); i++){
+      Electron this_electron = electronsInitial.at(i);
+      double ElEnergyShift = 1;
+
+      if(i==nElForRunCF) ElEnergyShift = GetShiftCFEl(this_electron, param.Electron_Tight_ID);
+
+      this_electron.SetPtEtaPhiM( electronsInitial.at(i).Pt()*ElEnergyShift, electronsInitial.at(i).Eta(), electronsInitial.at(i).Phi(), electronsInitial.at(i).M() );
+      electrons.push_back( this_electron);
+    }
+  }
+  else  electrons = electronsInitial;
 
   vector<HNL_LeptonCore::Channel> channels = {GetChannelENum(param.Channel)};
 
@@ -88,7 +105,7 @@ void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq,
       if(IsData && SameCharge(LepsT)) continue;
       if(!IsData && !SameCharge(LepsT)) continue;
       
-      if(IsData)weight_channel = GetCFWeightElectron(LepsT, param);
+      if(IsData)weight_channel = GetCFWeightElectron(LepsT, param,nElForRunCF,true);
       if(IsData)FillWeightHist(param.Name+"/CFWeight",weight_channel);
 
     }
@@ -311,8 +328,8 @@ TString HNL_RegionDefinitions::RunSignalRegionAK8String(bool ApplyForSR,
   if(ll.M() < M_CUT_LL) return false;
   if(ApplyForSR)FillCutflow(Reg, w, RegionTag+"_dilep_mass",param);
 
-  //if(HasTightTau) return "false";
-  if(ApplyForSR)FillCutflow(Reg, w, RegionTag+"_tauveto",param);
+  //  if(HasTightTau) return "false";
+  //if(ApplyForSR)FillCutflow(Reg, w, RegionTag+"_tauveto",param);
     
   if(AK8_JetColl.size() != 1)  return "false";
   if(ApplyForSR)FillCutflow(Reg, w, RegionTag+"_1AK8",param);

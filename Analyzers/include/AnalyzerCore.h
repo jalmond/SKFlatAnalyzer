@@ -255,6 +255,17 @@ public:
   bool HasHadronicAncestor(int TruthIdx, std::vector<Gen>& TruthColl);
   bool IsFinalPhotonSt23(std::vector<Gen>& TruthColl);
   bool IsSignalPID(int pid);
+
+
+  inline int GetEraNum() const {
+    if(DataEra=="2016preVFP") return 1;
+    if(DataEra=="2016postVFP") return 2;
+    if(DataEra=="2017") return 3;
+    if(DataEra=="2018") return 4;
+    return -1;
+  }
+  
+  
   // ------ General HNL functions (HNL_LeptonCore.C)                                                                                              
   inline bool IsSignal() const {
     if(MCSample.Contains("TypeI")) return true;

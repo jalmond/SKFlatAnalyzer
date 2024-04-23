@@ -399,17 +399,12 @@ Jet AnalyzerCore::GetCorrectedJetCloseToLepton(vector<Particle> leps, Jet jet){
 
 Jet AnalyzerCore::GetCorrectedJetCloseToLepton(Muon lep, Jet jet){
 
-  //jet_LepAwareJECv2 = (raw_jet * L1 - lepton) * L2L3Res + lepton                                                                                                                                                                                                                                                                                                                                                                       
-
+  //jet_LepAwareJECv2 = (raw_jet * L1 - lepton) * L2L3Res + lepton                                                             
   Particle  rawJet =  jet * jet.JECfactor();
 
   Particle  lepp4 = lep;
   double l1corrFactor = jet.JEC_L1();
   Particle jetp4 = (rawJet - lepp4 * (1.0 / l1corrFactor)) * (jet.Pt() / rawJet.Pt()) + lepp4;
-
-
-  //cout << "Corr Eta : " << jetp4.Eta() << " " << jet.Eta() << endl;                                                                                                                                                                                                                                                                                                                                                                    
-  // cout << "Corr Phi : " << jetp4.Phi() << " " << jet.Phi() << endl;                                                                                                                                                                                                                                                                                                                                                                   
 
   Jet jet_corr = jet;
 
