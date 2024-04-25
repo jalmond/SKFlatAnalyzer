@@ -181,7 +181,7 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
         if(IsData){
           weight_channel = GetFakeWeight(LepsT, param );
           
-          if(SameCharge(electrons) && LepsV.size() == 2){
+          if(SameCharge(LepsT) && LepsV.size() == 2){ //JH
             TString nT ="";
             for(auto ilep : muons) {
               if(ilep.PassID(param.Muon_Tight_ID)) nT=nT+"T";
