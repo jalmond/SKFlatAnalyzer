@@ -35,7 +35,6 @@ void HNL_ControlRegion_Plotter::executeEvent(){
   for (auto id: LepIDs){
     for(auto channel : ChannelsToRun){
       AnalyzerParameter param_signal = HNL_LeptonCore::InitialiseHNLParameter(id,channel);
-     
       for(auto iCR : CRToRun) RunControlRegions(param_signal , {iCR} );
     }
   }
@@ -87,14 +86,24 @@ void HNL_ControlRegion_Plotter::RunControlRegions(AnalyzerParameter param, vecto
 
   if(CRs.size() == 0) return;
   
+  if(_jentry < 8000 ){
+    if(RunFake){
+      cout << "Running Fakes: Initial check for process name " + param.Name << endl;
+      cout << "Muon ID = " << param.Muon_Tight_ID  << " run ID  = " << Muon_ID << endl;
+      for(auto ilep : MuonTightColl)cout << "Muon isT=" << ilep.PassID(param.Muon_Tight_ID) << endl;
+      
+      cout << "Electron ID = " << param.Electron_Tight_ID  << " run ID  = " << Electron_ID << endl;
+      for(auto ilep : ElectronTightColl)cout << "Electron isT=" << ilep.PassID(param.Electron_Tight_ID) << endl;
+    }
+  }
   vector<int> RunEl ;
   if(RunCF) RunEl =  {0,1} ;
   else RunEl = {-1};
 
   for(auto ir : RunEl){
     RunAllControlRegions(ElectronTightColl,ElectronVetoColl,MuonTightColl,MuonVetoColl, 
-			 AK4_JetAllColl, AK4_JetColl,AK4_VBF_JetColl,AK8_JetColl, AK4_BJetColl, 
-			 ev,METv, param, CRs,ir,weight);
+       AK4_JetAllColl, AK4_JetColl,AK4_VBF_JetColl,AK8_JetColl, AK4_BJetColl, 
+       ev,METv, param, CRs,ir,weight);
   }
 
 }

@@ -1376,7 +1376,8 @@ std::vector<Electron> AnalyzerCore::ElectronPromptOnly(const std::vector<Electro
   std::vector<Electron> out;
   for(unsigned int i=0; i<electrons.size(); i++){
     bool pass=true;
-    if(electrons.at(i).LeptonGenType() <= 0) pass=false;
+    if(electrons.at(i).IsFake()) pass=false;
+    //    if(electrons.at(i).LeptonGenType() <= 0) pass=false;
     //    if(electrons.at(i).LeptonGenType() >= 4) pass=false;
     if(pass)out.push_back( electrons.at(i) );
   }

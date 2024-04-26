@@ -332,8 +332,9 @@ void AnalyzerCore::PrintMatchedGen(std::vector<Gen>& gens,const Lepton& Lep){
 }
 
 bool AnalyzerCore::HasPromptConv(Electron el){
+  
   if(All_Gens.size() == 0) return false;
-
+  
   int TruthIdx  = GenMatchedIdx(el, All_Gens);;
   int nSt1el(0);
   for(unsigned int i=2; i < All_Gens.size(); i++){

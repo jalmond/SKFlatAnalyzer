@@ -40,8 +40,8 @@ double HNL_LeptonCore::GetCFSF(AnalyzerParameter param, TString EraReg, bool App
   double _SF=1.;
 
   map<TString,vector<double> > CFSFValues;
-  CFSFValues["HNL_ULID_BB"]      =  {1.02,1.095,1.43,1.45};
-  CFSFValues["HNL_ULID_EC"]      =  {0.97,0.98,1.38,1.29};
+  CFSFValues["HNL_ULID_BB"]      =  {0.987,1.064,1.398,1.413};
+  CFSFValues["HNL_ULID_EC"]      =  {0.93,0.934,1.332,1.241};
 
   CFSFValues["HNL_ULID_LooseCF_BB"]      =  {1.006,1.06,1.373,1.457};
   CFSFValues["HNL_ULID_LooseCF_EC"]      =  {0.978,0.921,1379.,1.313};
@@ -67,6 +67,16 @@ double HNL_LeptonCore::GetCFSF(AnalyzerParameter param, TString EraReg, bool App
   _SF= CFMapIter->second[GetEraNum()-1];
   
 
+  if(param.syst_ == AnalyzerParameter::CFSFUp) {
+    if(EraReg== "BB") _SF *= 1.09;
+    else  _SF *= 1.07;
+  }
+  if(param.syst_ == AnalyzerParameter::CFSFDown) {
+    if(EraReg== "BB") _SF *= 1/1.09;
+    else  _SF *= 1/1.07;
+  }
+
+
   return _SF;
 
 }
@@ -85,18 +95,22 @@ double HNL_LeptonCore::GetCFWeightElectron(std::vector<Lepton* > leps ,  Analyze
   int nElIt = 0;
 
   double cf_weight = 0;
-
+  
+  int sysR  = 0;
+  if(param.syst_ == AnalyzerParameter::CFRateUp) sysR = 1;
+  if(param.syst_ == AnalyzerParameter::CFRateDown) sysR = -1;
+  
 
   for(auto ilep : leps){
     if(ilep->LeptonFlavour()==Lepton::ELECTRON){
       
       if(nElIt==nEl) {
-	double el_cf_rate =   cfEst->GetElectronCFRate(param.Electron_Tight_ID, param.k.Electron_CF,ilep->defEta(),ilep->Pt(), 0);
+	double el_cf_rate =   cfEst->GetElectronCFRate(param.Electron_Tight_ID, param.k.Electron_CF,ilep->defEta(),ilep->Pt(), sysR);
 	el_cf_rate *= GetCFSF(param,ilep,ApplySF);
 	cf_weight += (el_cf_rate / (1.-el_cf_rate));
       }
       else if(nEl == -1){
-	double el_cf_rate =   cfEst->GetElectronCFRate(param.Electron_Tight_ID, param.k.Electron_CF,ilep->defEta(),ilep->Pt(), 0);
+	double el_cf_rate =   cfEst->GetElectronCFRate(param.Electron_Tight_ID, param.k.Electron_CF,ilep->defEta(),ilep->Pt(), sysR);
 	el_cf_rate *= GetCFSF(param,ilep,ApplySF);
         cf_weight += (el_cf_rate / (1.-el_cf_rate));
       }
@@ -106,6 +120,15 @@ double HNL_LeptonCore::GetCFWeightElectron(std::vector<Lepton* > leps ,  Analyze
   
 
   if(run_Debug) cout << "GetCFWeightElectron weight=" << cf_weight << endl;
+
+
+  //// Appply Mass Dependant Corr for 2017 for now
+  if(IsData && DataEra == "2017"){
+    if(param.syst_ == AnalyzerParameter::CFSFUp) {
+      if(GetLLMass(leps) < 90.) cf_weight *= 1.2;
+    }
+  }
+
   return cf_weight;
 }
 
@@ -145,7 +168,7 @@ double HNL_LeptonCore::GetZMassShift(vector<Electron> Electrons) {
   return 1;
 
 }
-double HNL_LeptonCore::GetShiftCFEl(Electron el,TString ID, TString Method) {
+double HNL_LeptonCore::GetShiftCFEl(Electron el,TString ID, bool ApplyDataCorr,TString Method) {
 
   //// Get Shift for  Prompt -> CF Pt response                                                                                                                                                                   
 
@@ -257,54 +280,70 @@ double HNL_LeptonCore::GetShiftCFEl(Electron el,TString ID, TString Method) {
     }
   }
   else if(ID.Contains("HNL_ULID")){
+    
+    
+    double DataCorr = 1.;
+    
+    if(ApplyDataCorr){
+      if(DataEra=="2016preVFP"  && el.IsBB()) DataCorr=0.975; 
+      if(DataEra=="2016postVFP" && el.IsBB()) DataCorr=0.99; 
+      if(DataEra=="2017"        && el.IsBB()) DataCorr=0.975; 
+      if(DataEra=="2018"        && el.IsBB()) DataCorr=0.975; 
+      
+      if(DataEra=="2016preVFP"  && !el.IsBB()) DataCorr=0.995;
+      if(DataEra=="2016postVFP" && !el.IsBB()) DataCorr=1.;
+      if(DataEra=="2017"        && !el.IsBB()) DataCorr=1.;
+      if(DataEra=="2018"        && !el.IsBB()) DataCorr=0.98;
+    }
+
     if(DataEra.Contains("2016")){
       if(el.IsBB()){
-	if(el.Pt() < 50)        return  (Method == "minChi2")  ? 0.971 : 0.956 ;
-	else  if(el.Pt() < 100) return  (Method == "minChi2")  ? 0.987: 0.979 ;
-	else  if(el.Pt() < 200) return  (Method == "minChi2")  ? 0.997: 0.991 ;
-	else  return  (Method == "minChi2") ?  0.998: 0.997 ;
+	if(el.Pt() < 50)        return  (Method == "minChi2")  ? DataCorr*0.971 : DataCorr*0.956 ;
+	else  if(el.Pt() < 100) return  (Method == "minChi2")  ? DataCorr*0.987: DataCorr*0.979 ;
+	else  if(el.Pt() < 200) return  (Method == "minChi2")  ? DataCorr*0.997: DataCorr*0.991 ;
+	else  return  (Method == "minChi2") ?  DataCorr*0.998: DataCorr*0.997 ;
       }
       if(el.IsEC()){
-	if(el.Pt() < 30)        return  (Method == "minChi2") ? 0.951 : 0.944 ;
-	else if(el.Pt() < 50)   return  (Method == "minChi2") ? 0.972 : 0.965 ;
-	else if(el.Pt() < 75)   return  (Method == "minChi2") ? 0.983 : 0.979 ;
-	else  if(el.Pt() < 100) return  (Method == "minChi2") ? 0.989 : 0.987 ;
-	else  if(el.Pt() < 200) return  (Method == "minChi2") ? 0.994 : 0.992 ;
-	else  return  (Method == "minChi2") ? 0.998: 0.999 ;
+	if(el.Pt() < 30)        return  (Method == "minChi2") ? DataCorr*0.951 : DataCorr*0.944 ;
+	else if(el.Pt() < 50)   return  (Method == "minChi2") ? DataCorr*0.972 : DataCorr*0.965 ;
+	else if(el.Pt() < 75)   return  (Method == "minChi2") ? DataCorr*0.983 : DataCorr*0.979 ;
+	else  if(el.Pt() < 100) return  (Method == "minChi2") ? DataCorr*0.989 : DataCorr*0.987 ;
+	else  if(el.Pt() < 200) return  (Method == "minChi2") ? DataCorr*0.994 : DataCorr*0.992 ;
+	else  return  (Method == "minChi2") ? DataCorr*0.998: DataCorr*0.999 ;
       }
     }
     
     if(DataEra=="2017"){
       if(el.IsBB()){
-	if(el.Pt() < 50)        return  (Method == "minChi2")  ? 0.969 : 0.951 ;
-	else  if(el.Pt() < 100) return  (Method == "minChi2") ? 0.987 : 0.977;
-	else  if(el.Pt() < 200) return  (Method == "minChi2")  ?  0.995 : 0.990 ;
-	else  return  (Method == "minChi2") ?  0.995 : 0.9965 ;
+	if(el.Pt() < 50)        return  (Method == "minChi2")  ? DataCorr*0.969 : DataCorr*0.951 ;
+	else  if(el.Pt() < 100) return  (Method == "minChi2") ? DataCorr*0.987 : DataCorr*0.977;
+	else  if(el.Pt() < 200) return  (Method == "minChi2")  ?  DataCorr*0.995 : DataCorr*0.990 ;
+	else  return  (Method == "minChi2") ?  DataCorr*0.995 : DataCorr*0.9965 ;
       }
       if(el.IsEC()){
-	if(el.Pt() < 30)        return  (Method == "minChi2") ?   0.949 : 0.931 ;
-	else if(el.Pt() < 50)   return  (Method == "minChi2") ?   0.969 : 0.962;
-	else if(el.Pt() < 75)   return  (Method == "minChi2") ?   0.982 : 0.9785;
-	else  if(el.Pt() < 100) return  (Method == "minChi2") ?  0.989 : 0.9865;
-	else  if(el.Pt() < 200) return  (Method == "minChi2") ?  0.993 : 0.9925 ;
-	else  return  (Method == "minChi2") ?  0.998 : 0.9965;
+	if(el.Pt() < 30)        return  (Method == "minChi2") ?   DataCorr*0.949 : DataCorr*0.931 ;
+	else if(el.Pt() < 50)   return  (Method == "minChi2") ?   DataCorr*0.969 : DataCorr*0.962;
+	else if(el.Pt() < 75)   return  (Method == "minChi2") ?   DataCorr*0.982 : DataCorr*0.9785;
+	else  if(el.Pt() < 100) return  (Method == "minChi2") ?  DataCorr*0.989 : DataCorr*0.9865;
+	else  if(el.Pt() < 200) return  (Method == "minChi2") ?  DataCorr*0.993 : DataCorr*0.9925 ;
+	else  return  (Method == "minChi2") ?  DataCorr*0.998 : DataCorr*0.9965;
       }
     }
     
     if(DataEra=="2018"){
       if(el.IsBB()){
-	if(el.Pt() < 50)        return  (Method == "minChi2")  ? 0.971 : 0.952 ;
-	else  if(el.Pt() < 100) return  (Method == "minChi2")  ? 0.985: 0.977 ;
-	else  if(el.Pt() < 200) return  (Method == "minChi2")  ? 0.997: 0.992 ;
-	else  return  (Method == "minChi2") ?  0.999: 1 ;
+	if(el.Pt() < 50)        return  (Method == "minChi2")  ? DataCorr*0.971 : DataCorr*0.952 ;
+	else  if(el.Pt() < 100) return  (Method == "minChi2")  ? DataCorr*0.985: DataCorr*0.977 ;
+	else  if(el.Pt() < 200) return  (Method == "minChi2")  ? DataCorr*0.997: DataCorr*0.992 ;
+	else  return  (Method == "minChi2") ?  DataCorr*0.999: 1 ;
       }
       if(el.IsEC()){
-	if(el.Pt() < 30)        return  (Method == "minChi2") ? 0.948 : 0.937 ;
-	else if(el.Pt() < 50)   return  (Method == "minChi2") ? 0.971 : 0.965 ;
-	else if(el.Pt() < 75)   return  (Method == "minChi2") ? 0.982 : 0.977 ;
-	else  if(el.Pt() < 100) return  (Method == "minChi2") ? 0.988 : 0.986 ;
-	else  if(el.Pt() < 200) return  (Method == "minChi2") ? 0.993 : 0.991 ;
-	else  return  (Method == "minChi2") ? 0.996: 0.995 ;
+	if(el.Pt() < 30)        return  (Method == "minChi2") ? DataCorr*0.948 : DataCorr*0.937 ;
+	else if(el.Pt() < 50)   return  (Method == "minChi2") ? DataCorr*0.971 : DataCorr*0.965 ;
+	else if(el.Pt() < 75)   return  (Method == "minChi2") ? DataCorr*0.982 : DataCorr*0.977 ;
+	else  if(el.Pt() < 100) return  (Method == "minChi2") ? DataCorr*0.988 : DataCorr*0.986 ;
+	else  if(el.Pt() < 200) return  (Method == "minChi2") ? DataCorr*0.993 : DataCorr*0.991 ;
+	else  return  (Method == "minChi2") ? DataCorr*0.996: DataCorr*0.995 ;
       }
     }
 

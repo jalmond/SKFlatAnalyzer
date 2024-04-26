@@ -602,8 +602,11 @@ TString AnalyzerParameter::GetSystType(){
   else if(syst_==Syst::BTagSFLTagDown)   return "BTagSFLTagDown";
   else if(syst_==Syst::METUnclUp)   return "METUnclUp";
   else if(syst_==Syst::METUnclDown)  return "METUnclDown";
-  else if(syst_==Syst::CFUp)    return "CFUp";
-  else if(syst_==Syst::CFDown)   return "CFDown";
+  else if(syst_==Syst::CFRateUp)    return "CFRateUp";
+  else if(syst_==Syst::CFRateDown)   return "CFRateDown";
+  else if(syst_==Syst::CFSFUp)    return "CFSFUp";
+  else if(syst_==Syst::CFSFDown)   return "CFSFDown";
+
   else if(syst_==Syst::FRUp)   return "FRUp";
   else if(syst_==Syst::FRDown)   return "FRDown";
   

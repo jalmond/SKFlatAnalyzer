@@ -180,7 +180,9 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
       else {
         if(IsData){
           weight_channel = GetFakeWeight(LepsT, param );
-          
+          if(_jentry < 8000){
+            cout << "Fake weight = " << weight_channel << endl;
+          }
           if(SameCharge(LepsT) && LepsV.size() == 2){ //JH
             TString nT ="";
             for(auto ilep : muons) {
@@ -318,6 +320,9 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
       if(FillHighMass1JetCRPlots(dilep_channel, LepsT, LepsV, JetColl,    AK8_JetColl, B_JetColl, ev, METv, param, weight_channel)) passed.push_back("HighMass1Jet_CR");
       if(FillHighMassBJetCRPlots(dilep_channel, LepsT, LepsV, JetColl,    AK8_JetColl, B_JetColl, ev, METv, param, weight_channel)) passed.push_back("HighMassBJet_CR");
       if(FillHighMassNPCRPlots(dilep_channel, LepsT, LepsV, JetColl,      AK8_JetColl, B_JetColl, ev, METv, param, weight_channel)) passed.push_back("HighMassNP_CR");
+
+      FillSSZPeakCRPlots(dilep_channel, LepsT, LepsV, JetColl,    AK8_JetColl, B_JetColl, ev, METv, param, weight_channel);
+
 
       if(!HasFlag("ScanFakes")){
   
@@ -1237,6 +1242,23 @@ bool HNL_RegionDefinitions::FillHighMassSR1CRPlots(HNL_LeptonCore::Channel chann
 
   //FillLimitInput(LimitRegions, weight_channel,   SRbin,  "LimitInput/"+param_channel.Name);
   return true;
+}
+
+bool HNL_RegionDefinitions::FillSSZPeakCRPlots(HNL_LeptonCore::Channel channel, std::vector<Lepton *> leps, std::vector<Lepton *> leps_veto   , std::vector<Jet> JetColl, std::vector<FatJet> AK8_JetColl, std::vector<Jet> B_JetColl,  Event ev, Particle METv, AnalyzerParameter param, float w){
+  
+  if(!CheckLeptonFlavourForChannel(channel, leps)) return false;
+  if (leps_veto.size() != 2) return false;
+  if (!SameCharge(leps)) return false;
+
+  Particle ll =  (*leps[0]) + (*leps[1]);
+  // Kepp only Z peak events with many CF                                                                                                                                                                         
+  if (fabs(ll.M()-M_Z) > M_ZWINDOW_VETO) return false;
+
+  Fill_RegionPlots(param,"HNL_HighMassSSZPeak_TwoLepton_CR"  ,  JetColl,  AK8_JetColl,  leps,  METv, nPV, w);
+
+  return true;
+
+  
 }
 
 

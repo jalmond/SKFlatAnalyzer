@@ -1,6 +1,6 @@
 #include "HNL_LeptonCore.h"
 
-void HNL_LeptonCore::initializeAnalyzer(bool READBKGHISTS, bool SETUPIDBDT){
+void HNL_LeptonCore::initializeAnalyzer(bool READBKGHISTS, bool SETUPIDBDT){ // default : true, true
 
   AnalyzerCore::initializeAnalyzer();
 
@@ -268,26 +268,27 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
   
   if(SystType == "All"){
     SystList = {AnalyzerParameter::JetResUp,AnalyzerParameter::JetResDown,
-    AnalyzerParameter::JetEnUp, AnalyzerParameter::JetEnDown,
-    AnalyzerParameter::JetMassUp,AnalyzerParameter::JetMassDown,                                                                                     
-    AnalyzerParameter::JetMassSmearUp,AnalyzerParameter::JetMassSmearDown,                                                                           
-    AnalyzerParameter::MuonRecoSFUp,AnalyzerParameter::MuonRecoSFDown,                                                                               
-    AnalyzerParameter::MuonEnUp,AnalyzerParameter::MuonEnDown,                                                                                       
-    AnalyzerParameter::MuonIDSFUp,AnalyzerParameter::MuonIDSFDown,                                                                                   
-    AnalyzerParameter::MuonISOSFUp,AnalyzerParameter::MuonISOSFDown,                                                                                 
-    AnalyzerParameter::MuonTriggerSFUp,AnalyzerParameter::MuonTriggerSFDown,                                                                                 
-    AnalyzerParameter::ElectronRecoSFUp,AnalyzerParameter::ElectronRecoSFDown,                                                                       
-    AnalyzerParameter::ElectronResUp,AnalyzerParameter::ElectronResDown,                                                                             
-    AnalyzerParameter::ElectronEnUp,AnalyzerParameter::ElectronEnDown,                                                                               
-    AnalyzerParameter::ElectronIDSFUp,AnalyzerParameter::ElectronIDSFDown,                                                                           
-    AnalyzerParameter::ElectronTriggerSFUp,AnalyzerParameter::ElectronTriggerSFDown,                                                                 
-    AnalyzerParameter::BTagSFHTagUp,AnalyzerParameter::BTagSFHTagDown,                                                                               
-    AnalyzerParameter::BTagSFLTagUp,AnalyzerParameter::BTagSFLTagDown,                                                                               
-    AnalyzerParameter::METUnclUp,AnalyzerParameter::METUnclDown,                                                                                     
-    //AnalyzerParameter::CFUp,AnalyzerParameter::CFDown,                                                                                               
-    //AnalyzerParameter::FRUp,AnalyzerParameter::FRDown,                                                                                               
-    AnalyzerParameter::PrefireUp,AnalyzerParameter::PrefireDown,                                                                                     
-    AnalyzerParameter::PUUp,AnalyzerParameter::PUDown};
+		AnalyzerParameter::JetEnUp, AnalyzerParameter::JetEnDown,
+		AnalyzerParameter::JetMassUp,AnalyzerParameter::JetMassDown,                                                                                     
+		AnalyzerParameter::JetMassSmearUp,AnalyzerParameter::JetMassSmearDown,                                                                           
+		AnalyzerParameter::MuonRecoSFUp,AnalyzerParameter::MuonRecoSFDown,                                                                               
+		AnalyzerParameter::MuonEnUp,AnalyzerParameter::MuonEnDown,                                                                                       
+		AnalyzerParameter::MuonIDSFUp,AnalyzerParameter::MuonIDSFDown,                                                                                   
+		AnalyzerParameter::MuonISOSFUp,AnalyzerParameter::MuonISOSFDown,                                                                                 
+		AnalyzerParameter::MuonTriggerSFUp,AnalyzerParameter::MuonTriggerSFDown,                                                                                 
+		AnalyzerParameter::ElectronRecoSFUp,AnalyzerParameter::ElectronRecoSFDown,                                                                       
+		AnalyzerParameter::ElectronResUp,AnalyzerParameter::ElectronResDown,                                                                             
+		AnalyzerParameter::ElectronEnUp,AnalyzerParameter::ElectronEnDown,                                                                               
+		AnalyzerParameter::ElectronIDSFUp,AnalyzerParameter::ElectronIDSFDown,                                                                           
+		AnalyzerParameter::ElectronTriggerSFUp,AnalyzerParameter::ElectronTriggerSFDown,                                                                 
+		AnalyzerParameter::BTagSFHTagUp,AnalyzerParameter::BTagSFHTagDown,                                                                               
+		AnalyzerParameter::BTagSFLTagUp,AnalyzerParameter::BTagSFLTagDown,                                                                               
+		AnalyzerParameter::METUnclUp,AnalyzerParameter::METUnclDown,                                                                                     
+		AnalyzerParameter::CFRateUp,AnalyzerParameter::CFRateDown,                                                                                               
+		AnalyzerParameter::CFSFUp,AnalyzerParameter::CFSFDown,                                                                                               
+		AnalyzerParameter::FRUp,AnalyzerParameter::FRDown,                                                                                               
+		AnalyzerParameter::PrefireUp,AnalyzerParameter::PrefireDown,                                                                                     
+		AnalyzerParameter::PUUp,AnalyzerParameter::PUDown};
     
     
   }
@@ -659,8 +660,8 @@ AnalyzerParameter HNL_LeptonCore::SetupHNLParameter(TString s_setup_version, TSt
     }    
     
     if(GetYearString() == "2017"){
-      param.k.Muon_EC_FR         = "HNL_ULID_FO_v9_c_AJ30";
-      param.k.Muon_BB_FR         = "HNL_ULID_FO_v1_a_AJ30";
+      param.k.Muon_BB_FR         = "HNL_ULID_FO_v9_c_AJ30";
+      param.k.Muon_EC_FR         = "HNL_ULID_FO_v1_a_AJ30";
       param.k.Electron_FR        = "HNL_ULID_FO_v0_AJ30";
     }
     if(GetYearString() == "2018"){

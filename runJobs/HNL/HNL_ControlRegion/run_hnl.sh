@@ -29,8 +29,8 @@ do
 	#SKFlat.py -a $analyzer  -l $datapath/${i}_DiLepton_MuMu.txt    -n 100  --nmax ${nmax}   -e ${i}  --skim SkimTree_HNMultiLepBDT  --userflags  ScanFakes,RunFake,${j}   &
         #SKFlat.py -a $analyzer  -l $datapath/${i}_DiLepton_EE.txt      -n 100    --nmax ${nmax}   -e ${i}  --skim SkimTree_HNMultiLepBDT  --userflags  ScanFakes,RunFake,${j}  &
         #
-	#SKFlat.py -a $analyzer  -l $datapath/${i}_DiLepton_EE.txt      -n 150    --nmax ${nmax}   -e ${i} --skim SkimTree_DileptonBDT     --userflags  ScanFakes,RunCF,${j} &
-        SKFlat.py -a $analyzer   -l $mcpath/RunPromptTLRemoval.txt       -n 150    --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLepBDT    --userflags  ScanFakes,RunPromptTLRemoval,${j} &    
+	SKFlat.py -a $analyzer  -l $datapath/${i}_DiLepton_EE.txt      -n 150    --nmax ${nmax}   -e ${i} --skim SkimTree_DileptonBDT     --userflags  ScanFakes,RunCF,${j} &
+        #SKFlat.py -a $analyzer   -l $mcpath/RunPromptTLRemoval.txt       -n 150    --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLepBDT    --userflags  ScanFakes,RunPromptTLRemoval,${j} &    
 
 	
     done
