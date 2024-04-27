@@ -19,6 +19,11 @@ macro_list  = [f for f in listdir(pathAnaDir) if isfile(join(pathAnaDir,f))]
 run_options = []
 for _macro in macro_list:
     if not flag == "NULL":
+        if flag == "CR":
+            flag = "HNL_ControlRegion_Definitions"
+        if flag == "SR":
+            flag = "HNL_SignalRegion_Definitions"
+
         if not flag in _macro:
             continue
     if '.C' in _macro:

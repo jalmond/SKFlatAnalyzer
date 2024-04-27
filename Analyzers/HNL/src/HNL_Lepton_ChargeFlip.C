@@ -917,8 +917,7 @@ void HNL_Lepton_ChargeFlip::executeEventFromParameter(AnalyzerParameter param){
 
       double weight_Closure=1;         double weight_Closure_SF=1;
       double weight_ClosureNoS=1;      double weight_ClosureNoS_SF=1;
-      double weight_ClosureFit=1;      double weight_ClosureFit_SF=1;
-      
+
       double rate_cf1       = cfEst->GetElectronCFRate(param.Electron_Tight_ID, "CFRate_InvPtEta3_PBS_" +CFKey,unshifted_el1.defEta(), unshifted_el1.Pt(), 0);
       double rate_cf2       = cfEst->GetElectronCFRate(param.Electron_Tight_ID, "CFRate_InvPtEta3_PBS_" +CFKey,unshifted_el2.defEta(), unshifted_el2.Pt(),0);
 

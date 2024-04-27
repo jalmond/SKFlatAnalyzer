@@ -12,7 +12,6 @@
 
 void HNL_LeptonCore::FillFakeHistograms(AnalyzerParameter param, TString plot_dir,std::vector<Lepton *> Leptons, std::vector<Jet> jets,   std::vector<FatJet> fatjets, vector<Jet> BJetColl, Particle met,  double w){
   
-  int nlep = 0;
   for(auto ilep : Leptons){
 
     if(!IsData && !ilep->IsFake()) continue;
@@ -91,7 +90,6 @@ void HNL_LeptonCore::Fill_PlotsAK8(AnalyzerParameter param, TString region, TStr
   
   double minDRTauAK8=9999.;
   double minDRLepAK8=9999.;
-  int nBJetAK8(0);
 
   for(unsigned int i=0; i < fatjets.size(); i++){
 
@@ -418,7 +416,7 @@ void HNL_LeptonCore::Fill_Plots(AnalyzerParameter param, TString region,  TStrin
   if(DrawLevel3&&minDRLep2Tau < 999)FillHist( plot_dir+ region+ "/DeltaR/dRMin_Lep2_Tau", minDRLep2Tau  ,w, 50, 0, 5, "#DeltaR (Tau,lep2)");
 
   int nPtbins=10;
-  double Pt1bins[nPtbins+1] = { 20.,25.,30., 40.,50., 70., 100., 120., 140., 160.,  200.};
+  double Pt1bins[nPtbins+1] = { 20.,25.,30., 40.,50., 70., 100.,  150.,  200.,400.,600};
   double Pt2bins[nPtbins+1] = { 10.,15., 20.,30., 40.,50., 100.,120., 140., 160.,  200.};
   double PTLep1  = (leps[0]->Pt() > 200.) ? 199. : leps[0]->Pt();
   double PTLep2  = (leps[1]->Pt() > 200.) ? 199. : leps[1]->Pt();
@@ -526,7 +524,13 @@ void HNL_LeptonCore::Fill_Plots(AnalyzerParameter param, TString region,  TStrin
 
   double mindRlepj1(99999.);
   double mindRlepj2(99999.);
+  int nBJet =0;
+  JetTagging::Parameters JPForPlots = JetTagging::Parameters(JetTagging::DeepJet, JetTagging::Medium, JetTagging::incl, JetTagging::mujets);
+
   for(unsigned int i=0; i < jets.size(); i++){
+    if( jets[i].GetTaggerResult(JPForPlots.j_Tagger) > mcCorr->GetJetTaggingCutValue(JPForPlots.j_Tagger, JPForPlots.j_WP) ) nBJet++;
+    
+    
     if(i == 0)     if(DrawLevel2)FillHist( plot_dir+ region+ "/AK4Jets/Jet_0_pt",  jets[i].Pt() , w, 400, 0., 2000., "AK4 Jet p_{T} GeV");
     if(DrawLevel3)FillHist( plot_dir+ region+ "/AK4Jets/pileup_mva",  jets[i].PileupJetId() , w, 100, -1., 1., "PileupJetId");
     if(DrawLevel3)FillHist( plot_dir+ region+ "/AK4Jets/pileup_loose", jets[i].PassPileupMVA("Loose", GetEraShort()), w, 2, 0., 2., "PileupJetId");
@@ -553,6 +557,7 @@ void HNL_LeptonCore::Fill_Plots(AnalyzerParameter param, TString region,  TStrin
       if(DrawLevel3)FillHist( plot_dir+ region+"/Mass/Jet_M_jj",  (jets[i]+jets[j]).M() ,w, 200,  0., 2000,"M(j,j)");
     }
   }
+  if(DrawLevel1)FillHist( plot_dir+ region+ "/NObj/N_BJet",  nBJet , w, 5, 0., 5., "PileupJetId");
 
   if(jets.size() > 1){
     double maxDiJetDeta=0.;

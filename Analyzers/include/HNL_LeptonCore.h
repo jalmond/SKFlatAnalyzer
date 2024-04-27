@@ -49,10 +49,15 @@ class HNL_LeptonCore : public AnalyzerCore {
   enum SearchRegion
   {
     ChannelDepPresel,    ChannelDepSR1,    ChannelDepSR2,     ChannelDepSR3,    ChannelDepSR3HM,ChannelDepFAILSR3,    ChannelDepDilep,    ChannelDepTrigger,    ChannelDepInc,ChannelDepIncQ,
-    ChannelDepCR1,    ChannelDepCR2,    ChannelDepCR3,
+    ChannelDepCR1,    ChannelDepCR2,    ChannelDepCR3,ChannelDepCR3HM,
     MuonSRSummary,    ElectronSRSummary,    ElectronMuonSRSummary,
+    
     MuonSR1,    ElectronSR1,    ElectronMuonSR1,    MuonSR2,    ElectronSR2,    ElectronMuonSR2,    MuonSR3,    ElectronSR3,    ElectronMuonSR3,
-    MuonSR3BDT,    ElectronSR3BDT,    ElectronMuonSR3BDT,    MuonCR3BDT,    ElectronCR3BDT,    ElectronMuonCR3BDT,
+    MuonSR3BDT,    ElectronSR3BDT,    ElectronMuonSR3BDT,    
+
+    MuonCR1,    ElectronCR1,    ElectronMuonCR1,    MuonCR2,    ElectronCR2,    ElectronMuonCR2,    MuonCR3,    ElectronCR3,    ElectronMuonCR3,
+    MuonCR3BDT,    ElectronCR3BDT,    ElectronMuonCR3BDT,    
+
     MuonSR,    ElectronSR,    ElectronMuonSR,    MuonCR,    ElectronCR,    ElectronMuonCR,
     MuonSRBDT,    ElectronSRBDT,    ElectronMuonSRBDT,    MuonCRBDT,    ElectronCRBDT,    ElectronMuonCRBDT,
     MuonSROpt,    ElectronSROpt,    ElectronMuonSROpt,    MuonSRBDTOpt,    ElectronSRBDTOpt,    ElectronMuonSRBDTOpt,
@@ -419,6 +424,7 @@ nvtx,  double w);
   //==== Functions                                                                                                                                                                                          
   //================                                                                                                                                                                                        
 
+  vector<TString> ConvertCutFlowLabels(vector<TString> SRlabels);
   bool    IsExists(TString filepath);
 
   //==== LEPTON CHARGE                                                                                                                                                                                           

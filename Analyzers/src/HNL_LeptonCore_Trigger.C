@@ -45,7 +45,8 @@ void HNL_LeptonCore::SetupTriggerLists(){
 
     // Lumi=16.8 /fb.
     // MU 
-    TrigList_HNL_DblMu = {"HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v","HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v"};// "HLT_TkMu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v"};               
+    TrigList_HNL_DblMu = {"HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v","HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v", "HLT_TkMu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v"};               
+    TrigList_HNL_MuEG  = {"HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v"};
     TrigList_POG_MuEG  = {"HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v"};
     TrigList_POG_EGMu  = {"HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v"};
     TrigList_HNL_EGMu  = {"HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v"};
@@ -61,8 +62,7 @@ void HNL_LeptonCore::SetupTriggerLists(){
     TrigList_HNL_HighPtMu = {"HLT_Mu50_v",   "HLT_TkMu50_v"};
     TrigList_HNL_Mu = {    "HLT_IsoMu24_v",   "HLT_IsoTkMu24_v",};
     // EG
-    //TrigList_HNL_DblEG = {  "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v","HLT_Photon175_v"};
-    TrigList_HNL_DblEG = {  "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v"}; //JH
+    TrigList_HNL_DblEG = {  "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v"};//,"HLT_Photon175_v"};
     TrigList_HNL_EG    = {  "HLT_Ele27_WPTight_Gsf_v" ,
                             "HLT_Ele25_eta2p1_WPTight_Gsf_v" ,
                             "HLT_Ele115_CaloIdVT_GsfTrkIdT_v",
@@ -91,8 +91,7 @@ void HNL_LeptonCore::SetupTriggerLists(){
     TrigList_POG_Mu = {  "HLT_IsoMu27_v"};
     TrigList_HNL_HighPtMu = {"HLT_Mu50_v"};
 
-    //TrigList_HNL_DblEG = { "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v","HLT_Photon200_v"};
-    TrigList_HNL_DblEG = { "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v"}; //JH
+    TrigList_HNL_DblEG = { "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v"};//,"HLT_Photon200_v"};
     TrigList_HNL_EG = { "HLT_Ele32_WPTight_Gsf_v",
                         "HLT_Ele32_WPTight_Gsf_L1DoubleEG_v",
                         "HLT_Ele115_CaloIdVT_GsfTrkIdT_v",
@@ -185,7 +184,6 @@ bool HNL_LeptonCore::PassTriggerSelection(HNL_LeptonCore::Channel channel,Event 
     for(auto ilep : leps) {
       if(ilep->LeptonFlavour() == Lepton::MUON) leps_muon.push_back(ilep);
     }
-    bool passTrig=false;
 
     if(selection == "Dilep")            return PassTriggerAndCheckStream(apply_ptcut,leps_muon,ev,TrigList_HNL_DblMu,check_pd);
     else  if(selection == "Lep")        return PassTriggerAndCheckStream(apply_ptcut,leps_muon,ev,TrigList_HNL_Mu,check_pd);

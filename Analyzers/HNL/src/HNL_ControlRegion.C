@@ -331,7 +331,7 @@ void HNL_ControlRegion::RunControlRegions(AnalyzerParameter param, vector<TStrin
 
   for(auto ir : RunEl){
     RunAllControlRegions(ElectronTightColl,ElectronVetoColl,MuonTightColl,MuonVetoColl, 
-			 AK4_JetAllColl, AK4_JetColl,AK4_VBF_JetColl,AK8_JetColl, AK4_BJetColl, 
+			 AK4_JetCollLoose,AK4_JetColl,AK4_VBF_JetColl,AK8_JetColl, AK4_BJetColl, 
 			 ev,METv, param, CRs, ir, weight);
   }
 

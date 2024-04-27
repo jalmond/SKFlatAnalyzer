@@ -128,6 +128,20 @@ void HNL_LeptonCore::OutCutFlow(TString lab, double w){
 
 }
 
+vector<TString> HNL_LeptonCore::ConvertCutFlowLabels(vector<TString> SRlabels){
+
+  vector<TString> CRlabels;
+
+  for(auto i : SRlabels) {
+    TString CRlabel = i;
+    CRlabel=CRlabel.ReplaceAll("SR","CR");
+    CRlabels.push_back(CRlabel);
+  }
+  
+  return CRlabels;
+}
+
+
 TString HNL_LeptonCore::SetLeptonID(TString lep, AnalyzerParameter p){
 
   if(lep=="Electron"){

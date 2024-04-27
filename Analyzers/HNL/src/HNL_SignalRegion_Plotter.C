@@ -90,7 +90,7 @@ void HNL_SignalRegion_Plotter::RunULAnalysis(AnalyzerParameter param){
   for(auto ir : RunEl){
     RunAllSignalRegions(Inclusive,
 			ElectronCollT,ElectronCollV,MuonCollT,MuonCollV,  TauColl,
-			AK4_JetCollLoose, AK4_JetAllColl, AK4_JetColl,AK4_VBF_JetColl,AK8_JetColl, AK4_BJetColl, 
+			AK4_JetCollLoose,AK4_JetColl,AK4_VBF_JetColl,AK8_JetColl, AK4_BJetColl, 
 			ev,METv, param, ir, weight);
   }
 
