@@ -1192,6 +1192,7 @@ bool HNL_RegionDefinitions::FillHighMassSR1CRPlots(HNL_LeptonCore::Channel chann
 
   int NB_JetColl = B_JetColl.size();
 
+  //  if(leps[0].Pt() < 20) return false; ---> Remove 
 
   Particle ll =  (*leps[0]) + (*leps[1]);
   if (channel==EE  && (fabs(ll.M()-M_Z) < M_ZWINDOW_VETO)) return false;
@@ -1246,8 +1247,8 @@ bool HNL_RegionDefinitions::FillSSZPeakCRPlots(HNL_LeptonCore::Channel channel, 
   
   if(!CheckLeptonFlavourForChannel(channel, leps)) return false;
   if (leps_veto.size() != 2) return false;
-  if (!SameCharge(leps)) return false;
-
+  if (!RunCF && !SameCharge(leps)) return false;
+  
   Particle ll =  (*leps[0]) + (*leps[1]);
   // Kepp only Z peak events with many CF                                                                                                                                                                         
   if (fabs(ll.M()-M_Z) > M_ZWINDOW_VETO) return false;
@@ -1551,6 +1552,7 @@ bool HNL_RegionDefinitions::FillHighMassSR2CRPlots(HNL_LeptonCore::Channel chann
   if (ll.M() < M_CUT_LL) return false;
   FillCutflow(Reg, w, "Step3",param);
 
+  //  if(leps[0].Pt() < 20) return false; ---> Remove                                                                                                                                                                                                               
 
   double met2_st = GetMET2ST(leps, JetColl, AK8_JetColl, METv);
   bool PassHMMet = (met2_st < 20);

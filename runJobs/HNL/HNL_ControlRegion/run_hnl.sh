@@ -15,7 +15,7 @@ skim=' '
 declare  -a era_list=( "2017" "2018" "2016postVFP" "2016preVFP")
 declare  -a eta_list=("BB" "EC" "Inclusive")
 declare  -a eta_list=("Inclusive")
-declare  -a era_list=( "2017" )
+declare  -a era_list=( "2018" )
 for i in "${era_list[@]}"
 do
     for j in "${eta_list[@]}"

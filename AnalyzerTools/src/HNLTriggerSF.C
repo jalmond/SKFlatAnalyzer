@@ -89,7 +89,7 @@ float MCCorrection::TriggerEfficiency(vector<Electron>& EleColl, vector<Muon>& M
     HistEff1 = map_hist_Electron["Trigger_Eff_"+StrMCorData+"_DiMuIsoMu8_HNL_ULID"];
   }
   else if(SFKey.Contains("DiMuIso")){
-    DiMuTrig=true; MinPt1=20., MinPt2=10., MaxPt1=200., MaxPt2=200., MaxfEta1=2.4;
+    DiMuTrig=true; MinPt1=20., MinPt2=10., MaxPt1=1000., MaxPt2=1000., MaxfEta1=2.4;
     TString Key1(SFKey), Key2(SFKey); Key1.ReplaceAll("DiMuIso","DiMuIsoMu17"); Key2.ReplaceAll("DiMuIso","DiMuIsoMu8");
     HistEff1 = map_hist_Muon["Trigger_Eff_"+StrMCorData+"_"+Key1];
     HistEff2 = map_hist_Muon["Trigger_Eff_"+StrMCorData+"_"+Key2];
