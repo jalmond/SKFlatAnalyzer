@@ -445,7 +445,7 @@ bool HNL_LeptonCore::PassTriggerAndCheckStream(bool apply_ptcut,vector<Lepton*> 
 }
 
 
-void HNL_LeptonCore::EvalTrigWeight(HNL_LeptonCore::Channel channel, vector<Muon> muons, vector<Electron> electrons, AnalyzerParameter& p, double& w) {
+void HNL_LeptonCore::EvalTrigWeight(HNL_LeptonCore::Channel channel, vector<Muon> muons, vector<Electron> electrons, AnalyzerParameter& p, Event ev, double& w) {
   
   if(IsData) return;
 
@@ -477,6 +477,21 @@ void HNL_LeptonCore::EvalTrigWeight(HNL_LeptonCore::Channel channel, vector<Muon
   w*=(this_trigsf);
   p.w.triggerSF =trigW*this_trigsf;
   
+  
+  ///// Update wright for Cases unprescaled triggers pass but prescale triggers fail
+  //// Case 1 2016b
+
+  if (DataEra == "2016b"){
+    if(!ev.PassTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v")){
+      if(ev.PassTrigger("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v")) w = w  * ev.GetTriggerLumi("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v")/ev.GetTriggerLumi( "Full");
+      if(ev.PassTrigger("HLT_TkMu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v")) w = w  * ev.GetTriggerLumi("HLT_TkMu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v")/ev.GetTriggerLumi( "Full");
+    }
+  }
+  if (DataEra == "2017"){
+    if(!ev.PassTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_v")){
+      if(ev.PassTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v"))   w = w  * ev.GetTriggerLumi("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v") / ev.GetTriggerLumi( "Full");
+    }
+  }
   return;
   
 

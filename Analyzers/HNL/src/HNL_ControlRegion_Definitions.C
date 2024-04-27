@@ -107,7 +107,7 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
       if (!PassTriggerSelection(dilep_channel, ev, LepsT,param.TriggerSelection)) continue;
     }
 
-    EvalTrigWeight(dilep_channel, muons,electrons,param, weight_channel);
+    EvalTrigWeight(dilep_channel, muons,electrons,param, ev, weight_channel);
 
     FillCutflow(CutFlow_Region, weight_channel, "Trigger",param);
  
@@ -180,36 +180,34 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
       else {
         if(IsData){
           weight_channel = GetFakeWeight(LepsT, param );
-          if(_jentry < 8000){
-            cout << "Fake weight = " << weight_channel << endl;
+
+          TString nT ="";
+          for(auto ilep : muons) {
+            if(ilep.PassID(param.Muon_Tight_ID)) nT=nT+"T";
+            else nT=nT+"L";
           }
-          if(SameCharge(LepsT) && LepsV.size() == 2){ //JH
-            TString nT ="";
-            for(auto ilep : muons) {
-              if(ilep.PassID(param.Muon_Tight_ID)) nT=nT+"T";
-              else nT=nT+"L";
-            }
-            for(auto ilep : electrons) {
-              if(ilep.PassID(param.Electron_Tight_ID))  nT=nT+"T";
-              else nT=nT+"L";
-            }
+          for(auto ilep : electrons) {
+            if(ilep.PassID(param.Electron_Tight_ID))  nT=nT+"T";
+            else nT=nT+"L";
+          }
+    
+          if(SameCharge(LepsT) && LepsV.size() == 2){
             if(nT=="TT")  FillHist(  "FAKES/"+param.Name+"/NTL",   1,  1,  5, 0, 5.);
             if(nT=="TL")  FillHist(  "FAKES/"+param.Name+"/NTL",   2,  weight_channel,  5, 0, 5.);
             if(nT=="LT")  FillHist(  "FAKES/"+param.Name+"/NTL",   3,  weight_channel,  5, 0, 5.);
             if(nT=="LL")  FillHist(  "FAKES/"+param.Name+"/NTL",   4,  weight_channel,  5, 0, 5.);
-            
             if(nT=="TT")  FillHist(  "FAKES/"+param.Name+"/UnWeighted_NTL",   1,  1,  5, 0, 5.);
             if(nT=="TL")  FillHist(  "FAKES/"+param.Name+"/UnWeighted_NTL",   2,  1,  5, 0, 5.);
             if(nT=="LT")  FillHist(  "FAKES/"+param.Name+"/UnWeighted_NTL",   3,  1,  5, 0, 5.);
             if(nT=="LL")  FillHist(  "FAKES/"+param.Name+"/UnWeighted_NTL",   4,  1,  5, 0, 5.);
-      
           }
-          
+    
           if(RunCR("OS_VR",CRs)) weight_OS = weight_channel;
           if(run_Debug) {cout <<"RunAllControlRegions ["<< nlog<< "] Fake Weight = " << weight_channel << endl;nlog++;}
         }
       }
     }
+
 
 
     if(RunCR("BDTCheck",CRs)){

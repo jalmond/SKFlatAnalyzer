@@ -17,7 +17,7 @@ double HNL_LeptonCore::GetPtPartonSF(Lepton  Lep, TString LooseID){
 
   /// DeepJet split
 
-  if(IsMuon && (LooseID == "HNL_ULID_FO_2016a")) return GetPtPartonSF(Lep,"HNL_ULID_FO_v3_a_2016");
+  if(IsMuon && (LooseID == "HNL_ULID_FO_2016a")) return GetPtPartonSF(Lep,"HNL_ULID_FO_v3_b_2016");
   if(IsMuon && (LooseID == "HNL_ULID_FO_2016b")) return GetPtPartonSF(Lep,"HNL_ULID_FO_v4_b_2016");
   if(IsMuon && (LooseID == "HNL_ULID_FO_2017") && Lep.IsBB()) return GetPtPartonSF(Lep,"HNL_ULID_FO_v9_c_2017");
   if(IsMuon && (LooseID == "HNL_ULID_FO_2017") && !Lep.IsBB()) return GetPtPartonSF(Lep,"HNL_ULID_FO_v1_a_2017");

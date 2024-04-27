@@ -124,7 +124,7 @@ void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq,
 
     if (!PassTriggerSelection(dilep_channel, ev, LepsT,param.TriggerSelection)) continue;
     
-    EvalTrigWeight(dilep_channel, muons,electrons,param, weight_channel);
+    EvalTrigWeight(dilep_channel, muons,electrons,param, ev,weight_channel);
 
     FillCutflow(CutFlow_Region, weight_channel, "Trigger",param);
 

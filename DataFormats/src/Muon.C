@@ -255,14 +255,14 @@ bool Muon::PassID(TString ID) const {
   if(ID == "HNL_ULID_FO")          return (PassID("MVALooseTrgSafe")        && (fabs(IP3D()/IP3Derr()) < 7)); 
 
   //// Optimised Loose IDs
-  if(ID == "HNL_ULID_FO_2016a")     return PassID("HNL_ULID_FO_v3_a");
-  if(ID == "HNL_ULID_FO_2016b")     return PassID("HNL_ULID_FO_v4_b");
-  if(ID == "HNL_ULID_FO_2017")     {
-    if (this->IsBB()) return PassID("HNL_ULID_FO_v9_c");
-    else return PassID("HNL_ULID_FO_v1_a");
+  if(ID == "HNL_ULID_FO_2016a")     return PassID("HNL_ULID_FO_v3_b_2016");
+  if(ID == "HNL_ULID_FO_2016b")     return PassID("HNL_ULID_FO_v4_b_2016");
+  if(ID == "HNL_ULID_FO_2017")      {    
+    if (this->IsBB()) return PassID("HNL_ULID_FO_v9_c_2017");
+    else return PassID("HNL_ULID_FO_v1_a_2017");
   }
-  if(ID == "HNL_ULID_FO_2018")     return PassID("HNL_ULID_FO_v3_b");
-    
+  if(ID == "HNL_ULID_FO_2018")     return PassID("HNL_ULID_FO_v3_b_2018");
+  
 
   if(ID == "HNL_ULID_FO_v0_"+Era){
     if(!PassID("HNL_ULID_FO")) return false;
@@ -274,7 +274,7 @@ bool Muon::PassID(TString ID) const {
     return true;
   }
  
-  if(ID.Contains("HNL_ULID_FO_")){
+  if(ID.Contains("HNL_ULID_FO_v")){
 
     double BJetDeepJetCut = 999;
     if(ID.Contains("HNL_ULID_FO_v1")) BJetDeepJetCut = 0.025;   //// Version 1 == TOP

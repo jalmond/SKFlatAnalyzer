@@ -14,7 +14,8 @@ skim=' '
 
 declare  -a era_list=( "2017" "2018" "2016postVFP" "2016preVFP")
 declare  -a eta_list=("BB" "EC" "Inclusive")
-
+declare  -a eta_list=("Inclusive")
+declare  -a era_list=( "2017" )
 for i in "${era_list[@]}"
 do
     for j in "${eta_list[@]}"
@@ -26,10 +27,10 @@ do
 	# 
 	#SKFlat.py -a $analyzer  -l $mcpath/Conv.txt                 -n 10        --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLepBDT   --userflags  ScanFakes,RunConv,${j}&
         
-	#SKFlat.py -a $analyzer  -l $datapath/${i}_DiLepton_MuMu.txt    -n 100  --nmax ${nmax}   -e ${i}  --skim SkimTree_HNMultiLepBDT  --userflags  ScanFakes,RunFake,${j}   &
+	SKFlat.py -a $analyzer  -l $datapath/${i}_DiLepton_MuMu.txt    -n 100  --nmax ${nmax}   -e ${i}  --skim SkimTree_HNMultiLepBDT  --userflags  ScanFakes,RunFake,${j}   &
         #SKFlat.py -a $analyzer  -l $datapath/${i}_DiLepton_EE.txt      -n 100    --nmax ${nmax}   -e ${i}  --skim SkimTree_HNMultiLepBDT  --userflags  ScanFakes,RunFake,${j}  &
         #
-	SKFlat.py -a $analyzer  -l $datapath/${i}_DiLepton_EE.txt      -n 150    --nmax ${nmax}   -e ${i} --skim SkimTree_DileptonBDT     --userflags  ScanFakes,RunCF,${j} &
+	#SKFlat.py -a $analyzer  -l $datapath/${i}_DiLepton_EE.txt      -n 150    --nmax ${nmax}   -e ${i} --skim SkimTree_DileptonBDT     --userflags  ScanFakes,RunCF,${j} &
         #SKFlat.py -a $analyzer   -l $mcpath/RunPromptTLRemoval.txt       -n 150    --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLepBDT    --userflags  ScanFakes,RunPromptTLRemoval,${j} &    
 
 	

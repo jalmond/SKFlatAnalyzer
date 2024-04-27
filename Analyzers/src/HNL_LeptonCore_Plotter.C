@@ -279,7 +279,7 @@ void HNL_LeptonCore::Fill_Plots(AnalyzerParameter param, TString region,  TStrin
   }
 
 
-  if(DrawLevel3)FillHist( plot_dir+ region+ "/Leptons/SumQ", leps[0]->Charge() + leps[1]->Charge(),  w, 10, -5, 5, "Q size");
+  if(DrawLevel1)FillHist( plot_dir+ region+ "/Leptons/SumQ", leps[0]->Charge() + leps[1]->Charge(),  w, 10, -5, 5, "Q size");
 
   Particle llCand = *leps[0] + *leps[1];
   Particle lllCand = (threelep) ? *leps[0] + *leps[1] + *leps[2] :  Particle();
