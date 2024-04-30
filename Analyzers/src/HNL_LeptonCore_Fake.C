@@ -455,6 +455,12 @@ double HNL_LeptonCore::GetFakeWeight(std::vector<Lepton *> leps, AnalyzerParamet
     double this_pr = fakeEst->GetPromptRate(_param.ApplyPR, IsMuon, ID, pr_key, leps[0]->fEta(), leps[0]->UncorrectedPt());
 
     this_weight=  fakeEst->CalculateLepWeight(this_pr, this_fr, leps[0]->PassLepID() );
+
+    if(isnan(this_weight)) {
+      cout << "Single Lepton Fake rate is NaN" << endl;
+      cout << "IsMuon = " << IsMuon << " fr_key = " << fr_key << " ID = " << ID << " this_fr = " << this_fr << " this_pr = " << this_pr << endl;
+      exit(EXIT_FAILURE);
+    }
     return this_weight;
   }
 
@@ -479,9 +485,6 @@ double HNL_LeptonCore::GetFakeWeight(std::vector<Lepton *> leps, AnalyzerParamet
     TString fr_key2 = (leps[1]->LeptonFlavour() == Lepton::ELECTRON) ?  _param.k.Electron_FR : muon_fr_key2;
     TString pr_key = (leps[0]->LeptonFlavour() == Lepton::ELECTRON) ?  _param.k.Electron_PR : _param.k.Muon_PR;
 
-    cout << "fr_key1 = " << fr_key1 << " fr_key2=" << fr_key2 << endl;
-    cout << "mu 1 = isBB=" << leps[0]->IsBB() << " eta = " << leps[0]->Eta() << endl;
-    cout << "mu 2 = isBB=" << leps[1]->IsBB() << " eta = " << leps[1]->Eta() << endl;
     if(run_Debug){
       if(leps[0]->LeptonFlavour() == Lepton::ELECTRON) cout << "_param.Electron_Tight_ID = " << _param.Electron_Tight_ID <<  " fr_key1 = " << fr_key1 << endl;
       else cout << "_param.Muon_Tight_ID  = " <<  _param.Muon_Tight_ID <<  " fr_key1 = " << fr_key1 <<endl;
@@ -503,6 +506,14 @@ double HNL_LeptonCore::GetFakeWeight(std::vector<Lepton *> leps, AnalyzerParamet
       cout << "this_fr1 = " << this_fr1 << " this_fr2 = " << this_fr2 << " this_pr1 = " << this_pr1 << " this_pr2 = " << this_pr2 << endl;
     //}
     this_weight = fakeEst->CalculateDilepWeight(this_pr1,this_fr1, this_pr2, this_fr2, leps[0]->PassLepID(),leps[1]->PassLepID(),0);
+
+    if(isnan(this_weight)) {
+      cout << "Dilepton Fake rate is NaN"<< endl;
+      cout << "IsMuon1 = " << IsMuon1 << " fr_key = " << fr_key1 << " ID1 = " << ID1<< " this_fr1 = " << this_fr1 << " pt = " << leps[0]->Pt() << " eta = " << leps[0]->fEta() << endl;
+      cout << "IsMuon2 = " << IsMuon2 << " fr_key = " << fr_key2 << " ID2 = " << ID2<< " this_fr2 = " << this_fr2 << " pt = " << leps[1]->Pt() << " eta = " << leps[1]->fEta() << endl;
+      exit(EXIT_FAILURE);
+    }
+
     if(run_Debug) cout << ID1 << " " << ID2 << "fr_key11 = " << fr_key1 <<  " w= " << this_weight << " 2L"<<endl;                                                    
     return this_weight;
   }

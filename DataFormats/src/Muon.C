@@ -255,7 +255,7 @@ bool Muon::PassID(TString ID) const {
   if(ID == "HNL_ULID_FO")          return (PassID("MVALooseTrgSafe")        && (fabs(IP3D()/IP3Derr()) < 7)); 
 
   //// Optimised Loose IDs
-  if(ID == "HNL_ULID_FO_2016a")     return PassID("HNL_ULID_FO_v3_b_2016");
+  if(ID == "HNL_ULID_FO_2016a")     return PassID("HNL_ULID_FO_v1_a_2016");
   if(ID == "HNL_ULID_FO_2016b")     return PassID("HNL_ULID_FO_v4_b_2016");
   if(ID == "HNL_ULID_FO_2017")      {    
     if (this->IsBB()) return PassID("HNL_ULID_FO_v9_c_2017");

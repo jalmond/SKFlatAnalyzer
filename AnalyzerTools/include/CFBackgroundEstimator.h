@@ -42,6 +42,7 @@ public:
 
   bool IgnoreNoHist;
 
+  double GetElectronCFRateFitted(TString ID, TString key, double eta, double pt, int sys);
   double GetElectronCFRate(TString ID, TString key, double eta, double pt, int sys=0);
   double GetElectronCFRate2D(TString ID, TString key, double eta, double pt, int sys=0);
   double GetMuonCFRate(TString ID, TString key, double eta, double pt, int sys=0);

@@ -29,6 +29,8 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
   if(run_Debug) cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;  
   int nlog(0);
   
+  if(RunCF && electrons_veto.size() !=2) return;
+
   for(unsigned int ic = 0; ic < channels.size(); ic++){
 
    

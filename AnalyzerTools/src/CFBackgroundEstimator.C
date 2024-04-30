@@ -74,7 +74,116 @@ CFBackgroundEstimator::~CFBackgroundEstimator(){
 }
 
 
+double CFBackgroundEstimator::GetElectronCFRateFitted(TString ID, TString key, double eta, double pt, int sys){
 
+  eta = fabs(eta);
+  if(eta>=2.5) eta = 2.49;
+  
+  //// Lowest pt value is 20;                                                                                                                                                                
+
+  if(pt < 15) pt = 15;
+  if(pt > 1000) pt = 999;
+
+  std::map< TString, TH2D* >::const_iterator mapit;
+  mapit = map_hist_Electron.find(key );
+
+  if(mapit==map_hist_Electron.end()){
+    cout << "[CFBackgroundEstimator::GetElectronCFRate] No"<< key  <<endl;
+    if(IgnoreNoHist) {
+      TString MapK = key;
+      if (std::find(MissingHists.begin(), MissingHists.end(), MapK ) == MissingHists.end())   MissingHists.push_back(MapK);
+      return 1.;
+    }
+    exit(ENODATA);
+  }
+
+  int this_bin = (key.Contains("Inv")) ?  (mapit->second)->FindBin(1/pt,eta) :  (mapit->second)->FindBin(pt,eta);
+  
+  int this_bin_m1 = this_bin-1;
+  int this_bin_p1 = this_bin+1;
+
+  double value_MainBin = (mapit->second)->GetBinContent(this_bin);
+  double value_mBin = (mapit->second)->GetBinContent(this_bin_m1);
+  double value_pBin = (mapit->second)->GetBinContent(this_bin_p1);
+  double IPt = (1/pt);  
+  if(IPt > 0.04)  return value_MainBin;
+  if(IPt < 0.002) return value_MainBin;
+
+  vector <double> invptbins = { 0., 0.002,
+		       0.003,
+		       0.004,
+		       0.005,
+		       0.0075,
+		       0.010,
+		       0.0125,
+		       0.015,
+		       0.0175,
+		       0.020,
+		       0.0225,
+		       0.025,
+		       0.030,
+		       0.035,
+		       0.04,
+		       0.07};
+
+
+  vector <double> BinCentres;
+  double Center_MainBin(0.), Center_mBin(0.), Center_pBin(0.);
+  for(int ib =1; ib < invptbins.size()-1; ib++){
+    if(IPt < invptbins[ib]) {
+      Center_MainBin = (invptbins[ib] - invptbins[ib-1]) /2.;
+      Center_mBin    = (invptbins[ib-1] - invptbins[ib-2]) /2.;
+      Center_pBin    = (invptbins[ib+1] - invptbins[ib]) /2.;
+    }
+  }
+  //  PrintBins((mapit->second));
+
+
+  cout << "  "<< endl;
+  cout << "Pt = " <<  pt << " IPt = " << IPt << " this_bin = " << this_bin << " this_bin_m1 = " << this_bin_m1 << "  = " << this_bin_p1 << endl;
+  cout << "value_MainBin = " << value_MainBin << " value_mBin " << value_mBin << " value_pBin = " << value_pBin << endl;
+  cout << "Center_MainBin = " << Center_MainBin << " Center_mBin = " << Center_mBin << " Center_pBin = " << Center_pBin << endl;
+
+  
+  ////    0         0.002     0.003                      0.04     0.07
+  ////    |         |         |       |    |      |     |    |
+  
+  if(IPt < Center_MainBin) {
+    double dX = Center_MainBin - Center_mBin;
+    double dY = value_mBin - value_MainBin;
+    
+    double CFRate = value_MainBin + (dY/dX) * (Center_MainBin-IPt);
+    
+    
+    cout << "Left of centre : IPt = " << IPt << " dX = " << dX << " dY = " << dY << " (Center_MainBin-IPt) = " << (Center_MainBin-IPt) << endl;
+    cout << "Left of centre : CFRate : " << value_MainBin << " --> "<<  CFRate << endl;
+    if(isnan(CFRate)) {
+      cout << "CF Fit returns nan. " << endl;
+      
+      exit(ENODATA);
+    }
+    return CFRate;
+  }
+  else{
+    double dX = Center_pBin - Center_MainBin;
+    double dY = value_MainBin - value_pBin;
+
+    cout << "Right of centre : IPt = " << IPt << " dX = "<< dX << " dY = " << dY<< " (Center_MainBin-IPt) = " << (Center_MainBin-IPt) << endl;
+    double CFRate = value_MainBin + (dY/dX) * (Center_MainBin-IPt);
+
+    cout << "Right of centre : CFRate : "<< value_MainBin << " --> "<<  CFRate << endl;
+
+    if(isnan(CFRate)) {
+      cout << "CF Fit returns nan. " <<endl;
+      
+      exit(ENODATA);
+    }
+    
+    return CFRate;
+  }
+
+  
+}
 
 double CFBackgroundEstimator::GetElectronCFRate(TString ID, TString key, double eta, double pt, int sys){
 

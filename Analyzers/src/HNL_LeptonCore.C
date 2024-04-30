@@ -667,7 +667,7 @@ AnalyzerParameter HNL_LeptonCore::SetupHNLParameter(TString s_setup_version, TSt
     param.Electron_FR_ID    = "HNL_ULID_FO_"+GetEraShort();
 
     if(GetEra() == "2016preVFP"){
-      param.k.Muon_FR            = "HNL_ULID_FO_v3_b_AJ30";
+      param.k.Muon_FR            = "HNL_ULID_FO_v1_a_AJ30";
       param.k.Electron_FR        = "HNL_ULID_FO_v5_a_AJ30";
     }
     if(GetEra() == "2016postVFP"){

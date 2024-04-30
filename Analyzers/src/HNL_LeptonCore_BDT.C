@@ -5,7 +5,7 @@ void HNL_LeptonCore::SetupEventMVAReader(bool ee, bool mm, bool emu){
 
   TString AnalyzerPath=std::getenv("SKFlat_WD");
   TString MVAPath = "/data/Run2UltraLegacy_v3/Run2/BDTClassifier/results_xml/HNL_ULID/";
-  MNStrList = {"90", "100", "150", "200", "300", "400", "500"};
+  MNStrList = {"85", "90", "95", "100", "125", "150", "200", "250", "300", "400", "500"};
   NCutList  = {"200"};
   NTreeList = {"850"};
 
@@ -474,23 +474,23 @@ void HNL_LeptonCore::SetupEventMVAReader(bool ee, bool mm, bool emu){
     //FinalBDTHyperParamMap settings are whats used in limit for SR/CR                                                                                                                                                                                                                                                        
     FinalBDTHyperParamMap[MNStrList.at(im)] = make_pair("200","850");
         
-    for(unsigned int ic=0; ic<NCutList.size(); ic++){
+    /*for(unsigned int ic=0; ic<NCutList.size(); ic++){
       for(unsigned int it=0; it<NTreeList.size(); it++){
 
-        /*TString FileNameMM  = "output_DY_MuMu_M"+MNStrList.at(im)+"_Mode100_NTree"+NTreeList.at(it)+"_Run2_BDT.weights.xml";
-        TString MVATagStrMM = "BDT_M"+MNStrList.at(im)+"_NCut"+NCutList.at(ic)+"_NTree"+NTreeList.at(it)+"_MuMu";
+        //TString FileNameMM  = "output_DY_MuMu_M"+MNStrList.at(im)+"_Mode100_NTree"+NTreeList.at(it)+"_Run2_BDT.weights.xml";
+        //TString MVATagStrMM = "BDT_M"+MNStrList.at(im)+"_NCut"+NCutList.at(ic)+"_NTree"+NTreeList.at(it)+"_MuMu";
 
-        if(mm)MVAReaderMM->BookMVA(MVATagStrMM, AnalyzerPath+MVAPath+"NCuts"+NCutList.at(ic)+"/"+FileNameMM);
+        //if(mm)MVAReaderMM->BookMVA(MVATagStrMM, AnalyzerPath+MVAPath+"NCuts"+NCutList.at(ic)+"/"+FileNameMM);
 
-        TString FileNameEE  = "output_DY_EE_M"+MNStrList.at(im)+"_Mode100_NTree"+NTreeList.at(it)+"_Run2_BDT.weights.xml";
-        TString MVATagStrEE = "BDT_M"+MNStrList.at(im)+"_NCut"+NCutList.at(ic)+"_NTree"+NTreeList.at(it)+"_EE";
+        //TString FileNameEE  = "output_DY_EE_M"+MNStrList.at(im)+"_Mode100_NTree"+NTreeList.at(it)+"_Run2_BDT.weights.xml";
+        //TString MVATagStrEE = "BDT_M"+MNStrList.at(im)+"_NCut"+NCutList.at(ic)+"_NTree"+NTreeList.at(it)+"_EE";
 
-        if(ee)MVAReaderEE->BookMVA(MVATagStrEE, AnalyzerPath+MVAPath+"NCuts"+NCutList.at(ic)+"/"+FileNameEE);
+        //if(ee)MVAReaderEE->BookMVA(MVATagStrEE, AnalyzerPath+MVAPath+"NCuts"+NCutList.at(ic)+"/"+FileNameEE);
 
-        TString FileNameEM  = "output_DY_EMu_M"+MNStrList.at(im)+"_Mode100_NTree"+NTreeList.at(it)+"_Run2_BDT.weights.xml";
-        TString MVATagStrEM = "BDT_M"+MNStrList.at(im)+"_NCut"+NCutList.at(ic)+"_NTree"+NTreeList.at(it)+"_EMu";
+        //TString FileNameEM  = "output_DY_EMu_M"+MNStrList.at(im)+"_Mode100_NTree"+NTreeList.at(it)+"_Run2_BDT.weights.xml";
+        //TString MVATagStrEM = "BDT_M"+MNStrList.at(im)+"_NCut"+NCutList.at(ic)+"_NTree"+NTreeList.at(it)+"_EMu";
 
-        if(emu)MVAReaderEM->BookMVA(MVATagStrEM, AnalyzerPath+MVAPath+"NCuts"+NCutList.at(ic)+"/"+FileNameEM);*/
+        //if(emu)MVAReaderEM->BookMVA(MVATagStrEM, AnalyzerPath+MVAPath+"NCuts"+NCutList.at(ic)+"/"+FileNameEM);
 
         TString FileNameMM        = "output_DY_MuMu_M"+MNStrList.at(im)+"_Incl_Run2_NTrees"+NTreeList.at(it)+"_NCuts"+NCutList.at(ic)+"_MaxDepth3_BDT.weights.xml";
         TString FileNameMMFake    = "output_DY_MuMu_M"+MNStrList.at(im)+"_Fake_Run2_NTrees"+NTreeList.at(it)+"_NCuts"+NCutList.at(ic)+"_MaxDepth3_BDT.weights.xml";
@@ -535,7 +535,61 @@ void HNL_LeptonCore::SetupEventMVAReader(bool ee, bool mm, bool emu){
         }
 
       }
+    }*/
+  
+  
+    TString NTreeMM = "850", NCutMM = "200", NTreeEE = "850", NCutEE = "200", NTreeEM = "850", NCutEM = "200";
+    if(im < 4){ NTreeMM = "700", NCutMM = "150", NTreeEE = "500", NCutEE = "250", NTreeEM = "1000", NCutEM = "100"; }    // mN = 85, 90, 95, 100 GeV
+    if(im == 4){ NTreeMM = "600", NCutMM = "100", NTreeEE = "500", NCutEE = "200", NTreeEM = "600", NCutEM = "200"; }    // mN = 125 GeV
+    if(im == 5){ NTreeMM = "850", NCutMM = "250", NTreeEE = "600", NCutEE = "250", NTreeEM = "500", NCutEM = "100"; }    // mN = 150 GeV
+    if(im == 6){ NTreeMM = "500", NCutMM = "300", NTreeEE = "500", NCutEE = "150", NTreeEM = "1000", NCutEM = "100"; }   // mN = 200 GeV
+    if(im == 7){ NTreeMM = "850", NCutMM = "150", NTreeEE = "700", NCutEE = "200", NTreeEM = "850", NCutEM = "200"; }    // mN = 250 GeV
+    if(im == 8){ NTreeMM = "850", NCutMM = "200", NTreeEE = "500", NCutEE = "200", NTreeEM = "850", NCutEM = "200"; }    // mN = 300 GeV
+    if(im == 9){ NTreeMM = "850", NCutMM = "200", NTreeEE = "500", NCutEE = "400", NTreeEM = "850", NCutEM = "200"; }    // mN = 400 GeV
+    if(im == 10){ NTreeMM = "850", NCutMM = "200", NTreeEE = "700", NCutEE = "200", NTreeEM = "850", NCutEM = "200"; }   // mN = 500 GeV
+
+    TString FileNameMM        = "output_DY_MuMu_M"+MNStrList.at(im)+"_Incl_Run2_NTrees"+NTreeMM+"_NCuts"+NCutMM+"_MaxDepth3_BDT.weights.xml";
+    TString FileNameMMFake    = "output_DY_MuMu_M"+MNStrList.at(im)+"_Fake_Run2_NTrees850_NCuts200_MaxDepth3_BDT.weights.xml";
+    TString FileNameMMNonFake = "output_DY_MuMu_M"+MNStrList.at(im)+"_NonFake_Run2_NTrees850_NCuts200_MaxDepth3_BDT.weights.xml";
+
+    TString MVATagStrMM        = "BDT_MuMu_M"+MNStrList.at(im)+"_Incl_NTrees"+NTreeMM+"_NCuts"+NCutMM+"_MaxDepth3";
+    TString MVATagStrMMFake    = "BDT_MuMu_M"+MNStrList.at(im)+"_Fake_NTrees850_NCuts200_MaxDepth3";
+    TString MVATagStrMMNonFake = "BDT_MuMu_M"+MNStrList.at(im)+"_NonFake_NTrees850_NCuts200_MaxDepth3";
+
+    if(mm){
+      MVAReaderMM->BookMVA(MVATagStrMM, AnalyzerPath+MVAPath+FileNameMM);
+      MVAReaderMMFake->BookMVA(MVATagStrMMFake, AnalyzerPath+MVAPath+FileNameMMFake);
+      MVAReaderMMNonFake->BookMVA(MVATagStrMMNonFake, AnalyzerPath+MVAPath+FileNameMMNonFake);
     }
+
+    TString FileNameEE        = "output_DY_EE_M"+MNStrList.at(im)+"_Incl_Run2_NTrees"+NTreeEE+"_NCuts"+NCutEE+"_MaxDepth3_BDT.weights.xml";
+    TString FileNameEEFake    = "output_DY_EE_M"+MNStrList.at(im)+"_Fake_Run2_NTrees850_NCuts200_MaxDepth3_BDT.weights.xml";
+    TString FileNameEENonFake = "output_DY_EE_M"+MNStrList.at(im)+"_NonFake_Run2_NTrees850_NCuts200_MaxDepth3_BDT.weights.xml";
+
+    TString MVATagStrEE        = "BDT_EE_M"+MNStrList.at(im)+"_Incl_NTrees"+NTreeEE+"_NCuts"+NCutEE+"_MaxDepth3";
+    TString MVATagStrEEFake    = "BDT_EE_M"+MNStrList.at(im)+"_Fake_NTrees850_NCuts200_MaxDepth3";
+    TString MVATagStrEENonFake = "BDT_EE_M"+MNStrList.at(im)+"_NonFake_NTrees850_NCuts200_MaxDepth3";
+
+    if(ee){
+      MVAReaderEE->BookMVA(MVATagStrEE, AnalyzerPath+MVAPath+FileNameEE);
+      MVAReaderEEFake->BookMVA(MVATagStrEEFake, AnalyzerPath+MVAPath+FileNameEEFake);
+      MVAReaderEENonFake->BookMVA(MVATagStrEENonFake, AnalyzerPath+MVAPath+FileNameEENonFake);
+    }
+
+    TString FileNameEM        = "output_DY_EMu_M"+MNStrList.at(im)+"_Incl_Run2_NTrees"+NTreeEM+"_NCuts"+NCutEM+"_MaxDepth3_BDT.weights.xml";
+    TString FileNameEMFake    = "output_DY_EMu_M"+MNStrList.at(im)+"_Fake_Run2_NTrees850_NCuts200_MaxDepth3_BDT.weights.xml";
+    TString FileNameEMNonFake = "output_DY_EMu_M"+MNStrList.at(im)+"_NonFake_Run2_NTrees850_NCuts200_MaxDepth3_BDT.weights.xml";
+
+    TString MVATagStrEM        = "BDT_EMu_M"+MNStrList.at(im)+"_Incl_NTrees"+NTreeEM+"_NCuts"+NCutEM+"_MaxDepth3";
+    TString MVATagStrEMFake    = "BDT_EMu_M"+MNStrList.at(im)+"_Fake_NTrees850_NCuts200_MaxDepth3";
+    TString MVATagStrEMNonFake = "BDT_EMu_M"+MNStrList.at(im)+"_NonFake_NTrees850_NCuts200_MaxDepth3";
+
+    if(emu){
+      MVAReaderEM->BookMVA(MVATagStrEM, AnalyzerPath+MVAPath+FileNameEM);
+      MVAReaderEMFake->BookMVA(MVATagStrEMFake, AnalyzerPath+MVAPath+FileNameEMFake);
+      MVAReaderEMNonFake->BookMVA(MVATagStrEMNonFake, AnalyzerPath+MVAPath+FileNameEMNonFake);
+    }
+
   }
   return;
 
@@ -804,6 +858,52 @@ double HNL_LeptonCore::EvaluateEventMVA(TString mN, TString bkgType, TString NCu
   SetupEventBDTVariables(LepTColl,
                          All_JetColl, JetColl,VBF_JetColl,B_JetColl,
                          ev,METv,param);
+
+  if(bkgType == "Incl"){
+
+    if(GetChannelString(channel) == "MuMu"){
+      if(mN = "85"){ NTree = "700", NCut = "150"; }
+      if(mN = "90"){ NTree = "700", NCut = "150"; }
+      if(mN = "95"){ NTree = "700", NCut = "150"; }
+      if(mN = "100"){ NTree = "700", NCut = "150"; }
+      if(mN = "125"){ NTree = "600", NCut = "100"; }
+      if(mN = "150"){ NTree = "850", NCut = "250"; }
+      if(mN = "200"){ NTree = "500", NCut = "300"; }
+      if(mN = "250"){ NTree = "850", NCut = "150"; }
+      if(mN = "300"){ NTree = "850", NCut = "200"; }
+      if(mN = "400"){ NTree = "850", NCut = "200"; }
+      if(mN = "500"){ NTree = "850", NCut = "200"; }
+    }
+
+    if(GetChannelString(channel) == "EE"){
+      if(mN = "85"){ NTree = "500", NCut = "250"; }
+      if(mN = "90"){ NTree = "500", NCut = "250"; }
+      if(mN = "95"){ NTree = "500", NCut = "250"; }
+      if(mN = "100"){ NTree = "500", NCut = "250"; }
+      if(mN = "125"){ NTree = "500", NCut = "200"; }
+      if(mN = "150"){ NTree = "600", NCut = "250"; }
+      if(mN = "200"){ NTree = "500", NCut = "150"; }
+      if(mN = "250"){ NTree = "700", NCut = "200"; }
+      if(mN = "300"){ NTree = "500", NCut = "200"; }
+      if(mN = "400"){ NTree = "500", NCut = "400"; }
+      if(mN = "500"){ NTree = "700", NCut = "200"; }
+    }
+
+    if(GetChannelString(channel) == "EMu"){
+      if(mN = "85"){ NTree = "1000", NCut = "100"; }
+      if(mN = "90"){ NTree = "1000", NCut = "100"; }
+      if(mN = "95"){ NTree = "1000", NCut = "100"; }
+      if(mN = "100"){ NTree = "1000", NCut = "100"; }
+      if(mN = "125"){ NTree = "600", NCut = "200"; }
+      if(mN = "150"){ NTree = "500", NCut = "100"; }
+      if(mN = "200"){ NTree = "1000", NCut = "100"; }
+      if(mN = "250"){ NTree = "850", NCut = "200"; }
+      if(mN = "300"){ NTree = "850", NCut = "200"; }
+      if(mN = "400"){ NTree = "850", NCut = "200"; }
+      if(mN = "500"){ NTree = "850", NCut = "200"; }
+    }
+
+  }
 
   //TString MVATagStr = "BDT_M"+mN+"_NCut"+NCut+"_NTree"+NTree+"_"+GetChannelString(channel);
   TString MVATagStr = "BDT_"+GetChannelString(channel)+"_M"+mN+"_"+bkgType+"_NTrees"+NTree+"_NCuts"+NCut+"_MaxDepth3";

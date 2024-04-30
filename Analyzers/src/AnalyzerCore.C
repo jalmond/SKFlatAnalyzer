@@ -1119,7 +1119,7 @@ double AnalyzerCore::GetKFactor(){
 
   double weight = 1.;
 
-  if(MCSample.Contains("WZTo3LNu_powheg") or MCSample.Contains("WZTo2L2Q")){
+  if(MCSample.Contains("WZTo3LNu_powheg") or MCSample.Contains("WZTo3LNu_mllmin4p0_powheg") or MCSample.Contains("WZTo2L2Q")){
     //Physics Letters B 761 (2016) 197 
     //http://dx.doi.org/10.1016/j.physletb.2016.08.017 
     weight = 1.109;
@@ -1147,8 +1147,9 @@ double AnalyzerCore::GetKFactor(){
     return 1.21;
   }
 
-
-
+  if(MCSample.Contains("WZTo3LNu_mllmin0p1_powheg"))     weight = 0.632; //// This is done from WZ CR Norm 
+  
+  
   return weight;
 
 }

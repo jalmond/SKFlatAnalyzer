@@ -356,7 +356,8 @@ void HNL_Lepton_ChargeFlip::executeEventFromParameter(AnalyzerParameter param){
 	CFMapW["_w_nos_invpteta"] = cfEst->GetElectronCFRate(param.Electron_Tight_ID, "CFRate_InvPtEta_NoS_"  +CFKey,iel.defEta(), iel.Pt(), 0);
 	CFMapW["_w_nos_invpteta2"] = cfEst->GetElectronCFRate(param.Electron_Tight_ID, "CFRate_InvPtEta2_NoS_"  +CFKey,iel.defEta(), iel.Pt(), 0);
 	CFMapW["_w_nos_invpteta3"] = cfEst->GetElectronCFRate(param.Electron_Tight_ID, "CFRate_InvPtEta3_NoS_"  +CFKey,iel.defEta(), iel.Pt(), 0);
-	
+	CFMapW["_w_fit_pbs_invpteta3"] =  cfEst->GetElectronCFRateFitted(param.Electron_Tight_ID, "CFRate_InvPtEta3_PBS_" +CFKey,iel.defEta(), iel.Pt(), 0);
+
 	for(auto im : CFMapW){
 	  FillHist(param.Name+"/Closure/NonCF_LepPt_"        + im.first,        iel.PtMaxed(1000)*PtShift ,  im.second*EvWeight , 13, ptbin,"pT");
 	  FillHist(param.Name+"/Closure/NonCF_LepPtShift2_"    + im.first,        iel.PtMaxed(1000)*PtShift*0.85 ,  im.second*EvWeight , 13, ptbin,"pT");
