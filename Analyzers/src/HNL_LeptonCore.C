@@ -253,6 +253,17 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
 
   vector<AnalyzerParameter::Syst> SystList = {};
 
+  if(SystType == "Jets"){
+    SystList.push_back(AnalyzerParameter::JetResUp);
+    SystList.push_back(AnalyzerParameter::JetResDown);
+    SystList.push_back(AnalyzerParameter::JetMassUp);
+    SystList.push_back(AnalyzerParameter::JetMassDown);
+    SystList.push_back(AnalyzerParameter::JetMassSmearUp);
+    SystList.push_back(AnalyzerParameter::JetMassSmearDown);
+    SystList.push_back(AnalyzerParameter::JetEnUp);
+    SystList.push_back(AnalyzerParameter::JetEnDown);
+  }
+
   if(SystType == "Initial"){
     SystList.push_back(AnalyzerParameter::JetResUp);
     SystList.push_back(AnalyzerParameter::JetResDown);
@@ -282,27 +293,27 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
   
   if(SystType == "All"){
     SystList = {AnalyzerParameter::JetResUp,AnalyzerParameter::JetResDown,
-		AnalyzerParameter::JetEnUp, AnalyzerParameter::JetEnDown,
-		AnalyzerParameter::JetMassUp,AnalyzerParameter::JetMassDown,                                                                                     
-		AnalyzerParameter::JetMassSmearUp,AnalyzerParameter::JetMassSmearDown,                                                                           
-		AnalyzerParameter::MuonRecoSFUp,AnalyzerParameter::MuonRecoSFDown,                                                                               
-		AnalyzerParameter::MuonEnUp,AnalyzerParameter::MuonEnDown,                                                                                       
-		AnalyzerParameter::MuonIDSFUp,AnalyzerParameter::MuonIDSFDown,                                                                                   
-		AnalyzerParameter::MuonISOSFUp,AnalyzerParameter::MuonISOSFDown,                                                                                 
-		AnalyzerParameter::MuonTriggerSFUp,AnalyzerParameter::MuonTriggerSFDown,                                                                                 
-		AnalyzerParameter::ElectronRecoSFUp,AnalyzerParameter::ElectronRecoSFDown,                                                                       
-		AnalyzerParameter::ElectronResUp,AnalyzerParameter::ElectronResDown,                                                                             
-		AnalyzerParameter::ElectronEnUp,AnalyzerParameter::ElectronEnDown,                                                                               
-		AnalyzerParameter::ElectronIDSFUp,AnalyzerParameter::ElectronIDSFDown,                                                                           
-		AnalyzerParameter::ElectronTriggerSFUp,AnalyzerParameter::ElectronTriggerSFDown,                                                                 
-		AnalyzerParameter::BTagSFHTagUp,AnalyzerParameter::BTagSFHTagDown,                                                                               
-		AnalyzerParameter::BTagSFLTagUp,AnalyzerParameter::BTagSFLTagDown,                                                                               
-		AnalyzerParameter::METUnclUp,AnalyzerParameter::METUnclDown,                                                                                     
-		AnalyzerParameter::CFRateUp,AnalyzerParameter::CFRateDown,                                                                                               
-		AnalyzerParameter::CFSFUp,AnalyzerParameter::CFSFDown,                                                                                               
-		AnalyzerParameter::FRUp,AnalyzerParameter::FRDown,                                                                                               
-		AnalyzerParameter::PrefireUp,AnalyzerParameter::PrefireDown,                                                                                     
-		AnalyzerParameter::PUUp,AnalyzerParameter::PUDown};
+    AnalyzerParameter::JetEnUp, AnalyzerParameter::JetEnDown,
+    AnalyzerParameter::JetMassUp,AnalyzerParameter::JetMassDown,                                                                                     
+    AnalyzerParameter::JetMassSmearUp,AnalyzerParameter::JetMassSmearDown,                                                                           
+    AnalyzerParameter::MuonRecoSFUp,AnalyzerParameter::MuonRecoSFDown,                                                                               
+    AnalyzerParameter::MuonEnUp,AnalyzerParameter::MuonEnDown,                                                                                       
+    AnalyzerParameter::MuonIDSFUp,AnalyzerParameter::MuonIDSFDown,                                                                                   
+    AnalyzerParameter::MuonISOSFUp,AnalyzerParameter::MuonISOSFDown,                                                                                 
+    AnalyzerParameter::MuonTriggerSFUp,AnalyzerParameter::MuonTriggerSFDown,                                                                                 
+    AnalyzerParameter::ElectronRecoSFUp,AnalyzerParameter::ElectronRecoSFDown,                                                                       
+    AnalyzerParameter::ElectronResUp,AnalyzerParameter::ElectronResDown,                                                                             
+    AnalyzerParameter::ElectronEnUp,AnalyzerParameter::ElectronEnDown,                                                                               
+    AnalyzerParameter::ElectronIDSFUp,AnalyzerParameter::ElectronIDSFDown,                                                                           
+    AnalyzerParameter::ElectronTriggerSFUp,AnalyzerParameter::ElectronTriggerSFDown,                                                                 
+    AnalyzerParameter::BTagSFHTagUp,AnalyzerParameter::BTagSFHTagDown,                                                                               
+    AnalyzerParameter::BTagSFLTagUp,AnalyzerParameter::BTagSFLTagDown,                                                                               
+    AnalyzerParameter::METUnclUp,AnalyzerParameter::METUnclDown,                                                                                     
+    AnalyzerParameter::CFRateUp,AnalyzerParameter::CFRateDown,                                                                                               
+    AnalyzerParameter::CFSFUp,AnalyzerParameter::CFSFDown,                                                                                               
+    AnalyzerParameter::FRUp,AnalyzerParameter::FRDown,                                                                                               
+    AnalyzerParameter::PrefireUp,AnalyzerParameter::PrefireDown,                                                                                     
+    AnalyzerParameter::PUUp,AnalyzerParameter::PUDown};
     
     
   }

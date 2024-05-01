@@ -11,12 +11,10 @@ ZZZ
 WpWp_EWK
 WpWp_QCD
 ttWToLNu
-ttWToQQ
 ttZToLLNuNu
 ttZToQQ_ll
 GluGluHToWWTo2L2Nu
 GluGluHToZZTo4L
-GluGluHToTauTau_M125
 GluGluToZZto2e2mu
 GluGluToZZto4e
 GluGluToZZto4mu

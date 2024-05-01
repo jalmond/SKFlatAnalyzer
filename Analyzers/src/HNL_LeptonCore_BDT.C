@@ -804,7 +804,6 @@ void HNL_LeptonCore::SetupEventBDTVariables(std::vector<Lepton *> LepTColl,
   ev_bdt_MET2HT  = JetColl.size()<1? -1.:pow(ev_bdt_MET,2.)/ev_bdt_HT;
   ev_bdt_MET2ST  = pow(ev_bdt_MET,2.)/ST;
 
-  const float MW = 80.379;
   float dijetmass_tmp=9999.;
   float dijetmass=99990000.;
   int m=-999;
@@ -814,7 +813,7 @@ void HNL_LeptonCore::SetupEventBDTVariables(std::vector<Lepton *> LepTColl,
     for(UInt_t enne=emme+1; enne<JetColl.size(); enne++) {
 
       dijetmass_tmp = (JetColl[emme]+JetColl[enne]).M();
-      if ( fabs(dijetmass_tmp-MW) < fabs(dijetmass-MW) ) {
+      if ( fabs(dijetmass_tmp-M_W) < fabs(dijetmass-M_W) ) {
         dijetmass = dijetmass_tmp;
         m = emme;
         n = enne;
@@ -862,45 +861,45 @@ double HNL_LeptonCore::EvaluateEventMVA(TString mN, TString bkgType, TString NCu
   if(bkgType == "Incl"){
 
     if(GetChannelString(channel) == "MuMu"){
-      if(mN = "85"){ NTree = "700", NCut = "150"; }
-      if(mN = "90"){ NTree = "700", NCut = "150"; }
-      if(mN = "95"){ NTree = "700", NCut = "150"; }
-      if(mN = "100"){ NTree = "700", NCut = "150"; }
-      if(mN = "125"){ NTree = "600", NCut = "100"; }
-      if(mN = "150"){ NTree = "850", NCut = "250"; }
-      if(mN = "200"){ NTree = "500", NCut = "300"; }
-      if(mN = "250"){ NTree = "850", NCut = "150"; }
-      if(mN = "300"){ NTree = "850", NCut = "200"; }
-      if(mN = "400"){ NTree = "850", NCut = "200"; }
-      if(mN = "500"){ NTree = "850", NCut = "200"; }
+      if(mN == "85"){ NTree = "700", NCut = "150"; }
+      if(mN == "90"){ NTree = "700", NCut = "150"; }
+      if(mN == "95"){ NTree = "700", NCut = "150"; }
+      if(mN == "100"){ NTree = "700", NCut = "150"; }
+      if(mN == "125"){ NTree = "600", NCut = "100"; }
+      if(mN == "150"){ NTree = "850", NCut = "250"; }
+      if(mN == "200"){ NTree = "500", NCut = "300"; }
+      if(mN == "250"){ NTree = "850", NCut = "150"; }
+      if(mN == "300"){ NTree = "850", NCut = "200"; }
+      if(mN == "400"){ NTree = "850", NCut = "200"; }
+      if(mN == "500"){ NTree = "850", NCut = "200"; }
     }
 
     if(GetChannelString(channel) == "EE"){
-      if(mN = "85"){ NTree = "500", NCut = "250"; }
-      if(mN = "90"){ NTree = "500", NCut = "250"; }
-      if(mN = "95"){ NTree = "500", NCut = "250"; }
-      if(mN = "100"){ NTree = "500", NCut = "250"; }
-      if(mN = "125"){ NTree = "500", NCut = "200"; }
-      if(mN = "150"){ NTree = "600", NCut = "250"; }
-      if(mN = "200"){ NTree = "500", NCut = "150"; }
-      if(mN = "250"){ NTree = "700", NCut = "200"; }
-      if(mN = "300"){ NTree = "500", NCut = "200"; }
-      if(mN = "400"){ NTree = "500", NCut = "400"; }
-      if(mN = "500"){ NTree = "700", NCut = "200"; }
+      if(mN == "85"){ NTree = "500", NCut = "250"; }
+      if(mN == "90"){ NTree = "500", NCut = "250"; }
+      if(mN == "95"){ NTree = "500", NCut = "250"; }
+      if(mN == "100"){ NTree = "500", NCut = "250"; }
+      if(mN == "125"){ NTree = "500", NCut = "200"; }
+      if(mN == "150"){ NTree = "600", NCut = "250"; }
+      if(mN == "200"){ NTree = "500", NCut = "150"; }
+      if(mN == "250"){ NTree = "700", NCut = "200"; }
+      if(mN == "300"){ NTree = "500", NCut = "200"; }
+      if(mN == "400"){ NTree = "500", NCut = "400"; }
+      if(mN == "500"){ NTree = "700", NCut = "200"; }
     }
 
     if(GetChannelString(channel) == "EMu"){
-      if(mN = "85"){ NTree = "1000", NCut = "100"; }
-      if(mN = "90"){ NTree = "1000", NCut = "100"; }
-      if(mN = "95"){ NTree = "1000", NCut = "100"; }
-      if(mN = "100"){ NTree = "1000", NCut = "100"; }
-      if(mN = "125"){ NTree = "600", NCut = "200"; }
-      if(mN = "150"){ NTree = "500", NCut = "100"; }
-      if(mN = "200"){ NTree = "1000", NCut = "100"; }
-      if(mN = "250"){ NTree = "850", NCut = "200"; }
-      if(mN = "300"){ NTree = "850", NCut = "200"; }
-      if(mN = "400"){ NTree = "850", NCut = "200"; }
-      if(mN = "500"){ NTree = "850", NCut = "200"; }
+      if(mN == "85"){ NTree = "1000", NCut = "100"; }
+      if(mN == "90"){ NTree = "1000", NCut = "100"; }
+      if(mN == "95"){ NTree = "1000", NCut = "100"; }
+      if(mN == "100"){ NTree = "1000", NCut = "100"; }
+      if(mN == "125"){ NTree = "600", NCut = "200"; }
+      if(mN == "150"){ NTree = "500", NCut = "100"; }
+      if(mN == "200"){ NTree = "1000", NCut = "100"; }
+      if(mN == "250"){ NTree = "850", NCut = "200"; }
+      if(mN == "300"){ NTree = "850", NCut = "200"; }
+      if(mN == "400"){ NTree = "850", NCut = "200"; }
+      if(mN == "500"){ NTree = "850", NCut = "200"; }
     }
 
   }

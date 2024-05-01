@@ -129,20 +129,26 @@ double CFBackgroundEstimator::GetElectronCFRateFitted(TString ID, TString key, d
 
   vector <double> BinCentres;
   double Center_MainBin(0.), Center_mBin(0.), Center_pBin(0.);
-  for(int ib =1; ib < invptbins.size()-1; ib++){
-    if(IPt < invptbins[ib]) {
-      Center_MainBin = (invptbins[ib] - invptbins[ib-1]) /2.;
-      Center_mBin    = (invptbins[ib-1] - invptbins[ib-2]) /2.;
-      Center_pBin    = (invptbins[ib+1] - invptbins[ib]) /2.;
+  bool corrBinFound=false;
+  for(int ib =2; ib < invptbins.size()-1; ib++){
+    //cout << "invptbins = " << invptbins[ib] << " IPt = " << IPt << endl;
+    if(!corrBinFound && (IPt <= invptbins[ib]) && (IPt >invptbins[ib-1]) ) {
+      //cout << "Correct bin " << endl;
+      corrBinFound=true;
+      Center_MainBin = (invptbins[ib] + invptbins[ib-1]) /2.;
+      Center_mBin    = (invptbins[ib-1] + invptbins[ib-2]) /2.;
+      Center_pBin    = (invptbins[ib+1] + invptbins[ib]) /2.;
+      //cout << "Center_MainBin = " << Center_MainBin << " Center_mBin = " << Center_mBin << " Center_pBin = " << Center_pBin << endl;
+
     }
   }
   //  PrintBins((mapit->second));
 
 
-  cout << "  "<< endl;
-  cout << "Pt = " <<  pt << " IPt = " << IPt << " this_bin = " << this_bin << " this_bin_m1 = " << this_bin_m1 << "  = " << this_bin_p1 << endl;
-  cout << "value_MainBin = " << value_MainBin << " value_mBin " << value_mBin << " value_pBin = " << value_pBin << endl;
-  cout << "Center_MainBin = " << Center_MainBin << " Center_mBin = " << Center_mBin << " Center_pBin = " << Center_pBin << endl;
+  //  cout << "  "<< endl;
+  //cout << "Pt = " <<  pt << " IPt = " << IPt << " this_bin = " << this_bin << " this_bin_m1 = " << this_bin_m1 << "  = " << this_bin_p1 << endl;
+  //cout << "value_MainBin = " << value_MainBin << " value_mBin " << value_mBin << " value_pBin = " << value_pBin << endl;
+  //cout << "Center_MainBin = " << Center_MainBin << " Center_mBin = " << Center_mBin << " Center_pBin = " << Center_pBin << endl;
 
   
   ////    0         0.002     0.003                      0.04     0.07
@@ -155,8 +161,8 @@ double CFBackgroundEstimator::GetElectronCFRateFitted(TString ID, TString key, d
     double CFRate = value_MainBin + (dY/dX) * (Center_MainBin-IPt);
     
     
-    cout << "Left of centre : IPt = " << IPt << " dX = " << dX << " dY = " << dY << " (Center_MainBin-IPt) = " << (Center_MainBin-IPt) << endl;
-    cout << "Left of centre : CFRate : " << value_MainBin << " --> "<<  CFRate << endl;
+    //cout << "Left of centre : IPt = " << IPt << " dX = " << dX << " dY = " << dY << " (Center_MainBin-IPt) = " << (Center_MainBin-IPt) << endl;
+    //cout << "Left of centre : CFRate : " << value_MainBin << " --> "<<  CFRate << endl;
     if(isnan(CFRate)) {
       cout << "CF Fit returns nan. " << endl;
       
@@ -168,10 +174,10 @@ double CFBackgroundEstimator::GetElectronCFRateFitted(TString ID, TString key, d
     double dX = Center_pBin - Center_MainBin;
     double dY = value_MainBin - value_pBin;
 
-    cout << "Right of centre : IPt = " << IPt << " dX = "<< dX << " dY = " << dY<< " (Center_MainBin-IPt) = " << (Center_MainBin-IPt) << endl;
+    // cout << "Right of centre : IPt = " << IPt << " dX = "<< dX << " dY = " << dY<< " (Center_MainBin-IPt) = " << (Center_MainBin-IPt) << endl;
     double CFRate = value_MainBin + (dY/dX) * (Center_MainBin-IPt);
 
-    cout << "Right of centre : CFRate : "<< value_MainBin << " --> "<<  CFRate << endl;
+    //cout << "Right of centre : CFRate : "<< value_MainBin << " --> "<<  CFRate << endl;
 
     if(isnan(CFRate)) {
       cout << "CF Fit returns nan. " <<endl;

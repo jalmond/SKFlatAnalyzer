@@ -477,7 +477,7 @@ void HNL_LeptonCore::Fill_Plots(AnalyzerParameter param, TString region,  TStrin
   double met2_st = pow(met.Pt(),2.)/ ST;
 
   if(DrawLevel2)FillHist( plot_dir+ region+ "/SKEvent/Ev_ST", ST  , w, 250, 0., 5000.,"ST GeV");
-  if(DrawLevel1)FillHist( plot_dir+ region+ "/SKEvent/Ev_MET2_ST", met2_st  , w, 40, 0., 20.,"MET2/ST GeV");
+  if(DrawLevel1)FillHist( plot_dir+ region+ "/SKEvent/Ev_MET2_ST", met2_st  , w, 100, 0., 100.,"MET2/ST GeV");
 
   Particle METv           = GetMiniAODvMET("T1xyCorr");
   Particle PuppiMETv      = GetMiniAODvMET("PuppiT1xyCorr");

@@ -6,7 +6,7 @@ njobs=250
 nmax=400
 skim=' '
 declare  -a era_list=("2016postVFP" "2016preVFP" "2017" "2018")
-declare  -a era_list=("2018")
+declare  -a era_list=("2016postVFP")
 
 declare  -a flag_list=("ClosureTest")
 
@@ -15,6 +15,6 @@ do
     for j in "${flag_list[@]}"
     do
 	
-	SKFlat.py -a $analyzer -i DYJetsToEE_MiNNLO   -n 50  --nmax 600   -e ${i}  --skim SkimTree_DileptonBDT --userflags $j&
+	SKFlat.py -a $analyzer -i DYJetsToEE_MiNNLO   -n 400  --nmax 800   -e ${i}  --skim SkimTree_DileptonBDT --userflags $j&
     done
 done

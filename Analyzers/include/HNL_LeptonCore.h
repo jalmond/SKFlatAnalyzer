@@ -147,6 +147,8 @@ class HNL_LeptonCore : public AnalyzerCore {
   double GetCFWeightElectron(std::vector<Electron> electrons ,  AnalyzerParameter param,   bool ApplySF=true);
   double GetCFWeightElectron(std::vector<Lepton* > leps ,  AnalyzerParameter param,int nEl,bool ApplySF=true);
   double GetShiftCFEl(Electron el , TString ID, bool ApplyCorr=false, TString Method = "minChi2") ;
+  double GetShiftCFEl(double elpt, bool isbb, TString ID, bool ApplyCorr=false, TString Method = "minChi2") ;
+  double PtExtrap(double val, double x1, double x2, double y1, double y2);
   double GetZMassShift(vector<Electron> Electrons) ;
 
   int  GetFakeLepSrcType(const Lepton& Lep, vector<Jet>& JetColl);

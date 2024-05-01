@@ -1,3 +1,6 @@
+CFRate          InvPtEta3_PBSExtrap		HNL_ULID_2016	HNL_CF_Version4_Electron_2016b_Rates.root
+CFRate          InvPtEta3_PBSExtrap_p1	HNL_ULID_2016	HNL_CF_Version4_Electron_2016b_Rates.root
+CFRate          InvPtEta3_PBSExtrap_p2	HNL_ULID_2016	HNL_CF_Version4_Electron_2016b_Rates.root
 CFRate          PtEta_CS                HNL_ULID_2016 HNL_CF_Version3_Electron_2016b_Rates.root
 CFRate          PtEta_NoS               HNL_ULID_2016 HNL_CF_Version3_Electron_2016b_Rates.root
 CFRate          PtEta_PBS               HNL_ULID_2016 HNL_CF_Version3_Electron_2016b_Rates.root
@@ -27,6 +30,9 @@ CFRate          PtEta2_PBS               POGTight HNL_CF_Version3_Electron_2016b
 CFRate          PtEta3_CS                POGTight HNL_CF_Version3_Electron_2016b_Rates.root
 CFRate          PtEta3_NoS               POGTight HNL_CF_Version3_Electron_2016b_Rates.root
 CFRate          PtEta3_PBS               POGTight HNL_CF_Version3_Electron_2016b_Rates.root
+CFRate          InvPtEta3_PBSExtrap         POGTight   HNL_CF_Version4_Electron_2016b_Rates.root
+CFRate          InvPtEta3_PBSExtrap_p1      POGTight   HNL_CF_Version4_Electron_2016b_Rates.root
+CFRate          InvPtEta3_PBSExtrap_p2      POGTight   HNL_CF_Version4_Electron_2016b_Rates.root
 CFRate          InvPtEta_CS                POGTight HNL_CF_Version3_Electron_2016b_Rates.root
 CFRate          InvPtEta_NoS               POGTight HNL_CF_Version3_Electron_2016b_Rates.root
 CFRate          InvPtEta_PBS               POGTight HNL_CF_Version3_Electron_2016b_Rates.root
@@ -38,6 +44,9 @@ CFRate          InvPtEta3_CS2                POGTight HNL_CF_Version3_Electron_2
 CFRate          InvPtEta3_CS3                POGTight HNL_CF_Version3_Electron_2016b_Rates.root
 CFRate          InvPtEta3_NoS               POGTight HNL_CF_Version3_Electron_2016b_Rates.root
 CFRate          InvPtEta3_PBS               POGTight HNL_CF_Version3_Electron_2016b_Rates.root
+CFRate          InvPtEta3_PBSExtrap         HNTightV2   HNL_CF_Version4_Electron_2016b_Rates.root
+CFRate          InvPtEta3_PBSExtrap_p1      HNTightV2   HNL_CF_Version4_Electron_2016b_Rates.root
+CFRate          InvPtEta3_PBSExtrap_p2      HNTightV2   HNL_CF_Version4_Electron_2016b_Rates.root
 CFRate          PtEta_CS                HNTightV2 HNL_CF_Version3_Electron_2016b_Rates.root
 CFRate          PtEta_NoS               HNTightV2 HNL_CF_Version3_Electron_2016b_Rates.root
 CFRate          PtEta_PBS               HNTightV2 HNL_CF_Version3_Electron_2016b_Rates.root

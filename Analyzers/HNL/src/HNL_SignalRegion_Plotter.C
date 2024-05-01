@@ -16,7 +16,7 @@ void HNL_SignalRegion_Plotter::executeEvent(){
   FillTimer("START_EV");
   
   //vector<TString> LepIDs = {"HNL_ULID","HNTightV2","TopHN", "Peking","POGTight"};
-  vector<TString> LepIDs = {"HNL_ULID"};
+  vector<TString> LepIDs = {"HNL_ULID","HNTightV2"};
   vector<HNL_LeptonCore::Channel> ChannelsToRun = {MuMu,EE,EMu};
 
   for (auto id: LepIDs){
@@ -28,7 +28,8 @@ void HNL_SignalRegion_Plotter::executeEvent(){
       if(!IsData) RunSyst=true;
       if(RunSyst){
         TString param_name = param.Name;
-        vector<AnalyzerParameter::Syst> SystList = GetSystList("Initial");
+        //vector<AnalyzerParameter::Syst> SystList = GetSystList("Initial");
+        vector<AnalyzerParameter::Syst> SystList = GetSystList("Jets");
         
         for(auto isyst : SystList){
           param.syst_ = AnalyzerParameter::Syst(isyst);
