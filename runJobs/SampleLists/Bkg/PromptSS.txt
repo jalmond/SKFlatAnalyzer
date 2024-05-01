@@ -14,6 +14,7 @@ ttWToLNu
 ttWToQQ
 ttZToLLNuNu
 ttZToQQ_ll
+GluGluHToWWTo2L2Nu
 GluGluHToZZTo4L
 GluGluHToTauTau_M125
 GluGluToZZto2e2mu
@@ -28,10 +29,8 @@ SingleTop_tch_top_Incl
 SingleTop_tW_antitop_NoFullyHad
 SingleTop_tW_top_NoFullyHad
 VHToNonbb
-GluGluHToWWTo2L2Nu
 VBF_HToZZTo4L
 VBFHToWWTo2L2Nu
 VBFHToTauTau_M125
-VHToNonbb
 ttHToNonbb
 tHq
