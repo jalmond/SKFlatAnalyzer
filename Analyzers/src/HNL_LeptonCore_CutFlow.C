@@ -302,7 +302,7 @@ vector<TString>  HNL_LeptonCore::GetLabelsFromRegion(HNL_LeptonCore::SearchRegio
   
   if(sr==SR2  || sr==CR2) {
     
-    labels = {  "SR2_lep_charge",  "SR2_lep_pt",  "SR2_DPhi",  "SR2_LLMass", "SR2_DiJet", "SR2_DiJetEta", "SR2_DiJetMass","SR2_VBF","SR2_met","SR2_bveto", "SR2_ht_lt1"};
+    labels = {  "SR2_lep_charge",  "SR2_lep_pt",  "SR2_DPhi",  "SR2_LLMass", "SR2_DiJet", "SR2_DiJetEta", "SR2_DiJetMass", "SR2_Zep", "SR2_VBF","SR2_met","SR2_bveto", "SR2_ht_lt1"};
     
     if(sr==CR2) labels = ConvertCutFlowLabels(labels);
   }

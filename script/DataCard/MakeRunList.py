@@ -5,14 +5,15 @@ import commands as cmd
 #mylist = cmd.getoutput("ls /data6/Users/jihkim/CombineTool/CMSSW_10_2_13/src/DataCardsShape/HNL_SignalRegion_Plotter/*.root | grep HNL_UL.root")
 #with open("RunList.txt",'w') as f:
 #  f.write(mylist)
-#channels = ["MuMu","EE"]
-#for channel in channels:
-#  mylist = cmd.getoutput("ls /data6/Users/jihkim/CombineTool/CMSSW_10_2_13/src/DataCardsShape/HNL_SignalRegion_Plotter/exo17028_CombinedYears/"+channel).split('\n')
-#  mylist = '\n'.join(["/data6/Users/jihkim/CombineTool/CMSSW_10_2_13/src/DataCardsShape/HNL_SignalRegion_Plotter/exo17028_CombinedYears/"+channel+"/"+s for s in mylist])
-#  with open("RunList_exo17028.txt",'a') as f:
-#    f.write(mylist)
-#    f.write('\n')
+channels = ["MuMu","EE"]
+for channel in channels:
+  mylist = cmd.getoutput("ls /data6/Users/jihkim/CombineTool/CMSSW_10_2_13/src/DataCardsShape/HNL_SignalRegion_Plotter/exo17028_CombinedYears_noSSWW/"+channel).split('\n')
+  mylist = '\n'.join(["/data6/Users/jihkim/CombineTool/CMSSW_10_2_13/src/DataCardsShape/HNL_SignalRegion_Plotter/exo17028_CombinedYears_noSSWW/"+channel+"/"+s for s in mylist])
+  with open("RunList_exo17028_noSSWW.txt",'a') as f:
+    f.write(mylist)
+    f.write('\n')
 
+"""
 #years = ["2016","2017","2018"]
 #years = ["Run2"]
 #years = ["2016preVFP","2016postVFP","2017","2018","Run2"]
@@ -39,3 +40,4 @@ for WP in myWPs:
           for tag in tags:
             card = input_path+WP+"/card_"+year+"_"+channel+"_"+mass+tag+".root\n"
             f.write(card)
+"""

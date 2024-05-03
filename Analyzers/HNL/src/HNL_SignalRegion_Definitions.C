@@ -521,13 +521,14 @@ TString HNL_RegionDefinitions::RunSignalRegionWWString(bool ApplyForSR,HNL_Lepto
   FillCutflow(Reg, w, RegionTag+"_DiJetEta",param);
 
   Particle JJ = JetColl[ijet1] + JetColl[ijet2];
-  FillCutflow(Reg, w, RegionTag+"_DiJetMass",param);
   if(JJ.M() < 750) return "false";
+  FillCutflow(Reg, w, RegionTag+"_DiJetMass",param);
   
   double Av_JetEta= 0.5*(JetColl[ijet1].Eta()+ JetColl[ijet2].Eta());
   double zeppenfeld = TMath::Max((*leps[0]).Eta()  - Av_JetEta , (*leps[1]).Eta()  - Av_JetEta ) /maxDiJetDeta;
   
   if(zeppenfeld > 0.75) return "false";
+  FillCutflow(Reg, w, RegionTag+"_Zep",param);
   
   if(!PassVBF(JetColl,leps,750., true)) return "false";
   
