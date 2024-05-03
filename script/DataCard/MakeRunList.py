@@ -5,6 +5,13 @@ import commands as cmd
 #mylist = cmd.getoutput("ls /data6/Users/jihkim/CombineTool/CMSSW_10_2_13/src/DataCardsShape/HNL_SignalRegion_Plotter/*.root | grep HNL_UL.root")
 #with open("RunList.txt",'w') as f:
 #  f.write(mylist)
+#channels = ["MuMu","EE"]
+#for channel in channels:
+#  mylist = cmd.getoutput("ls /data6/Users/jihkim/CombineTool/CMSSW_10_2_13/src/DataCardsShape/HNL_SignalRegion_Plotter/exo17028_CombinedYears/"+channel).split('\n')
+#  mylist = '\n'.join(["/data6/Users/jihkim/CombineTool/CMSSW_10_2_13/src/DataCardsShape/HNL_SignalRegion_Plotter/exo17028_CombinedYears/"+channel+"/"+s for s in mylist])
+#  with open("RunList_exo17028.txt",'a') as f:
+#    f.write(mylist)
+#    f.write('\n')
 
 #years = ["2016","2017","2018"]
 #years = ["Run2"]
@@ -17,10 +24,11 @@ masses = ["M90","M100","M150","M200","M300","M400","M500","M600","M700","M800","
 #masses = ["M100","M1000","M10000"]
 #masses = ["M500"]
 #channels = ["MuMu","EE"]
-channels = ["EMu"]
-#channels = ["MuMu","EE","EMu"]
+#channels = ["EMu"]
+channels = ["MuMu","EE","EMu"]
 input_path = "/data6/Users/jihkim/CombineTool/CMSSW_10_2_13/src/DataCardsShape/HNL_SignalRegion_Plotter/"
-myWPs = ["240422_HNL_ULID"]
+#myWPs = ["240422_HNL_ULID"]
+myWPs = ["240501_1704_HNL_ULID","240501_1704_HNTightV2"]
 tags = ["_sronly_syst"]
 
 for WP in myWPs:

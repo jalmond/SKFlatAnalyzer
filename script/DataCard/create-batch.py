@@ -47,7 +47,7 @@ for RunList in args.RunLists:
   
     card = cards[i].strip('\n')
     if '#' in card: continue
-    shortcard = card.split('/')[-1].replace(".root","").replace("card_","")
+    shortcard = card.split('/')[-1].replace(".root","").replace(".txt","").replace("card_","")
   
     os.system('mkdir -p Batch/'+WP+'/full_CLs/'+shortcard+'/output/')
     os.system('cp Batch/submit_skeleton.sh Batch/'+WP+'/full_CLs/'+shortcard+'/submit_Q1.sh')

@@ -25,7 +25,8 @@ masses = ["90","100","150","200","300","400","500","600","700","800","900","1000
 #masses = ["90","100","200","300","400","1000","10000"]
 IDs = [""] #["_ID"]
 tags = ["_sronly_syst"] #["_DYVBF"]
-myWPs = ["240422_HNL_ULID"]
+#myWPs = ["240422_HNL_ULID"]
+myWPs = ["240501_1704_HNL_ULID","240501_1704_HNTightV2"]
 
 for WP in myWPs:
   this_workdir = workdir+WP
