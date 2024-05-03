@@ -321,18 +321,18 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
       //// These are looser Selections than final limit input, 
       //// i.e., FillHighMassSR1CRPlots has no mW cut, so CR plots have more stats 
 
-      if(FillSSPreselectionPlots(dilep_channel,    LepsT, LepsV, JetColl,     AK8_JetColl, B_JetColl, ev, METv, param, weight_channel))	{
-	passed.push_back("SSPresel");
+      if(FillSSPreselectionPlots(dilep_channel,    LepsT, LepsV, JetColl,     AK8_JetColl, B_JetColl, ev, METv, param, weight_channel))  {
+        passed.push_back("SSPresel");
 
-	if(FillHighMassSR1CRPlots(dilep_channel, LepsT, LepsV, JetColl,     AK8_JetColl, B_JetColl, ev, METv, param, weight_channel)) passed.push_back("HighMassSR1_CR");
-	if(FillHighMassSR2CRPlots(dilep_channel, LepsT, LepsV,JetCollLoose, VBF_JetColl, AK8_JetColl, B_JetColl, ev, METv, param, weight_channel)) passed.push_back("HighMassSR2_CR");
-	if(!PassVBF(VBF_JetColl,LepsT,750) && FillHighMassSR3CRPlots(dilep_channel, LepsT, LepsV, JetColl,     AK8_JetColl, B_JetColl, ev, METv, param, weight_channel)) passed.push_back("HighMassSR3_CR");
-	
-	if(FillHighMass1JetCRPlots(dilep_channel, LepsT, LepsV, JetColl,    AK8_JetColl, B_JetColl, ev, METv, param, weight_channel)) passed.push_back("HighMass1Jet_CR");
-	if(FillHighMassBJetCRPlots(dilep_channel, LepsT, LepsV, JetColl,    AK8_JetColl, B_JetColl, ev, METv, param, weight_channel)) passed.push_back("HighMassBJet_CR");
-	if(FillHighMassNPCRPlots(dilep_channel, LepsT, LepsV, JetColl,      AK8_JetColl, B_JetColl, ev, METv, param, weight_channel)) passed.push_back("HighMassNP_CR");
-	
-	FillSSZPeakCRPlots(dilep_channel, LepsT, LepsV, JetColl,    AK8_JetColl, B_JetColl, ev, METv, param, weight_channel);
+        if(FillHighMassSR1CRPlots(dilep_channel, LepsT, LepsV, JetColl,     AK8_JetColl, B_JetColl, ev, METv, param, weight_channel)) passed.push_back("HighMassSR1_CR");
+        if(FillHighMassSR2CRPlots(dilep_channel, LepsT, LepsV,JetCollLoose, VBF_JetColl, AK8_JetColl, B_JetColl, ev, METv, param, weight_channel)) passed.push_back("HighMassSR2_CR");
+        if(!PassVBF(VBF_JetColl,LepsT,750) && FillHighMassSR3CRPlots(dilep_channel, LepsT, LepsV, JetColl,     AK8_JetColl, B_JetColl, ev, METv, param, weight_channel)) passed.push_back("HighMassSR3_CR");
+        
+        if(FillHighMass1JetCRPlots(dilep_channel, LepsT, LepsV, JetColl,    AK8_JetColl, B_JetColl, ev, METv, param, weight_channel)) passed.push_back("HighMass1Jet_CR");
+        if(FillHighMassBJetCRPlots(dilep_channel, LepsT, LepsV, JetColl,    AK8_JetColl, B_JetColl, ev, METv, param, weight_channel)) passed.push_back("HighMassBJet_CR");
+        if(FillHighMassNPCRPlots(dilep_channel, LepsT, LepsV, JetColl,      AK8_JetColl, B_JetColl, ev, METv, param, weight_channel)) passed.push_back("HighMassNP_CR");
+        
+        FillSSZPeakCRPlots(dilep_channel, LepsT, LepsV, JetColl,    AK8_JetColl, B_JetColl, ev, METv, param, weight_channel);
       }
 
       //// RunMainRegionCode(false runs CR version of SR1/2/3
@@ -1108,7 +1108,7 @@ bool HNL_RegionDefinitions::FillSSPreselectionPlots(HNL_LeptonCore::Channel chan
 
   HNL_LeptonCore::SearchRegion Reg = Presel;
   FillCutflow(Reg, w, "Step0",param);
-  if(!SameCharge(leps))  return false;
+  if(!RunCF && !SameCharge(leps))  return false; //JH : hotfix
   if(!CheckLeptonFlavourForChannel(channel, leps)) return false;
 
   FillCutflow(Reg, w, "Step1",param);
