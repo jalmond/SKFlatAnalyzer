@@ -14,7 +14,7 @@ skim=' '
 if [[ $1 == "" ]]; then
 
     declare  -a era_list=("2017" "2018" "2016postVFP" "2016preVFP")
-    declare  -a era_list=("2018")
+    declare  -a era_list=("2017" "2018")
 
     for i in "${era_list[@]}"
     do
