@@ -83,8 +83,8 @@ if [[ $1 == "" ]]; then
 
 #declare  -a era_list=("2018")
 #declare  -a era_list=("2016preVFP" "2016postVFP" "2017" "2018")
-declare  -a era_list=("2016preVFP" "2016postVFP")
-#declare  -a era_list=("2017")
+#declare  -a era_list=("2016preVFP" "2016postVFP")
+declare  -a era_list=("2017")
 
     for i in "${era_list[@]}"
     do
@@ -104,7 +104,7 @@ SKFlat.py -a $analyzer  -l $sigpath/VBF.txt   -n $njobs_sig  --nmax ${nmax}   -e
 
 ## Prompt ##
 SKFlat.py -a $analyzer  -l $mcpath/PromptSS.txt             -n 20        --nmax ${nmax}   -e ${i}  --skim SkimTree_HNMultiLepBDT --userflags RunPrompt &
-#SKFlat.py -a $analyzer  -i ZZTo4L_powheg             -n 100        --nmax ${nmax}   -e ${i}  --skim SkimTree_HNMultiLepBDT --userflags RunPrompt &
+SKFlat.py -a $analyzer  -i ZZTo4L_powheg             -n 100        --nmax ${nmax}   -e ${i}  --skim SkimTree_HNMultiLepBDT --userflags RunPrompt &
 
 ## Conv ##
 SKFlat.py -a $analyzer  -l $mcpath/Conv.txt                 -n 10        --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLepBDT  --userflags RunConv &

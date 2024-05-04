@@ -12,7 +12,7 @@ TString ENV_PLOT_PATH = getenv("PLOT_PATH");
 TString filepath = ENV_FILE_PATH+dataset+"/Limits/ReadLimits/Shape/out/";
 TString plotpath = ENV_FILE_PATH+dataset+"/src/LimitPlotter/out/";
 
-void DrawLimits(TString year="", TString channel="", bool CompareLimits=false, bool Logy=true){
+void DrawLimits(TString year="", TString channel="", bool CompareLimits=true, bool Logy=true){
 
   bool DrawObserved = false;
 
@@ -20,9 +20,8 @@ void DrawLimits(TString year="", TString channel="", bool CompareLimits=false, b
 
   //gStyle->SetOptStat(0);
 
-  //TString WP_nom = "240422_HNL_ULID"; // nominal working point
-  TString WP_nom = "240501_1704_HNL_ULID"; // nominal working point
-  TString tag_nom = "sronly_syst_Run2Scaled"; // nominal tag
+  TString WP_nom = "240504_PR44_HNL_ULID"; // nominal working point
+  TString tag_nom = "sronly_Run2Scaled"; // nominal tag
   TString method_nom = "Asym"; // nominal limit method
 
   TString this_plotpath = plotpath+WP_nom;
@@ -40,16 +39,16 @@ void DrawLimits(TString year="", TString channel="", bool CompareLimits=false, b
   scales.push_back(0.01);
 
   TString method = "Asym"; //"Full";
-  vector<TString> WPs = {"240501_1704_HNTightV2"};
-  vector<TString> tags = {"_sronly_syst_Run2Scaled"};
+  vector<TString> WPs = {"240501_1704_HNL_ULID"};
+  vector<TString> tags = {"_sronly_Run2Scaled"};
   for(int i=0; i<WPs.size(); i++){
     for(int j=0; j<tags.size(); j++){
       files.push_back(filepath+WPs[i]+"/"+year+"_"+channel+tags[j]+"_"+method+"_limit.txt"); // add files systematically
       scales.push_back(0.01);
     }
   }
-  if(channel=="EE"||channel=="MuMu") files.push_back(filepath+"240503_exo17028/"+channel+"_HNTightV2_Run2_Asym_limit.txt"); // add additional files
-  scales.push_back(1.); // already scaled when extracting limits...
+  //if(channel=="EE"||channel=="MuMu") files.push_back(filepath+"240503_exo17028/"+channel+"_HNTightV2_Run2_Asym_limit.txt"); // add additional files
+  //scales.push_back(1.); // already scaled when extracting limits...
 
   vector<vector<double>> masses, obss, limits, onesig_lefts, onesig_rights, twosig_lefts, twosig_rights;
   vector<int> n_centrals;
@@ -149,11 +148,11 @@ void DrawLimits(TString year="", TString channel="", bool CompareLimits=false, b
   // Use when there are more than two input limits to compare
   TGraph *gr_exp_1 = new TGraph(n_centrals[1],&masses[1][0],&limits[1][0]);
   gr_exp_1->SetLineWidth(3);
-  gr_exp_1->SetLineColor(kCyan);
+  gr_exp_1->SetLineColor(kViolet);
 
-  TGraph *gr_exp_2 = new TGraph(n_centrals[2],&masses[2][0],&limits[2][0]);
-  gr_exp_2->SetLineWidth(3);
-  gr_exp_2->SetLineColor(kViolet);
+  //TGraph *gr_exp_2 = new TGraph(n_centrals[2],&masses[2][0],&limits[2][0]);
+  //gr_exp_2->SetLineWidth(3);
+  //gr_exp_2->SetLineColor(kCyan);
 
   //TGraph *gr_exp_3 = new TGraph(n_centrals[3],&masses[3][0],&limits[3][0]);
   //gr_exp_3->SetLineWidth(3);
@@ -845,8 +844,8 @@ void DrawLimits(TString year="", TString channel="", bool CompareLimits=false, b
     //lg_Alt->AddEntry(gr_EWPD_mm, "EWPD (90% CL)", "l");
     //lg_Alt->AddEntry(gr_ATLAS_MuMu, "ATLAS 8 TeV", "l");
     lg_Alt->AddEntry(gr_17028_exp, "EXO-17-028 2016 (exp)", "l");
-    lg_Alt->AddEntry(gr_exp_2, "EXO-17-028 Run2 (exp)", "l");
-    lg_Alt->AddEntry(gr_exp_1, "This analysis HNTightV2 Run2 (exp)", "l");
+    //lg_Alt->AddEntry(gr_exp_2, "EXO-17-028 Run2 (exp)", "l");
+    lg_Alt->AddEntry(gr_exp_1, "PR43 HNL_ULID (exp)", "l");
     lg_Alt->AddEntry(gr_21003_exp, "EXO-21-003 Run2 (exp)", "l");
     //lg_Alt->AddEntry(gr_17028_obs, "CMS 13 TeV dilepton", "l");
     //lg_Alt->AddEntry(gr_trilepLimit, "CMS 13 TeV trilepton", "l");
@@ -861,8 +860,9 @@ void DrawLimits(TString year="", TString channel="", bool CompareLimits=false, b
     //lg_Alt->AddEntry(gr_17028_exp, "CMS 13 TeV dilepton", "l");
     //lg_Alt->AddEntry(gr_dbeta, "Neutrino-less double beta dacay", "l");
     lg_Alt->AddEntry(gr_17028_exp, "EXO-17-028 2016 (exp)", "l");
-    lg_Alt->AddEntry(gr_exp_2, "EXO-17-028 Run2 (exp)", "l");
-    lg_Alt->AddEntry(gr_exp_1, "This analysis HNTightV2 Run2 (exp)", "l");
+    //lg_Alt->AddEntry(gr_exp_2, "EXO-17-028 Run2 (exp)", "l");
+    //lg_Alt->AddEntry(gr_exp_1, "This analysis HNTightV2 Run2 (exp)", "l");
+    lg_Alt->AddEntry(gr_exp_1, "PR43 HNL_ULID (exp)", "l");
     //lg_Alt->AddEntry(gr_17028_obs, "CMS 13 TeV dilepton", "l");
     //lg_Alt->AddEntry(gr_trilepLimit, "CMS 13 TeV trilepton", "l");
     //lg_Alt->AddEntry(gr_EWPD_ee, "EWPD", "l");
@@ -875,6 +875,7 @@ void DrawLimits(TString year="", TString channel="", bool CompareLimits=false, b
     //lg_Alt->AddEntry(hist_emptylegend,"#color[0]{CMS 13 TeV trilepton}","l");
     //lg_Alt->AddEntry(hist_emptylegend,"#color[0]{CMS 13 TeV trilepton}","l");
     lg_Alt->AddEntry(gr_17028_exp, "CMS 13 TeV dilepton 2016 (exp)", "l");
+    lg_Alt->AddEntry(gr_exp_1, "PR43 HNL_ULID (exp)", "l");
     //lg_Alt->AddEntry(gr_17028_obs, "CMS 13 TeV dilepton", "l");
   }
 
@@ -932,21 +933,24 @@ void DrawLimits(TString year="", TString channel="", bool CompareLimits=false, b
     //gr_DELPHILimit->Draw("lsame");
     gr_21003_exp->Draw("lsame");
     gr_exp_1->Draw("lsame");
-    gr_exp_2->Draw("lsame");
+    //gr_exp_2->Draw("lsame");
     //gr_21003_obs->Draw("lsame");
     //gr_trilepLimit->Draw("lsame");
     //gr_EWPD_mm->Draw("lsame");
     //gr_ATLAS_MuMu->Draw("lsame");
   }
-  if(channel=="EE"){
+  else if(channel=="EE"){
     gr_exp_1->Draw("lsame");
-    gr_exp_2->Draw("lsame");
+    //gr_exp_2->Draw("lsame");
     //gr_L3_2Limit->Draw("lsame");
     //gr_DELPHILimit->Draw("lsame");
     //gr_trilepLimit->Draw("lsame");
     //gr_EWPD_ee->Draw("lsame");
     //gr_dbeta->Draw("lsame");
     //gr_ATLAS_EE->Draw("lsame");
+  }
+  else if(channel=="EMu"){
+    gr_exp_1->Draw("lsame");
   }
 
   if(DrawObserved) gr_obs_0->Draw("lsame");
@@ -1000,44 +1004,42 @@ void DrawLimits(TString year="", TString channel="", bool CompareLimits=false, b
     c_down->Draw();
     c_down->cd();
 
+    ////////// Now set the comparison points manually... (fix needed) ///////////
+
     // ratio with HNTightV2 //FIXME this is mass dependent.
-    double ratio_HNTightV2[n_centrals[0]];
-    for(int i=0; i<n_centrals[0]; i++) ratio_HNTightV2[i] = limits[1][i]/limits[0][i];
+    //double ratio_HNTightV2[n_centrals[0]];
+    //for(int i=0; i<n_centrals[0]; i++) ratio_HNTightV2[i] = limits[1][i]/limits[0][i];
 
     // ratio with EXO-17-028 Run2 propagated //FIXME this is mass dependent.
-    double mass_comp_17028_run2[13] = {100,200,300,400,500,600,700,800,900,1000,1100,1200,1500};
-    int index_comp_17028_run2[13] = {0,2,4,5,6,7,8,9,10,11,12,13,14};
-    int index_comp_17028_run2_nom[13] = {1,3,4,5,6,7,8,9,10,11,12,13,15};
-    double ratio_17028_run2[13];
-    if(channel=="MuMu"||channel=="EE"){
-      for(int i=0; i<13; i++) ratio_17028_run2[i] = limits[2][index_comp_17028_run2[i]]/limits[0][index_comp_17028_run2_nom[i]];
-    }
+    //double mass_comp_17028_run2[13] = {100,200,300,400,500,600,700,800,900,1000,1100,1200,1500};
+    //int index_comp_17028_run2[13] = {0,2,4,5,6,7,8,9,10,11,12,13,14};
+    //int index_comp_17028_run2_nom[13] = {1,3,4,5,6,7,8,9,10,11,12,13,15};
+    //double ratio_17028_run2[13];
+    //if(channel=="MuMu"||channel=="EE"){
+    //  for(int i=0; i<13; i++) ratio_17028_run2[i] = limits[2][index_comp_17028_run2[i]]/limits[0][index_comp_17028_run2_nom[i]];
+    //}
+
+    // ratio with PR43 limits //FIXME this is mass dependent.
+    double mass_comp_PR43[25] = {90,100,150,200,300,400,500,600,700,800,900,1000,1100,1200,1300,1500,1700,2000,2500,3000,5000,7500,10000,15000,20000};
+    int index_comp_PR44_PR43[25] = {1,3,5,6,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28};
+    double ratio_PR43[25];
+    for(int i=0; i<25; i++) ratio_PR43[i] = limits[1][i]/limits[0][index_comp_PR44_PR43[i]];
 
     // ratio with EXO-17-028 expected //FIXME this is mass dependent.
     double mass_comp_17028[17] = {100,150,200,300,400,500,600,700,800,900,1000,1100,1200,1300,1500,1700,2000};
     int index_comp_17028[17] = {0,2,3,5,6,7,8,9,10,11,12,13,14,15,17,18,19};
-    int index_comp_limit[17] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};
+    //int index_comp_limit[17] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};
+    int index_comp_PR44_17028[17] = {3,5,6,8,9,10,11,12,13,14,15,16,17,18,19,20,21};
     double ratio_17028[17];
-    for(int i=0; i<17; i++) ratio_17028[i] = exp_17028[index_comp_17028[i]]/limits[0][index_comp_limit[i]];
+    for(int i=0; i<17; i++) ratio_17028[i] = exp_17028[index_comp_17028[i]]/limits[0][index_comp_PR44_17028[i]];
 
     // ratio with EXO-21-003 expected //FIXME this is mass dependent.
     double mass_comp_21003[13] = {150,300,600,900,1000,1500,2000,2500,5000,7500,10000,15000,20000};
     double obs_comp_21003[13] = {0.1118, 0.0837, 0.0775, 0.0819, 0.0866, 0.099, 0.1166, 0.1375, 0.2322, 0.3288, 0.4368, 0.6341, 0.8621}; //xcheck with https://www.hepdata.net/record/131287
     double exp_comp_21003[13] = {0.14142136, 0.10583005, 0.10148892, 0.10583005, 0.11045361, 0.12688578, 0.15132746, 0.17804494, 0.30049958, 0.42567593, 0.56595053, 0.82085321, 1.1180340 };
+    int index_comp_PR44_21003[13] = {5,8,11,14,15,19,21,22,24,25,26,27,28};
     double ratio_21003[13];
-    ratio_21003[0] = exp_comp_21003[0]/limits[0][1];
-    ratio_21003[1] = exp_comp_21003[1]/limits[0][3];
-    ratio_21003[2] = exp_comp_21003[2]/limits[0][6];
-    ratio_21003[3] = exp_comp_21003[3]/limits[0][9];
-    ratio_21003[4] = exp_comp_21003[4]/limits[0][10];
-    ratio_21003[5] = exp_comp_21003[5]/limits[0][14];
-    ratio_21003[6] = exp_comp_21003[6]/limits[0][16];
-    ratio_21003[7] = exp_comp_21003[7]/limits[0][17];
-    ratio_21003[8] = exp_comp_21003[8]/limits[0][19];
-    ratio_21003[9] = exp_comp_21003[9]/limits[0][20];
-    ratio_21003[10] = exp_comp_21003[10]/limits[0][21];
-    ratio_21003[11] = exp_comp_21003[11]/limits[0][22];
-    ratio_21003[12] = exp_comp_21003[12]/limits[0][23];
+    for(int i=0; i<13; i++) ratio_21003[i] = exp_comp_21003[i]/limits[0][index_comp_PR44_21003[i]];
 
     TH1D *dummy2 = new TH1D("hist2", "", 100000, 0., 100000.);
     dummy2->GetYaxis()->SetTitleSize(0.1);
@@ -1052,32 +1054,45 @@ void DrawLimits(TString year="", TString channel="", bool CompareLimits=false, b
     dummy2->GetXaxis()->SetLabelSize(0.12);
     dummy2->GetXaxis()->SetRangeUser(80., 25000);
     if(Logy) dummy2->GetYaxis()->SetRangeUser(0.85, 50);
-		else dummy2->GetYaxis()->SetRangeUser(0.85, 2);
+    else dummy2->GetYaxis()->SetRangeUser(0.85, 2);
     dummy2->SetTitle("");
     dummy2->Draw("hist");
 
     TGraph *gr_ratio_17028 = new TGraph(17,mass_comp_17028,ratio_17028);
     gr_ratio_17028->SetMarkerColor(kRed);
     gr_ratio_17028->SetLineColor(kRed);
+    gr_ratio_17028->SetLineWidth(2);
     gr_ratio_17028->Draw("lpsame");
-    TGraph *gr_ratio_HNTightV2 = new TGraph(n_centrals[0],&masses[0][0],ratio_HNTightV2);
-    gr_ratio_HNTightV2->SetMarkerColor(kCyan);
-    gr_ratio_HNTightV2->SetLineColor(kCyan);
-    gr_ratio_HNTightV2->Draw("lpsame");
-    if(channel=="MuMu"||channel=="EE"){
+    TGraph *gr_ratio_PR43 = new TGraph(25,mass_comp_PR43,ratio_PR43);
+    gr_ratio_PR43->SetMarkerColor(kViolet);
+    gr_ratio_PR43->SetLineColor(kViolet);
+    gr_ratio_PR43->SetLineWidth(2);
+    gr_ratio_PR43->Draw("lpsame");
+    //TGraph *gr_ratio_HNTightV2 = new TGraph(n_centrals[0],&masses[0][0],ratio_HNTightV2);
+    //gr_ratio_HNTightV2->SetMarkerColor(kCyan);
+    //gr_ratio_HNTightV2->SetLineColor(kCyan);
+    //gr_ratio_HNTightV2->Draw("lpsame");
+    //if(channel=="MuMu"||channel=="EE"){
+    //  TGraph *gr_ratio_17028_run2 = new TGraph(13,mass_comp_17028_run2,ratio_17028_run2);
+    //  gr_ratio_17028_run2->SetMarkerColor(kViolet);
+    //  gr_ratio_17028_run2->SetLineColor(kViolet);
+    //  gr_ratio_17028_run2->Draw("lpsame");
+    //}
+    if(channel=="MuMu"){
       TGraph *gr_ratio_21003 = new TGraph(13,mass_comp_21003,ratio_21003);
       gr_ratio_21003->SetMarkerColor(kBlue);
       gr_ratio_21003->SetLineColor(kBlue);
+      gr_ratio_21003->SetLineWidth(2);
       gr_ratio_21003->Draw("lpsame");
-      TGraph *gr_ratio_17028_run2 = new TGraph(13,mass_comp_17028_run2,ratio_17028_run2);
-      gr_ratio_17028_run2->SetMarkerColor(kViolet);
-      gr_ratio_17028_run2->SetLineColor(kViolet);
-      gr_ratio_17028_run2->Draw("lpsame");
     }
 
-    c_Dilep->SaveAs(this_plotpath+"/"+year+"_"+channel+"_13TeV_mixing_"+WP_nom+"_"+tag_nom+"_comp.png");
+    if(Logy) c_Dilep->SaveAs(this_plotpath+"/"+year+"_"+channel+"_13TeV_mixing_"+WP_nom+"_"+tag_nom+"_comp_Logy.png");
+    else c_Dilep->SaveAs(this_plotpath+"/"+year+"_"+channel+"_13TeV_mixing_"+WP_nom+"_"+tag_nom+"_comp.png");
   }
-  else c_Dilep->SaveAs(this_plotpath+"/"+year+"_"+channel+"_13TeV_mixing_"+WP_nom+"_"+tag_nom+".png");
+  else{
+    if(Logy) c_Dilep->SaveAs(this_plotpath+"/"+year+"_"+channel+"_13TeV_mixing_"+WP_nom+"_"+tag_nom+"_Logy.png");
+    else c_Dilep->SaveAs(this_plotpath+"/"+year+"_"+channel+"_13TeV_mixing_"+WP_nom+"_"+tag_nom+".png");
+  }
 
   return;
 }
