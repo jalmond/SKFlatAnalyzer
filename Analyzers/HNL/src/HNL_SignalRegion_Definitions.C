@@ -451,10 +451,10 @@ TString HNL_RegionDefinitions::RunSignalRegionAK8String(bool ApplyForSR,
   TString R1Bin=RegionTag+"_MNbin1";
 
   int nSRbins=6;
-  double ml1jbins[nSRbins] = { 0., 500, 750., 1000.,1500, 2000.};
+  double ml1jbins[nSRbins] = { 0., 500,625., 750., 1000., 2000.};
 
   FillHist(  "LimitExtraction/"+ param.Name+"/LimitShape_"+RegionTag+"/N1Mass_Central",  MN1,  w, nSRbins-1, ml1jbins, "Reco M_{l1jj}");
-
+  
   if(MN1 > 225){
     if(leps[0]->Pt() < pt_cut)  return RegionTag+"_MNbin1";
   }
@@ -670,38 +670,240 @@ TString HNL_RegionDefinitions::RunSignalRegionAK4StringBDT(bool ApplyForSR, TStr
   ///////// BDT BINS NEED OPTIMISING
 
   vector<pair<TString, double > > BDTLimitBinsMu;
-  BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin1" , -0.2));
-  BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin2" , 0.));
-  BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin3" , 0.025));
-  BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin4" , 0.05));
-  BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin5" , 0.075));
-  BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin6" , 0.1));
-  BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin7" , 0.125));
-  BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin8" , 0.15));
-  BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin9" , 0.175));
-  BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin10" , 0.2));
-  BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin11" , 0.225));
-  BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin12" , 0.25));
-  BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin13" , 0.275));
-  BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin14" , 1.));
+  vector<pair<TString, double > > BDTLimitBinsEl;    
+  vector<pair<TString, double > > BDTLimitBinsEMu;                                                     
+  
+  /// Change binning so no end bins have < 0.5 bkg
+  
+  if(channel == MuMu){
+    BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin1" , -0.25));
+    BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin2" , -0.1));
+    BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin3" , -0.05));
+    BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin4" , 0.));
+    BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin5" , 0.05));
+    BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin6" , 0.1));
+    BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin7" , 0.12));
+    BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin8" , 0.14));
+    BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin9" , 0.16));
+    BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin10" , 0.18));
+    BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin11" , 0.20));
+    BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin12" , 0.22));
+    BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin13" , 0.24));
+    BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin14" , 0.26));
+    BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin15" , 0.28));
+    BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin16" , 0.3));
+    BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin17" , 1.));
 
 
-  vector<pair<TString, double > > BDTLimitBinsEl;
-  BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin1" , -0.2));
-  BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin2" , 0.));
-  BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin3" , 0.025));
-  BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin4" , 0.05));
-  BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin5" , 0.075));
-  BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin6" , 0.1));
-  BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin7" , 0.125));
-  BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin8" , 0.15));
-  BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin9" , 0.175));
-  BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin10" , 0.2));
-  BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin11" , 0.225));
-  BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin12" , 0.25));
-  BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin13" , 0.275));
-  BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin13" , 0.3));
-  BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin14" , 1.));
+    if(mN == "150" || mN=="300" || mN=="400" || mN=="500"){
+      BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin1" , -0.25));
+      BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin2" , -0.1));
+      BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin3" , -0.05));
+      BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin4" , 0.));
+      BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin5" , 0.05));
+      BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin6" , 0.1));
+      BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin7" , 0.12));
+      BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin8" , 0.14));
+      BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin9" , 0.16));
+      BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin10" , 0.18));
+      BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin11" , 0.20));
+      BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin12" , 0.21));
+      BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin13" , 0.22));
+      BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin14" , 0.23));
+      BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin15" , 0.24));
+      BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin16" , 0.25));
+      BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin17" , 1.));
+
+    }
+    if(mN == "250"){
+      BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin1" , -0.25));
+      BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin2" , -0.1));
+      BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin3" , -0.05));
+      BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin4" , 0.));
+      BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin5" , 0.05));
+      BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin6" , 0.1));
+      BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin7" , 0.12));
+      BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin8" , 0.14));
+      BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin9" , 0.16));
+      BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin10" , 0.18));
+      BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin11" , 0.20));
+      BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin12" , 0.21));
+      BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin13" , 0.22));
+      BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin14" , 0.24));
+      BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin15" , 0.25));
+      BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin16" , 0.28));
+      BDTLimitBinsMu.push_back( make_pair(RegionTag+"_BDTbin17" , 1.));
+
+    }
+
+  }
+
+  if(channel == EE){
+    BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin1" , -0.2));
+    BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin2" , -0.15));
+    BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin3" , -0.1));
+    BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin4" , 0.));
+    BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin5" , 0.05));
+    BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin6" , 0.1));
+    BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin7" , 0.125));
+    BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin8" , 0.15));
+    BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin9" , 0.175));
+    BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin10" , 0.2));
+    BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin11" , 0.22));
+    BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin12" , 0.24));
+    BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin13" , 0.26));
+    BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin14" , 0.28));
+    BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin15" , 0.3));
+    BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin16" , 0.325));
+    BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin17" , 1.));
+    
+    if(mN == "150" || mN == "300" || mN == "400"){
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin1" , -0.2));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin2" , -0.1));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin3" , 0));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin4" , 0.025));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin5" , 0.05));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin6" , 0.1));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin7" , 0.12));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin8" , 0.14));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin9" , 0.16));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin10" , 0.18));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin11" , 0.2));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin12" , 0.22));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin13" , 0.24));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin14" , 0.26));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin15" , 0.28));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin16" , 0.3));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin17" , 1.));
+    }
+
+    if(mN == "250"|| mN == "500"){
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin1" , -0.2));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin2" , -0.1));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin3" , 0));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin4" , 0.05));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin5" , 0.075));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin6" , 0.1));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin7" , 0.12));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin8" , 0.14));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin9" , 0.16));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin10" , 0.17));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin11" , 0.18));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin12" , 0.19));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin13" , 0.2));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin14" , 0.21));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin15" , 0.23));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin16" , 0.25));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin17" , 1.));
+    }
+  }
+
+
+  if(channel == EMu){
+
+    BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin1" , -0.25));
+    BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin2" , -0.2));
+    BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin3" , -0.1));
+    BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin4" , 0.));
+    BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin5" , 0.05));
+    BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin6" , 0.1));
+    BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin7" , 0.12));
+    BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin8" , 0.14));
+    BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin9" , 0.16));
+    BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin10" , 0.18));
+    BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin11" , 0.20));
+    BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin12" , 0.21));
+    BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin13" , 0.22));
+    BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin14" , 0.23));
+    BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin15" , 0.24));
+    BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin16" , 0.26));
+    BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin17" , 1.));
+
+
+    if( mN=="200" || mN == "250" || mN == "300"){
+
+      
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin1" , -0.25));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin2" , -0.2));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin3" , -0.1));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin4" , 0.));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin5" , 0.05));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin6" , 0.1));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin7" , 0.12));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin8" , 0.14));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin9" , 0.16));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin10" , 0.18));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin11" , 0.20));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin12" , 0.21));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin13" , 0.22));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin14" , 0.23));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin15" , 0.24));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin16" , 0.26));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin17" , 1.));
+    }
+
+    if(mN == "125"){
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin1" , -0.25));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin2" , -0.2));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin3" , -0.1));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin4" , 0.));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin5" , 0.05));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin6" , 0.1));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin7" , 0.12));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin8" , 0.14));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin9" , 0.16));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin10" , 0.18));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin11" , 0.2));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin12" , 0.22));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin13" , 0.24));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin14" , 0.26));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin15" , 0.28));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin16" , 0.3));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin17" , 1.));
+    }
+    if(mN == "150"){
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin1" , -0.25));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin2" , -0.2));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin3" , -0.1));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin4" , 0.));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin5" , 0.05));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin6" , 0.1));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin7" , 0.15));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin8" , 0.15));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin9" , 0.175));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin10" , 0.2));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin11" , 0.22));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin12" , 0.24));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin13" , 0.26));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin14" , 0.28));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin15" , 0.3));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin16" , 0.325));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin17" , 1.));
+    }
+
+
+    if(mN == "400" || mN== "500"){
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin1" , -0.25));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin2" , -0.2));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin3" , -0.1));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin4" , 0.));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin5" , 0.02));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin6" , 0.04));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin7" , 0.06));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin8" , 0.08));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin9" , 0.1));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin10" , 0.12));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin11" , 0.14));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin12" , 0.22));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin13" , 0.16));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin14" , 0.18));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin15" , 0.2));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin16" , 0.22));
+      BDTLimitBinsEl.push_back( make_pair(RegionTag+"_BDTbin17" , 1.));
+    }
+  }
+  
+
 
   /// Need to Add EMu Binning as current EMu uses EE
   
@@ -715,11 +917,23 @@ TString HNL_RegionDefinitions::RunSignalRegionAK4StringBDT(bool ApplyForSR, TStr
       bdtbin=bdtbin+1.;
     }  
   }
-  else{
+  if(channel == EE){
+
     
     for(auto imap : BDTLimitBinsEl){
       if(MVAvalueIncl< imap.second) {
         FillHist( "LimitExtraction/"+param.Name+"/LimitShape_"+RegionTag+"BDT/MVA_"+BDTLabel+"_Binned",  bdtbin,  w, BDTLimitBinsEl.size(), 0, double(BDTLimitBinsEl.size()),  RegionTag);
+        return imap.first;
+      }
+      bdtbin=bdtbin+1.;
+    }
+
+  }
+  if(channel == EMu){
+
+    for(auto imap : BDTLimitBinsEMu){
+      if(MVAvalueIncl< imap.second) {
+        FillHist( "LimitExtraction/"+param.Name+"/LimitShape_"+RegionTag+"BDT/MVA_"+BDTLabel+"_Binned",  bdtbin,  w, BDTLimitBinsEMu.size(), 0, double(BDTLimitBinsEMu.size()),  RegionTag);
         return imap.first;
       }
       bdtbin=bdtbin+1.;
@@ -801,13 +1015,20 @@ TString HNL_RegionDefinitions::RunSignalRegionAK4String(bool ApplyForSR,HNL_Lept
 
   if(JetColl.size() < 2){
     //// These cuts are temp HL will check
-    if(leps[1]->Pt() < 300. && met2_st < 5 ){
-      FillHist( "LimitExtraction/"+param.Name+"/LimitShape_"+RegionTag+"/RegionBins",  0.5,  w, 11, 0,11,  RegionTag+" Bins");
+    if(leps[1]->Pt() < 140. && met2_st < 5 ){
+      if(ApplyForSR)Fill_RegionPlots(param,"PassSR3_bin1" ,TauColl,  JetColl, AK8_JetColl, leps,  METv, nPV, w);
+      FillHist( "LimitExtraction/"+param.Name+"/LimitShape_"+RegionTag+"/RegionBins",  0.5,  w, 14, 0,14,  RegionTag+" Bins");
       return RegionTag+"_bin1";
     }
-    else  if(leps[1]->Pt() > 300.) {
-      FillHist( "LimitExtraction/"+param.Name+"/LimitShape_"+RegionTag+"/RegionBins",  1.5,  w, 11, 0,11,  RegionTag+" Bins");
+    else if(leps[1]->Pt() < 300. && met2_st < 5 ){
+      if(ApplyForSR)Fill_RegionPlots(param,"PassSR3_bin2" ,TauColl,  JetColl, AK8_JetColl, leps,  METv, nPV, w);
+      FillHist( "LimitExtraction/"+param.Name+"/LimitShape_"+RegionTag+"/RegionBins",  1.5,  w, 14, 0,14,  RegionTag+" Bins");
       return RegionTag+"_bin2";
+    }
+    else  if(leps[1]->Pt() > 300.) {
+      if(ApplyForSR)Fill_RegionPlots(param,"PassSR3_bin3" ,TauColl,  JetColl, AK8_JetColl, leps,  METv, nPV, w);
+      FillHist( "LimitExtraction/"+param.Name+"/LimitShape_"+RegionTag+"/RegionBins",  2.5,  w, 14, 0,14,  RegionTag+" Bins");
+      return RegionTag+"_bin3";
     }
   }
 
@@ -838,7 +1059,7 @@ TString HNL_RegionDefinitions::RunSignalRegionAK4String(bool ApplyForSR,HNL_Lept
     }
   }
 
-  double pt_bin2= 140.; /// OPT 
+  double pt_bin1= 140.; /// OPT 
   Particle Wcand = JetColl[m] + JetColl[n]+ *leps[0]+ *leps[1];
   Particle N1cand = JetColl[m] + JetColl[n]+ *leps[0];
   Particle N2cand = JetColl[m] + JetColl[n]+ *leps[1];
@@ -847,39 +1068,48 @@ TString HNL_RegionDefinitions::RunSignalRegionAK4String(bool ApplyForSR,HNL_Lept
 
   TString LimitBin = "";
 
-  if(Wcand.M() < 400 || leps[0]->Pt() < pt_bin2) {
-    if(ApplyForSR)Fill_RegionPlots(param,"PassSR3_bin3" ,TauColl,  JetColl, AK8_JetColl, leps,  METv, nPV, w);
-    LimitBin=RegionTag+"_bin3";
+  if(Wcand.M() < 400 || leps[0]->Pt() < pt_bin1) {
+    if(ApplyForSR)Fill_RegionPlots(param,"PassSR3_bin4" ,TauColl,  JetColl, AK8_JetColl, leps,  METv, nPV, w);
+    LimitBin=RegionTag+"_bin4";
     FillCutflow(Reg, w, RegionTag+"_W1Mass",param);
     FillCutflow(Reg, w, RegionTag+"_LepPt",param);
   }
-  else if(met2_st < 2){
-    if(ApplyForSR)Fill_RegionPlots(param,"PassSR3_bin4to6" ,TauColl,  JetColl, AK8_JetColl, leps,  METv, nPV, w);
-    if(N1cand.M() < 500.)   LimitBin=RegionTag+"_bin4";
-    else if(N1cand.M() < 750.)   LimitBin=RegionTag+"_bin5";
-    else LimitBin=RegionTag+"_bin6";
+  else  if(Wcand.M() < 600 ) {
+    if(ApplyForSR)Fill_RegionPlots(param,"PassSR3_bin5to7" ,TauColl,  JetColl, AK8_JetColl, leps,  METv, nPV, w);
+    if(leps[0]->Pt() < 200) LimitBin=RegionTag+"_bin5"; 
+    else if(met2_st < 2)      LimitBin=RegionTag+"_bin6";
+    else LimitBin=RegionTag+"_bin7";
   }
-  else   if(met2_st < 7){
-    if(ApplyForSR)Fill_RegionPlots(param,"PassSR3_bin7to9" ,TauColl,  JetColl, AK8_JetColl, leps,  METv, nPV, w);
-    if(N1cand.M() < 500.)   LimitBin=RegionTag+"_bin7";
-    else if(N1cand.M() < 750.)   LimitBin=RegionTag+"_bin8";
-    else LimitBin=RegionTag+"_bin9";
+  else if(Wcand.M() < 800 ) {
+    if(ApplyForSR)Fill_RegionPlots(param,"PassSR3_bin8to10" ,TauColl,  JetColl, AK8_JetColl, leps,  METv, nPV, w);
+    if(leps[0]->Pt() < 200) LimitBin=RegionTag+"_bin8";
+    else if(met2_st < 2)      LimitBin=RegionTag+"_bin9";
+    else LimitBin=RegionTag+"_bin10";
+  }
+  else if(Wcand.M() < 1000 ) {
+    if(ApplyForSR)Fill_RegionPlots(param,"PassSR3_bin11to12" ,TauColl,  JetColl, AK8_JetColl, leps,  METv, nPV, w);
+    if(met2_st < 2) LimitBin=RegionTag+"_bin11"; 
+    else LimitBin=RegionTag+"_bin12";
   }
   else{
-    if(ApplyForSR)Fill_RegionPlots(param,"PassSR3_bin10to11" ,TauColl,  JetColl, AK8_JetColl, leps,  METv, nPV, w);
-    if(N1cand.M() < 750.)   LimitBin=RegionTag+"_bin10";
-    else LimitBin=RegionTag+"_bin11";
+    if(ApplyForSR)Fill_RegionPlots(param,"PassSR3_bin13to14" ,TauColl,  JetColl, AK8_JetColl, leps,  METv, nPV, w);
+    if(met2_st < 2) LimitBin=RegionTag+"_bin13";
+    else LimitBin=RegionTag+"_bin14";
   }
 
-  if(LimitBin.Contains("_bin3")) FillHist( "LimitExtraction/"+param.Name+"/LimitShape_"+RegionTag+"/RegionBins",  2.5,  w, 11, 0,11,  RegionTag+" Bins");
-  if(LimitBin.Contains("_bin4")) FillHist( "LimitExtraction/"+param.Name+"/LimitShape_"+RegionTag+"/RegionBins",  3.5,  w, 11, 0,11,  RegionTag+" Bins");
-  if(LimitBin.Contains("_bin5")) FillHist( "LimitExtraction/"+param.Name+"/LimitShape_"+RegionTag+"/RegionBins",  4.5,  w, 11, 0,11,  RegionTag+" Bins");
-  if(LimitBin.Contains("_bin6")) FillHist( "LimitExtraction/"+param.Name+"/LimitShape_"+RegionTag+"/RegionBins",  5.5,  w, 11, 0,11,  RegionTag+" Bins");
-  if(LimitBin.Contains("_bin7")) FillHist( "LimitExtraction/"+param.Name+"/LimitShape_"+RegionTag+"/RegionBins",  6.5,  w, 11, 0,11,  RegionTag+" Bins");
-  if(LimitBin.Contains("_bin8")) FillHist( "LimitExtraction/"+param.Name+"/LimitShape_"+RegionTag+"/RegionBins",  7.5,  w, 11, 0,11,  RegionTag+" Bins");
-  if(LimitBin.Contains("_bin9")) FillHist( "LimitExtraction/"+param.Name+"/LimitShape_"+RegionTag+"/RegionBins",  8.5,  w, 11, 0,11,  RegionTag+" Bins");
-  if(LimitBin.Contains("_bin10")) FillHist( "LimitExtraction/"+param.Name+"/LimitShape_"+RegionTag+"/RegionBins", 9.5,  w, 11, 0,11,  RegionTag+" Bins");
-  if(LimitBin.Contains("_bin11")) FillHist( "LimitExtraction/"+param.Name+"/LimitShape_"+RegionTag+"/RegionBins", 10.5,  w, 11, 0,11,  RegionTag+" Bins");
+
+
+  if(LimitBin.Contains("_bin4")) FillHist( "LimitExtraction/"+param.Name+"/LimitShape_"+RegionTag+"/RegionBins",  3.5,  w, 14, 0,14,  RegionTag+" Bins");
+  if(LimitBin.Contains("_bin5")) FillHist( "LimitExtraction/"+param.Name+"/LimitShape_"+RegionTag+"/RegionBins",  4.5,  w, 14, 0,14,  RegionTag+" Bins");
+  if(LimitBin.Contains("_bin6")) FillHist( "LimitExtraction/"+param.Name+"/LimitShape_"+RegionTag+"/RegionBins",  5.5,  w, 14, 0,14,  RegionTag+" Bins");
+  if(LimitBin.Contains("_bin7")) FillHist( "LimitExtraction/"+param.Name+"/LimitShape_"+RegionTag+"/RegionBins",  6.5,  w, 14, 0,14,  RegionTag+" Bins");
+  if(LimitBin.Contains("_bin8")) FillHist( "LimitExtraction/"+param.Name+"/LimitShape_"+RegionTag+"/RegionBins",  7.5,  w, 14, 0,14,  RegionTag+" Bins");
+  if(LimitBin.Contains("_bin9")) FillHist( "LimitExtraction/"+param.Name+"/LimitShape_"+RegionTag+"/RegionBins",  8.5,  w, 14, 0,14,  RegionTag+" Bins");
+  if(LimitBin.Contains("_bin10")) FillHist( "LimitExtraction/"+param.Name+"/LimitShape_"+RegionTag+"/RegionBins", 9.5,  w, 14, 0,14,  RegionTag+" Bins");
+  if(LimitBin.Contains("_bin11")) FillHist( "LimitExtraction/"+param.Name+"/LimitShape_"+RegionTag+"/RegionBins", 10.5,  w, 14, 0,14,  RegionTag+" Bins");
+  if(LimitBin.Contains("_bin12")) FillHist( "LimitExtraction/"+param.Name+"/LimitShape_"+RegionTag+"/RegionBins", 11.5,  w, 14, 0,14,  RegionTag+" Bins");
+  if(LimitBin.Contains("_bin13")) FillHist( "LimitExtraction/"+param.Name+"/LimitShape_"+RegionTag+"/RegionBins", 12.5,  w, 14, 0,14,  RegionTag+" Bins");
+  if(LimitBin.Contains("_bin14")) FillHist( "LimitExtraction/"+param.Name+"/LimitShape_"+RegionTag+"/RegionBins", 13.5,  w, 14, 0,14,  RegionTag+" Bins");
   
   return LimitBin;
 }
