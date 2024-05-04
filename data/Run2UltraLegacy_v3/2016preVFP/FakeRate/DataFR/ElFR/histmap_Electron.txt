@@ -1,9 +1,9 @@
 FakeRate	HNTightV2	ptcone_eta	AwayJetPt40	FR_EGamma_Version1_2016a.root
 FakeRate 	passPOGTight	ptcone_eta  	AwayJetPt40	FR_EGamma_Version1_2016a.root
-FakeRate      	TopHNT	        ptcone_eta  	FR_cent		FR_EGamma_2016a_Top.root
+FakeRate      	TopHNSST        ptcone_eta  	FR_cent		FR_EGamma_2016a_Top.root
 FakeRate      	Peking_2016	ptcone_eta  	FR_cent		FR_EGamma_2016a_HNL_PtCone.root
 FakeRate      	HNTightV2	ptcone_eta	FR_cent		FR_EGamma_2016a_HNL_PtCone.root
-FakeRate     HNL_ULID_2016     ptparton_eta   HNL_ULID_FO_v5_a_AJ30     FR_EGamma_2016a_HNL_ULID_PtParton_v5.root
-FakeRate     HNL_ULID_2016     ptparton_eta   HNL_ULID_FO_v5_a_AJ40     FR_EGamma_2016a_HNL_ULID_PtParton_v5.root
-FakeRate     HNL_ULID_2016     ptparton_eta   HNL_ULID_FO_v5_a_AJ25     FR_EGamma_2016a_HNL_ULID_PtParton_v5.root
 FakeRate     HNL_ULID_2016     ptparton_eta   HNL_ULID_FO_v0_AJ30     FR_EGamma_2016a_HNL_ULID_PtParton_v5.root
+FakeRate     HNL_ULID_2016     ptparton_eta   HNL_ULID_FO_v0_AJ40     FR_EGamma_2016a_HNL_ULID_PtParton_v5.root
+FakeRate     HNL_ULID_2016     ptparton_eta   HNL_ULID_FO_v0_AJ25     FR_EGamma_2016a_HNL_ULID_PtParton_v5.root
+FakeRate     HNL_ULID_2016     ptparton_eta   HNL_ULID_FO_v0_AJ30Mu8  FR_EGamma_2016a_HNL_ULID_PtParton_v4.root

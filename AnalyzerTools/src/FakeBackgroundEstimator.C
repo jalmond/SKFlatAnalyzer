@@ -56,7 +56,12 @@ void FakeBackgroundEstimator::ReadHistograms(bool IsData, bool ScanIDs){
       for(int i=0;i<histlist->Capacity();i++){
 	TString this_frname = histlist->At(i)->GetName();
 	//cout << "Check " <<  this_frname <<  " " << b+"_"+c << " " << d << endl;
-	if (!b.Contains("Top")) {
+
+        if (b.Contains("HighPt")) {
+	  if (!this_frname.Contains(c)) continue;
+	  if (!this_frname.Contains(d)) continue;
+	}
+	else if (!b.Contains("Top")) {
 	  if (!this_frname.Contains(b+"_"+c)) continue;
 	  //if (!this_frname.Contains(c)) continue;
 	  if (!this_frname.Contains(d)) continue;
@@ -108,22 +113,30 @@ double FakeBackgroundEstimator::GetElectronFakeRate(TString ID, TString key, TSt
   key=key.ReplaceAll("FO_2018","FO");
 
 
+  //// Change Key Based on Paramater
   TString PtType = "pt_eta_";
   if(BinningParam.Contains("PtCone" ))  PtType = "ptcone_eta_";
   if(BinningParam == "PtParton") PtType= "ptparton_eta_";
   if(BinningParam == "PtCorr")   PtType= "ptcorr_eta_";
   if(BinningParam == "MotherPt") PtType= "mjpt_eta_";
-
-  key =  PtType+  + key;
+  key =  PtType+ key;
   
-  double value = 1.;
-  double error = 0.;
-  
+  //// Use Fabs Eta
   eta = fabs(eta);
   
-  if(pt >= 60)  pt = 59;
-  if(pt < 10) pt = 10;
+  //// Assign Limit on Bin Input
+  double value = 1.,  error = 0.;
   
+  /// Default
+  double ptmin=10.1, ptmax=79., etamin=0.01, etamax=2.49;
+
+  if(ID.Contains("Top")) {
+    ptmin=10.1, ptmax=49., etamin=0.01, etamax=2.49;
+  }
+
+  pt = min(max(pt,ptmin),ptmax);
+  eta = min(max(eta,etamin),etamax);
+
   
   std::map< TString, TH2D* >::const_iterator mapit;
   //  cout << "EL KEY FakeRate_"+ID+"_"+key << " ---" <<  endl;
@@ -193,9 +206,18 @@ double FakeBackgroundEstimator::GetMuonFakeRate(TString ID, TString key, TString
 
   eta = fabs(eta);
 
-  /// Make Sure pt is not out of bin range                                                                                                                                                                                                                                                                                                                                                                                               
-  if(pt>=70) pt=69;
-  if(pt < 10) pt=10;
+  /// Make Sure pt is not out of bin range                                                                                                                                                                                                                                     
+
+
+  double ptmin=10.1, ptmax=79., etamin=0.01, etamax=2.49;
+
+  if(ID.Contains("Top")) {
+    ptmin=10.1, ptmax=49., etamin=0.01, etamax=2.49;
+  }
+
+  pt = min(max(pt,ptmin),ptmax);
+  eta = min(max(eta,etamin),etamax);
+
 
   /// For Flvour bins binning is differen                                                                                                                                                   
 

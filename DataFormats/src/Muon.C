@@ -251,6 +251,15 @@ bool Muon::PassID(TString ID) const {
   /// Loose ID for SR with MVA cuts
   if(ID == "MVALooseTrgSafe")       return (PassID("MVALoose") && HLTCut);
 
+  //// Transfer Factor ID
+
+  if(ID == "HNL_ULID_SB_"+Era ) {
+    if(!PassID("HNL_ULID_FO"))  return false;
+    if((MVA() >  MVACut))  return false;
+    if((MVA() <  -0.2))    return false;
+    return true;
+  }
+
   /////////// FINAL UL HNL Type-1 ID                                                                                                                                                                               
   if(ID == "HNL_ULID_FO")          return (PassID("MVALooseTrgSafe")        && (fabs(IP3D()/IP3Derr()) < 7)); 
 

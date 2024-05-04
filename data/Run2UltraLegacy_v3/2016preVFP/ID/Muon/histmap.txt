@@ -8,6 +8,7 @@ ISO      SF        NUM_TightRelIso_DEN_MediumID            Efficiencies_muon_gen
 ISO      SF        NUM_LooseRelTkIso_DEN_HighPtIDandIPCut  Efficiencies_muon_generalTracks_Z_Run2016_UL_HIPM_ISO.root                 NUM_LooseRelTkIso_DEN_HighPtIDandIPCut_abseta_pt
 ID       SF        NUM_HNTightV2                           HNL_LeptonIDSF_Muon_2016preVFP_Eta_MuonPt.root                             Data_MC_SF_Eta_MuonPt_HNTightV2
 ID       SF        NUM_HNL_ULID_2016                       efficiency_ID_2016a.root                                                   sf
+ID       SF	   NUM_TopHNT			           IDEff_TopHNT_2016a.root    						      SF_fabs(probe_eta)_probe_pt
 Tracker  SF        NUM_GlobalMuons                         2016a_GlobalMuon_v17.root                                                  sf
 Trigger  Eff_DATA  IsoMu24_POGTight                        Efficiencies_muon_generalTracks_Z_Run2016_UL_HIPM_SingleMuonTriggers.root  NUM_IsoMu24_or_IsoTkMu24_DEN_CutBasedIdTight_and_PFIsoTight_abseta_pt_efficiencyData
 Trigger  Eff_MC    IsoMu24_POGTight                        Efficiencies_muon_generalTracks_Z_Run2016_UL_HIPM_SingleMuonTriggers.root  NUM_IsoMu24_or_IsoTkMu24_DEN_CutBasedIdTight_and_PFIsoTight_abseta_pt_efficiencyMC

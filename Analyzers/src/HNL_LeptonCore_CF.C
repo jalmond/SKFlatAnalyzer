@@ -43,12 +43,6 @@ double HNL_LeptonCore::GetCFSF(AnalyzerParameter param, TString EraReg, bool App
   CFSFValues["HNL_ULID_BB"]      =  {0.987,1.064,1.398,1.413};
   CFSFValues["HNL_ULID_EC"]      =  {0.93,0.934,1.332,1.241};
 
-  CFSFValues["HNL_ULID_LooseCF_BB"]      =  {1.006,1.06,1.373,1.457};
-  CFSFValues["HNL_ULID_LooseCF_EC"]      =  {0.978,0.921,1379.,1.313};
-
-  CFSFValues["HNL_ULID_LooseNP_BB"]      =  {1.032,1.096,1.416,1.424};
-  CFSFValues["HNL_ULID_LooseNP_EC"]      =  {0.954,0.967,1.401,1.279};
-
   CFSFValues["passPOGTight_BB"]      =  {1.097, 1.04, 1.49, 1.54};
   CFSFValues["passPOGTight_EC"]  =  {1.01,1, 1.30, 1.35};
   
@@ -105,12 +99,13 @@ double HNL_LeptonCore::GetCFWeightElectron(std::vector<Lepton* > leps ,  Analyze
     if(ilep->LeptonFlavour()==Lepton::ELECTRON){
       
       if(nElIt==nEl) {
-	double el_cf_rate =   cfEst->GetElectronCFRate(param.Electron_Tight_ID, param.k.Electron_CF,ilep->defEta(),ilep->Pt(), sysR);
+	//	double el_cf_rate =   cfEst->GetElectronCFRate(param.Electron_Tight_ID, param.k.Electron_CF,ilep->defEta(),ilep->Pt(), sysR);
+	double el_cf_rate =   cfEst->GetElectronCFRateFitted(param.Electron_Tight_ID, param.k.Electron_CF,ilep->defEta(),ilep->Pt(), sysR);
 	el_cf_rate *= GetCFSF(param,ilep,ApplySF);
 	cf_weight += (el_cf_rate / (1.-el_cf_rate));
       }
       else if(nEl == -1){
-	double el_cf_rate =   cfEst->GetElectronCFRate(param.Electron_Tight_ID, param.k.Electron_CF,ilep->defEta(),ilep->Pt(), sysR);
+	double el_cf_rate =   cfEst->GetElectronCFRateFitted(param.Electron_Tight_ID, param.k.Electron_CF,ilep->defEta(),ilep->Pt(), sysR);
 	el_cf_rate *= GetCFSF(param,ilep,ApplySF);
         cf_weight += (el_cf_rate / (1.-el_cf_rate));
       }
@@ -244,6 +239,7 @@ double HNL_LeptonCore::GetShiftCFEl(double el_pt, bool IsBB,TString ID, bool App
   //// Get Shift for  Prompt -> CF Pt response                                                                                                                                                                   
 
   double PtShift = 1.;
+  if(ID == "TopHNSST") return 1.;
 
   if(ID == "passPOGTight"){
     if(DataEra.Contains("2016")){

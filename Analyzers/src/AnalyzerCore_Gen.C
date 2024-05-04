@@ -421,6 +421,9 @@ bool AnalyzerCore::ConversionSplitting(std::vector<Lepton *> leps, bool RunConvM
   if(IsData) return true;
 
   int nlep_pt20(0);
+  
+  /// Only remove events if..
+  if(nlep != leps.size()) return true;
 
   for(auto ilep : leps){
 

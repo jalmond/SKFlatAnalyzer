@@ -14,9 +14,9 @@ skim=' '
 declare  -a era_list=("2017" "2018" "2016postVFP" "2016preVFP")
 declare  -a eta_list=("BB" "EC" "Inclusive")
 
-SKFlat.py -a $analyzer  -i DoubleEG:F    -n 50    --nmax ${nmax}   -e 2016postVFP  --skim SkimTree_HNMultiLepBDT  --userflags  ScanFakes,RunFake,BB  &                                                                                                    
-SKFlat.py -a $analyzer  -i DoubleMuon:G  -n 50    --nmax ${nmax}   -e 2016postVFP  --skim SkimTree_HNMultiLepBDT  --userflags  ScanFakes,RunFake,BB  &                                                                                                    
-SKFlat.py -a $analyzer  -i DoubleEG:F    -n 50    --nmax ${nmax}   -e 2016postVFP  --skim SkimTree_HNMultiLepBDT  --userflags  ScanFakes,RunFake,Inclusive  &
+
+SKFlat.py -a $analyzer  -i MuonEG:E    -n 50    --nmax ${nmax}   -e 2017   --skim SkimTree_HNMultiLepBDT  --userflags  ScanFakes,EC  &                                      
+
 
 
 #for i in "${era_list[@]}"

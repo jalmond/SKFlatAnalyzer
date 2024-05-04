@@ -15,7 +15,11 @@ void HNL_ControlRegion_Plotter::executeEvent(){
   else run_Debug=false;
 
   ///// LIST IDs to run
-  vector<TString> LepIDs = {"HNL_ULID"};//"TopHN","HNL_ULID","HNTightV2"};//,"TopHN", "DefaultPOGTight"};
+  vector<TString> LepIDs = {"HNL_ULID"};//,"TopHN", "DefaultPOGTight"};
+  if(strcmp(std::getenv("USER"),"jalmond")==0) LepIDs = {"HNL_ULID", "TopHN","HNTightV2"};;
+  if(RunFakeTF) LepIDs = {"HNL_ULID"};
+  
+  
   //// List Channels to run
   vector<HNL_LeptonCore::Channel> ChannelsToRun = {MuMu,EE,EMu };
   
@@ -34,6 +38,8 @@ void HNL_ControlRegion_Plotter::executeEvent(){
 
   for (auto id: LepIDs){
     for(auto channel : ChannelsToRun){
+      if(channel != MuMu  && id =="TopHN") continue;
+
       AnalyzerParameter param_signal = HNL_LeptonCore::InitialiseHNLParameter(id,channel);
       for(auto iCR : CRToRun) RunControlRegions(param_signal , {iCR} );
     }
@@ -62,6 +68,14 @@ void HNL_ControlRegion_Plotter::RunControlRegions(AnalyzerParameter param, vecto
   TString Electron_ID = SetLeptonID("Electron",param);
   TString Muon_ID     = SetLeptonID("Muon", param);
 
+  if(RunFakeTF){
+    // Muon_ID = "HNL_ULID_SB_"+GetYearString();
+    // Electron_ID = "HNL_ULID_SB_"+GetYearString();
+
+    Muon_ID = "HNL_ULID_FO"; 
+    Electron_ID = "HNL_ULID_Def_FO_"+GetYearString();
+  }
+
   double Min_Muon_Pt     = RunFake ? 5  : 10.;
   double Min_Electron_Pt = RunFake ? 10 : 15;
 
@@ -86,7 +100,7 @@ void HNL_ControlRegion_Plotter::RunControlRegions(AnalyzerParameter param, vecto
 
   if(CRs.size() == 0) return;
   
-  if(_jentry < 8000 ){
+  if(_jentry < 2000 ){
     if(RunFake){
       cout << "Running Fakes: Initial check for process name " + param.Name << endl;
       cout << "Muon ID = " << param.Muon_Tight_ID  << " run ID  = " << Muon_ID << endl;

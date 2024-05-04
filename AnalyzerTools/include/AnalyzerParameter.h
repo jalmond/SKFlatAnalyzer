@@ -10,6 +10,7 @@ class AnalyzerParameter{
 
  public:
   TString Name;
+  TString NameInclusive_Channel;
   TString DefName; 
   TString Channel;
   TString SplitPlot;

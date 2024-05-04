@@ -319,20 +319,26 @@ int  Electron::PassIDTight(TString ID) const{
   else if(ID.Contains("2017")) Year = "2017";
   else if(ID.Contains("2018")) Year = "2018";
 
-  if(ID == "HNL_ULID_"     +Year)         return (PassID("HNL_ULID_FO_"+Year)    && PassID("HNL_ULID_Fake_"+Year));
-  if(ID == "HNL_ULID_LooseNP_"+Year )     return (PassID("HNL_ULID_FO_"+Year)    && PassID("HNL_ULLID_Fake"));
-  if(ID == "HNL_ULID_LooseCF_"+Year )     return (PassID("HNL_ULID_Conv_"+Year)  && PassID("HNL_ULLID_CF")   && PassID("HNL_ULID_Fake_"+Year));
+  if(ID == "HNL_ULID_"     +Year)     return (PassID("HNL_ULID_Def_FO_"+Year)    && PassID("HNL_ULID_Fake_"+Year));
 
 
-  // Loose Fake IDs [FO] 
+  // Loose Fake IDs [FO]
+
+  if(ID == "HNL_ULID_SB_"+Year ) {
+
+    if(!PassID("HNL_ULID_Conv_"+Year)) return false;
+    if(!PassID("HNL_ULID_CF_"+Year)) return false;
+    if(PassID("HNL_ULID_Fake_"+Year))  return false;
+    if(Pass_MVA_BBEC("Fake_EDv5", -0.5, -0.5,   "Fake_v5")) return true;
+    return false;
+  }
+
   if(ID == "HNL_ULID_Def_FO_"  +Year)   return (PassID("HNL_ULID_Conv_"+Year)   && PassID("HNL_ULID_CF_"+Year));
-  if(ID == "HNL_ULLID_FO")         return (PassID("HNL_ULLID_Conv") && PassID("HNL_ULLID_CF"));
 
-
-  if(ID == "HNL_ULID_FO_2016a")     return PassID("HNL_ULID_FO_v5_a_"+Year);
-  if(ID == "HNL_ULID_FO_2016b")     return PassID("HNL_ULID_FO_v3_a_"+Year);
+  if(ID == "HNL_ULID_FO_2016a")     return PassID("HNL_ULID_FO_v0_"+Year);
+  if(ID == "HNL_ULID_FO_2016b")     return PassID("HNL_ULID_FO_v0_"+Year);
   if(ID == "HNL_ULID_FO_2017")      return PassID("HNL_ULID_FO_v0_"+Year);
-  if(ID == "HNL_ULID_FO_2018")     return PassID("HNL_ULID_FO_v3_a_"+Year);
+  if(ID == "HNL_ULID_FO_2018")     return PassID("HNL_ULID_FO_v0_"+Year);
 
 
   double CloseJet_PtratioCut = 0.4;
@@ -430,10 +436,6 @@ int  Electron::PassIDTight(TString ID) const{
   if(ID == "HNL_ULID_Conv_2018" ) return (PassMVABaseLine() && Pass_MVA_BBEC("Conv_EDv5", GetPtSlopeCut(20,50, -0.4,0.2) , GetPtSlopeCut(20,50,-0.4,0.2) ,   "Conv_v5"));
   if(ID == "HNL_ULID_CF_2018"   ) return (PassMVABaseLine() && Pass_MVA_BBEC("CF_EDv5",   el_mva_cut_cf_2018_B ,  el_mva_cut_cf_2018_EC ,     "CF_v5")) ;
   if(ID == "HNL_ULID_Fake_2018" ) return (PassMVABaseLine() && Pass_MVA_BBEC("Fake_EDv5", el_mva_cut_fake_2018_B, el_mva_cut_fake_2018_EC ,   "Fake_v5"));
-
-  if(ID == "HNL_ULLID_Conv" ) return (PassMVABaseLine() && Pass_MVA_BBEC("Conv_EDv5", GetPtSlopeCut(20,50, -0.4,0.) , GetPtSlopeCut(20,50,-0.4,0.) ,   "Conv_v5"));
-  if(ID == "HNL_ULLID_CF" )  return (PassMVABaseLine() && Pass_MVA_BBEC("CF_EDv5",   0.4 ,0.4 , "CF_v5")) ;
-  if(ID == "HNL_ULLID_Fake") return (PassMVABaseLine() && Pass_MVA_BBEC("Fake_EDv5",0.2 ,0.2 ,   "Fake_v5"));
 
 
   //////////////////////////////////////////////////////////////////////////////////// 

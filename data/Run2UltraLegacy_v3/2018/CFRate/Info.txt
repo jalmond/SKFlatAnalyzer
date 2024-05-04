@@ -1,0 +1,21 @@
+- HNL_CF_Electron_2018_Rates.root 
+___________________________________________________________________________
+
+This file contains CF rates in Hists Names "CFRate_"+Param + "_"+ElShift Method + ID
+i.e, CFRate_InvPtEta_CS_POGTight;1	
+InvPtEta means  1/pt  vs eta (eta binning v1)
+CS = Constant shift 
+POGTight ID
+
+
+ShiftMethod:
+NoS = No Pt shift
+PBS = Pt Binned Shift
+
+___________________________________________________________________________
+HNL_CF_Version3_Electron_2018_Rates.root
+___________________________________________________________________________
+
+PBSDataCorr = Data corr applied to shift
+CS2 = shift value 2%
+CS3 = shift value 3%

@@ -436,7 +436,7 @@ nvtx,  double w);
   bool SameCharge(std::vector<Lepton *> leps, int ch=0);
 
   /// global var for user flags
-  bool RunPrompt,RunFake, RunCF,  RunConv, RunSyst,RunPromptTLRemoval,run_ORTrigger;
+  bool RunPrompt,RunFake,RunFakeTF, RunCF,  RunConv, RunSyst,RunPromptTLRemoval,run_ORTrigger;
   bool IsSkimmed, Signal, HEM1516 ,BeforeRun319077;
   bool DEBUG,IsCentral, RunFullAnalysis;
   TRandom3* rand_;

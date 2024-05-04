@@ -4,7 +4,7 @@ mcpath=${SKFlat_WD}/runJobs/HNL/${rundir}/mc_lists/
 datapath=${SKFlat_WD}/runJobs/HNL/${rundir}/data_lists/
 njobs=400
 njobs_data=100
-nmax=600
+nmax=350
 declare  -a era_list=("2016postVFP" "2016preVFP" "2017" "2018")
 
 declare  -a joblist=("CheckProfile"  "RatesMuon" "RatesMuon2" "RatesEl" "RatesEl2" "RatesWR")
@@ -47,7 +47,7 @@ do
     if [[ $1 == "RatesMuon2" ]]; then
         SKFlat.py -a $analyzer  -l $mcpath/MC.txt              -n ${njobs}       --nmax ${nmax}  -e ${i}   --skim SkimTree_HNFakeBDT --userflags RunRatesNonSNU&
         SKFlat.py -a $analyzer  -l $datapath/DATA_${i}_mu.txt  -n ${njobs_data}  --nmax ${nmax}  -e ${i}   --skim SkimTree_HNFakeBDT --userflags RunRatesNonSNU&
-        SKFlat.py -a $analyzer  -l $datapath/DATA_${i}_MuMu.txt  -n ${njobs_data}  --nmax ${nmax}  -e ${i}   --skim SkimTree_DileptonBDT --userflags RunRatesNonSNU&
+        #SKFlat.py -a $analyzer  -l $datapath/DATA_${i}_MuMu.txt  -n ${njobs_data}  --nmax ${nmax}  -e ${i}   --skim SkimTree_DileptonBDT --userflags RunRatesNonSNU&
     fi
     if [[ $1 == "RatesEl" ]]; then
         SKFlat.py -a $analyzer  -l $mcpath/MC.txt              -n ${njobs}       --nmax ${nmax}  -e ${i}   --skim SkimTree_HNFakeBDT --userflags RunRatesEE&

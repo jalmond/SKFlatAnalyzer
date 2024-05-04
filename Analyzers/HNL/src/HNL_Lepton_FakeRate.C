@@ -185,9 +185,10 @@ void HNL_Lepton_FakeRate::executeEvent(){
   }
   if(HasFlag("RunRatesNonSNU")){
     /// Measure FR in Data    
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR","PR"},"Peking"        , "Peking",    "Peking_FO"));
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR","PR"},"HNTightV2"     , "HNTightV2", "HNLooseV1"));
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR","PR"},"HNL_HN3L"      , "HNL_HN3L",  "HNL_TopMVA_FO_MM"));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"POGHighPtTight"        , "POGHighPtTight",    "POGHighPtLoose"));
+    //VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"Peking"        , "Peking",    "Peking_FO"));
+    //VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNTightV2"     , "HNTightV2", "HNLooseV1"));
+    //VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_HN3L"      , "HNL_HN3L",  "HNL_TopMVA_FO_MM"));
     goto RunJobs;
   }
   
@@ -1226,7 +1227,7 @@ void HNL_Lepton_FakeRate::GetElFakeRates(TString Method, std::vector<Lepton *> l
       if(leps[0]->Pt() < 10) return;
       //if(!pass_8) return;
       if(!pass_12) return;
-      if(!IsData) weight_ptcorr *=(ev.GetTriggerLumi(triggerslist_12)*NVxt_El12);
+      if(!IsData) weight_ptcorr *=(ev.GetTriggerLumi(triggerslist_12)*NVxt_El12);  //// v6 RootFile low ptparton bin uses El12
 
     }
     else return ;
@@ -1353,7 +1354,12 @@ void HNL_Lepton_FakeRate::GetMuFakeRates(TString Method, std::vector<Lepton *> l
       if(Method.Contains("PtCone")) return;
     }
     else{
-      if(!Method.Contains("PtCone")) return;
+      if(param.Name.Contains("POGHighPtTight")) {
+	if(Method  != "Pt") return;
+      }
+      else{
+	if(!Method.Contains("PtCone")) return;
+      }
     }
   }
   else{

@@ -62,6 +62,9 @@ std::vector<FatJet> HNL_LeptonCore::GetHNLAK8Jets(TString JetType, AnalyzerParam
   if(JetType=="BDT")        return SelectAK8Jets  (AK8JetColl,  200., 2.7,  true,   1., false, -999, false, 0.,  200000., "",  ElectronCollV, MuonCollV);
   if(JetType=="HNL_PN")     return SelectAK8Jets  (AK8JetColl,  200., 2.7,  true,   1., false, -999, true,  40., 130.,    "particleNet_WvsQCD", ElectronCollV, MuonCollV);
 
+  
+  if(JetType=="EXO17028")        return SelectAK8Jets  (AK8JetColl,  200., 2.7,  true,   1., true, -999, true,  60., 130.,    "",  ElectronCollV, MuonCollV);
+
 
   return SelectAK8Jets  (AK8JetColl,  200., 5.,   true,   1., false, -999, false, 0., 20000., "", ElectronCollV, MuonCollV);
 

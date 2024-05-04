@@ -4876,32 +4876,31 @@ double MCCorrection::MuonID_SF(TString ID, double eta, double pt, int sys){
   //cout << "[MCCorrection::MuonID_SF] ID = " << ID << endl;
   //cout << "[MCCorrection::MuonID_SF] eta = " << eta << ", pt = " << pt << endl;
 
-  double value = 1.;
-  double error = 0.;
-
+  double value = 1. ,error = 0.;
+  
+  //// Set Eta as |eta|
   eta = fabs(eta);
 
-  if(ID.Contains("HNL_ULID")){
-    if(pt<10.) pt = 10.1;
-    if(pt>=1000.) pt = 999.9; 
-    if(eta>=2.4) eta = 2.39;
+  double ptmin=10.1, ptmax=119., etamin=0.01, etamax=2.39;
+
+  if(ID.Contains("HNL_ULID"))  {
+    ptmin=10.1, ptmax=999., etamin=0.01, etamax=2.39;
   }
-  else  if(ID.Contains("HNTight")){
-    if(pt<10.) pt = 10.1;
-    if(pt>=120.) pt = 119.9;
-    if(eta>=2.4) eta = 2.39;
+  else  if(ID.Contains("HNTight")) {
+    ptmin=10.1, ptmax=119., etamin=0.01, etamax=2.39;
   }
   else   if(ID=="NUM_TightID_DEN_TrackerMuons" || ID=="NUM_MediumID_DEN_TrackerMuons" || ID=="NUM_HighPtID_DEN_TrackerMuons"){
     //==== boundaries
-    if(pt<15.) pt = 15.1;
-    if(pt>=120.) pt = 119.9;
-    if(eta>=2.4) eta = 2.39;
+
+    ptmin=15.1, ptmax=119., etamin=0.01, etamax=2.39;
   }
-  else{
-    if(pt<15.) pt = 15.1;
-    if(pt>=2000.) pt = 199.9;
-    if(eta>=2.4) eta = 2.39;
+  else if(ID.Contains("HNTop")){ 
+    ptmin=10.1, ptmax=199., etamin=0.01, etamax=2.39; 
   }
+
+  pt = min(max(pt,ptmin),ptmax); 
+  eta = min(max(eta,etamin),etamax);
+  
   TH2F *this_hist = map_hist_Muon["ID_SF_"+ID];
   if(!this_hist){
     if(IgnoreNoHist) {
@@ -5167,6 +5166,10 @@ double MCCorrection::ElectronID_SF(TString ID, double sceta, double pt, int sys)
   if(pt>=500.) pt = 499.9;
   if(sceta>=2.5) sceta = 2.49;
   if(sceta<-2.5) sceta = -2.49;
+
+  if( ID.Contains("TopHNSST") ){ pt = max(pt,(double) 15.1); pt = min(pt,(double) 199.); }
+  if( ID.Contains("HNL_ULID") ){ pt = max(pt,(double) 15.1); pt = min(pt,(double) 499.); }
+  if( ID.Contains("HNTightV2") ){ pt = max(pt,(double) 15.1); pt = min(pt,(double) 499.); }
 
   if( ID.Contains("HEEP") ){
 

@@ -585,7 +585,6 @@ double HNL_LeptonCore::GetIsoFromID(Lepton lep, TString id){
     if (id == "POGHighPtWithLooseTrkIso") return 0.1;
     if (id == "POGHighPtWithVLooseTrkIso") return 0.45;
     if (id == "POGHighPtTight") return 0.1;
-    if (id == "POGHighPtTight") return 0.1;
     if (id == "POGHighPtMixTight") return 0.1;
     if (id.Contains("HNMVA_")) return 0.1;
   }

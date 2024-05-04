@@ -19,7 +19,7 @@ void HNL_LeptonCore::FillCutflowDef(TString cutflow_dirname,TString cutflow_hist
 
   if( !this_hist ){
     TString cf_name="Cutflows";
-
+    //SR_Summary
     //    cout << "cf_name = " << cf_name << " cutflow_dirname = " << cutflow_dirname << " cutflow_histname = " << cutflow_histname << endl;
     if(cutflow_histname.Contains("SR")||cutflow_histname.Contains("MuonCR")||cutflow_histname.Contains("ElectronCR")) cf_name="LimitBins";
     if(cutflow_histname.Contains("SR_Cut")) cf_name="SignalCutFlow";
@@ -344,7 +344,7 @@ vector<TString>  HNL_LeptonCore::GetLabelsFromRegion(HNL_LeptonCore::SearchRegio
   if(sr==ChannelDepCR3HM)    labels = {"MuMu_CR3_HM","EE_CR3_HM","EMu_CR3_HM"};
 
   //// SR Labels
-  if(sr==SR)   labels = {"SR1Pass","SR1Fail","SR2Pass","SR2Fail","SR3Pass","SR3Fail","SR4Pass","SR4Fail"  };
+  if(sr==SR)   labels = {"SR1","SR2","SR3_LowMass","SR3_HighMass","Fail"};
   if(sr == SignalRegion)     labels = {"NoCut","GENMatched","HEMVeto","METFilter","ConvFilter","LeptonFlavour","Trigger"};
   /// CR lanels 
   if(sr == ControlRegion)    labels = {"NoCut","HEMVeto","METFilter","GENMatched","LeptonFlavour","Trigger","OS_VR","VV_VR","VG_VR","SS_CR","VBF_CR"};
