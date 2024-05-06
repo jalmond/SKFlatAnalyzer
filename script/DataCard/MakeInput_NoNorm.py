@@ -21,7 +21,8 @@ channels = ["MuMu","EE","EMu"]
 #channels = ["MuMu","EE"]
 #tags = ["HNL_ULID","HNTightV2"] # HNLParameter Name
 tags = ["HNL_ULID"] # HNLParameter Name
-outputTag = "240504_PR44" # tag the output directory name as you wish
+#outputTag = "240504_PR44" # tag the output directory name as you wish
+outputTag = "240505_PR45" # tag the output directory name as you wish
 
 # Skim
 DataSkim = "_SkimTree_HNMultiLepBDT_"
