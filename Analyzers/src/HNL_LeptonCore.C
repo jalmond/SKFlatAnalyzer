@@ -644,7 +644,7 @@ AnalyzerParameter HNL_LeptonCore::SetupHNLParameter(TString s_setup_version, TSt
 
     param.FakeRateMethod       = "Standard";
     param.FakeRateParam        = "PtCone";
-    param.k.Muon_FR            = "FR_cent";
+    param.k.Muon_FR            = "AwayJetPt40";
     param.k.Electron_FR        = "FR_cent";
     param.k.Electron_ID_SF     = "passHNTightV2";
     param.k.Muon_ID_SF         = "NUM_HNTightV2";

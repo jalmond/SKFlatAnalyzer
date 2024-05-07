@@ -19,10 +19,10 @@ masses = ["M85","M90","M95","M100","M125","M150","M200","M250","M300","M400","M5
 #masses = ["M100","M1000","M10000"]
 channels = ["MuMu","EE","EMu"]
 #channels = ["MuMu","EE"]
-#tags = ["HNL_ULID","HNTightV2"] # HNLParameter Name
-tags = ["HNL_ULID"] # HNLParameter Name
+tags = ["HNL_ULID","HNTightV2"] # HNLParameter Name
+#tags = ["HNL_ULID"] # HNLParameter Name
 #outputTag = "240504_PR44" # tag the output directory name as you wish
-outputTag = "240505_PR45" # tag the output directory name as you wish
+outputTag = "240505_PR46" # tag the output directory name as you wish
 
 # Skim
 DataSkim = "_SkimTree_HNMultiLepBDT_"

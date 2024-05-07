@@ -31,7 +31,8 @@ input_path = "/data6/Users/jihkim/CombineTool/CMSSW_10_2_13/src/DataCardsShape/H
 #myWPs = ["240422_HNL_ULID"]
 #myWPs = ["240501_1704_HNL_ULID","240501_1704_HNTightV2"]
 #myWPs = ["240504_PR44_HNL_ULID"]
-myWPs = ["240505_PR45_HNL_ULID"]
+#myWPs = ["240505_PR45_HNL_ULID"]
+myWPs = ["240505_PR46_HNL_ULID","240505_PR46_HNTightV2"]
 tags = ["_sronly"]
 
 for WP in myWPs:

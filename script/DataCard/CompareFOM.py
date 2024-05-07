@@ -8,11 +8,13 @@ signal_name = "signalDYVBF" #"signalSSWW"
 
 pathlist = []
 taglist = []
-pathlist.append("/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegion_Plotter_PR43/LimitInputs/240501_1704_"+ID+"/"+era+"/"+card_name+"_card_input.root")
-taglist.append("PR43")
+#pathlist.append("/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegion_Plotter_PR43/LimitInputs/240501_1704_"+ID+"/"+era+"/"+card_name+"_card_input.root")
+#taglist.append("PR43")
 pathlist.append("/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegion_Plotter_PR44/LimitInputs/240504_PR44_"+ID+"/"+era+"/"+card_name+"_card_input.root")
 taglist.append("PR44")
-pathlist.append("/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegion_Plotter/LimitInputs/240505_PR45_"+ID+"/"+era+"/"+card_name+"_card_input.root")
+pathlist.append("/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegion_Plotter/LimitInputs/240505_PR46_HNTightV2"+"/"+era+"/"+card_name+"_card_input.root")
+taglist.append("PR45 HNTightV2")
+pathlist.append("/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegion_Plotter_PR45_HNL_ULID/LimitInputs/240505_PR45_"+ID+"/"+era+"/"+card_name+"_card_input.root")
 taglist.append("PR45")
 
 final_taglist = []
@@ -162,14 +164,14 @@ for i in range(maxNbin+1):
 with open("CompareFOM.txt", 'w') as f:
   f.write(era+' '+ID+' '+card_name+' '+signal_name+' (if bkg <=0 --> 1.00e-03)\n')
   for i in range(maxNbin+1):
-    f.write('=========================================================================\n')
+    f.write('============='+'='*3*30+'\n')
     for c in range(len(names[0])):
       f.write('%-10s'%names[i][c])
       for j in range(len(taglist)):
         #print contents[i][c][j]
         if type(contents[i][c][j]) == str:
-          f.write('%-21s'%contents[i][c][j])
+          f.write('%-30s'%contents[i][c][j])
         else:
-          f.write('%-21s'%format(contents[i][c][j],'.2e'))
+          f.write('%-30s'%format(contents[i][c][j],'.2e'))
       f.write('\n')
  

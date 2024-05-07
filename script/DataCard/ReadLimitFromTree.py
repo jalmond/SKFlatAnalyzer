@@ -30,7 +30,8 @@ tags = ["_sronly"] #["_DYVBF"]
 #myWPs = ["240422_HNL_ULID"]
 #myWPs = ["240501_1704_HNL_ULID","240501_1704_HNTightV2"]
 #myWPs = ["240504_PR44_HNL_ULID"]
-myWPs = ["240505_PR45_HNL_ULID"]
+#myWPs = ["240505_PR45_HNL_ULID"]
+myWPs = ["240505_PR46_HNL_ULID","240505_PR46_HNTightV2"]
 
 for WP in myWPs:
   this_workdir = workdir+WP

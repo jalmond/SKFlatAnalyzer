@@ -185,10 +185,10 @@ void HNL_Lepton_FakeRate::executeEvent(){
   }
   if(HasFlag("RunRatesNonSNU")){
     /// Measure FR in Data    
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"POGHighPtTight"        , "POGHighPtTight",    "POGHighPtLoose"));
-    //VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"Peking"        , "Peking",    "Peking_FO"));
-    //VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNTightV2"     , "HNTightV2", "HNLooseV1"));
-    //VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_HN3L"      , "HNL_HN3L",  "HNL_TopMVA_FO_MM"));
+    //VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"POGHighPtTight"        , "POGHighPtTight",    "POGHighPtLoose"));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"Peking"        , "Peking",    "Peking_FO"));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNTightV2"     , "HNTightV2", "HNLooseV1"));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_HN3L"      , "HNL_HN3L",  "HNL_TopMVA_FO_MM"));
     goto RunJobs;
   }
   
