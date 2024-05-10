@@ -26,19 +26,22 @@ eras = ["2017"]
 channels = ["MuMu","EE","EMu"]
 #channels = ["MuMu","EE"]
 #masses = ["M90","M100","M150","M200","M300","M400","M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M10000","M15000","M20000"]
-#masses = ["M100","M1000","M10000"]
+masses = ["M100","M1000","M10000"]
 #masses = ["M90","M100","M150","M200","M300","M400","M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M10000","M15000","M20000"]
-masses = ["M85","M90","M95","M100","M125","M150","M200","M250","M300","M400","M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M10000","M15000","M20000"]
+#masses = ["M85","M90","M95","M100","M125","M150","M200","M250","M300","M400","M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M10000","M15000","M20000"]
 
 #SRpath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegion_Plotter_PR43/LimitInputs/"
-SRpath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegion_Plotter/LimitInputs/"
-CRpath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/LimitInputs/"
+#SRpath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegion_Plotter/LimitInputs/"
+#CRpath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/LimitInputs/"
+SRpath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegion_Plotter/LimitExtraction/"
+CRpath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/LimitExtraction/"
 
 #myWPs = ["240422_HNL_ULID"]
 #myWPs = ["240501_1704_HNL_ULID","240501_1704_HNTightV2"]
 #myWPs = ["240504_PR44_HNL_ULID"]
 #myWPs = ["240505_PR45_HNL_ULID"]
-myWPs = ["240505_PR46_HNL_ULID","240505_PR46_HNTightV2"]
+#myWPs = ["240505_PR46_HNL_ULID","240505_PR46_HNTightV2"]
+myWPs = ["rateParam_HNL_ULID"]
 
 ################################################################################################################################################
 
@@ -60,15 +63,15 @@ def CardSetting(isCR, era, channel, mass):
   #    if "Electron" in lines[i]: lines[i] = lines_orig[i]
 
   # wz_cr setting
-  lines_wz_cr = lines[:]
-  lines_wz_cr[4] = "shapes * *  "+CRpath+WP+"/"+era+"/LLL_VR__/"+mass+"_"+channel+"_card_input.root $PROCESS $PROCESS_$SYSTEMATIC\n"
-  if "Mu" in channel: lines_wz_cr[17] = "rate                       -1      -1    0     -1    0            0\n"  # no cf
-  else: lines_wz_cr[17] = "rate                      -1      -1    -1    -1     0            0\n"                  # no signal FIXME will add signal in CRs
-  lines_wz_cr[20] = "" # remove lnN bkg normalization uncert.
-  for i in range(len(lines_wz_cr)):
-    lines_wz_cr[i] = lines_wz_cr[i].replace('bin1','wz_cr')
-  for i in range(22,40):
-    lines_wz_cr[i] = "" # remove unnecessary syst sources.
+  #lines_wz_cr = lines[:]
+  #lines_wz_cr[4] = "shapes * *  "+CRpath+WP+"/"+era+"/wz/"+mass+"_"+channel+"_card_input.root $PROCESS $PROCESS_$SYSTEMATIC\n"
+  #if "Mu" in channel: lines_wz_cr[17] = "rate                       -1      -1    0     -1    0            0\n"  # no cf
+  #else: lines_wz_cr[17] = "rate                      -1      -1    -1    -1     0            0\n"                  # no signal FIXME will add signal in CRs
+  #lines_wz_cr[20] = "" # remove lnN bkg normalization uncert.
+  #for i in range(len(lines_wz_cr)):
+  #  lines_wz_cr[i] = lines_wz_cr[i].replace('bin1','wz_cr')
+  #for i in range(22,40):
+  #  lines_wz_cr[i] = "" # remove unnecessary syst sources.
 
   # sr_inv setting
   lines_sr_inv = lines[:]

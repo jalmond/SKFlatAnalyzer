@@ -26,12 +26,14 @@ masses = ["85","90","95","100","125","150","200","250","300","400","500","600","
 #masses = ["90","100","200","300","400","1000","10000"]
 IDs = [""] #["_ID"]
 #tags = ["_sronly_syst"] #["_DYVBF"]
-tags = ["_sronly"] #["_DYVBF"]
+#tags = ["_sronly"] #["_DYVBF"]
+tags = [""] #["_DYVBF"]
 #myWPs = ["240422_HNL_ULID"]
 #myWPs = ["240501_1704_HNL_ULID","240501_1704_HNTightV2"]
 #myWPs = ["240504_PR44_HNL_ULID"]
 #myWPs = ["240505_PR45_HNL_ULID"]
-myWPs = ["240505_PR46_HNL_ULID","240505_PR46_HNTightV2"]
+#myWPs = ["240505_PR46_HNL_ULID","240505_PR46_HNTightV2"]
+myWPs = ["rateParam_HNL_ULID"]
 
 for WP in myWPs:
   this_workdir = workdir+WP

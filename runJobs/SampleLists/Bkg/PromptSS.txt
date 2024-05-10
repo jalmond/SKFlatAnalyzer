@@ -12,7 +12,7 @@ WpWp_EWK
 WpWp_QCD
 ttWToLNu
 ttZToLLNuNu
-ttZToQQ_ll
+#ttZToQQ_ll
 GluGluHToWWTo2L2Nu
 GluGluHToZZTo4L
 GluGluToZZto2e2mu

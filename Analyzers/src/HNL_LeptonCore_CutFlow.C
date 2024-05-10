@@ -194,9 +194,12 @@ TString HNL_LeptonCore::GetCutFlowNameFromRegion(HNL_LeptonCore::SearchRegion sr
   if(sr==MuonSR3BDT)   EVHistName ="MuonSR3BDT";
   if(sr==ElectronSR3BDT)   EVHistName ="ElectronSR3BDT";
   if(sr==ElectronMuonSR3BDT)   EVHistName ="ElectronMuonSR3BDT";
-  if(sr==MuonSR         || sr==MuonSRBDT         || sr==MuonSROpt         || sr==MuonSRBDTOpt)     EVHistName ="MuonSR";
-  if(sr==ElectronSR     || sr==ElectronSRBDT     || sr==ElectronSROpt     || sr==ElectronSRBDTOpt)   EVHistName ="ElectronSR";
-  if(sr==ElectronMuonSR || sr==ElectronMuonSRBDT || sr==ElectronMuonSROpt || sr==ElectronMuonSRBDTOpt) EVHistName ="ElectronMuonSR";
+  if(sr==MuonSR         || sr==MuonSROpt         )     EVHistName ="MuonSR";
+  if(sr==ElectronSR     || sr==ElectronSROpt     )     EVHistName ="ElectronSR";
+  if(sr==ElectronMuonSR || sr==ElectronMuonSROpt )     EVHistName ="ElectronMuonSR";
+  if(sr==MuonSRBDT          || sr==MuonSRBDTOpt)         EVHistName ="MuonSRBDT";
+  if(sr==ElectronSRBDT      || sr==ElectronSRBDTOpt)     EVHistName ="ElectronSRBDT";
+  if(sr==ElectronMuonSRBDT  || sr==ElectronMuonSRBDTOpt) EVHistName ="ElectronMuonSRBDT"; //JH
 
   ///// CR Names                                                                                     
   if(sr==MuonCR1)   EVHistName ="MuonCR1";
