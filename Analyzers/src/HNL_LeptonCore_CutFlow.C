@@ -347,7 +347,7 @@ vector<TString>  HNL_LeptonCore::GetLabelsFromRegion(HNL_LeptonCore::SearchRegio
   if(sr==ChannelDepCR3HM)    labels = {"MuMu_CR3_HM","EE_CR3_HM","EMu_CR3_HM"};
 
   //// SR Labels
-  if(sr==SR)   labels = {"SR1","SR2","SR3_LowMass","SR3_HighMass","Fail"};
+  if(sr==SR)   labels = {"SR1","SR2","SR3_LowMass","SR3_HighMass"};
   if(sr == SignalRegion)     labels = {"NoCut","GENMatched","HEMVeto","METFilter","ConvFilter","LeptonFlavour","Trigger"};
   /// CR lanels 
   if(sr == ControlRegion)    labels = {"NoCut","HEMVeto","METFilter","GENMatched","LeptonFlavour","Trigger","OS_VR","VV_VR","VG_VR","SS_CR","VBF_CR"};

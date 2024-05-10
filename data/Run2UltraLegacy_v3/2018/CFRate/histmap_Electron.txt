@@ -1,60 +1,16 @@
-CFRate          PtEta_CS                HNL_ULID_2018 HNL_CF_Version3_Electron_2018_Rates.root
-CFRate          PtEta_NoS               HNL_ULID_2018 HNL_CF_Version3_Electron_2018_Rates.root
-CFRate          PtEta_PBS               HNL_ULID_2018 HNL_CF_Version3_Electron_2018_Rates.root
-CFRate          PtEta2_CS                HNL_ULID_2018 HNL_CF_Version3_Electron_2018_Rates.root
-CFRate          PtEta2_NoS               HNL_ULID_2018 HNL_CF_Version3_Electron_2018_Rates.root
-CFRate          PtEta2_PBS               HNL_ULID_2018 HNL_CF_Version3_Electron_2018_Rates.root
-CFRate          PtEta3_CS                HNL_ULID_2018 HNL_CF_Version3_Electron_2018_Rates.root
-CFRate          PtEta3_NoS               HNL_ULID_2018 HNL_CF_Version3_Electron_2018_Rates.root
-CFRate          PtEta3_PBS               HNL_ULID_2018 HNL_CF_Version3_Electron_2018_Rates.root
-CFRate          InvPtEta_CS                HNL_ULID_2018 HNL_CF_Version3_Electron_2018_Rates.root
-CFRate          InvPtEta_NoS               HNL_ULID_2018 HNL_CF_Version3_Electron_2018_Rates.root
-CFRate          InvPtEta_PBS               HNL_ULID_2018 HNL_CF_Version3_Electron_2018_Rates.root
-CFRate          InvPtEta2_CS                HNL_ULID_2018 HNL_CF_Version3_Electron_2018_Rates.root
-CFRate          InvPtEta2_NoS               HNL_ULID_2018 HNL_CF_Version3_Electron_2018_Rates.root
-CFRate          InvPtEta2_PBS               HNL_ULID_2018 HNL_CF_Version3_Electron_2018_Rates.root
-CFRate          InvPtEta3_CS                HNL_ULID_2018 HNL_CF_Version3_Electron_2018_Rates.root
-CFRate          InvPtEta3_CS2                HNL_ULID_2018 HNL_CF_Version3_Electron_2018_Rates.root
-CFRate          InvPtEta3_CS3                HNL_ULID_2018 HNL_CF_Version3_Electron_2018_Rates.root
-CFRate          InvPtEta3_NoS               HNL_ULID_2018 HNL_CF_Version3_Electron_2018_Rates.root
-CFRate          InvPtEta3_PBS               HNL_ULID_2018 HNL_CF_Version3_Electron_2018_Rates.root
-CFRate          PtEta_CS                POGTight HNL_CF_Version3_Electron_2018_Rates.root
-CFRate          PtEta_NoS               POGTight HNL_CF_Version3_Electron_2018_Rates.root
-CFRate          PtEta_PBS               POGTight HNL_CF_Version3_Electron_2018_Rates.root
-CFRate          PtEta2_CS                POGTight HNL_CF_Version3_Electron_2018_Rates.root
-CFRate          PtEta2_NoS               POGTight HNL_CF_Version3_Electron_2018_Rates.root
-CFRate          PtEta2_PBS               POGTight HNL_CF_Version3_Electron_2018_Rates.root
-CFRate          PtEta3_CS                POGTight HNL_CF_Version3_Electron_2018_Rates.root
-CFRate          PtEta3_NoS               POGTight HNL_CF_Version3_Electron_2018_Rates.root
-CFRate          PtEta3_PBS               POGTight HNL_CF_Version3_Electron_2018_Rates.root
-CFRate          InvPtEta_CS                POGTight HNL_CF_Version3_Electron_2018_Rates.root
-CFRate          InvPtEta_NoS               POGTight HNL_CF_Version3_Electron_2018_Rates.root
-CFRate          InvPtEta_PBS               POGTight HNL_CF_Version3_Electron_2018_Rates.root
-CFRate          InvPtEta2_CS                POGTight HNL_CF_Version3_Electron_2018_Rates.root
-CFRate          InvPtEta2_NoS               POGTight HNL_CF_Version3_Electron_2018_Rates.root
-CFRate          InvPtEta2_PBS               POGTight HNL_CF_Version3_Electron_2018_Rates.root
-CFRate          InvPtEta3_CS                POGTight HNL_CF_Version3_Electron_2018_Rates.root
-CFRate          InvPtEta3_CS2                POGTight HNL_CF_Version3_Electron_2018_Rates.root
-CFRate          InvPtEta3_CS3                POGTight HNL_CF_Version3_Electron_2018_Rates.root
-CFRate          InvPtEta3_NoS               POGTight HNL_CF_Version3_Electron_2018_Rates.root
-CFRate          InvPtEta3_PBS               POGTight HNL_CF_Version3_Electron_2018_Rates.root
-CFRate          PtEta_CS                HNTightV2 HNL_CF_Version3_Electron_2018_Rates.root
-CFRate          PtEta_NoS               HNTightV2 HNL_CF_Version3_Electron_2018_Rates.root
-CFRate          PtEta_PBS               HNTightV2 HNL_CF_Version3_Electron_2018_Rates.root
-CFRate          PtEta2_CS                HNTightV2 HNL_CF_Version3_Electron_2018_Rates.root
-CFRate          PtEta2_NoS               HNTightV2 HNL_CF_Version3_Electron_2018_Rates.root
-CFRate          PtEta2_PBS               HNTightV2 HNL_CF_Version3_Electron_2018_Rates.root
-CFRate          PtEta3_CS                HNTightV2 HNL_CF_Version3_Electron_2018_Rates.root
-CFRate          PtEta3_NoS               HNTightV2 HNL_CF_Version3_Electron_2018_Rates.root
-CFRate          PtEta3_PBS               HNTightV2 HNL_CF_Version3_Electron_2018_Rates.root
-CFRate          InvPtEta_CS                HNTightV2 HNL_CF_Version3_Electron_2018_Rates.root
-CFRate          InvPtEta_NoS               HNTightV2 HNL_CF_Version3_Electron_2018_Rates.root
-CFRate          InvPtEta_PBS               HNTightV2 HNL_CF_Version3_Electron_2018_Rates.root
-CFRate          InvPtEta2_CS                HNTightV2 HNL_CF_Version3_Electron_2018_Rates.root
-CFRate          InvPtEta2_NoS               HNTightV2 HNL_CF_Version3_Electron_2018_Rates.root
-CFRate          InvPtEta2_PBS               HNTightV2 HNL_CF_Version3_Electron_2018_Rates.root
-CFRate          InvPtEta3_CS                HNTightV2 HNL_CF_Version3_Electron_2018_Rates.root
-CFRate          InvPtEta3_CS2                HNTightV2 HNL_CF_Version3_Electron_2018_Rates.root
-CFRate          InvPtEta3_CS3                HNTightV2 HNL_CF_Version3_Electron_2018_Rates.root
-CFRate          InvPtEta3_NoS               HNTightV2 HNL_CF_Version3_Electron_2018_Rates.root
-CFRate          InvPtEta3_PBS               HNTightV2 HNL_CF_Version3_Electron_2018_Rates.root
+CFRate          InvPtEta3       PBSExtrap   Central         HNL_ULID_2018                HNL_CF_Version4_AllDY_Electron_2018_Rates.root
+CFRate          InvPtEtaBB2     PBSExtrap   Central         HNL_ULID_2018                HNL_CF_Version4_AllDY_Electron_2018_Rates.root
+CFRate          InvPtEtaEC1     PBSExtrap   Central         HNL_ULID_2018                HNL_CF_Version4_AllDY_Electron_2018_Rates.root
+CFRate          InvPtEtaEC2     PBSExtrap   Central         HNL_ULID_2018                HNL_CF_Version4_AllDY_Electron_2018_Rates.root
+CFRate          InvPtEta3       PBSExtrap   Central         HNTightV2                HNL_CF_Version4_AllDY_Electron_2018_Rates.root
+CFRate          InvPtEtaBB2     PBSExtrap   Central         HNTightV2                HNL_CF_Version4_AllDY_Electron_2018_Rates.root
+CFRate          InvPtEtaEC1     PBSExtrap   Central         HNTightV2                HNL_CF_Version4_AllDY_Electron_2018_Rates.root
+CFRate          InvPtEtaEC2     PBSExtrap   Central         HNTightV2                HNL_CF_Version4_AllDY_Electron_2018_Rates.root
+CFRate          InvPtEta3       PBSExtrap   Central         TopHNSST                HNL_CF_Version4_AllDY_Electron_2018_Rates.root
+CFRate          InvPtEtaBB2     PBSExtrap   Central         TopHNSST                HNL_CF_Version4_AllDY_Electron_2018_Rates.root
+CFRate          InvPtEtaEC1     PBSExtrap   Central         TopHNSST                HNL_CF_Version4_AllDY_Electron_2018_Rates.root
+CFRate          InvPtEtaEC2     PBSExtrap   Central         TopHNSST                HNL_CF_Version4_AllDY_Electron_2018_Rates.root
+CFRate          InvPtEta3       PBSExtrap   Central         POGTight                HNL_CF_Version4_AllDY_Electron_2018_Rates.root
+CFRate          InvPtEtaBB2     PBSExtrap   Central         POGTight                HNL_CF_Version4_AllDY_Electron_2018_Rates.root
+CFRate          InvPtEtaEC1     PBSExtrap   Central         POGTight                HNL_CF_Version4_AllDY_Electron_2018_Rates.root
+CFRate          InvPtEtaEC2     PBSExtrap   Central         POGTight                HNL_CF_Version4_AllDY_Electron_2018_Rates.root

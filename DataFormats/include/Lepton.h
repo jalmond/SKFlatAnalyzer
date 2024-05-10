@@ -84,6 +84,8 @@ public:
     
   }
 
+
+
   inline TString GetLeptonTypeTString(){
     
     if(j_LeptonType < 0) return "Minus"+TString::Itoa(fabs(j_LeptonType), 10);
@@ -244,16 +246,16 @@ public:
   //// HNL UL Funtions
   inline double PtMaxed(double ptmax=2000, double shift=1.) const { 
     double ptshift = this->Pt()*shift;
-    if(ptshift < ptmax) return ptshift;
-    else return (ptshift - 0.00001);
+    if(ptshift > ptmax) return ptmax - 0.0001;
+    return ptshift ;
   }
 
 
   
   inline double InvPt(double shift=1.) const {
     double ptshift = this->Pt()*shift;
-    if(ptshift > 2000) return 1/2000.;
-    else return (1/ptshift);
+    if(ptshift > 1000) return (1/1000.) - 0.00001;
+    return (1/ptshift);
   }
 
   inline double PtParton(double Corr, double MVACut, double UpperValue=2.){

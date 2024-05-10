@@ -32,6 +32,14 @@ public:
   inline double scPhi() const { return j_scPhi; }
   inline double scE() const { return j_scE; }
 
+  inline TString CFEtaLabel() const {
+    if(fabs(j_scEta) < 1.4442) return "BB2";
+    else  if(fabs(j_scEta) < 2.2) return "EC1";
+    else return "EC2";
+
+
+  }
+
 
   ///////// ELECTRON MVA FUNCTIONS 
 

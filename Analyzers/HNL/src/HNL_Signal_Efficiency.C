@@ -69,7 +69,7 @@ void HNL_Signal_Efficiency::executeEvent(){
   
   vector<HNL_LeptonCore::Channel> channels = {EE,MuMu};//, EMu};
   
-  vector<TString> ElectronIDs = {"NoCut","HNVetoMVA","CutBasedLooseNoIso","CutBasedMediumNoIso","CutBasedTightNoIso","MVALooseNoIso","CutBasedVetoNoIso","HNTightV2","passPOGTight","passPOGMedium","passHEEPID","passMVAID_noIso_WP80","passMVAID_noIso_WP90","passMVAID_Iso_WP80","passMVAID_Iso_WP90","HNHEEPID","Peking_2016", "Peking_2017","HNL_ULID_"+GetYearString(),"MVALoose","TopHNSST"};
+  vector<TString> ElectronIDs = {"NoCut","HNVetoMVA","CutBasedLooseNoIso","CutBasedMediumNoIso","CutBasedTightNoIso","MVALooseNoIso","CutBasedVetoNoIso","HNTightV2","passPOGTight","passPOGMedium","passHEEPID","passMVAID_noIso_WP80","passMVAID_noIso_WP90","passMVAID_Iso_WP80","passMVAID_Iso_WP90","HNHEEPID","Peking_2016", "Peking_2017","HNL_ULID_"+GetYearString(),"MVALoose","TopHNSST","HNL_TC1_ULID_"+GetYearString(),"HNL_TC2_ULID_"+GetYearString(),"HNL_TC3_ULID_"+GetYearString()};
   
   vector<TString> MuonIDs = {"NoCut","POGTight","POGHighPt","POGMedium","POGLoose","POGTightWithTightIso","HNLoosePOG","HNTightV2","HNTightPFIsoLoose", "HNTightPFIsoMedium","HNTightPFIsoTight","HNTightPFIsoVeryTight","HNTightPFIsoVeryVeryTight","HNL_HN3L","Peking","HNL_ULID_"+GetYearString(),"MVALoose", "TopHN"};  
   
@@ -117,7 +117,9 @@ void HNL_Signal_Efficiency::executeEvent(){
           FillHist( "SignalReco"+channel+"/"+lepton_label+"_pt_"+imap.second, pt, weight,  400, 0., 2000.);
 	}
       }
-      
+      if(SameCharge(leps))           FillHist( "SS_SignalReco"+channel+"/LLMass_"+imap.second, GetLLMass(leps) , weight,  400, 0., 2000.);
+
+
       if(MCSample.Contains("Type")) continue;
       
       if(imap.first == EE)  {

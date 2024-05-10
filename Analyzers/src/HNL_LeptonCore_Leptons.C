@@ -54,7 +54,6 @@ std::vector<Muon> HNL_LeptonCore::SelectMuons(AnalyzerParameter& param, TString 
     if(!( muons.at(i).PassID(id) ))           continue;
     
     if((RunFake||RunPromptTLRemoval)  &&  (id == param.Muon_FR_ID)){
- 
       Muon this_muon = muons.at(i);
       if(param.FakeRateParam == "PtCone"){
         double Isocut = GetIsoFromID(Lepton(muons[i]), param.Muon_Tight_ID );

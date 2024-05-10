@@ -1012,12 +1012,12 @@ TString HNL_RegionDefinitions::RunSignalRegionAK4String(bool ApplyForSR,HNL_Lept
       FillHist( "LimitExtraction/"+param.Name+"/LimitShape_"+RegionTag+"/RegionBins",  0.5,  w, 14, 0,14,  RegionTag+" Bins");
       return RegionTag+"_bin1";
     }
-    else if(leps[1]->Pt() < 300. && met2_st < 5 ){
+    else if(leps[1]->Pt() < 250. && met2_st < 5 ){
       if(ApplyForSR)Fill_RegionPlots(param,"PassSR3_bin2" ,TauColl,  JetColl, AK8_JetColl, leps,  METv, nPV, w);
       FillHist( "LimitExtraction/"+param.Name+"/LimitShape_"+RegionTag+"/RegionBins",  1.5,  w, 14, 0,14,  RegionTag+" Bins");
       return RegionTag+"_bin2";
     }
-    else  if(leps[1]->Pt() > 300.) {
+    else  if(leps[1]->Pt() > 250.) {
       if(ApplyForSR)Fill_RegionPlots(param,"PassSR3_bin3" ,TauColl,  JetColl, AK8_JetColl, leps,  METv, nPV, w);
       FillHist( "LimitExtraction/"+param.Name+"/LimitShape_"+RegionTag+"/RegionBins",  2.5,  w, 14, 0,14,  RegionTag+" Bins");
       return RegionTag+"_bin3";

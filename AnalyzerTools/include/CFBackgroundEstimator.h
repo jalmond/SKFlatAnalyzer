@@ -26,7 +26,7 @@ public:
   ~CFBackgroundEstimator();
 
   TDirectory *histDir;
-  void ReadHistograms();
+  void ReadHistograms(bool loadStandard=true);
 
   int DataYear;
   TString DataEra;
@@ -42,7 +42,7 @@ public:
 
   bool IgnoreNoHist;
 
-  double GetElectronCFRateFitted(TString ID, TString key, double eta, double pt, int sys);
+  double GetElectronCFRateFitted(TString ID, TString BinTag, TString key, double eta, double pt, int sys);
   double GetElectronCFRate(TString ID, TString key, double eta, double pt, int sys=0);
   double GetElectronCFRate2D(TString ID, TString key, double eta, double pt, int sys=0);
   double GetMuonCFRate(TString ID, TString key, double eta, double pt, int sys=0);

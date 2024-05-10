@@ -37,11 +37,17 @@ double HNL_LeptonCore::GetCFSF(AnalyzerParameter param, TString EraReg, bool App
     Depends on ID/Eta
    */
 
+  
+
   double _SF=1.;
 
   map<TString,vector<double> > CFSFValues;
-  CFSFValues["HNL_ULID_BB"]      =  {0.987,1.064,1.398,1.413};
-  CFSFValues["HNL_ULID_EC"]      =  {0.93,0.934,1.332,1.241};
+
+  CFSFValues["HNL_ULID_BB"]      =  {0.944,1.02,1.48,1.437};
+  CFSFValues["HNL_ULID_EC"]      =  {0.907,0.903,1.343,1.217};
+
+  //CFSFValues["HNL_ULID_BB"]      =  {0.987,1.064,1.398,1.413};
+  //  CFSFValues["HNL_ULID_EC"]      =  {0.93,0.934,1.332,1.241};
 
   CFSFValues["passPOGTight_BB"]      =  {1.097, 1.04, 1.49, 1.54};
   CFSFValues["passPOGTight_EC"]  =  {1.01,1, 1.30, 1.35};
@@ -100,12 +106,12 @@ double HNL_LeptonCore::GetCFWeightElectron(std::vector<Lepton* > leps ,  Analyze
       
       if(nElIt==nEl) {
 	//	double el_cf_rate =   cfEst->GetElectronCFRate(param.Electron_Tight_ID, param.k.Electron_CF,ilep->defEta(),ilep->Pt(), sysR);
-	double el_cf_rate =   cfEst->GetElectronCFRateFitted(param.Electron_Tight_ID, param.k.Electron_CF,ilep->defEta(),ilep->Pt(), sysR);
+	double el_cf_rate =   cfEst->GetElectronCFRateFitted(param.Electron_Tight_ID,"InvPtBB1", param.k.Electron_CF,ilep->defEta(),ilep->Pt(), sysR);
 	el_cf_rate *= GetCFSF(param,ilep,ApplySF);
 	cf_weight += (el_cf_rate / (1.-el_cf_rate));
       }
       else if(nEl == -1){
-	double el_cf_rate =   cfEst->GetElectronCFRateFitted(param.Electron_Tight_ID, param.k.Electron_CF,ilep->defEta(),ilep->Pt(), sysR);
+	double el_cf_rate =   cfEst->GetElectronCFRateFitted(param.Electron_Tight_ID,"InvPtBB1", param.k.Electron_CF,ilep->defEta(),ilep->Pt(), sysR);
 	el_cf_rate *= GetCFSF(param,ilep,ApplySF);
         cf_weight += (el_cf_rate / (1.-el_cf_rate));
       }
@@ -171,65 +177,89 @@ double HNL_LeptonCore::PtExtrap(double val, double x1, double x2, double y1, dou
   return y1 + corr;
 
 }
-double HNL_LeptonCore::GetShiftCFEl(Electron el,TString ID, bool ApplyDataCorr,TString Method) {
+double HNL_LeptonCore::CheckShiftRange(double val, double shift){
+  if(val*shift > 1) return 1;
+  return val*shift;
+}
+
+double HNL_LeptonCore::GetShiftCFEl(Electron el,TString ID, bool ApplyDataCorr, int Sys) {
   
-  if(Method == "Extrap" && ID.Contains("HNL")){
+  //// By default if HNL ID just use extraoplated Shift based on pt binned MC Truth
+  if(ID.Contains("HNL")){
+    double DataCorr = 1.;
+    if(ApplyDataCorr){
+      if(DataEra=="2016preVFP"  && el.IsBB()) DataCorr=0.975;
+      if(DataEra=="2016postVFP" && el.IsBB()) DataCorr=0.99;
+      if(DataEra=="2017"        && el.IsBB()) DataCorr=0.975;
+      if(DataEra=="2018"        && el.IsBB()) DataCorr=0.975;
+
+      if(DataEra=="2016preVFP"  && !el.IsBB()) DataCorr=0.995;
+      if(DataEra=="2016postVFP" && !el.IsBB()) DataCorr=1.;
+      if(DataEra=="2017"        && !el.IsBB()) DataCorr=1.;
+      if(DataEra=="2018"        && !el.IsBB()) DataCorr=0.98;
+    }
+    
+    /// For Data use corr based on closure
+
+    double ShiftSys=DataCorr;
+    if(Sys==1) ShiftSys=1.02*DataCorr;
+    if(Sys==-1) ShiftSys=0.98*DataCorr;
+
     if(DataEra.Contains("2016")){
       if(el.IsBB()){
-	if(el.Pt() < 50) return 0.971;
-	else if(el.Pt() < 75) return PtExtrap(el.Pt() , 50,75, 0.971,0.987);
-	else if(el.Pt() < 150) return PtExtrap(el.Pt() , 75,150, 0.987,0.997);
-	else return 0.997;
+	if(el.Pt() < 50)        return CheckShiftRange(0.971,ShiftSys);
+	else if(el.Pt() < 75)   return CheckShiftRange(PtExtrap(el.Pt() , 50,75, 0.971,0.987),ShiftSys);
+	else if(el.Pt() < 150)  return CheckShiftRange(PtExtrap(el.Pt() , 75,150, 0.987,0.997),ShiftSys);
+	else return CheckShiftRange(0.997,ShiftSys);
       }
       else{
 	
-        if(el.Pt() < 30)         return  0.951;
-        else if(el.Pt() < 40)    return  PtExtrap(el.Pt() , 30,40., 0.951,0.972);
-        else if(el.Pt() < 62.5)  return  PtExtrap(el.Pt() , 40,62.5, 0.972,0.983);
-	else  if(el.Pt() < 87.5) return  PtExtrap(el.Pt() , 62.5,87.5, 0.983,0.989);
-	else  if(el.Pt() < 150)  return  PtExtrap(el.Pt() , 87.5,150, 0.989,0.995);
-        else  return 0.995;
+        if(el.Pt() < 30)         return  CheckShiftRange(0.951,ShiftSys);
+	else if(el.Pt() < 40)    return  CheckShiftRange(PtExtrap(el.Pt() , 30,40., 0.951,0.972),ShiftSys);
+        else if(el.Pt() < 62.5)  return  CheckShiftRange(PtExtrap(el.Pt() , 40,62.5, 0.972,0.983),ShiftSys);
+	else  if(el.Pt() < 87.5) return  CheckShiftRange(PtExtrap(el.Pt() , 62.5,87.5, 0.983,0.989),ShiftSys);
+	else  if(el.Pt() < 150)  return  CheckShiftRange(PtExtrap(el.Pt() , 87.5,150, 0.989,0.995),ShiftSys);
+        else  return CheckShiftRange(0.995,ShiftSys);
       }
-    }
+    }//// 2016
     
     if(DataEra=="2017"){
-
       if(el.IsBB()){
-	if(el.Pt() < 50) return 0.969;
-	else if(el.Pt() < 75) return PtExtrap(el.Pt() , 50,75, 0.969,0.987);
-	else if(el.Pt() < 150) return PtExtrap(el.Pt() , 75,150, 0.987,0.995);
-	else return 0.995;
+	if(el.Pt() < 50)         return CheckShiftRange(0.969,ShiftSys);
+	else if(el.Pt() < 75)    return CheckShiftRange(PtExtrap(el.Pt() , 50,75, 0.969,0.987),ShiftSys);
+	else if(el.Pt() < 150)   return CheckShiftRange(PtExtrap(el.Pt() , 75,150, 0.987,0.995),ShiftSys);
+	else return CheckShiftRange(0.995,ShiftSys);
       } 
       else{
-        if(el.Pt() < 30)         return  0.949;
-        else if(el.Pt() < 40)    return  PtExtrap(el.Pt() , 30,40, 0.949,0.969);
-        else if(el.Pt() < 62.5)  return  PtExtrap(el.Pt() , 40,62.5, 0.969,0.982);
-	else  if(el.Pt() < 87.5) return  PtExtrap(el.Pt() ,62.5, 87.5, 0.982,0.989);
-	else  if(el.Pt() < 150)  return  PtExtrap(el.Pt() , 87.5,150, 0.989,0.995);
-        else  return 0.995;
+        if(el.Pt() < 30)         return  CheckShiftRange(0.949,ShiftSys);
+	else if(el.Pt() < 40)    return  CheckShiftRange(PtExtrap(el.Pt() , 30,40, 0.949,0.969),ShiftSys);
+	else if(el.Pt() < 62.5)  return  CheckShiftRange(PtExtrap(el.Pt() , 40,62.5, 0.969,0.982),ShiftSys);
+	else  if(el.Pt() < 87.5) return  CheckShiftRange(PtExtrap(el.Pt() ,62.5, 87.5, 0.982,0.989),ShiftSys);
+	else  if(el.Pt() < 150)  return  CheckShiftRange(PtExtrap(el.Pt() , 87.5,150, 0.989,0.995),ShiftSys);
+	else  return CheckShiftRange(0.995,ShiftSys);
       }
-    }
+    }/// 2017
     
     if(DataEra=="2018"){
       
       if(el.IsBB()){
-	if(el.Pt() < 50)       return 0.971;
-        else if(el.Pt() < 75)  return PtExtrap(el.Pt() , 50,75, 0.971,0.985);
-        else if(el.Pt() < 150) return PtExtrap(el.Pt() , 75,150, 0.985,0.997);
-        else return 0.997;
+	if(el.Pt() < 50)       return CheckShiftRange(0.971,ShiftSys);
+	else if(el.Pt() < 75)  return CheckShiftRange(PtExtrap(el.Pt() , 50,75, 0.971,0.985),ShiftSys);
+	else if(el.Pt() < 150) return CheckShiftRange(PtExtrap(el.Pt() , 75,150, 0.985,0.997),ShiftSys);
+	else return CheckShiftRange(0.997,ShiftSys);
       }
       else{
-        if(el.Pt() < 30)         return  0.948;
-        else if(el.Pt() < 40)    return  PtExtrap(el.Pt() , 30,40, 0.948,0.971);
-        else if(el.Pt() < 62.5)  return  PtExtrap(el.Pt() , 40,62.5, 0.971,0.982);
-        else  if(el.Pt() < 87.5) return  PtExtrap(el.Pt() , 62.5,87.5, 0.982,0.988);
-        else  if(el.Pt() < 150)  return  PtExtrap(el.Pt() , 87.5,150, 0.988,0.995);
-        else  return 0.995;
+        if(el.Pt() < 30)         return  CheckShiftRange(0.948,ShiftSys);
+	else if(el.Pt() < 40)    return  CheckShiftRange(PtExtrap(el.Pt() , 30,40, 0.948,0.971),ShiftSys);
+	else if(el.Pt() < 62.5)  return  CheckShiftRange(PtExtrap(el.Pt() , 40,62.5, 0.971,0.982),ShiftSys);
+	else  if(el.Pt() < 87.5) return  CheckShiftRange(PtExtrap(el.Pt() , 62.5,87.5, 0.982,0.988),ShiftSys);
+	else  if(el.Pt() < 150)  return  CheckShiftRange(PtExtrap(el.Pt() , 87.5,150, 0.988,0.995),ShiftSys);
+        else  return CheckShiftRange(0.995,ShiftSys);
       }
-    }
-    
-  }
-    
+    }// 2018
+  } //// END HNL ID Loop
+  
+  //// Other ID not so detailed Shify
   return  GetShiftCFEl(el.Pt(),el.IsBB(), ID, ApplyDataCorr, "minChi2" );
   
 }
@@ -239,7 +269,6 @@ double HNL_LeptonCore::GetShiftCFEl(double el_pt, bool IsBB,TString ID, bool App
   //// Get Shift for  Prompt -> CF Pt response                                                                                                                                                                   
 
   double PtShift = 1.;
-  if(ID == "TopHNSST") return 1.;
 
   if(ID == "passPOGTight"){
     if(DataEra.Contains("2016")){
@@ -346,7 +375,7 @@ double HNL_LeptonCore::GetShiftCFEl(double el_pt, bool IsBB,TString ID, bool App
       }
     }
   }
-  else if(ID.Contains("HNL_ULID")){
+  else if(ID.Contains("HNL_")){
     
     
     double DataCorr = 1.;
@@ -415,8 +444,13 @@ double HNL_LeptonCore::GetShiftCFEl(double el_pt, bool IsBB,TString ID, bool App
     }
 
   }
+
+  if(ID == "TopHNSST") return 1.;
+
   cout << "[HNL_LeptonCore::GetShiftCFEl ] ERROR in GetShiftCFEl.. " << ID <<  endl;
   exit(EXIT_FAILURE);
+
+
 
   return PtShift;
 }

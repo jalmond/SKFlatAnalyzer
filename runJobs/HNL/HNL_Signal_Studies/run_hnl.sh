@@ -1,5 +1,5 @@
-analyzer=HNL_SignalStudies
-rundir=HNL_SignalStudies
+analyzer=HNL_Signal_Studies
+rundir=HNL_Signal_Studies
 mcpath=${SKFlat_WD}/runJobs/HNL/${analyzer}/Bkg/
 sigpath=${SKFlat_WD}/runJobs/SampleLists/Signals/
 datapath=${SKFlat_WD}/runJobs/HNL/${analyzer}/DATA/

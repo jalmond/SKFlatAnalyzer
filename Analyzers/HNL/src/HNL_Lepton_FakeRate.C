@@ -25,12 +25,7 @@ void HNL_Lepton_FakeRate::executeEvent(){
   // setup list of IDs and jobs
 
 
-  vector<TString> vLMVA;
 
-  for(int ilmva=0 ; ilmva < 1 ; ilmva++){
-    double lmva_d=  -1. + double(ilmva)*.05;
-    vLMVA.push_back(DoubleToString(lmva_d));
-  }
 
   vector<AnalyzerParameter> VParameters;
   
@@ -183,12 +178,16 @@ void HNL_Lepton_FakeRate::executeEvent(){
 
     goto RunJobs;
   }
-  if(HasFlag("RunRatesNonSNU")){
+
+  if(HasFlag("RunRatesFullID")){
     /// Measure FR in Data    
-    //VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"POGHighPtTight"        , "POGHighPtTight",    "POGHighPtLoose"));
+    
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"POGHighPtWithLooseTrkIso","POGHighPtWithLooseTrkIso","POGHighPt"));
     VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"Peking"        , "Peking",    "Peking_FO"));
     VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNTightV2"     , "HNTightV2", "HNLooseV1"));
     VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_HN3L"      , "HNL_HN3L",  "HNL_TopMVA_FO_MM"));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_"+GetYearString()   , "HNL_ULID_"+GetYearString(),  "HNL_ULID_FO_"+GetEraShort()));
+
     goto RunJobs;
   }
   
@@ -274,6 +273,7 @@ void HNL_Lepton_FakeRate::executeEventFromParameter(AnalyzerParameter param){
   
   if(!PassMETFilter()) return;
   
+  /// check pt is not changed
   std::vector<Electron> Initial_loose_electrons     = SelectElectrons( param,param.Electron_Loose_ID, 10, 2.5) ;
   std::vector<Muon>     Initial_loose_muons         = SelectMuons    ( param,param.Muon_Loose_ID,     5,  2.4);
 
@@ -282,7 +282,7 @@ void HNL_Lepton_FakeRate::executeEventFromParameter(AnalyzerParameter param){
   for(auto ilep : Initial_loose_electrons) Loose_Electrons.push_back(ilep);
   for(auto ilep : Initial_loose_muons)   Loose_Muons.push_back(ilep);
   
-
+  //// is 20 correct?
   std::vector<Jet> jets_tmp     = SelectJets   ( param, "tight", 20., 2.7);
   std::vector<Jet> jets; 
   for(unsigned int ijet =0; ijet < jets_tmp.size(); ijet++){
@@ -1114,18 +1114,14 @@ void HNL_Lepton_FakeRate::GetElFakeRates(TString Method, std::vector<Lepton *> l
   bool IsMuon=(leps[0]->LeptonFlavour() == Lepton::MUON);
   if(IsMuon) return;
 
-  if(! ( HasFlag("RunRatesTauAnalysis") || HasFlag("RunRatesTauAnalysisEE"))){
-    
-    if(param.Name.Contains("HNL_")){
-      if(Method.Contains("PtCone")) return;
-    }
-    else{
-      if(!Method.Contains("PtCone")) return;
-    }
+  
+  if(param.Name.Contains("HNL_")){
+    if(Method.Contains("PtCone")) return;
   }
   else{
-    if(! ( (Method == "PtCone") ||  (Method == "Pt") )) return;
+    if(!(Method.Contains("PtCone") || Method.Contains("Pt"))) return;
   }
+  
   double   isocut  = (Method == "PtCone") ? GetIsoFromID(*leps[0], param.Electron_Tight_ID) : 0. ;
   TString  LooseID =  param.Electron_Loose_ID ;
   TString  TightID =  param.Electron_Tight_ID ;
@@ -1182,7 +1178,7 @@ void HNL_Lepton_FakeRate::GetElFakeRates(TString Method, std::vector<Lepton *> l
   }
   if(Method == "PtCone"){
     PtHist ="ptcone";
-    lep_pt =  ( leps[0]->CalcPtCone(leps[0]->RelIso(), isocut) < UpperPtCut) ?  leps[0]->Pt() : UpperPtCutM1;
+    lep_pt =  ( leps[0]->CalcPtCone(leps[0]->RelIso(), isocut) < UpperPtCut) ?  leps[0]->CalcPtCone(leps[0]->RelIso(), isocut) : UpperPtCutM1;
     ptname = "ptcone_eta";
     if(lep_pt > 40){
       if(leps[0]->Pt() < 25) return;
@@ -1349,22 +1345,13 @@ void HNL_Lepton_FakeRate::GetMuFakeRates(TString Method, std::vector<Lepton *> l
   bool IsMuon=(leps[0]->LeptonFlavour() == Lepton::MUON);
   if(!IsMuon) return;
 
-  if(! ( HasFlag("RunRatesTauAnalysis") ||  HasFlag("RunRatesTauAnalysisEE"))){
-    if(param.Name.Contains("HNL_")){
-      if(Method.Contains("PtCone")) return;
-    }
-    else{
-      if(param.Name.Contains("POGHighPtTight")) {
-	if(Method  != "Pt") return;
-      }
-      else{
-	if(!Method.Contains("PtCone")) return;
-      }
-    }
+  if(param.Name.Contains("HNL_")){
+    if(Method.Contains("PtCone")) return;
   }
   else{
-    if(! ( (Method == "PtCone") ||   (Method == "Pt") )) return;
+    if(! (Method.Contains("PtCone") || Method.Contains("Pt"))) return;
   }
+  
   double   isocut  = (Method == "PtCone") ? GetIsoFromID(*leps[0], param.Muon_Tight_ID) : 0.;
   TString  LooseID =  param.Muon_Loose_ID ;
   TString  TightID =  param.Muon_Tight_ID ;
@@ -1414,7 +1401,7 @@ void HNL_Lepton_FakeRate::GetMuFakeRates(TString Method, std::vector<Lepton *> l
     }
   }
   if(Method == "PtCone"){
-    lep_pt      =  ( leps[0]->CalcPtCone(leps[0]->RelIso(), isocut) < UpperPtCut) ?  leps[0]->Pt() : UpperPtCutM1;
+    lep_pt      =  ( leps[0]->CalcPtCone(leps[0]->RelIso(), isocut) < UpperPtCut) ?  leps[0]->CalcPtCone(leps[0]->RelIso(), isocut) : UpperPtCutM1;
     ptname = "ptcone_eta";
     if(lep_pt > 30){
       if(leps[0]->Pt() < 20) return;
@@ -1545,7 +1532,7 @@ void HNL_Lepton_FakeRate::GetMuFakeRates(TString Method, std::vector<Lepton *> l
   
     if(lep_pt >10){
       FillHistogram((prefix + "_"+ptname).Data(),            lep_pt, lep_eta,  weight_ptcorr, "FR_"+leps[0]->GetFlavour()+"_"+PtHist , "FR_Eta", Ptlab);
-      FillHistogram((prefix + "_"+ptname+"Binning2").Data(),            lep_pt, lep_eta,  weight_ptcorr, "FR_"+leps[0]->GetFlavour()+"_"+PtHist+"2" , "FR_Eta", Ptlab);
+      FillHistogram((prefix + "_"+ptname+"Binning2").Data(), lep_pt, lep_eta,  weight_ptcorr, "FR_"+leps[0]->GetFlavour()+"_"+PtHist+"2" , "FR_Eta", Ptlab);
       FillHistogram((prefix + "_"+ptname+"v2").Data(),       lep_pt, lep_eta,  weight_ptcorr, "FR_"+leps[0]->GetFlavour()+"_"+PtHist , "FR_Etav2", Ptlab);
       FillHistogram((prefix + "_"+ptname+"v3").Data(),       lep_pt, lep_eta,  weight_ptcorr, "FR_"+leps[0]->GetFlavour()+"_"+PtHist , "FR_Etav3", Ptlab);
       

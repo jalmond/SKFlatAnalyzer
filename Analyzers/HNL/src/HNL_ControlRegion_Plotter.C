@@ -16,7 +16,7 @@ void HNL_ControlRegion_Plotter::executeEvent(){
 
   ///// LIST IDs to run
   vector<TString> LepIDs = {"HNL_ULID"};//,"TopHN", "DefaultPOGTight"};
-  if(strcmp(std::getenv("USER"),"jalmond")==0) LepIDs = {"HNL_ULID", "TopHN","HNTightV2"};;
+  if(strcmp(std::getenv("USER"),"jalmond")==0) LepIDs = {"HNL_ULID", "HNL_ULID","TopHN","HNTightV2"};;
   if(RunFakeTF) LepIDs = {"HNL_ULID"};
   
   
