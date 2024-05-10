@@ -114,10 +114,10 @@ MergeList['WW_norm']     = ["WpWp_QCD","WpWp_EWK"] #FIXME time to time
 MergeList['Prompt']      = [
                             #VVV
                             'WWW','WWZ','WZZ','ZZZ',
-                            #SingleTop
-                            'SingleTop_sch_Lep','SingleTop_tch_antitop_Incl','SingleTop_tch_top_Incl','SingleTop_tW_antitop_NoFullyHad','SingleTop_tW_top_NoFullyHad',
+                            #SingleTop : 0.1 level events
+                            #'SingleTop_sch_Lep','SingleTop_tch_antitop_Incl','SingleTop_tch_top_Incl','SingleTop_tW_antitop_NoFullyHad','SingleTop_tW_top_NoFullyHad',
                             #ttV
-                            'ttWToLNu','ttZToLLNuNu','ttZToQQ_ll', #'ttWToQQ' : no entry
+                            'ttWToLNu','ttZToLLNuNu', #'ttZToQQ_ll', 'ttWToQQ' : no entry
                             #TTXX
                             'TTTT','TTZZ',
                             #tZq
@@ -125,7 +125,7 @@ MergeList['Prompt']      = [
                             #Higgs
                             'ttHToNonbb','tHq','VHToNonbb',
                             #VBFHiggs
-                            'VBFHToTauTau_M125','VBFHToWWTo2L2Nu','VBF_HToZZTo4L',
+                            'VBF_HToZZTo4L', #'VBFHToTauTau_M125', 'VBFHToWWTo2L2Nu', : no entry
                             #ggH
                             'GluGluHToWWTo2L2Nu','GluGluHToZZTo4L', #'GluGluHToTauTau_M125' : no entry
                             #minor WWs
@@ -222,7 +222,8 @@ for tag in tags:
       #f_path_cf          = InputPath + era + "/" + RegionToCRFlagMap[region] + "RunCF__/"+Analyzer+CFSkim+"CF.root" #FIXME MC CF
       f_path_zg          = InputPath + era + "/" + RegionToCRFlagMap[region] + "RunConv__/"+Analyzer+ConvSkim+"ZG_norm.root" #FIXME to ZG_norm later
       f_path_conv        = InputPath + era + "/" + RegionToCRFlagMap[region] + "RunConv__/"+Analyzer+ConvSkim+"Conv_others.root"
-      f_path_wz          = InputPath + era + "/" + RegionToCRFlagMap[region] + "RunPrompt__/"+Analyzer+MCSkim+"WZTo3LNu_amcatnlo.root"
+      #f_path_wz          = InputPath + era + "/" + RegionToCRFlagMap[region] + "RunPrompt__/"+Analyzer+MCSkim+"WZTo3LNu_amcatnlo.root"
+      f_path_wz          = InputPath + era + "/" + RegionToCRFlagMap[region] + "RunPrompt__/"+Analyzer+MCSkim+"WZTo3LNu_mllmin4p0_powheg.root"
       f_path_zz          = InputPath + era + "/" + RegionToCRFlagMap[region] + "RunPrompt__/"+Analyzer+MCSkim+"ZZ_norm.root"
       f_path_ww          = InputPath + era + "/" + RegionToCRFlagMap[region] + "RunPrompt__/"+Analyzer+MCSkim+"WW_norm.root"
       f_path_wzewk       = InputPath + era + "/" + RegionToCRFlagMap[region] + "RunPrompt__/"+Analyzer+MCSkim+"WZ_EWK.root"
