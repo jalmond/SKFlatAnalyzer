@@ -1,6 +1,6 @@
-#WZTo3LNu_amcatnlo
+#WZTo3LNu_amcatnlo # this slightly overestimate the bkg. (xsec is 10% larger than powheg) use powheg instead.
 #ZZTo4L_powheg ## why is it so slow? --> many stats. split more
-WZTo3LNu_mllmin4p0_powheg ## this gives better agreement (10% lower xsec than amcatnlo)
+WZTo3LNu_mllmin4p0_powheg
 WZ_EWK
 WWTo2L2Nu_DS
 WWTo2L2Nu_powheg
@@ -13,7 +13,7 @@ WpWp_QCD
 ttWToLNu
 ttZToLLNuNu
 #ttZToQQ_ll
-GluGluHToWWTo2L2Nu
+#GluGluHToWWTo2L2Nu
 GluGluHToZZTo4L
 GluGluToZZto2e2mu
 GluGluToZZto4e

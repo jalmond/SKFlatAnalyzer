@@ -25,8 +25,12 @@ masses = ["M85","M90","M95","M100","M125","M150","M200","M250","M300","M400","M5
 #tags = ["_sronly"]
 
 #masses = ["M100","M1000","M10000"]
+#masses = ["M100"]
 channels = ["MuMu","EE","EMu"]
-tags = [""]
+#channels = ["MuMu"]
+#tags = ["_sronly_sr_syst"]
+tags = ["_syst"]
+#tags = ["_sr_syst"]
 
 for year in years:
   for channel in channels:

@@ -20,8 +20,8 @@ void DrawLimits(TString year="", TString channel="", bool CompareLimits=true, bo
 
   //gStyle->SetOptStat(0);
 
-  TString WP_nom = "rateParam_HNL_ULID"; // nominal working point
-  TString tag_nom = "_Run2Scaled"; // nominal tag
+  TString WP_nom = "PR48_rateParam_HNL_ULID"; // nominal working point
+  TString tag_nom = "_syst"; // nominal tag
   TString method_nom = "Asym"; // nominal limit method
 
   TString this_plotpath = plotpath+WP_nom;
@@ -41,11 +41,14 @@ void DrawLimits(TString year="", TString channel="", bool CompareLimits=true, bo
   TString method = "Asym"; //"Full";
   //vector<TString> WPs = {"240505_PR46_HNTightV2","240504_PR44_HNL_ULID"};
   //vector<TString> tags = {"_sronly_Run2Scaled"};
-  vector<TString> WPs = {"240505_PR46_HNL_ULID"};
-  vector<TString> tags = {"_sronly_Run2Scaled"};
+  //vector<TString> WPs = {"240505_PR46_HNL_ULID"};
+  //vector<TString> tags = {"_sronly_Run2Scaled"};
+  vector<TString> WPs = {"rateParam_HNL_ULID_PR46"};
+  vector<TString> tags = {"_Run2Scaled"};
   for(int i=0; i<WPs.size(); i++){
     for(int j=0; j<tags.size(); j++){
-      files.push_back(filepath+WPs[i]+"/"+year+"_"+channel+tags[j]+"_"+method+"_limit.txt"); // add files systematically
+      //files.push_back(filepath+WPs[i]+"/"+year+"_"+channel+tags[j]+"_"+method+"_limit.txt"); // add files systematically
+      files.push_back(filepath+WPs[i]+"/2017_"+channel+tags[j]+"_"+method+"_limit.txt"); // add files systematically
       scales.push_back(0.01);
     }
   }
@@ -849,7 +852,8 @@ void DrawLimits(TString year="", TString channel="", bool CompareLimits=true, bo
     //lg_Alt->AddEntry(gr_exp_2, "EXO-17-028 Run2 (exp)", "l");
     //lg_Alt->AddEntry(gr_exp_1, "PR43 HNL_ULID (exp)", "l");
     //lg_Alt->AddEntry(gr_exp_1, "PR45 HNTightV2 (exp)", "l");
-    lg_Alt->AddEntry(gr_exp_1, "PR46 HNL_ULID (exp)", "l");
+    //lg_Alt->AddEntry(gr_exp_1, "PR46 HNL_ULID (exp)", "l");
+    if(CompareLimits) lg_Alt->AddEntry(gr_exp_1, "PR46 HNL_ULID 2017 Scaled (exp)", "l");
     //lg_Alt->AddEntry(gr_exp_2, "PR44 HNL_ULID (exp)", "l");
     lg_Alt->AddEntry(gr_21003_exp, "EXO-21-003 Run2 (exp)", "l");
     //lg_Alt->AddEntry(gr_17028_obs, "CMS 13 TeV dilepton", "l");
@@ -869,7 +873,8 @@ void DrawLimits(TString year="", TString channel="", bool CompareLimits=true, bo
     //lg_Alt->AddEntry(gr_exp_1, "This analysis HNTightV2 Run2 (exp)", "l");
     //lg_Alt->AddEntry(gr_exp_1, "PR43 HNL_ULID (exp)", "l");
     //lg_Alt->AddEntry(gr_exp_1, "PR45 HNTightV2 (exp)", "l");
-    lg_Alt->AddEntry(gr_exp_1, "PR46 HNL_ULID (exp)", "l");
+    //lg_Alt->AddEntry(gr_exp_1, "PR46 HNL_ULID (exp)", "l");
+    if(CompareLimits) lg_Alt->AddEntry(gr_exp_1, "PR46 HNL_ULID 2017 Scaled (exp)", "l");
     //lg_Alt->AddEntry(gr_exp_2, "PR44 HNL_ULID (exp)", "l");
     //lg_Alt->AddEntry(gr_17028_obs, "CMS 13 TeV dilepton", "l");
     //lg_Alt->AddEntry(gr_trilepLimit, "CMS 13 TeV trilepton", "l");
@@ -886,7 +891,8 @@ void DrawLimits(TString year="", TString channel="", bool CompareLimits=true, bo
     lg_Alt->AddEntry(gr_17028_exp, "EXO-17-028 2016 (exp)", "l");
     //lg_Alt->AddEntry(gr_exp_1, "PR43 HNL_ULID (exp)", "l");
     //lg_Alt->AddEntry(gr_exp_1, "PR45 HNTightV2 (exp)", "l");
-    lg_Alt->AddEntry(gr_exp_1, "PR46 HNL_ULID (exp)", "l");
+    //lg_Alt->AddEntry(gr_exp_1, "PR46 HNL_ULID (exp)", "l");
+    if(CompareLimits) lg_Alt->AddEntry(gr_exp_1, "PR46 HNL_ULID 2017 Scaled (exp)", "l");
     //lg_Alt->AddEntry(gr_exp_2, "PR44 HNL_ULID (exp)", "l");
     //lg_Alt->AddEntry(gr_17028_obs, "CMS 13 TeV dilepton", "l");
   }
@@ -944,7 +950,7 @@ void DrawLimits(TString year="", TString channel="", bool CompareLimits=true, bo
     //gr_L3Limit->Draw("lsame");
     //gr_DELPHILimit->Draw("lsame");
     gr_21003_exp->Draw("lsame");
-    gr_exp_1->Draw("lsame");
+    if(CompareLimits) gr_exp_1->Draw("lsame");
     //gr_exp_2->Draw("lsame");
     //gr_21003_obs->Draw("lsame");
     //gr_trilepLimit->Draw("lsame");
@@ -952,7 +958,7 @@ void DrawLimits(TString year="", TString channel="", bool CompareLimits=true, bo
     //gr_ATLAS_MuMu->Draw("lsame");
   }
   else if(channel=="EE"){
-    gr_exp_1->Draw("lsame");
+    if(CompareLimits) gr_exp_1->Draw("lsame");
     //gr_exp_2->Draw("lsame");
     //gr_L3_2Limit->Draw("lsame");
     //gr_DELPHILimit->Draw("lsame");
@@ -962,7 +968,7 @@ void DrawLimits(TString year="", TString channel="", bool CompareLimits=true, bo
     //gr_ATLAS_EE->Draw("lsame");
   }
   else if(channel=="EMu"){
-    gr_exp_1->Draw("lsame");
+    if(CompareLimits) gr_exp_1->Draw("lsame");
     //gr_exp_2->Draw("lsame");
   }
 
@@ -988,19 +994,24 @@ void DrawLimits(TString year="", TString channel="", bool CompareLimits=true, bo
   if(tag_nom.Contains("Run2")) lumi = "137.9";
   if(tag_nom.Contains("Run23")) lumi = "400";
 
-  //latex_CMSPreliminary.DrawLatex(0.16, 0.96, "#scale[0.8]{CMS #bf{#it{Preliminary}}}");
-  latex_CMSPreliminary.DrawLatex(0.14, 0.93, "#scale[0.8]{CMS #bf{#it{Preliminary}}}");
-  if(tag_nom.Contains("Run23")) latex_Lumi.DrawLatex(0.734, 0.96, lumi+" fb^{-1} (13.6 TeV)");
-  //else latex_Lumi.DrawLatex(0.736, 0.96, lumi+" fb^{-1} (13 TeV)");
-  else latex_Lumi.DrawLatex(0.77, 0.93, lumi+" fb^{-1} (13 TeV)");
   latex_title.SetTextSize(0.04);
   latex_title.SetLineWidth(2);
-  //latex_title.DrawLatex(0.25, 0.84, "#font[41]{95% CL upper limit}");
-  //latex_title.SetTextSize(0.05);
-  //latex_title.DrawLatex(0.25, 0.88, "#font[62]{CMS}");
-  latex_title.DrawLatex(0.21, 0.79, "#font[41]{95% CL upper limit}");
-  latex_title.SetTextSize(0.05);
-  latex_title.DrawLatex(0.21, 0.83, "#font[62]{CMS}");
+  if(CompareLimits){
+    latex_CMSPreliminary.DrawLatex(0.14, 0.93, "#scale[0.8]{CMS #bf{#it{Preliminary}}}");
+    latex_Lumi.DrawLatex(0.77, 0.93, lumi+" fb^{-1} (13 TeV)");
+    latex_title.DrawLatex(0.21, 0.79, "#font[41]{95% CL upper limit}");
+    latex_title.SetTextSize(0.05);
+    latex_title.DrawLatex(0.21, 0.83, "#font[62]{CMS}");
+  }
+  else{
+    latex_CMSPreliminary.DrawLatex(0.16, 0.96, "#scale[0.8]{CMS #bf{#it{Preliminary}}}");
+    if(year.Contains("Run2")) latex_Lumi.DrawLatex(0.69, 0.96, lumi+" fb^{-1} (13 TeV)"); // Run2
+		else latex_Lumi.DrawLatex(0.736, 0.96, lumi+" fb^{-1} (13 TeV)");
+    latex_title.DrawLatex(0.25, 0.84, "#font[41]{95% CL upper limit}");
+    latex_title.SetTextSize(0.05);
+    latex_title.DrawLatex(0.25, 0.88, "#font[62]{CMS}");
+  }
+  //if(tag_nom.Contains("Run23")) latex_Lumi.DrawLatex(0.734, 0.96, lumi+" fb^{-1} (13.6 TeV)");
 
   dummy->Draw("axissame");
 
@@ -1047,24 +1058,36 @@ void DrawLimits(TString year="", TString channel="", bool CompareLimits=true, bo
     //for(int i=0; i<n_centrals[0]; i++) ratio_PR45_HNTightV2[i] = limits[1][i]/limits[0][i];
 
     // ratio with PR46 HNL_ULID limits //FIXME this is mass dependent.
-    double ratio_PR46_HNL_ULID[n_centrals[0]];
-    for(int i=0; i<n_centrals[0]; i++) ratio_PR46_HNL_ULID[i] = limits[1][i]/limits[0][i];
+    //double ratio_PR46_HNL_ULID[n_centrals[0]];
+    //for(int i=0; i<n_centrals[0]; i++) ratio_PR46_HNL_ULID[i] = limits[1][i]/limits[0][i];
+
+    // ratio with PR46 HNL_ULID rateParam w/o syst limits //FIXME this is mass dependent.
+    double mass_comp_PR46[25] = {100,150,200,250,300,400,500,600,700,800,900,1000,1100,1200,1300,1500,1700,2000,2500,3000,5000,7500,10000,15000,20000};
+    int index_comp_PR46_PR48[25] = {3,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28};
+    double ratio_PR46[25];
+    //for(int i=0; i<25; i++) cout << limits[1][index_comp_PR46_PR48[i]] << " vs " << limits[0][i] << endl;
+    for(int i=0; i<25; i++) ratio_PR46[i] = limits[1][index_comp_PR46_PR48[i]]/limits[0][i];
+    //for(int i=0; i<25; i++) cout << ratio_PR46[i] << endl;
 
     // ratio with EXO-17-028 expected //FIXME this is mass dependent.
     double mass_comp_17028[17] = {100,150,200,300,400,500,600,700,800,900,1000,1100,1200,1300,1500,1700,2000};
     int index_comp_17028[17] = {0,2,3,5,6,7,8,9,10,11,12,13,14,15,17,18,19};
     //int index_comp_limit[17] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};
-    int index_comp_PR44_17028[17] = {3,5,6,8,9,10,11,12,13,14,15,16,17,18,19,20,21};
+    //int index_comp_PR44_17028[17] = {3,5,6,8,9,10,11,12,13,14,15,16,17,18,19,20,21};
+    int index_comp_PR48_17028[17] = {0,1,2,4,5,6,7,8,9,10,11,12,13,14,15,16,17};
     double ratio_17028[17];
-    for(int i=0; i<17; i++) ratio_17028[i] = exp_17028[index_comp_17028[i]]/limits[0][index_comp_PR44_17028[i]];
+    //for(int i=0; i<17; i++) ratio_17028[i] = exp_17028[index_comp_17028[i]]/limits[0][index_comp_PR44_17028[i]];
+    for(int i=0; i<17; i++) ratio_17028[i] = exp_17028[index_comp_17028[i]]/limits[0][index_comp_PR48_17028[i]];
 
     // ratio with EXO-21-003 expected //FIXME this is mass dependent.
     double mass_comp_21003[13] = {150,300,600,900,1000,1500,2000,2500,5000,7500,10000,15000,20000};
     double obs_comp_21003[13] = {0.1118, 0.0837, 0.0775, 0.0819, 0.0866, 0.099, 0.1166, 0.1375, 0.2322, 0.3288, 0.4368, 0.6341, 0.8621}; //xcheck with https://www.hepdata.net/record/131287
     double exp_comp_21003[13] = {0.14142136, 0.10583005, 0.10148892, 0.10583005, 0.11045361, 0.12688578, 0.15132746, 0.17804494, 0.30049958, 0.42567593, 0.56595053, 0.82085321, 1.1180340 };
-    int index_comp_PR44_21003[13] = {5,8,11,14,15,19,21,22,24,25,26,27,28};
+    //int index_comp_PR44_21003[13] = {5,8,11,14,15,19,21,22,24,25,26,27,28};
+    int index_comp_PR48_21003[13] = {1,4,7,10,11,15,17,18,20,21,22,23,24};
     double ratio_21003[13];
-    for(int i=0; i<13; i++) ratio_21003[i] = exp_comp_21003[i]/limits[0][index_comp_PR44_21003[i]];
+    //for(int i=0; i<13; i++) ratio_21003[i] = exp_comp_21003[i]/limits[0][index_comp_PR44_21003[i]];
+    for(int i=0; i<13; i++) ratio_21003[i] = exp_comp_21003[i]/limits[0][index_comp_PR48_21003[i]];
 
     TH1D *dummy2 = new TH1D("hist2", "", 100000, 0., 100000.);
     dummy2->GetYaxis()->SetTitleSize(0.1);
@@ -1078,9 +1101,10 @@ void DrawLimits(TString year="", TString channel="", bool CompareLimits=true, bo
     dummy2->GetXaxis()->SetTitle("m_{N} (GeV)");
     dummy2->GetXaxis()->SetLabelSize(0.12);
     dummy2->GetXaxis()->SetRangeUser(80., 25000);
-    if(Logy) dummy2->GetYaxis()->SetRangeUser(0.85, 50);
+    if(Logy) dummy2->GetYaxis()->SetRangeUser(0.5, 50);
     //else dummy2->GetYaxis()->SetRangeUser(0.85, 2);
-    else dummy2->GetYaxis()->SetRangeUser(0.94, 1.06);
+    //else dummy2->GetYaxis()->SetRangeUser(0.94, 1.06);
+    else dummy2->GetYaxis()->SetRangeUser(0.5, 1.5);
     dummy2->SetTitle("");
     dummy2->Draw("hist");
 
@@ -1104,11 +1128,18 @@ void DrawLimits(TString year="", TString channel="", bool CompareLimits=true, bo
     //gr_ratio_PR44->SetLineColor(kViolet);
     //gr_ratio_PR44->SetLineWidth(2);
     //gr_ratio_PR44->Draw("lpsame");
-    TGraph *gr_ratio_PR46_HNL_ULID = new TGraph(n_centrals[0],&masses[0][0],ratio_PR46_HNL_ULID);
-    gr_ratio_PR46_HNL_ULID->SetMarkerColor(kViolet);
-    gr_ratio_PR46_HNL_ULID->SetLineColor(kViolet);
-    gr_ratio_PR46_HNL_ULID->SetLineWidth(2);
-    gr_ratio_PR46_HNL_ULID->Draw("lpsame");
+    //TGraph *gr_ratio_PR46_HNL_ULID = new TGraph(n_centrals[0],&masses[0][0],ratio_PR46_HNL_ULID);
+    //gr_ratio_PR46_HNL_ULID->SetMarkerColor(kViolet);
+    //gr_ratio_PR46_HNL_ULID->SetLineColor(kViolet);
+    //gr_ratio_PR46_HNL_ULID->SetLineWidth(2);
+    //gr_ratio_PR46_HNL_ULID->Draw("lpsame");
+
+    TGraph *gr_ratio_PR46 = new TGraph(25,mass_comp_PR46,ratio_PR46);
+    gr_ratio_PR46->SetMarkerColor(kViolet);
+    gr_ratio_PR46->SetLineColor(kViolet);
+    gr_ratio_PR46->SetLineWidth(2);
+    gr_ratio_PR46->Draw("lpsame");
+
     //TGraph *gr_ratio_HNTightV2 = new TGraph(n_centrals[0],&masses[0][0],ratio_HNTightV2);
     //gr_ratio_HNTightV2->SetMarkerColor(kCyan);
     //gr_ratio_HNTightV2->SetLineColor(kCyan);

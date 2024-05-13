@@ -199,7 +199,7 @@ TString HNL_LeptonCore::GetCutFlowNameFromRegion(HNL_LeptonCore::SearchRegion sr
   if(sr==ElectronMuonSR || sr==ElectronMuonSROpt )     EVHistName ="ElectronMuonSR";
   if(sr==MuonSRBDT          || sr==MuonSRBDTOpt)         EVHistName ="MuonSRBDT";
   if(sr==ElectronSRBDT      || sr==ElectronSRBDTOpt)     EVHistName ="ElectronSRBDT";
-  if(sr==ElectronMuonSRBDT  || sr==ElectronMuonSRBDTOpt) EVHistName ="ElectronMuonSRBDT"; //JH
+  if(sr==ElectronMuonSRBDT  || sr==ElectronMuonSRBDTOpt) EVHistName ="ElectronMuonSRBDT";
 
   ///// CR Names                                                                                     
   if(sr==MuonCR1)   EVHistName ="MuonCR1";

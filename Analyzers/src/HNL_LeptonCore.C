@@ -254,6 +254,15 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
 
   vector<AnalyzerParameter::Syst> SystList = {};
 
+  if(SystType == "Quick"){
+    SystList.push_back(AnalyzerParameter::JetResUp);
+    SystList.push_back(AnalyzerParameter::JetResDown);
+    SystList.push_back(AnalyzerParameter::JetEnUp);
+    SystList.push_back(AnalyzerParameter::JetEnDown);
+    SystList.push_back(AnalyzerParameter::BTagSFHTagUp);
+    SystList.push_back(AnalyzerParameter::BTagSFHTagDown);
+  }
+
   if(SystType == "Jets"){
     SystList.push_back(AnalyzerParameter::JetResUp);
     SystList.push_back(AnalyzerParameter::JetResDown);

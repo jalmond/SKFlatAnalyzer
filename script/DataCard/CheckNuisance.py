@@ -11,7 +11,7 @@ import commands as cmd
 
 years = ["2016","2017","2018"]
 years = ["Run2"]
-years = ["2017"]
+#years = ["2017"]
 #years = ["2016preVFP","2016postVFP","2018","Run2"]
 #masses = ["M5000","M7500","M10000","M15000","M20000"]
 #masses = ["M100","M1000","M10000"]
@@ -23,7 +23,7 @@ years = ["2017"]
 
 masses = ["M100","M1000","M10000"]
 channels = ["MuMu","EE","EMu"]
-tags = [""]
+tags = ["_syst"]
 
 pwd = os.getcwd()
 

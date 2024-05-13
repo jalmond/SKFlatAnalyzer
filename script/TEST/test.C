@@ -80,9 +80,9 @@ void test(TString era, bool isdata, TString sample, TString skim, TString flag){
   }
   else if(era=="2017" && isdata && sample=="DoubleEG" && skim=="HNMultiLepBDT"){
     if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/DATA_SkimTree_HNMultiLepBDT/DoubleEG/periodB/2023_09_04_143241/SKFlatNtuple_2017_DATA_0.root")) exit(EIO);
-    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/DATA_SkimTree_HNMultiLepBDT/DoubleEG/periodB/2023_09_04_143241/SKFlatNtuple_2017_DATA_1.root")) exit(EIO);
-    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/DATA_SkimTree_HNMultiLepBDT/DoubleEG/periodB/2023_09_04_143241/SKFlatNtuple_2017_DATA_2.root")) exit(EIO);
-    if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/DATA_SkimTree_HNMultiLepBDT/DoubleEG/periodB/2023_09_04_143241/SKFlatNtuple_2017_DATA_3.root")) exit(EIO);
+    //if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/DATA_SkimTree_HNMultiLepBDT/DoubleEG/periodB/2023_09_04_143241/SKFlatNtuple_2017_DATA_1.root")) exit(EIO);
+    //if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/DATA_SkimTree_HNMultiLepBDT/DoubleEG/periodB/2023_09_04_143241/SKFlatNtuple_2017_DATA_2.root")) exit(EIO);
+    //if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/DATA_SkimTree_HNMultiLepBDT/DoubleEG/periodB/2023_09_04_143241/SKFlatNtuple_2017_DATA_3.root")) exit(EIO);
     //if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/DATA_SkimTree_HNMultiLepBDT/DoubleEG/periodB/2023_09_04_143241/SKFlatNtuple_2017_DATA_4.root")) exit(EIO);
     //if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/DATA_SkimTree_HNMultiLepBDT/DoubleEG/periodB/2023_09_04_143241/SKFlatNtuple_2017_DATA_5.root")) exit(EIO);
     //if(!m.AddFile("/gv0/DATA/SKFlat/Run2UltraLegacy_v3/2017/DATA_SkimTree_HNMultiLepBDT/DoubleEG/periodB/2023_09_04_143241/SKFlatNtuple_2017_DATA_6.root")) exit(EIO);

@@ -17,6 +17,8 @@ parser.add_argument('--Q4', action='store_true')
 parser.add_argument('--Q5', action='store_true')
 parser.add_argument('-t', dest='Ntoy', default='1000', help='N of toys when running full CLs')
 parser.add_argument('--Asymptotic', action='store_true')
+parser.add_argument('--Work', action='store_true', help='running workspace')
+parser.add_argument('--Nuis', action='store_true', help='check nuisance fit')
 args = parser.parse_args()
 
 pwd = os.getcwd()
@@ -34,29 +36,43 @@ for RunList in args.RunLists:
   cards = open(RunList).readlines()
   NCARD = len(cards)
   WP = RunList.split('.')[-2].replace('RunList_','')
-  
-  os.system('mkdir -p Batch/'+WP)
-  with open('Batch/submit_skeleton.sh','w') as skel:
-    skel.write("universe = vanilla\n")
-    skel.write("getenv   = True\n")
-    skel.write("should_transfer_files = YES\n")
-    skel.write("when_to_transfer_output = ON_EXIT\n")
-    skel.write("request_memory = 24000\n")
+ 
+  if args.Work or args.Nuis:
+    with open(WP+'/submit_skeleton.sh','w') as skel: # for Nuisance check
+      skel.write("universe = vanilla\n")
+      skel.write("getenv   = True\n")
+      skel.write("should_transfer_files = YES\n")
+      skel.write("when_to_transfer_output = ON_EXIT\n")
+      skel.write("request_memory = 24000\n")
+  else:
+    os.system('mkdir -p Batch/'+WP)
+    with open('Batch/submit_skeleton.sh','w') as skel:
+      skel.write("universe = vanilla\n")
+      skel.write("getenv   = True\n")
+      skel.write("should_transfer_files = YES\n")
+      skel.write("when_to_transfer_output = ON_EXIT\n")
+      skel.write("request_memory = 24000\n")
   
   for i in range(0,NCARD):
   
     card = cards[i].strip('\n')
     if '#' in card: continue
     shortcard = card.split('/')[-1].replace(".root","").replace(".txt","").replace("card_","")
-  
-    os.system('mkdir -p Batch/'+WP+'/full_CLs/'+shortcard+'/output/')
-    os.system('cp Batch/submit_skeleton.sh Batch/'+WP+'/full_CLs/'+shortcard+'/submit_Q1.sh')
-    os.system('cp Batch/submit_skeleton.sh Batch/'+WP+'/full_CLs/'+shortcard+'/submit_Q2.sh')
-    os.system('cp Batch/submit_skeleton.sh Batch/'+WP+'/full_CLs/'+shortcard+'/submit_Q3.sh')
-    os.system('cp Batch/submit_skeleton.sh Batch/'+WP+'/full_CLs/'+shortcard+'/submit_Q4.sh')
-    os.system('cp Batch/submit_skeleton.sh Batch/'+WP+'/full_CLs/'+shortcard+'/submit_Q5.sh')
-    os.system('mkdir -p Batch/'+WP+'/Asymptotic/'+shortcard+'/output/')
-    os.system('cp Batch/submit_skeleton.sh Batch/'+WP+'/Asymptotic/'+shortcard+'/submit.sh')
+ 
+    if args.Work:
+      os.system('cp '+WP+'/submit_skeleton.sh '+WP+'/'+shortcard+'_submit_Workspace.sh')
+    elif args.Nuis:
+      os.system('mkdir -p '+WP+'/'+shortcard)
+      os.system('cp '+WP+'/submit_skeleton.sh '+WP+'/'+shortcard+'/submit_Nuisance.sh')
+    else:
+      os.system('mkdir -p Batch/'+WP+'/full_CLs/'+shortcard+'/output/')
+      os.system('cp Batch/submit_skeleton.sh Batch/'+WP+'/full_CLs/'+shortcard+'/submit_Q1.sh')
+      os.system('cp Batch/submit_skeleton.sh Batch/'+WP+'/full_CLs/'+shortcard+'/submit_Q2.sh')
+      os.system('cp Batch/submit_skeleton.sh Batch/'+WP+'/full_CLs/'+shortcard+'/submit_Q3.sh')
+      os.system('cp Batch/submit_skeleton.sh Batch/'+WP+'/full_CLs/'+shortcard+'/submit_Q4.sh')
+      os.system('cp Batch/submit_skeleton.sh Batch/'+WP+'/full_CLs/'+shortcard+'/submit_Q5.sh')
+      os.system('mkdir -p Batch/'+WP+'/Asymptotic/'+shortcard+'/output/')
+      os.system('cp Batch/submit_skeleton.sh Batch/'+WP+'/Asymptotic/'+shortcard+'/submit_Asympt.sh')
   
     if args.Full or args.Q1:
       with open("Batch/"+WP+"/full_CLs/"+shortcard+"/run_Q1.sh",'w') as runfile:
@@ -138,7 +154,7 @@ for RunList in args.RunLists:
       with open("Batch/"+WP+"/Asymptotic/"+shortcard+"/run_Asymptotic.sh",'w') as runfile:
         runfile.write("#!/bin/bash\n")
         runfile.write("combine -M AsymptoticLimits "+card+" --run blind\n")
-      with open("Batch/"+WP+"/Asymptotic/"+shortcard+"/submit.sh",'a') as submitfile:
+      with open("Batch/"+WP+"/Asymptotic/"+shortcard+"/submit_Asympt.sh",'a') as submitfile:
         submitfile.write("executable = run_Asymptotic.sh\n")
         submitfile.write("log = "+shortcard+"_Asymptotic.log\n")
         submitfile.write("output = "+shortcard+"_Asymptotic.out\n")
@@ -147,5 +163,49 @@ for RunList in args.RunLists:
         submitfile.write("transfer_output_remaps = \"higgsCombineTest.AsymptoticLimits.mH120.root = output/"+shortcard+"_Asymptotic.root\"\n")
         submitfile.write("queue\n")
       os.chdir('Batch/'+WP+'/Asymptotic/'+shortcard)
-      os.system('condor_submit submit.sh -batch-name '+shortcard+'_'+WP+'_Asymptotic')
+      os.system('condor_submit submit_Asympt.sh -batch-name '+shortcard+'_'+WP+'_Asymptotic')
+      os.chdir(pwd)
+
+    if args.Work:
+      with open(WP+"/"+shortcard+"_MakeWorkspace.sh",'w') as runfile:
+        runfile.write("#!/bin/bash\n")
+        card = card.replace(".root",".txt")
+        card_name = card.replace(".txt","")
+        if "EMu" in card_name:
+          runfile.write("text2workspace.py -P HiggsAnalysis.CombinedLimit.HNDilepModel:hnDilepModel_EMu "+card+" -o "+card_name+".root")
+        else:
+          runfile.write("text2workspace.py -P HiggsAnalysis.CombinedLimit.HNDilepModel:hnDilepModel "+card+" -o "+card_name+".root\n")
+      with open(WP+"/"+shortcard+"_submit_Workspace.sh",'a') as submitfile:
+        submitfile.write("executable = "+shortcard+"_MakeWorkspace.sh\n")
+        submitfile.write("log = "+shortcard+"_Workspace.log\n")
+        submitfile.write("output = "+shortcard+"_Workspace.out\n")
+        submitfile.write("error = "+shortcard+"_Workspace.err\n")
+        submitfile.write("queue\n")
+      os.chdir(WP)
+      os.system('condor_submit '+shortcard+'_submit_Workspace.sh -batch-name '+shortcard+'_'+WP+'_Workspace')
+      os.chdir(pwd)
+
+    if args.Nuis:
+      this_mass = shortcard.split('_M')[-1].split('_')[0]
+      with open(WP+"/"+shortcard+"/CheckNuisance.sh",'w') as runfile:
+        runfile.write("#!/bin/bash\n")
+        runfile.write("echo Running FitDiagnostics...\n")
+        runfile.write("combine -M FitDiagnostics "+card+" --rMin -1 --rMax 2 -n "+shortcard+" --plots\n")
+        runfile.write("echo Running Initial fit...\n")
+        runfile.write("combineTool.py -M Impacts -d "+card+" -m "+this_mass+" --rMin -1 --rMax 2 --robustFit 1 --doInitialFit --name "+shortcard+"\n")
+        runfile.write("echo Running Actual fit...\n")
+        runfile.write("combineTool.py -M Impacts -d "+card+" -m "+this_mass+" --rMin -1 --rMax 2 --robustFit 1 --doFits --name "+shortcard+"\n")
+        runfile.write("echo Making impact json...\n")
+        runfile.write("combineTool.py -M Impacts -d "+card+" -m "+this_mass+" --rMin -1 --rMax 2 --robustFit 1 --output "+shortcard+"_impacts.json --name "+shortcard+"\n")
+        runfile.write("echo Making impact plots...\n")
+        runfile.write("plotImpacts.py -i "+shortcard+"_impacts.json -o "+shortcard+"\n")
+        runfile.write("echo Done.\n")
+      with open(WP+"/"+shortcard+"/submit_Nuisance.sh",'a') as submitfile:
+        submitfile.write("executable = CheckNuisance.sh\n")
+        submitfile.write("log = "+shortcard+"_CheckNuisance.log\n")
+        submitfile.write("output = "+shortcard+"_CheckNuisance.out\n")
+        submitfile.write("error = "+shortcard+"_CheckNuisance.err\n")
+        submitfile.write("queue\n")
+      os.chdir(WP+"/"+shortcard)
+      os.system('condor_submit submit_Nuisance.sh -batch-name '+shortcard+'_'+WP+'_Nuisance')
       os.chdir(pwd)

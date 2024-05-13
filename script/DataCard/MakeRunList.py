@@ -33,9 +33,10 @@ input_path = "/data6/Users/jihkim/CombineTool/CMSSW_10_2_13/src/DataCardsShape/H
 #myWPs = ["240504_PR44_HNL_ULID"]
 #myWPs = ["240505_PR45_HNL_ULID"]
 #myWPs = ["240505_PR46_HNL_ULID","240505_PR46_HNTightV2"]
-myWPs = ["rateParam_HNL_ULID"]
+#myWPs = ["rateParam_HNL_ULID"]
+myWPs = ["PR48_rateParam_HNL_ULID"]
 #tags = ["_sronly"]
-tags = [""]
+tags = ["_syst"]
 
 for WP in myWPs:
   with open("RunList_"+WP+".txt",'w') as f:

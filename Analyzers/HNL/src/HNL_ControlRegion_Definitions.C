@@ -1285,27 +1285,22 @@ bool HNL_RegionDefinitions::FillSSZPeakCRPlots(HNL_LeptonCore::Channel channel, 
   if (leps_veto.size() != 2) return false;
   
   Particle ll =  (*leps[0]) + (*leps[1]);
-  // Kepp only Z peak events with many CF                                                                                                                                                           
-  //if ((fabs(ll.M()-M_Z) < 20.) && (fabs(ll.M()-M_Z) > 10.)) {
-  if (fabs(ll.M()-M_Z) < 10.) { //JH to avoid overlap with SR
-    Fill_RegionPlots(param,"HNL_HighMassSSZPeakSideBand_TwoLepton_CR"  ,  JetColl,  AK8_JetColl,  leps,  METv, nPV, w);
 
-    double Binvalue=0;
-    if((JetColl.size()<2) && (leps[1]->Pt()  < 50)) Binvalue=0.5;
-    else   if((JetColl.size()<2) && (leps[1]->Pt()  < 150)) Binvalue=1.5;
-    else   if((JetColl.size()<2)) Binvalue=2.5;
-    else   {
-      Particle llJJ =  *leps[0] + *leps[1]+JetColl[0]+JetColl[1];
-      /// For first one these are arbitary                                                                                                                                                 
-      if(llJJ.M() < 200) Binvalue= 3.5;
-      else     if(llJJ.M() < 400) Binvalue= 4.5;
-      else Binvalue= 5.5;
-    }
-    FillHist(  "LimitExtraction/"+ param.Name+"/LimitShape_CF/Binned",  Binvalue  ,  w, 6,0,6 ,"CR Binned");
-
-  }
-
+  // Kepp only Z peak events with many CF
   if (fabs(ll.M()-M_Z) > M_ZWINDOW_VETO) return false;
+
+  double Binvalue=0;
+  if((JetColl.size()<2) && (leps[1]->Pt()  < 50)) Binvalue=0.5;
+  else if((JetColl.size()<2) && (leps[1]->Pt()  < 150)) Binvalue=1.5;
+  else if((JetColl.size()<2)) Binvalue=2.5;
+  else {
+    Particle llJJ =  *leps[0] + *leps[1]+JetColl[0]+JetColl[1];
+    /// For first one these are arbitary
+    if(llJJ.M() < 200) Binvalue= 3.5;
+    else if(llJJ.M() < 400) Binvalue= 4.5;
+    else Binvalue= 5.5;
+  }
+  FillHist(  "LimitExtraction/"+ param.Name+"/LimitShape_CF/Binned",  Binvalue  ,  w, 6,0,6 ,"CR Binned");
 
   Fill_RegionPlots(param,"HNL_HighMassSSZPeak_TwoLepton_CR"  ,  JetColl,  AK8_JetColl,  leps,  METv, nPV, w);
   if(leps[1]->Pt() > 100) {
