@@ -14,8 +14,8 @@ workdir = "/data6/Users/jihkim/CombineTool/CMSSW_10_2_13/src/DataCardsShape/HNL_
 years = ["2016","2017","2018"]
 years = ["Run2"]
 years = ["2016preVFP","2016postVFP","2017","2018","Run2"]
-years = ["Run2"]
-#years = ["2017"]
+#years = ["Run2"]
+years = ["2017"]
 channels = ["MuMu","EE","EMu"]
 #channels = ["MuMu","EE"]
 #channels = ["EE"]
@@ -43,8 +43,8 @@ for WP in myWPs:
   for year, channel, ID, tag in [[year, channel, ID, tag] for year in years for channel in channels for ID in IDs for tag in tags]:
     
     if args.Asymptotic:
-      with open("out/"+WP+"/"+year+"_"+channel+ID+tag+"_Asym_limit.txt", 'w') as f:
-      #with open("out/"+WP+"/"+year+"_"+channel+ID+tag+"_Run2Scaled_Asym_limit.txt", 'w') as f:
+      #with open("out/"+WP+"/"+year+"_"+channel+ID+tag+"_Asym_limit.txt", 'w') as f:
+      with open("out/"+WP+"/"+year+"_"+channel+ID+tag+"_Run2Scaled_Asym_limit.txt", 'w') as f:
       #with open("out/"+WP+"/"+year+"_"+channel+ID+tag+"_Run23Scaled_Asym_limit.txt", 'w') as f:
   
         for mass in masses:
@@ -56,14 +56,14 @@ for WP in myWPs:
           tree_Asym = f_Asym.Get("limit")
   
           tree_Asym.GetEntry(2) # substitute for obs. limit for now
-          f.write(mass+"\t"+str(round(tree_Asym.limit,3))+"\t")
-          #f.write(mass+"\t"+str(round(tree_Asym.limit/1.87,3))+"\t") # FIXME estimating full Run2 from 2017
+          #f.write(mass+"\t"+str(round(tree_Asym.limit,3))+"\t")
+          f.write(mass+"\t"+str(round(tree_Asym.limit/1.87,3))+"\t") # FIXME estimating full Run2 from 2017
           #f.write(mass+"\t"+str(round(tree_Asym.limit/3.16,3))+"\t") # FIXME estimating full Run2+3 from 2017
   
           for i in range(5): # expected limits
             tree_Asym.GetEntry(i)
-            f.write(str(round(tree_Asym.limit,3))+"\t")
-            #f.write(str(round(tree_Asym.limit/1.87,3))+"\t") # FIXME estimating full Run2 from 2017
+            #f.write(str(round(tree_Asym.limit,3))+"\t")
+            f.write(str(round(tree_Asym.limit/1.87,3))+"\t") # FIXME estimating full Run2 from 2017
             #f.write(str(round(tree_Asym.limit/3.16,3))+"\t") # FIXME estimating full Run2+3 from 2017
           f.write("\n")
           print "done."

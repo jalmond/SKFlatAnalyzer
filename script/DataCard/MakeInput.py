@@ -12,13 +12,13 @@ args = parser.parse_args()
 
 
 #eras = ["2016preVFP", "2016postVFP", "2017", "2018"]
-#eras = ["2016","2017","2018"]
 #eras = ["2017"]
-eras = ["2018"]
+#eras = ["2018"]
+eras = ["Run2"] # Let's merge Run2 after running all eras first
 #masses = ["M90","M100","M150","M200","M300","M400","M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M10000","M15000","M20000"]
-#masses = ["M100","M1000","M10000"]
-masses = ["M85","M90","M95","M100","M125","M150","M200","M250","M300","M400","M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M10000","M15000","M20000"]
-#masses = ["M1000"]
+masses = ["M100","M1000","M10000"]
+#masses = ["M85","M90","M95","M100","M125","M150","M200","M250","M300","M400","M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M10000","M15000","M20000"]
+#masses = ["M10000"]
 #masses = ["M85"]
 channels = ["MuMu","EE","EMu"]
 #channels = ["MuMu","EE"]
@@ -50,7 +50,7 @@ MergeFake   = False  # RunFake
 MergeCF     = False  # RunCF
 MergeConv   = False  # RunConv
 MergeMC     = False  # RunPrompt
-MergeSignal = False
+MergeSignal = True
 #MergeDYVBF = True
 #MergeSSWW  = True
 
@@ -60,7 +60,7 @@ if args.CR:
   Analyzer = "HNL_ControlRegion_Plotter"
 
   regions = ["sr_inv","sr1_inv","sr2_inv","sr3_inv","cf_cr","ww_cr","zg_cr","wz_cr","wzewk_cr","zz_cr"] # for CRs
-  #regions = ""
+  regions = ""
 
   RegionToCRFlagMap['sr_inv'] = "SS_CR__"
   RegionToCRFlagMap['sr1_inv'] = "SS_CR__"
@@ -102,7 +102,7 @@ else:
 
   regions = ["sr","sr1","sr2","sr3"] # for SRs
   #regions = ["sr1"] # for SRs
-  #regions = ""
+  regions = ""
 
   RegionToCRFlagMap['sr'] = ""
   RegionToCRFlagMap['sr1'] = ""
@@ -130,30 +130,58 @@ InputPath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/"+Analyzer+"/"
 
 ##### Start merging #####
 MergeList = {}
-MergeList['Conv_others'] = ["TG","TTG","WZG","WWG","WGToLNuG","WGJJToLNu"] #FIXME time to time
-MergeList['ZG_norm']     = ["DYJets_MG","ZGToLLG"] #FIXME add this after applying ConversionSpltting
-MergeList['ZZ_norm']     = ["ZZTo4L_powheg","GluGluToZZto4e","GluGluToZZto4mu","GluGluToZZto2e2mu"] #FIXME time to time
-MergeList['WW_norm']     = ["WpWp_QCD","WpWp_EWK"] #FIXME time to time
-MergeList['Prompt']      = [
-                            #VVV
-                            'WWW','WWZ','WZZ','ZZZ',
-                            #SingleTop : 0.1 level events
-                            #'SingleTop_sch_Lep','SingleTop_tch_antitop_Incl','SingleTop_tch_top_Incl','SingleTop_tW_antitop_NoFullyHad','SingleTop_tW_top_NoFullyHad',
-                            #ttV
-                            'ttWToLNu','ttZToLLNuNu', #'ttZToQQ_ll', 'ttWToQQ' : no entry
-                            #TTXX
-                            'TTTT','TTZZ',
-                            #tZq
-                            'tZq',
-                            #Higgs
-                            'ttHToNonbb','tHq','VHToNonbb',
-                            #VBFHiggs
-                            'VBF_HToZZTo4L', #'VBFHToTauTau_M125', 'VBFHToWWTo2L2Nu', : no entry
-                            #ggH
-                            'GluGluHToZZTo4L', #'GluGluHToTauTau_M125', 'GluGluHToWWTo2L2Nu', : no entry
-                            #minor WWs
-                            'WWTo2L2Nu_DS','WWTo2L2Nu_powheg',
-                           ] #FIXME time to time
+MergeList['Conv_inc']      = ["TG","TTG","WZG","WWG","WGToLNuG","WGJJToLNu","ZGToLLG","DYJets_MG"] #FIXME time to time
+MergeList['Conv_others']   = ["TG","TTG","WZG","WWG","WGToLNuG","WGJJToLNu"] #FIXME time to time
+MergeList['ZG_norm']       = ["DYJets_MG","ZGToLLG"] #FIXME add this after applying ConversionSpltting
+MergeList['ZZ_norm']       = ["ZZTo4L_powheg","GluGluToZZto4e","GluGluToZZto4mu","GluGluToZZto2e2mu"] #FIXME time to time
+MergeList['WZ_norm']       = ["WZTo3LNu_mllmin4p0_powheg","WZ_EWK"] #FIXME time to time
+MergeList['WW_norm']       = ["WpWp_QCD","WpWp_EWK"] #FIXME time to time
+MergeList['Prompt_others'] = [
+                              #VVV
+                              'WWW','WWZ','WZZ','ZZZ',
+                              #SingleTop : 0.1 level events
+                              #'SingleTop_sch_Lep','SingleTop_tch_antitop_Incl','SingleTop_tch_top_Incl','SingleTop_tW_antitop_NoFullyHad','SingleTop_tW_top_NoFullyHad',
+                              #ttV
+                              'ttWToLNu','ttZToLLNuNu', #'ttZToQQ_ll', 'ttWToQQ' : no entry
+                              #TTXX
+                              'TTTT','TTZZ',
+                              #tZq
+                              'tZq',
+                              #Higgs
+                              'ttHToNonbb','tHq','VHToNonbb',
+                              #VBFHiggs
+                              'VBF_HToZZTo4L', #'VBFHToTauTau_M125', 'VBFHToWWTo2L2Nu', : no entry
+                              #ggH
+                              'GluGluHToZZTo4L', #'GluGluHToTauTau_M125', 'GluGluHToWWTo2L2Nu', : no entry
+                              #minor WWs
+                              'WWTo2L2Nu_DS','WWTo2L2Nu_powheg',
+                             ] #FIXME time to time
+MergeList['Prompt_inc']    = [
+                              #VVV
+                              'WWW','WWZ','WZZ','ZZZ',
+                              #SingleTop : 0.1 level events
+                              #'SingleTop_sch_Lep','SingleTop_tch_antitop_Incl','SingleTop_tch_top_Incl','SingleTop_tW_antitop_NoFullyHad','SingleTop_tW_top_NoFullyHad',
+                              #ttV
+                              'ttWToLNu','ttZToLLNuNu', #'ttZToQQ_ll', 'ttWToQQ' : no entry
+                              #TTXX
+                              'TTTT','TTZZ',
+                              #tZq
+                              'tZq',
+                              #Higgs
+                              'ttHToNonbb','tHq','VHToNonbb',
+                              #VBFHiggs
+                              'VBF_HToZZTo4L', #'VBFHToTauTau_M125', 'VBFHToWWTo2L2Nu', : no entry
+                              #ggH
+                              'GluGluHToZZTo4L', #'GluGluHToTauTau_M125', 'GluGluHToWWTo2L2Nu', : no entry
+                              #minor WWs
+                              'WWTo2L2Nu_DS','WWTo2L2Nu_powheg',
+                              #WW
+                              'WpWp_QCD','WpWp_EWK',
+                              #ZZ
+                              'ZZTo4L_powheg','GluGluToZZto4e','GluGluToZZto4mu','GluGluToZZto2e2mu',
+                              #WZ
+                              'WZTo3LNu_mllmin4p0_powheg','WZ_EWK',
+                             ] #FIXME time to time
 
 if MergeData:
 
@@ -162,54 +190,118 @@ if MergeData:
   else:
     print "[MergeData] Data unblinded. merging..."
     for era in eras:
-      for CRflag in CRflags:
-        OutFile=InputPath + era + "/" + CRflag + "/DATA/"+Analyzer+DataSkim+"DATA.root"
-        if os.path.exists(OutFile):
-          os.system("rm " + OutFile)
-        os.system("hadd " + OutFile + " " + InputPath + "/"+era+"/" + CRflag + "/DATA/*")
+      if era=="Run2":
+        for CRflag in CRflags:
+          os.system("mkdir -p "+InputPath+"/Run2/"+CRflag+"/DATA/")
+          OutFile=InputPath + "/Run2/" + CRflag + "/DATA/"+Analyzer+DataSkim+"DATA.root"
+          if os.path.exists(OutFile):
+            os.system("rm " + OutFile)
+          os.system("hadd " + OutFile + " " + InputPath + "/2016preVFP/" + CRflag + "/DATA/*DATA.root"\
+                                      + " " + InputPath + "/2016postVFP/" + CRflag + "/DATA/*DATA.root"\
+                                      + " " + InputPath + "/2017/" + CRflag + "/DATA/*DATA.root"\
+                                      + " " + InputPath + "/2018/" + CRflag + "/DATA/*DATA.root"\
+                   )
+      else:
+        for CRflag in CRflags:
+          OutFile=InputPath + era + "/" + CRflag + "/DATA/"+Analyzer+DataSkim+"DATA.root"
+          if os.path.exists(OutFile):
+            os.system("rm " + OutFile)
+          os.system("hadd " + OutFile + " " + InputPath + "/"+era+"/" + CRflag + "/DATA/*")
 
 if MergeFake:
 
   for era in eras:
-    for CRflag in CRflags:
-      OutFile=InputPath + era + "/" + CRflag + "RunFake__/DATA/"+Analyzer+FakeSkim+"Fake.root"
-      if os.path.exists(OutFile):
-        os.system("rm " + OutFile)
-      os.system("hadd " + OutFile + " " + InputPath + "/"+era+"/" + CRflag + "RunFake__/DATA/*")
+    if era=="Run2":
+      for CRflag in CRflags:
+        os.system("mkdir -p "+InputPath+"/Run2/"+CRflag+"RunFake__/DATA/")
+        OutFile=InputPath + "/Run2/" + CRflag + "RunFake__/DATA/"+Analyzer+FakeSkim+"Fake.root"
+        if os.path.exists(OutFile):
+          os.system("rm " + OutFile)
+        os.system("hadd " + OutFile + " " + InputPath + "/2016preVFP/" + CRflag + "RunFake__/DATA/*Fake.root"\
+                                    + " " + InputPath + "/2016postVFP/" + CRflag + "RunFake__/DATA/*Fake.root"\
+                                    + " " + InputPath + "/2017/" + CRflag + "RunFake__/DATA/*Fake.root"\
+                                    + " " + InputPath + "/2018/" + CRflag + "RunFake__/DATA/*Fake.root"\
+                 )
+    else:
+      for CRflag in CRflags:
+        OutFile=InputPath + era + "/" + CRflag + "RunFake__/DATA/"+Analyzer+FakeSkim+"Fake.root"
+        if os.path.exists(OutFile):
+          os.system("rm " + OutFile)
+        os.system("hadd " + OutFile + " " + InputPath + "/"+era+"/" + CRflag + "RunFake__/DATA/*")
 
 if MergeCF:
 
   for era in eras:
-    for CRflag in CRflags:
-      OutFile=InputPath + era + "/" + CRflag + "RunCF__/DATA/"+Analyzer+CFSkim+"CF.root" #FIXME Data CF
-      #OutFile=InputPath + era + "/" + CRflag + "RunCF__/"+Analyzer+CFSkim+"CF.root" #FIXME MC CF
-      if os.path.exists(OutFile):
-        os.system("rm " + OutFile)
-      os.system("hadd " + OutFile + " " + InputPath + "/"+era+"/" + CRflag + "RunCF__/DATA/*") #FIXME Data CF
-      #os.system("hadd " + OutFile + " " + InputPath + "/"+era+"/" + CRflag + "RunCF__/*") #FIXME MC CF
+    if era=="Run2":
+      for CRflag in CRflags:
+        os.system("mkdir -p "+InputPath+"/Run2/"+CRflag+"RunCF__/DATA/")
+        OutFile=InputPath + "/Run2/" + CRflag + "RunCF__/DATA/"+Analyzer+CFSkim+"CF.root"
+        if os.path.exists(OutFile):
+          os.system("rm " + OutFile)
+        os.system("hadd " + OutFile + " " + InputPath + "/2016preVFP/" + CRflag + "RunCF__/DATA/*CF.root"\
+                                    + " " + InputPath + "/2016postVFP/" + CRflag + "RunCF__/DATA/*CF.root"\
+                                    + " " + InputPath + "/2017/" + CRflag + "RunCF__/DATA/*CF.root"\
+                                    + " " + InputPath + "/2018/" + CRflag + "RunCF__/DATA/*CF.root"\
+                 )
+    else:
+      for CRflag in CRflags:
+        OutFile=InputPath + era + "/" + CRflag + "RunCF__/DATA/"+Analyzer+CFSkim+"CF.root" #FIXME Data CF
+        #OutFile=InputPath + era + "/" + CRflag + "RunCF__/"+Analyzer+CFSkim+"CF.root" #FIXME MC CF
+        if os.path.exists(OutFile):
+          os.system("rm " + OutFile)
+        os.system("hadd " + OutFile + " " + InputPath + "/"+era+"/" + CRflag + "RunCF__/DATA/*") #FIXME Data CF
+        #os.system("hadd " + OutFile + " " + InputPath + "/"+era+"/" + CRflag + "RunCF__/*") #FIXME MC CF
 
 if MergeConv:
 
   for era in eras:
-    for CRflag in CRflags:
-      for OutProc in MergeList.keys():
-        OutFile=InputPath + era + "/" + CRflag + "RunConv__/"+Analyzer+ConvSkim+OutProc+".root"
-        if os.path.exists(OutFile):
-          os.system("rm " + OutFile)
-        #print "hadd " + OutFile + " " + ' '.join([OutFile.split(OutProc+".root")[0]+ThisProc+".root" for ThisProc in MergeList[OutProc]])
-        if "does not exist" in cmd.getoutput("hadd " + OutFile + " " + ' '.join([OutFile.split(OutProc+".root")[0]+ThisProc+".root" for ThisProc in MergeList[OutProc]])):
-          os.system("rm " + OutFile)
+    if era=="Run2":
+      for CRflag in CRflags:
+        os.system("mkdir -p "+InputPath+"/Run2/"+CRflag+"RunConv__/")
+        for OutProc in MergeList.keys():
+          OutFile=InputPath + "/Run2/" + CRflag + "RunConv__/"+Analyzer+ConvSkim+OutProc+".root"
+          if os.path.exists(OutFile):
+            os.system("rm " + OutFile)
+          if os.system("hadd " + OutFile + " " + ' '.join([OutFile.split(OutProc+".root")[0].replace("/Run2/","/2016preVFP/")+ThisProc+".root" for ThisProc in MergeList[OutProc]])\
+                                         + " " + ' '.join([OutFile.split(OutProc+".root")[0].replace("/Run2/","/2016postVFP/")+ThisProc+".root" for ThisProc in MergeList[OutProc]])\
+                                         + " " + ' '.join([OutFile.split(OutProc+".root")[0].replace("/Run2/","/2017/")+ThisProc+".root" for ThisProc in MergeList[OutProc]])\
+                                         + " " + ' '.join([OutFile.split(OutProc+".root")[0].replace("/Run2/","/2018/")+ThisProc+".root" for ThisProc in MergeList[OutProc]])\
+                      ) != 0:
+            os.system("rm " + OutFile) # remove the output if there is any unmatched process
+    else:
+      for CRflag in CRflags:
+        for OutProc in MergeList.keys():
+          OutFile=InputPath + era + "/" + CRflag + "RunConv__/"+Analyzer+ConvSkim+OutProc+".root"
+          if os.path.exists(OutFile):
+            os.system("rm " + OutFile)
+          if os.system("hadd " + OutFile + " " + ' '.join([OutFile.split(OutProc+".root")[0]+ThisProc+".root" for ThisProc in MergeList[OutProc]])) != 0:
+            os.system("rm " + OutFile) # remove the output if there is any unmatched process
 
 if MergeMC:
 
   for era in eras:
-    for CRflag in CRflags:
-      for OutProc in MergeList.keys():
-        OutFile=InputPath + era + "/" + CRflag + "RunPrompt__/"+Analyzer+MCSkim+OutProc+".root"
-        if os.path.exists(OutFile):
-          os.system("rm " + OutFile)
-        if "does not exist" in cmd.getoutput("hadd " + OutFile + " " + ' '.join([OutFile.split(OutProc+".root")[0]+ThisProc+".root" for ThisProc in MergeList[OutProc]])):
-          os.system("rm " + OutFile)
+    if era=="Run2":
+      for CRflag in CRflags:
+        os.system("mkdir -p "+InputPath+"/Run2/"+CRflag+"RunPrompt__/")
+        for OutProc in MergeList.keys():
+          OutFile=InputPath + era + "/" + CRflag + "RunPrompt__/"+Analyzer+MCSkim+OutProc+".root"
+          if os.path.exists(OutFile):
+            os.system("rm " + OutFile)
+          if os.system("hadd " + OutFile + " " + ' '.join([OutFile.split(OutProc+".root")[0].replace("/Run2/","/2016preVFP/")+ThisProc+".root" for ThisProc in MergeList[OutProc]])\
+                                         + " " + ' '.join([OutFile.split(OutProc+".root")[0].replace("/Run2/","/2016postVFP/")+ThisProc+".root" for ThisProc in MergeList[OutProc]])\
+                                         + " " + ' '.join([OutFile.split(OutProc+".root")[0].replace("/Run2/","/2017/")+ThisProc+".root" for ThisProc in MergeList[OutProc]])\
+                                         + " " + ' '.join([OutFile.split(OutProc+".root")[0].replace("/Run2/","/2018/")+ThisProc+".root" for ThisProc in MergeList[OutProc]])\
+                      ) != 0:
+            os.system("rm " + OutFile) # remove the output if there is any unmatched process
+    else:
+      for CRflag in CRflags:
+        for OutProc in MergeList.keys():
+          OutFile=InputPath + era + "/" + CRflag + "RunPrompt__/"+Analyzer+MCSkim+OutProc+".root"
+          if os.path.exists(OutFile):
+            os.system("rm " + OutFile)
+          if os.system("hadd " + OutFile + " " + ' '.join([OutFile.split(OutProc+".root")[0]+ThisProc+".root" for ThisProc in MergeList[OutProc]])) != 0:
+            os.system("rm " + OutFile) # remove the output if there is any unmatched process
+
 
 if MergeSignal:
 
@@ -220,15 +312,43 @@ if MergeSignal:
   else:
     for era in eras:
       for mass in masses:
-        OutFileDYVBF=InputPath + era + "/"+Analyzer+"_signalDYVBF_"+mass+".root"
-        OutFileSSWW =InputPath + era + "/"+Analyzer+"_signalSSWW_"+mass+".root"
-        if int(mass.replace("M","")) < 500: # DY only
-          os.system("hadd -f " + OutFileDYVBF + "  " + InputPath+"/"+era+"/*DYTypeI*"+mass+"*.root")
-        elif 500 <= int(mass.replace("M","")) and int(mass.replace("M","")) <= 3000: # DY+VBF+SSWW
-          os.system("hadd -f " + OutFileDYVBF + "  " + InputPath+"/"+era+"/*DYTypeI*"+mass+"*.root" + " " + InputPath+"/"+era+"/*VBFTypeI*"+mass+"*.root")
-          os.system("hadd -f " + OutFileSSWW  + "  " + InputPath+"/"+era+"/*SSWWTypeI*"+mass+"*.root")
-        elif 3000 < int(mass.replace("M","")): # SSWW only
-          os.system("hadd -f " + OutFileSSWW  + "  " + InputPath+"/"+era+"/*SSWWTypeI*"+mass+"*.root")
+        if era=="Run2":
+          os.system("mkdir -p "+InputPath+"/Run2/")
+          OutFileDYVBF=InputPath + "/Run2/"+Analyzer+"_signalDYVBF_"+mass+".root"
+          OutFileSSWW =InputPath + "/Run2/"+Analyzer+"_signalSSWW_"+mass+".root"
+          if int(mass.replace("M","")) < 300: # DY only
+            os.system("hadd -f " + OutFileDYVBF + " " + InputPath+"/2016preVFP/*DYTypeI*"+mass+"_private.root"\
+                                                + " " + InputPath+"/2016postVFP/*DYTypeI*"+mass+"_private.root"\
+                                                + " " + InputPath+"/2017/*DYTypeI*"+mass+"_private.root"\
+                                                + " " + InputPath+"/2018/*DYTypeI*"+mass+"_private.root"\
+                     )
+          elif 300 <= int(mass.replace("M","")) and int(mass.replace("M","")) <= 3000: # DY+VBF+SSWW
+            os.system("hadd -f " + OutFileDYVBF + " " + InputPath+"/2016preVFP/*DYTypeI*"+mass+"_private.root" + " " + InputPath+"/2016preVFP/*VBFTypeI*"+mass+"_private.root"\
+                                                + " " + InputPath+"/2016postVFP/*DYTypeI*"+mass+"_private.root" + " " + InputPath+"/2016postVFP/*VBFTypeI*"+mass+"_private.root"\
+                                                + " " + InputPath+"/2017/*DYTypeI*"+mass+"_private.root" + " " + InputPath+"/2017/*VBFTypeI*"+mass+"_private.root"\
+                                                + " " + InputPath+"/2018/*DYTypeI*"+mass+"_private.root" + " " + InputPath+"/2018/*VBFTypeI*"+mass+"_private.root"\
+                     )
+            os.system("hadd -f " + OutFileSSWW  + " " + InputPath+"/2016preVFP/*SSWWTypeI*"+mass+"_private.root"\
+                                                + " " + InputPath+"/2016postVFP/*SSWWTypeI*"+mass+"_private.root"\
+                                                + " " + InputPath+"/2017/*SSWWTypeI*"+mass+"_private.root"\
+                                                + " " + InputPath+"/2018/*SSWWTypeI*"+mass+"_private.root"\
+                     )
+          elif 3000 < int(mass.replace("M","")): # SSWW only
+            os.system("hadd -f " + OutFileSSWW  + " " + InputPath+"/2016preVFP/*SSWWTypeI*"+mass+"_private.root"\
+                                                + " " + InputPath+"/2016postVFP/*SSWWTypeI*"+mass+"_private.root"\
+                                                + " " + InputPath+"/2017/*SSWWTypeI*"+mass+"_private.root"\
+                                                + " " + InputPath+"/2018/*SSWWTypeI*"+mass+"_private.root"\
+                     )
+        else:
+          OutFileDYVBF=InputPath + era + "/"+Analyzer+"_signalDYVBF_"+mass+".root"
+          OutFileSSWW =InputPath + era + "/"+Analyzer+"_signalSSWW_"+mass+".root"
+          if int(mass.replace("M","")) < 300: # DY only
+            os.system("hadd -f " + OutFileDYVBF + " " + InputPath+"/"+era+"/*DYTypeI*"+mass+"_private.root")
+          elif 300 <= int(mass.replace("M","")) and int(mass.replace("M","")) <= 3000: # DY+VBF+SSWW
+            os.system("hadd -f " + OutFileDYVBF + " " + InputPath+"/"+era+"/*DYTypeI*"+mass+"_private.root" + " " + InputPath+"/"+era+"/*VBFTypeI*"+mass+"_private.root")
+            os.system("hadd -f " + OutFileSSWW  + " " + InputPath+"/"+era+"/*SSWWTypeI*"+mass+"_private.root")
+          elif 3000 < int(mass.replace("M","")): # SSWW only
+            os.system("hadd -f " + OutFileSSWW  + " " + InputPath+"/"+era+"/*SSWWTypeI*"+mass+"_private.root")
 
 ##### Main job starts #####
 for tag in tags:
@@ -238,29 +358,30 @@ for tag in tags:
       OutputPath = InputPath+'/LimitExtraction/'+outputTag+tag+'/'
       os.system('mkdir -p '+OutputPath + era + '/' + region)
   
-      f_path_data        = InputPath + era + "/" + RegionToCRFlagMap[region] + "/DATA/"+Analyzer+DataSkim+"DATA.root"
-      f_path_fake        = InputPath + era + "/" + RegionToCRFlagMap[region] + "RunFake__/DATA/"+Analyzer+FakeSkim+"Fake.root"
-      f_path_cf          = InputPath + era + "/" + RegionToCRFlagMap[region] + "RunCF__/DATA/"+Analyzer+CFSkim+"CF.root"
-      #f_path_cf          = InputPath + era + "/" + RegionToCRFlagMap[region] + "RunCF__/"+Analyzer+CFSkim+"CF.root" #FIXME MC CF
-      f_path_zg          = InputPath + era + "/" + RegionToCRFlagMap[region] + "RunConv__/"+Analyzer+ConvSkim+"ZG_norm.root" #FIXME to ZG_norm later
-      f_path_conv        = InputPath + era + "/" + RegionToCRFlagMap[region] + "RunConv__/"+Analyzer+ConvSkim+"Conv_others.root"
-      #f_path_wz          = InputPath + era + "/" + RegionToCRFlagMap[region] + "RunPrompt__/"+Analyzer+MCSkim+"WZTo3LNu_amcatnlo.root"
-      f_path_wz          = InputPath + era + "/" + RegionToCRFlagMap[region] + "RunPrompt__/"+Analyzer+MCSkim+"WZTo3LNu_mllmin4p0_powheg.root" # This gives better agr
-      f_path_zz          = InputPath + era + "/" + RegionToCRFlagMap[region] + "RunPrompt__/"+Analyzer+MCSkim+"ZZ_norm.root"
-      f_path_ww          = InputPath + era + "/" + RegionToCRFlagMap[region] + "RunPrompt__/"+Analyzer+MCSkim+"WW_norm.root"
-      f_path_wzewk       = InputPath + era + "/" + RegionToCRFlagMap[region] + "RunPrompt__/"+Analyzer+MCSkim+"WZ_EWK.root"
-      f_path_prompt      = InputPath + era + "/" + RegionToCRFlagMap[region] + "RunPrompt__/"+Analyzer+MCSkim+"Prompt.root"
+      f_path_data          = InputPath + era + "/" + RegionToCRFlagMap[region] + "/DATA/"+Analyzer+DataSkim+"DATA.root"
+      f_path_fake          = InputPath + era + "/" + RegionToCRFlagMap[region] + "RunFake__/DATA/"+Analyzer+FakeSkim+"Fake.root"
+      f_path_cf            = InputPath + era + "/" + RegionToCRFlagMap[region] + "RunCF__/DATA/"+Analyzer+CFSkim+"CF.root"
+      #f_path_cf            = InputPath + era + "/" + RegionToCRFlagMap[region] + "RunCF__/"+Analyzer+CFSkim+"CF.root" #FIXME MC CF
+      f_path_zg            = InputPath + era + "/" + RegionToCRFlagMap[region] + "RunConv__/"+Analyzer+ConvSkim+"ZG_norm.root"
+      f_path_conv_others   = InputPath + era + "/" + RegionToCRFlagMap[region] + "RunConv__/"+Analyzer+ConvSkim+"Conv_others.root"
+      f_path_conv_inc      = InputPath + era + "/" + RegionToCRFlagMap[region] + "RunConv__/"+Analyzer+ConvSkim+"Conv_inc.root"
+      f_path_wz            = InputPath + era + "/" + RegionToCRFlagMap[region] + "RunPrompt__/"+Analyzer+MCSkim+"WZ_norm.root"
+      f_path_zz            = InputPath + era + "/" + RegionToCRFlagMap[region] + "RunPrompt__/"+Analyzer+MCSkim+"ZZ_norm.root"
+      f_path_ww            = InputPath + era + "/" + RegionToCRFlagMap[region] + "RunPrompt__/"+Analyzer+MCSkim+"WW_norm.root"
+      f_path_prompt_others = InputPath + era + "/" + RegionToCRFlagMap[region] + "RunPrompt__/"+Analyzer+MCSkim+"Prompt_others.root"
+      f_path_prompt_inc    = InputPath + era + "/" + RegionToCRFlagMap[region] + "RunPrompt__/"+Analyzer+MCSkim+"Prompt_inc.root"
       
-      if not Blinded: f_data        = TFile.Open(f_path_data)
-      f_fake        = TFile.Open(f_path_fake)
-      f_cf          = TFile.Open(f_path_cf)
-      f_zg          = TFile.Open(f_path_zg)
-      f_conv        = TFile.Open(f_path_conv)
-      f_wz          = TFile.Open(f_path_wz)
-      f_zz          = TFile.Open(f_path_zz)
-      f_ww          = TFile.Open(f_path_ww)
-      f_wzewk       = TFile.Open(f_path_wzewk)
-      f_prompt      = TFile.Open(f_path_prompt)
+      if not Blinded: f_data = TFile.Open(f_path_data)
+      f_fake          = TFile.Open(f_path_fake)
+      f_cf            = TFile.Open(f_path_cf)
+      f_zg            = TFile.Open(f_path_zg)
+      f_conv_others   = TFile.Open(f_path_conv_others)
+      f_conv_inc      = TFile.Open(f_path_conv_inc)
+      f_wz            = TFile.Open(f_path_wz)
+      f_zz            = TFile.Open(f_path_zz)
+      f_ww            = TFile.Open(f_path_ww)
+      f_prompt_others = TFile.Open(f_path_prompt_others)
+      f_prompt_inc    = TFile.Open(f_path_prompt_inc)
 
       for mass in masses: # iterate for each mass ...
         for channel in channels: # ...and each channel
@@ -288,15 +409,16 @@ for tag in tags:
           
           print "##### Initiating",mass,channel,"..."
           if not Blinded: h_data        = f_data.Get(input_hist)
-          h_fake        = f_fake.Get(input_hist)
-          h_cf          = f_cf.Get(input_hist)
-          h_zg          = f_zg.Get(input_hist)
-          h_conv        = f_conv.Get(input_hist)
-          h_wz          = f_wz.Get(input_hist)
-          h_zz          = f_zz.Get(input_hist)
-          h_ww          = f_ww.Get(input_hist)
-          h_wzewk       = f_wzewk.Get(input_hist)
-          h_prompt      = f_prompt.Get(input_hist)
+          h_fake          = f_fake.Get(input_hist)
+          h_cf            = f_cf.Get(input_hist)
+          h_zg            = f_zg.Get(input_hist)
+          h_conv_others   = f_conv_others.Get(input_hist)
+          h_conv_inc      = f_conv_inc.Get(input_hist)
+          h_wz            = f_wz.Get(input_hist)
+          h_zz            = f_zz.Get(input_hist)
+          h_ww            = f_ww.Get(input_hist)
+          h_prompt_others = f_prompt_others.Get(input_hist)
+          h_prompt_inc    = f_prompt_inc.Get(input_hist)
           print "##### histo done."
  
           # Make list of [file path, histogram, histo name]
@@ -304,33 +426,29 @@ for tag in tags:
                         [f_path_fake, h_fake, "fake"],
                         [f_path_cf, h_cf, "cf"],
                         [f_path_zg, h_zg, "zg"],
-                        [f_path_conv, h_conv, "conv"],
+                        [f_path_conv_others, h_conv_others, "conv_others"],
+                        [f_path_conv_inc, h_conv_inc, "conv_inc"],
                         [f_path_wz, h_wz, "wz"],
                         [f_path_zz, h_zz, "zz"],
                         [f_path_ww, h_ww, "ww"],
-                        [f_path_wzewk, h_wzewk, "wzewk"],
-                        [f_path_prompt, h_prompt, "prompt"],
+                        [f_path_prompt_others, h_prompt_others, "prompt_others"],
+                        [f_path_prompt_inc, h_prompt_inc, "prompt_inc"],
                        ]
           
           if Blinded:
             print "##### This analysis is blinded."
             print "##### Creating pseudo data..."
             print "Adding prompt..."
-            h_data = h_prompt.Clone()
+            h_data = h_prompt_inc.Clone()
 
             bkg_list = [ #bkg except prompt (already added above)
                         [f_path_fake, h_fake, "fake"],
                         [f_path_cf, h_cf, "cf"],
-                        [f_path_zg, h_zg, "zg"],
-                        [f_path_conv, h_conv, "conv"],
-                        [f_path_wz, h_wz, "wz"],
-                        [f_path_zz, h_zz, "zz"],
-                        [f_path_ww, h_ww, "ww"],
-                        [f_path_wzewk, h_wzewk, "wzewk"],
+                        [f_path_conv_inc, h_conv_inc, "conv_inc"],
                        ]
           
             total_number = 0 # to cross check
-            total_number += h_prompt.GetEntries()
+            total_number += h_prompt_inc.GetEntries()
           
             for bkg in bkg_list:
               try:
@@ -486,18 +604,14 @@ for tag in tags:
                       else:
                         print "Making an empty hist..."
                         if args.CR:
-                          h_syst = h_prompt.Clone() #FIXME
+                          h_syst = h_prompt_inc.Clone() # I could use data here, but data could have no entry due to stats so just use prompt_inc here.
                         else:
-                          h_syst = h_data.Clone() # With CR, data may not be defined for some regions with no entry ...
+                          h_syst = h_data.Clone() # SR --> data = total bkg, lowest possibility of no stats
                         for j in range(h_syst.GetNbinsX()):
                           h_syst.SetBinContent(j+1,0)
                           h_syst.SetBinError(j+1,0)
                         h_syst.SetBinContent(1,0.001) # to avoid Combine complaining for empty hist.
-                        h_syst.SetBinError(1,0.0001)
-                        #if h_syst.Integral() != 0:
-                        #  print "[!!ERROR!!] this must be empty. But having :",h_syst.Integral()
-                        #  print "Exiting..."
-                        #  sys.exit()
+                        h_syst.SetBinError(1,0.000001)
                         h_syst.SetDirectory(0) # Store h_syst in memory so that it cannot be deleted during the iteration
                     else:
                       try:
@@ -509,18 +623,14 @@ for tag in tags:
                         else:
                           print "Making an empty hist..."
                           if args.CR:
-                            h_syst = h_prompt.Clone() #FIXME
+                            h_syst = h_prompt_inc.Clone()
                           else:
-                            h_syst = h_data.Clone() # With CR, data may not be defined for some regions with no entry ...
+                            h_syst = h_data.Clone()
                           for j in range(h_syst.GetNbinsX()):
                             h_syst.SetBinContent(j+1,0)
                             h_syst.SetBinError(j+1,0)
                           h_syst.SetBinContent(1,0.001) # to avoid Combine complaining for empty hist.
-                          h_syst.SetBinError(1,0.0001)
-                          #if h_syst.Integral() != 0:
-                          #  print "[!!ERROR!!] this must be empty. But having :",h_syst.Integral()
-                          #  print "Exiting..."
-                          #  sys.exit()
+                          h_syst.SetBinError(1,0.000001)
                           h_syst.SetDirectory(0) # Store h_syst in memory so that it cannot be deleted during the iteration
 
                     name_syst = input_list[i][2]+"_"+this_syst # Define syst histo name
@@ -555,29 +665,27 @@ for tag in tags:
               else:
                 print "Making an empty hist..."
                 if args.CR:
-                  h_missing = h_prompt.Clone() #FIXME
+                  h_missing = h_prompt_inc.Clone()
                 else:
-                  h_missing = h_data.Clone() # With CR, data may not be defined for some regions with no entry ...
+                  h_missing = h_data.Clone()
                 for i in range(h_missing.GetNbinsX()):
                   h_missing.SetBinContent(i+1,0)
                   h_missing.SetBinError(i+1,0)
                 h_missing.SetBinContent(1,0.001) # to avoid Combine complaining for empty hist.
-                h_missing.SetBinError(1,0.0001)
-                #if h_missing.Integral() != 0:
-                #  print "[!!ERROR!!] this must be empty. But having :",h_missing.Integral()
-                #  print "Exiting..."
-                #  sys.exit()
+                h_missing.SetBinError(1,0.000001)
                 h_missing.SetName(item[2])
                 print "Writing "+item[2]+"..."
                 h_missing.Write() # Write empty histogram
                 continue
 
             if item[1].Integral() <=0 : #finally, treat -ve bins
+              print("[!!WARNING!!] Negative events "+str(item[1].Integral())+" in "+item[2]+" ------------------------------------")
+              print "Creating a makeup hist..."
               for i in range(item[1].GetNbinsX()):
                 item[1].SetBinContent(i+1,0)
                 item[1].SetBinError(i+1,0)
               item[1].SetBinContent(1,0.001) # to avoid Combine complaining for empty hist.
-              item[1].SetBinError(1,0.0001)
+              item[1].SetBinError(1,0.000001)
 
             print "Writing "+item[2]+"..."
             item[1].Write() # Write each histogram while iterating

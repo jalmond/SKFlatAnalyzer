@@ -853,7 +853,7 @@ void DrawLimits(TString year="", TString channel="", bool CompareLimits=true, bo
     //lg_Alt->AddEntry(gr_exp_1, "PR43 HNL_ULID (exp)", "l");
     //lg_Alt->AddEntry(gr_exp_1, "PR45 HNTightV2 (exp)", "l");
     //lg_Alt->AddEntry(gr_exp_1, "PR46 HNL_ULID (exp)", "l");
-    if(CompareLimits) lg_Alt->AddEntry(gr_exp_1, "PR46 HNL_ULID 2017 Scaled (exp)", "l");
+    //if(CompareLimits) lg_Alt->AddEntry(gr_exp_1, "PR46 HNL_ULID 2017 Scaled (exp)", "l");
     //lg_Alt->AddEntry(gr_exp_2, "PR44 HNL_ULID (exp)", "l");
     lg_Alt->AddEntry(gr_21003_exp, "EXO-21-003 Run2 (exp)", "l");
     //lg_Alt->AddEntry(gr_17028_obs, "CMS 13 TeV dilepton", "l");
@@ -874,7 +874,7 @@ void DrawLimits(TString year="", TString channel="", bool CompareLimits=true, bo
     //lg_Alt->AddEntry(gr_exp_1, "PR43 HNL_ULID (exp)", "l");
     //lg_Alt->AddEntry(gr_exp_1, "PR45 HNTightV2 (exp)", "l");
     //lg_Alt->AddEntry(gr_exp_1, "PR46 HNL_ULID (exp)", "l");
-    if(CompareLimits) lg_Alt->AddEntry(gr_exp_1, "PR46 HNL_ULID 2017 Scaled (exp)", "l");
+    //if(CompareLimits) lg_Alt->AddEntry(gr_exp_1, "PR46 HNL_ULID 2017 Scaled (exp)", "l");
     //lg_Alt->AddEntry(gr_exp_2, "PR44 HNL_ULID (exp)", "l");
     //lg_Alt->AddEntry(gr_17028_obs, "CMS 13 TeV dilepton", "l");
     //lg_Alt->AddEntry(gr_trilepLimit, "CMS 13 TeV trilepton", "l");
@@ -892,7 +892,7 @@ void DrawLimits(TString year="", TString channel="", bool CompareLimits=true, bo
     //lg_Alt->AddEntry(gr_exp_1, "PR43 HNL_ULID (exp)", "l");
     //lg_Alt->AddEntry(gr_exp_1, "PR45 HNTightV2 (exp)", "l");
     //lg_Alt->AddEntry(gr_exp_1, "PR46 HNL_ULID (exp)", "l");
-    if(CompareLimits) lg_Alt->AddEntry(gr_exp_1, "PR46 HNL_ULID 2017 Scaled (exp)", "l");
+    //if(CompareLimits) lg_Alt->AddEntry(gr_exp_1, "PR46 HNL_ULID 2017 Scaled (exp)", "l");
     //lg_Alt->AddEntry(gr_exp_2, "PR44 HNL_ULID (exp)", "l");
     //lg_Alt->AddEntry(gr_17028_obs, "CMS 13 TeV dilepton", "l");
   }
@@ -950,7 +950,7 @@ void DrawLimits(TString year="", TString channel="", bool CompareLimits=true, bo
     //gr_L3Limit->Draw("lsame");
     //gr_DELPHILimit->Draw("lsame");
     gr_21003_exp->Draw("lsame");
-    if(CompareLimits) gr_exp_1->Draw("lsame");
+    //if(CompareLimits) gr_exp_1->Draw("lsame");
     //gr_exp_2->Draw("lsame");
     //gr_21003_obs->Draw("lsame");
     //gr_trilepLimit->Draw("lsame");
@@ -958,7 +958,7 @@ void DrawLimits(TString year="", TString channel="", bool CompareLimits=true, bo
     //gr_ATLAS_MuMu->Draw("lsame");
   }
   else if(channel=="EE"){
-    if(CompareLimits) gr_exp_1->Draw("lsame");
+    //if(CompareLimits) gr_exp_1->Draw("lsame");
     //gr_exp_2->Draw("lsame");
     //gr_L3_2Limit->Draw("lsame");
     //gr_DELPHILimit->Draw("lsame");
@@ -968,7 +968,7 @@ void DrawLimits(TString year="", TString channel="", bool CompareLimits=true, bo
     //gr_ATLAS_EE->Draw("lsame");
   }
   else if(channel=="EMu"){
-    if(CompareLimits) gr_exp_1->Draw("lsame");
+    //if(CompareLimits) gr_exp_1->Draw("lsame");
     //gr_exp_2->Draw("lsame");
   }
 
@@ -1134,11 +1134,11 @@ void DrawLimits(TString year="", TString channel="", bool CompareLimits=true, bo
     //gr_ratio_PR46_HNL_ULID->SetLineWidth(2);
     //gr_ratio_PR46_HNL_ULID->Draw("lpsame");
 
-    TGraph *gr_ratio_PR46 = new TGraph(25,mass_comp_PR46,ratio_PR46);
-    gr_ratio_PR46->SetMarkerColor(kViolet);
-    gr_ratio_PR46->SetLineColor(kViolet);
-    gr_ratio_PR46->SetLineWidth(2);
-    gr_ratio_PR46->Draw("lpsame");
+    //TGraph *gr_ratio_PR46 = new TGraph(25,mass_comp_PR46,ratio_PR46);
+    //gr_ratio_PR46->SetMarkerColor(kViolet);
+    //gr_ratio_PR46->SetLineColor(kViolet);
+    //gr_ratio_PR46->SetLineWidth(2);
+    //gr_ratio_PR46->Draw("lpsame");
 
     //TGraph *gr_ratio_HNTightV2 = new TGraph(n_centrals[0],&masses[0][0],ratio_HNTightV2);
     //gr_ratio_HNTightV2->SetMarkerColor(kCyan);
