@@ -664,6 +664,8 @@ AnalyzerParameter HNL_LeptonCore::SetupHNLParameter(TString s_setup_version, TSt
     if(channel_st.Contains("MuMu")) param.k.Muon_Trigger_SF = "DiMuIso_HNL_ULID";
     if(channel_st.Contains("EMu"))  param.k.EMu_Trigger_SF = "EMuIso_HNL_ULID";
   
+    param.AK8JetColl       = "HNL";
+
     return param;
   }
   else if (s_setup_version=="HighPt"){
@@ -721,7 +723,7 @@ AnalyzerParameter HNL_LeptonCore::SetupHNLParameter(TString s_setup_version, TSt
     param.k.Muon_ID_SF         = "NUM_TopHNT";
     param.k.Muon_RECO_SF       = "MuonRecoSF";
 
-    param.k.Electron_CF  = "CFRate_PtInv_EtaRegion_TopHN";
+    param.k.Electron_CF  = "CFRate_InvPtEta3_PBSExtrap_Central_TopHNSST";
 
     param.TriggerSelection = "Dilep";
     if(channel_st.Contains("EE"))   param.k.Electron_Trigger_SF = "DiElIso_HNL_ULID";
@@ -883,7 +885,7 @@ AnalyzerParameter HNL_LeptonCore::SetupHNLParameter(TString s_setup_version, TSt
     param.FakeRateParam        = "PtCone";
     param.k.Muon_FR            = "FR_cent";
     param.k.Electron_FR        = "FR_cent";
-    param.k.Electron_CF  = "CFRate_PtInv_EtaRegion_TopHN"; //// FIX
+    param.k.Electron_CF  = "CFRate_InvPtEta3_PBSExtrap_Central_TopHNSST"; //// FIX
     
     return param;
   }

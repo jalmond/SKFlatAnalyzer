@@ -16,7 +16,7 @@ void HNL_Lepton_ID_BDT_Studies::executeEvent(){
     TriggerPrintOut(GetEvent());
   }
   
-  AnalyzerParameter param  = HNL_LeptonCore::InitialiseHNLParameter("POGTight");
+  AnalyzerParameter param  = HNL_LeptonCore::InitialiseHNLParameter("HNL_ULID");
   
   Event ev = GetEvent();
   double weight = SetupWeight(ev,param);
@@ -126,6 +126,42 @@ void HNL_Lepton_ID_BDT_Studies::executeEvent(){
     return;
   }
   
+
+  if(HasFlag("BDTPerType")){
+
+    int nbin_pt    =10;
+    double ptbins    [nbin_pt    +1] = { 10.,15.,20.,30.,35., 40.,50., 60., 80., 100.,200.};
+
+
+    for(auto ilep : ElectronCollProbe){
+      double PtLep =  (ilep.Pt() > 200) ? 199 : ilep.Pt();
+
+      TString  LepType = ilep.LepGenTypeNumberString();
+      if ( FindHEMElectron (ilep )) continue;
+      map<TString, double> mapBDT = ilep.MAPBDT();
+      for(auto imap : mapBDT ){
+	FillHist("BDTVariableLowPt/"+LepType+"/Electron/"+imap.first, imap.second  , weight, 200, -1., 1);
+      }
+      
+      if(ilep.PassID(param.Electron_FR_ID))FillHist("LepTypeFR/Electron/"+LepType+"_Loose", PtLep,   weight, nbin_pt, ptbins,"");
+      if(ilep.PassID(param.Electron_Tight_ID))FillHist("LepTypeFR/Electron/"+LepType+"_Tight", PtLep,   weight, nbin_pt, ptbins,"");
+      
+      
+    }
+    for(auto ilep : MuonCollProbe){
+      double PtLep =  (ilep.Pt() > 200) ? 199 : ilep.Pt();
+
+      TString  LepType = ilep.LepGenTypeNumberString();
+      map<TString, double> mapBDT = ilep.MAPBDT();
+      for(auto imap : mapBDT ) {
+        FillHist("BDTVariableLowPt/"+LepType+"/Muon/"+imap.first, imap.second  , weight, 200, -1., 1);
+      }
+      
+      if(ilep.PassID(param.Muon_FR_ID))FillHist("LepTypeFR/Muon/"+LepType+"_Loose", PtLep,   weight, nbin_pt, ptbins,"");
+      if(ilep.PassID(param.Muon_Tight_ID))FillHist("LepTypeFR/Muon/"+LepType+"_Tight", PtLep,   weight, nbin_pt, ptbins,"");
+    }
+    return;
+  }
   
   if(HasFlag("BDTPlots")){
     

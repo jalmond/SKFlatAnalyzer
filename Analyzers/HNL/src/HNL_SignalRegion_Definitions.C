@@ -514,20 +514,11 @@ TString HNL_RegionDefinitions::RunSignalRegionWWString(bool ApplyForSR,HNL_Lepto
   if(JetColl.size() < 2) return "false";
   FillCutflow(Reg, w, RegionTag+"_DiJet",param);
 
-  double maxDiJetDeta=0.;
-  int ijet1(-1), ijet2(-1);
-  for(unsigned int ij = 0; ij < JetColl.size()-1; ij++){
-    for(unsigned int ij2 = ij+1; ij2 < JetColl.size(); ij2++){
+  int ijet1(0), ijet2(1);
 
-      double deta = fabs(JetColl[ij].Eta() - JetColl[ij2].Eta());
-      if(deta > maxDiJetDeta) {
-  maxDiJetDeta=deta;
-        ijet1=ij;
-  ijet2=ij2;
-      }
-    }
-  }
   if(use_leadjets){ijet1=0;ijet2=1;}
+
+  double maxDiJetDeta =fabs(JetColl[ijet1].Eta() - JetColl[ijet2].Eta());
 
   if(maxDiJetDeta < 2.5) return "false";
   FillCutflow(Reg, w, RegionTag+"_DiJetEta",param);
@@ -537,7 +528,7 @@ TString HNL_RegionDefinitions::RunSignalRegionWWString(bool ApplyForSR,HNL_Lepto
   FillCutflow(Reg, w, RegionTag+"_DiJetMass",param);
   
   double Av_JetEta= 0.5*(JetColl[ijet1].Eta()+ JetColl[ijet2].Eta());
-  double zeppenfeld = TMath::Max((*leps[0]).Eta()  - Av_JetEta , (*leps[1]).Eta()  - Av_JetEta ) /maxDiJetDeta;
+  double zeppenfeld = CalulateMaxZeppenfeld(leps, Av_JetEta,maxDiJetDeta);
   
   if(zeppenfeld > 0.75) return "false";
   FillCutflow(Reg, w, RegionTag+"_Zep",param);
@@ -1148,19 +1139,10 @@ bool HNL_RegionDefinitions::PassVBFInitial(vector<Jet>  JetColl){
 
   if(JetColl.size() < 2) return false;
 
-  double maxDiJetDeta=0.;
-  int ijet1(-1), ijet2(-1);
-  for(unsigned int ij = 0; ij < JetColl.size()-1; ij++){
-    for(unsigned int ij2 = ij+1; ij2 < JetColl.size(); ij2++){
 
-      double deta = fabs(JetColl[ij].Eta() - JetColl[ij2].Eta());
-      if(deta > maxDiJetDeta) {
-        maxDiJetDeta=deta;
-        ijet1=ij;
-        ijet2=ij2;
-      }
-    }
-  }
+  int ijet1(0), ijet2(1);
+  double maxDiJetDeta = fabs(JetColl[ijet1].Eta() - JetColl[ijet2].Eta());
+
 
   if(maxDiJetDeta < 2.5) return false;
   Particle JJ = JetColl[ijet1] + JetColl[ijet2];
@@ -1179,26 +1161,15 @@ bool HNL_RegionDefinitions::PassVBF(vector<Jet>  JetColl,std::vector<Lepton *> l
   if( ( (*leps[0]) + (*leps[1]) ).M() < 20.) return false;
   if(JetColl.size() < 2) return false;
 
-  double maxDiJetDeta=0.;
-  int ijet1(-1), ijet2(-1);
-  for(unsigned int ij = 0; ij < JetColl.size()-1; ij++){
-    for(unsigned int ij2 = ij+1; ij2 < JetColl.size(); ij2++){
 
-      double deta = fabs(JetColl[ij].Eta() - JetColl[ij2].Eta());
-      if(deta > maxDiJetDeta) {
-        maxDiJetDeta=deta;
-        ijet1=ij;
-        ijet2=ij2;
-      }
-    }
-  }
-  if(use_leadjets){ijet1=0;ijet2=1;}
+  int ijet1(0), ijet2(1);
+  double maxDiJetDeta =fabs(JetColl[ijet1].Eta() - JetColl[ijet2].Eta());
   
   if(maxDiJetDeta < 2.5) return false;
   Particle JJ = JetColl[ijet1] + JetColl[ijet2];
   if(JJ.M() < mjj_cut) return false;
   double Av_JetEta= 0.5*(JetColl[ijet1].Eta()+ JetColl[ijet2].Eta());
-  double zeppenfeld = TMath::Max((*leps[0]).Eta()  - Av_JetEta , (*leps[1]).Eta()  - Av_JetEta ) /maxDiJetDeta;
+  double zeppenfeld = CalulateMaxZeppenfeld(leps, Av_JetEta,maxDiJetDeta);
 
   if(zeppenfeld > 0.75) return false;
 

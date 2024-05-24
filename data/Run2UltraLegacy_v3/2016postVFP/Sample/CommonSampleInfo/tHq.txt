@@ -1,2 +1,2 @@
 # alias PD xsec nmc sumsign sumw
-tHq	THQ_ctcvcp_4f_Hincl_TuneCP5_13TeV_madgraph_pythia8	0.7464	14939986	14939986.0	1.493998600000e+07
+tHq	THQ_ctcvcp_4f_Hincl_TuneCP5_13TeV_madgraph_pythia8	0.07096	14939986	14939986.0	14939986.0 

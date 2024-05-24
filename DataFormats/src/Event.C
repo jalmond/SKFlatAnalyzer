@@ -1016,6 +1016,7 @@ double Event::GetTriggerLumi(TString trig){
     else if(trig=="HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v") return 10.699483420*0.92;
     else if(trig=="HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v") return 8629.222597;
     else if(trig=="HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v") return 16812.151722482;
+    else if(trig=="HLT_TkMu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v") return 8740.119304100;
     else if(trig=="HLT_Mu17_TrkIsoVVL_v") return 26.87279*0.977825*0.93;
     else if (trig=="HLT_Mu8_TrkIsoVVL_v") return 1.29683*1.31533*0.82;
 

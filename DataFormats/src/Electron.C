@@ -319,6 +319,7 @@ int  Electron::PassIDTight(TString ID) const{
   else if(ID.Contains("2017")) Year = "2017";
   else if(ID.Contains("2018")) Year = "2018";
 
+  if(ID == "HNL_TC0_ULID_"     +Year)     return (PassID("HNL_ULID_OLDDef_FO_"+Year)    && PassID("HNL_ULID_Fake_"+Year));
   if(ID == "HNL_TC1_ULID_"     +Year)     return (PassID("HNL_ULID_Def_FO_"+Year)    && PassID("HNL_ULID_Fake_"+Year) && IsGsfCtfChargeConsistent());
   if(ID == "HNL_TC2_ULID_"     +Year)     return (PassID("HNL_ULID_Def_FO_"+Year)    && PassID("HNL_ULID_Fake_"+Year) && IsGsfScPixChargeConsistent());
   if(ID == "HNL_TC3_ULID_"     +Year)     return (PassID("HNL_ULID_Def_FO_"+Year)    && PassID("HNL_ULID_Fake_"+Year) && IsGsfCtfChargeConsistent() && IsGsfScPixChargeConsistent());
@@ -338,6 +339,7 @@ int  Electron::PassIDTight(TString ID) const{
     return false;
   }
 
+  if(ID == "HNL_ULID_OLDDef_FO_"  +Year)   return (PassID("HNL_ULID_Conv_"+Year)   && PassID("HNL_ULID_CF_"+Year));
   if(ID == "HNL_ULID_Def_FO_"  +Year)   return (PassID("HNL_ULID_Conv_"+Year)   && PassID("HNL_ULID_CF_"+Year)) &&  IsGsfCtfChargeConsistent();
 
   if(ID == "HNL_ULID_FO_2016a")     return PassID("HNL_ULID_FO_v0_"+Year);

@@ -415,28 +415,38 @@ bool AnalyzerCore::IsCF(Muon mu, std::vector<Gen> truthColl){
   return false;
 }
 
-bool AnalyzerCore::ConversionSplitting(std::vector<Lepton *> leps, bool RunConvMode,  int nlep){
+bool AnalyzerCore::ConversionSplitting(std::vector<Lepton *> leps, bool RunConvMode,  int nlep, bool SplitType){
 
   if(!RunConvMode) return true;
   if(IsData) return true;
 
-  int nlep_pt20(0);
+  int nlep_pt15(0);
   
   /// Only remove events if..
   if(nlep != leps.size()) return true;
-
+  
+  bool has2lType5=false;
   for(auto ilep : leps){
+    if(ilep->LeptonGenType() == -5) has2lType5=true;
+    if(ilep->Pt() > 15.) nlep_pt15++;
+  }
 
-    if(ilep->Pt() > 15.) nlep_pt20++;
+  if(leps.size() != 2) has2lType5 = false;
+  else{
+    Particle ll = (*leps[0]) + (*leps[1]);
+    if(ll.M() < 50)  has2lType5 = false;
+    if(ll.M() > 100)  has2lType5 = false;
   }
 
   if(MCSample.Contains("ZGTo")){
-    if(nlep_pt20 ==nlep) return true;
+    
+    if(SplitType && has2lType5) return false;
+    if(nlep_pt15 ==nlep) return true;
     else return false;
   }
-  else if(MCSample.Contains("DYJet")) {
-
-    if(nlep_pt20 !=nlep) return true;
+  else if(MCSample.Contains("DYJets")) {
+    if(SplitType && has2lType5) return true;
+    if(nlep_pt15 !=nlep) return true;
     else return false;
 
   }

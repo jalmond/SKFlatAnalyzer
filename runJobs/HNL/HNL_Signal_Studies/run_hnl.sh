@@ -12,9 +12,9 @@ declare  -a era_list=("2016postVFP" "2016preVFP" "2017" "2018")
 declare  -a era_list=( "2018")
 
 
-if [[ $1 == "WR" ]]; then
+if [[ $1 == "WWJet" ]]; then
 
-    SKFlat.py -a $analyzer  -l $sigpath/WROffshell.txt -n 10  --nmax ${nmax}   -e 2018  --skim SkimTree_HNMultiLepBDT&
+    SKFlat.py -a $analyzer   -l $sigpath/SSWW.txt -n 10  --nmax ${nmax}   -e 2018  --skim SkimTree_HNMultiLepBDT --userflags WWJet&
 
 fi
 

@@ -15,16 +15,13 @@ void HNL_SignalRegion_Plotter::executeEvent(){
 
   FillTimer("START_EV");
   
-  //vector<TString> LepIDs = {"HNL_ULID","HNTightV2"};
-  //vector<TString> LepIDs = {"HNTightV2"};
-  vector<TString> LepIDs = {"HNL_ULID"};
-  if(strcmp(std::getenv("USER"),"jalmond")==0) LepIDs = {"HNL_ULID","HNL_ULID","HNTightV2","POGTight","HighPt"};
+  vector<TString> LepIDs = {"HNL_ULID"}; //,"HNTightV2"};
+  if(strcmp(std::getenv("USER"),"jalmond")==0) LepIDs = {"HNL_ULID","HNTightV2","POGTight","TopHN","HighPt"};
 
   vector<HNL_LeptonCore::Channel> ChannelsToRun = {MuMu,EE,EMu};                                                    
 
   for (auto id: LepIDs){
     for(auto channel : ChannelsToRun){
-      if(channel == EE &&  id == "TopHN") continue;
       if(channel != MuMu &&  id == "HighPt") continue;
       AnalyzerParameter param = HNL_LeptonCore::InitialiseHNLParameter(id,channel);
       param.PlottingVerbose = 1;

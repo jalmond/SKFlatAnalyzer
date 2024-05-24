@@ -5,6 +5,26 @@
 
  */
 
+
+double HNL_LeptonCore::CalulateZeppenfeld(Lepton * lep, double Av_JetEta, double maxDiJetDeta){
+
+  return fabs((lep->Eta()  - Av_JetEta )) / maxDiJetDeta;
+  
+}
+
+double HNL_LeptonCore::CalulateMaxZeppenfeld(std::vector<Lepton *> leps, double Av_JetEta, double maxDiJetDeta){
+
+  double Maxzeppenfeld = -999;
+  for(unsigned int ilep =0; ilep < leps.size() ; ilep++){
+    for(unsigned int ilep2 =ilep+1; ilep2 < leps.size() ; ilep2++){
+      if(ilep== ilep2) continue;
+      double zeppenfeld = TMath::Max( CalulateZeppenfeld(leps[ilep], Av_JetEta,maxDiJetDeta), CalulateZeppenfeld(leps[ilep2], Av_JetEta,maxDiJetDeta));
+      if(zeppenfeld > Maxzeppenfeld) Maxzeppenfeld=zeppenfeld;
+    }
+  }
+  return Maxzeppenfeld;
+      
+}
 pair<int,int> HNL_LeptonCore::LeptonPairBestZCand(std::vector<Lepton *> leps){
 
   Particle Z1Cand;

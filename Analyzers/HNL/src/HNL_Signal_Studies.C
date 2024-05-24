@@ -69,27 +69,32 @@ void HNL_Signal_Studies::executeEvent(){
     
     param.Channel  = GetChannelString(dilep_channel);
     
-    weight = SetupWeight(ev,param);                                                                                                                                                                      
-    
-    
+    weight = SetupWeight(ev,param);                                                                                                                                                             
     if(MCSample.Contains("WGToLNuG")) weight *= 0.5;
     
     
     TString channel = GetChannelString(dilep_channel) ;
     
-    //    if(dilep_channel == MuMu) PlotBDTVariablesMuon(param);
-    //if(dilep_channel == EE)   PlotBDTVariablesElectron(param);
-    
+    if(HasFlag("PlotBDT")){
+      if(dilep_channel == MuMu) PlotBDTVariablesMuon(param);
+      if(dilep_channel == EE)   PlotBDTVariablesElectron(param);
+      return;
+    }
+
     
     FillTimer("START_RUN_"+channel);
     
     
     //double ptbins[11] = { 0., 10.,15., 20., 30., 40.,50., 100.,500. ,1000., 2000.};
-    
-    if(MCSample.Contains("DYType")   && MCSample.Contains("private"))  MakeType1SignalPlots(channel, false);
-    if(MCSample.Contains("VBFType")  && MCSample.Contains("private"))  MakeType1VBFSignalPlots(channel, false);
-    if(MCSample.Contains("SSWWType") && MCSample.Contains("private"))  MakeType1SSWWSignalPlots(channel, false);
-   
+
+    if(HasFlag("SignalKinematics")){
+      
+      if(MCSample.Contains("DYType")   && MCSample.Contains("private"))  MakeType1SignalPlots(channel, false);
+      if(MCSample.Contains("VBFType")  && MCSample.Contains("private"))  MakeType1VBFSignalPlots(channel, false);
+      if(MCSample.Contains("SSWWType") && MCSample.Contains("private"))  MakeType1SSWWSignalPlots(channel, false);
+      
+      return;
+    }
     
     Particle METv = GetMiniAODvMET("PuppiT1xyCorr"); // returns MET with systematic correction                                                                                                    
     
@@ -109,6 +114,65 @@ void HNL_Signal_Studies::executeEvent(){
     std::vector<Jet>    AK4_BJetColl                = GetHNLJets("BJet", param);
     std::vector<Tau> TauColl                        = SelectTaus(LepsV,param.Tau_Veto_ID,20., 2.3);
     
+    if(HasFlag("WWJet")){
+      
+      if(AK4_VBF_JetColl.size() < 2) return ;
+
+      double maxDiJetDeta=0.;
+      int ijet1(-1), ijet2(-1);
+      for(unsigned int ij = 0; ij < AK4_VBF_JetColl.size()-1; ij++){
+	for(unsigned int ij2 = ij+1; ij2 < AK4_VBF_JetColl.size(); ij2++){
+
+	  double deta = fabs(AK4_VBF_JetColl[ij].Eta() - AK4_VBF_JetColl[ij2].Eta());
+	  if(deta > maxDiJetDeta) {
+	    maxDiJetDeta=deta;
+	    ijet1=ij;
+	    ijet2=ij2;
+	  }
+	}
+      }
+      
+      /// CHeck GEN Matched
+      vector<Particle> GenWWJets = GetJetWW();
+      if(GenWWJets.size() != 2) return;
+      bool Method_PtOrder_Match=false;
+      bool Method_dEta_Match=false;
+      
+      Particle J1 = GenWWJets[0];
+      Particle J2 = GenWWJets[1];
+      
+      if(J1.DeltaR(AK4_VBF_JetColl[0]) < 0.2){
+	if(J2.DeltaR(AK4_VBF_JetColl[1]) < 0.2){
+	  Method_PtOrder_Match=true;
+	}
+      }
+      else   if(J2.DeltaR(AK4_VBF_JetColl[0]) < 0.2){
+	if(J1.DeltaR(AK4_VBF_JetColl[1]) < 0.2){
+          Method_PtOrder_Match=true;
+        } 
+      } 
+
+      
+      if(J1.DeltaR(AK4_VBF_JetColl[ijet1]) < 0.2){
+	if(J2.DeltaR(AK4_VBF_JetColl[ijet2]) < 0.2){
+          Method_dEta_Match=true;
+        } 
+      } 
+      else   if(J2.DeltaR(AK4_VBF_JetColl[ijet1]) < 0.2){
+	if(J1.DeltaR(AK4_VBF_JetColl[ijet2]) < 0.2){
+          Method_dEta_Match=true;
+        }
+      }
+
+      
+      FillHist("SSWWJetMatch/JetMatchEff", 0 , weight, 5, 0., 5);
+      if(Method_PtOrder_Match)FillHist("SSWWJetMatch/JetMatchEff", 1 , weight, 5, 0., 5);
+      if(Method_dEta_Match)FillHist("SSWWJetMatch/JetMatchEff", 2 , weight, 5, 0., 5);
+
+
+      return;
+    }
+
     
     //    TString def_paramName =param.Name;
     
@@ -574,6 +638,43 @@ HNL_Signal_Studies::~HNL_Signal_Studies(){
 
 }
 
+
+vector<Particle> HNL_Signal_Studies::GetJetWW(){
+  for(unsigned int i=2; i< All_Gens.size(); i++){
+    Gen gen = All_Gens.at(i);
+
+    if( (fabs(gen.PID()) == 13 )|| (fabs(gen.PID()) == 11 )){
+      if(gen.Pt() < 10. || fabs(gen.Eta()) > 2.4) return {};
+      
+    }
+  }
+
+  Gen j1,j2;
+  int Lep_Mother_ind(-1);
+  bool j1IsSet(false);
+
+  for(unsigned int i=2; i<All_Gens.size(); i++){
+    Gen gen = All_Gens.at(i);
+    if( ! ( ( fabs(gen.PID()) == 13)  || (fabs(gen.PID()) == 11) )) continue;
+    if (gen.Status() == 23){
+      TString LepFl = (fabs(gen.PID()) == 13) ? "Mu" : "El";
+      Lep_Mother_ind = gen.MotherIndex();
+    }
+  }
+
+  for(unsigned int i=2; i<All_Gens.size(); i++){
+    Gen gen = All_Gens.at(i);
+
+    if (gen.MotherIndex() == Lep_Mother_ind){
+      if(fabs(gen.PID()) > 6) continue;
+      if(!j1IsSet) {  j1= gen; j1IsSet=true;}
+      else j2 = gen;
+    }
+  }
+  
+  return {j1,j2};
+  
+}
 
 void HNL_Signal_Studies::MakeType1SSWWSignalPlots(TString process, bool apply_reco_cut){
 

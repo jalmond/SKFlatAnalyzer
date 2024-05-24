@@ -479,10 +479,11 @@ void HNL_LeptonCore::EvalTrigWeight(HNL_LeptonCore::Channel channel, vector<Muon
   ///// Update wright for Cases unprescaled triggers pass but prescale triggers fail
   //// Case 1 2016b
 
-  if (DataEra == "2016b"){
+  if (DataEra == "2016postVFP"){
     if(!ev.PassTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v")){
-      if(ev.PassTrigger("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v")) w = w  * ev.GetTriggerLumi("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v")/ev.GetTriggerLumi( "Full");
-      if(ev.PassTrigger("HLT_TkMu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v")) w = w  * ev.GetTriggerLumi("HLT_TkMu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v")/ev.GetTriggerLumi( "Full");
+      if(!ev.PassTrigger("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v")) {
+	if(ev.PassTrigger("HLT_TkMu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v")) w = w  * ev.GetTriggerLumi("HLT_TkMu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v")/ev.GetTriggerLumi( "Full");
+      }
     }
   }
   if (DataEra == "2017"){

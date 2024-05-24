@@ -51,6 +51,20 @@ public:
     }
     return -999;
   }
+
+  inline TString LepGenTypeNumberString() const {
+    TString Sign = (j_LeptonType <0) ? "minus" : "plus";
+    if(fabs(j_LeptonType) == 1) return Sign + "1";
+    if(fabs(j_LeptonType) == 2) return Sign + "2";
+    if(fabs(j_LeptonType) == 3) return Sign + "3";
+    if(fabs(j_LeptonType) == 4) return Sign + "4";
+    if(fabs(j_LeptonType) == 5) return Sign + "5";
+    if(fabs(j_LeptonType) == 6) return Sign + "6";
+    return "Zero";
+  }
+      
+
+
   //// Function to Check Nature of lepton
   inline TString LepGenTypeString() const {
     //// return TString based on Gen type
@@ -294,6 +308,20 @@ public:
   inline double LogdZ() const {return std::log(fabs(j_dZ));}
   inline double LogdXYSig() const {return std::log(fabs(j_dXY/j_dXYerr));}
   inline double LogdZSig() const {return std::log(fabs(j_dZ/j_dZerr));}
+
+  TString LepDoubleToString(double d){
+
+    std::string str = std::to_string (d);
+    str.erase ( str.find_last_not_of('0') + 1, std::string::npos );
+    str.erase ( str.find_last_not_of('.') + 1, std::string::npos );
+
+    TString ts_str = TString(str);
+    //    ts_str = ts_str.ReplaceAll(".","p");
+    //ts_str = ts_str.ReplaceAll("-","neg");
+
+    return ts_str;
+
+  }
 
 
 
@@ -743,6 +771,10 @@ public:
     double MJProxy = (MSlope * PMDiff) + this->Pt() ;
     if((MJProxy/this->Pt()) > UpperValue) return UpperValue*this->Pt();
     return MJProxy;
+  }
+
+  inline TString PrintInfo(){
+    return GetFlavour() +" Pt " + LepDoubleToString(this->Pt()) + " Lep Eta " + LepDoubleToString(this->Eta()) + " Lep Phi = " + LepDoubleToString(this->Phi());
   }
 
   virtual void Print();

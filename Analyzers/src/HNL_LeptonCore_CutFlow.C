@@ -142,11 +142,13 @@ TString HNL_LeptonCore::GetCutFlowNameFromRegion(HNL_LeptonCore::SearchRegion sr
   if(sr==WZCR)   EVHistName= "WZCR";
   if(sr==WZBCR)   EVHistName= "WZBCR";
   if(sr==ZZCR)   EVHistName= "ZZCR";
+  if(sr==ZZVBFCR)   EVHistName= "ZZVBFCR";
   if(sr==ZZCR2)  EVHistName= "ZZCR2";
   if(sr==WGCR)   EVHistName= "WGCR";
   if(sr==ZGCR)   EVHistName= "ZGCR";
   if(sr==WZBCR)   EVHistName= "WZBCR";
-  if(sr==WZCR2)   EVHistName= "WZCR2";
+  if(sr==WZVBFCR)   EVHistName= "WZVBFCR";
+  if(sr==WZVBFCR2)   EVHistName= "WZVBCR2";
   if(sr==HMCR1)   EVHistName= "HMCR1";
   if(sr==HMCR2)   EVHistName= "HMCR2";
   if(sr==HMCR3)   EVHistName= "HMCR3";
@@ -267,10 +269,12 @@ vector<TString>  HNL_LeptonCore::GetLabelsFromRegion(HNL_LeptonCore::SearchRegio
   if(sr==ZGCR)  nstep = 11;
   if(sr==WZCR)  nstep = 11;
   if(sr==ZZCR)  nstep = 6;
+  if(sr==ZZVBFCR)  nstep = 9;
   if(sr==ZZCR2)  nstep = 9;
   if(sr==WGCR)   nstep = 10;
   if(sr==WZBCR)   nstep = 15;
-  if(sr==WZCR2)   nstep = 7;
+  if(sr==WZVBFCR)   nstep = 7;
+  if(sr==WZVBFCR2)   nstep = 7;
   if(sr==HMCR1)   nstep = 7;
   if(sr==HMCR2)   nstep = 7;
   if(sr==HMCR3)   nstep = 8;
@@ -411,7 +415,7 @@ vector<TString>  HNL_LeptonCore::GetLabelsFromRegion(HNL_LeptonCore::SearchRegio
   //                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
   if(sr==CR)   labels = { "Z_CR","Top_CR","Top_CR2", "TopAK8_CR","ZAK8_CR",
 			  "WpWp_CR1","WpWp_CR2","WpWp_CRNP","WpWp_CRNP2","WpWp_CRNP3",
-			  "WZ_CR", "ZZ_CR","ZZOffShell_CR","ZG_CR","WG_CR","WZ2_CR","WZB_CR", 
+			  "WZ_CR", "ZZ_CR","ZZVBF_CCR","ZZOffShell_CR","ZG_CR","WG_CR","WZVBF_CR","WZVBF_CR2","WZB_CR", 
 			  "ZNPEl_CR", "ZNPMu_CR", "TopNP_CR",
 			  "HighMassSR1_CR","HighMassSR2_CR","HighMassSR3_CR" ,"HighMass1Jet_CR",
 			  "HighMassBJet_CR","HighMassNP_CR", "SSPresel"};

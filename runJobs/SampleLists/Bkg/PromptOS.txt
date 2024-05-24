@@ -1,5 +1,7 @@
 DYJets
 DYJets10to50_MG
+WJets_amcatnlo
+WJets_MG
 TTLL_powheg
 WZ_pythia
 ZZ_pythia
@@ -26,3 +28,8 @@ GluGluToZZto4mu
 TTTT
 TTZZ
 tZq
+SingleTop_sch_Lep
+SingleTop_tch_antitop_Incl
+SingleTop_tch_top_Incl
+SingleTop_tW_antitop_NoFullyHad
+SingleTop_tW_top_NoFullyHad

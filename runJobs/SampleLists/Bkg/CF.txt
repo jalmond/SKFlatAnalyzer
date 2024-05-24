@@ -1,2 +1,2 @@
-DYJets
+DYJetsToEE_MiNNLO
 TTLL_powheg

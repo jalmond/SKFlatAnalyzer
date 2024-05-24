@@ -42,6 +42,7 @@
 #define M_Z 91.1876
 #define M_W 80.379
 #define M_CUT_LL 10.
+#define M_CUT_NonSR3_LL 20.
 #define M_ZWINDOW 20.
 #define M_ZWINDOW_CR 15.
 #define M_ZWINDOW_VETO 10.
@@ -235,7 +236,7 @@ public:
   double  JetLeptonPtRatioLepAware( Electron lep);
 
   // =================   FR functions   AnalyzerCore_GEN.C  ======================                                                                                                                                                                                                         
-  bool ConversionSplitting(std::vector<Lepton *> leps, bool RunConvMode, int nlep);
+  bool ConversionSplitting(std::vector<Lepton *> leps, bool RunConvMode, int nlep, bool SplitByType=true);
   bool ConversionVeto(std::vector<Lepton *> leps,const std::vector<Gen>& gens);
   bool IsCF(Electron el, std::vector<Gen> gens, bool checcloseel=true);
   bool IsCF(Muon mu, std::vector<Gen> gens);
