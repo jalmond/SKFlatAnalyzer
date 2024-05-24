@@ -32,7 +32,7 @@ flag=$5
 
 # HNL_ControlRegionPlotter
 #echo -e ".L test.C\n test(\"2017\",true,\"DoubleMuon\",\"HNMultiLepBDT\",\"SSMultiLep,RunFake\");" | root -l 2>&1 | tee "DoubleMuon_RunFake".log
-echo -e ".L test.C\n test(\"2017\",true,\"DoubleMuon\",\"HNMultiLepBDT\",\"SSMultiLep,RunFake\");" | root -l 2>&1 | tee "DoubleMuon_RunFake".log
+#echo -e ".L test.C\n test(\"2017\",true,\"DoubleMuon\",\"HNMultiLepBDT\",\"SSMultiLep,RunFake\");" | root -l 2>&1 | tee "DoubleMuon_RunFake".log
 #echo -e ".L test.C\n test(\"2017\",true,\"DoubleMuon\",\"HNMultiLepBDT\",\"SSMultiLep\");" | root -l 2>&1 | tee "DoubleMuon_SSMultiLep".log
 #echo -e ".L test.C\n test(\"2017\",true,\"DoubleEG\",\"HNMultiLepBDT\",\"SSMultiLep\");" | root -l 2>&1 | tee "DoubleEG_SSMultiLep".log
 #echo -e ".L test.C\n test(\"2017\",true,\"DoubleEG\",\"DileptonBDT\",\"OS_VR\");" | root -l 2>&1 | tee "DoubleEG_OS_VR".log
@@ -42,3 +42,7 @@ echo -e ".L test.C\n test(\"2017\",true,\"DoubleMuon\",\"HNMultiLepBDT\",\"SSMul
 #echo -e ".L test.C\n test(\"2017\",true,\"DoubleEG\",\"HNMultiLepBDT\",\"LLL_VR\");" | root -l 2>&1 | tee "DoubleEG_LLL_VR".log
 #echo -e ".L test.C\n test(\"2017\",false,\"ZZ\",\"HNMultiLepBDT\",\"LLL_VR\");" | root -l 2>&1 | tee "ZZ_LLL_VR".log
 #echo -e ".L test.C\n test(\"2017\",true,\"DoubleEG\",\"HNMultiLepBDT\",\"SS_CR\");" | root -l 2>&1 | tee "DoubleEG_SS_CR".log
+echo -e ".L test.C\n test(\"2018\",false,\"ZG\",\"HNMultiLepBDT\",\"SS_CR,RunConv,SaveIntConv\");" | root -l 2>&1 | tee "2018_ZG_SS_CR_RunConv_SaveIntConv".log
+#echo -e ".L test.C\n test(\"2018\",false,\"ZG\",\"HNMultiLepBDT\",\"SS_CR,RunConv\");" | root -l 2>&1 |             tee "2018_ZG_SS_CR_RunConv".log
+#echo -e ".L test.C\n test(\"2018\",false,\"ZG\",\"HNMultiLepBDT\",\"SS_CR,SaveIntConv\");" | root -l 2>&1 |         tee "2018_ZG_SS_CR_SaveIntConv".log
+#echo -e ".L test.C\n test(\"2018\",false,\"ZG\",\"HNMultiLepBDT\",\"SS_CR\");" | root -l 2>&1 |                     tee "2018_ZG_SS_CR".log

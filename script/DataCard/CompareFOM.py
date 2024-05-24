@@ -11,8 +11,10 @@ if args.Opt:
   eras = ["Run2"]
   #eras = ["2018"]
   ID = "HNL_ULID"
-  channel = "MuMu"
-  region = "InitialSR2"
+  #channel = "MuMu"
+  channel = "EE"
+  #region = "InitialSR2"
+  region = "PassSR2"
 
   os.system('rm CompareFOM_Opt.txt')
   for era in eras:
@@ -24,6 +26,7 @@ if args.Opt:
       pathlist.append("/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegion_Plotter/"+era+"/RunCF__/DATA/HNL_SignalRegion_Plotter_SkimTree_DileptonBDT_CF.root")
     pathlist.append("/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegion_Plotter/"+era+"/RunConv__/HNL_SignalRegion_Plotter_SkimTree_HNMultiLepBDT_Conv_inc.root")
     pathlist.append("/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegion_Plotter/"+era+"/RunPrompt__/HNL_SignalRegion_Plotter_SkimTree_HNMultiLepBDT_Prompt_inc.root")
+    pathlist.append("/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegion_Plotter/"+era+"/HNL_SignalRegion_Plotter_signalDYVBF_M1000.root")
     pathlist.append("/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegion_Plotter/"+era+"/HNL_SignalRegion_Plotter_signalSSWW_M1000.root")
     pathlist.append("/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegion_Plotter/"+era+"/HNL_SignalRegion_Plotter_signalSSWW_M10000.root")
     #pathlist.append("/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegion_Plotter/"+era+"/HNL_SignalRegion_Plotter_SkimTree_HNMultiLepBDT_SSWWTypeI_SF_M1000_private.root")
@@ -36,84 +39,178 @@ if args.Opt:
       rowNamelist.append("cf")
     rowNamelist.append("conv")
     rowNamelist.append("prompt")
+    rowNamelist.append("DYVBF_M1000")
     rowNamelist.append("SSWW_M1000")
     rowNamelist.append("SSWW_M10000")
 
     ## column setting ##
+    test_sel1 = []
+    test_sel1.append([region+"/"+ID+"/"+channel+"/VBF/Lead_DEta_jet1_jet2","gt",2.5]) # hist, gt(lt), value(xxx)
+    test_sel1.append([region+"/"+ID+"/"+channel+"/VBF/Lead_DEta_jet1_jet2","gt",3]) # hist, gt(lt), value(xxx)
+    test_sel1.append([region+"/"+ID+"/"+channel+"/VBF/Lead_DEta_jet1_jet2","gt",3.5]) # hist, gt(lt), value(xxx)
+    test_sel1.append([region+"/"+ID+"/"+channel+"/VBF/Lead_DEta_jet1_jet2","gt",4]) # hist, gt(lt), value(xxx)
+    test_sel1.append([region+"/"+ID+"/"+channel+"/VBF/Lead_DEta_jet1_jet2","gt",4.5]) # hist, gt(lt), value(xxx)
+    test_sel2 = []
+    test_sel2.append([region+"/"+ID+"/"+channel+"/VBF/MaxDEta_jet1_jet2","gt",2.5]) # hist, gt(lt), value(xxx)
+    test_sel2.append([region+"/"+ID+"/"+channel+"/VBF/MaxDEta_jet1_jet2","gt",3]) # hist, gt(lt), value(xxx)
+    test_sel2.append([region+"/"+ID+"/"+channel+"/VBF/MaxDEta_jet1_jet2","gt",3.5]) # hist, gt(lt), value(xxx)
+    test_sel2.append([region+"/"+ID+"/"+channel+"/VBF/MaxDEta_jet1_jet2","gt",4]) # hist, gt(lt), value(xxx)
+    test_sel2.append([region+"/"+ID+"/"+channel+"/VBF/MaxDEta_jet1_jet2","gt",4.5]) # hist, gt(lt), value(xxx)
+    test_sel3 = []
+    test_sel3.append([region+"/"+ID+"/"+channel+"/VBF/Lead_MJJ","gt",650])   # hist, gt(lt), value(xxx)
+    test_sel3.append([region+"/"+ID+"/"+channel+"/VBF/Lead_MJJ","gt",700])   # hist, gt(lt), value(xxx)
+    test_sel3.append([region+"/"+ID+"/"+channel+"/VBF/Lead_MJJ","gt",750])   # hist, gt(lt), value(xxx)
+    test_sel3.append([region+"/"+ID+"/"+channel+"/VBF/Lead_MJJ","gt",800])   # hist, gt(lt), value(xxx)
+    test_sel3.append([region+"/"+ID+"/"+channel+"/VBF/Lead_MJJ","gt",850])   # hist, gt(lt), value(xxx)
+    test_sel4 = []
+    test_sel4.append([region+"/"+ID+"/"+channel+"/VBF/MaxDEtaJets_MJJ","gt",650])   # hist, gt(lt), value(xxx)
+    test_sel4.append([region+"/"+ID+"/"+channel+"/VBF/MaxDEtaJets_MJJ","gt",700])   # hist, gt(lt), value(xxx)
+    test_sel4.append([region+"/"+ID+"/"+channel+"/VBF/MaxDEtaJets_MJJ","gt",750])   # hist, gt(lt), value(xxx)
+    test_sel4.append([region+"/"+ID+"/"+channel+"/VBF/MaxDEtaJets_MJJ","gt",800])   # hist, gt(lt), value(xxx)
+    test_sel4.append([region+"/"+ID+"/"+channel+"/VBF/MaxDEtaJets_MJJ","gt",850])   # hist, gt(lt), value(xxx)
+    test_sel5 = []
+    test_sel5.append([region+"/"+ID+"/"+channel+"/VBF/Lead_zeppenfeld","lt",0.8])   # hist, gt(lt), value(xxx)
+    test_sel5.append([region+"/"+ID+"/"+channel+"/VBF/Lead_zeppenfeld","lt",0.75])   # hist, gt(lt), value(xxx)
+    test_sel5.append([region+"/"+ID+"/"+channel+"/VBF/Lead_zeppenfeld","lt",0.7])   # hist, gt(lt), value(xxx)
+    test_sel5.append([region+"/"+ID+"/"+channel+"/VBF/Lead_zeppenfeld","lt",0.65])   # hist, gt(lt), value(xxx)
+    test_sel5.append([region+"/"+ID+"/"+channel+"/VBF/Lead_zeppenfeld","lt",0.6])   # hist, gt(lt), value(xxx)
+    test_sel6 = []
+    test_sel6.append([region+"/"+ID+"/"+channel+"/VBF/MaxDEta_Jets_zeppenfeld","lt",0.8])   # hist, gt(lt), value(xxx)
+    test_sel6.append([region+"/"+ID+"/"+channel+"/VBF/MaxDEta_Jets_zeppenfeld","lt",0.75])   # hist, gt(lt), value(xxx)
+    test_sel6.append([region+"/"+ID+"/"+channel+"/VBF/MaxDEta_Jets_zeppenfeld","lt",0.7])   # hist, gt(lt), value(xxx)
+    test_sel6.append([region+"/"+ID+"/"+channel+"/VBF/MaxDEta_Jets_zeppenfeld","lt",0.65])   # hist, gt(lt), value(xxx)
+    test_sel6.append([region+"/"+ID+"/"+channel+"/VBF/MaxDEta_Jets_zeppenfeld","lt",0.6])   # hist, gt(lt), value(xxx)
+    #test_sel.append([region+"/"+ID+"/"+channel+"/VBF/MaxDEta_jet1_jet2","gt",2.5])   # hist, gt(lt), value(xxx)
+    #test_sel.append([region+"/"+ID+"/"+channel+"/VBF/MaxDEtaJets_MJJ","gt",750])   # hist, gt(lt), value(xxx)
+    #test_sel.append([region+"/"+ID+"/"+channel+"/VBF/MaxDEta_Jets_zeppenfeld","lt",0.75])   # hist, gt(lt), value(xxx)
     test_sel = []
-    test_sel.append([region+"/"+ID+"/"+channel+"/VBF/Lead_DEta_jet1_jet2","gt",2.5]) # hist, gt(lt), value(xxx)
-    test_sel.append([region+"/"+ID+"/"+channel+"/VBF/MaxDEta_jet1_jet2","gt",2.5])   # hist, gt(lt), value(xxx)
-    test_sel.append([region+"/"+ID+"/"+channel+"/VBF/Lead_MJJ","gt",750])   # hist, gt(lt), value(xxx)
-    test_sel.append([region+"/"+ID+"/"+channel+"/VBF/MaxDEtaJets_MJJ","gt",750])   # hist, gt(lt), value(xxx)
-    test_sel.append([region+"/"+ID+"/"+channel+"/VBF/Lead_zeppenfeld","lt",0.75])   # hist, gt(lt), value(xxx)
-    test_sel.append([region+"/"+ID+"/"+channel+"/VBF/MaxDEta_Jets_zeppenfeld","lt",0.75])   # hist, gt(lt), value(xxx)
+    test_sel.append(test_sel1)
+    test_sel.append(test_sel2)
+    test_sel.append(test_sel3)
+    test_sel.append(test_sel4)
+    test_sel.append(test_sel5)
+    test_sel.append(test_sel6)
+
+    colNamelist1 = []
+    colNamelist1.append("Lead_dEta > 2.5")
+    colNamelist1.append("Lead_dEta > 3")
+    colNamelist1.append("Lead_dEta > 3.5")
+    colNamelist1.append("Lead_dEta > 4")
+    colNamelist1.append("Lead_dEta > 4.5")
+    colNamelist2 = []
+    colNamelist2.append("Max_dEta > 2.5")
+    colNamelist2.append("Max_dEta > 3")
+    colNamelist2.append("Max_dEta > 3.5")
+    colNamelist2.append("Max_dEta > 4")
+    colNamelist2.append("Max_dEta > 4.5")
+    colNamelist3 = []
+    colNamelist3.append("Lead_Mjj > 650 GeV")
+    colNamelist3.append("Lead_Mjj > 700 GeV")
+    colNamelist3.append("Lead_Mjj > 750 GeV")
+    colNamelist3.append("Lead_Mjj > 800 GeV")
+    colNamelist3.append("Lead_Mjj > 850 GeV")
+    colNamelist4 = []
+    colNamelist4.append("MaxDEta_Mjj > 650 GeV")
+    colNamelist4.append("MaxDEta_Mjj > 700 GeV")
+    colNamelist4.append("MaxDEta_Mjj > 750 GeV")
+    colNamelist4.append("MaxDEta_Mjj > 800 GeV")
+    colNamelist4.append("MaxDEta_Mjj > 850 GeV")
+    colNamelist5 = []
+    colNamelist5.append("Lead_zep < 0.8")
+    colNamelist5.append("Lead_zep < 0.75")
+    colNamelist5.append("Lead_zep < 0.7")
+    colNamelist5.append("Lead_zep < 0.65")
+    colNamelist5.append("Lead_zep < 0.6")
+    colNamelist6 = []
+    colNamelist6.append("MaxDEta_zep < 0.8")
+    colNamelist6.append("MaxDEta_zep < 0.75")
+    colNamelist6.append("MaxDEta_zep < 0.7")
+    colNamelist6.append("MaxDEta_zep < 0.65")
+    colNamelist6.append("MaxDEta_zep < 0.6")
+    #colNamelist.append("Max_dEta > 2.5")
+    #colNamelist.append("Max_dEta_Mjj > 750 GeV")
+    #colNamelist.append("Max_dEta_zep < 0.75")
     colNamelist = []
-    colNamelist.append("Lead_dEta > 2.5")
-    colNamelist.append("Max_dEta > 2.5")
-    colNamelist.append("Lead_Mjj > 750 GeV")
-    colNamelist.append("Max_dEta_Mjj > 750 GeV")
-    colNamelist.append("Lead_zep < 0.75")
-    colNamelist.append("Max_dEta_zep < 0.75")
+    colNamelist.append(colNamelist1)
+    colNamelist.append(colNamelist2)
+    colNamelist.append(colNamelist3)
+    colNamelist.append(colNamelist4)
+    colNamelist.append(colNamelist5)
+    colNamelist.append(colNamelist6)
     
     with open("CompareFOM_Opt.txt", 'a') as f:
       f.write(era+' '+region+' '+ID+' '+channel+' (if bkg <=0 --> 1.00e-03)\n')
-
-      bkg_survive = [0.] * len(test_sel)
-      bkg_total = [0.] * len(test_sel)
-      for i in range(len(pathlist)): # write each row (file)
-        this_file    = TFile.Open(pathlist[i])
-        f.write('%-14s'%rowNamelist[i])
-
-        sig_survive = [0.] * len(test_sel)
-        sig_total = [0.] * len(test_sel)
-        for j in range(len(test_sel)): # write each column (hist)
-          if i==0:
-            f.write('%-23s'%colNamelist[j])
-          else:
-            this_hist    = this_file.Get(test_sel[j][0])
-            #print this_hist
-            this_Nbin    = this_hist.GetNbinsX()
-            this_LowEdge = this_hist.GetXaxis().GetBinLowEdge(1)
-            this_width   = this_hist.GetXaxis().GetBinWidth(1)
-            this_cutbin = int(((test_sel[j][2] - this_LowEdge)/this_width)+1)
-            #print this_cutbin,this_Nbin
-            this_total = this_hist.Integral() + this_hist.GetBinContent(0) + this_hist.GetBinContent(this_Nbin+1) # should include under/overflow contents
-            if test_sel[j][1] == "gt":
-              this_survive = this_hist.Integral(this_cutbin,this_Nbin+1)
-            elif test_sel[j][1] == "lt":
-              this_survive = this_hist.Integral(0,this_cutbin-1)
-            this_eff = (this_survive / this_total) * 100.
-
-            if not("DY" in rowNamelist[i] or "VBF" in rowNamelist[i] or "SSWW" in rowNamelist[i]): # bkg loop
-              bkg_survive[j] += this_survive
-              bkg_total[j] += this_total
-            else: # signal
-              sig_survive[j] += this_survive
-              sig_total[j] += this_total
-
-            #f.write('%-20s (%s'%(format(this_survive,'.3e'),format(this_eff,'.3e'))+'%)')
-            f.write('%-8s'%format(this_survive,'.3f') + '(%-4s'%format(this_eff,'.1f') + '%)        ')
-
-        if rowNamelist[i]=="prompt": # after filling the prompt
-          f.write('\n')
-          f.write('%-14s'%"bkg")
-          for j in range(len(test_sel)): # write each column (hist)
-            this_bkg_eff = (bkg_survive[j] / bkg_total[j]) * 100.
-            f.write('%-8s'%format(bkg_survive[j],'.3f') + '(%-4s'%format(this_bkg_eff,'.1f') + '%)        ')
-
-        #print bkg_survive
-        #print sig_survive
-        #print bkg_total
-        #print sig_total
-        if "DY" in rowNamelist[i] or "VBF" in rowNamelist[i] or "SSWW" in rowNamelist[i]: # after filling each signal
-          f.write('\n')
-          f.write('%-14s'%"FOM")
-          for j in range(len(test_sel)): # write each column (hist)
-            this_FOM = sqrt(2.*((sig_survive[j]+bkg_survive[j])*log(1+(sig_survive[j]/(bkg_survive[j])))-sig_survive[j]))
-            f.write('%-23s'%format(this_FOM,'.2f'))
-
-        f.write('\n')
       f.write('='*150+'\n')
+
+      for k in range(len(test_sel)): # iterate for multiple variables
+        bkg_survive = [0.] * len(test_sel[k])
+        bkg_total = [0.] * len(test_sel[k])
+        for i in range(len(pathlist)): # write each row (file)
+          this_file    = TFile.Open(pathlist[i])
+          #print this_file
+          f.write('%-14s'%rowNamelist[i])
+
+          sig_survive = [0.] * len(test_sel[k])
+          sig_total = [0.] * len(test_sel[k])
+          for j in range(len(test_sel[k])): # write each column (hist)
+            if i==0:
+              f.write('%-23s'%colNamelist[k][j])
+            else:
+              this_hist    = this_file.Get(test_sel[k][j][0])
+              #print this_hist
+              this_Nbin    = this_hist.GetNbinsX()
+              this_LowEdge = this_hist.GetXaxis().GetBinLowEdge(1)
+              this_width   = this_hist.GetXaxis().GetBinWidth(1)
+              this_cutbin = int(((test_sel[k][j][2] - this_LowEdge)/this_width)+1)
+              #print this_cutbin,this_Nbin
+              this_total = this_hist.Integral() + this_hist.GetBinContent(0) + this_hist.GetBinContent(this_Nbin+1) # should include under/overflow contents
+              if this_total <= 0.:
+                print "[WARNING] In file",this_file
+                print "[WARNING] and hist",this_hist
+                print "[WARNING] Negative/Zero events :",this_total
+                print "[WARNING] Converting to 0.001 ..."
+                this_total = 0.001
+              if test_sel[k][j][1] == "gt":
+                this_survive = this_hist.Integral(this_cutbin,this_Nbin+1)
+              elif test_sel[k][j][1] == "lt":
+                this_survive = this_hist.Integral(0,this_cutbin-1)
+              #print this_survive
+              #print this_total
+              this_eff = (this_survive / this_total) * 100.
+
+              if not("DY" in rowNamelist[i] or "VBF" in rowNamelist[i] or "SSWW" in rowNamelist[i]): # bkg loop
+                bkg_survive[j] += this_survive
+                bkg_total[j] += this_total
+              else: # signal
+                sig_survive[j] += this_survive
+                sig_total[j] += this_total
+
+              #f.write('%-20s (%s'%(format(this_survive,'.3e'),format(this_eff,'.3e'))+'%)')
+              f.write('%-8s'%format(this_survive,'.3f') + '(%-4s'%format(this_eff,'.1f') + '%)        ')
+
+          if rowNamelist[i]=="prompt": # after filling the prompt
+            f.write('\n')
+            f.write('%-14s'%"bkg")
+            for j in range(len(test_sel[k])): # write each column (hist)
+              this_bkg_eff = (bkg_survive[j] / bkg_total[j]) * 100.
+              f.write('%-8s'%format(bkg_survive[j],'.3f') + '(%-4s'%format(this_bkg_eff,'.1f') + '%)        ')
+
+          #print bkg_survive
+          #print sig_survive
+          #print bkg_total
+          #print sig_total
+          if "DY" in rowNamelist[i] or "VBF" in rowNamelist[i] or "SSWW" in rowNamelist[i]: # after filling each signal
+            f.write('\n')
+            f.write('%-14s'%"FOM")
+            for j in range(len(test_sel[k])): # write each column (hist)
+              if "SSWW" in rowNamelist[i]:
+                this_FOM = sqrt(2.*((sqrt(sig_survive[j])+bkg_survive[j])*log(1+(sqrt(sig_survive[j])/(bkg_survive[j])))-sqrt(sig_survive[j])))
+              else:
+                this_FOM = sqrt(2.*((sig_survive[j]+bkg_survive[j])*log(1+(sig_survive[j]/(bkg_survive[j])))-sig_survive[j]))
+              f.write('%-23s'%format(this_FOM,'.2f'))
+
+          f.write('\n')
+        f.write('='*150+'\n')
 
 else:
   era = "2017"

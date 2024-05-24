@@ -60,7 +60,7 @@ if args.CR:
   Analyzer = "HNL_ControlRegion_Plotter"
 
   regions = ["sr_inv","sr1_inv","sr2_inv","sr3_inv","cf_cr","ww_cr","zg_cr","wz_cr","wzewk_cr","zz_cr"] # for CRs
-  regions = ""
+  regions = "" # Use this when merging only
 
   RegionToCRFlagMap['sr_inv'] = "SS_CR__"
   RegionToCRFlagMap['sr1_inv'] = "SS_CR__"
@@ -102,7 +102,7 @@ else:
 
   regions = ["sr","sr1","sr2","sr3"] # for SRs
   #regions = ["sr1"] # for SRs
-  regions = ""
+  regions = "" # Use this when merging only
 
   RegionToCRFlagMap['sr'] = ""
   RegionToCRFlagMap['sr1'] = ""
@@ -314,41 +314,48 @@ if MergeSignal:
       for mass in masses:
         if era=="Run2":
           os.system("mkdir -p "+InputPath+"/Run2/")
+          OutFileDY   =InputPath + "/Run2/"+Analyzer+"_signalDY_"+mass+".root"
+          OutFileVBF  =InputPath + "/Run2/"+Analyzer+"_signalVBF_"+mass+".root"
           OutFileDYVBF=InputPath + "/Run2/"+Analyzer+"_signalDYVBF_"+mass+".root"
           OutFileSSWW =InputPath + "/Run2/"+Analyzer+"_signalSSWW_"+mass+".root"
-          if int(mass.replace("M","")) < 300: # DY only
-            os.system("hadd -f " + OutFileDYVBF + " " + InputPath+"/2016preVFP/*DYTypeI*"+mass+"_private.root"\
-                                                + " " + InputPath+"/2016postVFP/*DYTypeI*"+mass+"_private.root"\
-                                                + " " + InputPath+"/2017/*DYTypeI*"+mass+"_private.root"\
-                                                + " " + InputPath+"/2018/*DYTypeI*"+mass+"_private.root"\
-                     )
-          elif 300 <= int(mass.replace("M","")) and int(mass.replace("M","")) <= 3000: # DY+VBF+SSWW
-            os.system("hadd -f " + OutFileDYVBF + " " + InputPath+"/2016preVFP/*DYTypeI*"+mass+"_private.root" + " " + InputPath+"/2016preVFP/*VBFTypeI*"+mass+"_private.root"\
-                                                + " " + InputPath+"/2016postVFP/*DYTypeI*"+mass+"_private.root" + " " + InputPath+"/2016postVFP/*VBFTypeI*"+mass+"_private.root"\
-                                                + " " + InputPath+"/2017/*DYTypeI*"+mass+"_private.root" + " " + InputPath+"/2017/*VBFTypeI*"+mass+"_private.root"\
-                                                + " " + InputPath+"/2018/*DYTypeI*"+mass+"_private.root" + " " + InputPath+"/2018/*VBFTypeI*"+mass+"_private.root"\
-                     )
-            os.system("hadd -f " + OutFileSSWW  + " " + InputPath+"/2016preVFP/*SSWWTypeI*"+mass+"_private.root"\
+          # First, create DY, VBF, SSWWTypeI seperately
+          if os.system("hadd -f " + OutFileDY + " " + InputPath+"/2016preVFP/*DYTypeI*"+mass+"_private.root"\
+                                              + " " + InputPath+"/2016postVFP/*DYTypeI*"+mass+"_private.root"\
+                                              + " " + InputPath+"/2017/*DYTypeI*"+mass+"_private.root"\
+                                              + " " + InputPath+"/2018/*DYTypeI*"+mass+"_private.root"\
+                     ) != 0:
+            os.system("rm " + OutFileDY) # remove the output if there is any unmatched process
+          if os.system("hadd -f " + OutFileVBF + " " + InputPath+"/2016preVFP/*VBFTypeI*"+mass+"_private.root"\
+                                               + " " + InputPath+"/2016postVFP/*VBFTypeI*"+mass+"_private.root"\
+                                               + " " + InputPath+"/2017/*VBFTypeI*"+mass+"_private.root"\
+                                               + " " + InputPath+"/2018/*VBFTypeI*"+mass+"_private.root"\
+                     ) != 0:
+            os.system("rm " + OutFileVBF) # remove the output if there is any unmatched process
+          if os.system("hadd -f " + OutFileDYVBF + " " + InputPath+"/2016preVFP/*DYTypeI*"+mass+"_private.root" + " " + InputPath+"/2016preVFP/*VBFTypeI*"+mass+"_private.root"\
+                                                 + " " + InputPath+"/2016postVFP/*DYTypeI*"+mass+"_private.root" + " " + InputPath+"/2016postVFP/*VBFTypeI*"+mass+"_private.root"\
+                                                 + " " + InputPath+"/2017/*DYTypeI*"+mass+"_private.root" + " " + InputPath+"/2017/*VBFTypeI*"+mass+"_private.root"\
+                                                 + " " + InputPath+"/2018/*DYTypeI*"+mass+"_private.root" + " " + InputPath+"/2018/*VBFTypeI*"+mass+"_private.root"\
+                     ) != 0:
+            os.system("rm " + OutFileDYVBF) # remove the output if there is any unmatched process
+          if os.system("hadd -f " + OutFileSSWW + " " + InputPath+"/2016preVFP/*SSWWTypeI*"+mass+"_private.root"\
                                                 + " " + InputPath+"/2016postVFP/*SSWWTypeI*"+mass+"_private.root"\
                                                 + " " + InputPath+"/2017/*SSWWTypeI*"+mass+"_private.root"\
                                                 + " " + InputPath+"/2018/*SSWWTypeI*"+mass+"_private.root"\
-                     )
-          elif 3000 < int(mass.replace("M","")): # SSWW only
-            os.system("hadd -f " + OutFileSSWW  + " " + InputPath+"/2016preVFP/*SSWWTypeI*"+mass+"_private.root"\
-                                                + " " + InputPath+"/2016postVFP/*SSWWTypeI*"+mass+"_private.root"\
-                                                + " " + InputPath+"/2017/*SSWWTypeI*"+mass+"_private.root"\
-                                                + " " + InputPath+"/2018/*SSWWTypeI*"+mass+"_private.root"\
-                     )
+                     ) != 0:
+            os.system("rm " + OutFileSSWW) # remove the output if there is any unmatched process
         else:
+          OutFileDY   =InputPath + era + "/"+Analyzer+"_signalDY_"+mass+".root"
+          OutFileVBF  =InputPath + era + "/"+Analyzer+"_signalVBF_"+mass+".root"
           OutFileDYVBF=InputPath + era + "/"+Analyzer+"_signalDYVBF_"+mass+".root"
           OutFileSSWW =InputPath + era + "/"+Analyzer+"_signalSSWW_"+mass+".root"
-          if int(mass.replace("M","")) < 300: # DY only
-            os.system("hadd -f " + OutFileDYVBF + " " + InputPath+"/"+era+"/*DYTypeI*"+mass+"_private.root")
-          elif 300 <= int(mass.replace("M","")) and int(mass.replace("M","")) <= 3000: # DY+VBF+SSWW
-            os.system("hadd -f " + OutFileDYVBF + " " + InputPath+"/"+era+"/*DYTypeI*"+mass+"_private.root" + " " + InputPath+"/"+era+"/*VBFTypeI*"+mass+"_private.root")
-            os.system("hadd -f " + OutFileSSWW  + " " + InputPath+"/"+era+"/*SSWWTypeI*"+mass+"_private.root")
-          elif 3000 < int(mass.replace("M","")): # SSWW only
-            os.system("hadd -f " + OutFileSSWW  + " " + InputPath+"/"+era+"/*SSWWTypeI*"+mass+"_private.root")
+          if os.system("hadd -f " + OutFileDY + " " + InputPath+"/"+era+"/*DYTypeI*"+mass+"_private.root") != 0:
+            os.system("rm " + OutFileDY) # remove the output if there is any unmatched process
+          if os.system("hadd -f " + OutFileVBF + " " + InputPath+"/"+era+"/*VBFTypeI*"+mass+"_private.root") != 0:
+            os.system("rm " + OutFileVBF) # remove the output if there is any unmatched process
+          if os.system("hadd -f " + OutFileDYVBF + " " + InputPath+"/"+era+"/*DYTypeI*"+mass+"_private.root" + " " + InputPath+"/"+era+"/*VBFTypeI*"+mass+"_private.root") != 0:
+            os.system("rm " + OutFileDYVBF) # remove the output if there is any unmatched process
+          if os.system("hadd -f " + OutFileSSWW  + " " + InputPath+"/"+era+"/*SSWWTypeI*"+mass+"_private.root") != 0:
+            os.system("rm " + OutFileSSWW) # remove the output if there is any unmatched process
 
 ##### Main job starts #####
 for tag in tags:
