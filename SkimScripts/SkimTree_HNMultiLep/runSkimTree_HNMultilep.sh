@@ -20,10 +20,10 @@ if [[ $1 == "Signal" ]]; then
     done
 fi
 
-if [[ $1 == "DY" ]]; then
+if [[ $1 == "GG" ]]; then
     for i in "${era_list[@]}"
     do
-        SKFlat.py -a $analyzer  -i DYJetsToTauTau_MiNNLO     -n ${njobs}  --nmax ${nmax}   -e ${i}   --skim SkimTree_Dilepton &
+        SKFlat.py -a $analyzer  -i GGToLL     -n ${njobs}  --nmax ${nmax}   -e ${i}   --skim SkimTree_Dilepton &
     done
 fi
 

@@ -2,7 +2,7 @@
 
 void HNL_CrossCheck::initializeAnalyzer(){
 
-  HNL_LeptonCore::initializeAnalyzer();
+HNL_LeptonCore::initializeAnalyzer();
   SetupEventMVAReader();
 
   nLog = 100000;
@@ -20,7 +20,7 @@ void HNL_CrossCheck::executeEvent(){
   if(RunFakeTF) LepIDs = {"HNL_ULID"};
   
   //// List Channels to run
-  vector<HNL_LeptonCore::Channel> ChannelsToRun = {EMu ,MuMu,EE};
+  vector<HNL_LeptonCore::Channel> ChannelsToRun = {MuMu,EMu,EE};
   
   vector<TString> RegionsToPlot = {"SSMultiLep","Dilepton"}; 
   
@@ -65,7 +65,7 @@ void HNL_CrossCheck::RunControlRegions(AnalyzerParameter param, vector<TString> 
   TString Electron_ID = SetLeptonID("Electron",param);
   TString Muon_ID     = SetLeptonID("Muon", param);
 
-  double Min_Muon_Pt     = RunFake ? 5  : 15.;  //// Check 
+  double Min_Muon_Pt     = RunFake ? 5  : 10.;  //// Check 
   double Min_Electron_Pt = RunFake ? 10 : 15;
 
   std::vector<Muon>       MuonTightColl     = SelectMuons    ( param,Muon_ID,     Min_Muon_Pt,     2.4,weight); 
@@ -122,29 +122,216 @@ void HNL_CrossCheck::RunControlRegions(AnalyzerParameter param, vector<TString> 
 
   param.Name = param.Name  + "/"+ GetChannelString(dilep_channel);
 
-  
+ 
   //FillHighMassNPCRPlots(dilep_channel, LepsT, LepsV, AK4_JetColl, AK8_JetColl, AK4_BJetColl, ev, METv, param, weight)  ;
   bool RunNP=true;
   if(RunNP){
     if(LepsT.size() < 2) return ;    
 
     Particle ll =  (*LepsT[0]) + (*LepsT[1]);
-    if(ll.M() < M_CUT_NonSR3_LL) return ;
+    if(LepsT.size() ==2 && ll.M() < M_CUT_NonSR3_LL) return ;
+    
+    //    if(! ( (LepsT[0]->IsPrompt() && LepsT[1]->IsPrompt() )  || ( LepsT[0]->LeptonIsCF() || LepsT[1]->LeptonIsCF()  ))) return;
+    if( ! ( HasMEPhoton(*LepsT[0]) && LepsT[0]->LeptonGenType() > 0) || ( HasMEPhoton(*LepsT[1]) && LepsT[1]->LeptonGenType() > 0) || ( !HasMEPhoton(*LepsT[0]) && LepsT[0]->LeptonGenType() < 0) || ( !HasMEPhoton(*LepsT[1]) && LepsT[1]->LeptonGenType() < 0) ) return;
+    
+    if(CheckLeptonFlavourForChannel(dilep_channel,LepsT ) && SameCharge(LepsT)){
+      cout << " " << endl;
+      cout << " " << endl;
+      cout << " " << endl;
+      cout << " " << endl;
+      cout << " " << endl;
+      cout << " " << endl;
+      cout << " " << endl;
+      cout << " " << endl;
+      cout << "SS LL " << ll.M() << endl;
+      int Idx_Closest1    = GenMatchedIdx(*LepsT[0],All_Gens);
+      int Idx_Closest2    = GenMatchedIdx(*LepsT[1],All_Gens);
+      if(Idx_Closest1 > 0 && Idx_Closest2 > 0){
+	cout << "Lep 1 matched lep isPrompt = " << GenIsPrompt(All_Gens[Idx_Closest1]) << " Matched PID = " << All_Gens[Idx_Closest1].PID()  << " Type= " << LepsT[0]->LeptonGenType() << endl;
+	cout << "Lep 2 matched lep isPrompt = " << GenIsPrompt(All_Gens[Idx_Closest2]) << " Matched PID = " << All_Gens[Idx_Closest1].PID()  << " Type= " << LepsT[1]->LeptonGenType() << endl;
+	cout << "Lep 1 HasMEPhoton = " << HasMEPhoton(*LepsT[0]) << endl;
+	cout << "Lep 2 HasMEPhoton = " << HasMEPhoton(*LepsT[1]) << endl;
+        PrintGen(All_Gens);
+        for(auto i : LepsT)   PrintMatchedGen( All_Gens,*i);
+	for(auto i : LepsT)   cout << i->GetFlavour() << " "  << i->PrintInfo() <<  endl;
+	for(auto i : LepsT)   cout << "Is CF = " << i->LeptonIsCF() << endl;
+	for(auto i : LepsT)   cout << "Is Conv = " << i->IsConv() << endl;
+	for(auto i : LepsT)   cout << i->GetFlavour() << " "  << i->PrintInfo() << " LeptonIsPromptConv=" << i->LeptonIsPromptConv() <<  endl;
+
+      }
+      else {
+        cout << "------------------------------------------------------------" << endl;
+	cout << " " << endl;
+	cout << " " << endl;
+	cout << " " << endl;
+	cout << " " << endl;
+	cout << " " << endl;
+	cout << " " << endl;
+	cout << " " << endl;
+	cout << "SS EMu No Match" << ll.M() << endl;
+	cout << "Lep 1 matched lep " << LepsT[0]->LeptonGenType() << endl;
+	cout << "Lep 2 matched lep " << LepsT[1]->LeptonGenType() << endl;
+	cout << "Lep 1 HasMEPhoton = " << HasMEPhoton(*LepsT[0]) << endl;
+	cout << "Lep 2 HasMEPhoton = " << HasMEPhoton(*LepsT[1]) << endl;
+	cout << "Idx_Closest1 = " << Idx_Closest1 << " Idx_Closest2 = " << Idx_Closest2 << endl;
+
+	PrintGen(All_Gens);
+	for(auto i : LepsT)PrintMatchedGen( All_Gens,*i);
+        for(auto i : LepsT)   cout << i->GetFlavour() << " "  << i->PrintInfo() <<  endl;
+        for(auto i : LepsT)   cout << "Is CF = " << i->LeptonIsCF() << endl;
+        for(auto i : LepsT)   cout << i->GetFlavour() << " "  << i->PrintInfo() << " LeptonIsPromptConv=" << i->LeptonIsPromptConv() <<  endl;
+
+	for(unsigned int i=2; i<All_Gens.size(); i++){
+	  Gen gen = All_Gens.at(i);
+	  if(Idx_Closest1 < 0 && LepsT[0]->DeltaR(gen) < 0.2) {
+	    if(gen.PID() == 22) {
+	      cout << "Matched Ph ["<< i <<"] GenIsPrompt = " << GenIsPrompt(gen) << endl;
+	    }
+	  }
+          if(Idx_Closest2 < 0 && LepsT[1]->DeltaR(gen) < 0.2) {
+            if(gen.PID() == 22) {
+              cout << "Matched Ph ["<< i <<"] GenIsPrompt = " << GenIsPrompt(gen) << endl;
+            }
+          }
+
+	}
+	
+
+	cout << "------------------------------------------------------------" << endl;
+
+      }
+      
+    }     
+
+    return;
 
     bool HasConv=false;
     int ConvLepType=0;
+    int nPrompt =0;
+    bool GENTMatched=false;
+    bool PartonPhMatched=false;
+    int nFake =0;
+
     for(auto ilep : LepsT){
+      if(ilep->LeptonGenType() == 0)  nFake++;
+      if(ilep->LeptonGenType() == -1)  nFake++;
+      if(ilep->LeptonGenType() == -2)  nFake++;
+      if(ilep->LeptonGenType() == -3)  nFake++;
+      if(ilep->LeptonGenType() == 1) nPrompt++;
+      if(ilep->LeptonGenType() == 2) nPrompt++;
+      if(ilep->LeptonGenType() == 3) nPrompt++;
       if(ilep->LeptonGenType() > 3) {HasConv = true; ConvLepType = ilep->LeptonGenType();}
-      if(ilep->LeptonGenType() < -3) {HasConv = true;  ConvLepType = ilep->LeptonGenType();}
+      if(ilep->LeptonGenType() < -4) {HasConv = true;  ConvLepType = ilep->LeptonGenType();}
+
+      for(unsigned int i=2; i<All_Gens.size(); i++){
+	Gen gen = All_Gens.at(i);
+        if(ilep->DeltaR(gen) < 0.2) {
+          if(gen.PID() == 22 && gen.isPromptFinalState() && gen.Pt()> 15.) {
+	    int motherindex = gen.MotherIndex();
+	    while(All_Gens[motherindex].PID() == 22) motherindex = All_Gens[motherindex].MotherIndex();
+	    if(fabs(All_Gens[motherindex].PID()) <7 || fabs(All_Gens[motherindex].PID()) == 21) {
+	      PartonPhMatched=true;
+	    }	    
+	  }
+	}
+      }
+
+      for(unsigned int i=2; i<All_Gens.size(); i++){
+	Gen gen = All_Gens.at(i);
+	if(ilep->DeltaR(gen) < 0.2) {
+	  if(gen.PID() == 22 && gen.isPromptFinalState() && gen.Pt()> 15.) {
+	    for(unsigned int j=2; j<All_Gens.size(); j++){
+	      if(!(fabs(All_Gens.at(j).PID()) <7 || fabs(All_Gens.at(j).PID()) == 21)) continue;
+	      if(All_Gens.at(j).Status() != 23) continue;
+	      if(All_Gens.at(j).DeltaR(gen) > 0.05)GENTMatched=true;
+	    }
+	  }
+	}
+      }
     }
-    if(!HasConv) return;
+
+    /*if(PartonPhMatched){
+      if(LepsT.size()==2)cout << "2l PartonPhMatched MATCH" << endl;
+      if(LepsT.size()==3)cout << "3l PartonPhMatched MATCH" << endl;
+      for(auto i : LepsT)   cout << i->GetFlavour() << " "  << i->PrintInfo() << endl;
+      PrintGen(All_Gens);
+      for(auto i : LepsT)PrintMatchedGen( All_Gens,*i);
+      }*/
+    if(GENTMatched){
+      cout << " " << endl;
+      if(LepsT.size()==2)cout << "2l GENT MATCH" << endl;
+      if(LepsT.size()==3)cout << "3l GENT MATCH" << endl;
+      for(auto i : LepsT)   cout << i->GetFlavour() << " "  << i->PrintInfo() << endl;
+      PrintGen(All_Gens);
+      for(auto i : LepsT)PrintMatchedGen( All_Gens,*i);
+    }
+    else {
+      cout << " " << endl;
+      if(LepsT.size()==2)cout << "2l NOGENT MATCH" << endl;
+      if(LepsT.size()==3)cout << "3l NOGENT MATCH" << endl;
+      for(auto i : LepsT)   cout << i->GetFlavour() << " "  << i->PrintInfo() << endl;
+      PrintGen(All_Gens);
+      for(auto i : LepsT)PrintMatchedGen( All_Gens,*i);
+    }
+    return;
     
+    if(nPrompt == 3 || (nPrompt == 2 && SameCharge(LepsT))) {
+      if(LepsT.size()==2)cout << "2l All Prompt" << endl;
+      if(LepsT.size()==3)cout << "3l All Prompt" << endl;
+   
+      cout << "ll.M()  =  " << ll.M() << endl;
+      for(auto i : LepsT)   cout << "Is CF = " << i->LeptonIsCF() << endl;
+      for(auto i : LepsT)   cout << i->GetFlavour() << " "  << i->PrintInfo() << " LeptonIsPromptConv=" << i->LeptonIsPromptConv() <<  endl;
+      PrintGen(All_Gens);
+      for(auto i : LepsT)PrintMatchedGen( All_Gens,*i);
+    }
+
+    if(_jentry < 1000) {
+      if(LepsT.size() == 3 && CheckLeptonFlavourForChannel(GetTriLeptonChannel(dilep_channel),LepsT )){
+	if(!HasConv){
+	  cout << "3l no conv " << endl;
+	  for(auto i : LepsT)   cout << i->GetFlavour() << " "  << i->PrintInfo() << endl;
+	  PrintGen(All_Gens);
+	  for(auto i : LepsT)PrintMatchedGen( All_Gens,*i);
+	}
+	else{
+	  cout << "3l has conv " << endl;
+	  for(auto i : LepsT)   cout << i->GetFlavour() << " "  << i->PrintInfo() << endl;
+	  PrintGen(All_Gens);
+	  for(auto i : LepsT)PrintMatchedGen( All_Gens,*i);
+	  
+	}
+      }
+      
+      if(SameCharge(LepsT) && CheckLeptonFlavourForChannel(dilep_channel, LepsT)){
+	if(!HasConv){
+	  cout << "2l no conv " << endl;
+	  for(auto i : LepsT)   cout << i->GetFlavour() << " "  << i->PrintInfo() << endl;
+	  PrintGen(All_Gens);
+	  for(auto i : LepsT)PrintMatchedGen( All_Gens,*i);
+	}
+	else{
+	  cout << "2l conv " << endl;
+	  if(GetLLMass(LepsT) < 80  || GetLLMass(LepsT) > 100) return;
+	  for(auto i : LepsT)   cout << i->GetFlavour() << " "  << i->PrintInfo() << endl;
+	  PrintGen(All_Gens);
+	  for(auto i : LepsT)PrintMatchedGen( All_Gens,*i);
+	  
+	}
+      }
+    }
+    
+
     if(LepsT.size() == 3){
       AnalyzerParameter paramTrilep  = param;
       paramTrilep.Channel  = GetChannelString(GetTriLeptonChannel(dilep_channel));
 
       if(CheckLeptonFlavourForChannel(GetTriLeptonChannel(dilep_channel),LepsT )){
 	Fill_RegionPlots(paramTrilep,"HNL_SS_ThreeLep"  ,  AK4_JetColl, AK8_JetColl ,LepsT,  METv, nPV, weight);
+	if(nFake==0)         Fill_RegionPlots(paramTrilep,"HNL_NonFake_ThreeLep"  ,  AK4_JetColl, AK8_JetColl ,LepsT,  METv, nPV, weight);
+	if(nPrompt==3) Fill_RegionPlots(paramTrilep,"HNL_Prompt_ThreeLepton_CR"  ,  AK4_JetColl, AK8_JetColl ,LepsT,  METv, nPV, weight);
+	if(HasConv)         Fill_RegionPlots(paramTrilep,"HNL_Conv_ThreeLep"  ,  AK4_JetColl, AK8_JetColl ,LepsT,  METv, nPV, weight);
+	
 	if(ConvLepType == 6)        Fill_RegionPlots(paramTrilep,"HNL_SS_ThreeLep_6"  ,  AK4_JetColl, AK8_JetColl ,LepsT,  METv, nPV, weight);
 	if(ConvLepType == 5)        Fill_RegionPlots(paramTrilep,"HNL_SS_ThreeLep_5"  ,  AK4_JetColl, AK8_JetColl ,LepsT,  METv, nPV, weight);
 	if(ConvLepType == 4)        Fill_RegionPlots(paramTrilep,"HNL_SS_ThreeLep_4"  ,  AK4_JetColl, AK8_JetColl ,LepsT,  METv, nPV, weight);
@@ -157,22 +344,20 @@ void HNL_CrossCheck::RunControlRegions(AnalyzerParameter param, vector<TString> 
     if(LepsT.size() != 2) return ;
     if(!CheckLeptonFlavourForChannel(dilep_channel,LepsT )) return ;
     if(SameCharge(LepsT)) {
-      /* if(LepsT[0]->LeptonGenType() == -5 || LepsT[1]->LeptonGenType() == -5){
-	cout << "--------- " << endl;
-	cout << MCSample << " Conv Type Lep1 " << LepsT[0]->LeptonGenType()  << " lep 2 " << LepsT[1]->LeptonGenType()  << " Mass = " << ll.M() << endl;
-	cout << "Lep1 pt = " << LepsT[0]->PrintInfo() << endl;
-	PrintMatchedGen(All_Gens,*LepsT[0]);
-	cout << "Lep2 pt = " << LepsT[1]->PrintInfo() << endl;
-	PrintMatchedGen(All_Gens,*LepsT[1]);
-	}*/
-      if(LepsT[0]->LeptonGenType() == 4 || LepsT[1]->LeptonGenType() == 4) Fill_RegionPlots(param,"HNL_SS_ConvP4_TwoLepton_CR"  ,  AK4_JetColl, AK8_JetColl ,LepsT,  METv, nPV, weight);
-      if(LepsT[0]->LeptonGenType() == 5 || LepsT[1]->LeptonGenType() == 5) Fill_RegionPlots(param,"HNL_SS_ConvP5_TwoLepton_CR"  ,  AK4_JetColl, AK8_JetColl ,LepsT,  METv, nPV, weight);
-      if(LepsT[0]->LeptonGenType() == 6 || LepsT[1]->LeptonGenType() == 6) Fill_RegionPlots(param,"HNL_SS_ConvP6_TwoLepton_CR"  ,  AK4_JetColl, AK8_JetColl ,LepsT,  METv, nPV, weight);
-      if(LepsT[0]->LeptonGenType() == -4 || LepsT[1]->LeptonGenType() == -4) Fill_RegionPlots(param,"HNL_SS_ConvM4_TwoLepton_CR"  ,  AK4_JetColl, AK8_JetColl ,LepsT,  METv, nPV, weight);
-      if(LepsT[0]->LeptonGenType() == -5 || LepsT[1]->LeptonGenType() == -5) Fill_RegionPlots(param,"HNL_SS_ConvM5_TwoLepton_CR"  ,  AK4_JetColl, AK8_JetColl ,LepsT,  METv, nPV, weight);
-      if(LepsT[0]->LeptonGenType() == -6 || LepsT[1]->LeptonGenType() == -6) Fill_RegionPlots(param,"HNL_SS_ConvM6_TwoLepton_CR"  ,  AK4_JetColl, AK8_JetColl ,LepsT,  METv, nPV, weight);											      
+      if(nPrompt==2) Fill_RegionPlots(param,"HNL_SS_Prompt_TwoLepton_CR"  ,  AK4_JetColl, AK8_JetColl ,LepsT,  METv, nPV, weight);
+      if(nFake==0)         Fill_RegionPlots(param,"HNL_NonFake_Dilep"  ,  AK4_JetColl, AK8_JetColl ,LepsT,  METv, nPV, weight);
+
+      if(HasConv) {
+	if(LepsT[0]->LeptonGenType() == 4 || LepsT[1]->LeptonGenType() == 4) Fill_RegionPlots(param,"HNL_SS_ConvP4_TwoLepton_CR"  ,  AK4_JetColl, AK8_JetColl ,LepsT,  METv, nPV, weight);
+	if(LepsT[0]->LeptonGenType() == 5 || LepsT[1]->LeptonGenType() == 5) Fill_RegionPlots(param,"HNL_SS_ConvP5_TwoLepton_CR"  ,  AK4_JetColl, AK8_JetColl ,LepsT,  METv, nPV, weight);
+	if(LepsT[0]->LeptonGenType() == 6 || LepsT[1]->LeptonGenType() == 6) Fill_RegionPlots(param,"HNL_SS_ConvP6_TwoLepton_CR"  ,  AK4_JetColl, AK8_JetColl ,LepsT,  METv, nPV, weight);
+	if(LepsT[0]->LeptonGenType() == -4 || LepsT[1]->LeptonGenType() == -4) Fill_RegionPlots(param,"HNL_SS_ConvM4_TwoLepton_CR"  ,  AK4_JetColl, AK8_JetColl ,LepsT,  METv, nPV, weight);
+	if(LepsT[0]->LeptonGenType() == -5 || LepsT[1]->LeptonGenType() == -5) Fill_RegionPlots(param,"HNL_SS_ConvM5_TwoLepton_CR"  ,  AK4_JetColl, AK8_JetColl ,LepsT,  METv, nPV, weight);
+	if(LepsT[0]->LeptonGenType() == -6 || LepsT[1]->LeptonGenType() == -6) Fill_RegionPlots(param,"HNL_SS_ConvM6_TwoLepton_CR"  ,  AK4_JetColl, AK8_JetColl ,LepsT,  METv, nPV, weight);										     
+	Fill_RegionPlots(param,"HNL_Conv_HighMassNP_TwoLepton_CR"  ,  AK4_JetColl, AK8_JetColl ,LepsT,  METv, nPV, weight);
+      }
+      Fill_RegionPlots(param,"HNL_SS_HighMassNP_TwoLepton_CR"  ,  AK4_JetColl, AK8_JetColl ,LepsT,  METv, nPV, weight);
     }
-    if(SameCharge(LepsT))Fill_RegionPlots(param,"HNL_SS_HighMassNP_TwoLepton_CR"  ,  AK4_JetColl, AK8_JetColl ,LepsT,  METv, nPV, weight);
     else Fill_RegionPlots(param,"HNLS_OS_HighMassNP_TwoLepton_CR"  ,  AK4_JetColl, AK8_JetColl ,LepsT,  METv, nPV, weight);
     
   }

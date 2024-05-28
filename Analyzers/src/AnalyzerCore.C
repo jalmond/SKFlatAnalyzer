@@ -273,6 +273,10 @@ std::vector<Muon> AnalyzerCore::GetAllMuons(){
       if(fChain->GetBranch("muon_is_cf")) mu.SetLeptonIsCF(muon_is_cf->at(i));
     }
     
+    int UpdatedLeptonType = -999;
+    if(MCSample.Contains("Sherpa")) UpdatedLeptonType = HotFixLeptonType(Lepton(mu));
+    if(MCSample.Contains("MiNNLO")) UpdatedLeptonType = HotFixLeptonType(Lepton(mu));
+    if(UpdatedLeptonType != -999) mu.SetLeptonType(UpdatedLeptonType);
     out.push_back(mu);
 
   }
@@ -542,6 +546,12 @@ std::vector<Electron> AnalyzerCore::GetAllElectrons(){
     }
     el.SetLeptonIsPromptConv(HasPromptConv(el));
     el.SetLeptonIsCF(IsCF(el, All_Gens,true) );                                                                                                               
+
+    
+    int UpdatedLeptonType = -999;
+    if(MCSample.Contains("Sherpa")) UpdatedLeptonType = HotFixLeptonType(Lepton(el));
+    if(MCSample.Contains("MiNNLO")) UpdatedLeptonType = HotFixLeptonType(Lepton(el));
+    if(UpdatedLeptonType != -999) el.SetLeptonType(UpdatedLeptonType);
 
     out.push_back(el);
   }

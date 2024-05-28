@@ -10,10 +10,10 @@ declare  -a era_list=("2016postVFP" "2016preVFP"  "2017" "2018")
 
 
 
-if [[ $1 == "DY" ]]; then
+if [[ $1 == "GG" ]]; then
     for i in "${era_list[@]}"
     do
-        SKFlat.py -a $analyzer  -i DYJetsToTauTau_MiNNLO     -n ${njobs_data}  --nmax ${nmax}   -e ${i}   --skim SkimTree_Dilepton &
+        SKFlat.py -a $analyzer  -i GGToLL    -n ${njobs_data}  --nmax ${nmax}   -e ${i}   --skim  SkimTree_HNMultiLep &
     done
 fi
 

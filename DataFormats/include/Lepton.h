@@ -774,7 +774,7 @@ public:
   }
 
   inline TString PrintInfo(){
-    return GetFlavour() +" Pt " + LepDoubleToString(this->Pt()) + " Lep Eta " + LepDoubleToString(this->Eta()) + " Lep Phi = " + LepDoubleToString(this->Phi());
+    return GetFlavour() +" Charge = " + LepDoubleToString(Charge()) + " Pt " + LepDoubleToString(this->Pt()) + " Lep Eta " + LepDoubleToString(this->Eta()) + " Lep Phi = " + LepDoubleToString(this->Phi()) + " type = " + LepGenTypeNumberString();
   }
 
   virtual void Print();

@@ -1,7 +1,131 @@
 #include "AnalyzerCore.h"
 
 
-//=========================================================                                                                                                                                                        //==== Gen Matching Tools                                                                                                                                                                                          
+//=========================================================                                  //==== Gen Matching Tools                                                                                             
+
+bool AnalyzerCore::HasMEPhoton(Lepton lep){
+  ////https://github.com/GhentAnalysis/heavyNeutrino/blob/cd101501001e9776b324002da585e38fe0a378d4/multilep/src/GenTools.cc
+  ///https://github.com/GhentAnalysis/heavyNeutrino/blob/cd101501001e9776b324002da585e38fe0a378d4/multilep/src/LeptonAnalyzer.cc#L530C45-L530C55
+
+  int Idx_Closest    = GenMatchedIdx(lep,All_Gens);
+  
+  //// If Idx_Closest > 0 then status 1 lepton is matched and not photon
+  if(Idx_Closest > 0) return false;
+
+  float minDr=0.2;
+  unsigned int closest_index = 0;
+
+  for(int i=2; i<int(All_Gens.size()); i++){
+    
+    Gen gen = All_Gens.at(i);
+    if(lep.DeltaR(gen) < minDr)  {
+      if(gen.Status()==1){
+	minDr = lep.DeltaR(gen) ;
+	closest_index = i;
+      }
+    }
+  }
+  
+  if(closest_index == 0) return false;
+  if(All_Gens[closest_index].PID() ==22 && GenIsPrompt(All_Gens[closest_index])) return true;
+  return false;
+  
+}
+bool AnalyzerCore::GenIsPrompt(Gen gen){
+  
+  if(gen.IsEmpty()) return false;
+  if(gen.MotherIndex() < 0)  return false;
+  if(gen.MotherIndex() > int(All_Gens.size()))  return false;
+  
+  Gen mom = GenGetMother(gen);
+  if(mom.IsEmpty()) return false;
+
+  if(abs(mom.PID()) == 15 && mom.isPromptDecayed()) return true;
+  return (gen.isPromptFinalState() || gen.isPromptDecayed());
+}
+
+
+Gen  AnalyzerCore::GenGetMother(Gen gen){
+  
+  Gen pmoth;
+
+  if(gen.IsEmpty()) return pmoth;
+  //// In case mother index is not found return empty gen
+  if(gen.MotherIndex()  < 2) return pmoth;
+  if(gen.MotherIndex()  > int(All_Gens.size())  ) return pmoth;
+  
+  pmoth = All_Gens[gen.MotherIndex()];
+
+  if(gen.PID() == pmoth.PID()) return GenGetMother(pmoth); 
+  else return pmoth;
+}
+                                                                    
+
+int AnalyzerCore::HotFixLeptonType(Lepton lep){
+  ///// Fix some truth matching for samples that dont work with Jiwhans function
+  if(MCSample.Contains("MiNNLO")){
+
+    /// Internal conversions in these samples set as type1
+    //// A hot fix  is to check number of status 1/3 leptons from matched mother.
+    //// .... All 3/4 lepton are int conversion in check 
+
+    if(lep.LeptonGenType() != 1) return -999;
+
+    vector<int> matched_lep_check;
+    int Idx_Closest    = GenMatchedIdx(lep,All_Gens);
+    int MatchPID = (lep.IsMuon()) ? 13 : 11;
+
+    if(Idx_Closest < 0) return -999;
+    if(!(fabs(All_Gens[Idx_Closest].PID()) ==MatchPID)) return -999;
+
+    int motherindex = All_Gens[Idx_Closest].MotherIndex();
+    for(int i=2; i< int(All_Gens.size()); i++){
+      if(motherindex == All_Gens[i].MotherIndex()){
+	if(All_Gens[i].Status() == 1 && ((fabs(All_Gens[i].PID()) == 11) || (fabs(All_Gens[i].PID()) == 13 ) || (fabs(All_Gens[i].PID()) == 15 ))){
+	  matched_lep_check.push_back(i);
+	  if(i == Idx_Closest){
+	    if(matched_lep_check.size() > 2) return 5;
+	  }
+	}
+      }
+    }
+
+    return -999;
+  }
+  if(MCSample.Contains("Sherpa")){
+    
+    bool LepPrompt=false;
+    for(unsigned int i=2; i<All_Gens.size(); i++){
+      Gen gen = All_Gens.at(i);
+      
+      if(gen.Status() != 1) continue;
+      int mindex = All_Gens.at(i).MotherIndex();
+      int MotherPID = fabs(All_Gens.at(mindex).PID());
+      bool PromptLepMu = (MotherPID == 13)  || (MotherPID == 15);
+      bool PromptLepEl = (MotherPID == 11) || (MotherPID == 15);
+      
+      while (MotherPID > 10 && MotherPID < 16){
+	mindex = All_Gens.at(mindex).MotherIndex();
+	MotherPID= fabs(All_Gens.at(mindex).PID());
+      }
+      
+      bool PromptLepMuFull = PromptLepMu &&  ((MotherPID == 21)  || (MotherPID < 6));
+      bool PromptLepElFull = PromptLepEl &&  ((MotherPID == 21)  || (MotherPID < 6));
+      
+      if(fabs(gen.PID()) == 13){
+	if(PromptLepMuFull && lep.LeptonFlavour() == Lepton::MUON && lep.DeltaR(gen) < 0.1) LepPrompt=true;
+      }
+      if(fabs(gen.PID()) == 11){
+	if(PromptLepElFull &&lep.LeptonFlavour() != Lepton::MUON && lep.DeltaR(gen) < 0.1) LepPrompt=true;
+      }
+    }
+    if (LepPrompt) return 1;
+    else return -1;
+    
+  }
+  
+  return -999;
+}                         
 
 void AnalyzerCore::PrintGen(const std::vector<Gen>& gens){
 
@@ -331,11 +455,17 @@ void AnalyzerCore::PrintMatchedGen(std::vector<Gen>& gens,const Lepton& Lep){
   return;
 }
 
+
 bool AnalyzerCore::HasPromptConv(Electron el){
   
   if(All_Gens.size() == 0) return false;
+
+  ///// Version 1
   
   int TruthIdx  = GenMatchedIdx(el, All_Gens);;
+  if(TruthIdx < 0) return false;
+
+
   int nSt1el(0);
   for(unsigned int i=2; i < All_Gens.size(); i++){
     if(TruthIdx == int(i)) continue;
@@ -349,8 +479,53 @@ bool AnalyzerCore::HasPromptConv(Electron el){
     }
   }
 
-  /// if nSt1el (number of status 1 electrons in dR < 0.4 from same mother , if > 1 e->eee  that passes JH Gen code                                                                                                
+  ///// Rare cases of Z->e -> ph->e ;
+  //// So history of matched el is Z  and is type 1 
+  /*
+    ===========================================================
+    RunNumber:EventNumber = 1:56568815
+    indexPIDStatusMIdxMPIDStartPtEtaPhiM
+    Matched gen = 26
+    23 e- 23 19 Z 23 31.86 0.341.140.00 =======> DrMatched 0.10 
+    25 ph 23 19 Z 25 43.01 0.221.210.00 =======> DrMatched 0.03 
+    26 e+ 1 25 ph 26 48.50 0.251.190.00 =======> DrMatched 0.00  ---->  ----> 
+    27 e- 1 25 ph 27 2.62 0.071.330.00 =======> DrMatched 0.23 
+    28 e- 1 23 e- 23 23.76 0.341.140.00 =======> DrMatched 0.10 
+    ===========================================================
+    RunNumber:EventNumber = 1:56568815
+    indexPIDStatusMIdxMPIDStartPtEtaPhiM
+    Matched gen = 24
+    24e+119Z2440.07-0.74-0.230.00 =======> DrMatched 0.00  ---->  ----> 
+    Electron Electron Charge = 1 Pt 48.674604 Lep Eta 0.248848 Lep Phi = 1.193147 type = plus1
+    Electron Electron Charge = 1 Pt 39.865459 Lep Eta -0.739164 Lep Phi = -0.22767 type = plus1
+    Is CF = 0
+    Is CF = 0
+    Is Conv = 0
+    Is Conv = 0
+    Electron Electron Charge = 1 Pt 48.674604 Lep Eta 0.248848 Lep Phi = 1.193147 type = plus1 LeptonIsPromptConv=0
+    Electron Electron Charge = 1 Pt 39.865459 Lep Eta -0.739164 Lep Phi = -0.22767 type = plus1 LeptonIsPromptConv=0
+  */
+  if( !GenGetMother(All_Gens.at(TruthIdx)).IsEmpty()  && !GenGetMother(GenGetMother(All_Gens.at(TruthIdx))).IsEmpty()){
+
+    if( GenGetMother(All_Gens.at(TruthIdx)).PID() == 22 && 
+	fabs(GenGetMother(GenGetMother(All_Gens.at(TruthIdx))).PID()) == 11) return true;
+    
+    if( GenGetMother(All_Gens.at(TruthIdx)).PID() == 22 &&
+	fabs(GenGetMother(GenGetMother(All_Gens.at(TruthIdx))).PID()) == 13) return true;
+    
+    if( GenGetMother(All_Gens.at(TruthIdx)).PID() == 22 &&
+	fabs(GenGetMother(GenGetMother(All_Gens.at(TruthIdx))).PID()) == 15) return true;
+    
+    if( GenGetMother(All_Gens.at(TruthIdx)).PID() == 22 &&
+	fabs(GenGetMother(GenGetMother(All_Gens.at(TruthIdx))).PID()) == 23) return true;
+    
+    if( GenGetMother(All_Gens.at(TruthIdx)).PID() == 22 &&
+	fabs(GenGetMother(GenGetMother(All_Gens.at(TruthIdx))).PID()) == 24) return true;
+  }
+
+  /// if nSt1el (number of status 1 electrons in dR < 0.4 from same mother , if > 1 e->eee  that passes JH Gen code                                                                                                                                                                                                                                  
   bool bIsConv  =  (nSt1el > 0);
+
   return bIsConv;
 
 }
@@ -415,41 +590,62 @@ bool AnalyzerCore::IsCF(Muon mu, std::vector<Gen> truthColl){
   return false;
 }
 
-bool AnalyzerCore::ConversionSplitting(std::vector<Lepton *> leps, bool RunConvMode,  int nlep, bool SplitType){
+bool AnalyzerCore::ConversionSplitting(std::vector<Lepton *> leps, bool RunConvMode,  int nlep, AnalyzerParameter param){
 
   if(!RunConvMode) return true;
   if(IsData) return true;
 
+  bool IsSampleConvSplit = false;
+  vector<TString> ConvSamples  = {"ZGTo","DYJet","WGToLNuG","WJet"};
+  for(auto i : ConvSamples) if (MCSample.Contains(i)) IsSampleConvSplit=true;
+
+  if(!IsSampleConvSplit) return true;
+
+  bool SplitExtConv=true;
+  if(param.GetChannelFlavour() == "Muon") SplitExtConv=false;
+  
+  if(HasFlag("GENTConv")) SplitExtConv=true;
+
   int nlep_pt15(0);
   
   /// Only remove events if..
-  if(nlep != leps.size()) return true;
+  if(nlep != int(leps.size())) return true;
   
-  bool has2lType5=false;
+  bool hasExtConv=false;
   for(auto ilep : leps){
-    if(ilep->LeptonGenType() == -5) has2lType5=true;
+    if(HasMEPhoton(*ilep)) hasExtConv=true;
     if(ilep->Pt() > 15.) nlep_pt15++;
   }
 
-  if(leps.size() != 2) has2lType5 = false;
-  else{
-    Particle ll = (*leps[0]) + (*leps[1]);
-    if(ll.M() < 50)  has2lType5 = false;
-    if(ll.M() > 100)  has2lType5 = false;
-  }
-
   if(MCSample.Contains("ZGTo")){
-    
-    if(SplitType && has2lType5) return false;
-    if(nlep_pt15 ==nlep) return true;
-    else return false;
+    if(nlep_pt15 !=nlep ) return false;
+
+    if(SplitExtConv){
+      if(hasExtConv) return true;
+      else return false;
+    }
+    else return true;
   }
   else if(MCSample.Contains("DYJets")) {
-    if(SplitType && has2lType5) return true;
+    if(nlep_pt15 !=nlep) return true;
+    if(SplitExtConv){
+      if(!hasExtConv) return true;
+      else return false;
+    }
+    else return false;
+       
+  }
+
+  if(MCSample.Contains("WGTo")){
+    if(nlep_pt15 !=nlep ) return false;
+    else return true;
+  }
+  else if(MCSample.Contains("WJets")) {
     if(nlep_pt15 !=nlep) return true;
     else return false;
-
   }
+
+
 
   return true;
 

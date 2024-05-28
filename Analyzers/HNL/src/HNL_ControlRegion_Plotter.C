@@ -101,7 +101,8 @@ void HNL_ControlRegion_Plotter::RunControlRegions(AnalyzerParameter param, vecto
 
   if(CRs.size() == 0) return;
   
-  if(_jentry < 2000 ){
+
+  if(_jentry < 10000 ){
     if(RunFake){
       cout << "Running Fakes: Initial check for process name " + param.Name << endl;
       cout << "Muon ID = " << param.Muon_Tight_ID  << " run ID  = " << Muon_ID << endl;

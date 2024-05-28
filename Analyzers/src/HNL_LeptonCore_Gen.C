@@ -38,17 +38,23 @@ bool HNL_LeptonCore::PassGenMatchFilter(vector<Lepton *> leps, AnalyzerParameter
     else if( ilep->IsPrompt())   cout << "[PassGenMatchFilter] IsPrompt : " << ilep->Pt() << " " << ilep->Eta() << " " << ilep->Phi() << endl; // JH
   }
   if(DEBUG) cout << "nConv = " << nConv << " nCF = " << nCF << " nFake = " << nFake << " nPrompt = " << nPrompt << endl;
-  cout << "[PassGenMatchFilter] nConv = " << nConv << " nCF = " << nCF << " nFake = " << nFake << " nPrompt = " << nPrompt << endl; //JH
-  if(RunPrompt && (nPrompt == leps.size())) return true;
+  if(RunPrompt && (nPrompt == leps.size())) {
+    if(nCF > 0)   return false;
+    if(nConv > 0) return false;
+    return true;
+  }
   if(RunPrompt && (nPrompt != leps.size())) return false;
 
   if( (RunFake || RunConv || RunCF )){
     if(RunFake  && nFake > 0)  return true;
     if(!RunFake && nFake > 0)  return false;
-    if(RunCF    && nCF   > 0)  return true;
-    if(!RunCF   && nCF > 0)    return false;
+
     if(RunConv  && nConv > 0)  return true;
     if(!RunConv && nConv > 0) return false;
+
+    if(RunCF    && nCF   > 0)  return true;
+    if(!RunCF   && nCF > 0)    return false;
+
     return false;
   }
 

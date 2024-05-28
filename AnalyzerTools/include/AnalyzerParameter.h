@@ -135,6 +135,8 @@ class AnalyzerParameter{
     return FakeRateMethod + "_"+FakeRateParam;
   }
 
+  TString GetChannelFlavour();
+
   TString ChannelType();
   void SetChannel(TString inch);
   TString InclusiveChannelName();

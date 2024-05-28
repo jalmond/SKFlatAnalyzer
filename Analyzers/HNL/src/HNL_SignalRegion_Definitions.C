@@ -89,7 +89,7 @@ void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq,
 
     FillCutflow(CutFlow_Region, weight_ll, "METFilter",param);
   
-    if(!ConversionSplitting(LepsT,RunConv,2)) continue;
+    if(!ConversionSplitting(LepsT,RunConv,2,param)) continue;
 
     FillCutflow(CutFlow_Region, weight_ll, "ConvFilter",param);
 

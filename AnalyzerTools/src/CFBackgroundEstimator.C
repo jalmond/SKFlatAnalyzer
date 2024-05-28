@@ -326,7 +326,7 @@ double CFBackgroundEstimator::GetElectronCFRateFitted(TString ID, TString EtaBin
   vector <double> BinCentres;
   double Center_MainBin(0.), Center_mBin(0.), Center_pBin(0.);
   bool corrBinFound=false;
-  for(int ib =2; ib < InputBins.size()-1; ib++){
+  for(int ib =2; ib < int(InputBins.size())-1; ib++){
     //cout << "InputBins = " << InputBins[ib] << " IPt = " << IPt << endl;
     if(!corrBinFound && (IPt < InputBins[ib]) && (IPt >=InputBins[ib-1]) ) {
       //cout << "Correct bin " << endl;

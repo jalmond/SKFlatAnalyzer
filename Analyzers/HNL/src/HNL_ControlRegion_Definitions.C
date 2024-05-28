@@ -93,7 +93,7 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
     double weight_channel = weight_ll;
    
     TString label    = param.Name;
-   
+    
     if(! (CheckLeptonFlavourForChannel(dilep_channel, LepsT) 
         || CheckLeptonFlavourForChannel(trilep_channel, LepsT) 
         || CheckLeptonFlavourForChannel(fourlep_channel, LepsT))) {
@@ -308,7 +308,7 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
     if(RunCR("OS_VR",CRs)){
       //// OS L+L-
       
-      if(!ConversionSplitting(LepsT,RunConv,2)) return;
+      if(!ConversionSplitting(LepsT,RunConv,2,param)) return;
 
       FillCutflow(CutFlow_Region, weight_OS, "OS_VR",param);
     
@@ -325,44 +325,44 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
       FillCutflow(CutFlow_Region, weight_channel, "VV_VR",param);
 
       // LLL / LLLL 
-      if(ConversionSplitting(LepsT,RunConv,4)){
-        //////  SR1+3 ZZ
-        if(FillZZCRPlots (fourlep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramQuadlep, weight_channel)) passed.push_back("ZZ_CR");
-        if(FillZZ2CRPlots(fourlep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramQuadlep, weight_channel)) passed.push_back("ZZOffshell_CR"); 
-        //// SR2 ZZ AN[1] Table 11 
-        if(FillZZVBFCRPlots(fourlep_channel, LepsT, LepsV, VBF_JetColl, AK8_JetColl, B_JetColl, ev, METv, paramQuadlep, weight_channel)) passed.push_back("ZZVBF_CR");
+      if(ConversionSplitting(LepsT,RunConv,4,param)){
+	      //////  SR1+3 ZZ
+	      if(FillZZCRPlots (fourlep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramQuadlep, weight_channel)) passed.push_back("ZZ_CR");
+	      if(FillZZ2CRPlots(fourlep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramQuadlep, weight_channel)) passed.push_back("ZZOffshell_CR"); 
+	      //// SR2 ZZ AN[1] Table 11 
+	      if(FillZZVBFCRPlots(fourlep_channel, LepsT, LepsV, VBF_JetColl, AK8_JetColl, B_JetColl, ev, METv, paramQuadlep, weight_channel)) passed.push_back("ZZVBF_CR");
       }
       
-      if(ConversionSplitting(LepsT,RunConv,3)){
-        FillCutflow(CutFlow_Region, weight_channel, "VG_VR",param);
-        
-        if(FillWGCRPlots( trilep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTrilep, weight_channel)) passed.push_back("WG_CR");
-        if(FillZGCRPlots( trilep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTrilep, weight_channel)) passed.push_back("ZG_CR");
-        
-        ////// WZ CR [SR1+3]
-        
-        if(AK8_JetColl.size() > 0) {
-          if(FillWZCRPlots (trilep_channel,  LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTrilep, weight_channel))  passed.push_back("WZ_CR");
-        }
-        else if(!PassVBF(VBF_JetColl,LepsT,750)){
-          if(FillWZCRPlots (trilep_channel,  LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTrilep, weight_channel))  passed.push_back("WZ_CR");
-        }
-        
-        ////// WZ CR2
+      if(ConversionSplitting(LepsT,RunConv,3,param)){
+	      FillCutflow(CutFlow_Region, weight_channel, "VG_VR",param);
+	      
+	      if(FillWGCRPlots( trilep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTrilep, weight_channel)) passed.push_back("WG_CR");
+	      if(FillZGCRPlots( trilep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTrilep, weight_channel)) passed.push_back("ZG_CR");
+	      
+	      ////// WZ CR [SR1+3]
+	      
+	      if(AK8_JetColl.size() > 0) {
+	        if(FillWZCRPlots (trilep_channel,  LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTrilep, weight_channel))  passed.push_back("WZ_CR");
+	      }
+	      else if(!PassVBF(VBF_JetColl,LepsT,750)){
+	        if(FillWZCRPlots (trilep_channel,  LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTrilep, weight_channel))  passed.push_back("WZ_CR");
+	      }
+	      
+	      ////// WZ CR2
 
-        //// AN[2] Table 13 
-        if(FillWZVBFCRPlots      (trilep_channel, LepsT, LepsV, VBF_JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTrilep, weight_channel)) passed.push_back("WZVBF_CR");
-        /// AN[3] Table 15
-        if(FillWZVBF2CRPlots      (trilep_channel, LepsT, LepsV, VBF_JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTrilep, weight_channel)) passed.push_back("WZVBF2_CR");
+	      //// AN[2] Table 13 
+	      if(FillWZVBFCRPlots      (trilep_channel, LepsT, LepsV, VBF_JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTrilep, weight_channel)) passed.push_back("WZVBF_CR");
+	      /// AN[3] Table 15
+	      if(FillWZVBF2CRPlots      (trilep_channel, LepsT, LepsV, VBF_JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTrilep, weight_channel)) passed.push_back("WZVBF2_CR");
 
-        ///// Top CR
-        ///// AN [1] :   FillWZBCRPlots is Table11 WZ SR anti-bjet AM2019_089_v7 (Jet cut 50 -> 30 ; m(lll) > 100 ->105)
-        if(FillWZBCRPlots      (trilep_channel, LepsT, LepsV, VBF_JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTrilep, weight_channel)) passed.push_back("WZB_CR");
+	      ///// Top CR
+	      ///// AN [1] :   FillWZBCRPlots is Table11 WZ SR anti-bjet AM2019_089_v7 (Jet cut 50 -> 30 ; m(lll) > 100 ->105)
+	      if(FillWZBCRPlots      (trilep_channel, LepsT, LepsV, VBF_JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTrilep, weight_channel)) passed.push_back("WZB_CR");
 
-        ////// Jiwhans functions
-        if(FillZ_ElNPCRPlots   (trilep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTrilep, weight_channel))     passed.push_back("ZNPEl_CR");
-        if(FillZ_MuonNPCRPlots (trilep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTrilep, weight_channel))     passed.push_back("ZNPMu_CR");
-        if(FillTopNPCRPlots    (trilep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTrilep, weight_channel))     passed.push_back("TopNP_CR");
+	      ////// Jiwhans functions
+	      if(FillZ_ElNPCRPlots   (trilep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTrilep, weight_channel))     passed.push_back("ZNPEl_CR");
+	      if(FillZ_MuonNPCRPlots (trilep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTrilep, weight_channel))     passed.push_back("ZNPMu_CR");
+	      if(FillTopNPCRPlots    (trilep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTrilep, weight_channel))     passed.push_back("TopNP_CR");
       }
     }
 
@@ -373,7 +373,7 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
       if(RunCR("SS_CR",CRs))  FillCutflow(CutFlow_Region, weight_channel, "SS_CR",param);
       if(RunCR("VBF_CR",CRs)) FillCutflow(CutFlow_Region, weight_channel, "VBF_CR",param);
 
-      if(!ConversionSplitting(LepsT,RunConv,2))  return;
+      if(!ConversionSplitting(LepsT,RunConv,2,param))  return;
 
       if(RunCF&& IsData){    
         if(LepsT.size() == 2){
@@ -1824,7 +1824,7 @@ bool HNL_RegionDefinitions::FillZZCRPlots(HNL_LeptonCore::Channel channel, std::
   if (leps_veto.size() != 4) return false;
   FillCutflow(Reg, w, "Step2",param);
 
-  if(!ConversionSplitting(leps,RunConv,4)) return false;
+  if(!ConversionSplitting(leps,RunConv,4,param)) return false;
 
 
   int sumQ = leps[0]->Charge() + leps[1]->Charge() +leps[2]->Charge() +leps[3]->Charge() ;
@@ -1900,7 +1900,7 @@ bool HNL_RegionDefinitions::FillZZ2CRPlots(HNL_LeptonCore::Channel channel, std:
   FillCutflow(Reg, w, "Step1",param);
 
 
-  if(!ConversionSplitting(leps,RunConv,4)) return false;
+  if(!ConversionSplitting(leps,RunConv,4,param)) return false;
 
   if(!CheckLeptonFlavourForChannel(channel, leps)) return false;
   FillCutflow(Reg, w, "Step2",param);
@@ -1969,7 +1969,7 @@ bool HNL_RegionDefinitions::FillZZVBFCRPlots(HNL_LeptonCore::Channel channel, st
   if (leps_veto.size() != 4) return false;
   FillCutflow(Reg, w, "Step2",param);
 
-  if(!ConversionSplitting(leps,RunConv,4)) return false;
+  if(!ConversionSplitting(leps,RunConv,4,param)) return false;
 
   int sumQ = leps[0]->Charge() + leps[1]->Charge() +leps[2]->Charge() +leps[3]->Charge() ;
   if(sumQ != 0) return false;
@@ -2079,7 +2079,7 @@ bool HNL_RegionDefinitions::FillZGCRPlots(HNL_LeptonCore::Channel channel, std::
 
   FillCutflow(ZGCR, w, "Step9",param);
 
-  if(!ConversionSplitting(leps,RunConv,3)) return false;
+  if(!ConversionSplitting(leps,RunConv,3,param)) return false;
   
   FillCutflow(ZGCR, w, "Step10",param);
 
@@ -2172,7 +2172,7 @@ bool HNL_RegionDefinitions::FillWGCRPlots(HNL_LeptonCore::Channel channel, std::
 
   FillCutflow(WGCR, w, "Step8",param);
 
-  if(!ConversionSplitting(leps,RunConv,3)) {
+  if(!ConversionSplitting(leps,RunConv,3,param)) {
     if(DEBUGWG)cout << "Fail Conversion split " << endl;
     return false;
   }

@@ -382,6 +382,12 @@ void  AnalyzerParameter::SetChannel(TString inch){
   return;
 }
 
+TString  AnalyzerParameter::GetChannelFlavour(){
+  if(Channel == "EE"  ||Channel == "EEE" || Channel == "EEEE") return "Electron";
+  if(Channel == "MuMu"  ||Channel == "MuMuMu" || Channel == "MuMuMuMu") return "Muon";
+  return "ElectronMuon";
+
+}
 TString  AnalyzerParameter::ChannelType(){
 
   if(Channel == "EE"   || Channel =="MuMu"       || Channel == "EMu"   || Channel == "MuE" ) return "Dilepton";
