@@ -65,12 +65,17 @@ void HNL_SignalRegion_Plotter::RunULAnalysis(AnalyzerParameter param){
   TString el_ID = SetLeptonID("Electron",param);
   TString mu_ID = SetLeptonID("Muon", param);
 
-  double Min_Muon_Pt     = (RunFake) ? 6. : 10.;
-  double Min_Electron_Pt = (RunFake) ? 10. : 15.;
 
-  std::vector<Muon>       MuonCollT     = SelectMuons    ( param,mu_ID, Min_Muon_Pt,     2.4, weight);
-  std::vector<Electron>   ElectronCollT = SelectElectrons( param,el_ID, Min_Electron_Pt, 2.5, weight);
- 
+  double Min_FakeMuon_Pt      =  5;
+  double Min_FakeElectron_Pt =  10 ;
+  std::vector<Muon>       MuonTightColl_Init     = SelectMuons    ( param,mu_ID,     Min_FakeMuon_Pt,     2.4,weight);
+  std::vector<Electron>   ElectronTightColl_Init = SelectElectrons( param,el_ID, Min_FakeElectron_Pt, 2.5,weight);
+
+  //// Apply Full Pt cut after pt corrected in fakes                                                                            
+  double Min_Muon_Pt     =  10.;
+  double Min_Electron_Pt =  15;
+  std::vector<Muon>       MuonCollT  = SelectMuons(MuonTightColl_Init,mu_ID,     Min_Muon_Pt,     2.4);
+  std::vector<Electron>   ElectronCollT = SelectElectrons(ElectronTightColl_Init,el_ID, Min_Electron_Pt, 2.5);
 
   std::vector<Lepton *> leps_veto  = MakeLeptonPointerVector(MuonCollV,ElectronCollV);
   std::vector<Tau>        TauColl        = SelectTaus   (leps_veto,param.Tau_Veto_ID,20., 2.3);

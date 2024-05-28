@@ -402,9 +402,9 @@ bool HNL_LeptonCore::PassPtTrigger(Event ev, vector<TString> triglist,std::vecto
     double lep_ptcut = (leps[ilep]->LeptonFlavour() == Lepton::ELECTRON) ? GetPtCutTrigger(itrig, nel-1, "Electron") : GetPtCutTrigger(itrig, nmu-1, "Muon") ;
     
     if(leps[ilep]->Pt() < lep_ptcut) pass_trig_pt=false;
-    
+    //cout << "leps[ilep]->Pt() = " << leps[ilep]->Pt() << " lep_ptcut = " << lep_ptcut << endl;
   }
-
+  //cout << "GetPtCutTrigger = " << pass_trig_pt << endl;
   return pass_trig_pt;
 }
 
@@ -420,8 +420,9 @@ bool HNL_LeptonCore::PassTriggerAndCheckStream(bool apply_ptcut,vector<Lepton*> 
 
       if(ev.PassTrigger(itrig))  {
         trig_passed=true;
-
+	cout << "Pass trigger " << itrig << endl;
         if(apply_ptcut  && !PassPtTrigger(ev,  {itrig}, leps)) trig_passed=false;
+	
         if(trig_passed) return true;
       }
     }
