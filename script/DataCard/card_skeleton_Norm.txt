@@ -12,44 +12,48 @@ observation -1
 # the second 'process' line must have a positive number for backgrounds, and 0 for signal
 # then we list the independent sources of uncertainties, and give their effect (syst. error)
 # on each process and bin
-bin                        bin1   bin1   bin1   bin1   bin1   bin1   bin1   bin1   bin1    bin1         bin1  
-process                    fake   cf     zg     conv   wz     zz     ww     wzewk  prompt  signalDYVBF  signalSSWW
-process                    1      2      3      4      5      6      7      8      9       -1           0
-rate                       -1     -1     -1     -1     -1     -1     -1     -1     -1      -1           -1
-Lumi                lnN    -      -      1.05   1.05   1.05   1.05   1.05   1.05   1.05    1.05         1.05
-Fake                lnN    1.3    -      -      -      -      -      -      -      -       -            -
-BkgNorm             lnN    -      -      -      1.2    -      -      -      -      1.2     -            -
-CF                  lnN    -      1.2    -      -      -      -      -      -      -       -            -
-JetRes              shape  -      -      1      1      1      1      1      1      1       1            1
-JetEn               shape  -      -      1      1      1      1      1      1      1       1            1
-#JetMass             shape  -      -      1      1      1      1      1      1      1       1            1
-#JetMassSmear        shape  -      -      1      1      1      1      1      1      1       1            1
-#MuonRecoSF          shape  -      -      1      1      1      1      1      1      1       1            1
-#MuonIDSF            shape  -      -      1      1      1      1      1      1      1       1            1
-#MuonISOSF           shape  -      -      1      1      1      1      1      1      1       1            1
-#MuonEn              shape  -      -      1      1      1      1      1      1      1       1            1
-#ElectronRecoSF      shape  -      -      1      1      1      1      1      1      1       1            1
-#ElectronIDSF        shape  -      -      1      1      1      1      1      1      1       1            1
-#ElectronTriggerSF   shape  -      -      1      1      1      1      1      1      1       1            1
-#ElectronEn          shape  -      -      1      1      1      1      1      1      1       1            1
-#ElectronRes         shape  -      -      1      1      1      1      1      1      1       1            1
-BTagSFHTag          shape  -      -      1      1      1      1      1      1      1       1            1
-#BTagSFLTag          shape  -      -      1      1      1      1      1      1      1       1            1
-#METUncl             shape  -      -      1      1      1      1      1      1      1       1            1
-#Prefire             shape  -      -      1      1      1      1      1      1      1       1            1
-#PU                  shape  -      -      1      1      1      1      1      1      1       1            1
+bin                        bin1   bin1   bin1   bin1          bin1   bin1   bin1   bin1           bin1         bin1  
+process                    fake   cf     zg     conv_others   wz     zz     ww     prompt_others  signalDYVBF  signalSSWW
+process                    1      2      3      4             5      6      7      9              -1           0
+rate                       -1     -1     -1     -1            -1     -1     -1     -1             -1           -1
+Lumi                lnN    -      -      1.05   1.05          1.05   1.05   1.05   1.05           1.05         1.05
+Fake                lnN    1.3    -      -      -             -      -      -      -              -            -
+BkgNorm             lnN    -      -      -      1.2           -      -      -      1.2            -            -
+CF                  lnN    -      1.2    -      -             -      -      -      -              -            -
+JetRes              shape  -      -      1      1             1      1      1      1              1            1
+JetEn               shape  -      -      1      1             1      1      1      1              1            1
+#JetMass             shape  -      -      1      1             1      1      1      1              1            1
+#JetMassSmear        shape  -      -      1      1             1      1      1      1              1            1
+#MuonRecoSF          shape  -      -      1      1             1      1      1      1              1            1
+#MuonIDSF            shape  -      -      1      1             1      1      1      1              1            1
+#MuonISOSF           shape  -      -      1      1             1      1      1      1              1            1
+#MuonEn              shape  -      -      1      1             1      1      1      1              1            1
+#ElectronRecoSF      shape  -      -      1      1             1      1      1      1              1            1
+#ElectronIDSF        shape  -      -      1      1             1      1      1      1              1            1
+#ElectronTriggerSF   shape  -      -      1      1             1      1      1      1              1            1
+#ElectronEn          shape  -      -      1      1             1      1      1      1              1            1
+#ElectronRes         shape  -      -      1      1             1      1      1      1              1            1
+BTagSFHTag          shape  -      -      1      1             1      1      1      1              1            1
+#BTagSFLTag          shape  -      -      1      1             1      1      1      1              1            1
+#METUncl             shape  -      -      1      1             1      1      1      1              1            1
+#Prefire             shape  -      -      1      1             1      1      1      1              1            1
+#PU                  shape  -      -      1      1             1      1      1      1              1            1
 * autoMCStats 0 0 1
-CFNorm          rateParam  sr  cf      1.0
-ZGNorm          rateParam  sr  zg      1.0
-WZNorm          rateParam  sr  wz      1.0
-ZZNorm          rateParam  sr  zz      1.0
-WWNorm          rateParam  sr  ww      1.0
-WZewkNorm       rateParam  sr  wzewk   1.0
-FakeNorm        rateParam  sr  fake    1.0
-CFNorm          rateParam  cf_cr     cf      1.0
-ZGNorm          rateParam  zg_cr     zg      1.0
-WZNorm          rateParam  wz_cr     wz      1.0
-ZZNorm          rateParam  zz_cr     zz      1.0
-WWNorm          rateParam  ww_cr     ww      1.0
-WZewkNorm       rateParam  wzewk_cr  wzewk   1.0
-FakeNorm        rateParam  sr_inv    fake    1.0
+ZGNormSR1           rateParam  sr1       zg     1.0
+ZGNormSR3           rateParam  sr3       zg     1.0
+WZNormSR1           rateParam  sr1       wz     1.0
+WZNormSR2           rateParam  sr2       wz     1.0
+WZNormSR3           rateParam  sr3       wz     1.0
+ZZNormSR1           rateParam  sr1       zz     1.0
+ZZNormSR3           rateParam  sr3       zz     1.0
+WWNorm              rateParam  sr1       ww     1.0
+WWNorm              rateParam  sr2       ww     1.0
+WWNorm              rateParam  sr3       ww     1.0
+ZGNormSR1           rateParam  zg_cr1    zg     1.0
+ZGNormSR3           rateParam  zg_cr3    zg     1.0
+WZNormSR1           rateParam  wz_cr1    wz     1.0
+WZNormSR2           rateParam  wz_cr2    wz     1.0
+WZNormSR3           rateParam  wz_cr3    wz     1.0
+ZZNormSR1           rateParam  zz_cr1    zz     1.0
+ZZNormSR3           rateParam  zz_cr3    zz     1.0
+WWNorm              rateParam  ww_cr     ww     1.0

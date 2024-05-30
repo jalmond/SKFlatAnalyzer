@@ -698,7 +698,7 @@ for tag in tags:
             try:
               item[1].SetName(item[2])
             except AttributeError:
-              print("[!!WARNING!!] There is no hist "+item[1]+" in "+item[0]+" .")
+              print("[!!WARNING!!] There is no hist corresponding to "+item[2]+" in "+item[0]+" .")
               if "signal" in item[2]:
                 print "Skipping..."
                 continue

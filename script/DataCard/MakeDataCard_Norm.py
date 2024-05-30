@@ -20,17 +20,18 @@ pwd = os.getcwd()
 #
 #####################################################
 
-eras = ["2016","2017","2018"]
-eras = ["2017"]
-eras = ["2016preVFP","2016postVFP","2017","2018"]
+#eras = ["2016","2017","2018"]
+#eras = ["2017"]
+eras = ["2018"]
+#eras = ["2016preVFP","2016postVFP","2017","2018"]
 channels = ["MuMu","EE","EMu"]
 #channels = ["MuMu","EE"]
 #channels = ["MuMu"]
 #masses = ["M90","M100","M150","M200","M300","M400","M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M10000","M15000","M20000"]
-#masses = ["M100","M1000","M10000"]
+masses = ["M100","M1000","M10000"]
 #masses = ["M90","M100","M150","M200","M300","M400","M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M10000","M15000","M20000"]
-masses = ["M85","M90","M95","M100","M125","M150","M200","M250","M300","M400","M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M10000","M15000","M20000"]
-#masses = ["M100"]
+#masses = ["M85","M90","M95","M100","M125","M150","M200","M250","M300","M400","M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M10000","M15000","M20000"]
+#masses = ["M1000"]
 
 #SRpath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegion_Plotter_PR43/LimitInputs/"
 #SRpath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegion_Plotter/LimitInputs/"
@@ -44,7 +45,8 @@ CRpath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_
 #myWPs = ["240505_PR45_HNL_ULID"]
 #myWPs = ["240505_PR46_HNL_ULID","240505_PR46_HNTightV2"]
 #myWPs = ["rateParam_HNL_ULID_PR46"]
-myWPs = ["PR48_rateParam_HNL_ULID"]
+#myWPs = ["PR48_rateParam_HNL_ULID"]
+myWPs = ["PR51_HNL_ULID"]
 
 ################################################################################################################################################
 
@@ -53,126 +55,30 @@ def CardSetting(isCR, era, channel, mass):
   with open("/data6/Users/jihkim/CombineTool/CMSSW_10_2_13/src/DataCardsShape/HNL_SignalRegion_Plotter/card_skeleton_Norm.txt",'r') as f: # your workspace
     lines = f.readlines()
 
-  # skip the lepton SF syst for now ...
-  #for i in range(len(lines)):
-  #  if channel == "MuMu":
-  #    if "Muon" in lines[i]: lines[i] = lines_orig[i]
-  #    if "Electron" in lines[i]: lines[i] = lines[i].replace("1","-")
-  #  elif channel == "EE":
-  #    if "Muon" in lines[i]: lines[i] = lines[i].replace("1","-")
-  #    if "Electron" in lines[i]: lines[i] = lines_orig[i]
-  #  elif channel == "EMu":
-  #    if "Muon" in lines[i]: lines[i] = lines_orig[i]
-  #    if "Electron" in lines[i]: lines[i] = lines_orig[i]
-
-  regions_cr = ["sr_inv","sr1_inv","sr2_inv","sr3_inv","cf_cr","ww_cr","zg_cr","wz_cr","wzewk_cr","zz_cr"]
+  regions_cr = ["sr1_inv","sr2_inv","sr3_inv","cf_cr","ww_cr","wz_cr1","wz_cr2","wz_cr3","zg_cr1","zg_cr3","zz_cr1","zz_cr3"]
   lines_cr = {}
   # cr norm setting
   for region in regions_cr:
     this_lines_cr = lines[:]
     this_lines_cr[4] = "shapes * *  "+CRpath+WP+"/"+era+"/"+region+"/"+mass+"_"+channel+"_card_input.root $PROCESS $PROCESS_$SYSTEMATIC\n"
-    #### !! crazy hard-coded process rate !! #### FIXME
-    # fake   cf     zg     conv   wz     zz     ww     wzewk  prompt  signalDYVBF  signalSSWW
-    # 1      2      3      4      5      6      7      8      9       -1           0
     if (region == "cf_cr" and "Mu" in channel): continue
-    this_lines_cr[17] = "rate                       -1     -1     -1     -1     -1     -1     -1     -1     -1      0            0\n"  # no signal
-    #if channel == "MuMu":
-    #  if region=="sr1_inv":
-    #    this_lines_cr[17] = "rate                       -1     0      0      -1     -1     -1     -1     -1     -1     0            0\n"  # no signal
-    #  elif region=="sr2_inv": #NOTE no data as well
-    #    this_lines_cr[17] = "rate                       0      0      0      0      0      -1     -1     -1     -1     0            0\n"  # no signal
-    #  elif (region=="sr3_inv" or region=="sr_inv"):
-    #    this_lines_cr[17] = "rate                       -1     0      -1     -1     -1     -1     -1     -1     -1     0            0\n"  # no signal
-    #  elif region=="ww_cr":
-    #    this_lines_cr[17] = "rate                       -1     0      0      -1     -1     -1     -1     -1     -1     0            0\n"  # no signal
-    #  elif region=="zg_cr":
-    #    this_lines_cr[17] = "rate                       -1     0      -1     -1     -1     -1     0      -1     -1     0            0\n"  # no signal
-    #  elif region=="wz_cr":
-    #    this_lines_cr[17] = "rate                       -1     0      -1     -1     -1     -1     0      -1     -1     0            0\n"  # no signal
-    #  elif region=="wzewk_cr":
-    #    this_lines_cr[17] = "rate                       -1     0      -1     0      -1     -1     -1     -1     -1     0            0\n"  # no signal
-    #  elif region=="zz_cr":
-    #    this_lines_cr[17] = "rate                       -1     0      0      0      0      -1     0      0      -1     0            0\n"  # no signal
-    #elif channel == "EMu":
-    #  if region=="sr1_inv":
-    #    this_lines_cr[17] = "rate                       -1     0      0      -1     -1     -1     -1     -1     -1     0            0\n"  # no signal
-    #  elif region=="sr2_inv": #NOTE no data as well
-    #    this_lines_cr[17] = "rate                       0      0      0      -1     -1     -1     -1     -1     -1     0            0\n"  # no signal
-    #  elif (region=="sr3_inv" or region=="sr_inv"):
-    #    this_lines_cr[17] = "rate                       -1     0      -1     -1     -1     -1     -1     -1     -1     0            0\n"  # no signal
-    #  elif region=="ww_cr":
-    #    this_lines_cr[17] = "rate                       -1     0      -1     -1     -1     -1     -1     -1     -1     0            0\n"  # no signal
-    #  elif region=="zg_cr":
-    #    this_lines_cr[17] = "rate                       -1     0      -1     -1     -1     -1     0      -1     -1     0            0\n"  # no signal
-    #  elif region=="wz_cr":
-    #    this_lines_cr[17] = "rate                       -1     0      -1     -1     -1     -1     0      -1     -1     0            0\n"  # no signal
-    #  elif region=="wzewk_cr":
-    #    this_lines_cr[17] = "rate                       -1     0      -1     -1     -1     -1     0      -1     -1     0            0\n"  # no signal
-    #  elif region=="zz_cr":
-    #    this_lines_cr[17] = "rate                       -1     0      0      -1     0      -1     0      0      -1     0            0\n"  # no signal
-
-    #if "inv" in region:
-    #  if "Mu" in channel:
-    #    this_lines_cr[17] = "rate                       -1     0      -1     -1     -1     -1     -1     -1     -1      0            0\n"  # no signal
-    #  else:
-    #    this_lines_cr[17] = "rate                       -1     -1     -1     -1     -1     -1     -1     -1     -1      0            0\n"  # no signal
-    #elif region == "cf_cr":
-    #  if "Mu" in channel: continue
-    #  else:
-    #    this_lines_cr[17] = "rate                       -1     -1     -1     -1     -1     -1     -1     -1     -1      0            0\n"  # no signal
-    #elif region == "ww_cr":
-    #  if channel=="EE":
-    #    this_lines_cr[17] = "rate                       -1     -1     -1     -1     -1     -1     -1     -1     -1      0            0\n"  # no signal
-    #  if channel=="EMu":
-    #    this_lines_cr[17] = "rate                       -1     0      -1     -1     -1     -1     -1     -1     -1      0            0\n"  # no cf, signal
-    #  elif channel=="MuMu":
-    #    this_lines_cr[17] = "rate                       -1     0      0      -1     -1     -1     -1     -1     -1      0            0\n"  # no cf, zg, signal
-    #elif region == "zg_cr":
-    #  if channel=="EE":
-    #    this_lines_cr[17] = "rate                       -1     0      -1     -1     -1     -1     0      -1     -1      0            0\n"  # no cf, ww, signal
-    #  if channel=="EMu":
-    #    this_lines_cr[17] = "rate                       -1     0      -1     -1     -1     -1     0      -1     -1      0            0\n"  # no cf, ww, signal
-    #  elif channel=="MuMu":
-    #    this_lines_cr[17] = "rate                       -1     0      -1     -1     -1     -1     0      -1     -1      0            0\n"  # no cf, ww, signal
-    #elif region == "wz_cr":
-    #  if channel=="EE":
-    #    this_lines_cr[17] = "rate                       -1     0      -1     -1     -1     -1     0      -1     -1      0            0\n"  # no signal
-    #  if channel=="EMu":
-    #    this_lines_cr[17] = "rate                       -1     0      -1     -1     -1     -1     0      -1     -1      0            0\n"  # no cf, signal
-    #  elif channel=="MuMu":
-    #    this_lines_cr[17] = "rate                       -1     0      0      -1     -1     -1     0      -1     -1      0            0\n"  # no cf, zg, signal
-    #elif region == "wzewk_cr":
-    #  if channel=="EE":
-    #    this_lines_cr[17] = "rate                       -1     0      -1     -1     -1     -1     0      -1     -1      0            0\n"  # no signal
-    #  if channel=="EMu":
-    #    this_lines_cr[17] = "rate                       -1     0      -1     -1     -1     -1     0      -1     -1      0            0\n"  # no cf, signal
-    #  elif channel=="MuMu":
-    #    this_lines_cr[17] = "rate                       -1     0      -1     0      -1     -1     -1     -1     -1      0            0\n"  # no cf, conv, signal
-    #elif region == "zz_cr":
-    #  if channel=="EE":
-    #    this_lines_cr[17] = "rate                       -1     0      0      -1     0      -1     0      0      -1      0            0\n"  # no signal
-    #  if channel=="EMu":
-    #    this_lines_cr[17] = "rate                       -1     0      0      -1     0      -1     0      0      -1      0            0\n"  # no signal
-    #  elif channel=="MuMu":
-    #    this_lines_cr[17] = "rate                       -1     0      0      0      0      -1     0      0      -1      0            0\n"  # no signal
-    if "Mu" in channel:
-      this_lines_cr[41] = ""  # remove cf norm
-      this_lines_cr[48] = ""  # remove cf norm
+    this_lines_cr[17] = "rate                       -1     -1     -1     -1            -1     -1     -1     -1             0            0\n"  # no signal
     for i in range(len(this_lines_cr)):
       this_lines_cr[i] = this_lines_cr[i].replace('bin1',region)
     for i in range(22,40):
       this_lines_cr[i] = "" # remove unnecessary syst sources.
-    for i in range(41,55):
+
+    # handle norm constraints
+    for i in range(41,59):
       if "Norm" in this_lines_cr[i]:
         this_lines_cr[i] = this_lines_cr[i].replace('Norm','Norm'+era) # era dependent norm constraint
-      if "sr" in region:
-        this_lines_cr[i] = this_lines_cr[i].replace('sr_inv',region) # change sr_inv name in rateParam properly
       if (not region in this_lines_cr[i]):
         this_lines_cr[i] = "" # remove not corresponding rateParams
+
     lines_cr[region] = this_lines_cr
 
   # sr setting
-  regions_sr = ["sr","sr1","sr2","sr3"]
+  regions_sr = ["sr1","sr2","sr3"]
   lines_sr = {}
   lines_sronly = {}
 
@@ -180,33 +86,31 @@ def CardSetting(isCR, era, channel, mass):
     this_lines_sr = lines[:]
     this_lines_sr[4] = "shapes * *  "+SRpath+WP+"/"+era+"/"+region+"/"+mass+"_"+channel+"_card_input.root $PROCESS $PROCESS_$SYSTEMATIC\n"
     if int(mass.replace("M","")) < 500:
-      if "Mu" in channel: this_lines_sr[17] = "rate                       -1     0      -1     -1     -1     -1     -1     -1     -1      -1           0\n"  # no cf
-      else: this_lines_sr[17] = "rate                       -1     -1     -1     -1     -1     -1     -1     -1     -1      -1           0\n"  # no SSWW
+      if "Mu" in channel: this_lines_sr[17] = "rate                       -1     0      -1     -1            -1     -1     -1     -1             -1           0\n"  # no cf, SSWW
+      else: this_lines_sr[17] = "rate                       -1     -1     -1     -1            -1     -1     -1     -1             -1           0\n"  # no SSWW
     if 500 <= int(mass.replace("M","")) and int(mass.replace("M","")) <= 3000:
-      if "Mu" in channel: this_lines_sr[17] = "rate                       -1     0      -1     -1     -1     -1     -1     -1     -1      -1           -1\n"
-      else: this_lines_sr[17] = "rate                       -1     -1     -1     -1     -1     -1     -1     -1     -1      -1           -1\n"
+      if "Mu" in channel: this_lines_sr[17] = "rate                       -1     0      -1     -1            -1     -1     -1     -1             -1           -1\n" # no cf
+      else: this_lines_sr[17] = "rate                       -1     -1     -1     -1            -1     -1     -1     -1             -1           -1\n"
     elif 3000 < int(mass.replace("M","")):
-      if "Mu" in channel: this_lines_sr[17] = "rate                       -1     0      -1     -1     -1     -1     -1     -1     -1      0            -1\n"
-      else: this_lines_sr[17] = "rate                       -1     -1     -1     -1     -1     -1     -1     -1     -1      0            -1\n" # no DYVBF
+      if "Mu" in channel: this_lines_sr[17] = "rate                       -1     0      -1     -1            -1     -1     -1     -1             0            -1\n" # no cf, DYVBF
+      else: this_lines_sr[17] = "rate                       -1     -1     -1     -1            -1     -1     -1     -1             0            -1\n" # no DYVBF
     for i in range(len(this_lines_sr)):
       this_lines_sr[i] = this_lines_sr[i].replace('bin1',region)
     if not args.Syst:
       for i in range(22,40):
         this_lines_sr[i] = "" # remove unnecessary syst sources.
-    if "Mu" in channel:
-      this_lines_sr[41] = ""  # remove cf norm
-      this_lines_sr[48] = ""  # remove cf norm
-    for i in range(41,55):
+
+    # handle norm constraints
+    for i in range(41,59):
       if "Norm" in this_lines_sr[i]:
         this_lines_sr[i] = this_lines_sr[i].replace('Norm','Norm'+era) # era dependent norm constraint
-      if "sr_inv" in this_lines_sr[i] : this_lines_sr[i] = "" # remove sr_inv rateParam
-      this_lines_sr[i] = this_lines_sr[i].replace('sr',region) # change sr name in rateParam properly
       if (not region in this_lines_sr[i]):
         this_lines_sr[i] = "" # remove not corresponding rateParams
+
     lines_sr[region] = this_lines_sr
 
     this_lines_sronly = this_lines_sr[:]
-    for i in range(41,55):
+    for i in range(41,59):
       this_lines_sronly[i] = "" # remove all rateParams
     lines_sronly[region] = this_lines_sronly
 
@@ -271,10 +175,13 @@ for WP in myWPs:
                                      #sr_inv=card_"+era+"_"+channel+"_"+mass+"_sr_inv.txt "\
                                      +Add_cf_cr+" \
                                      ww_cr=card_"+era+"_"+channel+"_"+mass+"_ww_cr.txt \
-                                     zg_cr=card_"+era+"_"+channel+"_"+mass+"_zg_cr.txt \
-                                     wz_cr=card_"+era+"_"+channel+"_"+mass+"_wz_cr.txt \
-                                     wzewk_cr=card_"+era+"_"+channel+"_"+mass+"_wzewk_cr.txt \
-                                     zz_cr=card_"+era+"_"+channel+"_"+mass+"_zz_cr.txt \
+                                     zg_cr1=card_"+era+"_"+channel+"_"+mass+"_zg_cr1.txt \
+                                     zg_cr3=card_"+era+"_"+channel+"_"+mass+"_zg_cr3.txt \
+                                     wz_cr1=card_"+era+"_"+channel+"_"+mass+"_wz_cr1.txt \
+                                     wz_cr2=card_"+era+"_"+channel+"_"+mass+"_wz_cr2.txt \
+                                     wz_cr3=card_"+era+"_"+channel+"_"+mass+"_wz_cr3.txt \
+                                     zz_cr1=card_"+era+"_"+channel+"_"+mass+"_zz_cr1.txt \
+                                     zz_cr3=card_"+era+"_"+channel+"_"+mass+"_zz_cr3.txt \
                                      > card_"+era+"_"+channel+"_"+mass+systTag+".txt")
       elif args.Combine == "SR":
         os.system("combineCards.py year16a=card_2016preVFP_"+channel+"_"+mass+"_sronly"+systTag+".txt year16b=card_2016postVFP_"+channel+"_"+mass+"_sronly"+systTag+".txt year17=card_2017_"+channel+"_"+mass+"_sronly"+systTag+".txt year18=card_2018_"+channel+"_"+mass+"_sronly"+systTag+".txt > card_Run2_"+channel+"_"+mass+"_sronly"+systTag+".txt")
