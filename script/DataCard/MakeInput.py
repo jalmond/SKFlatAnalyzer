@@ -13,11 +13,12 @@ args = parser.parse_args()
 
 #eras = ["2016preVFP", "2016postVFP", "2017", "2018"]
 #eras = ["2017"]
-#eras = ["2018"]
-eras = ["Run2"] # Let's merge Run2 after running all eras first
+eras = ["2018"]
+#eras = ["Run2"] # Let's merge Run2 after running all eras first
 #masses = ["M90","M100","M150","M200","M300","M400","M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M10000","M15000","M20000"]
-masses = ["M100","M1000","M10000"]
-#masses = ["M85","M90","M95","M100","M125","M150","M200","M250","M300","M400","M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M10000","M15000","M20000"]
+#masses = ["M100","M1000","M10000"]
+masses = ["M85","M90","M95","M100","M125","M150","M200","M250","M300","M400","M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M10000","M15000","M20000"]
+#masses = ["M85","M90","M95","M100","M125","M150","M200","M250"]
 #masses = ["M10000"]
 #masses = ["M85"]
 channels = ["MuMu","EE","EMu"]
@@ -33,7 +34,8 @@ RegionToHistSuffixMap = {}
 tags = ["HNL_ULID"] # HNLParameter Name
 #outputTag = "240501_1704_" # tag the output directory name as you wish
 #outputTag = "rateParam_" # tag the output directory name as you wish
-outputTag = "PR48_rateParam_" # tag the output directory name as you wish
+#outputTag = "PR48_rateParam_" # tag the output directory name as you wish
+outputTag = "PR51_" # tag the output directory name as you wish
 
 # Skim
 DataSkim = "_SkimTree_HNMultiLepBDT_"
@@ -50,7 +52,7 @@ MergeFake   = False  # RunFake
 MergeCF     = False  # RunCF
 MergeConv   = False  # RunConv
 MergeMC     = False  # RunPrompt
-MergeSignal = True
+MergeSignal = False
 #MergeDYVBF = True
 #MergeSSWW  = True
 
@@ -59,8 +61,8 @@ if args.CR:
   CRflags = ["SS_CR__","VBF_CR__","LLL_VR__"]
   Analyzer = "HNL_ControlRegion_Plotter"
 
-  regions = ["sr_inv","sr1_inv","sr2_inv","sr3_inv","cf_cr","ww_cr","zg_cr","wz_cr","wzewk_cr","zz_cr"] # for CRs
-  regions = "" # Use this when merging only
+  regions = ["sr_inv","sr1_inv","sr2_inv","sr3_inv","cf_cr","ww_cr","zg_cr","zg_cr1","zg_cr3","wz_cr","wz_cr1","wz_cr2","wz_cr3","zz_cr","zz_cr1","zz_cr3"] # for CRs
+  #regions = "" # Use this when merging only
 
   RegionToCRFlagMap['sr_inv'] = "SS_CR__"
   RegionToCRFlagMap['sr1_inv'] = "SS_CR__"
@@ -69,9 +71,15 @@ if args.CR:
   RegionToCRFlagMap['cf_cr']  = "SS_CR__"
   RegionToCRFlagMap['ww_cr']  = "VBF_CR__"
   RegionToCRFlagMap['zg_cr']  = "LLL_VR__"
+  RegionToCRFlagMap['zg_cr1']  = "LLL_VR__"
+  RegionToCRFlagMap['zg_cr3']  = "LLL_VR__"
   RegionToCRFlagMap['wz_cr']  = "LLL_VR__"
-  RegionToCRFlagMap['wzewk_cr'] = "LLL_VR__"
+  RegionToCRFlagMap['wz_cr1']  = "LLL_VR__"
+  RegionToCRFlagMap['wz_cr2']  = "LLL_VR__"
+  RegionToCRFlagMap['wz_cr3']  = "LLL_VR__"
   RegionToCRFlagMap['zz_cr']  = "LLL_VR__"
+  RegionToCRFlagMap['zz_cr1']  = "LLL_VR__"
+  RegionToCRFlagMap['zz_cr3']  = "LLL_VR__"
 
   RegionToChannelMap['sr_inv'] = {'MuMu':'MuMu', 'EE':'EE', 'EMu':'EMu'}
   RegionToChannelMap['sr1_inv'] = {'MuMu':'MuMu', 'EE':'EE', 'EMu':'EMu'}
@@ -80,20 +88,32 @@ if args.CR:
   RegionToChannelMap['cf_cr']  = {'MuMu':'MuMu', 'EE':'EE', 'EMu':'EMu'}
   RegionToChannelMap['ww_cr']  = {'MuMu':'MuMu', 'EE':'EE', 'EMu':'EMu'}
   RegionToChannelMap['zg_cr']  = {'MuMu':'MuMuMu', 'EE':'EEE', 'EMu':'EMuL'}
+  RegionToChannelMap['zg_cr1']  = {'MuMu':'MuMuMu', 'EE':'EEE', 'EMu':'EMuL'}
+  RegionToChannelMap['zg_cr3']  = {'MuMu':'MuMuMu', 'EE':'EEE', 'EMu':'EMuL'}
   RegionToChannelMap['wz_cr']  = {'MuMu':'MuMuMu', 'EE':'EEE', 'EMu':'EMuL'}
-  RegionToChannelMap['wzewk_cr']  = {'MuMu':'MuMuMu', 'EE':'EEE', 'EMu':'EMuL'}
+  RegionToChannelMap['wz_cr1']  = {'MuMu':'MuMuMu', 'EE':'EEE', 'EMu':'EMuL'}
+  RegionToChannelMap['wz_cr2']  = {'MuMu':'MuMuMu', 'EE':'EEE', 'EMu':'EMuL'}
+  RegionToChannelMap['wz_cr3']  = {'MuMu':'MuMuMu', 'EE':'EEE', 'EMu':'EMuL'}
   RegionToChannelMap['zz_cr']  = {'MuMu':'MuMuMuMu', 'EE':'EEEE', 'EMu':'EMuLL'}
+  RegionToChannelMap['zz_cr1']  = {'MuMu':'MuMuMuMu', 'EE':'EEEE', 'EMu':'EMuLL'}
+  RegionToChannelMap['zz_cr3']  = {'MuMu':'MuMuMuMu', 'EE':'EEEE', 'EMu':'EMuLL'}
 
-  RegionToHistSuffixMap['sr_inv'] = {'MuMu':'LimitBins/MuonCR', 'EE':'LimitBins/ElectronCR', 'EMu':'LimitBins/ElectronMuonCR'}
+  RegionToHistSuffixMap['sr_inv']  = {'MuMu':'LimitBins/MuonCR',  'EE':'LimitBins/ElectronCR',  'EMu':'LimitBins/ElectronMuonCR'}
   RegionToHistSuffixMap['sr1_inv'] = {'MuMu':'LimitBins/MuonCR1', 'EE':'LimitBins/ElectronCR1', 'EMu':'LimitBins/ElectronMuonCR1'}
   RegionToHistSuffixMap['sr2_inv'] = {'MuMu':'LimitBins/MuonCR2', 'EE':'LimitBins/ElectronCR2', 'EMu':'LimitBins/ElectronMuonCR2'}
   RegionToHistSuffixMap['sr3_inv'] = {'MuMu':'LimitBins/MuonCR3', 'EE':'LimitBins/ElectronCR3', 'EMu':'LimitBins/ElectronMuonCR3'}
-  RegionToHistSuffixMap['cf_cr']  = {'MuMu':'LimitShape_CF/Binned', 'EE':'LimitShape_CF/Binned', 'EMu':'LimitShape_CF/Binned'}
-  RegionToHistSuffixMap['ww_cr']  = {'MuMu':'LimitShape_WW/Binned', 'EE':'LimitShape_WW/Binned', 'EMu':'LimitShape_WW/Binned'}
-  RegionToHistSuffixMap['zg_cr']  = {'MuMu':'LimitShape_ZG/Binned', 'EE':'LimitShape_ZG/Binned', 'EMu':'LimitShape_ZG/Binned'}
-  RegionToHistSuffixMap['wz_cr']  = {'MuMu':'LimitShape_WZ/Binned', 'EE':'LimitShape_WZ/Binned', 'EMu':'LimitShape_WZ/Binned'}
-  RegionToHistSuffixMap['wzewk_cr']  = {'MuMu':'LimitShape_WZEWK/Binned', 'EE':'LimitShape_WZEWK/Binned', 'EMu':'LimitShape_WZEWK/Binned'}
-  RegionToHistSuffixMap['zz_cr']  = {'MuMu':'LimitShape_ZZ/Binned', 'EE':'LimitShape_ZZ/Binned', 'EMu':'LimitShape_ZZ/Binned'}
+  RegionToHistSuffixMap['cf_cr']   = {'MuMu':'LimitShape_CF/Binned', 'EE':'LimitShape_CF/Binned', 'EMu':'LimitShape_CF/Binned'}
+  RegionToHistSuffixMap['ww_cr']   = {'MuMu':'LimitShape_WW/Binned', 'EE':'LimitShape_WW/Binned', 'EMu':'LimitShape_WW/Binned'}
+  RegionToHistSuffixMap['zg_cr']   = {'MuMu':'LimitShape_ZG/Binned', 'EE':'LimitShape_ZG/Binned', 'EMu':'LimitShape_ZG/Binned'}
+  RegionToHistSuffixMap['zg_cr1']  = {'MuMu':'LimitShape_ZG_SR1/Binned', 'EE':'LimitShape_ZG_SR1/Binned', 'EMu':'LimitShape_ZG_SR1/Binned'}
+  RegionToHistSuffixMap['zg_cr3']  = {'MuMu':'LimitShape_ZG_SR3/Binned', 'EE':'LimitShape_ZG_SR3/Binned', 'EMu':'LimitShape_ZG_SR3/Binned'}
+  RegionToHistSuffixMap['wz_cr']   = {'MuMu':'LimitShape_WZ/Binned', 'EE':'LimitShape_WZ/Binned', 'EMu':'LimitShape_WZ/Binned'}
+  RegionToHistSuffixMap['wz_cr1']  = {'MuMu':'LimitShape_WZ_SR1/Binned', 'EE':'LimitShape_WZ_SR1/Binned', 'EMu':'LimitShape_WZ_SR1/Binned'}
+  RegionToHistSuffixMap['wz_cr2']  = {'MuMu':'LimitShape_WZ_SR2/Binned', 'EE':'LimitShape_WZ_SR2/Binned', 'EMu':'LimitShape_WZ_SR2/Binned'}
+  RegionToHistSuffixMap['wz_cr3']  = {'MuMu':'LimitShape_WZ_SR3/Binned', 'EE':'LimitShape_WZ_SR3/Binned', 'EMu':'LimitShape_WZ_SR3/Binned'}
+  RegionToHistSuffixMap['zz_cr']   = {'MuMu':'LimitShape_ZZ/Binned', 'EE':'LimitShape_ZZ/Binned', 'EMu':'LimitShape_ZZ/Binned'}
+  RegionToHistSuffixMap['zz_cr1']  = {'MuMu':'LimitShape_ZZ_SR1/Binned', 'EE':'LimitShape_ZZ_SR1/Binned', 'EMu':'LimitShape_ZZ_SR1/Binned'}
+  RegionToHistSuffixMap['zz_cr3']  = {'MuMu':'LimitShape_ZZ_SR3/Binned', 'EE':'LimitShape_ZZ_SR3/Binned', 'EMu':'LimitShape_ZZ_SR3/Binned'}
 
 else:
   Blinded = True # Blinded --> the total background will be used as data_obs
@@ -102,7 +122,7 @@ else:
 
   regions = ["sr","sr1","sr2","sr3"] # for SRs
   #regions = ["sr1"] # for SRs
-  regions = "" # Use this when merging only
+  #regions = "" # Use this when merging only
 
   RegionToCRFlagMap['sr'] = ""
   RegionToCRFlagMap['sr1'] = ""
@@ -314,10 +334,10 @@ if MergeSignal:
       for mass in masses:
         if era=="Run2":
           os.system("mkdir -p "+InputPath+"/Run2/")
-          OutFileDY   =InputPath + "/Run2/"+Analyzer+"_signalDY_"+mass+".root"
-          OutFileVBF  =InputPath + "/Run2/"+Analyzer+"_signalVBF_"+mass+".root"
-          OutFileDYVBF=InputPath + "/Run2/"+Analyzer+"_signalDYVBF_"+mass+".root"
-          OutFileSSWW =InputPath + "/Run2/"+Analyzer+"_signalSSWW_"+mass+".root"
+          OutFileDY    = InputPath + "/Run2/"+Analyzer+"_signalDY_"+mass+".root"
+          OutFileVBF   = InputPath + "/Run2/"+Analyzer+"_signalVBF_"+mass+".root"
+          OutFileDYVBF = InputPath + "/Run2/"+Analyzer+"_signalDYVBF_"+mass+".root"
+          OutFileSSWW  = InputPath + "/Run2/"+Analyzer+"_signalSSWW_"+mass+".root"
           # First, create DY, VBF, SSWWTypeI seperately
           if os.system("hadd -f " + OutFileDY + " " + InputPath+"/2016preVFP/*DYTypeI*"+mass+"_private.root"\
                                               + " " + InputPath+"/2016postVFP/*DYTypeI*"+mass+"_private.root"\
@@ -343,19 +363,32 @@ if MergeSignal:
                                                 + " " + InputPath+"/2018/*SSWWTypeI*"+mass+"_private.root"\
                      ) != 0:
             os.system("rm " + OutFileSSWW) # remove the output if there is any unmatched process
+          # Now treat DYVBF depending on the mass
+          if int(mass.replace("M","")) < 300: # DY only
+            os.system("hadd -f " + OutFileDYVBF + " " + InputPath+"/2016preVFP/*DYTypeI*"+mass+"_private.root"\
+                                                + " " + InputPath+"/2016postVFP/*DYTypeI*"+mass+"_private.root"\
+                                                + " " + InputPath+"/2017/*DYTypeI*"+mass+"_private.root"\
+                                                + " " + InputPath+"/2018/*DYTypeI*"+mass+"_private.root")
+          else: # DY+VBF
+            os.system("hadd -f " + OutFileDYVBF + " " + InputPath+"/2016preVFP/*DYTypeI*"+mass+"_private.root" + " " + InputPath+"/2016preVFP/*VBFTypeI*"+mass+"_private.root"\
+                                                + " " + InputPath+"/2016postVFP/*DYTypeI*"+mass+"_private.root" + " " + InputPath+"/2016postVFP/*VBFTypeI*"+mass+"_private.root"\
+                                                + " " + InputPath+"/2017/*DYTypeI*"+mass+"_private.root" + " " + InputPath+"/2017/*VBFTypeI*"+mass+"_private.root"\
+                                                + " " + InputPath+"/2018/*DYTypeI*"+mass+"_private.root" + " " + InputPath+"/2018/*VBFTypeI*"+mass+"_private.root")
         else:
-          OutFileDY   =InputPath + era + "/"+Analyzer+"_signalDY_"+mass+".root"
-          OutFileVBF  =InputPath + era + "/"+Analyzer+"_signalVBF_"+mass+".root"
-          OutFileDYVBF=InputPath + era + "/"+Analyzer+"_signalDYVBF_"+mass+".root"
-          OutFileSSWW =InputPath + era + "/"+Analyzer+"_signalSSWW_"+mass+".root"
-          if os.system("hadd -f " + OutFileDY + " " + InputPath+"/"+era+"/*DYTypeI*"+mass+"_private.root") != 0:
-            os.system("rm " + OutFileDY) # remove the output if there is any unmatched process
-          if os.system("hadd -f " + OutFileVBF + " " + InputPath+"/"+era+"/*VBFTypeI*"+mass+"_private.root") != 0:
-            os.system("rm " + OutFileVBF) # remove the output if there is any unmatched process
-          if os.system("hadd -f " + OutFileDYVBF + " " + InputPath+"/"+era+"/*DYTypeI*"+mass+"_private.root" + " " + InputPath+"/"+era+"/*VBFTypeI*"+mass+"_private.root") != 0:
-            os.system("rm " + OutFileDYVBF) # remove the output if there is any unmatched process
-          if os.system("hadd -f " + OutFileSSWW  + " " + InputPath+"/"+era+"/*SSWWTypeI*"+mass+"_private.root") != 0:
-            os.system("rm " + OutFileSSWW) # remove the output if there is any unmatched process
+          OutFileDY    = InputPath + era + "/"+Analyzer+"_signalDY_"+mass+".root"
+          OutFileVBF   = InputPath + era + "/"+Analyzer+"_signalVBF_"+mass+".root"
+          OutFileDYVBF = InputPath + era + "/"+Analyzer+"_signalDYVBF_"+mass+".root"
+          OutFileSSWW  = InputPath + era + "/"+Analyzer+"_signalSSWW_"+mass+".root"
+          # First, create DY, VBF, SSWWTypeI seperately
+          os.system("cp " + InputPath+"/"+era+"/*DYTypeI*"+mass+"_private.root " + OutFileDY)
+          os.system("cp " + InputPath+"/"+era+"/*VBFTypeI*"+mass+"_private.root " + OutFileVBF)
+          os.system("cp " + InputPath+"/"+era+"/*SSWWTypeI*"+mass+"_private.root " + OutFileSSWW)
+          # Now treat DYVBF depending on the mass
+          if int(mass.replace("M","")) < 300: # DY only
+            os.system("hadd -f " + OutFileDYVBF + " " + InputPath+"/"+era+"/*DYTypeI*"+mass+"_private.root")
+          else: # DY+VBF
+            os.system("hadd -f " + OutFileDYVBF + " " + InputPath+"/"+era+"/*DYTypeI*"+mass+"_private.root" + " " + InputPath+"/"+era+"/*VBFTypeI*"+mass+"_private.root")
+
 
 ##### Main job starts #####
 for tag in tags:
@@ -665,7 +698,7 @@ for tag in tags:
             try:
               item[1].SetName(item[2])
             except AttributeError:
-              print("[!!WARNING!!] There is no hist corresponding to "+item[2]+" in "+item[0]+" .")
+              print("[!!WARNING!!] There is no hist "+item[1]+" in "+item[0]+" .")
               if "signal" in item[2]:
                 print "Skipping..."
                 continue
