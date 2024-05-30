@@ -39,7 +39,7 @@ BTagSFHTag          shape  -      -      1      1             1      1      1   
 #Prefire             shape  -      -      1      1             1      1      1      1              1            1
 #PU                  shape  -      -      1      1             1      1      1      1              1            1
 * autoMCStats 0 0 1
-ZGNormSR1           rateParam  sr1       zg     1.0
+#ZGNormSR1           rateParam  sr1       zg     1.0
 ZGNormSR3           rateParam  sr3       zg     1.0
 WZNormSR1           rateParam  sr1       wz     1.0
 WZNormSR2           rateParam  sr2       wz     1.0
@@ -49,7 +49,7 @@ ZZNormSR3           rateParam  sr3       zz     1.0
 WWNorm              rateParam  sr1       ww     1.0
 WWNorm              rateParam  sr2       ww     1.0
 WWNorm              rateParam  sr3       ww     1.0
-ZGNormSR1           rateParam  zg_cr1    zg     1.0
+#ZGNormSR1           rateParam  zg_cr1    zg     1.0
 ZGNormSR3           rateParam  zg_cr3    zg     1.0
 WZNormSR1           rateParam  wz_cr1    wz     1.0
 WZNormSR2           rateParam  wz_cr2    wz     1.0

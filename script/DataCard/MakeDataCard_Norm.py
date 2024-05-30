@@ -39,23 +39,27 @@ masses = ["M100","M1000","M10000"]
 SRpath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegion_Plotter/LimitExtraction/"
 CRpath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/LimitExtraction/"
 
-#myWPs = ["240422_HNL_ULID"]
-#myWPs = ["240501_1704_HNL_ULID","240501_1704_HNTightV2"]
-#myWPs = ["240504_PR44_HNL_ULID"]
-#myWPs = ["240505_PR45_HNL_ULID"]
-#myWPs = ["240505_PR46_HNL_ULID","240505_PR46_HNTightV2"]
-#myWPs = ["rateParam_HNL_ULID_PR46"]
-#myWPs = ["PR48_rateParam_HNL_ULID"]
-myWPs = ["PR51_HNL_ULID"]
+#InputWPs = ["240422_HNL_ULID"]
+#InputWPs = ["240501_1704_HNL_ULID","240501_1704_HNTightV2"]
+#InputWPs = ["240504_PR44_HNL_ULID"]
+#InputWPs = ["240505_PR45_HNL_ULID"]
+#InputWPs = ["240505_PR46_HNL_ULID","240505_PR46_HNTightV2"]
+#InputWPs = ["rateParam_HNL_ULID_PR46"]
+#InputWPs = ["PR48_rateParam_HNL_ULID"]
+InputWPs = ["PR51_HNL_ULID"]
+#OutputWP = "_NOsr2inv"
+OutputWP = "_NOsr2inv_NOzgcr1"
 
 ################################################################################################################################################
 
-def CardSetting(isCR, era, channel, mass):
+def CardSetting(isCR, WP, era, channel, mass):
 
   with open("/data6/Users/jihkim/CombineTool/CMSSW_10_2_13/src/DataCardsShape/HNL_SignalRegion_Plotter/card_skeleton_Norm.txt",'r') as f: # your workspace
     lines = f.readlines()
 
-  regions_cr = ["sr1_inv","sr2_inv","sr3_inv","cf_cr","ww_cr","wz_cr1","wz_cr2","wz_cr3","zg_cr1","zg_cr3","zz_cr1","zz_cr3"]
+  #regions_cr = ["sr1_inv","sr2_inv","sr3_inv","cf_cr","ww_cr","wz_cr1","wz_cr2","wz_cr3","zg_cr1","zg_cr3","zz_cr1","zz_cr3"]
+  #regions_cr = ["sr1_inv","sr3_inv","cf_cr","ww_cr","wz_cr1","wz_cr2","wz_cr3","zg_cr1","zg_cr3","zz_cr1","zz_cr3"]
+  regions_cr = ["sr1_inv","sr3_inv","cf_cr","ww_cr","wz_cr1","wz_cr2","wz_cr3","zg_cr3","zz_cr1","zz_cr3"]
   lines_cr = {}
   # cr norm setting
   for region in regions_cr:
@@ -130,31 +134,33 @@ if args.Syst:
 else:
   systTag = ""
 
-for WP in myWPs:
+for InputWP in InputWPs:
+  OutputWP = InputWP+OutputWP
+
   if not args.Combine:
-    os.system("mkdir -p "+WP)
-    os.system("ln -s /data6/Users/jihkim/SKFlatAnalyzer/script/DataCard/MakeWorkspace.py "+WP)
-    os.system("ln -s /data6/Users/jihkim/SKFlatAnalyzer/script/DataCard/CheckNuisance.py "+WP)
+    os.system("mkdir -p "+OutputWP)
+    os.system("ln -s /data6/Users/jihkim/SKFlatAnalyzer/script/DataCard/MakeWorkspace.py "+OutputWP)
+    os.system("ln -s /data6/Users/jihkim/SKFlatAnalyzer/script/DataCard/CheckNuisance.py "+OutputWP)
 
     for era, channel, mass in [(era, channel, mass) for era in eras for channel in channels for mass in masses]:
-      this_card = CardSetting(args.CR, era, channel, mass)
+      this_card = CardSetting(args.CR, InputWP, era, channel, mass)
       if args.CR:
         for region in this_card[0].keys():
-          with open(WP+"/card_"+era+"_"+channel+"_"+mass+"_"+region+systTag+".txt",'w') as f:
+          with open(OutputWP+"/card_"+era+"_"+channel+"_"+mass+"_"+region+systTag+".txt",'w') as f:
             for line in this_card[0][region]:
               f.write(line)
         for region in this_card[1].keys():
-          with open(WP+"/card_"+era+"_"+channel+"_"+mass+"_"+region+".txt",'w') as f:
+          with open(OutputWP+"/card_"+era+"_"+channel+"_"+mass+"_"+region+".txt",'w') as f:
             for line in this_card[1][region]:
               f.write(line)
       else:
         for region in this_card.keys():
-          with open(WP+"/card_"+era+"_"+channel+"_"+mass+"_sronly_"+region+systTag+".txt",'w') as f:
+          with open(OutputWP+"/card_"+era+"_"+channel+"_"+mass+"_sronly_"+region+systTag+".txt",'w') as f:
             for line in this_card[region]:
               f.write(line)
 
   else:
-    os.chdir(WP)
+    os.chdir(OutputWP)
     os.system('echo \'Currently combining cards at...\'')
     os.system('pwd')
     if args.Syst:
@@ -168,15 +174,15 @@ for WP in myWPs:
                                      sr1=card_"+era+"_"+channel+"_"+mass+"_sr1"+systTag+".txt \
                                      sr2=card_"+era+"_"+channel+"_"+mass+"_sr2"+systTag+".txt \
                                      sr3=card_"+era+"_"+channel+"_"+mass+"_sr3"+systTag+".txt \
-                                     sr1_inv=card_"+era+"_"+channel+"_"+mass+"_sr1_inv.txt \
-                                     sr2_inv=card_"+era+"_"+channel+"_"+mass+"_sr2_inv.txt \
-                                     sr3_inv=card_"+era+"_"+channel+"_"+mass+"_sr3_inv.txt "\
+                                     sr1_inv=card_"+era+"_"+channel+"_"+mass+"_sr1_inv.txt "\
+                                     #sr2_inv=card_"+era+"_"+channel+"_"+mass+"_sr2_inv.txt \
+                                     +"sr3_inv=card_"+era+"_"+channel+"_"+mass+"_sr3_inv.txt "\
                                      #sr=card_"+era+"_"+channel+"_"+mass+"_sr"+systTag+".txt \
                                      #sr_inv=card_"+era+"_"+channel+"_"+mass+"_sr_inv.txt "\
                                      +Add_cf_cr+" \
-                                     ww_cr=card_"+era+"_"+channel+"_"+mass+"_ww_cr.txt \
-                                     zg_cr1=card_"+era+"_"+channel+"_"+mass+"_zg_cr1.txt \
-                                     zg_cr3=card_"+era+"_"+channel+"_"+mass+"_zg_cr3.txt \
+                                     ww_cr=card_"+era+"_"+channel+"_"+mass+"_ww_cr.txt "\
+                                     #zg_cr1=card_"+era+"_"+channel+"_"+mass+"_zg_cr1.txt \
+                                     +"zg_cr3=card_"+era+"_"+channel+"_"+mass+"_zg_cr3.txt \
                                      wz_cr1=card_"+era+"_"+channel+"_"+mass+"_wz_cr1.txt \
                                      wz_cr2=card_"+era+"_"+channel+"_"+mass+"_wz_cr2.txt \
                                      wz_cr3=card_"+era+"_"+channel+"_"+mass+"_wz_cr3.txt \

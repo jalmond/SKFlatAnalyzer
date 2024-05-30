@@ -28,22 +28,23 @@ masses = ["M100","M1000","M10000"]
 #channels = ["EMu"]
 channels = ["MuMu","EE","EMu"]
 input_path = "/data6/Users/jihkim/CombineTool/CMSSW_10_2_13/src/DataCardsShape/HNL_SignalRegion_Plotter/"
-#myWPs = ["240422_HNL_ULID"]
-#myWPs = ["240501_1704_HNL_ULID","240501_1704_HNTightV2"]
-#myWPs = ["240504_PR44_HNL_ULID"]
-#myWPs = ["240505_PR45_HNL_ULID"]
-#myWPs = ["240505_PR46_HNL_ULID","240505_PR46_HNTightV2"]
-#myWPs = ["rateParam_HNL_ULID"]
-#myWPs = ["PR48_rateParam_HNL_ULID"]
-myWPs = ["PR51_HNL_ULID"]
+#InputWPs = ["240422_HNL_ULID"]
+#InputWPs = ["240501_1704_HNL_ULID","240501_1704_HNTightV2"]
+#InputWPs = ["240504_PR44_HNL_ULID"]
+#InputWPs = ["240505_PR45_HNL_ULID"]
+#InputWPs = ["240505_PR46_HNL_ULID","240505_PR46_HNTightV2"]
+#InputWPs = ["rateParam_HNL_ULID"]
+#InputWPs = ["PR48_rateParam_HNL_ULID"]
+InputWPs = ["PR51_HNL_ULID"]
+OutputWP = "_NOsr2inv_NOzgcr1"
 #tags = ["_sronly"]
 tags = ["_syst"]
 
-for WP in myWPs:
-  with open("RunList_"+WP+".txt",'w') as f:
+for InputWP in InputWPs:
+  with open("RunList_"+InputWP+OutputWP+".txt",'w') as f:
     for year in years:
       for channel in channels:
         for mass in masses:
           for tag in tags:
-            card = input_path+WP+"/card_"+year+"_"+channel+"_"+mass+tag+".root\n"
+            card = input_path+InputWP+OutputWP+"/card_"+year+"_"+channel+"_"+mass+tag+".root\n"
             f.write(card)
