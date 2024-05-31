@@ -447,7 +447,7 @@ for tag in tags:
           print "input_hist :", LimitDir+"/"+tag+"/"+RegionToChannelMap[region][channel]+"/"+InputHistMass+RegionToHistSuffixMap[region][channel]
           input_hist = LimitDir+"/"+tag+"/"+RegionToChannelMap[region][channel]+"/"+InputHistMass+RegionToHistSuffixMap[region][channel]
           
-          print "##### Initiating",mass,channel,"..."
+          print "##### Initiating",region,mass,channel,"..."
           if not Blinded: h_data        = f_data.Get(input_hist)
           h_fake          = f_fake.Get(input_hist)
           h_cf            = f_cf.Get(input_hist)

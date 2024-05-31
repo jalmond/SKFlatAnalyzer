@@ -66,7 +66,8 @@ def CardSetting(isCR, WP, era, channel, mass):
     this_lines_cr = lines[:]
     this_lines_cr[4] = "shapes * *  "+CRpath+WP+"/"+era+"/"+region+"/"+mass+"_"+channel+"_card_input.root $PROCESS $PROCESS_$SYSTEMATIC\n"
     if (region == "cf_cr" and "Mu" in channel): continue
-    this_lines_cr[17] = "rate                       -1     -1     -1     -1            -1     -1     -1     -1             0            0\n"  # no signal
+    if "Mu" in channel: this_lines_cr[17] = "rate                       -1     0      -1     -1            -1     -1     -1     -1             0            0\n"  # no cf, signal
+    else: this_lines_cr[17] = "rate                       -1     -1     -1     -1            -1     -1     -1     -1             0            0\n"  # no signal
     for i in range(len(this_lines_cr)):
       this_lines_cr[i] = this_lines_cr[i].replace('bin1',region)
     for i in range(22,40):
