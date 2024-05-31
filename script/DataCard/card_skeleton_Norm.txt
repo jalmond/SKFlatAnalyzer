@@ -44,7 +44,7 @@ ZGNormSR3           rateParam  sr3       zg     1.0
 WZNormSR1           rateParam  sr1       wz     1.0
 WZNormSR2           rateParam  sr2       wz     1.0
 WZNormSR3           rateParam  sr3       wz     1.0
-ZZNormSR1           rateParam  sr1       zz     1.0
+#ZZNormSR1           rateParam  sr1       zz     1.0
 ZZNormSR3           rateParam  sr3       zz     1.0
 WWNorm              rateParam  sr1       ww     1.0
 WWNorm              rateParam  sr2       ww     1.0
@@ -54,6 +54,6 @@ ZGNormSR3           rateParam  zg_cr3    zg     1.0
 WZNormSR1           rateParam  wz_cr1    wz     1.0
 WZNormSR2           rateParam  wz_cr2    wz     1.0
 WZNormSR3           rateParam  wz_cr3    wz     1.0
-ZZNormSR1           rateParam  zz_cr1    zz     1.0
+#ZZNormSR1           rateParam  zz_cr1    zz     1.0
 ZZNormSR3           rateParam  zz_cr3    zz     1.0
 WWNorm              rateParam  ww_cr     ww     1.0

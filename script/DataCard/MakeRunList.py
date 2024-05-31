@@ -36,7 +36,7 @@ input_path = "/data6/Users/jihkim/CombineTool/CMSSW_10_2_13/src/DataCardsShape/H
 #InputWPs = ["rateParam_HNL_ULID"]
 #InputWPs = ["PR48_rateParam_HNL_ULID"]
 InputWPs = ["PR51_HNL_ULID"]
-OutputWP = "_NOsr2inv_NOzgcr1"
+OutputWP = "_NOsr2inv_NOcr1Norm_FixCF"
 #tags = ["_sronly"]
 tags = ["_syst"]
 

@@ -48,7 +48,8 @@ CRpath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_
 #InputWPs = ["PR48_rateParam_HNL_ULID"]
 InputWPs = ["PR51_HNL_ULID"]
 #OutputWP = "_NOsr2inv"
-OutputWP = "_NOsr2inv_NOzgcr1"
+#OutputWP = "_NOsr2inv_NOzgcr1"
+OutputWP = "_NOsr2inv_NOcr1Norm_FixCF"
 
 ################################################################################################################################################
 
@@ -59,7 +60,8 @@ def CardSetting(isCR, WP, era, channel, mass):
 
   #regions_cr = ["sr1_inv","sr2_inv","sr3_inv","cf_cr","ww_cr","wz_cr1","wz_cr2","wz_cr3","zg_cr1","zg_cr3","zz_cr1","zz_cr3"]
   #regions_cr = ["sr1_inv","sr3_inv","cf_cr","ww_cr","wz_cr1","wz_cr2","wz_cr3","zg_cr1","zg_cr3","zz_cr1","zz_cr3"]
-  regions_cr = ["sr1_inv","sr3_inv","cf_cr","ww_cr","wz_cr1","wz_cr2","wz_cr3","zg_cr3","zz_cr1","zz_cr3"]
+  #regions_cr = ["sr1_inv","sr3_inv","cf_cr","ww_cr","wz_cr1","wz_cr2","wz_cr3","zg_cr3","zz_cr1","zz_cr3"]
+  regions_cr = ["sr1_inv","sr3_inv","cf_cr","ww_cr","wz_cr1","wz_cr2","wz_cr3","zg_cr3","zz_cr3"]
   lines_cr = {}
   # cr norm setting
   for region in regions_cr:
@@ -181,13 +183,11 @@ for InputWP in InputWPs:
                                      #sr=card_"+era+"_"+channel+"_"+mass+"_sr"+systTag+".txt \
                                      #sr_inv=card_"+era+"_"+channel+"_"+mass+"_sr_inv.txt "\
                                      +Add_cf_cr+" \
-                                     ww_cr=card_"+era+"_"+channel+"_"+mass+"_ww_cr.txt "\
-                                     #zg_cr1=card_"+era+"_"+channel+"_"+mass+"_zg_cr1.txt \
-                                     +"zg_cr3=card_"+era+"_"+channel+"_"+mass+"_zg_cr3.txt \
+                                     ww_cr=card_"+era+"_"+channel+"_"+mass+"_ww_cr.txt \
+                                     zg_cr3=card_"+era+"_"+channel+"_"+mass+"_zg_cr3.txt \
                                      wz_cr1=card_"+era+"_"+channel+"_"+mass+"_wz_cr1.txt \
                                      wz_cr2=card_"+era+"_"+channel+"_"+mass+"_wz_cr2.txt \
                                      wz_cr3=card_"+era+"_"+channel+"_"+mass+"_wz_cr3.txt \
-                                     zz_cr1=card_"+era+"_"+channel+"_"+mass+"_zz_cr1.txt \
                                      zz_cr3=card_"+era+"_"+channel+"_"+mass+"_zz_cr3.txt \
                                      > card_"+era+"_"+channel+"_"+mass+systTag+".txt")
       elif args.Combine == "SR":
