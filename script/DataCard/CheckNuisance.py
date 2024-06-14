@@ -41,10 +41,10 @@ for year in years:
         print "Processing",ws_name,"..."
 
         dict_log = {}
-        dict_log["FitDiag"] = cmd.getstatusoutput("combine -M FitDiagnostics "+ws+" --rMin -1 --rMax 2 -n "+ws_name+" --plots")
-        dict_log["iniFit"]  = cmd.getstatusoutput("combineTool.py -M Impacts -d "+ws+" -m "+mass.replace("M","")+" --rMin -1 --rMax 2 --robustFit 1 --doInitialFit --name "+ws_name)
-        dict_log["actFit"]  = cmd.getstatusoutput("combineTool.py -M Impacts -d "+ws+" -m "+mass.replace("M","")+" --rMin -1 --rMax 2 --robustFit 1 --doFits --name "+ws_name)
-        dict_log["Impjson"] = cmd.getstatusoutput("combineTool.py -M Impacts -d "+ws+" -m "+mass.replace("M","")+" --rMin -1 --rMax 2 --robustFit 1 --output "+ws_name+"_impacts.json --name "+ws_name)
+        dict_log["FitDiag"] = cmd.getstatusoutput("combine -M FitDiagnostics "+ws+" --rMin -10 --rMax 10 -n "+ws_name+" --plots")
+        dict_log["iniFit"]  = cmd.getstatusoutput("combineTool.py -M Impacts -d "+ws+" -m "+mass.replace("M","")+" --rMin -10 --rMax 10 --robustFit 1 --doInitialFit --name "+ws_name)
+        dict_log["actFit"]  = cmd.getstatusoutput("combineTool.py -M Impacts -d "+ws+" -m "+mass.replace("M","")+" --rMin -10 --rMax 10 --robustFit 1 --doFits --name "+ws_name)
+        dict_log["Impjson"] = cmd.getstatusoutput("combineTool.py -M Impacts -d "+ws+" -m "+mass.replace("M","")+" --rMin -10 --rMax 10 --robustFit 1 --output "+ws_name+"_impacts.json --name "+ws_name)
         dict_log["Impplot"] = cmd.getstatusoutput("plotImpacts.py -i "+ws_name+"_impacts.json -o "+ws_name)
         for key, value in dict_log.items():
           with open(key+".log",'w') as f:

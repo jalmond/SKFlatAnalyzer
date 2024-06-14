@@ -35,7 +35,8 @@ tags = ["HNL_ULID"] # HNLParameter Name
 #outputTag = "240501_1704_" # tag the output directory name as you wish
 #outputTag = "rateParam_" # tag the output directory name as you wish
 #outputTag = "PR48_rateParam_" # tag the output directory name as you wish
-outputTag = "PR51_" # tag the output directory name as you wish
+#outputTag = "PR51_" # tag the output directory name as you wish
+outputTag = "PR51_rescale_" # tag the output directory name as you wish
 
 # Skim
 DataSkim = "_SkimTree_HNMultiLepBDT_"
@@ -438,7 +439,9 @@ for tag in tags:
             RegionToHistSuffixMap[region][channel] = RegionToHistSuffixMap[region][channel].replace('BDT','') # FIXME make sure SR and CR share the same naming convention
 
           # Set channel dependent scaler first
-          DYVBFscaler = 0.01 # Set the signalDYVBF scaler
+          if int(mass.replace("M","")) <= 500: DYVBFscaler = 0.01
+          elif int(mass.replace("M","")) <= 3000: DYVBFscaler = 0.1
+          else: DYVBFscaler = 1.
           if "EMu" in channel:
             SSWWscaler = 4.*DYVBFscaler*DYVBFscaler # Set the EMu signalSSWW scaler
           else:

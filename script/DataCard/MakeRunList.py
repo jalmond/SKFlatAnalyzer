@@ -35,8 +35,13 @@ input_path = "/data6/Users/jihkim/CombineTool/CMSSW_10_2_13/src/DataCardsShape/H
 #InputWPs = ["240505_PR46_HNL_ULID","240505_PR46_HNTightV2"]
 #InputWPs = ["rateParam_HNL_ULID"]
 #InputWPs = ["PR48_rateParam_HNL_ULID"]
-InputWPs = ["PR51_HNL_ULID"]
-OutputWP = "_NOsr2inv_NOcr1Norm_FixCF"
+#InputWPs = ["PR51_HNL_ULID"]
+InputWPs = ["PR51_rescale_HNL_ULID"]
+#OutputWP = "_NOsr2inv_NOcr1Norm_FixCF"
+#OutputWP = "_NOsr2inv_IncNorm"
+#OutputWP = "_AltStat"
+#OutputWP = "_NoStat"
+OutputWP = ""
 #tags = ["_sronly"]
 tags = ["_syst"]
 
