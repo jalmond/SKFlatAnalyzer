@@ -15,14 +15,13 @@ void HNL_ControlRegion_Plotter::executeEvent(){
   else run_Debug=false;
 
   ///// LIST IDs to run
-  vector<TString> LepIDs = {"HNL_ULID"};//,"TopHN", "DefaultPOGTight"};
-  if(strcmp(std::getenv("USER"),"jalmond")==0) LepIDs = {"HNL_ULID","HNTightV2" ,"TopHN"};//, "POGTight"};
+  vector<TString> LepIDs = {"HNL_ULID","HNTightV2"};//,"TopHN", "DefaultPOGTight"};
+  if(strcmp(std::getenv("USER"),"jalmond")==0) LepIDs = {"HNL_ULID","HNTightV2" };//, "POGTight"};
   if(RunFakeTF) LepIDs = {"HNL_ULID"};
-  
+
   //// List Channels to run
   vector<HNL_LeptonCore::Channel> ChannelsToRun = {MuMu,EE,EMu };
   
-  vector<TString> RegionsToPlot = {"SSMultiLep","Dilepton"}; 
   
   ///// Run command 
 

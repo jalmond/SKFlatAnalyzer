@@ -11,6 +11,7 @@ HNL_LeptonCore::initializeAnalyzer();
 
 void HNL_CrossCheck::executeEvent(){
 
+
   if(!(_jentry%10000)) run_Debug=true;
   else run_Debug=false;
 
@@ -128,11 +129,80 @@ void HNL_CrossCheck::RunControlRegions(AnalyzerParameter param, vector<TString> 
   if(RunNP){
     if(LepsT.size() < 2) return ;    
 
+    for(auto ilep : LepsT){
+      if(ilep->IsConv()){
+	if(HasMEPhoton(*ilep)){
+	  cout << "External Conv " << endl;
+	  int Idx_Closest    = GenMatchedIdx(*ilep,All_Gens);
+	  cout <<"Idx_Closest = " << Idx_Closest<< endl;
+	  if(Idx_Closest > 0) FillHist("ConvExt/"+ilep->GetFlavour()+"/Lep/Gen_Pt", All_Gens[Idx_Closest].Pt()   ,  weight, 200, 0, 200 );
+	  FillHist("ConvExt/"+ilep->GetFlavour()+"/Lep/Reco_Pt", ilep->Pt()   ,  weight, 200, 0, 200 );
+	  
+	  for(unsigned int i=2; i<All_Gens.size(); i++){
+	    Gen gen = All_Gens.at(i);
+	    if(Idx_Closest < 0 && ilep->DeltaR(gen) < 0.2 ) {
+	      if(gen.PID() == 22) {
+		FillHist("ConvExt/"+ilep->GetFlavour()+"/Ph/Gen_Mass", gen.M()   ,  weight, 200, 0, 200 );
+		FillHist("ConvExt/"+ilep->GetFlavour()+"/Ph/Gen_Pt", gen.Pt()   ,  weight, 100, 0, 500 );
+	      }
+	    }
+	  }
+	}
+	else if(ilep->LeptonGenType() < 0){
+	  int Idx_Closest    = GenMatchedIdx(*ilep,All_Gens);
+	  
+          if(Idx_Closest > 0) FillHist("ConvExt2/"+ilep->GetFlavour()+"/Lep/Gen_Pt", All_Gens[Idx_Closest].Pt()   ,  weight, 200, 0, 200 );
+          FillHist("ConvExt2/"+ilep->GetFlavour()+"/Lep/Reco_Pt", ilep->Pt()   ,  weight, 200, 0, 200 );
+
+	  for(unsigned int i=2; i<All_Gens.size(); i++){
+            Gen gen = All_Gens.at(i);
+            if(Idx_Closest < 0 && ilep->DeltaR(gen) < 0.2 ) {
+              if(gen.PID() == 22) {
+		FillHist("ConvExt2/"+ilep->GetFlavour()+"/Ph/Gen_Mass", gen.M()   ,  weight, 200, 0, 200 );
+                FillHist("ConvExt2/"+ilep->GetFlavour()+"/Ph/Gen_Pt", gen.Pt()   ,  weight, 100, 0, 500 );
+              }
+            }
+          }
+
+	}
+	else{
+	  //cout << "Internal Conv" << endl;
+	  int Idx_Closest    = GenMatchedIdx(*ilep,All_Gens);
+	  //cout << "Idx_Closest = " << Idx_Closest << endl;
+	  Gen Mother = GenGetMother(All_Gens[Idx_Closest]);
+	  
+	  Particle  Gamma = All_Gens[Idx_Closest];
+          for(unsigned int i=2; i<All_Gens.size(); i++){
+	    if(i == Idx_Closest) continue;
+	    if(All_Gens.at(i).Status() != 1) continue;
+	    if(GenGetMother(All_Gens.at(i)).Index() == Mother.Index()) Gamma = Gamma + All_Gens.at(i);
+	  }
+
+          if(Idx_Closest > 0) FillHist("IntConv/"+ilep->GetFlavour()+"/Lep/Gen_Pt", All_Gens[Idx_Closest].Pt()   ,  weight, 200  , 0, 200 );
+          FillHist("IntConv/"+ilep->GetFlavour()+"/Lep/Reco_Pt", ilep->Pt()   ,  weight, 200, 0, 200 );
+
+
+
+	  FillHist("ConvInt/"+ilep->GetFlavour()+"/Ph/Gen_Mass", Gamma.M()   ,  weight, 200, 0, 200 );
+	  FillHist("ConvInt/"+ilep->GetFlavour()+"/Ph/Gen_Pt", Gamma.Pt()   ,  weight, 100, 0, 500 );
+	  
+	  //PrintGen(All_Gens);
+	  //for(auto i : LepsT) cout << i->GetFlavour() << " "  << i->PrintInfo() << " LeptonIsPromptConv=" << i->LeptonIsPromptConv() <<  endl;
+
+	  //for(auto i : LepsT) PrintMatchedGen( All_Gens,*i);
+
+	  return;
+	}
+	cout << "CONV ????  " << endl;
+      }
+    }
+    
+    return;
     Particle ll =  (*LepsT[0]) + (*LepsT[1]);
     if(LepsT.size() ==2 && ll.M() < M_CUT_NonSR3_LL) return ;
     
     //    if(! ( (LepsT[0]->IsPrompt() && LepsT[1]->IsPrompt() )  || ( LepsT[0]->LeptonIsCF() || LepsT[1]->LeptonIsCF()  ))) return;
-    if( ! ( HasMEPhoton(*LepsT[0]) && LepsT[0]->LeptonGenType() > 0) || ( HasMEPhoton(*LepsT[1]) && LepsT[1]->LeptonGenType() > 0) || ( !HasMEPhoton(*LepsT[0]) && LepsT[0]->LeptonGenType() < 0) || ( !HasMEPhoton(*LepsT[1]) && LepsT[1]->LeptonGenType() < 0) ) return;
+    //    if( ! ( HasMEPhoton(*LepsT[0]) && LepsT[0]->LeptonGenType() > 0) || ( HasMEPhoton(*LepsT[1]) && LepsT[1]->LeptonGenType() > 0) || ( !HasMEPhoton(*LepsT[0]) && LepsT[0]->LeptonGenType() < 0) || ( !HasMEPhoton(*LepsT[1]) && LepsT[1]->LeptonGenType() < 0) ) return;
     
     if(CheckLeptonFlavourForChannel(dilep_channel,LepsT ) && SameCharge(LepsT)){
       cout << " " << endl;
@@ -176,11 +246,14 @@ void HNL_CrossCheck::RunControlRegions(AnalyzerParameter param, vector<TString> 
 	cout << "Idx_Closest1 = " << Idx_Closest1 << " Idx_Closest2 = " << Idx_Closest2 << endl;
 
 	PrintGen(All_Gens);
-	for(auto i : LepsT)PrintMatchedGen( All_Gens,*i);
+	
         for(auto i : LepsT)   cout << i->GetFlavour() << " "  << i->PrintInfo() <<  endl;
         for(auto i : LepsT)   cout << "Is CF = " << i->LeptonIsCF() << endl;
         for(auto i : LepsT)   cout << i->GetFlavour() << " "  << i->PrintInfo() << " LeptonIsPromptConv=" << i->LeptonIsPromptConv() <<  endl;
 
+	
+	for(auto i : LepsT)PrintMatchedGen( All_Gens,*i);
+	
 	for(unsigned int i=2; i<All_Gens.size(); i++){
 	  Gen gen = All_Gens.at(i);
 	  if(Idx_Closest1 < 0 && LepsT[0]->DeltaR(gen) < 0.2) {

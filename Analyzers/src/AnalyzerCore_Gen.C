@@ -440,16 +440,26 @@ void AnalyzerCore::PrintMatchedGen(std::vector<Gen>& gens,const Lepton& Lep){
   for(unsigned int i=2; i<gens.size(); i++){
 
     Gen gen = gens.at(i);
-    vector<int> history = TrackGenSelfHistory(gen, gens);
 
     TString addon="";
     if(closest_index == i) addon = " ----> ";
     else addon="";
     if (Idx_Closest == i)  addon += " ----> ";
 
-    if(Lep.DeltaR(gen) < 0.4)  {
-      cout <<  i << "\t" << gen.SPID() << "\t" << gen.Status() << "\t" << gen.MotherIndex() << "\t" << gens.at(gen.MotherIndex()).SPID()<< "\t" << history[0] << "\t";
-      printf("%.2f\t%.2f\t%.2f\t%.2f =======> DrMatched %.2f\t "  +addon+ "\n",gen.Pt(), gen.Eta(), gen.Phi(), gen.M(),Lep.DeltaR(gen));
+    if(MCSample.Contains("Sherpa")){
+      if(Lep.DeltaR(gen) < 0.4)  {
+        cout <<  i << "\t" << gen.SPID() << "\t" << gen.Status() << "\t" << gen.MotherIndex() << "\t";
+        printf("%.2f\t%.2f\t%.2f\t%.2f =======> DrMatched %.2f\t "  +addon+ "\n",gen.Pt(), gen.Eta(), gen.Phi(), gen.M(),Lep.DeltaR(gen));
+	
+      }
+    }
+    else{
+      if(Lep.DeltaR(gen) < 0.4)  {
+	vector<int> history = TrackGenSelfHistory(gen, gens);
+	cout <<  i << "\t" << gen.SPID() << "\t" << gen.Status() << "\t" << gen.MotherIndex() << "\t" << gens.at(gen.MotherIndex()).SPID()<< "\t" << history[0] << "\t";
+	printf("%.2f\t%.2f\t%.2f\t%.2f =======> DrMatched %.2f\t "  +addon+ "\n",gen.Pt(), gen.Eta(), gen.Phi(), gen.M(),Lep.DeltaR(gen));
+	
+      }
     }
   }
   return;
@@ -470,15 +480,18 @@ bool AnalyzerCore::HasPromptConv(Electron el){
   for(unsigned int i=2; i < All_Gens.size(); i++){
     if(TruthIdx == int(i)) continue;
     if(TruthIdx < 0) continue;
+
     if(fabs(All_Gens.at(TruthIdx).Eta()-All_Gens.at(i).Eta())>0.1) continue;
-    if(All_Gens.at(TruthIdx).DeltaPhi(All_Gens.at(i))>0.3) continue;
+    if(fabs(All_Gens.at(TruthIdx).DeltaPhi(All_Gens.at(i)))>0.3) continue;
+
     if(All_Gens[TruthIdx].MotherIndex() == All_Gens[i].MotherIndex()){
       if(All_Gens[i].Status() == 1) {
-        if(fabs(All_Gens[i].PID()) == 11) nSt1el++;
+        if(fabs(All_Gens[i].PID()) == 11) {
+	  nSt1el++;
+	}
       }
     }
   }
-
   ///// Rare cases of Z->e -> ph->e ;
   //// So history of matched el is Z  and is type 1 
   /*
@@ -595,8 +608,9 @@ bool AnalyzerCore::ConversionSplitting(std::vector<Lepton *> leps, bool RunConvM
   if(!RunConvMode) return true;
   if(IsData) return true;
 
+
   bool IsSampleConvSplit = false;
-  vector<TString> ConvSamples  = {"ZGTo","DYJet","WGToLNuG","WJet"};
+  vector<TString> ConvSamples  = {"ZGTo","DYJet","WGToLNuG"};
   for(auto i : ConvSamples) if (MCSample.Contains(i)) IsSampleConvSplit=true;
 
   if(!IsSampleConvSplit) return true;
@@ -606,19 +620,19 @@ bool AnalyzerCore::ConversionSplitting(std::vector<Lepton *> leps, bool RunConvM
   
   if(HasFlag("GENTConv")) SplitExtConv=true;
 
-  int nlep_pt15(0);
-  
+  //  int nlep_pt15(0);
+  bool LowPtConv = false;
   /// Only remove events if..
   if(nlep != int(leps.size())) return true;
   
   bool hasExtConv=false;
   for(auto ilep : leps){
     if(HasMEPhoton(*ilep)) hasExtConv=true;
-    if(ilep->Pt() > 15.) nlep_pt15++;
+    if(ilep->Pt() < 15. && ilep->IsConv()) LowPtConv=true;
   }
 
   if(MCSample.Contains("ZGTo")){
-    if(nlep_pt15 !=nlep ) return false;
+    if(LowPtConv) return false;
 
     if(SplitExtConv){
       if(hasExtConv) return true;
@@ -627,7 +641,9 @@ bool AnalyzerCore::ConversionSplitting(std::vector<Lepton *> leps, bool RunConvM
     else return true;
   }
   else if(MCSample.Contains("DYJets")) {
-    if(nlep_pt15 !=nlep) return true;
+
+    if(LowPtConv) return true;
+
     if(SplitExtConv){
       if(!hasExtConv) return true;
       else return false;
@@ -635,17 +651,17 @@ bool AnalyzerCore::ConversionSplitting(std::vector<Lepton *> leps, bool RunConvM
     else return false;
        
   }
+  
+  if(MCSample.Contains("WGToLNuG_MG")){
 
-  if(MCSample.Contains("WGTo")){
-    if(nlep_pt15 !=nlep ) return false;
-    else return true;
-  }
-  else if(MCSample.Contains("WJets")) {
-    if(nlep_pt15 !=nlep) return true;
+    if(LowPtConv) return true;
     else return false;
   }
-
-
+  else if(MCSample.Contains("WGToLNuG")) {
+    if(!LowPtConv) return true;
+    else return false;
+  }
+ 
 
   return true;
 

@@ -222,7 +222,7 @@ double FakeBackgroundEstimator::GetMuonFakeRate(TString ID, TString key, TString
   /// For Flvour bins binning is differen                                                                                                                                                   
 
   std::map< TString, TH2D* >::const_iterator mapit;
-  cout << "KEY FakeRate_"+ID+" _ "+key << endl;
+  //cout << "KEY FakeRate_"+ID+" _ "+key << endl;
   mapit = map_hist_Muon.find("FakeRate_"+ID+"_"+key);
 
   if(mapit==map_hist_Muon.end()){

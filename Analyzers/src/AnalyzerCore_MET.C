@@ -96,6 +96,19 @@ Particle AnalyzerCore::UpdateMETSyst(AnalyzerParameter param, const Particle& ME
     }
   }
 
+  if(param.syst_ == AnalyzerParameter::JetMassUp ||
+     param.syst_ == AnalyzerParameter::JetMassDown ||
+     param.syst_ == AnalyzerParameter::JetMassSmearUp ||
+     param.syst_ == AnalyzerParameter::JetMassSmearDown){
+
+    for(unsigned int i=0; i<fatjets.size(); i++){
+      px_orig += fatjets.at(i).PxUnSmeared();
+      py_orig += fatjets.at(i).PyUnSmeared();
+      px_corrected += fatjets.at(i).Px();
+      py_corrected += fatjets.at(i).Py();
+    }
+  }
+
   if(param.syst_ ==AnalyzerParameter::MuonEnUp ||
      param.syst_ ==AnalyzerParameter::MuonEnDown){
     for(unsigned int i=0; i<muons.size(); i++){

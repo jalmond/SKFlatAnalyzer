@@ -420,7 +420,6 @@ bool HNL_LeptonCore::PassTriggerAndCheckStream(bool apply_ptcut,vector<Lepton*> 
 
       if(ev.PassTrigger(itrig))  {
         trig_passed=true;
-	cout << "Pass trigger " << itrig << endl;
         if(apply_ptcut  && !PassPtTrigger(ev,  {itrig}, leps)) trig_passed=false;
 	
         if(trig_passed) return true;

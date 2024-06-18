@@ -544,6 +544,7 @@ std::vector<Electron> AnalyzerCore::GetAllElectrons(){
     else {
       if(fChain->GetBranch("electron_lepton_type")) el.SetLeptonType(electron_lepton_type->at(i));
     }
+
     el.SetLeptonIsPromptConv(HasPromptConv(el));
     el.SetLeptonIsCF(IsCF(el, All_Gens,true) );                                                                                                               
 
@@ -1563,7 +1564,13 @@ Particle AnalyzerCore::AddFatJetAndLepton(const FatJet& fatjet, const Lepton& le
 }
 
 
+bool AnalyzerCore::SelectEvent(int evnumber){
 
+  
+  if(int(event) == evnumber) return true;
+  else return false;
+			
+}
 
 void AnalyzerCore::PrintEvent(AnalyzerParameter param,TString selection,double w){
 
@@ -1765,7 +1772,7 @@ int AnalyzerCore::GetPrElType_InSameSCRange_Public(int TruthIdx, const std::vect
     if(TruthColl.at(it_gen).Status()!=1) continue;
     if(abs(TruthColl.at(it_gen).PID())!=11) continue;
     if(fabs(TruthColl.at(TruthIdx).Eta()-TruthColl.at(it_gen).Eta())>dEtaMax) continue;
-    if(TruthColl.at(TruthIdx).DeltaPhi(TruthColl.at(it_gen))>dPhiMax) continue;
+    if(fabs(TruthColl.at(TruthIdx).DeltaPhi(TruthColl.at(it_gen)))>dPhiMax) continue;
 
     int LepType = GetLeptonType_Public(it_gen, TruthColl);
     if(!(LepType>=1 && LepType<=3)) continue;

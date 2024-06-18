@@ -542,7 +542,7 @@ TString HNL_RegionDefinitions::RunSignalRegionWWString(bool ApplyForSR,HNL_Lepto
   double HT(0.);
   for(auto ij : JetLooseColl) HT += ij.Pt();
   
-  double htltcut = 1.;
+  double htltcut = 2.; //JH
   
   if(PassHMMet     && ApplyForSR) FillCutflow(Reg, w, RegionTag+"_met",param);
 
@@ -565,10 +565,13 @@ TString HNL_RegionDefinitions::RunSignalRegionWWString(bool ApplyForSR,HNL_Lepto
       
       if(ApplyForSR)Fill_RegionPlots(param,"Pass"+RegionTag ,  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);      
       
-      FillCutflow(Reg, w, RegionTag+"_ht_lt1",param);
+      FillCutflow(Reg, w, RegionTag+"_ht_lt2",param); //JH
       
-      if (L2Pt > 120)      return RegionTag+"_HTLTbin1";
-      return RegionTag+"_HTLTbin2";
+      if(HT/leps[0]->Pt() < 1.){
+        if (L2Pt > 120.)      return RegionTag+"_HTLTbin1";
+        else return RegionTag+"_HTLTbin2";
+      }
+      else return RegionTag+"_HTLTbin3";
     }
   }
   return "false";
@@ -994,22 +997,22 @@ TString HNL_RegionDefinitions::RunSignalRegionAK4String(bool ApplyForSR,HNL_Lept
     else     if(llJJ.M() < 400) Binvalue= 4.5;
     else Binvalue= 5.5;
   }
-  FillHist(  "LimitExtraction/"+ param.Name+"/LimitShape_"+RegionTag+"/Binnned",  Binvalue  ,  w, 6,0,6 ,"CR Binned");
+  FillHist(  "LimitExtraction/"+ param.Name+"/LimitShape_"+RegionTag+"/Binned",  Binvalue  ,  w, 6,0,6 ,"CR Binned");
 
   if(JetColl.size() < 2){
     //// These cuts are temp HL will check
     if(leps[1]->Pt() < 140. && met2_st < 5 ){
-      if(ApplyForSR)Fill_RegionPlots(param,"PassSR3_bin1" ,TauColl,  JetColl, AK8_JetColl, leps,  METv, nPV, w);
+      //if(ApplyForSR)Fill_RegionPlots(param,"PassSR3_bin1" ,TauColl,  JetColl, AK8_JetColl, leps,  METv, nPV, w);
       FillHist( "LimitExtraction/"+param.Name+"/LimitShape_"+RegionTag+"/RegionBins",  0.5,  w, 14, 0,14,  RegionTag+" Bins");
       return RegionTag+"_bin1";
     }
     else if(leps[1]->Pt() < 250. && met2_st < 5 ){
-      if(ApplyForSR)Fill_RegionPlots(param,"PassSR3_bin2" ,TauColl,  JetColl, AK8_JetColl, leps,  METv, nPV, w);
+      //if(ApplyForSR)Fill_RegionPlots(param,"PassSR3_bin2" ,TauColl,  JetColl, AK8_JetColl, leps,  METv, nPV, w);
       FillHist( "LimitExtraction/"+param.Name+"/LimitShape_"+RegionTag+"/RegionBins",  1.5,  w, 14, 0,14,  RegionTag+" Bins");
       return RegionTag+"_bin2";
     }
     else  if(leps[1]->Pt() > 250.) {
-      if(ApplyForSR)Fill_RegionPlots(param,"PassSR3_bin3" ,TauColl,  JetColl, AK8_JetColl, leps,  METv, nPV, w);
+      //if(ApplyForSR)Fill_RegionPlots(param,"PassSR3_bin3" ,TauColl,  JetColl, AK8_JetColl, leps,  METv, nPV, w);
       FillHist( "LimitExtraction/"+param.Name+"/LimitShape_"+RegionTag+"/RegionBins",  2.5,  w, 14, 0,14,  RegionTag+" Bins");
       return RegionTag+"_bin3";
     }
@@ -1052,30 +1055,30 @@ TString HNL_RegionDefinitions::RunSignalRegionAK4String(bool ApplyForSR,HNL_Lept
   TString LimitBin = "";
 
   if(Wcand.M() < 400 || leps[0]->Pt() < pt_bin1) {
-    if(ApplyForSR)Fill_RegionPlots(param,"PassSR3_bin4" ,TauColl,  JetColl, AK8_JetColl, leps,  METv, nPV, w);
+    //if(ApplyForSR)Fill_RegionPlots(param,"PassSR3_bin4" ,TauColl,  JetColl, AK8_JetColl, leps,  METv, nPV, w);
     LimitBin=RegionTag+"_bin4";
     FillCutflow(Reg, w, RegionTag+"_W1Mass",param);
     FillCutflow(Reg, w, RegionTag+"_LepPt",param);
   }
   else  if(Wcand.M() < 600 ) {
-    if(ApplyForSR)Fill_RegionPlots(param,"PassSR3_bin5to7" ,TauColl,  JetColl, AK8_JetColl, leps,  METv, nPV, w);
+    //if(ApplyForSR)Fill_RegionPlots(param,"PassSR3_bin5to7" ,TauColl,  JetColl, AK8_JetColl, leps,  METv, nPV, w);
     if(leps[0]->Pt() < 200) LimitBin=RegionTag+"_bin5"; 
     else if(met2_st < 2)      LimitBin=RegionTag+"_bin6";
     else LimitBin=RegionTag+"_bin7";
   }
   else if(Wcand.M() < 800 ) {
-    if(ApplyForSR)Fill_RegionPlots(param,"PassSR3_bin8to10" ,TauColl,  JetColl, AK8_JetColl, leps,  METv, nPV, w);
+    //if(ApplyForSR)Fill_RegionPlots(param,"PassSR3_bin8to10" ,TauColl,  JetColl, AK8_JetColl, leps,  METv, nPV, w);
     if(leps[0]->Pt() < 200) LimitBin=RegionTag+"_bin8";
     else if(met2_st < 2)      LimitBin=RegionTag+"_bin9";
     else LimitBin=RegionTag+"_bin10";
   }
   else if(Wcand.M() < 1000 ) {
-    if(ApplyForSR)Fill_RegionPlots(param,"PassSR3_bin11to12" ,TauColl,  JetColl, AK8_JetColl, leps,  METv, nPV, w);
+    //if(ApplyForSR)Fill_RegionPlots(param,"PassSR3_bin11to12" ,TauColl,  JetColl, AK8_JetColl, leps,  METv, nPV, w);
     if(met2_st < 2) LimitBin=RegionTag+"_bin11"; 
     else LimitBin=RegionTag+"_bin12";
   }
   else{
-    if(ApplyForSR)Fill_RegionPlots(param,"PassSR3_bin13to14" ,TauColl,  JetColl, AK8_JetColl, leps,  METv, nPV, w);
+    //if(ApplyForSR)Fill_RegionPlots(param,"PassSR3_bin13to14" ,TauColl,  JetColl, AK8_JetColl, leps,  METv, nPV, w);
     if(met2_st < 2) LimitBin=RegionTag+"_bin13";
     else LimitBin=RegionTag+"_bin14";
   }

@@ -129,7 +129,7 @@ public:
   std::vector<Tau>       GetTaus(TString ID, double ptmin, double fetamax);
 
 
-
+  bool SelectEvent(int evnumber);
   
   //// =================  BDT Functions AnalyzerCore_IDBDT.C ================= 
 

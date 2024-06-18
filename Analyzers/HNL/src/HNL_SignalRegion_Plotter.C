@@ -31,9 +31,9 @@ void HNL_SignalRegion_Plotter::executeEvent(){
       //RunSyst=false;
       if(RunSyst){
         TString param_name = param.Name;
-        //vector<AnalyzerParameter::Syst> SystList = GetSystList("Initial");
+        vector<AnalyzerParameter::Syst> SystList = GetSystList("Initial");
         //vector<AnalyzerParameter::Syst> SystList = GetSystList("Jets");
-        vector<AnalyzerParameter::Syst> SystList = GetSystList("Quick");
+        //vector<AnalyzerParameter::Syst> SystList = GetSystList("Quick");
         
         for(auto isyst : SystList){
           param.syst_ = AnalyzerParameter::Syst(isyst);

@@ -36,7 +36,8 @@ tags = ["HNL_ULID"] # HNLParameter Name
 #outputTag = "rateParam_" # tag the output directory name as you wish
 #outputTag = "PR48_rateParam_" # tag the output directory name as you wish
 #outputTag = "PR51_" # tag the output directory name as you wish
-outputTag = "PR51_rescale_" # tag the output directory name as you wish
+#outputTag = "PR51_rescale_" # tag the output directory name as you wish
+outputTag = "PR52_" # tag the output directory name as you wish
 
 # Skim
 DataSkim = "_SkimTree_HNMultiLepBDT_"
@@ -48,12 +49,12 @@ MCSkim = "_SkimTree_HNMultiLepBDT_"
 SignalSkim = "_SkimTree_HNMultiLepBDT_"
 
 # This will do necessary hadd for you.
-MergeData   = False
-MergeFake   = False  # RunFake
-MergeCF     = False  # RunCF
-MergeConv   = False  # RunConv
-MergeMC     = False  # RunPrompt
-MergeSignal = False
+MergeData   = True
+MergeFake   = True  # RunFake
+MergeCF     = True  # RunCF
+MergeConv   = True  # RunConv
+MergeMC     = True  # RunPrompt
+MergeSignal = True
 #MergeDYVBF = True
 #MergeSSWW  = True
 
@@ -151,8 +152,8 @@ InputPath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/"+Analyzer+"/"
 
 ##### Start merging #####
 MergeList = {}
-MergeList['Conv_inc']      = ["TG","TTG","WZG","WWG","WGToLNuG","WGJJToLNu","ZGToLLG","DYJets_MG"] #FIXME time to time
-MergeList['Conv_others']   = ["TG","TTG","WZG","WWG","WGToLNuG","WGJJToLNu"] #FIXME time to time
+MergeList['Conv_inc']      = ["TG","TTG","WZG","WWG","WGToLNuG","WGToLNuG_MG","WGJJToLNu","ZGToLLG","DYJets_MG"] #FIXME time to time
+MergeList['Conv_others']   = ["TG","TTG","WZG","WWG","WGToLNuG","WGToLNuG_MG","WGJJToLNu"] #FIXME time to time
 MergeList['ZG_norm']       = ["DYJets_MG","ZGToLLG"] #FIXME add this after applying ConversionSpltting
 MergeList['ZZ_norm']       = ["ZZTo4L_powheg","GluGluToZZto4e","GluGluToZZto4mu","GluGluToZZto2e2mu"] #FIXME time to time
 MergeList['WZ_norm']       = ["WZTo3LNu_mllmin4p0_powheg","WZ_EWK"] #FIXME time to time
@@ -352,12 +353,6 @@ if MergeSignal:
                                                + " " + InputPath+"/2018/*VBFTypeI*"+mass+"_private.root"\
                      ) != 0:
             os.system("rm " + OutFileVBF) # remove the output if there is any unmatched process
-          if os.system("hadd -f " + OutFileDYVBF + " " + InputPath+"/2016preVFP/*DYTypeI*"+mass+"_private.root" + " " + InputPath+"/2016preVFP/*VBFTypeI*"+mass+"_private.root"\
-                                                 + " " + InputPath+"/2016postVFP/*DYTypeI*"+mass+"_private.root" + " " + InputPath+"/2016postVFP/*VBFTypeI*"+mass+"_private.root"\
-                                                 + " " + InputPath+"/2017/*DYTypeI*"+mass+"_private.root" + " " + InputPath+"/2017/*VBFTypeI*"+mass+"_private.root"\
-                                                 + " " + InputPath+"/2018/*DYTypeI*"+mass+"_private.root" + " " + InputPath+"/2018/*VBFTypeI*"+mass+"_private.root"\
-                     ) != 0:
-            os.system("rm " + OutFileDYVBF) # remove the output if there is any unmatched process
           if os.system("hadd -f " + OutFileSSWW + " " + InputPath+"/2016preVFP/*SSWWTypeI*"+mass+"_private.root"\
                                                 + " " + InputPath+"/2016postVFP/*SSWWTypeI*"+mass+"_private.root"\
                                                 + " " + InputPath+"/2017/*SSWWTypeI*"+mass+"_private.root"\
@@ -383,7 +378,7 @@ if MergeSignal:
           # First, create DY, VBF, SSWWTypeI seperately
           os.system("cp " + InputPath+"/"+era+"/*DYTypeI*"+mass+"_private.root " + OutFileDY)
           os.system("cp " + InputPath+"/"+era+"/*VBFTypeI*"+mass+"_private.root " + OutFileVBF)
-          os.system("cp " + InputPath+"/"+era+"/*SSWWTypeI*"+mass+"_private.root " + OutFileSSWW)
+          os.system("hadd -f " + OutFileSSWW + " " + InputPath+"/"+era+"/*SSWWTypeI*"+mass+"_private.root")
           # Now treat DYVBF depending on the mass
           if int(mass.replace("M","")) < 300: # DY only
             os.system("hadd -f " + OutFileDYVBF + " " + InputPath+"/"+era+"/*DYTypeI*"+mass+"_private.root")
@@ -611,22 +606,22 @@ for tag in tags:
               syst_list = [
                            "JetResUp","JetResDown",
                            "JetEnUp","JetEnDown",
-                           #"JetMassUp","JetMassDown",
-                           #"JetMassSmearUp","JetMassSmearDown",
+                           "JetMassUp","JetMassDown",
+                           "JetMassSmearUp","JetMassSmearDown",
+                           "MuonEnUp","MuonEnDown",
+                           "ElectronEnUp","ElectronEnDown",
+                           "ElectronResUp","ElectronResDown",
                            #"MuonRecoSFUp","MuonRecoSFDown",
-                           #"MuonEnUp","MuonEnDown",
                            #"MuonIDSFUp","MuonIDSFDown",
                            #"MuonISOSFUp","MuonISOSFDown",
                            #"ElectronRecoSFUp","ElectronRecoSFDown",
-                           #"ElectronResUp","ElectronResDown",
-                           #"ElectronEnUp","ElectronEnDown",
                            #"ElectronIDSFUp","ElectronIDSFDown",
                            #"ElectronTriggerSFUp","ElectronTriggerSFDown",
                            "BTagSFHTagUp","BTagSFHTagDown",
-                           #"BTagSFLTagUp","BTagSFLTagDown",
-                           #"METUnclUp","METUnclDown",
-                           #"PrefireUp","PrefireDown",
-                           #"PUUp","PUDown"
+                           "BTagSFLTagUp","BTagSFLTagDown",
+                           "METUnclUp","METUnclDown",
+                           "PrefireUp","PrefireDown",
+                           "PUUp","PUDown"
                            #"CFUp","CFDown",
                            #"FRUp","FRDown",
                           ]

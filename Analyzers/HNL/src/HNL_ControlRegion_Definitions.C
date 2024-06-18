@@ -388,7 +388,13 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
         else continue;
       }
       else if(LepsT.size() == 2){
-        if(!SameCharge(LepsT)) continue;
+	      if(MCSample.Contains("WGTo")){
+	        //// Set Weight to half and not apply SS cut
+	        weight_channel *= 0.5;
+	      }
+	      else {
+	        if(!SameCharge(LepsT)) continue;
+	      }
       }
       
     }
@@ -1441,9 +1447,6 @@ bool HNL_RegionDefinitions::FillHighMassNPCRPlots(HNL_LeptonCore::Channel channe
   if (leps_veto.size() != 2) return false;
   FillCutflow(Reg, w, "Step3",param);
   
-  if(leps[0]->DeltaPhi(*leps[1]) > 2.5 && JetColl.size() == 1)   Fill_RegionPlots(param,"HNL_HighMassNP1J_TwoLepton_CR"  ,  JetColl,  AK8_JetColl,  leps,  METv, nPV, w);
-  if(leps[0]->DeltaPhi(*leps[1]) > 2.5 && JetColl.size() == 2)   Fill_RegionPlots(param,"HNL_HighMassNP2J_TwoLepton_CR"  ,  JetColl,  AK8_JetColl,  leps,  METv, nPV, w);
-
   if(JetColl.size() > 0) return false;
   FillCutflow(Reg, w, "Step4",param);
 
@@ -1459,7 +1462,9 @@ bool HNL_RegionDefinitions::FillHighMassNPCRPlots(HNL_LeptonCore::Channel channe
 
   FillCutflow(Reg, w, "Step5",param);
 
-  if(leps[0]->DeltaPhi(*leps[1]) < 2.5)    return false;
+  double ll_dphi = fabs(TVector2::Phi_mpi_pi( ( (*leps[0]).Phi() - (*leps[1]).Phi() )) );
+
+  if(ll_dphi < 2.5)    return false;
   FillCutflow(Reg, w, "Step6",param);
 
   Fill_RegionPlots(param,"HNL_HighMassNP_TwoLepton_CR"  ,  JetColl,  AK8_JetColl,  leps,  METv, nPV, w);
@@ -1594,7 +1599,7 @@ bool HNL_RegionDefinitions::FillHighMassSR2CRPlots(HNL_LeptonCore::Channel chann
     if(!HasTightTau)     Fill_RegionPlots(param,"HNL_HighMassSR2_TauVeto_TwoLepton_CR"  ,  JetColl,  AK8_JetColl,  leps,  METv, nPV, w);
 
 
-    if (HT/leps[0]->Pt() > 1)  return false; //Increase stats by removing HT/LT cut in Region plots
+    if (HT/leps[0]->Pt() > 2)  return false; //Increase stats by removing HT/LT cut in Region plots //JH
     FillCutflow(Reg, w, "Step6",param);
 
        
@@ -2114,9 +2119,22 @@ bool HNL_RegionDefinitions::FillZGCRPlots(HNL_LeptonCore::Channel channel, std::
     FillHist(  "LimitExtraction/"+ param.Name+"/LimitShape_ZG/Binned",  Binvalue+3  ,  w, 9,0,9 ,"CR Binned");
   }
   
-
+  /*
+    if(RunConv){
+    if(leps[2]->Pt() < 100){
+    cout <<  "PASSES ZG  " << endl;
+    if(leps.size() == 3){
+    for(auto ilep : leps)cout << ilep->PrintInfo() << endl;
+    for(auto ilep : leps)cout << "HasMEPhoton = " << HasMEPhoton(*ilep) << endl;
+    PrintGen(All_Gens);
+    PrintMatchedGen(All_Gens, *leps[2]);
+    }
+    }
+    }
+  */
+  
   return true;
-
+  
 }
 
 
@@ -2138,10 +2156,13 @@ bool HNL_RegionDefinitions::FillWGCRPlots(HNL_LeptonCore::Channel channel, std::
   FillCutflow(WGCR, w, "Step2",param);
   if(!HasOSSFPair(leps))    return false;
   FillCutflow(WGCR, w, "Step3",param);
+
   if(DEBUGWG)cout << "FillWGCRPlots 2" << endl;
   if(HasLowMassMeson(leps)) return false;
   FillCutflow(WGCR, w, "Step4",param);
-  if(leps[2]->Pt() < 15) return false;
+
+  if(leps[2]->Pt() < 10) return false;
+
   FillCutflow(WGCR, w, "Step5",param);
   if(DEBUGWG)cout << "FillWGCRPlots 3" << endl;
 
@@ -2150,8 +2171,9 @@ bool HNL_RegionDefinitions::FillWGCRPlots(HNL_LeptonCore::Channel channel, std::
 
   int NB_JetColl=B_JetColl.size();
 
-  double MassMinOSSF = GetMassMinOSSF(leps);
+  ///  if(!HasLowMassOSSF(leps, 4))  return false;
 
+  double MassMinOSSF = GetMassMinOSSF(leps);
   if(MassMinOSSF > 4)  return false;
   FillCutflow(WGCR, w, "Step6",param);
   if(DEBUGWG)cout << "FillWGCRPlots 4" << endl;

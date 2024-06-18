@@ -357,7 +357,7 @@ vector<TString>  HNL_LeptonCore::GetLabelsFromRegion(HNL_LeptonCore::SearchRegio
   if(sr == ControlRegion)    labels = {"NoCut","HEMVeto","METFilter","GENMatched","LeptonFlavour","Trigger","OS_VR","VV_VR","VG_VR","SS_CR","VBF_CR"};
 
   vector<TString> SR1labels = {"SR1_MNbin1","SR1_MNbin2","SR1_MNbin3","SR1_MNbin4","SR1_MNbin5", "SR1_MNbin6"};   
-  vector<TString> SR2labels = {"SR2_HTLTbin1", "SR2_HTLTbin2"};
+  vector<TString> SR2labels = {"SR2_HTLTbin1", "SR2_HTLTbin2", "SR2_HTLTbin3"};
   vector<TString> SR3labels = {"SR3_bin1","SR3_bin2","SR3_bin3","SR3_bin4","SR3_bin5","SR3_bin6","SR3_bin7","SR3_bin8", "SR3_bin9","SR3_bin10","SR3_bin11","SR3_bin12","SR3_bin13","SR3_bin14"};
   vector<TString> SR3BDTlabels = {"SR3_BDTbin1","SR3_BDTbin2","SR3_BDTbin3","SR3_BDTbin4","SR3_BDTbin5","SR3_BDTbin6","SR3_BDTbin7","SR3_BDTbin8","SR3_BDTbin9","SR3_BDTbin10","SR3_BDTbin11","SR3_BDTbin12","SR3_BDTbin13","SR3_BDTbin14","SR3_BDTbin15","SR3_BDTbin16","SR3_BDTbin17"};
 
