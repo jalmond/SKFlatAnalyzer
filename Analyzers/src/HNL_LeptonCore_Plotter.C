@@ -454,12 +454,12 @@ void HNL_LeptonCore::Fill_Plots(AnalyzerParameter param, TString region,  TStrin
   if(DrawLevel1)FillHist( plot_dir+ region+ "/Leptons/Lep_2_pt", PTLep2  ,  w, 150, 0, 300,"1_{2} p_{T} GeV");
   if(DrawLevel1)FillHist( plot_dir+ region+ "/Leptons/Lep_1_eta", leps[0]->Eta()  , w, 60, -3., 3,"l_{1} #eta");
   if(DrawLevel1)FillHist( plot_dir+ region+ "/Leptons/Lep_2_eta", leps[1]->Eta()  , w, 60, -3., 3.,"l_{2} #eta");
-  if(threelep) {
+  if(leps.size()  >= 3) {
     if(DrawLevel1)FillHist( plot_dir+ region+ "/Leptons/Lep_3_pt", leps[2]->PtMaxed(1000.)  , w, 200, 0., 1000.,"l_{3} p_{T} GeV");
     if(DrawLevel1)FillHist( plot_dir+ region+ "/Leptons/Lep_3_eta", leps[2]->Eta()  , w, 60, -3., 3.,"l_{3} #eta");
     if(DrawLevel1)FillHist( plot_dir+ region+ "/Leptons/Lep_3_phi", leps[2]->Phi()  , w, 60, -3., 3.,"l_{3} #phi");
   }
-  if(fourlep) {
+  if(leps.size()  >= 4) {
     if(DrawLevel1)FillHist( plot_dir+ region+ "/Leptons/Lep_4_pt", leps[3]->PtMaxed(1000.)  , w, 200, 0., 1000.,"l_{4} p_{T} GeV");
     if(DrawLevel1)FillHist( plot_dir+ region+ "/Leptons/Lep_4_eta", leps[3]->Eta()  , w, 60, -3., 3.,"l_{4} #eta");
     if(DrawLevel1)FillHist( plot_dir+ region+ "/Leptons/Lep_4_phi", leps[3]->Phi()  , w, 60, -3., 3.,"l_{4} #phi");

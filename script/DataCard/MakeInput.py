@@ -17,9 +17,9 @@ eras = ["2018"]
 #eras = ["Run2"] # Let's merge Run2 after running all eras first
 #masses = ["M90","M100","M150","M200","M300","M400","M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M10000","M15000","M20000"]
 #masses = ["M100","M1000","M10000"]
-masses = ["M85","M90","M95","M100","M125","M150","M200","M250","M300","M400","M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M10000","M15000","M20000"]
+#masses = ["M85","M90","M95","M100","M125","M150","M200","M250","M300","M400","M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M10000","M15000","M20000"]
 #masses = ["M85","M90","M95","M100","M125","M150","M200","M250"]
-#masses = ["M10000"]
+masses = ["M10000"]
 #masses = ["M85"]
 channels = ["MuMu","EE","EMu"]
 #channels = ["MuMu","EE"]
@@ -37,7 +37,8 @@ tags = ["HNL_ULID"] # HNLParameter Name
 #outputTag = "PR48_rateParam_" # tag the output directory name as you wish
 #outputTag = "PR51_" # tag the output directory name as you wish
 #outputTag = "PR51_rescale_" # tag the output directory name as you wish
-outputTag = "PR52_" # tag the output directory name as you wish
+#outputTag = "PR52_" # tag the output directory name as you wish
+outputTag = "PR52_10TeVrescale_" # tag the output directory name as you wish
 
 # Skim
 DataSkim = "_SkimTree_HNMultiLepBDT_"
@@ -49,12 +50,12 @@ MCSkim = "_SkimTree_HNMultiLepBDT_"
 SignalSkim = "_SkimTree_HNMultiLepBDT_"
 
 # This will do necessary hadd for you.
-MergeData   = True
-MergeFake   = True  # RunFake
-MergeCF     = True  # RunCF
-MergeConv   = True  # RunConv
-MergeMC     = True  # RunPrompt
-MergeSignal = True
+MergeData   = False
+MergeFake   = False  # RunFake
+MergeCF     = False  # RunCF
+MergeConv   = False  # RunConv
+MergeMC     = False  # RunPrompt
+MergeSignal = False
 #MergeDYVBF = True
 #MergeSSWW  = True
 
@@ -436,7 +437,8 @@ for tag in tags:
           # Set channel dependent scaler first
           if int(mass.replace("M","")) <= 500: DYVBFscaler = 0.01
           elif int(mass.replace("M","")) <= 3000: DYVBFscaler = 0.1
-          else: DYVBFscaler = 1.
+          #else: DYVBFscaler = 1.
+          else: DYVBFscaler = 0.3
           if "EMu" in channel:
             SSWWscaler = 4.*DYVBFscaler*DYVBFscaler # Set the EMu signalSSWW scaler
           else:

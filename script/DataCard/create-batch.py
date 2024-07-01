@@ -175,6 +175,7 @@ for RunList in args.RunLists:
           runfile.write("text2workspace.py -P HiggsAnalysis.CombinedLimit.HNDilepModel:hnDilepModel_EMu "+card+" -o "+card_name+".root")
         else:
           runfile.write("text2workspace.py -P HiggsAnalysis.CombinedLimit.HNDilepModel:hnDilepModel "+card+" -o "+card_name+".root\n")
+        #runfile.write("text2workspace.py "+card+" -o "+card_name+".root\n")
       with open(WP+"/"+shortcard+"_submit_Workspace.sh",'a') as submitfile:
         submitfile.write("executable = "+shortcard+"_MakeWorkspace.sh\n")
         submitfile.write("log = "+shortcard+"_Workspace.log\n")
@@ -190,11 +191,11 @@ for RunList in args.RunLists:
       with open(WP+"/"+shortcard+"/CheckNuisance.sh",'w') as runfile:
         runfile.write("#!/bin/bash\n")
         runfile.write("echo Running FitDiagnostics...\n")
-        runfile.write("combine -M FitDiagnostics "+card+" --rMin -10 --rMax 10 -n "+shortcard+" --plots\n")
+        runfile.write("combine -M FitDiagnostics "+card+" --rMin -10 --rMax 10 --saveShapes --saveWithUncertainties -n "+shortcard+" --plots\n")
         runfile.write("echo Running Initial fit...\n")
-        runfile.write("combineTool.py -M Impacts -d "+card+" -m "+this_mass+" --rMin -10 --rMax 10 --robustFit 1 --doInitialFit --name "+shortcard+"\n")
+        runfile.write("combineTool.py -M Impacts -d "+card+" -m "+this_mass+" --rMin -10 --rMax 10 --robustFit 1 --doInitialFit --name "+shortcard+" -t -1\n")
         runfile.write("echo Running Actual fit...\n")
-        runfile.write("combineTool.py -M Impacts -d "+card+" -m "+this_mass+" --rMin -10 --rMax 10 --robustFit 1 --doFits --name "+shortcard+"\n")
+        runfile.write("combineTool.py -M Impacts -d "+card+" -m "+this_mass+" --rMin -10 --rMax 10 --robustFit 1 --doFits --name "+shortcard+" -t -1\n")
         runfile.write("echo Making impact json...\n")
         runfile.write("combineTool.py -M Impacts -d "+card+" -m "+this_mass+" --rMin -10 --rMax 10 --robustFit 1 --output "+shortcard+"_impacts.json --name "+shortcard+"\n")
         runfile.write("echo Making impact plots...\n")
