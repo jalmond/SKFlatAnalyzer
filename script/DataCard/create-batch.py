@@ -175,7 +175,7 @@ for RunList in args.RunLists:
           runfile.write("text2workspace.py -P HiggsAnalysis.CombinedLimit.HNDilepModel:hnDilepModel_EMu "+card+" -o "+card_name+".root")
         else:
           runfile.write("text2workspace.py -P HiggsAnalysis.CombinedLimit.HNDilepModel:hnDilepModel "+card+" -o "+card_name+".root\n")
-        #runfile.write("text2workspace.py "+card+" -o "+card_name+".root\n")
+        #runfile.write("text2workspace.py "+card+" -o "+card_name+".root\n") # when you want to test the default model, with SSWW only: see https://cms-talk.web.cern.ch/t/0-impact-on-poi-negative-bin-issue/42793
       with open(WP+"/"+shortcard+"_submit_Workspace.sh",'a') as submitfile:
         submitfile.write("executable = "+shortcard+"_MakeWorkspace.sh\n")
         submitfile.write("log = "+shortcard+"_Workspace.log\n")
@@ -190,8 +190,8 @@ for RunList in args.RunLists:
       this_mass = shortcard.split('_M')[-1].split('_')[0]
       with open(WP+"/"+shortcard+"/CheckNuisance.sh",'w') as runfile:
         runfile.write("#!/bin/bash\n")
-        runfile.write("echo Running FitDiagnostics...\n")
-        runfile.write("combine -M FitDiagnostics "+card+" --rMin -10 --rMax 10 --saveShapes --saveWithUncertainties -n "+shortcard+" --plots\n")
+        runfile.write("echo Running FitDiagnostics...\n") # Asimov set as default; FIXME later to choose Asimov or not
+        runfile.write("combine -M FitDiagnostics "+card+" --rMin -10 --rMax 10 --saveShapes --saveWithUncertainties -n "+shortcard+" --plots -t -1\n")
         runfile.write("echo Running Initial fit...\n")
         runfile.write("combineTool.py -M Impacts -d "+card+" -m "+this_mass+" --rMin -10 --rMax 10 --robustFit 1 --doInitialFit --name "+shortcard+" -t -1\n")
         runfile.write("echo Running Actual fit...\n")

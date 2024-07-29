@@ -33,7 +33,7 @@ channels = ["MuMu","EE","EMu"]
 #masses = ["M3000"]
 #masses = ["M90","M100","M150","M200","M300","M400","M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M10000","M15000","M20000"]
 #masses = ["M85","M90","M95","M100","M125","M150","M200","M250","M300","M400","M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M10000","M15000","M20000"]
-masses = ["M1000","M10000"]
+masses = ["M100","M1000","M10000"]
 
 #SRpath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegion_Plotter_PR43/LimitInputs/"
 #SRpath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegion_Plotter/LimitInputs/"
@@ -58,10 +58,11 @@ InputWPs = ["PR52_HNL_ULID"]
 #OutputWP = "_NOsr2inv_IncNorm"
 #OutputWP = "_AltStat"
 #OutputWP = "_FakeCF0p1"
-OutputWP = "_FakeCF0p1_toy"
+#OutputWP = "_FakeCF0p1_toy"
 #OutputWP = "_SSWWonly"
 #OutputWP = "_DYVBFonly"
 #OutputWP = "_defMod_SSWWonly"
+OutputWP = "_Fake0p3CF0p2_PR991"
 
 ################################################################################################################################################
 
@@ -137,7 +138,7 @@ def CardSetting(isCR, WP, era, channel, mass):
     lines_sr[region] = this_lines_sr
 
     this_lines_sronly = this_lines_sr[:]
-    for i in range(41,45):
+    for i in range(41,61):
       this_lines_sronly[i] = "" # remove all rateParams
     lines_sronly[region] = this_lines_sronly
 
@@ -189,26 +190,11 @@ for InputWP in InputWPs:
     if args.Syst:
       os.system('echo \'Systematics have been added.\'')
     for channel, mass in [(channel, mass) for channel in channels for mass in masses]:
-      if args.Combine == "CR":
-        for era in eras:
-          if "Mu" in channel: Add_cf_cr = ""
-          else: Add_cf_cr = "cf_cr=card_"+era+"_"+channel+"_"+mass+"_cf_cr.txt"
-          #if (channel is "EMu" and int(mass.replace('M',''))==100) or (channel is "EE" and int(mass.replace('M',''))<150): #FIXME later
-          #  os.system("combineCards.py \
-          #                             sr1=card_"+era+"_"+channel+"_"+mass+"_sr1"+systTag+".txt \
-          #                             sr3=card_"+era+"_"+channel+"_"+mass+"_sr3"+systTag+".txt \
-          #                             sr1_inv=card_"+era+"_"+channel+"_"+mass+"_sr1_inv.txt "\
-          #                             #sr2_inv=card_"+era+"_"+channel+"_"+mass+"_sr2_inv.txt \
-          #                             +"sr3_inv=card_"+era+"_"+channel+"_"+mass+"_sr3_inv.txt "\
-          #                             #sr=card_"+era+"_"+channel+"_"+mass+"_sr"+systTag+".txt \
-          #                             #sr_inv=card_"+era+"_"+channel+"_"+mass+"_sr_inv.txt "\
-          #                             +Add_cf_cr+" \
-          #                             ww_cr=card_"+era+"_"+channel+"_"+mass+"_ww_cr.txt \
-          #                             zg_cr=card_"+era+"_"+channel+"_"+mass+"_zg_cr.txt \
-          #                             wz_cr=card_"+era+"_"+channel+"_"+mass+"_wz_cr.txt \
-          #                             zz_cr=card_"+era+"_"+channel+"_"+mass+"_zz_cr.txt \
-          #                             > card_"+era+"_"+channel+"_"+mass+systTag+".txt")
-          #else:
+      for era in eras:
+        if "Mu" in channel: Add_cf_cr = ""
+        else: Add_cf_cr = "cf_cr=card_"+era+"_"+channel+"_"+mass+"_cf_cr.txt"
+
+        if args.Combine == "CR":
           os.system("combineCards.py \
                                      sr1=card_"+era+"_"+channel+"_"+mass+"_sr1"+systTag+".txt \
                                      sr2=card_"+era+"_"+channel+"_"+mass+"_sr2"+systTag+".txt \
@@ -224,9 +210,15 @@ for InputWP in InputWPs:
                                      wz_cr=card_"+era+"_"+channel+"_"+mass+"_wz_cr.txt \
                                      zz_cr=card_"+era+"_"+channel+"_"+mass+"_zz_cr.txt \
                                      > card_"+era+"_"+channel+"_"+mass+systTag+".txt")
-      elif args.Combine == "SR":
-        os.system("combineCards.py year16a=card_2016preVFP_"+channel+"_"+mass+"_sronly"+systTag+".txt year16b=card_2016postVFP_"+channel+"_"+mass+"_sronly"+systTag+".txt year17=card_2017_"+channel+"_"+mass+"_sronly"+systTag+".txt year18=card_2018_"+channel+"_"+mass+"_sronly"+systTag+".txt > card_Run2_"+channel+"_"+mass+"_sronly"+systTag+".txt")
-      else:
+        elif args.Combine == "SR": # Combine SR1 only, SR2 only, SR3 only
+          os.system("combineCards.py \
+                                     sr1=card_"+era+"_"+channel+"_"+mass+"_sronly_sr1"+systTag+".txt \
+                                     sr2=card_"+era+"_"+channel+"_"+mass+"_sronly_sr2"+systTag+".txt \
+                                     sr3=card_"+era+"_"+channel+"_"+mass+"_sronly_sr3"+systTag+".txt "\
+                                     #sr=card_"+era+"_"+channel+"_"+mass+"_sronly_sr"+systTag+".txt \
+                                     +Add_cf_cr+" \
+                                     > card_"+era+"_"+channel+"_sronly_"+mass+systTag+".txt")
+      if args.Combine == "Era": # This will combine all era datacards with CR setup
         os.system("combineCards.py year16a=card_2016preVFP_"+channel+"_"+mass+systTag+".txt year16b=card_2016postVFP_"+channel+"_"+mass+systTag+".txt year17=card_2017_"+channel+"_"+mass+systTag+".txt year18=card_2018_"+channel+"_"+mass+systTag+".txt > card_Run2_"+channel+"_"+mass+systTag+".txt")
     os.system('echo \'Done.\'')
     os.chdir(pwd)
