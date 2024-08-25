@@ -56,6 +56,7 @@ public:
   float el_phi;
   int el_q;
   bool el_3charge;
+  bool el_2charge;
   float el_l1et;
 
   bool tag_passEGL1SingleEGOr;

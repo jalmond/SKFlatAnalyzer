@@ -59,6 +59,7 @@ void SkimTree_EGammaTnP::initializeAnalyzer(){
   newtree->Branch("el_phi",&el_phi);
   newtree->Branch("el_q",&el_q);
   newtree->Branch("el_3charge",&el_3charge);
+  newtree->Branch("el_2charge",&el_2charge);
   newtree->Branch("el_l1et",&el_l1et);
 
   newtree->Branch("tag_passEGL1SingleEGOr",&tag_passEGL1SingleEGOr);
@@ -116,21 +117,21 @@ void SkimTree_EGammaTnP::executeEvent(){
     map<Electron*,Gen*> genmatching;
     if(!IsDATA){
       for(Gen* gen:{&gen_l0_dressed,&gen_l1_dressed}){
-	vector<Electron*> cands={};
-	for(Electron& electron:electrons)
-	  if(gen->DeltaR(electron)<0.2) cands.push_back(&electron);
-	double mindpt=1000.;
-	Electron *matched=NULL;
-	for(Electron* cand:cands){
-	  double dpt=fabs((cand->Pt()-gen->Pt())/gen->Pt());
-	  if(dpt<mindpt&&genmatching.find(cand)==genmatching.end()){
-	    mindpt=dpt;
-	    matched=cand;
-	  }
-	}
-	if(matched){
-	  genmatching[matched]=gen;
-	}
+        vector<Electron*> cands={};
+        for(Electron& electron:electrons)
+          if(gen->DeltaR(electron)<0.2) cands.push_back(&electron);
+        double mindpt=1000.;
+        Electron *matched=NULL;
+        for(Electron* cand:cands){
+          double dpt=fabs((cand->Pt()-gen->Pt())/gen->Pt());
+          if(dpt<mindpt&&genmatching.find(cand)==genmatching.end()){
+            mindpt=dpt;
+            matched=cand;
+          }
+        }
+        if(matched){
+          genmatching[matched]=gen;
+        }
       }
       
       weight=p.w.lumiweight;
@@ -149,100 +150,101 @@ void SkimTree_EGammaTnP::executeEvent(){
     for(Electron& tag:electrons){
       if(tag.etaRegion()==Electron::GAP) continue;
       for(Electron& probe:electrons){
-	if(&tag==&probe) continue;
-	if((tag+probe).M()<40) continue;
-	
-	passingCutBasedMedium94XV2=probe.passMediumID();
-	passingCutBasedTight94XV2=probe.passTightID();
-	passingHNLMVACF=probe.PassID("HNL_ULID_CF_"+GetYearString());
-	passingHNLMVAConv=probe.PassID("HNL_ULID_Conv_"+GetYearString());
-	passingHNLMVAFake=probe.PassID("HNL_ULID_Fake_"+GetYearString());
-	passingHNLMVA=probe.PassID("HNL_ULID_"+GetYearString());
-	scoreHNLMVACF=probe.HNL_MVA_CF("EDv5");
+        if(&tag==&probe) continue;
+        if((tag+probe).M()<40) continue;
+        
+        passingCutBasedMedium94XV2=probe.passMediumID();
+        passingCutBasedTight94XV2=probe.passTightID();
+        passingHNLMVACF=probe.PassID("HNL_ULID_CF_"+GetYearString());
+        passingHNLMVAConv=probe.PassID("HNL_ULID_Conv_"+GetYearString());
+        passingHNLMVAFake=probe.PassID("HNL_ULID_Fake_"+GetYearString());
+        passingHNLMVA=probe.PassID("HNL_ULID_"+GetYearString());
+        scoreHNLMVACF=probe.HNL_MVA_CF("EDv5");
         scoreHNLMVAConv=probe.HNL_MVA_Conv("EDv5");
-	scoreHNLMVAFake=probe.HNL_MVA_Fake("EDv5");
+        scoreHNLMVAFake=probe.HNL_MVA_Fake("EDv5");
 
-	passEGL1SingleEGOr=probe.PassFilter("hltEGL1SingleEGOrFilter");
-	passHltEle27WPTightGsf=probe.PassPath("HLT_Ele27_WPTight_Gsf_v");
-	passHltEle28WPTightGsf=probe.PassPath("HLT_Ele28_WPTight_Gsf_v");
-	passHltEle32WPTightGsf=probe.PassPath("HLT_Ele32_WPTight_Gsf_v");
-	passHltEle32DoubleEGWPTightGsf=probe.PassPath("HLT_Ele32_WPTight_Gsf_L1DoubleEG_v");
-	passHltEle35WPTightGsf=probe.PassPath("HLT_Ele35_WPTight_Gsf_v");
-	passHltEle23Ele12CaloIdLTrackIdLIsoVLLeg1=probe.PassFilter("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg1Filter");
-	passHltEle23Ele12CaloIdLTrackIdLIsoVLLeg2=probe.PassFilter("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg2Filter");
-	el_e=probe.UncorrE();
-	el_e_cor=probe.Energy();
-	el_et=probe.Et()*probe.UncorrE()/probe.Energy();
-	el_et_cor=probe.Et();
-	el_pt=probe.UncorrPt();
-	el_pt_cor=probe.Pt();
-	el_eta=probe.Eta();
-	el_abseta=fabs(probe.Eta());
-	el_sc_eta=probe.scEta();
-	el_phi=probe.Phi();
-	el_q=probe.Charge();
-	el_3charge=probe.IsGsfCtfScPixChargeConsistent();
-	el_l1et=probe.L1Et();
-	
-	tag_passEGL1SingleEGOr=tag.PassFilter("hltEGL1SingleEGOrFilter");
-	tag_passHltEle27WPTightGsf=tag.PassPath("HLT_Ele27_WPTight_Gsf_v");
-	tag_passHltEle28WPTightGsf=tag.PassPath("HLT_Ele28_WPTight_Gsf_v");
-	tag_passHltEle32WPTightGsf=tag.PassPath("HLT_Ele32_WPTight_Gsf_v");
-	tag_passHltEle32DoubleEGWPTightGsf=tag.PassPath("HLT_Ele32_WPTight_Gsf_L1DoubleEG_v");
-	tag_passHltEle35WPTightGsf=tag.PassPath("HLT_Ele35_WPTight_Gsf_v");
-	if(!(tag_passHltEle27WPTightGsf|tag_passHltEle28WPTightGsf|tag_passHltEle32WPTightGsf|tag_passHltEle32DoubleEGWPTightGsf|tag_passHltEle35WPTightGsf)) continue;
-	tag_passingCutBasedMedium94XV2=tag.passMediumID();
-	tag_passingCutBasedTight94XV2=tag.passTightID();
-	tag_Ele_IsoMVA94XV2=tag.MVAIso();      
-	tag_Ele_e=tag.UncorrE();
-	tag_Ele_e_cor=tag.Energy();
-	tag_Ele_et=tag.UncorrE()/tag.Energy()*tag.Et();
-	tag_Ele_et_cor=tag.Et();
-	tag_Ele_pt=tag.UncorrPt();
-	tag_Ele_pt_cor=tag.Pt();
-	tag_Ele_eta=tag.Eta();
-	tag_Ele_abseta=fabs(tag.Eta());
-	tag_Ele_phi=tag.Phi();
-	tag_Ele_q=tag.Charge();
-	tag_Ele_3charge=tag.IsGsfCtfScPixChargeConsistent();
-	tag_sc_eta=tag.scEta();
-	
-	TLorentzVector pair_cor=tag+probe;
-	TLorentzVector pair=tag.UncorrE()/tag.Energy()*tag+probe.UncorrE()/probe.Energy()*probe;
-	pair_mass=pair.M();
-	pair_mass_cor=pair_cor.M();
-	pair_pt=pair.Pt();
-	pair_pt_cor=pair_cor.Pt();
-	
-	if(!IsDATA){
-	  Gen *mc_probe=NULL,*mc_tag=NULL;
-	  if(genmatching.find(&probe)!=genmatching.end())
-	    mc_probe=genmatching[&probe];
-	  if(genmatching.find(&tag)!=genmatching.end())
-	    mc_tag=genmatching[&tag];
-	  
-	  if(mc_probe){
-	    mc_probe_e=mc_probe->E();
-	    mc_probe_et=mc_probe->Et();
-	    mc_probe_eta=mc_probe->Eta();
-	    mc_probe_phi=mc_probe->Phi();
-	  }else{
-	    mc_probe_e=0.;
-	    mc_probe_et=0.;
-	    mc_probe_eta=0.;
-	    mc_probe_phi=0.;
-	  }
-	  if(mc_probe&&mc_tag){
-	    mcTrue=true;
-	    mcMass=(*mc_probe+*mc_tag).M();
-	  }else{
-	    mcTrue=false;
-	    mcMass=0;
-	  }
-	}
-	
-	newtree->Fill();
-      }
+        passEGL1SingleEGOr=probe.PassFilter("hltEGL1SingleEGOrFilter");
+        passHltEle27WPTightGsf=probe.PassPath("HLT_Ele27_WPTight_Gsf_v");
+        passHltEle28WPTightGsf=probe.PassPath("HLT_Ele28_WPTight_Gsf_v");
+        passHltEle32WPTightGsf=probe.PassPath("HLT_Ele32_WPTight_Gsf_v");
+        passHltEle32DoubleEGWPTightGsf=probe.PassPath("HLT_Ele32_WPTight_Gsf_L1DoubleEG_v");
+        passHltEle35WPTightGsf=probe.PassPath("HLT_Ele35_WPTight_Gsf_v");
+        passHltEle23Ele12CaloIdLTrackIdLIsoVLLeg1=probe.PassFilter("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg1Filter");
+        passHltEle23Ele12CaloIdLTrackIdLIsoVLLeg2=probe.PassFilter("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg2Filter");
+        el_e=probe.UncorrE();
+        el_e_cor=probe.Energy();
+        el_et=probe.Et()*probe.UncorrE()/probe.Energy();
+        el_et_cor=probe.Et();
+        el_pt=probe.UncorrPt();
+        el_pt_cor=probe.Pt();
+        el_eta=probe.Eta();
+        el_abseta=fabs(probe.Eta());
+        el_sc_eta=probe.scEta();
+        el_phi=probe.Phi();
+        el_q=probe.Charge();
+        el_3charge=probe.IsGsfCtfScPixChargeConsistent();
+        el_2charge=probe.IsGsfCtfChargeConsistent();
+        el_l1et=probe.L1Et();
+        
+        tag_passEGL1SingleEGOr=tag.PassFilter("hltEGL1SingleEGOrFilter");
+        tag_passHltEle27WPTightGsf=tag.PassPath("HLT_Ele27_WPTight_Gsf_v");
+        tag_passHltEle28WPTightGsf=tag.PassPath("HLT_Ele28_WPTight_Gsf_v");
+        tag_passHltEle32WPTightGsf=tag.PassPath("HLT_Ele32_WPTight_Gsf_v");
+        tag_passHltEle32DoubleEGWPTightGsf=tag.PassPath("HLT_Ele32_WPTight_Gsf_L1DoubleEG_v");
+        tag_passHltEle35WPTightGsf=tag.PassPath("HLT_Ele35_WPTight_Gsf_v");
+        if(!(tag_passHltEle27WPTightGsf|tag_passHltEle28WPTightGsf|tag_passHltEle32WPTightGsf|tag_passHltEle32DoubleEGWPTightGsf|tag_passHltEle35WPTightGsf)) continue;
+        tag_passingCutBasedMedium94XV2=tag.passMediumID();
+        tag_passingCutBasedTight94XV2=tag.passTightID();
+        tag_Ele_IsoMVA94XV2=tag.MVAIso();      
+        tag_Ele_e=tag.UncorrE();
+        tag_Ele_e_cor=tag.Energy();
+        tag_Ele_et=tag.UncorrE()/tag.Energy()*tag.Et();
+        tag_Ele_et_cor=tag.Et();
+        tag_Ele_pt=tag.UncorrPt();
+        tag_Ele_pt_cor=tag.Pt();
+        tag_Ele_eta=tag.Eta();
+        tag_Ele_abseta=fabs(tag.Eta());
+        tag_Ele_phi=tag.Phi();
+        tag_Ele_q=tag.Charge();
+        tag_Ele_3charge=tag.IsGsfCtfScPixChargeConsistent();
+        tag_sc_eta=tag.scEta();
+        
+        TLorentzVector pair_cor=tag+probe;
+        TLorentzVector pair=tag.UncorrE()/tag.Energy()*tag+probe.UncorrE()/probe.Energy()*probe;
+        pair_mass=pair.M();
+        pair_mass_cor=pair_cor.M();
+        pair_pt=pair.Pt();
+        pair_pt_cor=pair_cor.Pt();
+        
+        if(!IsDATA){
+          Gen *mc_probe=NULL,*mc_tag=NULL;
+          if(genmatching.find(&probe)!=genmatching.end())
+            mc_probe=genmatching[&probe];
+          if(genmatching.find(&tag)!=genmatching.end())
+            mc_tag=genmatching[&tag];
+          
+          if(mc_probe){
+            mc_probe_e=mc_probe->E();
+            mc_probe_et=mc_probe->Et();
+            mc_probe_eta=mc_probe->Eta();
+            mc_probe_phi=mc_probe->Phi();
+          }else{
+            mc_probe_e=0.;
+            mc_probe_et=0.;
+            mc_probe_eta=0.;
+            mc_probe_phi=0.;
+          }
+          if(mc_probe&&mc_tag){
+            mcTrue=true;
+            mcMass=(*mc_probe+*mc_tag).M();
+          }else{
+            mcTrue=false;
+            mcMass=0;
+          }
+        }
+        
+        newtree->Fill();
+      } /// probe loop
     } /// tag loop
   } /// Electron Stream 
 }
@@ -263,8 +265,8 @@ double SkimTree_EGammaTnP::GetL1Threshold(){
     auto it=map_L1Threshold.find(run);
     if(it!=map_L1Threshold.end()){
       for(auto p:it->second){
-	if(p.first<=lumi) rt=p.second;
-	else break;
+       if(p.first<=lumi) rt=p.second;
+       else break;
       }
     }else{
       cout<<"[SkimTree_EGammaTnP::GetL1Threshold] unknown run "<<run<<endl;
