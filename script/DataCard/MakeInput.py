@@ -1,4 +1,8 @@
 # Place it in SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegion_Plotter
+# It does hadd first, and then create inputs for Combine.
+# Which to hadd is controlled by the Merge* flags.
+# If you want to do hadd only for some reason, then set regions as blank.
+# Run python MakeInput.py --Syst\ python MakeInput.py --CR --Syst. 
 
 import os, sys
 import commands as cmd
@@ -12,14 +16,16 @@ args = parser.parse_args()
 
 
 #eras = ["2016preVFP", "2016postVFP", "2017", "2018"]
+eras = ["2016preVFP"]
+#eras = ["2016postVFP"]
 #eras = ["2017"]
-eras = ["2018"]
+#eras = ["2018"]
 #eras = ["Run2"] # Let's merge Run2 after running all eras first
 #masses = ["M90","M100","M150","M200","M300","M400","M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M10000","M15000","M20000"]
 #masses = ["M100","M1000","M10000"]
-#masses = ["M85","M90","M95","M100","M125","M150","M200","M250","M300","M400","M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M10000","M15000","M20000"]
+masses = ["M85","M90","M95","M100","M125","M150","M200","M250","M300","M400","M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M10000","M15000","M20000"]
 #masses = ["M85","M90","M95","M100","M125","M150","M200","M250"]
-masses = ["M10000"]
+#masses = ["M10000"]
 #masses = ["M85"]
 channels = ["MuMu","EE","EMu"]
 #channels = ["MuMu","EE"]
@@ -37,8 +43,8 @@ tags = ["HNL_ULID"] # HNLParameter Name
 #outputTag = "PR48_rateParam_" # tag the output directory name as you wish
 #outputTag = "PR51_" # tag the output directory name as you wish
 #outputTag = "PR51_rescale_" # tag the output directory name as you wish
-#outputTag = "PR52_" # tag the output directory name as you wish
-outputTag = "PR52_10TeVrescale_" # tag the output directory name as you wish
+outputTag = "PR52_" # tag the output directory name as you wish
+#outputTag = "PR52_10TeVrescale_" # tag the output directory name as you wish
 
 # Skim
 DataSkim = "_SkimTree_HNMultiLepBDT_"
@@ -64,7 +70,8 @@ if args.CR:
   CRflags = ["SS_CR__","VBF_CR__","LLL_VR__"]
   Analyzer = "HNL_ControlRegion_Plotter"
 
-  regions = ["sr_inv","sr1_inv","sr2_inv","sr3_inv","cf_cr","ww_cr","zg_cr","zg_cr1","zg_cr3","wz_cr","wz_cr1","wz_cr2","wz_cr3","zz_cr","zz_cr1","zz_cr3"] # for CRs
+  #regions = ["sr_inv","sr1_inv","sr2_inv","sr3_inv","cf_cr","ww_cr","zg_cr","zg_cr1","zg_cr3","wz_cr","wz_cr1","wz_cr2","wz_cr3","zz_cr","zz_cr1","zz_cr3"] # for CRs
+  regions = ["sr_inv","sr1_inv","sr2_inv","sr3_inv","cf_cr","ww_cr","zg_cr","wz_cr","zz_cr"] # for CRs
   #regions = "" # Use this when merging only
 
   RegionToCRFlagMap['sr_inv'] = "SS_CR__"
@@ -435,14 +442,21 @@ for tag in tags:
             RegionToHistSuffixMap[region][channel] = RegionToHistSuffixMap[region][channel].replace('BDT','') # FIXME make sure SR and CR share the same naming convention
 
           # Set channel dependent scaler first
-          if int(mass.replace("M","")) <= 500: DYVBFscaler = 0.01
-          elif int(mass.replace("M","")) <= 3000: DYVBFscaler = 0.1
-          #else: DYVBFscaler = 1.
-          else: DYVBFscaler = 0.3
+          DYVBFscaler = 0.01 # Set the signalDYVBF scaler
           if "EMu" in channel:
             SSWWscaler = 4.*DYVBFscaler*DYVBFscaler # Set the EMu signalSSWW scaler
           else:
             SSWWscaler = DYVBFscaler*DYVBFscaler # Set the signalSSWW scaler
+
+          # Mass dependent scaler, if necessary ...
+          #if int(mass.replace("M","")) <= 500: DYVBFscaler = 0.01
+          #elif int(mass.replace("M","")) <= 3000: DYVBFscaler = 0.1
+          ##else: DYVBFscaler = 1.
+          #else: DYVBFscaler = 0.3
+          #if "EMu" in channel:
+          #  SSWWscaler = 4.*DYVBFscaler*DYVBFscaler # Set the EMu signalSSWW scaler
+          #else:
+          #  SSWWscaler = DYVBFscaler*DYVBFscaler # Set the signalSSWW scaler
 
           print "input_hist :", LimitDir+"/"+tag+"/"+RegionToChannelMap[region][channel]+"/"+InputHistMass+RegionToHistSuffixMap[region][channel]
           input_hist = LimitDir+"/"+tag+"/"+RegionToChannelMap[region][channel]+"/"+InputHistMass+RegionToHistSuffixMap[region][channel]
@@ -543,6 +557,7 @@ for tag in tags:
               #  sys.exit()
             else:
               try:
+                if "EMu" in channel: h_syst.Scale(2) #XXX FIXME MY SKFlatOutput EMu signal have a half of events, should be fixed later
                 h_signalDYVBF.Scale(DYVBFscaler) # Scaling the signal due to Combine fitting
               except AttributeError:
                 print("[!!WARNING!!] There is no hist named "+input_hist+" in "+f_path_signalDYVBF+" .")
@@ -676,6 +691,7 @@ for tag in tags:
                     name_syst = input_list[i][2]+"_"+this_syst # Define syst histo name
                     try:
                       if "DYVBF" in input_list[i][2]: # Scale the syst variated signals
+                        if "EMu" in channel: h_syst.Scale(2) #XXX FIXME MY SKFlatOutput EMu signal have a half of events, should be fixed later
                         h_syst.Scale(DYVBFscaler)
                       elif "SSWW" in input_list[i][2]:
                         h_syst.Scale(SSWWscaler)

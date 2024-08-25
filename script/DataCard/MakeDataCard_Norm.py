@@ -1,6 +1,10 @@
 # Make Datacards
 # Place this at CombineTool/CMSSW_10_2_13/src/<your working directory>
 # You need to place card_skeletons already
+# python MakeDataCard_Norm.py --CR --Syst\ python MakeDataCard_Norm.py --Combine CR --Syst <-- add rateParam
+# python MakeDataCard_Norm.py --Combine Era --Syst
+# python MakeDataCard_Norm.py --Syst\ python MakeDataCard_Norm.py --Combine SR --Syst <-- without rateParam ("sronly" setting)
+
 
 import os, sys, argparse
 
@@ -22,8 +26,9 @@ pwd = os.getcwd()
 
 #eras = ["2016","2017","2018"]
 #eras = ["2017"]
-eras = ["2018"]
+#eras = ["2018"]
 #eras = ["2016preVFP","2016postVFP","2017","2018"]
+eras = ["2016preVFP","2016postVFP","2017"]
 channels = ["MuMu","EE","EMu"]
 #channels = ["MuMu","EE"]
 #channels = ["MuMu"]
@@ -32,8 +37,9 @@ channels = ["MuMu","EE","EMu"]
 #masses = ["M500","M1000","M5000"]
 #masses = ["M3000"]
 #masses = ["M90","M100","M150","M200","M300","M400","M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M10000","M15000","M20000"]
-#masses = ["M85","M90","M95","M100","M125","M150","M200","M250","M300","M400","M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M10000","M15000","M20000"]
-masses = ["M100","M1000","M10000"]
+masses = ["M85","M90","M95","M100","M125","M150","M200","M250","M300","M400","M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M10000","M15000","M20000"]
+#masses = ["M100","M1000","M10000"]
+#masses = ["M20000"]
 
 #SRpath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegion_Plotter_PR43/LimitInputs/"
 #SRpath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegion_Plotter/LimitInputs/"
@@ -62,7 +68,9 @@ InputWPs = ["PR52_HNL_ULID"]
 #OutputWP = "_SSWWonly"
 #OutputWP = "_DYVBFonly"
 #OutputWP = "_defMod_SSWWonly"
-OutputWP = "_Fake0p3CF0p2_PR991"
+#OutputWP = "_Fake0p3CF0p2_PR991"
+#OutputWP = "_Fake0p3CF0p2_PR991_TestModel"
+OutputWP = "_AN"
 
 ################################################################################################################################################
 
@@ -101,7 +109,7 @@ def CardSetting(isCR, WP, era, channel, mass):
     lines_cr[region] = this_lines_cr
 
   # sr setting
-  regions_sr = ["sr1","sr2","sr3"]
+  regions_sr = ["sr","sr1","sr2","sr3"]
   lines_sr = {}
   lines_sronly = {}
 

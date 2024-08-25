@@ -171,10 +171,11 @@ for RunList in args.RunLists:
         runfile.write("#!/bin/bash\n")
         card = card.replace(".root",".txt")
         card_name = card.replace(".txt","")
-        if "EMu" in card_name:
-          runfile.write("text2workspace.py -P HiggsAnalysis.CombinedLimit.HNDilepModel:hnDilepModel_EMu "+card+" -o "+card_name+".root")
-        else:
-          runfile.write("text2workspace.py -P HiggsAnalysis.CombinedLimit.HNDilepModel:hnDilepModel "+card+" -o "+card_name+".root\n")
+        #if "EMu" in card_name:
+        #  runfile.write("text2workspace.py -P HiggsAnalysis.CombinedLimit.HNDilepModel:hnDilepModel_EMu "+card+" -o "+card_name+".root")
+        #else:
+        #  runfile.write("text2workspace.py -P HiggsAnalysis.CombinedLimit.HNDilepModel:hnDilepModel "+card+" -o "+card_name+".root\n")
+        runfile.write("text2workspace.py -P HiggsAnalysis.CombinedLimit.HNDilepModel:hnDilepModel "+card+" -o "+card_name+".root\n")
         #runfile.write("text2workspace.py "+card+" -o "+card_name+".root\n") # when you want to test the default model, with SSWW only: see https://cms-talk.web.cern.ch/t/0-impact-on-poi-negative-bin-issue/42793
       with open(WP+"/"+shortcard+"_submit_Workspace.sh",'a') as submitfile:
         submitfile.write("executable = "+shortcard+"_MakeWorkspace.sh\n")
