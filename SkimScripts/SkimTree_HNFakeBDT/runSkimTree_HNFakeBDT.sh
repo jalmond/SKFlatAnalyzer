@@ -13,6 +13,7 @@ if [[ $1 == "" ]]; then
     do
         #SKFlat.py -a $analyzer  -l $datapath/DATA_${i}_FakeMu.txt  -n ${njobs_data}  --nmax ${nmax}   -e ${i} --skim SkimTree_HNFake&
         #SKFlat.py -a $analyzer  -l $datapath/DATA_${i}_FakeEl.txt  -n ${njobs_data}  --nmax ${nmax}   -e ${i} --skim SkimTree_HNFake&
-	SKFlat.py -a $analyzer  -l $mcpath/FakeRateMainMC.txt             -n ${njobs}       --nmax ${nmax}   -e ${i} --skim SkimTree_HNFake&
+        SKFlat.py -a $analyzer  -l $mcpath/FakeRateMainMCAlt.txt      -n ${njobs}       --nmax ${nmax}   -e ${i} --skim SkimTree_HNFake& 
+	#SKFlat.py -a $analyzer  -l $mcpath/FakeRateMainMC.txt             -n ${njobs}       --nmax ${nmax}   -e ${i} --skim SkimTree_HNFake&
     done
 fi

@@ -53,7 +53,10 @@ std::vector<Muon> HNL_LeptonCore::SelectMuons(AnalyzerParameter& param, TString 
     if(!( fabs(muons.at(i).Eta())< fetamax )) continue;
     if(!( muons.at(i).PassID(id) ))           continue;
     
-    if((RunFake||RunPromptTLRemoval)  &&  (id == param.Muon_FR_ID)){
+    bool CorrPt = (RunFake||RunPromptTLRemoval) && (id == param.Muon_FR_ID || id == param.Muon_Veto_ID);
+
+    if(CorrPt){
+
       Muon this_muon = muons.at(i);
       if(param.FakeRateParam == "PtCone"){
         double Isocut = GetIsoFromID(Lepton(muons[i]), param.Muon_Tight_ID );
@@ -67,9 +70,8 @@ std::vector<Muon> HNL_LeptonCore::SelectMuons(AnalyzerParameter& param, TString 
         this_muon.SetPtEtaPhiM( muons.at(i).CalcMVACone( muons.at(i).MVAFakeCut(param.Muon_Tight_ID,GetYearString())) , muons.at(i).Eta(), muons.at(i).Phi(), muons.at(i).M() );
       }
       if(param.FakeRateParam == "PtParton"){
-        this_muon.SetPtEtaPhiM(muons.at(i).PtParton(GetPtPartonSF(Lepton(muons.at(i)), param.Muon_FR_ID), muons.at(i).MVAFakeCut(param.Muon_Tight_ID,GetYearString())), muons.at(i).Eta(), muons.at(i).Phi(), muons.at(i).M() );
+        this_muon.SetPtEtaPhiM(muons.at(i).PtParton(GetPtPartonSF(Lepton(muons.at(i)), param.Muon_FR_ID, param), muons.at(i).MVAFakeCut(param.Muon_Tight_ID,GetYearString())), muons.at(i).Eta(), muons.at(i).Phi(), muons.at(i).M() );
       }
-      
       if(param.FakeRateParam == "MotherJetPt"){
         this_muon.SetPtEtaPhiM( muons.at(i).MotherJetPt(),muons.at(i).Eta(), muons.at(i).Phi(), muons.at(i).M() );
       } 
@@ -160,7 +162,9 @@ std::vector<Electron> HNL_LeptonCore::SelectElectrons(AnalyzerParameter& param, 
       }
     }
     
-    if((RunFake||RunPromptTLRemoval) && (id == param.Electron_FR_ID)){
+    bool CorrPt = (RunFake||RunPromptTLRemoval) && (id == param.Electron_FR_ID || id == param.Electron_Veto_ID);
+
+    if(CorrPt){
       Electron this_electron = electrons.at(i);
       if(param.FakeRateParam == "PtCone"){
         double Isocut = GetIsoFromID(Lepton(electrons.at(i)),param.Electron_Tight_ID);
@@ -175,7 +179,7 @@ std::vector<Electron> HNL_LeptonCore::SelectElectrons(AnalyzerParameter& param, 
         this_electron.SetPtEtaPhiM( electrons.at(i).CalcMVACone( electrons.at(i).MVAFakeCut(param.Electron_Tight_ID,GetYearString())) , electrons.at(i).Eta(), electrons.at(i).Phi(), electrons.at(i).M() );
       }
       if(param.FakeRateParam == "PtParton"){
-        this_electron.SetPtEtaPhiM(electrons.at(i).PtParton(GetPtPartonSF(Lepton(electrons.at(i)), param.Electron_FR_ID), electrons.at(i).MVAFakeCut(param.Electron_Tight_ID,GetYearString())), electrons.at(i).Eta(), electrons.at(i).Phi(), electrons.at(i).M() );
+        this_electron.SetPtEtaPhiM(electrons.at(i).PtParton(GetPtPartonSF(Lepton(electrons.at(i)), param.Electron_FR_ID,param), electrons.at(i).MVAFakeCut(param.Electron_Tight_ID,GetYearString())), electrons.at(i).Eta(), electrons.at(i).Phi(), electrons.at(i).M() );
       }
       if(param.FakeRateParam == "MotherJetPt"){
         this_electron.SetPtEtaPhiM( electrons.at(i).MotherJetPt(),electrons.at(i).Eta(), electrons.at(i).Phi(), electrons.at(i).M() );

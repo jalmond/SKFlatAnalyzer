@@ -89,6 +89,9 @@ class HNL_LeptonCore : public AnalyzerCore {
   AnalyzerParameter InitialiseHNLParameter(TString s_setup);  
   AnalyzerParameter InitialiseHNLParameter(TString s_setup, HNL_LeptonCore::Channel channel);  
   AnalyzerParameter SetupHNLParameter(TString s_setup_version, TString channel_str_name);
+
+  /// Systemaic HNL ID setup
+  bool UpdataParamBySyst(TString JobID, AnalyzerParameter& paramEv , AnalyzerParameter::Syst systname, TString OrigParamName);
   
   // ------ Analysis Obj   
 
@@ -97,6 +100,7 @@ class HNL_LeptonCore : public AnalyzerCore {
   std::pair<double,double> METXYCorr_Met_MetPhi(double uncormet, double uncormet_phi, int runnb, TString year, bool isMC, int npv, bool isUL =false,bool ispuppi=false);
   std::map<TString, double> cfmap;
 
+  std::map<TString, double> MakeSFmap;
   map<TString, Particle> METMap(AnalyzerParameter param);
 
 
@@ -132,7 +136,7 @@ class HNL_LeptonCore : public AnalyzerCore {
 
    
   //------ BKG
-  double GetPtPartonSF(Lepton Lep, TString ID);
+  double GetPtPartonSF(Lepton Lep, TString ID, AnalyzerParameter param);
   double GetFakeWeightMuon(std::vector<Muon> muons , AnalyzerParameter param);
   double GetFakeWeightMuon(std::vector<Muon> muons , std::vector<TString> vtrig, AnalyzerParameter param);
   double GetFakeWeightElectron(std::vector<Electron> electrons , vector<TString> trigs, AnalyzerParameter param);
@@ -157,7 +161,7 @@ class HNL_LeptonCore : public AnalyzerCore {
 
   //---- BDT Related    HNL_LeptonCore_BDT                                                                                                                                                                                           
   void initializeAnalyzer(bool READBKGHISTS=true, bool SETUPIDBDT=true);
-  void SetupEventMVAReader(bool ee=true, bool mm=true, bool emu=true);
+  void SetupEventMVAReader(TString version, bool ee=true, bool mm=true, bool emu=true);
   void SetupEvMVA();
   void DeleteEvMVA();
   

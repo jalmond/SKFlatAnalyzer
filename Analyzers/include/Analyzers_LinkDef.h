@@ -18,6 +18,7 @@
 #pragma link C++ class SkimTree_FakeEventSkimBDT+;
 #pragma link C++ class SkimTree_Dilepton+;
 #pragma link C++ class SkimTree_DileptonBDT+;
+#pragma link C++ class SkimTree_HNLTriggerSF+;
 #pragma link C++ class SkimTree_BDT+;
 #pragma link C++ class SkimTree_EventSkim+;
 #pragma link C++ class SkimTree_EGammaTnP+;

@@ -5,7 +5,7 @@ void HNL_SignalRegion_Plotter::initializeAnalyzer(){
   // All default settings like trigger/ PD/ BJet are decalred in HNL_LeptonCore::initializeAnalyzer to make them consistent for all HNL codes
 
   HNL_LeptonCore::initializeAnalyzer();
-  SetupEventMVAReader();
+  SetupEventMVAReader("V2");
   nLog = 100000;
 
 }
@@ -16,7 +16,7 @@ void HNL_SignalRegion_Plotter::executeEvent(){
   FillTimer("START_EV");
   
   vector<TString> LepIDs = {"HNL_ULID"}; //,"HNTightV2"};
-  if(strcmp(std::getenv("USER"),"jalmond")==0) LepIDs = {"HNL_ULID","HNTightV2","POGTight","TopHN","HighPt"};
+  if(strcmp(std::getenv("USER"),"jalmond")==0) LepIDs = {"HNL_ULID"};//,"HNTightV2","POGTight","TopHN","HighPt"};
 
   vector<HNL_LeptonCore::Channel> ChannelsToRun = {MuMu,EE,EMu};                                                    
 
@@ -32,15 +32,13 @@ void HNL_SignalRegion_Plotter::executeEvent(){
       if(RunSyst){
         TString param_name = param.Name;
         vector<AnalyzerParameter::Syst> SystList = GetSystList("Initial");
+        //vector<AnalyzerParameter::Syst> SystList = GetSystList("Fake");
         //vector<AnalyzerParameter::Syst> SystList = GetSystList("Jets");
         //vector<AnalyzerParameter::Syst> SystList = GetSystList("Quick");
         
         for(auto isyst : SystList){
-          param.syst_ = AnalyzerParameter::Syst(isyst);
-          
-          param.Name = "Syst_"+param.GetSystType()+param_name;
-          param.DefName = "Syst_"+param.GetSystType()+param_name;
-          RunULAnalysis(param);
+          bool runJob = UpdataParamBySyst(id,param,AnalyzerParameter::Syst(isyst),param_name);
+          if(runJob) RunULAnalysis(param);
         }
       }    
       
@@ -58,9 +56,9 @@ void HNL_SignalRegion_Plotter::RunULAnalysis(AnalyzerParameter param){
   Event ev = GetEvent();
   double weight =SetupWeight(ev,param);
   
-  // veto leptons
-  std::vector<Electron>   ElectronCollV = GetElectrons(param.Electron_Veto_ID, 10., 2.5); 
-  std::vector<Muon>       MuonCollV     = GetMuons    (param.Muon_Veto_ID,     5., 2.4);
+  // HL ID
+  std::vector<Electron>   ElectronCollV = SelectElectrons(param,param.Electron_Veto_ID, 10., 2.5); 
+  std::vector<Muon>       MuonCollV     = SelectMuons    (param,param.Muon_Veto_ID,     5., 2.4);
   
   TString el_ID = SetLeptonID("Electron",param);
   TString mu_ID = SetLeptonID("Muon", param);
@@ -98,10 +96,11 @@ void HNL_SignalRegion_Plotter::RunULAnalysis(AnalyzerParameter param){
   else RunEl = {-1};
 
   for(auto ir : RunEl){
+    
     RunAllSignalRegions(Inclusive,
-			ElectronCollT,ElectronCollV,MuonCollT,MuonCollV,  TauColl,
-			AK4_JetCollLoose,AK4_JetColl,AK4_VBF_JetColl,AK8_JetColl, AK4_BJetColl, 
-			ev,METv, param, ir, weight);
+      ElectronCollT,ElectronCollV,MuonCollT,MuonCollV,  TauColl,
+      AK4_JetCollLoose,AK4_JetColl,AK4_VBF_JetColl,AK8_JetColl, AK4_BJetColl, 
+      ev,METv, param, ir, weight);
   }
 
   FillTimer("END_SR");

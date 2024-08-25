@@ -1,9 +1,21 @@
-FakeRate	HNTightV2	ptcone_eta  AwayJetPt40	FR_EGamma_Version1_2018.root
-FakeRate 	passPOGTight	ptcone_eta  AwayJetPt40	FR_EGamma_Version1_2018.root
-FakeRate 	TopHNSST      	ptcone_eta  FR_cent     FR_EGamma_2018_Top.root
-FakeRate 	Peking_2018     ptcone_eta  FR_cent     FR_EGamma_2018_HNL_PtCone.root
-FakeRate 	HNTightV2      	ptcone_eta  FR_cent     FR_EGamma_2018_HNL_PtCone.root
-FakeRate        HNL_ULID_2018     ptparton_eta   HNL_ULID_FO_v0_AJ30     FR_EGamma_2018_HNL_ULID_PtParton_v5.root
-FakeRate        HNL_ULID_2018     ptparton_eta   HNL_ULID_FO_v0_AJ40     FR_EGamma_2018_HNL_ULID_PtParton_v5.root
-FakeRate        HNL_ULID_2018     ptparton_eta   HNL_ULID_FO_v0_AJ25     FR_EGamma_2018_HNL_ULID_PtParton_v5.root
-FakeRate        HNL_ULID_2018     ptparton_eta   HNL_ULID_FO_v0_AJ30Mu8  FR_EGamma_2018_HNL_ULID_PtParton_v4.root
+###-----------------------------------------------------------------------------------------------------------------------------
+###--- Initial entries for non MVA HNL IDs
+###-----------------------------------------------------------------------------------------------------------------------------
+FakeRate        HNTightV2       ptcone_eta  AwayJetPt40		MainFiles/FR_EGamma_Version1_2018.root
+FakeRate        passPOGTight    ptcone_eta  AwayJetPt40 	MainFiles/FR_EGamma_Version1_2018.root
+FakeRate        TopHNSST        ptcone_eta  FR_cent     	MainFiles/FR_EGamma_2018_Top.root
+FakeRate        Peking_2018     ptcone_eta  FR_cent     	MainFiles/FR_EGamma_2018_HNL_PtCone.root
+FakeRate        HNTightV2       ptcone_eta  FR_cent     	MainFiles/FR_EGamma_2018_HNL_PtCone.root
+###-----------------------------------------------------------------------------------------------------------------------------
+###--- Following entries for MVA HNL IDs using v4 [LOWER El8 Trigger used]
+###-----------------------------------------------------------------------------------------------------------------------------
+FakeRate      HNL_ULID_2018     ptparton_eta   HNL_ULID_FO_v9_a_AJ40	MainFiles/FR_EGamma_2018_HNL_ULID_PtParton_v4.root
+###-----------------------------------------------------------------------------------------------------------------------------
+###--- Following entries for MVA HNL IDs using v6 [CENTRAL: El12 trigger lowest]
+###-----------------------------------------------------------------------------------------------------------------------------
+FakeRate      HNL_ULID_2018     ptparton_eta   HNL_ULID_FO_v9_a_AJ30_El12		MainFiles/FR_EGamma_2018_HNL_ULID_PtParton_v5.root
+FakeRate      HNL_ULID_2018     ptparton_eta   HNL_ULID_FO_v9_a_AJ40_El12       	MainFiles/FR_EGamma_2018_HNL_ULID_PtParton_v5.root
+FakeRate      HNL_ULID_2018     ptparton_eta   HNL_ULID_FO_v9_a_AJ60_El12       	MainFiles/FR_EGamma_2018_HNL_ULID_PtParton_v5.root
+FakeRate      HNL_ULID_2018     ptparton_eta   HNL_ULID_FO_v0_AJ40_El12         	MainFiles/FR_EGamma_2018_HNL_ULID_PtParton_v5.root
+FakeRate      HNL_ULID_2018     ptparton_eta   HNL_ULID_FO_v8_a_AJ40_El12       	MainFiles/FR_EGamma_2018_HNL_ULID_PtParton_v5.root
+###-----------------------------------------------------------------------------------------------------------------------------

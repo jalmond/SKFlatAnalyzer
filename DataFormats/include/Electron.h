@@ -48,7 +48,7 @@ public:
   inline double MVANoIso() const { return j_mvanoiso; }
 
 
-  /////// --> Response functions used for BDT tarining 
+  /////// --> Response functions used for BDT training 
   inline bool PassMVANoIsoResponse(double A, double B, double C){
     double mva_resp = MVANoIsoResponse();
     double cut = A - std::exp(-Pt() / B) * C;

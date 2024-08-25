@@ -1,6 +1,6 @@
 #include "HNL_SR3_BDT_KinVar.h"
 
-const float MZ = 91.1876, MW = 80.379;
+//const float MZ = 91.1876, MW = 80.379;
 
 void HNL_SR3_BDT_KinVar::initializeAnalyzer(){
 
@@ -138,7 +138,7 @@ void HNL_SR3_BDT_KinVar::executeEvent(){
   AnalyzerParameter param_bdt = HNL_LeptonCore::InitialiseHNLParameter("BDT");
 
   Event ev = GetEvent();
-  double weight =SetupWeight(ev,param_bdt);
+  double weight = SetupWeight(ev, param_bdt);
   
   //FillHist("CutFlow", 0., weight, 20, 0., 20.);
   FillHist("CutFlow_MuMu", 0.5, 1., 10, 0., 10.);
@@ -151,8 +151,7 @@ void HNL_SR3_BDT_KinVar::executeEvent(){
   FillHist("CutFlow_EE", 1.5, 1., 10, 0., 10.);
   FillHist("CutFlow_EMu", 1.5, 1., 10, 0., 10.);
 
-  vector<HNL_LeptonCore::Channel> channels = {EE,MuMu, EMu};
-
+  vector<HNL_LeptonCore::Channel> channels = {EE, MuMu, EMu};
 
   std::vector<Muon>       MuonCollT     = GetLepCollByRunType    ( GetMuons    (param_bdt.Muon_Tight_ID, 10., 2.4)    , param_bdt, "");
   std::vector<Electron>   ElectronCollT = GetLepCollByRunType    ( GetElectrons(param_bdt.Electron_Tight_ID, 10., 2.5), param_bdt, "");
@@ -163,9 +162,19 @@ void HNL_SR3_BDT_KinVar::executeEvent(){
   std::vector<Lepton *> LepsT  = MakeLeptonPointerVector(MuonCollT,ElectronCollT);
   std::vector<Lepton *> LepsV  = MakeLeptonPointerVector(MuonCollV,ElectronCollV);
 
+  if(!PassHEMVeto(LepsV)) return;
+
+  FillHist("CutFlow_MuMu", 2.5, 1., 10, 0., 10.);
+  FillHist("CutFlow_EE", 2.5, 1., 10, 0., 10.);
+  FillHist("CutFlow_EMu", 2.5, 1., 10, 0., 10.);
+
   if(!(LepsT.size() == 2)) return;
 
-  if(!PassGenMatchFilter(LepsT, param_bdt)) return;
+  if(!(LepsV.size() == 2)) return;
+
+  FillHist("CutFlow_MuMu", 3.5, 1., 10, 0., 10.);
+  FillHist("CutFlow_EE", 3.5, 1., 10, 0., 10.);
+  FillHist("CutFlow_EMu", 3.5, 1., 10, 0., 10.);
 
   for(auto dilep_channel : channels){
 
@@ -178,20 +187,45 @@ void HNL_SR3_BDT_KinVar::executeEvent(){
     //std::vector<Lepton *> LepsT  = MakeLeptonPointerVector(MuonCollT,ElectronCollT);
     //std::vector<Lepton *> LepsV  = MakeLeptonPointerVector(MuonCollV,ElectronCollV);
 
-    if (!PassTriggerSelection(dilep_channel, ev, LepsT, "Dilep")) continue;
+    if(!CheckLeptonFlavourForChannel(dilep_channel, LepsT)) continue;
 
-    if(DataEra=="2017" && dilep_channel==MuMu){
-      
-      //if(ev.PassTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v") && !ev.PassTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v")) weight = weight*4803.366325775/ev.GetTriggerLumi("Full");
-      //if(!ev.PassTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_v")) continue;
-      if(ev.PassTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v") && !ev.PassTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_v")) weight = weight*36674.511073518/ev.GetTriggerLumi("Full");
+    if(dilep_channel == MuMu) FillHist("CutFlow_MuMu", 4.5, 1., 10, 0., 10.);
+    if(dilep_channel == EE) FillHist("CutFlow_EE", 4.5, 1., 10, 0., 10.);
+    if(dilep_channel == EMu) FillHist("CutFlow_EMu", 4.5, 1., 10, 0., 10.);
+
+    if(!PassGenMatchFilter(LepsT, param_bdt)) continue;
+
+    if(!ConversionSplitting(LepsT, RunConv, 2, param_bdt)) continue;
+
+    if(!PassTriggerSelection(dilep_channel, ev, LepsT, "Dilep")) continue;
+
+    if(dilep_channel == MuMu){
+
+      if(DataEra=="2016postVFP"){
+
+        if(!ev.PassTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v")){
+          if(!ev.PassTrigger("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v")) {
+            if(ev.PassTrigger("HLT_TkMu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v")) weight = weight*ev.GetTriggerLumi("HLT_TkMu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v")/ev.GetTriggerLumi("Full");
+          }
+        }
+
+      }
+      if(DataEra=="2017"){
+
+        //if(!ev.PassTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v")){
+        //  if(ev.PassTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v")) weight = weight*4803.366325775/ev.GetTriggerLumi("Full");
+        //}
+        if(!ev.PassTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_v")){
+           if(ev.PassTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v")) weight = weight*ev.GetTriggerLumi("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v")/ev.GetTriggerLumi("Full");
+        }
+
+      }
 
     }
 
-    if(dilep_channel == MuMu) FillHist("CutFlow_MuMu", 2.5, 1., 10, 0., 10.);
-    if(dilep_channel == EE) FillHist("CutFlow_EE", 2.5, 1., 10, 0., 10.);
-    if(dilep_channel == EMu) FillHist("CutFlow_EMu", 2.5, 1., 10, 0., 10.);
-
+    if(dilep_channel == MuMu) FillHist("CutFlow_MuMu", 5.5, 1., 10, 0., 10.);
+    if(dilep_channel == EE) FillHist("CutFlow_EE", 5.5, 1., 10, 0., 10.);
+    if(dilep_channel == EMu) FillHist("CutFlow_EMu", 5.5, 1., 10, 0., 10.);
 
     //std::vector<Tau>    mytaus         = GetTaus("HNVeto",20., 2.3);
  
@@ -203,19 +237,26 @@ void HNL_SR3_BDT_KinVar::executeEvent(){
     //std::vector<Jet>    AK4_JetColl    = SelectAK4Jets(jets_tmp,     20., 2.7, true, 0.4, 0.8, "", ElectronCollV, MuonCollV, AK8_JetColl);
     //std::vector<Jet>    AK4_JetVBFColl = SelectAK4Jets(jets_tmp,     30., 4.7, true, 0.4, 0.8, "", ElectronCollV, MuonCollV, AK8_JetColl);
 
-    std::vector<FatJet> AK8_JetColl    = SelectAK8Jets(fatjets_tmp, 200., 2.7, true, 1., false, -999, true, 40., 130., "particleNet_WvsQCD", ElectronCollV, MuonCollV);
+    std::vector<FatJet> AK8_JetColl    = SelectAK8Jets(fatjets_tmp,   200., 2.7, true, 1., false, -999, true, 40., 130., "particleNet_WvsQCD", ElectronCollV, MuonCollV);
     std::vector<Jet>    AK4_JetColl    = SelectAK4Jets(jets_tmp,      20., 2.7, true, 0.4, 0.8, "Loose",  ElectronCollV, MuonCollV, AK8_JetColl);
     std::vector<Jet>    AK4_JetVBFColl = SelectAK4Jets(jets_tmp,      30., 4.7, true, 0.4, 0.8, "Loose",  ElectronCollV, MuonCollV, AK8_JetColl);
     std::vector<Jet>    AK4_JetAllColl = SelectAK4Jets(jets_tmp,      20., 2.7, true, 0.4, 0.8, "Loose",  ElectronCollV, MuonCollV, AK8_JetColl);
 
-    Particle METv = GetMiniAODvMET("PuppiT1xyULCorr");
- 
+    //Particle METv = GetMiniAODvMET("PuppiT1xyULCorr");
+    Particle METv = GetvMET("PuppiT1xyULCorr", param_bdt); 
+
     std::vector<Jet> bjets_tmp         = SelectAK4Jets(jets_tmp,      20., 2.4, true, 0.4, 0.8, "", ElectronCollV, MuonCollV, AK8_JetColl);
 
-    JetTagging::Parameters param_jets = JetTagging::Parameters(JetTagging::DeepJet, JetTagging::Medium, JetTagging::incl, JetTagging::mujets);
-    std::vector<Jet> BJetColl         = SelectBJets(param_bdt, bjets_tmp, param_jets);
-    double sf_btag                    = GetBJetSF(param_bdt, bjets_tmp, param_jets);
-    if(!IsData )weight*= sf_btag;
+    JetTagging::Parameters param_jets  = JetTagging::Parameters(JetTagging::DeepJet, JetTagging::Medium, JetTagging::incl, JetTagging::mujets);
+    std::vector<Jet> BJetColl          = SelectBJets(param_bdt, bjets_tmp, param_jets);
+    double sf_btag                     = GetBJetSF(param_bdt, bjets_tmp, param_jets);
+    if(!IsData) weight *= sf_btag;
+
+    //==== Removing Z peak events in ee channel
+    bool passNonZ = true;
+    if(dilep_channel == EE){
+      if(fabs(GetLLMass(LepsT)-M_Z) < M_ZWINDOW_VETO) passNonZ = false;
+    }
 
     //==== Merging OS+SS for signal    
     bool passCharge = false;
@@ -231,41 +272,59 @@ void HNL_SR3_BDT_KinVar::executeEvent(){
     if(RunFake || MCSample.Contains("DYTypeI")) weightCharge = 0.5;
     weight *= weightCharge;
 
-    if(MCSample.Contains("DYJets")) weightDYZ = 0.5;
+    if(MCSample.Contains("DYJets")){
+      if(RunConv) weightDYZ = 1.; // DYJets_MG only
+      if(RunFake || RunCF){
+        if(MCSample.Contains("MiNNLO")) weightDYZ = 1.;
+        else weightDYZ = 0.5; // DYJets_MG, DYJets
+      }
+    }
     weight *= weightDYZ;
+
+    //==== Applying CF SF
+    double avgSF = 1.;
+
+    if(RunCF){
+      avgSF = (GetCFSF(param_bdt, LepsT[0], true) + GetCFSF(param_bdt, LepsT[1], true))*0.5;
+    }
+
+    weight *= avgSF;
+
+    //==== Applying Conv SF
 
     //==== Event selection : SR3
     bool EventCand = false;
 
-    if(passCharge && LepsV.size()==2){
+    if(passCharge){
 
-      if(dilep_channel == MuMu) FillHist("CutFlow_MuMu", 3.5, 1., 10, 0., 10.);
-      if(dilep_channel == EE) FillHist("CutFlow_EE", 3.5, 1., 10, 0., 10.);
-      if(dilep_channel == EMu) FillHist("CutFlow_EMu", 3.5, 1., 10, 0., 10.);
+      if(dilep_channel == MuMu) FillHist("CutFlow_MuMu", 6.5, 1., 10, 0., 10.);
+      if(dilep_channel == EE) FillHist("CutFlow_EE", 6.5, 1., 10, 0., 10.);
+      if(dilep_channel == EMu) FillHist("CutFlow_EMu", 6.5, 1., 10, 0., 10.);
 
+      if(GetLLMass(LepsT) > M_CUT_LL){
+        if(passNonZ){
 
-      if(GetLLMass(LepsT) > 10.){
+          if(dilep_channel == MuMu) FillHist("CutFlow_MuMu", 7.5, 1., 10, 0., 10.);
+          if(dilep_channel == EE) FillHist("CutFlow_EE", 7.5, 1., 10, 0., 10.);
+          if(dilep_channel == EMu) FillHist("CutFlow_EMu", 7.5, 1., 10, 0., 10.);
 
-        if(dilep_channel == MuMu) FillHist("CutFlow_MuMu", 4.5, 1., 10, 0., 10.);
-        if(dilep_channel == EE) FillHist("CutFlow_EE", 4.5, 1., 10, 0., 10.);
-        if(dilep_channel == EMu) FillHist("CutFlow_EMu", 4.5, 1., 10, 0., 10.);
+          if(AK8_JetColl.size() == 0){
 
-	if(AK8_JetColl.size() == 0){
+            if(dilep_channel == MuMu) FillHist("CutFlow_MuMu", 8.5, 1., 10, 0., 10.);
+            if(dilep_channel == EE) FillHist("CutFlow_EE", 8.5, 1., 10, 0., 10.);
+            if(dilep_channel == EMu) FillHist("CutFlow_EMu", 8.5, 1., 10, 0., 10.);
 
-          if(dilep_channel == MuMu) FillHist("CutFlow_MuMu", 5.5, 1., 10, 0., 10.);
-          if(dilep_channel == EE) FillHist("CutFlow_EE", 5.5, 1., 10, 0., 10.);
-          if(dilep_channel == EMu) FillHist("CutFlow_EMu", 5.5, 1., 10, 0., 10.);
+            //if(!PassVBFInitial(AK4_JetVBFColl)){
+            if(!PassVBF(AK4_JetVBFColl, LepsT, 750., true)){
 
-	  if(!PassVBFInitial(AK4_JetVBFColl)){
+              if(dilep_channel == MuMu) FillHist("CutFlow_MuMu", 9.5, 1., 10, 0., 10.);
+              if(dilep_channel == EE) FillHist("CutFlow_EE", 9.5, 1., 10, 0., 10.);
+              if(dilep_channel == EMu) FillHist("CutFlow_EMu", 9.5, 1., 10, 0., 10.);
 
-            if(dilep_channel == MuMu) FillHist("CutFlow_MuMu", 6.5, 1., 10, 0., 10.);
-            if(dilep_channel == EE) FillHist("CutFlow_EE", 6.5, 1., 10, 0., 10.);
-            if(dilep_channel == EMu) FillHist("CutFlow_EMu", 6.5, 1., 10, 0., 10.);
+              EventCand=true;
 
-	    EventCand=true;
-
-	  }
-
+	    }
+          }
 	}
       }
     }
@@ -291,18 +350,17 @@ void HNL_SR3_BDT_KinVar::MakeTreeSS2L(HNL_LeptonCore::Channel lep_channel,vector
   
   // CorrectChannelStream checks EE channel has only EE events
   //if(!CheckLeptonFlavourForChannel(lep_channel, LepTColl)) return;
-  if(CheckLeptonFlavourForChannel(lep_channel, LepTColl)){
+  //if(CheckLeptonFlavourForChannel(lep_channel, LepTColl)){
 
   // Pt cut is set in CheckLeptonFlavourForChannel
   //if(!(LepTColl[0]->Pt()>20 && LepTColl[1]->Pt()>10)) return;
 
-  float Mll = GetLLMass(LepTColl);
-  //if (lep_channel==EE && (fabs(Mll-90.) < 10.)) return;
-  if(lep_channel==EE && (fabs(Mll-MZ)<10.)) return;
+  //float Mll = GetLLMass(LepTColl);
+  //if(lep_channel==EE && (fabs(Mll-M_Z)<M_ZWINDOW_VETO)) return;
 
-  if(lep_channel == MuMu) FillHist("CutFlow_MuMu", 7.5, 1., 10, 0., 10.);
-  if(lep_channel == EE) FillHist("CutFlow_EE", 7.5, 1., 10, 0., 10.);
-  if(lep_channel == EMu) FillHist("CutFlow_EMu", 7.5, 1., 10, 0., 10.);
+  //if(lep_channel == MuMu) FillHist("CutFlow_MuMu", 7.5, 1., 10, 0., 10.);
+  //if(lep_channel == EE) FillHist("CutFlow_EE", 7.5, 1., 10, 0., 10.);
+  //if(lep_channel == EMu) FillHist("CutFlow_EMu", 7.5, 1., 10, 0., 10.);
 
   InitializeTreeVars();
   
@@ -334,7 +392,7 @@ void HNL_SR3_BDT_KinVar::MakeTreeSS2L(HNL_LeptonCore::Channel lep_channel,vector
   dRlj22  = JetColl.size()<2? -1.:LepTColl.at(1)->DeltaR(JetColl.at(1));
   dRlj23  = JetColl.size()<3? -1.:LepTColl.at(1)->DeltaR(JetColl.at(2));
   
-  MSSSF   = Mll;
+  MSSSF   = GetLLMass(LepTColl);
   Mlj11   = JetColl.size()<1? -1.:(*LepTColl.at(0)+JetColl.at(0)).M();
   Mlj12   = JetColl.size()<2? -1.:(*LepTColl.at(0)+JetColl.at(1)).M();
   Mlj13   = JetColl.size()<3? -1.:(*LepTColl.at(0)+JetColl.at(2)).M();
@@ -490,7 +548,6 @@ void HNL_SR3_BDT_KinVar::MakeTreeSS2L(HNL_LeptonCore::Channel lep_channel,vector
   MET2HT = JetColl.size()<1? -1.:pow(MET,2.)/HT;
   MET2ST = pow(MET,2.)/ST;
   
-  //const float MW = 80.379;
   float dijetmass_tmp=9999.;
   float dijetmass=99990000.;
   int m=-999;
@@ -502,7 +559,7 @@ void HNL_SR3_BDT_KinVar::MakeTreeSS2L(HNL_LeptonCore::Channel lep_channel,vector
       dijetmass_tmp = (JetColl[emme]+JetColl[enne]).M();
       //if(emme == enne) continue;
       
-      if ( fabs(dijetmass_tmp-MW) < fabs(dijetmass-MW) ) {
+      if ( fabs(dijetmass_tmp-M_W) < fabs(dijetmass-M_W) ) {
 	dijetmass = dijetmass_tmp;
 	m = emme;
 	n = enne;
@@ -539,7 +596,7 @@ void HNL_SR3_BDT_KinVar::MakeTreeSS2L(HNL_LeptonCore::Channel lep_channel,vector
     tree_em->Fill();
     FillHist("sumw_EMu", 0.5, w_tot, 2, 0., 2.);
   }
-  }
+  //}
 }
   
 

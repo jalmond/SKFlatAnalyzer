@@ -3,7 +3,7 @@
 void HNL_CrossCheck::initializeAnalyzer(){
 
 HNL_LeptonCore::initializeAnalyzer();
-  SetupEventMVAReader();
+  SetupEventMVAReader("V2");
 
   nLog = 100000;
 }
@@ -17,7 +17,7 @@ void HNL_CrossCheck::executeEvent(){
 
   ///// LIST IDs to run
   vector<TString> LepIDs = {"HNL_ULID"};//,"TopHN", "DefaultPOGTight"};
-  if(strcmp(std::getenv("USER"),"jalmond")==0) LepIDs = {"HNL_ULID"};//,"HNTightV2" ,"TopHN"};//, "POGTight"};
+  if(strcmp(std::getenv("USER"),"jalmond")==0) LepIDs = {"HNTightV2"};//,"HNTightV2" ,"TopHN"};//, "POGTight"};
   if(RunFakeTF) LepIDs = {"HNL_ULID"};
   
   //// List Channels to run
@@ -129,21 +129,44 @@ void HNL_CrossCheck::RunControlRegions(AnalyzerParameter param, vector<TString> 
   if(RunNP){
     if(LepsT.size() < 2) return ;    
 
+    TString EvTag ="";
+    Particle SumParticle;
+    int nCh=0;
+    for(auto ilep : LepsT) {
+      if(ilep->Charge() >0) nCh++;
+      
+      SumParticle += *ilep;
+    }
+    if(ElectronTightColl.size() ==2 && MuonTightColl.size() ==0 ) EvTag ="SSEE";
+    else if(ElectronTightColl.size() ==0 && MuonTightColl.size() ==2 ) EvTag ="SSMM";
+    else if(ElectronTightColl.size() ==1 && MuonTightColl.size() ==1 ) EvTag ="SSEM";
+    else if(ElectronTightColl.size() ==3 && MuonTightColl.size() ==0 ) EvTag ="EEE";
+    else if(ElectronTightColl.size() ==0 && MuonTightColl.size() ==3 ) EvTag ="MMM";
+    else if((ElectronTightColl.size() + MuonTightColl.size()) ==3 )  EvTag ="EML";
+    else EvTag = "NULL";
+    double LLMass =  SumParticle.M();
+
+    bool ZWMass = (LLMass < 90 && LLMass > 75);
     for(auto ilep : LepsT){
+
       if(ilep->IsConv()){
 	if(HasMEPhoton(*ilep)){
-	  cout << "External Conv " << endl;
+
 	  int Idx_Closest    = GenMatchedIdx(*ilep,All_Gens);
-	  cout <<"Idx_Closest = " << Idx_Closest<< endl;
-	  if(Idx_Closest > 0) FillHist("ConvExt/"+ilep->GetFlavour()+"/Lep/Gen_Pt", All_Gens[Idx_Closest].Pt()   ,  weight, 200, 0, 200 );
-	  FillHist("ConvExt/"+ilep->GetFlavour()+"/Lep/Reco_Pt", ilep->Pt()   ,  weight, 200, 0, 200 );
+	  if(Idx_Closest > 0) FillHist(EvTag+"/ConvExt/"+ilep->GetFlavour()+"/Lep/Gen_Pt", All_Gens[Idx_Closest].Pt()   ,  weight, 200, 0, 200 );
+	  FillHist(EvTag+"/ConvExt/"+ilep->GetFlavour()+"/Lep/Reco_Pt", ilep->Pt()   ,  weight, 200, 0, 200 );
+	  FillHist(EvTag+"/ConvExt/"+ilep->GetFlavour()+"/Mass", LLMass   ,  weight, 200, 0, 200 );
 	  
 	  for(unsigned int i=2; i<All_Gens.size(); i++){
 	    Gen gen = All_Gens.at(i);
 	    if(Idx_Closest < 0 && ilep->DeltaR(gen) < 0.2 ) {
-	      if(gen.PID() == 22) {
-		FillHist("ConvExt/"+ilep->GetFlavour()+"/Ph/Gen_Mass", gen.M()   ,  weight, 200, 0, 200 );
-		FillHist("ConvExt/"+ilep->GetFlavour()+"/Ph/Gen_Pt", gen.Pt()   ,  weight, 100, 0, 500 );
+	      if(gen.PID() == 22 && gen.Status()==1) {
+		FillHist(EvTag+"/ConvExt/"+ilep->GetFlavour()+"/Ph/Gen_Mass", gen.M()   ,  weight, 200, 0, 200 );
+		FillHist(EvTag+"/ConvExt/"+ilep->GetFlavour()+"/Ph/Gen_Pt", gen.Pt()   ,  weight, 100, 0, 500 );
+		if(ZWMass){
+		  FillHist(EvTag+"/ConvExtZ/"+ilep->GetFlavour()+"/Ph/Gen_Mass", gen.M()   ,  weight, 200, 0, 200 );
+		  FillHist(EvTag+"/ConvExtZ/"+ilep->GetFlavour()+"/Ph/Gen_Pt", gen.Pt()   ,  weight, 100, 0, 500 );
+		}
 	      }
 	    }
 	  }
@@ -151,49 +174,48 @@ void HNL_CrossCheck::RunControlRegions(AnalyzerParameter param, vector<TString> 
 	else if(ilep->LeptonGenType() < 0){
 	  int Idx_Closest    = GenMatchedIdx(*ilep,All_Gens);
 	  
-          if(Idx_Closest > 0) FillHist("ConvExt2/"+ilep->GetFlavour()+"/Lep/Gen_Pt", All_Gens[Idx_Closest].Pt()   ,  weight, 200, 0, 200 );
-          FillHist("ConvExt2/"+ilep->GetFlavour()+"/Lep/Reco_Pt", ilep->Pt()   ,  weight, 200, 0, 200 );
+          if(Idx_Closest > 0) FillHist(EvTag+"/ConvExt2/"+ilep->GetFlavour()+"/Lep/Gen_Pt", All_Gens[Idx_Closest].Pt()   ,  weight, 200, 0, 200 );
+          FillHist(EvTag+"/ConvExt2/"+ilep->GetFlavour()+"/Lep/Reco_Pt", ilep->Pt()   ,  weight, 200, 0, 200 );
+          FillHist(EvTag+"/ConvExt2/"+ilep->GetFlavour()+"/Mass", LLMass   ,  weight, 200, 0, 200 );
 
 	  for(unsigned int i=2; i<All_Gens.size(); i++){
             Gen gen = All_Gens.at(i);
             if(Idx_Closest < 0 && ilep->DeltaR(gen) < 0.2 ) {
-              if(gen.PID() == 22) {
-		FillHist("ConvExt2/"+ilep->GetFlavour()+"/Ph/Gen_Mass", gen.M()   ,  weight, 200, 0, 200 );
-                FillHist("ConvExt2/"+ilep->GetFlavour()+"/Ph/Gen_Pt", gen.Pt()   ,  weight, 100, 0, 500 );
+              if(gen.PID() == 22 && gen.Status()==1) {
+		FillHist(EvTag+"/ConvExt2/"+ilep->GetFlavour()+"/Ph/Gen_Mass", gen.M()   ,  weight, 200, 0, 200 );
+                FillHist(EvTag+"/ConvExt2/"+ilep->GetFlavour()+"/Ph/Gen_Pt", gen.Pt()   ,  weight, 100, 0, 500 );
               }
             }
           }
-
 	}
 	else{
 	  //cout << "Internal Conv" << endl;
 	  int Idx_Closest    = GenMatchedIdx(*ilep,All_Gens);
 	  //cout << "Idx_Closest = " << Idx_Closest << endl;
 	  Gen Mother = GenGetMother(All_Gens[Idx_Closest]);
-	  
+	  int nLep(0);
 	  Particle  Gamma = All_Gens[Idx_Closest];
           for(unsigned int i=2; i<All_Gens.size(); i++){
 	    if(i == Idx_Closest) continue;
 	    if(All_Gens.at(i).Status() != 1) continue;
-	    if(GenGetMother(All_Gens.at(i)).Index() == Mother.Index()) Gamma = Gamma + All_Gens.at(i);
+	    if(MCSample.Contains("MiNNL")){
+	      if(nLep > 1 && GenGetMother(All_Gens.at(i)).Index() == Mother.Index()) Gamma = Gamma + All_Gens.at(i);
+	      nLep++;
+	    }
+	    else   if(GenGetMother(All_Gens.at(i)).Index() == Mother.Index()) Gamma = Gamma + All_Gens.at(i);
 	  }
 
-          if(Idx_Closest > 0) FillHist("IntConv/"+ilep->GetFlavour()+"/Lep/Gen_Pt", All_Gens[Idx_Closest].Pt()   ,  weight, 200  , 0, 200 );
-          FillHist("IntConv/"+ilep->GetFlavour()+"/Lep/Reco_Pt", ilep->Pt()   ,  weight, 200, 0, 200 );
+          if(Idx_Closest > 0) FillHist(EvTag+"/ConvInt/"+ilep->GetFlavour()+"/Lep/Gen_Pt", All_Gens[Idx_Closest].Pt()   ,  weight, 200  , 0, 200 );
+          FillHist(EvTag+"/ConvInt/"+ilep->GetFlavour()+"/Lep/Reco_Pt", ilep->Pt()   ,  weight, 200, 0, 200 );
+	  FillHist(EvTag+"/ConvInt/"+ilep->GetFlavour()+"/Mass", LLMass   ,  weight, 200, 0, 200 );
 
-
-
-	  FillHist("ConvInt/"+ilep->GetFlavour()+"/Ph/Gen_Mass", Gamma.M()   ,  weight, 200, 0, 200 );
-	  FillHist("ConvInt/"+ilep->GetFlavour()+"/Ph/Gen_Pt", Gamma.Pt()   ,  weight, 100, 0, 500 );
-	  
-	  //PrintGen(All_Gens);
-	  //for(auto i : LepsT) cout << i->GetFlavour() << " "  << i->PrintInfo() << " LeptonIsPromptConv=" << i->LeptonIsPromptConv() <<  endl;
-
-	  //for(auto i : LepsT) PrintMatchedGen( All_Gens,*i);
-
-	  return;
+	  FillHist(EvTag+"/ConvInt/"+ilep->GetFlavour()+"/Ph/Gen_Mass", Gamma.M()   ,  weight, 200, 0, 200 );
+	  FillHist(EvTag+"/ConvInt/"+ilep->GetFlavour()+"/Ph/Gen_Pt", Gamma.Pt()   ,  weight, 100, 0, 500 );
+	  if(ZWMass){
+	    FillHist(EvTag+"/ConvIntZ/"+ilep->GetFlavour()+"/Ph/Gen_Mass", Gamma.M()   ,  weight, 200, 0, 200 );
+	    FillHist(EvTag+"/ConvIntZ/"+ilep->GetFlavour()+"/Ph/Gen_Pt", Gamma.Pt()   ,  weight, 100, 0, 500 );
+	  }
 	}
-	cout << "CONV ????  " << endl;
       }
     }
     

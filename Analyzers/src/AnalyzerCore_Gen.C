@@ -425,6 +425,7 @@ void AnalyzerCore::PrintMatchedGen(std::vector<Gen>& gens,const Lepton& Lep){
 
   unsigned int Idx_Closest    = GenMatchedIdx(Lep,gens);
   cout << "Matched gen = " << Idx_Closest << endl;
+  cout << Lep.PrintInfo() << endl;
 
   float minDr=1.;
   unsigned int closest_index = 0;

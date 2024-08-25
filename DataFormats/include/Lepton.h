@@ -83,13 +83,14 @@ public:
   }
 
   inline TString sLepGenType() const {
-    if((j_LeptonType>=4 || j_LeptonType<-4 )) return  "Conv";
+    if( j_LeptonType<-4 ) return  "ExtConv";
+    if((j_LeptonType>=4 )) return  "IntConv";
     if( (j_LeptonType<0 && j_LeptonType>=-4)) {
       if(j_lep_jetflavour == 5) return "FakeHF_B";
       if(j_lep_jetflavour == 4) return "FakeHF_C";
       if(j_lep_jetflavour == 0) return "FakeLF";
     }
-    if(j_LeptonIsPromptConv) return "Conv";
+    if(j_LeptonIsPromptConv) return "IntConv";
     if(j_LeptonIsCF) return "CF";
     if(j_LeptonType==1) return "Prompt";
     if( j_LeptonType==2) return "Signal";
@@ -309,7 +310,7 @@ public:
   inline double LogdXYSig() const {return std::log(fabs(j_dXY/j_dXYerr));}
   inline double LogdZSig() const {return std::log(fabs(j_dZ/j_dZerr));}
 
-  TString LepDoubleToString(double d){
+  TString LepDoubleToString(double d) const{
 
     std::string str = std::to_string (d);
     str.erase ( str.find_last_not_of('0') + 1, std::string::npos );
@@ -773,8 +774,8 @@ public:
     return MJProxy;
   }
 
-  inline TString PrintInfo(){
-    return GetFlavour() +" Charge = " + LepDoubleToString(Charge()) + " Pt " + LepDoubleToString(this->Pt()) + " Lep Eta " + LepDoubleToString(this->Eta()) + " Lep Phi = " + LepDoubleToString(this->Phi()) + " type = " + LepGenTypeNumberString();
+  inline TString PrintInfo() const{
+    return this->GetFlavour() +" Charge = " + this->LepDoubleToString(Charge()) + " Pt " + this->LepDoubleToString(this->Pt()) + " Lep Eta " + this->LepDoubleToString(this->Eta()) + " Lep Phi = " + this->LepDoubleToString(this->Phi()) + " type = " + this->LepGenTypeNumberString();
   }
 
   virtual void Print();

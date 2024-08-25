@@ -84,9 +84,9 @@ void HNL_LeptonCore::SetupTriggerLists(){
   else if(DataYear==2017){
 
 
-    TrigList_HNL_DblMu = { //"HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v",
-         "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v",
-                           "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_v" };
+    TrigList_HNL_DblMu = { "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v",
+			   "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v" };
+                           //"HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_v" };
     TrigList_HNL_Mu = {  "HLT_IsoMu27_v"};
     TrigList_POG_Mu = {  "HLT_IsoMu27_v"};
     TrigList_HNL_HighPtMu = {"HLT_Mu50_v"};
@@ -487,8 +487,8 @@ void HNL_LeptonCore::EvalTrigWeight(HNL_LeptonCore::Channel channel, vector<Muon
     }
   }
   if (DataEra == "2017"){
-    if(!ev.PassTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_v")){
-      if(ev.PassTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v"))   w = w  * ev.GetTriggerLumi("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v") / ev.GetTriggerLumi( "Full");
+    if(!ev.PassTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v")){
+      if(ev.PassTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v"))   w = w  * ev.GetTriggerLumi("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v") / ev.GetTriggerLumi( "Full");
     }
   }
   return;

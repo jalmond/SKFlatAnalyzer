@@ -8,7 +8,7 @@ void HNL_SignalMuonOpt::initializeAnalyzer(){
   
   //SetupIDMVAReaderDefault(); /// Not needed for BDT skim
   
-  SetupEventMVAReader(false,true,false);
+  SetupEventMVAReader("V2",false,true,false);
 
   RunHighPt= HasFlag("RunHighPt");
   RunEE = HasFlag("RunEE");

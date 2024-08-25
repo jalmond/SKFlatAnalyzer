@@ -58,8 +58,6 @@ void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq,
   for(auto dilep_channel : channels){
     
     double  weight_channel = weight_ll;
-    // DYTypeI, VBFTypeI EMu or MuE xsec should be a half of that of EE or MuMu.
-    if ( ((MCSample.Contains("DYTypeI")||MCSample.Contains("VBFTypeI")) && MCSample.Contains("private")) && (dilep_channel == EMu) ) weight_channel *= 0.5;
 
     //// Select CHannel used for Signals to check if signal is EE/MM/Emu using gen info
     if(MCSample.Contains("Type")&& !SelectChannel(dilep_channel)) continue;
@@ -116,10 +114,8 @@ void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq,
     }
  
     if(RunFake&& IsData){
-      if(_jentry%nLog==0){
-    cout << "Running Fakes... " <<  GetFakeWeight(LepsT, param) << "  " << GetFakeWeight(LepsT, param) << endl;
-      }
-
+      //if(_jentry < 100) cout << "Event " << event << " param = " << param.Name << " Running Fakes... FR=" <<  GetFakeWeight(LepsT, param) << endl;
+      
       weight_channel = GetFakeWeight(LepsT, param);
       FillFakeWeightHist(param.Name+"/FakeWeight", LepsT,param, weight_channel);
     }
@@ -389,7 +385,7 @@ TString HNL_RegionDefinitions::RunSignalRegionAK8String(bool ApplyForSR,
   if(!CheckLeptonFlavourForChannel(channel, leps)) return "false";  
   if (leps_veto.size() != 2) return "false";
 
-  if(leps[1]->Pt() < 15 ) return "false";
+  if(leps[1]->Pt() < 20 ) return "false";
 
   FillCutflow(Reg, w, RegionTag+"_lep_pt",param);
   

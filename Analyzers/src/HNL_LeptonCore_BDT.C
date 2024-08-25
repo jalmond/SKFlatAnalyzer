@@ -1,10 +1,11 @@
 #include "HNL_LeptonCore.h"
 
-void HNL_LeptonCore::SetupEventMVAReader(bool ee, bool mm, bool emu){
+void HNL_LeptonCore::SetupEventMVAReader(TString version, bool ee, bool mm, bool emu){
+
   InitializeTreeVars();
 
   TString AnalyzerPath=std::getenv("SKFlat_WD");
-  TString MVAPath = "/data/Run2UltraLegacy_v3/Run2/BDTClassifier/results_xml/HNL_ULID/";
+  TString MVAPath = "/data/Run2UltraLegacy_v3/Run2/BDTClassifier/results_xml/HNL_ULID/"+version+"/";
   MNStrList = {"85", "90", "95", "100", "125", "150", "200", "250", "300", "400", "500"};
   NCutList  = {"200"};
   NTreeList = {"850"};
@@ -539,14 +540,27 @@ void HNL_LeptonCore::SetupEventMVAReader(bool ee, bool mm, bool emu){
   
   
     TString NTreeMM = "850", NCutMM = "200", NTreeEE = "850", NCutEE = "200", NTreeEM = "850", NCutEM = "200";
-    if(im < 4){ NTreeMM = "700", NCutMM = "150", NTreeEE = "500", NCutEE = "250", NTreeEM = "1000", NCutEM = "100"; }    // mN = 85, 90, 95, 100 GeV
-    if(im == 4){ NTreeMM = "600", NCutMM = "100", NTreeEE = "500", NCutEE = "200", NTreeEM = "600", NCutEM = "200"; }    // mN = 125 GeV
-    if(im == 5){ NTreeMM = "850", NCutMM = "250", NTreeEE = "600", NCutEE = "250", NTreeEM = "500", NCutEM = "100"; }    // mN = 150 GeV
-    if(im == 6){ NTreeMM = "500", NCutMM = "300", NTreeEE = "500", NCutEE = "150", NTreeEM = "1000", NCutEM = "100"; }   // mN = 200 GeV
-    if(im == 7){ NTreeMM = "850", NCutMM = "150", NTreeEE = "700", NCutEE = "200", NTreeEM = "850", NCutEM = "200"; }    // mN = 250 GeV
-    if(im == 8){ NTreeMM = "850", NCutMM = "200", NTreeEE = "500", NCutEE = "200", NTreeEM = "850", NCutEM = "200"; }    // mN = 300 GeV
-    if(im == 9){ NTreeMM = "850", NCutMM = "200", NTreeEE = "500", NCutEE = "400", NTreeEM = "850", NCutEM = "200"; }    // mN = 400 GeV
-    if(im == 10){ NTreeMM = "850", NCutMM = "200", NTreeEE = "700", NCutEE = "200", NTreeEM = "850", NCutEM = "200"; }   // mN = 500 GeV
+
+    if(version == "V1"){
+      if(im < 4){ NTreeMM = "700", NCutMM = "150", NTreeEE = "500", NCutEE = "250", NTreeEM = "1000", NCutEM = "100"; }    // mN = 85, 90, 95, 100 GeV
+      if(im == 4){ NTreeMM = "600", NCutMM = "100", NTreeEE = "500", NCutEE = "200", NTreeEM = "600", NCutEM = "200"; }    // mN = 125 GeV
+      if(im == 5){ NTreeMM = "850", NCutMM = "250", NTreeEE = "600", NCutEE = "250", NTreeEM = "500", NCutEM = "100"; }    // mN = 150 GeV
+      if(im == 6){ NTreeMM = "500", NCutMM = "300", NTreeEE = "500", NCutEE = "150", NTreeEM = "1000", NCutEM = "100"; }   // mN = 200 GeV
+      if(im == 7){ NTreeMM = "850", NCutMM = "150", NTreeEE = "700", NCutEE = "200", NTreeEM = "850", NCutEM = "200"; }    // mN = 250 GeV
+      if(im == 8){ NTreeMM = "850", NCutMM = "200", NTreeEE = "500", NCutEE = "200", NTreeEM = "850", NCutEM = "200"; }    // mN = 300 GeV
+      if(im == 9){ NTreeMM = "850", NCutMM = "200", NTreeEE = "500", NCutEE = "400", NTreeEM = "850", NCutEM = "200"; }    // mN = 400 GeV
+      if(im == 10){ NTreeMM = "850", NCutMM = "200", NTreeEE = "700", NCutEE = "200", NTreeEM = "850", NCutEM = "200"; }   // mN = 500 GeV
+    }
+    if(version == "V2"){
+      if(im < 4){ NTreeMM = "700", NCutMM = "400", NTreeEE = "1000", NCutEE = "150", NTreeEM = "1000", NCutEM = "150"; }    // mN = 85, 90, 95, 100 GeV
+      if(im == 4){ NTreeMM = "850", NCutMM = "150", NTreeEE = "500", NCutEE = "250", NTreeEM = "1000", NCutEM = "400"; }    // mN = 125 GeV
+      if(im == 5){ NTreeMM = "850", NCutMM = "150", NTreeEE = "500", NCutEE = "300", NTreeEM = "850", NCutEM = "200"; }     // mN = 150 GeV
+      if(im == 6){ NTreeMM = "1000", NCutMM = "400", NTreeEE = "500", NCutEE = "150", NTreeEM = "1000", NCutEM = "200"; }   // mN = 200 GeV
+      if(im == 7){ NTreeMM = "1000", NCutMM = "300", NTreeEE = "850", NCutEE = "400", NTreeEM = "1000", NCutEM = "200"; }   // mN = 250 GeV
+      if(im == 8){ NTreeMM = "1000", NCutMM = "400", NTreeEE = "500", NCutEE = "250", NTreeEM = "1000", NCutEM = "200"; }   // mN = 300 GeV
+      if(im == 9){ NTreeMM = "1000", NCutMM = "100", NTreeEE = "1000", NCutEE = "300", NTreeEM = "1000", NCutEM = "100"; }  // mN = 400 GeV
+      if(im == 10){ NTreeMM = "1000", NCutMM = "150", NTreeEE = "850", NCutEE = "250", NTreeEM = "1000", NCutEM = "150"; }  // mN = 500 GeV
+    }
 
     TString FileNameMM        = "output_DY_MuMu_M"+MNStrList.at(im)+"_Incl_Run2_NTrees"+NTreeMM+"_NCuts"+NCutMM+"_MaxDepth3_BDT.weights.xml";
     TString FileNameMMFake    = "output_DY_MuMu_M"+MNStrList.at(im)+"_Fake_Run2_NTrees850_NCuts200_MaxDepth3_BDT.weights.xml";

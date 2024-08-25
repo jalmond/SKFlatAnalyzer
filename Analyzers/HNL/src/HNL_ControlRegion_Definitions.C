@@ -1231,7 +1231,7 @@ bool HNL_RegionDefinitions::FillHighMassSR1CRPlots(HNL_LeptonCore::Channel chann
   FillCutflow(Reg, w, "Step0",param);
   if(!CheckLeptonFlavourForChannel(channel, leps)) return false;
 
-  if(leps[1]->Pt() < 15) return false; 
+  if(leps[1]->Pt() < 20) return false; 
   FillCutflow(Reg, w, "Step1",param);
 
   if (leps_veto.size() != 2) return false;

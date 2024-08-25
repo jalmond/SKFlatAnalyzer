@@ -566,10 +566,15 @@ TString AnalyzerParameter::GetSystType(){
   if(syst_==Syst::Central){
     return "Central";
   }
-  else if(syst_==Syst::FRAJ25)   return "AJ25";
   else if(syst_==Syst::FRAJ30)   return "AJ30";
   else if(syst_==Syst::FRAJ40)   return "AJ40";
   else if(syst_==Syst::FRAJ60)   return "AJ60";
+  else if(syst_==Syst::FRLooseIDDJUp)     return "LIDUp";
+  else if(syst_==Syst::FRLooseIDDJDown)   return "LIDDown";
+  else if(syst_==Syst::FRPartonSFUp)   return "PSFUp"; 
+  else if(syst_==Syst::FRPartonSFDown) return "PSFDown";
+  else if(syst_==Syst::FRAltBinning) return "AltBinning";
+  else if(syst_==Syst::PRApplied) return "PRApplied";
   else if(syst_==Syst::JetResUp) return "JetResUp";
   else if(syst_==Syst::JetResDown) return "JetResDown";
   else if(syst_==Syst::JetEnUp)  return "JetEnUp";
@@ -618,8 +623,6 @@ TString AnalyzerParameter::GetSystType(){
   else if(syst_==Syst::FRUp)   return "FRUp";
   else if(syst_==Syst::FRDown)   return "FRDown";
   
-
-
   else{
     cout << "[AnalyzerParameter::GetSystType] Wrong Syst" << endl;
     exit(ENODATA);

@@ -26,6 +26,9 @@ class HNL_Lepton_FakeRate_MC  : public HNL_LeptonCore {
 				   
   bool UseEvent(std::vector<Lepton *> leps,   std::vector< Jet> jets, float awayjetcut, Particle MET, float wt);
 
+  double GetMuonMCFakeRate(Muon mu, TString version);
+  double GetElectronMCFakeRate(Electron el, TString version);
+
 
   //==== pileup
 

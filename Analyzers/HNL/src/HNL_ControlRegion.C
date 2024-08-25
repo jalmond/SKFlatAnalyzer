@@ -3,7 +3,7 @@
 void HNL_ControlRegion::initializeAnalyzer(){
 
   HNL_LeptonCore::initializeAnalyzer();
-  SetupEventMVAReader();
+  SetupEventMVAReader("V2");
 
   nLog = 100000;
 }
