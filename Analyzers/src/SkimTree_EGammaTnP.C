@@ -59,7 +59,6 @@ void SkimTree_EGammaTnP::initializeAnalyzer(){
   newtree->Branch("el_phi",&el_phi);
   newtree->Branch("el_q",&el_q);
   newtree->Branch("el_3charge",&el_3charge);
-  newtree->Branch("el_2charge",&el_2charge);
   newtree->Branch("el_l1et",&el_l1et);
 
   newtree->Branch("tag_passEGL1SingleEGOr",&tag_passEGL1SingleEGOr);
@@ -183,7 +182,6 @@ void SkimTree_EGammaTnP::executeEvent(){
         el_phi=probe.Phi();
         el_q=probe.Charge();
         el_3charge=probe.IsGsfCtfScPixChargeConsistent();
-        el_2charge=probe.IsGsfCtfChargeConsistent();
         el_l1et=probe.L1Et();
         
         tag_passEGL1SingleEGOr=tag.PassFilter("hltEGL1SingleEGOrFilter");
