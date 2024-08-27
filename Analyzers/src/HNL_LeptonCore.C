@@ -50,7 +50,8 @@ void HNL_LeptonCore::initializeAnalyzer(bool READBKGHISTS, bool SETUPIDBDT){ // 
 
   //// Read Histograms Moved from Initialise Tools
   if(!IsDATA){
-    if(!Analyzer.Contains("SkimTree")) mcCorr->ReadHistograms();
+    //if(!Analyzer.Contains("SkimTree")) mcCorr->ReadHistograms(); //JH
+    mcCorr->ReadHistograms(); //JH
     mcCorr->SetupJetTagging();
   }
 
