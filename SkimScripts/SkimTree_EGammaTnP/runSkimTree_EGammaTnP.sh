@@ -7,7 +7,8 @@ njobs_data=2000
 nmax=300
 skim=' '
 
-declare  -a era_list=("2017" )
+#declare  -a era_list=("2017" )
+declare  -a era_list=("2018" )
 #declare  -a era_list=("2016preVFP" "2016postVFP" "2018")
 
 if [[ $1 == "" ]]; then
@@ -16,8 +17,8 @@ if [[ $1 == "" ]]; then
     do
 
 #SKFlat.py -a $analyzer  -i DYJets_MG    -n 6000  --nmax 300           -e ${i}   --skim SkimTree_DileptonBDT &
-SKFlat.py -a $analyzer  -i DYJets       -n 6000  --nmax 300           -e ${i}   --skim SkimTree_DileptonBDT &
-#SKFlat.py -a $analyzer  -l $datapath/${i}_SingleLepton.txt  -n 6000  --nmax 300   -e ${i}  --skim SkimTree_DileptonBDT &
+#SKFlat.py -a $analyzer  -i DYJets       -n 6000  --nmax 300           -e ${i}   --skim SkimTree_DileptonBDT &
+SKFlat.py -a $analyzer  -l $datapath/${i}_SingleLepton.txt  -n 6000  --nmax 300   -e ${i}  --skim SkimTree_DileptonBDT &
 
     done
 fi
