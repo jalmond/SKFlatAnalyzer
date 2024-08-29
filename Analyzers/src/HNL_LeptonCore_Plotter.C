@@ -530,7 +530,8 @@ void HNL_LeptonCore::Fill_Plots(AnalyzerParameter param, TString region,  TStrin
   Particle METunsmearedv = ev.GetMETVector();
   
   if(DrawLevel2)FillHist( plot_dir+ region+ "/SKEvent/MET_uncorr", METunsmearedv.Pt()  , w, 200, 0., 400.,"MET GeV");
-  if(DrawLevel1)FillHist( plot_dir+ region+ "/Mass/M_ll",  llCand.M(), w, 400, 0., 2000., "M_{ll} GeV");
+  if(DrawLevel1)FillHist( plot_dir+ region+ "/Mass/M_LL",  llCand.M(), w, 400, 0., 2000., "M_{ll} GeV");
+  if(DrawLevel1)FillHist( plot_dir+ region+ "/Mass/M_ll",  llCand.M(), w, 2000, 0., 2000., "M_{ll} GeV");
 
   double mindRlepj1(99999.);
   double mindRlepj2(99999.);
