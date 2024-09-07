@@ -62,6 +62,10 @@ std::vector<Muon> HNL_LeptonCore::SelectMuons(AnalyzerParameter& param, TString 
         double Isocut = GetIsoFromID(Lepton(muons[i]), param.Muon_Tight_ID );
         this_muon.SetPtEtaPhiM( muons.at(i).CalcPtCone(muons.at(i).RelIso(), Isocut), muons.at(i).Eta(), muons.at(i).Phi(), muons.at(i).M() );
       }
+      if(param.FakeRateParam == "TrkPtCone"){
+        double Isocut = GetIsoFromID(Lepton(muons[i]), param.Muon_Tight_ID );
+	this_muon.SetPtEtaPhiM( muons.at(i).CalcTrkPtCone(muons.at(i).RelIso(), Isocut), muons.at(i).Eta(), muons.at(i).Phi(), muons.at(i).M() );
+      }
       if(param.FakeRateParam == "PtConeMini"){
         double Isocut  = GetIsoFromID(Lepton(muons[i]), param.Muon_Tight_ID);
         this_muon.SetPtEtaPhiM( muons.at(i).CalcPtCone(muons.at(i).MiniRelIso(), Isocut), muons.at(i).Eta(), muons.at(i).Phi(), muons.at(i).M() );
@@ -169,6 +173,10 @@ std::vector<Electron> HNL_LeptonCore::SelectElectrons(AnalyzerParameter& param, 
       if(param.FakeRateParam == "PtCone"){
         double Isocut = GetIsoFromID(Lepton(electrons.at(i)),param.Electron_Tight_ID);
         this_electron.SetPtEtaPhiM( electrons.at(i).CalcPtCone(electrons.at(i).RelIso(), Isocut), electrons.at(i).Eta(), electrons.at(i).Phi(), electrons.at(i).M() );
+      }
+      if(param.FakeRateParam == "TrkPtCone"){
+	double Isocut = GetIsoFromID(Lepton(electrons.at(i)),param.Electron_Tight_ID);
+        this_electron.SetPtEtaPhiM( electrons.at(i).CalcTrkPtCone(electrons.at(i).RelIso(), Isocut), electrons.at(i).Eta(), electrons.at(i).Phi(), electrons.at(i).M() );
       }
       if(param.FakeRateParam == "PtConeMini"){
         double Isocut = GetIsoFromID(Lepton(electrons.at(i)) ,param.Electron_Tight_ID);

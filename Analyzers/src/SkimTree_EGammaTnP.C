@@ -32,6 +32,12 @@ void SkimTree_EGammaTnP::initializeAnalyzer(){
 
   newtree->Branch("passingCutBasedMedium94XV2",&passingCutBasedMedium94XV2);
   newtree->Branch("passingCutBasedTight94XV2",&passingCutBasedTight94XV2);
+  newtree->Branch("passingMVA80",&passingMVA80);
+  newtree->Branch("passingMVA90",&passingMVA90);
+  newtree->Branch("passingHEEP",&passingHEEP);
+  newtree->Branch("passingMVALoose",&passingMVALoose);
+  newtree->Branch("passingTriggerEmul",&passingTriggerEmul);
+
   newtree->Branch("passingHNLMVA",&passingHNLMVA);
   newtree->Branch("passingHNLMVACF",&passingHNLMVACF);
   newtree->Branch("passingHNLMVAConv",&passingHNLMVAConv);
@@ -56,6 +62,7 @@ void SkimTree_EGammaTnP::initializeAnalyzer(){
   newtree->Branch("el_eta",&el_eta);
   newtree->Branch("el_abseta",&el_abseta);
   newtree->Branch("el_sc_eta",&el_sc_eta);
+  newtree->Branch("el_sc_abseta",&el_sc_abseta);
   newtree->Branch("el_phi",&el_phi);
   newtree->Branch("el_q",&el_q);
   newtree->Branch("el_3charge",&el_3charge);
@@ -67,8 +74,15 @@ void SkimTree_EGammaTnP::initializeAnalyzer(){
   newtree->Branch("tag_passHltEle32WPTightGsf",&tag_passHltEle32WPTightGsf);
   newtree->Branch("tag_passHltEle32DoubleEGWPTightGsf",&tag_passHltEle32DoubleEGWPTightGsf);
   newtree->Branch("tag_passHltEle35WPTightGsf",&tag_passHltEle35WPTightGsf);
+  newtree->Branch("tag_passtrigMVA",&tag_passtrigMVA);
   newtree->Branch("tag_passingCutBasedMedium94XV2",&tag_passingCutBasedMedium94XV2);
   newtree->Branch("tag_passingCutBasedTight94XV2",&tag_passingCutBasedTight94XV2);
+  newtree->Branch("tag_passingMVA80",&tag_passingMVA80);
+  newtree->Branch("tag_passingMVA90",&tag_passingMVA90);
+  newtree->Branch("tag_passingHEEP",&tag_passingHEEP);
+  newtree->Branch("tag_passingMVALoose",&tag_passingMVALoose);
+  newtree->Branch("tag_passingTriggerEmul",&tag_passingTriggerEmul);
+
   newtree->Branch("tag_Ele_IsoMVA94XV2",&tag_Ele_IsoMVA94XV2);
   newtree->Branch("tag_Ele_e",&tag_Ele_e);
   newtree->Branch("tag_Ele_e_cor",&tag_Ele_e_cor);
@@ -154,10 +168,17 @@ void SkimTree_EGammaTnP::executeEvent(){
         
         passingCutBasedMedium94XV2=probe.passMediumID();
         passingCutBasedTight94XV2=probe.passTightID();
-        passingHNLMVACF=probe.PassID("HNL_ULID_CF_"+GetYearString());
-        passingHNLMVAConv=probe.PassID("HNL_ULID_Conv_"+GetYearString());
-        passingHNLMVAFake=probe.PassID("HNL_ULID_Fake_"+GetYearString());
-        passingHNLMVA=probe.PassID("HNL_ULID_"+GetYearString());
+        
+        passingHEEP = (DataYear == 2018)  ?  probe.passHEEP2018Prompt() : probe.passHEEPID();
+        passingMVA80 = probe.passMVAID_noIso_WP90();
+        passingMVA90 = probe.passMVAID_noIso_WP90();
+        passingMVALoose = probe.PassMVABaseLine(); 
+        passingTriggerEmul  = probe.PassID("TriggerLoose"); 
+        passingHNLMVACF   =probe.PassID("HNL_ULID_CF_"+GetYearString());
+        passingHNLMVAConv =probe.PassID("HNL_ULID_Conv_"+GetYearString());
+        passingHNLMVAFake =probe.PassID("HNL_ULID_Fake_"+GetYearString());
+        passingHNLMVA     =probe.PassID("HNL_ULID_"+GetYearString());
+
         scoreHNLMVACF=probe.HNL_MVA_CF("EDv5");
         scoreHNLMVAConv=probe.HNL_MVA_Conv("EDv5");
         scoreHNLMVAFake=probe.HNL_MVA_Fake("EDv5");
@@ -179,11 +200,16 @@ void SkimTree_EGammaTnP::executeEvent(){
         el_eta=probe.Eta();
         el_abseta=fabs(probe.Eta());
         el_sc_eta=probe.scEta();
+              el_sc_abseta=fabs(probe.scEta());
+        
         el_phi=probe.Phi();
         el_q=probe.Charge();
         el_3charge=probe.IsGsfCtfScPixChargeConsistent();
         el_l1et=probe.L1Et();
         
+        if(probe.Pt() < 20)  tag_passtrigMVA=tag.MVAIso();
+        else tag_passtrigMVA = true;
+
         tag_passEGL1SingleEGOr=tag.PassFilter("hltEGL1SingleEGOrFilter");
         tag_passHltEle27WPTightGsf=tag.PassPath("HLT_Ele27_WPTight_Gsf_v");
         tag_passHltEle28WPTightGsf=tag.PassPath("HLT_Ele28_WPTight_Gsf_v");
@@ -193,6 +219,13 @@ void SkimTree_EGammaTnP::executeEvent(){
         if(!(tag_passHltEle27WPTightGsf|tag_passHltEle28WPTightGsf|tag_passHltEle32WPTightGsf|tag_passHltEle32DoubleEGWPTightGsf|tag_passHltEle35WPTightGsf)) continue;
         tag_passingCutBasedMedium94XV2=tag.passMediumID();
         tag_passingCutBasedTight94XV2=tag.passTightID();
+        tag_passingHEEP = (DataYear == 2018)  ?  tag.passHEEP2018Prompt() : tag.passHEEPID();
+              tag_passingMVA80 = tag.passMVAID_noIso_WP90();
+              tag_passingMVA90 = tag.passMVAID_noIso_WP90();
+        tag_passingMVALoose = tag.PassMVABaseLine();
+              tag_passingTriggerEmul  = tag.PassID("TriggerLoose");
+
+
         tag_Ele_IsoMVA94XV2=tag.MVAIso();      
         tag_Ele_e=tag.UncorrE();
         tag_Ele_e_cor=tag.Energy();
@@ -200,6 +233,7 @@ void SkimTree_EGammaTnP::executeEvent(){
         tag_Ele_et_cor=tag.Et();
         tag_Ele_pt=tag.UncorrPt();
         tag_Ele_pt_cor=tag.Pt();
+          
         tag_Ele_eta=tag.Eta();
         tag_Ele_abseta=fabs(tag.Eta());
         tag_Ele_phi=tag.Phi();
@@ -242,7 +276,7 @@ void SkimTree_EGammaTnP::executeEvent(){
         }
         
         newtree->Fill();
-      } /// probe loop
+      }
     } /// tag loop
   } /// Electron Stream 
 }

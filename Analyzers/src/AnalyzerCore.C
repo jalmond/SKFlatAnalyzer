@@ -130,7 +130,7 @@ std::vector<Muon> AnalyzerCore::GetAllMuons(){
   for(unsigned int i=0; i<muon_pt->size(); i++){
 
     Muon mu;
-
+    mu.SetRunEra(DataYear);
     mu.SetCharge(muon_charge->at(i));
     mu.SetUncorrectedPt(muon_pt->at(i));
     Muon mu_tmp;
@@ -160,7 +160,8 @@ std::vector<Muon> AnalyzerCore::GetAllMuons(){
     mu.SetisPOGHighPt(muon_ishighpt->at(i));
     mu.SetPOGMediumHIP(muon_ismedium_hip->at(i),muon_ismedium_nohip->at(i));
     mu.SetChi2(muon_normchi->at(i));
-    mu.SetIso(muon_PfChargedHadronIsoR04->at(i),muon_PfNeutralHadronIsoR04->at(i),muon_PfGammaIsoR04->at(i),muon_PFSumPUIsoR04->at(i),muon_trkiso->at(i));
+    mu.SetIso(muon_PfChargedHadronIsoR04->at(i),muon_PfNeutralHadronIsoR04->at(i),muon_PfGammaIsoR04->at(i),muon_PFSumPUIsoR04->at(i));
+    mu.SetTrkIso(muon_trkiso->at(i));
     mu.SetLepIso(muon_PfChargedHadronIsoR04->at(i),muon_PfNeutralHadronIsoR04->at(i),muon_PfGammaIsoR04->at(i));
    
     mu.SetTrackerLayers(muon_trackerLayers->at(i));
@@ -297,6 +298,7 @@ std::vector<Electron> AnalyzerCore::GetAllElectrons(){
   for(unsigned int i=0; i<electron_Energy->size(); i++){
 
     Electron el;
+    el.SetRunEra(DataYear);
 
     el.SetEnShift(  electron_Energy_Scale_Up->at(i)/electron_Energy->at(i), electron_Energy_Scale_Down->at(i)/electron_Energy->at(i) );
     el.SetResShift( electron_Energy_Smear_Up->at(i)/electron_Energy->at(i), electron_Energy_Smear_Down->at(i)/electron_Energy->at(i) );
@@ -342,6 +344,8 @@ std::vector<Electron> AnalyzerCore::GetAllElectrons(){
       electron_hcalPFClusterIso->at(i),
       electron_ecalDriven->at(i)
     );
+    el.SetTrkIso(electron_trackIso->at(i));
+
 
     el.SetIDBit(electron_IDBit->at(i));
     vector<int> temp_idcutbit;

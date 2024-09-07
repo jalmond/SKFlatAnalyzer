@@ -572,8 +572,8 @@ void HNL_LeptonCore::SetupEventMVAReader(TString version, bool ee, bool mm, bool
 
     if(mm){
       MVAReaderMM->BookMVA(MVATagStrMM, AnalyzerPath+MVAPath+FileNameMM);
-      //MVAReaderMMFake->BookMVA(MVATagStrMMFake, AnalyzerPath+MVAPath+FileNameMMFake);
-      //MVAReaderMMNonFake->BookMVA(MVATagStrMMNonFake, AnalyzerPath+MVAPath+FileNameMMNonFake);
+      MVAReaderMMFake->BookMVA(MVATagStrMMFake, AnalyzerPath+MVAPath+FileNameMMFake);
+      MVAReaderMMNonFake->BookMVA(MVATagStrMMNonFake, AnalyzerPath+MVAPath+FileNameMMNonFake);
     }
 
     TString FileNameEE        = "output_DY_EE_M"+MNStrList.at(im)+"_Incl_Run2_NTrees"+NTreeEE+"_NCuts"+NCutEE+"_MaxDepth3_BDT.weights.xml";
@@ -586,8 +586,8 @@ void HNL_LeptonCore::SetupEventMVAReader(TString version, bool ee, bool mm, bool
 
     if(ee){
       MVAReaderEE->BookMVA(MVATagStrEE, AnalyzerPath+MVAPath+FileNameEE);
-      //MVAReaderEEFake->BookMVA(MVATagStrEEFake, AnalyzerPath+MVAPath+FileNameEEFake);
-      //MVAReaderEENonFake->BookMVA(MVATagStrEENonFake, AnalyzerPath+MVAPath+FileNameEENonFake);
+      MVAReaderEEFake->BookMVA(MVATagStrEEFake, AnalyzerPath+MVAPath+FileNameEEFake);
+      MVAReaderEENonFake->BookMVA(MVATagStrEENonFake, AnalyzerPath+MVAPath+FileNameEENonFake);
     }
 
     TString FileNameEM        = "output_DY_EMu_M"+MNStrList.at(im)+"_Incl_Run2_NTrees"+NTreeEM+"_NCuts"+NCutEM+"_MaxDepth3_BDT.weights.xml";
@@ -600,8 +600,8 @@ void HNL_LeptonCore::SetupEventMVAReader(TString version, bool ee, bool mm, bool
 
     if(emu){
       MVAReaderEM->BookMVA(MVATagStrEM, AnalyzerPath+MVAPath+FileNameEM);
-      //MVAReaderEMFake->BookMVA(MVATagStrEMFake, AnalyzerPath+MVAPath+FileNameEMFake);
-      //MVAReaderEMNonFake->BookMVA(MVATagStrEMNonFake, AnalyzerPath+MVAPath+FileNameEMNonFake);
+      MVAReaderEMFake->BookMVA(MVATagStrEMFake, AnalyzerPath+MVAPath+FileNameEMFake);
+      MVAReaderEMNonFake->BookMVA(MVATagStrEMNonFake, AnalyzerPath+MVAPath+FileNameEMNonFake);
     }
 
   }

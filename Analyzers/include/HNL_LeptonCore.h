@@ -90,6 +90,20 @@ class HNL_LeptonCore : public AnalyzerCore {
   AnalyzerParameter InitialiseHNLParameter(TString s_setup, HNL_LeptonCore::Channel channel);  
   AnalyzerParameter SetupHNLParameter(TString s_setup_version, TString channel_str_name);
 
+  AnalyzerParameter DefaultParam(TString s_setup_version,TString channel_st);
+
+  /// List of Setups
+  void GetSetup_POGTight(AnalyzerParameter& paramEv);
+  void GetSetup_MVAPOG(AnalyzerParameter& paramEv);
+  void GetSetup_HighPt(AnalyzerParameter& paramEv);
+  void GetSetup_HNTightV2(AnalyzerParameter& paramEv);
+  void GetSetup_HNL16(AnalyzerParameter& paramEv);
+  void GetSetup_HNLTopID(AnalyzerParameter& paramEv);
+  void GetSetup_HNLID(AnalyzerParameter& paramEv);
+  void GetSetup_Peking(AnalyzerParameter& paramEv);
+  void GetSetup_HNLOpt(AnalyzerParameter& paramEv);
+  void GetSetup_BDT(AnalyzerParameter& paramEv);
+
   /// Systemaic HNL ID setup
   bool UpdataParamBySyst(TString JobID, AnalyzerParameter& paramEv , AnalyzerParameter::Syst systname, TString OrigParamName);
   

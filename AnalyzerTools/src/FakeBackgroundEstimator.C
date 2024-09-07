@@ -103,6 +103,8 @@ FakeBackgroundEstimator::~FakeBackgroundEstimator(){
 
 double FakeBackgroundEstimator::GetFakeRate(bool IsMuon,TString ID, TString key, TString BinningMethod, TString BinningParam, double eta, double pt, TString FakeTagger, int sys){
 
+  if(ID.Contains("HEEP")) return 0.4; //// THIS IS HACK AND JUST FOR CHECK
+
   if(IsMuon) return GetMuonFakeRate(ID, key, BinningMethod, BinningParam, eta, pt, FakeTagger, sys );
   else return GetElectronFakeRate(ID, key, BinningMethod, BinningParam, eta, pt, FakeTagger, sys );
 

@@ -11,6 +11,18 @@ njobs_data=200
 nmax=600
 skim=' '
 
+
+if [[ $1 == "WG" ]]; then
+
+    declare  -a era_list=("2018")
+    for i in "${era_list[@]}"
+    do
+
+	 SKFlat.py -a $analyzer  -i WGToLNuG_01J_5f_Pt10_resub  -n 100        --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLepBDT  --userflags SSMultiLep,RunConv&
+	 SKFlat.py -a $analyzer  -i WGToLNuG  -n 100        --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLepBDT  --userflags SSMultiLep,RunConv&
+    done
+fi
+
 if [[ $1 == "" ]]; then
 
     declare  -a era_list=("2017" "2018" "2016postVFP" "2016preVFP")

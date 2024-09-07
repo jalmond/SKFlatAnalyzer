@@ -300,6 +300,7 @@ public:
   
   /// Standard Functions
 
+  inline int Run_Era() const {return j_run_era;}
   void SetdXY(double dXY, double dXYerr);
   inline double fdXY() const {return fabs(j_dXY);}
   inline double dXY() const {return j_dXY;}
@@ -324,6 +325,9 @@ public:
 
   }
 
+  inline void SetRunEra(int run_era){
+    j_run_era=run_era;
+  }
 
 
   void SetLepMVA(double mva);
@@ -683,8 +687,6 @@ public:
   inline bool LepIDSet()  const {return j_IDSet;}
   inline TString LepTightIDName() const {return j_TIDName;}
 
-  inline TString FakeFlavourString()  const {return j_FakeFlavour;} //JH
-  void SetFakeFlavour(double cut);
   TString CutString(double cut);
 
   inline int LeptonGenType() const {return j_LeptonType;}
@@ -759,6 +761,11 @@ public:
   inline double CalcPtCone(double this_reliso, double Tight_reliso){
     return ( this->Pt() ) * ( 1. + max(0., (this_reliso-Tight_reliso)) );
   }
+  
+  inline double CalcTrkPtCone(double this_reliso, double Tight_reliso){
+    return ( this->Pt() + max(0., (this_reliso-Tight_reliso)));
+  }
+
   inline double CalcMVACone(double Tight_mva, double UpperValue=1.5){
     double this_mva (0.);
 
@@ -780,12 +787,19 @@ public:
 
   virtual void Print();
 
+  
+  void SetTrkIso(double iso);
+  inline double TrkIso() const {return j_trkiso; }
+  
+
   std::map<TString, double> j_lep_map_mva_hnl;
 
   /////// FAKE MVA
   /// Version 4
   double j_lep_mva_hnl_fake_v4_hf,   j_lep_mva_hnl_fake_v4_hfb,   j_lep_mva_hnl_fake_v4_hfc,   j_lep_mva_hnl_fake_v4_lf, j_lep_mva_hnl_fake_v4_top, j_lep_mva_hnl_fake_v4;
   double j_lep_mva_hnl_fake_ed_v4_hf,j_lep_mva_hnl_fake_ed_v4_hfb,j_lep_mva_hnl_fake_ed_v4_hfc,j_lep_mva_hnl_fake_ed_v4_lf, j_lep_mva_hnl_fake_ed_v4_top, j_lep_mva_hnl_fake_ed_v4;
+
+  int j_run_era;
   
   /// Version 5
   double j_lep_mva_hnl_fake_ed_v5,j_lep_mva_hnl_fake_v5_hfb,j_lep_mva_hnl_fake_v5_hfc,j_lep_mva_hnl_fake_v5_lf;
@@ -820,10 +834,11 @@ public:
   double el_mva_cut_cf_2018_EC;
 
   double TopMVA_cut;
-
+  
 
 private:
   double j_dXY, j_dXYerr;
+  double j_trkiso;
   double j_lep_mva;
   double j_dZ, j_dZerr;
   double j_IP3D, j_IP3Derr;
@@ -848,8 +863,6 @@ private:
   bool j_IDSet;
   TString j_TIDName;
 
-
-  TString j_FakeFlavour;
 
   ClassDef(Lepton,1)
 

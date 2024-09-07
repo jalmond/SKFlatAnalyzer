@@ -1,0 +1,2 @@
+# alias PD xsec nmc sumsign sumw
+TT_HeavyN-Mu_2L_MN50	TTbar01Jets_TypeIHeavyN-Mu_2L_LO_MN50_TuneCP5_13TeV-madgraphMLM-pythia8	1.0	199961	199961	1.999610e+05

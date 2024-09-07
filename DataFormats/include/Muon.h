@@ -23,7 +23,6 @@ public:
     cout << "PFNH04 " << j_PFNH04 << endl;
     cout << "PFPH04 " << j_PFPH04 << endl;
     cout << "PU04 " << j_PU04  << endl;
-    cout << "TrikIso " << j_trkiso << endl;
     cout << "MiniAODPt " << j_MiniAODPt << endl;
     cout << "MomentumScaleUp " << j_MomentumScaleUp << endl;
     cout << "MomentumScaleDown " << j_MomentumScaleDown << endl;
@@ -104,9 +103,9 @@ public:
   inline bool isPOGHighPt() const {return j_isPOGHighPt;}
   inline bool isMvaTight() const {return PassSelector(MvaTight);}
 
-  void SetIso(double ch04, double nh04, double ph04, double pu04, double trkiso);
+  void SetIso(double ch04, double nh04, double ph04, double pu04);
   void CalcPFRelIso(bool use_corrected_pt=true);
-  inline double TrkIso() const {return j_trkiso;}
+
   double EA();
 
   void SetChi2(double chi2);
@@ -221,7 +220,7 @@ private:
   bool j_ismedium_hip;
   bool j_ismedium_nohip;
   double j_chi2;
-  double j_PFCH04, j_PFNH04, j_PFPH04, j_PU04, j_trkiso;
+  double j_PFCH04, j_PFNH04, j_PFPH04, j_PU04;
   double j_MiniAODPt, j_MiniAODTunePPt, j_MomentumScaleUp, j_MomentumScaleDown;
   Particle j_TuneP4;
   double j_TunePPtError;

@@ -27,13 +27,11 @@ do
 	SKFlat.py -a $analyzer -i DYJets_Pt-250To400     -n 100  --nmax 400   -e ${i}  --skim SkimTree_DileptonBDT --userflags $j&
 	SKFlat.py -a $analyzer -i DYJets_Pt-400To650     -n 100  --nmax 400   -e ${i}  --skim SkimTree_DileptonBDT --userflags $j&
 	SKFlat.py -a $analyzer -i DYJets_Pt-650ToInf     -n 100  --nmax 400   -e ${i}  --skim SkimTree_DileptonBDT --userflags $j
-
 	SKFlat.py -a $analyzer -i WJets_MG -n 200  --nmax 400   -e ${i}  --skim SkimTree_BDT --userflags $j&
         SKFlat.py -a $analyzer -i DYJets                 -n 600  --nmax 400   -e ${i}  --skim SkimTree_DileptonBDT --userflags $j&
         SKFlat.py -a $analyzer -i DYJets_MG              -n 100  --nmax 400   -e ${i}  --skim SkimTree_DileptonBDT --userflags $j
-
         SKFlat.py -a $analyzer -i DYJetsToEE_MiNNLO      -n 200  --nmax 400   -e ${i}  --skim SkimTree_DileptonBDT --userflags $j&
-	SKFlat.py -a $analyzer -i TTLJ_powheg  -n 600  --nmax 400   -e ${i}  --skim SkimTree_BDT --userflags $j&
+	SKFlat.py -a $analyzer -i TTLJ_powheg            -n 600  --nmax 400   -e ${i}  --skim SkimTree_BDT --userflags $j&
         SKFlat.py -a $analyzer -i TTLL_powheg            -n 600  --nmax 400   -e ${i}  --skim SkimTree_DileptonBDT --userflags $j&
 
     done

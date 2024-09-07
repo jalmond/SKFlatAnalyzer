@@ -57,6 +57,12 @@ double HNL_LeptonCore::GetCFSF(AnalyzerParameter param, TString EraReg, bool App
   
   CFSFValues["TopHNSST_BB"]      =  {0.80,     0.79,     1.162, 1.47};
   CFSFValues["TopHNSST_EC"]      =  {0.78,     0.83,     1.31,  1.28};
+  
+
+  /// HEEP Values are copied for HNTight
+  CFSFValues["passHEEPID_v3_BB"]     =  {0.842,0.967, 1.34, 1.44};
+  CFSFValues["passHEEPID_v3_EC"]     =  {0.84,0.90, 1.37, 1.40};
+
 
   map<TString,vector<double> >::iterator CFMapIter ;
 
@@ -185,7 +191,9 @@ double HNL_LeptonCore::CheckShiftRange(double val, double shift){
 double HNL_LeptonCore::GetShiftCFEl(Electron el,TString ID, bool ApplyDataCorr, int Sys) {
   
   //// By default if HNL ID just use extraoplated Shift based on pt binned MC Truth
-  if(ID.Contains("HNL")){
+
+  bool UseHNLShiftStudy = true; /// Use shift based on HNL ID, assuming no dependance on ID
+  if(UseHNLShiftStudy){
     double DataCorr = 1.;
     if(ApplyDataCorr){
       if(DataEra=="2016preVFP"  && el.IsBB()) DataCorr=0.975;
@@ -444,6 +452,59 @@ double HNL_LeptonCore::GetShiftCFEl(double el_pt, bool IsBB,TString ID, bool App
     }
 
   }
+  else {
+    if(DataEra.Contains("2016")){
+      if(IsBB){
+        if(el_pt < 50)        return  (Method == "minChi2")  ? 0.972 : 0.957;
+        else  if(el_pt < 100) return  (Method == "minChi2")  ? 0.989 : 0.983;
+        else  if(el_pt < 200) return  (Method == "minChi2")  ? 0.995 : 0.992;
+        else  return  (Method == "minChi2") ?  0.994 : 0.999;
+      }
+      if(!IsBB){
+        if(el_pt < 30)        return  (Method == "minChi2") ?  0.959 : 0.946;
+        else if(el_pt < 50)   return  (Method == "minChi2") ?  0.977 : 0.972;
+        else if(el_pt < 75)   return  (Method == "minChi2") ?   0.986 : 0.983;
+        else  if(el_pt < 100) return  (Method == "minChi2") ? 0.991 : 0.990;
+        else  if(el_pt < 200) return  (Method == "minChi2") ?  0.994 : 0.993;
+        else  return  (Method == "minChi2") ?   1 : 1;
+      }
+    }
+
+    if(DataEra=="2017"){
+      if(IsBB){
+        if(el_pt < 50)        return  (Method == "minChi2")  ? 0.972 : 0.957;
+        else  if(el_pt < 100) return  (Method == "minChi2")  ? 0.988 : 0.983;
+        else  if(el_pt < 200) return  (Method == "minChi2")  ? 0.993 : 0.992;
+        else  return  (Method == "minChi2") ?    0.994 : 0.999;
+      }
+      if(!IsBB){
+        if(el_pt < 30)        return  (Method == "minChi2") ?  0.953 : 0.946;
+        else if(el_pt < 50)   return  (Method == "minChi2") ?  0.975 : 0.972;
+        else if(el_pt < 75)   return  (Method == "minChi2") ?  0.985 : 0.983;
+        else  if(el_pt < 100) return  (Method == "minChi2") ?  0.991 : 0.990;
+        else  if(el_pt < 200) return  (Method == "minChi2") ?   0.994 : 0.993;
+        else  return  (Method == "minChi2") ?  1 : 1;
+      }
+    }
+
+    if(DataEra=="2018"){
+      if(IsBB){
+        if(el_pt < 50)        return  (Method == "minChi2")  ? 0.969 : 0.955;
+        else  if(el_pt < 100) return  (Method == "minChi2")  ? 0.987 : 0.985;
+        else  if(el_pt < 200) return  (Method == "minChi2")  ? 0.993 : 0.992;
+        else  return  (Method == "minChi2") ?  0.994 : 0.999;
+      }
+      if(!IsBB){
+        if(el_pt < 30)        return  (Method == "minChi2") ?  0.953 : 0.946;
+        else if(el_pt < 50)   return  (Method == "minChi2") ?  0.975 : 0.972;
+        else if(el_pt < 75)   return  (Method == "minChi2") ?  0.985 : 0.983;
+        else  if(el_pt < 100) return  (Method == "minChi2") ?  0.991 : 0.990;
+        else  if(el_pt < 200) return  (Method == "minChi2") ?  0.994 : 0.993;
+        else  return  (Method == "minChi2") ? 1 : 1;
+      }
+    }
+  }
+
 
   if(ID == "TopHNSST") return 1.;
 

@@ -22,9 +22,9 @@ void HNL_Lepton_ChargeFlip::initializeAnalyzer(){
 
 void HNL_Lepton_ChargeFlip::executeEvent(){
   
-  vector<TString> LepIDs = {"HNL_ULID_"+GetYearString() , "HNL_TC1_ULID_"+GetYearString() ,  "TopHN", "POGTight", "HNTightV2"};
-  if(HasFlag("ClosureTest")) LepIDs = {"HNL_ULID_"+GetYearString() , "HNL_TC1_ULID_"+GetYearString() };
-  if(HasFlag("ScaleFactor")) LepIDs = {"HNL_ULID_"+GetYearString() , "HNL_TC1_ULID_"+GetYearString() };
+  vector<TString> LepIDs = {"HNL_ULID_"+GetYearString(),"HNL_TC0_ULID_"+GetYearString() , "HNL_TC1_ULID_"+GetYearString() , "TopHN", "POGTight", "HNTightV2", "passHEEPID_v1","passHEEPID_v2","passHEEPID_v3"};
+  if(HasFlag("ClosureTest")) LepIDs = {"HNL_ULID_"+GetYearString() , "HNL_TC0_ULID_"+GetYearString() };
+  if(HasFlag("ScaleFactor")) LepIDs = {"HNL_ULID_"+GetYearString() , "HNL_TC0_ULID_"+GetYearString() };
 
   for (auto id: LepIDs){
     AnalyzerParameter param = InitialiseHNLParameter("SignalStudy");

@@ -2,6 +2,8 @@
 
 double HNL_LeptonCore::GetPtPartonSF(Lepton  Lep, TString LooseID,AnalyzerParameter param){
 
+  if(!LooseID.Contains("HNL_ULID")) return 1;
+
   bool IsMuon=(Lep.LeptonFlavour() == Lepton::MUON);
 
   double SystFactor = 1;
@@ -331,7 +333,7 @@ double HNL_LeptonCore::GetIsoFromID(Lepton lep, TString id){
       else  return 0.05880;
     }
 
-    if( id == "passHEEPID" )         return 0.6;
+    if( id.Contains("passHEEPID" ))         return 5;
     if( id == "CutBasedLooseNoIso" ) return 0.6;
 
     if( id == "TopHNSST" ) return 0.1;

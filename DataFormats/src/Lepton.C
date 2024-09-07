@@ -3,6 +3,8 @@
 ClassImp(Lepton)
 
 Lepton::Lepton() : Particle() {
+  
+  j_run_era=0; /// SetEra
  
   mu_mva_cut_fake_2016 = 0.72;
   mu_mva_cut_fake_2017 = 0.64;
@@ -62,7 +64,7 @@ Lepton::Lepton() : Particle() {
   j_IDSet= false;
   j_TIDName="";
 
-  j_FakeFlavour = ""; //JH
+  j_trkiso = -999.;
 
   j_lep_map_mva_hnl.clear();
   j_lep_mva_hnl_fake_v4=-999;
@@ -165,6 +167,10 @@ bool Lepton::Pass_MVA(double mva, double cut, TString s_mva) const {
   return true;
 }
 
+
+void Lepton::SetTrkIso(double trkiso){
+  j_trkiso=trkiso;
+}
 
 
 

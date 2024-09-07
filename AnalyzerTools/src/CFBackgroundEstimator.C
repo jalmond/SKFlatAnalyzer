@@ -18,8 +18,8 @@ void CFBackgroundEstimator::ReadHistograms(bool loadStandard){
 
   TDirectory* origDir = gDirectory;
 
-  bool loadStudy=true;
-  bool loadSyst=true;
+  bool loadStudy=false;
+  bool loadSyst=false;
   
   if(loadStandard){
     string elline;

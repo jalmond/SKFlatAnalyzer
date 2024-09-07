@@ -24,6 +24,19 @@ void SkimTree_HNFake::initializeAnalyzer(){
 	};
       } // // 2016 DMu DATA    
       
+      if (this->DataStream == "SingleMuon"){
+
+        triggers = {
+	  "HLT_IsoMu24_v",
+	  "HLT_IsoTkMu24_v"
+	};
+      }
+      if (this->DataStream == "SingleElectron"){
+	triggers = {
+	  "HLT_Ele27_WPTight_Gsf_v",
+	};
+      }
+
       if (this->DataStream == "DoubleEG"){
         triggers = {
 	  "HLT_Ele8_CaloIdL_TrackIdL_IsoVL_PFJet30_v",     // DoubleEG
@@ -47,7 +60,10 @@ void SkimTree_HNFake::initializeAnalyzer(){
         "HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_v",    // DoubleEG
         "HLT_Ele17_CaloIdL_TrackIdL_IsoVL_PFJet30_v",    // DoubleEG
         //"HLT_Ele17_CaloIdM_TrackIdM_PFJet30_v",        // DoubleEG
-        "HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v"     // DoubleEG
+        "HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v",     // DoubleEG
+	"HLT_IsoMu24_v",
+	"HLT_IsoTkMu24_v",
+	"HLT_Ele27_WPTight_Gsf_v"
       };
 
     } // 2016 MC
@@ -61,17 +77,20 @@ void SkimTree_HNFake::initializeAnalyzer(){
     if(IsDATA){
       
       if (this->DataStream == "SingleMuon"){
-	triggers = { "HLT_Mu3_PFJet40_v","HLT_Mu50_v"};
+	triggers = { "HLT_Mu3_PFJet40_v","HLT_Mu50_v" ,  "HLT_IsoMu24_v", "HLT_IsoMu27_v"};
 	
       } // 2017 DATA SMu
 
       if (this->DataStream == "SingleElectron"){
 	
 	triggers = {
+	  "HLT_Ele27_WPTight_Gsf_v",
+	  "HLT_Ele28_WPTight_Gsf_v",
+	  "HLT_Ele32_WPTight_Gsf_v",
 	  "HLT_Ele8_CaloIdL_TrackIdL_IsoVL_PFJet30_v",     // SingleElectron
 	  "HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_v",    // SingleElectron
 	  //"HLT_Ele17_CaloIdM_TrackIdM_PFJet30_v",        // SingleElectron
-	  "HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v"     // SingleElectron
+	  "HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v",     // SingleElectron
 	};
       }// 2017 DATA SEl       
 
@@ -86,7 +105,7 @@ void SkimTree_HNFake::initializeAnalyzer(){
     } // 2017
     
     else {
-      
+     
       
       triggers = {
 	"HLT_Mu50_v",
@@ -96,7 +115,13 @@ void SkimTree_HNFake::initializeAnalyzer(){
 	"HLT_Ele8_CaloIdL_TrackIdL_IsoVL_PFJet30_v",     // SingleElectron
 	"HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_v",    // SingleElectron
 	//"HLT_Ele17_CaloIdM_TrackIdM_PFJet30_v",        // SingleElectron
-	"HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v"     // SingleElectron
+	"HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v",     // SingleElectron
+	"HLT_IsoMu24_v", 
+	"HLT_IsoMu27_v",
+	"HLT_Ele27_WPTight_Gsf_v",
+	"HLT_Ele28_WPTight_Gsf_v",
+	"HLT_Ele32_WPTight_Gsf_v"
+	
       };
       cout << "Filling 2017 trigger " << endl;
 
@@ -108,15 +133,17 @@ void SkimTree_HNFake::initializeAnalyzer(){
    
       if (this->DataStream == "SingleMuon"){
       
-	triggers = {"HLT_Mu3_PFJet40_v","HLT_Mu50_v"};
+	triggers = {"HLT_Mu3_PFJet40_v","HLT_Mu50_v", "HLT_IsoMu24_v"};
 	
       }
       if (this->DataStream == "EGamma"){
 
         triggers = {
+	  "HLT_Ele27_WPTight_Gsf_v",
+	  "HLT_Ele28_WPTight_Gsf_v",
+	  "HLT_Ele32_WPTight_Gsf_v",
           "HLT_Ele8_CaloIdL_TrackIdL_IsoVL_PFJet30_v", 
           "HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_v",
-          //"HLT_Ele17_CaloIdM_TrackIdM_PFJet30_v",      
           "HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v" 
         };
       }
@@ -132,10 +159,14 @@ void SkimTree_HNFake::initializeAnalyzer(){
       
 
       triggers = {
+	"HLT_IsoMu24_v",
         "HLT_Mu50_v",
 	"HLT_Mu3_PFJet40_v",                             // SingleMuon
 	"HLT_Mu8_TrkIsoVVL_v",                           // DoubleMuon
 	"HLT_Mu17_TrkIsoVVL_v",                          // DoubleMuon
+	"HLT_Ele27_WPTight_Gsf_v",
+	"HLT_Ele28_WPTight_Gsf_v",
+	"HLT_Ele32_WPTight_Gsf_v",
 	"HLT_Ele8_CaloIdL_TrackIdL_IsoVL_PFJet30_v",     // EGamma
 	"HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_v",    // EGamma
 	//"HLT_Ele17_CaloIdM_TrackIdM_PFJet30_v",        // EGamma
@@ -183,8 +214,10 @@ void SkimTree_HNFake::executeEvent(){
   vector<Jet> alljet = GetJets("tight", 20., 2.7);
   bool dphi_lj(false);
   bool dR_lj(false);
+  bool PassPt(false);
 
   for(unsigned int imu=0; imu < allmuons.size(); imu++){
+    if(allmuons[imu].Pt() > 10) PassPt = true;
     if((METv.Pt() > 25) && MT(allmuons[imu], METv) > 60) HighMET = true;
     else{
       for(unsigned int ij=0; ij <alljet.size(); ij++){
@@ -197,6 +230,7 @@ void SkimTree_HNFake::executeEvent(){
   }
   
   for(unsigned int iel=0; iel <allel.size(); iel++){
+    if(allel[iel].Pt() > 15) PassPt = true;
     if((METv.Pt() > 25) && MT(allel[iel], METv) > 60) HighMET = true;
     else{ 
       for(unsigned int ij=0; ij <alljet.size(); ij++){
@@ -213,7 +247,7 @@ void SkimTree_HNFake::executeEvent(){
   else if(dR_lj)  newtree->Fill();
   else if(HasOSZCand) newtree->Fill();
   else if(HighMET) newtree->Fill();
-
+  else if(NLep==1&&PassPt) newtree->Fill();
   return;
 
 

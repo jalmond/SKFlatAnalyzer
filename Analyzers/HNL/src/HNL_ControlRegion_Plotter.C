@@ -3,7 +3,7 @@
 void HNL_ControlRegion_Plotter::initializeAnalyzer(){
 
   HNL_LeptonCore::initializeAnalyzer();
-  SetupEventMVAReader("V2");
+  SetupEventMVAReader("V1"); //JH FIXME later to V2
 
   nLog = 100000;
 }

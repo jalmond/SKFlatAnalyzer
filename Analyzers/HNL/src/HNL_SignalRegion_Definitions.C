@@ -125,6 +125,7 @@ void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq,
     EvalTrigWeight(dilep_channel, muons,electrons,param, ev,weight_channel);
 
     FillCutflow(CutFlow_Region, weight_channel, "Trigger",param);
+    if(B_JetColl.size()>0)     FillCutflow(CutFlow_Region, weight_channel, "BJet",param);
 
 
     /// RunMainRegionCode runs SR1/SR2/SR3

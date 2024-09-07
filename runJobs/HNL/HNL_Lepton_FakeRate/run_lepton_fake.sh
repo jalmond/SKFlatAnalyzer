@@ -3,11 +3,13 @@ rundir=HNL_Lepton_FakeRate
 mcpath=${SKFlat_WD}/runJobs/HNL/${rundir}/mc_lists/
 datapath=${SKFlat_WD}/runJobs/HNL/${rundir}/data_lists/
 njobs=400
-njobs_data=100
-nmax=350
+njobs_data=200
+nmax=500
 declare  -a era_list=("2016postVFP" "2016preVFP" "2017" "2018")
 
 declare  -a joblist=("CheckProfile"  "RatesMuon" "RatesMuon2" "RatesEl" "RatesEl2" "RatesWR")
+
+
 
 for i in "${era_list[@]}"
 
@@ -29,6 +31,11 @@ do
     fi
 
 
+    if [[ $1 == "RatesHEEP" ]]; then
+        SKFlat.py -a $analyzer  -l $mcpath/MC.txt              -n ${njobs}       --nmax ${nmax}  -e ${i}   --skim SkimTree_HNFakeBDT --userflags RunRatesHEEP&
+        SKFlat.py -a $analyzer  -l $datapath/DATA_${i}_el.txt  -n ${njobs_data}  --nmax ${nmax}  -e ${i}   --skim SkimTree_HNFakeBDT --userflags RunRatesHEEP&
+    fi
+
     if [[ $1 == "Rates" ]]; then
         SKFlat.py -a $analyzer  -l $mcpath/MC.txt              -n ${njobs}       --nmax ${nmax}  -e ${i}   --skim SkimTree_HNFakeBDT --userflags RunRates&
         SKFlat.py -a $analyzer  -l $datapath/DATA_${i}_mu.txt  -n ${njobs_data}  --nmax ${nmax}  -e ${i}   --skim SkimTree_HNFakeBDT --userflags RunRates&
@@ -45,13 +52,18 @@ do
     fi
 
     if [[ $1 == "MakeRegionPlots" ]]; then
-        SKFlat.py -a $analyzer  -l $mcpath/MC.txt              -n ${njobs}       --nmax ${nmax}  -e ${i}   --skim SkimTree_HNFakeBDT --userflags MakeRegionPlots&
-        SKFlat.py -a $analyzer  -l $datapath/DATA_${i}_mu.txt  -n ${njobs_data}  --nmax ${nmax}  -e ${i}   --skim SkimTree_HNFakeBDT --userflags MakeRegionPlots&              
-        SKFlat.py -a $analyzer  -l $datapath/DATA_${i}_el.txt  -n ${njobs_data}  --nmax ${nmax}  -e ${i}   --skim SkimTree_HNFakeBDT --userflags MakeRegionPlots&
-        SKFlat.py -a $analyzer  -l ${mcpath}/QCD_${i}.txt  -n ${njobs}  --nmax ${nmax}  -e ${i}   --skim SkimTree_FakeEventSkimBDT --userflags MakeRegionPlots&                                                     
-	SKFlat.py -a $analyzer  -i DYJetsToMuMu_MiNNLO  -n  ${njobs_data}  --nmax ${nmax}  -e ${i}  --skim SkimTree_DileptonBDT --userflags MakeRegionPlots &
-	SKFlat.py -a $analyzer  -i DYJetsToEE_MiNNLO    -n  ${njobs_data}  --nmax ${nmax}  -e ${i}  --skim SkimTree_DileptonBDT --userflags MakeRegionPlots &
-        SKFlat.py -a $analyzer  -l $datapath/DATA_${i}_ll.txt   -n  ${njobs_data}  --nmax ${nmax}  -e ${i}  --skim SkimTree_DileptonBDT --userflags MakeRegionPlots &
+	
+	SKFlat.py -a $analyzer  -l $datapath/DATA_${i}_mu.txt  -n ${njobs_data}  --nmax ${nmax}  -e ${i}    --userflags MakeRegionPlotsL&
+        SKFlat.py -a $analyzer  -l $mcpath/MC.txt              -n ${njobs}       --nmax ${nmax}  -e ${i}    --userflags MakeRegionPlotsL&         
+
+	#SKFlat.py -a $analyzer  -l $datapath/DATA_${i}_mu.txt  -n ${njobs_data}  --nmax ${nmax}  -e ${i}   --skim SkimTree_HNFakeBDT --userflags MakeRegionPlotsL&
+	#SKFlat.py -a $analyzer  -l $mcpath/MC.txt              -n ${njobs}       --nmax ${nmax}  -e ${i}   --skim SkimTree_HNFakeBDT --userflags MakeRegionPlotsL&
+	
+        #SKFlat.py -a $analyzer  -l $datapath/DATA_${i}_el.txt  -n ${njobs_data}  --nmax ${nmax}  -e ${i}   --skim SkimTree_HNFakeBDT --userflags MakeRegionPlots&
+        #SKFlat.py -a $analyzer  -l ${mcpath}/QCD_${i}.txt  -n ${njobs}  --nmax ${nmax}  -e ${i}   --skim SkimTree_FakeEventSkimBDT --userflags MakeRegionPlots&                                                     
+	#SKFlat.py -a $analyzer  -i DYJetsToMuMu_MiNNLO  -n  ${njobs_data}  --nmax ${nmax}  -e ${i}  --skim SkimTree_DileptonBDT --userflags MakeRegionPlotsLL &
+	#SKFlat.py -a $analyzer  -i DYJetsToEE_MiNNLO    -n  ${njobs_data}  --nmax ${nmax}  -e ${i}  --skim SkimTree_DileptonBDT --userflags MakeRegionPlotsLL &
+        #SKFlat.py -a $analyzer  -l $datapath/DATA_${i}_ll.txt   -n  ${njobs_data}  --nmax ${nmax}  -e ${i}  --skim SkimTree_DileptonBDT --userflags MakeRegionPlotsLL &
 	
     fi
 

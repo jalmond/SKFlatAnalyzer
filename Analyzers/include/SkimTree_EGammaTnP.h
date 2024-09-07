@@ -27,6 +27,12 @@ public:
   
   float L1ThresholdHLTEle23Ele12CaloIdLTrackIdLIsoVL;
 
+  bool passingMVA80;
+  bool passingMVA90;
+  bool passingHEEP;
+  bool passingMVALoose;
+  bool passingTriggerEmul;
+  
   bool passingCutBasedMedium94XV2;
   bool passingCutBasedTight94XV2;
   bool passingHNLMVA;
@@ -44,6 +50,7 @@ public:
   bool passHltEle35WPTightGsf;
   bool passHltEle23Ele12CaloIdLTrackIdLIsoVLLeg1;
   bool passHltEle23Ele12CaloIdLTrackIdLIsoVLLeg2;
+  float el_sc_abseta;
   float el_e;
   float el_e_cor;
   float el_et;
@@ -66,6 +73,14 @@ public:
   bool tag_passHltEle35WPTightGsf;
   bool tag_passingCutBasedMedium94XV2;
   bool tag_passingCutBasedTight94XV2;
+  bool tag_passtrigMVA;
+  bool tag_passingMVA80;
+  bool tag_passingMVA90;
+  bool tag_passingHEEP;
+  bool tag_passingMVALoose;
+  bool tag_passingTriggerEmul;
+
+
   float tag_Ele_IsoMVA94XV2;
   float tag_Ele_e;
   float tag_Ele_e_cor;

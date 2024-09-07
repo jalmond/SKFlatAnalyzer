@@ -12,7 +12,6 @@ Muon::Muon() : Lepton() {
   j_PFNH04 = -999.;
   j_PFPH04 = -999.;
   j_PU04 = -999.;
-  j_trkiso = -999.;
   this->SetLeptonFlavour(MUON);
   j_MiniAODPt = -999.;
   j_MomentumScaleUp = -999.;
@@ -54,12 +53,11 @@ void Muon::SetPOGMediumHIP(bool ismedium_hip, bool ismedium_nohip){
   j_ismedium_hip = ismedium_hip;
   j_ismedium_nohip = ismedium_nohip;
 }
-void Muon::SetIso(double ch04, double nh04, double ph04, double pu04, double trkiso){
+void Muon::SetIso(double ch04, double nh04, double ph04, double pu04){
   j_PFCH04 = ch04;
   j_PFNH04 = nh04;
   j_PFPH04 = ph04;
   j_PU04 = pu04;
-  j_trkiso = trkiso;
   CalcPFRelIso();
 }
 

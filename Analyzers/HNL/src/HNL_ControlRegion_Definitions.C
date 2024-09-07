@@ -1904,7 +1904,6 @@ bool HNL_RegionDefinitions::FillZZ2CRPlots(HNL_LeptonCore::Channel channel, std:
   if (leps_veto.size() != 4) return false;
   FillCutflow(Reg, w, "Step1",param);
 
-
   if(!ConversionSplitting(leps,RunConv,4,param)) return false;
 
   if(!CheckLeptonFlavourForChannel(channel, leps)) return false;
