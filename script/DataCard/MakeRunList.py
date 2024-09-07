@@ -28,7 +28,9 @@ input_path = os.getcwd()
 grepRegion = '' if "Run2" in args.eras else ' | grep sr3_inv' # When you grep an individual era, there are many duplications with different regions, namely sr1, ww_cr, sr3_inv, etc. Pick just one (sr3_inv)
 
 #tags = ["_sronly"]
-tags = ["_syst"]
+#tags = ["_syst"]
+#tags = ["_sr1_syst_Combined","_sr2_syst_Combined","_sr3_syst_Combined","_syst"]
+tags = ["_sr1_syst","_sr2_syst","_sr3_syst","_sr_syst"]
 
 for dirName in args.dirNames:
 

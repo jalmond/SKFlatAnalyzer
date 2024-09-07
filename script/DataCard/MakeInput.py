@@ -10,13 +10,14 @@ import argparse
 from ROOT import *
 
 parser = argparse.ArgumentParser(description='script for creating input root file.',formatter_class=argparse.RawTextHelpFormatter)
+parser.add_argument('--CnC', action='store_true', help='1bin cut and count setting')
 parser.add_argument('--CR', action='store_true', help='Make HNL_ControlRegion_Plotter input (default : HNL_SignalRegion_Plotter)')
 parser.add_argument('--Syst', action='store_true', help='Add systematics')
 args = parser.parse_args()
 
 
-#eras = ["2016preVFP", "2016postVFP", "2017", "2018"]
-eras = ["2016preVFP"]
+eras = ["2016preVFP", "2016postVFP", "2017", "2018"]
+#eras = ["2016preVFP"]
 #eras = ["2016postVFP"]
 #eras = ["2017"]
 #eras = ["2018"]
@@ -25,11 +26,11 @@ eras = ["2016preVFP"]
 #masses = ["M100","M1000","M10000"]
 masses = ["M85","M90","M95","M100","M125","M150","M200","M250","M300","M400","M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M10000","M15000","M20000"]
 #masses = ["M85","M90","M95","M100","M125","M150","M200","M250"]
-#masses = ["M10000"]
+#masses = ["M1000"]
 #masses = ["M85"]
 channels = ["MuMu","EE","EMu"]
 #channels = ["MuMu","EE"]
-#channels = ["MuMu"]
+#channels = ["EE"]
 HistChannelMap = {'MuMu':'Muon', 'EE':'Electron', 'EMu':'ElectronMuon'}
 ## Ugly region maps ##
 RegionToCRFlagMap = {}
@@ -37,7 +38,7 @@ RegionToChannelMap = {}
 RegionToHistSuffixMap = {}
 
 #tags = ["HNL_ULID","HNTightV2"] # HNLParameter Name
-tags = ["HNL_ULID"] # HNLParameter Name
+tags = ["HNL_ULID"] # HNLParameter Name, used to call the histogram
 #outputTag = "240501_1704_" # tag the output directory name as you wish
 #outputTag = "rateParam_" # tag the output directory name as you wish
 #outputTag = "PR48_rateParam_" # tag the output directory name as you wish
@@ -45,6 +46,9 @@ tags = ["HNL_ULID"] # HNLParameter Name
 #outputTag = "PR51_rescale_" # tag the output directory name as you wish
 outputTag = "PR52_" # tag the output directory name as you wish
 #outputTag = "PR52_10TeVrescale_" # tag the output directory name as you wish
+
+if args.CnC:
+  outputTag += 'CnC_'
 
 # Skim
 DataSkim = "_SkimTree_HNMultiLepBDT_"
@@ -131,7 +135,7 @@ else:
   Analyzer = "HNL_SignalRegion_Plotter"
 
   regions = ["sr","sr1","sr2","sr3"] # for SRs
-  #regions = ["sr1"] # for SRs
+  #regions = ["sr3"] # for SRs
   #regions = "" # Use this when merging only
 
   RegionToCRFlagMap['sr'] = ""
@@ -491,7 +495,7 @@ for tag in tags:
           
           if Blinded:
             print "##### This analysis is blinded."
-            print "##### Creating pseudo data..."
+            print "##### Creating Asimov data..."
             print "Adding prompt..."
             h_data = h_prompt_inc.Clone()
 
@@ -710,7 +714,7 @@ for tag in tags:
           outfile = TFile.Open(OutputPath+era+"/"+region+"/"+mass+"_"+channel+"_card_input.root","RECREATE")
           
           outfile.cd() # Move into it
-          for item in input_list:
+          for item in input_list: # Remember, item = [path,hist,name]
             try:
               item[1].SetName(item[2])
             except AttributeError:
@@ -734,7 +738,7 @@ for tag in tags:
                 h_missing.Write() # Write empty histogram
                 continue
 
-            if item[1].Integral() <=0 : #finally, treat -ve bins
+            if item[1].Integral() <=0 : # treat -ve bins
               print("[!!WARNING!!] Negative events "+str(item[1].Integral())+" in "+item[2]+" ------------------------------------")
               print "Creating a makeup hist..."
               for i in range(item[1].GetNbinsX()):
@@ -742,6 +746,11 @@ for tag in tags:
                 item[1].SetBinError(i+1,0)
               item[1].SetBinContent(1,0.001) # to avoid Combine complaining for empty hist.
               item[1].SetBinError(1,0.000001)
+
+            if args.CnC:
+              print "!!Cut and count option activated!!"
+              print "!!Merging all into 1 bin...!!"
+              item[1].Rebin(item[1].GetNbinsX())
 
             print "Writing "+item[2]+"..."
             item[1].Write() # Write each histogram while iterating

@@ -1,9 +1,9 @@
 # Make Datacards
 # Place this at CombineTool/CMSSW_10_2_13/src/<your working directory>
 # You need to place card_skeletons already
-# python MakeDataCard_Norm.py --CR --Syst\ python MakeDataCard_Norm.py --Combine CR --Syst <-- add rateParam
+# python MakeDataCard_Norm.py --CR --Syst; python MakeDataCard_Norm.py --Combine CR --Syst <-- add rateParam
 # python MakeDataCard_Norm.py --Combine Era --Syst
-# python MakeDataCard_Norm.py --Syst\ python MakeDataCard_Norm.py --Combine SR --Syst <-- without rateParam ("sronly" setting)
+# python MakeDataCard_Norm.py --Syst; python MakeDataCard_Norm.py --Combine SR --Syst <-- without rateParam ("sronly" setting)
 
 
 import os, sys, argparse
@@ -25,13 +25,14 @@ pwd = os.getcwd()
 #####################################################
 
 #eras = ["2016","2017","2018"]
-#eras = ["2017"]
+eras = ["2017"]
 #eras = ["2018"]
 #eras = ["2016preVFP","2016postVFP","2017","2018"]
-eras = ["2016preVFP","2016postVFP","2017"]
+#eras = ["2016preVFP","2016postVFP","2017"]
 channels = ["MuMu","EE","EMu"]
 #channels = ["MuMu","EE"]
 #channels = ["MuMu"]
+#channels = ["EE"]
 #masses = ["M90","M100","M150","M200","M300","M400","M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M10000","M15000","M20000"]
 #masses = ["M100","M1000","M10000"]
 #masses = ["M500","M1000","M5000"]
@@ -57,6 +58,7 @@ CRpath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_
 #InputWPs = ["PR51_HNL_ULID"]
 #InputWPs = ["PR51_rescale_HNL_ULID"]
 InputWPs = ["PR52_HNL_ULID"]
+#InputWPs = ["PR52_CnC_HNL_ULID"]
 #InputWPs = ["PR52_10TeVrescale_HNL_ULID"]
 #OutputWP = "_NOsr2inv"
 #OutputWP = "_NOsr2inv_NOzgcr1"
@@ -70,7 +72,8 @@ InputWPs = ["PR52_HNL_ULID"]
 #OutputWP = "_defMod_SSWWonly"
 #OutputWP = "_Fake0p3CF0p2_PR991"
 #OutputWP = "_Fake0p3CF0p2_PR991_TestModel"
-OutputWP = "_AN"
+#OutputWP = "_AN"
+OutputWP = "_SUScomment"
 
 ################################################################################################################################################
 
@@ -218,7 +221,34 @@ for InputWP in InputWPs:
                                      wz_cr=card_"+era+"_"+channel+"_"+mass+"_wz_cr.txt \
                                      zz_cr=card_"+era+"_"+channel+"_"+mass+"_zz_cr.txt \
                                      > card_"+era+"_"+channel+"_"+mass+systTag+".txt")
-        elif args.Combine == "SR": # Combine SR1 only, SR2 only, SR3 only
+          os.system("combineCards.py \
+                                     sr1=card_"+era+"_"+channel+"_"+mass+"_sr1"+systTag+".txt \
+                                     sr1_inv=card_"+era+"_"+channel+"_"+mass+"_sr1_inv.txt "\
+                                     +Add_cf_cr+" \
+                                     ww_cr=card_"+era+"_"+channel+"_"+mass+"_ww_cr.txt \
+                                     zg_cr=card_"+era+"_"+channel+"_"+mass+"_zg_cr.txt \
+                                     wz_cr=card_"+era+"_"+channel+"_"+mass+"_wz_cr.txt \
+                                     zz_cr=card_"+era+"_"+channel+"_"+mass+"_zz_cr.txt \
+                                     > card_"+era+"_"+channel+"_"+mass+"_sr1"+systTag+"_Combined.txt")
+          os.system("combineCards.py \
+                                     sr2=card_"+era+"_"+channel+"_"+mass+"_sr2"+systTag+".txt \
+                                     sr2_inv=card_"+era+"_"+channel+"_"+mass+"_sr2_inv.txt "\
+                                     +Add_cf_cr+" \
+                                     ww_cr=card_"+era+"_"+channel+"_"+mass+"_ww_cr.txt \
+                                     zg_cr=card_"+era+"_"+channel+"_"+mass+"_zg_cr.txt \
+                                     wz_cr=card_"+era+"_"+channel+"_"+mass+"_wz_cr.txt \
+                                     zz_cr=card_"+era+"_"+channel+"_"+mass+"_zz_cr.txt \
+                                     > card_"+era+"_"+channel+"_"+mass+"_sr2"+systTag+"_Combined.txt")
+          os.system("combineCards.py \
+                                     sr3=card_"+era+"_"+channel+"_"+mass+"_sr3"+systTag+".txt \
+                                     sr3_inv=card_"+era+"_"+channel+"_"+mass+"_sr3_inv.txt "\
+                                     +Add_cf_cr+" \
+                                     ww_cr=card_"+era+"_"+channel+"_"+mass+"_ww_cr.txt \
+                                     zg_cr=card_"+era+"_"+channel+"_"+mass+"_zg_cr.txt \
+                                     wz_cr=card_"+era+"_"+channel+"_"+mass+"_wz_cr.txt \
+                                     zz_cr=card_"+era+"_"+channel+"_"+mass+"_zz_cr.txt \
+                                     > card_"+era+"_"+channel+"_"+mass+"_sr3"+systTag+"_Combined.txt")
+        elif args.Combine == "SR": # Combine SR1 only, SR2 only, SR3 only (no rateParam)
           os.system("combineCards.py \
                                      sr1=card_"+era+"_"+channel+"_"+mass+"_sronly_sr1"+systTag+".txt \
                                      sr2=card_"+era+"_"+channel+"_"+mass+"_sronly_sr2"+systTag+".txt \
