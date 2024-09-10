@@ -15,12 +15,14 @@ void HNL_ControlRegion_Plotter::executeEvent(){
   else run_Debug=false;
 
   ///// LIST IDs to run
-  vector<TString> LepIDs = {"HNL_ULID","HNTightV2"};//,"TopHN", "DefaultPOGTight"};
+  //vector<TString> LepIDs = {"HNL_ULID","HighPt"};//,"TopHN", "DefaultPOGTight"};
+  vector<TString> LepIDs = {"HighPt"};//,"TopHN", "DefaultPOGTight"}; //FIXME
   if(strcmp(std::getenv("USER"),"jalmond")==0) LepIDs = {"HNL_ULID","HNTightV2" };//, "POGTight"};
   if(RunFakeTF) LepIDs = {"HNL_ULID"};
 
   //// List Channels to run
-  vector<HNL_LeptonCore::Channel> ChannelsToRun = {MuMu,EE,EMu };
+  //vector<HNL_LeptonCore::Channel> ChannelsToRun = {MuMu,EE,EMu};
+  vector<HNL_LeptonCore::Channel> ChannelsToRun = {EE};
   
   
   ///// Run command 
@@ -37,6 +39,7 @@ void HNL_ControlRegion_Plotter::executeEvent(){
   for (auto id: LepIDs){
     for(auto channel : ChannelsToRun){
       if(channel != MuMu  && id =="TopHN") continue;
+      if(channel != EE  && id =="HighPt") continue; //JH
 
       AnalyzerParameter param_signal = HNL_LeptonCore::InitialiseHNLParameter(id,channel);
       if(channel == EMu) param_signal.CFMethod   = "MC";

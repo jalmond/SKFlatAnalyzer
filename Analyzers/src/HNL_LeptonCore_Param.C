@@ -28,6 +28,7 @@ AnalyzerParameter  HNL_LeptonCore::DefaultParam(TString s_setup_version,TString 
   param_default.Apply_Weight_PNETSF   = true;
   param_default.Apply_Weight_JetPUID   = true;
 
+  param_default.Apply_Weight_PDF  = false; //JH
 
 
   //// By default dont apply ID/Trigger SF                                                                                                                            

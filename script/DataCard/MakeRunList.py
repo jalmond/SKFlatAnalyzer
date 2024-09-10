@@ -30,7 +30,14 @@ grepRegion = '' if "Run2" in args.eras else ' | grep sr3_inv' # When you grep an
 #tags = ["_sronly"]
 #tags = ["_syst"]
 #tags = ["_sr1_syst_Combined","_sr2_syst_Combined","_sr3_syst_Combined","_syst"]
-tags = ["_sr1_syst","_sr2_syst","_sr3_syst","_sr_syst"]
+#tags = ["_sr1_syst","_sr2_syst","_sr3_syst","_sr_syst"]
+#tags = ["_sr1_syst_Combined","_sr2_syst_Combined","_sr3_syst_Combined","_sr_syst_Combined","_syst","_sr1_syst","_sr2_syst","_sr3_syst","_sr_syst"]
+#tags = ["_sr_syst_NoCFCR_Combined","_sr_syst_NoInv_Combined","_sr_syst_NoCFCR_NoInv_Combined"]
+#tags = ["_sr1_syst_Combined","_sr2_syst_Combined","_sr3_syst_Combined","_sr_syst_Combined","_syst","_sr1_syst","_sr2_syst","_sr3_syst","_sr_syst","_sr_syst_NoCFCR_Combined","_sr_syst_NoInv_Combined","_sr_syst_NoCFCR_NoInv_Combined"]
+## No syst
+#tags = ["_sr1_Combined","_sr2_Combined","_sr3_Combined","_sr_Combined","","_sr_NoCFCR_Combined","_sr_NoInv_Combined","_sr_NoCFCR_NoInv_Combined"]
+## SR only
+tags = ["_sronly_sr1","_sronly_sr2","_sronly_sr3","_sronly_sr123","_sronly_sr","_sronly_sr1_syst","_sronly_sr2_syst","_sronly_sr3_syst","_sronly_sr123_syst","_sronly_sr_syst"]
 
 for dirName in args.dirNames:
 

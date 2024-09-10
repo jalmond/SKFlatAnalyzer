@@ -225,6 +225,27 @@ public:
   inline bool passMVAID_Iso_WP90() const {return PassSelector(POG_MVA_ISO_WP90); }
   inline bool passMVAID_noiso_WPLoose() const {return PassSelector(POG_MVA_NOISO_WPLOOSE); }
   inline bool passHEEPID() const {return PassSelector(POG_HEEP); }
+  inline bool passHEEPID_NoMinPt() const {
+					int HEEPcutbit = IDCutBit().at(11);
+
+					//cout << "HEEPcutbit : " << HEEPcutbit << endl;
+					//cout << "Pt : " << Pt() << endl;
+					//if((HEEPcutbit&4094)==4094){
+					//cout << "HEEP w/o MinPt passed;" << endl;
+					//cout << "===========================" << endl;
+					//cout << "HEEPcutbit : " << HEEPcutbit << endl;
+					//cout << "Pt : " << Pt() << endl;
+					//cout << "===========================" << endl;
+					//}
+					//if(PassSelector(POG_HEEP)){
+					//cout << "HEEP passed;" << endl;
+					//cout << "===========================" << endl;
+					//cout << "HEEPcutbit : " << HEEPcutbit << endl;
+					//cout << "Pt : " << Pt() << endl;
+					//cout << "===========================" << endl;
+					//}
+					
+					return (HEEPcutbit&4094)==4094; } //JH
 
 
   int PassHNLTight(TString ID) const;
@@ -234,6 +255,7 @@ public:
   bool Pass_LepMVAID() const ;
   bool Pass_LepMVATopID() const ;
   bool passLooseHEEPID() const;
+  bool passLooseHEEPID_NoMinPt() const; //JH
 
   bool passHEEP2018Prompt() const; // HEEP
 

@@ -357,7 +357,8 @@ int  Electron::PassIDTight(TString ID) const{
   }
   if(ID=="passHEEPID_v3"){
     if(Run_Era() == 2018 )return passHEEP2018Prompt()&& Pass_TriggerEmulation()&&PassConversionVeto() && IsGsfCtfChargeConsistent()? 1 : 0;
-    else   return passHEEPID()         && Pass_TriggerEmulation()&&PassConversionVeto() && IsGsfCtfChargeConsistent()? 1 : 0;
+    //else   return passHEEPID()         && Pass_TriggerEmulation()&&PassConversionVeto() && IsGsfCtfChargeConsistent()? 1 : 0;
+    else   return passHEEPID_NoMinPt()         && Pass_TriggerEmulation()&&PassConversionVeto() && IsGsfCtfChargeConsistent()? 1 : 0; //JH
   }
 
   //=== MVA
@@ -430,7 +431,7 @@ int  Electron::PassIDLoose(TString ID) const{
   if(ID=="passLooseID")  return passLooseID()     ? 1 : 0; 
   if(ID=="HEEPLoose_v1")    return passLooseHEEPID() ? 1 : 0; 
   if(ID=="HEEPLoose_v2")    return passLooseHEEPID() && Pass_TriggerEmulation()&&PassConversionVeto() && IsGsfCtfScPixChargeConsistent() ? 1 : 0; 
-  if(ID=="HEEPLoose_v3")    return passLooseHEEPID() && Pass_TriggerEmulation()&&PassConversionVeto() && IsGsfCtfChargeConsistent()? 1 : 0; 
+  if(ID=="HEEPLoose_v3")    return passLooseHEEPID_NoMinPt() && Pass_TriggerEmulation()&&PassConversionVeto() && IsGsfCtfChargeConsistent()? 1 : 0;  //JH
 
 
   //=== loose user                                                                                                                                                                                       
@@ -497,6 +498,23 @@ bool Electron::passLooseHEEPID() const{
   return true;
   
 }
+
+bool Electron::passLooseHEEPID_NoMinPt() const{
+
+  int HEEPcutbit = IDCutBit().at(11);
+
+
+  //==  H/E and EM+Had_depth1 AND NoMinPt = (4096-1) - (1<<6) - (1<<8) - (1<<7) - (1<<9) - (1<<0) = 3134
+  if(! ( (HEEPcutbit&3134)==3134 ) ) return false;
+  if(! (HoverE()<0.13) ) return false;
+  if(! (TrkIso()<20.) ) return false;
+  if(! (dXY()<0.1) ) return false;
+  if(! ( dr03EcalRecHitSumEt() + dr03HcalDepth1TowerSumEt() < 8. ) ) return false;     
+
+  return true;
+  
+}
+
 bool Electron::passHEEP2018Prompt() const {
 
   //==== If not endcap, use original function

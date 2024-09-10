@@ -29,22 +29,24 @@ eras = ["2017"]
 #eras = ["2018"]
 #eras = ["2016preVFP","2016postVFP","2017","2018"]
 #eras = ["2016preVFP","2016postVFP","2017"]
-channels = ["MuMu","EE","EMu"]
+#channels = ["MuMu","EE","EMu"]
 #channels = ["MuMu","EE"]
 #channels = ["MuMu"]
-#channels = ["EE"]
+channels = ["EE"]
 #masses = ["M90","M100","M150","M200","M300","M400","M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M10000","M15000","M20000"]
 #masses = ["M100","M1000","M10000"]
 #masses = ["M500","M1000","M5000"]
 #masses = ["M3000"]
 #masses = ["M90","M100","M150","M200","M300","M400","M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M10000","M15000","M20000"]
-masses = ["M85","M90","M95","M100","M125","M150","M200","M250","M300","M400","M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M10000","M15000","M20000"]
-#masses = ["M100","M1000","M10000"]
+#masses = ["M85","M90","M95","M100","M125","M150","M200","M250","M300","M400","M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M10000","M15000","M20000"]
+masses = ["M100","M1000","M10000"]
 #masses = ["M20000"]
 
 #SRpath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegion_Plotter_PR43/LimitInputs/"
 #SRpath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegion_Plotter/LimitInputs/"
 #CRpath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/LimitInputs/"
+#SRpath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegion_Plotter/LimitExtraction/"
+#CRpath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/LimitExtraction/"
 SRpath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegion_Plotter/LimitExtraction/"
 CRpath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/LimitExtraction/"
 
@@ -57,23 +59,27 @@ CRpath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_
 #InputWPs = ["PR48_rateParam_HNL_ULID"]
 #InputWPs = ["PR51_HNL_ULID"]
 #InputWPs = ["PR51_rescale_HNL_ULID"]
-InputWPs = ["PR52_HNL_ULID"]
+#InputWPs = ["PR52_HNL_ULID"]
 #InputWPs = ["PR52_CnC_HNL_ULID"]
+#InputWPs = ["PR52_NewCnC_HNL_ULID"]
 #InputWPs = ["PR52_10TeVrescale_HNL_ULID"]
-#OutputWP = "_NOsr2inv"
-#OutputWP = "_NOsr2inv_NOzgcr1"
-#OutputWP = "_NOsr2inv_NOcr1Norm_FixCF"
-#OutputWP = "_NOsr2inv_IncNorm"
-#OutputWP = "_AltStat"
-#OutputWP = "_FakeCF0p1"
-#OutputWP = "_FakeCF0p1_toy"
-#OutputWP = "_SSWWonly"
-#OutputWP = "_DYVBFonly"
-#OutputWP = "_defMod_SSWWonly"
-#OutputWP = "_Fake0p3CF0p2_PR991"
-#OutputWP = "_Fake0p3CF0p2_PR991_TestModel"
-#OutputWP = "_AN"
-OutputWP = "_SUScomment"
+#InputWPs = ["PR55_HNL_ULID","PR55_HighPt"]
+InputWPs = ["PR55_HNL_ULID"]
+#OutputTag = "_NOsr2inv"
+#OutputTag = "_NOsr2inv_NOzgcr1"
+#OutputTag = "_NOsr2inv_NOcr1Norm_FixCF"
+#OutputTag = "_NOsr2inv_IncNorm"
+#OutputTag = "_AltStat"
+#OutputTag = "_FakeCF0p1"
+#OutputTag = "_FakeCF0p1_toy"
+#OutputTag = "_SSWWonly"
+#OutputTag = "_DYVBFonly"
+#OutputTag = "_defMod_SSWWonly"
+#OutputTag = "_Fake0p3CF0p2_PR991"
+#OutputTag = "_Fake0p3CF0p2_PR991_TestModel"
+#OutputTag = "_AN"
+#OutputTag = "_SUScomment"
+OutputTag = ""
 
 ################################################################################################################################################
 
@@ -87,7 +93,7 @@ def CardSetting(isCR, WP, era, channel, mass):
   #regions_cr = ["sr1_inv","sr3_inv","cf_cr","ww_cr","wz_cr1","wz_cr2","wz_cr3","zg_cr3","zz_cr1","zz_cr3"]
   #regions_cr = ["sr1_inv","sr3_inv","cf_cr","ww_cr","wz_cr1","wz_cr2","wz_cr3","zg_cr3","zz_cr3"]
   #regions_cr = ["sr1_inv","sr3_inv","cf_cr","ww_cr","wz_cr","zg_cr","zz_cr"]
-  regions_cr = ["sr1_inv","sr2_inv","sr3_inv","cf_cr","ww_cr","wz_cr","zg_cr","zz_cr"]
+  regions_cr = ["sr_inv","sr1_inv","sr2_inv","sr3_inv","cf_cr","ww_cr","wz_cr","zg_cr","zz_cr"]
   lines_cr = {}
   # cr norm setting
   for region in regions_cr:
@@ -170,7 +176,7 @@ else:
   systTag = ""
 
 for InputWP in InputWPs:
-  OutputWP = InputWP+OutputWP
+  OutputWP = InputWP+OutputTag
 
   if not args.Combine:
     os.system("mkdir -p "+OutputWP)
@@ -206,21 +212,36 @@ for InputWP in InputWPs:
         else: Add_cf_cr = "cf_cr=card_"+era+"_"+channel+"_"+mass+"_cf_cr.txt"
 
         if args.Combine == "CR":
-          os.system("combineCards.py \
-                                     sr1=card_"+era+"_"+channel+"_"+mass+"_sr1"+systTag+".txt \
-                                     sr2=card_"+era+"_"+channel+"_"+mass+"_sr2"+systTag+".txt \
-                                     sr3=card_"+era+"_"+channel+"_"+mass+"_sr3"+systTag+".txt \
-                                     sr1_inv=card_"+era+"_"+channel+"_"+mass+"_sr1_inv.txt \
-                                     sr2_inv=card_"+era+"_"+channel+"_"+mass+"_sr2_inv.txt \
-                                     sr3_inv=card_"+era+"_"+channel+"_"+mass+"_sr3_inv.txt "\
-                                     #sr=card_"+era+"_"+channel+"_"+mass+"_sr"+systTag+".txt \
-                                     #sr_inv=card_"+era+"_"+channel+"_"+mass+"_sr_inv.txt "\
-                                     +Add_cf_cr+" \
-                                     ww_cr=card_"+era+"_"+channel+"_"+mass+"_ww_cr.txt \
-                                     zg_cr=card_"+era+"_"+channel+"_"+mass+"_zg_cr.txt \
-                                     wz_cr=card_"+era+"_"+channel+"_"+mass+"_wz_cr.txt \
-                                     zz_cr=card_"+era+"_"+channel+"_"+mass+"_zz_cr.txt \
-                                     > card_"+era+"_"+channel+"_"+mass+systTag+".txt")
+          if "E" in channel and mass == "M100": # no signalDYVBF in SR1 with M100 EE, EMu for now FIXME later
+            os.system("combineCards.py \
+                                       sr2=card_"+era+"_"+channel+"_"+mass+"_sr2"+systTag+".txt \
+                                       sr3=card_"+era+"_"+channel+"_"+mass+"_sr3"+systTag+".txt \
+                                       sr2_inv=card_"+era+"_"+channel+"_"+mass+"_sr2_inv.txt \
+                                       sr3_inv=card_"+era+"_"+channel+"_"+mass+"_sr3_inv.txt "\
+                                       #sr=card_"+era+"_"+channel+"_"+mass+"_sr"+systTag+".txt \
+                                       #sr_inv=card_"+era+"_"+channel+"_"+mass+"_sr_inv.txt "\
+                                       +Add_cf_cr+" \
+                                       ww_cr=card_"+era+"_"+channel+"_"+mass+"_ww_cr.txt \
+                                       zg_cr=card_"+era+"_"+channel+"_"+mass+"_zg_cr.txt \
+                                       wz_cr=card_"+era+"_"+channel+"_"+mass+"_wz_cr.txt \
+                                       zz_cr=card_"+era+"_"+channel+"_"+mass+"_zz_cr.txt \
+                                       > card_"+era+"_"+channel+"_"+mass+systTag+".txt")
+          else:
+            os.system("combineCards.py \
+                                       sr1=card_"+era+"_"+channel+"_"+mass+"_sr1"+systTag+".txt \
+                                       sr2=card_"+era+"_"+channel+"_"+mass+"_sr2"+systTag+".txt \
+                                       sr3=card_"+era+"_"+channel+"_"+mass+"_sr3"+systTag+".txt \
+                                       sr1_inv=card_"+era+"_"+channel+"_"+mass+"_sr1_inv.txt \
+                                       sr2_inv=card_"+era+"_"+channel+"_"+mass+"_sr2_inv.txt \
+                                       sr3_inv=card_"+era+"_"+channel+"_"+mass+"_sr3_inv.txt "\
+                                       #sr=card_"+era+"_"+channel+"_"+mass+"_sr"+systTag+".txt \
+                                       #sr_inv=card_"+era+"_"+channel+"_"+mass+"_sr_inv.txt "\
+                                       +Add_cf_cr+" \
+                                       ww_cr=card_"+era+"_"+channel+"_"+mass+"_ww_cr.txt \
+                                       zg_cr=card_"+era+"_"+channel+"_"+mass+"_zg_cr.txt \
+                                       wz_cr=card_"+era+"_"+channel+"_"+mass+"_wz_cr.txt \
+                                       zz_cr=card_"+era+"_"+channel+"_"+mass+"_zz_cr.txt \
+                                       > card_"+era+"_"+channel+"_"+mass+systTag+".txt")
           os.system("combineCards.py \
                                      sr1=card_"+era+"_"+channel+"_"+mass+"_sr1"+systTag+".txt \
                                      sr1_inv=card_"+era+"_"+channel+"_"+mass+"_sr1_inv.txt "\
@@ -248,14 +269,44 @@ for InputWP in InputWPs:
                                      wz_cr=card_"+era+"_"+channel+"_"+mass+"_wz_cr.txt \
                                      zz_cr=card_"+era+"_"+channel+"_"+mass+"_zz_cr.txt \
                                      > card_"+era+"_"+channel+"_"+mass+"_sr3"+systTag+"_Combined.txt")
+          os.system("combineCards.py \
+                                     sr=card_"+era+"_"+channel+"_"+mass+"_sr"+systTag+".txt \
+                                     sr_inv=card_"+era+"_"+channel+"_"+mass+"_sr_inv.txt "\
+                                     +Add_cf_cr+" \
+                                     ww_cr=card_"+era+"_"+channel+"_"+mass+"_ww_cr.txt \
+                                     zg_cr=card_"+era+"_"+channel+"_"+mass+"_zg_cr.txt \
+                                     wz_cr=card_"+era+"_"+channel+"_"+mass+"_wz_cr.txt \
+                                     zz_cr=card_"+era+"_"+channel+"_"+mass+"_zz_cr.txt \
+                                     > card_"+era+"_"+channel+"_"+mass+"_sr"+systTag+"_Combined.txt")
+          os.system("combineCards.py \
+                                     sr=card_"+era+"_"+channel+"_"+mass+"_sr"+systTag+".txt \
+                                     sr_inv=card_"+era+"_"+channel+"_"+mass+"_sr_inv.txt \
+                                     ww_cr=card_"+era+"_"+channel+"_"+mass+"_ww_cr.txt \
+                                     zg_cr=card_"+era+"_"+channel+"_"+mass+"_zg_cr.txt \
+                                     wz_cr=card_"+era+"_"+channel+"_"+mass+"_wz_cr.txt \
+                                     zz_cr=card_"+era+"_"+channel+"_"+mass+"_zz_cr.txt \
+                                     > card_"+era+"_"+channel+"_"+mass+"_sr"+systTag+"_NoCFCR_Combined.txt")
+          os.system("combineCards.py \
+                                     sr=card_"+era+"_"+channel+"_"+mass+"_sr"+systTag+".txt "\
+                                     +Add_cf_cr+" \
+                                     ww_cr=card_"+era+"_"+channel+"_"+mass+"_ww_cr.txt \
+                                     zg_cr=card_"+era+"_"+channel+"_"+mass+"_zg_cr.txt \
+                                     wz_cr=card_"+era+"_"+channel+"_"+mass+"_wz_cr.txt \
+                                     zz_cr=card_"+era+"_"+channel+"_"+mass+"_zz_cr.txt \
+                                     > card_"+era+"_"+channel+"_"+mass+"_sr"+systTag+"_NoInv_Combined.txt")
+          os.system("combineCards.py \
+                                     sr=card_"+era+"_"+channel+"_"+mass+"_sr"+systTag+".txt \
+                                     ww_cr=card_"+era+"_"+channel+"_"+mass+"_ww_cr.txt \
+                                     zg_cr=card_"+era+"_"+channel+"_"+mass+"_zg_cr.txt \
+                                     wz_cr=card_"+era+"_"+channel+"_"+mass+"_wz_cr.txt \
+                                     zz_cr=card_"+era+"_"+channel+"_"+mass+"_zz_cr.txt \
+                                     > card_"+era+"_"+channel+"_"+mass+"_sr"+systTag+"_NoCFCR_NoInv_Combined.txt")
         elif args.Combine == "SR": # Combine SR1 only, SR2 only, SR3 only (no rateParam)
           os.system("combineCards.py \
                                      sr1=card_"+era+"_"+channel+"_"+mass+"_sronly_sr1"+systTag+".txt \
                                      sr2=card_"+era+"_"+channel+"_"+mass+"_sronly_sr2"+systTag+".txt \
-                                     sr3=card_"+era+"_"+channel+"_"+mass+"_sronly_sr3"+systTag+".txt "\
-                                     #sr=card_"+era+"_"+channel+"_"+mass+"_sronly_sr"+systTag+".txt \
-                                     +Add_cf_cr+" \
-                                     > card_"+era+"_"+channel+"_sronly_"+mass+systTag+".txt")
+                                     sr3=card_"+era+"_"+channel+"_"+mass+"_sronly_sr3"+systTag+".txt \
+                                     > card_"+era+"_"+channel+"_"+mass+"_sronly_sr123"+systTag+".txt")
       if args.Combine == "Era": # This will combine all era datacards with CR setup
         os.system("combineCards.py year16a=card_2016preVFP_"+channel+"_"+mass+systTag+".txt year16b=card_2016postVFP_"+channel+"_"+mass+systTag+".txt year17=card_2017_"+channel+"_"+mass+systTag+".txt year18=card_2018_"+channel+"_"+mass+systTag+".txt > card_Run2_"+channel+"_"+mass+systTag+".txt")
     os.system('echo \'Done.\'')

@@ -5,7 +5,7 @@ void HNL_SignalRegion_Plotter::initializeAnalyzer(){
   // All default settings like trigger/ PD/ BJet are decalred in HNL_LeptonCore::initializeAnalyzer to make them consistent for all HNL codes
 
   HNL_LeptonCore::initializeAnalyzer();
-  SetupEventMVAReader("V1"); /// Fix 
+  SetupEventMVAReader("V1"); // JH FIXME later to V2
   nLog = 100000;
 
 }
@@ -15,20 +15,21 @@ void HNL_SignalRegion_Plotter::executeEvent(){
 
   FillTimer("START_EV");
   
-  vector<TString> LepIDs = {"HNL_ULID"}; //,"HNTightV2"};
+  //vector<TString> LepIDs = {"HNL_ULID", "HighPt"}; //,"HNTightV2"};
+  vector<TString> LepIDs = {"HighPt"}; //,"HNTightV2"}; //FIXME
   if(strcmp(std::getenv("USER"),"jalmond")==0) LepIDs = {"HNL_ULID","POGTight","TopHN","HNTightV2","MVAPOG"};//,"HNTightV2","POGTight","TopHN","HighPt"};
 
-  vector<HNL_LeptonCore::Channel> ChannelsToRun = {EE};                                                    
+  vector<HNL_LeptonCore::Channel> ChannelsToRun = {EE}; //FIXME
 
   for (auto id: LepIDs){
     for(auto channel : ChannelsToRun){
-      if(channel != MuMu &&  id == "HighPt") continue;
+      if(channel != EE && id == "HighPt") continue;
       AnalyzerParameter param = HNL_LeptonCore::InitialiseHNLParameter(id,channel);
       param.PlottingVerbose = 1;
       RunULAnalysis(param);
       
       // if(!IsData) RunSyst=true;
-      RunSyst=true;
+      RunSyst=false; // FIXME
       if(RunSyst){
         TString param_name = param.Name;
         vector<AnalyzerParameter::Syst> SystList = GetSystList("Initial");

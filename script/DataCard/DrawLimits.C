@@ -20,8 +20,10 @@ void DrawLimits(TString year="", TString channel="", bool CompareLimits=true, bo
 
   //gStyle->SetOptStat(0);
 
-  TString WP_nom = "PR48_rateParam_HNL_ULID"; // nominal working point
-  TString tag_nom = "_syst"; // nominal tag
+  //TString WP_nom = "PR48_rateParam_HNL_ULID"; // nominal working point
+  TString WP_nom = "PR55_HNL_ULID"; // nominal working point
+  //TString tag_nom = "_syst"; // nominal tag
+  TString tag_nom = "_sr_Combined"; // nominal tag
   TString method_nom = "Asym"; // nominal limit method
 
   TString this_plotpath = plotpath+WP_nom;
@@ -43,8 +45,10 @@ void DrawLimits(TString year="", TString channel="", bool CompareLimits=true, bo
   //vector<TString> tags = {"_sronly_Run2Scaled"};
   //vector<TString> WPs = {"240505_PR46_HNL_ULID"};
   //vector<TString> tags = {"_sronly_Run2Scaled"};
-  vector<TString> WPs = {"rateParam_HNL_ULID_PR46"};
-  vector<TString> tags = {"_Run2Scaled"};
+  //vector<TString> WPs = {"rateParam_HNL_ULID_PR46"};
+  vector<TString> WPs = {"PR55_HighPt"};
+  //vector<TString> tags = {"_Run2Scaled"};
+  vector<TString> tags = {"_sr_Combined"};
   for(int i=0; i<WPs.size(); i++){
     for(int j=0; j<tags.size(); j++){
       //files.push_back(filepath+WPs[i]+"/"+year+"_"+channel+tags[j]+"_"+method+"_limit.txt"); // add files systematically
@@ -153,7 +157,8 @@ void DrawLimits(TString year="", TString channel="", bool CompareLimits=true, bo
   // Use when there are more than two input limits to compare
   TGraph *gr_exp_1 = new TGraph(n_centrals[1],&masses[1][0],&limits[1][0]);
   gr_exp_1->SetLineWidth(3);
-  gr_exp_1->SetLineColor(kViolet);
+  //gr_exp_1->SetLineColor(kViolet);
+  gr_exp_1->SetLineColor(kRed);
 
   //TGraph *gr_exp_2 = new TGraph(n_centrals[2],&masses[2][0],&limits[2][0]);
   //gr_exp_2->SetLineWidth(3);
@@ -843,12 +848,12 @@ void DrawLimits(TString year="", TString channel="", bool CompareLimits=true, bo
   TLegend *lg_Alt = new TLegend(0.65, 0.15, 0.93, 0.48);
   lg_Alt->SetBorderSize(0);
   lg_Alt->SetFillStyle(0);
+  //lg_Alt->AddEntry(gr_17028_exp, "EXO-17-028 2016 (exp)", "l");
   if(channel=="MuMu"){
     //lg_Alt->AddEntry(gr_DELPHILimit, "DELPHI prompt", "l");
     //lg_Alt->AddEntry(gr_L3Limit, "L3", "l");
     //lg_Alt->AddEntry(gr_EWPD_mm, "EWPD (90% CL)", "l");
     //lg_Alt->AddEntry(gr_ATLAS_MuMu, "ATLAS 8 TeV", "l");
-    lg_Alt->AddEntry(gr_17028_exp, "EXO-17-028 2016 (exp)", "l");
     //lg_Alt->AddEntry(gr_exp_2, "EXO-17-028 Run2 (exp)", "l");
     //lg_Alt->AddEntry(gr_exp_1, "PR43 HNL_ULID (exp)", "l");
     //lg_Alt->AddEntry(gr_exp_1, "PR45 HNTightV2 (exp)", "l");
@@ -868,13 +873,13 @@ void DrawLimits(TString year="", TString channel="", bool CompareLimits=true, bo
     //lg_Alt->AddEntry(gr_ATLAS_EE, "ATLAS 8 TeV", "l");
     //lg_Alt->AddEntry(gr_17028_exp, "CMS 13 TeV dilepton", "l");
     //lg_Alt->AddEntry(gr_dbeta, "Neutrino-less double beta dacay", "l");
-    lg_Alt->AddEntry(gr_17028_exp, "EXO-17-028 2016 (exp)", "l");
     //lg_Alt->AddEntry(gr_exp_2, "EXO-17-028 Run2 (exp)", "l");
     //lg_Alt->AddEntry(gr_exp_1, "This analysis HNTightV2 Run2 (exp)", "l");
     //lg_Alt->AddEntry(gr_exp_1, "PR43 HNL_ULID (exp)", "l");
     //lg_Alt->AddEntry(gr_exp_1, "PR45 HNTightV2 (exp)", "l");
     //lg_Alt->AddEntry(gr_exp_1, "PR46 HNL_ULID (exp)", "l");
     //if(CompareLimits) lg_Alt->AddEntry(gr_exp_1, "PR46 HNL_ULID 2017 Scaled (exp)", "l");
+    if(CompareLimits) lg_Alt->AddEntry(gr_exp_1, "HEEP (exp)", "l");
     //lg_Alt->AddEntry(gr_exp_2, "PR44 HNL_ULID (exp)", "l");
     //lg_Alt->AddEntry(gr_17028_obs, "CMS 13 TeV dilepton", "l");
     //lg_Alt->AddEntry(gr_trilepLimit, "CMS 13 TeV trilepton", "l");
@@ -888,7 +893,6 @@ void DrawLimits(TString year="", TString channel="", bool CompareLimits=true, bo
     //lg_Alt->AddEntry(hist_emptylegend,"#color[0]{CMS 13 TeV trilepton}","l");
     //lg_Alt->AddEntry(hist_emptylegend,"#color[0]{CMS 13 TeV trilepton}","l");
     //lg_Alt->AddEntry(gr_17028_exp, "CMS 13 TeV dilepton 2016 (exp)", "l");
-    lg_Alt->AddEntry(gr_17028_exp, "EXO-17-028 2016 (exp)", "l");
     //lg_Alt->AddEntry(gr_exp_1, "PR43 HNL_ULID (exp)", "l");
     //lg_Alt->AddEntry(gr_exp_1, "PR45 HNTightV2 (exp)", "l");
     //lg_Alt->AddEntry(gr_exp_1, "PR46 HNL_ULID (exp)", "l");
@@ -943,14 +947,14 @@ void DrawLimits(TString year="", TString channel="", bool CompareLimits=true, bo
   gr_band_2sigma_0->Draw("3same");
   gr_band_1sigma_0->Draw("3same");
   gr_exp_0->Draw("lsame");
-  gr_17028_exp->Draw("lsame");
+  //gr_17028_exp->Draw("lsame");
   //gr_17028_obs->Draw("lsame");
   //gr_8and13TeV_obs->Draw("lsame");
   if(channel=="MuMu"){
     //gr_L3Limit->Draw("lsame");
     //gr_DELPHILimit->Draw("lsame");
     gr_21003_exp->Draw("lsame");
-    //if(CompareLimits) gr_exp_1->Draw("lsame");
+    if(CompareLimits) gr_exp_1->Draw("lsame");
     //gr_exp_2->Draw("lsame");
     //gr_21003_obs->Draw("lsame");
     //gr_trilepLimit->Draw("lsame");
@@ -958,7 +962,7 @@ void DrawLimits(TString year="", TString channel="", bool CompareLimits=true, bo
     //gr_ATLAS_MuMu->Draw("lsame");
   }
   else if(channel=="EE"){
-    //if(CompareLimits) gr_exp_1->Draw("lsame");
+    if(CompareLimits) gr_exp_1->Draw("lsame");
     //gr_exp_2->Draw("lsame");
     //gr_L3_2Limit->Draw("lsame");
     //gr_DELPHILimit->Draw("lsame");
@@ -968,7 +972,7 @@ void DrawLimits(TString year="", TString channel="", bool CompareLimits=true, bo
     //gr_ATLAS_EE->Draw("lsame");
   }
   else if(channel=="EMu"){
-    //if(CompareLimits) gr_exp_1->Draw("lsame");
+    if(CompareLimits) gr_exp_1->Draw("lsame");
     //gr_exp_2->Draw("lsame");
   }
 
@@ -1030,9 +1034,9 @@ void DrawLimits(TString year="", TString channel="", bool CompareLimits=true, bo
 
     ////////// Now set the comparison points manually... (fix needed) ///////////
 
-    // ratio with HNTightV2 //FIXME this is mass dependent.
-    //double ratio_HNTightV2[n_centrals[0]];
-    //for(int i=0; i<n_centrals[0]; i++) ratio_HNTightV2[i] = limits[1][i]/limits[0][i];
+    // ratio with the target1 // use this when the target and nominal share the same mass points
+    double ratio_target1[n_centrals[0]];
+    for(int i=0; i<n_centrals[0]; i++) ratio_target1[i] = limits[1][i]/limits[0][i];
 
     // ratio with EXO-17-028 Run2 propagated //FIXME this is mass dependent.
     //double mass_comp_17028_run2[13] = {100,200,300,400,500,600,700,800,900,1000,1100,1200,1500};
@@ -1093,7 +1097,8 @@ void DrawLimits(TString year="", TString channel="", bool CompareLimits=true, bo
     dummy2->GetYaxis()->SetTitleSize(0.1);
     dummy2->GetYaxis()->SetTitleOffset(0.5);
     if(channel=="MuMu") dummy2->GetYaxis()->SetTitle("#frac{limits}{Run2 #mu#mu}");
-    else if(channel=="EE") dummy2->GetYaxis()->SetTitle("#frac{limits}{Run2 ee}");
+    //else if(channel=="EE") dummy2->GetYaxis()->SetTitle("#frac{limits}{Run2 ee}");
+    else if(channel=="EE") dummy2->GetYaxis()->SetTitle("#frac{HEEP}{New ID}");
     else if(channel=="EMu") dummy2->GetYaxis()->SetTitle("#frac{limits}{Run2 e#mu}");
     dummy2->GetYaxis()->SetLabelSize(0.12);
     dummy2->GetXaxis()->SetTitleSize(0.1);
@@ -1101,18 +1106,27 @@ void DrawLimits(TString year="", TString channel="", bool CompareLimits=true, bo
     dummy2->GetXaxis()->SetTitle("m_{N} (GeV)");
     dummy2->GetXaxis()->SetLabelSize(0.12);
     dummy2->GetXaxis()->SetRangeUser(80., 25000);
-    if(Logy) dummy2->GetYaxis()->SetRangeUser(0.5, 50);
+    //if(Logy) dummy2->GetYaxis()->SetRangeUser(0.5, 50);
+    if(Logy) dummy2->GetYaxis()->SetRangeUser(0.5, 10);
     //else dummy2->GetYaxis()->SetRangeUser(0.85, 2);
     //else dummy2->GetYaxis()->SetRangeUser(0.94, 1.06);
     else dummy2->GetYaxis()->SetRangeUser(0.5, 1.5);
     dummy2->SetTitle("");
     dummy2->Draw("hist");
 
-    TGraph *gr_ratio_17028 = new TGraph(17,mass_comp_17028,ratio_17028);
-    gr_ratio_17028->SetMarkerColor(kRed);
-    gr_ratio_17028->SetLineColor(kRed);
-    gr_ratio_17028->SetLineWidth(2);
-    gr_ratio_17028->Draw("lpsame");
+    // Draw the comparison line with the target limit
+
+    TGraph *gr_ratio_target1 = new TGraph(n_centrals[0],&masses[0][0],ratio_target1);
+    gr_ratio_target1->SetMarkerColor(kRed);
+    gr_ratio_target1->SetLineColor(kRed);
+    gr_ratio_target1->SetLineWidth(2);
+    gr_ratio_target1->Draw("lpsame");
+
+    //TGraph *gr_ratio_17028 = new TGraph(17,mass_comp_17028,ratio_17028);
+    //gr_ratio_17028->SetMarkerColor(kRed);
+    //gr_ratio_17028->SetLineColor(kRed);
+    //gr_ratio_17028->SetLineWidth(2);
+    //gr_ratio_17028->Draw("lpsame");
     //TGraph *gr_ratio_PR43 = new TGraph(25,mass_comp_PR43,ratio_PR43);
     //gr_ratio_PR43->SetMarkerColor(kCyan);
     //gr_ratio_PR43->SetLineColor(kCyan);
