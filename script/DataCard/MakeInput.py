@@ -9,11 +9,14 @@ import commands as cmd
 import argparse
 from ROOT import *
 import array
+gROOT.SetBatch(kTRUE)
 
 parser = argparse.ArgumentParser(description='script for creating input root file.',formatter_class=argparse.RawTextHelpFormatter)
+parser.add_argument('--Scan', action='store_true', help='scan the bin content')
 parser.add_argument('--CnC', action='store_true', help='1bin cut and count setting')
 parser.add_argument('--CR', action='store_true', help='Make HNL_ControlRegion_Plotter input (default : HNL_SignalRegion_Plotter)')
 parser.add_argument('--Syst', action='store_true', help='Add systematics')
+parser.add_argument('--Merge', action='store_true', help='hadd the needed histograms')
 args = parser.parse_args()
 
 
@@ -25,13 +28,15 @@ eras = ["2017"]
 #eras = ["Run2"] # Let's merge Run2 after running all eras first
 #masses = ["M90","M100","M150","M200","M300","M400","M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M10000","M15000","M20000"]
 #masses = ["M100","M1000","M10000"]
-masses = ["M85","M90","M95","M100","M125","M150","M200","M250","M300","M400","M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M10000","M15000","M20000"]
+#masses = ["M85","M90","M95","M100","M125","M150","M200","M250","M300","M400","M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M10000","M15000","M20000"]
 #masses = ["M85","M90","M95","M100","M125","M150","M200","M250"]
 #masses = ["M1000"]
 #masses = ["M85"]
-#channels = ["MuMu","EE","EMu"]
+#masses = ["M85","M90","M95","M100","M125","M150","M200","M250","M300","M400","M500","M1000"]
+masses = ["M3000","M5000","M7500","M10000","M15000","M20000"]
+channels = ["MuMu","EE","EMu"]
 #channels = ["MuMu","EE"]
-channels = ["EE"]
+#channels = ["EE"]
 HistChannelMap = {'MuMu':'Muon', 'EE':'Electron', 'EMu':'ElectronMuon'}
 ## Ugly region maps ##
 RegionToCRFlagMap = {}
@@ -39,8 +44,9 @@ RegionToChannelMap = {}
 RegionToHistSuffixMap = {}
 
 #tags = ["HNL_ULID","HNTightV2"] # HNLParameter Name
-#tags = ["HNL_ULID"] # HNLParameter Name, used to call the histogram
-tags = ["HNL_ULID","HighPt"] # HNLParameter Name, used to call the histogram
+tags = ["HNL_ULID"] # HNLParameter Name, used to call the histogram
+#tags = ["HNL_ULID","HighPt"] # HNLParameter Name, used to call the histogram
+#tags = ["HighPt"] # HNLParameter Name, used to call the histogram
 #outputTag = "240501_1704_" # tag the output directory name as you wish
 #outputTag = "rateParam_" # tag the output directory name as you wish
 #outputTag = "PR48_rateParam_" # tag the output directory name as you wish
@@ -49,7 +55,10 @@ tags = ["HNL_ULID","HighPt"] # HNLParameter Name, used to call the histogram
 #outputTag = "PR52_" # tag the output directory name as you wish
 #outputTag = "PR52_New" # tag the output directory name as you wish
 #outputTag = "PR52_10TeVrescale_" # tag the output directory name as you wish
-outputTag = "PR55_" # tag the output directory name as you wish
+#outputTag = "PR55_" # tag the output directory name as you wish
+#outputTag = "PR55_NoMinPt_" # tag the output directory name as you wish
+#outputTag = "PR52_TestScan_" # tag the output directory name as you wish
+outputTag = "PR52_SSWWrescale_" # tag the output directory name as you wish
 
 if args.CnC:
   outputTag += 'CnC_'
@@ -64,14 +73,14 @@ MCSkim = "_SkimTree_HNMultiLepBDT_"
 SignalSkim = "_SkimTree_HNMultiLepBDT_"
 
 # This will do necessary hadd for you.
-MergeData   = True
-MergeFake   = True  # RunFake
-MergeCF     = True  # RunCF
-MergeConv   = True  # RunConv
-MergeMC     = True  # RunPrompt
-MergeSignal = True
-#MergeDYVBF = True
-#MergeSSWW  = True
+MergeData   = True if args.Merge else False
+MergeFake   = True if args.Merge else False  # RunFake
+MergeCF     = True if args.Merge else False  # RunCF
+MergeConv   = True if args.Merge else False  # RunConv
+MergeMC     = True if args.Merge else False  # RunPrompt
+MergeSignal = True if args.Merge else False
+#MergeDYVBF = True if args.Merge else False
+#MergeSSWW  = True if args.Merge else False
 
 if args.CR:
   Blinded = False # Blinded --> the total background will be used as data_obs
@@ -79,7 +88,7 @@ if args.CR:
   Analyzer = "HNL_ControlRegion_Plotter"
 
   #regions = ["sr_inv","sr1_inv","sr2_inv","sr3_inv","cf_cr","ww_cr","zg_cr","zg_cr1","zg_cr3","wz_cr","wz_cr1","wz_cr2","wz_cr3","zz_cr","zz_cr1","zz_cr3"] # for CRs
-  regions = ["sr_inv","sr1_inv","sr2_inv","sr3_inv","cf_cr","ww_cr","zg_cr","wz_cr","zz_cr"] # for CRs
+  regions = ["sr_inv","sr1_inv","sr2_inv","sr3_inv","cf_cr","ww_cr","zg_cr","wz_cr","zz_cr"] if not args.Merge else "" # for CRs
   #regions = "" # Use this when merging only
 
   RegionToCRFlagMap['sr_inv'] = "SS_CR__"
@@ -138,8 +147,8 @@ else:
   CRflags = [""]
   Analyzer = "HNL_SignalRegion_Plotter"
 
-  regions = ["sr","sr1","sr2","sr3"] # for SRs
-  #regions = ["sr3"] # for SRs
+  regions = ["sr","sr1","sr2","sr3"] if not args.Merge else "" # for SRs
+  #regions = ["sr"] # for SRs
   #regions = "" # Use this when merging only
 
   RegionToCRFlagMap['sr'] = ""
@@ -164,8 +173,8 @@ if ChargeSplit:
 else:
   ChargeSplit = ""
 
-#InputPath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/"+Analyzer+"_PR52/"
-InputPath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/"+Analyzer
+InputPath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/"+Analyzer+"_PR52/"
+#InputPath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/"+Analyzer
 
 ##### Start merging #####
 MergeList = {}
@@ -403,6 +412,44 @@ if MergeSignal:
             os.system("hadd -f " + OutFileDYVBF + " " + InputPath+"/"+era+"/*DYTypeI*"+mass+"_private.root" + " " + InputPath+"/"+era+"/*VBFTypeI*"+mass+"_private.root")
 
 
+
+##### Useful functions #####
+def FillScan(outScan, inScan, procName):
+  #print "[FillScan] Initiate",procName,"..."
+  #print "[FillScan] Currently",outScan.GetNbinsY(),"soures are contained."
+  FillBin = 0
+  for i in range(outScan.GetNbinsY()+5):
+    #print type(outScan.GetYaxis().GetBinLabel(i+1))
+    if procName == outScan.GetYaxis().GetBinLabel(i+1):
+      print "[FillScan] procName duplicated:",procName
+      print "[FillScan] Please check. skipping..."
+      return
+    if outScan.GetYaxis().GetBinLabel(i+1) == "":
+      FillBin = i+1
+      #print "[FillScan] FillBin =",FillBin
+      outScan.GetYaxis().SetBinLabel(FillBin, procName)
+      break
+
+  try:
+    inScan.GetNbinsX()
+  except AttributeError:
+    print "[FillScan] There is no hist named",procName
+    print "[FillScan] Filling zeros..."
+    for j in range(outScan.GetNbinsX()):
+      outScan.SetBinContent(j+1,FillBin,0)
+  else:
+    for j in range(outScan.GetNbinsX()):
+      outScan.SetBinContent(j+1,FillBin,inScan.GetBinContent(j+1))
+  
+  ### Sanity check ###
+  #print "Label of ybin:",outScan.GetYaxis().GetBinLabel(FillBin)
+  #print "Contents :",outScan.Integral(0,outScan.GetNbinsX(),FillBin,FillBin)
+  #print "Original contents :",inScan.Integral()
+  #print "[FillScan] Done."
+  #print "[FillScan] Now",outScan.GetNbinsY(),"soures are contained."
+
+  return
+
 ##### Main job starts #####
 for tag in tags:
   for era in eras:
@@ -452,6 +499,7 @@ for tag in tags:
 
           # Set channel dependent scaler first
           DYVBFscaler = 0.01 # Set the signalDYVBF scaler
+          if int(mass.replace("M","")) > 3000: DYVBFscaler = 0.1 # relax the scale for SSWW impact
           if "EMu" in channel:
             SSWWscaler = 4.*DYVBFscaler*DYVBFscaler # Set the EMu signalSSWW scaler
           else:
@@ -497,6 +545,19 @@ for tag in tags:
                         [f_path_prompt_others, h_prompt_others, "prompt_others"],
                         [f_path_prompt_inc, h_prompt_inc, "prompt_inc"],
                        ]
+
+          if args.Scan:
+            print "##### Scan initiated. #####"
+            h_scan = TH2D("Nominal","Nominal",h_fake.GetNbinsX(),0,h_fake.GetNbinsX(),len(input_list)+2,0,len(input_list)+2) # There is no automatic merging from many TH1s... see https://root-forum.cern.ch/t/filling-a-th2-from-two-existing-th1/14575; +2 is to secure space for 2 signals. I was going to extend the axis, but... (below)
+            #h_scan.GetYaxis().SetCanExtend(1) # This seems not resolved... https://root-forum.cern.ch/t/extending-axis-for-th1-vs-th2/20964
+            print "h_scan for Nominal created; this should be empty:",h_scan.Integral(0,h_fake.GetNbinsX(),1,1)
+            if h_scan.Integral(0,h_fake.GetNbinsX(),1,1)!=0.: sys.exit()
+            h_scan.SetDirectory(0)
+            scan_list = []
+
+            for i in range(len(input_list)):
+              print "##### Making 2D hist for",input_list[i][2],"#####"
+              FillScan(h_scan,input_list[i][1],input_list[i][2]) # out, in, name
           
           if Blinded:
             print "##### This analysis is blinded."
@@ -554,6 +615,9 @@ for tag in tags:
             except ReferenceError:
               print("[!!WARNING!!] There is no signal file "+f_path_signalDYVBF+" .")
               print "Skipping..."
+              if args.Scan:
+                print "##### Making 2D hist for","signalDYVBF","#####"
+                FillScan(h_scan,h_signalDYVBF,"signalDYVBF") # out, in, name
               #print "Making an empty hist..."
               #h_signalDYVBF = h_data.Clone() #NOTE This might be not working after unblinding, when there is no real data.
               #for i in range(h_signalDYVBF.GetNbinsX()):
@@ -565,8 +629,11 @@ for tag in tags:
               #  print "Exiting..."
               #  sys.exit()
             else:
+              if args.Scan:
+                print "##### Making 2D hist for","signalDYVBF","#####"
+                FillScan(h_scan,h_signalDYVBF,"signalDYVBF") # out, in, name
               try:
-                if "EMu" in channel: h_syst.Scale(2) #XXX FIXME MY SKFlatOutput EMu signal have a half of events, should be fixed later
+                #if "EMu" in channel: h_syst.Scale(2) #XXX FIXME MY SKFlatOutput EMu signal have a half of events, should be fixed later
                 h_signalDYVBF.Scale(DYVBFscaler) # Scaling the signal due to Combine fitting
               except AttributeError:
                 print("[!!WARNING!!] There is no hist named "+input_hist+" in "+f_path_signalDYVBF+" .")
@@ -590,6 +657,9 @@ for tag in tags:
             except ReferenceError:
               print("[!!WARNING!!] There is no signal file "+f_path_signalSSWW+" .")
               print "Skipping..."
+              if args.Scan:
+                print "##### Making 2D hist for","signalSSWW","#####"
+                FillScan(h_scan,h_signalDYVBF,"signalSSWW") # out, in, name
               #print "Making an empty hist..."
               #h_signalSSWW = h_data.Clone() #NOTE This might be not working after unblinding, when there is no real data.
               #for i in range(h_signalSSWW.GetNbinsX()):
@@ -601,6 +671,9 @@ for tag in tags:
               #  print "Exiting..."
               #  sys.exit()
             else:
+              if args.Scan:
+                print "##### Making 2D hist for","signalSSWW","#####"
+                FillScan(h_scan,h_signalSSWW,"signalSSWW") # out, in, name
               try:
                 h_signalSSWW.Scale(SSWWscaler) # To be consistent when calculating mixing limits
               except AttributeError:
@@ -620,6 +693,14 @@ for tag in tags:
                 print "Scaled signalSSWW :", h_signalSSWW.Integral()
                 input_list.append([f_path_signalSSWW, h_signalSSWW, "signalSSWW"])
   
+            if args.Scan:
+              #print h_scan
+              #print h_scan.GetTitle()
+              #for i in range(h_scan.GetNbinsX()): print h_scan.GetYaxis().GetBinLabel(3), h_scan.GetBinContent(i+1,3)
+              #h_scan.SetDirectory(0)
+              scan_list.append(h_scan)
+              #print scan_list
+
             print "##### Signal done."
   
   
@@ -653,16 +734,27 @@ for tag in tags:
                           ]
   
               Nproc = len(input_list) # The number of processes = the length of the input list before adding systematics
-              for this_syst in syst_list: # Define new input_hist with each syst name
-                input_hist = LimitDir+"/Syst_"+this_syst+tag+"/"+channel+"/"+InputHistMass+RegionToHistSuffixMap[region][channel]
   
-                for i in range(Nproc):
+              for i in range(Nproc):
+                if args.Scan:
+                  h_scan = TH2D(input_list[i][2],input_list[i][2],h_fake.GetNbinsX(),0,h_fake.GetNbinsX(),len(syst_list),0,len(syst_list))
+                  print "h_scan for",input_list[i][2],"syst created; this should be empty:",h_scan.Integral(0,h_fake.GetNbinsX(),1,1)
+                  if h_scan.Integral(0,h_fake.GetNbinsX(),1,1)!=0.: sys.exit()
+                  h_scan.SetDirectory(0)
+
+                for this_syst in syst_list: # Define new input_hist with each syst name
+                  input_hist = LimitDir+"/Syst_"+this_syst+tag+"/"+channel+"/"+InputHistMass+RegionToHistSuffixMap[region][channel]
+
                   if not "fake_data_path" in input_list[i][0]: # There is no file like "fake_data_path" ...
+                    name_syst = input_list[i][2]+"_"+this_syst # Define syst histo name
                     f_syst = TFile.Open(input_list[i][0]) # Get each process's file
                     try:
                       h_syst = f_syst.Get(input_hist)
                     except ReferenceError:
                       print("[!!WARNING!!] There is no file "+input_list[i][0]+" .")
+                      if args.Scan:
+                        print "##### Making 2D hist for",name_syst,"#####"
+                        FillScan(h_scan,h_syst,name_syst) # out, in, name
                       if "signal" in input_list[i][2]:
                         print "Skipping..."
                       else:
@@ -678,6 +770,9 @@ for tag in tags:
                         h_syst.SetBinError(1,0.000001)
                         h_syst.SetDirectory(0) # Store h_syst in memory so that it cannot be deleted during the iteration
                     else:
+                      if args.Scan:
+                        print "##### Making 2D hist for",name_syst,"#####"
+                        FillScan(h_scan,h_syst,name_syst) # out, in, name
                       try:
                         h_syst.SetDirectory(0) # Store h_syst in memory so that it cannot be deleted during the iteration
                       except AttributeError:
@@ -697,10 +792,9 @@ for tag in tags:
                           h_syst.SetBinError(1,0.000001)
                           h_syst.SetDirectory(0) # Store h_syst in memory so that it cannot be deleted during the iteration
 
-                    name_syst = input_list[i][2]+"_"+this_syst # Define syst histo name
                     try:
                       if "DYVBF" in input_list[i][2]: # Scale the syst variated signals
-                        if "EMu" in channel: h_syst.Scale(2) #XXX FIXME MY SKFlatOutput EMu signal have a half of events, should be fixed later
+                        #if "EMu" in channel: h_syst.Scale(2) #XXX FIXME MY SKFlatOutput EMu signal have a half of events, should be fixed later
                         h_syst.Scale(DYVBFscaler)
                       elif "SSWW" in input_list[i][2]:
                         h_syst.Scale(SSWWscaler)
@@ -712,18 +806,25 @@ for tag in tags:
                     print "Appending "+name_syst+"..."
                     input_list.append([input_list[i][0], h_syst, name_syst]) # Append each syst histogram while iterating
   
+                if args.Scan:
+                  #for i in range(h_scan.GetNbinsX()): print h_scan.GetYaxis().GetBinLabel(3), h_scan.GetBinContent(i+1,3)
+                  h_scan.SetDirectory(0)
+                  scan_list.append(h_scan)
+                  #print scan_list
+
               print "##### Systematics done."
   
   
           print "##### Now creating a limit input root file..."
-          outfile = TFile.Open(OutputPath+era+"/"+region+"/"+mass+"_"+channel+"_card_input.root","RECREATE")
+          outName = OutputPath+era+"/"+region+"/"+mass+"_"+channel
+          outfile = TFile.Open(outName+"_card_input.root","RECREATE")
           
           outfile.cd() # Move into it
           for item in input_list: # Remember, item = [path,hist,name]
             try:
               item[1].SetName(item[2])
             except AttributeError:
-              print("[!!WARNING!!] There is no hist corresponding to "+item[2]+" in "+item[0]+" .")
+              print("[!!WARNING!!] There is no hist corresponding to "+item[2]+" in "+item[0]+" .") # Final scan
               if "signal" in item[2]:
                 print "Skipping..."
                 continue
@@ -776,4 +877,32 @@ for tag in tags:
             #item[1].Write() # Write each histogram while iterating
           
           outfile.Close()
-          print OutputPath+era+"/"+region+"/"+mass+"_"+channel+"_card_input.root has been created."
+          print outName+"_card_input.root has been created."
+
+          if args.Scan:
+            colors = array.array('i',[632,417,860])
+            levels = array.array('d',[-1.e308,-0.00001,0.00001,1.e308]) # Even if I set the color with zero bins, it won't be drawn if the minimum is zero (not negative). See https://root-forum.cern.ch/t/not-plotting-zero-bins-in-th2-with-negative-entries/19633/4
+            #print "len(scan_list):",len(scan_list)
+            canvas = TCanvas("canvas","canvas",900,1000)
+            #canvas.SetFrameFillColor(417) # https://root-forum.cern.ch/t/how-to-set-a-color-for-zero-entry-bins-in-cont-histograms/5411; This doesn't look pretty.
+            #pad = TPad("pad","pad",0.1,0,1,1)
+            #pad.Draw()
+            #pad.cd()
+            for i in range(len(scan_list)):
+              this_h_scan = scan_list[i]
+              this_proc = this_h_scan.GetTitle()
+              #print "this_proc:",this_proc
+              #Final check
+              #for j in range(this_h_scan.GetNbinsY()): print j,this_h_scan.GetYaxis().GetBinLabel(j+1),this_h_scan.GetBinContent(1,j+1)
+              this_h_scan.SetStats(0)
+              this_h_scan.SetContour(3,levels)
+              #this_h_scan.GetYaxis().SetLabelSize(0.01)
+              this_h_scan.Draw("COLZTEXT")
+              this_h_scan.GetZaxis().SetRangeUser(this_h_scan.GetMinimum(),1.)
+              gStyle.SetPalette(3,colors)
+              gStyle.SetPaintTextFormat("4.1f") # https://root-forum.cern.ch/t/decimal-precision-with-text-drawing-option/15923
+              #gPad.SetLogz()
+              if i==0: canvas.Print(outName+"_card_scan.pdf(", "Title: "+this_proc)
+              elif i==(len(scan_list)-1): canvas.Print(outName+"_card_scan.pdf)", "Title: "+this_proc)
+              else: canvas.Print(outName+"_card_scan.pdf", "Title: "+this_proc) # https://root-forum.cern.ch/t/problem-with-saving-multiple-canvases-to-a-single-pdf/57145/3
+            print outName+"_card_scan.pdf has been created."

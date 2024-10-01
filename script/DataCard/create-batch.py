@@ -40,7 +40,7 @@ for RunList in args.RunLists:
   if args.Work or args.Nuis:
     with open(WP+'/submit_skeleton.sh','w') as skel: # for Nuisance check
       skel.write("universe = vanilla\n")
-      skel.write("getenv   = True\n")
+      skel.write("+SingularityImage = \"/cvmfs/singularity.opensciencegrid.org/opensciencegrid/osgvo-el9:latest\"\n")
       skel.write("should_transfer_files = YES\n")
       skel.write("when_to_transfer_output = ON_EXIT\n")
       skel.write("request_memory = 24000\n")
@@ -60,7 +60,8 @@ for RunList in args.RunLists:
     shortcard = card.split('/')[-1].replace(".root","").replace(".txt","").replace("card_","")
  
     if args.Work:
-      os.system('cp '+WP+'/submit_skeleton.sh '+WP+'/'+shortcard+'_submit_Workspace.sh')
+      os.system('mkdir -p '+WP+'/'+shortcard)
+      os.system('cp '+WP+'/submit_skeleton.sh '+WP+'/'+shortcard+'/submit_Workspace.sh')
     elif args.Nuis:
       os.system('mkdir -p '+WP+'/'+shortcard)
       os.system('cp '+WP+'/submit_skeleton.sh '+WP+'/'+shortcard+'/submit_Nuisance.sh')
@@ -167,46 +168,75 @@ for RunList in args.RunLists:
       os.chdir(pwd)
 
     if args.Work:
-      with open(WP+"/"+shortcard+"_MakeWorkspace.sh",'w') as runfile:
+      with open(WP+"/"+shortcard+"/MakeWorkspace.sh",'w') as runfile:
         runfile.write("#!/bin/bash\n")
-        card = card.replace(".root",".txt")
-        card_name = card.replace(".txt","")
-        #if "EMu" in card_name:
-        #  runfile.write("text2workspace.py -P HiggsAnalysis.CombinedLimit.HNDilepModel:hnDilepModel_EMu "+card+" -o "+card_name+".root")
-        #else:
-        #  runfile.write("text2workspace.py -P HiggsAnalysis.CombinedLimit.HNDilepModel:hnDilepModel "+card+" -o "+card_name+".root\n")
-        runfile.write("text2workspace.py -P HiggsAnalysis.CombinedLimit.HNDilepModel:hnDilepModel "+card+" -o "+card_name+".root\n")
-        #runfile.write("text2workspace.py "+card+" -o "+card_name+".root\n") # when you want to test the default model, with SSWW only: see https://cms-talk.web.cern.ch/t/0-impact-on-poi-negative-bin-issue/42793
-      with open(WP+"/"+shortcard+"_submit_Workspace.sh",'a') as submitfile:
-        submitfile.write("executable = "+shortcard+"_MakeWorkspace.sh\n")
+        runfile.write("source /cvmfs/cms.cern.ch/cmsset_default.sh\n")
+        runfile.write("pushd "+pwd+"/"+WP+"/"+shortcard+"\n")
+        runfile.write("echo Setting cmsenv environment...\n")
+        runfile.write("cmsenv\n")
+        card = card.replace(".root",".txt") # The Runlist contains card_name.root by default.
+        if "EMu" in shortcard:
+          runfile.write("text2workspace.py -P HiggsAnalysis.CombinedLimit.HNDilepModel:hnDilepModel_EMu "+card+" -o "+shortcard+".root\n")
+        else:
+          runfile.write("text2workspace.py -P HiggsAnalysis.CombinedLimit.HNDilepModel:hnDilepModel "+card+" -o "+shortcard+".root\n")
+        if float(shortcard.split('_')[2].replace("M","")) > 3000.: # mass is above 3000 GeV so that it only contains SSWW
+          runfile.write("text2workspace.py "+card+" -o "+shortcard+"_DefMod.root\n") # check the impact with default physics model with SSWW: see https://cms-talk.web.cern.ch/t/0-impact-on-poi-negative-bin-issue/42793
+      with open(WP+"/"+shortcard+"/submit_Workspace.sh",'a') as submitfile:
+        submitfile.write("executable = MakeWorkspace.sh\n")
         submitfile.write("log = "+shortcard+"_Workspace.log\n")
         submitfile.write("output = "+shortcard+"_Workspace.out\n")
-        submitfile.write("error = "+shortcard+"_Workspace.err\n")
+        submitfile.write("error = "+shortcard+"_Workspace.out\n")
+        #submitfile.write("error = "+shortcard+"_Workspace.err\n")
         submitfile.write("queue\n")
-      os.chdir(WP)
-      os.system('condor_submit '+shortcard+'_submit_Workspace.sh -batch-name '+shortcard+'_'+WP+'_Workspace')
+      os.chdir(WP+"/"+shortcard)
+      os.system('condor_submit submit_Workspace.sh -batch-name '+shortcard+'_'+WP+'_Workspace')
       os.chdir(pwd)
 
     if args.Nuis:
       this_mass = shortcard.split('_M')[-1].split('_')[0]
       with open(WP+"/"+shortcard+"/CheckNuisance.sh",'w') as runfile:
         runfile.write("#!/bin/bash\n")
+        runfile.write("source /cvmfs/cms.cern.ch/cmsset_default.sh\n")
+        runfile.write("pushd "+pwd+"/"+WP+"/"+shortcard+"\n")
+        runfile.write("echo Setting cmsenv environment...\n")
+        runfile.write("cmsenv\n")
         runfile.write("echo Running FitDiagnostics...\n") # Asimov set as default; FIXME later to choose Asimov or not
-        runfile.write("combine -M FitDiagnostics "+card+" --rMin -10 --rMax 10 --saveShapes --saveWithUncertainties -n "+shortcard+" --plots -t -1\n")
+        runfile.write("combine -M FitDiagnostics "+shortcard+".root --rMin -10 --rMax 10 --saveShapes --saveWithUncertainties -n "+shortcard+" --plots -t -1\n")
         runfile.write("echo Running Initial fit...\n")
-        runfile.write("combineTool.py -M Impacts -d "+card+" -m "+this_mass+" --rMin -10 --rMax 10 --robustFit 1 --doInitialFit --name "+shortcard+" -t -1\n")
+        runfile.write("combineTool.py -M Impacts -d "+shortcard+".root -m "+this_mass+" --rMin -10 --rMax 10 --robustFit 1 --doInitialFit --name "+shortcard+" -t -1\n")
         runfile.write("echo Running Actual fit...\n")
-        runfile.write("combineTool.py -M Impacts -d "+card+" -m "+this_mass+" --rMin -10 --rMax 10 --robustFit 1 --doFits --name "+shortcard+" -t -1\n")
+        runfile.write("combineTool.py -M Impacts -d "+shortcard+".root -m "+this_mass+" --rMin -10 --rMax 10 --robustFit 1 --doFits --name "+shortcard+" -t -1\n")
         runfile.write("echo Making impact json...\n")
-        runfile.write("combineTool.py -M Impacts -d "+card+" -m "+this_mass+" --rMin -10 --rMax 10 --robustFit 1 --output "+shortcard+"_impacts.json --name "+shortcard+"\n")
+        runfile.write("combineTool.py -M Impacts -d "+shortcard+".root -m "+this_mass+" --rMin -10 --rMax 10 --robustFit 1 --output "+shortcard+"_impacts.json --name "+shortcard+"\n")
         runfile.write("echo Making impact plots...\n")
         runfile.write("plotImpacts.py -i "+shortcard+"_impacts.json -o "+shortcard+"\n")
+        runfile.write("echo Running fast scan...\n")
+        runfile.write("combineTool.py -M FastScan -w "+shortcard+".root:w -o "+shortcard+"_Asimov_nll -t -1\n")
+        runfile.write("combineTool.py -M FastScan -w "+shortcard+".root:w -o "+shortcard+"_nll\n")
+        runfile.write("echo Running multi-dimensional fit...\n")
+        runfile.write("combineTool.py -M MultiDimFit "+shortcard+".root --algo grid --points=200 --rMin -10 --rMax 10 --alignEdges 1 -t -1 --name ."+shortcard+"\n")
+        runfile.write("combineTool.py -M MultiDimFit "+shortcard+".root --algo grid --points=1000 --rMin -100 --rMax 100 --alignEdges 1 -t -1 --name ."+shortcard+"_rRange100\n")
+        runfile.write("echo Summarizing the result into 1D...\n")
+        runfile.write("plot1DScan.py higgsCombine."+shortcard+".MultiDimFit.mH120.root -o "+shortcard+"_MDfit\n")
+        runfile.write("plot1DScan.py higgsCombine."+shortcard+"_rRange100.MultiDimFit.mH120.root -o "+shortcard+"_MDfit\n")
+        if float(shortcard.split('_')[2].replace("M","")) > 3000.: # mass is above 3000 GeV so that it only contains SSWW --> get impact with default physics model
+          runfile.write("combineTool.py -M Impacts -d "+shortcard+"_DefMod.root -m "+this_mass+" --rMin -100 --rMax 100 --robustFit 1 --doInitialFit --name "+shortcard+"_DefMod -t -1\n")
+          runfile.write("combineTool.py -M Impacts -d "+shortcard+"_DefMod.root -m "+this_mass+" --rMin -100 --rMax 100 --robustFit 1 --doFits --name "+shortcard+"_DefMod -t -1\n")
+          runfile.write("combineTool.py -M Impacts -d "+shortcard+"_DefMod.root -m "+this_mass+" --rMin -100 --rMax 100 --robustFit 1 --output "+shortcard+"_DefMod_impacts.json --name "+shortcard+"_DefMod\n")
+          runfile.write("plotImpacts.py -i "+shortcard+"_DefMod_impacts.json -o "+shortcard+"_DefMod\n")
+          runfile.write("combineTool.py -M FastScan -w "+shortcard+"_DefMod.root:w -o "+shortcard+"_DefMod_Asimov_nll -t -1\n")
+          runfile.write("combineTool.py -M FastScan -w "+shortcard+"_DefMod.root:w -o "+shortcard+"_DefMod_nll\n")
+          runfile.write("combineTool.py -M MultiDimFit "+shortcard+"_DefMod.root --algo grid --points=200 --rMin -10 --rMax 10 --alignEdges 1 -t -1 --name ."+shortcard+"_DefMod\n")
+          runfile.write("combineTool.py -M MultiDimFit "+shortcard+"_DefMod.root --algo grid --points=1000 --rMin -100 --rMax 100 --alignEdges 1 -t -1 --name ."+shortcard+"_DefMod_rRange100\n")
+          runfile.write("plot1DScan.py higgsCombine."+shortcard+"_DefMod.MultiDimFit.mH120.root -o "+shortcard+"_DefMod_MDfit\n")
+          runfile.write("plot1DScan.py higgsCombine."+shortcard+"_DefMod_rRange100.MultiDimFit.mH120.root -o "+shortcard+"_DefMod_MDfit\n")
         runfile.write("echo Done.\n")
       with open(WP+"/"+shortcard+"/submit_Nuisance.sh",'a') as submitfile:
         submitfile.write("executable = CheckNuisance.sh\n")
         submitfile.write("log = "+shortcard+"_CheckNuisance.log\n")
         submitfile.write("output = "+shortcard+"_CheckNuisance.out\n")
-        submitfile.write("error = "+shortcard+"_CheckNuisance.err\n")
+        submitfile.write("error = "+shortcard+"_CheckNuisance.out\n")
+        #submitfile.write("error = "+shortcard+"_CheckNuisance.err\n")
         submitfile.write("queue\n")
       os.chdir(WP+"/"+shortcard)
       os.system('condor_submit submit_Nuisance.sh -batch-name '+shortcard+'_'+WP+'_Nuisance')

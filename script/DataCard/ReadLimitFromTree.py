@@ -38,7 +38,8 @@ tags = ["_sr_Combined"] #["_DYVBF"]
 #myWPs = ["240505_PR46_HNL_ULID","240505_PR46_HNTightV2"]
 #myWPs = ["rateParam_HNL_ULID"]
 #myWPs = ["PR48_rateParam_HNL_ULID"]
-myWPs = ["PR55_HNL_ULID","PR55_HighPt"]
+#myWPs = ["PR55_HNL_ULID","PR55_HighPt"]
+myWPs = ["PR55_NoMinPt_HighPt"]
 
 for WP in myWPs:
   this_workdir = workdir+WP

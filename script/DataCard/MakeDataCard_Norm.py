@@ -29,17 +29,20 @@ eras = ["2017"]
 #eras = ["2018"]
 #eras = ["2016preVFP","2016postVFP","2017","2018"]
 #eras = ["2016preVFP","2016postVFP","2017"]
-#channels = ["MuMu","EE","EMu"]
+channels = ["MuMu","EE","EMu"]
 #channels = ["MuMu","EE"]
 #channels = ["MuMu"]
-channels = ["EE"]
+#channels = ["EE"]
+#channels = ["EE","EMu"]
 #masses = ["M90","M100","M150","M200","M300","M400","M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M10000","M15000","M20000"]
 #masses = ["M100","M1000","M10000"]
 #masses = ["M500","M1000","M5000"]
 #masses = ["M3000"]
 #masses = ["M90","M100","M150","M200","M300","M400","M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M10000","M15000","M20000"]
 #masses = ["M85","M90","M95","M100","M125","M150","M200","M250","M300","M400","M500","M600","M700","M800","M900","M1000","M1100","M1200","M1300","M1500","M1700","M2000","M2500","M3000","M5000","M7500","M10000","M15000","M20000"]
-masses = ["M100","M1000","M10000"]
+#masses = ["M100","M1000","M10000"]
+masses = ["M3000","M5000","M7500","M10000","M15000","M20000"]
+#masses = ["M100"]
 #masses = ["M20000"]
 
 #SRpath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegion_Plotter_PR43/LimitInputs/"
@@ -47,8 +50,10 @@ masses = ["M100","M1000","M10000"]
 #CRpath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/LimitInputs/"
 #SRpath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegion_Plotter/LimitExtraction/"
 #CRpath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/LimitExtraction/"
-SRpath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegion_Plotter/LimitExtraction/"
-CRpath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/LimitExtraction/"
+SRpath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegion_Plotter_PR52/LimitExtraction/"
+CRpath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter_PR52/LimitExtraction/"
+#SRpath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_SignalRegion_Plotter/LimitExtraction/"
+#CRpath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/LimitExtraction/"
 
 #InputWPs = ["240422_HNL_ULID"]
 #InputWPs = ["240501_1704_HNL_ULID","240501_1704_HNTightV2"]
@@ -60,11 +65,13 @@ CRpath = "/data6/Users/jihkim/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_
 #InputWPs = ["PR51_HNL_ULID"]
 #InputWPs = ["PR51_rescale_HNL_ULID"]
 #InputWPs = ["PR52_HNL_ULID"]
+InputWPs = ["PR52_SSWWrescale_HNL_ULID"]
 #InputWPs = ["PR52_CnC_HNL_ULID"]
 #InputWPs = ["PR52_NewCnC_HNL_ULID"]
 #InputWPs = ["PR52_10TeVrescale_HNL_ULID"]
 #InputWPs = ["PR55_HNL_ULID","PR55_HighPt"]
-InputWPs = ["PR55_HNL_ULID"]
+#InputWPs = ["PR55_HNL_ULID"]
+#InputWPs = ["PR55_NoMinPt_HighPt"]
 #OutputTag = "_NOsr2inv"
 #OutputTag = "_NOsr2inv_NOzgcr1"
 #OutputTag = "_NOsr2inv_NOcr1Norm_FixCF"
@@ -79,6 +86,7 @@ InputWPs = ["PR55_HNL_ULID"]
 #OutputTag = "_Fake0p3CF0p2_PR991_TestModel"
 #OutputTag = "_AN"
 #OutputTag = "_SUScomment"
+#OutputTag = "_Singluarity"
 OutputTag = ""
 
 ################################################################################################################################################
@@ -212,11 +220,9 @@ for InputWP in InputWPs:
         else: Add_cf_cr = "cf_cr=card_"+era+"_"+channel+"_"+mass+"_cf_cr.txt"
 
         if args.Combine == "CR":
-          if "E" in channel and mass == "M100": # no signalDYVBF in SR1 with M100 EE, EMu for now FIXME later
+          if mass == "M100": # no signalDYVBF in SR1, SR2 with M100 for now FIXME later
             os.system("combineCards.py \
-                                       sr2=card_"+era+"_"+channel+"_"+mass+"_sr2"+systTag+".txt \
                                        sr3=card_"+era+"_"+channel+"_"+mass+"_sr3"+systTag+".txt \
-                                       sr2_inv=card_"+era+"_"+channel+"_"+mass+"_sr2_inv.txt \
                                        sr3_inv=card_"+era+"_"+channel+"_"+mass+"_sr3_inv.txt "\
                                        #sr=card_"+era+"_"+channel+"_"+mass+"_sr"+systTag+".txt \
                                        #sr_inv=card_"+era+"_"+channel+"_"+mass+"_sr_inv.txt "\
