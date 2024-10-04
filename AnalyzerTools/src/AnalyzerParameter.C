@@ -13,7 +13,6 @@ void AnalyzerParameter::Clear(){
   SplitPlot = "NULL";
   MCCorrrectionIgnoreNoHist = false;
   DEBUG = false;
-
   isocut = -1;
   
   PlottingVerbose = 1;
@@ -622,7 +621,6 @@ TString AnalyzerParameter::GetSystType(){
   else if(syst_==Syst::CFRateDown)   return "CFRateDown";
   else if(syst_==Syst::CFSFUp)    return "CFSFUp";
   else if(syst_==Syst::CFSFDown)   return "CFSFDown";
-
   else if(syst_==Syst::FRUp)   return "FRUp";
   else if(syst_==Syst::FRDown)   return "FRDown";
   

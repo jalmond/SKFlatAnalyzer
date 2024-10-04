@@ -52,17 +52,12 @@ void HNL_ControlRegion_Plotter::executeEvent(){
 
   vector<TString> CRToRun;
   if(HasFlag("Dilepton"))        CRToRun = {"OS_VR","SS_CR","VBF_CR","LLL_VR"};
-  else if(HasFlag("OS_VR"))      CRToRun = {"OS_VR"}; //JH
-  else if(HasFlag("SS_CR"))      CRToRun = {"SS_CR"}; //JH
-  else if(HasFlag("VBF_CR"))     CRToRun = {"VBF_CR"}; //JH
-  else if(HasFlag("LLL_VR"))     CRToRun = {"LLL_VR"}; //JH
   else if(HasFlag("SSMultiLep")) CRToRun = {"SS_CR","VBF_CR","LLL_VR"};
-  //else CRToRun = {"SS_CR"}; //JH
 
   for (auto id: LepIDs){
     for(auto channel : ChannelsToRun){
       if(channel != MuMu  && id =="TopHN") continue;
-      if(channel != EE  && id =="HighPt") continue; //JH
+      if(channel != EE  && id =="HighPt") continue;
 
       AnalyzerParameter param_signal = HNL_LeptonCore::InitialiseHNLParameter(id,channel);
       if(channel == EMu) param_signal.CFMethod   = "MC";

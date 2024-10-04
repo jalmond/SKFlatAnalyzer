@@ -372,7 +372,7 @@ TString HNL_RegionDefinitions::RunSignalRegionAK8String(bool ApplyForSR,
   double met_cut     = ApplyForSR ? 10. : 12;
   double met2_st     = GetMET2ST(leps, JetColl, AK8_JetColl, METv);
   bool PassHMMet     = ApplyForSR ? (met2_st < met_cut) :  (met2_st > met_cut);
-  bool PassBJetMVeto = ApplyForSR ? (B_JetColl.size()==0) : (B_JetColl.size()> 0);
+  bool PassBJetMVeto = ApplyForSR ? (B_JetColl.size()==0) : (B_JetColl.size()== 1);
   bool PassRegionReq = ApplyForSR ? (PassHMMet && PassBJetMVeto) :  (PassHMMet ||  PassBJetMVeto) ;
 
   double LowerMassSR1WmassCut = 450.;
@@ -484,7 +484,7 @@ TString HNL_RegionDefinitions::RunSignalRegionWWString(bool ApplyForSR,HNL_Lepto
 
   double met2_st     = GetMET2ST(leps, JetColl, AK8_JetColl, METv);
   bool PassHMMet     = ApplyForSR ? (met2_st < met_cut) :  (met2_st > met_cut);
-  bool PassBJetMVeto = ApplyForSR ? (B_JetColl.size()==0) : (B_JetColl.size()> 0);
+  bool PassBJetMVeto = ApplyForSR ? (B_JetColl.size()==0) : (B_JetColl.size() ==1);
   bool PassRegionReq = ApplyForSR ? (PassHMMet && PassBJetMVeto) :  (PassHMMet ||  PassBJetMVeto) ;
 
   if (leps_veto.size() != 2) return "false";
@@ -499,7 +499,7 @@ TString HNL_RegionDefinitions::RunSignalRegionWWString(bool ApplyForSR,HNL_Lepto
   if(leps[1]->Pt() < 15.) return "false";
   FillCutflow(Reg, w, RegionTag+"_lep_pt",param);
 
-  if(ApplyForSR) Fill_RegionPlots(param,"Initial"+RegionTag ,  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w); //JH : for SR2 opt
+  if(ApplyForSR) Fill_RegionPlots(param,"Initial"+RegionTag ,  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);
 
   bool use_leadjets=true;
   double ll_dphi = fabs(TVector2::Phi_mpi_pi( ( (*leps[0]).Phi() - (*leps[1]).Phi() )) );
@@ -540,7 +540,7 @@ TString HNL_RegionDefinitions::RunSignalRegionWWString(bool ApplyForSR,HNL_Lepto
   double HT(0.);
   for(auto ij : JetLooseColl) HT += ij.Pt();
   
-  double htltcut = 2.; //JH
+  double htltcut = 2.;
   
   if(PassHMMet     && ApplyForSR) FillCutflow(Reg, w, RegionTag+"_met",param);
 
@@ -565,7 +565,7 @@ TString HNL_RegionDefinitions::RunSignalRegionWWString(bool ApplyForSR,HNL_Lepto
       
       if(ApplyForSR)Fill_RegionPlots(param,"Pass"+RegionTag ,  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);      
       
-      FillCutflow(Reg, w, RegionTag+"_ht_lt2",param); //JH
+      FillCutflow(Reg, w, RegionTag+"_ht_lt2",param);
       
       if(HT/leps[0]->Pt() < 1.){
         if (L2Pt > 120.)      return RegionTag+"_HTLTbin1";
@@ -603,7 +603,7 @@ TString HNL_RegionDefinitions::RunSignalRegionAK4StringBDT(bool ApplyForSR, TStr
   vector<FatJet> AK8_JetColl;
   double met2_st     = GetMET2ST(LepTColl, JetColl, AK8_JetColl, METv);
   bool PassHMMet     = ApplyForSR ? (met2_st < met_cut) :  (met2_st > met_cut);
-  bool PassBJetMVeto = ApplyForSR ? (B_JetColl.size()==0) : (B_JetColl.size()> 0);
+  bool PassBJetMVeto = ApplyForSR ? (B_JetColl.size()==0) : (B_JetColl.size() ==1);
   bool PassRegionReq = ApplyForSR ? (PassHMMet && PassBJetMVeto) :  (PassHMMet ||  PassBJetMVeto) ;
 
   TString RegionTag                = ApplyForSR ? "SR3" : "CR3";
@@ -632,7 +632,7 @@ TString HNL_RegionDefinitions::RunSignalRegionAK4StringBDT(bool ApplyForSR, TStr
   if(FillCutFlow && !ApplyForSR )  FillCutflow(Reg, w, RegionTag+"_MET",param);
   if(FillCutFlow) FillCutflow(Reg, w, RegionTag+"_bveto",param);
 
-  float MVAvalueIncl    = EvaluateEventMVA(mN, "Incl", NCut, NTree, channel, LepTColl, ev, METv, param, w, false); //JH be careful..
+  float MVAvalueIncl    = EvaluateEventMVA(mN, "Incl", NCut, NTree, channel, LepTColl, ev, METv, param, w, false);
   //float MVAvalueFake    = EvaluateEventMVA(mN, "Fake", NCut, NTree, channel, LepTColl, ev, METv, param, w);
   //float MVAvalueNonFake = EvaluateEventMVA(mN, "NonFake", NCut, NTree, channel, LepTColl, ev, METv, param, w);
 
@@ -939,7 +939,7 @@ TString HNL_RegionDefinitions::RunSignalRegionAK4String(bool ApplyForSR,HNL_Lept
 
   double met2_st     = GetMET2ST(leps, JetColl, AK8_JetColl, METv);
   bool PassHMMet     = ApplyForSR ? (met2_st < met_cut) :  (met2_st > met_cut);
-  bool PassBJetMVeto = ApplyForSR ? (B_JetColl.size()==0) : (B_JetColl.size()> 0);
+  bool PassBJetMVeto = ApplyForSR ? (B_JetColl.size()==0) : (B_JetColl.size() == 1);
   bool PassRegionReq = ApplyForSR ? (PassHMMet && PassBJetMVeto) :  (PassHMMet ||  PassBJetMVeto) ;
 
   TString RegionTag  = ApplyForSR ? "SR3" : "CR3";

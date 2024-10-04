@@ -75,88 +75,98 @@ void HNL_LeptonCore::initializeAnalyzer(bool READBKGHISTS, bool SETUPIDBDT){ // 
   cfEst->SetEra(GetEra());
   cfEst->SetFittedBins();
 
-  if(RunCF&&READBKGHISTS)     cfEst->ReadHistograms(1);
+  if(RunCF&&READBKGHISTS)    cfEst->ReadHistograms(1);
   else if (Analyzer.Contains("ChargeFlip"))  cfEst->ReadHistograms(2);
 
+  
   TString datapath = getenv("DATA_DIR");
-  for(auto mapCFShift  : {datapath+ "/"+GetEra()+"/CFRate/Shift.txt"} ){
-    cout << "Reading " << mapCFShift << endl;
-    string Fline;
-    ifstream in(mapCFShift);
-    while(getline(in,Fline)){
-      std::istringstream is( Fline );
-      TString a,b,c;
-      double d,e;
-      is >> a; // Era                                                                                                                                           
-      is >> b; // Bin
-      is >> c; // ID                                                                                                                                            
-      is >> d; // shiftValuechi
-      is >> e; // shiftValuemean
 
-      MakeCFShiftmap[a+"_"+b+"_"+c+"_Nom"] = d;
-      double sysVal= fabs(e-d);
-
-      double upvalue=d;
-      double downvalue=d;
-      if(sysVal < 0.01) sysVal = 0.01;
-      if(e > d) {
-        downvalue = 0.01;
-        upvalue = sysVal;
+  if((RunCF&&READBKGHISTS) || Analyzer.Contains("ChargeFlip")){
+    for(auto mapCFShift  : {datapath+ "/"+GetEra()+"/CFRate/Shift.txt"} ){
+      cout << "Reading " << mapCFShift << endl;
+      string Fline;
+      ifstream in(mapCFShift);
+      while(getline(in,Fline)){
+	std::istringstream is( Fline );
+	TString a,b,c;
+	double d,e;
+	is >> a; // Era                                                                                                                                           
+	is >> b; // Bin
+	is >> c; // ID                                                                                                                                            
+	is >> d; // shiftValuechi
+	is >> e; // shiftValuemean
+	
+	MakeCFShiftmap[a+"_"+b+"_"+c+"_Nom"] = d;
+	double sysVal= fabs(e-d);
+	
+	double upvalue=d;
+	double downvalue=d;
+	if(sysVal < 0.01) sysVal = 0.01;
+	if(e > d) {
+	  downvalue = 0.01;
+	  upvalue = sysVal;
+	}
+	else if(e < d) {
+	  downvalue = sysVal;
+	  upvalue= 0.01;
+	}
+	else {
+	  downvalue = 0.01;
+	  upvalue = 0.01;
+	}
+	MakeCFShiftmap[a+"_"+b+"_"+c+"_Up"]  = upvalue;
+	MakeCFShiftmap[a+"_"+b+"_"+c+"_Down"] = downvalue;
       }
-      else if(e < d) {
-        downvalue = sysVal;
-        upvalue= 0.01;
-      }
-      else {
-        downvalue = 0.01;
-        upvalue = 0.01;
-      }
-      MakeCFShiftmap[a+"_"+b+"_"+c+"_Up"]  = upvalue;
-      MakeCFShiftmap[a+"_"+b+"_"+c+"_Down"] = downvalue;
     }
+    for(auto ih : MakeCFShiftmap) cout << "Adding EL Shift " << ih.first << " " << ih.second << endl;
   }
 
-  for(auto ih : MakeCFShiftmap) cout << "Adding EL Shift " << ih.first << " " << ih.second << endl;
 
 
   //// Setup Fake PartonSF 
 
-  vector<TString> FakeHMaps = {datapath + "/"+GetEra()+"/FakeRate/MCFR/TT_PartonSF.txt",
-             datapath + "/"+GetEra()+"/FakeRate/MCFR/QCD_PartonSF.txt"};
-
-  if(IsDATA) FakeHMaps = {datapath + "/"+GetEra()+"/FakeRate/DataFR/Data_PartonSF.txt"};
-  cout << "HNL_LeptonCore::IsData = " << IsData << endl;
-
-  for(auto ihmap  :  FakeHMaps){
-    string Fline;
-    ifstream in(ihmap);
-    while(getline(in,Fline)){
-      std::istringstream is( Fline );
-      if(IsDATA){
-        TString a,b,c,d;
-        double e;
-        is >> a; // Era
-        is >> b; // Eta
-        is >> c; // ID 
-        is >> d; // SampleType
-        is >> e; // SF                                                                                                                                                                                                                                     
-        MakeSFmap[a+"_"+b+"_"+c+"_"+d] = e;  
-      }
-      else{
-  TString a,b,c,d,e;
-  double f;
-  is >> a; // Era
-  is >> b; // Eta
-  is >> c; // ID
-  is >> d; // SampleType
-  is >> e; // Sample
-  is >> f; // SF
-  MakeSFmap[a+"_"+b+"_"+c+"_"+d + "_"+e] = f;
+  if((RunFake&&READBKGHISTS) 
+     || RunPromptTLRemoval 
+     || (Analyzer.Contains("HNL_Lepton_FakeRate") && !Analyzer.Contains("SkimTree") )
+     || (Analyzer.Contains("Fake") && !Analyzer.Contains("SkimTree") )){
+    
+    
+    vector<TString> FakeHMaps = {datapath + "/"+GetEra()+"/FakeRate/MCFR/TT_PartonSF.txt",
+				 datapath + "/"+GetEra()+"/FakeRate/MCFR/QCD_PartonSF.txt"};
+    
+    if(IsDATA) FakeHMaps = {datapath + "/"+GetEra()+"/FakeRate/DataFR/Data_PartonSF.txt"};
+    cout << "HNL_LeptonCore::IsData = " << IsData << endl;
+    
+    for(auto ihmap  :  FakeHMaps){
+      string Fline;
+      ifstream in(ihmap);
+      while(getline(in,Fline)){
+	std::istringstream is( Fline );
+	if(IsDATA){
+	  TString a,b,c,d;
+	  double e;
+	  is >> a; // Era
+	  is >> b; // Eta
+	  is >> c; // ID 
+	  is >> d; // SampleType
+	  is >> e; // SF                                                                                                                                                                                                                                     
+	  MakeSFmap[a+"_"+b+"_"+c+"_"+d] = e;	
+	}
+	else{
+	  TString a,b,c,d,e;
+	  double f;
+	  is >> a; // Era
+	  is >> b; // Eta
+	  is >> c; // ID
+	  is >> d; // SampleType
+	  is >> e; // Sample
+	  is >> f; // SF
+	  MakeSFmap[a+"_"+b+"_"+c+"_"+d + "_"+e] = f;
+	}
       }
     }
+    for(auto ih : MakeSFmap) cout << "Adding PartonSF " << ih.first << " " << ih.second << endl;
   }
-  for(auto ih : MakeSFmap) cout << "Adding PartonSF " << ih.first << " " << ih.second << endl;
-
   if(SETUPIDBDT) SetupIDMVAReaderDefault(false,false);
 
 }
@@ -514,7 +524,7 @@ AnalyzerParameter HNL_LeptonCore::SetupFakeParameter(AnalyzerParameter::Syst Sys
 
   param.AK4JetColl       = "TightPUL";
   param.AK4VBFJetColl    = "VBFTightPUL";
-  param.AK8JetColl       = "HNL_PN";
+  param.AK8JetColl       = "HNL_PN_NoMass";
   param.BJetColl         = "Tight";
 
   //// Weights                                                                                                                                              
@@ -545,6 +555,8 @@ AnalyzerParameter HNL_LeptonCore::SetupFakeParameter(AnalyzerParameter::Syst Sys
 
 bool  HNL_LeptonCore::UpdateParamBySyst(TString JobID, AnalyzerParameter& paramEv , AnalyzerParameter::Syst systname, TString OrigParamName){
  
+  if(!RunFake) return true;
+
   //// This function updates the ID/Keys for Fakes based on systematic settings
 
   /// If not HNL_ULID setting return 
@@ -727,7 +739,7 @@ double HNL_LeptonCore::SetupWeight(Event ev, AnalyzerParameter& param){
         FillWeightHist(param.ChannelDir()+"/PDFScale_"+TString::Itoa(i,10), weight_Scale->at(i));
       }
     }
-  } //JH
+  }
 
   double this_mc_weight =  MCweight(param.Apply_Weight_SumQ, param.Apply_Weight_Norm1Ipb);
   FillWeightHist(param.ChannelDir()+"/MCWeight",    this_mc_weight);
