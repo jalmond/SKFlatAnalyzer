@@ -11,6 +11,74 @@ public:
   Electron();
   ~Electron();
 
+  inline int BtoI(bool b) const {
+    return b? 1 : 0 ;
+  }
+
+  inline TString GetCFShift_BinLabel(double shift) const{
+
+    double pt_shifted = this->Pt() * shift;
+    TString PtBinLabel  =  "";
+    if(IsBB()){
+      if(pt_shifted < 35)       PtBinLabel = "_Pt_Bin1";
+      else  if(pt_shifted < 50)PtBinLabel = "_Pt_Bin2";
+      else  if(pt_shifted < 70)PtBinLabel = "_Pt_Bin3";
+      else  if(pt_shifted < 100)PtBinLabel = "_Pt_Bin4";
+      else PtBinLabel = "_Pt_Bin5";
+    }
+    else{
+
+      if(pt_shifted < 20)       PtBinLabel = "_Pt_Bin1";
+      else if(pt_shifted < 30)  PtBinLabel = "_Pt_Bin2";
+      else if(pt_shifted < 40)  PtBinLabel = "_Pt_Bin3";
+      else if(pt_shifted < 50)  PtBinLabel = "_Pt_Bin4";
+      else if(pt_shifted < 60)  PtBinLabel = "_Pt_Bin5";
+      else if(pt_shifted < 70)  PtBinLabel = "_Pt_Bin6";
+      else if(pt_shifted < 80)  PtBinLabel = "_Pt_Bin7";
+      else  if(pt_shifted < 100)PtBinLabel = "_Pt_Bin8";
+      else  if(pt_shifted < 200)PtBinLabel = "_Pt_Bin9";
+      else PtBinLabel = "_Pt_Bin10";
+    }
+    return PtBinLabel;
+    
+  }
+  
+  inline double GetDeepJetFromID(TString ID, TString prefix) const{
+    double BJetDeepJetCut=999;
+    if(ID.Contains(prefix+"v1")) BJetDeepJetCut = 0.025;
+    if(ID.Contains(prefix+"v2")) BJetDeepJetCut = 0.05;   //// Version 2 == TOP                                                                                                                                                                                   
+    if(ID.Contains(prefix+"v3")) BJetDeepJetCut = 0.1;
+    if(ID.Contains(prefix+"v4")) BJetDeepJetCut = 0.2;
+    if(ID.Contains(prefix+"v5")) BJetDeepJetCut = 0.3;
+    if(ID.Contains(prefix+"v6")) BJetDeepJetCut = 0.4;
+    if(ID.Contains(prefix+"v7")) BJetDeepJetCut = 0.5;
+    if(ID.Contains(prefix+"v8")) BJetDeepJetCut = 0.75;
+    if(ID.Contains(prefix+"v9")) BJetDeepJetCut = 0.9;
+    
+    return BJetDeepJetCut;
+  }
+  inline bool ApplyCvsB(TString ID) const{
+    if(ID.Contains("_b")) return true;
+    if(ID.Contains("_c")) return true;
+    return false;
+  }
+  inline bool ApplyCvsL(TString ID)const{
+    if(ID.Contains("_b")) return true;
+    if(ID.Contains("_c")) return true;
+    return false;
+  }
+
+  inline double GetCvsBCut(TString ID)const{
+    if(ID.Contains("_b")) return 0.1;
+    if(ID.Contains("_c")) return 0.1;
+    return -999;
+  }
+  inline double GetCvsLCut(TString ID)const{
+    if(ID.Contains("_b")) return 0.6;
+    if(ID.Contains("_c")) return 0.8;
+    return 999;
+  }
+
   void SetEnShift(double en_up, double en_down);
   inline double EnShift(int s) const {
     if(s==0) return 1.;
@@ -115,6 +183,7 @@ public:
   }
 
   bool PassMVABaseLine() const;
+  bool PassMVABaseLineTrkIso() const;
 
   bool PassMVA_POGUL_BB(double mva1, double mva2, double mva3) const ;
   bool PassMVA_POGUL_EB(double mva1, double mva2, double mva3) const ;
@@ -247,12 +316,15 @@ public:
 					
 					return (HEEPcutbit&4094)==4094; } //JH
 
+  bool passHEEPIDHNL() const;
+  bool passHEEP2018PromptHNL() const;
 
   int PassHNLTight(TString ID) const;
   int PassHNLTop(TString ID) const;
 
   bool Pass_MultiFunction_Opt(TString ID) const;
   bool Pass_LepMVAID() const ;
+  bool Pass_LepMVAID_TrkIso() const ;
   bool Pass_LepMVATopID() const ;
   bool passLooseHEEPID() const;
   bool passLooseHEEPID_NoMinPt() const; //JH

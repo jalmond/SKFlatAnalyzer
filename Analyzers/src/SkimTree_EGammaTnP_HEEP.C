@@ -9,6 +9,22 @@ void SkimTree_EGammaTnP_HEEP::initializeAnalyzer(){
   HNL_LeptonCore::initializeAnalyzer(); 
   outfile->cd();
 
+  weight_tree=new TTree("weight_tree","weight_tree");
+  if(!IsDATA){
+    weight_tree->Branch("event",&event);
+    weight_tree->Branch("weight",&weight);
+    weight_tree->Branch("PUweight",&PUweight);
+    weight_tree->Branch("PUweight_up",&PUweight_up);
+    weight_tree->Branch("PUweight_down",&PUweight_down);
+    weight_tree->Branch("prefireweight",&prefireweight);
+    weight_tree->Branch("prefireweight_up",&prefireweight_up);
+    weight_tree->Branch("prefireweight_down",&prefireweight_down);
+    weight_tree->Branch("zptweight",&zptweight);
+    weight_tree->Branch("z0weight",&z0weight);
+    weight_tree->Branch("totWeight",&totWeight);
+  }
+
+
   newtree=new TTree("fitter_tree","fitter_tree");
 
   newtree->Branch("run",&run);
@@ -31,20 +47,23 @@ void SkimTree_EGammaTnP_HEEP::initializeAnalyzer(){
   newtree->Branch("L1ThresholdHLTEle23Ele12CaloIdLTrackIdLIsoVL",&L1ThresholdHLTEle23Ele12CaloIdLTrackIdLIsoVL);
 
   newtree->Branch("passingCutBasedMedium94XV2",&passingCutBasedMedium94XV2);
-  newtree->Branch("passingCutBasedTight94XV2",&passingCutBasedTight94XV2);
+  newtree->Branch("passingCutBasedTight94XV2", &passingCutBasedTight94XV2);
   newtree->Branch("passingMVA80",&passingMVA80);
   newtree->Branch("passingMVA90",&passingMVA90);
   newtree->Branch("passingHEEP",&passingHEEP);
   newtree->Branch("passingMVALoose",&passingMVALoose);
   newtree->Branch("passingTriggerEmul",&passingTriggerEmul);
 
+  newtree->Branch("passingHNLHeep",&passingHNLHeep);
   newtree->Branch("passingHNLMVA",&passingHNLMVA);
+  newtree->Branch("passingHNLMVA_TrkIso",&passingHNLMVA_TrkIso);
   newtree->Branch("passingHNLMVACF",&passingHNLMVACF);
   newtree->Branch("passingHNLMVAConv",&passingHNLMVAConv);
   newtree->Branch("passingHNLMVAFake",&passingHNLMVAFake);
   newtree->Branch("scoreHNLMVACF",&scoreHNLMVACF);
   newtree->Branch("scoreHNLMVAConv",&scoreHNLMVAConv);
   newtree->Branch("scoreHNLMVAFake",&scoreHNLMVAFake);
+
   newtree->Branch("passEGL1SingleEGOr",&passEGL1SingleEGOr);
   newtree->Branch("passHltEle27WPTightGsf",&passHltEle27WPTightGsf);
   newtree->Branch("passHltEle28WPTightGsf",&passHltEle28WPTightGsf);
@@ -112,41 +131,92 @@ void SkimTree_EGammaTnP_HEEP::initializeAnalyzer(){
   }
   
 }
+
+bool SkimTree_EGammaTnP_HEEP::IsGoodTagProbe(Electron el_tag, Electron el_probe){
+  
+  if(el_probe.Pt() < 5) return false;
+  if(fabs(el_probe.scEta()) >2.5) return false;
+
+  if((el_tag+el_probe).M()<50) return false;
+  if((el_tag+el_probe).M()>130) return false;
+  if((el_tag.Charge() + el_probe.Charge()) != 0)  return false;
+  return true;
+}
+
+bool SkimTree_EGammaTnP_HEEP::IsTag(Electron el_tag){
+  
+  if(el_tag.etaRegion()==Electron::GAP) return false;
+  if(fabs(el_tag.scEta()) >2.1) return false;
+  if(!el_tag.passTightID()) return false;
+  
+  if(DataYear == 2016){
+    if(el_tag.Pt() < 30) return false;
+    if(!el_tag.PassFilter("hltEle27erWPTightGsfTrackIsoFilter")) return false; 
+  }
+  if(DataYear == 2017){
+    if(el_tag.Pt() < 35) return false;
+    if(!el_tag.PassFilter("hltEGL1SingleEGOrFilter")) return false;
+    if(!el_tag.PassFilter("hltEle32L1DoubleEGWPTightGsfTrackIsoFilter")) return false;
+  }
+  if(DataYear == 2018){
+    if(el_tag.Pt() < 35) return false;
+    if(!el_tag.PassFilter("hltEle32WPTightGsfTrackIsoFilter")) return false;
+  }
+  return true;
+}
+
+
 void SkimTree_EGammaTnP_HEEP::executeEvent(){
 
   if(!IsDATA||DataStream.Contains("SingleElectron")||DataStream.Contains("EGamma")){
 
     Event ev = GetEvent();
+
     vector<Electron> electrons= GetAllElectrons();
+   
     
     AnalyzerParameter p = HNL_LeptonCore::InitialiseHNLParameter("Basic");
-
-
-    if(! (ev.PassTrigger({"HLT_Ele27_WPTight_Gsf_v","HLT_Ele28_WPTight_Gsf_v","HLT_Ele32_WPTight_Gsf_L1DoubleEG_v","HLT_Ele32_WPTight_Gsf_v","HLT_Ele35_WPTight_Gsf_v"})) ) return;
+    
+    if(DataYear == 2016){
+      if(! (ev.PassTrigger("HLT_Ele27_eta2p1_WPTight_Gsf_v")))return;
+    }
+    if(DataYear == 2017){
+      if(! (ev.PassTrigger("HLT_Ele32_WPTight_Gsf_L1DoubleEG_v"))) return;
+    }
+    if(DataYear == 2018){
+      if(! (ev.PassTrigger("HLT_Ele32_WPTight_Gsf_v"))) return;
+    }
+    
+    //else{
+    //  if(! (ev.PassTrigger({"HLT_Ele27_WPTight_Gsf_v","HLT_Ele28_WPTight_Gsf_v","HLT_Ele32_WPTight_Gsf_L1DoubleEG_v","HLT_Ele32_WPTight_Gsf_v","HLT_Ele35_WPTight_Gsf_v"})) ) return;
+    // }
     
     if(!PassMETFilter()) return;
-
-
+    
     map<Electron*,Gen*> genmatching;
+
     if(!IsDATA){
+
       for(Gen* gen:{&gen_l0_dressed,&gen_l1_dressed}){
 	vector<Electron*> cands={};
-	for(Electron& electron:electrons)
+	for(Electron&  electron: electrons){
 	  if(gen->DeltaR(electron)<0.2) cands.push_back(&electron);
-	double mindpt=1000.;
-	Electron *matched=NULL;
-	for(Electron* cand:cands){
-	  double dpt=fabs((cand->Pt()-gen->Pt())/gen->Pt());
-	  if(dpt<mindpt&&genmatching.find(cand)==genmatching.end()){
-	    mindpt=dpt;
-	    matched=cand;
+	  double mindpt=1000.;
+	  Electron *matched=NULL;
+	  for(Electron* cand:cands){
+	    double dpt=fabs((cand->Pt()-gen->Pt())/gen->Pt());
+	    if(dpt<mindpt&&genmatching.find(cand)==genmatching.end()){
+	      mindpt=dpt;
+	      matched=cand;
+	    }
+	  }
+	  if(matched){
+	    genmatching[matched]=gen;
 	  }
 	}
-	if(matched){
-	  genmatching[matched]=gen;
-	}
       }
-      
+
+
       weight=p.w.lumiweight;
       PUweight=p.w.PUweight;
       PUweight_up=p.w.PUweight_up;
@@ -156,15 +226,131 @@ void SkimTree_EGammaTnP_HEEP::executeEvent(){
       prefireweight_down=p.w.prefireweight_down;
       zptweight=p.w.zptweight;
       z0weight=p.w.z0weight;
-      totWeight=p.w.lumiweight*p.w.PUweight*p.w.prefireweight*p.w.zptweight*p.w.z0weight;
+      //      totWeight=p.w.lumiweight*p.w.PUweight*p.w.prefireweight*p.w.zptweight*p.w.z0weight;
+      totWeight=p.w.lumiweight*p.w.PUweight*p.w.prefireweight;
     }
     L1ThresholdHLTEle23Ele12CaloIdLTrackIdLIsoVL=GetL1Threshold();
-
+    
+    /// Check number of tag + probe pairs to help sort pairs
+    int nTagPair(0);
     for(Electron& tag:electrons){
-      if(tag.etaRegion()==Electron::GAP) continue;
+      
+      if(!IsTag(tag)) continue;
+      bool HasPair=false;
       for(Electron& probe:electrons){
 	if(&tag==&probe) continue;
-	if((tag+probe).M()<40) continue;
+	if(!IsGoodTagProbe(tag,probe)) continue;
+	HasPair=true;
+      }
+      if(HasPair) nTagPair++;
+    }
+    
+    /// Fill matched_pair_electrons with T&P pairs
+    vector<pair<Electron,Electron> > matched_pair_electrons;
+    vector<bool> matched_truth_pair_electrons;
+    vector<Gen*> v_gen_tag;
+    vector<Gen*> v_gen_probe;
+    /// if nTags == 1 then use High Pt probe 
+
+    if(nTagPair==0) return;
+    else if(nTagPair==1){
+
+      double pt_probe_highest = 0;
+      for(Electron& tag:electrons){
+	if(!IsTag(tag)) continue;
+	//// Loop over probe candidates
+	for(Electron& probe:electrons){
+
+	  if(&tag==&probe) continue;
+	  if(!IsGoodTagProbe(tag,probe)) continue;
+
+	  /// Check highest pt
+	  if(probe.Pt() > pt_probe_highest) {
+	    pt_probe_highest = probe.Pt();
+
+	    if(matched_pair_electrons.size() == 2){
+	      /// Reset to update Highest Pt
+	      if(!IsData) {
+		v_gen_tag.pop_back();
+		v_gen_probe.pop_back();
+		matched_truth_pair_electrons.pop_back();
+	      }
+	      matched_pair_electrons.pop_back();
+	    }
+	    matched_pair_electrons.push_back(make_pair(tag,probe));
+	    /// Check Trth match for MC
+	    if(!IsData){
+	      /// Fill Tag and Probe Gen closest matched
+	      Gen* NullGen= NULL;
+	      if((genmatching.find(&tag)!=genmatching.end())) v_gen_tag.push_back(genmatching.find(&tag)->second);
+	      else v_gen_tag.push_back(NullGen);
+	      if((genmatching.find(&probe)!=genmatching.end())) v_gen_probe.push_back(genmatching.find(&probe)->second);
+	      else v_gen_probe.push_back(NullGen);
+
+	      /// If both are found set pair match true
+	      if(genmatching.find(&probe)!=genmatching.end() && (genmatching.find(&tag)!=genmatching.end())) {
+		matched_truth_pair_electrons.push_back(true);
+	      }
+	      else matched_truth_pair_electrons.push_back(false);
+	    }
+	  }
+	}
+      }
+    }
+    else if(nTagPair>1){
+      
+      //// Since there are more than one pair with different tags  need to check first if one pair has two tags
+
+      for(Electron& tag:electrons){
+	double pt_probe_highest_pt = 0;
+	bool truth_matched_pair=false;
+	if(!IsTag(tag)) continue;
+	Electron probe_assigned;
+	Gen* TagGen=NULL;
+	Gen* ProbeGen=NULL;
+	for(Electron& probe:electrons){
+	  if(&tag==&probe) continue;
+
+	  if(!IsGoodTagProbe(tag,probe)) continue;
+
+	  if(probe.Pt() > pt_probe_highest_pt) {
+	    pt_probe_highest_pt = probe.Pt();
+	    probe_assigned = probe;
+	    if(!IsData){
+              if(genmatching.find(&probe)!=genmatching.end() && (genmatching.find(&tag)!=genmatching.end())) truth_matched_pair=true;
+	      else               truth_matched_pair=false;
+
+	      Gen* NullGen= NULL;
+	      if((genmatching.find(&tag)!=genmatching.end())) TagGen = genmatching.find(&tag)->second;
+	      else  TagGen = NullGen;
+	      if((genmatching.find(&probe)!=genmatching.end())) ProbeGen = genmatching.find(&probe)->second;
+	      else ProbeGen = NullGen;
+
+	    }
+	  }
+	}// probe loop
+	matched_pair_electrons.push_back(make_pair(tag,probe_assigned));
+	if(!IsData){
+	  matched_truth_pair_electrons.push_back(truth_matched_pair);
+	  v_gen_tag.push_back(TagGen);	
+	  v_gen_probe.push_back(ProbeGen);	
+	}
+      } // tag loop
+    } // multi Tag pairs loop
+    
+    
+    int nPairs_counter=-1; /// Needed to access Gen Info
+    for(auto t_p_pair : matched_pair_electrons){
+      nPairs_counter++;
+      
+      vector<Electron> vProbe = {t_p_pair.second};  // fill vector to keep structure of code same
+      Electron tag = t_p_pair.first;
+      if(!IsTag(tag)) continue;
+
+      for(Electron& probe:vProbe){
+	
+	if(&tag==&probe) continue;
+	if(!IsGoodTagProbe(tag,probe)) continue;
 	
 	passingCutBasedMedium94XV2=probe.passMediumID();
 	passingCutBasedTight94XV2=probe.passTightID();
@@ -174,15 +360,17 @@ void SkimTree_EGammaTnP_HEEP::executeEvent(){
 	passingMVA90 = probe.passMVAID_noIso_WP90();
 	passingMVALoose = probe.PassMVABaseLine(); 
 	passingTriggerEmul  = probe.PassID("TriggerLoose"); 
-	passingHNLMVACF   =probe.PassID("HNL_ULID_CF_"+GetYearString());
-	passingHNLMVAConv =probe.PassID("HNL_ULID_Conv_"+GetYearString());
-	passingHNLMVAFake =probe.PassID("HNL_ULID_Fake_"+GetYearString());
+	passingHNLMVACF   =probe.PassID("HNL_ULID_CF");
+	passingHNLMVAConv =probe.PassID("HNL_ULID_Conv");
+	passingHNLMVAFake =probe.PassID("HNL_ULID_Fake");
 	passingHNLMVA     =probe.PassID("HNL_ULID_"+GetYearString());
-
+	passingHNLMVA_TrkIso     =probe.PassID("HNL_ULID_TrkIso");
+	passingHNLHeep     =probe.PassID("HNL_ULID_HEEP");
+	
 	scoreHNLMVACF=probe.HNL_MVA_CF("EDv5");
-        scoreHNLMVAConv=probe.HNL_MVA_Conv("EDv5");
+	scoreHNLMVAConv=probe.HNL_MVA_Conv("EDv5");
 	scoreHNLMVAFake=probe.HNL_MVA_Fake("EDv5");
-
+	
 	passEGL1SingleEGOr=probe.PassFilter("hltEGL1SingleEGOrFilter");
 	passHltEle27WPTightGsf=probe.PassPath("HLT_Ele27_WPTight_Gsf_v");
 	passHltEle28WPTightGsf=probe.PassPath("HLT_Ele28_WPTight_Gsf_v");
@@ -200,7 +388,7 @@ void SkimTree_EGammaTnP_HEEP::executeEvent(){
 	el_eta=probe.Eta();
 	el_abseta=fabs(probe.Eta());
 	el_sc_eta=probe.scEta();
-        el_sc_abseta=fabs(probe.scEta());
+	el_sc_abseta=fabs(probe.scEta());
 	
 	el_phi=probe.Phi();
 	el_q=probe.Charge();
@@ -209,23 +397,25 @@ void SkimTree_EGammaTnP_HEEP::executeEvent(){
 	
 	if(probe.Pt() < 20)  tag_passtrigMVA=(tag.MVAIso() > 0.92);
 	else tag_passtrigMVA = true;
-
+	
 	tag_passEGL1SingleEGOr=tag.PassFilter("hltEGL1SingleEGOrFilter");
 	tag_passHltEle27WPTightGsf=tag.PassPath("HLT_Ele27_WPTight_Gsf_v");
 	tag_passHltEle28WPTightGsf=tag.PassPath("HLT_Ele28_WPTight_Gsf_v");
 	tag_passHltEle32WPTightGsf=tag.PassPath("HLT_Ele32_WPTight_Gsf_v");
 	tag_passHltEle32DoubleEGWPTightGsf=tag.PassPath("HLT_Ele32_WPTight_Gsf_L1DoubleEG_v");
 	tag_passHltEle35WPTightGsf=tag.PassPath("HLT_Ele35_WPTight_Gsf_v");
+
 	if(!(tag_passHltEle27WPTightGsf|tag_passHltEle28WPTightGsf|tag_passHltEle32WPTightGsf|tag_passHltEle32DoubleEGWPTightGsf|tag_passHltEle35WPTightGsf)) continue;
+
 	tag_passingCutBasedMedium94XV2=tag.passMediumID();
 	tag_passingCutBasedTight94XV2=tag.passTightID();
 	tag_passingHEEP = (DataYear == 2018)  ?  tag.passHEEP2018Prompt() : tag.passHEEPID();
-        tag_passingMVA80 = tag.passMVAID_noIso_WP90();
-        tag_passingMVA90 = tag.passMVAID_noIso_WP90();
+	tag_passingMVA80 = tag.passMVAID_noIso_WP90();
+	tag_passingMVA90 = tag.passMVAID_noIso_WP90();
 	tag_passingMVALoose = tag.PassMVABaseLine();
-        tag_passingTriggerEmul  = tag.PassID("TriggerLoose");
-
-
+	tag_passingTriggerEmul  = tag.PassID("TriggerLoose");
+	
+	
 	tag_Ele_IsoMVA94XV2=tag.MVAIso();      
 	tag_Ele_e=tag.UncorrE();
 	tag_Ele_e_cor=tag.Energy();
@@ -233,7 +423,7 @@ void SkimTree_EGammaTnP_HEEP::executeEvent(){
 	tag_Ele_et_cor=tag.Et();
 	tag_Ele_pt=tag.UncorrPt();
 	tag_Ele_pt_cor=tag.Pt();
-		
+	
 	tag_Ele_eta=tag.Eta();
 	tag_Ele_abseta=fabs(tag.Eta());
 	tag_Ele_phi=tag.Phi();
@@ -249,13 +439,11 @@ void SkimTree_EGammaTnP_HEEP::executeEvent(){
 	pair_pt_cor=pair_cor.Pt();
 	
 	if(!IsDATA){
-	  Gen *mc_probe=NULL,*mc_tag=NULL;
-	  if(genmatching.find(&probe)!=genmatching.end())
-	    mc_probe=genmatching[&probe];
-	  if(genmatching.find(&tag)!=genmatching.end())
-	    mc_tag=genmatching[&tag];
+	  Gen *mc_probe=v_gen_probe.at(nPairs_counter);
+	  Gen *mc_tag=v_gen_tag.at(nPairs_counter);
 	  
 	  if(mc_probe){
+	    //if(RunDebug) cout << " mc_probe->E()  " << mc_probe->E() << " mc_probe->Et() = " << mc_probe->Et() << " mc_probe->Eta() " << mc_probe->Eta() << " mc_probe->Phi() = " << mc_probe->Phi() << endl;
 	    mc_probe_e=mc_probe->E();
 	    mc_probe_et=mc_probe->Et();
 	    mc_probe_eta=mc_probe->Eta();
@@ -266,7 +454,7 @@ void SkimTree_EGammaTnP_HEEP::executeEvent(){
 	    mc_probe_eta=0.;
 	    mc_probe_phi=0.;
 	  }
-	  if(mc_probe&&mc_tag){
+	  if(matched_truth_pair_electrons.at(nPairs_counter)){
 	    mcTrue=true;
 	    mcMass=(*mc_probe+*mc_tag).M();
 	  }else{
@@ -276,12 +464,18 @@ void SkimTree_EGammaTnP_HEEP::executeEvent(){
 	}
 	
 	newtree->Fill();
+	weight_tree->Fill();
+	
       }
     } /// tag loop
   } /// Electron Stream 
 }
 
 void SkimTree_EGammaTnP_HEEP::WriteHist(){
+
+  /// Write 
+  outfile->cd();
+  weight_tree->Write();
   outfile->mkdir("tnpEleIDs");
   outfile->cd("tnpEleIDs");
   newtree->Write();

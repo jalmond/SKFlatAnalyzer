@@ -25,13 +25,13 @@ void HNL_Lepton_FakeRate_Region_Plotter::executeEvent(){
 					     MuMu,
 					     HNL_LeptonCore::NormTo1Invpb,
 					     {"MakeSingleLeptonPlots"},
-					     "HNL_ID_MakeSingleLeptonPlots"     ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_"+GetEraShort()));
+					     "HNL_ID_MakeSingleLeptonPlots"     ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO"));
 
     VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,
 					     EE,
 					     HNL_LeptonCore::NormTo1Invpb,
 					     {"MakeSingleLeptonPlots"},
-					     "HNL_ID_MakeSingleLeptonPlots"     ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_"+GetEraShort()));
+					     "HNL_ID_MakeSingleLeptonPlots"     ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO"));
 
     goto RunJobs;
   }
@@ -42,11 +42,11 @@ void HNL_Lepton_FakeRate_Region_Plotter::executeEvent(){
 					     MuMu,
 					     HNL_LeptonCore::NormTo1Invpb,
 					     {"MakeDiLeptonPlots"}    ,
-					     "HNL_ID_MakeDiLeptonPlots"         ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_"+GetEraShort()));
+					     "HNL_ID_MakeDiLeptonPlots"         ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO"));
     VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,
 					     EE,HNL_LeptonCore::NormTo1Invpb,
 					     {"MakeDiLeptonPlots"}    ,
-					     "HNL_ID_MakeDiLeptonPlots"         ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_"+GetEraShort()));
+					     "HNL_ID_MakeDiLeptonPlots"         ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO"));
     
     goto RunJobs;
   }

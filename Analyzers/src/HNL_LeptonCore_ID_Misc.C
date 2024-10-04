@@ -55,8 +55,8 @@ void HNL_LeptonCore::GetSetup_BDT(AnalyzerParameter& param_default ){
 
   param_default.k.Electron_ID_SF  = "TmpHNL_ULID_"+GetYearString();
   param_default.k.Muon_ID_SF      = "TmpHNL_ULID_"+GetYearString();
-  param_default.Muon_FR_ID        = "HNL_ULID_FO_"+GetYearString();
-  param_default.Electron_FR_ID    = "HNL_ULID_FO_"+GetYearString();
+  param_default.Muon_FR_ID        = "HNL_ULID_FO";
+  param_default.Electron_FR_ID    = "HNL_ULID_FO";
 
   return;
 

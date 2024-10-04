@@ -443,7 +443,8 @@ TString HNL_RegionDefinitions::RunSignalRegionAK8String(bool ApplyForSR,
   double ml1jbins[nSRbins] = { 0., 500,625., 750., 1000., 2000.};
 
   FillHist(  "LimitExtraction/"+ param.Name+"/LimitShape_"+RegionTag+"/N1Mass_Central",  MN1,  w, nSRbins-1, ml1jbins, "Reco M_{l1jj}");
-  
+  FillHist("LimitExtraction/"+ param.Name+"/LimitShape_"+RegionTag+"/l1J",  MN1,  w, 2000, 0., 2000., "Reco M_{l1jj}");
+
   if(MN1 > 225){
     if(leps[0]->Pt() < pt_cut)  return RegionTag+"_MNbin1";
   }
@@ -552,11 +553,13 @@ TString HNL_RegionDefinitions::RunSignalRegionWWString(bool ApplyForSR,HNL_Lepto
     double HTPT = (HT/leps[0]->Pt() > 5)  ? 5. : HT/leps[0]->Pt() ;
 
     FillHist( "LimitExtraction/"+param.Name+"/LimitShape_"+RegionTag + "/HT_PT_Central",  HTPT,  w, 5, HTBin, "Reco H_{T}/P_{T}^{lep1}");
+    FillHist("LimitExtraction/"+param.Name+"/LimitShape_"+RegionTag + "/HTPtl1",  HTPT,  w, 50, 0., 5., "Reco H_{T}/P_{T}^{lep1}");
 
     double PTBin[5] = { 0.,50, 100., 120., 200};
     double L2Pt = (leps[1]->Pt() > 200) ? 199. : leps[1]->Pt();
 
     FillHist( "LimitExtraction/"+param.Name+"/LimitShape_"+RegionTag + "/PT2_LT1_Central",  L2Pt,  w, 4, PTBin, "Reco P_{T}^{Lep2}");
+    FillHist("LimitExtraction/"+param.Name+"/LimitShape_"+RegionTag + "/Ptl2",  L2Pt,  w, 200, 0., 200., "Reco P_{T}^{Lep2}");
 
     if (HT/leps[0]->Pt() < htltcut){
       
@@ -619,20 +622,20 @@ TString HNL_RegionDefinitions::RunSignalRegionAK4StringBDT(bool ApplyForSR, TStr
 
   if(FillCutFlow)  FillCutflow(Reg, w, RegionTag+"_dilep_mass",param);
 
-  //float MVAvalue = EvaluateEventMVA(mN, NCut,NTree, channel,  LepTColl,ev, METv,param);
+  //float MVAvalue = EvaluateEventMVA(mN, NCut,NTree, channel, LepTColl, ev, METv, param, w);
   //cout << "Summary of BDT " << mN << endl;
   //cout << "Predetermined value = " << MVAvalue << " " <<  ev.HNL_MVA_Event(GetChannelString(channel)+"_"+mN) << endl;
-
-  float MVAvalueIncl    = EvaluateEventMVA(mN, "Incl", NCut, NTree, channel, LepTColl, ev, METv, param);
-  float MVAvalueFake    = EvaluateEventMVA(mN, "Fake", NCut, NTree, channel, LepTColl, ev, METv, param);
-  float MVAvalueNonFake = EvaluateEventMVA(mN, "NonFake", NCut, NTree, channel, LepTColl, ev, METv, param);
 
   if(FillCutFlow && ApplyForSR && PassHMMet ) FillCutflow(Reg, w, RegionTag+"_MET",param);
 
   if(!PassRegionReq)  return "false";
   if(FillCutFlow && !ApplyForSR )  FillCutflow(Reg, w, RegionTag+"_MET",param);
   if(FillCutFlow) FillCutflow(Reg, w, RegionTag+"_bveto",param);
-  
+
+  float MVAvalueIncl    = EvaluateEventMVA(mN, "Incl", NCut, NTree, channel, LepTColl, ev, METv, param, w, false); //JH be careful..
+  //float MVAvalueFake    = EvaluateEventMVA(mN, "Fake", NCut, NTree, channel, LepTColl, ev, METv, param, w);
+  //float MVAvalueNonFake = EvaluateEventMVA(mN, "NonFake", NCut, NTree, channel, LepTColl, ev, METv, param, w);
+
   FillHist("LimitExtraction/"+param.Name+"/LimitShape_"+RegionTag+"BDT/MVA1D_Incl_AllJets_"+BDTLabel, MVAvalueIncl, w, 80, -1., 1.);
   if(JetColl.size() < 2){
     FillHist("LimitExtraction/"+param.Name+"/LimitShape_"+RegionTag+"BDT/MVA1D_Incl_01Jet_"+BDTLabel, MVAvalueIncl, w, 80, -1., 1.);
@@ -640,7 +643,7 @@ TString HNL_RegionDefinitions::RunSignalRegionAK4StringBDT(bool ApplyForSR, TStr
   else{
     FillHist("LimitExtraction/"+param.Name+"/LimitShape_"+RegionTag+"BDT/MVA1D_Incl_2Jets_"+BDTLabel, MVAvalueIncl, w, 80, -1., 1.);
   }
-  FillHist("LimitExtraction/"+param.Name+"/LimitShape_"+RegionTag+"BDT/MVA2D_"+BDTLabel, MVAvalueFake, MVAvalueNonFake, w, 80, -1., 1., 80, -1., 1.);
+  //FillHist("LimitExtraction/"+param.Name+"/LimitShape_"+RegionTag+"BDT/MVA2D_"+BDTLabel, MVAvalueFake, MVAvalueNonFake, w, 80, -1., 1., 80, -1., 1.);
 
   vector<Tau> TauColl;
   if(FillCutFlow&&ApplyForSR) Fill_RegionPlots(param,"Pass"+RegionTag+"BDT" ,TauColl,  JetColl, AK8_JetColl, LepTColl,  METv, nPV, w);
@@ -982,7 +985,8 @@ TString HNL_RegionDefinitions::RunSignalRegionAK4String(bool ApplyForSR,HNL_Lept
   double L2Pt = (leps[1]->Pt() > 400) ? 399. : leps[1]->Pt();
 
   FillHist( "LimitExtraction/"+param.Name+"/LimitShape_"+RegionTag + "/Pt_Lepton1",  L2Pt,  w, 5, PTBin, "Reco P_{T}^{Lep2}");
-  
+  FillHist("LimitExtraction/"+param.Name+"/LimitShape_"+RegionTag + "/Ptl2",  L2Pt,  w, 400, 0., 400., "Reco P_{T}^{Lep2}");
+
   double Binvalue=0;
   if((JetColl.size()<2) && (leps[1]->Pt()  < 50)) Binvalue=0.5;
   else   if((JetColl.size()<2) && (leps[1]->Pt()  < 150)) Binvalue=1.5;

@@ -371,7 +371,8 @@ std::vector<Jet> AnalyzerCore::JetsAwayFromFatJet(const std::vector<Jet>& jets, 
 
 Jet AnalyzerCore::GetCorrectedJetCloseToLepton(vector<Particle> leps, Jet jet){
 
-  //jet_LepAwareJECv2 = (raw_jet * L1 - lepton) * L2L3Res + lepton                                                                                                                                                                                                                                                                                                                                                                       
+  //jet_LepAwareJECv2 = (raw_jet * L1 - lepton) * L2L3Res + lepton 
+
   Particle  rawJet =  jet * jet.JECfactor();
   double l1corrFactor = jet.JEC_L1();
 

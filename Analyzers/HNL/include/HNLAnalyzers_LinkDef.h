@@ -19,6 +19,7 @@
 #pragma link C++ class HNL_ControlRegion+;
 #pragma link C++ class HNL_SignalRegion_Plotter+;
 #pragma link C++ class HNL_SR3_BDT_KinVar+;
+#pragma link C++ class HNL_ElectronID_HighPt+;
 #pragma link C++ class HNL_Signal_Efficiency+;
 #pragma link C++ class HNL_Signal_Studies+;
 #pragma link C++ class HNL_GenericObject_Studies+;

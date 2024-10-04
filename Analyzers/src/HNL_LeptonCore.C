@@ -18,6 +18,9 @@ void HNL_LeptonCore::initializeAnalyzer(bool READBKGHISTS, bool SETUPIDBDT){ // 
   //=== bkg flags                                                                                                                                      
   RunPrompt = HasFlag("RunPrompt");
   RunFake   = HasFlag("RunFake");
+  RunOSFake = HasFlag("RunOSFake");
+
+  if(RunOSFake) RunFake = true;/// In case RunFake not flagged
   RunFakeTF = HasFlag("RunFakeTF");
   RunCF     = HasFlag("RunCF");
   RunConv   = HasFlag("RunConv");
@@ -27,6 +30,9 @@ void HNL_LeptonCore::initializeAnalyzer(bool READBKGHISTS, bool SETUPIDBDT){ // 
   /// Other flags                                                                                                                                      
   RunSyst = HasFlag("RunSyst");
   HEM1516 = HasFlag("HEM1516");
+
+  /// clear map
+  map_bdt_booked.clear();
 
   std::vector<JetTagging::Parameters> jtps;
   jtps.push_back( JetTagging::Parameters(JetTagging::DeepJet, JetTagging::Loose, JetTagging::incl, JetTagging::mujets));
@@ -67,23 +73,66 @@ void HNL_LeptonCore::initializeAnalyzer(bool READBKGHISTS, bool SETUPIDBDT){ // 
   
   //==== CFBackgroundEstimator                                                                                                                                              
   cfEst->SetEra(GetEra());
-  if(RunCF&&READBKGHISTS)     cfEst->ReadHistograms(true);
-  else if (Analyzer.Contains("ChargeFlip"))  cfEst->ReadHistograms(false);
+  cfEst->SetFittedBins();
+
+  if(RunCF&&READBKGHISTS)     cfEst->ReadHistograms(1);
+  else if (Analyzer.Contains("ChargeFlip"))  cfEst->ReadHistograms(2);
+
+  TString datapath = getenv("DATA_DIR");
+  for(auto mapCFShift  : {datapath+ "/"+GetEra()+"/CFRate/Shift.txt"} ){
+    cout << "Reading " << mapCFShift << endl;
+    string Fline;
+    ifstream in(mapCFShift);
+    while(getline(in,Fline)){
+      std::istringstream is( Fline );
+      TString a,b,c;
+      double d,e;
+      is >> a; // Era                                                                                                                                           
+      is >> b; // Bin
+      is >> c; // ID                                                                                                                                            
+      is >> d; // shiftValuechi
+      is >> e; // shiftValuemean
+
+      MakeCFShiftmap[a+"_"+b+"_"+c+"_Nom"] = d;
+      double sysVal= fabs(e-d);
+
+      double upvalue=d;
+      double downvalue=d;
+      if(sysVal < 0.01) sysVal = 0.01;
+      if(e > d) {
+        downvalue = 0.01;
+        upvalue = sysVal;
+      }
+      else if(e < d) {
+        downvalue = sysVal;
+        upvalue= 0.01;
+      }
+      else {
+        downvalue = 0.01;
+        upvalue = 0.01;
+      }
+      MakeCFShiftmap[a+"_"+b+"_"+c+"_Up"]  = upvalue;
+      MakeCFShiftmap[a+"_"+b+"_"+c+"_Down"] = downvalue;
+    }
+  }
+
+  for(auto ih : MakeCFShiftmap) cout << "Adding EL Shift " << ih.first << " " << ih.second << endl;
 
 
   //// Setup Fake PartonSF 
-  TString datapath = getenv("DATA_DIR");
+
   vector<TString> FakeHMaps = {datapath + "/"+GetEra()+"/FakeRate/MCFR/TT_PartonSF.txt",
              datapath + "/"+GetEra()+"/FakeRate/MCFR/QCD_PartonSF.txt"};
 
-  if(IsData) FakeHMaps = {datapath + "/"+GetEra()+"/FakeRate/DataFR/Data_PartonSF.txt"};
+  if(IsDATA) FakeHMaps = {datapath + "/"+GetEra()+"/FakeRate/DataFR/Data_PartonSF.txt"};
+  cout << "HNL_LeptonCore::IsData = " << IsData << endl;
 
   for(auto ihmap  :  FakeHMaps){
     string Fline;
     ifstream in(ihmap);
     while(getline(in,Fline)){
       std::istringstream is( Fline );
-      if(IsData){
+      if(IsDATA){
         TString a,b,c,d;
         double e;
         is >> a; // Era
@@ -292,41 +341,11 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
 
   vector<AnalyzerParameter::Syst> SystList = {};
 
-  if(SystType == "Quick"){
+  if(SystType == "Initial" || SystType == ""){
     SystList.push_back(AnalyzerParameter::JetResUp);
     SystList.push_back(AnalyzerParameter::JetResDown);
-    SystList.push_back(AnalyzerParameter::JetEnUp);
-    SystList.push_back(AnalyzerParameter::JetEnDown);
-    SystList.push_back(AnalyzerParameter::BTagSFHTagUp);
-    SystList.push_back(AnalyzerParameter::BTagSFHTagDown);
-  }
-
-  if(SystType == "Jets"){
-    SystList.push_back(AnalyzerParameter::JetResUp);
-    SystList.push_back(AnalyzerParameter::JetResDown);
-    SystList.push_back(AnalyzerParameter::JetMassUp);
-    SystList.push_back(AnalyzerParameter::JetMassDown);
-    SystList.push_back(AnalyzerParameter::JetMassSmearUp);
-    SystList.push_back(AnalyzerParameter::JetMassSmearDown);
-    SystList.push_back(AnalyzerParameter::JetEnUp);
-    SystList.push_back(AnalyzerParameter::JetEnDown);
-  }
-
-  if(SystType == "Initial"){
-    SystList.push_back(AnalyzerParameter::JetResUp);
-    SystList.push_back(AnalyzerParameter::JetResDown);
-    SystList.push_back(AnalyzerParameter::JetMassUp);
-    SystList.push_back(AnalyzerParameter::JetMassDown);
-    SystList.push_back(AnalyzerParameter::JetMassSmearUp);
-    SystList.push_back(AnalyzerParameter::JetMassSmearDown);
-    SystList.push_back(AnalyzerParameter::JetEnUp);
-    SystList.push_back(AnalyzerParameter::JetEnDown);
-    SystList.push_back(AnalyzerParameter::MuonEnUp);
-    SystList.push_back(AnalyzerParameter::MuonEnDown);
-    SystList.push_back(AnalyzerParameter::ElectronResUp);
-    SystList.push_back(AnalyzerParameter::ElectronResDown);
-    SystList.push_back(AnalyzerParameter::ElectronEnUp);
-    SystList.push_back(AnalyzerParameter::ElectronEnDown);
+    SystList.push_back(AnalyzerParameter::PUUp);
+    SystList.push_back(AnalyzerParameter::PUDown);
     SystList.push_back(AnalyzerParameter::BTagSFHTagUp);
     SystList.push_back(AnalyzerParameter::BTagSFHTagDown);
     SystList.push_back(AnalyzerParameter::BTagSFLTagUp);
@@ -361,12 +380,12 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
     AnalyzerParameter::MuonEnUp,AnalyzerParameter::MuonEnDown,                                                                                       
     AnalyzerParameter::MuonIDSFUp,AnalyzerParameter::MuonIDSFDown,                                                                                   
     AnalyzerParameter::MuonISOSFUp,AnalyzerParameter::MuonISOSFDown,                                                                                 
-    AnalyzerParameter::MuonTriggerSFUp,AnalyzerParameter::MuonTriggerSFDown,                                                                                 
+    //AnalyzerParameter::MuonTriggerSFUp,AnalyzerParameter::MuonTriggerSFDown,                                                                                 
     AnalyzerParameter::ElectronRecoSFUp,AnalyzerParameter::ElectronRecoSFDown,                                                                       
     AnalyzerParameter::ElectronResUp,AnalyzerParameter::ElectronResDown,                                                                             
     AnalyzerParameter::ElectronEnUp,AnalyzerParameter::ElectronEnDown,                                                                               
     AnalyzerParameter::ElectronIDSFUp,AnalyzerParameter::ElectronIDSFDown,                                                                           
-    AnalyzerParameter::ElectronTriggerSFUp,AnalyzerParameter::ElectronTriggerSFDown,                                                                 
+    //AnalyzerParameter::ElectronTriggerSFUp,AnalyzerParameter::ElectronTriggerSFDown,                                                                 
     AnalyzerParameter::BTagSFHTagUp,AnalyzerParameter::BTagSFHTagDown,                                                                               
     AnalyzerParameter::BTagSFLTagUp,AnalyzerParameter::BTagSFLTagDown,                                                                               
     AnalyzerParameter::METUnclUp,AnalyzerParameter::METUnclDown,                                                                                     
@@ -374,11 +393,22 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
     AnalyzerParameter::CFSFUp,AnalyzerParameter::CFSFDown,                                                                                               
     AnalyzerParameter::FRUp,AnalyzerParameter::FRDown,                                                                                               
     AnalyzerParameter::PrefireUp,AnalyzerParameter::PrefireDown,                                                                                     
-    AnalyzerParameter::PUUp,AnalyzerParameter::PUDown};
+    AnalyzerParameter::PUUp,AnalyzerParameter::PUDown,
+    AnalyzerParameter::FRAJ30,
+    AnalyzerParameter::FRAJ60,
+    AnalyzerParameter::FRLooseIDDJUp,
+    AnalyzerParameter::FRLooseIDDJDown,
+    AnalyzerParameter::FRPartonSFUp,
+    AnalyzerParameter::FRPartonSFDown};
+  };
     
-    
-  }
-  
+  if(SystType == "Quick"){
+    SystList.push_back(AnalyzerParameter::JetResUp);
+    SystList.push_back(AnalyzerParameter::JetResDown);
+    SystList.push_back(AnalyzerParameter::FRAJ30);
+    SystList.push_back(AnalyzerParameter::FRAJ60);
+  };
+
   return SystList;
 
 }
@@ -513,7 +543,7 @@ AnalyzerParameter HNL_LeptonCore::SetupFakeParameter(AnalyzerParameter::Syst Sys
 }
 
 
-bool  HNL_LeptonCore::UpdataParamBySyst(TString JobID, AnalyzerParameter& paramEv , AnalyzerParameter::Syst systname, TString OrigParamName){
+bool  HNL_LeptonCore::UpdateParamBySyst(TString JobID, AnalyzerParameter& paramEv , AnalyzerParameter::Syst systname, TString OrigParamName){
  
   //// This function updates the ID/Keys for Fakes based on systematic settings
 
@@ -528,16 +558,16 @@ bool  HNL_LeptonCore::UpdataParamBySyst(TString JobID, AnalyzerParameter& paramE
 
   //// Setup FR ID
   if(paramEv.syst_ == AnalyzerParameter::FRLooseIDDJUp){
-    paramEv.Muon_FR_ID        = "HNL_ULID_FOUp_"+GetEraShort();
-    paramEv.Electron_FR_ID    = "HNL_ULID_FOUp_"+GetEraShort();
+    paramEv.Muon_FR_ID        = "HNL_ULID_FO_Up";
+    paramEv.Electron_FR_ID    = "HNL_ULID_FO_Up";
   }
   else if(paramEv.syst_ == AnalyzerParameter::FRLooseIDDJDown){
-    paramEv.Muon_FR_ID        = "HNL_ULID_FODown_"+GetEraShort();
-    paramEv.Electron_FR_ID    = "HNL_ULID_FODown_"+GetEraShort();
+    paramEv.Muon_FR_ID        = "HNL_ULID_FO_Down";
+    paramEv.Electron_FR_ID    = "HNL_ULID_FO_Down";
   }
   else{
-    paramEv.Muon_FR_ID        = "HNL_ULID_FO_"+GetEraShort();
-    paramEv.Electron_FR_ID    = "HNL_ULID_FO_"+GetEraShort();
+    paramEv.Muon_FR_ID        = "HNL_ULID_FO";
+    paramEv.Electron_FR_ID    = "HNL_ULID_FO";
   }
 
   TString MuFRBin = (paramEv.syst_ ==AnalyzerParameter::FRAltBinning) ? "_Binv2" : "";
@@ -627,16 +657,16 @@ AnalyzerParameter HNL_LeptonCore::SetupHNLParameter(TString s_setup_version, TSt
   if (s_setup_version=="EXO17028")  GetSetup_HNL16(param);
   if (s_setup_version=="TopHN")     GetSetup_HNLTopID(param);
   if (s_setup_version=="HNL_ULID")  GetSetup_HNLID(param);
-   
-  if (s_setup_version=="Peking")    GetSetup_Peking(param);
-  if (s_setup_version=="HNL_Opt")   GetSetup_HNLOpt(param);
-  if (s_setup_version=="BDT")       GetSetup_BDT(param);
+
+  if (s_setup_version=="Peking")  GetSetup_Peking(param);
+  if (s_setup_version=="HNL_Opt") GetSetup_HNLOpt(param);
+  if (s_setup_version=="BDT")     GetSetup_BDT(param);
 
   if (s_setup_version == "FakeRate" ){
     param.Apply_Weight_LumiNorm = false;
     return param;  }
 
-  if (s_setup_version=="SignalStudy"){
+  if (s_setup_version=="SignalStudy" || s_setup_version=="MCBkg"){
     param.FakeMethod = "MC";
     param.CFMethod   = "MC";
     param.ConvMethod = "MC";

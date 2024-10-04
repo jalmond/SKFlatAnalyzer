@@ -10,6 +10,8 @@
 ------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------*/
 
+
+
 void HNL_LeptonCore::FillFakeHistograms(AnalyzerParameter param, TString plot_dir,std::vector<Lepton *> Leptons, std::vector<Jet> jets,   std::vector<FatJet> fatjets, vector<Jet> BJetColl, Particle met,  double w){
   
   for(auto ilep : Leptons){
@@ -93,10 +95,10 @@ void HNL_LeptonCore::Fill_PlotsAK8(AnalyzerParameter param, TString region, TStr
 
   for(unsigned int i=0; i < fatjets.size(); i++){
 
-    for(auto itau : TauColl){
-      if(fatjets[i].DeltaR(itau) < minDRTauAK8) minDRTauAK8 = fatjets[i].DeltaR(itau) ;
-      if(DrawLevel3)FillHist( plot_dir+region+ "/AK8J_dR_Tau",   fatjets[i].DeltaR(itau) ,  w, 50, 0, 5, "#DeltaR (WAK8,Tau)");
-    }
+    //for(auto itau : TauColl){
+    //  if(fatjets[i].DeltaR(itau) < minDRTauAK8) minDRTauAK8 = fatjets[i].DeltaR(itau) ;
+    //  if(DrawLevel3)FillHist( plot_dir+region+ "/AK8J_dR_Tau",   fatjets[i].DeltaR(itau) ,  w, 50, 0, 5, "#DeltaR (WAK8,Tau)");
+    //}
     for(auto ilep : leps){
       if(fatjets[i].DeltaR(*ilep) < minDRLepAK8) minDRLepAK8 = fatjets[i].DeltaR(*ilep) ;
       if(DrawLevel3)FillHist( plot_dir+region+ "/AK8Jet_dR_"+ilep->GetFlavour(),   fatjets[i].DeltaR(*ilep) ,  w, 50, 0, 5, "#DeltaR (WAK8,"+ilep->GetFlavour()+")");
@@ -229,6 +231,8 @@ void HNL_LeptonCore::Fill_Plots(AnalyzerParameter param, TString region,  TStrin
         vector<Tau> TauColl,  std::vector<Jet> jets, std::vector<FatJet> fatjets, std::vector<Lepton *> leps , 
         Particle  met, double nvtx,  double w){
 
+  if(param.syst_ != AnalyzerParameter::Central) return; //JH : FIXME for fast run
+
   TString regionAK8 = region+"/AK8";
   TString lepregion= region + "/LeptonMVA";
 
@@ -245,6 +249,11 @@ void HNL_LeptonCore::Fill_Plots(AnalyzerParameter param, TString region,  TStrin
     if(ilep->LeptonFlavour() == Lepton::MUON) nmu++;
   }
     
+  //std::vector<FatJet> AK8_JetColl_PN_NoMass          = GetHNLAK8Jets("HNL_PN_NoMass",param);
+  //std::vector<FatJet> AK8_JetColl_NoMass          = GetHNLAK8Jets("HNL_NoMass",param);
+  //Fill_PlotsAK8(param, regionAK8, plot_dir+"_AK8_JetColl_PN_NoMass",TauColl,jets , AK8_JetColl_PN_NoMass, leps, met, nvtx,w);
+  //Fill_PlotsAK8(param, regionAK8, plot_dir+"_AK8_JetColl_NoMass",TauColl,jets , AK8_JetColl_NoMass, leps, met, nvtx,w);
+
   Fill_PlotsAK8(param, regionAK8, plot_dir,TauColl,jets , fatjets, leps, met, nvtx,w);
   
   bool DrawLevel1 = true; // Always gets drawn
@@ -415,10 +424,10 @@ void HNL_LeptonCore::Fill_Plots(AnalyzerParameter param, TString region,  TStrin
     if(DrawLevel1)FillHist( plot_dir+ region+ "/Leptons/Lepton_eta",i->Eta()  , w, 50, -2.5, 2.5,"l_{1} #eta");
     if(DrawLevel2)FillHist( plot_dir+ region+ "/Leptons/Lepton_phi",i->Phi()  , w, 50, -2.5, 2.5,"l_{1} #phi");
     LT += i->Pt();
-    for(auto itau  : TauColl){
-      if(nlep==0 && i->DeltaR(itau) < minDRLep1Tau) minDRLep1Tau = i->DeltaR(itau);
-      if(nlep==1 && i->DeltaR(itau) < minDRLep2Tau) minDRLep2Tau = i->DeltaR(itau);
-    }
+    //for(auto itau  : TauColl){
+    //  if(nlep==0 && i->DeltaR(itau) < minDRLep1Tau) minDRLep1Tau = i->DeltaR(itau);
+    //  if(nlep==1 && i->DeltaR(itau) < minDRLep2Tau) minDRLep2Tau = i->DeltaR(itau);
+    //}
     nlep++;
   }
   if(DrawLevel3&&minDRLep1Tau < 999)FillHist( plot_dir+ region+ "/DeltaR/dRMin_Lep1_Tau", minDRLep1Tau  ,w, 50, 0, 5, "#DeltaR (Tau,lep1)");
@@ -729,8 +738,8 @@ void HNL_LeptonCore::FillLeptonKinematicPlots(AnalyzerParameter param, TString c
   FillHist( cut+ "/Lepton_Pt_"+label   , lep.Pt() , w, 5000, 0., 10000., label_lep+"p_{T} GeV");
   FillHist( cut+ "/Lepton_Eta_"+label  , lep.Eta() , w, 60, -3., 3.,label_lep+"#eta");
   FillHist( cut+ "/Lepton_Phi_"+label  , lep.Phi() , w, 60, -3., 3.,label_lep+"#phi");
-  double ptbins[11] = { 0., 10.,15., 20., 30., 40.,50., 100.,500. ,1000.,2000.};
-  FillHist( cut+ "/Lepton_PtBinned_"+label   , Pt_Lep, w, 10, ptbins);
+  double ptbins[14] = { 0., 10.,15., 20., 30., 40.,50., 100.,200.,300.,400.,500. ,1000.,2000.};
+  FillHist( cut+ "/Lepton_PtBinned_"+label   , Pt_Lep, w, 11, ptbins);
 
   // IP                                                                                                                                                                                                                                                                         
   FillHist( cut+ "/Lepton_Dxy_"+label           , lep.fdXY() , w, 250,  0, 0.2, "dXY");
@@ -816,7 +825,7 @@ void HNL_LeptonCore::FillAllElectronPlots(AnalyzerParameter param , TString cut,
   TString label  = param.hpostfix;
 
 
-  FillHist( cut+ "/nelectrons"+label , size(ElectronColl) , w, 5, 0., 5., "n_{el}");
+  FillHist( cut+ "/NElectrons"+label , size(ElectronColl) , w, 5, 0., 5., "n_{el}");
 
   for(unsigned int i=0; i < ElectronColl.size(); i++){
 
@@ -849,29 +858,29 @@ void HNL_LeptonCore::FillElectronKinematicPlots(AnalyzerParameter param , TStrin
 
   TString label = param.hpostfix;
 
-  FillHist( cut+ "/Electron_SCEta_"+label  , lep.scEta() , w, 60, -3., 3.,"electron #eta");
+  FillHist( cut+ "/Electron_SCEta_"+label  , lep.scEta() , w, 60, -3.,  3., "electron #eta");
   FillHist( cut+ "/Electron_SCPhi_"+label  , lep.scPhi() , w, 70, -3.5, 3.5,"electron #phi");
 
   /// POG MVA                                                                                                                                                                                                                                                                   
-  FillHist( cut+ "/Electron_NoIsoMva_"+label  , lep.MVANoIso(), w, 600, -1., 1., "MVA");
+  FillHist( cut+ "/Electron_NoIsoMva_"           +label  , lep.MVANoIso(),                  w, 600, -1., 1., "MVA");
   FillHist( cut+ "/Electron_RelNoIsoMvaResponse_"+label  , lep.MVANoIsoResponse()/lep.Pt(), w, 160, -1.,1., "MVA");
-  FillHist( cut+ "/Electron_NoIsoMvaResponse_"+label  , lep.MVANoIsoResponse(), w, 160, -8.,8., "MVA");
-  FillHist( cut+ "/Electron_MvaIso_"+label  , lep.MVAIso(), w, 600, -1., 1., "MVA");
-  FillHist( cut+ "/Electron_RelMvaIsoResponse_"+label  , lep.MVAIsoResponse()/lep.Pt(), w, 600, -1., 1., "MVA");
-  FillHist( cut+ "/Electron_MvaIsoResponse_"+label  , lep.MVAIsoResponse(), w, 600, -8., 8., "MVA");
+  FillHist( cut+ "/Electron_NoIsoMvaResponse_"   +label  , lep.MVANoIsoResponse(),          w, 160, -8.,8., "MVA");
+  FillHist( cut+ "/Electron_MvaIso_"             +label  , lep.MVAIso(),                    w, 600, -1., 1., "MVA");
+  FillHist( cut+ "/Electron_RelMvaIsoResponse_"  +label  , lep.MVAIsoResponse()/lep.Pt(),   w, 600, -1., 1., "MVA");
+  FillHist( cut+ "/Electron_MvaIsoResponse_"     +label  , lep.MVAIsoResponse(),            w, 600, -8., 8., "MVA");
 
   /// CF MVA                                                                                                                                                                                                                                                                    
-  FillHist( cut+ "/Electron_EoverP_"+label  , lep.EOverP() , w, 400, -10, 100);
-  FillHist( cut+ "/Electron_LogEoverP_"+label  , log(lep.EOverP()) , w, 400, -1, 10);
+  FillHist( cut+ "/Electron_EoverP_"       +label  , lep.EOverP() , w, 400, -10, 100);
+  FillHist( cut+ "/Electron_LogEoverP_"    +label  , log(lep.EOverP()) , w, 400, -1, 10);
 
-  FillHist( cut+ "/Electron_FBrem_"+label  , std::max(lep.FBrem(),-2.),  w, 200, -1., 1);
-  FillHist( cut+ "/Electron_R9_"+label  , lep.R9(), w, 100, 0., 1);
-  FillHist( cut+ "/Electron_dr03TkSumPt_"+label  , lep.dr03TkSumPt()/lep.UncorrPt(), w, 200, 0., 0.5, "");
-  FillHist( cut+ "/Electron_E15_"+label  , lep.e15(), w, 1000, 0., 1000);
-  FillHist( cut+ "/Electron_E25_"+label  , lep.e25(), w, 1000, 0., 1000);
-  FillHist( cut+ "/Electron_E55_"+label  , lep.e55(), w, 1000, 0., 1000);
-  FillHist( cut+ "/Electron_e2x5OverE5x5_"+label  , lep.e2x5OverE5x5(), w, 100, 0., 1);
-  FillHist( cut+ "/Electron_e1x5OverE5x5_"+label  , lep.e1x5OverE5x5(), w, 100, 0., 1);
+  FillHist( cut+ "/Electron_FBrem_"        +label  , std::max(lep.FBrem(),-2.),  w, 200, -1., 1);
+  FillHist( cut+ "/Electron_R9_"           +label  , lep.R9(), w, 100, 0., 1);
+  FillHist( cut+ "/Electron_dr03TkSumPt_"  +label  , lep.dr03TkSumPt()/lep.UncorrPt(), w, 200, 0., 0.5, "");
+  FillHist( cut+ "/Electron_E15_"          +label  , lep.e15(), w, 1000, 0., 1000);
+  FillHist( cut+ "/Electron_E25_"          +label  , lep.e25(), w, 1000, 0., 1000);
+  FillHist( cut+ "/Electron_E55_"          +label  , lep.e55(), w, 1000, 0., 1000);
+  FillHist( cut+ "/Electron_e2x5OverE5x5_" +label  , lep.e2x5OverE5x5(), w, 100, 0., 1);
+  FillHist( cut+ "/Electron_e1x5OverE5x5_" +label  , lep.e1x5OverE5x5(), w, 100, 0., 1);
   FillHist( cut+ "/Electron_EtaWidth_"+label  , lep.EtaWidth(), w, 100, 0., 0.2);
   FillHist( cut+ "/Electron_PhiWidth_"+label  , lep.PhiWidth(), w, 200, 0., 0.2);
 
@@ -898,7 +907,7 @@ void HNL_LeptonCore::FillElectronKinematicPlots(AnalyzerParameter param , TStrin
   FillHist( cut+ "/Electron_ecalPFClusterIso_"+label  , lep.ecalPFClusterIso()/lep.UncorrPt(), w, 100, 0., 1., "");
   FillHist( cut+ "/Electron_hcalPFClusterIso_"+label  , lep.hcalPFClusterIso()/lep.UncorrPt(), w, 100, 0., 1., "");
 
-  vector<TString> IDs ={"HNTightV2"};
+  vector<TString> IDs ={"HNTightV2","passHEEPID_v1","passHEEPID_v2","passHEEPID_v3","HNL_ULID","passPOGTight","HNL_ULID_HEEP"};
   for (auto ID : IDs){
     if(lep.PassID(ID)) FillHist( cut+ "/Electron_Pass_"+ID+label  , 1, w, 4, 0., 4., "Pass " + ID);
     else FillHist( cut+ "/Electron_Pass_"+ID+label  , 0, w, 4, 0., 4., "Pass " + ID);

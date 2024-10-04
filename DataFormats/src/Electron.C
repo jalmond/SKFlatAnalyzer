@@ -275,7 +275,7 @@ int  Electron::PassIDTight(TString ID) const{
   //////////////////////////////////////////////////////////////////////////////////// 
 
   if(ID=="Peking"){
-    if( Run_Era()== 2016) {
+    if( Run_Year()== 2016) {
 
       if(! (passTightID()) ) return 0;
       if( IsBB()){
@@ -303,7 +303,7 @@ int  Electron::PassIDTight(TString ID) const{
     }
   }
   if(ID=="Peking_FO") {
-    if( Run_Era()== 2016) {
+    if( Run_Year()== 2016) {
       if(! (passLooseID()) ) return 0;
       if( IsBB()){
 	if( !(fabs(dXY()) < 0.05 && fabs(dZ())< 0.1)) return 0;
@@ -329,50 +329,48 @@ int  Electron::PassIDTight(TString ID) const{
     }  
   }
   
-  if(ID=="HNTightV2")  return passTightID_NoTightCharge() &&PassHNID()  &&(fabs(IP3D()/IP3Derr())<4.)? 1 : 0 ;
-  if(ID=="HNTightV3")  return (PassHNOpt()==1)  ? 1 : 0 ;
-  if(ID=="HNTight_17028") return Pass_HNTight2016()? 1 : 0 ;  // EXO-17-028             
+  if(ID=="HNTightV2")     return BtoI(passTightID_NoTightCharge() &&PassHNID()  &&(fabs(IP3D()/IP3Derr())<4.));
+  if(ID=="HNTightV3")     return (PassHNOpt()==1)  ? 1 : 0 ;
+  if(ID=="HNTight_17028") return BtoI(Pass_HNTight2016());
   
   // No Isoc
-  if(ID=="CutBasedLooseNoIso") return Pass_CutBasedLooseNoIso()? 1 : 0 ;
-  if(ID=="CutBasedMediumNoIso") return Pass_CutBasedMediumNoIso()? 1 : 0 ;
-  if(ID=="CutBasedTightNoIso") return Pass_CutBasedTightNoIso()? 1 : 0 ;
-  if(ID=="MVALooseNoIso") return passMVAID_noiso_WPLoose()? 1 : 0 ;
-  if(ID=="CutBasedVetoNoIso") return Pass_CutBasedVetoNoIso()? 1 : 0 ;
+  if(ID=="CutBasedLooseNoIso")  return BtoI(Pass_CutBasedLooseNoIso());
+  if(ID=="CutBasedMediumNoIso") return BtoI(Pass_CutBasedMediumNoIso());
+  if(ID=="CutBasedTightNoIso")  return BtoI(Pass_CutBasedTightNoIso());
+  if(ID=="MVALooseNoIso")       return BtoI(passMVAID_noiso_WPLoose());
+  if(ID=="CutBasedVetoNoIso")   return BtoI(Pass_CutBasedVetoNoIso());
   
   //=== POG
-  if(ID=="passPOGTight")             return passTightID_NoTightCharge()? 1 : 0 ;
-  if(ID=="passPOGMedium")            return passMediumID_NoTightCharge()? 1 : 0 ;
-  if(ID=="passMediumID") return passMediumID()? 1 : 0 ;
-  if(ID=="passTightID") return passTightID()? 1 : 0 ;
+  if(ID=="passPOGTight")        return BtoI(passTightID_NoTightCharge());
+  if(ID=="passPOGMedium")       return BtoI(passMediumID_NoTightCharge());
+  if(ID=="passMediumID")        return BtoI(passMediumID());
+  if(ID=="passTightID")         return BtoI(passTightID());
   //=== HEEP IDS                                                                                                                                                                                       
   if(ID=="passHEEPID_v1")           {
-    if(Run_Era() == 2018 ) return passHEEP2018Prompt()? 1 : 0 ;
-    else return passHEEPID()? 1 : 0 ;
+    if(Run_Year() == 2018 ) return BtoI(passHEEP2018PromptHNL());
+    else return BtoI(passHEEPIDHNL());
   }
   
-  if(ID=="passHEEPID_v2"){
-    if(Run_Era() == 2018 ) return passHEEP2018Prompt()&&Pass_TriggerEmulation()&&PassConversionVeto() && IsGsfCtfScPixChargeConsistent()? 1 : 0 ;
-    else return passHEEPID()&& Pass_TriggerEmulation()&&PassConversionVeto() && IsGsfCtfScPixChargeConsistent() ? 1 : 0;
-  }
-  if(ID=="passHEEPID_v3"){
-    if(Run_Era() == 2018 )return passHEEP2018Prompt()&& Pass_TriggerEmulation()&&PassConversionVeto() && IsGsfCtfChargeConsistent()? 1 : 0;
-    //else   return passHEEPID()         && Pass_TriggerEmulation()&&PassConversionVeto() && IsGsfCtfChargeConsistent()? 1 : 0;
-    else   return passHEEPID_NoMinPt()         && Pass_TriggerEmulation()&&PassConversionVeto() && IsGsfCtfChargeConsistent()? 1 : 0; //JH
-  }
+  if(ID=="passHEEPID_v2") return BtoI(PassID("passHEEPID_v1") && PassID("passTriggerLoose") && PassID("passTightCharge"));
+  if(ID=="passHEEPID_v3") return BtoI(PassID("passHEEPID_v1") && PassID("passTriggerLoose") && PassID("passMediumCharge"));
 
+  if(ID=="passMediumCharge") return IsGsfCtfChargeConsistent();
+  if(ID=="passTightCharge") return IsGsfCtfChargeConsistent();
+  if(ID=="passTriggerLoose") return Pass_TriggerEmulationLoose();
+  
+  
   //=== MVA
 
-  if(ID=="passMVAID_noIso_WP90Opt") return passMVAID_noIso_WP90()? 1 : 0 ;
-  if(ID=="passMVAID_noIso_WP80Opt") return passMVAID_noIso_WP80()? 1 : 0 ;
-  if(ID=="passMVAID_noIso_WP80") return passMVAID_noIso_WP80HN()? 1 : 0 ;
-  if(ID=="passMVAID_noIso_WP90") return passMVAID_noIso_WP90HN()? 1 : 0 ;
-  if(ID=="passMVAID_Iso_WP80")   return passMVAID_Iso_WP80HN()? 1 : 0 ;
-  if(ID=="passMVAID_Iso_WP90")   return passMVAID_Iso_WP90HN()? 1 : 0 ;
-
+  if(ID=="passMVAID_noIso_WP90Opt") return BtoI(passMVAID_noIso_WP90()) ;
+  if(ID=="passMVAID_noIso_WP80Opt") return BtoI(passMVAID_noIso_WP80()) ;
+  if(ID=="passMVAID_noIso_WP80")    return BtoI(passMVAID_noIso_WP80HN()) ;
+  if(ID=="passMVAID_noIso_WP90")    return BtoI(passMVAID_noIso_WP90HN());
+  if(ID=="passMVAID_Iso_WP80")      return BtoI(passMVAID_Iso_WP80HN());
+  if(ID=="passMVAID_Iso_WP90")      return BtoI(passMVAID_Iso_WP90HN());
+  
   //==== Customized                                                                                                                                                                                  
-  if(ID=="SUSYTight") return Pass_SUSYTight()? 1 : 0 ;
-  if(ID=="SUSYLoose") return Pass_SUSYLoose()? 1 : 0 ;
+  if(ID=="SUSYTight") return BtoI(Pass_SUSYTight());
+  if(ID=="SUSYLoose") return BtoI(Pass_SUSYLoose());
   
 
   // ===== Type-1    
@@ -417,64 +415,74 @@ bool Electron::PassMVABaseLine() const{
   return true;
 }
 
+bool Electron::PassMVABaseLineTrkIso() const{
+
+  if(!PassConversionVeto() ) return false;
+  if(!Pass_LepMVAID_TrkIso())       return false;
+  return true;
+}
+
 
 int  Electron::PassIDLoose(TString ID) const{
     
-  if(ID=="MVAID")    return  (Pass_LepMVAID()) ? 1 : 0;
-  if(ID=="TopMVAID") return  (Pass_LepMVATopID()) ? 1 : 0;
-  
+  if(ID=="PassMVABaseLine")          return  BtoI(Pass_LepMVAID());
+  if(ID=="PassMVABaseLine_TrkIso")   return  BtoI(Pass_LepMVAID_TrkIso());
 
-  if(ID=="passProbeID") return passMVAID_noiso_WPLoose() ? 1 : 0;  // --- VETO POG                                                                                                                                           
+  if(ID=="MVAID")        return  BtoI(Pass_LepMVAID());
+  if(ID=="TopMVAID")     return  BtoI(Pass_LepMVATopID());
+  if(ID=="MVAID_TrkIso") return  BtoI(Pass_LepMVAID_TrkIso());
+
+  if(ID=="passProbeID")  return BtoI(passMVAID_noiso_WPLoose());
   //=== POG
-  if(ID=="passProbeIDTight") return passMVAID_noiso_WPLoose()&&Pass_TriggerEmulationLoose() ? 1 : 0;  // --- VETO POG                                                                                                                                             
+  if(ID=="passProbeIDTight") return BtoI(passMVAID_noiso_WPLoose()&&Pass_TriggerEmulationLoose());
 
-  if(ID=="passLooseID")  return passLooseID()     ? 1 : 0; 
-  if(ID=="HEEPLoose_v1")    return passLooseHEEPID() ? 1 : 0; 
-  if(ID=="HEEPLoose_v2")    return passLooseHEEPID() && Pass_TriggerEmulation()&&PassConversionVeto() && IsGsfCtfScPixChargeConsistent() ? 1 : 0; 
-  if(ID=="HEEPLoose_v3")    return passLooseHEEPID_NoMinPt() && Pass_TriggerEmulation()&&PassConversionVeto() && IsGsfCtfChargeConsistent()? 1 : 0;  //JH
+  if(ID=="passLooseID")  return BtoI(passLooseID());
 
+  if(ID=="passHEEPLoose_v1") return BtoI(passLooseHEEPID());
+  if(ID=="passHEEPLoose_v2") return BtoI(passLooseHEEPID() && Pass_TriggerEmulationLoose()&&PassConversionVeto() && IsGsfCtfScPixChargeConsistent());
+  if(ID=="passHEEPLoose_v3") return BtoI(passLooseHEEPID() && Pass_TriggerEmulationLoose()&&PassConversionVeto() && IsGsfCtfChargeConsistent());
 
   //=== loose user                                                                                                                                                                                       
-  if(ID=="HNLooseMVA") return (passIDHN(3,0.2, 0.2, 0.2,0.2, 10.,10., 0.6, 0.6, -999., -999.)&&passMVAID_noiso_WPLoose())  ? 1 : 0;  
-  if(ID=="HNLooseV1")   return  Pass_HNLooseID(0.6,0.2,0.1,10) ? 1 : 0;  // V POG IP/ISO   17028 IP                                                                                                
-  if(ID=="HNLooseV2")   return  Pass_HNLooseID(0.6,0.2,0.1,9999) ? 1 : 0;  // V POG IP/ISO                                                                                                                  
-  if(ID=="HNLooseV3")    return  Pass_HNLooseID(0.6,0.02,0.1,4.) ? 1 : 0;  // V POG IP/ISO                                                                                                                    
+  if(ID=="HNLooseMVA") return BtoI(passIDHN(3,0.2, 0.2, 0.2,0.2, 10.,10., 0.6, 0.6, -999., -999.)&&passMVAID_noiso_WPLoose());  
+  if(ID=="HNLooseV1")  return BtoI(Pass_HNLooseID(0.6,0.2,0.1,10));  // V POG IP/ISO   17028 IP                                                                                                
+  if(ID=="HNLooseV2")  return BtoI(Pass_HNLooseID(0.6,0.2,0.1,9999));  // V POG IP/ISO                                                                                                                  
+  if(ID=="HNLooseV3")  return BtoI(Pass_HNLooseID(0.6,0.02,0.1,4.));  // V POG IP/ISO                                                                                                                    
   if(ID=="HNLooseV4")   {
-    if( IsBB())   return  Pass_HNLooseID(0.6,0.05,0.1,4.) ? 1 : 0;  // non POG IP/ISO     
-    else  return  Pass_HNLooseID(0.6,0.1,0.2,4.) ? 1 : 0; 
+    if( IsBB())   return  BtoI(Pass_HNLooseID(0.6,0.05,0.1,4.));  // non POG IP/ISO     
+    else  return  BtoI(Pass_HNLooseID(0.6,0.1,0.2,4.)); 
   }
 
-  if(ID=="HNLooseV4_LooseIP")   return  Pass_HNLooseID(0.6,0.2,0.2,10.) ? 1 : 0;  // non POG IP/ISO                                         
+  if(ID=="HNLooseV4_LooseIP")   return  BtoI(Pass_HNLooseID(0.6,0.2,0.2,10.));  // non POG IP/ISO                                        
 
   if(ID=="HNLoosePOG")   {
-    if( IsBB()) return  Pass_HNLooseID(0.6,0.05,0.1,999.) ? 1 : 0;  // non POG IP/ISO                                                                           
-    else  return  Pass_HNLooseID(0.6,0.1,0.2,999.) ? 1 : 0; 
+    if( IsBB()) return  BtoI(Pass_HNLooseID(0.6,0.05,0.1,999.));  // non POG IP/ISO                                                                           
+    else  return  BtoI(Pass_HNLooseID(0.6,0.1,0.2,999.) ); 
   }
   
-  if(ID=="HNLoosePOG_LooseIP")   return  Pass_HNLooseID(0.6,0.2,0.2,999.) ? 1 : 0;  // non POG IP/ISO                                        
+  if(ID=="HNLoosePOG_LooseIP")   return  BtoI(Pass_HNLooseID(0.6,0.2,0.2,999.));  // non POG IP/ISO                                        
 
   // ===== Type-1                                                                                                                                                                                     
-  if(ID=="HNLoose2016")     return (passIDHN(3,0.01, 0.01, 0.04,0.04, 4.,4., 0.6, 0.6, -999., -999.)&&passMVAID_noiso_WPLoose())  ? 1 : 0; 
-
+  if(ID=="HNLoose2016")     return BtoI(passIDHN(3,0.01, 0.01, 0.04,0.04, 4.,4., 0.6, 0.6, -999., -999.)&&passMVAID_noiso_WPLoose()); 
   
-
-  if(ID=="passLooseID")      return passLooseIDHN() ? 1 : 0;  // non POG IP/ISO Pass_HNLooseID(0.6,0.2,0.2,10.);                                          
+  
+  
+  if(ID=="passLooseID")     return BtoI(passLooseIDHN() );  // non POG IP/ISO Pass_HNLooseID(0.6,0.2,0.2,10.);                                          
   return -1;
 }
 
 
 int  Electron::PassIDOptLoose(TString ID) const{
+  
+  if(ID=="passMVAID_noIso_WP80Loose")   return BtoI(passMVAID_noIso_WP80HNLoose()) ;
+  if(ID=="passMVAID_noIso_WP90Loose")   return BtoI(passMVAID_noIso_WP90HNLoose());
+  if(ID=="passMVAID_Iso_WP80Loose")     return BtoI(passMVAID_Iso_WP80HNLoose());
+  if(ID=="passMVAID_Iso_WP90Loose")     return BtoI(passMVAID_Iso_WP90HNLoose());
+  if(ID=="passMVAID_noIso_WP90LooseV2") return BtoI(Pass_HNLoose2016MVANonIso(0.6,0.02,0.05,5));
+  if(ID=="HNMVALoose") return BtoI(Pass_HNMVALoose(0.6, 999., 999.)) ;
 
-  if(ID=="passMVAID_noIso_WP80Loose") return passMVAID_noIso_WP80HNLoose() ? 1 : 0 ;
-  if(ID=="passMVAID_noIso_WP90Loose") return passMVAID_noIso_WP90HNLoose() ? 1 : 0 ;
-  if(ID=="passMVAID_Iso_WP80Loose") return passMVAID_Iso_WP80HNLoose() ? 1 : 0 ;
-  if(ID=="passMVAID_Iso_WP90Loose") return passMVAID_Iso_WP90HNLoose()? 1 : 0 ;
-  if(ID=="passMVAID_noIso_WP90LooseV2") return Pass_HNLoose2016MVANonIso(0.6,0.02,0.05,5)? 1 : 0 ;
-  if(ID=="HNMVALoose") return Pass_HNMVALoose(0.6, 999., 999.)? 1 : 0 ;
-
-  if(ID=="HNLoose_17028")       return Pass_HNLoose2016(0.6, 0.2, 0.1, 10.)? 1 : 0 ;
-  if(ID=="HNLoose_17028_TightIP")  return Pass_HNLoose2016(0.6, 0.01, 0.04, 4.)? 1 : 0 ;
-  if(ID=="HNLoose_17028_TOP")   return Pass_HNLoose2016(0.6, 0.02, 0.04, 4.)? 1 : 0 ;
+  if(ID=="HNLoose_17028")          return BtoI(Pass_HNLoose2016(0.6, 0.2, 0.1, 10.));
+  if(ID=="HNLoose_17028_TightIP")  return BtoI(Pass_HNLoose2016(0.6, 0.01, 0.04, 4.)) ;
+  if(ID=="HNLoose_17028_TOP")      return BtoI(Pass_HNLoose2016(0.6, 0.02, 0.04, 4.));
 
 
   return -1;
@@ -485,15 +493,18 @@ int  Electron::PassIDOptLoose(TString ID) const{
 
 bool Electron::passLooseHEEPID() const{
 
-  int HEEPcutbit = IDCutBit().at(11);
-
-
+  //  int HEEPcutbit = IDCutBit().at(11);
   //==  H/E and EM+Had_depth1 = (4096-1) - (1<<6) - (1<<8) - (1<<7) - (1<<9) = 3135
-  if(! ( (HEEPcutbit&3135)==3135 ) ) return false;
-  if(! (HoverE()<0.13) ) return false;
+  //== ADD (1<<0) - (1<<2) - (1<<3) - (1<<4)  
+
+  if(!isEcalDriven()) return false;
+  if(! (dXY()<0.05) ) return false;
+  if(NMissingHits() > 1) return false;
+
+  //  if(! ( (HEEPcutbit&3135)==3135 ) ) return false;
+  //  if(! (HoverE()<0.13) ) return false; --> In trigger emulation cuts
   if(! (TrkIso()<20.) ) return false;
-  if(! (dXY()<0.1) ) return false;
-  if(! ( dr03EcalRecHitSumEt() + dr03HcalDepth1TowerSumEt() < 8. ) ) return false;     
+  //  if(! ( dr03EcalRecHitSumEt() + dr03HcalDepth1TowerSumEt() < 8. ) ) return false;     
 
   return true;
   
@@ -512,7 +523,46 @@ bool Electron::passLooseHEEPID_NoMinPt() const{
   if(! ( dr03EcalRecHitSumEt() + dr03HcalDepth1TowerSumEt() < 8. ) ) return false;     
 
   return true;
+}
   
+bool Electron::passHEEPIDHNL() const {
+  int HEEPcutbit = IDCutBit().at(11);
+
+  /// Remove Pt cut only
+  if(! ( (HEEPcutbit&4094)==4094 ) ) return false;
+  return true;
+}
+
+bool Electron::passHEEP2018PromptHNL() const {
+
+  //==== If not endcap, use original function                                                                                                                     
+  if( fabs(scEta()) < 1.566 ) return passHEEPIDHNL();
+
+  //==== https://github.com/CMSSNU/SKFlatMaker/blob/Run2Legacy_v4/SKFlatMaker/python/SKFlatMaker_cfi.py#L37-L50                                                   
+  int HEEPcutbit = IDCutBit().at(11);
+
+  //==== https://twiki.cern.ch/twiki/bin/view/CMS/CutBasedElectronIdentificationRun2#Applying_Individual_Cuts_of_a_Se                                             
+  //==== We will modify H/E (bit nr=6) and EM+Had_depth1 (bit nr=8) isolation cut for EndCap for 2018                                                             
+  //==== Decimal without H/E and EM+Had_depth1 = (4096-1) - (1<<6) - (1<<8) - (1<<0))= 3774                                                                                
+  if(! ( (HEEPcutbit&3774)==3774 ) ) return false;
+
+  //==== new cutd : https://indico.cern.ch/event/831669/contributions/3485543/attachments/1871797/3084930/ApprovalSlides_EE_v3.pdf, page 9                       
+
+  //==== new H/E cut                                                                                                                                              
+  //double cutValue_HoverE =                                      5 / scE() + 0.05; // original cut                                                                 
+  double cutValue_HoverE = ( -0.4 + 0.4 * fabs(scEta()) ) * Rho() / scE() + 0.05;
+  if(! (HoverE()<cutValue_HoverE) ) return false;
+
+  //==== new EM+Had_depth1 cut                                                                                                                                    
+  //double cutValue_emhaddep1 = UncorrPt() > 50. ? 2.5 + 0.03 * (UncorrPt()-50.) +                        0.28 * Rho() : 2.5 +                        0.28 * Rho();
+  
+  // original cut                                                                                                                                                  
+  
+  double cutValue_emhaddep1 = UncorrPt() > 50. ? 2.5 + 0.03 * (UncorrPt()-50.) + (0.15 + 0.07*fabs(scEta())) * Rho() : 2.5 + (0.15 + 0.07*fabs(scEta())) * Rho();
+  if(! ( dr03EcalRecHitSumEt() + dr03HcalDepth1TowerSumEt() < cutValue_emhaddep1 ) ) return false;
+
+  return true;
+
 }
 
 bool Electron::passHEEP2018Prompt() const {

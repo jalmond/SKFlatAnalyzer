@@ -19,39 +19,39 @@ void HNL_Lepton_FakeRate_MC::executeEvent(){
   
   if(HasFlag("MCClosure")){
 
-    vector<TString> LIDs = {"HNL_ULID_FO_v1_a_"+GetYearString(),
-                            "HNL_ULID_FO_v2_a_"+GetYearString(),
-                            "HNL_ULID_FO_v3_a_"+GetYearString(),
-                            "HNL_ULID_FO_v4_a_"+GetYearString(),
-                            "HNL_ULID_FO_v5_a_"+GetYearString(),
-                            "HNL_ULID_FO_v6_a_"+GetYearString(),
-                            "HNL_ULID_FO_v7_a_"+GetYearString(),
-                            "HNL_ULID_FO_v8_a_"+GetYearString(),
-                            "HNL_ULID_FO_v9_a_"+GetYearString(),
-                            "HNL_ULID_FO_v1_b_"+GetYearString(),
-                            "HNL_ULID_FO_v2_b_"+GetYearString(),
-                            "HNL_ULID_FO_v3_b_"+GetYearString(),
-                            "HNL_ULID_FO_v4_b_"+GetYearString(),
-                            "HNL_ULID_FO_v5_b_"+GetYearString(),
-                            "HNL_ULID_FO_v6_b_"+GetYearString(),
-                            "HNL_ULID_FO_v7_b_"+GetYearString(),
-                            "HNL_ULID_FO_v8_b_"+GetYearString(),
-                            "HNL_ULID_FO_v9_b_"+GetYearString(),
-                            "HNL_ULID_FO_v1_c_"+GetYearString(),
-                            "HNL_ULID_FO_v2_c_"+GetYearString(),
-                            "HNL_ULID_FO_v3_c_"+GetYearString(),
-                            "HNL_ULID_FO_v4_c_"+GetYearString(),
-                            "HNL_ULID_FO_v5_c_"+GetYearString(),
-                            "HNL_ULID_FO_v6_c_"+GetYearString(),
-                            "HNL_ULID_FO_v7_c_"+GetYearString(),
-                            "HNL_ULID_FO_v8_c_"+GetYearString(),
-                            "HNL_ULID_FO_v9_c_"+GetYearString(),
-                            "HNL_ULID_FO_v0_"+GetYearString()};
+    vector<TString> LIDs = {"HNL_ULID_FO_v1_a",
+                            "HNL_ULID_FO_v2_a",
+                            "HNL_ULID_FO_v3_a",
+                            "HNL_ULID_FO_v4_a",
+                            "HNL_ULID_FO_v5_a",
+                            "HNL_ULID_FO_v6_a",
+                            "HNL_ULID_FO_v7_a",
+                            "HNL_ULID_FO_v8_a",
+                            "HNL_ULID_FO_v9_a",
+                            "HNL_ULID_FO_v1_b",
+                            "HNL_ULID_FO_v2_b",
+                            "HNL_ULID_FO_v3_b",
+                            "HNL_ULID_FO_v4_b",
+                            "HNL_ULID_FO_v5_b",
+                            "HNL_ULID_FO_v6_b",
+                            "HNL_ULID_FO_v7_b",
+                            "HNL_ULID_FO_v8_b",
+                            "HNL_ULID_FO_v9_b",
+                            "HNL_ULID_FO_v1_c",
+                            "HNL_ULID_FO_v2_c",
+                            "HNL_ULID_FO_v3_c",
+                            "HNL_ULID_FO_v4_c",
+                            "HNL_ULID_FO_v5_c",
+                            "HNL_ULID_FO_v6_c",
+                            "HNL_ULID_FO_v7_c",
+                            "HNL_ULID_FO_v8_c",
+                            "HNL_ULID_FO_v9_c",
+                            "HNL_ULID_FO_v0"};
 
     vector<TString> NIDs;
     for(auto i : LIDs){
       TString aname = i;
-      aname = aname.ReplaceAll("HNL_ULID_FO_","HNL_LooseID_FO");
+      aname = aname.ReplaceAll("HNL_ULID_FO","HNL_LooseID_FO");
       NIDs.push_back(i);
     }
 
@@ -64,7 +64,7 @@ void HNL_Lepton_FakeRate_MC::executeEvent(){
 
   if(HasFlag("Standard")){
     //// RUN MISCJOBS
-    vector<TString> LIDs = {"HNL_ULID_FO", "HNL_ULID_FOv3_"+GetYearString()};
+    vector<TString> LIDs = {"HNL_ULID_FO", "HNL_ULID_FOv3"};
     vector<TString> NIDs = {"HNL_LooseID_","HNL_LooseID_v3_" };
     for(unsigned int l=0 ; l < LIDs.size(); l++)   VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu, HNL_LeptonCore::NormToXsec, {"MCProfile"},NIDs[l]+"_MC","HNL_ULID_"+GetYearString(),LIDs[l]));
 
@@ -75,34 +75,34 @@ void HNL_Lepton_FakeRate_MC::executeEvent(){
   if(HasFlag("CheckProfile")){
     //// Check MVA Profile  for PtParton
 
-    vector<TString> LIDs = {"HNL_ULID_FO_v1_a_"+GetYearString(),
-                            "HNL_ULID_FO_v2_a_"+GetYearString(),
-                            "HNL_ULID_FO_v3_a_"+GetYearString(),
-                            "HNL_ULID_FO_v4_a_"+GetYearString(),
-                            "HNL_ULID_FO_v5_a_"+GetYearString(),
-                            "HNL_ULID_FO_v6_a_"+GetYearString(),
-                            "HNL_ULID_FO_v7_a_"+GetYearString(),
-                            "HNL_ULID_FO_v8_a_"+GetYearString(),
-                            "HNL_ULID_FO_v9_a_"+GetYearString(),
-                            "HNL_ULID_FO_v1_b_"+GetYearString(),
-                            "HNL_ULID_FO_v2_b_"+GetYearString(),
-                            "HNL_ULID_FO_v3_b_"+GetYearString(),
-                            "HNL_ULID_FO_v4_b_"+GetYearString(),
-                            "HNL_ULID_FO_v5_b_"+GetYearString(),
-                            "HNL_ULID_FO_v6_b_"+GetYearString(),
-                            "HNL_ULID_FO_v7_b_"+GetYearString(),
-                            "HNL_ULID_FO_v8_b_"+GetYearString(),
-                            "HNL_ULID_FO_v9_b_"+GetYearString(),
-                            "HNL_ULID_FO_v1_c_"+GetYearString(),
-                            "HNL_ULID_FO_v2_c_"+GetYearString(),
-                            "HNL_ULID_FO_v3_c_"+GetYearString(),
-                            "HNL_ULID_FO_v4_c_"+GetYearString(),
-                            "HNL_ULID_FO_v5_c_"+GetYearString(),
-                            "HNL_ULID_FO_v6_c_"+GetYearString(),
-                            "HNL_ULID_FO_v7_c_"+GetYearString(),
-                            "HNL_ULID_FO_v8_c_"+GetYearString(),
-                            "HNL_ULID_FO_v9_c_"+GetYearString(),
-                            "HNL_ULID_FO_v0_"+GetYearString()};
+    vector<TString> LIDs = {"HNL_ULID_FO_v1_a",
+                            "HNL_ULID_FO_v2_a",
+                            "HNL_ULID_FO_v3_a",
+                            "HNL_ULID_FO_v4_a",
+                            "HNL_ULID_FO_v5_a",
+                            "HNL_ULID_FO_v6_a",
+                            "HNL_ULID_FO_v7_a",
+                            "HNL_ULID_FO_v8_a",
+                            "HNL_ULID_FO_v9_a",
+                            "HNL_ULID_FO_v1_b",
+                            "HNL_ULID_FO_v2_b",
+                            "HNL_ULID_FO_v3_b",
+                            "HNL_ULID_FO_v4_b",
+                            "HNL_ULID_FO_v5_b",
+                            "HNL_ULID_FO_v6_b",
+                            "HNL_ULID_FO_v7_b",
+                            "HNL_ULID_FO_v8_b",
+                            "HNL_ULID_FO_v9_b",
+                            "HNL_ULID_FO_v1_c",
+                            "HNL_ULID_FO_v2_c",
+                            "HNL_ULID_FO_v3_c",
+                            "HNL_ULID_FO_v4_c",
+                            "HNL_ULID_FO_v5_c",
+                            "HNL_ULID_FO_v6_c",
+                            "HNL_ULID_FO_v7_c",
+                            "HNL_ULID_FO_v8_c",
+                            "HNL_ULID_FO_v9_c",
+                            "HNL_ULID_FO_v0"};
 
     vector<TString> NIDs;
     for(auto i : LIDs){
@@ -119,34 +119,34 @@ void HNL_Lepton_FakeRate_MC::executeEvent(){
   if(HasFlag("CheckProfileEE")){
     /// Check MVA/Pt Profile for ptparton in Electrons
 
-    vector<TString> LIDs = {"HNL_ULID_FO_v1_a_"+GetYearString(),
-                            "HNL_ULID_FO_v2_a_"+GetYearString(),
-                            "HNL_ULID_FO_v3_a_"+GetYearString(),
-                            "HNL_ULID_FO_v4_a_"+GetYearString(),
-                            "HNL_ULID_FO_v5_a_"+GetYearString(),
-                            "HNL_ULID_FO_v6_a_"+GetYearString(),
-                            "HNL_ULID_FO_v7_a_"+GetYearString(),
-                            "HNL_ULID_FO_v8_a_"+GetYearString(),
-                            "HNL_ULID_FO_v9_a_"+GetYearString(),
-                            "HNL_ULID_FO_v1_b_"+GetYearString(),
-                            "HNL_ULID_FO_v2_b_"+GetYearString(),
-                            "HNL_ULID_FO_v3_b_"+GetYearString(),
-                            "HNL_ULID_FO_v4_b_"+GetYearString(),
-                            "HNL_ULID_FO_v5_b_"+GetYearString(),
-                            "HNL_ULID_FO_v6_b_"+GetYearString(),
-                            "HNL_ULID_FO_v7_b_"+GetYearString(),
-                            "HNL_ULID_FO_v8_b_"+GetYearString(),
-                            "HNL_ULID_FO_v9_b_"+GetYearString(),
-                            "HNL_ULID_FO_v1_c_"+GetYearString(),
-                            "HNL_ULID_FO_v2_c_"+GetYearString(),
-                            "HNL_ULID_FO_v3_c_"+GetYearString(),
-                            "HNL_ULID_FO_v4_c_"+GetYearString(),
-                            "HNL_ULID_FO_v5_c_"+GetYearString(),
-                            "HNL_ULID_FO_v6_c_"+GetYearString(),
-                            "HNL_ULID_FO_v7_c_"+GetYearString(),
-                            "HNL_ULID_FO_v8_c_"+GetYearString(),
-                            "HNL_ULID_FO_v9_c_"+GetYearString(),
-                            "HNL_ULID_FO_v0_"+GetYearString()};
+    vector<TString> LIDs = {"HNL_ULID_FO_v1_a",
+                            "HNL_ULID_FO_v2_a",
+                            "HNL_ULID_FO_v3_a",
+                            "HNL_ULID_FO_v4_a",
+                            "HNL_ULID_FO_v5_a",
+                            "HNL_ULID_FO_v6_a",
+                            "HNL_ULID_FO_v7_a",
+                            "HNL_ULID_FO_v8_a",
+                            "HNL_ULID_FO_v9_a",
+                            "HNL_ULID_FO_v1_b",
+                            "HNL_ULID_FO_v2_b",
+                            "HNL_ULID_FO_v3_b",
+                            "HNL_ULID_FO_v4_b",
+                            "HNL_ULID_FO_v5_b",
+                            "HNL_ULID_FO_v6_b",
+                            "HNL_ULID_FO_v7_b",
+                            "HNL_ULID_FO_v8_b",
+                            "HNL_ULID_FO_v9_b",
+                            "HNL_ULID_FO_v1_c",
+                            "HNL_ULID_FO_v2_c",
+                            "HNL_ULID_FO_v3_c",
+                            "HNL_ULID_FO_v4_c",
+                            "HNL_ULID_FO_v5_c",
+                            "HNL_ULID_FO_v6_c",
+                            "HNL_ULID_FO_v7_c",
+                            "HNL_ULID_FO_v8_c",
+                            "HNL_ULID_FO_v9_c",
+                            "HNL_ULID_FO_v0"};
 
 
     vector<TString> NIDs;
@@ -164,34 +164,34 @@ void HNL_Lepton_FakeRate_MC::executeEvent(){
   if(HasFlag("MCFakes")) {
 
 
-    vector<TString> LIDs = {"HNL_ULID_FO_v1_a_"+GetYearString(),
-                            "HNL_ULID_FO_v2_a_"+GetYearString(),
-                            "HNL_ULID_FO_v3_a_"+GetYearString(),
-                            "HNL_ULID_FO_v4_a_"+GetYearString(),
-                            "HNL_ULID_FO_v5_a_"+GetYearString(),
-                            "HNL_ULID_FO_v6_a_"+GetYearString(),
-                            "HNL_ULID_FO_v7_a_"+GetYearString(),
-                            "HNL_ULID_FO_v8_a_"+GetYearString(),
-                            "HNL_ULID_FO_v9_a_"+GetYearString(),
-                            "HNL_ULID_FO_v1_b_"+GetYearString(),
-                            "HNL_ULID_FO_v2_b_"+GetYearString(),
-                            "HNL_ULID_FO_v3_b_"+GetYearString(),
-                            "HNL_ULID_FO_v4_b_"+GetYearString(),
-                            "HNL_ULID_FO_v5_b_"+GetYearString(),
-                            "HNL_ULID_FO_v6_b_"+GetYearString(),
-                            "HNL_ULID_FO_v7_b_"+GetYearString(),
-                            "HNL_ULID_FO_v8_b_"+GetYearString(),
-                            "HNL_ULID_FO_v9_b_"+GetYearString(),
-                            "HNL_ULID_FO_v1_c_"+GetYearString(),
-                            "HNL_ULID_FO_v2_c_"+GetYearString(),
-                            "HNL_ULID_FO_v3_c_"+GetYearString(),
-                            "HNL_ULID_FO_v4_c_"+GetYearString(),
-                            "HNL_ULID_FO_v5_c_"+GetYearString(),
-                            "HNL_ULID_FO_v6_c_"+GetYearString(),
-                            "HNL_ULID_FO_v7_c_"+GetYearString(),
-                            "HNL_ULID_FO_v8_c_"+GetYearString(),
-                            "HNL_ULID_FO_v9_c_"+GetYearString(),
-                            "HNL_ULID_FO_v0_"+GetYearString()};
+    vector<TString> LIDs = {"HNL_ULID_FO_v1_a",
+                            "HNL_ULID_FO_v2_a",
+                            "HNL_ULID_FO_v3_a",
+                            "HNL_ULID_FO_v4_a",
+                            "HNL_ULID_FO_v5_a",
+                            "HNL_ULID_FO_v6_a",
+                            "HNL_ULID_FO_v7_a",
+                            "HNL_ULID_FO_v8_a",
+                            "HNL_ULID_FO_v9_a",
+                            "HNL_ULID_FO_v1_b",
+                            "HNL_ULID_FO_v2_b",
+                            "HNL_ULID_FO_v3_b",
+                            "HNL_ULID_FO_v4_b",
+                            "HNL_ULID_FO_v5_b",
+                            "HNL_ULID_FO_v6_b",
+                            "HNL_ULID_FO_v7_b",
+                            "HNL_ULID_FO_v8_b",
+                            "HNL_ULID_FO_v9_b",
+                            "HNL_ULID_FO_v1_c",
+                            "HNL_ULID_FO_v2_c",
+                            "HNL_ULID_FO_v3_c",
+                            "HNL_ULID_FO_v4_c",
+                            "HNL_ULID_FO_v5_c",
+                            "HNL_ULID_FO_v6_c",
+                            "HNL_ULID_FO_v7_c",
+                            "HNL_ULID_FO_v8_c",
+                            "HNL_ULID_FO_v9_c",
+                            "HNL_ULID_FO_v0"};
 
 
     vector<TString> NIDs;
@@ -204,10 +204,6 @@ void HNL_Lepton_FakeRate_MC::executeEvent(){
     for(unsigned int l=0 ; l < LIDs.size(); l++)     VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NoNorm,        {"MCFakes"},NIDs[l]+"_MC","HNL_ULID_"+GetYearString(),LIDs[l]));
     for(unsigned int l=0 ; l < LIDs.size(); l++)     VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NoNorm,        {"MCFakes"},NIDs[l]+"_MC","HNL_ULID_"+GetYearString(),LIDs[l]));
 
-    //// Measure Fake Rates in MC
-    //VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NoNorm,        {"MCFakes"},"HNL_ID"   ,   "HNL_ULID_"+GetYearString(), "HNL_ULID_FO_"+GetEraShort()));
-
-    //VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NoNorm,        {"MCFakes"},"HNL_ID"     ,   "HNL_ULID_"+GetYearString(), "HNL_ULID_FO_"+GetEraShort()));
 
 
     goto RunJobs;
@@ -295,7 +291,7 @@ void HNL_Lepton_FakeRate_MC::RunM(std::vector<Electron> loose_el,  std::vector<M
 
   if(param.HasFlag("MCClosure")) {
 
-    std::vector<Muon>     Initial_loose_muons         = SelectMuons    ( param, "HNL_ULID_FO_v0_"+GetYearString(),     5,  2.4);
+    std::vector<Muon>     Initial_loose_muons         = SelectMuons    ( param, "HNL_ULID_FO_v0",     5,  2.4);
     if(Initial_loose_muons.size() != 2) return ;
 
     bool PassSS = SameCharge(loose_mu);
@@ -711,7 +707,7 @@ void HNL_Lepton_FakeRate_MC::RunE( std::vector<Electron> loose_el, std::vector<M
 
   if(param.HasFlag("MCClosure")) {
 
-    std::vector<Electron> Initial_loose_electrons     = SelectElectrons( param, "HNL_ULID_FO_v0_"+GetYearString(), 10, 2.5) ;
+    std::vector<Electron> Initial_loose_electrons     = SelectElectrons( param, "HNL_ULID_FO_v0", 10, 2.5) ;
 
 
     if(Initial_loose_electrons.size() != 2) return ;

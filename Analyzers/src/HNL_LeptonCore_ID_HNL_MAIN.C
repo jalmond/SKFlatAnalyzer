@@ -1,5 +1,6 @@
 #include "HNL_LeptonCore.h"
 
+
 void HNL_LeptonCore::GetSetup_HNLID(AnalyzerParameter& param_default ){
 
   /// MAIN SETUP FOR ANALYSIS                                                                                                                                                                                                                                                                             
@@ -20,8 +21,8 @@ void HNL_LeptonCore::GetSetup_HNLID(AnalyzerParameter& param_default ){
   param_default.FakeRateMethod    = "Standard";
   param_default.FakeRateParam     = "PtParton";
 
-  param_default.Muon_FR_ID        = "HNL_ULID_FO_"+GetEraShort();
-  param_default.Electron_FR_ID    = "HNL_ULID_FO_"+GetEraShort();
+  param_default.Muon_FR_ID        = "HNL_ULID_FO";
+  param_default.Electron_FR_ID    = "HNL_ULID_FO";
 
   TString JFRJetPt = "_AJ40";
   TString MuFRBin =  "";
@@ -48,7 +49,7 @@ void HNL_LeptonCore::GetSetup_HNLID(AnalyzerParameter& param_default ){
   param_default.k.Muon_ISO_SF        = "Default";
   param_default.k.Electron_ID_SF     = "passHNL_ULID_"+GetYearString();
 
-  param_default.k.Electron_CF  = "CFRate_InvPtEta3_PBSExtrap_Central_" + param_default.Electron_Tight_ID;
+  param_default.k.Electron_CF  = "CFRate_InvPtEta3_PBSExtrap_Central_HNL_ULID";
   param_default.TriggerSelection = "Dilep";
   if(param_default.Channel.Contains("EE"))   param_default.k.Electron_Trigger_SF = "DiElIso_HNL_ULID";
   if(param_default.Channel.Contains("MuMu")) param_default.k.Muon_Trigger_SF = "DiMuIso_HNL_ULID";

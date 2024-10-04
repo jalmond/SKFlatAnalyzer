@@ -62,14 +62,31 @@ void HNL_LeptonCore::FillLimitInput(HNL_LeptonCore::SearchRegion sr, double even
   TString histname = GetCutFlowNameFromRegion(sr);
 
   FillCutflowDef(hist_path,   histname, event_weight,lables, label);
-  //FillCutflowDef(hist_path,   histname+"_unweighted", 1,lables, label);
 
+  /// Fill SingleBinned                                                                                                                                                                                           
+  vector<HNL_LeptonCore::SearchRegion> SingleBinned = {MuonCR1,MuonCR2,MuonCR3,MuonCRBDT,MuonCR3BDT,
+                                                       ElectronCR1,ElectronCR2,ElectronCR3,ElectronCRBDT,ElectronCR3BDT,
+                                                       ElectronMuonCR1,ElectronMuonCR2,ElectronMuonCR3,ElectronMuonCRBDT,ElectronMuonCR3BDT,
+                                                       MuonSR1,MuonSR2,MuonSR3,MuonSRBDT,MuonSR3BDT,
+                                                       ElectronSR1,ElectronSR2,ElectronSR3,ElectronSRBDT,ElectronSR3BDT,
+                                                       ElectronMuonSR1,ElectronMuonSR2,ElectronMuonSR3,ElectronMuonSRBDT,ElectronMuonSR3BDT,
+                                                       MuonCR,ElectronCR,ElectronMuonCR,
+                                                       MuonSR,ElectronSR,ElectronMuonSR};
+
+  if(std::find(SingleBinned.begin(), SingleBinned.end(), sr) != SingleBinned.end()){
+    FillCutflowDef(hist_path,   histname+"_SingleBin", event_weight,{"SingleBin"}, "SingleBin");
+  }
+  else{
+    cout << "Limit plot error" << endl;
+    exit(EXIT_FAILURE);
+  }
+  return;
 }
 void HNL_LeptonCore::FillCutflow(HNL_LeptonCore::SearchRegion sr, double event_weight, TString label,  TString hist_path){
 
   vector<TString> lables = GetLabelsFromRegion(sr);
   TString histname = GetCutFlowNameFromRegion(sr);
-
+  
   FillCutflowDef(hist_path,   histname, event_weight,lables, label);
   //FillCutflowDef(hist_path,   histname+"_unweighted", 1,lables, label);
 

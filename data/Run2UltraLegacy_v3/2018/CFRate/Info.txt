@@ -19,3 +19,14 @@ ___________________________________________________________________________
 PBSDataCorr = Data corr applied to shift
 CS2 = shift value 2%
 CS3 = shift value 3%
+
+___________________________________________________________________________
+HNL_CF_Version4_AllDY_Electron_2018_Rates.root
+___________________________________________________________________________
+This is CF rates used in Jet+X talks
+
+___________________________________________________________________________
+HNL_CF_Version6_Electron_2018_Rates.root
+___________________________________________________________________________
+Updated shifts and added HEEP IDs 
+Removed CS rates as same as V4

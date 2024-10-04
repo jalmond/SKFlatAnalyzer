@@ -4,7 +4,8 @@ ClassImp(Lepton)
 
 Lepton::Lepton() : Particle() {
   
-  j_run_era=0; /// SetEra
+  j_run_era=""; /// SetEra
+  j_run_year=0; /// SetEra
  
   mu_mva_cut_fake_2016 = 0.72;
   mu_mva_cut_fake_2017 = 0.64;

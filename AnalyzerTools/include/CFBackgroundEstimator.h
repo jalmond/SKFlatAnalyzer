@@ -26,7 +26,7 @@ public:
   ~CFBackgroundEstimator();
 
   TDirectory *histDir;
-  void ReadHistograms(bool loadStandard=true);
+  void ReadHistograms(int loadFormat=0);
 
   int DataYear;
   TString DataEra;
@@ -40,7 +40,12 @@ public:
   std::map< TString, TH2D* > map_hist_Electron;
   std::map< TString, TH1D* > map_hist_Muon;
 
+  std::map<TString, vector<double> > map_pt_bins;
+
   bool IgnoreNoHist;
+
+  void SetFittedBins();
+  vector<double> FindBin(TString key);
 
   double GetElectronCFRateFitted(TString ID, TString BinTag, TString key, double eta, double pt, int sys);
   double GetElectronCFRate(TString ID, TString key, double eta, double pt, int sys=0);

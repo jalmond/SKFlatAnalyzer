@@ -55,34 +55,34 @@ void HNL_ControlRegion::executeEvent(){
 	  
 	  if(channel == MuMu){
 	    
-	    vector<TString> MuFakeIDs = {"HNL_ULID_FO_v0_"+GetYearString(),
-					 "HNL_ULID_FO_v1_a_"+GetYearString(),
-					 "HNL_ULID_FO_v1_b_"+GetYearString(),
-					 "HNL_ULID_FO_v1_c_"+GetYearString(),
-					 "HNL_ULID_FO_v2_a_"+GetYearString(),
-                                         "HNL_ULID_FO_v2_b_"+GetYearString(),
-                                         "HNL_ULID_FO_v2_c_"+GetYearString(),
-					 "HNL_ULID_FO_v3_a_"+GetYearString(),
-                                         "HNL_ULID_FO_v3_b_"+GetYearString(),
-                                         "HNL_ULID_FO_v3_c_"+GetYearString(),
-					 "HNL_ULID_FO_v4_a_"+GetYearString(),
-                                         "HNL_ULID_FO_v4_b_"+GetYearString(),
-                                         "HNL_ULID_FO_v4_c_"+GetYearString(),
-					 "HNL_ULID_FO_v5_a_"+GetYearString(),
-                                         "HNL_ULID_FO_v5_b_"+GetYearString(),
-                                         "HNL_ULID_FO_v5_c_"+GetYearString(),
-					 "HNL_ULID_FO_v6_a_"+GetYearString(),
-                                         "HNL_ULID_FO_v6_b_"+GetYearString(),
-                                         "HNL_ULID_FO_v6_c_"+GetYearString(),
-					 "HNL_ULID_FO_v7_a_"+GetYearString(),
-                                         "HNL_ULID_FO_v7_b_"+GetYearString(),
-                                         "HNL_ULID_FO_v7_c_"+GetYearString(),
-					 "HNL_ULID_FO_v8_a_"+GetYearString(),
-                                         "HNL_ULID_FO_v8_b_"+GetYearString(),
-                                         "HNL_ULID_FO_v8_c_"+GetYearString(),
-					 "HNL_ULID_FO_v9_a_"+GetYearString(),
-                                         "HNL_ULID_FO_v9_b_"+GetYearString(),
-                                         "HNL_ULID_FO_v9_c_"+GetYearString()};
+	    vector<TString> MuFakeIDs = {"HNL_ULID_FO_v0",
+					 "HNL_ULID_FO_v1_a",
+					 "HNL_ULID_FO_v1_b",
+					 "HNL_ULID_FO_v1_c",
+					 "HNL_ULID_FO_v2_a",
+                                         "HNL_ULID_FO_v2_b",
+                                         "HNL_ULID_FO_v2_c",
+					 "HNL_ULID_FO_v3_a",
+                                         "HNL_ULID_FO_v3_b",
+                                         "HNL_ULID_FO_v3_c",
+					 "HNL_ULID_FO_v4_a",
+                                         "HNL_ULID_FO_v4_b",
+                                         "HNL_ULID_FO_v4_c",
+					 "HNL_ULID_FO_v5_a",
+                                         "HNL_ULID_FO_v5_b",
+                                         "HNL_ULID_FO_v5_c",
+					 "HNL_ULID_FO_v6_a",
+                                         "HNL_ULID_FO_v6_b",
+                                         "HNL_ULID_FO_v6_c",
+					 "HNL_ULID_FO_v7_a",
+                                         "HNL_ULID_FO_v7_b",
+                                         "HNL_ULID_FO_v7_c",
+					 "HNL_ULID_FO_v8_a",
+                                         "HNL_ULID_FO_v8_b",
+                                         "HNL_ULID_FO_v8_c",
+					 "HNL_ULID_FO_v9_a",
+                                         "HNL_ULID_FO_v9_b",
+                                         "HNL_ULID_FO_v9_c"};
 	    
 	    vector<TString> FakeTag   = {"HNL_ULID_FO_v0",
                                          "HNL_ULID_FO_v1_a",
@@ -146,34 +146,34 @@ void HNL_ControlRegion::executeEvent(){
 	    }
 	  }
           else if(channel == EMu){
-	    vector<TString> ElFakeIDs = {"HNL_ULID_FO_v0_"+GetYearString(),
-                                         "HNL_ULID_FO_v1_a_"+GetYearString(),
-                                         "HNL_ULID_FO_v1_b_"+GetYearString(),
-                                         "HNL_ULID_FO_v1_c_"+GetYearString(),
-                                         "HNL_ULID_FO_v2_a_"+GetYearString(),
-                                         "HNL_ULID_FO_v2_b_"+GetYearString(),
-                                         "HNL_ULID_FO_v2_c_"+GetYearString(),
-                                         "HNL_ULID_FO_v3_a_"+GetYearString(),
-                                         "HNL_ULID_FO_v3_b_"+GetYearString(),
-                                         "HNL_ULID_FO_v3_c_"+GetYearString(),
-                                         "HNL_ULID_FO_v4_a_"+GetYearString(),
-                                         "HNL_ULID_FO_v4_b_"+GetYearString(),
-                                         "HNL_ULID_FO_v4_c_"+GetYearString(),
-                                         "HNL_ULID_FO_v5_a_"+GetYearString(),
-                                         "HNL_ULID_FO_v5_b_"+GetYearString(),
-                                         "HNL_ULID_FO_v5_c_"+GetYearString(),
-                                         "HNL_ULID_FO_v6_a_"+GetYearString(),
-                                         "HNL_ULID_FO_v6_b_"+GetYearString(),
-                                         "HNL_ULID_FO_v6_c_"+GetYearString(),
-                                         "HNL_ULID_FO_v7_a_"+GetYearString(),
-                                         "HNL_ULID_FO_v7_b_"+GetYearString(),
-                                         "HNL_ULID_FO_v7_c_"+GetYearString(),
-                                         "HNL_ULID_FO_v8_a_"+GetYearString(),
-                                         "HNL_ULID_FO_v8_b_"+GetYearString(),
-                                         "HNL_ULID_FO_v8_c_"+GetYearString(),
-                                         "HNL_ULID_FO_v9_a_"+GetYearString(),
-                                         "HNL_ULID_FO_v9_b_"+GetYearString(),
-                                         "HNL_ULID_FO_v9_c_"+GetYearString()};
+	    vector<TString> ElFakeIDs = {"HNL_ULID_FO_v0",
+                                         "HNL_ULID_FO_v1_a",
+                                         "HNL_ULID_FO_v1_b",
+                                         "HNL_ULID_FO_v1_c",
+                                         "HNL_ULID_FO_v2_a",
+                                         "HNL_ULID_FO_v2_b",
+                                         "HNL_ULID_FO_v2_c",
+                                         "HNL_ULID_FO_v3_a",
+                                         "HNL_ULID_FO_v3_b",
+                                         "HNL_ULID_FO_v3_c",
+                                         "HNL_ULID_FO_v4_a",
+                                         "HNL_ULID_FO_v4_b",
+                                         "HNL_ULID_FO_v4_c",
+                                         "HNL_ULID_FO_v5_a",
+                                         "HNL_ULID_FO_v5_b",
+                                         "HNL_ULID_FO_v5_c",
+                                         "HNL_ULID_FO_v6_a",
+                                         "HNL_ULID_FO_v6_b",
+                                         "HNL_ULID_FO_v6_c",
+                                         "HNL_ULID_FO_v7_a",
+                                         "HNL_ULID_FO_v7_b",
+                                         "HNL_ULID_FO_v7_c",
+                                         "HNL_ULID_FO_v8_a",
+                                         "HNL_ULID_FO_v8_b",
+                                         "HNL_ULID_FO_v8_c",
+                                         "HNL_ULID_FO_v9_a",
+                                         "HNL_ULID_FO_v9_b",
+                                         "HNL_ULID_FO_v9_c"};
 
 	    vector<TString> FakeTag   = {"HNL_ULID_FO_v0",
                                          "HNL_ULID_FO_v1_a",
@@ -210,7 +210,7 @@ void HNL_ControlRegion::executeEvent(){
             for(unsigned int i= 0 ; i < FakeTag.size(); i++){
               for(unsigned int j= 0 ; j < FakeParam.size(); j++){
                 for(unsigned int k= 0 ; k < FakeMethod.size(); k++){
-                  if(FakeMethod[k] == "BDTFlavour" && FakeTag[i] !=  "HNL_ULID_FO_"+GetYearString()) continue;
+                  if(FakeMethod[k] == "BDTFlavour" && FakeTag[i] !=  "HNL_ULID_FO") continue;
                   for(auto iaj : AJetPtEE){
 
                     if(!RunFake){
@@ -228,14 +228,7 @@ void HNL_ControlRegion::executeEvent(){
                     param_signal.FakeRateMethod = FakeMethod[k];
                     param_signal.FakeRateParam  = FakeParam[j];
 
-		    param_signal.Muon_FR_ID     = "HNL_ULID_FO_"+GetEraShort() ;
-		    if(GetEra() == "2016preVFP")  param_signal.k.Muon_FR      = "HNL_ULID_FO_v1_a_AJ30";
-		    if(GetEra() == "2016postVFP") param_signal.k.Muon_FR            = "HNL_ULID_FO_v4_b_AJ30";
-		    if(GetYearString() == "2017") {
-		      param_signal.k.Muon_BB_FR         = "HNL_ULID_FO_v9_c_AJ30";
-		      param_signal.k.Muon_EC_FR         = "HNL_ULID_FO_v1_a_AJ30";
-		    }
-		    if(GetYearString() == "2018")  param_signal.k.Muon_FR         = "HNL_ULID_FO_v3_b_AJ30";
+		    param_signal.Muon_FR_ID     = "HNL_ULID_FO" ;
 		    
                     param_signal.Electron_FR_ID     = ElFakeIDs[i] ;
                     param_signal.k.Electron_FR      = FakeTag[i]+"_"+iaj;
@@ -256,34 +249,34 @@ void HNL_ControlRegion::executeEvent(){
 	  else if(channel == EE){
 	    
 	    
-	    vector<TString> ElFakeIDs = {"HNL_ULID_FO_v0_"+GetYearString(),
-                                         "HNL_ULID_FO_v1_a_"+GetYearString(),
-                                         "HNL_ULID_FO_v1_b_"+GetYearString(),
-                                         "HNL_ULID_FO_v1_c_"+GetYearString(),
-                                         "HNL_ULID_FO_v2_a_"+GetYearString(),
-                                         "HNL_ULID_FO_v2_b_"+GetYearString(),
-                                         "HNL_ULID_FO_v2_c_"+GetYearString(),
-                                         "HNL_ULID_FO_v3_a_"+GetYearString(),
-                                         "HNL_ULID_FO_v3_b_"+GetYearString(),
-                                         "HNL_ULID_FO_v3_c_"+GetYearString(),
-                                         "HNL_ULID_FO_v4_a_"+GetYearString(),
-                                         "HNL_ULID_FO_v4_b_"+GetYearString(),
-                                         "HNL_ULID_FO_v4_c_"+GetYearString(),
-                                         "HNL_ULID_FO_v5_a_"+GetYearString(),
-                                         "HNL_ULID_FO_v5_b_"+GetYearString(),
-                                         "HNL_ULID_FO_v5_c_"+GetYearString(),
-                                         "HNL_ULID_FO_v6_a_"+GetYearString(),
-                                         "HNL_ULID_FO_v6_b_"+GetYearString(),
-                                         "HNL_ULID_FO_v6_c_"+GetYearString(),
-                                         "HNL_ULID_FO_v7_a_"+GetYearString(),
-                                         "HNL_ULID_FO_v7_b_"+GetYearString(),
-                                         "HNL_ULID_FO_v7_c_"+GetYearString(),
-                                         "HNL_ULID_FO_v8_a_"+GetYearString(),
-                                         "HNL_ULID_FO_v8_b_"+GetYearString(),
-                                         "HNL_ULID_FO_v8_c_"+GetYearString(),
-                                         "HNL_ULID_FO_v9_a_"+GetYearString(),
-                                         "HNL_ULID_FO_v9_b_"+GetYearString(),
-                                         "HNL_ULID_FO_v9_c_"+GetYearString()};
+	    vector<TString> ElFakeIDs = {"HNL_ULID_FO_v0",
+                                         "HNL_ULID_FO_v1_a",
+                                         "HNL_ULID_FO_v1_b",
+                                         "HNL_ULID_FO_v1_c",
+                                         "HNL_ULID_FO_v2_a",
+                                         "HNL_ULID_FO_v2_b",
+                                         "HNL_ULID_FO_v2_c",
+                                         "HNL_ULID_FO_v3_a",
+                                         "HNL_ULID_FO_v3_b",
+                                         "HNL_ULID_FO_v3_c",
+                                         "HNL_ULID_FO_v4_a",
+                                         "HNL_ULID_FO_v4_b",
+                                         "HNL_ULID_FO_v4_c",
+                                         "HNL_ULID_FO_v5_a",
+                                         "HNL_ULID_FO_v5_b",
+                                         "HNL_ULID_FO_v5_c",
+                                         "HNL_ULID_FO_v6_a",
+                                         "HNL_ULID_FO_v6_b",
+                                         "HNL_ULID_FO_v6_c",
+                                         "HNL_ULID_FO_v7_a",
+                                         "HNL_ULID_FO_v7_b",
+                                         "HNL_ULID_FO_v7_c",
+                                         "HNL_ULID_FO_v8_a",
+                                         "HNL_ULID_FO_v8_b",
+                                         "HNL_ULID_FO_v8_c",
+                                         "HNL_ULID_FO_v9_a",
+                                         "HNL_ULID_FO_v9_b",
+                                         "HNL_ULID_FO_v9_c"};
 
 
             vector<TString> FakeTag   = {"HNL_ULID_FO_v0",
@@ -322,7 +315,7 @@ void HNL_ControlRegion::executeEvent(){
 	    for(unsigned int i= 0 ; i < FakeTag.size(); i++){
 	      for(unsigned int j= 0 ; j < FakeParam.size(); j++){
 		for(unsigned int k= 0 ; k < FakeMethod.size(); k++){
-		  if(FakeMethod[k] == "BDTFlavour" && FakeTag[i] !=  "HNL_ULID_FO_"+GetYearString()) continue;
+		  if(FakeMethod[k] == "BDTFlavour" && FakeTag[i] !=  "HNL_ULID_FO") continue;
 		  for(auto iaj : AJetPtEE){
 		    
 		    if(!RunFake){

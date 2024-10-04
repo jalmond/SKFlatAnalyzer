@@ -43,8 +43,8 @@ AnalyzerParameter  HNL_LeptonCore::DefaultParam(TString s_setup_version,TString 
   /// Lepton ID DEFAULT                                                                                                                                               
   param_default.k.Electron_RECO_SF   = "RECO_SF";  // RECO_SF_AFB is alternative SF                                                                                           
   param_default.k.Muon_RECO_SF   = "HighPtMuonRecoSF";
-  param_default.Muon_Veto_ID     = "HNVetoMVA";  param_default.Muon_Tight_ID     = "HNVetoMVA";
-  param_default.Electron_Veto_ID = "HNVetoMVA";  param_default.Electron_Tight_ID = "MVAID";
+  param_default.Muon_Veto_ID     = "NoCut";  param_default.Muon_Tight_ID     = "NoCut";
+  param_default.Electron_Veto_ID = "NoCut";  param_default.Electron_Tight_ID = "NoCut";
 
   param_default.Tau_Veto_ID      = "JetVLElVLMuVL";
 

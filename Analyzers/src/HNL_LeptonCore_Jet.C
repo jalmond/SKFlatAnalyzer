@@ -61,6 +61,7 @@ std::vector<FatJet> HNL_LeptonCore::GetHNLAK8Jets(TString JetType, AnalyzerParam
   if(JetType=="HNL_NoMass") return SelectAK8Jets  (AK8JetColl,  200., 2.7,  true,   1., false, -999, false, 0.,  200000., "",  ElectronCollV, MuonCollV);
   if(JetType=="BDT")        return SelectAK8Jets  (AK8JetColl,  200., 2.7,  true,   1., false, -999, false, 0.,  200000., "",  ElectronCollV, MuonCollV);
   if(JetType=="HNL_PN")     return SelectAK8Jets  (AK8JetColl,  200., 2.7,  true,   1., false, -999, true,  40., 130.,    "particleNet_WvsQCD", ElectronCollV, MuonCollV);
+  if(JetType=="HNL_PN_NoMass")     return SelectAK8Jets  (AK8JetColl,  200., 2.7,  true,   1., false, -999, true,  0., 200000.,    "particleNet_WvsQCD", ElectronCollV, MuonCollV);
 
   
   if(JetType=="EXO17028")        return SelectAK8Jets  (AK8JetColl,  200., 2.7,  true,   1., true, -999, true,  60., 130.,    "",  ElectronCollV, MuonCollV);
@@ -261,16 +262,24 @@ std::vector<FatJet> HNL_LeptonCore::SelectFatJets(AnalyzerParameter param,TStrin
 
   std::vector<FatJet> jets_pc = puppiCorr->Correct(All_FatJets);
   std::vector<FatJet> jets;
-  if(param.syst_ == AnalyzerParameter::JetEnUp)            jets    = ScaleFatJets( jets_pc, +1 );
-  else if(param.syst_ == AnalyzerParameter::JetEnDown)     jets    = ScaleFatJets( jets_pc, -1 );
-  else if(param.syst_ == AnalyzerParameter::JetResUp)      jets    = SmearFatJets(jets_pc, +1 );
-  else if(param.syst_ == AnalyzerParameter::JetResDown)    jets    = SmearFatJets(jets_pc, -1 );
-  else if(param.syst_ == AnalyzerParameter::JetMassUp)     jets    = ScaleSDMassFatJets( jets_pc, +1 );
-  else if(param.syst_ == AnalyzerParameter::JetMassDown)   jets    = ScaleSDMassFatJets( jets_pc, -1 );
-  else if(param.syst_ == AnalyzerParameter::JetMassSmearUp)     jets    = SmearSDMassFatJets( jets_pc, +1 );
-  else if(param.syst_ == AnalyzerParameter::JetMassSmearDown)   jets    = SmearSDMassFatJets( jets_pc, -1 );
-  else jets = jets_pc;
+  int sys_ak8_scale = 0;
+  int sys_ak8_smear = 0;
+  int sys_ak8_mass_scale = 0;
+  int sys_ak8_mass_smear = 0;
 
+  if(param.syst_ == AnalyzerParameter::JetEnUp)    sys_ak8_scale=1;
+  if(param.syst_ == AnalyzerParameter::JetEnDown)  sys_ak8_scale=-1;
+  if(param.syst_ == AnalyzerParameter::JetResUp)   sys_ak8_smear=1;
+  if(param.syst_ == AnalyzerParameter::JetResDown) sys_ak8_smear=-1;
+  if(param.syst_ == AnalyzerParameter::JetMassUp)  sys_ak8_mass_scale=1;
+  if(param.syst_ == AnalyzerParameter::JetMassDown)  sys_ak8_mass_scale=-1;
+  if(param.syst_ == AnalyzerParameter::JetMassSmearUp) sys_ak8_mass_smear=1;
+  if(param.syst_ == AnalyzerParameter::JetMassSmearDown) sys_ak8_mass_smear=-1;
+
+  jets    = ScaleFatJets( jets_pc, sys_ak8_scale );
+  jets    = SmearFatJets(jets, sys_ak8_smear );
+  jets    = ScaleSDMassFatJets( jets, sys_ak8_mass_scale );
+  jets    = SmearSDMassFatJets( jets, sys_ak8_mass_smear );
 
   std::vector<FatJet> out;
   for(unsigned int i=0; i<jets.size(); i++){

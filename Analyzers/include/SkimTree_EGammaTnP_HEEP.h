@@ -11,6 +11,9 @@ public:
   void executeEvent();
   void WriteHist();
 
+  bool IsTag(Electron el_tag);
+  bool IsGoodTagProbe(Electron el_tag, Electron el_probe);
+
   static map<int,vector<pair<int,double>>> map_L1Threshold;
   double GetL1Threshold();
 
@@ -18,6 +21,7 @@ public:
   ~SkimTree_EGammaTnP_HEEP();
 
   TTree* newtree;
+  TTree* weight_tree;
   float weight;
   float PUweight,PUweight_up,PUweight_down;
   float prefireweight,prefireweight_up,prefireweight_down;
@@ -36,12 +40,14 @@ public:
   bool passingCutBasedMedium94XV2;
   bool passingCutBasedTight94XV2;
   bool passingHNLMVA;
+  bool passingHNLMVA_TrkIso;
+  bool passingHNLHeep;
   bool passingHNLMVACF;
   bool passingHNLMVAConv;
   bool passingHNLMVAFake;
-  bool scoreHNLMVACF;
-  bool scoreHNLMVAConv;
-  bool scoreHNLMVAFake;
+  double scoreHNLMVACF;
+  double scoreHNLMVAConv;
+  double scoreHNLMVAFake;
   bool passEGL1SingleEGOr;
   bool passHltEle27WPTightGsf;
   bool passHltEle28WPTightGsf;

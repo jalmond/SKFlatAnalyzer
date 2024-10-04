@@ -174,9 +174,9 @@ void SkimTree_EGammaTnP::executeEvent(){
         passingMVA90 = probe.passMVAID_noIso_WP90();
         passingMVALoose = probe.PassMVABaseLine(); 
         passingTriggerEmul  = probe.PassID("TriggerLoose"); 
-        passingHNLMVACF   =probe.PassID("HNL_ULID_CF_"+GetYearString());
-        passingHNLMVAConv =probe.PassID("HNL_ULID_Conv_"+GetYearString());
-        passingHNLMVAFake =probe.PassID("HNL_ULID_Fake_"+GetYearString());
+        passingHNLMVACF   =probe.PassID("HNL_ULID_CF");
+        passingHNLMVAConv =probe.PassID("HNL_ULID_Conv");
+        passingHNLMVAFake =probe.PassID("HNL_ULID_Fake");
         passingHNLMVA     =probe.PassID("HNL_ULID_"+GetYearString());
 
         scoreHNLMVACF=probe.HNL_MVA_CF("EDv5");

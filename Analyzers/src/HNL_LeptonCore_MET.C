@@ -75,24 +75,25 @@ Particle HNL_LeptonCore::GetvMET(TString METType, AnalyzerParameter param,bool P
   if(param.syst_ == AnalyzerParameter::ElectronEnUp)  IdxSyst = 6;
   if(param.syst_ == AnalyzerParameter::ElectronEnDown)IdxSyst = 7;
 
-  Particle vMETSyst;
+  Particle vMETCorr = PropSmearing ? GetvCorrMET(METType,param,vStandMET) : vStandMET;
+  Particle vMETFinal;
 
   if(IdxSyst>=0 && IdxSyst < 8){
 
     if(UsePuppi){
-      if( isfinite(PuppiMET_Type1_pt_shifts->at(IdxSyst)))  vMETSyst = UpdateMETSyst(PuppiMET_Type1_pt, PuppiMET_Type1_phi, PuppiMET_Type1_pt_shifts->at(IdxSyst),PuppiMET_Type1_phi_shifts->at(IdxSyst), vStandMET);
-      else return vStandMET;
+      if( isfinite(PuppiMET_Type1_pt_shifts->at(IdxSyst)))  vMETFinal = UpdateMETSyst(PuppiMET_Type1_pt, PuppiMET_Type1_phi, PuppiMET_Type1_pt_shifts->at(IdxSyst),PuppiMET_Type1_phi_shifts->at(IdxSyst), vMETCorr);
+      else return vMETCorr;
     }
     else{
       if(isfinite(pfMET_Type1_PhiCor_pt_shifts->at(IdxSyst))){
-        if(IsxyCorr) vMETSyst = UpdateMETSyst(pfMET_Type1_PhiCor_pt, pfMET_Type1_PhiCor_phi, pfMET_Type1_PhiCor_pt_shifts->at(IdxSyst), pfMET_Type1_PhiCor_phi_shifts->at(IdxSyst), vStandMET);
-        else         vMETSyst = UpdateMETSyst(pfMET_Type1_pt, pfMET_Type1_phi, pfMET_Type1_pt_shifts->at(IdxSyst), pfMET_Type1_phi_shifts->at(IdxSyst), vStandMET);
+        if(IsxyCorr) vMETFinal = UpdateMETSyst(pfMET_Type1_PhiCor_pt, pfMET_Type1_PhiCor_phi, pfMET_Type1_PhiCor_pt_shifts->at(IdxSyst), pfMET_Type1_PhiCor_phi_shifts->at(IdxSyst), vMETCorr);
+        else         vMETFinal = UpdateMETSyst(pfMET_Type1_pt, pfMET_Type1_phi, pfMET_Type1_pt_shifts->at(IdxSyst), pfMET_Type1_phi_shifts->at(IdxSyst), vMETCorr);
       }
-      else return vStandMET;
+      else return vMETCorr;
     }
   }
 
-  return vMETSyst;
+  return vMETFinal;
 }
 
 
@@ -121,8 +122,8 @@ Particle HNL_LeptonCore::GetvMET(TString METType, AnalyzerParameter param,
   if(param.syst_ == AnalyzerParameter::JetResDown)            IdxSyst = 1;
   if(param.syst_ == AnalyzerParameter::JetEnUp)               IdxSyst = 2;
   if(param.syst_ == AnalyzerParameter::JetEnDown)             IdxSyst = 3;
-  if(param.syst_ == AnalyzerParameter::MuonEnUp)              IdxSyst = 4;
-  if(param.syst_ == AnalyzerParameter::MuonEnDown)            IdxSyst = 5;
+  if(param.syst_ == AnalyzerParameter::MuonEnUp)              IdxSyst = 54; /// +50 so code uses our Muon corr not POG in MiniAOD
+  if(param.syst_ == AnalyzerParameter::MuonEnDown)            IdxSyst = 55; /// +50 so code uses our Muon corr not POG in MiniAOD
   if(param.syst_ == AnalyzerParameter::ElectronEnUp)          IdxSyst = 6;
   if(param.syst_ == AnalyzerParameter::ElectronEnDown)        IdxSyst = 7;
   // syst source not defined in CMSSW
@@ -131,25 +132,26 @@ Particle HNL_LeptonCore::GetvMET(TString METType, AnalyzerParameter param,
   if(param.syst_ == AnalyzerParameter::JetMassSmearUp)        IdxSyst = 22;
   if(param.syst_ == AnalyzerParameter::JetMassSmearDown)      IdxSyst = 23;
 
-  Particle vMETSyst = PropSmearing ? GetvCorrMET(METType,param,vStandMET) : vStandMET;
+  Particle vMETCorr = PropSmearing ? GetvCorrMET(METType,param,vStandMET) : vStandMET;
+  Particle vMETFinal;
 
-  if(IdxSyst >= 20 )  vMETSyst = UpdateMETSyst(param, vStandMET, jets, fatjets, muons, electrons);
+  if(IdxSyst >= 20 )  vMETFinal = UpdateMETSyst(param, vMETCorr, jets, fatjets, muons, electrons);
   else if(IdxSyst>=0){
 
     if(UsePuppi) {
       if(isfinite(PuppiMET_Type1_pt_shifts->at(IdxSyst))){
-        vMETSyst = UpdateMETSyst(PuppiMET_Type1_pt, PuppiMET_Type1_phi, PuppiMET_Type1_pt_shifts->at(IdxSyst),PuppiMET_Type1_phi_shifts->at(IdxSyst), vStandMET);
+        vMETFinal = UpdateMETSyst(PuppiMET_Type1_pt, PuppiMET_Type1_phi, PuppiMET_Type1_pt_shifts->at(IdxSyst),PuppiMET_Type1_phi_shifts->at(IdxSyst), vMETCorr);
       }
     }
     else {
       if(isfinite(pfMET_Type1_PhiCor_pt_shifts->at(IdxSyst))){
-        if(IsxyCorr) vMETSyst = UpdateMETSyst(pfMET_Type1_PhiCor_pt, pfMET_Type1_PhiCor_phi, pfMET_Type1_PhiCor_pt_shifts->at(IdxSyst), pfMET_Type1_PhiCor_phi_shifts->at(IdxSyst), vStandMET);
-        else         vMETSyst = UpdateMETSyst(pfMET_Type1_pt, pfMET_Type1_phi, pfMET_Type1_pt_shifts->at(IdxSyst), pfMET_Type1_phi_shifts->at(IdxSyst), vStandMET);
+        if(IsxyCorr) vMETFinal = UpdateMETSyst(pfMET_Type1_PhiCor_pt, pfMET_Type1_PhiCor_phi, pfMET_Type1_PhiCor_pt_shifts->at(IdxSyst), pfMET_Type1_PhiCor_phi_shifts->at(IdxSyst), vMETCorr);
+        else         vMETFinal = UpdateMETSyst(pfMET_Type1_pt, pfMET_Type1_phi, pfMET_Type1_pt_shifts->at(IdxSyst), pfMET_Type1_phi_shifts->at(IdxSyst), vMETCorr);
       }
     }
   }
 
-  return vMETSyst;
+  return vMETFinal;
 
 }
 

@@ -11,6 +11,14 @@ njobs_data=200
 nmax=600
 skim=' '
 
+if [[ $1 == "CF" ]]; then
+
+    declare  -a era_list=("2017" "2016postVFP" "2016preVFP" "2018")
+    for i in "${era_list[@]}"
+    do
+	SKFlat.py -a $analyzer  -l $datapath/${i}_DiLepton_EE.txt      -n 100    --nmax ${nmax}   -e ${i} --skim SkimTree_DileptonBDT  --userflags SSMultiLep,RunCF
+    done
+fi
 
 if [[ $1 == "WG" ]]; then
 

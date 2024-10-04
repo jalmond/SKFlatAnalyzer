@@ -105,7 +105,7 @@ class HNL_LeptonCore : public AnalyzerCore {
   void GetSetup_BDT(AnalyzerParameter& paramEv);
 
   /// Systemaic HNL ID setup
-  bool UpdataParamBySyst(TString JobID, AnalyzerParameter& paramEv , AnalyzerParameter::Syst systname, TString OrigParamName);
+  bool UpdateParamBySyst(TString JobID, AnalyzerParameter& paramEv , AnalyzerParameter::Syst systname, TString OrigParamName);
   
   // ------ Analysis Obj   
 
@@ -115,6 +115,7 @@ class HNL_LeptonCore : public AnalyzerCore {
   std::map<TString, double> cfmap;
 
   std::map<TString, double> MakeSFmap;
+  std::map<TString, double> MakeCFShiftmap;
   map<TString, Particle> METMap(AnalyzerParameter param);
 
 
@@ -165,8 +166,12 @@ class HNL_LeptonCore : public AnalyzerCore {
   double GetCFWeightElectron(std::vector<Electron> electrons ,  AnalyzerParameter param,   bool ApplySF=true);
   double GetCFWeightElectron(std::vector<Lepton* > leps ,  AnalyzerParameter param,int nEl,bool ApplySF=true);
   double CheckShiftRange(double val, double shift);
+  double GetShiftPtMedian(double pt1, double pt2, double shiftVal);
+
+  double GetCFShift(TString ID, TString bintag);
+  double GetCFShiftSyst(TString ID, TString bintag,int sys);
   double GetShiftCFEl(Electron el , TString ID, bool ApplyCorr=false, int sys=0) ;
-  double GetShiftCFEl(double elpt, bool isbb, TString ID, bool ApplyCorr=false, TString method="minChi2") ;
+  double GetShiftCFEl(double elpt, bool isbb, TString ID, bool ApplyCorr=false, int sys=0) ;
   double PtExtrap(double val, double x1, double x2, double y1, double y2);
   double GetZMassShift(vector<Electron> Electrons) ;
 
@@ -339,13 +344,17 @@ nvtx,  double w);
   TMVA::Reader *MVAReaderMM, *MVAReaderEE, *MVAReaderEM;
   TMVA::Reader *MVAReaderMMFake, *MVAReaderEEFake, *MVAReaderEMFake, *MVAReaderMMNonFake, *MVAReaderEENonFake, *MVAReaderEMNonFake;
 
+  /// Map to store booked settings
+  map<TString, TString > map_bdt_booked;
+
+
   /// Event BDT var 
   void InitializeTreeVars();
   void SetupEventBDTVariables(std::vector<Lepton *> LepTColl,    std::vector<Jet> JetAllColl,std::vector<Jet> JetColl, std::vector<Jet> JetVBFColl, std::vector<Jet> B_JetColl, Event  ev, Particle METv, AnalyzerParameter param);
 
   double EvaluateEventMVA(TString mN, TString bkgType, TString NCut, TString NTree, HNL_LeptonCore::Channel channel,
                           std::vector<Lepton *> LepTColl,
-                          Event ev, Particle METv, AnalyzerParameter param);
+                          Event ev, Particle METv, AnalyzerParameter param, double weight=1., bool isVarPlots=false);
 
   Float_t ev_bdt_Nj, ev_bdt_Nvbfj, ev_bdt_Nb, ev_bdt_LQ;
   Float_t ev_bdt_Ptl1, ev_bdt_Ptl2, ev_bdt_Ptj1, ev_bdt_Ptj2, ev_bdt_Ptj3, ev_bdt_MET, ev_bdt_HT, ev_bdt_LT, ev_bdt_HTLT, ev_bdt_HTLT1, ev_bdt_HTLT2, ev_bdt_MET2ST, ev_bdt_MET2HT, ev_bdt_Etal1, ev_bdt_Etal2;
@@ -383,7 +392,7 @@ nvtx,  double w);
 
 
   /// ------ SYSTEMATICS
-  vector<AnalyzerParameter::Syst> GetSystList(TString SystType);
+  vector<AnalyzerParameter::Syst> GetSystList(TString SystType="");
 
   /// ---- TRIGGER HNL_LeptonCore_Trigger
   void    SetupTriggerLists();  
@@ -459,7 +468,7 @@ nvtx,  double w);
   bool SameCharge(std::vector<Lepton *> leps, int ch=0);
 
   /// global var for user flags
-  bool RunPrompt,RunFake,RunFakeTF, RunCF,  RunConv, RunSyst,RunPromptTLRemoval,run_ORTrigger;
+  bool RunPrompt,RunFake,RunOSFake,RunFakeTF, RunCF,  RunConv, RunSyst,RunPromptTLRemoval,run_ORTrigger;
   bool IsSkimmed, Signal, HEM1516 ,BeforeRun319077;
   bool DEBUG,IsCentral, RunFullAnalysis;
   TRandom3* rand_;

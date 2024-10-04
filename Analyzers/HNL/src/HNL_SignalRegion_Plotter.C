@@ -5,9 +5,31 @@ void HNL_SignalRegion_Plotter::initializeAnalyzer(){
   // All default settings like trigger/ PD/ BJet are decalred in HNL_LeptonCore::initializeAnalyzer to make them consistent for all HNL codes
 
   HNL_LeptonCore::initializeAnalyzer();
-  SetupEventMVAReader("V1"); // JH FIXME later to V2
+  
+  bool run_ee_bdt=false;
+  bool run_mm_bdt=false;
+  bool run_em_bdt=false;
+  
+  if(HasFlag("EE") || HasFlag("MuMu") || HasFlag("EMu")){
+    run_ee_bdt=HasFlag("EE");
+    run_mm_bdt=HasFlag("MuMu");
+    run_em_bdt=HasFlag("EMu");
+    SetupEventMVAReader("V2",run_ee_bdt,run_mm_bdt,run_em_bdt);
+  }
+  else SetupEventMVAReader("V2");
+
   nLog = 100000;
 
+  RunEE   = HasFlag("EE");
+  RunMuMu = HasFlag("MuMu");
+  RunEMu  = HasFlag("EMu");
+  RunSyst = HasFlag("RunSyst");
+  RunFullSyst = HasFlag("RunFullSyst");
+  RunTopID = HasFlag("RunHNTop");
+  RunPOGID = HasFlag("RunPOG");
+  RunHighPtID = HasFlag("RunHighPt");
+  RunPekingID = HasFlag("RunPeking");
+  
 }
 
 
@@ -15,33 +37,54 @@ void HNL_SignalRegion_Plotter::executeEvent(){
 
   FillTimer("START_EV");
   
-  //vector<TString> LepIDs = {"HNL_ULID", "HighPt"}; //,"HNTightV2"};
-  vector<TString> LepIDs = {"HighPt"}; //,"HNTightV2"}; //FIXME
-  if(strcmp(std::getenv("USER"),"jalmond")==0) LepIDs = {"HNL_ULID","POGTight","TopHN","HNTightV2","MVAPOG"};//,"HNTightV2","POGTight","TopHN","HighPt"};
+  if(_jentry == 0){
+    cout << "HNL_SignalRegion_Plotter::IsData = " << IsData << endl;
+  }
+  vector<TString> LepIDs = {"HNL_ULID"}; //,"HNTightV2"};
+  if(RunTopID) LepIDs = {"TopHN"};
+  if(RunPOGID) LepIDs = {"POGTight"};
+  if(RunHighPtID) LepIDs = {"HighPt"};
+  if(RunPekingID) LepIDs = {"Peking"};
+  //  if(strcmp(std::getenv("USER"),"jalmond")==0) LepIDs = {"HNL_ULID","POGTight","TopHN","HNTightV2","MVAPOG"};//,"HNTightV2","POGTight","TopHN","HighPt"};
 
-  vector<HNL_LeptonCore::Channel> ChannelsToRun = {EE}; //FIXME
+  vector<HNL_LeptonCore::Channel> ChannelsToRun = {};
+  if(RunEE)   ChannelsToRun.push_back(EE);
+  if(RunMuMu) ChannelsToRun.push_back(MuMu);
+  if(RunEMu)  ChannelsToRun.push_back(EMu);
+  if(ChannelsToRun.size() == 0) ChannelsToRun = {EE,MuMu,EMu};
 
   for (auto id: LepIDs){
     for(auto channel : ChannelsToRun){
-      if(channel != EE && id == "HighPt") continue;
+
       AnalyzerParameter param = HNL_LeptonCore::InitialiseHNLParameter(id,channel);
       param.PlottingVerbose = 1;
       RunULAnalysis(param);
       
       // if(!IsData) RunSyst=true;
-      RunSyst=false; // FIXME
-      if(RunSyst){
-        TString param_name = param.Name;
-        vector<AnalyzerParameter::Syst> SystList = GetSystList("Initial");
-        //vector<AnalyzerParameter::Syst> SystList = GetSystList("Fake");
-        //vector<AnalyzerParameter::Syst> SystList = GetSystList("Jets");
-        //vector<AnalyzerParameter::Syst> SystList = GetSystList("Quick");
+      RunSyst=true; // FIXME
         
+      if(RunSyst||RunFullSyst){
+        TString param_name = param.Name;
+        //vector<AnalyzerParameter::Syst> SystList = GetSystList("All");
+        vector<AnalyzerParameter::Syst> SystList = GetSystList("Quick");
+
+        //if(RunSyst) {
+        //  /// Set Individual systs    
+        //  SystList = { 
+        //    AnalyzerParameter::MuonEnUp,AnalyzerParameter::MuonEnDown,
+        //    AnalyzerParameter::ElectronEnUp,AnalyzerParameter::ElectronEnDown,
+        //  };
+        //}
+
         for(auto isyst : SystList){
-          bool runJob = UpdataParamBySyst(id,param,AnalyzerParameter::Syst(isyst),param_name);
+          bool runJob = UpdateParamBySyst(id,param,AnalyzerParameter::Syst(isyst),param_name);
+          if(_jentry%10000 == 0){
+            cout << "param.GetSystType(): " << param.GetSystType() << endl;
+            cout << "param.Name: " << param.Name << endl;
+          }
           if(runJob) RunULAnalysis(param);
         }
-      }    
+      }
       
     }
   }

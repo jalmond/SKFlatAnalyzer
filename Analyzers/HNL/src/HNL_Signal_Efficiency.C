@@ -11,7 +11,7 @@ void HNL_Signal_Efficiency::executeEvent(){
 
   
   //==== Gen for genmatching
-  AnalyzerParameter param  = InitialiseHNLParameter("SignalStudy");
+  AnalyzerParameter param  = InitialiseHNLParameter("");
   Event ev = GetEvent();
   double weight =  (gen_weight > 0) ? 1. : -1. ; //SetupWeight(ev,param);
   
@@ -60,14 +60,28 @@ void HNL_Signal_Efficiency::executeEvent(){
   vector<Muon>     HNMuons = SelectMuons (InputMuons, "HNTightV2", 10., 2.4);
   vector<Electron> HNElectrons = SelectElectrons (InputElectrons, "HNTightV2", 15., 2.4);
   
- 
   if(SameCharge(HNLMuons) && (InputMuons[0].Pt() > 20) )     FillHist( process + "/SS_Muon_HNL", 1., weight, 4,0., 4);
   if(SameCharge(HNMuons)  && (InputMuons[0].Pt() > 20) )      FillHist( process + "/SS_Muon_HNTight", 1., weight, 4,0., 4);
 
   if(SameCharge(HNLElectrons) && (InputElectrons[0].Pt() > 25) ) FillHist( process + "/SS_Electron_HNL", 1., weight, 4,0., 4);
   if(SameCharge(HNElectrons)  && (InputElectrons[0].Pt() > 25))  FillHist( process + "/SS_Electron_HNTight", 1., weight, 4,0., 4);
   
-  vector<HNL_LeptonCore::Channel> channels = {EE,MuMu};//, EMu};
+  /// Check baseline IDs;
+  if(HasFlag("Baseline_EE")){
+    
+    vector<Electron> BL_InputElectrons    = GetElectrons    ( "PassMVABaseLine", 15., 2.5);
+    vector<Electron> BLTrk_InputElectrons = GetElectrons    ( "PassMVABaseLine_TrkIso", 15., 2.5);
+    if(SameCharge(BL_InputElectrons) && (BL_InputElectrons[0].Pt() > 25) ) FillHist( process + "/SS_Baseline_Electron_", 1., weight, 4,0., 4);
+    if(SameCharge(BLTrk_InputElectrons)  && (BLTrk_InputElectrons[0].Pt() > 25))  FillHist( process + "/SS_BaselineTrkIso_Electron", 1., weight, 4,0., 4);
+
+    if(SameCharge(BL_InputElectrons) && (BL_InputElectrons[0].Pt() > 25) )FillElectronPlots(param,"SS_Baseline",BL_InputElectrons,weight);
+    if(SameCharge(BLTrk_InputElectrons) && (BLTrk_InputElectrons[0].Pt() > 25) )FillElectronPlots(param,"SS_Baseline",BLTrk_InputElectrons,weight);
+    
+    return;
+  }
+  
+
+  vector<HNL_LeptonCore::Channel> channels = {EE};//,MuMu};//, EMu};
   
   vector<TString> ElectronIDs = {"NoCut","HNVetoMVA","CutBasedLooseNoIso","CutBasedMediumNoIso","CutBasedTightNoIso","MVALooseNoIso","CutBasedVetoNoIso","HNTightV2","passPOGTight","passPOGMedium","passHEEPID","passMVAID_noIso_WP80","passMVAID_noIso_WP90","passMVAID_Iso_WP80","passMVAID_Iso_WP90","HNHEEPID","Peking_2016", "Peking_2017","HNL_ULID_"+GetYearString(),"MVALoose","TopHNSST","HNL_TC1_ULID_"+GetYearString(),"HNL_TC2_ULID_"+GetYearString(),"HNL_TC3_ULID_"+GetYearString()};
   

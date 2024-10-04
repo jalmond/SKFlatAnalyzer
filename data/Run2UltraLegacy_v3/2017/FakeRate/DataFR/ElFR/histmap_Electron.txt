@@ -6,6 +6,9 @@ FakeRate        passPOGTight    ptcone_eta  AwayJetPt40 	MainFiles/FR_EGamma_Ver
 FakeRate        TopHNSST        ptcone_eta  FR_cent     	MainFiles/FR_EGamma_2017_Top.root
 FakeRate        Peking_2017     ptcone_eta  FR_cent     	MainFiles/FR_EGamma_2017_HNL_PtCone.root
 FakeRate        HNTightV2       ptcone_eta  FR_cent     	MainFiles/FR_EGamma_2017_HNL_PtCone.root
+FakeRate        passHEEPID_v1   pt_eta      FR_cent             MainFiles/FR_EGamma_HEEP_2017_HNL_Pt.root
+FakeRate        passHEEPID_v2   pt_eta      FR_cent             MainFiles/FR_EGamma_HEEP_2017_HNL_Pt.root
+FakeRate        passHEEPID_v3   pt_eta      FR_cent             MainFiles/FR_EGamma_HEEP_2017_HNL_Pt.root
 ###-----------------------------------------------------------------------------------------------------------------------------
 ###--- Following entries for MVA HNL IDs using v4 [LOWER El8 Trigger used]
 ###-----------------------------------------------------------------------------------------------------------------------------

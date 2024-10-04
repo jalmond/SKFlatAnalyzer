@@ -12,6 +12,26 @@ public:
   void  PrintObject(TString label);
 
 
+  inline TString GetLeptonCatagory() const{
+    if(fabs(this->Eta()) < 1.5) {
+      if(this->Pt() < 30) return "BB_Pt1";
+      if(this->Pt() < 40) return "BB_Pt2";
+      if(this->Pt() < 50) return "BB_Pt3";
+      if(this->Pt() < 100) return "BB_Pt4";
+      return "BB_Pt5";
+    }
+    else {
+      if(this->Pt() < 30)  return "EC_Pt1";
+      if(this->Pt() < 40)  return "EC_Pt2";
+      if(this->Pt() < 50)  return "EC_Pt3";
+      if(this->Pt() < 100)  return "EC_Pt4";
+      return "EC_Pt5";
+    }
+  }
+
+
+
+
   //==== For empty Gen
   void SetIsEmpty(bool b);
   inline bool IsEmpty() const { return j_IsEmpty; }

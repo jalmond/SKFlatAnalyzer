@@ -61,7 +61,7 @@ def DrawHist(HistsName, Inputs,tag,args,SavedHistName):
     
     tdrstyle.setTDRStyle()
     ROOT.TH1.AddDirectory(False)
-    ROOT.gROOT.SetBatch(True)
+    ROOT.gROOT.SetBatchRebin(True)
 
     c1 = ROOT.TCanvas(HistsName ,HistsName, 800, 800)
     latex_CMSPriliminary = ROOT.TLatex()

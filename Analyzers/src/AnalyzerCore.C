@@ -130,7 +130,8 @@ std::vector<Muon> AnalyzerCore::GetAllMuons(){
   for(unsigned int i=0; i<muon_pt->size(); i++){
 
     Muon mu;
-    mu.SetRunEra(DataYear);
+    mu.SetRunYear(DataYear);
+    mu.SetRunEra(GetEraShort());
     mu.SetCharge(muon_charge->at(i));
     mu.SetUncorrectedPt(muon_pt->at(i));
     Muon mu_tmp;
@@ -298,8 +299,8 @@ std::vector<Electron> AnalyzerCore::GetAllElectrons(){
   for(unsigned int i=0; i<electron_Energy->size(); i++){
 
     Electron el;
-    el.SetRunEra(DataYear);
-
+    el.SetRunYear(DataYear);
+    el.SetRunEra(GetEraShort());
     el.SetEnShift(  electron_Energy_Scale_Up->at(i)/electron_Energy->at(i), electron_Energy_Scale_Down->at(i)/electron_Energy->at(i) );
     el.SetResShift( electron_Energy_Smear_Up->at(i)/electron_Energy->at(i), electron_Energy_Smear_Down->at(i)/electron_Energy->at(i) );
 

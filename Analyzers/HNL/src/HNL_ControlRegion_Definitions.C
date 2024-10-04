@@ -69,8 +69,10 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
     
     /// Filters events based on Conv/CF/Fake/Prompt
     
+    bool Running_OSFake = (RunOSFake || (RunCR("OS_VR",CRs) && RunFake));
     
-    if(! (RunCR("OS_VR",CRs) && RunFake)){
+    if(!Running_OSFake){
+      /// If running OS Region then fakes use Gen
       if(!PassGenMatchFilter(LepsT,param)) continue;
     }
 
@@ -176,8 +178,8 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
     /// For OS Fakes use SS TT events - VV , but RunFake uses LL so need to apply Tight ID 
     bool PassTight = true;
     if(RunFake){
-      if(RunCR("OS_VR",CRs) && (dilep_channel==EE || dilep_channel==MuMu) ){
- 
+      if(Running_OSFake && (dilep_channel==EE || dilep_channel==MuMu) ){
+  
         if(dilep_channel==EE   && !SameCharge(electrons))   continue;
         if(dilep_channel==MuMu && !SameCharge(muons))       continue;
         
@@ -217,7 +219,7 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
             if(nT=="LL")  FillHist(  "FAKES/"+param.Name+"/UnWeighted_NTL",   4,  1,  5, 0, 5.);
           }
     
-          if(RunCR("OS_VR",CRs)) weight_OS = weight_channel;
+          if(Running_OSFake) weight_OS = weight_channel;
           if(run_Debug) {cout <<"RunAllControlRegions ["<< nlog<< "] Fake Weight = " << weight_channel << endl;nlog++;}
         }
       }
@@ -326,43 +328,43 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
 
       // LLL / LLLL 
       if(ConversionSplitting(LepsT,RunConv,4,param)){
-	      //////  SR1+3 ZZ
-	      if(FillZZCRPlots (fourlep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramQuadlep, weight_channel)) passed.push_back("ZZ_CR");
-	      if(FillZZ2CRPlots(fourlep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramQuadlep, weight_channel)) passed.push_back("ZZOffshell_CR"); 
-	      //// SR2 ZZ AN[1] Table 11 
-	      if(FillZZVBFCRPlots(fourlep_channel, LepsT, LepsV, VBF_JetColl, AK8_JetColl, B_JetColl, ev, METv, paramQuadlep, weight_channel)) passed.push_back("ZZVBF_CR");
+        //////  SR1+3 ZZ
+        if(FillZZCRPlots (fourlep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramQuadlep, weight_channel)) passed.push_back("ZZ_CR");
+        if(FillZZ2CRPlots(fourlep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramQuadlep, weight_channel)) passed.push_back("ZZOffshell_CR"); 
+        //// SR2 ZZ AN[1] Table 11 
+        if(FillZZVBFCRPlots(fourlep_channel, LepsT, LepsV, VBF_JetColl, AK8_JetColl, B_JetColl, ev, METv, paramQuadlep, weight_channel)) passed.push_back("ZZVBF_CR");
       }
       
       if(ConversionSplitting(LepsT,RunConv,3,param)){
-	      FillCutflow(CutFlow_Region, weight_channel, "VG_VR",param);
-	      
-	      if(FillWGCRPlots( trilep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTrilep, weight_channel)) passed.push_back("WG_CR");
-	      if(FillZGCRPlots( trilep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTrilep, weight_channel)) passed.push_back("ZG_CR");
-	      
-	      ////// WZ CR [SR1+3]
-	      
-	      if(AK8_JetColl.size() > 0) {
-	        if(FillWZCRPlots (trilep_channel,  LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTrilep, weight_channel))  passed.push_back("WZ_CR");
-	      }
-	      else if(!PassVBF(VBF_JetColl,LepsT,750)){
-	        if(FillWZCRPlots (trilep_channel,  LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTrilep, weight_channel))  passed.push_back("WZ_CR");
-	      }
-	      
-	      ////// WZ CR2
+        FillCutflow(CutFlow_Region, weight_channel, "VG_VR",param);
+        
+        if(FillWGCRPlots( trilep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTrilep, weight_channel)) passed.push_back("WG_CR");
+        if(FillZGCRPlots( trilep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTrilep, weight_channel)) passed.push_back("ZG_CR");
+        
+        ////// WZ CR [SR1+3]
+        
+        if(AK8_JetColl.size() > 0) {
+          if(FillWZCRPlots (trilep_channel,  LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTrilep, weight_channel))  passed.push_back("WZ_CR");
+        }
+        else if(!PassVBF(VBF_JetColl,LepsT,750)){
+          if(FillWZCRPlots (trilep_channel,  LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTrilep, weight_channel))  passed.push_back("WZ_CR");
+        }
+        
+        ////// WZ CR2
 
-	      //// AN[2] Table 13 
-	      if(FillWZVBFCRPlots      (trilep_channel, LepsT, LepsV, VBF_JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTrilep, weight_channel)) passed.push_back("WZVBF_CR");
-	      /// AN[3] Table 15
-	      if(FillWZVBF2CRPlots      (trilep_channel, LepsT, LepsV, VBF_JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTrilep, weight_channel)) passed.push_back("WZVBF2_CR");
+        //// AN[2] Table 13 
+        if(FillWZVBFCRPlots      (trilep_channel, LepsT, LepsV, VBF_JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTrilep, weight_channel)) passed.push_back("WZVBF_CR");
+        /// AN[3] Table 15
+        if(FillWZVBF2CRPlots      (trilep_channel, LepsT, LepsV, VBF_JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTrilep, weight_channel)) passed.push_back("WZVBF2_CR");
 
-	      ///// Top CR
-	      ///// AN [1] :   FillWZBCRPlots is Table11 WZ SR anti-bjet AM2019_089_v7 (Jet cut 50 -> 30 ; m(lll) > 100 ->105)
-	      if(FillWZBCRPlots      (trilep_channel, LepsT, LepsV, VBF_JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTrilep, weight_channel)) passed.push_back("WZB_CR");
+        ///// Top CR
+        ///// AN [1] :   FillWZBCRPlots is Table11 WZ SR anti-bjet AM2019_089_v7 (Jet cut 50 -> 30 ; m(lll) > 100 ->105)
+        if(FillWZBCRPlots      (trilep_channel, LepsT, LepsV, VBF_JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTrilep, weight_channel)) passed.push_back("WZB_CR");
 
-	      ////// Jiwhans functions
-	      if(FillZ_ElNPCRPlots   (trilep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTrilep, weight_channel))     passed.push_back("ZNPEl_CR");
-	      if(FillZ_MuonNPCRPlots (trilep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTrilep, weight_channel))     passed.push_back("ZNPMu_CR");
-	      if(FillTopNPCRPlots    (trilep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTrilep, weight_channel))     passed.push_back("TopNP_CR");
+        ////// Jiwhans functions
+        if(FillZ_ElNPCRPlots   (trilep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTrilep, weight_channel))     passed.push_back("ZNPEl_CR");
+        if(FillZ_MuonNPCRPlots (trilep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTrilep, weight_channel))     passed.push_back("ZNPMu_CR");
+        if(FillTopNPCRPlots    (trilep_channel, LepsT, LepsV, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTrilep, weight_channel))     passed.push_back("TopNP_CR");
       }
     }
 
@@ -388,13 +390,13 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
         else continue;
       }
       else if(LepsT.size() == 2){
-	      if(MCSample.Contains("WGTo")){
-	        //// Set Weight to half and not apply SS cut
-	        weight_channel *= 0.5;
-	      }
-	      else {
-	        if(!SameCharge(LepsT)) continue;
-	      }
+        if(MCSample.Contains("WGTo")){
+          //// Set Weight to half and not apply SS cut
+          weight_channel *= 0.5;
+        }
+        else {
+          if(!SameCharge(LepsT)) continue;
+        }
       }
       
     }

@@ -32,35 +32,35 @@ void HNL_Lepton_FakeRate::executeEvent(){
   if(HasFlag("CheckProfile")){
     //// Check MVA Profile  for PtParton
 
-    vector<TString> LIDs = {"HNL_ULID_FO_v1_a_"+GetYearString(),
-          "HNL_ULID_FO_v2_a_"+GetYearString(),
-          "HNL_ULID_FO_v3_a_"+GetYearString(),
-          "HNL_ULID_FO_v4_a_"+GetYearString(),
-          "HNL_ULID_FO_v5_a_"+GetYearString(),
-          "HNL_ULID_FO_v6_a_"+GetYearString(),
-          "HNL_ULID_FO_v7_a_"+GetYearString(),
-          "HNL_ULID_FO_v8_a_"+GetYearString(),
-          "HNL_ULID_FO_v9_a_"+GetYearString(),
-          "HNL_ULID_FO_v1_b_"+GetYearString(),
-                            "HNL_ULID_FO_v2_b_"+GetYearString(),
-                            "HNL_ULID_FO_v3_b_"+GetYearString(),
-                            "HNL_ULID_FO_v4_b_"+GetYearString(),
-                            "HNL_ULID_FO_v5_b_"+GetYearString(),
-                            "HNL_ULID_FO_v6_b_"+GetYearString(),
-                            "HNL_ULID_FO_v7_b_"+GetYearString(),
-                            "HNL_ULID_FO_v8_b_"+GetYearString(),
-                            "HNL_ULID_FO_v9_b_"+GetYearString(),
-          "HNL_ULID_FO_v1_c_"+GetYearString(),
-                            "HNL_ULID_FO_v2_c_"+GetYearString(),
-                            "HNL_ULID_FO_v3_c_"+GetYearString(),
-                            "HNL_ULID_FO_v4_c_"+GetYearString(),
-                            "HNL_ULID_FO_v5_c_"+GetYearString(),
-                            "HNL_ULID_FO_v6_c_"+GetYearString(),
-                            "HNL_ULID_FO_v7_c_"+GetYearString(),
-                            "HNL_ULID_FO_v8_c_"+GetYearString(),
-                            "HNL_ULID_FO_v9_c_"+GetYearString(),
-                            "HNL_ULID_FO_v0_"+GetYearString()};
-          
+    vector<TString> LIDs = {"HNL_ULID_FO_v1_a",
+			    "HNL_ULID_FO_v2_a",
+			    "HNL_ULID_FO_v3_a",
+			    "HNL_ULID_FO_v4_a",
+			    "HNL_ULID_FO_v5_a",
+			    "HNL_ULID_FO_v6_a",
+			    "HNL_ULID_FO_v7_a",
+			    "HNL_ULID_FO_v8_a",
+			    "HNL_ULID_FO_v9_a",
+			    "HNL_ULID_FO_v1_b",
+                            "HNL_ULID_FO_v2_b",
+                            "HNL_ULID_FO_v3_b",
+                            "HNL_ULID_FO_v4_b",
+                            "HNL_ULID_FO_v5_b",
+                            "HNL_ULID_FO_v6_b",
+                            "HNL_ULID_FO_v7_b",
+                            "HNL_ULID_FO_v8_b",
+                            "HNL_ULID_FO_v9_b",
+			    "HNL_ULID_FO_v1_c",
+                            "HNL_ULID_FO_v2_c",
+                            "HNL_ULID_FO_v3_c",
+                            "HNL_ULID_FO_v4_c",
+                            "HNL_ULID_FO_v5_c",
+                            "HNL_ULID_FO_v6_c",
+                            "HNL_ULID_FO_v7_c",
+                            "HNL_ULID_FO_v8_c",
+                            "HNL_ULID_FO_v9_c",
+                            "HNL_ULID_FO_v0"};
+			    
 
     vector<TString> NIDs;
     for(auto i : LIDs){
@@ -79,34 +79,34 @@ void HNL_Lepton_FakeRate::executeEvent(){
   if(HasFlag("CheckProfileEE")){
     /// Check MVA/Pt Profile for ptparton in Electrons
 
-    vector<TString> LIDs = {"HNL_ULID_FO_v1_a_"+GetYearString(),
-                            "HNL_ULID_FO_v2_a_"+GetYearString(),
-                            "HNL_ULID_FO_v3_a_"+GetYearString(),
-                            "HNL_ULID_FO_v4_a_"+GetYearString(),
-                            "HNL_ULID_FO_v5_a_"+GetYearString(),
-                            "HNL_ULID_FO_v6_a_"+GetYearString(),
-                            "HNL_ULID_FO_v7_a_"+GetYearString(),
-                            "HNL_ULID_FO_v8_a_"+GetYearString(),
-                            "HNL_ULID_FO_v9_a_"+GetYearString(),
-                            "HNL_ULID_FO_v1_b_"+GetYearString(),
-                            "HNL_ULID_FO_v2_b_"+GetYearString(),
-                            "HNL_ULID_FO_v3_b_"+GetYearString(),
-                            "HNL_ULID_FO_v4_b_"+GetYearString(),
-                            "HNL_ULID_FO_v5_b_"+GetYearString(),
-                            "HNL_ULID_FO_v6_b_"+GetYearString(),
-                            "HNL_ULID_FO_v7_b_"+GetYearString(),
-                            "HNL_ULID_FO_v8_b_"+GetYearString(),
-                            "HNL_ULID_FO_v9_b_"+GetYearString(),
-                            "HNL_ULID_FO_v1_c_"+GetYearString(),
-                            "HNL_ULID_FO_v2_c_"+GetYearString(),
-                            "HNL_ULID_FO_v3_c_"+GetYearString(),
-                            "HNL_ULID_FO_v4_c_"+GetYearString(),
-                            "HNL_ULID_FO_v5_c_"+GetYearString(),
-                            "HNL_ULID_FO_v6_c_"+GetYearString(),
-                            "HNL_ULID_FO_v7_c_"+GetYearString(),
-                            "HNL_ULID_FO_v8_c_"+GetYearString(),
-                            "HNL_ULID_FO_v9_c_"+GetYearString(),
-                            "HNL_ULID_FO_v0_"+GetYearString()};
+    vector<TString> LIDs = {"HNL_ULID_FO_v1_a",
+                            "HNL_ULID_FO_v2_a",
+                            "HNL_ULID_FO_v3_a",
+                            "HNL_ULID_FO_v4_a",
+                            "HNL_ULID_FO_v5_a",
+                            "HNL_ULID_FO_v6_a",
+                            "HNL_ULID_FO_v7_a",
+                            "HNL_ULID_FO_v8_a",
+                            "HNL_ULID_FO_v9_a",
+                            "HNL_ULID_FO_v1_b",
+                            "HNL_ULID_FO_v2_b",
+                            "HNL_ULID_FO_v3_b",
+                            "HNL_ULID_FO_v4_b",
+                            "HNL_ULID_FO_v5_b",
+                            "HNL_ULID_FO_v6_b",
+                            "HNL_ULID_FO_v7_b",
+                            "HNL_ULID_FO_v8_b",
+                            "HNL_ULID_FO_v9_b",
+                            "HNL_ULID_FO_v1_c",
+                            "HNL_ULID_FO_v2_c",
+                            "HNL_ULID_FO_v3_c",
+                            "HNL_ULID_FO_v4_c",
+                            "HNL_ULID_FO_v5_c",
+                            "HNL_ULID_FO_v6_c",
+                            "HNL_ULID_FO_v7_c",
+                            "HNL_ULID_FO_v8_c",
+                            "HNL_ULID_FO_v9_c",
+                            "HNL_ULID_FO_v0"};
 
 
     vector<TString> NIDs;
@@ -135,54 +135,52 @@ void HNL_Lepton_FakeRate::executeEvent(){
 
   if(HasFlag("RunRatesHEEP")){
     /// Measure FR in Data                                                                                                                                                                                                                                                                                                 
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"passHEEPID_v1"  ,"passHEEPID_v1", "HEEPLoose_v1"));
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"passHEEPID_v2"  ,"passHEEPID_v2", "HEEPLoose_v2"));
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"passHEEPID_v3"  ,"passHEEPID_v3", "HEEPLoose_v3"));
-    
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"passHEEPID_v1"  ,"passHEEPID_v1", "passHEEPLoose_v1"));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"passHEEPID_v2"  ,"passHEEPID_v2", "passHEEPLoose_v2"));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"passHEEPID_v3"  ,"passHEEPID_v3", "passHEEPLoose_v3"));    
   }
-    
-
+   
 
   if(HasFlag("RunRates")){
     /// Measure FR in Data
 
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v0_"+GetYearString()  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v0_"+GetYearString()));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v0"  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v0"));
    
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v1_a_"+GetYearString()  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v1_a_"+GetYearString()));                                                   
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v1_b_"+GetYearString()  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v1_b_"+GetYearString()));                                                 
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v1_c_"+GetYearString()  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v1_c_"+GetYearString()));                                                 
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v1_a"  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v1_a"));                                                   
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v1_b"  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v1_b"));                                                 
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v1_c"  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v1_c"));                                                 
 
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v2_a_"+GetYearString()  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v2_a_"+GetYearString()));
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v2_b_"+GetYearString()  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v2_b_"+GetYearString()));
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v2_c_"+GetYearString()  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v2_c_"+GetYearString()));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v2_a"  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v2_a"));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v2_b"  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v2_b"));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v2_c"  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v2_c"));
 
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v3_a_"+GetYearString()  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v3_a_"+GetYearString()));
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v3_b_"+GetYearString()  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v3_b_"+GetYearString()));
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v3_c_"+GetYearString()  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v3_c_"+GetYearString()));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v3_a"  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v3_a"));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v3_b"  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v3_b"));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v3_c"  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v3_c"));
 
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v4_a_"+GetYearString()  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v4_a_"+GetYearString()));
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v4_b_"+GetYearString()  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v4_b_"+GetYearString()));
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v4_c_"+GetYearString()  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v4_c_"+GetYearString()));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v4_a"  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v4_a"));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v4_b"  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v4_b"));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v4_c"  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v4_c"));
 
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v5_a_"+GetYearString()  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v5_a_"+GetYearString()));
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v5_b_"+GetYearString()  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v5_b_"+GetYearString()));
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v5_c_"+GetYearString()  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v5_c_"+GetYearString()));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v5_a"  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v5_a"));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v5_b"  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v5_b"));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v5_c"  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v5_c"));
 
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v6_a_"+GetYearString()  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v6_a_"+GetYearString()));
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v6_b_"+GetYearString()  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v6_b_"+GetYearString()));
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v6_c_"+GetYearString()  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v6_c_"+GetYearString()));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v6_a"  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v6_a"));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v6_b"  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v6_b"));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v6_c"  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v6_c"));
 
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v7_a_"+GetYearString()  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v7_a_"+GetYearString()));
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v7_b_"+GetYearString()  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v7_b_"+GetYearString()));
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v7_c_"+GetYearString()  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v7_c_"+GetYearString()));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v7_a"  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v7_a"));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v7_b"  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v7_b"));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v7_c"  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v7_c"));
 
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v8_a_"+GetYearString()  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v8_a_"+GetYearString()));
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v8_b_"+GetYearString()  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v8_b_"+GetYearString()));
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v8_c_"+GetYearString()  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v8_c_"+GetYearString()));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v8_a"  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v8_a"));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v8_b"  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v8_b"));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v8_c"  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v8_c"));
 
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v9_a_"+GetYearString()  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v9_a_"+GetYearString()));
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v9_b_"+GetYearString()  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v9_b_"+GetYearString()));
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v9_c_"+GetYearString()  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v9_c_"+GetYearString()));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v9_a"  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v9_a"));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v9_b"  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v9_b"));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v9_c"  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v9_c"));
 
 
     goto RunJobs;
@@ -195,20 +193,20 @@ void HNL_Lepton_FakeRate::executeEvent(){
     VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"Peking"        , "Peking",    "Peking_FO"));
     VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNTightV2"     , "HNTightV2", "HNLooseV1"));
     VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_HN3L"      , "HNL_HN3L",  "HNL_TopMVA_FO_MM"));
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_"+GetYearString()   , "HNL_ULID_"+GetYearString(),    "HNL_ULID_FO_"+GetEraShort()));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_"+GetYearString()   , "HNL_ULID_"+GetYearString(),    "HNL_ULID_FO"));
     
     goto RunJobs;
   }
   
   if(HasFlag("RunPromptRates")){
     /// Measure FR in Data                                                                                                                                                                                                                                                   
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"PR"},"HNL_ULID_"+GetYearString()   , "HNL_ULID_"+GetYearString(),    "HNL_ULID_FO_"+GetEraShort()));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"PR"},"HNL_ULID_"+GetYearString()   , "HNL_ULID_"+GetYearString(),    "HNL_ULID_FO"));
 
     goto RunJobs;
   }
   if(HasFlag("RunPromptRatesEE")){
     /// Measure FR in Data                                                                                                                                                                                                                                                   
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"PR"},"HNL_ULID_"+GetYearString()   , "HNL_ULID_"+GetYearString(),    "HNL_ULID_FO_"+GetEraShort()));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"PR"},"HNL_ULID_"+GetYearString()   , "HNL_ULID_"+GetYearString(),    "HNL_ULID_FO"));
 
     goto RunJobs;
   }
@@ -216,43 +214,43 @@ void HNL_Lepton_FakeRate::executeEvent(){
   if(HasFlag("RunRatesEE")){
     /// Measure FR in Data 
 
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v0_"+GetYearString()  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v0_"+GetYearString()));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v0"  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v0"));
 
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v1_a_"+GetYearString()  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v1_a_"+GetYearString()));
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v1_b_"+GetYearString()  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v1_b_"+GetYearString()));
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v1_c_"+GetYearString()  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v1_c_"+GetYearString()));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v1_a"  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v1_a"));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v1_b"  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v1_b"));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v1_c"  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v1_c"));
 
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v2_a_"+GetYearString()  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v2_a_"+GetYearString()));
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v2_b_"+GetYearString()  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v2_b_"+GetYearString()));
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v2_c_"+GetYearString()  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v2_c_"+GetYearString()));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v2_a"  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v2_a"));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v2_b"  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v2_b"));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v2_c"  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v2_c"));
 
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v3_a_"+GetYearString()  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v3_a_"+GetYearString()));
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v3_b_"+GetYearString()  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v3_b_"+GetYearString()));
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v3_c_"+GetYearString()  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v3_c_"+GetYearString()));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v3_a"  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v3_a"));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v3_b"  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v3_b"));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v3_c"  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v3_c"));
 
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v4_a_"+GetYearString()  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v4_a_"+GetYearString()));
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v4_b_"+GetYearString()  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v4_b_"+GetYearString()));
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v4_c_"+GetYearString()  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v4_c_"+GetYearString()));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v4_a"  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v4_a"));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v4_b"  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v4_b"));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v4_c"  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v4_c"));
 
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v5_a_"+GetYearString()  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v5_a_"+GetYearString()));
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v5_b_"+GetYearString()  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v5_b_"+GetYearString()));
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v5_c_"+GetYearString()  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v5_c_"+GetYearString()));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v5_a"  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v5_a"));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v5_b"  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v5_b"));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v5_c"  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v5_c"));
 
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v6_a_"+GetYearString()  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v6_a_"+GetYearString()));
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v6_b_"+GetYearString()  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v6_b_"+GetYearString()));
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v6_c_"+GetYearString()  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v6_c_"+GetYearString()));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v6_a"  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v6_a"));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v6_b"  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v6_b"));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v6_c"  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v6_c"));
 
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v7_a_"+GetYearString()  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v7_a_"+GetYearString()));
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v7_b_"+GetYearString()  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v7_b_"+GetYearString()));
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v7_c_"+GetYearString()  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v7_c_"+GetYearString()));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v7_a"  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v7_a"));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v7_b"  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v7_b"));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v7_c"  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v7_c"));
 
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v8_a_"+GetYearString()  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v8_a_"+GetYearString()));
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v8_b_"+GetYearString()  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v8_b_"+GetYearString()));
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v8_c_"+GetYearString()  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v8_c_"+GetYearString()));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v8_a"  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v8_a"));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v8_b"  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v8_b"));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v8_c"  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v8_c"));
 
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v9_a_"+GetYearString()  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v9_a_"+GetYearString()));
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v9_b_"+GetYearString()  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v9_b_"+GetYearString()));
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v9_c_"+GetYearString()  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v9_c_"+GetYearString()));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v9_a"  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v9_a"));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v9_b"  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v9_b"));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_FO_v9_c"  ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO_v9_c"));
 
 
 
@@ -262,9 +260,9 @@ void HNL_Lepton_FakeRate::executeEvent(){
   if(HasFlag("RunRatesFullEEID")){
     /// Measure FR in Data                                                                                                                                                                                                                    
     
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"Peking"        , "Peking_"+GetYearString(),    "Peking_FO_"+GetYearString()));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"Peking"        , "Peking",    "Peking_FO"));
     VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNTightV2"     , "HNTightV2", "HNLooseV1"));
-    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_"+GetYearString()   , "HNL_ULID_"+GetYearString(),    "HNL_ULID_FO_"+GetEraShort()));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_"+GetYearString()   , "HNL_ULID_"+GetYearString(),    "HNL_ULID_FO"));
     
 
     goto RunJobs;
@@ -932,7 +930,6 @@ void HNL_Lepton_FakeRate::GetElFakeRates(TString Method, std::vector<Lepton *> l
   TString  LooseID =  param.Electron_Loose_ID ;
   TString  TightID =  param.Electron_Tight_ID ;
   double MVACut = leps[0]->MVAFakeCut(TightID,GetYearString());
-
 
   Event ev = GetEvent();
   TString triggerslist_8="HLT_Ele8_CaloIdL_TrackIdL_IsoVL_PFJet30_v";   

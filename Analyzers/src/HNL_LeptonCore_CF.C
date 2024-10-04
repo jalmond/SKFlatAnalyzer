@@ -106,18 +106,19 @@ double HNL_LeptonCore::GetCFWeightElectron(std::vector<Lepton* > leps ,  Analyze
   if(param.syst_ == AnalyzerParameter::CFRateUp) sysR = 1;
   if(param.syst_ == AnalyzerParameter::CFRateDown) sysR = -1;
   
+  TString TightID = param.Electron_Tight_ID;
+  if(TightID.Contains("HNL_ULID")) TightID=TightID.ReplaceAll("_"+GetYearString(),"");
 
   for(auto ilep : leps){
     if(ilep->LeptonFlavour()==Lepton::ELECTRON){
       
       if(nElIt==nEl) {
-	//	double el_cf_rate =   cfEst->GetElectronCFRate(param.Electron_Tight_ID, param.k.Electron_CF,ilep->defEta(),ilep->Pt(), sysR);
-	double el_cf_rate =   cfEst->GetElectronCFRateFitted(param.Electron_Tight_ID,"InvPtBB1", param.k.Electron_CF,ilep->defEta(),ilep->Pt(), sysR);
+	double el_cf_rate =   cfEst->GetElectronCFRateFitted(TightID,"InvPtBB1", param.k.Electron_CF,ilep->defEta(),ilep->Pt(), sysR);
 	el_cf_rate *= GetCFSF(param,ilep,ApplySF);
 	cf_weight += (el_cf_rate / (1.-el_cf_rate));
       }
       else if(nEl == -1){
-	double el_cf_rate =   cfEst->GetElectronCFRateFitted(param.Electron_Tight_ID,"InvPtBB1", param.k.Electron_CF,ilep->defEta(),ilep->Pt(), sysR);
+	double el_cf_rate =   cfEst->GetElectronCFRateFitted(TightID,"InvPtBB1", param.k.Electron_CF,ilep->defEta(),ilep->Pt(), sysR);
 	el_cf_rate *= GetCFSF(param,ilep,ApplySF);
         cf_weight += (el_cf_rate / (1.-el_cf_rate));
       }
@@ -183,6 +184,12 @@ double HNL_LeptonCore::PtExtrap(double val, double x1, double x2, double y1, dou
   return y1 + corr;
 
 }
+double HNL_LeptonCore::GetShiftPtMedian(double pt1, double pt2, double shiftVal){
+
+  return (pt2+pt1)/(2.*shiftVal); 
+
+}
+
 double HNL_LeptonCore::CheckShiftRange(double val, double shift){
   if(val*shift > 1) return 1;
   return val*shift;
@@ -191,328 +198,107 @@ double HNL_LeptonCore::CheckShiftRange(double val, double shift){
 double HNL_LeptonCore::GetShiftCFEl(Electron el,TString ID, bool ApplyDataCorr, int Sys) {
   
   //// By default if HNL ID just use extraoplated Shift based on pt binned MC Truth
-
-  bool UseHNLShiftStudy = true; /// Use shift based on HNL ID, assuming no dependance on ID
-  if(UseHNLShiftStudy){
-    double DataCorr = 1.;
-    if(ApplyDataCorr){
-      if(DataEra=="2016preVFP"  && el.IsBB()) DataCorr=0.975;
-      if(DataEra=="2016postVFP" && el.IsBB()) DataCorr=0.99;
-      if(DataEra=="2017"        && el.IsBB()) DataCorr=0.975;
-      if(DataEra=="2018"        && el.IsBB()) DataCorr=0.975;
-
-      if(DataEra=="2016preVFP"  && !el.IsBB()) DataCorr=0.995;
-      if(DataEra=="2016postVFP" && !el.IsBB()) DataCorr=1.;
-      if(DataEra=="2017"        && !el.IsBB()) DataCorr=1.;
-      if(DataEra=="2018"        && !el.IsBB()) DataCorr=0.98;
-    }
-    
-    /// For Data use corr based on closure
-
-    double ShiftSys=DataCorr;
-    if(Sys==1) ShiftSys=1.02*DataCorr;
-    if(Sys==-1) ShiftSys=0.98*DataCorr;
-
-    if(DataEra.Contains("2016")){
-      if(el.IsBB()){
-	if(el.Pt() < 50)        return CheckShiftRange(0.971,ShiftSys);
-	else if(el.Pt() < 75)   return CheckShiftRange(PtExtrap(el.Pt() , 50,75, 0.971,0.987),ShiftSys);
-	else if(el.Pt() < 150)  return CheckShiftRange(PtExtrap(el.Pt() , 75,150, 0.987,0.997),ShiftSys);
-	else return CheckShiftRange(0.997,ShiftSys);
-      }
-      else{
-	
-        if(el.Pt() < 30)         return  CheckShiftRange(0.951,ShiftSys);
-	else if(el.Pt() < 40)    return  CheckShiftRange(PtExtrap(el.Pt() , 30,40., 0.951,0.972),ShiftSys);
-        else if(el.Pt() < 62.5)  return  CheckShiftRange(PtExtrap(el.Pt() , 40,62.5, 0.972,0.983),ShiftSys);
-	else  if(el.Pt() < 87.5) return  CheckShiftRange(PtExtrap(el.Pt() , 62.5,87.5, 0.983,0.989),ShiftSys);
-	else  if(el.Pt() < 150)  return  CheckShiftRange(PtExtrap(el.Pt() , 87.5,150, 0.989,0.995),ShiftSys);
-        else  return CheckShiftRange(0.995,ShiftSys);
-      }
-    }//// 2016
-    
-    if(DataEra=="2017"){
-      if(el.IsBB()){
-	if(el.Pt() < 50)         return CheckShiftRange(0.969,ShiftSys);
-	else if(el.Pt() < 75)    return CheckShiftRange(PtExtrap(el.Pt() , 50,75, 0.969,0.987),ShiftSys);
-	else if(el.Pt() < 150)   return CheckShiftRange(PtExtrap(el.Pt() , 75,150, 0.987,0.995),ShiftSys);
-	else return CheckShiftRange(0.995,ShiftSys);
-      } 
-      else{
-        if(el.Pt() < 30)         return  CheckShiftRange(0.949,ShiftSys);
-	else if(el.Pt() < 40)    return  CheckShiftRange(PtExtrap(el.Pt() , 30,40, 0.949,0.969),ShiftSys);
-	else if(el.Pt() < 62.5)  return  CheckShiftRange(PtExtrap(el.Pt() , 40,62.5, 0.969,0.982),ShiftSys);
-	else  if(el.Pt() < 87.5) return  CheckShiftRange(PtExtrap(el.Pt() ,62.5, 87.5, 0.982,0.989),ShiftSys);
-	else  if(el.Pt() < 150)  return  CheckShiftRange(PtExtrap(el.Pt() , 87.5,150, 0.989,0.995),ShiftSys);
-	else  return CheckShiftRange(0.995,ShiftSys);
-      }
-    }/// 2017
-    
-    if(DataEra=="2018"){
-      
-      if(el.IsBB()){
-	if(el.Pt() < 50)       return CheckShiftRange(0.971,ShiftSys);
-	else if(el.Pt() < 75)  return CheckShiftRange(PtExtrap(el.Pt() , 50,75, 0.971,0.985),ShiftSys);
-	else if(el.Pt() < 150) return CheckShiftRange(PtExtrap(el.Pt() , 75,150, 0.985,0.997),ShiftSys);
-	else return CheckShiftRange(0.997,ShiftSys);
-      }
-      else{
-        if(el.Pt() < 30)         return  CheckShiftRange(0.948,ShiftSys);
-	else if(el.Pt() < 40)    return  CheckShiftRange(PtExtrap(el.Pt() , 30,40, 0.948,0.971),ShiftSys);
-	else if(el.Pt() < 62.5)  return  CheckShiftRange(PtExtrap(el.Pt() , 40,62.5, 0.971,0.982),ShiftSys);
-	else  if(el.Pt() < 87.5) return  CheckShiftRange(PtExtrap(el.Pt() , 62.5,87.5, 0.982,0.988),ShiftSys);
-	else  if(el.Pt() < 150)  return  CheckShiftRange(PtExtrap(el.Pt() , 87.5,150, 0.988,0.995),ShiftSys);
-        else  return CheckShiftRange(0.995,ShiftSys);
-      }
-    }// 2018
-  } //// END HNL ID Loop
   
-  //// Other ID not so detailed Shify
-  return  GetShiftCFEl(el.Pt(),el.IsBB(), ID, ApplyDataCorr, "minChi2" );
+  if(ID.Contains("HNL_ULID")) ID=ID.ReplaceAll("_"+GetYearString(),"");//// Remove Year for CF inputs 
+  
+  double DataCorr = 1.;
+  if(ApplyDataCorr){
+    if(DataEra=="2016preVFP"  && el.IsBB()) DataCorr=0.975;
+    if(DataEra=="2016postVFP" && el.IsBB()) DataCorr=0.99;
+    if(DataEra=="2017"        && el.IsBB()) DataCorr=0.975;
+    if(DataEra=="2018"        && el.IsBB()) DataCorr=0.975;
+    
+    if(DataEra=="2016preVFP"  && !el.IsBB()) DataCorr=0.995;
+    if(DataEra=="2016postVFP" && !el.IsBB()) DataCorr=1.;
+    if(DataEra=="2017"        && !el.IsBB()) DataCorr=1.;
+    if(DataEra=="2018"        && !el.IsBB()) DataCorr=0.98;
+  }
+  
+  return  DataCorr*GetShiftCFEl(el.Pt(),el.IsBB(), ID, ApplyDataCorr, Sys );
   
 }
 
-double HNL_LeptonCore::GetShiftCFEl(double el_pt, bool IsBB,TString ID, bool ApplyDataCorr,TString Method) {
+double HNL_LeptonCore::GetCFShiftSyst(TString ID, TString bintag, int direction){
+
+  if(direction==0) return 1.;
+
+  TString key = GetEraShort() + "_"+bintag+"_"+ID+"_Nom";
+
+  if(direction>0)  key = GetEraShort() + "_"+bintag+"_"+ID+"_Up";
+  if(direction<0)  key = GetEraShort() + "_"+bintag+"_"+ID+"_Down";
+  
+  map<TString,double >::iterator CFMapIter ;
+
+  CFMapIter = MakeCFShiftmap.find(key);
+
+  if(CFMapIter == MakeCFShiftmap.end()) {  cout << "[HNL_LeptonCore::GGetCFShiftSyst] ERROR in GetCFShiftSyst.. " << key  << endl;   exit(EXIT_FAILURE);}
+
+  return 1 + double(direction)*CFMapIter->second;
+
+
+}
+
+double HNL_LeptonCore::GetCFShift(TString ID, TString bintag){
+
+  TString key = GetEraShort() + "_"+bintag+"_"+ID+"_Nom";
+    
+  map<TString,double >::iterator CFMapIter ;
+  
+  CFMapIter = MakeCFShiftmap.find(key);
+  if(CFMapIter == MakeCFShiftmap.end()) {  cout << "[HNL_LeptonCore::GGetCFShift] ERROR in GetCFShift.. " << key  << endl;   exit(EXIT_FAILURE);}
+
+  return CFMapIter->second;
+
+}
+
+double HNL_LeptonCore::GetShiftCFEl(double el_pt, bool IsBB,TString ID, bool ApplyDataCorr, int sys) {
 
   //// Get Shift for  Prompt -> CF Pt response                                                                                                                                                                   
-
-  double PtShift = 1.;
-
-  if(ID == "passPOGTight"){
-    if(DataEra.Contains("2016")){
-      if(IsBB){
-	if(el_pt < 50)        return  (Method == "minChi2")  ? 0.985 : 0.978;
-	else  if(el_pt < 100) return  (Method == "minChi2")  ? 0.996 : 0.992;
-	else  if(el_pt < 200) return  (Method == "minChi2")  ? 0.998: 0.998 ;
-	else  return  (Method == "minChi2") ?  0.998 : 0.998;
-      }
-      if(!IsBB){
-	if(el_pt < 30)        return  (Method == "minChi2") ? 0.975 : 0.971 ;
-	else if(el_pt < 50)   return  (Method == "minChi2") ? 0.989 : 0.985;
-	else if(el_pt < 75)   return  (Method == "minChi2") ? 0.993 : 0.992;
-	else  if(el_pt < 100) return  (Method == "minChi2") ? 0.996 : 0.996;
-	else  if(el_pt < 200) return  (Method == "minChi2") ? 0.998 : 0.998;
-	else  return  (Method == "minChi2") ? 0.999 : 0.999 ;
-      }
-    }
+  if(IsBB){
+    double MedianBin1 = GetShiftPtMedian(15,35,GetCFShift(ID,"BB_Pt_Bin1"));
+    double MedianBin2 = GetShiftPtMedian(35,50,GetCFShift(ID,"BB_Pt_Bin2"));
+    double MedianBin3 = GetShiftPtMedian(50,70,GetCFShift(ID,"BB_Pt_Bin3"));
+    double MedianBin4 = GetShiftPtMedian(70,100,GetCFShift(ID,"BB_Pt_Bin4"));
+    double MedianBin5 = GetShiftPtMedian(100,200,GetCFShift(ID,"BB_Pt_Bin5"));
     
-    if(DataEra=="2017"){
-      if(IsBB){
-	if(el_pt < 50)        return  (Method == "minChi2") ? 0.986 : 0.976;
-	else  if(el_pt < 100) return  (Method == "minChi2") ? 0.996 : 0.992;
-	else  if(el_pt < 200) return  (Method == "minChi2")  ? 0.999 : 0.997;
-	else  return  (Method == "minChi2") ?   1 : 1;
-      }
-      if(!IsBB){
-	if(el_pt < 30)        return  (Method == "minChi2")  ? 0.972:0.967;
-	else if(el_pt < 50)   return  (Method == "minChi2")  ?  0.988 : 0.985; 
-	else if(el_pt < 75)   return  (Method == "minChi2")  ?  0.991 : 0.990;
-	else  if(el_pt < 100) return  (Method == "minChi2") ?  0.995 : 0.995;
-	else  if(el_pt < 200) return  (Method == "minChi2") ?  0.997 : 0.997;
-	else  return  (Method == "minChi2")   ? 0.998 : 0.998;
-      }
-    }
+    if(el_pt < MedianBin1)  return CheckShiftRange(GetCFShift(ID,"BB_Pt_Bin1"),GetCFShiftSyst(ID,"BB_Pt_Bin1",sys));
+    if(el_pt < MedianBin2)  return CheckShiftRange(PtExtrap(el_pt , MedianBin1,MedianBin2, GetCFShift(ID,"BB_Pt_Bin1"),GetCFShift(ID,"BB_Pt_Bin2")),GetCFShiftSyst(ID,"BB_Pt_Bin2",sys));
+    if(el_pt < MedianBin3)  return CheckShiftRange(PtExtrap(el_pt , MedianBin2,MedianBin3, GetCFShift(ID,"BB_Pt_Bin2"),GetCFShift(ID,"BB_Pt_Bin3")),GetCFShiftSyst(ID,"BB_Pt_Bin3",sys));
+    if(el_pt < MedianBin4)  return CheckShiftRange(PtExtrap(el_pt , MedianBin3,MedianBin4, GetCFShift(ID,"BB_Pt_Bin3"),GetCFShift(ID,"BB_Pt_Bin4")),GetCFShiftSyst(ID,"BB_Pt_Bin4",sys));
+    if(el_pt < MedianBin5)  return CheckShiftRange(PtExtrap(el_pt , MedianBin4,MedianBin5, GetCFShift(ID,"BB_Pt_Bin4"),GetCFShift(ID,"BB_Pt_Bin5")),GetCFShiftSyst(ID,"BB_Pt_Bin5",sys));
+    return CheckShiftRange(GetCFShift(ID,"BB_Pt_Bin5"),GetCFShiftSyst(ID,"BB_Pt_Bin5",sys));
     
-    if(DataEra=="2018"){
-      if(IsBB){
-	if(el_pt < 50)        return  (Method == "minChi2")  ? 0.985 : 0.976;
-	else  if(el_pt < 100) return  (Method == "minChi2")  ? 0.996 : 0.992;
-	else  if(el_pt < 200) return  (Method == "minChi2")  ? 0.998 : 0.997;
-	else  return  (Method == "minChi2") ?  1 : 1;
-      }
-      if(!IsBB){
-	if(el_pt < 30)        return  (Method == "minChi2") ?  0.971: 0.967;
-	else if(el_pt < 50)   return  (Method == "minChi2") ?  0.987 : 0.985;
-	else if(el_pt < 75)   return  (Method == "minChi2") ?  0.991 : 0.990;
-	else  if(el_pt < 100) return  (Method == "minChi2") ?  0.995 : 0.995;
-	else  if(el_pt < 200) return  (Method == "minChi2") ?  0.997 : 0.997;
-	else  return  (Method == "minChi2") ? 0.998 : 0.998;
-      }
-    }
-  }
-
-  else if(ID == "HNTightV2"){
-    if(DataEra.Contains("2016")){
-      if(IsBB){
-        if(el_pt < 50)        return  (Method == "minChi2")  ? 0.972 : 0.957;
-        else  if(el_pt < 100) return  (Method == "minChi2")  ? 0.989 : 0.983;
-        else  if(el_pt < 200) return  (Method == "minChi2")  ? 0.995 : 0.992;
-        else  return  (Method == "minChi2") ?  0.994 : 0.999; 
-      }
-      if(!IsBB){
-        if(el_pt < 30)        return  (Method == "minChi2") ?  0.959 : 0.946;
-        else if(el_pt < 50)   return  (Method == "minChi2") ?  0.977 : 0.972;
-        else if(el_pt < 75)   return  (Method == "minChi2") ?   0.986 : 0.983;
-        else  if(el_pt < 100) return  (Method == "minChi2") ? 0.991 : 0.990;
-        else  if(el_pt < 200) return  (Method == "minChi2") ?  0.994 : 0.993;
-        else  return  (Method == "minChi2") ?   1 : 1;
-      }
-    }
-
-    if(DataEra=="2017"){
-      if(IsBB){
-        if(el_pt < 50)        return  (Method == "minChi2")  ? 0.972 : 0.957; 
-        else  if(el_pt < 100) return  (Method == "minChi2")  ? 0.988 : 0.983;
-        else  if(el_pt < 200) return  (Method == "minChi2")  ? 0.993 : 0.992;
-        else  return  (Method == "minChi2") ?    0.994 : 0.999;
-      }
-      if(!IsBB){
-        if(el_pt < 30)        return  (Method == "minChi2") ?  0.953 : 0.946; 
-        else if(el_pt < 50)   return  (Method == "minChi2") ?  0.975 : 0.972;
-        else if(el_pt < 75)   return  (Method == "minChi2") ?  0.985 : 0.983;
-        else  if(el_pt < 100) return  (Method == "minChi2") ?  0.991 : 0.990;
-        else  if(el_pt < 200) return  (Method == "minChi2") ?   0.994 : 0.993;
-        else  return  (Method == "minChi2") ?  1 : 1;
-      }
-    }
-
-    if(DataEra=="2018"){
-      if(IsBB){
-        if(el_pt < 50)        return  (Method == "minChi2")  ? 0.969 : 0.955;
-        else  if(el_pt < 100) return  (Method == "minChi2")  ? 0.987 : 0.985;
-        else  if(el_pt < 200) return  (Method == "minChi2")  ? 0.993 : 0.992;
-        else  return  (Method == "minChi2") ?  0.994 : 0.999;
-      }
-      if(!IsBB){
-        if(el_pt < 30)        return  (Method == "minChi2") ?  0.953 : 0.946;
-        else if(el_pt < 50)   return  (Method == "minChi2") ?  0.975 : 0.972;
-        else if(el_pt < 75)   return  (Method == "minChi2") ?  0.985 : 0.983;
-        else  if(el_pt < 100) return  (Method == "minChi2") ?  0.991 : 0.990;
-        else  if(el_pt < 200) return  (Method == "minChi2") ?  0.994 : 0.993;
-        else  return  (Method == "minChi2") ? 1 : 1;
-      }
-    }
-  }
-  else if(ID.Contains("HNL_")){
-    
-    
-    double DataCorr = 1.;
-    
-    if(ApplyDataCorr){
-      if(DataEra=="2016preVFP"  && IsBB) DataCorr=0.975; 
-      if(DataEra=="2016postVFP" && IsBB) DataCorr=0.99; 
-      if(DataEra=="2017"        && IsBB) DataCorr=0.975; 
-      if(DataEra=="2018"        && IsBB) DataCorr=0.975; 
-      
-      if(DataEra=="2016preVFP"  && !IsBB) DataCorr=0.995;
-      if(DataEra=="2016postVFP" && !IsBB) DataCorr=1.;
-      if(DataEra=="2017"        && !IsBB) DataCorr=1.;
-      if(DataEra=="2018"        && !IsBB) DataCorr=0.98;
-    }
-
-    if(DataEra.Contains("2016")){
-      if(IsBB){
-	if(el_pt < 50)        return  (Method == "minChi2")  ? DataCorr*0.971 : DataCorr*0.956 ;
-	else  if(el_pt < 100) return  (Method == "minChi2")  ? DataCorr*0.987: DataCorr*0.979 ;
-	else  if(el_pt < 200) return  (Method == "minChi2")  ? DataCorr*0.997: DataCorr*0.991 ;
-	else  return  (Method == "minChi2") ?  DataCorr*0.998: DataCorr*0.997 ;
-      }
-      if(!IsBB){
-	if(el_pt < 30)        return  (Method == "minChi2") ? DataCorr*0.951 : DataCorr*0.944 ;
-	else if(el_pt < 50)   return  (Method == "minChi2") ? DataCorr*0.972 : DataCorr*0.965 ;
-	else if(el_pt < 75)   return  (Method == "minChi2") ? DataCorr*0.983 : DataCorr*0.979 ;
-	else  if(el_pt < 100) return  (Method == "minChi2") ? DataCorr*0.989 : DataCorr*0.987 ;
-	else  if(el_pt < 200) return  (Method == "minChi2") ? DataCorr*0.994 : DataCorr*0.992 ;
-	else  return  (Method == "minChi2") ? DataCorr*0.998: DataCorr*0.999 ;
-      }
-    }
-    
-    if(DataEra=="2017"){
-      if(IsBB){
-	if(el_pt < 50)        return  (Method == "minChi2")  ? DataCorr*0.969 : DataCorr*0.951 ;
-	else  if(el_pt < 100) return  (Method == "minChi2") ? DataCorr*0.987 : DataCorr*0.977;
-	else  if(el_pt < 200) return  (Method == "minChi2")  ?  DataCorr*0.995 : DataCorr*0.990 ;
-	else  return  (Method == "minChi2") ?  DataCorr*0.995 : DataCorr*0.9965 ;
-      }
-      if(!IsBB){
-	if(el_pt < 30)        return  (Method == "minChi2") ?   DataCorr*0.949 : DataCorr*0.931 ;
-	else if(el_pt < 50)   return  (Method == "minChi2") ?   DataCorr*0.969 : DataCorr*0.962;
-	else if(el_pt < 75)   return  (Method == "minChi2") ?   DataCorr*0.982 : DataCorr*0.9785;
-	else  if(el_pt < 100) return  (Method == "minChi2") ?  DataCorr*0.989 : DataCorr*0.9865;
-	else  if(el_pt < 200) return  (Method == "minChi2") ?  DataCorr*0.993 : DataCorr*0.9925 ;
-	else  return  (Method == "minChi2") ?  DataCorr*0.998 : DataCorr*0.9965;
-      }
-    }
-    
-    if(DataEra=="2018"){
-      if(IsBB){
-	if(el_pt < 50)        return  (Method == "minChi2")  ? DataCorr*0.971 : DataCorr*0.952 ;
-	else  if(el_pt < 100) return  (Method == "minChi2")  ? DataCorr*0.985: DataCorr*0.977 ;
-	else  if(el_pt < 200) return  (Method == "minChi2")  ? DataCorr*0.997: DataCorr*0.992 ;
-	else  return  (Method == "minChi2") ?  DataCorr*0.999: 1 ;
-      }
-      if(!IsBB){
-	if(el_pt < 30)        return  (Method == "minChi2") ? DataCorr*0.948 : DataCorr*0.937 ;
-	else if(el_pt < 50)   return  (Method == "minChi2") ? DataCorr*0.971 : DataCorr*0.965 ;
-	else if(el_pt < 75)   return  (Method == "minChi2") ? DataCorr*0.982 : DataCorr*0.977 ;
-	else  if(el_pt < 100) return  (Method == "minChi2") ? DataCorr*0.988 : DataCorr*0.986 ;
-	else  if(el_pt < 200) return  (Method == "minChi2") ? DataCorr*0.993 : DataCorr*0.991 ;
-	else  return  (Method == "minChi2") ? DataCorr*0.996: DataCorr*0.995 ;
-      }
-    }
-
   }
   else {
-    if(DataEra.Contains("2016")){
-      if(IsBB){
-        if(el_pt < 50)        return  (Method == "minChi2")  ? 0.972 : 0.957;
-        else  if(el_pt < 100) return  (Method == "minChi2")  ? 0.989 : 0.983;
-        else  if(el_pt < 200) return  (Method == "minChi2")  ? 0.995 : 0.992;
-        else  return  (Method == "minChi2") ?  0.994 : 0.999;
-      }
-      if(!IsBB){
-        if(el_pt < 30)        return  (Method == "minChi2") ?  0.959 : 0.946;
-        else if(el_pt < 50)   return  (Method == "minChi2") ?  0.977 : 0.972;
-        else if(el_pt < 75)   return  (Method == "minChi2") ?   0.986 : 0.983;
-        else  if(el_pt < 100) return  (Method == "minChi2") ? 0.991 : 0.990;
-        else  if(el_pt < 200) return  (Method == "minChi2") ?  0.994 : 0.993;
-        else  return  (Method == "minChi2") ?   1 : 1;
-      }
-    }
-
-    if(DataEra=="2017"){
-      if(IsBB){
-        if(el_pt < 50)        return  (Method == "minChi2")  ? 0.972 : 0.957;
-        else  if(el_pt < 100) return  (Method == "minChi2")  ? 0.988 : 0.983;
-        else  if(el_pt < 200) return  (Method == "minChi2")  ? 0.993 : 0.992;
-        else  return  (Method == "minChi2") ?    0.994 : 0.999;
-      }
-      if(!IsBB){
-        if(el_pt < 30)        return  (Method == "minChi2") ?  0.953 : 0.946;
-        else if(el_pt < 50)   return  (Method == "minChi2") ?  0.975 : 0.972;
-        else if(el_pt < 75)   return  (Method == "minChi2") ?  0.985 : 0.983;
-        else  if(el_pt < 100) return  (Method == "minChi2") ?  0.991 : 0.990;
-        else  if(el_pt < 200) return  (Method == "minChi2") ?   0.994 : 0.993;
-        else  return  (Method == "minChi2") ?  1 : 1;
-      }
-    }
-
-    if(DataEra=="2018"){
-      if(IsBB){
-        if(el_pt < 50)        return  (Method == "minChi2")  ? 0.969 : 0.955;
-        else  if(el_pt < 100) return  (Method == "minChi2")  ? 0.987 : 0.985;
-        else  if(el_pt < 200) return  (Method == "minChi2")  ? 0.993 : 0.992;
-        else  return  (Method == "minChi2") ?  0.994 : 0.999;
-      }
-      if(!IsBB){
-        if(el_pt < 30)        return  (Method == "minChi2") ?  0.953 : 0.946;
-        else if(el_pt < 50)   return  (Method == "minChi2") ?  0.975 : 0.972;
-        else if(el_pt < 75)   return  (Method == "minChi2") ?  0.985 : 0.983;
-        else  if(el_pt < 100) return  (Method == "minChi2") ?  0.991 : 0.990;
-        else  if(el_pt < 200) return  (Method == "minChi2") ?  0.994 : 0.993;
-        else  return  (Method == "minChi2") ? 1 : 1;
-      }
-    }
+    
+    double MedianBin1 = GetShiftPtMedian(15,20,GetCFShift(ID,"EC_Pt_Bin1"));
+    double MedianBin2 = GetShiftPtMedian(20,30,GetCFShift(ID,"EC_Pt_Bin2"));
+    double MedianBin3 = GetShiftPtMedian(30,40,GetCFShift(ID,"EC_Pt_Bin3"));
+    double MedianBin4 = GetShiftPtMedian(40,50,GetCFShift(ID,"EC_Pt_Bin4"));
+    double MedianBin5 = GetShiftPtMedian(50,60,GetCFShift(ID,"EC_Pt_Bin5"));
+    double MedianBin6 = GetShiftPtMedian(60,70,GetCFShift(ID,"EC_Pt_Bin6"));
+    double MedianBin7 = GetShiftPtMedian(70,80,GetCFShift(ID,"EC_Pt_Bin7"));
+    double MedianBin8 = GetShiftPtMedian(80,100,GetCFShift(ID,"EC_Pt_Bin8"));
+    double MedianBin9 = GetShiftPtMedian(100,200,GetCFShift(ID,"EC_Pt_Bin9"));
+    
+    if(el_pt < MedianBin1)  return CheckShiftRange(GetCFShift(ID,"EC_Pt_Bin1"),GetCFShiftSyst(ID,"EC_Pt_Bin1",sys));
+    if(el_pt < MedianBin2)  return CheckShiftRange(PtExtrap(el_pt , MedianBin1,MedianBin2, GetCFShift(ID,"EC_Pt_Bin1"),GetCFShift(ID,"EC_Pt_Bin2")),GetCFShiftSyst(ID,"EC_Pt_Bin2",sys));
+    if(el_pt < MedianBin3)  return CheckShiftRange(PtExtrap(el_pt , MedianBin2,MedianBin3, GetCFShift(ID,"EC_Pt_Bin2"),GetCFShift(ID,"EC_Pt_Bin3")),GetCFShiftSyst(ID,"EC_Pt_Bin3",sys));
+    if(el_pt < MedianBin4)  return CheckShiftRange(PtExtrap(el_pt , MedianBin3,MedianBin4, GetCFShift(ID,"EC_Pt_Bin3"),GetCFShift(ID,"EC_Pt_Bin4")),GetCFShiftSyst(ID,"EC_Pt_Bin4",sys));
+    if(el_pt < MedianBin5)  return CheckShiftRange(PtExtrap(el_pt , MedianBin4,MedianBin5, GetCFShift(ID,"EC_Pt_Bin4"),GetCFShift(ID,"EC_Pt_Bin5")),GetCFShiftSyst(ID,"EC_Pt_Bin5",sys));
+    if(el_pt < MedianBin6)  return CheckShiftRange(PtExtrap(el_pt , MedianBin5,MedianBin6, GetCFShift(ID,"EC_Pt_Bin5"),GetCFShift(ID,"EC_Pt_Bin6")),GetCFShiftSyst(ID,"EC_Pt_Bin6",sys));
+    if(el_pt < MedianBin7)  return CheckShiftRange(PtExtrap(el_pt , MedianBin6,MedianBin7, GetCFShift(ID,"EC_Pt_Bin6"),GetCFShift(ID,"EC_Pt_Bin7")),GetCFShiftSyst(ID,"EC_Pt_Bin7",sys));
+    if(el_pt < MedianBin8)  return CheckShiftRange(PtExtrap(el_pt , MedianBin7,MedianBin8, GetCFShift(ID,"EC_Pt_Bin7"),GetCFShift(ID,"EC_Pt_Bin8")),GetCFShiftSyst(ID,"EC_Pt_Bin8",sys));
+    if(el_pt < MedianBin9)  return CheckShiftRange(PtExtrap(el_pt , MedianBin8,MedianBin9, GetCFShift(ID,"EC_Pt_Bin8"),GetCFShift(ID,"EC_Pt_Bin9")),GetCFShiftSyst(ID,"EC_Pt_Bin9",sys));
+    return CheckShiftRange(GetCFShift(ID,"EC_Pt_Bin9"),GetCFShiftSyst(ID,"EC_Pt_Bin9",sys));
+    
   }
 
-
-  if(ID == "TopHNSST") return 1.;
-
+  
   cout << "[HNL_LeptonCore::GetShiftCFEl ] ERROR in GetShiftCFEl.. " << ID <<  endl;
   exit(EXIT_FAILURE);
 
 
-
-  return PtShift;
+  return 1;
 }
 

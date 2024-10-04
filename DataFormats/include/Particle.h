@@ -10,6 +10,35 @@ class Particle: public TLorentzVector{
 
 public:
 
+
+  inline TString GetCFShift_BinLabel(double gen_dummy_pt) const{
+
+    TString PtBinLabel  =  "";
+    if(fabs(this->Eta()) < 1.5){
+      if(gen_dummy_pt < 35)       PtBinLabel = "_Pt_Bin1";
+      else  if(gen_dummy_pt < 50)PtBinLabel = "_Pt_Bin2";
+      else  if(gen_dummy_pt < 70)PtBinLabel = "_Pt_Bin3";
+      else  if(gen_dummy_pt < 100)PtBinLabel = "_Pt_Bin4";
+      else PtBinLabel = "_Pt_Bin5";
+    }
+    else{
+
+      if(gen_dummy_pt < 20)       PtBinLabel = "_Pt_Bin1";
+      else if(gen_dummy_pt < 30)  PtBinLabel = "_Pt_Bin2";
+      else if(gen_dummy_pt < 40)  PtBinLabel = "_Pt_Bin3";
+      else if(gen_dummy_pt < 50)  PtBinLabel = "_Pt_Bin4";
+      else if(gen_dummy_pt < 60)  PtBinLabel = "_Pt_Bin5";
+      else if(gen_dummy_pt < 70)  PtBinLabel = "_Pt_Bin6";
+      else if(gen_dummy_pt < 80)  PtBinLabel = "_Pt_Bin7";
+      else  if(gen_dummy_pt < 100)PtBinLabel = "_Pt_Bin8";
+      else  if(gen_dummy_pt < 200)PtBinLabel = "_Pt_Bin9";
+      else PtBinLabel = "_Pt_Bin10";
+    }
+    return PtBinLabel;
+  }
+
+
+
   void  PrintObject(TString label);
 
 
