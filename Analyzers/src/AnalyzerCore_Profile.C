@@ -1,7 +1,7 @@
 #include "AnalyzerCore.h"
 
 
-void AnalyzerCore::FillProf(TString histname, double xvalue, double yvalue, double weight, int n_bin, double x_min, double x_max, bool IsAverage){ //JH : true by default                                         
+void AnalyzerCore::FillProf(TString histname, double xvalue, double yvalue, double weight, int n_bin, double x_min, double x_max, bool IsAverage){ // true by default                                         
 
   TProfile *this_hist = GetHistPf(histname);
   if( !this_hist ){

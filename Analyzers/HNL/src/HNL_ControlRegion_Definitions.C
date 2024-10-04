@@ -533,7 +533,6 @@ bool HNL_RegionDefinitions::FillTopCRPlots(HNL_LeptonCore::Channel channel, std:
   FillCutflow(Reg, w, "Step5",param);
 
   if (channel != EMu){
-    //if (fabs(ll.M()-M_Z) < M_ZWINDOW) return false; //JH
     if (ll.M()  < 110)       return false;
   }
   FillCutflow(Reg, w, "Step6",param);
@@ -581,7 +580,6 @@ bool HNL_RegionDefinitions::FillTopCR2Plots(HNL_LeptonCore::Channel channel, std
 
 
   if (channel != EMu){
-    //if (fabs(ll.M()-M_Z) < M_ZWINDOW) return false; //JH
     if (ll.M()  < 110)       return false;
   }
   FillCutflow(Reg, w, "Step6",param);
@@ -625,7 +623,6 @@ bool HNL_RegionDefinitions::FillTopAK8CRPlots(HNL_LeptonCore::Channel channel, s
 
   Particle  ll   = (*leps[0]) + (*leps[1]);
   if (channel != EMu){
-    //if (fabs(ll.M()-M_Z) < M_ZWINDOW) return false; //JH
     if (ll.M()  < 110)      return false;
   }
   FillCutflow(Reg, w, "Step6",param);
@@ -1610,10 +1607,6 @@ bool HNL_RegionDefinitions::FillHighMassSR2CRPlots(HNL_LeptonCore::Channel chann
     }
 
     if(!HasTightTau)     Fill_RegionPlots(param,"HNL_HighMassSR2_TauVeto_TwoLepton_CR"  ,  JetColl,  AK8_JetColl,  leps,  METv, nPV, w);
-
-
-    if (HT/leps[0]->Pt() > 2)  return false; //Increase stats by removing HT/LT cut in Region plots //JH
-    FillCutflow(Reg, w, "Step6",param);
 
        
     return true;
