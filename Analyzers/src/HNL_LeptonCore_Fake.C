@@ -174,7 +174,7 @@ double HNL_LeptonCore::GetFakeWeight(std::vector<Lepton *> leps, AnalyzerParamet
   //// Access event weight based on Lepton collection                                                               
   if(!IsDATA) return 1.;
 
-  fakeEst->IgnoreNoHist=false; //JH
+  fakeEst->IgnoreNoHist=false;
 
   ///// SINGLE LEPTON EVENTS 
   double this_weight = -1.;

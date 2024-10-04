@@ -231,8 +231,6 @@ void HNL_LeptonCore::Fill_Plots(AnalyzerParameter param, TString region,  TStrin
         vector<Tau> TauColl,  std::vector<Jet> jets, std::vector<FatJet> fatjets, std::vector<Lepton *> leps , 
         Particle  met, double nvtx,  double w){
 
-  if(param.syst_ != AnalyzerParameter::Central) return; //JH : FIXME for fast run
-
   TString regionAK8 = region+"/AK8";
   TString lepregion= region + "/LeptonMVA";
 

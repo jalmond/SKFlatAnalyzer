@@ -727,7 +727,7 @@ double HNL_LeptonCore::SetupWeight(Event ev, AnalyzerParameter& param){
         FillWeightHist(param.ChannelDir()+"/PDFScale_"+TString::Itoa(i,10), weight_Scale->at(i));
       }
     }
-  } //JH
+  }
 
   double this_mc_weight =  MCweight(param.Apply_Weight_SumQ, param.Apply_Weight_Norm1Ipb);
   FillWeightHist(param.ChannelDir()+"/MCWeight",    this_mc_weight);

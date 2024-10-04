@@ -78,10 +78,6 @@ void HNL_SignalRegion_Plotter::executeEvent(){
 
         for(auto isyst : SystList){
           bool runJob = UpdateParamBySyst(id,param,AnalyzerParameter::Syst(isyst),param_name);
-          if(_jentry%10000 == 0){
-            cout << "param.GetSystType(): " << param.GetSystType() << endl;
-            cout << "param.Name: " << param.Name << endl;
-          }
           if(runJob) RunULAnalysis(param);
         }
       }
