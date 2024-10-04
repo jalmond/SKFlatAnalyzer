@@ -432,7 +432,7 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
       //if(FillHighMassBJetCRPlots(dilep_channel, LepsT, LepsV, JetColl,    AK8_JetColl, B_JetColl, ev, METv, param, weight_channel)) passed.push_back("HighMassBJet_CR");
       //if(FillHighMassNPCRPlots(dilep_channel, LepsT, LepsV, JetColl,      AK8_JetColl, B_JetColl, ev, METv, param, weight_channel)) passed.push_back("HighMassNP_CR");
       
-      FillSSZPeakCRPlots(dilep_channel, LepsT, LepsV, JetColl,    AK8_JetColl, B_JetColl, ev, METv, param, weight_channel);
+      FillSSZPeakCRPlots(dilep_channel, LepsT, LepsV, JetColl, VBF_JetColl, AK8_JetColl, B_JetColl, ev, METv, param, weight_channel);
 
       //// RunMainRegionCode(false runs CR version of SR1/2/3
       if(!HasFlag("ScanFakes")) RunMainRegionCode(false, dilep_channel, Inclusive, LepsT, LepsV,TauColl, JetCollLoose,JetColl, VBF_JetColl, AK8_JetColl, B_JetColl, ev, METv, param, weight_channel);
@@ -1324,7 +1324,7 @@ bool HNL_RegionDefinitions::FillHighMassSR1CRPlots(HNL_LeptonCore::Channel chann
   return true;
 }
 
-bool HNL_RegionDefinitions::FillSSZPeakCRPlots(HNL_LeptonCore::Channel channel, std::vector<Lepton *> leps, std::vector<Lepton *> leps_veto   , std::vector<Jet> JetColl, std::vector<FatJet> AK8_JetColl, std::vector<Jet> B_JetColl,  Event ev, Particle METv, AnalyzerParameter param, float w){
+bool HNL_RegionDefinitions::FillSSZPeakCRPlots(HNL_LeptonCore::Channel channel, std::vector<Lepton *> leps, std::vector<Lepton *> leps_veto   , std::vector<Jet> JetColl,  std::vector<Jet> VBF_JetColl, std::vector<FatJet> AK8_JetColl, std::vector<Jet> B_JetColl,  Event ev, Particle METv, AnalyzerParameter param, float w){
   
   if(!CheckLeptonFlavourForChannel(channel, leps)) return false;
   if (leps_veto.size() != 2) return false;
@@ -1354,7 +1354,18 @@ bool HNL_RegionDefinitions::FillSSZPeakCRPlots(HNL_LeptonCore::Channel channel, 
     if(leps[1]->fEta() > 1.5)     Fill_RegionPlots(param,"HNL_HighMassSSZPeak_HighPtHighEta_TwoLepton_CR"  ,  JetColl,  AK8_JetColl,  leps,  METv, nPV, w);
     if(leps[1]->fEta() > 1.5&& JetColl.size() < 2) Fill_RegionPlots(param,"HNL_HighMassSSZPeak_HighPtHighEtaLowNJet_TwoLepton_CR"  ,  JetColl,  AK8_JetColl,  leps,  METv, nPV, w);
   }
-  if(AK8_JetColl.size() > 0)   Fill_RegionPlots(param,"HNL_HighMassSSZPeak_AK8_TwoLepton_CR"  ,  JetColl,  AK8_JetColl,  leps,  METv, nPV, w);
+  if(AK8_JetColl.size() > 0){
+    Fill_RegionPlots(param,"HNL_HighMassSSZPeak_AK8_TwoLepton_CR"  ,  JetColl,  AK8_JetColl,  leps,  METv, nPV, w);
+    FillHist(  "LimitExtraction/"+ param.Name+"/LimitShape_CF/SR1",  1  ,  w, 1,0,1 ,"SR1");
+  }
+  else if(PassVBF(VBF_JetColl,leps,750)){
+    Fill_RegionPlots(param,"HNL_HighMassSSZPeak_VBF_TwoLepton_CR"  ,  VBF_JetColl,  AK8_JetColl,  leps,  METv, nPV, w);
+    FillHist(  "LimitExtraction/"+ param.Name+"/LimitShape_CF/SR2",  1  ,  w, 1,0,1 ,"SR2");
+  }
+  else{
+    Fill_RegionPlots(param,"HNL_HighMassSSZPeak_AK4_TwoLepton_CR"  ,  JetColl,  AK8_JetColl,  leps,  METv, nPV, w);
+    FillHist(  "LimitExtraction/"+ param.Name+"/LimitShape_CF/SR3",  1  ,  w, 1,0,1 ,"SR3");
+  }
   
   return true;
 
