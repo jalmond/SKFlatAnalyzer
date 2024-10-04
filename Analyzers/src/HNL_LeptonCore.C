@@ -403,10 +403,10 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
   };
     
   if(SystType == "Quick"){
-    SystList.push_back(AnalyzerParameter::JetResUp);
-    SystList.push_back(AnalyzerParameter::JetResDown);
+    //SystList.push_back(AnalyzerParameter::JetResUp);
+    //SystList.push_back(AnalyzerParameter::JetResDown);
     SystList.push_back(AnalyzerParameter::FRAJ30);
-    SystList.push_back(AnalyzerParameter::FRAJ60);
+    //SystList.push_back(AnalyzerParameter::FRAJ60);
   };
 
   return SystList;
