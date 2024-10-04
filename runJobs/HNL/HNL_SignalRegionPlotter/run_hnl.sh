@@ -31,7 +31,8 @@ fi
 
 if [[ $1 == "DY" ]]; then
 
-    SKFlat.py -a $analyzer  -i DYTypeI_DF_M300_private  -n 10  --nmax ${nmax}   -e 2017 --skim SkimTree_HNMultiLepBDT --userflags RunSyst&
+    SKFlat.py -a $analyzer  -i DYTypeI_DF_M1000_private  -n 10  --nmax ${nmax}   -e 2017 --skim SkimTree_HNMultiLepBDT &
+    #--userflags RunSyst&
     #SKFlat.py -a $analyzer  -i DYTypeI_DF_M400_private  -n 10  --nmax ${nmax}   -e 2017 --skim SkimTree_HNMultiLepBDT &
 
 fi
@@ -54,9 +55,7 @@ if [[ $1 == "CF" ]]; then
 
     for i in "${era_list[@]}"
     do
-
-	SKFlat.py -a $analyzer  -l $datapath/${i}_DiLepton_EE.txt      -n 100    --nmax ${nmax}   -e ${i} --skim SkimTree_DileptonBDT  --userflags RunCF
-
+	SKFlat.py -a $analyzer  -l $datapath/${i}_DiLepton_EE.txt      -n 400    --nmax ${nmax}   -e ${i} --skim SkimTree_DileptonBDT  --userflags RunCF,RunEE &
     done
     
 fi

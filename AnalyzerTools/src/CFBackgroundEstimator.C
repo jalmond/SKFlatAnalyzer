@@ -140,54 +140,59 @@ CFBackgroundEstimator::~CFBackgroundEstimator(){
 
 void CFBackgroundEstimator::SetFittedBins(){
   
-  vector<double> InputBins_BB1 = {  0.,
-                                    0.0015,
-                                    0.002,
-                                    0.00225,
-                                    0.0025,
-                                    0.00275,
-                                    0.003,
-                                    0.004,
-                                    0.005,
-                                    0.006,
-                                    0.007,
-                                    0.008,
-                                    0.010,
-                                    0.0125,
-                                    0.015,
-                                    0.0175,
-                                    0.020,
-                                    0.0225,
-                                    0.025,
-                                    0.030,
-                                    0.035,
-                                    0.04,
-                                    0.07};
-  map_pt_bins["InputBins_BB1"] = InputBins_BB1;
+  vector<double> InputBins_EtaBB1 = {  0.,0.8,      1.4442,1.556,      2.5};
+  map_pt_bins["InputBins_Eta_BB1"] = InputBins_EtaBB1;
+  
 
-  vector<double> InputBins_BB2 = {0.,
-                                  0.002,
-                                  0.0025,
-                                  0.003,
-                                  0.004,
-                                  0.005,
-                                  0.006,
-                                  0.007,
-                                  0.008,
-                                  0.010,
-                                  0.0125,
-                                  0.015,
-                                  0.020,
-                                  0.025,
-                                  0.030,
-                                  0.04,
-                                  0.07};
+  vector<double> InputBins_V1 = {  0.,
+				   0.0015,
+				   0.002,
+				   0.00225,
+				   0.0025,
+				   0.00275,
+				   0.003,
+				   0.004,
+				   0.005,
+				   0.006,
+				   0.007,
+				   0.008,
+				   0.010,
+				   0.0125,
+				   0.015,
+				   0.0175,
+				   0.020,
+				   0.0225,
+				   0.025,
+				   0.030,
+				   0.035,
+				   0.04,
+				   0.07};
 
-  map_pt_bins["InputBins_BB2"] = InputBins_BB2;
+  map_pt_bins["InputBins_Version1"] = InputBins_V1;
 
+  vector<double> InputBins_V2 = {0.,
+				 0.002,
+				 0.0025,
+				 0.003,
+				 0.004,
+				 0.005,
+				 0.006,
+				 0.007,
+				 0.008,
+				 0.010,
+				 0.0125,
+				 0.015,
+				 0.020,
+				 0.025,
+				 0.030,
+				 0.04,
+				 0.07};
+  
+  map_pt_bins["InputBins_Version2"] = InputBins_V2;
+  
+  
   vector<double> InputBins_EC1 =  { 0.,
-                                    0.0015,
-                                    0.002,
+				    0.002,
                                     0.00225,
                                     0.0025,
                                     0.00275,
@@ -294,9 +299,8 @@ vector<double> CFBackgroundEstimator::FindBin(TString key){
 double CFBackgroundEstimator::GetElectronCFRateFitted(TString ID, TString EtaBinTag, TString key, double eta, double pt, int sys){
 
   vector<double> HistBins ;
-  if(EtaBinTag == "InvPtBB1") HistBins  = FindBin("InputBins_BB1");
-  if(EtaBinTag == "InvPtBB2") HistBins  = FindBin("InputBins_BB1");
-  if(EtaBinTag == "InvPt2BB2") HistBins = FindBin("InputBins_BB2");
+  if(EtaBinTag == "InvPtBB1") HistBins  = FindBin("InputBins_Version1");
+  if(EtaBinTag == "InvPtBB2") HistBins  = FindBin("InputBins_Version2");
   if(EtaBinTag == "InvPtEC1") HistBins  = FindBin("InputBins_EC1");
   if(EtaBinTag == "InvPtEC2") HistBins  = FindBin("InputBins_EC2");
   if(EtaBinTag == "InvPt") HistBins = FindBin("InputBins_BB1");

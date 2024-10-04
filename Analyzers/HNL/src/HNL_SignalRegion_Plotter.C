@@ -57,12 +57,11 @@ void HNL_SignalRegion_Plotter::executeEvent(){
     for(auto channel : ChannelsToRun){
 
       AnalyzerParameter param = HNL_LeptonCore::InitialiseHNLParameter(id,channel);
-      param.PlottingVerbose = 1;
+      param.PlottingVerbose = 2;
+      if(id == "HNL_ULID")         param.PlottingVerbose = 1;
+      if(id.Contains("HEEP"))      param.PlottingVerbose = 1;
       RunULAnalysis(param);
-      
-      // if(!IsData) RunSyst=true;
-      RunSyst=true; // FIXME
-        
+
       if(RunSyst||RunFullSyst){
         TString param_name = param.Name;
         //vector<AnalyzerParameter::Syst> SystList = GetSystList("All");
@@ -130,7 +129,7 @@ void HNL_SignalRegion_Plotter::RunULAnalysis(AnalyzerParameter param){
   EvalJetWeight(AK4_JetColl, AK8_JetColl, weight, param);
 
   FillTimer("START_SR");
-  
+
   vector<int> RunEl ;
   if(RunCF) RunEl =  {0,1} ;
   else RunEl = {-1};
@@ -147,11 +146,7 @@ void HNL_SignalRegion_Plotter::RunULAnalysis(AnalyzerParameter param){
 
 
 }
-
-
-
  
-
 
 HNL_SignalRegion_Plotter::HNL_SignalRegion_Plotter(){
 

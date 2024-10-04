@@ -10,9 +10,9 @@
 ------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------*/
 
-
-
 void HNL_LeptonCore::FillFakeHistograms(AnalyzerParameter param, TString plot_dir,std::vector<Lepton *> Leptons, std::vector<Jet> jets,   std::vector<FatJet> fatjets, vector<Jet> BJetColl, Particle met,  double w){
+
+  if(!DrawSyst(param.syst_)) return;
   
   for(auto ilep : Leptons){
 
@@ -73,9 +73,31 @@ void HNL_LeptonCore::FillFakeHistograms(AnalyzerParameter param, TString plot_di
   return;
 }
 
+bool HNL_LeptonCore::DrawSyst(AnalyzerParameter::Syst SystType){
+  
+  vector<AnalyzerParameter::Syst> SystToPlot;
+
+  if(IsData){
+    if(RunFake) SystToPlot= {AnalyzerParameter::Syst::FRUp,AnalyzerParameter::Syst::FRDown, AnalyzerParameter::Syst::FRAJ30,AnalyzerParameter::Syst::FRAJ60,AnalyzerParameter::Syst::FRLooseIDDJUp,AnalyzerParameter::Syst::FRLooseIDDJDown,AnalyzerParameter::Syst::FRPartonSFUp, AnalyzerParameter::Syst::FRPartonSFDown};
+    if(RunCF)   SystToPlot= {AnalyzerParameter::Syst::CFRateUp,AnalyzerParameter::Syst::CFRateDown, AnalyzerParameter::Syst::CFSFUp,AnalyzerParameter::Syst::CFSFDown};
+    
+  }
+  else {
+    SystToPlot= {AnalyzerParameter::Syst::JetEnUp, AnalyzerParameter::Syst::JetEnDown};
+  }
+  
+  SystToPlot.push_back(AnalyzerParameter::Syst::Central);
+  if(std::find(SystToPlot.begin(), SystToPlot.end(), SystType) != SystToPlot.end()) return true;
+  else return false;
+}
+
 void HNL_LeptonCore::Fill_PlotsAK8(AnalyzerParameter param, TString region, TString plot_dir, 
            std::vector<Tau> TauColl, std::vector<Jet> jets,   std::vector<FatJet> fatjets, std::vector<Lepton *> leps , 
            Particle  met, double nvtx,  double w){
+
+  //// Only Draw JEC/Fake Syst
+  if(!DrawSyst(param.syst_)) return;
+
 
   if(fatjets.size() == 0) return;
   if((leps.size()  == 1) && !(param.ChannelType() == "Lepton"))     return;
@@ -179,8 +201,16 @@ void HNL_LeptonCore::Fill_PlotsAK8(AnalyzerParameter param, TString region, TStr
 
   for(unsigned int ij =0; ij < jets.size(); ij++){
     if(DrawLevel2)FillHist( plot_dir+region+ "/AK8J_DeltaR/AK8J_AK4J",   fatjets[0].DeltaR(jets[ij]),  w, 50, 0, 5, "#DeltaR (WAK8,j)");
-    if(jets[ij].GetTaggerResult(JetTagging::DeepCSV) > mcCorr->GetJetTaggingCutValue(JetTagging::DeepCSV , JetTagging::Medium)) {
+
+    //    if(fatjets[0].DeltaR(jets[ij]) < 0.8)  cout << plot_dir << " FAT JET JET DR = " << fatjets[0].DeltaR(jets[ij]) <<  " SD mass = " << fatjets[0].SDMass() <<  endl;
+       
+    if(jets[ij].GetTaggerResult(JetTagging::DeepJet) > mcCorr->GetJetTaggingCutValue(JetTagging::DeepJet , JetTagging::Medium)) {
+      if(DrawLevel1)FillHist( plot_dir+region+ "/AK8J_DeepJetM_SDMass",       fatjets[0].SDMass()    , w, 100, 0., 500.  , "Mass_{softdrop} GeV");
       if(DrawLevel2)FillHist( plot_dir+region+ "/AK8J_DeltaR/AK8J_AK4BJ",   fatjets[0].DeltaR(jets[ij]),  w, 50, 0, 5, "#DeltaR (WAK8,Bj)");
+    }
+    if(jets[ij].GetTaggerResult(JetTagging::DeepCSV) > mcCorr->GetJetTaggingCutValue(JetTagging::DeepCSV , JetTagging::Medium)) {
+      if(DrawLevel1)FillHist( plot_dir+region+ "/AK8J_DeepCSVM_SDMass",       fatjets[0].SDMass()    , w, 100, 0., 500.  , "Mass_{softdrop} GeV");
+      if(DrawLevel2)FillHist( plot_dir+region+ "/AK8J_DeltaR/AK8J_AK4BJ_CSV",   fatjets[0].DeltaR(jets[ij]),  w, 50, 0, 5, "#DeltaR (WAK8,Bj)");
     }
   }
 
@@ -210,12 +240,17 @@ void HNL_LeptonCore::Fill_PlotsAK8(AnalyzerParameter param, TString region, TStr
 }
 
 void HNL_LeptonCore::Fill_RegionPlots(AnalyzerParameter param, TString plot_dir,   std::vector<Jet> jets,    std::vector<FatJet> fatjets, std::vector<Lepton *> leps , Particle  met, double nvtx,  double w){
+
+  if(!DrawSyst(param.syst_)) return;
+
   vector<Tau> NullTaus;
   Fill_RegionPlots(param, plot_dir, NullTaus,jets,fatjets, leps, met, nvtx, w);
 }
 
 
 void HNL_LeptonCore::Fill_RegionPlots(AnalyzerParameter param, TString plot_dir, vector<Tau> Taus,  std::vector<Jet> jets,    std::vector<FatJet> fatjets, std::vector<Lepton *> leps , Particle  met, double nvtx,  double w){
+
+  if(!DrawSyst(param.syst_)) return;
 
   TString region ="/"+param.Name + param.hprefix;
   
@@ -230,6 +265,8 @@ void HNL_LeptonCore::Fill_RegionPlots(AnalyzerParameter param, TString plot_dir,
 void HNL_LeptonCore::Fill_Plots(AnalyzerParameter param, TString region,  TString plot_dir, 
         vector<Tau> TauColl,  std::vector<Jet> jets, std::vector<FatJet> fatjets, std::vector<Lepton *> leps , 
         Particle  met, double nvtx,  double w){
+
+  if(!DrawSyst(param.syst_)) return;
 
   TString regionAK8 = region+"/AK8";
   TString lepregion= region + "/LeptonMVA";
@@ -247,11 +284,10 @@ void HNL_LeptonCore::Fill_Plots(AnalyzerParameter param, TString region,  TStrin
     if(ilep->LeptonFlavour() == Lepton::MUON) nmu++;
   }
     
+  //  std::vector<Jet>    AK4_BJetColl                = GetHNLJets("BJet_NoAk8Cleaning", param);
   //std::vector<FatJet> AK8_JetColl_PN_NoMass          = GetHNLAK8Jets("HNL_PN_NoMass",param);
   //std::vector<FatJet> AK8_JetColl_NoMass          = GetHNLAK8Jets("HNL_NoMass",param);
-  //Fill_PlotsAK8(param, regionAK8, plot_dir+"_AK8_JetColl_PN_NoMass",TauColl,jets , AK8_JetColl_PN_NoMass, leps, met, nvtx,w);
-  //Fill_PlotsAK8(param, regionAK8, plot_dir+"_AK8_JetColl_NoMass",TauColl,jets , AK8_JetColl_NoMass, leps, met, nvtx,w);
-
+ 
   Fill_PlotsAK8(param, regionAK8, plot_dir,TauColl,jets , fatjets, leps, met, nvtx,w);
   
   bool DrawLevel1 = true; // Always gets drawn
@@ -667,23 +703,31 @@ void HNL_LeptonCore::Fill_Plots(AnalyzerParameter param, TString region,  TStrin
 /// FillMuonPlots Fills all kinamatics                                                                                                                                                                                                                                          
 void HNL_LeptonCore::FillMuonCollPlots(bool passSel, TString SelSt, AnalyzerParameter param, TString cut,  std::vector<Muon> muons, double w){
 
+  if(!DrawSyst(param.syst_)) return;
+
   for(auto imu: muons)   FillMuonPlots(passSel, SelSt, param, cut, imu, w);
 
   return;
 }
 void HNL_LeptonCore::FillMuonCollPlots(AnalyzerParameter param, TString cut,  std::vector<Muon> muons, double w){
+
+  if(!DrawSyst(param.syst_)) return;
+
   for(auto imu: muons)   FillMuonPlots(true, "", param, cut, imu, w);
   return;
 }
 
 /// FillAllMuonPlots Fills all kinamatics in pt/eta bins                                                                              
 void HNL_LeptonCore::FillMuonPlots(AnalyzerParameter param, TString cut,  Muon muon, double w){
+  if(!DrawSyst(param.syst_)) return;
   FillMuonPlots(true, "", param, cut, muon, w);
 }                                                                                                                                      
     
 
 void HNL_LeptonCore::FillMuonPlots(bool passSel, TString SelSt, AnalyzerParameter param, TString cut,  Muon muon, double w){
   
+  if(!DrawSyst(param.syst_)) return;
+
   if(!passSel) return;
 
   cut = "MuonPlots/"+cut;
@@ -704,6 +748,8 @@ void HNL_LeptonCore::FillMuonPlots(bool passSel, TString SelSt, AnalyzerParamete
 
 
 void HNL_LeptonCore::FillLeptonKinematicPlots(AnalyzerParameter param, TString cut,  Lepton lep, double w){
+
+  if(!DrawSyst(param.syst_)) return;
 
   vector<Jet> JetAllColl = All_Jets;
 
@@ -785,6 +831,8 @@ void HNL_LeptonCore::FillLeptonKinematicPlots(AnalyzerParameter param, TString c
 
 void HNL_LeptonCore::FillMuonKinematicPlots(AnalyzerParameter param, TString cut,  Muon lep, double w){
 
+  if(!DrawSyst(param.syst_)) return;
+
   FillLeptonKinematicPlots(param, cut, Lepton(lep),w);
 
   TString label = param.hpostfix;
@@ -813,12 +861,16 @@ void HNL_LeptonCore::FillMuonKinematicPlots(AnalyzerParameter param, TString cut
 
 void HNL_LeptonCore::FillElectronPlots(AnalyzerParameter param , TString cut,  std::vector<Electron> ElectronColl, double w){
 
+  if(!DrawSyst(param.syst_)) return;
+
   for(auto iel : ElectronColl)   FillElectronKinematicPlots(param, cut, iel, w);
 
   return;
 }
 
 void HNL_LeptonCore::FillAllElectronPlots(AnalyzerParameter param , TString cut,  std::vector<Electron> ElectronColl, double w){
+
+  if(!DrawSyst(param.syst_)) return;
 
   TString label  = param.hpostfix;
 
@@ -851,6 +903,8 @@ void HNL_LeptonCore::FillAllElectronPlots(AnalyzerParameter param , TString cut,
 }
 
 void HNL_LeptonCore::FillElectronKinematicPlots(AnalyzerParameter param , TString cut,  Electron lep, double w){
+
+  if(!DrawSyst(param.syst_)) return;
   
   FillLeptonKinematicPlots(param, cut, Lepton(lep),w);
 
@@ -959,6 +1013,8 @@ void HNL_LeptonCore::Fill_SigRegionPlots4(HNL_LeptonCore::Channel channel, TStri
 
 void HNL_LeptonCore::FillLeptonPlots(AnalyzerParameter param,std::vector<Lepton *> leps, TString this_region, double weight){
   
+  if(!DrawSyst(param.syst_)) return;
+
   for(unsigned int i=0; i<leps.size(); i++){
 
     TString this_itoa = TString::Itoa(i,10);
@@ -993,10 +1049,12 @@ void HNL_LeptonCore::FillLeptonPlots(AnalyzerParameter param,std::vector<Lepton 
 
 
   }
-
+  return;
 }
 
 void HNL_LeptonCore::FillJetPlots(AnalyzerParameter param,std::vector<Jet> jets, std::vector<FatJet> fatjets, TString this_region, double weight){
+
+  if(!DrawSyst(param.syst_)) return;
 
   for(unsigned int i=0; i<jets.size(); i++){
 

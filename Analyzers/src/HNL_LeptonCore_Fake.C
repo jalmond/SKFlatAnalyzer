@@ -165,7 +165,11 @@ double HNL_LeptonCore::GetFakeRateMuon(Muon mu, AnalyzerParameter param){
   if(param.syst_ == AnalyzerParameter::FRAJ30) fr_key = fr_key.ReplaceAll("40","30");
   if(param.syst_ == AnalyzerParameter::FRAJ60) fr_key = fr_key.ReplaceAll("40","60");
   
-  return fakeEst->GetMuonFakeRate(param.Muon_Tight_ID, fr_key,param.FakeRateMethod,param.FakeRateParam,LepEta, LepPt, mu.LeptonFakeTagger() );
+  int FRStatSyst = 0;
+  if(param.syst_ == AnalyzerParameter::FRUp)   FRStatSyst=1;
+  if(param.syst_ == AnalyzerParameter::FRDown) FRStatSyst=-1;
+
+  return fakeEst->GetMuonFakeRate(param.Muon_Tight_ID, fr_key,param.FakeRateMethod,param.FakeRateParam,LepEta, LepPt, mu.LeptonFakeTagger() ,FRStatSyst);
 
 }
 
@@ -192,11 +196,16 @@ double HNL_LeptonCore::GetFakeWeight(std::vector<Lepton *> leps, AnalyzerParamet
    
     if(!leps[0]->LepIDSet()) {      cout << "Lepton ID not set" << endl;      exit(EXIT_FAILURE);    }
 
-    double this_fr = fakeEst->GetFakeRate  (IsMuon, ID,  fr_key, _param.FakeRateMethod, _param.FakeRateParam, leps[0]->fEta(), leps[0]->Pt(),leps[0]->LeptonFakeTagger());
+    int FRStatSyst = 0;
+    if(_param.syst_ == AnalyzerParameter::FRUp) FRStatSyst=1;
+    if(_param.syst_ == AnalyzerParameter::FRDown) FRStatSyst=-1;
+
+
+    double this_fr = fakeEst->GetFakeRate  (IsMuon, ID,  fr_key, _param.FakeRateMethod, _param.FakeRateParam, leps[0]->fEta(), leps[0]->Pt(),leps[0]->LeptonFakeTagger(),FRStatSyst);
     double this_pr = fakeEst->GetPromptRate(_param.ApplyPR, IsMuon, ID, pr_key, leps[0]->fEta(), leps[0]->UncorrectedPt());
 
     this_weight=  fakeEst->CalculateLepWeight(this_pr, this_fr, leps[0]->PassLepID() );
-
+    
     if(isnan(this_weight)) {
       cout << "Single Lepton Fake rate is NaN" << endl;
       cout << "IsMuon = " << IsMuon << " fr_key = " << fr_key << " ID = " << ID << " this_fr = " << this_fr << " this_pr = " << this_pr << endl;
@@ -235,9 +244,12 @@ double HNL_LeptonCore::GetFakeWeight(std::vector<Lepton *> leps, AnalyzerParamet
     bool IsMuon1  = (leps[0]->LeptonFlavour() != Lepton::ELECTRON);
     bool IsMuon2  = (leps[1]->LeptonFlavour() != Lepton::ELECTRON);
 
+    int FRStatSyst = 0;
+    if(_param.syst_ == AnalyzerParameter::FRUp)FRStatSyst=1;
+    if(_param.syst_ == AnalyzerParameter::FRDown) FRStatSyst=-1;
 
-    double this_fr1 =  fakeEst->GetFakeRate(IsMuon1, ID1,  fr_key1, _param.FakeRateMethod, _param.FakeRateParam, leps[0]->fEta(), leps[0]->Pt(),leps[0]->LeptonFakeTagger());
-    double this_fr2 =  fakeEst->GetFakeRate(IsMuon2, ID2,  fr_key2, _param.FakeRateMethod, _param.FakeRateParam, leps[1]->fEta(), leps[1]->Pt(),leps[1]->LeptonFakeTagger() );
+    double this_fr1 =  fakeEst->GetFakeRate(IsMuon1, ID1,  fr_key1, _param.FakeRateMethod, _param.FakeRateParam, leps[0]->fEta(), leps[0]->Pt(),leps[0]->LeptonFakeTagger(),FRStatSyst);
+    double this_fr2 =  fakeEst->GetFakeRate(IsMuon2, ID2,  fr_key2, _param.FakeRateMethod, _param.FakeRateParam, leps[1]->fEta(), leps[1]->Pt(),leps[1]->LeptonFakeTagger(),FRStatSyst);
 
     double this_pr1 =  1;//fakeEst->GetPromptRate(_param.ApplyPR, IsMuon1, ID1, pr_key, leps[0]->fEta(), leps[0]->UncorrectedPt());
     double this_pr2 =  1;//fakeEst->GetPromptRate(_param.ApplyPR, IsMuon2, ID2, pr_key, leps[1]->fEta(), leps[1]->UncorrectedPt());
@@ -278,7 +290,10 @@ double HNL_LeptonCore::GetFakeWeight(std::vector<Lepton *> leps, AnalyzerParamet
       if(_param.syst_ == AnalyzerParameter::FRAJ30) fr_key = fr_key.ReplaceAll("40","30");
       if(_param.syst_ == AnalyzerParameter::FRAJ60) fr_key = fr_key.ReplaceAll("40","60");
       
-      this_fr = fakeEst->GetFakeRate(IsMuon, ID,  fr_key, _param.FakeRateMethod, _param.FakeRateParam, lep->fEta(), lep->Pt(),lep->LeptonFakeTagger());
+      int FRStatSyst = 0;
+      if(_param.syst_ == AnalyzerParameter::FRUp)FRStatSyst=1;
+      if(_param.syst_ == AnalyzerParameter::FRDown) FRStatSyst=-1;
+      this_fr = fakeEst->GetFakeRate(IsMuon, ID,  fr_key, _param.FakeRateMethod, _param.FakeRateParam, lep->fEta(), lep->Pt(),lep->LeptonFakeTagger(),FRStatSyst);
       this_weight *= -1.*this_fr/(1.-this_fr);
       FRs.push_back(this_fr);
 

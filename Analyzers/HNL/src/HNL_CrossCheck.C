@@ -38,6 +38,7 @@ void HNL_CrossCheck::executeEvent(){
 
       AnalyzerParameter param_signal = HNL_LeptonCore::InitialiseHNLParameter(id,channel);
       if(channel == EMu) param_signal.CFMethod   = "MC";
+      if(channel == EE)  param_signal.CFMethod   = "MC";
 
       for(auto iCR : CRToRun) RunControlRegions(param_signal , {iCR} );
     }
@@ -89,6 +90,22 @@ void HNL_CrossCheck::RunControlRegions(AnalyzerParameter param, vector<TString> 
   EvalJetWeight(AK4_JetColl, AK8_JetColl, weight, param);
 
 
+  if(ElectronTightColl.size() == 2){
+    if(!SameCharge(ElectronTightColl)){
+      double pt1= (ElectronTightColl[0].Pt() > 2000) ? 2000. : ElectronTightColl[0].Pt();
+      double pt2= (ElectronTightColl[1].Pt() > 2000) ? 2000. : ElectronTightColl[1].Pt();
+      FillHist("OS/CFLep/Reco_Pt", pt1   ,  weight, 2000, 0, 2000 );
+      FillHist("OS/CFLep/Reco_Pt", pt2   ,  weight, 2000, 0, 2000 );
+    }
+    else  {
+      double pt1= (ElectronTightColl[0].Pt() > 2000) ? 2000. : ElectronTightColl[0].Pt();
+      double pt2= (ElectronTightColl[1].Pt() > 2000) ? 2000. : ElectronTightColl[1].Pt();
+      if(ElectronTightColl[0].LeptonIsCF())FillHist("SS/CFLep/Reco_Pt", pt1   ,  weight, 2000, 0, 2000 );
+      if(ElectronTightColl[1].LeptonIsCF())FillHist("SS/CFLep/Reco_Pt", pt2   ,  weight, 2000, 0, 2000 );
+    }
+  }
+  return;
+
   if(CRs.size() == 0) return;
   
   if(_jentry < 2000 ){
@@ -125,7 +142,7 @@ void HNL_CrossCheck::RunControlRegions(AnalyzerParameter param, vector<TString> 
 
  
   //FillHighMassNPCRPlots(dilep_channel, LepsT, LepsV, AK4_JetColl, AK8_JetColl, AK4_BJetColl, ev, METv, param, weight)  ;
-  bool RunNP=true;
+  bool RunNP=false;
   if(RunNP){
     if(LepsT.size() < 2) return ;    
 
