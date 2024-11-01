@@ -680,7 +680,7 @@ TString HNL_RegionDefinitions::RunSignalRegionAK4StringBDT(bool ApplyForSR, TStr
   //float MVAvalueFake    = EvaluateEventMVA(mN, "Fake", NCut, NTree, channel, LepTColl, ev, METv, param, w);
   //float MVAvalueNonFake = EvaluateEventMVA(mN, "NonFake", NCut, NTree, channel, LepTColl, ev, METv, param, w);
   
-  if(!ApplyForSR){
+  if(!ApplyForSR|| HasFlag("PlotBDT")){
     FillHist("LimitExtraction/"+param.Name+"/LimitShape_"+RegionTag+"BDT/MVA1D_Incl_AllJets_"+BDTLabel, MVAvalueIncl, w, 80, -1., 1.);
     if(PassRegionReqBTaggedCR)   FillHist("LimitExtraction/"+param.Name+"/LimitShape_"+RegionTag+"BDT_BTagged/MVA1D_Incl_AllJets_"+BDTLabel, MVAvalueIncl, w, 80, -1., 1.);
     if(PassRegionReqInvMETCR)    FillHist("LimitExtraction/"+param.Name+"/LimitShape_"+RegionTag+"BDT_InvMET/MVA1D_Incl_AllJets_"+BDTLabel, MVAvalueIncl, w, 80, -1., 1.);
