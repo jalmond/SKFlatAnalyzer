@@ -251,6 +251,8 @@ void HNL_LeptonCore::Fill_RegionPlots(AnalyzerParameter param, TString plot_dir,
   TString region ="/"+param.Name + param.hprefix;
   TString regionL = "/"+param.NameInclusive_Channel + param.hprefix;
 
+  //  cout << region << " " << regionL << endl;
+
   /// Draw Main plot with All syst
   Fill_Main_Plots(param, region, plot_dir , Taus,jets,fatjets, leps, met, nvtx, w);
   Fill_Main_Plots(param, regionL,plot_dir , Taus,jets,fatjets, leps, met, nvtx, w);
