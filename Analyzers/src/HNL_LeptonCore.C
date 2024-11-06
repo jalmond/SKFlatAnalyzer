@@ -378,8 +378,8 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
   }
   else {
   
-    if(IsData) return {};
-
+    if(RunNoSyst||IsData) return {};
+    
     SystList.push_back(AnalyzerParameter::JetResUp);
     SystList.push_back(AnalyzerParameter::JetResDown);
     SystList.push_back(AnalyzerParameter::JetEnUp);
