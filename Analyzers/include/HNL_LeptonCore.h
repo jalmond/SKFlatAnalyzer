@@ -189,8 +189,10 @@ class HNL_LeptonCore : public AnalyzerCore {
   /// ------ Corrections  HNL_LeptonCore_Corrections                                                                                                                                                
   double HNLZvtxSF(HNL_LeptonCore::Channel ch);
   double HNLZvtxSF(TString  ch);
-  bool PassHEMVeto(std::vector<Lepton *> leps);
-  
+  bool PassHEMVeto(std::vector<Lepton *> leps,double& weight_hem);
+  void  PassJetHEMVeto(vector<Jet> jets,TString Flag, double& weight_hem);
+
+
   double GetDYWeakWeight(double mass);
 
   //  ================= MC weight functions              HNL_LeptonCore_EvCorr.C   =================                           

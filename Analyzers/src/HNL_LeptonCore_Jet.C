@@ -213,6 +213,15 @@ std::vector<Jet> HNL_LeptonCore::SelectJets(const std::vector<Jet>& jets, TStrin
     if(!( fabs(jets.at(i).Eta())<fetamax ))   continue;
     if(!( jets.at(i).PassID(id) ))            continue;
     out.push_back( jets.at(i) );
+
+    if(!HasFlag("NoHEMJet")){
+
+      if(DataEra=="2018"){
+	if (jets.at(i).Eta() < -1.3){
+          if((jets.at(i).Phi() < -0.87) && (jets.at(i).Phi() > -1.57)) continue;
+        }
+      } 
+    }
   }
   std::sort(out.begin(),       out.end(),        PtComparing);
 
@@ -235,6 +244,15 @@ std::vector<Jet> HNL_LeptonCore::SelectJets(AnalyzerParameter param,TString id, 
     if(!( jets.at(i).Pt()> ptmin ))            continue;
     if(!( fabs(jets.at(i).Eta() )< fetamax ))  continue;
     if(!( jets.at(i).PassID( id) ))            continue;
+
+    if(!HasFlag("NoHEMJet")){
+      if(DataEra=="2018"){
+	if (jets.at(i).Eta() < -1.3){
+	  if((jets.at(i).Phi() < -0.87) && (jets.at(i).Phi() > -1.57)) continue;
+	}
+      }
+    }
+
     out.push_back( jets.at(i) );
   }
 
@@ -253,6 +271,14 @@ std::vector<FatJet> HNL_LeptonCore::SelectFatJets(const std::vector<FatJet>& jet
     if(!( jets.at(i).Pt()>ptmin ))           continue;
     if(!( fabs(jets.at(i).Eta())<fetamax ))  continue;
     if(!( jets.at(i).PassID(id) ))           continue;
+
+    if(!HasFlag("NoHEMJet")){
+      if(DataEra=="2018"){
+	if (jets.at(i).Eta() < -1.3){
+          if((jets.at(i).Phi() < -0.87) && (jets.at(i).Phi() > -1.57)) continue;
+        }
+      } 
+    }
     out.push_back( jets.at(i) );
   }
   std::sort(out.begin(),       out.end(),        PtComparing);
@@ -290,6 +316,14 @@ std::vector<FatJet> HNL_LeptonCore::SelectFatJets(AnalyzerParameter param,TStrin
     if(!( jets.at(i).Pt()>  ptmin ))          continue;
     if(!( fabs(jets.at(i).Eta())< fetamax ))  continue;
     if(!( jets.at(i).PassID(id) ))            continue;
+
+    if(!HasFlag("NoHEMJet")){
+      if(DataEra=="2018"){
+	if (jets.at(i).Eta() < -1.3){
+          if((jets.at(i).Phi() < -0.87) && (jets.at(i).Phi() > -1.57)) continue;
+        }
+      } 
+    }
     out.push_back( jets.at(i) );
   }
 
