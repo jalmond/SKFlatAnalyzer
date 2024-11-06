@@ -71,12 +71,15 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
 
     FillCutflow(CutFlow_Region, weight_ll, "NoCut", param);
     
-    if(!PassHEMVeto(LepsV)) continue;
-    FillCutflow(CutFlow_Region, weight_ll, "HEMVeto", param);
+
+    double weight_channel = weight_ll;
+
+    if(!PassHEMVeto(LepsV,weight_channel)) continue;
+    FillCutflow(CutFlow_Region, weight_channel, "HEMVeto", param);
 
     if(!PassMETFilter()) continue;
 
-    FillCutflow(CutFlow_Region, weight_ll, "METFilter",param);
+    FillCutflow(CutFlow_Region, weight_channel, "METFilter",param);
 
     if(run_Debug) {cout <<"RunAllControlRegions ["<< nlog<< "] : Pass METFilters" << endl;nlog++;}
     
@@ -89,7 +92,7 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
       if(!PassGenMatchFilter(LepsT,param)) continue;
     }
     
-    FillCutflow(CutFlow_Region, weight_ll, "GENMatched",param);
+    FillCutflow(CutFlow_Region, weight_channel, "GENMatched",param);
     
     if(run_Debug) cout << "HNL_RegionDefinitions::RunAllControlRegions [" << GetChannelString(channels[ic])<<" ]" << endl;
     
@@ -107,7 +110,6 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
     paramTrilep.NameInclusive_Channel = param.DefName   + "/" + paramTrilep.InclusiveChannelName();
     paramQuadlep.NameInclusive_Channel = param.DefName  + "/" + paramQuadlep.InclusiveChannelName();
 
-    double weight_channel = weight_ll;
    
     TString label    = param.Name;
     

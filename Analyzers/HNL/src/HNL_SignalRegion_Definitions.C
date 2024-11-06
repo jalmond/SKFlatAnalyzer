@@ -91,7 +91,16 @@ void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq,
     if(!PassGenMatchFilter(LepsT,param)) continue;
     FillCutflow(CutFlow_Region, weight_ll, "GENMatched",param);
     
-    if(!PassHEMVeto(LepsV)) continue;
+    for(auto iel : electrons){
+      FillHist( param.Name+"/Inclusive_El_HEM_EtaPhi", iel.Eta(), iel.Phi(),  fabs(weight_channel),  100, -2.5, 2.5, 70, -3.5,3.5);
+      if(!IsData || IsHEMIssueRun()) {
+	FillHist( param.Name+"/HEM_Region_El_HEM_EtaPhi", iel.Eta(), iel.Phi(),  fabs(weight_channel),  100, -2.5, 2.5, 70, -3.5,3.5);
+	
+	if(FindHEMElectron(iel)) FillHist( param.Name+"/HEM_Region_Fail_El_HEM_EtaPhi", iel.Eta(), iel.Phi(),  fabs(weight_channel),  100, -2.5, 2.5, 70, -3.5,3.5);
+
+      }
+    }
+    if(!PassHEMVeto(LepsV,weight_channel)) continue;
     FillCutflow(CutFlow_Region, weight_ll, "HEMVeto", param);
 
     if(!PassMETFilter()) return;
@@ -107,6 +116,8 @@ void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq,
     if(!ConversionSplitting(LepsT,RunConv,2,param)) continue;
 
     FillCutflow(CutFlow_Region, weight_ll, "ConvFilter",param);
+
+    //    PassJetHEMVeto(JetColl,param.Name+"_Jet",weight_channel);
 
     if(LepsT.size() ==2)  FillCutflow(HNL_LeptonCore::ChannelDepDilep, weight_channel, GetChannelString(dilep_channel) +"_Dilep",param);
     
@@ -247,8 +258,10 @@ void   HNL_RegionDefinitions::RunMainRegionCode(bool IsSR,HNL_LeptonCore::Channe
 	
 	if(RegionBin != "false") {
 	  FillLimitInput(LimitRegionsBDT, weight_reg, RegionBin,"LimitExtractionBDT/"+param.Name+"/M"+MNStrList[im]);
-	  if(B_JetColl.size()==1)          FillLimitInput(LimitRegionsBDT, weight_reg, RegionBin,"LimitExtractionBDT_BTagged/"+param.Name+"/M"+MNStrList[im]);
-	  else           FillLimitInput(LimitRegionsBDT, weight_reg, RegionBin,"LimitExtractionBDT_InvMET/"+param.Name+"/M"+MNStrList[im]);
+	  if(!IsSR){
+	    if(B_JetColl.size()==1)          FillLimitInput(LimitRegionsBDT, weight_reg, RegionBin,"LimitExtractionBDT_BTagged/"+param.Name+"/M"+MNStrList[im]);
+	    else     FillLimitInput(LimitRegionsBDT, weight_reg, RegionBin,"LimitExtractionBDT_InvMET/"+param.Name+"/M"+MNStrList[im]);
+	  }
 	}
       }
     }
@@ -336,8 +349,6 @@ bool  HNL_RegionDefinitions::PassPreselection(bool ApplyForSR,HNL_LeptonCore::Ch
 
   FillCutflow(HNL_LeptonCore::ChannelDepTrigger, w, GetChannelString(channel) +"_MultiTrigger",param);
   FillCutflow(HNL_LeptonCore::ChannelDepTrigger, w, GetChannelString(channel) +"_Trigger",param);
-
-  if(!PassHEMVeto(leps)) return false;
 
   // Make sure events contain 2 leps
   if (leps_veto.size() != 2) return false;
