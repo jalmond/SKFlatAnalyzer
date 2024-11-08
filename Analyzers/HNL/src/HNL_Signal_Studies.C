@@ -108,6 +108,35 @@ void HNL_Signal_Studies::executeEvent(){
 
     // returns MET with systematic correction; run this after all object selection done; NOTE that VBF jet is used here
 
+    if(HasFlag("CheckMuonInEff")){
+      //      cout << "------------------------------" << endl;
+      if (IsData || ( process.Contains("Mu+Mu+") or   process.Contains("Mu-Mu-")  or process.Contains("MuMu"))){
+	vector<Gen> gen_lep= GetGenLepronsSignal();
+	for(auto i : gen_lep) {
+	  //	  cout << "Gen muon Pt=" << i.Pt() << " eta = " << i.Eta() << " phi = " << i.Phi() << endl;
+	  FillHist("GenMuon/All_Eta", i.Eta() , weight, 100, -5., 5);
+	  FillHist("GenMuon/All_Phi", i.Phi() , weight, 100, -5., 5);
+	  FillHist("GenMuon/All_Pt", i.Pt() , weight, 100, 0, 2000);
+
+	  bool Matched=false;
+	  for(auto imu : MuonCollT){
+	    if(i.DeltaR(imu) < 0.1)     Matched=true;
+	  }
+	  if(Matched){
+	    
+	    FillHist("GenMuon/Matched_Eta", i.Eta() , weight, 100, -5., 5);
+	    FillHist("GenMuon/Matched_Phi", i.Phi() , weight, 100, -5., 5);
+	    FillHist("GenMuon/Matched_Pt", i.Pt() , weight, 100, 0, 2000);
+	  }
+	  else{
+	    FillHist("GenMuon/NonMatched_Eta", i.Eta() , weight, 100, -5., 5);
+	    FillHist("GenMuon/NonMatched_Phi", i.Phi() , weight, 100, -5., 5);
+	    FillHist("GenMuon/NonMatched_Pt", i.Pt() , weight, 100, 0, 2000);
+	  }
+	}
+      }
+      return;
+    }
 
     if(HasFlag("WWJet")){
       
