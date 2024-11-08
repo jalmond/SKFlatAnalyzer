@@ -26,13 +26,21 @@ fi
 
 if [[ $1 == "DY" ]]; then
 
-    SKFlat.py -a $analyzer  -i DYTypeI_DF_M1000_private  -n 20  --nmax ${nmax}   -e 2018 --skim SkimTree_HNMultiLepBDT --userflags RunNoSyst,HEMJet &
-    #SKFlat.py -a $analyzer  -i DYTypeI_DF_M400_private  -n 20  --nmax ${nmax}   -e 2018 --skim SkimTree_HNMultiLepBDT   --userflags RunNoSyst,HEMJet &
+    if [[ $1 == "DY1000" ]]; then
+	
+	SKFlat.py -a $analyzer  -i DYTypeI_DF_M1000_private  -n 20  --nmax ${nmax}   -e 2018 --skim SkimTree_HNMultiLepBDT --userflags RunNoSyst &
+    fi
+    if [[ $1 == "DY400" ]]; then
 
-    SKFlat.py -a $analyzer  -i DYTypeI_DF_M1000_private  -n 20  --nmax ${nmax}   -e 2018 --skim SkimTree_HNMultiLepBDT --userflags RunNoSyst &
-    #SKFlat.py -a $analyzer  -i DYTypeI_DF_M400_private  -n 20  --nmax ${nmax}   -e 2018 --skim SkimTree_HNMultiLepBDT   --userflags RunNoSyst &
+	SKFlat.py -a $analyzer  -i DYTypeI_DF_M400_private  -n 20  --nmax ${nmax}   -e 2018 --skim SkimTree_HNMultiLepBDT   --userflags RunNoSyst &
+    fi
 
-
+    if [[ $1 == "DY" ]]; then
+     
+        SKFlat.py -a $analyzer  -i DYTypeI_DF_M400_private  -n 20  --nmax ${nmax}   -e 2018 --skim SkimTree_HNMultiLepBDT   --userflags RunNoSyst &
+        SKFlat.py -a $analyzer  -i DYTypeI_DF_M1000_private  -n 20  --nmax ${nmax}   -e 2018 --skim SkimTree_HNMultiLepBDT   --userflags RunNoSyst &
+        SKFlat.py -a $analyzer  -i DYTypeI_DF_M3000_private  -n 20  --nmax ${nmax}   -e 2018 --skim SkimTree_HNMultiLepBDT   --userflags RunNoSyst &
+    fi
 fi
 
 
@@ -66,13 +74,31 @@ if [[ $1 == "FAKE" ]]; then
 
 fi
 
+if [[ $1 == "HEM" ]]; then
+
+    declare  -a era_list=("2018")
+    declare  -a flag_list=("ScaleHEMJet,RunNoSyst" "RunNoSyst")
+    for i in "${era_list[@]}"
+    do
+	for j in "${flag_list[@]}"
+	do
+	    
+	    SKFlat.py -a $analyzer  -l $sigpath/SSWW.txt  -n $njobs_sig  --nmax ${nmax}  -e ${i}  --skim SkimTree_HNMultiLepBDT  --userflags ${j}&
+            SKFlat.py -a $analyzer  -l $sigpath/DY.txt    -n $njobs_sig  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLepBDT  --userflags ${j}&
+	    SKFlat.py -a $analyzer  -l $sigpath/VBF.txt   -n $njobs_sig  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLepBDT  --userflags ${j}&
+	done
+    done
+
+fi
+
+
 
 if [[ $1 == "SIG" ]]; then
 
     declare  -a era_list=("2018")
     for i in "${era_list[@]}"
     do
-
+	
 	SKFlat.py -a $analyzer  -l $sigpath/SSWW.txt  -n $njobs_sig  --nmax ${nmax}  -e ${i}  --skim SkimTree_HNMultiLepBDT  --userflags RunNoSyst&
 	SKFlat.py -a $analyzer  -l $sigpath/DY.txt    -n $njobs_sig  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLepBDT  --userflags RunNoSyst&
 	SKFlat.py -a $analyzer  -l $sigpath/VBF.txt   -n $njobs_sig  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLepBDT  --userflags RunNoSyst&
