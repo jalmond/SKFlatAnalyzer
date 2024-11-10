@@ -440,7 +440,7 @@ TString HNL_RegionDefinitions::RunSignalRegionAK8String(bool ApplyForSR,
   if(!PassRegionReq) return "false";
 
   double pt_cut = 100.;
-  if(DataEra=="2018")  pt_cut = 200.; 
+  //  if(DataEra=="2018")  pt_cut = 200.; 
 
   //Fill Limit plot
  
@@ -457,7 +457,14 @@ TString HNL_RegionDefinitions::RunSignalRegionAK8String(bool ApplyForSR,
   }
 
   //// Fill Plots before All SR cuts for better stats 
-  if(ApplyForSR) Fill_RegionPlots(param,"Pass"+RegionTag ,  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);
+  if(ApplyForSR) {
+    Fill_RegionPlots(param,"Pass"+RegionTag ,  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);
+    double nbin_reg;
+    double binvalue = GetLimitBin("CR_SR1_Inv",leps,JetColl,AK8_JetColl,ev,nbin_reg);
+    FillHist(  "LimitExtraction/"+ param.Name+"_noWMassCut/LimitShape_"+RegionTag+"/N1Mass_Central", binvalue,  w, int(nbin_reg),0,nbin_reg ,"CR Binned");
+  }
+
+  
   
   Particle Wcand = AK8_JetColl[m] + *leps[0]+*leps[1];
   if(Wcand.M()  < LowerMassSR1WmassCut ) return "false";
@@ -474,10 +481,14 @@ TString HNL_RegionDefinitions::RunSignalRegionAK8String(bool ApplyForSR,
     //// CR Inputs
     double nbin_reg;
     double binvalue = GetLimitBin("CR_SR1_Inv",leps,JetColl,AK8_JetColl,ev,nbin_reg);    
-    FillHist(  "LimitExtraction/"+ param.Name+"/LimitShape_"+RegionTag+"/N1Mass_Central", binvalue,  w, int(nbin_reg),0,nbin_reg ,"CR Binned");
     if(PassRegionReqInvMETCR)      FillHist(  "LimitExtraction/"+ param.Name+"/LimitShape_"+RegionTag+"_InvMET/N1Mass_Central", binvalue,  w, int(nbin_reg),0,nbin_reg ,"CR Binned");
     if(PassRegionReqBTaggedCR)     FillHist(  "LimitExtraction/"+ param.Name+"/LimitShape_"+RegionTag+"_BTagged/N1Mass_Central", binvalue,  w, int(nbin_reg),0,nbin_reg ,"CR Binned");
 
+  }
+  else {
+    double nbin_reg;
+    double binvalue = GetLimitBin("CR_SR1_Inv",leps,JetColl,AK8_JetColl,ev,nbin_reg);
+    FillHist(  "LimitExtraction/"+ param.Name+"/LimitShape_"+RegionTag+"/N1Mass_Central", binvalue,  w, int(nbin_reg),0,nbin_reg ,"CR Binned");
   }
 
   //// Return SR bin
@@ -593,9 +604,13 @@ TString HNL_RegionDefinitions::RunSignalRegionWWString(bool ApplyForSR,HNL_Lepto
 
       double nbin_reg;
       double binvalue = GetLimitBin("CR_SR2_Inv",leps,JetColl,AK8_JetColl,ev,nbin_reg);
-      FillHist(  "LimitExtraction/"+ param.Name+"/LimitShape_"+RegionTag+"/HT_PT_Central", binvalue,  w, int(nbin_reg),0,nbin_reg ,"Reco H_{T}/P_{T}^{lep1}");
       if(PassRegionReqInvMETCR)  FillHist(  "LimitExtraction/"+ param.Name+"/LimitShape_"+RegionTag+"_InvMET/HT_PT_Central", binvalue,  w, int(nbin_reg),0,nbin_reg ,"Reco H_{T}/P_{T}^{lep1}");
       if(PassRegionReqBTaggedCR) FillHist(  "LimitExtraction/"+ param.Name+"/LimitShape_"+RegionTag+"_BTagged/HT_PT_Central", binvalue,  w, int(nbin_reg),0,nbin_reg ,"Reco H_{T}/P_{T}^{lep1}");
+    }
+    else{
+      double nbin_reg;
+      double binvalue = GetLimitBin("CR_SR2_Inv",leps,JetColl,AK8_JetColl,ev,nbin_reg);
+      FillHist(  "LimitExtraction/"+ param.Name+"/LimitShape_"+RegionTag+"/HT_PT_Central", binvalue,  w, int(nbin_reg),0,nbin_reg ,"Reco H_{T}/P_{T}^{lep1}");
     }
 
     FillCutflow(Reg, w, RegionTag+"_ht_lt1",param);
@@ -603,23 +618,19 @@ TString HNL_RegionDefinitions::RunSignalRegionWWString(bool ApplyForSR,HNL_Lepto
     double ll_dphi = fabs(TVector2::Phi_mpi_pi( ( (*leps[0]).Phi() - (*leps[1]).Phi() )) );
     if(ll_dphi > 2.) {
       
-      if(HTOverPT < 1.){
-	if (leps[1]->Pt() > 120.)      return RegionTag+"_HTLTbin1";
+      if(HTOverPT < 2.){
+	if (leps[1]->Pt() > 80.)      return RegionTag+"_HTLTbin1";
 	else return RegionTag+"_HTLTbin2";
       }
-      else  if(HTOverPT< 2.){
-	if (leps[1]->Pt() > 120.)      return RegionTag+"_HTLTbin3";
-	else return RegionTag+"_HTLTbin4";
-      }
-      else  if(HTOverPT < 5.) return RegionTag+"_HTLTbin6";
-      else return RegionTag+"_HTLTbin7";
+      else  if(HTOverPT < 5.) return RegionTag+"_HTLTbin3";
+      else return RegionTag+"_HTLTbin4";
     }
     else{
       if(HTOverPT < 2.){
-	if (leps[1]->Pt() > 120.)      return RegionTag+"_HTLTbin8";
-	else return RegionTag+"_HTLTbin9";
+	if (leps[1]->Pt() > 80.)      return RegionTag+"_HTLTbin5";
+	else return RegionTag+"_HTLTbin6";
       }
-      else RegionTag+"_HTLTbin10";
+      else RegionTag+"_HTLTbin7";
     }
   }
   return "false";

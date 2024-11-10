@@ -59,7 +59,7 @@ void HNL_ControlRegion_Plotter::executeEvent(){
 
   for (auto id: LepIDs){
     /// For non HNL_ULID run no syst
-    RunNoSyst= (id == "HNL_ULID") ? false : true;
+    RunJetSyst= (id == "HNL_ULID") ? false : true;
 
     for(auto channel : ChannelsToRun){
       if(channel != MuMu  && id =="TopHN") continue;

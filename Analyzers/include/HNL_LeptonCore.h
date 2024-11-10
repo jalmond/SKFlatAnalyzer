@@ -481,7 +481,7 @@ class HNL_LeptonCore : public AnalyzerCore {
   bool SameCharge(std::vector<Lepton *> leps, int ch=0);
 
   /// global var for user flags
-  bool RunPrompt,RunFake,RunOSFake,RunFakeTF, RunCF,  RunConv,RunNoSyst,RunPromptTLRemoval,run_ORTrigger,RunFullSyst;
+  bool RunPrompt,RunFake,RunOSFake,RunFakeTF, RunCF,  RunConv,RunJetSyst,RunPromptTLRemoval,run_ORTrigger,RunFullSyst;
   bool RunEE;
   bool RunEMu;
   bool RunMuMu;

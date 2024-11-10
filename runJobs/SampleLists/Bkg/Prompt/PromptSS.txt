@@ -14,6 +14,8 @@ GluGluHToZZTo4L
 GluGluToZZto2e2mu
 GluGluToZZto4e
 GluGluToZZto4mu
+GluGluToZZto2mu2tau
+GluGluToZZto2e2tau
 TTTT
 TTZZ
 tZq

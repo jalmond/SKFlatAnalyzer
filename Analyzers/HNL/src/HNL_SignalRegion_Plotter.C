@@ -38,7 +38,7 @@ void HNL_SignalRegion_Plotter::executeEvent(){
   }
   vector<TString> LepIDs = {"HNL_ULID","HNTightV2", "POGTight"};
   if(RunFullSyst) LepIDs = {"HNL_ULID"};
-  if(RunNoSyst)   LepIDs = {"HNL_ULID"};
+  if(RunJetSyst)   LepIDs = {"HNL_ULID"};
 
   //// Allow ID setting by flag
   if(RunTopID) LepIDs = {"TopHN"};

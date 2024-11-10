@@ -29,7 +29,7 @@ void HNL_LeptonCore::initializeAnalyzer(bool READBKGHISTS, bool SETUPIDBDT){
   run_ORTrigger = HasFlag("MultiTrig");
 
   /// Other flags                                                                                                                                      
-  RunNoSyst = HasFlag("RunNoSyst");/// Turn off default Syst
+  RunJetSyst = HasFlag("RunJetSyst");/// Turn off default Syst
   RunFullSyst = HasFlag("RunFullSyst"); /// Turn on Full MC syst
   RunEE   = HasFlag("EE");
   RunMuMu = HasFlag("MuMu");
@@ -355,7 +355,6 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
 
   vector<AnalyzerParameter::Syst> SystList = {};
   
-  if(RunNoSyst) return SystList;
   
   if(RunCF){
     SystList = {
@@ -378,13 +377,14 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
   }
   else {
   
-    if(RunNoSyst||IsData) return {};
+    if(IsData) return {};
     
-    SystList.push_back(AnalyzerParameter::JetResUp);
-    SystList.push_back(AnalyzerParameter::JetResDown);
-    SystList.push_back(AnalyzerParameter::JetEnUp);
-    SystList.push_back(AnalyzerParameter::JetEnDown);
-    
+    if(RunJetSyst){
+      SystList.push_back(AnalyzerParameter::JetResUp);
+      SystList.push_back(AnalyzerParameter::JetResDown);
+      SystList.push_back(AnalyzerParameter::JetEnUp);
+      SystList.push_back(AnalyzerParameter::JetEnDown);
+    }
     if(RunFullSyst){
       
       SystList = {AnalyzerParameter::JetResUp,AnalyzerParameter::JetResDown,
