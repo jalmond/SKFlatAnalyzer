@@ -124,6 +124,9 @@ class HNL_LeptonCore : public AnalyzerCore {
   double ReturnCFWeight(vector<double> CFRates);
   double ReturnCFWeight(double CFRates);
 
+
+  bool PassTandP_PairCriteria(vector<Muon> muons, int itag, int iprobe);
+
   /// Jet Functions   HNL_LeptonCore_Jet                                                                                                                           
   JetTagging::Parameters GetParamJetTagger(AnalyzerParameter param);
   void  EvalJetWeight(std::vector<Jet>    AK4_JetColl, std::vector<FatJet> fatjets, double & w,AnalyzerParameter& param); 
@@ -294,6 +297,7 @@ class HNL_LeptonCore : public AnalyzerCore {
   /// Function to check which hists to plot whening running systematics
   bool DrawSyst(AnalyzerParameter param_sys);
 
+  void FillTandP(bool passProbe, TString Tag, TString ID, double pr_pt,double eta , double weight, TString binstring);
   void FillMuonCollPlots     (bool passSel, TString sel, AnalyzerParameter param, TString cut,  std::vector<Muon> muons, double w);
   void FillMuonCollPlots     (AnalyzerParameter param, TString cut,  std::vector<Muon> muons, double w);
   void FillMuonPlots         (bool passSel, TString sel, AnalyzerParameter param, TString cut,  Muon muon, double w);

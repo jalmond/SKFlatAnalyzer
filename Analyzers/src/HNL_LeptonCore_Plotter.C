@@ -793,6 +793,40 @@ void HNL_LeptonCore::Fill_Plots(AnalyzerParameter param, TString region,  TStrin
 
 
 
+void HNL_LeptonCore::FillTandP(bool passProbe, TString Tag, TString ID, double pr_pt, double eta,  double weight, TString BinLabel){
+
+  int n_bin    =4;
+  vector<double> bins = { 0,120,200,450,1000};
+
+  if(BinLabel == "Bin2"){
+    n_bin    =3;
+    bins ={ 0,120,200,1000};
+  }
+
+  double arrx_bins [n_bin+1];
+  std::copy(bins.begin(), bins.end(), arrx_bins);
+
+  FillHist( Tag+"_"+BinLabel+"/Denom",  pr_pt,  weight, n_bin,arrx_bins);
+  if(passProbe)       FillHist( Tag+"_"+BinLabel+"/Num",  pr_pt,  weight, n_bin,arrx_bins);
+
+  if(fabs(eta) < 0.9){
+    FillHist( Tag+"_"+BinLabel+"_Eta1/Denom",  pr_pt,  weight, n_bin,arrx_bins);
+    if(passProbe)       FillHist( Tag+"_"+BinLabel+"_Eta1/Num",  pr_pt,  weight, n_bin,arrx_bins);
+  }
+  else  if(fabs(eta) < 1.2){
+    FillHist( Tag+"_"+BinLabel+"_Eta2/Denom",  pr_pt,  weight, n_bin,arrx_bins);
+    if(passProbe)       FillHist( Tag+"_"+BinLabel+"_Eta2/Num",  pr_pt,  weight, n_bin,arrx_bins);
+  }
+  else {
+    FillHist( Tag+"_"+BinLabel+"_Eta3/Denom",  pr_pt,  weight, n_bin,arrx_bins);
+    if(passProbe)       FillHist( Tag+"_"+BinLabel+"_Eta3/Num",  pr_pt,  weight, n_bin,arrx_bins);
+
+  }
+
+  return;
+
+}
+
 
 /// FillMuonPlots Fills all kinamatics                                                                                                                                                                                                                                          
 void HNL_LeptonCore::FillMuonCollPlots(bool passSel, TString SelSt, AnalyzerParameter param, TString cut,  std::vector<Muon> muons, double w){
