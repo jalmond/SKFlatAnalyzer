@@ -4,6 +4,13 @@ void HNL_LeptonCore::initializeAnalyzer(bool READBKGHISTS, bool SETUPIDBDT){
 
   AnalyzerCore::initializeAnalyzer();
 
+  //// Define Limit bins per channel/era
+  map_BDT_bins_labels.clear();
+  map_bins_labels.clear();
+  map_bins_boundaries.clear();
+  DefineLimitBins();
+  DefineBDTLimitBins();
+
   /// SETUP BKG OBJ
   mcCorr          = new MCCorrection();
   puppiCorr       = new PuppiSoftdropMassCorr();
@@ -229,13 +236,13 @@ void HNL_LeptonCore::OutCutFlow(TString lab, double w){
 
 }
 
-vector<TString> HNL_LeptonCore::ConvertCutFlowLabels(vector<TString> SRlabels){
+vector<TString> HNL_LeptonCore::ConvertCutFlowLabels(vector<TString> SRlabels, TString SRName, TString CRName){
 
   vector<TString> CRlabels;
 
   for(auto i : SRlabels) {
     TString CRlabel = i;
-    CRlabel=CRlabel.ReplaceAll("SR","CR");
+    CRlabel=CRlabel.ReplaceAll(SRName,CRName);
     CRlabels.push_back(CRlabel);
   }
   
@@ -355,6 +362,7 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
 
   vector<AnalyzerParameter::Syst> SystList = {};
   
+  if(!HasFlag("RunSyst")) return SystList;
   
   if(RunCF){
     SystList = {
