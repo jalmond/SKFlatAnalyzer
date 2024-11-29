@@ -36,9 +36,8 @@ void HNL_SignalRegion_Plotter::executeEvent(){
   if(_jentry == 0){
     cout << "HNL_SignalRegion_Plotter::IsData = " << IsData << endl;
   }
-  vector<TString> LepIDs = {"HNL_ULID","HNTightV2", "POGTight"};
-  if(RunFullSyst) LepIDs = {"HNL_ULID"};
-  if(RunNoSyst)   LepIDs = {"HNL_ULID"};
+  vector<TString> LepIDs = {"HNL_ULID"};
+  if(HasFlag("AllID")) LepIDs = {"HNL_ULID","HNTightV2", "POGTight"};
 
   //// Allow ID setting by flag
   if(RunTopID) LepIDs = {"TopHN"};
@@ -63,6 +62,8 @@ void HNL_SignalRegion_Plotter::executeEvent(){
       param.PlottingVerbose = 0; //// Draw basic plots
       if(id == "HNL_ULID")         param.PlottingVerbose = 1; /// Draw more plots
       if(id.Contains("HEEP"))      param.PlottingVerbose = 1;
+
+      param.PlottingVerbose = 3; //// TEMP FOR LIMIT BIN STUDY
 
       RunULAnalysis(param);
 
