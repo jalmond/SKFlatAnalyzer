@@ -84,7 +84,7 @@ void HNL_HighPtMuon_Studies::executeEvent(){
     if(Muons[imu].PassID(param.Muon_Tight_ID)){
       LL=LL+Muons[imu];
       LL_TuneP=LL_TuneP+Muons[imu].TuneP4();
-      if(ComparePtTune(Muons[imu], 0.1)) {
+      if(ComparePtTune(Muons[imu], 0.3)) {
 	cout << " " << endl;
 	cout << "Event " << event << " lumi = " << lumi << " run number = " << run <<  endl;
 	cout << "Muon pt mismatch pt = " << Muons[imu].Pt() << " tune pt = "  << Muons[imu].TuneP4().Pt() << " ratio = " <<  Muons[imu].TuneP4().Pt()/ Muons[imu].Pt()  << endl;

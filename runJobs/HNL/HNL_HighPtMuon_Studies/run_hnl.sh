@@ -23,7 +23,7 @@ if [[ $1 == "SIG" ]]; then
 
     for i in "${era_list[@]}"
     do
-        SKFlat.py -a $analyzer  -l ${SKFlat_WD}/runJobs/SampleLists/Signals/Private/SampleSig.txt
+        SKFlat.py -a $analyzer  -l ${SKFlat_WD}/runJobs/SampleLists/Signals/Private/SampleSig.txt  -n 300  --nmax 300  -e ${i} --skim SkimTree_HNMultiLepBDT&     
     done
 fi
 
