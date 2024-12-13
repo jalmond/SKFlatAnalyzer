@@ -169,7 +169,7 @@ void  AnalyzerCore::SmearHighPtMuon(Muon& this_muon){
 
 
 
-void  AnalyzerCore::SmearHighPtMuonSyst(std::vector<Muon>& muons, int sys){
+void  AnalyzerCore::SmearHighPtMuonSyst(std::vector<Muon>& muons){
 
   for(unsigned int i=0; i<muons.size(); i++){
     
@@ -181,10 +181,7 @@ void  AnalyzerCore::SmearHighPtMuonSyst(std::vector<Muon>& muons, int sys){
     double sigmaSmear = GetSmearFactor(MiniAODP, fabs(muons[i].Eta())) * 0.46;
     
     /// scale pt                                                                                                                                                                                    
-    double new_pt = muons[i].Pt();
-    if(sys > 0) new_pt =muons[i].Pt() * (1+gRandom->Gaus(0,sigmaSmear));
-    if(sys < 0) new_pt = muons[i].Pt() * (1-gRandom->Gaus(0,sigmaSmear));
-    
+    double new_pt = muons[i].Pt() * (1+gRandom->Gaus(0,sigmaSmear));
     muons[i].SetPtEtaPhiM( new_pt, muons[i].Eta(), muons[i].Phi(), muons[i].M() );
   }
   return ;

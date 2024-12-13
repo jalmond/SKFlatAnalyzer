@@ -125,7 +125,7 @@ public:
 
   double GetSmearFactor(double p, double eta);
   void SmearHighPtMuon(Muon& muon);
-  void SmearHighPtMuonSyst(std::vector<Muon>&, int sys);
+  void SmearHighPtMuonSyst(std::vector<Muon>&);
 
   void HighPtMuonCorr(std::vector<Muon>& muons);
 

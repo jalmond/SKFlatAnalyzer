@@ -103,7 +103,7 @@ class AnalyzerParameter{
     JetResUp, JetResDown,    JetEnUp, JetEnDown,
     JetMassUp,JetMassDown,    JetMassSmearUp,JetMassSmearDown,
     MuonRecoSFUp,MuonRecoSFDown,    MuonEnUp,MuonEnDown,    MuonIDSFUp,MuonIDSFDown,    MuonISOSFUp,MuonISOSFDown,
-    MuonResUp,MuonResDown,
+    MuonRes,
     MuonTriggerSFUp,MuonTriggerSFDown,    ElectronRecoSFUp,ElectronRecoSFDown,
     ElectronResUp,ElectronResDown,    ElectronEnUp,ElectronEnDown,
     ElectronIDSFUp,ElectronIDSFDown,    ElectronTriggerSFUp,ElectronTriggerSFDown,

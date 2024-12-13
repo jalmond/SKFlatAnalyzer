@@ -54,8 +54,7 @@ std::vector<Muon> HNL_LeptonCore::SelectMuons(AnalyzerParameter& param, TString 
   else muons = this_AllMuons;
 
   //// High Pt have resolution syst 
-  if(param.syst_ == AnalyzerParameter::MuonResUp)    SmearHighPtMuonSyst(muons,1);
-  if(param.syst_ == AnalyzerParameter::MuonResDown)  SmearHighPtMuonSyst(muons,-1);
+  if(param.syst_ == AnalyzerParameter::MuonRes)    SmearHighPtMuonSyst(muons);
 
 
   std::vector<Muon> out;
