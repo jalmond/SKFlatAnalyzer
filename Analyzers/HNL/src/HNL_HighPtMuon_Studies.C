@@ -180,7 +180,7 @@ void HNL_HighPtMuon_Studies::DrawMuonPlotsHighPt(vector<Muon> muons, Event ev,TS
   if(SameCharge(muons)){
     SmearHighPtMuon(muons[0]);
     FillHist("SS_smearcorr/"+label, muons[0].Pt() ,  1, 10,ptbins);
-    SmearHighPtMuonSyst(muons,1);    
+    SmearHighPtMuonSyst(muons);    
     FillHist("SS_smearcorr_syst/"+label, muons[0].Pt() ,  1, 10,ptbins);
   }
 
