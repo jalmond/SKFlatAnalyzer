@@ -147,7 +147,7 @@ double AnalyzerCore::GetSmearFactor(double p, double eta){
 void  AnalyzerCore::SmearHighPtMuon(Muon& this_muon){
 
   if(DataYear == 2016)  return ;
-  
+  if(this_muon.MiniAODPt() < 200) return ;
   
   if(fabs(this_muon.Eta()) < 1.2) return;
   else{
@@ -173,7 +173,9 @@ void  AnalyzerCore::SmearHighPtMuonSyst(std::vector<Muon>& muons){
 
   for(unsigned int i=0; i<muons.size(); i++){
     
-    
+    //// Smear high pt only
+    if(muons[i].MiniAODPt() < 200) continue;
+
     ///// Correction based on p https://indico.cern.ch/event/1027400/contributions/4314162/attachments/2224086/3825588/MuonPOG_13Apr21.pdf                                                          
     double MiniAODP = sqrt( muons[i].MiniAODPt() * muons[i].MiniAODPt() + muons[i].Pz() * muons[i].Pz() );
     
@@ -205,7 +207,7 @@ void AnalyzerCore::HighPtMuonCorr(std::vector<Muon>& muons){
     if(muons[i].UncorrectedPt() > 200) {
       /// Change pt back to uncorrecetd PF
       
-      mu.SetPtEtaPhiM(muons[i].UncorrectedPt(), muons[i].Eta(), muons[i].Phi(), muons[i].M());
+      muons[i].SetPtEtaPhiM(muons[i].UncorrectedPt(), muons[i].Eta(), muons[i].Phi(), muons[i].M());
 
       /// change syst scale
       //      cout << "muons[i] = " << muons[i].Pt() << endl;
