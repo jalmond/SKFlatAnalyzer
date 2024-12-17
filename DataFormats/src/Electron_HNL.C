@@ -92,9 +92,9 @@ int  Electron::PassHNLTight(TString ID) const{
   if(ID == "HNL_ULID_Probe_Split_3") return BtoI((Pass_LepMVAID_split1() && Pass_LepMVAID_split2()));
   if(ID == "HNL_ULID_Probe_Split_4") return BtoI((Pass_LepMVAID_split1() && Pass_LepMVAID_split2() && Pass_LepMVAID_split3()));
   if(ID == "HNL_ULID_Probe_Split_5") return BtoI((Pass_LepMVAID_split1() && Pass_LepMVAID_split2() && Pass_LepMVAID_split3() && Pass_LepMVAID_split4()));
-  if(ID == "HNL_ULID_Probe_Split_6") return BtoI((Pass_LepMVAID_split1() && Pass_LepMVAID_split2() && Pass_LepMVAID_split3() && Pass_LepMVAID_split4() && Pass_LepMVAID_split5()));
-  if(ID == "HNL_ULID_Probe_Split_7") return BtoI((Pass_LepMVAID_split1() && Pass_LepMVAID_split2() && Pass_LepMVAID_split3() && Pass_LepMVAID_split4() && Pass_LepMVAID_split5() && Pass_LepMVAID_split6()));
-  if(ID == "HNL_ULID_Probe_Split_8") return BtoI((Pass_LepMVAID_split1() && Pass_LepMVAID_split2() && Pass_LepMVAID_split3() && Pass_LepMVAID_split4() && Pass_LepMVAID_split5() && Pass_LepMVAID_split6() && Pass_LepMVAID_split7()));
+  if(ID == "HNL_ULID_Probe_Split_6") return BtoI((Pass_LepMVAID_split1() && Pass_LepMVAID_split2() && Pass_LepMVAID_split3() && Pass_LepMVAID_split4() && IsGsfCtfChargeConsistent()));
+  if(ID == "HNL_ULID_Probe_Split_7") return BtoI((Pass_LepMVAID_split1() && Pass_LepMVAID_split2() && Pass_LepMVAID_split3() && Pass_LepMVAID_split4() && IsGsfCtfChargeConsistent() && PassID("HNL_ULID_CF")));
+  if(ID == "HNL_ULID_Probe_Split_8") return BtoI((Pass_LepMVAID_split1() && Pass_LepMVAID_split2() && Pass_LepMVAID_split3() && Pass_LepMVAID_split4() && IsGsfCtfChargeConsistent() && PassID("HNL_ULID_CF") && PassID("HNL_ULID_Fake")));
   
 
 
