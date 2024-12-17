@@ -100,8 +100,10 @@ void HNL_Signal_Efficiency::executeEvent(){
 
     TString channel = GetChannelString(dilep_channel) ;
     FillHist( "NoCut_"+ channel, 1., weight, 2,0., 2);
+
+    //    double ptbins[11] = { 0., 100.,200.,300., 400.,500,700,900,  1200.,1500.,3000};
     
-    double ptbins[12] = { 0., 10.,15., 20., 30., 40.,50., 100.,250.,500. ,1000.,2000.};
+    double ptbins[14] = { 0., 10.,15., 20., 30., 40.,50., 100.,250.,500. ,750,1000.,1500,2000.};
     
     for(auto imap : LeptonIDMap){
 
@@ -139,24 +141,24 @@ void HNL_Signal_Efficiency::executeEvent(){
       if(imap.first == EE)  {
 	for(auto iel : vecSelectedElectrons){
 
-	  double pt = (iel.Pt() > 1000) ? 999 : iel.Pt();
+	  double pt = (iel.Pt() > 2000) ? 1999 : iel.Pt();
 
 	  if (iel.IsPrompt()) {
-	    FillHist( "Prompt_"+channel+"/Electron_pt_"+iel.GetEtaRegion()+"_"+imap.second, pt, weight, 11, ptbins);
-            FillHist( "Prompt_"+channel+"/Electron_pt_"+imap.second, pt, weight,  400, 0., 2000.);
+	    FillHist( "Prompt_"+channel+"/Electron_pt_"+iel.GetEtaRegion()+"_"+imap.second, pt, weight, 13, ptbins);
+            FillHist( "Prompt_"+channel+"/Electron_pt_"+imap.second, pt, weight,  13, ptbins);
 	    
 	  }
 	  if (iel.IsFake()) {
-	    FillHist( "Fake_"+channel+"/Electron_pt_"+iel.GetEtaRegion()+"_"+imap.second, pt, weight, 11, ptbins);
-	    FillHist( "Fake_"+channel+"/Electron_pt_"+imap.second, pt, weight,  400, 0., 2000.);
+	    FillHist( "Fake_"+channel+"/Electron_pt_"+iel.GetEtaRegion()+"_"+imap.second, pt, weight, 13, ptbins);
+	    FillHist( "Fake_"+channel+"/Electron_pt_"+imap.second, pt, weight,  13, ptbins);
 	  }
 	  if (iel.IsConv()) {
-	    FillHist( "Conv_"+channel+"/Electron_pt_"+iel.GetEtaRegion()+"_"+imap.second, pt, weight, 11, ptbins);
-	    FillHist( "Conv_"+channel+"/Electron_pt_"+imap.second, pt,  weight,  400, 0., 2000.);
+	    FillHist( "Conv_"+channel+"/Electron_pt_"+iel.GetEtaRegion()+"_"+imap.second, pt, weight, 13, ptbins);
+	    FillHist( "Conv_"+channel+"/Electron_pt_"+imap.second, pt,  weight,  13, ptbins);
 	  }
 	  if(iel.LeptonIsCF()){
-	    FillHist( "CF_"+channel+"/Electron_pt_"+iel.GetEtaRegion()+"_"+imap.second, pt, weight, 11, ptbins);
-            FillHist( "CF_"+channel+"/Electron_pt_"+imap.second, pt,  weight,  400, 0., 2000.);
+	    FillHist( "CF_"+channel+"/Electron_pt_"+iel.GetEtaRegion()+"_"+imap.second, pt, weight, 13, ptbins);
+            FillHist( "CF_"+channel+"/Electron_pt_"+imap.second, pt,  weight,  13, ptbins);
 	  }
 	}
       }
@@ -167,16 +169,16 @@ void HNL_Signal_Efficiency::executeEvent(){
 	  double pt = (imu.Pt() > 1000) ? 999 : imu.Pt();
 	  
 	  if (imu.IsPrompt()) {
-	    FillHist( "Prompt_"+channel+"/Muon_pt_"+imu.GetEtaRegion()+"_"+imap.second, pt, weight, 11, ptbins);
-	    FillHist( "Prompt_"+channel+"/Muon_pt_"+imap.second, pt, weight,  400, 0., 2000.);
+	    FillHist( "Prompt_"+channel+"/Muon_pt_"+imu.GetEtaRegion()+"_"+imap.second, pt, weight, 13, ptbins);
+	    FillHist( "Prompt_"+channel+"/Muon_pt_"+imap.second, pt, weight,  13, ptbins);
 	  }
 	  if (imu.IsFake()) {
-	    FillHist( "Fake_"+channel+"/Muon_pt_"+imu.GetEtaRegion()+"_"+imap.second, pt, weight, 11, ptbins);
-	    FillHist( "Fake_"+channel+"/Muon_pt_"+imap.second, pt, weight,  400, 0., 2000.);
+	    FillHist( "Fake_"+channel+"/Muon_pt_"+imu.GetEtaRegion()+"_"+imap.second, pt, weight, 13, ptbins);
+	    FillHist( "Fake_"+channel+"/Muon_pt_"+imap.second, pt, weight,  13, ptbins);
 	  }
 	  if (imu.IsConv()) {
-	    FillHist( "Conv_"+channel+"/Muon_pt_"+imu.GetEtaRegion()+"_"+imap.second, pt, weight, 11, ptbins);
-	    FillHist( "Conv_"+channel+"/Muon_pt_"+imap.second, pt,  weight,  400, 0., 2000.);
+	    FillHist( "Conv_"+channel+"/Muon_pt_"+imu.GetEtaRegion()+"_"+imap.second, pt, weight, 13, ptbins);
+	    FillHist( "Conv_"+channel+"/Muon_pt_"+imap.second, pt,  weight,  13, ptbins);
 	  }
 	}
       }
