@@ -32,7 +32,7 @@ int  Electron::PassHNLTight(TString ID) const{
   //// HNL_ULID_Defv2_FO_ has Medium Charge cut on top of HNL_ULID_Defv1_FO_                                                                                                                                            
   if(ID == "HNL_ULID")           return BtoI(PassID("HNL_ULID_Defv2_FO") && PassID("HNL_ULID_Fake"));
   if(ID == "HNL_ULID_ConvLowPt") return BtoI(PassID("HNL_ULID_Defv3_FO") && PassID("HNL_ULID_Fake"));
-  if(ID == "HNL_ULID_NoConv")    return BtoI(PassID("HNL_ULID_Defv8_FO") && PassID("HNL_ULID_Fake"));
+  if(ID == "HNL_ULID_NoConv")    return BtoI(PassID("HNL_ULID_Defv4_FO") && PassID("HNL_ULID_Fake"));
 
 
   if(ID == "HNL_ULID_"+Year)    return BtoI(PassID("HNL_ULID_Defv2_FO") && PassID("HNL_ULID_Fake"));

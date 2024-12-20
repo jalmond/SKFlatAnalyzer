@@ -356,16 +356,19 @@ parser = argparse.ArgumentParser(description='SKFlat Command')
 parser.add_argument('-e', dest='Era', default="2017",help="2016preVFP(2016a), 2016postVFP(2016b), 2017, 2018, Run2")
 parser.add_argument('-o', dest='Outputdir', default="",help="")
 parser.add_argument('-v', dest='Version', default="Version1",help="")
-parser.add_argument('-s', dest='Script', default="Config/RunEff.py",help="")
+parser.add_argument('-s', dest='Script', default="NULL",help="pick config/*.py")
 parser.add_argument('-n', dest='NJob',type=int, default=15,help="")
-parser.add_argument('-max', dest='NMax',type=int, default=50,help="")
-
+parser.add_argument('-max', dest='NMax',type=int, default=500,help="")
 
 args = parser.parse_args()
 
 Version = args.Version
 NJobs=args.NJob
 Era = args.Era
+
+if args.Script == "NULL":
+    print ("-s command not set")
+    exit()
 
 print ("Running MakeInputList:")
 print ("Njobs = " + str(args.NJob))

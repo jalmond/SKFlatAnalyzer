@@ -54,7 +54,6 @@ void SkimTree_EGammaTnP_HNLHighPt::initializeAnalyzer(){
   newtree->Branch("passingMVALoose",&passingMVALoose);
   newtree->Branch("passingTriggerEmul",&passingTriggerEmul);
 
-  newtree->Branch("passingHNLHeep",&passingHNLHeep);
   newtree->Branch("passingHNLMVA",&passingHNLMVA);
   newtree->Branch("passingHNLMVA_TrkIso",&passingHNLMVA_TrkIso);
   newtree->Branch("passingHNLMVACF",&passingHNLMVACF);
@@ -341,7 +340,7 @@ void SkimTree_EGammaTnP_HNLHighPt::executeEvent(){
         passingHNLMVAFake =probe.PassID("HNL_ULID_Fake");
         passingHNLMVA     =probe.PassID("HNL_ULID_"+GetYearString());
         passingHNLMVA_TrkIso     =probe.PassID("HNL_ULID_TrkIso");
-        passingHNLHeep     =probe.PassID("HNL_ULID_HEEP");
+
 
 	//// Split IDs
 	passingHNL_ULID_NoConv =probe.PassID("HNL_ULID_NoConv");

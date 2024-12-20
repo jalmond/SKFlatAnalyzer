@@ -21,8 +21,10 @@ NJob=args.NJob
 Era = args.Era
 WorkDir=args.WorkDir
 
-It_Probes = ['HNL_ULID_Split_1','HNL_ULID_Split_2','HNL_ULID_Split_3','HNL_ULID_Split_4','HNL_ULID_Split_5','HNL_ULID_Split_6','HNL_ULID_Split_7','HNL_ULID_Split_8']
-It_Tags   = ['Pass','HNL_ULID_Tag_Split_2','HNL_ULID_Tag_Split_3','HNL_ULID_Tag_Split_4','HNL_ULID_Tag_Split_5','HNL_ULID_Tag_Split_6','HNL_ULID_Tag_Split_7','HNL_ULID_Tag_Split_8' ]
+It_Probes    = ['HNL_ULID_Split_1','HNL_ULID_Split_2','HNL_ULID_Split_3','HNL_ULID_Split_4','HNL_ULID_Split_4b','HNL_ULID_Split_5','HNL_ULID_Split_6','HNL_ULID_Split_7','HNL_ULID_Split_8','HNL_ULID_Split_8b']
+
+#### IDs applied to probe befrpre PASS/FAIL
+It_ProbeID   = ['Pass',            'HNL_ULID_Probe_Split_2','HNL_ULID_Probe_Split_3','HNL_ULID_Probe_Split_4','HNL_ULID_Probe_Split_4','HNL_ULID_Probe_Split_5','HNL_ULID_Probe_Split_6','HNL_ULID_Probe_Split_7','HNL_ULID_Probe_Split_8' ,'HNL_ULID_Probe_Split_8']
 It_IsPasses = ['Pass','Fail']
 It_EtaRegions = ['BB','EC']
 #It_EtaRegions = ['BB']
@@ -473,12 +475,12 @@ def classify_hist(this_year, this_chain):
   Probes = {}
   nProbe=0
   for this_probe in It_Probes:
-    ProbeID=It_Tags[nProbe]
+    ProbeID=It_ProbeID[nProbe]
     nProbe=nProbe+1
 
     ### Apply probe ID before Pass/Fail check
     if ProbeID != "Pass":
-      if getattr(this_chain, "passing"+TagID):
+      if getattr(this_chain, "passing"+ProbeID):
         continue
 
     Probes[this_probe] = 'Pass' if getattr(this_chain, "passing"+this_probe) else 'Fail'
