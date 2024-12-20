@@ -275,13 +275,13 @@ def MakeInputFiles(_type, _era,_sample,_path,_list,NJOBS):
 
 
 
-def CheckList(input_samples, types_sample,NJobs,Era):
+def CheckList(input_samples, types_sample,NJobs,Era,SkimName):
     from os import listdir
     from os.path import isfile, isdir,join
     NFewestFiles=1000000
 
     for x in input_samples[Era]:
-        path_to_files="/gv0/DATA/SKFlat/Run2UltraLegacy_v3/"+Era+"/"+types[x]+"_SkimTree_EGammaTnP_HighPt/" + x
+        path_to_files="/gv0/DATA/SKFlat/Run2UltraLegacy_v3/"+Era+"/"+types[x]+"_"+SkimName+"/" + x
         print path_to_files
 
         if types[x] == "MC":
@@ -313,7 +313,7 @@ def CheckList(input_samples, types_sample,NJobs,Era):
     return NFewestFiles
 
 
-def MakeInputList(input_samples, types_sample, NJobs,Era):
+def MakeInputList(input_samples, types_sample, NJobs,Era,SkimName):
 
     from os import listdir
     from os.path import isfile, isdir,join
@@ -321,7 +321,7 @@ def MakeInputList(input_samples, types_sample, NJobs,Era):
     print "Making MakeInputList for following samples"
 
     for x in input_samples[Era]:
-        path_to_files="/gv0/DATA/SKFlat/Run2UltraLegacy_v3/"+Era+"/"+types[x]+"_SkimTree_EGammaTnP_HighPt/" + x
+        path_to_files="/gv0/DATA/SKFlat/Run2UltraLegacy_v3/"+Era+"/"+types[x]+"_"+SkimName+"/" + x
         print path_to_files
 
         if types[x] == "MC":
@@ -377,13 +377,14 @@ if not os.path.exists("batch_input"):
 
 #os.system("python MakeInputList.py -e " + Era +  " -n " + str(NJobs))
 
-NMaxAllowed=CheckList(samples,types,NJobs,Era)
+SkimName="SkimTree_EGammaTnP_HNLHighPt"
+NMaxAllowed=CheckList(samples,types,NJobs,Era,SkimName)
 
 if NJobs > NMaxAllowed:
   NJobs=NMaxAllowed
   print("Updating Njobs since some input has fewer files: NJobs --> " + str(NJobs))
 
-MakeInputList(samples,types,NJobs,Era)
+MakeInputList(samples,types,NJobs,Era,SkimName)
 
 ## Add Abosolute path for outputdir
 
@@ -455,7 +456,7 @@ for WorkDir in WorkDirs:
   
   scriptname=scriptname.replace('Config/','')
 
-  commandsfilename = 'ElectronIDSF'
+  commandsfilename = 'ElectronIDSF_'+Era+"_"+Version
   run_commands = open(MasterJobDir+'/'+commandsfilename+'.sh','w')
 
   print>>run_commands,'''#!/bin/bash
