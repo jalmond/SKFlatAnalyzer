@@ -480,7 +480,7 @@ def classify_hist(this_year, this_chain):
 
     ### Apply probe ID before Pass/Fail check
     if ProbeID != "Pass":
-      if getattr(this_chain, "passing"+ProbeID):
+      if not getattr(this_chain, "passing"+ProbeID):
         continue
 
     Probes[this_probe] = 'Pass' if getattr(this_chain, "passing"+this_probe) else 'Fail'
@@ -772,6 +772,17 @@ def measureSFs(Data_OS, Bundle, Era, EtaRegion, Probe, Tag, Save, n_job, OutFile
   txt_lumi.DrawLatex(.95,.96, luminosity[Era]+" fb^{-1} (13 TeV)")
 
   IDnames = {
+
+    'HNL_ULID_Split_1' : 'HNL_ULID_Split_1',
+    'HNL_ULID_Split_2' : 'HNL_ULID_Split_2',
+    'HNL_ULID_Split_3' : 'HNL_ULID_Split_3',
+    'HNL_ULID_Split_4' : 'HNL_ULID_Split_4',
+    'HNL_ULID_Split_4b' : 'HNL_ULID_Split_4b',
+    'HNL_ULID_Split_5' : 'HNL_ULID_Split_5',
+    'HNL_ULID_Split_6' : 'HNL_ULID_Split_6',
+    'HNL_ULID_Split_7' : 'HNL_ULID_Split_7',
+    'HNL_ULID_Split_8' : 'HNL_ULID_Split_8',
+    'HNL_ULID_Split_8b' : 'HNL_ULID_Split_8b',
              'HEEP'               : 'HEEP',
              'HNLMVA'             : 'MVA ID',
              'CutBasedTight94XV2' : 'POG Tight',
@@ -852,7 +863,7 @@ def measureSFs(Data_OS, Bundle, Era, EtaRegion, Probe, Tag, Save, n_job, OutFile
   line.SetLineColor(2)
   line.Draw()
 
-  c1.SaveAs(WorkDir+"/Out_TurnOn/"+OutName+"_"+str(n_job)+".png")
+  c1.SaveAs(WorkDir+"/Out_Eff/"+OutName+"_"+str(n_job)+".png")
   del c1
 
   return
@@ -1090,11 +1101,24 @@ def makeKinComparison(NthJob):
                  "os" : "(el_q+tag_Ele_q==0)",
                  "ss" : "(el_q+tag_Ele_q!=0)",
     }
+
+
+    #### add ID of N-1 to probe Fail 
+    nProbe_data=0
     for Probe in It_Probes:
-      this_cuts[Probe] = {
-                          'Pass':"(passing"+Probe+"==1)",
-                          'Fail':"(passing"+Probe+"==0)",
-      }
+      ProbeID_data=It_ProbeID[nProbe_data]
+      if nProbe_data == 0:
+        this_cuts[Probe] = {
+          'Pass':"(passing"+Probe+"==1)",
+          'Fail':"(passing"+Probe+"==0)",
+        }
+      else:
+        this_cuts[Probe] = {
+          'Pass':"(passing"+Probe+"==1)",
+          'Fail':"(passing"+Probe+"==0 && passing"+ProbeID_data+"==1)",
+        }
+
+      nProbe_data=nProbe_data+1
 
     #### create hists w/ cuts applied
     t1 = datetime.now()
@@ -1103,7 +1127,10 @@ def makeKinComparison(NthJob):
     for EtaRegion in It_EtaRegions:
       for Charge in ["os","ss"]:
         # ID iteration
+
+        nProbe_data=0 
         for Probe in It_Probes:
+
           for IsPass in It_IsPasses:
             draw_command = this_draw_command+"_"+EtaRegion+"_"+Charge+"_"+Probe+"_"+IsPass
             cut_condition = this_cuts[EtaRegion]+"&&"+this_cuts[Charge]+"&&"+this_cuts[Probe][IsPass]
