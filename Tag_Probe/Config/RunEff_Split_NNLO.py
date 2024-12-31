@@ -60,7 +60,8 @@ luminosity = {
 }
 samples = {
   '2016' : [
-     "DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8",
+      "DYJetsToEE_M-50_massWgtFix_TuneCP5_13TeV-powhegMiNNLO-pythia8-photos",
+      "DYJetsToTauTau_M-50_AtLeastOneEorMuDecay_TuneCP5_13TeV-powhegMiNNLO-pythia8-photos",
      "WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8",
      "TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8",
      "TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8",
@@ -72,7 +73,8 @@ samples = {
      "SingleElectron",
   ],
   '2016preVFP' : [
-     "DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8",
+      "DYJetsToEE_M-50_massWgtFix_TuneCP5_13TeV-powhegMiNNLO-pythia8-photos",
+      "DYJetsToTauTau_M-50_AtLeastOneEorMuDecay_TuneCP5_13TeV-powhegMiNNLO-pythia8-photos",
      "WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8",
      "TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8",
      "TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8",
@@ -84,7 +86,8 @@ samples = {
      "SingleElectron",
   ],
   '2016postVFP' : [
-    "DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8",
+      "DYJetsToEE_M-50_massWgtFix_TuneCP5_13TeV-powhegMiNNLO-pythia8-photos",
+      "DYJetsToTauTau_M-50_AtLeastOneEorMuDecay_TuneCP5_13TeV-powhegMiNNLO-pythia8-photos",
     "WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8",
     "TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8",
     "TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8",
@@ -96,7 +99,8 @@ samples = {
     "SingleElectron",
   ],
   '2017' : [
-    "DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8",
+    "DYJetsToEE_M-50_massWgtFix_TuneCP5_13TeV-powhegMiNNLO-pythia8-photos",
+    "DYJetsToTauTau_M-50_AtLeastOneEorMuDecay_massWgtFix_TuneCP5_13TeV-powhegMiNNLO-pythia8-photos",
     "WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8",
     "TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8",
     "TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8",
@@ -108,7 +112,8 @@ samples = {
     "SingleElectron",
   ],
   '2018' : [
-    "DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8",
+ "DYJetsToEE_M-50_massWgtFix_TuneCP5_13TeV-powhegMiNNLO-pythia8-photos",
+      "DYJetsToTauTau_M-50_AtLeastOneEorMuDecay_massWgtFix_TuneCP5_13TeV-powhegMiNNLO-pythia8-photos",
     "WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8",
     "TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8",
     "TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8",
@@ -121,7 +126,9 @@ samples = {
   ],
 }
 types = {
-  'DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8' : 'MC',
+  'DYJetsToEE_M-50_massWgtFix_TuneCP5_13TeV-powhegMiNNLO-pythia8-photos'  : 'MC',
+  'DYJetsToTauTau_M-50_AtLeastOneEorMuDecay_massWgtFix_TuneCP5_13TeV-powhegMiNNLO-pythia8-photos' : 'MC',
+  'DYJetsToTauTau_M-50_AtLeastOneEorMuDecay_TuneCP5_13TeV-powhegMiNNLO-pythia8-photos' : 'MC',
   'WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8' : 'MC',
   'TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8' : 'MC',
   'TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8' : 'MC',
@@ -136,6 +143,17 @@ types = {
 dates = {
   '2016preVFP':
     {
+
+      'DYJetsToEE_M-50_massWgtFix_TuneCP5_13TeV-powhegMiNNLO-pythia8-photos' : {
+                                                             '' : '2024_12_03_013251',
+                                                            },
+      'DYJetsToTauTau_M-50_AtLeastOneEorMuDecay_massWgtFix_TuneCP5_13TeV-powhegMiNNLO-pythia8-photos' : {
+                                                             '' : '2024_12_03_013251',
+                                                            },
+       'DYJetsToTauTau_M-50_AtLeastOneEorMuDecay_TuneCP5_13TeV-powhegMiNNLO-pythia8-photos' : {
+                                                             '' : '2024_12_03_013251',
+                                                            },
+
      'DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8' : {
                                                              '' : '2024_12_03_013251',
                                                             },
@@ -173,6 +191,19 @@ dates = {
     },
   '2016postVFP':
     {
+
+      'DYJetsToEE_M-50_massWgtFix_TuneCP5_13TeV-powhegMiNNLO-pythia8-photos' : {
+                                                             '' : '2024_12_03_013251',
+                                                            },
+      'DYJetsToTauTau_M-50_AtLeastOneEorMuDecay_massWgtFix_TuneCP5_13TeV-powhegMiNNLO-pythia8-photos' : {
+                                                             '' : '2024_12_03_013251',
+                                                            },
+       'DYJetsToTauTau_M-50_AtLeastOneEorMuDecay_TuneCP5_13TeV-powhegMiNNLO-pythia8-photos' : {
+                                                             '' : '2024_12_03_013251',
+                                                            },
+
+
+
      'DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8' : {
                                                              '' : '2024_12_03_013251',
                                                             },
@@ -208,6 +239,18 @@ dates = {
     },
   '2017':
     {
+
+      'DYJetsToEE_M-50_massWgtFix_TuneCP5_13TeV-powhegMiNNLO-pythia8-photos' : {
+                                                             '' : '2024_12_03_013251',
+                                                            },
+      'DYJetsToTauTau_M-50_AtLeastOneEorMuDecay_massWgtFix_TuneCP5_13TeV-powhegMiNNLO-pythia8-photos' : {
+                                                             '' : '2024_12_03_013251',
+                                                            },
+       'DYJetsToTauTau_M-50_AtLeastOneEorMuDecay_TuneCP5_13TeV-powhegMiNNLO-pythia8-photos' : {
+                                                             '' : '2024_12_03_013251',
+                                                            },
+
+
      'DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8' : {
                                                              '' : '2024_12_13_185927',
                                                             },
@@ -245,6 +288,16 @@ dates = {
     },
   '2018':
     {
+
+      'DYJetsToEE_M-50_massWgtFix_TuneCP5_13TeV-powhegMiNNLO-pythia8-photos' : {
+                                                             '' : '2024_12_03_013251',
+                                                            },
+      'DYJetsToTauTau_M-50_AtLeastOneEorMuDecay_massWgtFix_TuneCP5_13TeV-powhegMiNNLO-pythia8-photos' : {
+                                                             '' : '2024_12_03_013251',
+                                                            },
+       'DYJetsToTauTau_M-50_AtLeastOneEorMuDecay_TuneCP5_13TeV-powhegMiNNLO-pythia8-photos' : {
+                                                             '' : '2024_12_03_013251',
+                                                            },
      'DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8' : {
                                                              '' : '2024_12_13_185927',
                                                             },
@@ -288,6 +341,10 @@ triggers = {
             '2018'        : 'passHltEle32WPTightGsf',
 }
 nameFilter = {
+
+  'DYJetsToEE_M-50_massWgtFix_TuneCP5_13TeV-powhegMiNNLO-pythia8-photos'  : 'DYJetsToEE',
+  'DYJetsToTauTau_M-50_AtLeastOneEorMuDecay_massWgtFix_TuneCP5_13TeV-powhegMiNNLO-pythia8-photos' : 'DYJetsToTauTau',
+  'DYJetsToTauTau_M-50_AtLeastOneEorMuDecay_TuneCP5_13TeV-powhegMiNNLO-pythia8-photos' : 'DYJetsToTauTau',
   'DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8' : 'DYJets',
   'WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8' : 'WJets',
   'TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8' : 'TTLL',

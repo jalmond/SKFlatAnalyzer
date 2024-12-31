@@ -10,31 +10,34 @@ import subprocess
 
 samples = {
   '2016' : [
-     "DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8",
-     "WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8",
-     "TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8",
-     "TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8",
-     "WW_TuneCP5_13TeV-pythia8",
-     "WZ_TuneCP5_13TeV-pythia8",
-     "ZZ_TuneCP5_13TeV-pythia8",
-     "ST_tW_top_5f_NoFullyHadronicDecays_TuneCP5_13TeV-powheg-pythia8",
-     "ST_tW_antitop_5f_NoFullyHadronicDecays_TuneCP5_13TeV-powheg-pythia8",
-     "SingleElectron",
+      "DYJetsToEE_M-50_massWgtFix_TuneCP5_13TeV-powhegMiNNLO-pythia8-photos",
+      "DYJetsToTauTau_M-50_AtLeastOneEorMuDecay_TuneCP5_13TeV-powhegMiNNLO-pythia8-photos",
+      "WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8",
+      "TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8",
+      "TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8",
+      "WW_TuneCP5_13TeV-pythia8",
+      "WZ_TuneCP5_13TeV-pythia8",
+      "ZZ_TuneCP5_13TeV-pythia8",
+      "ST_tW_top_5f_NoFullyHadronicDecays_TuneCP5_13TeV-powheg-pythia8",
+      "ST_tW_antitop_5f_NoFullyHadronicDecays_TuneCP5_13TeV-powheg-pythia8",
+      "SingleElectron",
   ],
-  '2016preVFP' : [
-     "DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8",
-     "WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8",
-     "TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8",
-     "TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8",
-     "WW_TuneCP5_13TeV-pythia8",
-     "WZ_TuneCP5_13TeV-pythia8",
-     "ZZ_TuneCP5_13TeV-pythia8",
-     "ST_tW_top_5f_NoFullyHadronicDecays_TuneCP5_13TeV-powheg-pythia8",
-     "ST_tW_antitop_5f_NoFullyHadronicDecays_TuneCP5_13TeV-powheg-pythia8",
-     "SingleElectron",
-  ],
+    '2016preVFP' : [
+        "DYJetsToEE_M-50_massWgtFix_TuneCP5_13TeV-powhegMiNNLO-pythia8-photos",
+        "DYJetsToTauTau_M-50_AtLeastOneEorMuDecay_TuneCP5_13TeV-powhegMiNNLO-pythia8-photos",
+        "WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8",
+        "TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8",
+        "TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8",
+        "WW_TuneCP5_13TeV-pythia8",
+        "WZ_TuneCP5_13TeV-pythia8",
+        "ZZ_TuneCP5_13TeV-pythia8",
+        "ST_tW_top_5f_NoFullyHadronicDecays_TuneCP5_13TeV-powheg-pythia8",
+        "ST_tW_antitop_5f_NoFullyHadronicDecays_TuneCP5_13TeV-powheg-pythia8",
+        "SingleElectron",
+],
   '2016postVFP' : [
-    "DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8",
+ "DYJetsToEE_M-50_massWgtFix_TuneCP5_13TeV-powhegMiNNLO-pythia8-photos",
+      "DYJetsToTauTau_M-50_AtLeastOneEorMuDecay_TuneCP5_13TeV-powhegMiNNLO-pythia8-photos",
     "WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8",
     "TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8",
     "TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8",
@@ -46,19 +49,21 @@ samples = {
     "SingleElectron",
   ],
   '2017' : [
-    "DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8",
-    "WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8",
-    "TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8",
-    "TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8",
+      "DYJetsToEE_M-50_massWgtFix_TuneCP5_13TeV-powhegMiNNLO-pythia8-photos",
+      "DYJetsToTauTau_M-50_AtLeastOneEorMuDecay_massWgtFix_TuneCP5_13TeV-powhegMiNNLO-pythia8-photos",
+      "WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8",
+      "TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8",
+      "TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8",
     "WW_TuneCP5_13TeV-pythia8",
-    "WZ_TuneCP5_13TeV-pythia8",
-    "ZZ_TuneCP5_13TeV-pythia8",
-    "ST_tW_top_5f_NoFullyHadronicDecays_TuneCP5_13TeV-powheg-pythia8",
+      "WZ_TuneCP5_13TeV-pythia8",
+      "ZZ_TuneCP5_13TeV-pythia8",
+      "ST_tW_top_5f_NoFullyHadronicDecays_TuneCP5_13TeV-powheg-pythia8",
     "ST_tW_antitop_5f_NoFullyHadronicDecays_TuneCP5_13TeV-powheg-pythia8",
-    "SingleElectron",
+      "SingleElectron",
   ],
   '2018' : [
-    "DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8",
+      "DYJetsToEE_M-50_massWgtFix_TuneCP5_13TeV-powhegMiNNLO-pythia8-photos",
+      "DYJetsToTauTau_M-50_AtLeastOneEorMuDecay_massWgtFix_TuneCP5_13TeV-powhegMiNNLO-pythia8-photos",
     "WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8",
     "TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8",
     "TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8",
@@ -71,18 +76,23 @@ samples = {
   ],
 }
 
+
+
 types = {
-  'DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8' : 'MC',
-  'WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8' : 'MC',
-  'TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8' : 'MC',
-  'TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8' : 'MC',
-  'ST_tW_top_5f_NoFullyHadronicDecays_TuneCP5_13TeV-powheg-pythia8' : 'MC',
-  'ST_tW_antitop_5f_NoFullyHadronicDecays_TuneCP5_13TeV-powheg-pythia8' : 'MC',
-  'WW_TuneCP5_13TeV-pythia8' : 'MC',
-  'WZ_TuneCP5_13TeV-pythia8' : 'MC',
-  'ZZ_TuneCP5_13TeV-pythia8' : 'MC',
-  'SingleElectron' : 'DATA',
-  'EGamma' : 'DATA',
+    
+    'DYJetsToEE_M-50_massWgtFix_TuneCP5_13TeV-powhegMiNNLO-pythia8-photos' : 'MC',
+    'DYJetsToTauTau_M-50_AtLeastOneEorMuDecay_TuneCP5_13TeV-powhegMiNNLO-pythia8-photos' : 'MC',
+    'DYJetsToTauTau_M-50_AtLeastOneEorMuDecay_massWgtFix_TuneCP5_13TeV-powhegMiNNLO-pythia8-photos' : 'MC',
+    'WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8' : 'MC',
+    'TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8' : 'MC',
+    'TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8' : 'MC',
+    'ST_tW_top_5f_NoFullyHadronicDecays_TuneCP5_13TeV-powheg-pythia8' : 'MC',
+    'ST_tW_antitop_5f_NoFullyHadronicDecays_TuneCP5_13TeV-powheg-pythia8' : 'MC',
+    'WW_TuneCP5_13TeV-pythia8' : 'MC',
+    'WZ_TuneCP5_13TeV-pythia8' : 'MC',
+    'ZZ_TuneCP5_13TeV-pythia8' : 'MC',
+    'SingleElectron' : 'DATA',
+    'EGamma' : 'DATA',
 }
 
 
@@ -113,10 +123,10 @@ def CheckList(input_samples, types_sample,NJobs,Era,SkimName):
     NFewestFiles=1000000
 
     for x in input_samples[Era]:
-        path_to_files="/gv0/DATA/SKFlat/Run2UltraLegacy_v3/"+Era+"/"+types[x]+"_"+SkimName+"/" + x
+        path_to_files="/gv0/DATA/SKFlat/Run2UltraLegacy_v3/"+Era+"/"+types_sample[x]+"_"+SkimName+"/" + x
         print path_to_files
 
-        if types[x] == "MC":
+        if types_sample[x] == "MC":
             datedir = [f for f in listdir(path_to_files) if isdir(join(path_to_files, f))]
             if len(datedir ) > 1:
                 exit
@@ -124,7 +134,7 @@ def CheckList(input_samples, types_sample,NJobs,Era,SkimName):
             infiles = [f for f in listdir(new_path_to_files) if isfile(join(new_path_to_files, f))]
             if len(infiles) < NFewestFiles:
                 NFewestFiles = len(infiles)
-            MakeInputFiles(types[x],Era,x, new_path_to_files,infiles,NJobs)
+            MakeInputFiles(types_sample[x],Era,x, new_path_to_files,infiles,NJobs)
         else:
             perioddir = [f for f in listdir(path_to_files) if isdir(join(path_to_files, f))]
             if len(perioddir ) > 1:
@@ -140,7 +150,7 @@ def CheckList(input_samples, types_sample,NJobs,Era,SkimName):
                 infiles = [f for f in listdir(new_path_to_files) if isfile(join(new_path_to_files, f))]
                 if len(infiles) < NFewestFiles:
                     NFewestFiles = len(infiles)
-                MakeInputFiles(types[x],Era,x+"_"+period, new_path_to_files,infiles,NJobs)
+                MakeInputFiles(types_sample[x],Era,x+"_"+period, new_path_to_files,infiles,NJobs)
 
     return NFewestFiles
 
@@ -153,17 +163,17 @@ def MakeInputList(input_samples, types_sample, NJobs,Era,SkimName):
     print "Making MakeInputList for following samples"
 
     for x in input_samples[Era]:
-        path_to_files="/gv0/DATA/SKFlat/Run2UltraLegacy_v3/"+Era+"/"+types[x]+"_"+SkimName+"/" + x
+        path_to_files="/gv0/DATA/SKFlat/Run2UltraLegacy_v3/"+Era+"/"+types_sample[x]+"_"+SkimName+"/" + x
         print path_to_files
 
-        if types[x] == "MC":
+        if types_sample[x] == "MC":
             datedir = [f for f in listdir(path_to_files) if isdir(join(path_to_files, f))]
             if len(datedir ) > 1:
                 exit
             new_path_to_files = path_to_files + "/"+datedir[0]
             infiles = [f for f in listdir(new_path_to_files) if isfile(join(new_path_to_files, f))]
 
-            MakeInputFiles(types[x],Era,x, new_path_to_files,infiles,NJobs)
+            MakeInputFiles(types_sample[x],Era,x, new_path_to_files,infiles,NJobs)
         else:
             perioddir = [f for f in listdir(path_to_files) if isdir(join(path_to_files, f))]
             if len(perioddir ) > 1:
@@ -177,7 +187,7 @@ def MakeInputList(input_samples, types_sample, NJobs,Era,SkimName):
 
                 new_path_to_files = period_path_to_files + "/"+datedir[0]
                 infiles = [f for f in listdir(new_path_to_files) if isfile(join(new_path_to_files, f))]
-                MakeInputFiles(types[x],Era,x+"_"+period, new_path_to_files,infiles,NJobs)
+                MakeInputFiles(types_sample[x],Era,x+"_"+period, new_path_to_files,infiles,NJobs)
 
 
 
@@ -213,6 +223,9 @@ if not os.path.exists("batch_input"):
 #os.system("python MakeInputList.py -e " + Era +  " -n " + str(NJobs))
 
 SkimName="SkimTree_EGammaTnP_HNLHighPt"
+
+
+
 NMaxAllowed=CheckList(samples,types,NJobs,Era,SkimName)
 
 if NJobs > NMaxAllowed:
