@@ -31,13 +31,16 @@ int  Electron::PassHNLTight(TString ID) const{
 
   //// HNL_ULID_Defv2_FO_ has Medium Charge cut on top of HNL_ULID_Defv1_FO_                                                                                                                                            
   if(ID == "HNL_ULID")           return BtoI(PassID("HNL_ULID_Defv2_FO") && PassID("HNL_ULID_Fake"));
-  if(ID == "HNL_ULID_ConvHighPt") return BtoI(PassID("HNL_ULID_Defv3_FO") && PassID("HNL_ULID_Fake"));
 
+  ////// Check variation on conversion cut
+  if(ID == "HNL_ULID_ConvHighPt") return BtoI(PassID("HNL_ULID_Defv3_FO") && PassID("HNL_ULID_Fake"));
   if(ID == "HNL_ULID_NoConv")    return BtoI(PassID("HNL_ULID_Defv4_FO") && PassID("HNL_ULID_Fake"));
 
 
   if(ID == "HNL_ULID_"+Year)    return BtoI(PassID("HNL_ULID_Defv2_FO") && PassID("HNL_ULID_Fake"));
+  //// NEW ID with changes at high pt
   if(ID == "HNL_ULID_HighPt_"+Year)    return BtoI(PassID("HNL_ULID_Defv3_FO") && PassID("HNL_ULID_Fake_HighPt"));
+
   if(ID == "HNL_ULID_NoMedCC")  return BtoI(PassID("HNL_ULID_Defv1_FO") && PassID("HNL_ULID_Fake"));
 
   if(ID == "HNL_ULID_TrkIso")    return BtoI(PassID("HNL_ULID_TrkIso_Conv")   &&
@@ -54,8 +57,11 @@ int  Electron::PassHNLTight(TString ID) const{
   // HNL_ULID_Defv2_FO_ is new default FO ID WIth medium charge cut                                                                                                                                                     
   if(ID == "HNL_ULID_Defv2_FO")    return BtoI(PassID("HNL_ULID_Conv")         && PassID("HNL_ULID_CF") &&  IsGsfCtfChargeConsistent());
 
+  /// v3 has removed CONV MVA at high pt
   if(ID == "HNL_ULID_Defv3_FO")   return BtoI(PassID("HNL_ULID_Conv_HighPt")  && PassID("HNL_ULID_CF") &&  IsGsfCtfChargeConsistent());
+  /// v4 has no CONV MVA
   if(ID == "HNL_ULID_Defv4_FO")   return BtoI(PassID("HNL_ULID_CF") &&  IsGsfCtfChargeConsistent());
+  /// v5 has no CF &&CONV
   if(ID == "HNL_ULID_Defv5_FO")   return BtoI(PassMVABaseLine()&&IsGsfCtfChargeConsistent());
 
   if(ID == "HNL_ULID_Defv3")   return BtoI(PassID("HNL_ULID_Conv_LowPt")   && PassID("HNL_ULID_CF") &&  IsGsfCtfChargeConsistent()&& PassID("HNL_ULID_Fake") );
