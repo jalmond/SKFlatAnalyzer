@@ -91,6 +91,7 @@ void HNL_Signal_Efficiency::executeEvent(){
 				 //"passPOGTight","passPOGMedium","passMVAID_noIso_WP80","passMVAID_noIso_WP90","passMVAID_Iso_WP80","passMVAID_Iso_WP90",
 				 //"HNL_ULID_"+GetYearString(),"MVALoose","TopHNSST",
 				 "HNL_ULID_"+GetYearString(), 
+				 "HNL_HPT_ULID_"+GetYearString(),
 				 "HNL_ULID_NoConv","HNL_ULID_ConvLowPt","HNL_ULID_Baseline",
 				 "HNL_ULID_Conv_LowPt",	  "HNL_ULID_Defv1_FO", "HNL_ULID_Defv2_FO","HNL_ULID_Defv3_FO","HNL_ULID_Defv4_FO","HNL_ULID_Defv5_FO",
 				 "HNL_ULID_Defv3","HNL_ULID_Defv4","HNL_ULID_Defv5",
@@ -147,8 +148,12 @@ void HNL_Signal_Efficiency::executeEvent(){
           FillHist( "SignalReco"+channel+"/"+lepton_label+"_pt_"+imap.second, pt, weight,  400, 0., 2000.);
 	}
       }
-      if(SameCharge(leps))           FillHist( "SS_SignalReco"+channel+"/LLMass_"+imap.second, GetLLMass(leps) , weight,  400, 0., 2000.);
 
+      if(SameCharge(leps))  {
+	FillHist( "SS_SignalReco"+channel+"/LLMass_"+imap.second, GetLLMass(leps) , weight,  400, 0., 2000.);
+	FillHist( "SS_SignalReco"+channel+"/"+leps[1]->GetFlavour()+"_ptbinned_"+imap.second, leps[1]->Pt(), weight, 11, ptbins);
+      }
+      
 
       if(MCSample.Contains("Type")) continue;
       

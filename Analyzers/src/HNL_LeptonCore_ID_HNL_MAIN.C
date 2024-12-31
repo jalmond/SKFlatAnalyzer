@@ -1,7 +1,7 @@
 #include "HNL_LeptonCore.h"
 
 
-void HNL_LeptonCore::GetSetup_HNLID2(AnalyzerParameter& param_default ){
+void HNL_LeptonCore::GetSetup_HNLHPTID(AnalyzerParameter& param_default ){
   GetSetup_HNLID(param_default);
   param_default.Electron_Tight_ID = "HNL_ULID_v2";
 }

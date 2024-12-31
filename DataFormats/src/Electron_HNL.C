@@ -64,7 +64,7 @@ int  Electron::PassHNLTight(TString ID) const{
   /// v5 has no CF &&CONV
   if(ID == "HNL_ULID_Defv5_FO")   return BtoI(PassMVABaseLine()&&IsGsfCtfChargeConsistent());
 
-  if(ID == "HNL_ULID_Defv3")   return BtoI(PassID("HNL_ULID_Conv_LowPt")   && PassID("HNL_ULID_CF") &&  IsGsfCtfChargeConsistent()&& PassID("HNL_ULID_Fake") );
+  if(ID == "HNL_ULID_Defv3")   return BtoI(PassID("HNL_ULID_Conv_HighPt")   && PassID("HNL_ULID_CF") &&  IsGsfCtfChargeConsistent()&& PassID("HNL_ULID_Fake") );
   if(ID == "HNL_ULID_Defv4")   return BtoI(PassID("HNL_ULID_CF") && PassID("HNL_ULID_Fake")   &&  IsGsfCtfChargeConsistent());
   if(ID == "HNL_ULID_Defv5")   return BtoI(PassMVABaseLine()&&IsGsfCtfChargeConsistent()&& PassID("HNL_ULID_Fake") );
 
@@ -86,7 +86,7 @@ int  Electron::PassHNLTight(TString ID) const{
   if(ID == "HNL_ULID_Split_7h") return BtoI((Pass_LepMVAID_split1() &&  Pass_LepMVAID_split2() && Pass_LepMVAID_split3()  && Pass_LepMVAID_split4() && IsGsfCtfChargeConsistent()  && PassID("HNL_ULID_CF") && PassID("HNL_ULID_Fake_0p2")));
 
   if(ID == "HNL_ULID_Split_8")  return BtoI(PassID("HNL_ULID_Split_7") && PassID("HNL_ULID_Conv"));
-  if(ID == "HNL_ULID_Split_8b") return BtoI(PassID("HNL_ULID_Split_7") && PassID("HNL_ULID_Conv_LowPt"));
+  if(ID == "HNL_ULID_Split_8b") return BtoI(PassID("HNL_ULID_Split_7") && PassID("HNL_ULID_Conv_HighPt"));
 
   if(ID == "HNL_ULID_Probe_Split_2") return BtoI(Pass_LepMVAID_split1());
   if(ID == "HNL_ULID_Probe_Split_3") return BtoI(Pass_LepMVAID_split1()  &&  Pass_LepMVAID_split2());
