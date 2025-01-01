@@ -39,7 +39,9 @@ int  Electron::PassHNLTight(TString ID) const{
 
   if(ID == "HNL_ULID_"+Year)    return BtoI(PassID("HNL_ULID_Defv2_FO") && PassID("HNL_ULID_Fake"));
   //// NEW ID with changes at high pt
+
   if(ID == "HNL_ULID_HighPt_"+Year)    return BtoI(PassID("HNL_ULID_Defv3_FO") && PassID("HNL_ULID_Fake_HighPt"));
+  if(ID == "HNL_ULID_HighPtv2_"+Year)    return BtoI(PassID("HNL_ULID_Defv3_FO") && PassID("HNL_ULID_Fake_HighPtv2"));
 
   if(ID == "HNL_ULID_NoMedCC")  return BtoI(PassID("HNL_ULID_Defv1_FO") && PassID("HNL_ULID_Fake"));
 
@@ -204,6 +206,17 @@ int  Electron::PassHNLTight(TString ID) const{
       else return BtoI(PassMVABaseLine() && Pass_MVA_BBEC("Fake_EDv5", GetPtSlopeCut(ptlow,pthigh, el_mva_cut_fake_2016_B,barrelCut), GetPtSlopeCut(ptlow,pthigh, el_mva_cut_fake_2016_EC,endcapcut),   "Fake_v5"));
     }
 
+    if(ID == "HNL_ULID_Fake_HighPtv2" ) {
+      double barrelCut=0.;
+      double endcapcut=0.;
+      double ptlow = 150;
+      double pthigh=200;
+      if(this->Pt() < ptlow) return BtoI(PassMVABaseLine() && Pass_MVA_BBEC("Fake_EDv5", el_mva_cut_fake_2016_B, el_mva_cut_fake_2016_EC,   "Fake_v5"));
+      if(this->Pt() > pthigh) return BtoI(PassMVABaseLine() && Pass_MVA_BBEC("Fake_EDv5", barrelCut, endcapcut,   "Fake_v5"));
+      else return BtoI(PassMVABaseLine() && Pass_MVA_BBEC("Fake_EDv5", GetPtSlopeCut(ptlow,pthigh, el_mva_cut_fake_2016_B,barrelCut), GetPtSlopeCut(ptlow,pthigh, el_mva_cut_fake_2016_EC,endcapcut),   "Fake_v5"));
+    }
+
+
     if(ID == "HNL_ULID_Conv_HighPt" ) {
       double ptlow = 150;
       double pthigh= 200;
@@ -233,6 +246,16 @@ int  Electron::PassHNLTight(TString ID) const{
       if(this->Pt() > pthigh) return BtoI(PassMVABaseLine() && Pass_MVA_BBEC("Fake_EDv5", barrelCut, endcapcut,   "Fake_v5"));
       else return BtoI(PassMVABaseLine() && Pass_MVA_BBEC("Fake_EDv5", GetPtSlopeCut(ptlow,pthigh, el_mva_cut_fake_2017_B,barrelCut), GetPtSlopeCut(ptlow,pthigh, el_mva_cut_fake_2017_EC,endcapcut),   "Fake_v5"));
     }
+    if(ID == "HNL_ULID_Fake_HighPtv2" ) {
+      double barrelCut=0.;
+      double endcapcut=0.;
+      double ptlow = 150;
+      double pthigh=200;
+      if(this->Pt() < ptlow) return BtoI(PassMVABaseLine() && Pass_MVA_BBEC("Fake_EDv5", el_mva_cut_fake_2017_B, el_mva_cut_fake_2017_EC,   "Fake_v5"));
+      if(this->Pt() > pthigh) return BtoI(PassMVABaseLine() && Pass_MVA_BBEC("Fake_EDv5", barrelCut, endcapcut,   "Fake_v5"));
+      else return BtoI(PassMVABaseLine() && Pass_MVA_BBEC("Fake_EDv5", GetPtSlopeCut(ptlow,pthigh, el_mva_cut_fake_2017_B,barrelCut), GetPtSlopeCut(ptlow,pthigh, el_mva_cut_fake_2017_EC,endcapcut),   "Fake_v5"));
+    }
+
 
     if(ID == "HNL_ULID_Conv_HighPt" ) {
       double ptlow = 150;
@@ -258,6 +281,16 @@ int  Electron::PassHNLTight(TString ID) const{
     if(ID == "HNL_ULID_Fake_HighPt" ) {
       double barrelCut=-0.4;
       double endcapcut=-0.4;
+      double ptlow = 150;
+      double pthigh=200;
+      if(this->Pt() < ptlow) return BtoI(PassMVABaseLine() && Pass_MVA_BBEC("Fake_EDv5", el_mva_cut_fake_2018_B, el_mva_cut_fake_2018_EC,   "Fake_v5"));
+      if(this->Pt() > pthigh) return BtoI(PassMVABaseLine() && Pass_MVA_BBEC("Fake_EDv5", barrelCut, endcapcut,   "Fake_v5"));
+      else return BtoI(PassMVABaseLine() && Pass_MVA_BBEC("Fake_EDv5", GetPtSlopeCut(ptlow,pthigh, el_mva_cut_fake_2018_B,barrelCut), GetPtSlopeCut(ptlow,pthigh, el_mva_cut_fake_2018_EC,endcapcut),   "Fake_v5"));
+    }
+
+    if(ID == "HNL_ULID_Fake_HighPtv2" ) {
+      double barrelCut=0.;
+      double endcapcut=0.;
       double ptlow = 150;
       double pthigh=200;
       if(this->Pt() < ptlow) return BtoI(PassMVABaseLine() && Pass_MVA_BBEC("Fake_EDv5", el_mva_cut_fake_2018_B, el_mva_cut_fake_2018_EC,   "Fake_v5"));

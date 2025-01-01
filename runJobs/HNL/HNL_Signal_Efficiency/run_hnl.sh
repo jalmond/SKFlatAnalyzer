@@ -21,7 +21,7 @@ if [[ $1 == "" ]]; then
 	#SKFlat.py -a $analyzer  -l ${mcpath}/Conv.txt    -n 100  --nmax 400  -e ${i}  --skim SkimTree_ConvEventSkim&
         #SKFlat.py -a $analyzer  -l ${mcpath}/Fake.txt    -n 100  --nmax 400  -e ${i}  --skim SkimTree_FakeEventSkimBDT&
 	SKFlat.py -a $analyzer  -i TTLL_powheg    -n 400  --nmax 400  -e ${i}  --skim SkimTree_DileptonBDT &
-	SKFlat.py -a $analyzer  -i DYJets         -n 400  --nmax 400  -e ${i}  --skim SkimTree_DileptonBDT &
+	SKFlat.py -a $analyzer  -i DYJetsToEE_MiNNLO         -n 400  --nmax 400  -e ${i}  --skim SkimTree_DileptonBDT &
 	
     done
     
