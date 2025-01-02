@@ -52,8 +52,16 @@ class SkimTree_EGammaTnP_HNLHighPt : public HNL_LeptonCore {
   bool passingHNL_ULID_Split_4;
   bool passingHNL_ULID_Split_4b;
   bool passingHNL_ULID_Split_5;
+  bool passingHNL_ULID_Split_5b;
   bool passingHNL_ULID_Split_6;
   bool passingHNL_ULID_Split_7;
+  bool passingHNL_ULID_Split_7b;
+  bool passingHNL_ULID_Split_7c;
+  bool passingHNL_ULID_Split_7d;
+  bool passingHNL_ULID_Split_7e;
+  bool passingHNL_ULID_Split_7f;
+  bool passingHNL_ULID_Split_7g;
+  bool passingHNL_ULID_Split_7h;
   bool passingHNL_ULID_Split_8;
   bool passingHNL_ULID_Split_8b;
 

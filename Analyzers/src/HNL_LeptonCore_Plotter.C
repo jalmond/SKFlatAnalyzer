@@ -572,19 +572,25 @@ void HNL_LeptonCore::Fill_Plots(AnalyzerParameter param, TString region,  TStrin
   if(DrawLevel3&&minDRLep2Tau < 999)FillHist( plot_dir+ region+ "/DeltaR/dRMin_Lep2_Tau", minDRLep2Tau  ,w, 50, 0, 5, "#DeltaR (Tau,lep2)");
 
   int nPtbins=10;
-  double Pt1bins[nPtbins+1] = { 20.,25.,30., 40.,50., 70., 100.,  150.,  200.,400.,600};
+  double Pt1bins[nPtbins+1] = { 20.,25.,30., 40.,50., 70., 100.,  150.,  200.,400.,1000};
   double Pt2bins[nPtbins+1] = { 10.,15., 20.,30., 40.,50., 100.,120., 140., 160.,  200.};
   double PTLep1  = (leps[0]->Pt() > 500.) ? 499. : leps[0]->Pt();
   double PTLep2  = (leps[1]->Pt() > 200.) ? 199. : leps[1]->Pt();
 
 
   for(auto il : leps){
-    double PTLep = (il->Pt() > 200.) ? 199. : il->Pt();
+    double PTLep = (il->Pt() > 600.) ? 599. : il->Pt();
     TString LepType = (IsData) ? "Data" : il->sLepGenType();
     if (LepType == "") continue;
     
     if(DrawLevel3)FillHist( plot_dir+ region+ "/Leptons/"+LepType+"_Lep_pt", PTLep  ,  w, nPtbins, Pt1bins,"l_{1} p_{T} GeV");
     if(DrawLevel2)FillHist( plot_dir+ region+ "/Leptons/"+LepType+"_Lep_eta", il->fEta()  , w, 60, 0.,  3.,"l_{2} #eta");
+
+    if(PTLep > 500)FillHist( plot_dir+ region+ "/Leptons/"+LepType+"_Lep_eta_pt500", il->Eta() ,  1, 100,-2.5,2.5,"l_{1} p_{T} GeV");
+    else if(PTLep > 300)FillHist( plot_dir+ region+ "/Leptons/"+LepType+"_Lep_eta_pt300", il->Eta() ,  1, 100,-2.5,2.5,"l_{1} p_{T} GeV");
+    else if(PTLep > 200)FillHist( plot_dir+ region+ "/Leptons/"+LepType+"_Lep_eta_pt200", il->Eta() ,  1, 100,-2.5,2.5,"l_{1} p_{T} GeV");
+    else if(PTLep > 100)FillHist( plot_dir+ region+ "/Leptons/"+LepType+"_Lep_eta_pt100", il->Eta() ,  1, 100,-2.5,2.5,"l_{1} p_{T} GeV");
+    else FillHist( plot_dir+ region+ "/Leptons/"+LepType+"_Lep_eta_pt20", il->Eta() ,  1, 100,-2.5,2.5,"l_{1} p_{T} GeV");
     
     map<TString, double> lep_bdt_map = il->MAPBDT();
     for(auto i : lep_bdt_map)  {
@@ -595,6 +601,14 @@ void HNL_LeptonCore::Fill_Plots(AnalyzerParameter param, TString region,  TStrin
       }
     }
   }
+
+  if(leps.size() > 1){
+    
+    FillHist( plot_dir+ region+ "/Leptons/Lep_pt_eta", -leps[0]->PtMaxed(1000.) , leps[0]->Eta(),  1, nPtbins,Pt1bins , 50, -2.5, 2.5);
+    FillHist( plot_dir+ region+ "/Leptons/Lep_pt_eta", leps[1]->PtMaxed(1000.)  , leps[1]->Eta(),  1, nPtbins,Pt1bins, 50, -2.5, 2.5);
+    
+  }
+
 
   if(DrawLevel2)FillHist( plot_dir+ region+ "/Leptons/Lep_1_Pt", PTLep1  ,  w, nPtbins, Pt1bins,"l_{1} p_{T} GeV");
   if(DrawLevel2)FillHist( plot_dir+ region+ "/Leptons/Lep_2_Pt", PTLep2  ,  w, nPtbins, Pt2bins,"1_{2} p_{T} GeV");
