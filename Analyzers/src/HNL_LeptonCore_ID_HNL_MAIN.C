@@ -3,8 +3,8 @@
 
 void HNL_LeptonCore::GetSetup_HNLHPTID(AnalyzerParameter& param_default ){
   GetSetup_HNLID(param_default);
-  param_default.Electron_Tight_ID = "HNL_ULID_HighPt_"+GetYearString();
-  param_default.Electron_FR_ID    = "HNL_ULID_HighPt_FO";
+  param_default.Electron_Tight_ID = "HNL_HighPt_ULID_"+GetYearString();
+  param_default.Electron_FR_ID    = "HNL_HighPt_ULID_FO";
 
   return;
 }
