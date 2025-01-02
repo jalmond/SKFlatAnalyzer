@@ -52,6 +52,7 @@ void SkimTree_EGammaTnP_HNLHighPt::initializeAnalyzer(){
   newtree->Branch("passingMVA90",&passingMVA90);
   newtree->Branch("passingHEEP",&passingHEEP);
   newtree->Branch("passingMVALoose",&passingMVALoose);
+  newtree->Branch("passingMMVABaseline",&passingMVABaseline);
   newtree->Branch("passingTriggerEmul",&passingTriggerEmul);
 
   newtree->Branch("passingHNLMVA",&passingHNLMVA);
@@ -344,6 +345,7 @@ void SkimTree_EGammaTnP_HNLHighPt::executeEvent(){
         passingMVA80 = probe.passMVAID_noIso_WP90();
         passingMVA90 = probe.passMVAID_noIso_WP90();
         passingMVALoose = probe.PassMVABaseLine(); 
+        passingMVABaseline = probe.PassID("HNL_ULID_BaseLineCC"); 
         passingTriggerEmul  = probe.PassID("TriggerLoose"); 
         passingHNLMVACF   =probe.PassID("HNL_ULID_CF");
         passingHNLMVAConv =probe.PassID("HNL_ULID_Conv");

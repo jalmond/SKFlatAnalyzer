@@ -3,6 +3,7 @@
 void HNL_Signal_Efficiency::initializeAnalyzer(){
 
   HNL_LeptonCore::initializeAnalyzer();
+  SetupEventMVAReader("V2");
 
 }
 
@@ -90,11 +91,18 @@ void HNL_Signal_Efficiency::executeEvent(){
 				 //"CutBasedLooseNoIso","CutBasedMediumNoIso","CutBasedTightNoIso","MVALooseNoIso","CutBasedVetoNoIso","HNTightV2",
 				 //"passPOGTight","passPOGMedium","passMVAID_noIso_WP80","passMVAID_noIso_WP90","passMVAID_Iso_WP80","passMVAID_Iso_WP90",
 				 //"HNL_ULID_"+GetYearString(),"MVALoose","TopHNSST",
+				 "HNTightV2", "passMVAID_Iso_WP80",
 				 "HNL_ULID_"+GetYearString(), 
 				 "HNL_ULID_HighPt_"+GetYearString(),
-				 "HNL_ULID_NoConv","HNL_ULID_Conv","HNL_ULID_Baseline",
-				 "HNL_ULID_Conv_HighPt",	  "HNL_ULID_Defv1_FO", "HNL_ULID_Defv2_FO","HNL_ULID_Defv3_FO","HNL_ULID_Defv4_FO","HNL_ULID_Defv5_FO",
-				 "HNL_ULID_Defv3","HNL_ULID_Defv4","HNL_ULID_Defv5",
+				 "HNL_ULID_HighPtv2_"+GetYearString(),
+				 "HNL_ULID_HighPtv3_"+GetYearString(),
+				 "HNL_ULID_HighPtv4_"+GetYearString(),
+				 "HNL_ULID_HighPtv5_"+GetYearString(),
+				 //				 "HNL_ULID_HighPtv3_"+GetYearString(),
+				 //"HNL_ULID_HighPtv4_"+GetYearString(),
+				 //"HNL_ULID_NoConv","HNL_ULID_Conv","HNL_ULID_Baseline","HNL_ULID_BaseLineCC",
+				 //"HNL_ULID_Conv_HighPt",	  "HNL_ULID_Defv1_FO", "HNL_ULID_Defv2_FO","HNL_ULID_Defv3_FO","HNL_ULID_Defv4_FO","HNL_ULID_Defv5_FO",
+				 //"HNL_ULID_Defv3","HNL_ULID_Defv4","HNL_ULID_Defv5",
 				 //"HNL_ULID_Split_1","HNL_ULID_Split_2","HNL_ULID_Split_3","HNL_ULID_Split_4","HNL_ULID_Split_4b",
 				 //"HNL_ULID_Split_5","HNL_ULID_Split_6","HNL_ULID_Split_7","HNL_ULID_Split_8","HNL_ULID_Split_8b",
 				 //"HNL_ULID_Probe_Split_2","HNL_ULID_Probe_Split_3","HNL_ULID_Probe_Split_4","HNL_ULID_Probe_Split_5","HNL_ULID_Probe_Split_6","HNL_ULID_Probe_Split_7","HNL_ULID_Probe_Split_8",
@@ -120,7 +128,7 @@ void HNL_Signal_Efficiency::executeEvent(){
 
     //    double ptbins[11] = { 0., 100.,200.,300., 400.,500,700,900,  1200.,1500.,3000};
     
-    double ptbins[16] = { 0., 10.,15., 20., 30., 40.,50., 100.,150,200, 250.,500. ,750,1000.,1500,2000.};
+    double ptbins[16] = { 0., 10.,15., 20., 30., 40.,50., 100.,150,175,200, 250.,500. ,750,1000.,2000.};
     
     for(auto imap : LeptonIDMap){
 
@@ -137,6 +145,7 @@ void HNL_Signal_Efficiency::executeEvent(){
       if(imap.first == EE) {
 	vecSelectedElectrons = SelectElectrons    ( InputElectrons ,  imap.second, 10., 2.5);
 	vecSelectedMuons     = SelectMuons (InputMuons, "POGMedium", 10., 2.4);
+	
       }
       
       std::vector<Lepton *> leps       = MakeLeptonPointerVector(vecSelectedMuons,vecSelectedElectrons ,param);
@@ -182,14 +191,54 @@ void HNL_Signal_Efficiency::executeEvent(){
 	}
       }
 
-      if(SameCharge(leps))  {
-	FillHist( "SS_SignalReco"+channel+"/LLMass_"+imap.second, GetLLMass(leps) , weight_mc,  400, 0., 2000.);
-	FillHist( "SS_SignalReco"+channel+"/"+leps[1]->GetFlavour()+"_ptbinned_"+imap.second, leps[1]->Pt(), weight_mc, 15, ptbins);
-	if(leps[0]->IsFake()  || leps[1]->IsFake() ) FillHist( "SS_SignalReco"+channel+"/Fake_"+leps[1]->GetFlavour()+"_ptbinned_"+imap.second, leps[1]->Pt(), weight_mc, 15, ptbins);
-	else if(leps[0]->LeptonIsCF()  || leps[1]->LeptonIsCF() )  FillHist( "SS_SignalReco"+channel+"/CF_"+leps[1]->GetFlavour()+"_ptbinned_"+imap.second, leps[1]->Pt(), weight_mc, 15, ptbins);
-	else if(leps[0]->IsConv()  || leps[1]->IsConv() )  FillHist( "SS_SignalReco"+channel+"/Conv_"+leps[1]->GetFlavour()+"_ptbinned_"+imap.second, leps[1]->Pt(), weight_mc, 15, ptbins);
-	else FillHist( "SS_SignalReco"+channel+"/Prompt_"+leps[1]->GetFlavour()+"_ptbinned_"+imap.second, leps[1]->Pt(), weight_mc, 15, ptbins);
+      
+      param.CutFlowDir = "CutFlow";
+      /// Used for Lepton Inclusive plots                                                                                                                                                                           
+      param.NameInclusive_Channel = param.Name  + "/"+param.InclusiveChannelName();
+      param.Name = param.Name  + "/EE";
+
+
+
+      if(imap.first == EE) {
+	if(vecSelectedElectrons.size() == 2 && vecSelectedMuons.size()==0){
+	  if(SameCharge(leps))  {
+	    
+	    if(leps[0]->LeptonIsCF()  || leps[1]->LeptonIsCF() ) {
+	      if( (leps[0]->LeptonIsCF() &&  leps[0]->Pt() > 150) ||  (leps[1]->LeptonIsCF() &&  leps[1]->Pt() > 150) ) {
+		
+	        Fill_RegionPlots(param,"HighPt" , TauColl, AK4_JetColl, AK8_JetColl, leps,METv, nPV,weight_mc);
+		
+	      }
+	    }
+	    
+	    FillHist( "SS_SignalReco"+channel+"/LLMass_"+imap.second, GetLLMass(leps) , weight_mc,  400, 0., 2000.);
+	    FillHist( "SS_SignalReco"+channel+"/"+leps[1]->GetFlavour()+"_ptbinned_"+imap.second, leps[1]->Pt(), weight_mc, 15, ptbins);
+	    if(leps[0]->IsFake()  || leps[1]->IsFake() ) FillHist( "SS_SignalReco"+channel+"/Fake_"+leps[1]->GetFlavour()+"_ptbinned_"+imap.second, leps[1]->Pt(), weight_mc, 15, ptbins);
+	    else if(leps[0]->LeptonIsCF()  || leps[1]->LeptonIsCF() )  FillHist( "SS_SignalReco"+channel+"/CF_"+leps[1]->GetFlavour()+"_ptbinned_"+imap.second, leps[1]->Pt(), weight_mc, 15, ptbins);
+	    else if(leps[0]->IsConv()  || leps[1]->IsConv() )  FillHist( "SS_SignalReco"+channel+"/Conv_"+leps[1]->GetFlavour()+"_ptbinned_"+imap.second, leps[1]->Pt(), weight_mc, 15, ptbins);
+	    else FillHist( "SS_SignalReco"+channel+"/Prompt_"+leps[1]->GetFlavour()+"_ptbinned_"+imap.second, leps[1]->Pt(), weight_mc, 15, ptbins);
+	  }
+	  else{
+	    FillHist( "OS_SignalReco"+channel+"/LLMass_"+imap.second, GetLLMass(leps) , weight_mc,  400, 0., 2000.);
+            FillHist( "OS_SignalReco"+channel+"/"+leps[1]->GetFlavour()+"_ptbinned_"+imap.second, leps[1]->Pt(), weight_mc, 15, ptbins);
+            if(leps[0]->IsFake()  || leps[1]->IsFake() ) FillHist( "OS_SignalReco"+channel+"/Fake_"+leps[1]->GetFlavour()+"_ptbinned_"+imap.second, leps[1]->Pt(), weight_mc, 15, ptbins);
+            else if(leps[0]->LeptonIsCF()  || leps[1]->LeptonIsCF() )  FillHist( "OS_SignalReco"+channel+"/CF_"+leps[1]->GetFlavour()+"_ptbinned_"+imap.second, leps[1]->Pt(), weight_mc, 15, ptbins);
+            else if(leps[0]->IsConv()  || leps[1]->IsConv() )  FillHist( "OS_SignalReco"+channel+"/Conv_"+leps[1]->GetFlavour()+"_ptbinned_"+imap.second, leps[1]->Pt(), weight_mc, 15, ptbins);
+            else FillHist( "OS_SignalReco"+channel+"/Prompt_"+leps[1]->GetFlavour()+"_ptbinned_"+imap.second, leps[1]->Pt(), weight_mc, 15, ptbins);
+	  }
+	}
+	if(vecSelectedElectrons.size() == 1 && vecSelectedMuons.size()==1){
+	  if(SameCharge(leps))  {
+	    FillHist( "SS_SignalRecoEMu/LLMass_"+imap.second, GetLLMass(leps) , weight_mc,  400, 0., 2000.);
+	    FillHist( "SS_SignalRecoEMu/"+leps[1]->GetFlavour()+"_ptbinned_"+imap.second, leps[1]->Pt(), weight_mc, 15, ptbins);
+	    if(leps[0]->IsFake()  || leps[1]->IsFake() ) FillHist( "SS_SignalRecoEMu/Fake_"+leps[1]->GetFlavour()+"_ptbinned_"+imap.second, leps[1]->Pt(), weight_mc, 15, ptbins);
+	    else if(leps[0]->LeptonIsCF()  || leps[1]->LeptonIsCF() )  FillHist( "SS_SignalRecoEMu/CF_"+leps[1]->GetFlavour()+"_ptbinned_"+imap.second, leps[1]->Pt(), weight_mc, 15, ptbins);
+	    else if(leps[0]->IsConv()  || leps[1]->IsConv() )  FillHist( "SS_SignalRecoEMu/Conv_"+leps[1]->GetFlavour()+"_ptbinned_"+imap.second, leps[1]->Pt(), weight_mc, 15, ptbins);
+	    else FillHist( "SS_SignalRecoEMu/Prompt_"+leps[1]->GetFlavour()+"_ptbinned_"+imap.second, leps[1]->Pt(), weight_mc, 15, ptbins);
+	  }
+	}
       }
+	
       
 
       if(MCSample.Contains("Type")) continue;
@@ -253,15 +302,16 @@ void HNL_Signal_Efficiency::executeEvent(){
 //      std::vector<Muon> MuonCollConvE = SkimLepColl(MuonCollConv, "ME");
 
 
-  
 
 
 HNL_Signal_Efficiency::HNL_Signal_Efficiency(){
+  SetupEvMVA();
 
 
 }
  
 HNL_Signal_Efficiency::~HNL_Signal_Efficiency(){
+  DeleteEvMVA();
 
 }
 

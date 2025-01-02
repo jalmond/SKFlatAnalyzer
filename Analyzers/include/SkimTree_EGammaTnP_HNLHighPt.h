@@ -35,6 +35,7 @@ class SkimTree_EGammaTnP_HNLHighPt : public HNL_LeptonCore {
   bool passingMVA90;
   bool passingHEEP;
   bool passingMVALoose;
+  bool passingMVABaseline;
   bool passingTriggerEmul;
   
   bool passingCutBasedMedium94XV2;

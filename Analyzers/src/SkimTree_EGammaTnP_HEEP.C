@@ -371,7 +371,6 @@ void SkimTree_EGammaTnP_HEEP::executeEvent(){
 	passingHNLMVA_HighPt_Tight     =probe.PassID("HNL_ULID_HighPtv2_"+GetYearString());
 
 	passingHNLMVA_TrkIso     =probe.PassID("HNL_ULID_TrkIso");
-	passingHNLHeep     =probe.PassID("HNL_ULID_HEEP");
 	
 	scoreHNLMVACF=probe.HNL_MVA_CF("EDv5");
 	scoreHNLMVAConv=probe.HNL_MVA_Conv("EDv5");
