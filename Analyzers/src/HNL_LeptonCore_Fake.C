@@ -2,7 +2,10 @@
 
 double HNL_LeptonCore::GetPtPartonSF(Lepton  Lep, TString LooseID,AnalyzerParameter param){
 
-  if(!LooseID.Contains("HNL_ULID")) return 1;
+  if(!LooseID.Contains("ULID")) return 1;
+
+  /// Treat HNL_HighPt_ULID ... same as HNL_ULID
+  if(LooseID.Contains("HighPt")) LooseID=LooseID.ReplaceAll("_HighPt","");
 
   bool IsMuon=(Lep.LeptonFlavour() == Lepton::MUON);
 

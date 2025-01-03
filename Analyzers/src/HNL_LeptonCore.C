@@ -679,7 +679,7 @@ AnalyzerParameter HNL_LeptonCore::SetupHNLParameter(TString s_setup_version, TSt
   if (s_setup_version=="EXO17028")  GetSetup_HNL16(param);
   if (s_setup_version=="TopHN")     GetSetup_HNLTopID(param);
   if (s_setup_version=="HNL_ULID")  GetSetup_HNLID(param);
-  if (s_setup_version=="HNL_HPT_ULID")  GetSetup_HNLHPTID(param);
+  if (s_setup_version=="HNL_ULIDv2")  GetSetup_HNLHPTID(param);
   if (s_setup_version=="Peking")  GetSetup_Peking(param);
   if (s_setup_version=="HNL_Opt") GetSetup_HNLOpt(param);
   if (s_setup_version=="BDT")     GetSetup_BDT(param);

@@ -203,6 +203,8 @@ double HNL_LeptonCore::GetShiftCFEl(Electron el,TString ID, bool ApplyDataCorr, 
   
   if(ID.Contains("HNL_ULID")) ID=ID.ReplaceAll("_"+GetYearString(),"");//// Remove Year for CF inputs 
   
+  if(ID.Contains("HighPt")) ID="HNL_ULID";
+
   double DataCorr = 1.;
   if(ApplyDataCorr){
     if(DataEra=="2016preVFP"  && el.IsBB()) DataCorr=0.985;

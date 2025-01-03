@@ -52,9 +52,12 @@ void SkimTree_EGammaTnP_HNLHighPt::initializeAnalyzer(){
   newtree->Branch("passingMVA90",&passingMVA90);
   newtree->Branch("passingHEEP",&passingHEEP);
   newtree->Branch("passingMVALoose",&passingMVALoose);
+  newtree->Branch("passingMMVABaseline",&passingMVABaseline);
   newtree->Branch("passingTriggerEmul",&passingTriggerEmul);
 
   newtree->Branch("passingHNLMVA",&passingHNLMVA);
+  newtree->Branch("passingHNLMVA_HighPt",&passingHNLMVA_HighPt);
+  newtree->Branch("passingHNLMVA_HighPt_Tight",&passingHNLMVA_HighPt_Tight);
   newtree->Branch("passingHNLMVA_TrkIso",&passingHNLMVA_TrkIso);
   newtree->Branch("passingHNLMVACF",&passingHNLMVACF);
   newtree->Branch("passingHNLMVAConv",&passingHNLMVAConv);
@@ -342,11 +345,14 @@ void SkimTree_EGammaTnP_HNLHighPt::executeEvent(){
         passingMVA80 = probe.passMVAID_noIso_WP90();
         passingMVA90 = probe.passMVAID_noIso_WP90();
         passingMVALoose = probe.PassMVABaseLine(); 
+        passingMVABaseline = probe.PassID("HNL_ULID_BaseLineCC"); 
         passingTriggerEmul  = probe.PassID("TriggerLoose"); 
         passingHNLMVACF   =probe.PassID("HNL_ULID_CF");
         passingHNLMVAConv =probe.PassID("HNL_ULID_Conv");
         passingHNLMVAFake =probe.PassID("HNL_ULID_Fake");
         passingHNLMVA     =probe.PassID("HNL_ULID_"+GetYearString());
+        passingHNLMVA_HighPt =probe.PassID("HNL_ULID_HighPt_"+GetYearString());
+        passingHNLMVA_HighPt_Tight   =probe.PassID("HNL_ULID_HighPtv2_"+GetYearString());
         passingHNLMVA_TrkIso     =probe.PassID("HNL_ULID_TrkIso");
 
 	//// Split IDs

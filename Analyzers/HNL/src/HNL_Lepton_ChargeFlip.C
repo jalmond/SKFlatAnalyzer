@@ -22,7 +22,8 @@ void HNL_Lepton_ChargeFlip::initializeAnalyzer(){
 
 void HNL_Lepton_ChargeFlip::executeEvent(){
   
-  vector<TString> LepIDs = {"HNL_ULID","TopHN", "POGTight", "HNTightV2", "passHEEPID_v1","passHEEPID_v3"};
+  vector<TString> LepIDs = {"HNL_ULID","TopHN", "POGTight", "HNTightV2", "passHEEPID_v1","passHEEPID_v3",    
+			    "HNL_ULID_HighPt","HNL_ULID_HighPtv2","HNL_ULID_HighPtv3","HNL_ULID_HighPtv4","HNL_ULID_HighPtv5","HNL_ULID_HighPtv6","HNL_ULID_HighPtv7","HNL_ULID_HighPtv8"};
   if(HasFlag("ClosureTest")) LepIDs = {"HNL_ULID" , "passHEEPID_v1",  "passHEEPID_v3" };
   if(HasFlag("ScaleFactor")) LepIDs = {"HNL_ULID" , "passHEEPID_v1","passHEEPID_v3" };
   //  if(HasFlag("ShiftEnergyZ")) LepIDs = {"HNL_ULID" , "POGTight","passHEEPID_v3", "TpHN", };
