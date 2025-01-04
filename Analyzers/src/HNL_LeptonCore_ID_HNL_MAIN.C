@@ -57,7 +57,7 @@ void HNL_LeptonCore::GetSetup_HNLID(AnalyzerParameter& param_default ){
   param_default.k.Muon_ISO_SF        = "Default";
   param_default.k.Electron_ID_SF     = "passHNL_ULID_"+GetYearString();
 
-  param_default.k.Electron_CF  = "CFRate_InvPtEta3_PBSExtrap_Central_HNL_ULID";
+  param_default.k.Electron_CF  = "CFRate_InvPtEta3_PBSExtrap_Central_HNL_HighPt_ULID";
   param_default.TriggerSelection = "Dilep";
   if(param_default.Channel.Contains("EE"))   param_default.k.Electron_Trigger_SF = "DiElIso_HNL_ULID";
   if(param_default.Channel.Contains("MuMu")) param_default.k.Muon_Trigger_SF = "DiMuIso_HNL_ULID";
