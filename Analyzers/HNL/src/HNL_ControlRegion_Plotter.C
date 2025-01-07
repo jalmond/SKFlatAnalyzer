@@ -30,7 +30,7 @@ void HNL_ControlRegion_Plotter::executeEvent(){
   if(!(_jentry%10000)) run_Debug=true;
   else run_Debug=false;
 
-  vector<TString> LepIDs = {"HNL_ULID","HNL_ULIDv2"};//,"HNTightV2"};
+  vector<TString> LepIDs = {"HNL_ULID","HNL_ULIDv2","HNTightV2"};
 
   /// Set ID by flag
   if(RunTopID) LepIDs = {"TopHN"};

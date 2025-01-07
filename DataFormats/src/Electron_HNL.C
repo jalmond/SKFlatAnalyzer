@@ -33,8 +33,8 @@ int  Electron::PassHNLTight(TString ID) const{
   if(ID == "HNL_ULID")         return BtoI(PassID("HNL_ULID_Defv2_FO") && PassID("HNL_ULID_Fake"));
 
   ////// Check variation on conversion cut
-  if(ID == "HNL_ULID_ConvHighPt") return BtoI(PassID("HNL_ULID_Defv3_FO") && PassID("HNL_ULID_Fake"));
-  if(ID == "HNL_ULID_NoConv")    return BtoI(PassID("HNL_ULID_Defv4_FO") && PassID("HNL_ULID_Fake"));
+  if(ID == "HNL_ULID_ConvHighPt") return BtoI(PassID("HNL_ULID_Defv3_FO") && PassID("HNL_ULID_Fake_HighPt"));
+  if(ID == "HNL_ULID_NoConv")    return BtoI(PassID("HNL_ULID_Defv4_FO") && PassID("HNL_ULID_Fake_HighPt"));
 
 
   if(ID == "HNL_ULID_BaseLineCC")   return BtoI(PassMVABaseLine()&&IsGsfCtfChargeConsistent());
@@ -73,7 +73,7 @@ int  Electron::PassHNLTight(TString ID) const{
   if(ID == "HNL_ULID_Defv3")   return BtoI(PassID("HNL_ULID_Conv_HighPt")   && PassID("HNL_ULID_CF") &&  IsGsfCtfChargeConsistent()&& PassID("HNL_ULID_Fake_HighPt") );
   if(ID == "HNL_ULID_Defv4")   return BtoI(PassID("HNL_ULID_CF") && PassID("HNL_ULID_Fake_HighPt")   &&  IsGsfCtfChargeConsistent());
   if(ID == "HNL_ULID_Defv5")   return BtoI(PassMVABaseLine()&&IsGsfCtfChargeConsistent()&& PassID("HNL_ULID_Fake_HighPt") );
-
+  if(ID == "HNL_ULID_Defv6")   return BtoI(PassID("HNL_ULID_Conv_HighPt") && PassID("HNL_ULID_Fake_HighPt")   &&  IsGsfCtfChargeConsistent());
 
   ///// SPLIT ID for N-1 Eff
   if(ID == "HNL_ULID_Split_1")  return BtoI(Pass_LepMVAID_split1());
@@ -85,7 +85,7 @@ int  Electron::PassHNLTight(TString ID) const{
   if(ID == "HNL_ULID_Split_5b") return BtoI((Pass_LepMVAID_split1() &&  Pass_LepMVAID_split2() && Pass_LepMVAID_split3()  && Pass_LepMVAID_split4() && IsGsfScPixChargeConsistent()));
   if(ID == "HNL_ULID_Split_6")  return BtoI((Pass_LepMVAID_split1() &&  Pass_LepMVAID_split2() && Pass_LepMVAID_split3()  && Pass_LepMVAID_split4() && IsGsfCtfChargeConsistent()  && PassID("HNL_ULID_CF")));
   if(ID == "HNL_ULID_Split_7")  return BtoI((Pass_LepMVAID_split1() &&  Pass_LepMVAID_split2() && Pass_LepMVAID_split3()  && Pass_LepMVAID_split4() && IsGsfCtfChargeConsistent()  && PassID("HNL_ULID_CF") && PassID("HNL_ULID_Fake")));
-  if(ID == "HNL_ULID_Split_7b") return BtoI((Pass_LepMVAID_split1() &&  Pass_LepMVAID_split2() && Pass_LepMVAID_split3()  && Pass_LepMVAID_split4() && IsGsfCtfChargeConsistent()  && PassID("HNL_ULID_CF") && PassID("HNL_ULID_Fake_m0p8")));
+  if(ID == "HNL_ULID_Split_7b") return BtoI((Pass_LepMVAID_split1() &&  Pass_LepMVAID_split2() && Pass_LepMVAID_split3()  && Pass_LepMVAID_split4() && IsGsfCtfChargeConsistent()  && PassID("HNL_ULID_CF") && PassID("HNL_ULID_Fake_HighPt")));
   if(ID == "HNL_ULID_Split_7c") return BtoI((Pass_LepMVAID_split1() &&  Pass_LepMVAID_split2() && Pass_LepMVAID_split3()  && Pass_LepMVAID_split4() && IsGsfCtfChargeConsistent()  && PassID("HNL_ULID_CF") && PassID("HNL_ULID_Fake_m0p6")));
   if(ID == "HNL_ULID_Split_7d") return BtoI((Pass_LepMVAID_split1() &&  Pass_LepMVAID_split2() && Pass_LepMVAID_split3()  && Pass_LepMVAID_split4() && IsGsfCtfChargeConsistent()  && PassID("HNL_ULID_CF") && PassID("HNL_ULID_Fake_m0p4")));
   if(ID == "HNL_ULID_Split_7e") return BtoI((Pass_LepMVAID_split1() &&  Pass_LepMVAID_split2() && Pass_LepMVAID_split3()  && Pass_LepMVAID_split4() && IsGsfCtfChargeConsistent()  && PassID("HNL_ULID_CF") && PassID("HNL_ULID_Fake_m0p2")));

@@ -42,13 +42,14 @@ class SkimTree_EGammaTnP_HNLHighPt : public HNL_LeptonCore {
   bool passingCutBasedTight94XV2;
   bool passingHNLMVA;
   bool passingHNLMVA_HighPt;
-  bool passingHNLMVA_HighPt_Tight;
   bool passingHNLMVA_TrkIso;
   bool passingHNLHeep;
   bool passingHNLMVACF;
   bool passingHNLMVAConv;
   bool passingHNLMVAFake;
-  bool passingHNL_ULID_NoConv;
+  bool passingHNLMVA_NoConv;
+  bool passingHNLMVA_NoCF;
+  bool passingHNLMVA_NoFake;
   bool passingHNL_ULID_Split_1;
   bool passingHNL_ULID_Split_2;
   bool passingHNL_ULID_Split_3;

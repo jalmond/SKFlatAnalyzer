@@ -21,11 +21,10 @@ NJob=args.NJob
 Era = args.Era
 WorkDir=args.WorkDir
 
-It_Probes    = ['MVALoose','HNLMVA','HNLMVA_HighPt','HNLMVA_HighPt_Tight']
-
+It_Probes    = ['MVALoose','MVABaseline','HNLMVA','HNLMVA_HighPt']
 
 #### IDs applied to probe befrpre PASS/FAIL
-It_ProbeID   = ['Pass',  'MVALoose','MVALoose','MVALoose']
+It_ProbeID   = ['Pass', 'Pass',  'MVABaseline','MVABaseline','MVABaseline']
 It_IsPasses = ['Pass','Fail']
 It_EtaRegions = ['BB','EC']
 #It_EtaRegions = ['BB']
@@ -946,7 +945,7 @@ def SplitChain(_era,_type,_sample,nj):
   
 def makeKinComparison(NthJob):
 
-  pt_bins = np.array([35, 40, 45, 50, 60, 70, 80, 100, 200, 300, 400, 1000], dtype=np.float64)
+  pt_bins = np.array([35, 40, 45, 50, 60, 70, 80, 100, 150, 200, 300, 400, 1000], dtype=np.float64)
   nBins = len(pt_bins)-1
 
   HEEP_eta_bins = np.array([0, 1.4442, 1.566, 2.5], dtype='d')
@@ -1172,7 +1171,7 @@ def makeKinComparison(NthJob):
     nProbe_data=0
     for Probe in It_Probes:
       ProbeID_data=It_ProbeID[nProbe_data]
-      if nProbe_data == 0:
+      if nProbe_data < 2:
         this_cuts[Probe] = {
           'Pass':"(passing"+Probe+"==1)",
           'Fail':"(passing"+Probe+"==0)",

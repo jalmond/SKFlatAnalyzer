@@ -78,7 +78,7 @@ bool HNL_LeptonCore::DrawSyst(AnalyzerParameter param_sys){
   vector<AnalyzerParameter::Syst> SystToPlot;
 
   if(IsData){
-    if(RunFake) SystToPlot= {AnalyzerParameter::Syst::FRUp,AnalyzerParameter::Syst::FRDown, AnalyzerParameter::Syst::FRAJ30,AnalyzerParameter::Syst::FRAJ60,AnalyzerParameter::Syst::FRLooseIDDJUp,AnalyzerParameter::Syst::FRLooseIDDJDown,AnalyzerParameter::Syst::FRPartonSFUp, AnalyzerParameter::Syst::FRPartonSFDown};
+    if(RunFake) SystToPlot= {AnalyzerParameter::Syst::FRUp,AnalyzerParameter::Syst::FRDown, AnalyzerParameter::Syst::FRAJUp,AnalyzerParameter::Syst::FRAJDown,AnalyzerParameter::Syst::FRLooseIDDJUp,AnalyzerParameter::Syst::FRLooseIDDJDown,AnalyzerParameter::Syst::FRPartonSFUp, AnalyzerParameter::Syst::FRPartonSFDown};
     if(RunCF)   SystToPlot= {AnalyzerParameter::Syst::CFRateUp,AnalyzerParameter::Syst::CFRateDown, AnalyzerParameter::Syst::CFSFUp,AnalyzerParameter::Syst::CFSFDown};
     
   }
@@ -323,6 +323,7 @@ void HNL_LeptonCore::Fill_Standard_Plots(AnalyzerParameter param, TString region
 
     FillHist( plot_dir+ region+ "/Mass/DiJet_M_l1W",             MN1,        w, 11, mljbins , "Reco M_{l1jj}");
     FillHist( plot_dir+ region+ "/Mass/DiJet_M_l2W",             MN2,        w, 11, mljbins , "Reco M_{l2jj} ");
+
   }
 
   return;

@@ -1150,6 +1150,13 @@ bool HNL_RegionDefinitions::FillWWCRNP2Plots(HNL_LeptonCore::Channel channel, st
 
   if(AK8_JetColl.size() > 0) return false;
 
+  
+  double ll_dphi = fabs(TVector2::Phi_mpi_pi( ( (*leps[0]).Phi() - (*leps[1]).Phi() )) );
+  if(ll_dphi <  0.5) {
+    Fill_RegionPlots(param,"HNL_WpWpNP2_LowDPhi_TwoLepton_CR" ,  jets_eta5,  AK8_JetColl,  leps,  METv, nPV, w);
+  }
+
+
   Fill_RegionPlots(param,"HNL_WpWpNP2_TwoLepton_CR" ,  jets_eta5,  AK8_JetColl,  leps,  METv, nPV, w);
 
   return true;
@@ -1210,6 +1217,29 @@ bool HNL_RegionDefinitions::FillWWCRNP3Plots(HNL_LeptonCore::Channel channel, st
   if(AK8_JetColl.size() > 0) return false;
 
   Fill_RegionPlots(param,"HNL_WpWpNP3_TwoLepton_CR" ,  jets_eta5,  AK8_JetColl,  leps,  METv, nPV, w);
+
+  double dijetmass_tmp=999.;
+  double dijetmass=9990000.;
+  int m=-999;
+  int n=-999;
+
+  for(UInt_t emme=0; emme<jets_eta5.size(); emme++){
+    for(UInt_t enne=1; enne<jets_eta5.size(); enne++) {
+      if(emme == enne) continue;
+      dijetmass_tmp = (jets_eta5[emme]+jets_eta5[enne]).M();
+
+      if ( fabs(dijetmass_tmp-80.4) < fabs(dijetmass-80.4) ) {
+	dijetmass = dijetmass_tmp;
+	m = emme;
+	n = enne;
+      }
+    }
+  }
+  
+  Particle MNTmp = (jets_eta5[m]+jets_eta5[n] + *leps[1]);
+  if(MNTmp.M() < 500)   Fill_RegionPlots(param,"HNL_WpWpNP3_LowMass_TwoLepton_CR" ,  jets_eta5,  AK8_JetColl,  leps,  METv, nPV, w);
+
+
 
   return true;
 
@@ -1573,10 +1603,18 @@ bool HNL_RegionDefinitions::FillHighMassSR3CRPlots(HNL_LeptonCore::Channel chann
   if(AK8_JetColl.size() > 0) return false;
   FillCutflow(Reg, w, "Step5",param);
     
-
-  if(PassHMMet && NB_JetColl==1)    Fill_RegionPlots(param,"HNL_HighMassSR3_TwoLepton_CR_InvBtagged"  ,  JetColl,  AK8_JetColl,  leps,  METv, nPV, w);
+  if(PassHMMet  && NB_JetColl==1)    Fill_RegionPlots(param,"HNL_HighMassSR3_TwoLepton_CR_InvBtagged"  ,  JetColl,  AK8_JetColl,  leps,  METv, nPV, w);
   if(!PassHMMet && NB_JetColl==0)   Fill_RegionPlots(param,"HNL_HighMassSR3_TwoLepton_CR_InvMet"  ,  JetColl,  AK8_JetColl,  leps,  METv, nPV, w);
 
+  if(PassHMMet  && NB_JetColl==1){
+    double ll_dphi = fabs(TVector2::Phi_mpi_pi( ( (*leps[0]).Phi() - (*leps[1]).Phi() )) );
+    if(ll_dphi > 0.25 && ll_dphi < 0.5) Fill_RegionPlots(param,"HNL_HighMassSR3_TwoLepton_CR_InvBTagged_LowDPhi"  ,  JetColl,  AK8_JetColl,  leps,  METv, nPV, w);
+    
+  }
+  if(!PassHMMet && NB_JetColl==0) {
+    if(leps[1]->Eta() > 1.7) Fill_RegionPlots(param,"HNL_HighMassSR3_TwoLepton_CR_InvMet_HighEta"  ,  JetColl,  AK8_JetColl,  leps,  METv, nPV, w);
+    if(leps[1]->Eta() > -1.7) Fill_RegionPlots(param,"HNL_HighMassSR3_TwoLepton_CR_InvMet_LowEra"  ,  JetColl,  AK8_JetColl,  leps,  METv, nPV, w);
+  }
   if (JetColl.size() < 2  && leps[1]->Pt() > 80.) {
     if(leps[1]->Pt() > 140.)return true;
     else return false;
