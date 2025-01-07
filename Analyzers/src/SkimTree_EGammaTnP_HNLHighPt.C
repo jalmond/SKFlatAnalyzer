@@ -52,17 +52,18 @@ void SkimTree_EGammaTnP_HNLHighPt::initializeAnalyzer(){
   newtree->Branch("passingMVA90",&passingMVA90);
   newtree->Branch("passingHEEP",&passingHEEP);
   newtree->Branch("passingMVALoose",&passingMVALoose);
-  newtree->Branch("passingMMVABaseline",&passingMVABaseline);
+  newtree->Branch("passingMVABaseline",&passingMVABaseline);
   newtree->Branch("passingTriggerEmul",&passingTriggerEmul);
 
   newtree->Branch("passingHNLMVA",&passingHNLMVA);
   newtree->Branch("passingHNLMVA_HighPt",&passingHNLMVA_HighPt);
-  newtree->Branch("passingHNLMVA_HighPt_Tight",&passingHNLMVA_HighPt_Tight);
   newtree->Branch("passingHNLMVA_TrkIso",&passingHNLMVA_TrkIso);
   newtree->Branch("passingHNLMVACF",&passingHNLMVACF);
   newtree->Branch("passingHNLMVAConv",&passingHNLMVAConv);
   newtree->Branch("passingHNLMVAFake",&passingHNLMVAFake);
-  newtree->Branch("passingHNL_ULID_NoConv",&passingHNL_ULID_NoConv);
+  newtree->Branch("passingHNLMVA_NoConv",&passingHNLMVA_NoConv);
+  newtree->Branch("passingHNLMVA_NoCF",&passingHNLMVA_NoCF);
+  newtree->Branch("passingHNLMVA_NoFake",&passingHNLMVA_NoFake);
   newtree->Branch("passingHNL_ULID_Split_1",&passingHNL_ULID_Split_1);
   newtree->Branch("passingHNL_ULID_Split_2",&passingHNL_ULID_Split_2);
   newtree->Branch("passingHNL_ULID_Split_3",&passingHNL_ULID_Split_3);
@@ -351,12 +352,14 @@ void SkimTree_EGammaTnP_HNLHighPt::executeEvent(){
         passingHNLMVAConv =probe.PassID("HNL_ULID_Conv");
         passingHNLMVAFake =probe.PassID("HNL_ULID_Fake");
         passingHNLMVA     =probe.PassID("HNL_ULID_"+GetYearString());
-        passingHNLMVA_HighPt =probe.PassID("HNL_ULID_HighPt_"+GetYearString());
-        passingHNLMVA_HighPt_Tight   =probe.PassID("HNL_ULID_HighPtv2_"+GetYearString());
-        passingHNLMVA_TrkIso     =probe.PassID("HNL_ULID_TrkIso");
+        passingHNLMVA_HighPt =probe.PassID("HNL_HighPt_ULID_"+GetYearString());
+        passingHNLMVA_TrkIso =probe.PassID("HNL_ULID_TrkIso");
+	passingHNLMVA_NoFake = probe.PassID("HNL_ULID_Defv3_FO");
+	passingHNLMVA_NoConv = probe.PassID("HNL_ULID_NoConv");
+	passingHNLMVA_NoCF = probe.PassID("HNL_ULID_Defv6");
 
 	//// Split IDs
-	passingHNL_ULID_NoConv =probe.PassID("HNL_ULID_NoConv");
+	
 	passingHNL_ULID_Split_1 = probe.PassID("HNL_ULID_Split_1"); 
 	passingHNL_ULID_Split_2 = probe.PassID("HNL_ULID_Split_2"); 
 	passingHNL_ULID_Split_3 = probe.PassID("HNL_ULID_Split_3"); 

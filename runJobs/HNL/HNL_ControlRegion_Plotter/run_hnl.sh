@@ -22,10 +22,11 @@ fi
 
 if [[ $1 == "Data" ]]; then
 
-    declare  -a era_list=("2017" "2016postVFP" "2016preVFP" "2018")
+    declare  -a era_list=("2017")
+    #"2018")
     for i in "${era_list[@]}"
     do
-        SKFlat.py -a $analyzer  -l $datapath/DL/${i}_DiLepton_EE.txt      -n 100    --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLepBDT   --userflags SSMultiLep
+        SKFlat.py -a $analyzer  -l $datapath/DL/${i}_DiLepton_EE.txt      -n 100    --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLepBDT   --userflags SSMultiLep &
     done
 fi
 

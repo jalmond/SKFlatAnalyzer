@@ -26,6 +26,8 @@ void HNL_Lepton_ChargeFlip::executeEvent(){
 
   if(HasFlag("ClosureTest")) LepIDs = {"HNL_ULID" , "HNL_HighPt_ULID",  "passHEEPID_v1",  "passHEEPID_v3" };
   if(HasFlag("ScaleFactor")) LepIDs = {"HNL_ULID" , "HNL_HighPt_ULID", "passHEEPID_v1","passHEEPID_v3" };
+  if(HasFlag("ScaleFactorTop"))  LepIDs = {"TopHN"};
+
   //  if(HasFlag("ShiftEnergyZ")) LepIDs = {"HNL_ULID" , "POGTight","passHEEPID_v3", "TpHN", };
 
 
@@ -39,6 +41,10 @@ void HNL_Lepton_ChargeFlip::executeEvent(){
     param.Apply_Weight_LumiNorm = false;
     
     if(HasFlag("ScaleFactor")){
+      param.Apply_Weight_LumiNorm = true;
+      param.Apply_Weight_Norm1Ipb = true;
+    }
+    if(HasFlag("ScaleFactorTop")){
       param.Apply_Weight_LumiNorm = true;
       param.Apply_Weight_Norm1Ipb = true;
     }
@@ -1231,7 +1237,7 @@ void HNL_Lepton_ChargeFlip::executeEventFromParameter(AnalyzerParameter param){
   }
 
   
-  if(HasFlag("ScaleFactor")){
+  if(HasFlag("ScaleFactor") || HasFlag("ScaleFactorTop") ){
 
     FillHist(param.Name+"/ZGSub/All",  1    , EvWeight ,2., 0, 2, "");
 
