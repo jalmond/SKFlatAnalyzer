@@ -138,7 +138,12 @@ void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq,
       if(IsData)FillWeightHist(param.Name+"/CFWeight",weight_channel);
 
     }
-    else if(HasFlag("MergeCharge")){
+    else if(HasFlag("SSConvSplit")){
+      /// used to test conv with SS cut
+      if(!SameCharge(LepsT)) continue;
+    }
+    else if(RunConv){
+      /// USE SS+OS / 2 using dilepton skim
       weight_channel*= 0.5;
       if(LepsT.size() != 2) continue;
     }
