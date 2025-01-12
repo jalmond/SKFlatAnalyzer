@@ -12,24 +12,24 @@ void HNL_LeptonCore::DefineLimitBins(){
   vector<double> cr1bins = { 0.,400,  2000.};
 
   if(DataEra == "2016preVFP") {
-    sr1bins_mm = { 0., 400,  2000.};
-    sr1bins_ee = { 0., 400,  500,  2000.};
-    sr1bins_em = { 0., 400,  500,  600, 2000.};
+    sr1bins_mm = { 0., 450,  2000.};
+    sr1bins_ee = { 0., 450,  600,  2000.};
+    sr1bins_em = { 0., 450,  600, 2000.};
   }
   if(DataEra == "2016postVFP") {
-    sr1bins_mm = { 0., 400,  2000.};
-    sr1bins_ee = { 0., 400,  500, 750,  2000.};
-    sr1bins_em = { 0., 400,  500, 2000.};
+    sr1bins_mm = { 0., 450,  2000.};
+    sr1bins_ee = { 0., 450,  750,  2000.};
+    sr1bins_em = { 0., 450,  500, 2000.};
   }
   if(DataEra == "2017") {
-    sr1bins_mm  = { 0., 300., 500,  600., 2000.};
-    sr1bins_ee  = { 0., 400,  500,  750., 2000.};
-    sr1bins_em  = { 0., 300., 400,  500,  600, 800., 2000.};
+    sr1bins_mm  = { 0., 450,  600., 2000.};
+    sr1bins_ee  = { 0., 450,  750., 2000.};
+    sr1bins_em  = { 0., 450,  500,  600, 800., 2000.};
   }
   if(DataEra == "2018") {
-    sr1bins_mm = { 0.,  300., 400., 500, 750., 2000.};
-    sr1bins_ee = { 0.,  300., 400., 500, 625,  750., 2000.};
-    sr1bins_em = { 0.,  300., 400., 500, 600,  800., 2000.};
+    sr1bins_mm = { 0.,   450., 600., 2000.};
+    sr1bins_ee = { 0.,   450., 625,  750., 2000.};
+    sr1bins_em = { 0.,   450., 500, 600,  800., 2000.};
   }
 
   vector<TString> MuMu_SR1_BinTags, EE_SR1_BinTags ,EMu_SR1_BinTags, InvMETCR1_BinTags, BJetCR1_BinTags;
@@ -390,7 +390,7 @@ TString HNL_LeptonCore::GetSR3StringBin(TString RegionTag, TString channel, bool
           else if(LT < 250)  return RegionTag+"_bin17";
           else if(LT < 350)  return RegionTag+"_bin18";
           else if(LT < 450)  return RegionTag+"_bin19";
-          else if(LT < 750)  return RegionTag+"_bin20";
+          else if(LT < 650)  return RegionTag+"_bin20";
           else               return RegionTag+"_bin21";
 	}
 	else{

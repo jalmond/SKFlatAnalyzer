@@ -361,7 +361,25 @@ double HNL_LeptonCore::MergeMultiMC(vector<TString> vec, TString Method){
 vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
 
   vector<AnalyzerParameter::Syst> SystList = {};
-  
+  if(SystType=="Theory"){
+    SystList.push_back(AnalyzerParameter::PDFUp);
+    SystList.push_back(AnalyzerParameter::PDFDown);
+    SystList.push_back(AnalyzerParameter::ScaleUp);
+    SystList.push_back(AnalyzerParameter::ScaleDown);
+    return SystList;
+  }
+  if(SystType=="Muon"){
+    SystList.push_back(AnalyzerParameter::MuonRecoSFUp);
+    SystList.push_back(AnalyzerParameter::MuonRecoSFDown);
+    SystList.push_back(AnalyzerParameter::MuonEnUp);
+    SystList.push_back(AnalyzerParameter::MuonEnDown);
+    SystList.push_back(AnalyzerParameter::MuonIDSFUp);
+    SystList.push_back(AnalyzerParameter::MuonIDSFDown);
+    SystList.push_back(AnalyzerParameter::MuonTriggerSFUp);
+    SystList.push_back(AnalyzerParameter::MuonTriggerSFDown);
+    return SystList;
+  }
+
   if(!HasFlag("RunSyst")) return SystList;
   
   if(RunCF){
@@ -387,12 +405,6 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
   
     if(IsData) return {};
     
-    if(RunJetSyst){
-      SystList.push_back(AnalyzerParameter::JetResUp);
-      SystList.push_back(AnalyzerParameter::JetResDown);
-      SystList.push_back(AnalyzerParameter::JetEnUp);
-      SystList.push_back(AnalyzerParameter::JetEnDown);
-    }
     if(RunFullSyst){
       
       SystList = {AnalyzerParameter::JetResUp,AnalyzerParameter::JetResDown,
@@ -426,6 +438,19 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
 	SystList.push_back(AnalyzerParameter::ElectronTriggerSFDown);
       }
     }
+    else    if(RunJetSyst){
+      SystList.push_back(AnalyzerParameter::JetResUp);
+      SystList.push_back(AnalyzerParameter::JetResDown);
+      SystList.push_back(AnalyzerParameter::JetEnUp);
+      SystList.push_back(AnalyzerParameter::JetEnDown);
+    }
+  }
+  
+  if(MCSample.Contains("Type")){
+    SystList.push_back(AnalyzerParameter::PDFUp);
+    SystList.push_back(AnalyzerParameter::PDFDown);
+    SystList.push_back(AnalyzerParameter::ScaleUp);
+    SystList.push_back(AnalyzerParameter::ScaleDown);
   }
   
   return SystList;

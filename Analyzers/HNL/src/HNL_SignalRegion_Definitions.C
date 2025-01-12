@@ -75,13 +75,18 @@ void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq,
     param.Name = param.Name  + "/"+channel_string;
 
 
-
     //// Set HT over Pt for use in SR/CR VBF limit inputs
     for(long unsigned int imu =0 ; imu <  muons.size(); imu++) muons[imu].SetHTOverPt(GetHT(AK4_JetCollLoose,AK8_JetColl));
     for(long unsigned int iel =0 ; iel < electrons.size() ; iel++) electrons[iel].SetHTOverPt(GetHT(AK4_JetCollLoose,AK8_JetColl));
 
     std::vector<Lepton *> LepsT       = MakeLeptonPointerVector(muons,     electrons,     param);
     std::vector<Lepton *> LepsV       = MakeLeptonPointerVector(muons_veto,electrons_veto,param);
+
+    if(MCSample.Contains("Type"))Fill_RegionPlots(param,"Signal_NoCut" , TauColl,
+                                                  JetColl, AK8_JetColl, LepsT,
+                                                  METv, nPV, weight_channel);
+
+
    
     //// Set METST value after shifting Electrons                                                                                                                                                                                             
     ev.SetMET2ST(GetMET2ST(LepsT, JetColl, AK8_JetColl, METv));
@@ -132,6 +137,10 @@ void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq,
       if(IsData)weight_channel = GetCFWeightElectron(LepsT, param,nElForRunCF,true);
       if(IsData)FillWeightHist(param.Name+"/CFWeight",weight_channel);
 
+    }
+    else if(HasFlag("MergeCharge")){
+      weight_channel*= 0.5;
+      if(LepsT.size() != 2) continue;
     }
     else{
       if(!SameCharge(LepsT)) continue;
@@ -257,6 +266,10 @@ void   HNL_RegionDefinitions::RunMainRegionCode(bool IsSR,HNL_LeptonCore::Channe
       /// Region 1+2+3                                                                                                                                                                  
       //FillLimitInput(LimitRegions, weight_reg,   RegionBin,  "LimitExtraction/"+param.Name,"SR1_"+channel_string,channel_string);
 
+
+      if(param.syst_ == AnalyzerParameter::PDFUp)   weight_reg*=GetPDFUncertainty("SR1",1);
+      if(param.syst_ == AnalyzerParameter::PDFDown) weight_reg*=GetPDFUncertainty("SR1",-1);
+
       if(IsSR) Fill_RegionPlots(param,"AllSR" , TauColl, 
 				JetColl, AK8_JetColl, LepsT, 
 				METv, nPV, weight_reg);
@@ -281,6 +294,10 @@ void   HNL_RegionDefinitions::RunMainRegionCode(bool IsSR,HNL_LeptonCore::Channe
     
     if(RegionBin != "false") {
      
+
+      if(param.syst_ == AnalyzerParameter::PDFUp)   weight_reg*=GetPDFUncertainty("SR2",1);
+      if(param.syst_ == AnalyzerParameter::PDFDown) weight_reg*=GetPDFUncertainty("SR2",-1);
+
       //if(IsSR) FillCutflow(HNL_LeptonCore::SR, weight_reg, "SR2",param);
  
       if(IsSR) Fill_RegionPlots(param,"AllSR" , TauColl, JetColl, AK8_JetColl, LepsT,  METv, nPV, weight_reg);
@@ -303,6 +320,9 @@ void   HNL_RegionDefinitions::RunMainRegionCode(bool IsSR,HNL_LeptonCore::Channe
     else{
 
       //// Fail VBF Req
+
+      if(param.syst_ == AnalyzerParameter::PDFUp)   weight_reg*=GetPDFUncertainty("SR3",1);
+      if(param.syst_ == AnalyzerParameter::PDFDown) weight_reg*=GetPDFUncertainty("SR3",-1);
       
       for(auto imapHP :FinalBDTHyperParamMap){
 	TString RegBDT = RunSignalRegionAK4StringBDT(IsSR,imapHP.first , imapHP.second.first, imapHP.second.second, channel,qq, LepsT, JetColl,  B_JetColl, ev, METv ,param,weight_reg);

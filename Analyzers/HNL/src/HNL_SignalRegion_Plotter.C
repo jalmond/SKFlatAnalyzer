@@ -36,7 +36,7 @@ void HNL_SignalRegion_Plotter::executeEvent(){
   if(_jentry == 0){
     cout << "HNL_SignalRegion_Plotter::IsData = " << IsData << endl;
   }
-  vector<TString> LepIDs = {"HNL_ULID","HNL_ULIDv2"};
+  vector<TString> LepIDs = {"HNL_ULIDv2"};
   if(HasFlag("AllID")) LepIDs = {"HNL_ULID","HNTightV2", "POGTight"};
 
   //// Allow ID setting by flag
@@ -76,6 +76,9 @@ void HNL_SignalRegion_Plotter::executeEvent(){
 
       TString param_name = param.Name;
 
+      TString SystLabel = "";
+      if(HasFlag("Theory")) SystLabel= "Theory";
+      if(HasFlag("Muon")) SystLabel= "Muon";
       for(auto isyst : GetSystList()){
 	bool runJob = UpdateParamBySyst(id,param,AnalyzerParameter::Syst(isyst),param_name);
 	if(runJob) RunULAnalysis(param);
@@ -100,6 +103,10 @@ void HNL_SignalRegion_Plotter::RunULAnalysis(AnalyzerParameter param){
   
   TString el_ID = SetLeptonID("Electron",param);
   TString mu_ID = SetLeptonID("Muon", param);
+  
+  cout << " --- " << endl;
+  if(param.syst_ == AnalyzerParameter::ScaleUp) weight *= GetScaleUncertainty(1);
+  if(param.syst_ == AnalyzerParameter::ScaleDown) weight *= GetScaleUncertainty(-1);
 
 
   double Min_FakeMuon_Pt      =  5;

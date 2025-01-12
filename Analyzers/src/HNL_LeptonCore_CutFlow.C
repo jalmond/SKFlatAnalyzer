@@ -150,7 +150,8 @@ void HNL_LeptonCore::FillCutflow2D(TString cutflow_dirname,TString cutflow_histn
     if(RunFake)   bkg_label = "Fake";
     else if(RunCF)   bkg_label = "CF";
     else{
-      if(MCSample.Contains("WZ"))   bkg_label = "WZ";
+      if(MCSample.Contains("WZG"))   bkg_label = "Conv"; 
+      else if(MCSample.Contains("WZ"))   bkg_label = "WZ";
       else if(MCSample.Contains("ZZ"))   bkg_label = "ZZ";
       else if(MCSample.Contains("WpWp"))   bkg_label = "WpWp";
       else if(MCSample.Contains("ZG"))   bkg_label = "Conv";
