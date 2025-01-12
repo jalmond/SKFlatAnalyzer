@@ -46,7 +46,7 @@ if [[ $1 == "" ]]; then
 	SKFlat.py -a $analyzer  -l $mcpath/Prompt/PromptSS2.txt            -n 200       --nmax ${nmax}   -e ${i}  --skim SkimTree_HNMultiLepBDT --userflags  SSMultiLep,RunPrompt &
 	
 	### Conv
-	SKFlat.py -a $analyzer  -l $mcpath/Conv/Conv.txt          -n 20        --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLepBDT  --userflags SSMultiLep,RunConv&
+	SKFlat.py -a $analyzer  -l $mcpath/Conv/Conv.txt          -n 20        --nmax ${nmax}   -e ${i} --skim SkimTree_DileptonBDT --userflags SSMultiLep,RunConv&
 
 	### Fakes
         SKFlat.py -a $analyzer  -l $datapath/DL/${i}_DiLepton_EMu.txt      -n 100  --nmax ${nmax}   -e ${i}  --skim SkimTree_HNMultiLepBDT  --userflags SSMultiLep,RunFake   &

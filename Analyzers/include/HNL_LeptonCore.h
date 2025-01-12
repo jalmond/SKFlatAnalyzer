@@ -244,6 +244,9 @@ class HNL_LeptonCore : public AnalyzerCore {
   double GetPileUpWeight(int N_pileup, int syst);
   double GetZ0Weight(double valx);
 
+  double GetScaleUncertainty(int sys);
+  double GetPDFUncertainty(TString SR, int sys);
+
 
   //  ================= MC weight functions              HNL_LeptonCore_Lepton.C   =================                                                                                                                                          
 

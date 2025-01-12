@@ -596,7 +596,7 @@ void HNL_LeptonCore::Fill_Plots(AnalyzerParameter param, TString region,  TStrin
     map<TString, double> lep_bdt_map = il->MAPBDT();
     for(auto i : lep_bdt_map)  {
       if(!i.first.Contains("v5")) continue;
-      if(DrawLevel3){
+      if(DrawLevel1){
 	if(il->IsBB())FillHist( plot_dir+lepregion+ "/"+LepType+"_Lepton_BB_mva_"+i.first , i.second, w, 100, -1., 1., "MVA");
 	else FillHist( plot_dir+lepregion+ "/"+LepType+"_Lepton_EC_mva_"+i.first  , i.second, w, 100, -1., 1., "MVA");
       }

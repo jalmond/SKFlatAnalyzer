@@ -24,7 +24,7 @@ void HNL_SignalRegion_TestRun::executeEvent(){
   if(_jentry == 0){
     cout << "HNL_SignalRegion_TestRun::IsData = " << IsData << endl;
   }
-  vector<TString> LepIDs = {"HNL_ULID","HNL_ULID_NoConv","HNL_ULID_ConvFix"};
+  vector<TString> LepIDs = {"HNL_ULID"};
 
 
   //  if(strcmp(std::getenv("USER"),"jalmond")==0) LepIDs = {"HNL_ULID","POGTight","TopHN","HNTightV2","MVAPOG"};//,"HNTightV2","POGTight","TopHN","HighPt"};
@@ -105,6 +105,45 @@ void HNL_SignalRegion_TestRun::RunULAnalysis(AnalyzerParameter param){
   EvalJetWeight(AK4_JetColl, AK8_JetColl, weight, param);
 
   FillTimer("START_SR");
+
+  std::vector<Lepton *> LepsT       = MakeLeptonPointerVector(MuonCollT,ElectronCollT,     param);
+
+
+  /// Used for Lepton Inclusive plots                                                                                                                                                                                                 
+  param.NameInclusive_Channel = param.Name  + "/"+param.InclusiveChannelName();
+
+
+  if(ElectronCollT.size() == 2 && MuonCollV.size() == 0) {
+    /// Used for Lepton Inclusive plots                                                                                                                                                                                                 
+    
+    AnalyzerParameter paramEE = param;
+
+    paramEE.Name = paramEE.Name  + "/EE";
+    if(ElectronCollT[0].IsFake() || ElectronCollT[1].IsFake() ){
+      if(SameCharge(ElectronCollT)){
+	Fill_RegionPlots(paramEE,"EE_Fake_SS" , TauColl, AK4_JetColl, AK8_JetColl, LepsT,  METv, nPV, weight);	
+      }
+      else{
+	Fill_RegionPlots(paramEE,"EE_Fake_OS" , TauColl, AK4_JetColl, AK8_JetColl, LepsT,  METv, nPV, weight);
+      }
+    }
+  }
+  if(MuonCollT.size() == 2 && ElectronCollV.size() == 0) {
+
+    AnalyzerParameter paramMM =param;
+
+    paramMM.Name = paramMM.Name  + "/MuMu";
+
+    if(MuonCollT[0].IsFake() || MuonCollT[1].IsFake() ){
+      if(SameCharge(MuonCollT)){
+        Fill_RegionPlots(paramMM,"MuMu_Fake_SS" , TauColl, AK4_JetColl, AK8_JetColl, LepsT,  METv, nPV, weight);
+      }
+      else{
+        Fill_RegionPlots(paramMM,"MuMu_Fake_OS" , TauColl, AK4_JetColl, AK8_JetColl, LepsT,  METv, nPV, weight);
+      }
+    }
+  }
+
 
   vector<int> RunEl ;
   if(RunCF) RunEl =  {0,1} ;

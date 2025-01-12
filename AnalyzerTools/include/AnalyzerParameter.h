@@ -115,6 +115,8 @@ class AnalyzerParameter{
     PrefireUp,PrefireDown,
     PUUp,PUDown,
     JetPUIDUp, JetPUIDDown,
+    PDFUp,PDFDown,
+    ScaleUp,ScaleDown,
     NSyst
   };
 
