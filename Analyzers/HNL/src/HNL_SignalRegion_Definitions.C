@@ -82,10 +82,11 @@ void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq,
     std::vector<Lepton *> LepsT       = MakeLeptonPointerVector(muons,     electrons,     param);
     std::vector<Lepton *> LepsV       = MakeLeptonPointerVector(muons_veto,electrons_veto,param);
 
-    if(MCSample.Contains("Type"))Fill_RegionPlots(param,"Signal_NoCut" , TauColl,
-                                                  JetColl, AK8_JetColl, LepsT,
-                                                  METv, nPV, weight_channel);
-
+    if(param.syst_ ==AnalyzerParameter::Central){
+      if(MCSample.Contains("Type"))Fill_RegionPlots(param,"Signal_NoCut" , TauColl,
+						    JetColl, AK8_JetColl, LepsT,
+						    METv, nPV, weight_channel);
+    }
 
    
     //// Set METST value after shifting Electrons                                                                                                                                                                                             

@@ -104,7 +104,6 @@ void HNL_SignalRegion_Plotter::RunULAnalysis(AnalyzerParameter param){
   TString el_ID = SetLeptonID("Electron",param);
   TString mu_ID = SetLeptonID("Muon", param);
   
-  cout << " --- " << endl;
   if(param.syst_ == AnalyzerParameter::ScaleUp) weight *= GetScaleUncertainty(1);
   if(param.syst_ == AnalyzerParameter::ScaleDown) weight *= GetScaleUncertainty(-1);
 
