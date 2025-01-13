@@ -602,7 +602,8 @@ TString HNL_RegionDefinitions::RunSignalRegionWWString(bool ApplyForSR,HNL_Lepto
 	}
 	else{
 	  if(HTOverPT < 2.)  return RegionTag+"_HTLTbin3";
-	  else return RegionTag+"_HTLTbin4";
+	  else if(HTOverPT < 5.)  return RegionTag+"_HTLTbin4";
+	  else return RegionTag+"_HTLTbin5";
 	}
       }
       if(DataEra== "2016postVFP"){
@@ -613,7 +614,8 @@ TString HNL_RegionDefinitions::RunSignalRegionWWString(bool ApplyForSR,HNL_Lepto
 	}
 	else{
 	  if(HTOverPT < 3.)  return RegionTag+"_HTLTbin3";
-	  else return RegionTag+"_HTLTbin4";
+	  else if(HTOverPT < 5.)  return RegionTag+"_HTLTbin4";
+	  else return RegionTag+"_HTLTbin5";
 	}
       }
       if(DataYear == 2017){
@@ -626,13 +628,11 @@ TString HNL_RegionDefinitions::RunSignalRegionWWString(bool ApplyForSR,HNL_Lepto
 	    if (leps[1]->Pt() > 80.)      return RegionTag+"_HTLTbin1";
 	    else return RegionTag+"_HTLTbin2";
 	  }
-	  else if(HTOverPT < 5.) return RegionTag+"_HTLTbin3";
-	  else return RegionTag+"_HTLTbin4";
+	  else return RegionTag+"_HTLTbin3";
 	}
 	else{
-	  if(HTOverPT < 2.)  return RegionTag+"_HTLTbin5";
-	  else if(HTOverPT < 5.)  return RegionTag+"_HTLTbin6";
-	  else return RegionTag+"_HTLTbin7";
+	  if(HTOverPT < 3.)  return RegionTag+"_HTLTbin4";
+	  else return RegionTag+"_HTLTbin5";
 	}
       }
       if(DataYear== 2018){
@@ -641,13 +641,11 @@ TString HNL_RegionDefinitions::RunSignalRegionWWString(bool ApplyForSR,HNL_Lepto
 	    if (leps[1]->Pt() > 80.)      return RegionTag+"_HTLTbin1";
 	    else return RegionTag+"_HTLTbin2";
 	  }
-	  else if(HTOverPT < 5.) return RegionTag+"_HTLTbin3";
-	  else return RegionTag+"_HTLTbin4";
+	  else return RegionTag+"_HTLTbin3";
 	}
 	else{
-	  if(HTOverPT < 2.)  return RegionTag+"_HTLTbin5";
-	  else if(HTOverPT < 5.)  return RegionTag+"_HTLTbin6";
-	  else return RegionTag+"_HTLTbin7";
+	  if(HTOverPT < 3.)  return RegionTag+"_HTLTbin4";
+	  else return RegionTag+"_HTLTbin5";
 	}
       }
       

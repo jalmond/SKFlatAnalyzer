@@ -14,22 +14,22 @@ void HNL_LeptonCore::DefineLimitBins(){
   if(DataEra == "2016preVFP") {
     sr1bins_mm = { 0., 450,  2000.};
     sr1bins_ee = { 0., 450,  600,  2000.};
-    sr1bins_em = { 0., 450,  600, 2000.};
+    sr1bins_em = { 0., 350, 450,  600, 2000.};
   }
   if(DataEra == "2016postVFP") {
     sr1bins_mm = { 0., 450,  2000.};
     sr1bins_ee = { 0., 450,  750,  2000.};
-    sr1bins_em = { 0., 450,  500, 2000.};
+    sr1bins_em = { 0., 350,450,  600, 2000.};
   }
   if(DataEra == "2017") {
-    sr1bins_mm  = { 0., 450,  600., 2000.};
+    sr1bins_mm  = { 0., 450,   2000.};
     sr1bins_ee  = { 0., 450,  750., 2000.};
-    sr1bins_em  = { 0., 450,  500,  600, 800., 2000.};
+    sr1bins_em  = { 0., 450,   600, 800., 2000.};
   }
   if(DataEra == "2018") {
-    sr1bins_mm = { 0.,   450., 600., 2000.};
-    sr1bins_ee = { 0.,   450., 625,  750., 2000.};
-    sr1bins_em = { 0.,   450., 500, 600,  800., 2000.};
+    sr1bins_mm = { 0.,   450.,  2000.};
+    sr1bins_ee = { 0.,   450.,  750., 2000.};
+    sr1bins_em = { 0.,   450.,  600,  800., 2000.};
   }
 
   vector<TString> MuMu_SR1_BinTags, EE_SR1_BinTags ,EMu_SR1_BinTags, CR1_BinTags;
@@ -53,14 +53,8 @@ void HNL_LeptonCore::DefineLimitBins(){
 
   //// Define SR 2 binning  
   
-  if(DataYear == 2016) {
-    map_bins_labels ["SR2"]       = {"SR2_HTLTbin1",       "SR2_HTLTbin2",       "SR2_HTLTbin3",     "SR2_HTLTbin4"};
-    map_bins_labels ["CR2"] = {"CR2_HTLTbin1", "CR2_HTLTbin2", "CR2_HTLTbin3"};
-  }
-  else {
-    map_bins_labels ["SR2"]       = {"SR2_HTLTbin1",       "SR2_HTLTbin2",       "SR2_HTLTbin3",       "SR2_HTLTbin4", "SR2_HTLTbin5", "SR2_HTLTbin6","SR2_HTLTbin7"};
-    map_bins_labels ["CR2"] = {"CR2_HTLTbin1", "CR2_HTLTbin2", "CR2_HTLTbin3"};
-  }
+  map_bins_labels ["SR2"]       = {"SR2_HTLTbin1",       "SR2_HTLTbin2",       "SR2_HTLTbin3",     "SR2_HTLTbin4","SR2_HTLTbin5"};
+  map_bins_labels ["CR2"] = {"CR2_HTLTbin1", "CR2_HTLTbin2", "CR2_HTLTbin3"};
 
   //// Define SR 3 binning                                                                                                                              
 
