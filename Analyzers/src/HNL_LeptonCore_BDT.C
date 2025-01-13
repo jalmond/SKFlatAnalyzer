@@ -621,13 +621,9 @@ void HNL_LeptonCore::DefineBDTLimitBins(){
   map_bdt_limit_bins["SR3BDT_EMu_2018_500"] = {-0.25,-0.2,-0.1,0,0.05,0.1,0.12,0.14,0.16,0.18,0.2,1};
 
   //// Set CR binning
-  map_bdt_limit_bins["InvMETCR3BDT_MuMu"] =  {-0.25,-0.175,-0.15,-0.125,-0.1,0,-0.05,0.,0.05,1};
-  map_bdt_limit_bins["InvMETCR3BDT_EE"]   =  {-0.25,-0.175,-0.15,-0.125,-0.1,0,-0.05,0.,0.05,1};
-  map_bdt_limit_bins["InvMETCR3BDT_EMu"]  =  {-0.25,-0.175,-0.15,-0.125,-0.1,0,-0.05,0.,0.05,1};
-
-  map_bdt_limit_bins["BJetCR3BDT_MuMu"] =  {-0.25,-0.15,-0.1,-0.05,0.,0.05,0.1,1};
-  map_bdt_limit_bins["BJetCR3BDT_EE"]   =  {-0.25,-0.15,-0.1,-0.05,0.,0.05,0.1,1};
-  map_bdt_limit_bins["BJetCR3BDT_EMu"]  =  {-0.25,-0.15,-0.1,-0.05,0.,0.05,0.1,1};
+  map_bdt_limit_bins["CR3BDT_MuMu"] =  {-0.25,-0.15,-0.1,-0.05,0.,0.05,0.1,1};
+  map_bdt_limit_bins["CR3BDT_EE"]   =  {-0.25,-0.15,-0.1,-0.05,0.,0.05,0.1,1};
+  map_bdt_limit_bins["CR3BDT_EMu"]  =  {-0.25,-0.15,-0.1,-0.05,0.,0.05,0.1,1};
 
 
   for(auto imap : map_bdt_limit_bins){
@@ -635,8 +631,7 @@ void HNL_LeptonCore::DefineBDTLimitBins(){
     vector<TString> SR_BinTags,CR_BinTags;
     for(unsigned int i_d =0 ; i_d <  imap.second.size(); i_d++){
       if(imap.first.Contains("SR"))SR_BinTags.push_back("SR3BDT_bin"+to_string(i_d+1));
-      else  if(imap.first.Contains("InvMET")) SR_BinTags.push_back("InvMETCR3BDT_bin"+to_string(i_d+1));
-      else SR_BinTags.push_back("BJetCR3BDT_bin"+to_string(i_d+1));
+      else SR_BinTags.push_back("CR3BDT_bin"+to_string(i_d+1));
     }
     map_BDT_bins_labels [imap.first]=SR_BinTags;
 

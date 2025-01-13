@@ -11,7 +11,7 @@ njobs_data=200
 nmax=500
 skim=' '
 
-declare  -a era_list=("2017" "2018")
+declare  -a era_list=("2018")
 
 if [[ $1 == "DYCR" ]]; then
 

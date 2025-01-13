@@ -96,14 +96,14 @@ double HNL_LeptonCore::GetScaleUncertainty(int sys){
   if(sys==0) return 1;
   if(sys == 1){
     double min_var=0;
-    for(int iw=0; iw < weight_Scale->size() ; iw++) {
+    for(int iw=0; iw < weight_Scale->size() -2 ; iw++) {
       if(weight_Scale->at(iw) > min_var) min_var = weight_Scale->at(iw);
     }
     return min_var;
   }
   if(sys==-1){
     double max_var=1000;
-    for(int iw=0; iw < weight_Scale->size() ; iw++) {
+    for(int iw=0; iw < weight_Scale->size() -2; iw++) {
       if(weight_Scale->at(iw) <max_var) max_var = weight_Scale->at(iw);
     }
     return max_var;
