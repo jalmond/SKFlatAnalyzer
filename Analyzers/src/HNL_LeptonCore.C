@@ -371,6 +371,8 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
   if(SystType=="Muon"){
     SystList.push_back(AnalyzerParameter::MuonRecoSFUp);
     SystList.push_back(AnalyzerParameter::MuonRecoSFDown);
+    SystList.push_back(AnalyzerParameter::MuonResUp);
+    SystList.push_back(AnalyzerParameter::MuonResDown);
     SystList.push_back(AnalyzerParameter::MuonEnUp);
     SystList.push_back(AnalyzerParameter::MuonEnDown);
     SystList.push_back(AnalyzerParameter::MuonIDSFUp);
@@ -396,10 +398,10 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
     SystList.push_back(AnalyzerParameter::FRDown);
     SystList.push_back(AnalyzerParameter::FRAJUp);
     SystList.push_back(AnalyzerParameter::FRAJDown);
-    SystList.push_back(AnalyzerParameter::FRLooseIDDJUp);
-    SystList.push_back(AnalyzerParameter::FRLooseIDDJDown);
     SystList.push_back(AnalyzerParameter::FRPartonSFUp);
     SystList.push_back(AnalyzerParameter::FRPartonSFDown);
+    SystList.push_back(AnalyzerParameter::FRHighPtUp);
+    SystList.push_back(AnalyzerParameter::FRHighPtDown);
   }
   else {
   
@@ -422,6 +424,8 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
 	SystList.push_back(AnalyzerParameter::MuonEnDown);
 	SystList.push_back(AnalyzerParameter::MuonIDSFUp);
 	SystList.push_back(AnalyzerParameter::MuonIDSFDown);
+	SystList.push_back(AnalyzerParameter::MuonResUp);
+        SystList.push_back(AnalyzerParameter::MuonResDown);
 	SystList.push_back(AnalyzerParameter::MuonTriggerSFUp);
 	SystList.push_back(AnalyzerParameter::MuonTriggerSFDown);
       }

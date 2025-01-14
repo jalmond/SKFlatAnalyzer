@@ -573,6 +573,8 @@ TString AnalyzerParameter::GetSystType(){
   else if(syst_==Syst::FRLooseIDDJDown)   return "LIDDown";
   else if(syst_==Syst::FRPartonSFUp)   return "PSFUp"; 
   else if(syst_==Syst::FRPartonSFDown) return "PSFDown";
+  else if(syst_==Syst::FRHighPtUp) return "FRHighPtUp";
+  else if(syst_==Syst::FRHighPtDown) return "FRHighPtDown";
   else if(syst_==Syst::FRAltBinning) return "AltBinning";
   else if(syst_==Syst::PRApplied) return "PRApplied";
   else if(syst_==Syst::JetResUp) return "JetResUp";

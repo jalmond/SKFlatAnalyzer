@@ -29,7 +29,7 @@ void HNL_SignalRegion_TestRun::executeEvent(){
 
   //  if(strcmp(std::getenv("USER"),"jalmond")==0) LepIDs = {"HNL_ULID","POGTight","TopHN","HNTightV2","MVAPOG"};//,"HNTightV2","POGTight","TopHN","HighPt"};
 
-  vector<HNL_LeptonCore::Channel> ChannelsToRun = {EE};
+  vector<HNL_LeptonCore::Channel> ChannelsToRun = {MuMu};
   if(ChannelsToRun.size() == 0) ChannelsToRun = {EE,MuMu,EMu};
 
 
@@ -52,7 +52,7 @@ void HNL_SignalRegion_TestRun::executeEvent(){
 
       TString param_name = param.Name;
 
-      for(auto isyst : GetSystList()){
+      for(auto isyst : GetSystList("Muon")){
 	bool runJob = UpdateParamBySyst(id,param,AnalyzerParameter::Syst(isyst),param_name);
 	if(runJob) RunULAnalysis(param);
       }
@@ -88,6 +88,11 @@ void HNL_SignalRegion_TestRun::RunULAnalysis(AnalyzerParameter param){
   double Min_Electron_Pt =  15;
   std::vector<Muon>       MuonCollT  = SelectMuons(MuonTightColl_Init,mu_ID,     Min_Muon_Pt,     2.4);
   std::vector<Electron>   ElectronCollT = SelectElectrons(ElectronTightColl_Init,el_ID, Min_Electron_Pt, 2.5);
+
+  if(_jentry < 1000){
+    cout << param.Name << "  " << endl;
+    for(auto imu : MuonCollT) cout << "Mu Pt = " << imu.Pt()  << "  weight = " << weight << endl;
+  }
 
   std::vector<Lepton *> leps_veto  = MakeLeptonPointerVector(MuonCollV,ElectronCollV);
   std::vector<Tau>        TauColl        = SelectTaus   (leps_veto,param.Tau_Veto_ID,20., 2.3);

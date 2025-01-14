@@ -365,8 +365,8 @@ void HNL_LeptonCore::Fill_Main_Plots(AnalyzerParameter param, TString region,  T
     int nPtbins=12;
     double Pt1bins[nPtbins+1] = { 20.,25., 30., 40., 50., 70., 100.,  150.,  200.,400.,600,1000,2000};
     double Pt2bins[nPtbins+1] = { 10.,15., 20., 30., 40., 50., 100.,  120.,  140., 160.,  200.,400,1000};
-    double PTLep1  = (leps[0]->Pt() > 500.) ? 499. : leps[0]->Pt();
-    double PTLep2  = (leps[1]->Pt() > 200.) ? 199. : leps[1]->Pt();
+    double PTLep1  = (leps[0]->Pt() > 2000.) ? 1999. : leps[0]->Pt();
+    double PTLep2  = (leps[1]->Pt() > 1000.) ? 999. : leps[1]->Pt();
     
     FillHist( plot_dir+ region+ "/Master/Lep1_pt", PTLep1  ,  w, nPtbins, Pt1bins,"l_{1} p_{T} GeV");
     FillHist( plot_dir+ region+ "/Master/Lep2_pt", PTLep2  ,  w, nPtbins, Pt2bins,"l_{2} p_{T} GeV");

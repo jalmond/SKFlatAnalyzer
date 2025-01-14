@@ -120,8 +120,11 @@ double FakeBackgroundEstimator::GetElectronFakeRate(TString ID, TString key, TSt
     //// Initial Corr                                                                                                                                
     if(ID.Contains("2016")){
       if(fabs(eta) < 1.5){
-	if(pt > 200)  ApplyHighPtCorr=1.4;
+	if(pt > 200)  ApplyHighPtCorr=1.5;
 	else if(pt > 150)  ApplyHighPtCorr=1.2;
+      }
+      else{
+	if(pt > 250)   ApplyHighPtCorr=0.5;
       }
     }
     else  if(ID.Contains("2017")){
@@ -129,12 +132,18 @@ double FakeBackgroundEstimator::GetElectronFakeRate(TString ID, TString key, TSt
         if(pt > 200)  ApplyHighPtCorr=1.4;
         else if(pt > 150)  ApplyHighPtCorr=1.2;
       }
+      else{
+	if(pt > 250)   ApplyHighPtCorr=0.5;
+      } 
     }
     else   if(ID.Contains("2018")){
       if(fabs(eta) < 1.5){
 	if(pt > 200)  ApplyHighPtCorr=1.2;
 	else if(pt > 150)  ApplyHighPtCorr=1.2;
       }
+      else{
+	if(pt > 250)   ApplyHighPtCorr=0.5;
+      } 
     }
   }
   
