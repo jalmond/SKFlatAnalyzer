@@ -115,6 +115,41 @@ double FakeBackgroundEstimator::GetElectronFakeRate(TString ID, TString key, TSt
 
   bool IsMC = false;
 
+  double ApplyHighPtCorr=1;
+  if(ID.Contains("HNL_HighPt")) {
+    //// Initial Corr                                                                                                                                
+    if(ID.Contains("2016")){
+      if(fabs(eta) < 1.5){
+	if(pt > 200)  ApplyHighPtCorr=1.5;
+	else if(pt > 150)  ApplyHighPtCorr=1.2;
+      }
+      else{
+	if(pt > 250)   ApplyHighPtCorr=0.5;
+      }
+    }
+    else  if(ID.Contains("2017")){
+      if(fabs(eta) < 1.5){
+        if(pt > 200)  ApplyHighPtCorr=1.4;
+        else if(pt > 150)  ApplyHighPtCorr=1.2;
+      }
+      else{
+	if(pt > 250)   ApplyHighPtCorr=0.5;
+      } 
+    }
+    else   if(ID.Contains("2018")){
+      if(fabs(eta) < 1.5){
+	if(pt > 200)  ApplyHighPtCorr=1.2;
+	else if(pt > 150)  ApplyHighPtCorr=1.2;
+      }
+      else{
+	if(pt > 250)   ApplyHighPtCorr=0.5;
+      } 
+    }
+  }
+  
+
+  if(ID.Contains("HighPt")) ID=ID.ReplaceAll("_HighPt","");
+
   TString PtType = "pt_eta_";
   if(key.Contains("MC")){
     IsMC=true;
@@ -179,7 +214,7 @@ double FakeBackgroundEstimator::GetElectronFakeRate(TString ID, TString key, TSt
 
   //cout << "[FakeBackgroundEstimator::FakeBackgroundEstimator] value = " << value << endl;
 
-  return value+double(sys)*error;
+  return ApplyHighPtCorr*(value+double(sys)*error);
 
 }
 
@@ -236,6 +271,8 @@ double FakeBackgroundEstimator::GetMuonFakeRate(TString ID, TString key, TString
   mapit = map_hist_Muon.find("FakeRate_"+ID+"_"+key);
 
   if(mapit==map_hist_Muon.end()){
+    cout << "Missing  " << "FakeRate_"+ID+"_"+key << endl;
+    for(auto i : map_hist_Muon) cout << i.first << endl;
     if(IgnoreNoHist){
       TString MapK = "FakeRate_"+ID+"_"+key;
       if (std::find(MissingHists.begin(), MissingHists.end(), MapK ) == MissingHists.end())   MissingHists.push_back(MapK);

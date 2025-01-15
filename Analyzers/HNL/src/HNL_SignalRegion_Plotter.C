@@ -36,13 +36,13 @@ void HNL_SignalRegion_Plotter::executeEvent(){
   if(_jentry == 0){
     cout << "HNL_SignalRegion_Plotter::IsData = " << IsData << endl;
   }
-  vector<TString> LepIDs = {"HNL_ULID"};
+  vector<TString> LepIDs = {"HNL_ULID", "HNL_ULIDv2"};
   if(HasFlag("AllID")) LepIDs = {"HNL_ULID","HNTightV2", "POGTight"};
 
   //// Allow ID setting by flag
   if(RunTopID) LepIDs = {"TopHN"};
   if(RunPOGID) LepIDs = {"POGTight"};
-  if(RunHighPtID) LepIDs = {"HighPt"};
+  if(RunHighPtID) LepIDs = {"HNL_ULID","HighPt"};
   if(RunPekingID) LepIDs = {"Peking"};
 
 
@@ -54,21 +54,30 @@ void HNL_SignalRegion_Plotter::executeEvent(){
   if(RunEMu)  ChannelsToRun.push_back(EMu);
   if(ChannelsToRun.size() == 0) ChannelsToRun = {EE,MuMu,EMu};
 
+  if(RunHighPtID) ChannelsToRun = {MuMu};
+
+
   for (auto id: LepIDs){
 
     for(auto channel : ChannelsToRun){
-
+      
       AnalyzerParameter param = HNL_LeptonCore::InitialiseHNLParameter(id,channel);
+      
       param.PlottingVerbose = 0; //// Draw basic plots
-      if(id == "HNL_ULID")         param.PlottingVerbose = 1; /// Draw more plots
+      if(id.Contains("ULID"))         param.PlottingVerbose = 1; /// Draw more plots
       if(id.Contains("HEEP"))      param.PlottingVerbose = 1;
-
-      param.PlottingVerbose = 3; //// TEMP FOR LIMIT BIN STUDY
+      
+      
+      if(HasFlag("HighPtTrigger")) param.TriggerSelection     = "HighPt";          
+      if(HasFlag("HighPtTrigger")) param.Apply_Weight_TriggerSF = false;
 
       RunULAnalysis(param);
 
       TString param_name = param.Name;
 
+      TString SystLabel = "";
+      if(HasFlag("Theory")) SystLabel= "Theory";
+      if(HasFlag("Muon")) SystLabel= "Muon";
       for(auto isyst : GetSystList()){
 	bool runJob = UpdateParamBySyst(id,param,AnalyzerParameter::Syst(isyst),param_name);
 	if(runJob) RunULAnalysis(param);
@@ -93,6 +102,9 @@ void HNL_SignalRegion_Plotter::RunULAnalysis(AnalyzerParameter param){
   
   TString el_ID = SetLeptonID("Electron",param);
   TString mu_ID = SetLeptonID("Muon", param);
+  
+  if(param.syst_ == AnalyzerParameter::ScaleUp) weight *= GetScaleUncertainty(1);
+  if(param.syst_ == AnalyzerParameter::ScaleDown) weight *= GetScaleUncertainty(-1);
 
 
   double Min_FakeMuon_Pt      =  5;

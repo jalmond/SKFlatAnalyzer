@@ -15,6 +15,18 @@ public:
     return b? 1 : 0 ;
   }
 
+  inline TString PtEtaCategoryCFScaleFactor() const{
+    if(fabs(j_scEta) < 1.5){
+      if(this->Pt() < 35) return "BB_Pt1";
+      if(this->Pt() < 50) return "BB_Pt2";
+      return "BB_Pt3";
+    } 
+    else{
+      if(this->Pt() < 35) return "EC_Pt1";
+      if(this->Pt() < 50) return "EC_Pt2";
+      return "EC_Pt3";
+    }
+  }
   inline TString GetCFShift_BinLabel(double shift) const{
 
     double pt_shifted = this->Pt() * shift;
@@ -304,6 +316,11 @@ public:
   bool Pass_MultiFunction_Opt(TString ID) const;
   bool Pass_LepMVAID() const ;
   bool Pass_LepMVAID_TrkIso() const ;
+  bool Pass_LepMVAID_split1() const;
+  bool Pass_LepMVAID_split2() const;
+  bool Pass_LepMVAID_split3() const;
+  bool Pass_LepMVAID_split4() const;
+  bool Pass_LepMVAID_split4b() const;
   bool Pass_LepMVATopID() const ;
   bool passLooseHEEPID() const;
 

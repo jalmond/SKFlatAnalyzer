@@ -566,13 +566,15 @@ TString AnalyzerParameter::GetSystType(){
   if(syst_==Syst::Central){
     return "Central";
   }
-  else if(syst_==Syst::FRAJ30)   return "AJ30";
-  else if(syst_==Syst::FRAJ40)   return "AJ40";
-  else if(syst_==Syst::FRAJ60)   return "AJ60";
+  else if(syst_==Syst::FRAJUp)       return "AJUp";
+  else if(syst_==Syst::FRAJ40)  return "AJ40";
+  else if(syst_==Syst::FRAJDown)     return "AJDown";
   else if(syst_==Syst::FRLooseIDDJUp)     return "LIDUp";
   else if(syst_==Syst::FRLooseIDDJDown)   return "LIDDown";
   else if(syst_==Syst::FRPartonSFUp)   return "PSFUp"; 
   else if(syst_==Syst::FRPartonSFDown) return "PSFDown";
+  else if(syst_==Syst::FRHighPtUp) return "FRHighPtUp";
+  else if(syst_==Syst::FRHighPtDown) return "FRHighPtDown";
   else if(syst_==Syst::FRAltBinning) return "AltBinning";
   else if(syst_==Syst::PRApplied) return "PRApplied";
   else if(syst_==Syst::JetResUp) return "JetResUp";
@@ -588,6 +590,8 @@ TString AnalyzerParameter::GetSystType(){
   else if(syst_==Syst::MuonRecoSFUp)  return "MuonRecoSFUp";
   else if(syst_==Syst::MuonRecoSFDown) return "MuonRecoSFDown";
   else if(syst_==Syst::MuonEnUp)   return "MuonEnUp";
+  else if(syst_==Syst::MuonResUp) return "MuonResUp";
+  else if(syst_==Syst::MuonResDown) return "MuonResDown";
   else if(syst_==Syst::MuonEnDown) return "MuonEnDown";
   else if(syst_==Syst::MuonIDSFUp) return "MuonIDSFUp";
   else if(syst_==Syst::MuonIDSFDown)    return "MuonIDSFDown";
@@ -617,6 +621,10 @@ TString AnalyzerParameter::GetSystType(){
   else if(syst_==Syst::CFSFDown)   return "CFSFDown";
   else if(syst_==Syst::FRUp)   return "FRUp";
   else if(syst_==Syst::FRDown)   return "FRDown";
+  else if(syst_==Syst::PDFUp)   return "PDFUp";
+  else if(syst_==Syst::PDFDown)   return "PDFDown";
+  else if(syst_==Syst::ScaleUp)   return "ScaleUp";
+  else if(syst_==Syst::ScaleDown)   return "ScaleDown";
   
   else{
     cout << "[AnalyzerParameter::GetSystType] Wrong Syst" << endl;

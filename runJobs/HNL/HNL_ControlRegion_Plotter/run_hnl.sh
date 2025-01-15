@@ -20,19 +20,18 @@ if [[ $1 == "CF" ]]; then
     done
 fi
 
-if [[ $1 == "WZ" ]]; then
+if [[ $1 == "Data" ]]; then
 
-    declare  -a era_list=("2018")
+    declare  -a era_list=("2017")
+    #"2018")
     for i in "${era_list[@]}"
     do
-
-	SKFlat.py -a $analyzer  -i   WZTo3LNu_mllmin4p0_powheg -n 100        --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLepBDT  --userflags SSMultiLep,RunPrompt&
+        SKFlat.py -a $analyzer  -l $datapath/DL/${i}_DiLepton_EE.txt      -n 100    --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLepBDT   --userflags SSMultiLep &
     done
 fi
 
 if [[ $1 == "" ]]; then
 
-    #UseMET2ST
     declare  -a era_list=("2017" "2016postVFP" "2016preVFP" "2018")
     for i in "${era_list[@]}"
     do
@@ -40,13 +39,13 @@ if [[ $1 == "" ]]; then
 	SKFlat.py -a $analyzer  -l $datapath/DL/${i}_DiLepton_MuMu.txt      -n 100  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLepBDT   --userflags SSMultiLep &
         SKFlat.py -a $analyzer  -l $datapath/DL/${i}_DiLepton_EMu.txt      -n 100  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLepBDT   --userflags SSMultiLep &
 	SKFlat.py -a $analyzer  -l $datapath/DL/${i}_DiLepton_EE.txt      -n 100    --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLepBDT   --userflags SSMultiLep 
-
+	
 	#### Prompt
 	SKFlat.py -a $analyzer  -l $mcpath/Prompt/PromptSS.txt             -n 20        --nmax ${nmax}   -e ${i}  --skim SkimTree_HNMultiLepBDT --userflags  SSMultiLep,RunPrompt &
 	SKFlat.py -a $analyzer  -l $mcpath/Prompt/PromptSS2.txt            -n 200       --nmax ${nmax}   -e ${i}  --skim SkimTree_HNMultiLepBDT --userflags  SSMultiLep,RunPrompt &
 	
 	### Conv
-	SKFlat.py -a $analyzer  -l $mcpath/Conv/Conv.txt          -n 20        --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLepBDT  --userflags SSMultiLep,RunConv&
+	SKFlat.py -a $analyzer  -l $mcpath/Conv/Conv.txt          -n 50        --nmax ${nmax}   -e ${i} --skim SkimTree_DileptonBDT --userflags SSMultiLep,RunConv&
 
 	### Fakes
         SKFlat.py -a $analyzer  -l $datapath/DL/${i}_DiLepton_EMu.txt      -n 100  --nmax ${nmax}   -e ${i}  --skim SkimTree_HNMultiLepBDT  --userflags SSMultiLep,RunFake   &
@@ -61,3 +60,12 @@ if [[ $1 == "" ]]; then
     
 fi
 
+
+if [[ $1 == "WZ" ]]; then
+     declare  -a era_list=("2017" "2016postVFP" "2016preVFP" "2018")
+    for i in "${era_list[@]}"
+    do
+	SKFlat.py -a $analyzer  -i WZTo3LNu_mllmin4p0_powheg        -n 200       --nmax ${nmax}   -e ${i}  --skim SkimTree_HNMultiLepBDT --userflags  SSMultiLep,RunPrompt &                                                               
+    done
+
+fi

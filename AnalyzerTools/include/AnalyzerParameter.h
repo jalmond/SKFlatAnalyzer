@@ -97,12 +97,14 @@ class AnalyzerParameter{
   Weight w;
   enum Syst{
     Central,
-    FRAJ30,FRAJ40,FRAJ60,
+    FRAJUp,FRAJ40,FRAJDown,
+    FRHighPtUp,FRHighPtDown,
     FRLooseIDDJUp,FRLooseIDDJDown,
     FRPartonSFUp, FRPartonSFDown,PRApplied,FRAltBinning,
     JetResUp, JetResDown,    JetEnUp, JetEnDown,
     JetMassUp,JetMassDown,    JetMassSmearUp,JetMassSmearDown,
     MuonRecoSFUp,MuonRecoSFDown,    MuonEnUp,MuonEnDown,    MuonIDSFUp,MuonIDSFDown,    MuonISOSFUp,MuonISOSFDown,
+    MuonResUp,MuonResDown,
     MuonTriggerSFUp,MuonTriggerSFDown,    ElectronRecoSFUp,ElectronRecoSFDown,
     ElectronResUp,ElectronResDown,    ElectronEnUp,ElectronEnDown,
     ElectronIDSFUp,ElectronIDSFDown,    ElectronTriggerSFUp,ElectronTriggerSFDown,
@@ -114,6 +116,8 @@ class AnalyzerParameter{
     PrefireUp,PrefireDown,
     PUUp,PUDown,
     JetPUIDUp, JetPUIDDown,
+    PDFUp,PDFDown,
+    ScaleUp,ScaleDown,
     NSyst
   };
 
