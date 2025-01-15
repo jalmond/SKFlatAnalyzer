@@ -36,8 +36,8 @@ void HNL_SignalRegion_Plotter::executeEvent(){
   if(_jentry == 0){
     cout << "HNL_SignalRegion_Plotter::IsData = " << IsData << endl;
   }
-  vector<TString> LepIDs = {"HNL_ULID", "HNL_ULIDv2"};
-  if(HasFlag("AllID")) LepIDs = {"HNL_ULID","HNTightV2", "POGTight"};
+  vector<TString> LepIDs = {"HNL_ULIDv2"};
+  if(HasFlag("AllID")) LepIDs = {"HNL_ULID","HNTightV2", "POGTight","HNL_ULIDv2"};
 
   //// Allow ID setting by flag
   if(RunTopID) LepIDs = {"TopHN"};
@@ -64,10 +64,9 @@ void HNL_SignalRegion_Plotter::executeEvent(){
       AnalyzerParameter param = HNL_LeptonCore::InitialiseHNLParameter(id,channel);
       
       param.PlottingVerbose = 0; //// Draw basic plots
-      if(id.Contains("ULID"))         param.PlottingVerbose = 1; /// Draw more plots
-      if(id.Contains("HEEP"))      param.PlottingVerbose = 1;
-      
-      
+      if(id.Contains("ULID"))  param.PlottingVerbose = 1; /// Draw more plots
+      if(id.Contains("HEEP"))  param.PlottingVerbose = 1;
+            
       if(HasFlag("HighPtTrigger")) param.TriggerSelection     = "HighPt";          
       if(HasFlag("HighPtTrigger")) param.Apply_Weight_TriggerSF = false;
 
@@ -76,9 +75,10 @@ void HNL_SignalRegion_Plotter::executeEvent(){
       TString param_name = param.Name;
 
       TString SystLabel = "";
-      if(HasFlag("Theory")) SystLabel= "Theory";
-      if(HasFlag("Muon")) SystLabel= "Muon";
-      for(auto isyst : GetSystList()){
+      if(HasFlag("Syst_Theory")) SystLabel= "Theory";
+      else if(HasFlag("Syst_Muon")) SystLabel= "Muon";
+      else SystLabel=GetChannelString(channel);
+      for(auto isyst : GetSystList(SystLabel)){
 	bool runJob = UpdateParamBySyst(id,param,AnalyzerParameter::Syst(isyst),param_name);
 	if(runJob) RunULAnalysis(param);
       }
