@@ -234,7 +234,7 @@ class HNL_LeptonCore : public AnalyzerCore {
   double GetZ0Weight(double valx);
 
   double GetScaleUncertainty(int sys);
-  double GetPDFUncertainty(TString SR, int sys);
+  TString GetPDFUncertainty(int iw, double& ev_weight );
 
 
   //  ================= MC weight functions              HNL_LeptonCore_Lepton.C   =================                                                                                                                                          
@@ -307,6 +307,11 @@ class HNL_LeptonCore : public AnalyzerCore {
   vector<TF1*> fZptWeightM;
   TAxis* fZptWeightMaxis=NULL;
 
+
+  /// Files
+  TH1D* h_SumW_PDF;
+  TH1D* h_SumW_Scale;
+  TH1D* h_SumW_AlphaS;
 
 
   //=====================                                                                                                                                                                                           

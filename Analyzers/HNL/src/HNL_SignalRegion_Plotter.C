@@ -139,12 +139,35 @@ void HNL_SignalRegion_Plotter::RunULAnalysis(AnalyzerParameter param){
   if(RunCF) RunEl =  {0,1} ;
   else RunEl = {-1};
 
-  for(auto ir : RunEl){
-    
-    RunAllSignalRegions(Inclusive,
-			ElectronCollT,ElectronCollV,MuonCollT,MuonCollV,  TauColl,
-			AK4_JetCollLoose,AK4_JetColl,AK4_VBF_JetColl,AK8_JetColl, AK4_BJetColl, 
+
+  if(param.syst_ == AnalyzerParameter::PDF) {
+    TString ORIGName= param.Name;
+    TString ORIGDefName= param.DefName;
+
+    for(unsigned int iw=0; iw<weight_PDF->size()+1; iw++){
+      double PDF_W=1;
+      TString PNAME_PDF = GetPDFUncertainty(iw,PDF_W);
+
+      param.Name= ORIGName+PNAME_PDF;
+      param.DefName=ORIGDefName +PNAME_PDF;
+
+      RunAllSignalRegions(Inclusive,
+			  ElectronCollT,ElectronCollV,MuonCollT,MuonCollV,  TauColl,
+			  AK4_JetCollLoose,AK4_JetColl,AK4_VBF_JetColl,AK8_JetColl, AK4_BJetColl,
+			  ev,METv, param, -1, weight*PDF_W);
+
+      
+    }
+  }
+  else{
+					  
+    for(auto ir : RunEl){
+      
+      RunAllSignalRegions(Inclusive,
+			  ElectronCollT,ElectronCollV,MuonCollT,MuonCollV,  TauColl,
+			  AK4_JetCollLoose,AK4_JetColl,AK4_VBF_JetColl,AK8_JetColl, AK4_BJetColl, 
 			ev,METv, param, ir, weight);
+    }
   }
 
   FillTimer("END_SR");

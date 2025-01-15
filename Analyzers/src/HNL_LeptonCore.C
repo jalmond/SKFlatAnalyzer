@@ -36,8 +36,6 @@ void HNL_LeptonCore::initializeAnalyzer(bool READBKGHISTS, bool SETUPIDBDT){
   run_ORTrigger = HasFlag("MultiTrig");
 
   /// Other flags                                                                                                                                      
-  RunJetSyst = HasFlag("RunJetSyst");/// Turn off default Syst
-  RunFullSyst = HasFlag("RunFullSyst"); /// Turn on Full MC syst
   RunEE   = HasFlag("EE");
   RunMuMu = HasFlag("MuMu");
   RunEMu  = HasFlag("EMu");
@@ -182,6 +180,26 @@ void HNL_LeptonCore::initializeAnalyzer(bool READBKGHISTS, bool SETUPIDBDT){
     for(auto ih : MakeSFmap) cout << "Adding PartonSF " << ih.first << " " << ih.second << endl;
   }
   if(SETUPIDBDT) SetupIDMVAReaderDefault(false,false);
+
+  
+  TString TheoryPath = datapath+"/"+GetEra()+"/Theory/";
+
+  if(!gSystem->AccessPathName(TheoryPath + "/"+DataEra+"/GetEffLumi_SkimTree_HNMultiLepBDT_"+MCSample+".root")){
+
+    TDirectory* origDir = gDirectory;
+
+    TFile* GenNormFile= new TFile(TheoryPath + "/"+DataEra+"/GetEffLumi_SkimTree_HNMultiLepBDT_"+MCSample+".root");
+    h_SumW_PDF = ((TH1D*) GenNormFile->Get("sumW_PDF"));
+    h_SumW_Scale = ((TH1D*) GenNormFile->Get("sumW_Scale"));
+    h_SumW_AlphaS = ((TH1D*) GenNormFile->Get("sumW_AlphaS"));    
+    GenNormFile->Close();
+    delete GenNormFile;
+    origDir->cd();
+  }
+  else {
+    cout << "[HNL_LeptonCore::AccessPathName ] Theory file not found.." << endl;
+    exit(EXIT_FAILURE);
+  }
 
 }
 
@@ -362,8 +380,7 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
 
   vector<AnalyzerParameter::Syst> SystList = {};
   if(SystType=="Theory"){
-    SystList.push_back(AnalyzerParameter::PDFUp);
-    SystList.push_back(AnalyzerParameter::PDFDown);
+    SystList.push_back(AnalyzerParameter::PDF);
     SystList.push_back(AnalyzerParameter::ScaleUp);
     SystList.push_back(AnalyzerParameter::ScaleDown);
     return SystList;
@@ -381,9 +398,17 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
     SystList.push_back(AnalyzerParameter::MuonTriggerSFDown);
     return SystList;
   }
+  if(SystType=="Jet"){
+    SystList.push_back(AnalyzerParameter::JetResUp);
+    SystList.push_back(AnalyzerParameter::JetResDown);
+    SystList.push_back(AnalyzerParameter::JetEnUp);
+    SystList.push_back(AnalyzerParameter::JetEnDown);
+    return SystList;
+  }
 
   if(!HasFlag("RunSyst")) return SystList;
   
+  //// Runs All Syst for Bkg types
   if(RunCF){
     SystList = {
       AnalyzerParameter::CFRateUp,
@@ -407,17 +432,19 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
   
     if(IsData) return {};
     
-    if(RunFullSyst){
+    if(HasFlag("RunSyst")){
       
       SystList = {AnalyzerParameter::JetResUp,AnalyzerParameter::JetResDown,
 		  AnalyzerParameter::JetEnUp, AnalyzerParameter::JetEnDown,
+		  AnalyzerParameter::JetPUIDUp,AnalyzerParameter::JetPUIDDown,
+		  AnalyzerParameter::JetPNETUp,AnalyzerParameter::JetPNETDown,
 		  AnalyzerParameter::BTagSFHTagUp,AnalyzerParameter::BTagSFHTagDown,
                   AnalyzerParameter::BTagSFLTagUp,AnalyzerParameter::BTagSFLTagDown,
                   AnalyzerParameter::METUnclUp,AnalyzerParameter::METUnclDown,
                   AnalyzerParameter::PrefireUp,AnalyzerParameter::PrefireDown,
                   AnalyzerParameter::PUUp,AnalyzerParameter::PUDown};
       
-      if(RunMuMu || RunEMu){
+      if(SystType=="MuMu" || SystType=="EMu"){
 	SystList.push_back(AnalyzerParameter::MuonRecoSFUp);
 	SystList.push_back(AnalyzerParameter::MuonRecoSFDown);
 	SystList.push_back(AnalyzerParameter::MuonEnUp);
@@ -429,7 +456,7 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
 	SystList.push_back(AnalyzerParameter::MuonTriggerSFUp);
 	SystList.push_back(AnalyzerParameter::MuonTriggerSFDown);
       }
-      if(RunEE || RunEMu){
+      if(SystType=="EE" || SystType=="EMu"){
 	SystList.push_back(AnalyzerParameter::ElectronRecoSFUp);
 	SystList.push_back(AnalyzerParameter::ElectronRecoSFDown);
 	SystList.push_back(AnalyzerParameter::ElectronResUp);
@@ -442,17 +469,10 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
 	SystList.push_back(AnalyzerParameter::ElectronTriggerSFDown);
       }
     }
-    else    if(RunJetSyst){
-      SystList.push_back(AnalyzerParameter::JetResUp);
-      SystList.push_back(AnalyzerParameter::JetResDown);
-      SystList.push_back(AnalyzerParameter::JetEnUp);
-      SystList.push_back(AnalyzerParameter::JetEnDown);
-    }
   }
   
   if(MCSample.Contains("Type")){
-    SystList.push_back(AnalyzerParameter::PDFUp);
-    SystList.push_back(AnalyzerParameter::PDFDown);
+    SystList.push_back(AnalyzerParameter::PDF);
     SystList.push_back(AnalyzerParameter::ScaleUp);
     SystList.push_back(AnalyzerParameter::ScaleDown);
   }
