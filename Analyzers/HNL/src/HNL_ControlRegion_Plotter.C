@@ -79,7 +79,7 @@ void HNL_ControlRegion_Plotter::executeEvent(){
 
 	TString SystString = "";
 	if(HasFlag("OS")) SystString = "Muon";
-	else SystLabel=GetChannelString(channel);
+	else SystString=GetChannelString(channel);
 
 	for(auto isyst : GetSystList(SystString)){
 	  bool runJob = UpdateParamBySyst(id,param_signal,AnalyzerParameter::Syst(isyst),param_name);

@@ -182,9 +182,9 @@ void HNL_LeptonCore::initializeAnalyzer(bool READBKGHISTS, bool SETUPIDBDT){
   if(SETUPIDBDT) SetupIDMVAReaderDefault(false,false);
 
   
-  TString TheoryPath = datapath+"/"+GetEra()+"/Theory/";
+  TString TheoryPath = "/data9/Users/jalmond_public/PDFSyst/"+GetEra()+"/Theory/";
 
-  if(!gSystem->AccessPathName(TheoryPath + "/"+DataEra+"/GetEffLumi_SkimTree_HNMultiLepBDT_"+MCSample+".root")){
+  if(!gSystem->AccessPathName(TheoryPath+ "/GetEffLumi_SkimTree_HNMultiLepBDT_"+MCSample+".root")){
 
     TDirectory* origDir = gDirectory;
 
