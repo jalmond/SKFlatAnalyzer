@@ -15,11 +15,15 @@ declare  -a era_list=("2016postVFP" "2016preVFP" "2017" "2018")
 
 if [[ $1 == "DY" ]]; then
 
+    declare  -a era_list=("2018")
     for i in "${era_list[@]}"
     do
-	SKFlat.py -a $analyzer  -i DYTypeI_DF_M500_private  -n 20  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLepBDT  &
+        SKFlat.py -a $analyzer  -i DYTypeI_DF_M100_private   -n 20 --nmax 600  -e ${i}  --skim SkimTree_HNMultiLepBDT  --userflags RunSyst&
+	SKFlat.py -a $analyzer  -i DYTypeI_DF_M1000_private   -n 20 --nmax 600  -e ${i}  --skim SkimTree_HNMultiLepBDT  --userflags RunSyst&
+	SKFlat.py -a $analyzer  -i SSWWTypeI_SF_M1000_private -n 20 --nmax 600  -e ${i}  --skim SkimTree_HNMultiLepBDT  --userflags RunSyst&
     done
 fi
+
 
 if [[ $1 == "HEM" ]]; then
 
@@ -89,18 +93,6 @@ if [[ $1 == "SYST" ]]; then
     done
 fi
 
-if [[ $1 == "MergeCharge" ]]; then
-
-    declare  -a era_list=("2017")
-
-    #"2018" "2016preVFP" "2016postVFP")
-    
-    for i in "${era_list[@]}"
-    do
-        SKFlat.py -a $analyzer  -l $mcpath/Conv/Conv.txt                 -n 50        --nmax 500   -e ${i} --skim SkimTree_DileptonBDT  --userflags MergeCharge,RunConv &
-    done
-fi
-
 
 if [[ $1 == "" ]]; then
 
@@ -109,10 +101,10 @@ if [[ $1 == "" ]]; then
     for i in "${era_list[@]}"
     do
 	
-        #SKFlat.py -a $analyzer  -l $sigpath/Private/SSWW.txt  -n $njobs_sig  --nmax ${nmax}  -e ${i}  --skim SkimTree_HNMultiLepBDT &
-	#SKFlat.py -a $analyzer  -l $sigpath/Private/DY.txt    -n $njobs_sig  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLepBDT &
-        #SKFlat.py -a $analyzer  -l $sigpath/Private/VBF.txt   -n $njobs_sig  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLepBDT &
-	#SKFlat.py -a $analyzer  -l $sigpath/Private/Weinberg.txt   -n 40  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLepBDT  
+        SKFlat.py -a $analyzer  -l $sigpath/Private/SSWW.txt  -n $njobs_sig  --nmax ${nmax}  -e ${i}  --skim SkimTree_HNMultiLepBDT &
+	SKFlat.py -a $analyzer  -l $sigpath/Private/DY.txt    -n $njobs_sig  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLepBDT &
+        SKFlat.py -a $analyzer  -l $sigpath/Private/VBF.txt   -n $njobs_sig  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLepBDT &
+	SKFlat.py -a $analyzer  -l $sigpath/Private/Weinberg.txt   -n 40  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLepBDT  
 
 	SKFlat.py -a $analyzer  -l $datapath/DL/${i}_DiLepton_MuMu.txt      -n 100  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLepBDT    &
 	SKFlat.py -a $analyzer  -l $datapath/DL/${i}_DiLepton_EE.txt      -n 100    --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLepBDT    &
