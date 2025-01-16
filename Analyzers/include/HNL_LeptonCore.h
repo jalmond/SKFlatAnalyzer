@@ -313,6 +313,7 @@ class HNL_LeptonCore : public AnalyzerCore {
   TH1D* h_SumW_Scale;
   TH1D* h_SumW_AlphaS;
 
+  TDirectory *TheoryDir;
 
   //=====================                                                                                                                                                                                           
   //==== Tools                                                                                                                                                                                                      
