@@ -9,7 +9,6 @@ TString HNL_LeptonCore::GetPDFUncertainty(int iw, double& ev_weight ){
 
   float Norm, weight_pdf;
   if (iw<weight_PDF->size()) {
-    
     Norm = h_SumW_PDF->GetBinContent(iw+1);
     ev_weight = weight_PDF->at(iw)*(NormNom/Norm);
     

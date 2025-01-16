@@ -181,23 +181,26 @@ void HNL_LeptonCore::initializeAnalyzer(bool READBKGHISTS, bool SETUPIDBDT){
   }
   if(SETUPIDBDT) SetupIDMVAReaderDefault(false,false);
 
-  
-  TString TheoryPath = "/data9/Users/jalmond_public/PDFSyst/"+GetEra()+"/Theory/";
+  TheoryDir = TDirectoryHelper::GetTempDirectory("Theory");
 
-  if(!gSystem->AccessPathName(TheoryPath+ "/GetEffLumi_SkimTree_HNMultiLepBDT_"+MCSample+".root")){
+  TString TheoryPath = "/data9/Users/jalmond_public/PDFSyst/"+GetEra()+"/Theory/GetEffLumi_SkimTree_HNMultiLepBDT_"+MCSample+".root";
+  std::ifstream infile(TheoryPath);
+  if(infile.good()){
 
     TDirectory* origDir = gDirectory;
-
-    TFile* GenNormFile= new TFile(TheoryPath + "/"+DataEra+"/GetEffLumi_SkimTree_HNMultiLepBDT_"+MCSample+".root");
-    h_SumW_PDF = ((TH1D*) GenNormFile->Get("sumW_PDF"));
-    h_SumW_Scale = ((TH1D*) GenNormFile->Get("sumW_Scale"));
-    h_SumW_AlphaS = ((TH1D*) GenNormFile->Get("sumW_AlphaS"));    
+    cout << "Acessing file " << TheoryPath << endl;
+    TFile* GenNormFile= new TFile(TheoryPath );
+    TheoryDir->cd();
+    h_SumW_PDF = ((TH1D*) GenNormFile->Get("sumW_PDF")->Clone());
+    h_SumW_Scale = ((TH1D*) GenNormFile->Get("sumW_Scale")->Clone());
+    h_SumW_AlphaS = ((TH1D*) GenNormFile->Get("sumW_AlphaS")->Clone());    
+    
     GenNormFile->Close();
     delete GenNormFile;
     origDir->cd();
   }
   else {
-    cout << "[HNL_LeptonCore::AccessPathName ] Theory file not found.." << endl;
+    cout << "[HNL_LeptonCore::AccessPathName ] Theory file " << TheoryPath << " not found.." << endl;
     exit(EXIT_FAILURE);
   }
 
@@ -949,6 +952,13 @@ HNL_LeptonCore::~HNL_LeptonCore(){
  
   delete rand_;
   
+  TString TheoryPath = "/data9/Users/jalmond_public/PDFSyst/"+GetEra()+"/Theory/";
+
+  if(h_SumW_PDF) delete h_SumW_PDF;
+  if(h_SumW_Scale) delete h_SumW_Scale;
+  if(h_SumW_AlphaS) delete h_SumW_AlphaS;
+  
+
   DeleteZptWeight();
 
 }
