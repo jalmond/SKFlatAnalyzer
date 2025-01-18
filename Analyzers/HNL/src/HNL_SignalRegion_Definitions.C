@@ -583,19 +583,8 @@ TString HNL_RegionDefinitions::RunSignalRegionWWString(bool ApplyForSR,HNL_Lepto
       }
     }
     else{
-      if(DataEra== "2016preVFP"){
-	if(ll_dphi > 2.) {
-	  if(HTOverPT < 2.) return RegionTag+"_HTLTbin1";
-	  return RegionTag+"_HTLTbin2";
-	}
-	else{
-	  if(HTOverPT < 2.)  return RegionTag+"_HTLTbin3";
-	  else if(HTOverPT < 5.)  return RegionTag+"_HTLTbin4";
-	  else return RegionTag+"_HTLTbin5";
-	}
-      }
-      if(DataEra== "2016postVFP"){
-	
+
+      if(DataYear == 2016){
 	if(ll_dphi > 2.) {
 	  if(HTOverPT < 2.) return RegionTag+"_HTLTbin1";
 	  return RegionTag+"_HTLTbin2";
@@ -606,13 +595,10 @@ TString HNL_RegionDefinitions::RunSignalRegionWWString(bool ApplyForSR,HNL_Lepto
 	  else return RegionTag+"_HTLTbin5";
 	}
       }
+
       if(DataYear == 2017){
 	if(ll_dphi > 2.) {
-	  if(channel == MuMu && HTOverPT < 3.){
-	    if (leps[1]->Pt() > 80.)      return RegionTag+"_HTLTbin1";
-	    else return RegionTag+"_HTLTbin2";
-	  }
-	  else if(HTOverPT < 2.){
+	  if(HTOverPT < 3.){
 	    if (leps[1]->Pt() > 80.)      return RegionTag+"_HTLTbin1";
 	    else return RegionTag+"_HTLTbin2";
 	  }
@@ -625,7 +611,7 @@ TString HNL_RegionDefinitions::RunSignalRegionWWString(bool ApplyForSR,HNL_Lepto
       }
       if(DataYear== 2018){
 	if(ll_dphi > 2.) {
-	  if(HTOverPT < 2.){
+	  if(HTOverPT < 3.){
 	    if (leps[1]->Pt() > 80.)      return RegionTag+"_HTLTbin1";
 	    else return RegionTag+"_HTLTbin2";
 	  }
