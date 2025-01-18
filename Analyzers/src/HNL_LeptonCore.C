@@ -388,7 +388,9 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
 
   vector<AnalyzerParameter::Syst> SystList = {};
   if(SystType=="Theory"){
-    SystList.push_back(AnalyzerParameter::PDF);
+    SystList.push_back(AnalyzerParameter::PDFUp);
+    SystList.push_back(AnalyzerParameter::PDFDown);
+    //SystList.push_back(AnalyzerParameter::PDF);
     SystList.push_back(AnalyzerParameter::ScaleUp);
     SystList.push_back(AnalyzerParameter::ScaleDown);
     return SystList;
@@ -480,7 +482,9 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
   }
   
   if(MCSample.Contains("Type")){
-    SystList.push_back(AnalyzerParameter::PDF);
+    //    SystList.push_back(AnalyzerParameter::PDF);
+    SystList.push_back(AnalyzerParameter::PDFUp);
+    SystList.push_back(AnalyzerParameter::PDFDown);
     SystList.push_back(AnalyzerParameter::ScaleUp);
     SystList.push_back(AnalyzerParameter::ScaleDown);
   }
