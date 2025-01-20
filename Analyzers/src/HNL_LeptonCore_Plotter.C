@@ -340,31 +340,30 @@ void HNL_LeptonCore::Fill_Main_Plots(AnalyzerParameter param, TString region,  T
   double ST = GetST(leps, jets, fatjets, met);
   double met2_st = pow(met.Pt(),2.)/ ST;
 
-  FillHist( plot_dir+ region+ "/MainPlots/Ev_MET2_ST", met2_st  , w, 100, 0., 100.,"MET2/ST GeV");
+  FillHist( plot_dir+ region+ "/MainPlots/Ev_MET2_ST", met2_st  , w, 1000, 0., 100.,"MET2/ST GeV");
 
 
 
   if(fatjets.size() > 0){
 
     Particle N1Cand  = fatjets[0] + *leps[0] ;
-    double MN1 = (N1Cand.M() > 2000.) ? 1999. : N1Cand.M();
-    FillHist( plot_dir+ region+ "/MainPlots/M1J",          MN1,          w, 400, 0, 2000, "M_{Jl_{1}} GeV" );
+    //double MN1 = (N1Cand.M() > 2000.) ? 1999. : N1Cand.M();
+    FillHist( plot_dir+ region+ "/MainPlots/M1J",          N1Cand.M(),       w, 9999, 0, 9999, "M_{Jl_{1}} GeV" );
     
     return;
   }
   else{
     
-    int nSRbins = 5;
-    double mhtptins[nSRbins] = { 0.,1,2,5,10};
-    FillHist( plot_dir+ region+ "/MainPlots/HT_PT1",     leps[0]->HTOverPt(),     w, nSRbins-1, mhtptins, "H_{T}/p_{T}");
+    FillHist( plot_dir+ region+ "/MainPlots/HT_PT1",     leps[0]->HTOverPt(),     w, 100, 0, 10, "H_{T}/p_{T}");
     
     
-    double PTLep1  = (leps[0]->Pt() > 2000.) ? 1999. : leps[0]->Pt();
-    double PTLep2  = (leps[1]->Pt() > 1000.) ? 999. : leps[1]->Pt();
-    
-    FillHist( plot_dir+ region+ "/MainPlots/Lep1_pt", PTLep1  ,  w, 400, 0, 2000,"l_{1} p_{T} GeV");
-    FillHist( plot_dir+ region+ "/MainPlots/Lep2_pt", PTLep2  ,  w, 200, 0, 1000,"l_{2} p_{T} GeV");
-    FillHist( plot_dir+ region+ "/MainPlots/LT", VarUpperLimit(PTLep2+PTLep1,2000)  ,  w, 400, 0, 2000,"l_{T} p_{T} GeV");
+    double PTLep1  = leps[0]->Pt();
+    double PTLep2  = leps[1]->Pt();
+    double LT = PTLep1+PTLep2;
+
+    FillHist( plot_dir+ region+ "/MainPlots/Lep1_pt", PTLep1  ,  w, 9999, 0, 9999,"l_{1} p_{T} GeV");
+    FillHist( plot_dir+ region+ "/MainPlots/Lep2_pt", PTLep2  ,  w, 9999, 0, 9999,"l_{2} p_{T} GeV");
+    FillHist( plot_dir+ region+ "/MainPlots/LT", LT  ,  w, 9999, 0, 9999,"l_{T} p_{T} GeV");
 
     return;
   }
