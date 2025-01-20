@@ -116,7 +116,6 @@ double FakeBackgroundEstimator::HighPtCorr(TString ID, double eta, double pt, in
   double ApplyHighPtCorr=1;
 
   /// Function uses MC to correct high pt Fake rates
-
   if(sys==-1)    return 1;
 
   if(sys==0){
