@@ -346,13 +346,9 @@ void HNL_LeptonCore::Fill_Main_Plots(AnalyzerParameter param, TString region,  T
 
   if(fatjets.size() > 0){
 
-    Particle WCand   = fatjets[0];
     Particle N1Cand  = fatjets[0] + *leps[0] ;
-    int nSRbins = 6;
-    double mljbins[nSRbins] = { 0., 500,625., 750., 1000., 2000.};
     double MN1 = (N1Cand.M() > 2000.) ? 1999. : N1Cand.M();
-
-    FillHist( plot_dir+ region+ "/MainPlots/M1J",          MN1,          w, nSRbins-1, mljbins, "M_{Jl_{1}} GeV" );
+    FillHist( plot_dir+ region+ "/MainPlots/M1J",          MN1,          w, 400, 0, 2000, "M_{Jl_{1}} GeV" );
     
     return;
   }
@@ -363,15 +359,12 @@ void HNL_LeptonCore::Fill_Main_Plots(AnalyzerParameter param, TString region,  T
     FillHist( plot_dir+ region+ "/MainPlots/HT_PT1",     leps[0]->HTOverPt(),     w, nSRbins-1, mhtptins, "H_{T}/p_{T}");
     
     
-    int nPtbins=12;
-    double Pt1bins[nPtbins+1] = { 20.,25., 30., 40., 50., 70., 100.,  150.,  200.,400.,600,1000,2000};
-    double Pt2bins[nPtbins+1] = { 10.,15., 20., 30., 40., 50., 100.,  120.,  140., 160.,  200.,400,1000};
     double PTLep1  = (leps[0]->Pt() > 2000.) ? 1999. : leps[0]->Pt();
     double PTLep2  = (leps[1]->Pt() > 1000.) ? 999. : leps[1]->Pt();
     
-    FillHist( plot_dir+ region+ "/MainPlots/Lep1_pt", PTLep1  ,  w, nPtbins, Pt1bins,"l_{1} p_{T} GeV");
-    FillHist( plot_dir+ region+ "/MainPlots/Lep2_pt", PTLep2  ,  w, nPtbins, Pt2bins,"l_{2} p_{T} GeV");
-    FillHist( plot_dir+ region+ "/MainPlots/LT", VarUpperLimit(PTLep2+PTLep1,2000)  ,  w, nPtbins, Pt1bins,"l_{T} p_{T} GeV");
+    FillHist( plot_dir+ region+ "/MainPlots/Lep1_pt", PTLep1  ,  w, 400, 0, 2000,"l_{1} p_{T} GeV");
+    FillHist( plot_dir+ region+ "/MainPlots/Lep2_pt", PTLep2  ,  w, 200, 0, 1000,"l_{2} p_{T} GeV");
+    FillHist( plot_dir+ region+ "/MainPlots/LT", VarUpperLimit(PTLep2+PTLep1,2000)  ,  w, 400, 0, 2000,"l_{T} p_{T} GeV");
 
     return;
   }
