@@ -313,7 +313,7 @@ def MakeInputList(input_samples, types_sample, NJobsToRun,Era,SkimName):
                 datedir = sorted(datedir)
 
                 print "Use the last item of:",datedir
-                new_path_to_files = period_path_to_files + "/"+datedir[0]
+                new_path_to_files = period_path_to_files + "/"+datedir[-1]
                 infiles = [f for f in listdir(new_path_to_files) if isfile(join(new_path_to_files, f))]
                 MakeInputFiles(types_sample[x],Era,x+"_"+period, new_path_to_files,infiles,NJobsToRun[x])
 
@@ -329,12 +329,15 @@ parser.add_argument('-v', dest='Version', default="Version1",help="")
 parser.add_argument('-s', dest='Script', default="NULL",help="pick config/*.py")
 parser.add_argument('-n', dest='NJob',type=int, default=15,help="")
 parser.add_argument('-max', dest='NMax',type=int, default=500,help="")
+parser.add_argument('-ScaleCF', dest='ScaleCF', type=float, default=1, help='SF for CF')
+
 
 args = parser.parse_args()
 
 Version = args.Version
 NJobs=args.NJob
 Era = args.Era
+ScaleCF=args.ScaleCF
 
 if args.Script == "NULL":
     print ("-s command not set")
@@ -469,7 +472,7 @@ while [ "$Trial" -lt 3 ]; do
   echo "#### running ####"
 
 
-  python {0}/{1} -nj ${{SECTION}} -e {4} -wd {0} 2> err.log
+  python {0}/{1} -nj ${{SECTION}} -e {4} -ScaleCF {5} -wd {0} 2> err.log
 
   EXITCODE=$?
   if [ "$EXITCODE" -eq 5 ]; then
@@ -488,7 +491,7 @@ fi
 
 cat err.log >&2
 exit $EXITCODE
-'''.format(MasterJobDir,scriptname, SCRAM_ARCH, cmsswrel, Era )
+'''.format(MasterJobDir,scriptname, SCRAM_ARCH, cmsswrel, Era ,ScaleCF)
   run_commands.close()
 
   submit_command = open(MasterJobDir+'/submit.jds','w')
