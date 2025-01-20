@@ -14,9 +14,12 @@ parser.add_argument('-nj', dest='NJob', type=int, default=0, help='Number of job
 #parser.add_argument('-e' , dest='Era', default ='2017')
 parser.add_argument('-e' , dest='Eras', default=[], nargs='+')
 parser.add_argument('-wd' , dest='WorkDir', default ='./')
+parser.add_argument('-ScaleCF', dest='ScaleCF', type=float, default=1, help='SF for CF')
+
 
 args = parser.parse_args()
 
+ScaleCF=args.ScaleCF
 Name_Nevents = "_N"+str(args.Nevents) if args.Nevents > 0 else ""
 NJob=args.NJob
 #Era = args.Era

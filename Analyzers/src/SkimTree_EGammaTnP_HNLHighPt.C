@@ -22,7 +22,7 @@ void SkimTree_EGammaTnP_HNLHighPt::initializeAnalyzer(){
     weight_tree->Branch("zptweight",&zptweight);
     weight_tree->Branch("z0weight",&z0weight);
     weight_tree->Branch("totWeight",&totWeight);
-    weight_tree->Branch("totWeight_zpt",&totWeight_zpt);
+    weight_tree->Branch("totWeight_uncorr",&totWeight_uncorr);
   }
 
 
@@ -42,7 +42,7 @@ void SkimTree_EGammaTnP_HNLHighPt::initializeAnalyzer(){
     newtree->Branch("zptweight",&zptweight);
     newtree->Branch("z0weight",&z0weight);
     newtree->Branch("totWeight",&totWeight);
-    newtree->Branch("totWeight_zpt",&totWeight_zpt);
+    newtree->Branch("totWeight_uncorr",&totWeight_uncorr);
   }
   newtree->Branch("event_met_pfmet",&pfMET_Type1_pt);
   newtree->Branch("event_met_pfphi",&pfMET_Type1_phi);
@@ -171,7 +171,7 @@ void SkimTree_EGammaTnP_HNLHighPt::initializeAnalyzer(){
 bool SkimTree_EGammaTnP_HNLHighPt::IsGoodTagProbe(Electron el_tag, Electron el_probe){
   
   // https://indico.cern.ch/event/1255216/contributions/5273071/attachments/2594851/4478919/HEEP%20ID%202016UL%20for%20EGamma.pdf
-  if(el_probe.Pt() < 35) return false;
+  //if(el_probe.Pt() < 35) return false;
   if(fabs(el_probe.scEta()) >2.5) return false;
   if(el_probe.etaRegion()==Electron::GAP) return false;
 
@@ -193,6 +193,8 @@ bool SkimTree_EGammaTnP_HNLHighPt::IsTag(Electron el_tag){
   else{
     if(!el_tag.passHEEPID()) return false;
   }
+  if(!el_tag.IsGsfCtfChargeConsistent())  return false;
+  
   // Match trigger in data
   if(IsDATA){
     if(DataYear == 2016){
@@ -220,22 +222,24 @@ void SkimTree_EGammaTnP_HNLHighPt::executeEvent(){
    
     
     AnalyzerParameter p = HNL_LeptonCore::InitialiseHNLParameter("Basic");
-    
-    if(DataYear == 2016){
-      //if(! (ev.PassTrigger("HLT_Ele27_eta2p1_WPTight_Gsf_v")))return; // No skim now
-      if(! (ev.PassTrigger("HLT_Ele27_WPTight_Gsf_v")))return;
-    }
-    if(DataYear == 2017){
-      if(! (ev.PassTrigger("HLT_Ele32_WPTight_Gsf_L1DoubleEG_v"))) return;
-    }
-    if(DataYear == 2018){
-      if(! (ev.PassTrigger("HLT_Ele32_WPTight_Gsf_v"))) return;
+
+    if(IsDATA){
+      if(DataYear == 2016){
+	if(! (ev.PassTrigger("HLT_Ele27_WPTight_Gsf_v")))return;
+      }
+      if(DataYear == 2017){
+	if(! (ev.PassTrigger("HLT_Ele32_WPTight_Gsf_L1DoubleEG_v"))) return;
+      }
+      if(DataYear == 2018){
+	if(! (ev.PassTrigger("HLT_Ele32_WPTight_Gsf_v"))) return;
+      }
     }
     
     //else{
     //  if(! (ev.PassTrigger({"HLT_Ele27_WPTight_Gsf_v","HLT_Ele28_WPTight_Gsf_v","HLT_Ele32_WPTight_Gsf_L1DoubleEG_v","HLT_Ele32_WPTight_Gsf_v","HLT_Ele35_WPTight_Gsf_v"})) ) return;
     // }
     
+    double EvWeight=1.;
     if(!PassMETFilter()) return;
     
     if(!IsDATA){
@@ -251,8 +255,8 @@ void SkimTree_EGammaTnP_HNLHighPt::executeEvent(){
       zptweight=p.w.zptweight;
       z0weight=p.w.z0weight;
       //      totWeight=p.w.lumiweight*p.w.PUweight*p.w.prefireweight*p.w.zptweight*p.w.z0weight;
-      totWeight=p.w.lumiweight*p.w.PUweight*p.w.prefireweight;
-      totWeight_zpt=p.w.lumiweight*p.w.PUweight*p.w.prefireweight*p.w.zptweight;
+      EvWeight=p.w.lumiweight*p.w.PUweight*p.w.prefireweight;
+      totWeight_uncorr=p.w.lumiweight*p.w.PUweight*p.w.prefireweight;
     }
     L1ThresholdHLTEle23Ele12CaloIdLTrackIdLIsoVL=GetL1Threshold();
     
@@ -261,6 +265,7 @@ void SkimTree_EGammaTnP_HNLHighPt::executeEvent(){
     for(Electron& tag:electrons){
       
       if(!IsTag(tag)) continue;
+      
       bool HasPair=false;
       for(Electron& probe:electrons){
         if(&tag==&probe) continue;
@@ -321,7 +326,9 @@ void SkimTree_EGammaTnP_HNLHighPt::executeEvent(){
       } // tag loop
     } // multi Tag pairs loop
           
-          
+    
+
+
     int nPairs_counter=-1; /// Needed to access Gen Info
     for(auto t_p_pair : matched_pair_electrons){
       nPairs_counter++;
@@ -329,7 +336,10 @@ void SkimTree_EGammaTnP_HNLHighPt::executeEvent(){
       vector<Electron> vProbe = {t_p_pair.second};  // fill vector to keep structure of code same
       Electron tag = t_p_pair.first;
       if(!IsTag(tag)) continue;
+      totWeight = EvWeight;
 
+      if(!IsDATA) totWeight = totWeight * mcCorr->ElectronID_SF("HEEP",tag.scEta(), tag.Pt(), 0);
+      
       for(Electron& probe:vProbe){
         
         if(&tag==&probe) continue;
@@ -456,46 +466,44 @@ void SkimTree_EGammaTnP_HNLHighPt::executeEvent(){
 	    totWeight=totWeight* mcCorr->ElectronReco_SF("RECO_SF",tag.defEta(),tag.Pt(),0);
 	    totWeight=totWeight* mcCorr->ElectronReco_SF("RECO_SF",probe.defEta(),probe.Pt(),0);
 	    
-	    totWeight_zpt=totWeight_zpt* mcCorr->ElectronReco_SF("RECO_SF",tag.defEta(),tag.Pt(),0);
-            totWeight_zpt=totWeight_zpt* mcCorr->ElectronReco_SF("RECO_SF",probe.defEta(),probe.Pt(),0);
+	    totWeight_uncorr=totWeight_uncorr* mcCorr->ElectronReco_SF("RECO_SF",tag.defEta(),tag.Pt(),0);
+            totWeight_uncorr=totWeight_uncorr* mcCorr->ElectronReco_SF("RECO_SF",probe.defEta(),probe.Pt(),0);
 
 	    if(tag.LeptonIsCF()){
 	      
 	      double CFSF = 1.;
 	      if(tag.GetEtaRegion()=="BB"){
-		if(DataEra=="2016preVFP") CFSF = 0.9170;
-		if(DataEra=="2016postVFP") CFSF = 1.044;
-		if(DataEra=="2017") CFSF = 1.552;
-		if(DataEra=="2018") CFSF = 1.430;
+		if(DataEra=="2016preVFP") CFSF = 1.1;
+		if(DataEra=="2016postVFP") CFSF = 1.0;
+		if(DataEra=="2017") CFSF = 1.3;
+		if(DataEra=="2018") CFSF = 1.3;
 	      }
 	      else{
-		if(DataEra=="2016preVFP") CFSF = 0.873;
-		if(DataEra=="2016postVFP") CFSF = 0.914;
-		if(DataEra=="2017") CFSF =1.329;
-		if(DataEra=="2018") CFSF = 1.293;
+		if(DataEra=="2016preVFP")  CFSF = 0.9;
+		if(DataEra=="2016postVFP") CFSF = 0.9;
+		if(DataEra=="2017") CFSF =1.2;
+		if(DataEra=="2018") CFSF = 1.2;
 
 	      }
 	      totWeight=totWeight*CFSF;
-              totWeight_zpt=totWeight_zpt*CFSF;
 	    }
 	    if(probe.LeptonIsCF()){
 	      
 	      double CFSF = 1.;
               if(probe.GetEtaRegion()=="BB"){
-		if(DataEra=="2016preVFP") CFSF = 0.9170;
-		if(DataEra=="2016postVFP") CFSF = 1.044;
-		if(DataEra=="2017") CFSF = 1.552;
-		if(DataEra=="2018") CFSF = 1.430;
+		if(DataEra=="2016preVFP") CFSF = 0.9;
+		if(DataEra=="2016postVFP") CFSF = 1.;
+		if(DataEra=="2017") CFSF = 1.5;
+		if(DataEra=="2018") CFSF = 1.4;
               }
 	      else{
-		if(DataEra=="2016preVFP") CFSF = 0.873;
-                if(DataEra=="2016postVFP") CFSF = 0.914;
-                if(DataEra=="2017") CFSF =1.329;
-                if(DataEra=="2018") CFSF = 1.293;
+		if(DataEra=="2016preVFP") CFSF = 0.9;
+                if(DataEra=="2016postVFP") CFSF = 0.9;
+                if(DataEra=="2017") CFSF =1.3;
+                if(DataEra=="2018") CFSF = 1.3;
 
 	      } 
               totWeight=totWeight*CFSF;
-              totWeight_zpt=totWeight_zpt*CFSF;
 
             }
 
