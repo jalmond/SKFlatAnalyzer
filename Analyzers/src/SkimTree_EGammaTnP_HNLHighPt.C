@@ -22,7 +22,6 @@ void SkimTree_EGammaTnP_HNLHighPt::initializeAnalyzer(){
     weight_tree->Branch("zptweight",&zptweight);
     weight_tree->Branch("z0weight",&z0weight);
     weight_tree->Branch("totWeight",&totWeight);
-    weight_tree->Branch("totWeight_uncorr",&totWeight_uncorr);
   }
 
 
@@ -42,7 +41,6 @@ void SkimTree_EGammaTnP_HNLHighPt::initializeAnalyzer(){
     newtree->Branch("zptweight",&zptweight);
     newtree->Branch("z0weight",&z0weight);
     newtree->Branch("totWeight",&totWeight);
-    newtree->Branch("totWeight_uncorr",&totWeight_uncorr);
   }
   newtree->Branch("event_met_pfmet",&pfMET_Type1_pt);
   newtree->Branch("event_met_pfphi",&pfMET_Type1_phi);
@@ -256,7 +254,6 @@ void SkimTree_EGammaTnP_HNLHighPt::executeEvent(){
       z0weight=p.w.z0weight;
       //      totWeight=p.w.lumiweight*p.w.PUweight*p.w.prefireweight*p.w.zptweight*p.w.z0weight;
       EvWeight=p.w.lumiweight*p.w.PUweight*p.w.prefireweight;
-      totWeight_uncorr=p.w.lumiweight*p.w.PUweight*p.w.prefireweight;
     }
     L1ThresholdHLTEle23Ele12CaloIdLTrackIdLIsoVL=GetL1Threshold();
     
@@ -466,9 +463,6 @@ void SkimTree_EGammaTnP_HNLHighPt::executeEvent(){
 	    totWeight=totWeight* mcCorr->ElectronReco_SF("RECO_SF",tag.defEta(),tag.Pt(),0);
 	    totWeight=totWeight* mcCorr->ElectronReco_SF("RECO_SF",probe.defEta(),probe.Pt(),0);
 	    
-	    totWeight_uncorr=totWeight_uncorr* mcCorr->ElectronReco_SF("RECO_SF",tag.defEta(),tag.Pt(),0);
-            totWeight_uncorr=totWeight_uncorr* mcCorr->ElectronReco_SF("RECO_SF",probe.defEta(),probe.Pt(),0);
-
 	    if(tag.LeptonIsCF()){
 	      
 	      double CFSF = 1.;

@@ -81,7 +81,8 @@ void HNL_LeptonCore::initializeAnalyzer(bool READBKGHISTS, bool SETUPIDBDT){
   else if(RunPromptTLRemoval)   fakeEst->ReadHistograms(true,Analyzer=="HNL_ControlRegion"); /// For now when checking                                                                                                                    
   else if(Analyzer.Contains("HNL_Lepton_FakeRate") && !Analyzer.Contains("SkimTree") ) fakeEst->ReadHistograms(IsDATA,false); ///
   else if(Analyzer.Contains("Fake") && !Analyzer.Contains("SkimTree") ) fakeEst->ReadHistograms(IsDATA,true); ///
-  
+  else if(Analyzer.Contains("SkimTree_EGammaTnP_HNLHighPt") && IsDATA) fakeEst->ReadHistograms(true,false); 
+
   //==== CFBackgroundEstimator                                                                                                                                              
   cfEst->SetEra(GetEra());
   cfEst->SetFittedBins();
@@ -423,18 +424,18 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
     SystList = {
       AnalyzerParameter::CFRateUp,
       AnalyzerParameter::CFRateDown,
-      AnalyzerParameter::CFSFUp,
-      AnalyzerParameter::CFSFDown
+      //AnalyzerParameter::CFSFUp,
+      //AnalyzerParameter::CFSFDown
     };
   }
   
   else if(RunFake){
-    SystList.push_back(AnalyzerParameter::FRUp);
+    SystList.push_back(AnalyzerParameter::FRUp); //// Add 
     SystList.push_back(AnalyzerParameter::FRDown);
-    SystList.push_back(AnalyzerParameter::FRAJUp);
-    SystList.push_back(AnalyzerParameter::FRAJDown);
-    SystList.push_back(AnalyzerParameter::FRPartonSFUp);
-    SystList.push_back(AnalyzerParameter::FRPartonSFDown);
+    //SystList.push_back(AnalyzerParameter::FRAJUp); /// Apply 15% in DataCard
+    //SystList.push_back(AnalyzerParameter::FRAJDown); 
+    //SystList.push_back(AnalyzerParameter::FRPartonSFUp); /// Apply 10% in DataCard
+    //SystList.push_back(AnalyzerParameter::FRPartonSFDown);
     SystList.push_back(AnalyzerParameter::FRHighPtUp);
     SystList.push_back(AnalyzerParameter::FRHighPtDown);
   }
