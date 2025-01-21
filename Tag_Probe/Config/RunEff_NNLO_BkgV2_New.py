@@ -28,7 +28,16 @@ WorkDir=args.WorkDir
 It_Probes    = [ 'MVALoose','MVABaseline','HNLMVA','HNLMVA_HighPt', 'HNL_ULID_Split_1','HNL_ULID_Split_2','HNL_ULID_Split_3','HNL_ULID_Split_4','HNL_ULID_Split_4b','HNL_ULID_Split_5','HNL_ULID_Split_5b','HNL_ULID_Split_6','HNL_ULID_Split_7','HNL_ULID_Split_8','HNLMVA_NoCF','HNLMVA_NoConv','HNLMVA_NoFake']
 
 #### IDs applied to probe befrpre PASS/FAIL
-It_ProbeID   = ['HNL_ULID_Split_2',     'HNL_ULID_Split_2', 'HNL_ULID_Split_2', 'HNL_ULID_Split_2','HNL_ULID_Probe_Split_2',       'HNL_ULID_Probe_Split_2','HNL_ULID_Probe_Split_3','HNL_ULID_Probe_Split_4','HNL_ULID_Probe_Split_4','HNL_ULID_Probe_Split_5','HNL_ULID_Probe_Split_5','HNL_ULID_Probe_Split_6','HNL_ULID_Probe_Split_7','HNL_ULID_Probe_Split_8' ,'MVABaseline','MVABaseline','MVABaseline']
+
+It_ProbeID   = ['Pass',     'Pass', 'Pass', 'Pass','Pass',  'HNL_ULID_Probe_Split_2','HNL_ULID_Probe_Split_3','HNL_ULID_Probe_Split_4','HNL_ULID_Probe_Split_4','HNL_ULID_Probe_Split_5','HNL_ULID_Probe_Split_5','HNL_ULID_Probe_Split_6','HNL_ULID_Probe_Split_7','HNL_ULID_Probe_Split_8' ,'MVABaseline','MVABaseline','MVABaseline']                                                             
+
+NID_Full= 0
+
+for tmpID in It_ProbeID:
+  if tmpID == 'Pass':
+    NID_Full=NID_Full+1
+
+#It_ProbeID   = ['HNL_ULID_Split_2',     'HNL_ULID_Split_2', 'HNL_ULID_Split_2', 'HNL_ULID_Split_2','HNL_ULID_Probe_Split_2',       'HNL_ULID_Probe_Split_2','HNL_ULID_Probe_Split_3','HNL_ULID_Probe_Split_4','HNL_ULID_Probe_Split_4','HNL_ULID_Probe_Split_5','HNL_ULID_Probe_Split_5','HNL_ULID_Probe_Split_6','HNL_ULID_Probe_Split_7','HNL_ULID_Probe_Split_8' ,'MVABaseline','MVABaseline','MVABaseline']
 It_IsPasses = ['Pass','Fail']
 It_EtaRegions = ['BB','EC']
 #It_EtaRegions = ['BB']
@@ -1349,7 +1358,7 @@ def CreateHists(NthJob):
     for Probe in It_Probes:
       ProbeID_data=It_ProbeID[nProbe_data]
       # JA
-      if nProbe_data < 0:
+      if nProbe_data < NID_Full:
         this_cuts[Probe] = {
           'Pass':"(passing"+Probe+"==1)",
           'Fail':"(passing"+Probe+"==0)",
