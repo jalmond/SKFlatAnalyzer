@@ -14,30 +14,19 @@ parser.add_argument('-nj', dest='NJob', type=int, default=0, help='Number of job
 #parser.add_argument('-e' , dest='Era', default ='2017')
 parser.add_argument('-e' , dest='Eras', default=[], nargs='+')
 parser.add_argument('-wd' , dest='WorkDir', default ='./')
-parser.add_argument('-ScaleCF', dest='ScaleCF', type=float, default=1, help='SF for CF')
-
 
 args = parser.parse_args()
 
-ScaleCF=args.ScaleCF
 Name_Nevents = "_N"+str(args.Nevents) if args.Nevents > 0 else ""
 NJob=args.NJob
 #Era = args.Era
 WorkDir=args.WorkDir
 
-It_Probes    = [ 'MVALoose','MVABaseline','HNLMVA','HNLMVA_HighPt', 'HNL_ULID_Split_1','HNL_ULID_Split_2','HNL_ULID_Split_3','HNL_ULID_Split_4','HNL_ULID_Split_4b','HNL_ULID_Split_5','HNL_ULID_Split_5b','HNL_ULID_Split_6','HNL_ULID_Split_7','HNL_ULID_Split_8','HNLMVA_NoCF','HNLMVA_NoConv','HNLMVA_NoFake']
+It_Probes    = [ 'MVABaseline','HNLMVA_HighPt']
 
 #### IDs applied to probe befrpre PASS/FAIL
+It_ProbeID   = ['Pass']#,     'Pass']
 
-It_ProbeID   = ['Pass',     'Pass', 'Pass', 'Pass','Pass',  'HNL_ULID_Probe_Split_2','HNL_ULID_Probe_Split_3','HNL_ULID_Probe_Split_4','HNL_ULID_Probe_Split_4','HNL_ULID_Probe_Split_5','HNL_ULID_Probe_Split_5','HNL_ULID_Probe_Split_6','HNL_ULID_Probe_Split_7','HNL_ULID_Probe_Split_8' ,'MVABaseline','MVABaseline','MVABaseline']                                                             
-
-NID_Full= 0
-
-for tmpID in It_ProbeID:
-  if tmpID == 'Pass':
-    NID_Full=NID_Full+1
-
-#It_ProbeID   = ['HNL_ULID_Split_2',     'HNL_ULID_Split_2', 'HNL_ULID_Split_2', 'HNL_ULID_Split_2','HNL_ULID_Probe_Split_2',       'HNL_ULID_Probe_Split_2','HNL_ULID_Probe_Split_3','HNL_ULID_Probe_Split_4','HNL_ULID_Probe_Split_4','HNL_ULID_Probe_Split_5','HNL_ULID_Probe_Split_5','HNL_ULID_Probe_Split_6','HNL_ULID_Probe_Split_7','HNL_ULID_Probe_Split_8' ,'MVABaseline','MVABaseline','MVABaseline']
 It_IsPasses = ['Pass','Fail']
 It_EtaRegions = ['BB','EC']
 #It_EtaRegions = ['BB']
@@ -899,17 +888,22 @@ def measureSFs(Data_OS, Bundle, Era, EtaRegion, Probe, Tag, Save, n_job, OutFile
 
   # handling exceptions
   Data_Eff_exc1 = []
-  #print "Checking Data eff bins ..."
+  #JA
+  print "Checking Data eff bins ..."
   for i in range(Data_Eff.GetNbinsX()):
-    #print i+1, "th bin num:", Data_Eff.GetBinContent(i+1), "den:", Data_Tot.GetBinContent(i+1)
+    print i+1, "th bin num:", Data_Eff.GetBinContent(i+1), "den:", Data_Tot.GetBinContent(i+1)
     if Data_Eff.GetBinContent(i+1) <= 0:
       Data_Eff.SetBinContent(i+1, 1)
       Data_Tot.SetBinContent(i+1, 0.01) # eff = 100 so out of range
     if Data_Eff.GetBinContent(i+1) > Data_Tot.GetBinContent(i+1): # den is less than num, due to negative weight
-      #print ">>>>>>>>>>>>>>","bin",i+1,": Eff exceeds 1 !!!! <<<<<<<<<<<<<<<<<"
+      print ">>>>>>>>>>>>>>","bin",i+1,": Eff exceeds 1 !!!! <<<<<<<<<<<<<<<<<"
       Data_Eff_exc1.append([i+1,(Data_Eff.GetBinContent(i+1)-Data_Tot.GetBinContent(i+1))/Data_Tot.GetBinContent(i+1)]) # store errors
       Data_Tot.SetBinContent(i+1, Data_Eff.GetBinContent(i+1)) # make SF = 1
   Data_Eff.Divide(Data_Eff,Data_Tot,1,1,"B")
+  
+  for i in range(Data_Eff.GetNbinsX()):
+    print i+1, "th bin SF:", Data_Eff.GetBinContent(i+1)
+
   for i in range(len(Data_Eff_exc1)):
     Data_Eff.SetBinError(Data_Eff_exc1[i][0], Data_Eff_exc1[i][1])
 
@@ -1357,8 +1351,7 @@ def CreateHists(NthJob):
     nProbe_data=0
     for Probe in It_Probes:
       ProbeID_data=It_ProbeID[nProbe_data]
-      # JA
-      if nProbe_data < NID_Full:
+      if nProbe_data < 5:
         this_cuts[Probe] = {
           'Pass':"(passing"+Probe+"==1)",
           'Fail':"(passing"+Probe+"==0)",
@@ -1438,13 +1431,9 @@ def makeResults():
     # Call necessary files first
     HistFiles = []
     for era in eras:
-      #HistFiles.append(TFile.Open("/data6/Users/jalmond_public/For_Jihun/SF_"+era+".root"))
-      #HistFiles.append(TFile.Open("/data6/Users/jalmond_public/For_Jihun/Version3/SF_"+era+".root")) #V3 NLO
-      #HistFiles.append(TFile.Open("/data9/Users/jalmond_public/For_Jihun/Version3_NNLO/SF_"+era+".root")) #V3 MiNNLO : Step by step split
-      #HistFiles.append(TFile.Open("/data9/Users/jalmond_public/For_Jihun/Version5_NNLO/SF_"+era+".root")) #V5 MiNNLO : MVALoose, IDs on top of MVALoose
-      #HistFiles.append(TFile.Open("/data9/Users/jalmond_public/For_Jihun/Version6_NNLO/SF_"+era+".root")) #V6 MiNNLO : same but pt 100 to 150, 150 to 200
-      if "Version7" in WorkDir: HistFiles.append(TFile.Open("/data9/Users/jalmond_public/For_Jihun/Version7_split_NNLO/SF_"+era+".root")) #V7 MiNNLO : applied RECO, CF SF
-      elif "Version8" in WorkDir: HistFiles.append(TFile.Open("/data6/Users/jihkim/TandPRunlog/Version8_NNLO/2018/TS_2025_01_17_091438__321797____tamsa1/Out_Eff/SF_"+era+".root")) #V8 MiNNLO : change Diboson MC set, add minor MCs, store mcConv
+
+      HistFiles.append(TFile.Open("/data9/Users/jalmond_public/For_Jihun/Version1_BkgV2/SF_"+era+".root"))
+      
 
     # Merge 2016
     if len(eras) > 1:
@@ -1462,7 +1451,6 @@ def makeResults():
         for Probe in It_Probes:
           h_mc[EtaRegion][Charge][Probe] = {}
           for IsPass in It_IsPasses:
-            #h_mc[EtaRegion][Charge][Probe][IsPass] = this_HistFile.Get("pt_"+year+"_"+Charge+"_"+EtaRegion+"_"+Probe+"_"+IsPass) if "tot" in Charge else [this_HistFile.Get("pt_"+year+"_"+nameFilter[sample]+"_"+EtaRegion+"_"+Charge+"_"+Probe+"_"+IsPass) for sample in samples[year][:-1]]
             h_mc[EtaRegion][Charge][Probe][IsPass] = merge_lastbins(this_HistFile.Get("pt_"+year+"_"+Charge+"_"+EtaRegion+"_"+Probe+"_"+IsPass)) if "tot" in Charge else [merge_lastbins(this_HistFile.Get("pt_"+year+"_"+nameFilter[sample]+"_"+EtaRegion+"_"+Charge+"_"+Probe+"_"+IsPass)) for sample in samples[year][:-1]]
         # All probes
         #h_mc[EtaRegion][Charge]['All'] = this_HistFile.Get("pt_"+year+"_"+Charge+"_"+EtaRegion) if "tot" in Charge else [this_HistFile.Get("pt_"+year+"_"+nameFilter[sample]+"_"+EtaRegion+"_"+Charge) for sample in samples[year][:-1]] 
@@ -1485,6 +1473,7 @@ def makeResults():
     for EtaRegion in It_EtaRegions:
       for Probe in It_Probes:
         for IsPass in It_IsPasses:
+          
           h_Bundle[EtaRegion][Probe][IsPass].append(h_mc[EtaRegion]['os'][Probe][IsPass][0].Clone()) # DY or DYtoEE (MiNNLO)
           h_Bundle[EtaRegion][Probe][IsPass].append(h_mc[EtaRegion]['os'][Probe][IsPass][1].Clone()) # DYtoTauTau (MiNNLO)
           h_Bundle[EtaRegion][Probe][IsPass].append(h_mc[EtaRegion]['os'][Probe][IsPass][2].Clone()) # TTLL (TT)
@@ -1617,8 +1606,18 @@ def makeResults():
           }
         for IsPass in It_IsPasses:
 
+          for i in range(h_data[EtaRegion]['os'][Probe][IsPass].GetNbinsX()):
+            print i+1, "th Databin OS:",  h_data[EtaRegion]['os'][Probe][IsPass].GetBinContent(i+1)
+
+
           # SS data - SS prompt = OS fake
-          h_data[EtaRegion]['ss'][Probe][IsPass].Add(h_mc[EtaRegion]['ss_tot'][Probe][IsPass],-1)
+          for i in range(h_mc[EtaRegion]['ss_tot'][Probe][IsPass].GetNbinsX()):
+            print i+1, "th bin SS_tot:", h_mc[EtaRegion]['ss_tot'][Probe][IsPass].GetBinContent(i+1)
+    
+          for i in range(h_data[EtaRegion]['ss'][Probe][IsPass].GetNbinsX()):
+            print i+1, "th Databin SS:",  h_data[EtaRegion]['ss'][Probe][IsPass].GetBinContent(i+1)
+
+          h_data[EtaRegion]['ss'][Probe][IsPass].Add(h_mc[EtaRegion]['ss_tot'][Probe][IsPass],-1) #JA CHANGE
           h_Bundle[EtaRegion][Probe][IsPass].append(h_data[EtaRegion]['ss'][Probe][IsPass].Clone()) # Fake
           h_Bundle[EtaRegion][Probe][IsPass][-1].SetFillColor(kAzure+1)
 
@@ -1662,8 +1661,7 @@ def makeResults():
 
 if __name__ == '__main__':
   beginTime = datetime.now()
-  #makeTurnOn()
-  CreateHists(NJob) # Jobs to be splitted with condor
-  #makeResults()
+
+  makeResults()
   endTime = datetime.now()
   print "["+endTime.now().strftime("%Y-%m-%d %H:%M:%S")+"]","Total done in",endTime-beginTime,"."
