@@ -77,6 +77,7 @@ void HNL_SignalRegion_Plotter::executeEvent(){
       TString SystLabel = "";
       if(HasFlag("Syst_Theory")) SystLabel= "Theory";
       else if(HasFlag("Syst_Muon")) SystLabel= "Muon";
+      else if(HasFlag("Syst_Jet")) SystLabel= "Jet";
       else SystLabel=GetChannelString(channel);
       for(auto isyst : GetSystList(SystLabel)){
 	bool runJob = UpdateParamBySyst(id,param,AnalyzerParameter::Syst(isyst),param_name);

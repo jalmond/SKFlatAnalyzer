@@ -460,24 +460,24 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
 	SystList.push_back(AnalyzerParameter::MuonRecoSFDown);
 	SystList.push_back(AnalyzerParameter::MuonEnUp);
 	SystList.push_back(AnalyzerParameter::MuonEnDown);
-	SystList.push_back(AnalyzerParameter::MuonIDSFUp);
-	SystList.push_back(AnalyzerParameter::MuonIDSFDown);
+	//SystList.push_back(AnalyzerParameter::MuonIDSFUp);
+	//SystList.push_back(AnalyzerParameter::MuonIDSFDown);
 	SystList.push_back(AnalyzerParameter::MuonResUp);
         SystList.push_back(AnalyzerParameter::MuonResDown);
-	SystList.push_back(AnalyzerParameter::MuonTriggerSFUp);
-	SystList.push_back(AnalyzerParameter::MuonTriggerSFDown);
+	//SystList.push_back(AnalyzerParameter::MuonTriggerSFUp);
+	//SystList.push_back(AnalyzerParameter::MuonTriggerSFDown);
       }
       if(SystType=="EE" || SystType=="EMu"){
-	SystList.push_back(AnalyzerParameter::ElectronRecoSFUp);
-	SystList.push_back(AnalyzerParameter::ElectronRecoSFDown);
+	//SystList.push_back(AnalyzerParameter::ElectronRecoSFUp);
+	//SystList.push_back(AnalyzerParameter::ElectronRecoSFDown);
 	SystList.push_back(AnalyzerParameter::ElectronResUp);
 	SystList.push_back(AnalyzerParameter::ElectronResDown);
 	SystList.push_back(AnalyzerParameter::ElectronEnUp);
 	SystList.push_back(AnalyzerParameter::ElectronEnDown);
-	SystList.push_back(AnalyzerParameter::ElectronIDSFUp);
-	SystList.push_back(AnalyzerParameter::ElectronIDSFDown);
-	SystList.push_back(AnalyzerParameter::ElectronTriggerSFUp);
-	SystList.push_back(AnalyzerParameter::ElectronTriggerSFDown);
+	//SystList.push_back(AnalyzerParameter::ElectronIDSFUp);
+	//SystList.push_back(AnalyzerParameter::ElectronIDSFDown);
+	//SystList.push_back(AnalyzerParameter::ElectronTriggerSFUp);
+	//SystList.push_back(AnalyzerParameter::ElectronTriggerSFDown);
       }
     }
   }
