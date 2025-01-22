@@ -219,6 +219,8 @@ void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq,
       continue;
     }
 
+    //// Fill Trigger Cutflow
+    FillCutflow(HNL_LeptonCore::ChannelDepTrigger, weight_channel, GetChannelString(dilep_channel) +"_MultiTrigger",param); /// test adding SL trigger
     FillCutflow(HNL_LeptonCore::ChannelDepTrigger, weight_channel, GetChannelString(dilep_channel) +"_Trigger",param);
     
     EvalTrigWeight(dilep_channel, muons,electrons,param, ev,weight_channel);
