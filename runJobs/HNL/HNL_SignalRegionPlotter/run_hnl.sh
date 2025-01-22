@@ -81,6 +81,14 @@ if [[ $1 == "SIG" ]]; then
 fi
 
 
+if [[ $1 == "SYST_FakeEE" ]]; then
+
+    
+    SKFlat.py -a $analyzer  -l $datapath/DL/2018_DiLepton_EE.txt      -n 200    --nmax 500   -e 2018  --skim SkimTree_HNMultiLepBDT  --userflags RunSyst,RunFake   &
+    
+fi
+
+
 if [[ $1 == "SYST" ]]; then
 
     for i in "${era_list[@]}"

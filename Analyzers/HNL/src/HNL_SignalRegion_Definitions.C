@@ -310,6 +310,13 @@ void   HNL_RegionDefinitions::RunMainRegionCode(bool IsSR,HNL_LeptonCore::Channe
     
     if(RegionBin != "false") {
 
+      if(RunFake && channel==EE && RegionBin.Contains("MNbin3")){
+	cout << "Name : " << param.Name << endl;
+	cout << "MNbin3 Fake Check" << endl;
+	for(auto ilep : LepsT) cout << "Pt lep = " << ilep->Pt() << " eta=  "<< ilep->Eta() << endl;
+	cout << "Weight = " << weight_reg << endl;
+      }
+
       /// Region 1+2+3                                                                                                                                                                  
       //FillLimitInput(LimitRegions, weight_reg,   RegionBin,  "LimitExtraction/"+param.Name,"SR1_"+channel_string,channel_string);
 
