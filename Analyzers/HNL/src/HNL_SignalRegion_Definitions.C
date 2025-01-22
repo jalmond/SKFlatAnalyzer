@@ -214,8 +214,15 @@ void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq,
    
 
     if (!PassTriggerSelection(dilep_channel, ev, LepsT,param.TriggerSelection)) {
-      if(PassTriggerSelection(dilep_channel, ev, LepsT,"POGSglLep"))   FillCutflow(HNL_LeptonCore::ChannelDepTrigger, weight_channel, GetChannelString(dilep_channel) +"_MultiTrigger",param);
-
+      if(dilep_channel==MuMu){
+	if(PassTriggerSelection(dilep_channel, ev, LepsT,"HighPt"))   FillCutflow(HNL_LeptonCore::ChannelDepTrigger, weight_channel, GetChannelString(dilep_channel) +"_MultiTrigger",param);
+      }
+      if(dilep_channel==EE){
+        if(PassTriggerSelection(dilep_channel, ev, LepsT,"POGSglLep"))   FillCutflow(HNL_LeptonCore::ChannelDepTrigger, weight_channel, GetChannelString(dilep_channel) +"_MultiTrigger",param);
+      } 
+      if(dilep_channel==EMu){
+        if(PassTriggerSelection(dilep_channel, ev, LepsT,"Full"))   FillCutflow(HNL_LeptonCore::ChannelDepTrigger, weight_channel, GetChannelString(dilep_channel) +"_MultiTrigger",param);
+      } 
       continue;
     }
 
