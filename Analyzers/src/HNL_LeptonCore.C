@@ -434,8 +434,10 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
     //SystList.push_back(AnalyzerParameter::FRAJDown); 
     //SystList.push_back(AnalyzerParameter::FRPartonSFUp); /// Apply 10% in DataCard
     //SystList.push_back(AnalyzerParameter::FRPartonSFDown);
-    SystList.push_back(AnalyzerParameter::FRHighPtUp);
-    SystList.push_back(AnalyzerParameter::FRHighPtDown);
+    if(SystType!="MuMu" ){
+      SystList.push_back(AnalyzerParameter::FRHighPtUp);
+      SystList.push_back(AnalyzerParameter::FRHighPtDown);
+    }
   }
   else {
   
