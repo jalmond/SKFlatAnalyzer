@@ -211,15 +211,15 @@ void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq,
       FillFakeWeightHist(param.Name+"/FakeWeight", LepsT,param, weight_channel);
 
     }
-    
-    FillCutflow(HNL_LeptonCore::ChannelDepTrigger, w, GetChannelString(channel) +"_MultiTrigger",param);
+   
 
     if (!PassTriggerSelection(dilep_channel, ev, LepsT,param.TriggerSelection)) {
-      PassTriggerSelection(dilep_channel, ev, LepsT,"POGSglLep")
+      if(PassTriggerSelection(dilep_channel, ev, LepsT,"POGSglLep"))   FillCutflow(HNL_LeptonCore::ChannelDepTrigger, weight_channel, GetChannelString(dilep_channel) +"_MultiTrigger",param);
+
       continue;
     }
 
-    FillCutflow(HNL_LeptonCore::ChannelDepTrigger, w, GetChannelString(channel) +"_Trigger",param);
+    FillCutflow(HNL_LeptonCore::ChannelDepTrigger, weight_channel, GetChannelString(dilep_channel) +"_Trigger",param);
     
     EvalTrigWeight(dilep_channel, muons,electrons,param, ev,weight_channel);
 
