@@ -383,8 +383,6 @@ double HNL_LeptonCore::MergeMultiMC(vector<TString> vec, TString Method){
 }
 
 
-
-
 vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
 
   vector<AnalyzerParameter::Syst> SystList = {};
