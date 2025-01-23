@@ -6,7 +6,6 @@ void HNL_SignalRegion_Plotter::initializeAnalyzer(){
 
   HNL_LeptonCore::initializeAnalyzer();
   
-  if(HasFlag("CutFlow")) return;
   if(IsDATA){
     bool run_ee_bdt=false;
     bool run_mm_bdt=false;
