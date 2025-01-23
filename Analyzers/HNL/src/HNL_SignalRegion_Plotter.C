@@ -70,12 +70,23 @@ void HNL_SignalRegion_Plotter::executeEvent(){
     if (this->DataStream == "EGamma") ChannelsToRun = {EE};
     if (this->DataStream == "MuonEG") ChannelsToRun = {EMu};
   }
+  if(MCSample.Contains("Type")){
+    //// Run channel based on MC Sample
+    if(MCSample.Contains("SSWWTypeI_DF")) ChannelsToRun = {EMu};
+    else if(MCSample.Contains("SSWWTypeI_SF")) ChannelsToRun = {EE,MuMu};
+    else ChannelsToRun = {EE,MuMu,EMu};
+
+
+  }
+
 
 
   for (auto id: LepIDs){
 
     for(auto channel : ChannelsToRun){
       
+      if(MCSample.Contains("Type")&& !SelectChannel(channel)) continue;
+
       AnalyzerParameter param = HNL_LeptonCore::InitialiseHNLParameter(id,channel);
       
       param.PlottingVerbose = 0; //// Draw basic plots
