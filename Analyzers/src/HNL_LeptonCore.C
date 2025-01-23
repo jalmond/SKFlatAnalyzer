@@ -193,15 +193,30 @@ void HNL_LeptonCore::initializeAnalyzer(bool READBKGHISTS, bool SETUPIDBDT){
 	
 	TDirectory* origDir = gDirectory;
 	cout << "Acessing file " << TheoryPath << endl;
-	TFile* GenNormFile= new TFile(TheoryPath );
 	TheoryDir->cd();
-	h_SumW_PDF = ((TH1D*) GenNormFile->Get("sumW_PDF")->Clone());
-	h_SumW_Scale = ((TH1D*) GenNormFile->Get("sumW_Scale")->Clone());
-	h_SumW_AlphaS = ((TH1D*) GenNormFile->Get("sumW_AlphaS")->Clone());    
-	
+	TFile* GenNormFile= new TFile(TheoryPath );
+
+	GenNormFile->ls(); 
+
+	TIter next(GenNormFile->GetListOfKeys());
+	TKey* key;
+	while ((key = (TKey*)next())) {
+	  if (strcmp(key->GetClassName(), "TH1F") == 0 || 
+	      strcmp(key->GetClassName(), "TH1D") == 0 || 
+	      strcmp(key->GetClassName(), "TH1I") == 0 || 
+	      strcmp(key->GetClassName(), "TH1S") == 0) {
+	    cout << "Histogram: " << key->GetName() << endl;
+	    if(key->GetName() == "sumW_PDF")h_SumW_PDF = ((TH1D*) GenNormFile->Get("sumW_PDF")->Clone());
+	    if(key->GetName() == "sumW_Scale")h_SumW_Scale = ((TH1D*) GenNormFile->Get("sumW_Scale")->Clone());
+	    if(key->GetName() == "sumW_AlphaS") h_SumW_AlphaS = ((TH1D*) GenNormFile->Get("sumW_AlphaS")->Clone());
+
+	  }
+	}
+
 	GenNormFile->Close();
-      delete GenNormFile;
-      origDir->cd();
+	cout << "Close file" << endl;
+	delete GenNormFile;
+	origDir->cd();
       }
       else {
 	cout << "[HNL_LeptonCore::AccessPathName ] Theory file " << TheoryPath << " not found.." << endl;
