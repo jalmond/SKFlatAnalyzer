@@ -105,6 +105,31 @@ void HNL_SignalRegion_Plotter::executeEvent(){
       else if(HasFlag("Syst_Muon")) SystLabel= "Muon";
       else if(HasFlag("Syst_Jet")) SystLabel= "Jet";
       else SystLabel=GetChannelString(channel);
+
+
+      if(HasFlag("RunSyst")){
+
+	if(!PassMETFilter()) return;
+
+	Event ev = GetEvent();
+
+	if(channel==EE){
+	  if(!ev.PassTrigger(TrigList_HNL_DblEG)) continue;
+	  std::vector<Muon>       MuonCollV     = SelectMuons    (param,param.Muon_Veto_ID,     5., 2.4);
+	  if(MuonCollV.size() > 0) continue;
+	}
+	if(channel==MuMu){
+	  if(!ev.PassTrigger(TrigList_HNL_DblMu)) continue;
+	  std::vector<Electron>   ElectronCollV = SelectElectrons(param,param.Electron_Veto_ID, 10., 2.5);
+	  if(ElectronCollV.size() >0) continue;
+	}
+	if(channel==EMu){
+	  if(!(ev.PassTrigger(TrigList_HNL_MuEG) || ev.PassTrigger(TrigList_HNL_EGMu) )) continue;
+	}
+
+      }
+
+      //// Run Systematics
       for(auto isyst : GetSystList(SystLabel)){
 	bool runJob = UpdateParamBySyst(id,param,AnalyzerParameter::Syst(isyst),param_name);
 	if(runJob) RunULAnalysis(param);
