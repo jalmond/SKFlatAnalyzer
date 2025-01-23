@@ -186,7 +186,11 @@ void HNL_LeptonCore::initializeAnalyzer(bool READBKGHISTS, bool SETUPIDBDT){
 
   TString TheoryPath = "/data9/Users/jalmond_public/PDFSyst/"+GetEra()+"/Theory/GetEffLumi_SkimTree_HNMultiLepBDT_"+MCSample+".root";
   std::ifstream infile(TheoryPath);
+
   
+  h_SumW_PDF=nullptr;
+  h_SumW_Scale=nullptr;
+
   if(HasFlag("RunSyst")){
     if(MCSample.Contains("Type")){
       if(infile.good()){
@@ -200,6 +204,7 @@ void HNL_LeptonCore::initializeAnalyzer(bool READBKGHISTS, bool SETUPIDBDT){
 
 	TIter next(GenNormFile->GetListOfKeys());
 	TKey* key;
+	
 	while ((key = (TKey*)next())) {
 	  if (strcmp(key->GetClassName(), "TH1F") == 0 || 
 	      strcmp(key->GetClassName(), "TH1D") == 0 || 
@@ -225,8 +230,8 @@ void HNL_LeptonCore::initializeAnalyzer(bool READBKGHISTS, bool SETUPIDBDT){
 	cout << "Close file" << endl;
 	delete GenNormFile;
 
-	if (h_SumW_PDF)    cout << "h_SumW_PDF Integral = " << h_SumW_PDF->Integral() << endl;
-	if (h_SumW_Scale) cout << "h_SumW_Scale Integral = " << h_SumW_Scale->Integral() << endl;
+	if (h_SumW_PDF!=nullptr)    cout << "h_SumW_PDF Integral = " << h_SumW_PDF->Integral() << endl;
+	if (h_SumW_Scale!=nullptr ) cout << "h_SumW_Scale Integral = " << h_SumW_Scale->Integral() << endl;
 
       }
       else {
