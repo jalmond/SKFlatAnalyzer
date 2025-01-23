@@ -147,7 +147,6 @@ void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq,
 	  }
 	}
       }
-      return;
     }
     if(HasFlag("CutFlow"))  continue;
     if(HasFlag("RunOS")) continue;
