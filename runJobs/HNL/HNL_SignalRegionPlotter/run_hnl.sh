@@ -92,8 +92,8 @@ fi
 if [[ $1 == "SYST" ]]; then
     
     ##### SET Era here 
-    declare  -a era_list=("2016preVFP" "2016postVFP")   
-    nmax=300
+    #declare  -a era_list=("2016preVFP" "2016postVFP")   
+    #nmax=300
 
     for i in "${era_list[@]}"
     do
