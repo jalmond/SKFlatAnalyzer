@@ -214,8 +214,8 @@ void HNL_LeptonCore::initializeAnalyzer(bool READBKGHISTS, bool SETUPIDBDT){
 	      h_SumW_PDF = ((TH1D*) GenNormFile->Get("sumW_PDF")->Clone());
 	    }
 	    if(strcmp(key->GetName(),"sumW_Scale") == 0) h_SumW_Scale = ((TH1D*) GenNormFile->Get("sumW_Scale")->Clone());
-	    if(strcmp(key->GetName(),"sumW_AlphaS") == 0)h_SumW_AlphaS = ((TH1D*) GenNormFile->Get("sumW_AlphaS")->Clone());
-
+	    ///if(strcmp(key->GetName(),"sumW_AlphaS") == 0)h_SumW_AlphaS = ((TH1D*) GenNormFile->Get("sumW_AlphaS")->Clone());
+	    
 	    origDir->cd();
 
 	  }
@@ -225,9 +225,8 @@ void HNL_LeptonCore::initializeAnalyzer(bool READBKGHISTS, bool SETUPIDBDT){
 	cout << "Close file" << endl;
 	delete GenNormFile;
 
-	cout << "h_SumW_PDF Integral = " << h_SumW_PDF->Integral() << endl;
-	cout << "h_SumW_Scale Integral = " << h_SumW_Scale->Integral() << endl;
-        cout << "h_SumW_AlphaS Integral = " << h_SumW_AlphaS->Integral() << endl;
+	if (h_SumW_PDF)    cout << "h_SumW_PDF Integral = " << h_SumW_PDF->Integral() << endl;
+	if (h_SumW_Scale) cout << "h_SumW_Scale Integral = " << h_SumW_Scale->Integral() << endl;
 
       }
       else {
@@ -1000,10 +999,10 @@ HNL_LeptonCore::~HNL_LeptonCore(){
 	delete h_SumW_Scale;
 	h_SumW_Scale = nullptr; // Set pointer to nullptr after deletion
       }
-      if (h_SumW_AlphaS != nullptr) {
-	delete h_SumW_AlphaS;
-	h_SumW_AlphaS = nullptr; // Set pointer to nullptr after deletion
-      }
+      //      if (h_SumW_AlphaS != nullptr) {
+      //delete h_SumW_AlphaS;
+      //h_SumW_AlphaS = nullptr; // Set pointer to nullptr after deletion
+      //}
     }
   }
   DeleteZptWeight();
