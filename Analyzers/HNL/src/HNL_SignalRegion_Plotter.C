@@ -108,18 +108,19 @@ void HNL_SignalRegion_Plotter::executeEvent(){
 
 
       if(HasFlag("RunSyst")){
-	/// Some code to remove unnecessary Syst runs                                                                                                                                                           \
-                                                                                                                                                                                                                   
+
 	if(!PassMETFilter()) return;
 
+	Event ev = GetEvent();
+
 	if(channel==EE){
-	  if(!ev.PassTrigger(TrigList_HNL_EGMu)) continue;
-	  std::vector<Muon>       MuonCollV     = SelectMuons    (param_signal,param_signal.Muon_Veto_ID,     5., 2.4);
+	  if(!ev.PassTrigger(TrigList_HNL_DblEG)) continue;
+	  std::vector<Muon>       MuonCollV     = SelectMuons    (param,param.Muon_Veto_ID,     5., 2.4);
 	  if(MuonCollV.size() > 0) continue;
 	}
 	if(channel==MuMu){
 	  if(!ev.PassTrigger(TrigList_HNL_DblMu)) continue;
-	  std::vector<Electron>   ElectronCollV = SelectElectrons(param_signal,param_signal.Electron_Veto_ID, 10., 2.5);
+	  std::vector<Electron>   ElectronCollV = SelectElectrons(param,param.Electron_Veto_ID, 10., 2.5);
 	  if(ElectronCollV.size() >0) continue;
 	}
 	if(channel==EMu){

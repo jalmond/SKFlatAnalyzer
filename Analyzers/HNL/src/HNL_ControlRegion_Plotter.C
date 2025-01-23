@@ -102,8 +102,10 @@ void HNL_ControlRegion_Plotter::executeEvent(){
 	  /// Some code to remove unnecessary Syst runs                                                                                                                                                              
 	  if(!PassMETFilter()) return;
   
+	  Event ev = GetEvent();
+
 	  if(channel==EE){
-	    if(!ev.PassTrigger(TrigList_HNL_EGMu)) continue;
+	    if(!ev.PassTrigger(TrigList_HNL_DblEG)) continue;
 	    std::vector<Muon>       MuonCollV     = SelectMuons    (param_signal,param_signal.Muon_Veto_ID,     5., 2.4);  
 	    if(MuonCollV.size() > 0) continue;
 	  }
