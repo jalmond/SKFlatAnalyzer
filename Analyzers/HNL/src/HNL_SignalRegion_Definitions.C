@@ -960,16 +960,11 @@ TString HNL_RegionDefinitions::RunSignalRegionAK4String(bool ApplyForSR,HNL_Lept
   ////// Set Limit Binned 
   if(JetColl.size() < 2){
     FillCutflow(Reg, w, RegionTag+"_lowjet",param);
+    if(ApplyForSR&&param.IsCentral())Fill_RegionPlots(param,"PassSR3_LowJet" ,TauColl,  JetColl, AK8_JetColl, leps,  METv, nPV, w);
     //// These cuts are temp HL will check
     return GetSR3StringBin(RegionTag,GetChannelString(channel), true, met2_st,LT,ll_dphi);
   }  
-  
-  
-  if(JetColl.size() < 2)  {
-    if(ApplyForSR&&param.IsCentral())Fill_RegionPlots(param,"PassSR3_LowJet" ,TauColl,  JetColl, AK8_JetColl, leps,  METv, nPV, w);
-    return "false";
-  }
-  
+    
   FillCutflow(Reg, w, RegionTag+"_dijet",param);
                                                           
   double dijetmass_tmp=999.;
@@ -992,7 +987,12 @@ TString HNL_RegionDefinitions::RunSignalRegionAK4String(bool ApplyForSR,HNL_Lept
   Particle Wcand  = JetColl[m]+JetColl[n]+ *leps[0] + *leps[1];
   double Wmass = (Wcand.M() > 2000.) ? 1999. : Wcand.M();
   if(ApplyForSR){
-    if(Wmass < 400) return "false";
+    if(DataEra.Contains("16")) {
+      if(Wmass < 350) return "false";
+    }
+    else{
+      if(Wmass < 400) return "false";
+    }
   }
 
   if(ApplyForSR&&param.IsCentral())Fill_RegionPlots(param,"PassSR3_HighJet" ,TauColl,  JetColl, AK8_JetColl, leps,  METv, nPV, w);

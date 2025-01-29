@@ -131,7 +131,6 @@ TString HNL_LeptonCore::GetSR3StringBin(TString RegionTag, TString channel, bool
     return "";
   }
   
-  cout << "GetSR3StringBin " << channel << endl;
   if(channel == "MuMu"){
     
     if(DataYear == 2016){
@@ -185,7 +184,7 @@ TString HNL_LeptonCore::GetSR3StringBin(TString RegionTag, TString channel, bool
 	
 	else{
 	  if( LT<= 200 )        return RegionTag+"_bin6";
-	  else if( LT<= 300 )   return RegionTag+"_bin7";
+	  else if( LT<= 275 )   return RegionTag+"_bin7";
 	  else  return RegionTag+"_bin8";
 	}
       }
@@ -215,7 +214,7 @@ TString HNL_LeptonCore::GetSR3StringBin(TString RegionTag, TString channel, bool
 	  if(LT<= 200)          return RegionTag+"_bin1";
 	  else if(LT<= 250)     return RegionTag+"_bin2";
 	  else if(LT<= 300)     return RegionTag+"_bin3";
-	  else if(LT<= 400)     return RegionTag+"_bin4";
+	  else if(LT<= 350)     return RegionTag+"_bin4";
 	  else       return RegionTag+"_bin5";
 	}
 	else{
@@ -259,7 +258,7 @@ TString HNL_LeptonCore::GetSR3StringBin(TString RegionTag, TString channel, bool
 	}
 	else{
 	  if( LT<= 200 )        return RegionTag+"_bin6";
-	  else if( LT<= 450 )   return RegionTag+"_bin7";
+	  else if( LT<= 375 )   return RegionTag+"_bin7";
 	  else  return RegionTag+"_bin8";
 	}
       }
@@ -270,13 +269,13 @@ TString HNL_LeptonCore::GetSR3StringBin(TString RegionTag, TString channel, bool
 	  else if(LT < 350)  return RegionTag+"_bin10";
 	  else if(LT < 450)  return RegionTag+"_bin11";
 	  else if(LT < 550)  return RegionTag+"_bin12";
-	  else if(LT < 650)  return RegionTag+"_bin13";
+	  else if(LT < 675)  return RegionTag+"_bin13";
 	  else               return RegionTag+"_bin14";
 	}
 	else{
 	  if(LT < 250)  return RegionTag+"_bin15";
-	  else if(LT < 350)  return RegionTag+"_bin16";
-	  else if(LT < 450)  return RegionTag+"_bin17";
+	  else if(LT < 325)  return RegionTag+"_bin16";
+	  else if(LT < 400)  return RegionTag+"_bin17";
 	  else  return RegionTag+"_bin18";
 	}/// MET
       }
@@ -302,15 +301,15 @@ TString HNL_LeptonCore::GetSR3StringBin(TString RegionTag, TString channel, bool
         if(met2_st < 3){
           if(LT < 275)       return RegionTag+"_bin9";
           else if(LT < 400)  return RegionTag+"_bin10";
-          else if(LT < 500)  return RegionTag+"_bin11";
-          else if(LT < 600)  return RegionTag+"_bin12";
+          else if(LT < 475)  return RegionTag+"_bin11";
+          else if(LT < 550)  return RegionTag+"_bin12";
           else if(LT < 650)  return RegionTag+"_bin13";
           else               return RegionTag+"_bin14";
 	}
 	else{
-          if(LT < 250)  return RegionTag+"_bin15";
+          if(LT < 300)  return RegionTag+"_bin15";
           else if(LT < 500)  return RegionTag+"_bin16";
-          else if(LT < 650)  return RegionTag+"_bin17";
+          else if(LT < 600)  return RegionTag+"_bin17";
           else  return RegionTag+"_bin18";
 	}/// MET                                                                                                                                                                                                                                                              
       } 
@@ -344,9 +343,9 @@ TString HNL_LeptonCore::GetSR3StringBin(TString RegionTag, TString channel, bool
           else               return RegionTag+"_bin14";
 	}
 	else{
-          if(LT < 400)  return RegionTag+"_bin15";
+          if(LT < 350)  return RegionTag+"_bin15";
           else if(LT < 500)  return RegionTag+"_bin16";
-          else if(LT < 750)  return RegionTag+"_bin17";
+          else if(LT < 650)  return RegionTag+"_bin17";
           else  return RegionTag+"_bin18";
 	}/// MET                                                                                                                                                                                                                                                              
       } 
@@ -361,13 +360,13 @@ TString HNL_LeptonCore::GetSR3StringBin(TString RegionTag, TString channel, bool
 	if(met2_st < 5){
 	  if(LT<= 175)             return RegionTag+"_bin1";
 	  else if(LT<= 250)        return RegionTag+"_bin2";
-	  else if(LT<= 350)        return RegionTag+"_bin3";
-	  else if(LT<= 500)        return RegionTag+"_bin4";
+	  else if(LT<= 325)        return RegionTag+"_bin3";
+	  else if(LT<= 400)        return RegionTag+"_bin4";
 	  else                     return RegionTag+"_bin5";
         }
         else{
           if( LT<= 250 )        return RegionTag+"_bin6";
-          else if( LT<= 450 )   return RegionTag+"_bin7";
+          else if( LT<= 425 )   return RegionTag+"_bin7"; 
           else  return RegionTag+"_bin8";
         }
 
@@ -387,7 +386,7 @@ TString HNL_LeptonCore::GetSR3StringBin(TString RegionTag, TString channel, bool
         else{
           if(LT < 200)       return RegionTag+"_bin15";
           else if(LT < 300)  return RegionTag+"_bin16";
-          else if(LT < 450)  return RegionTag+"_bin17";
+          else if(LT < 425)  return RegionTag+"_bin17";
           else  return RegionTag+"_bin18";
         }/// MET     
       }
@@ -398,14 +397,14 @@ TString HNL_LeptonCore::GetSR3StringBin(TString RegionTag, TString channel, bool
 	if(met2_st < 5){
 	  if(LT<= 175)             return RegionTag+"_bin1";
 	  else if(LT<= 250)        return RegionTag+"_bin2";
-	  else if(LT<= 400)        return RegionTag+"_bin3";
-	  else if(LT<= 500)        return RegionTag+"_bin4";
-	  else                     return RegionTag+"_bin6";
+	  else if(LT<= 350)        return RegionTag+"_bin3";
+	  else if(LT<= 450)        return RegionTag+"_bin4";
+	  else                     return RegionTag+"_bin5";
 	  
 	}
 	else{
 	  if( LT<= 250 )        return RegionTag+"_bin6";
-	  else if( LT<= 500 )   return RegionTag+"_bin7";
+	  else if( LT<= 450 )   return RegionTag+"_bin7";
 	  else  return RegionTag+"_bin8";
 	}
       }
@@ -441,7 +440,7 @@ TString HNL_LeptonCore::GetSR3StringBin(TString RegionTag, TString channel, bool
         }
         else{
           if( LT<= 250 )        return RegionTag+"_bin6";
-          else if( LT<= 600 )   return RegionTag+"_bin7";
+          else if( LT<= 550 )   return RegionTag+"_bin7";
           else  return RegionTag+"_bin8";
         }
       }
@@ -451,13 +450,13 @@ TString HNL_LeptonCore::GetSR3StringBin(TString RegionTag, TString channel, bool
           else if(LT < 400)  return RegionTag+"_bin10";
           else if(LT < 500)  return RegionTag+"_bin11";
           else if(LT < 600)  return RegionTag+"_bin12";
-          else if(LT < 800)  return RegionTag+"_bin13";
+          else if(LT < 700)  return RegionTag+"_bin13";
           else               return RegionTag+"_bin14";
         }
         else{
           if(LT < 250)       return RegionTag+"_bin15";
           else if(LT < 400)  return RegionTag+"_bin16";
-          else if(LT < 600)  return RegionTag+"_bin17";
+          else if(LT < 550)  return RegionTag+"_bin17";
           else  return RegionTag+"_bin18";
         }
       }	
