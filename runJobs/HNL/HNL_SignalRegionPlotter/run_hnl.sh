@@ -49,7 +49,7 @@ SKFlat.py -a $analyzer  -l $mcpath/Prompt/PromptSS2.txt            -n 200       
 
 if [[ $1 == "Main" ]]; then
 
-    declare  -a era_list=("2016preVFP" "2016postVFP" "2017" "2018")
+    declare  -a era_list=("2016preVFP" "2016postVFP" "2018")
 
     for i in "${era_list[@]}"
     do
