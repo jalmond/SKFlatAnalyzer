@@ -176,7 +176,7 @@ class HNL_LeptonCore : public AnalyzerCore {
   Particle GetvMET(TString METType, AnalyzerParameter param, std::vector<Jet> jets, std::vector<FatJet> fatjets, std::vector<Muon> muons, std::vector<Electron> electrons, bool propsmear=true);
   Particle GetvMET(TString METType, AnalyzerParameter param, bool propsmear=true);
   Particle GetMiniAODvMET(TString METType);
-  Particle GetvCorrMET(TString METType, AnalyzerParameter param, Particle METUncorr);
+  Particle GetvCorrMET(TString METType, std::vector<Muon> muons , AnalyzerParameter param, Particle METUncorr);
 
    
   //------ BKG
@@ -273,8 +273,6 @@ class HNL_LeptonCore : public AnalyzerCore {
   std::vector<FatJet> SelectFatJets(AnalyzerParameter param,TString ID, double ptmin, double fetamax);
   std::vector<FatJet> SelectFatJets(TString id, double ptmin, double fetamax);
   std::vector<FatJet> SelectFatJets(const std::vector<FatJet>& jets, TString id, double ptmin, double fetamax);
-
-  vector<Jet>      SkimJetColl(const vector<Jet>& JetColl,     vector<Gen>& TruthColl, AnalyzerParameter param,TString Option);
 
 
   //===== Detailed jet selection

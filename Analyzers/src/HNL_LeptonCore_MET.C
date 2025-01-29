@@ -1,7 +1,7 @@
 #include "HNL_LeptonCore.h"
 
 
-Particle HNL_LeptonCore::GetvCorrMET(TString METType, AnalyzerParameter param, Particle METUncorr){
+Particle HNL_LeptonCore::GetvCorrMET(TString METType, vector<Muon> tight_muons, AnalyzerParameter param, Particle METUncorr){
 
   //// THIS FUNCTION UPDATES MET BASED ON JET Smearing / muon rocc  
   //// Follows https://twiki.cern.ch/twiki/bin/view/CMS/MissingETRun2Corrections                                                                                                                                                                                               
@@ -34,16 +34,18 @@ Particle HNL_LeptonCore::GetvCorrMET(TString METType, AnalyzerParameter param, P
      jets_corr.push_back(ij);
    }
    
+
    Particle UpdatedMET = UpdateMETSmearedJet(METUncorr,jets_corr);
    if(SmearJets) return UpdatedMET;
 
-   std::vector<Muon> tight_muons = GetMuons(param.Muon_Tight_ID, 20.,  2.4);
+   //   std::vector<Muon> tight_muons = SelectMuons(param, param.Muon_Tight_ID, 10.,  2.4);
+
    Particle UpdatedMET2 = UpdateMET(UpdatedMET,tight_muons);
    return UpdatedMET2;
 
  }
  else   if(SmearMuons ) {
-   std::vector<Muon> tight_muons = GetMuons(param.Muon_Tight_ID, 20.,  2.4);
+   //   std::vector<Muon> tight_muons = SelectMuons(param, param.Muon_Tight_ID, 10.,  2.4);
    Particle UpdatedMET = UpdateMET(METUncorr,tight_muons);
    return UpdatedMET;
  }
@@ -54,11 +56,13 @@ Particle HNL_LeptonCore::GetvCorrMET(TString METType, AnalyzerParameter param, P
 
 Particle HNL_LeptonCore::GetvMET(TString METType, AnalyzerParameter param,bool PropSmearing){
 
+  //// THIS FUNCION IS OLD PLEASE USE OTHER 
+
   bool ApplySyst      = (!IsDATA) && (param.syst_ != AnalyzerParameter::Central);
 
   Particle vStandMET = GetMiniAODvMET(METType);
   if(!ApplySyst && !PropSmearing) return vStandMET;  //// This function calls central values stored in MINMIAOD OR POG COrrected                                                                                                                                                                                              
-  if(!ApplySyst && PropSmearing)  return GetvCorrMET(METType,param,vStandMET);
+  //  if(!ApplySyst && PropSmearing)  return GetvCorrMET(METType,SelectMuons(param.Muon_Tight_ID, 10.,  2.4),param,vStandMET);
 
   bool UsePuppi     = METType.Contains("Puppi");
   bool IsxyCorr     = METType.Contains("xyCorr");
@@ -74,8 +78,7 @@ Particle HNL_LeptonCore::GetvMET(TString METType, AnalyzerParameter param,bool P
   if(param.syst_ == AnalyzerParameter::MuonEnDown)    IdxSyst = 5;
   if(param.syst_ == AnalyzerParameter::ElectronEnUp)  IdxSyst = 6;
   if(param.syst_ == AnalyzerParameter::ElectronEnDown)IdxSyst = 7;
-
-  Particle vMETCorr = PropSmearing ? GetvCorrMET(METType,param,vStandMET) : vStandMET;
+  Particle vMETCorr = PropSmearing ? GetvCorrMET(METType,SelectMuons(param.Muon_Tight_ID, 10.,  2.4),param,vStandMET) : vStandMET;
   Particle vMETFinal;
 
   if(IdxSyst>=0 && IdxSyst < 8){
@@ -107,10 +110,23 @@ Particle HNL_LeptonCore::GetvMET(TString METType, AnalyzerParameter param,
   ////// This function is used to get MET both central and systematic                                                                                                                                                                                                                                                         
 
   bool ApplySyst      = (!IsDATA) && (param.syst_ != AnalyzerParameter::Central);
+  
 
   Particle vStandMET = GetMiniAODvMET(METType);
-  if(!ApplySyst && !PropSmearing) return vStandMET;  //// This function calls central values stored in MINMIAOD OR POG COrrected                                                                                                                                                                                              
-  if(!ApplySyst && PropSmearing)  return GetvCorrMET(METType,param,vStandMET);
+
+  if(HasFlag("ScanSystematic"))  cout << "GetvMET Nom = " << vStandMET.Pt() << endl;
+  
+  if(!ApplySyst && !PropSmearing) return vStandMET;  //// This function calls central values stored in MINMIAOD OR POG COrrected                                        
+  if(HasFlag("ScanSystematic")) {
+    Particle a = GetvCorrMET(METType,muons,param,vStandMET) ;
+    cout << "GetvMET smear = " << a.Pt() << " " << vStandMET.Pt()<<endl;
+
+    Particle b = GetvCorrMET(METType,muons,param,vStandMET) ;
+    cout << "GetvMET smear2 = " << b.Pt() << " " << vStandMET.Pt()<<endl;
+
+  }
+  
+  if(!ApplySyst && PropSmearing)  return GetvCorrMET(METType,muons,param,vStandMET);
 
   bool UsePuppi     = METType.Contains("Puppi");
   bool IsxyCorr     = METType.Contains("xyCorr");
@@ -118,32 +134,41 @@ Particle HNL_LeptonCore::GetvMET(TString METType, AnalyzerParameter param,
   int IdxSyst = -1;
   if(param.syst_ == AnalyzerParameter::METUnclUp)             IdxSyst = 10;
   if(param.syst_ == AnalyzerParameter::METUnclDown)           IdxSyst = 11;
-  if(param.syst_ == AnalyzerParameter::JetResUp)              IdxSyst = 0;
-  if(param.syst_ == AnalyzerParameter::JetResDown)            IdxSyst = 1;
-  if(param.syst_ == AnalyzerParameter::JetEnUp)               IdxSyst = 2;
-  if(param.syst_ == AnalyzerParameter::JetEnDown)             IdxSyst = 3;
-  if(param.syst_ == AnalyzerParameter::MuonEnUp)              IdxSyst = 54; /// +50 so code uses our Muon corr not POG in MiniAOD
-  if(param.syst_ == AnalyzerParameter::MuonEnDown)            IdxSyst = 55; /// +50 so code uses our Muon corr not POG in MiniAOD
+  if(param.syst_ == AnalyzerParameter::JetResUp)              IdxSyst = 100;/// Jet + Muon corr already applied in GetvCorrMET
+  if(param.syst_ == AnalyzerParameter::JetResDown)            IdxSyst = 101;/// Jet + Muon corr already applied in GetvCorrMET    
+  if(param.syst_ == AnalyzerParameter::JetEnUp)               IdxSyst = 102;/// Jet + Muon corr already applied in GetvCorrMET   
+  if(param.syst_ == AnalyzerParameter::JetEnDown)             IdxSyst = 103;/// Jet + Muon corr already applied in GetvCorrMET   
+  if(param.syst_ == AnalyzerParameter::MuonEnUp)              IdxSyst = 104;/// Jet + Muon corr already applied in GetvCorrMET   
+  if(param.syst_ == AnalyzerParameter::MuonEnDown)            IdxSyst = 105;/// Jet + Muon corr already applied in GetvCorrMET   
+  if(param.syst_ == AnalyzerParameter::MuonResUp)      IdxSyst = 106;/// Jet + Muon corr already applied in GetvCorrMET   
+  if(param.syst_ == AnalyzerParameter::MuonResDown)    IdxSyst = 107;/// Jet + Muon corr already applied in GetvCorrMET   
   if(param.syst_ == AnalyzerParameter::ElectronEnUp)          IdxSyst = 56;
   if(param.syst_ == AnalyzerParameter::ElectronEnDown)        IdxSyst = 57;
-  // syst source not defined in CMSSW
-  if(param.syst_ == AnalyzerParameter::JetMassUp)             IdxSyst = 20;
-  if(param.syst_ == AnalyzerParameter::JetMassDown)           IdxSyst = 21;
-  if(param.syst_ == AnalyzerParameter::JetMassSmearUp)        IdxSyst = 22;
-  if(param.syst_ == AnalyzerParameter::JetMassSmearDown)      IdxSyst = 23;
-  if(param.syst_ == AnalyzerParameter::ElectronResUp)         IdxSyst = 34;
-  if(param.syst_ == AnalyzerParameter::ElectronResDown)       IdxSyst = 35;
-  if(param.syst_ == AnalyzerParameter::BTagSFHTagUp)          IdxSyst = 40;
-  if(param.syst_ == AnalyzerParameter::BTagSFHTagDown)        IdxSyst = 41;
-  if(param.syst_ == AnalyzerParameter::BTagSFLTagUp)          IdxSyst = 42;
-  if(param.syst_ == AnalyzerParameter::BTagSFLTagDown)        IdxSyst = 43;
+  if(param.syst_ == AnalyzerParameter::ElectronResUp)          IdxSyst = 58;
+  if(param.syst_ == AnalyzerParameter::ElectronResDown)        IdxSyst = 59;
+  if(param.syst_ == AnalyzerParameter::BTagSFHTagUp)          IdxSyst = 60;
+  if(param.syst_ == AnalyzerParameter::BTagSFHTagDown)        IdxSyst = 61;
+  if(param.syst_ == AnalyzerParameter::BTagSFLTagUp)          IdxSyst = 62;
+  if(param.syst_ == AnalyzerParameter::BTagSFLTagDown)        IdxSyst = 63;
 
-  Particle vMETCorr = PropSmearing ? GetvCorrMET(METType,param,vStandMET) : vStandMET;
+
+  // syst source not defined in CMSSW
+  //  if(param.syst_ == AnalyzerParameter::JetMassUp)             IdxSyst = 20;
+  //  if(param.syst_ == AnalyzerParameter::JetMassDown)           IdxSyst = 21;
+  ///  if(param.syst_ == AnalyzerParameter::JetMassSmearUp)        IdxSyst = 22;
+  // if(param.syst_ == AnalyzerParameter::JetMassSmearDown)      IdxSyst = 23;
+  //  if(param.syst_ == AnalyzerParameter::BTagSFHTagUp)          IdxSyst = 40;
+  //  if(param.syst_ == AnalyzerParameter::BTagSFHTagDown)        IdxSyst = 41;
+  //  if(param.syst_ == AnalyzerParameter::BTagSFLTagUp)          IdxSyst = 42;
+  //  if(param.syst_ == AnalyzerParameter::BTagSFLTagDown)        IdxSyst = 43;
+
+  Particle vMETCorr = PropSmearing ? GetvCorrMET(METType,muons,param,vStandMET) : vStandMET;
   if(IdxSyst == -1) return vMETCorr;
 
   Particle vMETFinal;
-
-  if(IdxSyst >= 20 )  vMETFinal = UpdateMETSyst(param, vMETCorr, jets, fatjets, muons, electrons);
+  
+  if(IdxSyst >= 100 ) vMETFinal = vMETCorr; /// Jet smearing  already propagated
+  else if(IdxSyst >= 20 )  vMETFinal = UpdateMETSyst(param, vMETCorr, jets, fatjets, muons, electrons);
   else if(IdxSyst>=0){
 
     if(UsePuppi) {
@@ -162,6 +187,10 @@ Particle HNL_LeptonCore::GetvMET(TString METType, AnalyzerParameter param,
     cout << "[HNL_LeptonCore::GetvMET] There is no matched syst type;" << endl;
     cout << "[HNL_LeptonCore::GetvMET] Current syst index : " << IdxSyst << endl;
     exit(EXIT_FAILURE);
+  }
+
+  if(HasFlag("ScanSystematic")){
+    cout << "GetvMET [IdxSyst = "<<IdxSyst<< "]final = " << vMETFinal.Pt() << endl;
   }
 
   return vMETFinal;

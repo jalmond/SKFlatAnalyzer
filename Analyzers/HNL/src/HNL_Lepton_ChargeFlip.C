@@ -26,6 +26,9 @@ void HNL_Lepton_ChargeFlip::executeEvent(){
 
   if(HasFlag("ClosureTest")) LepIDs = {"HNL_ULID" , "HNL_HighPt_ULID",  "passHEEPID_v1",  "passHEEPID_v3" };
   if(HasFlag("ScaleFactor")) LepIDs = {"HNL_ULID" , "HNL_HighPt_ULID", "passHEEPID_v1","passHEEPID_v3" };
+  if(HasFlag("ScaleFactorPt1")) LepIDs = {"HNL_ULID" , "HNL_HighPt_ULID"};
+  if(HasFlag("ScaleFactorPt2")) LepIDs = {"HNL_ULID" , "HNL_HighPt_ULID"};
+  if(HasFlag("ScaleFactorPt3")) LepIDs = {"HNL_ULID" , "HNL_HighPt_ULID"};
   if(HasFlag("ScaleFactorTop"))  LepIDs = {"TopHN","HNL_HighPt_ULID"};
 
   //  if(HasFlag("ShiftEnergyZ")) LepIDs = {"HNL_ULID" , "POGTight","passHEEPID_v3", "TpHN", };
@@ -41,6 +44,18 @@ void HNL_Lepton_ChargeFlip::executeEvent(){
     param.Apply_Weight_LumiNorm = false;
     
     if(HasFlag("ScaleFactor")){
+      param.Apply_Weight_LumiNorm = true;
+      param.Apply_Weight_Norm1Ipb = true;
+    }
+    if(HasFlag("ScaleFactorPt1")){
+      param.Apply_Weight_LumiNorm = true;
+      param.Apply_Weight_Norm1Ipb = true;
+    }
+    if(HasFlag("ScaleFactorPt2")){
+      param.Apply_Weight_LumiNorm = true;
+      param.Apply_Weight_Norm1Ipb = true;
+    }
+    if(HasFlag("ScaleFactorPt3")){
       param.Apply_Weight_LumiNorm = true;
       param.Apply_Weight_Norm1Ipb = true;
     }
@@ -1237,7 +1252,7 @@ void HNL_Lepton_ChargeFlip::executeEventFromParameter(AnalyzerParameter param){
   }
 
   
-  if(HasFlag("ScaleFactor") || HasFlag("ScaleFactorTop") ){
+  if(HasFlag("ScaleFactor") || HasFlag("ScaleFactorTop")  || HasFlag("ScaleFactorPt1") || HasFlag("ScaleFactorPt2") || HasFlag("ScaleFactorPt3")){
 
     FillHist(param.Name+"/ZGSub/All",  1    , EvWeight ,2., 0, 2, "");
 
@@ -1246,6 +1261,16 @@ void HNL_Lepton_ChargeFlip::executeEventFromParameter(AnalyzerParameter param){
     if(Leptons.size() != 2) return;
     if(ElectronColl.size() != 2) return;
     
+    if(HasFlag("ScaleFactorPt1") ){
+      if(ElectronColl[1].Pt() < 50) return;
+    }
+    if(HasFlag("ScaleFactorPt2") ){
+      if(ElectronColl[1].Pt() < 100) return;
+    } 
+    if(HasFlag("ScaleFactorPt3") ){
+      if(ElectronColl[1].Pt() < 200) return;
+    }
+
     Particle ZCand  = ElectronColl.at(0)+ElectronColl.at(1);
     double MllLeft  = 50;
     double MllRight = 150;
@@ -1297,7 +1322,6 @@ void HNL_Lepton_ChargeFlip::executeEventFromParameter(AnalyzerParameter param){
     if((abs(ElectronColl.at(0).scEta())<1.4442&&abs(ElectronColl.at(1).scEta())>=1.556)||(abs(ElectronColl.at(0).scEta())>=1.556&&abs(ElectronColl.at(1).scEta())<1.4442)) EtaCat ="BE";
     if(abs(ElectronColl.at(0).scEta())>=1.556&&abs(ElectronColl.at(1).scEta())>=1.556) EtaCat = "EE";
     
-
     TString PtEtaCat1 = ElectronColl.at(0).PtEtaCategoryCFScaleFactor();
     TString PtEtaCat2 = ElectronColl.at(1).PtEtaCategoryCFScaleFactor();
 
@@ -1405,7 +1429,6 @@ void HNL_Lepton_ChargeFlip::executeEventFromParameter(AnalyzerParameter param){
 	
 	weight_ClosureNoS      = ReturnCFWeight({rateNoS_cf1,rateNoS_cf2});
         weight_ClosureNoS_SF   = ReturnCFWeight({rateNoS_cf1 * GetCFSF(param, Lepton(this_El1)),rateNoS_cf2 * GetCFSF(param, Lepton(this_El2))});
-
       }
       weight_Closure    *= EvWeight;
       weight_Closure_SF *= EvWeight;

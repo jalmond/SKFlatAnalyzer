@@ -726,13 +726,46 @@ bool HNL_RegionDefinitions::FillZCRPlots(HNL_LeptonCore::Channel channel, std::v
     for(auto ilep: leps) cout << "HNL_ZAK8_TwoLepton_CR Type " <<  ilep->LeptonGenType() << endl;
   }
 
+  bool isBB=false;
+  bool isEE=false;
+  if(leps[0]->IsBB() && leps[1]->IsBB() ) isBB=true;
+  if(leps[0]->IsEC() &&leps[1]->IsEC()) isEE=true;
+
   if(RunFake){
     if(SameCharge(leps))Fill_RegionPlots(param,"HNL_OS_Z_TwoLepton_CR" ,  JetColl , AK8_JetColl,  leps,  METv, nPV, w);
+    if(SameCharge(leps))Fill_RegionPlots(param,"HNL_OS_Z_TwoLepton_UnCorr_CR" ,  JetColl , AK8_JetColl,  leps,  METv, nPV, w);
+    if(SameCharge(leps))Fill_RegionPlots(param,"HNL_OS_Z_TwoLepton_NoSF_CR" ,  JetColl , AK8_JetColl,  leps,  METv, nPV, w);
+    
+    if(isBB && SameCharge(leps))Fill_RegionPlots(param,"HNL_OS_Z_BB_TwoLepton_CR" ,  JetColl , AK8_JetColl,  leps,  METv, nPV, w);
+    if(isEE && SameCharge(leps))Fill_RegionPlots(param,"HNL_OS_Z_EE_TwoLepton_CR" ,  JetColl , AK8_JetColl,  leps,  METv, nPV, w);
+
   }
   else if(!SameCharge(leps)){
+    
     Fill_RegionPlots(param,"HNL_OS_Z_TwoLepton_CR" ,  JetColl , AK8_JetColl,  leps,  METv, nPV, w);
+    if(isBB )    Fill_RegionPlots(param,"HNL_OS_Z_BB_TwoLepton_CR" ,  JetColl , AK8_JetColl,  leps,  METv, nPV, w);
+    if(isEE )    Fill_RegionPlots(param,"HNL_OS_Z_EE_TwoLepton_CR" ,  JetColl , AK8_JetColl,  leps,  METv, nPV, w);
+    
+    double weight_uncorr = w;
+    if(!IsData) weight_uncorr = w/(param.w.z0weight*param.w.zptweight*param.w.weakweight);
+    
+    double weight_nosf = w;
+    if(!IsData) weight_nosf= w/param.w.muonIDSF;
+
+    Fill_RegionPlots(param,"HNL_OS_Z_TwoLepton_UnCorr_CR" ,  JetColl , AK8_JetColl,  leps,  METv, nPV, weight_uncorr);    
+
+    Fill_RegionPlots(param,"HNL_OS_Z_TwoLepton_NoSF_CR" ,  JetColl , AK8_JetColl,  leps,  METv, nPV, weight_nosf);
+  }
+  if(leps[0]->Pt() > 300) {
+    if(RunFake){
+      if(SameCharge(leps))Fill_RegionPlots(param,"HNL_OS_Z_HighPt_TwoLepton_CR" ,  JetColl , AK8_JetColl,  leps,  METv, nPV, w);
+    }
+    else if(!SameCharge(leps)){
+      Fill_RegionPlots(param,"HNL_OS_Z_HighPt_TwoLepton_CR" ,  JetColl , AK8_JetColl,  leps,  METv, nPV, w);
+    }
   }
 
+  
   return true;
 
 }

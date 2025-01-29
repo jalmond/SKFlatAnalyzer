@@ -15,7 +15,7 @@ if [[ $1 == "DATA" ]]; then
     for i in "${era_list[@]}"
     do	
         #SKFlat.py -a $analyzer  -l ${datapath}/SL/${i}_SingleLepton_Mu.txt    -n 1  --nmax 1  -e ${i}  --skim SkimTree_HNMultiLepBDT&
-	SKFlat.py -a $analyzer  -l ${datapath}/DL/${i}_DiLepton_MuMu.txt    -n 300  --nmax 600  -e ${i}  --skim SkimTree_DileptonBDT&
+	SKFlat.py -a $analyzer  -l ${datapath}/DL/${i}_DiLepton_MuMu.txt    -n 300  --nmax 700  -e ${i}  --skim SkimTree_DileptonBDT&
     done
 fi
 

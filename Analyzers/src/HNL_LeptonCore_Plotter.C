@@ -260,7 +260,9 @@ void HNL_LeptonCore::Fill_RegionPlots(AnalyzerParameter param, TString plot_dir,
   /// Draw for main systematics only
   Fill_Standard_Plots(param, region ,plot_dir , Taus,jets,fatjets, leps, met, nvtx, w);
   Fill_Standard_Plots(param, regionL,plot_dir , Taus,jets,fatjets, leps, met, nvtx, w);
-  
+  if(region.Contains("HNL_OS")) return;
+
+
   if(param.syst_ != AnalyzerParameter::Syst::Central) return;
 
   int PlotVerbose = param.PlottingVerbose;
@@ -284,16 +286,20 @@ void HNL_LeptonCore::Fill_Standard_Plots(AnalyzerParameter param, TString region
   
   if(leps.size() != 2) return;
 
-  FillHist( plot_dir+ region+ "/NObj/N_AK4J",    jets.size()             , w, 10,  0., 10., "N_{AK4 jets}");
-  FillHist( plot_dir+ region+ "/SKEvent/Ev_MET", VarUpperLimit(met.Pt(), 400) , w, 200, 0., 400.,"MET GeV");
+  FillHist( plot_dir+ region+ "/Standard/N_AK4J",    jets.size()             , w, 10,  0., 10., "N_{AK4 jets}");
+  FillHist( plot_dir+ region+ "/Standard/Ev_MET", VarUpperLimit(met.Pt(), 400) , w, 200, 0., 400.,"MET GeV");
 
   Particle llCand = *leps[0] + *leps[1];
-  FillHist( plot_dir+ region+ "/Mass/M_ll",  VarUpperLimit(llCand.M(),2000)  , w, 400, 0., 2000., "M_{ll} GeV");
+  FillHist( plot_dir+ region+ "/Standard/M_ll",  VarUpperLimit(llCand.M(),2000)  , w, 400, 0., 2000., "M_{ll} GeV");
+
+
+  int nPtbins=12;
+  double Ptbins[nPtbins+1] = { 20.,25.,30., 40.,50., 70., 100.,  150.,  200.,350,500., 750,1000};
 
   for(auto il : leps){
-    FillHist( plot_dir+ region+ "/Leptons/Lepton_pt", VarUpperLimit(il->Pt(), 1000.)  , w, 1000, 0., 1000.,"1_{2} p_{T} GeV");
-    FillHist( plot_dir+ region+ "/Leptons/Lepton_eta",il->Eta()  , w, 50, -2.5, 2.5,"l_{1} #eta");
-    FillHist( plot_dir+ region+ "/Leptons/Lepton_phi",il->Phi()  , w, 50, -2.5, 2.5,"l_{1} #phi");
+    FillHist( plot_dir+ region+ "/Standard/Lepton_pt", VarUpperLimit(il->Pt(), 1000.)  , w, nPtbins,Ptbins,"1_{2} p_{T} GeV");
+    FillHist( plot_dir+ region+ "/Standard/Lepton_eta",il->Eta()  , w, 50, -2.5, 2.5,"l_{1} #eta");
+    FillHist( plot_dir+ region+ "/Standard/Lepton_phi",il->Phi()  , w, 50, -2.5, 2.5,"l_{1} #phi");
   }
 
   if(jets.size() > 1){
@@ -322,8 +328,8 @@ void HNL_LeptonCore::Fill_Standard_Plots(AnalyzerParameter param, TString region
     double MN1  = (N1Cand.M() > 2500.) ? 2499. : N1Cand.M();
     double MN2  = (N2Cand.M() > 2500.) ? 2499. : N2Cand.M();
 
-    FillHist( plot_dir+ region+ "/Mass/DiJet_M_l1W",      MN1,        w, 11, mljbins , "Reco M_{l1jj}");
-    FillHist( plot_dir+ region+ "/Mass/DiJet_M_l2W",      MN2,        w, 11, mljbins , "Reco M_{l2jj} ");
+    FillHist( plot_dir+ region+ "/Standard/DiJet_M_l1W",      MN1,        w, 11, mljbins , "Reco M_{l1jj}");
+    FillHist( plot_dir+ region+ "/Standard/DiJet_M_l2W",      MN2,        w, 11, mljbins , "Reco M_{l2jj} ");
 
   }
 
@@ -601,8 +607,12 @@ void HNL_LeptonCore::Fill_Plots(AnalyzerParameter param, TString region,  TStrin
   }
   
   if(leps.size() > 1){
-    FillHist( plot_dir+ region+ "/Leptons/Lep_pt_eta", -leps[0]->PtMaxed(1000.) , leps[0]->Eta(),  1, nPtbins,Pt1bins , 50, -2.5, 2.5);
-    FillHist( plot_dir+ region+ "/Leptons/Lep_pt_eta", leps[1]->PtMaxed(1000.)  , leps[1]->Eta(),  1, nPtbins,Pt1bins, 50, -2.5, 2.5);
+    int nPtbins2D=21;
+    double Pt2Dbins[nPtbins2D+1] = { -1000, -400, -200,-150,-100,-70,-50,-40,-30,-25,-20, 20.,25.,30., 40.,50., 70., 100.,  150.,  200.,400.,1000};
+    double PTLep1_2D  = (leps[0]->Pt() > 1000.) ? 999. : leps[0]->Pt();
+    double PTLep2_2D  = (leps[1]->Pt() > 1000.) ? 999. : leps[1]->Pt();
+    FillHist( plot_dir+ region+ "/Leptons/Lep_pt_eta", leps[0]->PtMaxed(1000.) , leps[0]->Eta(),  fabs(w), nPtbins2D,Pt2Dbins , 50, -2.5, 2.5);
+    FillHist( plot_dir+ region+ "/Leptons/Lep_pt_eta", -leps[1]->PtMaxed(1000.)  , leps[1]->Eta(),  fabs(w), nPtbins2D,Pt2Dbins,  50, -2.5, 2.5);
   }
 
 
@@ -1028,8 +1038,8 @@ void HNL_LeptonCore::FillAllElectronPlots(AnalyzerParameter param , TString cut,
     if (LepType >= 0) gen_label = to_string(LepType);
     else gen_label = "Minus_"+to_string(fabs(LepType));
 
-    if(Analyzer== "HNL_LeptonIDBDTStudies"){
-
+    if(Analyzer.Contains("BDTStudies")){
+      
       if(GenTypeMatched(MatchGenDef(All_Gens,ElectronColl.at(i)))){
 	
 	if(label.Contains("Fake")) FillElectronKinematicPlots( param,"Electron_"+label+"_"+ ElectronColl.at(i).CloseJet_Flavour()+"_"+MatchGenDef(All_Gens,ElectronColl[i])+"_"+ cut, ElectronColl.at(i), w);

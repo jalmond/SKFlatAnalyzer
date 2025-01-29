@@ -41,6 +41,11 @@ void HNL_SignalRegion_Plotter::executeEvent(){
   if(_jentry == 0){
     cout << "HNL_SignalRegion_Plotter::IsData = " << IsData << endl;
   }
+
+  if(HasFlag("ScanSystematic")){
+    ///Only scan 1000 events
+    if(_jentry > 100) return;
+  }
   vector<TString> LepIDs = {"HNL_ULIDv2"};
   if(HasFlag("AllID")) LepIDs = {"HNL_ULID","HNTightV2", "POGTight","HNL_ULIDv2"};
 
@@ -79,7 +84,10 @@ void HNL_SignalRegion_Plotter::executeEvent(){
 
   }
 
-
+  if(HasFlag("CompareTuneP")) {
+    ChannelsToRun = {MuMu};
+    LepIDs = {"HNTightV2", "POGTight","HNL_ULIDv2"};
+  }
 
   for (auto id: LepIDs){
 
@@ -173,6 +181,9 @@ void HNL_SignalRegion_Plotter::RunULAnalysis(AnalyzerParameter param){
   double Min_Electron_Pt =  15;
   std::vector<Muon>       MuonCollT  = SelectMuons(MuonTightColl_Init,mu_ID,     Min_Muon_Pt,     2.4);
   std::vector<Electron>   ElectronCollT = SelectElectrons(ElectronTightColl_Init,el_ID, Min_Electron_Pt, 2.5);
+
+  
+
 
   std::vector<Lepton *> leps_veto  = MakeLeptonPointerVector(MuonCollV,ElectronCollV);
   std::vector<Tau>        TauColl        = SelectTaus   (leps_veto,param.Tau_Veto_ID,20., 2.3);

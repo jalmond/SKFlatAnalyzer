@@ -201,6 +201,22 @@ void HNL_Lepton_FakeRate::executeEvent(){
     
     goto RunJobs;
   }
+  if(HasFlag("HEMJetFakes")){
+    /// Measure FR in Data                                                                                                                                                                                      
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"POGHighPtWithLooseTrkIso", "POGHighPtWithLooseTrkIso","POGHighPt"));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"Peking"        , "Peking",    "Peking_FO"));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNTightV2"     , "HNTightV2", "HNLooseV1"));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_HN3L"      , "HNL_HN3L",  "HNL_TopMVA_FO_MM"));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_"+GetYearString()   , "HNL_ULID_"+GetYearString(),    "HNL_ULID_FO"));
+  }
+  if(HasFlag("HEMJetFakesEE")){
+    //    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"Peking"        , "Peking",    "Peking_FO"));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNTightV2"     , "HNTightV2", "HNLooseV4"));
+    VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,EE,HNL_LeptonCore::NormTo1Invpb,{"FR"},"HNL_ULID_"+GetYearString()   , "HNL_ULID_"+GetYearString(),    "HNL_ULID_FO"));
+
+    goto RunJobs;
+  }
+
   
   if(HasFlag("RunPromptRates")){
     /// Measure FR in Data                                                                                                                                                                                                                                                   
@@ -273,6 +289,7 @@ void HNL_Lepton_FakeRate::executeEvent(){
     goto RunJobs;
   }
 
+
   if(HasFlag("GetNvtxSF")){
     VParameters.clear();
     VParameters.push_back(SetupFakeParameter(AnalyzerParameter::Central,MuMu,HNL_LeptonCore::NormTo1Invpb,{"NvtxSF"},"HNL_ID"         ,"HNL_ULID_"+GetYearString(), "HNL_ULID_FO"));
@@ -313,6 +330,7 @@ void HNL_Lepton_FakeRate::executeEventFromParameter(AnalyzerParameter param){
   if(_jentry < 10)    cout << "param.Muon_Loose_ID = "     << param.Muon_Loose_ID     << " nmu = " << Initial_loose_muons.size() << endl;
  
 
+
   std::vector<Electron> Loose_Electrons;
   std::vector<Muon>     Loose_Muons;
   for(auto ilep : Initial_loose_electrons) Loose_Electrons.push_back(ilep);
@@ -321,12 +339,25 @@ void HNL_Lepton_FakeRate::executeEventFromParameter(AnalyzerParameter param){
   //// is 20 correct?
   std::vector<Jet> jets_tmp     = SelectJets   ( param, "tight", 20., 2.7);
   std::vector<Jet> jets; 
+  bool HasHEMJet = false;
   for(unsigned int ijet =0; ijet < jets_tmp.size(); ijet++){
     bool jetok=true;
     for(unsigned int iel=0 ; iel < Initial_loose_electrons.size(); iel++)   { if(jets_tmp[ijet].DeltaR(Initial_loose_electrons[iel]) < 0.4) jetok = false;}
     for(unsigned int iel=0 ; iel < Initial_loose_muons.size(); iel++)       { if(jets_tmp[ijet].DeltaR(Initial_loose_muons[iel]) < 0.4)     jetok = false;}
+
+    if(HasFlag("HEMJetFakes")){
+      if(jets_tmp[ijet].IsHEMJet(GetEra()))HasHEMJet=true;
+    }
+    if(HasFlag("HEMJetFakesEE")){
+      if(jets_tmp[ijet].IsHEMJet(GetEra())) HasHEMJet=true;
+
+    }
+    
     if(jetok) jets.push_back(jets_tmp[ijet]);
   }
+
+  if(HasFlag("HEMJetFakes") && !HasHEMJet) return;
+  if(HasFlag("HEMJetFakesEE") && !HasHEMJet) return;
   if(param.Channel=="EE")   RunE(Loose_Electrons,Loose_Muons, jets,  param, weight);
   if(param.Channel=="MuMu") RunM(Loose_Electrons,Loose_Muons,  jets, param, weight);
   

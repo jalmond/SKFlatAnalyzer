@@ -197,22 +197,6 @@ std::vector<Jet> HNL_LeptonCore::SelBJets(std::vector<Jet>& jetColl, JetTagging:
 
 
 
-vector<Jet> HNL_LeptonCore::SkimJetColl(const vector<Jet>& JetColl, vector<Gen>& TruthColl, AnalyzerParameter param,TString Option){
-
-  bool GetPrLepCleanJet=false;
-  TString Criteria="";
-  if(Option.Contains("NoPr"))  GetPrLepCleanJet =true;
-  if(Option.Contains("NoTau")) Criteria="InclTau";
-
-  vector<Jet> ReturnVec;
-  for(unsigned int i=0; i<JetColl.size(); i++){
-    bool HasEWLep=HasEWLepInJet(JetColl.at(i), TruthColl, Criteria);
-    if( GetPrLepCleanJet && (!HasEWLep) ) ReturnVec.push_back(JetColl.at(i));
-  }
-
-  return ReturnVec;
-}
-
 std::vector<Jet> HNL_LeptonCore::SelectJets(const std::vector<Jet>& jets, TString id, double ptmin, double fetamax){
 
   std::vector<Jet> out;
@@ -352,8 +336,8 @@ std::vector<FatJet> HNL_LeptonCore::SelectFatJets(AnalyzerParameter param,TStrin
 
   jets    = ScaleFatJets( jets_pc, sys_ak8_scale );
   jets    = SmearFatJets(jets, sys_ak8_smear );
-  jets    = ScaleSDMassFatJets( jets, sys_ak8_mass_scale );
-  jets    = SmearSDMassFatJets( jets, sys_ak8_mass_smear );
+  //  jets    = ScaleSDMassFatJets( jets, sys_ak8_mass_scale ); /// We do not use SD mass now
+  //  jets    = SmearSDMassFatJets( jets, sys_ak8_mass_smear );
 
   std::vector<FatJet> out;
   for(unsigned int i=0; i<jets.size(); i++){
