@@ -322,22 +322,13 @@ std::vector<FatJet> HNL_LeptonCore::SelectFatJets(AnalyzerParameter param,TStrin
   std::vector<FatJet> jets;
   int sys_ak8_scale = 0;
   int sys_ak8_smear = 0;
-  int sys_ak8_mass_scale = 0;
-  int sys_ak8_mass_smear = 0;
 
   if(param.syst_ == AnalyzerParameter::JetEnUp)    sys_ak8_scale=1;
   if(param.syst_ == AnalyzerParameter::JetEnDown)  sys_ak8_scale=-1;
   if(param.syst_ == AnalyzerParameter::JetResUp)   sys_ak8_smear=1;
   if(param.syst_ == AnalyzerParameter::JetResDown) sys_ak8_smear=-1;
-  if(param.syst_ == AnalyzerParameter::JetMassUp)  sys_ak8_mass_scale=1;
-  if(param.syst_ == AnalyzerParameter::JetMassDown)  sys_ak8_mass_scale=-1;
-  if(param.syst_ == AnalyzerParameter::JetMassSmearUp) sys_ak8_mass_smear=1;
-  if(param.syst_ == AnalyzerParameter::JetMassSmearDown) sys_ak8_mass_smear=-1;
-
   jets    = ScaleFatJets( jets_pc, sys_ak8_scale );
   jets    = SmearFatJets(jets, sys_ak8_smear );
-  //  jets    = ScaleSDMassFatJets( jets, sys_ak8_mass_scale ); /// We do not use SD mass now
-  //  jets    = SmearSDMassFatJets( jets, sys_ak8_mass_smear );
 
   std::vector<FatJet> out;
   for(unsigned int i=0; i<jets.size(); i++){

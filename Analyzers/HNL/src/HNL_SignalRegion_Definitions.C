@@ -985,13 +985,13 @@ TString HNL_RegionDefinitions::RunSignalRegionAK4String(bool ApplyForSR,HNL_Lept
     }
   }
   Particle Wcand  = JetColl[m]+JetColl[n]+ *leps[0] + *leps[1];
-  double Wmass = (Wcand.M() > 2000.) ? 1999. : Wcand.M();
+
   if(ApplyForSR){
     if(DataEra.Contains("16")) {
-      if(Wmass < 350) return "false";
+      if(Wcand.M() < 300) return "false";
     }
     else{
-      if(Wmass < 400) return "false";
+      if(Wcand.M() < 400) return "false";
     }
   }
 
