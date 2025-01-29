@@ -114,31 +114,33 @@ void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq,
 
       if(RunCutFlow){
 	
-	FillCutflow(CutFlow_Region, weight_ll, "NoCut", param);
+	FillCutflow(CutFlow_Region, weight_Cutflow, "NoCut", param);
 	if (PassTriggerSelection(dilep_channel, ev, LepsT,param.TriggerSelection)){
-	  FillCutflow(CutFlow_Region, weight_channel, "Trigger",param);
+	  FillCutflow(CutFlow_Region, weight_Cutflow, "Trigger",param);
 	  
 	  if(PassGenMatchFilter(LepsT,param)){
 	    if(ConversionSplitting(LepsT,RunConv,2,param)){
-	      FillCutflow(CutFlow_Region, weight_ll, "GENMatched",param);
-	      if(PassHEMVeto(LepsV,weight_channel)) {
-		FillCutflow(CutFlow_Region, weight_ll, "HEMVeto", param);
+	      FillCutflow(CutFlow_Region, weight_Cutflow, "GENMatched",param);
+	      if(PassHEMVeto(LepsV,weight_Cutflow)) {
+		FillCutflow(CutFlow_Region, weight_Cutflow, "HEMVeto", param);
 		if(PassMETFilter()) {
-		  FillCutflow(CutFlow_Region, weight_ll, "METFilter",param);
+		  FillCutflow(CutFlow_Region, weight_Cutflow, "METFilter",param);
 		  if(CheckLeptonFlavourForChannel(dilep_channel, LepsT)) {
 		    if(LepsT.size()==2){
-		      FillCutflow(CutFlow_Region, weight_channel, "LeptonFlavour",param);
+		      FillCutflow(CutFlow_Region, weight_Cutflow, "LeptonFlavour",param);
 		      if(SameCharge(LepsT) || (CFRun)){
 			
-			FillCutflow(CutFlow_Region, weight_channel, "SSLepton",param);
+			FillCutflow(CutFlow_Region, weight_Cutflow, "SSLepton",param);
 			if(LepsV.size()==2) {
 			  
-			  FillCutflow(CutFlow_Region, weight_channel, "LepVeto",param);
+			  FillCutflow(CutFlow_Region, weight_Cutflow, "LepVeto",param);
 			  Particle ll =  (*LepsT[0]) + (*LepsT[1]);
 			  if(ll.M() > 20){
-			    FillCutflow(CutFlow_Region, weight_channel, "DiLepMass",param);
-			    if(B_JetColl.size()==0)     FillCutflow(CutFlow_Region, weight_channel, "BJet",param);
-			    if(B_JetColl.size()==0 && ev.MET2ST() < 15)   FillCutflow(CutFlow_Region, weight_channel, "MET",param);
+			    if(dilep_channel!=EE ||  ( (fabs(ll.M()-M_Z) > M_ZWINDOW_VETO))){
+			      FillCutflow(CutFlow_Region, weight_Cutflow, "DiLepMass",param);
+			      if(B_JetColl.size()==0)     FillCutflow(CutFlow_Region, weight_Cutflow, "BJet",param);
+			      if(B_JetColl.size()==0 && ev.MET2ST() < 15)   FillCutflow(CutFlow_Region, weight_Cutflow, "MET",param);
+			    }
 			  }
 			}
 		      }
@@ -179,7 +181,7 @@ void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq,
     if(! CheckLeptonFlavourForChannel(dilep_channel, LepsT))  continue;
 
     
-
+  
     if(param.IsCentral()) PassJetHEMVeto(JetColl,param.Name+"_Jet",weight_channel);
 
     if(LepsT.size() ==2)  FillCutflow(HNL_LeptonCore::ChannelDepDilep, weight_channel, GetChannelString(dilep_channel) +"_Dilep",param);
@@ -299,6 +301,40 @@ void   HNL_RegionDefinitions::RunMainRegionCode(bool IsSR,HNL_LeptonCore::Channe
     }
   }
   
+  if(HasFlag("ScanSystematic")){
+    if(param.GetSystType() == "Central" ) cout << "######################################" << endl;
+    cout << "Scanning effects on Obj with Syst ["<< param.GetSystType()<<"] "<< endl;
+    cout << "Event  " << event << " param.GetSystType() = " << param.GetSystType()  << " channel " << GetChannelString(channel) << " weight = " << weight_reg<< endl;
+    cout << "-----------------------" << endl;
+    cout << "Event  " << event << " param.GetSystType() = " << param.GetSystType()  << " METv = " << METv.Pt() << " ev.MET2ST() = " << ev.MET2ST() << endl;
+    cout << "-----------------------" << endl;
+    cout << "-----------------------" << endl;
+    cout << "Event  " << event << " param.GetSystType() = " << param.GetSystType()  << " N(bjet) = "<<B_JetColl.size() << endl;
+    cout << "Scan jets " << endl;
+    int count = 0;  // Initialize counter
+    for (auto& ij : JetColl) {
+      cout << "Event  " << event << " param.GetSystType() = " << param.GetSystType()  << " Jet " << count++ << " pt = " << ij.Pt() << endl;
+    }
+    cout << "-----------------------" << endl;
+    count = 0;  
+    for (auto& ij : AK8_JetColl) {
+      Particle N= ij + *LepsT[0]+*LepsT[1];
+      cout << "Event  " << event << " param.GetSystType() = " << param.GetSystType()  << " FatJet " << count++ << " pt = " << ij.Pt() << " N mass = " << N.M() << endl;
+    }    
+    cout << "-----------------------" << endl;
+    cout << "-----------------------" << endl;
+
+    cout << "Scan leptons " << endl;
+    count = 0;  // Initialize counter                                                                                                                                                                           
+    for (auto& il : LepsT) {
+      cout << " Event  " << event << " " << il->GetFlavour() << " " << count++ << " pt = " << il->Pt() << endl;
+    }        
+    
+    cout << "Event  " << event << " param.GetSystType() = " << param.GetSystType()  << " SR2: HTOverPt = " << LepsT[0]->HTOverPt() << endl;
+    cout << "######################################" << endl;
+
+  }
+
   if(!PassPreselection(IsSR,channel,Inclusive, 
 		       LepsT, LepsV, TauColl, 
 		       JetColl, VBF_JetColl, AK8_JetColl, B_JetColl,
@@ -383,17 +419,21 @@ void   HNL_RegionDefinitions::RunMainRegionCode(bool IsSR,HNL_LeptonCore::Channe
       if(param.syst_ == AnalyzerParameter::PDFDown) weight_reg*=GetPDFUncertainty("SR3",-1);
       
       /// RunBDT checks if signal mc and mass <= 500
+      
       if(RunBDT()){
 	for(auto imapHP :FinalBDTHyperParamMap){
-	  TString RegBDT = RunSignalRegionAK4StringBDT(IsSR,imapHP.first , imapHP.second.first, imapHP.second.second, channel,qq, LepsT, JetColl,  B_JetColl, ev, METv ,param,weight_reg);
-	  
-	  if(RegBDT != "false"){
+	  if(GetBDTSignalMass(imapHP.first) == imapHP.first){
 	    
-	    //// Low Mass BDT Binned R1+2+3 only limit input
-	    //	  FillLimitInput(LimitRegionsBDT, weight_reg, RegBDT,"LimitExtractionBDT/"+param.Name+"/M"+imapHP.first,"SR3_"+channel_string+"_"+GetYearString()+"_"+imapHP.first);
-	    /// R3 LowMass BDt Only limit input
-	    FillLimitInput(LimitRegionsBDTR3, weight_reg, RegBDT,"LimitExtractionBDT/"+param.Name+"/M"+imapHP.first,"SR3BDT_"+channel_string+"_"+DataEra+"_"+imapHP.first,channel_string);
-	    if(IsSR&&imapHP.first == "100") FillCutflow(HNL_LeptonCore::SRLowMass, weight_reg, "SR3_LowMass",param);
+	    TString RegBDT = RunSignalRegionAK4StringBDT(IsSR,imapHP.first , imapHP.second.first, imapHP.second.second, channel,qq, LepsT, JetColl,  B_JetColl, ev, METv ,param,weight_reg);
+	    
+	    if(RegBDT != "false"){
+	      
+	      //// Low Mass BDT Binned R1+2+3 only limit input
+	      //	  FillLimitInput(LimitRegionsBDT, weight_reg, RegBDT,"LimitExtractionBDT/"+param.Name+"/M"+imapHP.first,"SR3_"+channel_string+"_"+GetYearString()+"_"+imapHP.first);
+	      /// R3 LowMass BDt Only limit input
+	      FillLimitInput(LimitRegionsBDTR3, weight_reg, RegBDT,"LimitExtractionBDT/"+param.Name+"/M"+imapHP.first,"SR3BDT_"+channel_string+"_"+DataEra+"_"+imapHP.first,channel_string);
+	      if(IsSR&&imapHP.first == "100") FillCutflow(HNL_LeptonCore::SRLowMass, weight_reg, "SR3_LowMass",param);
+	    }
 	  }
 	}
       }
@@ -481,7 +521,9 @@ TString HNL_RegionDefinitions::RunSignalRegionAK8String(bool ApplyForSR,
 							std::vector<Jet> JetColl, std::vector<FatJet>  AK8_JetColl, std::vector<Jet> B_JetColl, 
 							Event ev, Particle METv, AnalyzerParameter param,  float w){
    
-  double met_cut     = 15;
+  double met_cut     = 10;
+  if(channel == MuMu) met_cut     = 15;
+
   double met2_st     = ev.MET2ST(); 
   bool PassHMMet     = ApplyForSR ? (met2_st < met_cut) :  (met2_st > met_cut);
   bool PassBJetMVeto = ApplyForSR ? (B_JetColl.size()==0) : (B_JetColl.size()== 1);
@@ -671,7 +713,7 @@ TString HNL_RegionDefinitions::RunSignalRegionWWString(bool ApplyForSR,HNL_Lepto
 
       if(DataYear == 2016){
 	if(ll_dphi > 2.) {
-	  if(HTOverPT < 2.) return RegionTag+"_HTLTbin1";
+	  if(HTOverPT < 2) return RegionTag+"_HTLTbin1";
 	  return RegionTag+"_HTLTbin2";
 	}
 	else{
@@ -683,7 +725,7 @@ TString HNL_RegionDefinitions::RunSignalRegionWWString(bool ApplyForSR,HNL_Lepto
 
       if(DataYear == 2017){
 	if(ll_dphi > 2.) {
-	  if(HTOverPT < 3.){
+	  if(HTOverPT < 2.){
 	    if (leps[1]->Pt() > 80.)      return RegionTag+"_HTLTbin1";
 	    else return RegionTag+"_HTLTbin2";
 	  }
@@ -696,8 +738,8 @@ TString HNL_RegionDefinitions::RunSignalRegionWWString(bool ApplyForSR,HNL_Lepto
       }
       if(DataYear== 2018){
 	if(ll_dphi > 2.) {
-	  if(HTOverPT < 3.){
-	    if (leps[1]->Pt() > 80.)      return RegionTag+"_HTLTbin1";
+	  if(HTOverPT < 2.){
+	    if (leps[1]->Pt() > 100.)      return RegionTag+"_HTLTbin1";
 	    else return RegionTag+"_HTLTbin2";
 	  }
 	  else return RegionTag+"_HTLTbin3";
@@ -873,7 +915,7 @@ TString HNL_RegionDefinitions::RunSignalRegionAK4String(bool ApplyForSR,HNL_Lept
 
   if (leps_veto.size() != 2) return "false";
 
-  if(TauColl.size() > 0) return "false";
+  //  if(TauColl.size() > 0) return "false";
   FillCutflow(Reg, w, RegionTag+"_tauveto",param);
 
   Particle ll =  (*leps[0]) + (*leps[1]);
@@ -899,6 +941,7 @@ TString HNL_RegionDefinitions::RunSignalRegionAK4String(bool ApplyForSR,HNL_Lept
   if(leps[1]->Pt() < 50 ||  ll.M() < 50) {
     return "false";
   }
+
   FillCutflow(Reg, w, RegionTag+"_L1Pt",param);
   
   if(ApplyForSR&&param.IsCentral()) {
@@ -914,7 +957,9 @@ TString HNL_RegionDefinitions::RunSignalRegionAK4String(bool ApplyForSR,HNL_Lept
   if(JetColl.size() < 2){
     FillCutflow(Reg, w, RegionTag+"_lowjet",param);
     //// These cuts are temp HL will check
-     
+    
+    //    cout << " High Jet  GetSR3StringBin = " << GetSR3StringBin(RegionTag,GetChannelString(channel), true, met2_st,LT,ll_dphi) << " met2_st = " << met2_st << " LT = " << LT << " ll_dphi = " << ll_dphi << endl;
+ 
     return GetSR3StringBin(RegionTag,GetChannelString(channel), true, met2_st,LT,ll_dphi);
   }  
   
@@ -923,10 +968,35 @@ TString HNL_RegionDefinitions::RunSignalRegionAK4String(bool ApplyForSR,HNL_Lept
   if(JetColl.size() < 2)   return "false";
   
   FillCutflow(Reg, w, RegionTag+"_dijet",param);
-                                                           
-  TString LimitBin = GetSR3StringBin(RegionTag,GetChannelString(channel), false, met2_st,LT,ll_dphi);
+                                                          
+  double dijetmass_tmp=999.;
+  double dijetmass=9990000.;
+  int m=-999;
+  int n=-999;
 
-    
+  for(UInt_t emme=0; emme<JetColl.size(); emme++){
+    for(UInt_t enne=1; enne<JetColl.size(); enne++) {
+      if(emme == enne) continue;
+      dijetmass_tmp = (JetColl[emme]+JetColl[enne]).M();
+
+      if ( fabs(dijetmass_tmp-M_W) < fabs(dijetmass-M_W) ) {
+	dijetmass = dijetmass_tmp;
+	m = emme;
+	n = enne;
+      }
+    }
+  }
+  Particle Wcand  = JetColl[m]+JetColl[n]+ *leps[0] + *leps[1];
+  double Wmass = (Wcand.M() > 2000.) ? 1999. : Wcand.M();
+  if(ApplyForSR){
+    if(Wmass < 400) return "false";
+  }
+
+  TString LimitBin = GetSR3StringBin(RegionTag,GetChannelString(channel), false, met2_st,LT,ll_dphi);
+  
+  //  cout << " High Jet  GetSR3StringBin = " << LimitBin << " met2_st = " << met2_st << " LT = " << LT << " ll_dphi = " << ll_dphi << endl;
+
+  
   return LimitBin;
 }
 

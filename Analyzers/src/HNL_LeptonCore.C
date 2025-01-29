@@ -420,7 +420,7 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
   if(SystType=="Theory"){
     SystList.push_back(AnalyzerParameter::PDFUp);
     SystList.push_back(AnalyzerParameter::PDFDown);
-    //SystList.push_back(AnalyzerParameter::PDF);
+    SystList.push_back(AnalyzerParameter::PDF);
     SystList.push_back(AnalyzerParameter::ScaleUp);
     SystList.push_back(AnalyzerParameter::ScaleDown);
     return SystList;
@@ -514,7 +514,7 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
   }
   
   if(MCSample.Contains("Type")){
-    //    SystList.push_back(AnalyzerParameter::PDF);
+    SystList.push_back(AnalyzerParameter::PDF);
     SystList.push_back(AnalyzerParameter::PDFUp);
     SystList.push_back(AnalyzerParameter::PDFDown);
     SystList.push_back(AnalyzerParameter::ScaleUp);
@@ -654,6 +654,17 @@ AnalyzerParameter HNL_LeptonCore::SetupFakeParameter(AnalyzerParameter::Syst Sys
 
 }
 
+
+TString HNL_LeptonCore::GetPtBin(bool muon, double pt){
+  TString pt_label="";
+  
+  if(pt< 50) pt_label = "_ptbin1"; 
+  else if(pt < 100) pt_label = "_ptbin2"; 
+  else if(pt < 400) pt_label = "_ptbin3";
+  else pt_label = "_ptbin4";                                                               
+  return pt_label;
+
+}
 
 bool  HNL_LeptonCore::UpdateParamBySyst(TString JobID, AnalyzerParameter& paramEv , AnalyzerParameter::Syst systname, TString OrigParamName){
 

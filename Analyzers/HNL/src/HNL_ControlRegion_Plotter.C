@@ -94,8 +94,8 @@ void HNL_ControlRegion_Plotter::executeEvent(){
 	TString param_name = param_signal.Name;
 
 	TString SystString = "";
-	if(HasFlag("OS")) SystString = "Muon";
-	else SystString=GetChannelString(channel);
+	//	if(HasFlag("OS")) SystString = "Muon";
+	SystString=GetChannelString(channel);
 
 
 	if(HasFlag("RunSyst")){

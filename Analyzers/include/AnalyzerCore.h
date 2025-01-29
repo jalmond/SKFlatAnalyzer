@@ -288,7 +288,7 @@ public:
   
 
   bool RunBDT();
-
+  TString GetBDTSignalMass(TString mass);
 
   
   // ------ General HNL functions (HNL_LeptonCore.C)                                                                                              

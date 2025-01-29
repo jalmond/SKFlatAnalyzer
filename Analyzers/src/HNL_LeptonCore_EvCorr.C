@@ -144,6 +144,7 @@ double HNL_LeptonCore::GetElectronIDWeight(std::vector<Electron> electrons,Analy
   return tmpW;
 }
 
+
 void HNL_LeptonCore::EvalMuonIDWeight(std::vector<Muon> muons,AnalyzerParameter& param , double& ev_weight ){
 
   if(param.Set_MuIDW) return;
@@ -173,19 +174,19 @@ void HNL_LeptonCore::EvalMuonIDWeight(std::vector<Muon> muons,AnalyzerParameter&
     double this_recosf = (param.Apply_Weight_RECOSF) ?  mcCorr->MuonReco_SF(param.k.Muon_RECO_SF, this_eta, reco_pt,SystDir_MuonRecoSF) : 1. ;
     this_weight *= this_recosf;
     FillWeightHist(param.ChannelDir()+"/RecoMuWeight_"+param.Name,this_recosf);
-    param.w.muonRECOSF=this_recosf;
+    param.w.muonRECOSF*=this_recosf;
     
     /// [2]  TRACKING ID SF  (Taken from https://github.com/sansan9401/SKFlatAnalyzer/blob/Run2UltraLegacy_asym/ branch Oct 14 23)
     double this_trackersf = (param.Apply_Weight_MuonTrackerSF) ? mcCorr->MuonTracker_SF("NUM_GlobalMuons", this_eta, reco_pt,0) : 1. ;
     this_weight *= this_trackersf;
     FillWeightHist(param.ChannelDir()+"/TrackerMuWeight_"+param.Name,this_trackersf);
-    param.w.muonTrackerSF =this_trackersf;
+    param.w.muonTrackerSF *=this_trackersf;
 
     /// [3] ID SF needs KEY input 
     double this_idsf   = (param.Apply_Weight_IDSF) ?  mcCorr->MuonID_SF (param.k.Muon_ID_SF,  this_eta, this_pt,SystDir_MuonIDSF) : 1.;
     double this_isosf  = (param.Apply_Weight_IDSF) ?  mcCorr->MuonISO_SF(param.k.Muon_ISO_SF, this_eta, this_pt,SystDir_MuonISOSF) : 1. ;
-    param.w.muonIDSF  = this_idsf;
-    param.w.muonISOSF = this_isosf;
+    param.w.muonIDSF  *= this_idsf;
+    param.w.muonISOSF *= this_isosf;
     FillWeightHist(param.ChannelDir()+"/IDMuWeight_"+param.Name,this_idsf);
     FillWeightHist(param.ChannelDir()+"/ISOMuWeight_"+param.Name,this_isosf);
     this_weight *= this_idsf*this_isosf;
@@ -345,8 +346,6 @@ void  HNL_LeptonCore::PassJetHEMVeto(vector<Jet> jets, TString Flag, double& wei
  
   //// Check status of Jets in HEM region  
 
-  std::vector<Muon> muons = SelectMuons("POGLoose", 5, 2.8);
-  
   int nJets_orig = jets.size();
   int nJets_HEMVeto (0);
   for(auto  ijet : jets) {

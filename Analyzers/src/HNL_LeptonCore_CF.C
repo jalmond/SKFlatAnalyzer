@@ -68,6 +68,12 @@ double HNL_LeptonCore::GetCFSF(AnalyzerParameter param, TString EraReg, bool App
   CFSFValues["passHEEPID_v3_BB"]     =  {1.136,0.991,1.314,1.323};
   CFSFValues["passHEEPID_v3_EC"]     =  {0.904,0.902,1.199,1.235};
 
+  ///// Pt Binned SF
+  
+  //  CFSFValues["HNL_HighPt_ULID_Pt2_BB"]      =  {0.88, 1.044,1.511,1.430};
+  //  CFSFValues["HNL_HighPt_ULID_Pt2_BB"]      =  {0.9170, 1.044,1.329,1.430};
+
+
 
   map<TString,vector<double> >::iterator CFMapIter ;
 

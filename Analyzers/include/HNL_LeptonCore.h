@@ -274,8 +274,6 @@ class HNL_LeptonCore : public AnalyzerCore {
   std::vector<FatJet> SelectFatJets(TString id, double ptmin, double fetamax);
   std::vector<FatJet> SelectFatJets(const std::vector<FatJet>& jets, TString id, double ptmin, double fetamax);
 
-  vector<Jet>      SkimJetColl(const vector<Jet>& JetColl,     vector<Gen>& TruthColl, AnalyzerParameter param,TString Option);
-
 
   //===== Detailed jet selection
 

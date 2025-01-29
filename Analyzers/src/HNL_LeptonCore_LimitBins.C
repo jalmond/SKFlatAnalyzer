@@ -12,24 +12,24 @@ void HNL_LeptonCore::DefineLimitBins(){
   vector<double> cr1bins = { 0.,400, 600,   2000.};
 
   if(DataEra == "2016preVFP") {
-    sr1bins_mm = { 0., 450,  2000.};
-    sr1bins_ee = { 0., 450,  600,  2000.};
-    sr1bins_em = { 0., 350, 450,  600, 2000.};
+    sr1bins_mm = { 0., 400, 550,  2000.};
+    sr1bins_ee = { 0., 450, 600,  2000.};
+    sr1bins_em = { 0., 400, 500,  750, 2000.};
   }
   if(DataEra == "2016postVFP") {
-    sr1bins_mm = { 0., 450,  2000.};
-    sr1bins_ee = { 0., 450,  750,  2000.};
+    sr1bins_mm = { 0., 400,  500, 2000.};
+    sr1bins_ee = { 0., 500,  750,  2000.};
     sr1bins_em = { 0., 350,450,  600, 2000.};
   }
   if(DataEra == "2017") {
-    sr1bins_mm  = { 0., 450,   2000.};
-    sr1bins_ee  = { 0., 450,  750., 2000.};
-    sr1bins_em  = { 0., 450,   600, 800., 2000.};
+    sr1bins_mm  = { 0., 450,  700,  2000.};
+    sr1bins_ee  = { 0., 500,  800., 2000.};
+    sr1bins_em  = { 0., 500,  600, 800., 2000.};
   }
   if(DataEra == "2018") {
-    sr1bins_mm = { 0.,   450.,  2000.};
-    sr1bins_ee = { 0.,   450.,  750., 2000.};
-    sr1bins_em = { 0.,   450.,  600,  800., 2000.};
+    sr1bins_mm = { 0.,   450., 700., 2000.};
+    sr1bins_ee = { 0.,   500., 800., 2000.};
+    sr1bins_em = { 0.,   500., 700,  1000., 2000.};
   }
 
   vector<TString> MuMu_SR1_BinTags, EE_SR1_BinTags ,EMu_SR1_BinTags, CR1_BinTags;
@@ -58,20 +58,20 @@ void HNL_LeptonCore::DefineLimitBins(){
 
   //// Define SR 3 binning                                                                                                                              
 
-  vector<TString> minBinsSR3={"SR3_bin1","SR3_bin2","SR3_bin3","SR3_bin4","SR3_bin5","SR3_bin6","SR3_bin7","SR3_bin8", "SR3_bin9","SR3_bin10","SR3_bin11","SR3_bin12","SR3_bin13","SR3_bin14","SR3_bin15","SR3_bin16","SR3_bin17","SR3_bin18","SR3_bin19","SR3_bin20"};
+  vector<TString> minBinsSR3={"SR3_bin1","SR3_bin2","SR3_bin3","SR3_bin4","SR3_bin5","SR3_bin6","SR3_bin7","SR3_bin8", "SR3_bin9","SR3_bin10","SR3_bin11","SR3_bin12","SR3_bin13","SR3_bin14","SR3_bin15","SR3_bin16","SR3_bin17","SR3_bin18"};
 
   std::vector<TString> MuMu_SR3 = minBinsSR3;
   std::vector<TString> EE_SR3   = minBinsSR3;
   std::vector<TString> EMu_SR3  = minBinsSR3;
   
-  EE_SR3.insert(EE_SR3.end(), {"SR3_bin21","SR3_bin22","SR3_bin23","SR3_bin24","SR3_bin25"}); // Append {bin20-24}
-  EMu_SR3.insert(EMu_SR3.end(), {"SR3_bin21","SR3_bin22","SR3_bin23"}); // Append {bin20-21}   
+  //  EE_SR3.insert(EE_SR3.end(), {"SR3_bin21","SR3_bin22","SR3_bin23","SR3_bin24","SR3_bin25"}); // Append {bin20-24}
+  //  EMu_SR3.insert(EMu_SR3.end(), {"SR3_bin19","SR3_bin20","SR3_bin21","SR3_bin22","SR3_bin23"}); // Append {bin20-21}   
 
   map_bins_labels ["SR3_MuMu"] = MuMu_SR3;
   map_bins_labels ["SR3_EE"]   = EE_SR3;
   map_bins_labels ["SR3_EMu"]  = EMu_SR3;
 
-  std::vector<TString> CR3 = {"CR3_bin1","CR3_bin2","CR3_bin3","CR3_bin4","CR3_bin5","CR3_bin6","CR3_bin7","CR3_bin8"};
+  std::vector<TString> CR3 = {"CR3_bin1","CR3_bin2","CR3_bin3","CR3_bin4","CR3_bin5","CR3_bin6"};
   map_bins_labels ["CR3"]    = CR3;
  
 
@@ -119,25 +119,19 @@ TString HNL_LeptonCore::GetSR3StringBin(TString RegionTag, TString channel, bool
 
   if(RegionTag=="CR3"){
     if(LowJet){
-      if(ll_dphi > 2.5){
-	if(LT<= 150)       return RegionTag+"_bin1";
-	else               return RegionTag+"_bin2";
-      }
-      else{
-	if(LT<= 150)      return RegionTag+"_bin3";
-	else              return RegionTag+"_bin4";
-      }
+      if(LT<= 150)       return RegionTag+"_bin1";
+      else               return RegionTag+"_bin2";
     }
     else{
-      if(LT < 150)       return RegionTag+"_bin5";
-      else if(LT < 200)  return RegionTag+"_bin6";
-      else if(LT < 300)  return RegionTag+"_bin7";
-      else               return RegionTag+"_bin8";
+      if(LT < 150)       return RegionTag+"_bin3";
+      else if(LT < 200)  return RegionTag+"_bin4";
+      else if(LT < 300)  return RegionTag+"_bin5";
+      else               return RegionTag+"_bin6";
     }
     return "";
   }
-
-
+  
+  cout << "GetSR3StringBin " << channel << endl;
   if(channel == "MuMu"){
     
     if(DataYear == 2016){
@@ -145,40 +139,34 @@ TString HNL_LeptonCore::GetSR3StringBin(TString RegionTag, TString channel, bool
       if(LowJet){
 	////////// LOWJET BINS
 	if(met2_st < 5){
-	  if(ll_dphi > 2.5){
-	    if(LT<= 150)       return RegionTag+"_bin1";
-	    else if(LT<= 200)  return RegionTag+"_bin2";
-	    else               return RegionTag+"_bin3";
-	 }
-	  else{
-	    if(LT<= 150)  return RegionTag+"_bin4";
-	    else if(LT<= 200)  return RegionTag+"_bin5";
-	    else          return RegionTag+"_bin6";
-	  }
+	  if(LT<= 150)     return RegionTag+"_bin1";	 
+	  else if(LT<= 175)  return RegionTag+"_bin2";
+	  else if(LT<= 225)  return RegionTag+"_bin3";
+	  else if(LT<= 275)  return RegionTag+"_bin4";
+	  else               return RegionTag+"_bin5";
 	}
 	else{
-	  if( LT<= 150 )  return RegionTag+"_bin7";
-	  else if( LT<= 200 )  return RegionTag+"_bin8";
-	  else            return RegionTag+"_bin9";
+	  if( LT<= 175 )  return RegionTag+"_bin6";
+	  else if( LT<= 250 )  return RegionTag+"_bin7";
+	  else            return RegionTag+"_bin8";
 	}
       }
       else{
 	//#################### HighJET BINS  
 
 	if(met2_st < 5){
-          if(LT < 150)       return RegionTag+"_bin10";
-          else if(LT < 175)  return RegionTag+"_bin11";
-          else if(LT < 200)  return RegionTag+"_bin12";
-          else if(LT < 250)  return RegionTag+"_bin13";
-          else if(LT < 350)  return RegionTag+"_bin14";
-          else if(LT < 450)  return RegionTag+"_bin15";
-          else               return RegionTag+"_bin16";
+          if(LT < 175)       return RegionTag+"_bin9";
+          else if(LT < 200)  return RegionTag+"_bin10";
+          else if(LT < 250)  return RegionTag+"_bin11";
+          else if(LT < 300)  return RegionTag+"_bin12";
+          else if(LT < 350)  return RegionTag+"_bin13";
+          else               return RegionTag+"_bin14";
         }
         else{
-          if(LT < 150)  return RegionTag+"_bin17";
-          else if(LT < 200)  return RegionTag+"_bin18";
-          else if(LT < 250)  return RegionTag+"_bin19";
-          else  return RegionTag+"_bin20";
+          if(LT < 200)  return RegionTag+"_bin15";
+          else if(LT < 250)  return RegionTag+"_bin16";
+          else if(LT < 300)  return RegionTag+"_bin17";
+          else  return RegionTag+"_bin18";
         }/// MET            
       }
     }
@@ -188,41 +176,35 @@ TString HNL_LeptonCore::GetSR3StringBin(TString RegionTag, TString channel, bool
 
 	////////// LOWJET BINS  /////////////////////////////                                                                                                                                                                                  
 	if(met2_st < 5){
-	  if(ll_dphi > 2.5){
-	    if(LT<= 200)       return RegionTag+"_bin1";
-	    else if(LT<= 250)  return RegionTag+"_bin2";
-	    else               return RegionTag+"_bin3";
-	  }
-	  else{
-	    if(LT<= 150)        return RegionTag+"_bin4";
-	    else if(LT<= 200)   return RegionTag+"_bin5";
-	    else                return RegionTag+"_bin6";
-	  }
+	  if(LT<= 150)       return RegionTag+"_bin1";
+	  else if(LT<= 200)  return RegionTag+"_bin2";
+	  else if(LT<= 250)  return RegionTag+"_bin3";
+	  else if(LT<= 300)  return RegionTag+"_bin4";
+	  else               return RegionTag+"_bin5";
 	}
+	
 	else{
-	  if( LT<= 150 )        return RegionTag+"_bin7";
-	  else if( LT<= 250 )   return RegionTag+"_bin8";
-	  else  return RegionTag+"_bin9";
+	  if( LT<= 200 )        return RegionTag+"_bin6";
+	  else if( LT<= 300 )   return RegionTag+"_bin7";
+	  else  return RegionTag+"_bin8";
 	}
       }
       else{
 	//#################### HighJET BINS                                                                                                                                                                       
 
-
 	if(met2_st < 5){
-          if(LT < 150)       return RegionTag+"_bin10";
-          else if(LT < 175)  return RegionTag+"_bin11";
-          else if(LT < 200)  return RegionTag+"_bin12";
-          else if(LT < 250)  return RegionTag+"_bin13";
-          else if(LT < 350)  return RegionTag+"_bin14";
-          else if(LT < 450)  return RegionTag+"_bin15";
-          else               return RegionTag+"_bin16";
+          if(LT < 200)       return RegionTag+"_bin9";
+          else if(LT < 250)  return RegionTag+"_bin10";
+          else if(LT < 300)  return RegionTag+"_bin11";
+          else if(LT < 350)  return RegionTag+"_bin12";
+          else if(LT < 450)  return RegionTag+"_bin13";
+          else               return RegionTag+"_bin14";
         }
         else{
-          if(LT < 150)  return RegionTag+"_bin17";
-          else if(LT < 200)  return RegionTag+"_bin18";
-          else if(LT < 300)  return RegionTag+"_bin19";
-          else  return RegionTag+"_bin20";
+          if(LT < 200)  return RegionTag+"_bin15";
+          else if(LT < 300)  return RegionTag+"_bin16";
+          else if(LT < 400)  return RegionTag+"_bin17";
+          else  return RegionTag+"_bin18";
         }/// MET            
       }
     }
@@ -230,89 +212,73 @@ TString HNL_LeptonCore::GetSR3StringBin(TString RegionTag, TString channel, bool
       if(LowJet){
         ////////// LOWJET BINS  /////////////////////////////                                                                                                                                                  
 	if(met2_st < 5){
-	  if(ll_dphi > 2.5){
-	    if(LT<= 200)          return RegionTag+"_bin1";
-	    else if(LT<= 250)     return RegionTag+"_bin2";
-	    else if(LT<= 300)     return RegionTag+"_bin3";
-	    else       return RegionTag+"_bin4";
-	  }
-	  else{
-	    if(LT<= 200)         return RegionTag+"_bin5";
-	    else            return RegionTag+"_bin6";
-	  }
+	  if(LT<= 200)          return RegionTag+"_bin1";
+	  else if(LT<= 250)     return RegionTag+"_bin2";
+	  else if(LT<= 300)     return RegionTag+"_bin3";
+	  else if(LT<= 400)     return RegionTag+"_bin4";
+	  else       return RegionTag+"_bin5";
 	}
 	else{
-	  if( LT<= 200 )   return RegionTag+"_bin7";
-	  else if( LT<= 300 )   return RegionTag+"_bin8";
-	  else  return RegionTag+"_bin9";
+	  if( LT<= 200 )   return RegionTag+"_bin6";
+	  else if( LT<= 400 )   return RegionTag+"_bin7";
+	  else  return RegionTag+"_bin8";
 	}
       }
       else{
 	//#################### HighJET BINS                                                                                                                                                                      
-
 	if(met2_st < 5){
-          if(LT < 150)       return RegionTag+"_bin10";
-          else if(LT < 175)  return RegionTag+"_bin11";
-          else if(LT < 200)  return RegionTag+"_bin12";
-          else if(LT < 250)  return RegionTag+"_bin13";
-          else if(LT < 350)  return RegionTag+"_bin14";
-          else if(LT < 450)  return RegionTag+"_bin15";
-          else               return RegionTag+"_bin16";
+          if(LT < 225)       return RegionTag+"_bin9";
+          else if(LT < 275)  return RegionTag+"_bin10";
+          else if(LT < 325)  return RegionTag+"_bin11";
+          else if(LT < 400)  return RegionTag+"_bin12";
+          else if(LT < 500)  return RegionTag+"_bin13";
+          else               return RegionTag+"_bin14";
         }
         else{
-          if(LT < 150)  return RegionTag+"_bin17";
-          else if(LT < 200)  return RegionTag+"_bin18";
-          else if(LT < 300)  return RegionTag+"_bin19";
-          else  return RegionTag+"_bin20";
+          if(LT < 200)  return RegionTag+"_bin15";
+          else if(LT < 350)  return RegionTag+"_bin16";
+          else if(LT < 450)  return RegionTag+"_bin17";
+          else  return RegionTag+"_bin18";
         }/// MET                                    
 	
       }
     }
   }
+
   if(channel == "EE"){
-    
+   
     if(DataYear == 2016) {
       if(LowJet){
         ////////// LOWJET BINS  /////////////////////////////                                                                                                                                                    
 	if(met2_st < 4){
-	  if(ll_dphi > 2.5){
-	    if(LT<= 150)             return RegionTag+"_bin1";
-	    else if(LT<= 200)        return RegionTag+"_bin2";
-	    else if(LT<= 250)        return RegionTag+"_bin3";
-	    else if(LT<= 400)        return RegionTag+"_bin4";
-	    else if(LT<= 500)        return RegionTag+"_bin5";
-	    else if(LT<= 600)        return RegionTag+"_bin6";
-	    else                     return RegionTag+"_bin7";
-	  }
-	  else{
-	    if(LT<= 150)         return RegionTag+"_bin8";
-	    else if(LT<= 250)    return RegionTag+"_bin9";
-	    else                 return RegionTag+"_bin10";
-	  }
+	  if(LT<= 200)             return RegionTag+"_bin1";
+	  else if(LT<= 300)        return RegionTag+"_bin2";
+	  else if(LT<= 400)        return RegionTag+"_bin3";
+	  else if(LT<= 600)        return RegionTag+"_bin4";
+	  else if(LT<= 750)        return RegionTag+"_bin5";
+	  else                     return RegionTag+"_bin6";
 	}
 	else{
-	  if( LT<= 200 )        return RegionTag+"_bin11";
-	  else if( LT<= 300 )   return RegionTag+"_bin12";
-	  else  return RegionTag+"_bin13";
+	  if( LT<= 200 )        return RegionTag+"_bin6";
+	  else if( LT<= 450 )   return RegionTag+"_bin7";
+	  else  return RegionTag+"_bin8";
 	}
       }
       else{
 	//#################### HighJET BINS                                                                                                                                                                       
 	if(met2_st < 4){
-	  if(LT < 150)       return RegionTag+"_bin14";
-	  else if(LT < 175)  return RegionTag+"_bin15";
-	  else if(LT < 200)  return RegionTag+"_bin16";
-	  else if(LT < 250)  return RegionTag+"_bin17";
-	  else if(LT < 300)  return RegionTag+"_bin18";
-	  else if(LT < 350)  return RegionTag+"_bin19";
-	  else if(LT < 450)  return RegionTag+"_bin20";
-	  else               return RegionTag+"_bin21";
+	  if(LT < 250)       return RegionTag+"_bin9";
+	  else if(LT < 350)  return RegionTag+"_bin10";
+	  else if(LT < 450)  return RegionTag+"_bin11";
+	  else if(LT < 550)  return RegionTag+"_bin12";
+	  else if(LT < 650)  return RegionTag+"_bin13";
+	  else               return RegionTag+"_bin14";
 	}
 	else{
-	  if(LT < 150)  return RegionTag+"_bin22";
-	  else if(LT < 200)  return RegionTag+"_bin23";
-	  else if(LT < 300)  return RegionTag+"_bin24";
-	  else  return RegionTag+"_bin25";
+	  if(LT < 250)  return RegionTag+"_bin15";
+	  else if(LT < 350)  return RegionTag+"_bin16";
+	  else if(LT < 450)  return RegionTag+"_bin17";
+	  else  return RegionTag+"_bin18";
 	}/// MET
       }
     }/// 2016
@@ -320,44 +286,33 @@ TString HNL_LeptonCore::GetSR3StringBin(TString RegionTag, TString channel, bool
       if(LowJet){
         ////////// LOWJET BINS  /////////////////////////////                                                                                                                                                                                                                 
         if(met2_st < 3){
-          if(ll_dphi > 2.5){
-            if(LT<= 150)             return RegionTag+"_bin1";
-            else if(LT<= 200)        return RegionTag+"_bin2";
-            else if(LT<= 250)        return RegionTag+"_bin3";
-            else if(LT<= 400)        return RegionTag+"_bin4";
-            else if(LT<= 500)        return RegionTag+"_bin5";
-            else if(LT<= 750)        return RegionTag+"_bin6";
-            else                     return RegionTag+"_bin7";
-          }
-          else{
-            if(LT<= 150)         return RegionTag+"_bin8";
-            else if(LT<= 250)    return RegionTag+"_bin9";
-            else                 return RegionTag+"_bin10";
-          }
+	  if(LT<= 200)             return RegionTag+"_bin1";
+	  else if(LT<= 400)        return RegionTag+"_bin2";
+	  else if(LT<= 600)        return RegionTag+"_bin3";
+	  else if(LT<= 800)        return RegionTag+"_bin4";
+	  else                     return RegionTag+"_bin5";
         }
         else{
-          if( LT<= 200 )        return RegionTag+"_bin11";
-          else if( LT<= 300 )   return RegionTag+"_bin12";
-          else  return RegionTag+"_bin13";
+          if( LT<= 200 )        return RegionTag+"_bin6";
+          else if( LT<= 500 )   return RegionTag+"_bin7";
+          else  return RegionTag+"_bin8";
         }
       }
       else{
         //#################### HighJET BINS                                                                                                                                                                                                                                   
         if(met2_st < 3){
-          if(LT < 150)       return RegionTag+"_bin14";
-          else if(LT < 175)  return RegionTag+"_bin15";
-          else if(LT < 200)  return RegionTag+"_bin16";
-          else if(LT < 250)  return RegionTag+"_bin17";
-          else if(LT < 350)  return RegionTag+"_bin18";
-          else if(LT < 450)  return RegionTag+"_bin19";
-          else if(LT < 650)  return RegionTag+"_bin20";
-          else               return RegionTag+"_bin21";
+          if(LT < 275)       return RegionTag+"_bin9";
+          else if(LT < 400)  return RegionTag+"_bin10";
+          else if(LT < 500)  return RegionTag+"_bin11";
+          else if(LT < 600)  return RegionTag+"_bin12";
+          else if(LT < 650)  return RegionTag+"_bin13";
+          else               return RegionTag+"_bin14";
 	}
 	else{
-          if(LT < 150)  return RegionTag+"_bin22";
-          else if(LT < 200)  return RegionTag+"_bin23";
-          else if(LT < 300)  return RegionTag+"_bin24";
-          else  return RegionTag+"_bin25";
+          if(LT < 250)  return RegionTag+"_bin15";
+          else if(LT < 500)  return RegionTag+"_bin16";
+          else if(LT < 650)  return RegionTag+"_bin17";
+          else  return RegionTag+"_bin18";
 	}/// MET                                                                                                                                                                                                                                                              
       } 
       return "";
@@ -368,43 +323,34 @@ TString HNL_LeptonCore::GetSR3StringBin(TString RegionTag, TString channel, bool
         ////////// LOWJET BINS  /////////////////////////////                                                                                                                                                                                                                 
         if(met2_st < 3){
           if(ll_dphi > 2.5){
-            if(LT<= 150)             return RegionTag+"_bin1";
-            else if(LT<= 200)        return RegionTag+"_bin2";
-            else if(LT<= 250)        return RegionTag+"_bin3";
-            else if(LT<= 400)        return RegionTag+"_bin4";
-            else if(LT<= 500)        return RegionTag+"_bin5";
-            else if(LT<= 750)        return RegionTag+"_bin6";
-            else                     return RegionTag+"_bin7";
-          }
-          else{
-            if(LT<= 150)         return RegionTag+"_bin8";
-            else if(LT<= 250)    return RegionTag+"_bin9";
-            else                 return RegionTag+"_bin10";
+            if(LT<= 200)             return RegionTag+"_bin1";
+            else if(LT<= 400)        return RegionTag+"_bin2";
+            else if(LT<= 600)        return RegionTag+"_bin3";
+            else if(LT<= 900)        return RegionTag+"_bin4";
+            else                     return RegionTag+"_bin5";
           }
         }
         else{
-          if( LT<= 200 )        return RegionTag+"_bin11";
-          else if( LT<= 300 )   return RegionTag+"_bin12";
-          else  return RegionTag+"_bin13";
+          if( LT<= 200 )        return RegionTag+"_bin6";
+          else if( LT<= 600 )   return RegionTag+"_bin7";
+          else  return RegionTag+"_bin8";
         }
       }
       else{
         //#################### HighJET BINS                                                                                                                                                                                                                                   
         if(met2_st < 3){
-          if(LT < 150)       return RegionTag+"_bin14";
-          else if(LT < 175)  return RegionTag+"_bin15";
-          else if(LT < 200)  return RegionTag+"_bin16";
-          else if(LT < 250)  return RegionTag+"_bin17";
-          else if(LT < 350)  return RegionTag+"_bin18";
-          else if(LT < 450)  return RegionTag+"_bin19";
-          else if(LT < 750)  return RegionTag+"_bin20";
-          else               return RegionTag+"_bin21";
+          if(LT < 200)       return RegionTag+"_bin9";
+          else if(LT < 400)  return RegionTag+"_bin10";
+          else if(LT < 500)  return RegionTag+"_bin11";
+          else if(LT < 600)  return RegionTag+"_bin12";
+          else if(LT < 800)  return RegionTag+"_bin13";
+          else               return RegionTag+"_bin14";
 	}
 	else{
-          if(LT < 150)  return RegionTag+"_bin22";
-          else if(LT < 300)  return RegionTag+"_bin23";
-          else if(LT < 400)  return RegionTag+"_bin24";
-          else  return RegionTag+"_bin25";
+          if(LT < 400)  return RegionTag+"_bin15";
+          else if(LT < 500)  return RegionTag+"_bin16";
+          else if(LT < 750)  return RegionTag+"_bin17";
+          else  return RegionTag+"_bin18";
 	}/// MET                                                                                                                                                                                                                                                              
       } 
     }
@@ -416,26 +362,16 @@ TString HNL_LeptonCore::GetSR3StringBin(TString RegionTag, TString channel, bool
 	////////// LOWJET BINS  /////////////////////////////       
 
 	if(met2_st < 5){
-          if(ll_dphi > 2.5){
-            if(LT<= 150)             return RegionTag+"_bin1";
-            else if(LT<= 200)        return RegionTag+"_bin2";
-            else if(LT<= 250)        return RegionTag+"_bin3";
-            else if(LT<= 300)        return RegionTag+"_bin4";
-            else if(LT<= 400)        return RegionTag+"_bin5";
-            else                     return RegionTag+"_bin6";
-          }
-          else{
-            if(LT<= 150)         return RegionTag+"_bin7";
-            else if(LT<= 200)    return RegionTag+"_bin8";
-            else if(LT<= 250)    return RegionTag+"_bin9";
-            else                 return RegionTag+"_bin10";
-          }
+	  if(LT<= 175)             return RegionTag+"_bin1";
+	  else if(LT<= 250)        return RegionTag+"_bin2";
+	  else if(LT<= 350)        return RegionTag+"_bin3";
+	  else if(LT<= 500)        return RegionTag+"_bin4";
+	  else                     return RegionTag+"_bin5";
         }
         else{
-          if( LT<= 150 )        return RegionTag+"_bin11";
-          else if( LT<= 250 )   return RegionTag+"_bin12";
-          else if( LT<= 350 )   return RegionTag+"_bin13";
-          else  return RegionTag+"_bin14";
+          if( LT<= 250 )        return RegionTag+"_bin6";
+          else if( LT<= 450 )   return RegionTag+"_bin7";
+          else  return RegionTag+"_bin8";
         }
 
       }
@@ -444,17 +380,18 @@ TString HNL_LeptonCore::GetSR3StringBin(TString RegionTag, TString channel, bool
 	//#################### HighJET BINS                                                                                                                                                                       
 
 	if(met2_st < 5){
-          if(LT < 150)       return RegionTag+"_bin15";
-          else if(LT < 200)  return RegionTag+"_bin16";
-          else if(LT < 250)  return RegionTag+"_bin17";
-          else if(LT < 300)  return RegionTag+"_bin18";
-          else               return RegionTag+"_bin19";
+          if(LT < 200)       return RegionTag+"_bin9";
+          else if(LT < 250)  return RegionTag+"_bin10";
+          else if(LT < 300)  return RegionTag+"_bin11";
+          else if(LT < 400)  return RegionTag+"_bin12";
+          else if(LT < 500)  return RegionTag+"_bin13";
+          else               return RegionTag+"_bin14";
         }
         else{
-          if(LT < 150)       return RegionTag+"_bin20";
-          else if(LT < 200)  return RegionTag+"_bin21";
-          else if(LT < 300)  return RegionTag+"_bin22";
-          else  return RegionTag+"_bin23";
+          if(LT < 200)       return RegionTag+"_bin15";
+          else if(LT < 300)  return RegionTag+"_bin16";
+          else if(LT < 450)  return RegionTag+"_bin17";
+          else  return RegionTag+"_bin18";
         }/// MET     
       }
     } 
@@ -462,26 +399,17 @@ TString HNL_LeptonCore::GetSR3StringBin(TString RegionTag, TString channel, bool
      
       if(LowJet){
 	if(met2_st < 5){
-	  if(ll_dphi > 2.5){
-	    if(LT<= 150)             return RegionTag+"_bin1";
-	    else if(LT<= 200)        return RegionTag+"_bin2";
-	    else if(LT<= 250)        return RegionTag+"_bin3";
-	    else if(LT<= 300)        return RegionTag+"_bin4";
-	    else if(LT<= 400)        return RegionTag+"_bin5";
-	    else                     return RegionTag+"_bin6";
-	  }
-	  else{
-	    if(LT<= 150)         return RegionTag+"_bin7";
-	    else if(LT<= 200)    return RegionTag+"_bin8";
-	    else if(LT<= 250)    return RegionTag+"_bin9";
-	    else                 return RegionTag+"_bin10";
-	  }
+	  if(LT<= 175)             return RegionTag+"_bin1";
+	  else if(LT<= 250)        return RegionTag+"_bin2";
+	  else if(LT<= 400)        return RegionTag+"_bin3";
+	  else if(LT<= 500)        return RegionTag+"_bin4";
+	  else                     return RegionTag+"_bin6";
+	  
 	}
 	else{
-	  if( LT<= 150 )        return RegionTag+"_bin11";
-	  else if( LT<= 250 )   return RegionTag+"_bin12";
-	  else if( LT<= 350 )   return RegionTag+"_bin13";
-	  else  return RegionTag+"_bin14";
+	  if( LT<= 250 )        return RegionTag+"_bin6";
+	  else if( LT<= 500 )   return RegionTag+"_bin7";
+	  else  return RegionTag+"_bin8";
 	}
       }
       else{
@@ -489,17 +417,18 @@ TString HNL_LeptonCore::GetSR3StringBin(TString RegionTag, TString channel, bool
 	//#################### HighJET BINS                                                                                                                                                                                                                                   
 	
 	if(met2_st < 5){
-	  if(LT < 150)       return RegionTag+"_bin15";
-	  else if(LT < 200)  return RegionTag+"_bin16";
-	  else if(LT < 300)  return RegionTag+"_bin17";
-	  else if(LT < 350)  return RegionTag+"_bin18";
-	  else               return RegionTag+"_bin19";
+	  if(LT < 175)       return RegionTag+"_bin9";
+	  else if(LT < 250)  return RegionTag+"_bin10";
+	  else if(LT < 300)  return RegionTag+"_bin11";
+	  else if(LT < 400)  return RegionTag+"_bin12";
+	  else if(LT < 500)  return RegionTag+"_bin13";
+	  else               return RegionTag+"_bin14";
 	}
 	else{
-	  if(LT < 150)  return RegionTag+"_bin20";
-	  else if(LT < 200)  return RegionTag+"_bin21";
-	  else if(LT < 300)  return RegionTag+"_bin22";
-	  else  return RegionTag+"_bin23";
+	  if(LT < 250)  return RegionTag+"_bin15";
+	  else if(LT < 350)  return RegionTag+"_bin16";
+	  else if(LT < 500)  return RegionTag+"_bin17";
+	  else  return RegionTag+"_bin18";
 	}/// MET  
       }
     }   
@@ -507,41 +436,32 @@ TString HNL_LeptonCore::GetSR3StringBin(TString RegionTag, TString channel, bool
     if(DataYear == 2018){
       if(LowJet){
 	if(met2_st < 5){
-          if(ll_dphi > 2.5){
-            if(LT<= 150)             return RegionTag+"_bin1";
-            else if(LT<= 175)        return RegionTag+"_bin2";
-            else if(LT<= 250)        return RegionTag+"_bin3";
-            else if(LT<= 300)        return RegionTag+"_bin4";
-            else if(LT<= 350)        return RegionTag+"_bin5";
-            else                     return RegionTag+"_bin6";
-          }
-          else{
-            if(LT<= 150)         return RegionTag+"_bin7";
-            else if(LT<= 200)    return RegionTag+"_bin8";
-            else if(LT<= 300)    return RegionTag+"_bin9";
-            else                 return RegionTag+"_bin10";
-          }
+	  if(LT<= 250)             return RegionTag+"_bin1";
+	  else if(LT<= 300)        return RegionTag+"_bin2";
+	  else if(LT<= 400)        return RegionTag+"_bin3";
+	  else if(LT<= 500)        return RegionTag+"_bin4";
+	  else                     return RegionTag+"_bin5";
         }
         else{
-          if( LT<= 200 )        return RegionTag+"_bin11";
-          else if( LT<= 300 )   return RegionTag+"_bin12";
-          else if( LT<= 400 )   return RegionTag+"_bin13";
-          else  return RegionTag+"_bin14";
+          if( LT<= 250 )        return RegionTag+"_bin6";
+          else if( LT<= 600 )   return RegionTag+"_bin7";
+          else  return RegionTag+"_bin8";
         }
       }
       else{
 	if(met2_st < 5){
-          if(LT < 150)       return RegionTag+"_bin15";
-          else if(LT < 200)  return RegionTag+"_bin16";
-          else if(LT < 300)  return RegionTag+"_bin17";
-          else if(LT < 400)  return RegionTag+"_bin18";
-          else               return RegionTag+"_bin19";
+          if(LT < 200)       return RegionTag+"_bin9";
+          else if(LT < 400)  return RegionTag+"_bin10";
+          else if(LT < 500)  return RegionTag+"_bin11";
+          else if(LT < 600)  return RegionTag+"_bin12";
+          else if(LT < 800)  return RegionTag+"_bin13";
+          else               return RegionTag+"_bin14";
         }
         else{
-          if(LT < 150)       return RegionTag+"_bin20";
-          else if(LT < 300)  return RegionTag+"_bin21";
-          else if(LT < 400)  return RegionTag+"_bin22";
-          else  return RegionTag+"_bin23";
+          if(LT < 250)       return RegionTag+"_bin15";
+          else if(LT < 400)  return RegionTag+"_bin16";
+          else if(LT < 600)  return RegionTag+"_bin17";
+          else  return RegionTag+"_bin18";
         }
       }	
     }

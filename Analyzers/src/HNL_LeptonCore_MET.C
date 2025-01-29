@@ -124,19 +124,27 @@ Particle HNL_LeptonCore::GetvMET(TString METType, AnalyzerParameter param,
   if(param.syst_ == AnalyzerParameter::JetEnDown)             IdxSyst = 3;
   if(param.syst_ == AnalyzerParameter::MuonEnUp)              IdxSyst = 54; /// +50 so code uses our Muon corr not POG in MiniAOD
   if(param.syst_ == AnalyzerParameter::MuonEnDown)            IdxSyst = 55; /// +50 so code uses our Muon corr not POG in MiniAOD
+  if(param.syst_ == AnalyzerParameter::MuonResUp)      IdxSyst = 74;
+  if(param.syst_ == AnalyzerParameter::MuonResDown)    IdxSyst = 75;
   if(param.syst_ == AnalyzerParameter::ElectronEnUp)          IdxSyst = 56;
   if(param.syst_ == AnalyzerParameter::ElectronEnDown)        IdxSyst = 57;
+  if(param.syst_ == AnalyzerParameter::ElectronResUp)          IdxSyst = 58;
+  if(param.syst_ == AnalyzerParameter::ElectronResDown)        IdxSyst = 59;
+  if(param.syst_ == AnalyzerParameter::BTagSFHTagUp)          IdxSyst = 60;
+  if(param.syst_ == AnalyzerParameter::BTagSFHTagDown)        IdxSyst = 61;
+  if(param.syst_ == AnalyzerParameter::BTagSFLTagUp)          IdxSyst = 62;
+  if(param.syst_ == AnalyzerParameter::BTagSFLTagDown)        IdxSyst = 63;
+
+
   // syst source not defined in CMSSW
   if(param.syst_ == AnalyzerParameter::JetMassUp)             IdxSyst = 20;
   if(param.syst_ == AnalyzerParameter::JetMassDown)           IdxSyst = 21;
   if(param.syst_ == AnalyzerParameter::JetMassSmearUp)        IdxSyst = 22;
   if(param.syst_ == AnalyzerParameter::JetMassSmearDown)      IdxSyst = 23;
-  if(param.syst_ == AnalyzerParameter::ElectronResUp)         IdxSyst = 34;
-  if(param.syst_ == AnalyzerParameter::ElectronResDown)       IdxSyst = 35;
-  if(param.syst_ == AnalyzerParameter::BTagSFHTagUp)          IdxSyst = 40;
-  if(param.syst_ == AnalyzerParameter::BTagSFHTagDown)        IdxSyst = 41;
-  if(param.syst_ == AnalyzerParameter::BTagSFLTagUp)          IdxSyst = 42;
-  if(param.syst_ == AnalyzerParameter::BTagSFLTagDown)        IdxSyst = 43;
+  //  if(param.syst_ == AnalyzerParameter::BTagSFHTagUp)          IdxSyst = 40;
+  //  if(param.syst_ == AnalyzerParameter::BTagSFHTagDown)        IdxSyst = 41;
+  //  if(param.syst_ == AnalyzerParameter::BTagSFLTagUp)          IdxSyst = 42;
+  //  if(param.syst_ == AnalyzerParameter::BTagSFLTagDown)        IdxSyst = 43;
 
   Particle vMETCorr = PropSmearing ? GetvCorrMET(METType,param,vStandMET) : vStandMET;
   if(IdxSyst == -1) return vMETCorr;
