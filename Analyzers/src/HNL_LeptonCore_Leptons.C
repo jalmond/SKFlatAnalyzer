@@ -47,7 +47,6 @@ std::vector<Muon> HNL_LeptonCore::SelectMuons(AnalyzerParameter& param, TString 
 
   HighPtMuonCorr(this_AllMuons);
 
-
   if(param.syst_ == AnalyzerParameter::MuonEnUp)         muons = ScaleMuons( this_AllMuons, +1 );
   else if(param.syst_ == AnalyzerParameter::MuonEnDown)  muons = ScaleMuons( this_AllMuons, -1 );
   else muons = this_AllMuons;
@@ -65,8 +64,8 @@ std::vector<Muon> HNL_LeptonCore::SelectMuons(AnalyzerParameter& param, TString 
     
     if(HasFlag("Remove_HighPtEC")) {
       /// Test sensitivity with High pt EC removed
-      if(fabs(muons.at(i).Eta()) > 2.1 && muons.at(i).Pt() > 400)   continue;
-      if(fabs(muons.at(i).Eta()) > 1.5 && muons.at(i).Pt() > 600)   continue;
+      //if(fabs(muons.at(i).Eta()) > 2.1 && muons.at(i).Pt() > 400)   continue;
+      if(fabs(muons.at(i).Eta()) > 1.5 && muons.at(i).Pt() > 500)   continue;
     }
 
     bool CorrPt = (RunFake||RunPromptTLRemoval) && (id == param.Muon_FR_ID || id == param.Muon_Veto_ID);
@@ -186,8 +185,8 @@ std::vector<Electron> HNL_LeptonCore::SelectElectrons(AnalyzerParameter& param, 
     }
 
     if(HasFlag("Remove_HighPtEC")) {
-      if(fabs(electrons.at(i).Eta()) > 2.1 && electrons.at(i).Pt() > 400)   continue;
-      if(fabs(electrons.at(i).Eta()) > 1.5 && electrons.at(i).Pt() > 600)   continue;
+      // if(fabs(electrons.at(i).Eta()) > 2.1 && electrons.at(i).Pt() > 400)   continue;
+      if(fabs(electrons.at(i).Eta()) > 1.5 && electrons.at(i).Pt() > 500)   continue;
     }
     
     bool CorrPt = (RunFake||RunPromptTLRemoval) && (id == param.Electron_FR_ID || id == param.Electron_Veto_ID);
