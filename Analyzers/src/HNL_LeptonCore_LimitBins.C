@@ -252,11 +252,10 @@ TString HNL_LeptonCore::GetSR3StringBin(TString RegionTag, TString channel, bool
         ////////// LOWJET BINS  /////////////////////////////                                                                                                                                                    
 	if(met2_st < 4){
 	  if(LT<= 200)             return RegionTag+"_bin1";
-	  else if(LT<= 300)        return RegionTag+"_bin2";
-	  else if(LT<= 400)        return RegionTag+"_bin3";
-	  else if(LT<= 600)        return RegionTag+"_bin4";
-	  else if(LT<= 750)        return RegionTag+"_bin5";
-	  else                     return RegionTag+"_bin6";
+	  else if(LT<= 400)        return RegionTag+"_bin2";
+	  else if(LT<= 600)        return RegionTag+"_bin3";
+	  else if(LT<= 750)        return RegionTag+"_bin4";
+	  else                     return RegionTag+"_bin5";
 	}
 	else{
 	  if( LT<= 200 )        return RegionTag+"_bin6";
@@ -322,13 +321,11 @@ TString HNL_LeptonCore::GetSR3StringBin(TString RegionTag, TString channel, bool
       if(LowJet){
         ////////// LOWJET BINS  /////////////////////////////                                                                                                                                                                                                                 
         if(met2_st < 3){
-          if(ll_dphi > 2.5){
-            if(LT<= 200)             return RegionTag+"_bin1";
-            else if(LT<= 400)        return RegionTag+"_bin2";
-            else if(LT<= 600)        return RegionTag+"_bin3";
-            else if(LT<= 900)        return RegionTag+"_bin4";
-            else                     return RegionTag+"_bin5";
-          }
+	  if(LT<= 200)             return RegionTag+"_bin1";
+	  else if(LT<= 400)        return RegionTag+"_bin2";
+	  else if(LT<= 600)        return RegionTag+"_bin3";
+	  else if(LT<= 900)        return RegionTag+"_bin4";
+	  else                     return RegionTag+"_bin5";
         }
         else{
           if( LT<= 200 )        return RegionTag+"_bin6";

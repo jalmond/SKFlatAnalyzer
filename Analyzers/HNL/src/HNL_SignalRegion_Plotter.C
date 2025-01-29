@@ -44,7 +44,7 @@ void HNL_SignalRegion_Plotter::executeEvent(){
 
   if(HasFlag("ScanSystematic")){
     ///Only scan 1000 events
-    if(_jentry > 1000) return;
+    if(_jentry > 100) return;
   }
   vector<TString> LepIDs = {"HNL_ULIDv2"};
   if(HasFlag("AllID")) LepIDs = {"HNL_ULID","HNTightV2", "POGTight","HNL_ULIDv2"};

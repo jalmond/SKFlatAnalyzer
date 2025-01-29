@@ -311,10 +311,6 @@ std::vector<Electron> AnalyzerCore::GetAllElectrons(){
     el.SetEnShift(  electron_Energy_Scale_Up->at(i)/electron_Energy->at(i), electron_Energy_Scale_Down->at(i)/electron_Energy->at(i) );
     el.SetResShift( electron_Energy_Smear_Up->at(i)/electron_Energy->at(i), electron_Energy_Smear_Down->at(i)/electron_Energy->at(i) );
 
-    if(HasFlag("ScanSystematic")){
-      cout << "GetAllElectrons electron_Energy->at(i) = " << electron_Energy->at(i) << " electron_Energy_Smear_Up->at(i) = " << electron_Energy_Smear_Up->at(i) << " electron_Energy_Smear_Down->at(i) = " << electron_Energy_Smear_Down->at(i) << " electron_Energy_Scale_Up->at(i) = " << electron_Energy_Scale_Up->at(i) << " electron_Energy_Scale_Down->at(i) = " << electron_Energy_Scale_Down->at(i) << endl;
-    }
-
     el.SetPtEtaPhiE(1., electron_eta->at(i), electron_phi->at(i), electron_Energy->at(i));
     double el_theta = el.Theta();
     double el_pt = electron_Energy->at(i) * TMath::Sin( el_theta );

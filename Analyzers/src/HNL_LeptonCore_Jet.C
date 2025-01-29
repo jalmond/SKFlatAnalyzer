@@ -336,8 +336,8 @@ std::vector<FatJet> HNL_LeptonCore::SelectFatJets(AnalyzerParameter param,TStrin
 
   jets    = ScaleFatJets( jets_pc, sys_ak8_scale );
   jets    = SmearFatJets(jets, sys_ak8_smear );
-  jets    = ScaleSDMassFatJets( jets, sys_ak8_mass_scale );
-  jets    = SmearSDMassFatJets( jets, sys_ak8_mass_smear );
+  //  jets    = ScaleSDMassFatJets( jets, sys_ak8_mass_scale ); /// We do not use SD mass now
+  //  jets    = SmearSDMassFatJets( jets, sys_ak8_mass_smear );
 
   std::vector<FatJet> out;
   for(unsigned int i=0; i<jets.size(); i++){

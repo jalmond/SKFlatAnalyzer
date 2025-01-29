@@ -312,14 +312,15 @@ void   HNL_RegionDefinitions::RunMainRegionCode(bool IsSR,HNL_LeptonCore::Channe
     cout << "Event  " << event << " param.GetSystType() = " << param.GetSystType()  << " N(bjet) = "<<B_JetColl.size() << endl;
     cout << "Scan jets " << endl;
     int count = 0;  // Initialize counter
-    for (auto& ij : JetColl) {
-      cout << "Event  " << event << " param.GetSystType() = " << param.GetSystType()  << " Jet " << count++ << " pt = " << ij.Pt() << endl;
+    for (std::size_t ij = 0; ij < JetColl.size(); ij++) {
+      cout << "Event  " << event << " param.GetSystType() = " << param.GetSystType()  << " Jet " << count++ << " pt = " << JetColl[ij].Pt() << endl;
     }
     cout << "-----------------------" << endl;
     count = 0;  
-    for (auto& ij : AK8_JetColl) {
-      Particle N= ij + *LepsT[0]+*LepsT[1];
-      cout << "Event  " << event << " param.GetSystType() = " << param.GetSystType()  << " FatJet " << count++ << " pt = " << ij.Pt() << " N mass = " << N.M() << endl;
+    for (std::size_t ij=0; ij < AK8_JetColl.size(); ij++) {
+      Particle N=  AK8_JetColl[ij] + *LepsT[0]+*LepsT[1];
+      cout << "Event  " << event << " param.GetSystType() = " << param.GetSystType()  << " FatJet " << count++ << " pt = " << AK8_JetColl[ij].Pt() << " N mass = " << N.M() << endl;
+
     }    
     cout << "-----------------------" << endl;
     cout << "-----------------------" << endl;
@@ -327,7 +328,8 @@ void   HNL_RegionDefinitions::RunMainRegionCode(bool IsSR,HNL_LeptonCore::Channe
     cout << "Scan leptons " << endl;
     count = 0;  // Initialize counter                                                                                                                                                                           
     for (auto& il : LepsT) {
-      cout << " Event  " << event << " " << il->GetFlavour() << " " << count++ << " pt = " << il->Pt() << endl;
+      cout << " Event  " << event << " " << il->GetFlavour() << " " << count++ << " pt = " << il->Pt() << " eta = " << il->Eta() << endl;
+      if(il->Pt() > 150 && fabs(il->Eta()) > 1.5) cout << "HPT EC" << endl;
     }        
     
     cout << "Event  " << event << " param.GetSystType() = " << param.GetSystType()  << " SR2: HTOverPt = " << LepsT[0]->HTOverPt() << endl;
@@ -578,16 +580,18 @@ TString HNL_RegionDefinitions::RunSignalRegionAK8String(bool ApplyForSR,
   double MN1 = (N1cand.M() > 2000.) ? 1999. : N1cand.M();
 
  
-  double nbin_reg;
-  double binvalue = GetLimitBin("CR_SR1_Inv",leps,JetColl,AK8_JetColl,ev,nbin_reg);    
-  FillHist(  "LimitExtraction/"+ param.Name+"/LimitShape_"+RegionTag+"/N1Mass_Central", binvalue,  w, int(nbin_reg),0,nbin_reg ,"CR Binned");
-  
+  if(!ApplyForSR){
+    double nbin_reg;
+    double binvalue = GetLimitBin("CR_SR1_Inv",leps,JetColl,AK8_JetColl,ev,nbin_reg);    
+    FillHist(  "LimitExtraction/"+ param.Name+"/LimitShape_"+RegionTag+"/N1Mass_Central", binvalue,  w, int(nbin_reg),0,nbin_reg ,"CR Binned");
+  }
+
   //// Return SR bin
   /// Bins defined in  HNL_LeptonCore::DefineLimitBins() in HNL_LeptonCore_LimitBins.C 
   vector<double> ml1jbins;
   if(ApplyForSR) ml1jbins = GetLimitBinBoundary("SR1",GetChannelString(channel));
   else  ml1jbins = GetLimitBinBoundary(RegionTag);
-  
+
   for(unsigned int ibin=1; ibin < ml1jbins.size(); ibin++){
     if(MN1 < ml1jbins[ibin]) return RegionTag+"_MNbin"+to_string(ibin);
   }
@@ -957,15 +961,14 @@ TString HNL_RegionDefinitions::RunSignalRegionAK4String(bool ApplyForSR,HNL_Lept
   if(JetColl.size() < 2){
     FillCutflow(Reg, w, RegionTag+"_lowjet",param);
     //// These cuts are temp HL will check
-    
-    //    cout << " High Jet  GetSR3StringBin = " << GetSR3StringBin(RegionTag,GetChannelString(channel), true, met2_st,LT,ll_dphi) << " met2_st = " << met2_st << " LT = " << LT << " ll_dphi = " << ll_dphi << endl;
- 
     return GetSR3StringBin(RegionTag,GetChannelString(channel), true, met2_st,LT,ll_dphi);
   }  
   
-  if(ApplyForSR&&param.IsCentral())Fill_RegionPlots(param,"PassSR3" ,TauColl,  JetColl, AK8_JetColl, leps,  METv, nPV, w);
   
-  if(JetColl.size() < 2)   return "false";
+  if(JetColl.size() < 2)  {
+    if(ApplyForSR&&param.IsCentral())Fill_RegionPlots(param,"PassSR3_LowJet" ,TauColl,  JetColl, AK8_JetColl, leps,  METv, nPV, w);
+    return "false";
+  }
   
   FillCutflow(Reg, w, RegionTag+"_dijet",param);
                                                           
@@ -992,11 +995,10 @@ TString HNL_RegionDefinitions::RunSignalRegionAK4String(bool ApplyForSR,HNL_Lept
     if(Wmass < 400) return "false";
   }
 
-  TString LimitBin = GetSR3StringBin(RegionTag,GetChannelString(channel), false, met2_st,LT,ll_dphi);
-  
-  //  cout << " High Jet  GetSR3StringBin = " << LimitBin << " met2_st = " << met2_st << " LT = " << LT << " ll_dphi = " << ll_dphi << endl;
+  if(ApplyForSR&&param.IsCentral())Fill_RegionPlots(param,"PassSR3_HighJet" ,TauColl,  JetColl, AK8_JetColl, leps,  METv, nPV, w);
 
-  
+  TString LimitBin = GetSR3StringBin(RegionTag,GetChannelString(channel), false, met2_st,LT,ll_dphi);
+    
   return LimitBin;
 }
 
