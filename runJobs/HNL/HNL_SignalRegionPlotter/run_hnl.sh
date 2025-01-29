@@ -44,6 +44,8 @@ if [[ $1 == "SIG" ]]; then
 fi
 
 
+SKFlat.py -a $analyzer  -l $mcpath/Prompt/PromptSS2.txt            -n 200       --nmax ${nmax}   -e 2016postVFP  --skim SkimTree_HNMultiLepBDT --userflags RunPrompt &
+
 
 if [[ $1 == "Main" ]]; then
 
