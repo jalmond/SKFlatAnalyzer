@@ -609,10 +609,8 @@ void HNL_LeptonCore::Fill_Plots(AnalyzerParameter param, TString region,  TStrin
   if(leps.size() > 1){
     int nPtbins2D=21;
     double Pt2Dbins[nPtbins2D+1] = { -1000, -400, -200,-150,-100,-70,-50,-40,-30,-25,-20, 20.,25.,30., 40.,50., 70., 100.,  150.,  200.,400.,1000};
-    double PTLep1_2D  = (leps[0]->Pt() > 1000.) ? 999. : leps[0]->Pt();
-    double PTLep2_2D  = (leps[1]->Pt() > 1000.) ? 999. : leps[1]->Pt();
-    FillHist( plot_dir+ region+ "/Leptons/Lep_pt_eta", leps[0]->PtMaxed(1000.) , leps[0]->Eta(),  fabs(w), nPtbins2D,Pt2Dbins , 50, -2.5, 2.5);
-    FillHist( plot_dir+ region+ "/Leptons/Lep_pt_eta", -leps[1]->PtMaxed(1000.)  , leps[1]->Eta(),  fabs(w), nPtbins2D,Pt2Dbins,  50, -2.5, 2.5);
+    FillHist( plot_dir+ region+ "/Leptons/Lep_pt_eta", leps[0]->Pt() , leps[0]->Eta(),  fabs(w), nPtbins2D,Pt2Dbins , 50, -2.5, 2.5);
+    FillHist( plot_dir+ region+ "/Leptons/Lep_pt_eta", -leps[1]->Pt()  , leps[1]->Eta(),  fabs(w), nPtbins2D,Pt2Dbins,  50, -2.5, 2.5);
   }
 
 
