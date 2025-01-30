@@ -987,8 +987,8 @@ TString HNL_RegionDefinitions::RunSignalRegionAK4String(bool ApplyForSR,HNL_Lept
   Particle Wcand  = JetColl[m]+JetColl[n]+ *leps[0] + *leps[1];
 
   if(ApplyForSR){
-    if(DataEra.Contains("16")) {
-      if(Wcand.M() < 350) return "false";
+    if(DataEra.Contains("16") && channel==MuMu) {
+      if(Wcand.M() < 400) return "false";
     }
     else{
       if(Wcand.M() < 400) return "false";

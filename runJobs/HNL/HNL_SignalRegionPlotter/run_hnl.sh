@@ -16,11 +16,13 @@ declare  -a era_list=("2016postVFP" "2016preVFP" "2017" "2018")
 
 if [[ $1 == "DY" ]]; then
 
-    declare  -a era_list=("2018")
+
     for i in "${era_list[@]}"
     do
-        SKFlat.py -a $analyzer  -i DYTypeI_DF_M500_private   -n 20 --nmax 600  -e ${i}  --skim SkimTree_HNMultiLepBDT &
-
+        SKFlat.py -a $analyzer  -i DYTypeI_DF_M600_private   -n 20 --nmax 600  -e ${i}  --skim SkimTree_HNMultiLepBDT &
+	SKFlat.py -a $analyzer  -i VBFTypeI_DF_M600_private   -n 20 --nmax 600  -e ${i}  --skim SkimTree_HNMultiLepBDT &
+        SKFlat.py -a $analyzer  -i DYTypeI_DF_M1000_private   -n 20 --nmax 600  -e ${i}  --skim SkimTree_HNMultiLepBDT &
+	SKFlat.py -a $analyzer  -i SSWWTypeI_SF_M1000_private   -n 20 --nmax 600  -e ${i}  --skim SkimTree_HNMultiLepBDT &
     done
 fi
 
@@ -46,7 +48,7 @@ fi
 
 if [[ $1 == "Main" ]]; then
 
-    declare  -a era_list=("2016preVFP" "2016postVFP" "2017" "2018")
+    declare  -a era_list=("2016preVFP" "2016postVFP")
 
     for i in "${era_list[@]}"
     do
