@@ -1,7 +1,7 @@
 #include "HNL_LeptonCore.h"
 
 
-bool HNL_LeptonCore::PassTandP_PairCriteria(vector<Muon> muons, int itag, int iprobe){
+bool HNL_LeptonCore::PassTandP_PairCriteria(const vector<Muon>& muons, int itag, int iprobe){
 
   
   if(muons[itag].Charge() == muons[iprobe].Charge()) return false;

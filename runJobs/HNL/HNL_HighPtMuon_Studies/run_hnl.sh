@@ -8,6 +8,9 @@ skim=' '
 
 
 
+SKFlat.py -a $analyzer  -l ${SKFlat_WD}/runJobs/SampleLists/Bkg/Prompt/DY_Ext.txt -n 300  --nmax 500  -e 2017  --skim SkimTree_DileptonBDT --userflags DYPeak &
+
+
 if [[ $1 == "DATA" ]]; then
 
 

@@ -25,8 +25,55 @@ void HNL_TandP_Efficiency::RunHighPt(AnalyzerParameter param, double weight){
 
   TString ID = "POGHighPt";
 
+  AnalyzerParameter p = HNL_LeptonCore::InitialiseHNLParameter("Basic");
+  Event ev = GetEvent();
+  vector<Electron> electrons= GetAllElectrons();
+  if(DataYear == 2016){
+    if(! (ev.PassTrigger("HLT_Ele27_WPTight_Gsf_v")))return;
+  }
+  if(DataYear == 2017){
+    if(! (ev.PassTrigger("HLT_Ele32_WPTight_Gsf_L1DoubleEG_v"))) return;
+  }
+  if(DataYear == 2018){
+    if(! (ev.PassTrigger("HLT_Ele32_WPTight_Gsf_v"))) return;
+  }
 
+  double EvWeight=p.w.lumiweight*p.w.PUweight*p.w.prefireweight*p.w.zptweight*p.w.z0weight*p.w.weakweight;
+  
+  if(electrons.size() == 2){
+    
+    int nPtbins=14;
+    double Ptbins[nPtbins+1] = { 20.,25.,30., 40.,50., 70., 100.,  150.,  200.,350,500., 750,1000,1500,2000};
+
+    if(1){
+      Electron el_tag = electrons[0];
+      Electron el_probe = electrons[1];
+      if(fabs(el_tag.scEta())<1.4442 && el_tag.passHEEPID() && el_tag.PassPath("HLT_Ele32_WPTight_Gsf_L1DoubleEG_v") &&el_tag.Pt() > 35 && el_tag.IsPrompt()){
+	if(el_probe.IsFake() && el_probe.Pt() > 10){
+	  FillHist("Fake_QCD_All",el_probe.Pt() ,  EvWeight, nPtbins,Ptbins);
+	  if(el_probe.PassID("HNL_HighPt_ULID"))           FillHist("Fake_QCD_Pass",el_probe.Pt() ,  EvWeight, nPtbins,Ptbins);
+	  else   FillHist("Fake_QCD_Fail",el_probe.Pt() ,  EvWeight, nPtbins,Ptbins);
+	}
+      }
+    }
+    if(1){
+      Electron el_tag = electrons[1];
+      Electron el_probe = electrons[0];
+      if(fabs(el_tag.scEta())<1.4442 && el_tag.passHEEPID() && el_tag.PassPath("HLT_Ele32_WPTight_Gsf_L1DoubleEG_v") &&el_tag.Pt() > 35 && el_tag.IsPrompt()){
+	if(el_probe.IsFake() && el_probe.Pt() > 10){
+          FillHist("Fake_QCD_All",el_probe.Pt() ,  EvWeight, nPtbins,Ptbins);
+	  if(el_probe.PassID("HNL_HighPt_ULID"))           FillHist("Fake_QCD_Pass",el_probe.Pt() ,  EvWeight, nPtbins,Ptbins);
+          else FillHist("Fake_QCD_Fail",el_probe.Pt() ,  EvWeight, nPtbins,Ptbins);
+        }
+      }
+    }
+  }
+  return;
+
+  if(!PassMETFilter()) return;
+  
   std::vector<Muon>      Muons     = SelectMuons    ( param, "Global",    53., 2.4, weight);
+
   
   for(unsigned int itag=0; itag < Muons.size(); itag++){
 

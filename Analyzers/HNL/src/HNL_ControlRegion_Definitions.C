@@ -714,10 +714,42 @@ bool HNL_RegionDefinitions::FillZCRPlots(HNL_LeptonCore::Channel channel, std::v
 
   if(NB_JetColl > 0)                return false;
   FillCutflow(Reg, w, "Step3",param);
+
+
+  if (ll.M() < 50 ) return false;
+
+  if(RunFake){
+    if(SameCharge(leps))Fill_RegionPlots(param,"HNL_OS_FullMass_NoSF_TwoLepton_CR" ,  JetColl , AK8_JetColl,  leps,  METv, nPV, w);
+    if(SameCharge(leps))Fill_RegionPlots(param,"HNL_OS_FullMass_Weight1_TwoLepton_CR" ,  JetColl , AK8_JetColl,  leps,  METv, nPV, w);
+    if(SameCharge(leps))Fill_RegionPlots(param,"HNL_OS_FullMass_Weight2_TwoLepton_CR" ,  JetColl , AK8_JetColl,  leps,  METv, nPV, w);
+    if(SameCharge(leps))Fill_RegionPlots(param,"HNL_OS_FullMass_Weight3_TwoLepton_CR" ,  JetColl , AK8_JetColl,  leps,  METv, nPV, w);
+    if(SameCharge(leps))Fill_RegionPlots(param,"HNL_OS_FullMass_TwoLepton_CR" ,  JetColl , AK8_JetColl,  leps,  METv, nPV, w);
+
+  }
+  else if(!SameCharge(leps)){
+    Fill_RegionPlots(param,"HNL_OS_FullMass_TwoLepton_CR" ,  JetColl , AK8_JetColl,  leps,  METv, nPV, w);
+
+    double weight_nosf = w;
+    if(!IsData) weight_nosf= w/param.w.muonIDSF;
+
+    Fill_RegionPlots(param,"HNL_OS_FullMass_NoSF_TwoLepton_CR" ,  JetColl , AK8_JetColl,  leps,  METv, nPV, weight_nosf);
+
+    double weight_uncorr = w;
+    if(!IsData) weight_uncorr = w/(param.w.z0weight*param.w.zptweight*param.w.weakweight);
+    Fill_RegionPlots(param,"HNL_OS_FullMass_Weight1_TwoLepton_CR" ,  JetColl , AK8_JetColl,  leps,  METv, nPV, weight_uncorr);
+    double weight_uncorr2 = w;
+    if(!IsData) weight_uncorr2 = w/(param.w.z0weight*param.w.weakweight);
+    Fill_RegionPlots(param,"HNL_OS_FullMass_Weight2_TwoLepton_CR" ,  JetColl , AK8_JetColl,  leps,  METv, nPV, weight_uncorr2);
+
+    double weight_uncorr3 = w;
+    if(!IsData) weight_uncorr3 = w/(param.w.weakweight);
+    Fill_RegionPlots(param,"HNL_OS_FullMass_Weight3_TwoLepton_CR" ,  JetColl , AK8_JetColl,  leps,  METv, nPV, weight_uncorr3);
+    
+
+  }
   
   if (fabs(ll.M()-M_Z) > M_ZWINDOW) return false;
   FillCutflow(Reg, w, "Step4",param);
-
 
   if(AK8_JetColl.size() > 0) return false;
 

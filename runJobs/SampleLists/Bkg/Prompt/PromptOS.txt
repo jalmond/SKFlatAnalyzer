@@ -2,7 +2,4 @@ TTLL_powheg
 WZ_pythia
 ZZ_pythia
 WWTo2L2Nu_powheg
-WWW
-WWZ
-ZZZ
 DYJetsToTauTau_MiNNLO

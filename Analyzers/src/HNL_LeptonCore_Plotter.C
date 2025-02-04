@@ -293,11 +293,11 @@ void HNL_LeptonCore::Fill_Standard_Plots(AnalyzerParameter param, TString region
   FillHist( plot_dir+ region+ "/Standard/M_ll",  VarUpperLimit(llCand.M(),2000)  , w, 400, 0., 2000., "M_{ll} GeV");
 
 
-  int nPtbins=12;
-  double Ptbins[nPtbins+1] = { 20.,25.,30., 40.,50., 70., 100.,  150.,  200.,350,500., 750,1000};
+  int nPtbins=14;
+  double Ptbins[nPtbins+1] = { 20.,25.,30., 40.,50., 70., 100.,  150.,  200.,350,500., 750,1000,1500,2000};
 
   for(auto il : leps){
-    FillHist( plot_dir+ region+ "/Standard/Lepton_pt", VarUpperLimit(il->Pt(), 1000.)  , w, nPtbins,Ptbins,"1_{2} p_{T} GeV");
+    FillHist( plot_dir+ region+ "/Standard/Lepton_pt", VarUpperLimit(il->Pt(), 2000.)  , w, nPtbins,Ptbins,"1_{2} p_{T} GeV");
     FillHist( plot_dir+ region+ "/Standard/Lepton_eta",il->Eta()  , w, 50, -2.5, 2.5,"l_{1} #eta");
     FillHist( plot_dir+ region+ "/Standard/Lepton_phi",il->Phi()  , w, 50, -2.5, 2.5,"l_{1} #phi");
   }
@@ -440,6 +440,8 @@ void HNL_LeptonCore::Fill_Plots(AnalyzerParameter param, TString region,  TStrin
   Particle llCand  = *leps[0] + *leps[1];
   Particle lllCand = (threelep) ? *leps[0] + *leps[1] + *leps[2] :  Particle();
   Particle lljjCand;
+
+  FillHist( plot_dir+ region+ "/DiLepton/ll_Pt",  VarUpperLimit(llCand.Pt(),2000)  , w, 2000, 0., 2000., "Z pt GeV");
 
   if(jets.size() == 1 ) {
 

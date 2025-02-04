@@ -160,6 +160,34 @@ void HNL_ControlRegion_Plotter::RunControlRegions(AnalyzerParameter param, vecto
   std::vector<Muon>       MuonTightColl  = SelectMuons(MuonTightColl_Init,Muon_ID,     Min_Muon_Pt,     2.4);
   std::vector<Electron>   ElectronTightColl = SelectElectrons(ElectronTightColl_Init,Electron_ID, Min_Electron_Pt, 2.5);
 
+  if(HasFlag("OS"))  {
+    /// apply DY Z pt cuts
+    if(!HasFlag("MiNNLO")) {
+      if(MCSample == "DYJetsToMuMu_MiNNLO" || MCSample.Contains("DYJets_Pt") ) {
+	
+	if(MuonTightColl.size()==2 && !(SameCharge(MuonTightColl))){
+	  Lepton l1(MuonTightColl[0]);
+	  Lepton l2(MuonTightColl[1]);
+	  
+	  int Idx1_Closest = GenMatchedIdx(l1, All_Gens);
+	  int Idx2_Closest = GenMatchedIdx(l2, All_Gens);
+	  if(Idx1_Closest >=0 && Idx2_Closest >= 0){
+	    
+	    if (std::abs(All_Gens[Idx1_Closest].PID()) != 13 || std::abs(All_Gens[Idx2_Closest].PID()) != 13) return;
+	    
+	    Particle Z = All_Gens[Idx1_Closest] + All_Gens[Idx2_Closest];
+	    
+	    if(MCSample == "DYJetsToMuMu_MiNNLO"){
+	      if(Z.Pt() > 150) return;      
+	    }
+	    else if(Z.Pt() <= 150) return;    
+	  }
+	  else return;     
+	} // DY loop
+      }
+    }
+  }
+
 
   //// Change this so now Truth matching does not remove Leptons but in Definition code the GenFIlter removes events 
   //  std::vector<Muon>       MuonTightColl      =  GetLepCollByRunType    (MuonTightCollInit,    param);  

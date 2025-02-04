@@ -25,11 +25,8 @@ void HNL_Lepton_ChargeFlip::executeEvent(){
   vector<TString> LepIDs = {"HNL_ULID","TopHN", "POGTight", "HNTightV2", "passHEEPID_v1","passHEEPID_v3", "HNL_HighPt_ULID"};
 
   if(HasFlag("ClosureTest")) LepIDs = {"HNL_ULID" , "HNL_HighPt_ULID",  "passHEEPID_v1",  "passHEEPID_v3" };
-  if(HasFlag("ScaleFactor")) LepIDs = {"HNL_ULID" , "HNL_HighPt_ULID", "passHEEPID_v1","passHEEPID_v3" };
-  if(HasFlag("ScaleFactorPt1")) LepIDs = {"HNL_ULID" , "HNL_HighPt_ULID"};
-  if(HasFlag("ScaleFactorPt2")) LepIDs = {"HNL_ULID" , "HNL_HighPt_ULID"};
-  if(HasFlag("ScaleFactorPt3")) LepIDs = {"HNL_ULID" , "HNL_HighPt_ULID"};
-  if(HasFlag("ScaleFactorTop"))  LepIDs = {"TopHN","HNL_HighPt_ULID"};
+  if(HasFlag("ScaleFactor")) LepIDs = {"HNL_ULID" , "HNL_HighPt_ULID", "passHEEPID_v1", "passHEEPID_v3" };
+  if(HasFlag("ScaleFactorTop"))  LepIDs = {"NoCut","HNL_ULID_BaseLineCC","Fail_HNL_HighPt_ULID"};
 
   //  if(HasFlag("ShiftEnergyZ")) LepIDs = {"HNL_ULID" , "POGTight","passHEEPID_v3", "TpHN", };
 
@@ -47,18 +44,7 @@ void HNL_Lepton_ChargeFlip::executeEvent(){
       param.Apply_Weight_LumiNorm = true;
       param.Apply_Weight_Norm1Ipb = true;
     }
-    if(HasFlag("ScaleFactorPt1")){
-      param.Apply_Weight_LumiNorm = true;
-      param.Apply_Weight_Norm1Ipb = true;
-    }
-    if(HasFlag("ScaleFactorPt2")){
-      param.Apply_Weight_LumiNorm = true;
-      param.Apply_Weight_Norm1Ipb = true;
-    }
-    if(HasFlag("ScaleFactorPt3")){
-      param.Apply_Weight_LumiNorm = true;
-      param.Apply_Weight_Norm1Ipb = true;
-    }
+    
     if(HasFlag("ScaleFactorTop")){
       param.Apply_Weight_LumiNorm = true;
       param.Apply_Weight_Norm1Ipb = true;
@@ -104,7 +90,7 @@ void HNL_Lepton_ChargeFlip::executeEvent(){
 }
 
 // check if fitting is useless
-/*
+/*sselecte
  execute under --userflag CFfitval
 1. pick up some processes with large xsec (ttbar DY)
 2. choose OS ee events
@@ -130,8 +116,9 @@ void HNL_Lepton_ChargeFlip::executeEventFromParameter(AnalyzerParameter param){
 
   if(_jentry<10) cout << "EvWeight  = " << EvWeight << endl;
   // Electrons 
-  std::vector<Electron> ElectronColltmp;
-  if(param.Electron_Tight_ID.Contains("HEEP")) ElectronColltmp = GetElectrons(param.Electron_Tight_ID,15.,2.5);
+  std::vector<Electron> ElectronColltmp;  
+  if(HasFlag("ScaleFactorTop")) ElectronColltmp = GetElectrons(param.Electron_Tight_ID,35.,2.5);
+  else if(param.Electron_Tight_ID.Contains("HEEP")) ElectronColltmp = GetElectrons(param.Electron_Tight_ID,15.,2.5);
   else ElectronColltmp = GetElectrons(param.Electron_Tight_ID,15.,2.5);
   
   if(run_Debug) cout <<  "Number of All ID Electrons = " << ElectronColltmp.size() << endl;
@@ -1261,16 +1248,6 @@ void HNL_Lepton_ChargeFlip::executeEventFromParameter(AnalyzerParameter param){
     if(Leptons.size() != 2) return;
     if(ElectronColl.size() != 2) return;
     
-    if(HasFlag("ScaleFactorPt1") ){
-      if(ElectronColl[1].Pt() < 50) return;
-    }
-    if(HasFlag("ScaleFactorPt2") ){
-      if(ElectronColl[1].Pt() < 100) return;
-    } 
-    if(HasFlag("ScaleFactorPt3") ){
-      if(ElectronColl[1].Pt() < 200) return;
-    }
-
     Particle ZCand  = ElectronColl.at(0)+ElectronColl.at(1);
     double MllLeft  = 50;
     double MllRight = 150;

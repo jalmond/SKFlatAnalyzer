@@ -6,10 +6,6 @@ void HNL_SignalRegion_TestRun::initializeAnalyzer(){
 
   HNL_LeptonCore::initializeAnalyzer();
   
-  bool run_ee_bdt=false;
-  bool run_mm_bdt=false;
-  bool run_em_bdt=false;
-  
   SetupEventMVAReader("V2");
 
   nLog = 100000;

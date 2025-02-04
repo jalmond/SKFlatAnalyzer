@@ -25,6 +25,35 @@ void HNL_HighPtMuon_Studies::executeEvent(){
   //// v2) rochester corr for pt < 200 ; GE corrected for pt > 200
   ////
 
+
+  if (HasFlag("DYPeak")) {
+    std::vector<Muon> ZMuons = SelectMuons(param, param.Muon_Tight_ID, 10.0, 2.5);
+    if (ZMuons.size() != 2 || SameCharge(ZMuons)) return;
+
+    Lepton l1(ZMuons[0]);
+    Lepton l2(ZMuons[1]);
+
+    int Idx1_Closest = GenMatchedIdx(l1, All_Gens);
+    int Idx2_Closest = GenMatchedIdx(l2, All_Gens);
+
+    if (std::abs(All_Gens[Idx1_Closest].PID()) != 13 || std::abs(All_Gens[Idx2_Closest].PID()) != 13) return;
+
+    Particle Z = All_Gens[Idx1_Closest] + All_Gens[Idx2_Closest];
+    Particle ZReco = ZMuons[0] + ZMuons[1];
+
+    // Fill histograms for Gen-level
+    FillHist("Gen/Z_Mass", Z.M(), weight, 2000, 0, 2000);
+    FillHist("Gen/Z_Pt", Z.Pt(), weight, 2000, 0, 2000);
+    FillHist("Gen/Mu1_Pt", All_Gens[Idx1_Closest].Pt(), weight, 2000, 0, 2000);
+    FillHist("Gen/Mu2_Pt", All_Gens[Idx2_Closest].Pt(), weight, 2000, 0, 2000);
+
+    // Fill histograms for Reco-level
+    FillHist("Reco/Z_Mass", ZReco.M(), weight, 2000, 0, 2000);
+    FillHist("Reco/Z_Pt", ZReco.Pt(), weight, 2000, 0, 2000);
+    FillHist("Reco/Mu1_Pt", ZMuons[0].Pt(), weight, 2000, 0, 2000);
+    FillHist("Reco/Mu2_Pt", ZMuons[1].Pt(), weight, 2000, 0, 2000);
+  }
+
   std::vector<Muon>       Muons_HNL_v1     = GetHighPtMuons("PF_Nom", param.Muon_Tight_ID,     10.,  2.4);
   std::vector<Muon>       Muons_HNL_v2     = GetHighPtMuons("PF_Roch",param.Muon_Tight_ID,    10.,  2.4);
   std::vector<Muon>       Muons_HNL_v3     = GetHighPtMuons("PF_GE",  param.Muon_Tight_ID,      10.,  2.4);
@@ -125,34 +154,48 @@ void HNL_HighPtMuon_Studies::executeEvent(){
 
   if(Muons_HNL_v1.size() < 2) return;
 
-  Particle LL;
-  Particle LL_TuneP;
-  bool MisMatch=false;
-  double R=0;
-  double MisMatchedPt=0;
-  if(SameCharge(Muons_HNL_v1)){
-    for(unsigned int imu = 0; imu < Muons_HNL_v1.size(); imu++){
-      if(Muons_HNL_v1[imu].PassID(param.Muon_Tight_ID)){
-	LL=LL+Muons_HNL_v1[imu];
-	LL_TuneP=LL_TuneP+Muons_HNL_v1[imu].TuneP4();
-	
-	FillHist("Inclusive_DiLep_N", ((Muons_HNL_v1[imu].TuneP4().Pt()-Muons_HNL_v1[imu].Pt())/ Muons_HNL_v1[imu].TuneP4().Pt()) ,  1, 200, -1, 1 );
-	if(ComparePtTune(Muons_HNL_v1[imu], 0.3)) {
-	  cout << " " << endl;
-	  cout << "Event " << event << " lumi = " << lumi << " run number = " << run <<  endl;
-	  cout << "index = " << imu << " MET2ST=   = " << MET2ST<< " MET2ST_TuneP = " << MET2ST_TuneP<< endl;
-	  cout << "Muon pt mismatch pt = " << Muons_HNL_v1[imu].Pt() << " tune pt = "  << Muons_HNL_v1[imu].TuneP4().Pt() << " ratio = " <<  Muons_HNL_v1[imu].TuneP4().Pt()/ Muons_HNL_v1[imu].Pt()  << endl;
-	  cout << "Muon Eta = " << Muons_HNL_v1[imu].Eta() << "   Muon Phi = " << Muons_HNL_v1[imu].Phi() <<  " charge = " << Muons_HNL_v1[imu].Charge() << endl;
-	  cout << "LL mass = " << LL.M() << " LL_TuneP mass = " << LL_TuneP.M() << endl;
-	  if(!MisMatch) {
-	    R= (Muons_HNL_v1[imu].TuneP4().Pt()-Muons_HNL_v1[imu].Pt())/ Muons_HNL_v1[imu].TuneP4().Pt();
-	    MisMatchedPt=Muons_HNL_v1[imu].Pt();
-	  } 
-	  MisMatch=true;
+  Particle LL, LL_TuneP;
+  bool MisMatch = false;
+  double MisMatchedPt = 0.0;
+  double R = 0.0;
+
+  if (SameCharge(Muons_HNL_v1)) {
+    for (size_t imu = 0; imu < Muons_HNL_v1.size(); ++imu) {
+      const auto& muon = Muons_HNL_v1[imu];
+
+      if (muon.PassID(param.Muon_Tight_ID)) {
+	LL += muon;
+	LL_TuneP += muon.TuneP4();
+
+	double tuneP_ratio = (muon.TuneP4().Pt() - muon.Pt()) / muon.TuneP4().Pt();
+	FillHist("Inclusive_DiLep_N", tuneP_ratio, 1, 200, -1, 1);
+
+	if (ComparePtTune(muon, 0.3)) {
+	  std::cout << "\n"
+		    << "Event " << event << " lumi = " << lumi 
+		    << " run number = " << run << "\n"
+		    << "index = " << imu << " MET2ST = " << MET2ST 
+		    << " MET2ST_TuneP = " << MET2ST_TuneP << "\n"
+		    << "Muon pt mismatch: pt = " << muon.Pt() 
+		    << " tune pt = " << muon.TuneP4().Pt()
+		    << " ratio = " << muon.TuneP4().Pt() / muon.Pt() << "\n"
+		    << "Muon Eta = " << muon.Eta()
+		    << " Muon Phi = " << muon.Phi() 
+		    << " charge = " << muon.Charge() << "\n"
+		    << "LL mass = " << LL.M() 
+		    << " LL_TuneP mass = " << LL_TuneP.M() 
+		    << std::endl;
+
+	  if (!MisMatch) {
+	    R = tuneP_ratio;
+	    MisMatchedPt = muon.Pt();
+	  }
+	  MisMatch = true;
 	}
       }
     }
   }
+  if(R>0.3) std::cout <<  "MisMatchedPt = " << MisMatchedPt << endl;
   
   if(Muons_HNL_v1.size() != 2) return;
   Particle LL2 = Muons_HNL_v1[0] + Muons_HNL_v1[1];
