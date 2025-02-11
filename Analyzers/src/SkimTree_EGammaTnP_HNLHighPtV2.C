@@ -20,6 +20,9 @@ void SkimTree_EGammaTnP_HNLHighPtV2::initializeAnalyzer(){
     weight_tree->Branch("prefireweight_up",&prefireweight_up);
     weight_tree->Branch("prefireweight_down",&prefireweight_down);
     weight_tree->Branch("zptweight",&zptweight);
+    weight_tree->Branch("zptweight_g",&zptweight_g);
+    weight_tree->Branch("zptweight_gy",&zptweight_gy);
+    weight_tree->Branch("zptweight_gym",&zptweight_gym);
     weight_tree->Branch("z0weight",&z0weight);
     weight_tree->Branch("totWeight",&totWeight);
   }
@@ -39,6 +42,9 @@ void SkimTree_EGammaTnP_HNLHighPtV2::initializeAnalyzer(){
     newtree->Branch("prefireweight_up",&prefireweight_up);
     newtree->Branch("prefireweight_down",&prefireweight_down);
     newtree->Branch("zptweight",&zptweight);
+    newtree->Branch("zptweight_g",&zptweight_g);
+    newtree->Branch("zptweight_gy",&zptweight_gy);
+    newtree->Branch("zptweight_gym",&zptweight_gym);
     newtree->Branch("z0weight",&z0weight);
     newtree->Branch("totWeight",&totWeight);
   }
@@ -250,9 +256,12 @@ void SkimTree_EGammaTnP_HNLHighPtV2::executeEvent(){
       prefireweight_up=p.w.prefireweight_up;
       prefireweight_down=p.w.prefireweight_down;
       zptweight=p.w.zptweight;
+      zptweight_g=p.w.zptweight_g;
+      zptweight_gy=p.w.zptweight_gy;
+      zptweight_gym=p.w.zptweight_gym;
       z0weight=p.w.z0weight;
       //totWeight=p.w.lumiweight*p.w.PUweight*p.w.prefireweight*p.w.zptweight*p.w.z0weight;
-      EvWeight=p.w.lumiweight*p.w.PUweight*p.w.prefireweight*p.w.zptweight*p.w.z0weight*p.w.weakweight;
+      EvWeight=p.w.lumiweight*p.w.PUweight*p.w.prefireweight*p.w.z0weight*p.w.weakweight;
     }
     L1ThresholdHLTEle23Ele12CaloIdLTrackIdLIsoVL=GetL1Threshold();
     

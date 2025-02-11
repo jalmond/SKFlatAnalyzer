@@ -715,37 +715,108 @@ bool HNL_RegionDefinitions::FillZCRPlots(HNL_LeptonCore::Channel channel, std::v
   if(NB_JetColl > 0)                return false;
   FillCutflow(Reg, w, "Step3",param);
 
-
+  
   if (ll.M() < 50 ) return false;
 
-  if(RunFake){
-    if(SameCharge(leps))Fill_RegionPlots(param,"HNL_OS_FullMass_NoSF_TwoLepton_CR" ,  JetColl , AK8_JetColl,  leps,  METv, nPV, w);
-    if(SameCharge(leps))Fill_RegionPlots(param,"HNL_OS_FullMass_Weight1_TwoLepton_CR" ,  JetColl , AK8_JetColl,  leps,  METv, nPV, w);
-    if(SameCharge(leps))Fill_RegionPlots(param,"HNL_OS_FullMass_Weight2_TwoLepton_CR" ,  JetColl , AK8_JetColl,  leps,  METv, nPV, w);
-    if(SameCharge(leps))Fill_RegionPlots(param,"HNL_OS_FullMass_Weight3_TwoLepton_CR" ,  JetColl , AK8_JetColl,  leps,  METv, nPV, w);
-    if(SameCharge(leps))Fill_RegionPlots(param,"HNL_OS_FullMass_TwoLepton_CR" ,  JetColl , AK8_JetColl,  leps,  METv, nPV, w);
 
+  //// Plot No DY corr...                                                                                                                                                                                                                                                                                                  
+  //// No Trigger SF                                                                                                                                                                                                                                                                                                       
+  //// Trigger Only                                                                                                                                                                                                                                                                                                        
+  //// Trigger + Reco                                                                                                                                                                                                                                                                                                      
+  //// Trigger + reco + ID                                                                                                                                                                                                                                                                                                 
+
+  // Define selection labels                                                                                                                                                                                                                                                                                               
+  TString Label_sel[] = {
+    "_NoCorr_DefaultWeight",
+    "_NoCorr_TriggerSF",
+    "_NoCorr_TriggerSF_RecoSF",
+    "_NoCorr_TriggerSF_RecoSF_IDSF",
+    "_NoCorr_TriggerSF_RecoSF_IDSF_3bin",
+    "_Corr1_DefaultWeight",
+    "_Corr1_TriggerSF",
+    "_Corr1_TriggerSF_RecoSF",
+    "_Corr1_TriggerSF_RecoSF_IDSF",
+    "_Corr1_TriggerSF_RecoSF_IDSF_3bin",
+    "_Corr2_DefaultWeight",
+    "_Corr2_TriggerSF",
+    "_Corr2_TriggerSF_RecoSF",
+    "_Corr2_TriggerSF_RecoSF_IDSF",
+    "_Corr2_TriggerSF_RecoSF_IDSF_3bin",
+    "_Corr3_DefaultWeight",
+    "_Corr3_TriggerSF",
+    "_Corr3_TriggerSF_RecoSF",
+    "_Corr3_TriggerSF_RecoSF_IDSF",
+    "_Corr3_TriggerSF_RecoSF_IDSF_3bin",
+    "_Corr4_DefaultWeight",
+    "_Corr4_TriggerSF",
+    "_Corr4_TriggerSF_RecoSF",
+    "_Corr4_TriggerSF_RecoSF_IDSF",
+    "_Corr4_TriggerSF_RecoSF_IDSF_3bin"
+  };
+
+  double weight_corr = param.w.z0weight*param.w.zptweight*param.w.weakweight;
+  double weight_SF   = param.w.muonIDSF*param.w.muonRECOSF*param.w.muonTrackerSF*param.w.triggerSF;
+  double IDSF2 = 1/param.w.muonIDSF;
+
+  for(auto lep : leps){
+    if(!IsData)IDSF2*= mcCorr->MuonID_SF( "NUM_2bins_HNL_ULID_"+GetYearString(), abs(lep->Eta()), lep->Pt(), 0);
   }
+  // Define weights                                                                                                                                                                                                                                                                                                        
+  double def_weight_level1       = w/(weight_corr*weight_SF); /// No SF No Z Weight
+  double def_weight_level2       = w/(param.w.zptweight*weight_SF); // No SF  No ZPt weight
+  double def_weight_level3       = def_weight_level2 * param.w.zptweight_g;
+  double def_weight_level4       = def_weight_level2 * param.w.zptweight_gy;
+  double def_weight_level5       = def_weight_level2 * param.w.zptweight_gym;
+
+  double os_weight[] = {def_weight_level1,
+			def_weight_level1*param.w.triggerSF,
+			def_weight_level1*param.w.triggerSF*param.w.muonRECOSF*param.w.muonTrackerSF,
+			def_weight_level1*param.w.triggerSF*param.w.muonRECOSF*param.w.muonTrackerSF*param.w.muonIDSF,
+			def_weight_level1*param.w.triggerSF*param.w.muonRECOSF*param.w.muonTrackerSF*IDSF2,
+
+			def_weight_level2,
+			def_weight_level2*param.w.triggerSF,
+			def_weight_level2*param.w.triggerSF*param.w.muonRECOSF*param.w.muonTrackerSF,
+			def_weight_level2*param.w.triggerSF*param.w.muonRECOSF*param.w.muonTrackerSF*param.w.muonIDSF,
+			def_weight_level2*param.w.triggerSF*param.w.muonRECOSF*param.w.muonTrackerSF*IDSF2,
+
+			def_weight_level3,
+			def_weight_level3*param.w.triggerSF,
+			def_weight_level3*param.w.triggerSF*param.w.muonRECOSF*param.w.muonTrackerSF,
+			def_weight_level3*param.w.triggerSF*param.w.muonRECOSF*param.w.muonTrackerSF*param.w.muonIDSF,
+			def_weight_level3*param.w.triggerSF*param.w.muonRECOSF*param.w.muonTrackerSF*IDSF2,
+
+			def_weight_level4,
+			def_weight_level4*param.w.triggerSF,
+			def_weight_level4*param.w.triggerSF*param.w.muonRECOSF*param.w.muonTrackerSF,
+			def_weight_level4*param.w.triggerSF*param.w.muonRECOSF*param.w.muonTrackerSF*param.w.muonIDSF,
+			def_weight_level4*param.w.triggerSF*param.w.muonRECOSF*param.w.muonTrackerSF*IDSF2,
+
+                        def_weight_level5,
+                        def_weight_level5*param.w.triggerSF,
+                        def_weight_level5*param.w.triggerSF*param.w.muonRECOSF*param.w.muonTrackerSF,
+                        def_weight_level5*param.w.triggerSF*param.w.muonRECOSF*param.w.muonTrackerSF*param.w.muonIDSF,
+                        def_weight_level5*param.w.triggerSF*param.w.muonRECOSF*param.w.muonTrackerSF*IDSF2,
+
+  };
+
+  
+
+  if (RunFake) {
+    if (SameCharge(leps)) {
+      for (int i = 0; i < 20; ++i) {
+        Fill_RegionPlots(param, "HNL_OS_FullMass_" + Label_sel[i] + "TwoLepton_CR",
+                         JetColl, AK8_JetColl, leps, METv, nPV, os_weight[i]);
+      }
+    }
+  }
+
   else if(!SameCharge(leps)){
-    Fill_RegionPlots(param,"HNL_OS_FullMass_TwoLepton_CR" ,  JetColl , AK8_JetColl,  leps,  METv, nPV, w);
 
-    double weight_nosf = w;
-    if(!IsData) weight_nosf= w/param.w.muonIDSF;
-
-    Fill_RegionPlots(param,"HNL_OS_FullMass_NoSF_TwoLepton_CR" ,  JetColl , AK8_JetColl,  leps,  METv, nPV, weight_nosf);
-
-    double weight_uncorr = w;
-    if(!IsData) weight_uncorr = w/(param.w.z0weight*param.w.zptweight*param.w.weakweight);
-    Fill_RegionPlots(param,"HNL_OS_FullMass_Weight1_TwoLepton_CR" ,  JetColl , AK8_JetColl,  leps,  METv, nPV, weight_uncorr);
-    double weight_uncorr2 = w;
-    if(!IsData) weight_uncorr2 = w/(param.w.z0weight*param.w.weakweight);
-    Fill_RegionPlots(param,"HNL_OS_FullMass_Weight2_TwoLepton_CR" ,  JetColl , AK8_JetColl,  leps,  METv, nPV, weight_uncorr2);
-
-    double weight_uncorr3 = w;
-    if(!IsData) weight_uncorr3 = w/(param.w.weakweight);
-    Fill_RegionPlots(param,"HNL_OS_FullMass_Weight3_TwoLepton_CR" ,  JetColl , AK8_JetColl,  leps,  METv, nPV, weight_uncorr3);
-    
-
+    for (int i = 0; i < 20; ++i) {
+      Fill_RegionPlots(param, "HNL_OS_FullMass_" + Label_sel[i] + "TwoLepton_CR",
+                       JetColl, AK8_JetColl, leps, METv, nPV, os_weight[i]);
+    }
   }
   
   if (fabs(ll.M()-M_Z) > M_ZWINDOW) return false;
@@ -761,39 +832,23 @@ bool HNL_RegionDefinitions::FillZCRPlots(HNL_LeptonCore::Channel channel, std::v
   bool isBB=false;
   bool isEE=false;
   if(leps[0]->IsBB() && leps[1]->IsBB() ) isBB=true;
-  if(leps[0]->IsEC() &&leps[1]->IsEC()) isEE=true;
+  if(leps[0]->IsEC() &&leps[1]->IsEC())   isEE=true;
 
-  if(RunFake){
-    if(SameCharge(leps))Fill_RegionPlots(param,"HNL_OS_Z_TwoLepton_CR" ,  JetColl , AK8_JetColl,  leps,  METv, nPV, w);
-    if(SameCharge(leps))Fill_RegionPlots(param,"HNL_OS_Z_TwoLepton_UnCorr_CR" ,  JetColl , AK8_JetColl,  leps,  METv, nPV, w);
-    if(SameCharge(leps))Fill_RegionPlots(param,"HNL_OS_Z_TwoLepton_NoSF_CR" ,  JetColl , AK8_JetColl,  leps,  METv, nPV, w);
-    
-    if(isBB && SameCharge(leps))Fill_RegionPlots(param,"HNL_OS_Z_BB_TwoLepton_CR" ,  JetColl , AK8_JetColl,  leps,  METv, nPV, w);
-    if(isEE && SameCharge(leps))Fill_RegionPlots(param,"HNL_OS_Z_EE_TwoLepton_CR" ,  JetColl , AK8_JetColl,  leps,  METv, nPV, w);
 
-  }
-  else if(!SameCharge(leps)){
-    
-    Fill_RegionPlots(param,"HNL_OS_Z_TwoLepton_CR" ,  JetColl , AK8_JetColl,  leps,  METv, nPV, w);
-    if(isBB )    Fill_RegionPlots(param,"HNL_OS_Z_BB_TwoLepton_CR" ,  JetColl , AK8_JetColl,  leps,  METv, nPV, w);
-    if(isEE )    Fill_RegionPlots(param,"HNL_OS_Z_EE_TwoLepton_CR" ,  JetColl , AK8_JetColl,  leps,  METv, nPV, w);
-    
-    double weight_uncorr = w;
-    if(!IsData) weight_uncorr = w/(param.w.z0weight*param.w.zptweight*param.w.weakweight);
-    
-    double weight_nosf = w;
-    if(!IsData) weight_nosf= w/param.w.muonIDSF;
-
-    Fill_RegionPlots(param,"HNL_OS_Z_TwoLepton_UnCorr_CR" ,  JetColl , AK8_JetColl,  leps,  METv, nPV, weight_uncorr);    
-
-    Fill_RegionPlots(param,"HNL_OS_Z_TwoLepton_NoSF_CR" ,  JetColl , AK8_JetColl,  leps,  METv, nPV, weight_nosf);
-  }
-  if(leps[0]->Pt() > 300) {
-    if(RunFake){
-      if(SameCharge(leps))Fill_RegionPlots(param,"HNL_OS_Z_HighPt_TwoLepton_CR" ,  JetColl , AK8_JetColl,  leps,  METv, nPV, w);
+  if (RunFake) {
+    if (SameCharge(leps)) {
+      for (int i = 0; i < 20; ++i) {
+	Fill_RegionPlots(param, "HNL_OS_Z_" + Label_sel[i] + "TwoLepton_CR",
+			 JetColl, AK8_JetColl, leps, METv, nPV, os_weight[i]);
+      }
     }
-    else if(!SameCharge(leps)){
-      Fill_RegionPlots(param,"HNL_OS_Z_HighPt_TwoLepton_CR" ,  JetColl , AK8_JetColl,  leps,  METv, nPV, w);
+  }
+  
+  else if(!SameCharge(leps)){
+
+    for (int i = 0; i < 20; ++i) {
+      Fill_RegionPlots(param, "HNL_OS_Z_" + Label_sel[i] + "TwoLepton_CR",
+		       JetColl, AK8_JetColl, leps, METv, nPV, os_weight[i]);
     }
   }
 
@@ -1268,6 +1323,7 @@ bool HNL_RegionDefinitions::FillHighMassSR1CRPlots(HNL_LeptonCore::Channel chann
   if (leps.size() != 2) return false;
   FillCutflow(Reg, w, "Step3",param);
 
+  if(JetColl.size() > 3) return false;
 
   int NB_JetColl = B_JetColl.size();
 
@@ -1278,8 +1334,10 @@ bool HNL_RegionDefinitions::FillHighMassSR1CRPlots(HNL_LeptonCore::Channel chann
 
   double met2_st = ev.MET2ST(); 
   bool PassHMMet    = (met2_st < 15);
+  if(channel==MuMu) PassHMMet    = (met2_st < 10);
 
-  if(AK8_JetColl.size()==0)    return false;
+
+  if(AK8_JetColl.size()!=1)    return false;
 
 
   FillCutflow(Reg, w, "Step5",param);
@@ -1317,8 +1375,8 @@ bool HNL_RegionDefinitions::FillHighMassSR1CRPlots(HNL_LeptonCore::Channel chann
   }
 
 
-  if(PassHMMet && NB_JetColl==0) return false;
-  if(NB_JetColl >1) return false;
+  if(PassHMMet && NB_JetColl==0) return false; /// SR
+  if(!PassHMMet && NB_JetColl>0) return false;
 
   FillCutflow(Reg, w, "Step6",param);
   

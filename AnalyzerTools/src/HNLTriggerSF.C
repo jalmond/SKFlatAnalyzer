@@ -89,11 +89,11 @@ float MCCorrection::TriggerEfficiency(vector<Electron>& EleColl, vector<Muon>& M
     HistEff1 = map_hist_Electron["Trigger_Eff_"+StrMCorData+"_DiElIsoEl12_HNL_ULID"];
   }
   else if(SFKey.Contains("Mu17Leg_MMTr")){
-    SiglElTrig=true, MinPt1=20., MaxPt1=200., MaxfEta1=2.4;
+    SiglElTrig=true, MinPt1=20., MaxPt1=199., MaxfEta1=2.4;
     HistEff1 = map_hist_Electron["Trigger_Eff_"+StrMCorData+"_DiMuIsoMu17_HNL_ULID"];
   }
   else if(SFKey.Contains("Mu8Leg_MMTr")){
-    SiglElTrig=true, MinPt1=10., MaxPt1=200., MaxfEta1=2.4;
+    SiglElTrig=true, MinPt1=10., MaxPt1=199., MaxfEta1=2.4;
     HistEff1 = map_hist_Electron["Trigger_Eff_"+StrMCorData+"_DiMuIsoMu8_HNL_ULID"];
   }
   else if(SFKey.Contains("DiMuIso")){
@@ -103,7 +103,7 @@ float MCCorrection::TriggerEfficiency(vector<Electron>& EleColl, vector<Muon>& M
     HistEff2 = map_hist_Muon["Trigger_Eff_"+StrMCorData+"_"+Key2];
   }
   else if(SFKey.Contains("DiElIso")){
-    DiElTrig=true; MinPt1=25., MinPt2=15., MaxPt1=200., MaxPt2=200., MaxfEta1=2.5;
+    DiElTrig=true; MinPt1=25., MinPt2=15., MaxPt1=199., MaxPt2=199., MaxfEta1=2.5;
     TString Key1(SFKey), Key2(SFKey); Key1.ReplaceAll("DiElIso","DiElIsoEl23"); Key2.ReplaceAll("DiElIso","DiElIsoEl12");
     HistEff1 = map_hist_Electron["Trigger_Eff_"+StrMCorData+"_"+Key1];
     HistEff2 = map_hist_Electron["Trigger_Eff_"+StrMCorData+"_"+Key2];
@@ -112,13 +112,25 @@ float MCCorrection::TriggerEfficiency(vector<Electron>& EleColl, vector<Muon>& M
     EMuTrig=true;
     //    TString SSLabel = SFKey.Contains("IDSS")? "SS":"";
     TString TrEl2Pt = DataEra=="2016preVFP"? "8":"12";
-    MinPt1=25., MinPt2=15., MaxPt1=200., MaxPt2=200., MaxfEta1=2.5;
-    MinPt3=25., MinPt4=10., MaxPt3=200., MaxPt4=200., MaxfEta2=2.4;
+    MinPt1=25., MinPt2=15., MaxPt1=199, MaxPt2=199., MaxfEta1=2.5;
+    MinPt3=25., MinPt4=10., MaxPt3=199., MaxPt4=199., MaxfEta2=2.4;
     HistEff1 = map_hist_Electron["Trigger_Eff_"+StrMCorData+"_EMuIsoEl23_HNL_ULID"];
     HistEff2 = map_hist_Electron["Trigger_Eff_"+StrMCorData+"_EMuIsoEl"+TrEl2Pt+"_HNL_ULID"];
     HistEff3 = map_hist_Muon["Trigger_Eff_"+StrMCorData+"_EMuIsoMu23_HNL_ULID"];
     HistEff4 = map_hist_Muon["Trigger_Eff_"+StrMCorData+"_EMuIsoMu8_HNL_ULID"];
   }
+  else if(SFKey=="EMuIso_HNL_ULIDv2" or SFKey=="EMuIso_HNL_ULIDv2"){
+    EMuTrig=true;
+    //    TString SSLabel = SFKey.Contains("IDSS")? "SS":"";                                                                                                                                                        
+    TString TrEl2Pt = DataEra=="2016preVFP"? "8":"12";
+    MinPt1=25., MinPt2=15., MaxPt1=199, MaxPt2=199., MaxfEta1=2.5;
+    MinPt3=25., MinPt4=10., MaxPt3=199., MaxPt4=199., MaxfEta2=2.4;
+    HistEff1 = map_hist_Electron["Trigger_Eff_"+StrMCorData+"_EMuIsoEl23_HNL_ULIDv2"];
+    HistEff2 = map_hist_Electron["Trigger_Eff_"+StrMCorData+"_EMuIsoEl"+TrEl2Pt+"_HNL_ULIDv2"];
+    HistEff3 = map_hist_Muon["Trigger_Eff_"+StrMCorData+"_EMuIsoMu23_HNL_ULIDv2"];
+    HistEff4 = map_hist_Muon["Trigger_Eff_"+StrMCorData+"_EMuIsoMu8_HNL_ULIDv2"];
+  }
+
   else if(SFKey.Contains("TrigSoup2L")){
     TrigSoup2L=true; TString SSLabel = SFKey.Contains("IDSS")? "SS":"";
     TString TrEl2Pt = DataEra=="2016preVFP"? "8":"12";
@@ -490,16 +502,17 @@ float MCCorrection::DZEfficiency(TString SFKey, bool ReturnDataEff, TString Opti
   float Eff=0.;
   if(SFKey.Contains("DiMuIso")){
     if(DataEra=="2016postVFP") Eff = ReturnDataEff? 0.9798:0.9969;
-    else if(DataEra=="2017"  ) Eff = 0.9958;
+    else if(DataEra=="2017"  ) Eff = ReturnDataEff? 0.9963:0.9959;
+    else if(DataEra=="2018"  ) Eff = ReturnDataEff? 0.9988:0.9959;
     else                       Eff = 1.;
   }
   else if(SFKey.Contains("DiElIso")){
-    if     (DataEra=="2016preVFP" ) Eff = 0.986;
-    else if(DataEra=="2016postVFP") Eff = 0.980;
+    if     (DataEra=="2016preVFP" ) Eff = ReturnDataEff? 0.9873 : 0.9888;
+    else if(DataEra=="2016postVFP") Eff = ReturnDataEff? 0.981 : 0.9822;
     else                            Eff = 1.;
   }
   else if(SFKey.Contains("EMuIso")){
-    if(DataEra=="2016postVFP") Eff = ReturnDataEff? 0.9648:0.9882;
+    if(DataEra=="2016postVFP") Eff = ReturnDataEff? 0.9691:0.9890;
     //else if(DataEra=="2017"  ) Eff = 0.9951; //for now included in muleg
     else                       Eff = 1.;
   }

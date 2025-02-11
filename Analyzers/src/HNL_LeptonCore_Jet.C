@@ -16,7 +16,7 @@ JetTagging::Parameters HNL_LeptonCore::GetParamJetTagger(AnalyzerParameter& para
 
 }
 
-void  HNL_LeptonCore::EvalJetWeight(const std::vector<Jet>&    AK4_JetColl, const std::vector<FatJet>&   AK8_JetColl,  double & w,AnalyzerParameter& param){
+void  HNL_LeptonCore::EvalJetWeight(const std::vector<Jet>&    AK4_JetColl, const std::vector<Jet>&    AK4_VBFJetColl, const std::vector<FatJet>&   AK8_JetColl,  double & w,AnalyzerParameter& param){
   
   if(IsData) return;
     
@@ -74,7 +74,12 @@ void  HNL_LeptonCore::EvalJetWeight(const std::vector<Jet>&    AK4_JetColl, cons
 
   // Jet PUID SF
   if (param.Apply_Weight_JetPUID) {
-    double jPUID = GetJetPileupIDSF(AK4_JetColl, param.JetPUID, param);
+
+    vector<Jet> Merged_Jets = AK4_VBFJetColl; 
+    for(const auto& jet : AK4_JetColl) {
+      if(jet.Pt() < 30) Merged_Jets.push_back(jet);
+    }
+    double jPUID = GetJetPileupIDSF(Merged_Jets, param.JetPUID, param);
 
     // Apply weight and update parameter
     w *= jPUID;

@@ -184,10 +184,11 @@ class HNL_LeptonCore : public AnalyzerCore {
 
   // Checks whether a pair of muons passes the T&P pair criteria
   bool PassTandP_PairCriteria(const std::vector<Muon>& muons, int tagIndex, int probeIndex);
+  bool PassTandP_PairCriteriaHighMass(const std::vector<Muon>& muons, int tagIndex, int probeIndex);
 
   /// Jet Functions   HNL_LeptonCore_Jet                                                                                                                           
   JetTagging::Parameters GetParamJetTagger(AnalyzerParameter& param);
-  void  EvalJetWeight(const std::vector<Jet>&    AK4_JetColl, const std::vector<FatJet>& fatjets, double & w,AnalyzerParameter& param); 
+  void  EvalJetWeight(const std::vector<Jet>&    AK4_JetColl, const std::vector<Jet>&    AK4_VBFJetColl, const std::vector<FatJet>& fatjets, double & w,AnalyzerParameter& param); 
   TString CloseJetFlavour(std::vector<Jet> jetColl, Lepton* lep);
   TString CloseJetFlavour(std::vector<Jet> jetColl, Muon mu);
   TString CloseJetFlavour(std::vector<Jet> jetColl, Electron el);

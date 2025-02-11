@@ -293,11 +293,11 @@ void HNL_LeptonCore::Fill_Standard_Plots(AnalyzerParameter param, TString region
   FillHist( plot_dir+ region+ "/Standard/M_ll",  VarUpperLimit(llCand.M(),2000)  , w, 400, 0., 2000., "M_{ll} GeV");
 
 
-  int nPtbins=14;
-  double Ptbins[nPtbins+1] = { 20.,25.,30., 40.,50., 70., 100.,  150.,  200.,350,500., 750,1000,1500,2000};
+  int nPtbins=15;
+  double Ptbins[nPtbins+1] = { 0,20.,25.,30., 40.,50., 70., 100.,  150.,  200.,350,500., 750,1000,1500,2000};
 
   for(auto il : leps){
-    FillHist( plot_dir+ region+ "/Standard/Lepton_pt", VarUpperLimit(il->Pt(), 2000.)  , w, nPtbins,Ptbins,"1_{2} p_{T} GeV");
+    FillHist( plot_dir+ region+ "/Standard/Lepton_pt", il->Pt(), w, nPtbins,Ptbins,"1_{2} p_{T} GeV");
     FillHist( plot_dir+ region+ "/Standard/Lepton_eta",il->Eta()  , w, 50, -2.5, 2.5,"l_{1} #eta");
     FillHist( plot_dir+ region+ "/Standard/Lepton_phi",il->Phi()  , w, 50, -2.5, 2.5,"l_{1} #phi");
   }
@@ -455,15 +455,15 @@ void HNL_LeptonCore::Fill_Plots(AnalyzerParameter param, TString region,  TStrin
     if(DrawLevel3)FillHist( plot_dir+ region+ "/DeltaR/Single_AK4J_dR_W_lep2",   WCand.DeltaR(*leps[1] ),  w, 50, 0, 5, "#DeltaR (W,lep2)");
     if(DrawLevel3)FillHist( plot_dir+ region+ "/DeltaR/Single_AK4J_mW",          WCand.M(),                w, 50, 0, 500, "Reco_Onejet M_{jj}");
 
-    int nSRbins=10;
-    double mljbins[nSRbins] = { 0., 200., 400.,500., 600.,700., 1000.,1250., 1500., 2000.};
-    double MN1 = (N1Cand.M() > 2000.) ? 1999. : N1Cand.M();
-    double MN2 = (N2Cand.M() > 2000.) ? 1999. : N2Cand.M();
-    double MllW = (lljjCand.M() > 2000.) ? 1999. : lljjCand.M();
+    int nSRbins=11;
+    double mljbins[nSRbins] = { 0., 200., 400.,500., 600.,700., 1000.,1250., 1500., 2000.,5000};
+    double MN1 = (N1Cand.M() > 5000.) ? 4999. : N1Cand.M();
+    double MN2 = (N2Cand.M() > 5000.) ? 4999. : N2Cand.M();
+    double MllW = (lljjCand.M() > 5000.) ? 4999. : lljjCand.M();
 
-    if(DrawLevel3)FillHist( plot_dir+ region+ "/Mass/Single_AK4J_M_l1W",        MN1,   w, 9, mljbins, "Reco_Onejet M_{l1jj}");
-    if(DrawLevel3)FillHist( plot_dir+ region+ "/Mass/Single_AK4J_M_l2W",        MN2,   w, 9, mljbins, "Reco_Onejet M_{l2jj} ");
-    if(DrawLevel3)FillHist( plot_dir+ region+ "/Mass/Single_AK4J_M_llW",        MllW,  w, 9, mljbins, "Reco_Onejet M_{lljj}");
+    if(DrawLevel3)FillHist( plot_dir+ region+ "/Mass/Single_AK4J_M_l1W",        MN1,   w, 10, mljbins, "Reco_Onejet M_{l1jj}");
+    if(DrawLevel3)FillHist( plot_dir+ region+ "/Mass/Single_AK4J_M_l2W",        MN2,   w, 10, mljbins, "Reco_Onejet M_{l2jj} ");
+    if(DrawLevel3)FillHist( plot_dir+ region+ "/Mass/Single_AK4J_M_llW",        MllW,  w, 10, mljbins, "Reco_Onejet M_{lljj}");
     if(DrawLevel3)FillHist( plot_dir+ region+ "/DeltaPhi/Single_AK4J_dPhi_l1_l1J",  fabs(TVector2::Phi_mpi_pi( ( (*leps[0]+ jets[0]).Phi() - (leps[1]->Phi() )))),  w,  500, 0., 2000., "Reco_Onejet M_{lljj}");
   }
   if(jets.size() > 1){
@@ -538,18 +538,18 @@ void HNL_LeptonCore::Fill_Plots(AnalyzerParameter param, TString region,  TStrin
     if(DrawLevel1)FillHist(plot_dir+ region+ "/Mass/DiJet_M_W",   WCand.M(),  w, 50, 0, 500, "Reco M_{jj}");
 
 
-    int nSRbins=6;
-    double mljbins[nSRbins] = { 0., 100.,200., 400.,  1000.,3000.};
-    double MN1  = (N1Cand.M() > 2500.) ? 2499. : N1Cand.M();
-    double MN2  = (N2Cand.M() > 2500.) ? 2499. : N2Cand.M();
-    double MllW = (W1Cand.M() > 2500.) ? 2499. : W1Cand.M();
+    int nSRbins=7;
+    double mljbins[nSRbins] = { 0., 100.,200., 400.,  1000.,3000.,5000};
+    double MN1  = (N1Cand.M() > 5000.) ? 4999. : N1Cand.M();
+    double MN2  = (N2Cand.M() > 5000.) ? 4999. : N2Cand.M();
+    double MllW = (W1Cand.M() > 5000.) ? 4999. : W1Cand.M();
 
     if(DrawLevel3) FillHist( plot_dir+ region+ "/Mass/DiJet_M_l1W_M_W",         MN1, MllW,  w, 100, 0., 2000., 100, 0., 2000.);
-    if(DrawLevel1) FillHist( plot_dir+ region+ "/Mass/DiJet_M_l1jj",   MN1,        w, 2500, 0, 2500, "Reco M_{l1jj}");
-    if(DrawLevel1) FillHist( plot_dir+ region+ "/Mass/DiJet_M_l2jj",   MN2,        w, 2500, 0, 2500, "Reco M_{l2jj}");
-    if(DrawLevel1) FillHist( plot_dir+ region+ "/Mass/DiJet_M_lljj",   MllW,        w, 2500, 0, 2500, "Reco M_{lljj}");
+    if(DrawLevel1) FillHist( plot_dir+ region+ "/Mass/DiJet_M_l1jj",   MN1,        w, 2500, 0, 5000, "Reco M_{l1jj}");
+    if(DrawLevel1) FillHist( plot_dir+ region+ "/Mass/DiJet_M_l2jj",   MN2,        w, 2500, 0, 5000, "Reco M_{l2jj}");
+    if(DrawLevel1) FillHist( plot_dir+ region+ "/Mass/DiJet_M_lljj",   MllW,        w, 2500, 0, 5000, "Reco M_{lljj}");
     if(DrawLevel3) FillHist( plot_dir+ region+ "/Mass/DiJet_M_lAv12W", (N1Cand.M()+  N2Cand.M())/2.,  w,  500, 0., 2000., "Reco M_{l1_2jj} ");
-    if(DrawLevel1) FillHist( plot_dir+ region+ "/Mass/DiJet_M_llW",  MllW ,  w, 5, mljbins , "Reco M_{lljj}");
+    if(DrawLevel1) FillHist( plot_dir+ region+ "/Mass/DiJet_M_llW",  MllW ,  w, 6, mljbins , "Reco M_{lljj}");
 
 
     if(DrawLevel3) FillHist( plot_dir+ region+ "/DeltaR/DiJet_dR_Wj1_lep2",   jets[m].DeltaR(*leps[1] ),  w, 50, 0, 5, "#DeltaR (Wj1,lep2)");
@@ -580,11 +580,14 @@ void HNL_LeptonCore::Fill_Plots(AnalyzerParameter param, TString region,  TStrin
   double PTLep1  = (leps[0]->Pt() > 500.) ? 499. : leps[0]->Pt();
   double PTLep2  = (leps[1]->Pt() > 200.) ? 199. : leps[1]->Pt();
 
-
+  int HasHighEndcapLep=1;
   for(auto il : leps){
-    double PTLep = (il->Pt() > 600.) ? 599. : il->Pt();
+    double PTLep =  il->Pt();
     TString LepType = (IsData) ? "Data" : il->sLepGenType();
     if (LepType == "") continue;
+    
+    if(PTLep > 500 && il->fEta() > 2.) HasHighEndcapLep=3;
+    else if(PTLep > 500 && il->fEta() > 1.5 && HasHighEndcapLep < 3) HasHighEndcapLep=2;
     
     if(DrawLevel3){
       
@@ -608,18 +611,22 @@ void HNL_LeptonCore::Fill_Plots(AnalyzerParameter param, TString region,  TStrin
     }
   }
   
+  FillHist( plot_dir+ region+ "/Leptons/HighPtEtaCheck", 0  ,  w, 5,0, 5,"");
+  FillHist( plot_dir+ region+ "/Leptons/HighPtEtaCheck", HasHighEndcapLep  ,  w,5, 0, 5,"");
+
+
   if(leps.size() > 1){
-    int nPtbins2D=21;
-    double Pt2Dbins[nPtbins2D+1] = { -1000, -400, -200,-150,-100,-70,-50,-40,-30,-25,-20, 20.,25.,30., 40.,50., 70., 100.,  150.,  200.,400.,1000};
+    int nPtbins2D=11;
+    double Pt2Dbins[nPtbins2D+1] = {0,20.,25.,30., 40.,50., 70., 100.,  150.,  200.,400.,1000};
     FillHist( plot_dir+ region+ "/Leptons/Lep_pt_eta", leps[0]->Pt() , leps[0]->Eta(),  fabs(w), nPtbins2D,Pt2Dbins , 50, -2.5, 2.5);
-    FillHist( plot_dir+ region+ "/Leptons/Lep_pt_eta", -leps[1]->Pt()  , leps[1]->Eta(),  fabs(w), nPtbins2D,Pt2Dbins,  50, -2.5, 2.5);
+    FillHist( plot_dir+ region+ "/Leptons/Lep_pt_eta", leps[1]->Pt()  , leps[1]->Eta(),  fabs(w), nPtbins2D,Pt2Dbins,  50, -2.5, 2.5);
   }
 
 
   if(DrawLevel2)FillHist( plot_dir+ region+ "/Leptons/Lep_1_Pt", PTLep1  ,  w, nPtbins, Pt1bins,"l_{1} p_{T} GeV");
   if(DrawLevel2)FillHist( plot_dir+ region+ "/Leptons/Lep_2_Pt", PTLep2  ,  w, nPtbins, Pt2bins,"1_{2} p_{T} GeV");
-  if(DrawLevel1)FillHist( plot_dir+ region+ "/Leptons/Lep_1_pt", PTLep1  ,  w, 100, 0, 500,"l_{1} p_{T} GeV");
-  if(DrawLevel1)FillHist( plot_dir+ region+ "/Leptons/Lep_2_pt", PTLep2  ,  w, 300, 0, 300,"1_{2} p_{T} GeV");
+  if(DrawLevel1)FillHist( plot_dir+ region+ "/Leptons/Lep_1_pt", PTLep1  ,  w, 200, 0, 2000,"l_{1} p_{T} GeV");
+  if(DrawLevel1)FillHist( plot_dir+ region+ "/Leptons/Lep_2_pt", PTLep2  ,  w, 200, 0, 1000,"1_{2} p_{T} GeV");
   if(DrawLevel1)FillHist( plot_dir+ region+ "/Leptons/Lep_1_eta", leps[0]->Eta()  , w, 60, -3., 3,"l_{1} #eta");
   if(DrawLevel1)FillHist( plot_dir+ region+ "/Leptons/Lep_2_eta", leps[1]->Eta()  , w, 60, -3., 3.,"l_{2} #eta");
   if(DrawLevel1)FillHist( plot_dir+ region+ "/Leptons/Lep_1_phi", leps[0]->Phi()  , w, 200, -10, 10.,"l_{3} #phi");
@@ -815,34 +822,39 @@ void HNL_LeptonCore::Fill_Plots(AnalyzerParameter param, TString region,  TStrin
 
 void HNL_LeptonCore::FillTandP(bool passProbe, TString Tag, TString ID, double pr_pt, double eta,  double weight, TString BinLabel){
 
-  int n_bin    =4;
-  vector<double> bins = { 0,120,200,450,1000};
+  int n_bin    =8;
+  vector<double> bins = { 0,120,200,300,400,500,750,1000,2000};
 
   if(BinLabel == "Bin2"){
-    n_bin    =3;
-    bins ={ 0,120,200,1000};
+    n_bin    =6;
+    bins ={ 0,60,120,200,300,1000,2000};
   }
 
   double arrx_bins [n_bin+1];
   std::copy(bins.begin(), bins.end(), arrx_bins);
 
-  FillHist( Tag+"_"+BinLabel+"/Denom",  pr_pt,  weight, n_bin,arrx_bins);
-  if(passProbe)       FillHist( Tag+"_"+BinLabel+"/Num",  pr_pt,  weight, n_bin,arrx_bins);
+  FillHist( ID+"/"+Tag+"_"+BinLabel+"/Denom",  pr_pt,  weight, n_bin,arrx_bins);
+  if(passProbe)       FillHist( ID+"/"+Tag+"_"+BinLabel+"/Num",  pr_pt,  weight, n_bin,arrx_bins);
 
   if(fabs(eta) < 0.9){
-    FillHist( Tag+"_"+BinLabel+"_Eta1/Denom",  pr_pt,  weight, n_bin,arrx_bins);
-    if(passProbe)       FillHist( Tag+"_"+BinLabel+"_Eta1/Num",  pr_pt,  weight, n_bin,arrx_bins);
+    FillHist( ID+"/"+Tag+"_"+BinLabel+"_Eta1/Denom",  pr_pt,  weight, n_bin,arrx_bins);
+    if(passProbe)       FillHist( ID+"/"+Tag+"_"+BinLabel+"_Eta1/Num",  pr_pt,  weight, n_bin,arrx_bins);
   }
   else  if(fabs(eta) < 1.2){
-    FillHist( Tag+"_"+BinLabel+"_Eta2/Denom",  pr_pt,  weight, n_bin,arrx_bins);
-    if(passProbe)       FillHist( Tag+"_"+BinLabel+"_Eta2/Num",  pr_pt,  weight, n_bin,arrx_bins);
+    FillHist( ID+"/"+Tag+"_"+BinLabel+"_Eta2/Denom",  pr_pt,  weight, n_bin,arrx_bins);
+    if(passProbe)       FillHist( ID+"/"+Tag+"_"+BinLabel+"_Eta2/Num",  pr_pt,  weight, n_bin,arrx_bins);
   }
-  else {
-    FillHist( Tag+"_"+BinLabel+"_Eta3/Denom",  pr_pt,  weight, n_bin,arrx_bins);
-    if(passProbe)       FillHist( Tag+"_"+BinLabel+"_Eta3/Num",  pr_pt,  weight, n_bin,arrx_bins);
+  else     if(fabs(eta) < 2.1){
 
+    FillHist( ID+"/"+Tag+"_"+BinLabel+"_Eta3/Denom",  pr_pt,  weight, n_bin,arrx_bins);
+    if(passProbe)       FillHist( ID+"/"+Tag+"_"+BinLabel+"_Eta3/Num",  pr_pt,  weight, n_bin,arrx_bins);
+    
   }
-
+  else{
+    FillHist( ID+"/"+Tag+"_"+BinLabel+"_Eta4/Denom",  pr_pt,  weight, n_bin,arrx_bins);
+    if(passProbe)       FillHist( ID+"/"+Tag+"_"+BinLabel+"_Eta4/Num",  pr_pt,  weight, n_bin,arrx_bins);
+  }
+  
   return;
 
 }
@@ -922,7 +934,7 @@ void HNL_LeptonCore::FillLeptonKinematicPlots(AnalyzerParameter param, TString c
   if(IdxMatchAwayJet!=-1) PtRatioAwayJet = JetAllColl.at(IdxMatchAwayJet).Pt()/ lep.Pt();
 
   TString label_lep = (lep.LeptonFlavour()==Lepton::ELECTRON) ? "Electron": "Muon";
-  double Pt_Lep = (lep.Pt() > 2000) ? 1999 : lep.Pt();
+  double Pt_Lep =  lep.Pt();
 
   label += label_lep;
 

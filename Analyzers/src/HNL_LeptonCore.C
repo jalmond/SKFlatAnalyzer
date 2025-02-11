@@ -425,6 +425,12 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
     SystList.push_back(AnalyzerParameter::ScaleDown);
     return SystList;
   }
+
+  if(SystType=="Muon_Reco"){
+    SystList.push_back(AnalyzerParameter::MuonRecoSFUp);
+    SystList.push_back(AnalyzerParameter::MuonRecoSFDown);
+    return SystList;
+  }
   if(SystType=="Muon"){
     SystList.push_back(AnalyzerParameter::MuonRecoSFUp);
     SystList.push_back(AnalyzerParameter::MuonRecoSFDown);

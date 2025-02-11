@@ -286,6 +286,9 @@ std::vector<Muon> AnalyzerCore::GetAllMuons(){
     if(MCSample.Contains("Sherpa")) UpdatedLeptonType = HotFixLeptonType(Lepton(mu));
     if(MCSample.Contains("MiNNLO")) UpdatedLeptonType = HotFixLeptonType(Lepton(mu));
     if(UpdatedLeptonType != -999) mu.SetLeptonType(UpdatedLeptonType);
+
+    ///// Smear high pt muons
+    if(muon_pt->at(i) > 200)  SmearHighPtMuon(mu);
     out.push_back(mu);
 
   }

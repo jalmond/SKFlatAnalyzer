@@ -9,7 +9,7 @@ void HNL_LeptonCore::DefineLimitBins(){
   vector<double> sr1bins_em;
 
   //// Define CR1 binning      
-  vector<double> cr1bins = { 0.,400, 600,   2000.};
+  vector<double> cr1bins = { 0.,400, 500,   2000.};
 
   if(DataEra == "2016preVFP") {
     sr1bins_mm = { 0., 400, 550,  2000.};

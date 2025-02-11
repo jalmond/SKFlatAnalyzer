@@ -19,6 +19,9 @@ void HNL_HighPtMuon_Studies::executeEvent(){
   AnalyzerParameter param = HNL_LeptonCore::InitialiseHNLParameter("HNL_ULID");
   double weight = SetupWeight(ev,param);
 
+  double weight_noZWeight = weight / param.w.zptweight;
+  
+  
   //// Access muon and highpt muon collections with rc corr applied as default
   //// Need following muon collections
   //// v1) rochester corrected muons
@@ -42,18 +45,27 @@ void HNL_HighPtMuon_Studies::executeEvent(){
     Particle ZReco = ZMuons[0] + ZMuons[1];
 
     // Fill histograms for Gen-level
-    FillHist("Gen/Z_Mass", Z.M(), weight, 2000, 0, 2000);
-    FillHist("Gen/Z_Pt", Z.Pt(), weight, 2000, 0, 2000);
-    FillHist("Gen/Mu1_Pt", All_Gens[Idx1_Closest].Pt(), weight, 2000, 0, 2000);
-    FillHist("Gen/Mu2_Pt", All_Gens[Idx2_Closest].Pt(), weight, 2000, 0, 2000);
-
-    // Fill histograms for Reco-level
-    FillHist("Reco/Z_Mass", ZReco.M(), weight, 2000, 0, 2000);
-    FillHist("Reco/Z_Pt", ZReco.Pt(), weight, 2000, 0, 2000);
-    FillHist("Reco/Mu1_Pt", ZMuons[0].Pt(), weight, 2000, 0, 2000);
-    FillHist("Reco/Mu2_Pt", ZMuons[1].Pt(), weight, 2000, 0, 2000);
+    
+    std::vector<std::pair<std::string, double>> weights = {
+      {"", weight},                // Default weight
+      {"_noZWeight", weight_noZWeight}  // Alternative weight
+    };
+    
+    for (const auto& [suffix, w] : weights) {
+      // Fill histograms for Gen-level
+      FillHist("Gen/Z_Mass" + suffix, Z.M(), w, 2000, 0, 2000);
+      FillHist("Gen/Z_Pt" + suffix, Z.Pt(), w, 2000, 0, 2000);
+      FillHist("Gen/Mu1_Pt" + suffix, All_Gens[Idx1_Closest].Pt(), w, 2000, 0, 2000);
+      FillHist("Gen/Mu2_Pt" + suffix, All_Gens[Idx2_Closest].Pt(), w, 2000, 0, 2000);
+      
+      // Fill histograms for Reco-level
+      FillHist("Reco/Z_Mass" + suffix, ZReco.M(), w, 2000, 0, 2000);
+      FillHist("Reco/Z_Pt" + suffix, ZReco.Pt(), w, 2000, 0, 2000);
+      FillHist("Reco/Mu1_Pt" + suffix, ZMuons[0].Pt(), w, 2000, 0, 2000);
+      FillHist("Reco/Mu2_Pt" + suffix, ZMuons[1].Pt(), w, 2000, 0, 2000);
+    }
+    return;
   }
-
   std::vector<Muon>       Muons_HNL_v1     = GetHighPtMuons("PF_Nom", param.Muon_Tight_ID,     10.,  2.4);
   std::vector<Muon>       Muons_HNL_v2     = GetHighPtMuons("PF_Roch",param.Muon_Tight_ID,    10.,  2.4);
   std::vector<Muon>       Muons_HNL_v3     = GetHighPtMuons("PF_GE",  param.Muon_Tight_ID,      10.,  2.4);

@@ -46,7 +46,7 @@ void HNL_SignalRegion_Plotter::executeEvent(){
     ///Only scan 1000 events
     if(_jentry > 100) return;
   }
-  vector<TString> LepIDs = {"HNL_ULIDv2"};
+  vector<TString> LepIDs = {"HNL_ULIDv2","HNL_ULID"};
   if(HasFlag("AllID")) LepIDs = {"HNL_ULID","HNTightV2", "POGTight","HNL_ULIDv2"};
 
   //// Allow ID setting by flag
@@ -111,6 +111,7 @@ void HNL_SignalRegion_Plotter::executeEvent(){
       TString SystLabel = "";
       if(HasFlag("Syst_Theory")) SystLabel= "Theory";
       else if(HasFlag("Syst_Muon")) SystLabel= "Muon";
+      else if(HasFlag("Syst_Muon_Reco")) SystLabel= "Muon_Reco";
       else if(HasFlag("Syst_Jet")) SystLabel= "Jet";
       else SystLabel=GetChannelString(channel);
 
@@ -198,7 +199,7 @@ void HNL_SignalRegion_Plotter::RunULAnalysis(AnalyzerParameter param){
   //Particle METv = GetvMET("PuppiT1xyULCorr",param);
   Particle METv = GetvMET("PuppiT1xyULCorr", param, AK4_VBF_JetColl, AK8_JetColl, MuonCollT, ElectronCollT); // returns MET with systematic correction; run this after all object selection done; NOTE that VBF jet is used here
   
-  EvalJetWeight(AK4_JetColl, AK8_JetColl, weight, param);
+  EvalJetWeight(AK4_JetColl,AK4_VBF_JetColl, AK8_JetColl, weight, param);
 
   FillTimer("START_SR");
 
@@ -227,7 +228,8 @@ void HNL_SignalRegion_Plotter::RunULAnalysis(AnalyzerParameter param){
     }
   }
   else{
-					  
+		
+
     for(auto ir : RunEl){
       
       RunAllSignalRegions(Inclusive,

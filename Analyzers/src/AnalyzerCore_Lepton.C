@@ -213,7 +213,7 @@ void AnalyzerCore::HighPtMuonCorr(std::vector<Muon>& muons){
 
       /// change syst scale
       //      cout << "muons[i] = " << muons[i].Pt() << endl;
-      SmearHighPtMuon(muons[i]); 
+      //      SmearHighPtMuon(muons[i]);  ---> Apply in getallmuons now
       //      cout << "SmearHighPtMuon muons[i] = " << muons[i].Pt() <<endl;
       
       Particle this_tunep4 = muons[i].TuneP4();
