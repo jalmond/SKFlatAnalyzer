@@ -112,9 +112,9 @@ AnalyzerParameter  HNL_LeptonCore::DefaultParam(const TString& s_setup_version, 
     if(IsDYSample){
       if((abs(lhe_l0.ID())==11||abs(lhe_l0.ID())==13)) {
         TLorentzVector genZ=(gen_l0+gen_l1);
-        param_default.w.zptweight =GetZptWeight(genZ.Rapidity(),genZ.Pt());
+        param_default.w.zptweight = GetZptWeight(genZ.Pt(),genZ.Rapidity());
         param_default.w.zptweight_g =GetZptWeight(genZ.Pt());
-        param_default.w.zptweight_gy =GetZptWeight(genZ.Rapidity(),genZ.Pt());
+        param_default.w.zptweight_gy =GetZptWeight(genZ.Pt(),genZ.Rapidity());
         param_default.w.zptweight_gym =GetZptWeight(genZ.Pt(),genZ.Rapidity(),genZ.M());
         param_default.w.weakweight=GetDYWeakWeight(genZ.M());
 

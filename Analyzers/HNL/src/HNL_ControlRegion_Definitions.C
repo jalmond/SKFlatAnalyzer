@@ -756,7 +756,7 @@ bool HNL_RegionDefinitions::FillZCRPlots(HNL_LeptonCore::Channel channel, std::v
 
   double weight_corr = param.w.z0weight*param.w.zptweight*param.w.weakweight;
   double weight_SF   = param.w.muonIDSF*param.w.muonRECOSF*param.w.muonTrackerSF*param.w.triggerSF;
-  double IDSF2 = 1/param.w.muonIDSF;
+  double IDSF2 = 1;
 
   for(auto lep : leps){
     if(!IsData)IDSF2*= mcCorr->MuonID_SF( "NUM_2bins_HNL_ULID_"+GetYearString(), abs(lep->Eta()), lep->Pt(), 0);
@@ -804,7 +804,7 @@ bool HNL_RegionDefinitions::FillZCRPlots(HNL_LeptonCore::Channel channel, std::v
 
   if (RunFake) {
     if (SameCharge(leps)) {
-      for (int i = 0; i < 20; ++i) {
+      for (int i = 0; i < 25; ++i) {
         Fill_RegionPlots(param, "HNL_OS_FullMass_" + Label_sel[i] + "TwoLepton_CR",
                          JetColl, AK8_JetColl, leps, METv, nPV, os_weight[i]);
       }
@@ -813,7 +813,7 @@ bool HNL_RegionDefinitions::FillZCRPlots(HNL_LeptonCore::Channel channel, std::v
 
   else if(!SameCharge(leps)){
 
-    for (int i = 0; i < 20; ++i) {
+    for (int i = 0; i < 25; ++i) {
       Fill_RegionPlots(param, "HNL_OS_FullMass_" + Label_sel[i] + "TwoLepton_CR",
                        JetColl, AK8_JetColl, leps, METv, nPV, os_weight[i]);
     }
@@ -837,7 +837,7 @@ bool HNL_RegionDefinitions::FillZCRPlots(HNL_LeptonCore::Channel channel, std::v
 
   if (RunFake) {
     if (SameCharge(leps)) {
-      for (int i = 0; i < 20; ++i) {
+      for (int i = 0; i < 25; ++i) {
 	Fill_RegionPlots(param, "HNL_OS_Z_" + Label_sel[i] + "TwoLepton_CR",
 			 JetColl, AK8_JetColl, leps, METv, nPV, os_weight[i]);
       }
@@ -846,7 +846,7 @@ bool HNL_RegionDefinitions::FillZCRPlots(HNL_LeptonCore::Channel channel, std::v
   
   else if(!SameCharge(leps)){
 
-    for (int i = 0; i < 20; ++i) {
+    for (int i = 0; i < 25; ++i) {
       Fill_RegionPlots(param, "HNL_OS_Z_" + Label_sel[i] + "TwoLepton_CR",
 		       JetColl, AK8_JetColl, leps, METv, nPV, os_weight[i]);
     }
@@ -1336,9 +1336,7 @@ bool HNL_RegionDefinitions::FillHighMassSR1CRPlots(HNL_LeptonCore::Channel chann
   bool PassHMMet    = (met2_st < 15);
   if(channel==MuMu) PassHMMet    = (met2_st < 10);
 
-
   if(AK8_JetColl.size()!=1)    return false;
-
 
   FillCutflow(Reg, w, "Step5",param);
 
@@ -1376,7 +1374,8 @@ bool HNL_RegionDefinitions::FillHighMassSR1CRPlots(HNL_LeptonCore::Channel chann
 
 
   if(PassHMMet && NB_JetColl==0) return false; /// SR
-  if(!PassHMMet && NB_JetColl>0) return false;
+  if(!PassHMMet && NB_JetColl>0) return false; /// Dont consider BJET && MET Sideband together
+  if(NB_JetColl >1) return false; /// Dont consider Multi BJet events
 
   FillCutflow(Reg, w, "Step6",param);
   
@@ -1628,8 +1627,9 @@ bool HNL_RegionDefinitions::FillHighMassSR2CRPlots(HNL_LeptonCore::Channel chann
   double met2_st = ev.MET2ST();//  double met2_st = GetMET2ST(leps, JetColl, AK8_JetColl, METv);
   bool PassHMMet = (met2_st < 15);   ///// USe SR MET + 2 GeV
 
-  if(PassHMMet && NB_JetColl==0) return false;
-  if(NB_JetColl >1) return false;
+  if(PassHMMet && NB_JetColl==0) return false; /// SR                                                                                                                                       
+  if(!PassHMMet && NB_JetColl>0) return false; /// Dont consider BJET && MET Sideband together                                                                                              
+  if(NB_JetColl >1) return false; /// Dont consider Multi BJet events                                                                                                                       
 
   FillCutflow(Reg, w, "Step4",param);
 

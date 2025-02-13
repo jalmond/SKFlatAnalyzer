@@ -581,6 +581,8 @@ void HNL_LeptonCore::Fill_Plots(AnalyzerParameter param, TString region,  TStrin
   double PTLep2  = (leps[1]->Pt() > 200.) ? 199. : leps[1]->Pt();
 
   int HasHighEndcapLep=1;
+  int HasHighEndcapLep_200=1;
+
   for(auto il : leps){
     double PTLep =  il->Pt();
     TString LepType = (IsData) ? "Data" : il->sLepGenType();
@@ -589,6 +591,9 @@ void HNL_LeptonCore::Fill_Plots(AnalyzerParameter param, TString region,  TStrin
     if(PTLep > 500 && il->fEta() > 2.) HasHighEndcapLep=3;
     else if(PTLep > 500 && il->fEta() > 1.5 && HasHighEndcapLep < 3) HasHighEndcapLep=2;
     
+    if(PTLep > 200 && il->fEta() > 2.) HasHighEndcapLep_200=3;
+    else if(PTLep > 200 && il->fEta() > 1.5 && HasHighEndcapLep < 3) HasHighEndcapLep_200=2;
+
     if(DrawLevel3){
       
       FillHist( plot_dir+ region+ "/Leptons/"+LepType+"_Lep_pt", PTLep  ,  w, nPtbins, Pt1bins,"l_{1} p_{T} GeV");
@@ -613,6 +618,9 @@ void HNL_LeptonCore::Fill_Plots(AnalyzerParameter param, TString region,  TStrin
   
   FillHist( plot_dir+ region+ "/Leptons/HighPtEtaCheck", 0  ,  w, 5,0, 5,"");
   FillHist( plot_dir+ region+ "/Leptons/HighPtEtaCheck", HasHighEndcapLep  ,  w,5, 0, 5,"");
+
+  FillHist( plot_dir+ region+ "/Leptons/HighPtEtaCheck_200", 0  ,  w, 5,0, 5,"");
+  FillHist( plot_dir+ region+ "/Leptons/HighPtEtaCheck_200", HasHighEndcapLep_200  ,  w,5, 0, 5,"");
 
 
   if(leps.size() > 1){

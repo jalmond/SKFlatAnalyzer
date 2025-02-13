@@ -601,7 +601,6 @@ TString HNL_RegionDefinitions::RunSignalRegionAK8String(bool ApplyForSR,
   Particle N1cand = AK8_JetColl[0] + *leps[0];
   double MN1 = (N1cand.M() > 2000.) ? 1999. : N1cand.M();
 
-  /// MW < 400 return
 
   if(!ApplyForSR){
     double nbin_reg;
@@ -701,8 +700,6 @@ TString HNL_RegionDefinitions::RunSignalRegionWWString(bool ApplyForSR,HNL_Lepto
   
   FillCutflow(Reg, w, RegionTag+"_VBF",param);
 
-  //// MLLW  < 400
-  
   if(PassRegionReq){
 
     if(PassHMMet) FillCutflow(Reg, w, RegionTag+"_met",param);

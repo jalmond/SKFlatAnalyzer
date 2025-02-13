@@ -22,11 +22,11 @@ fi
 
 if [[ $1 == "Resubmit" ]]; then
 
-    declare  -a era_list=("2016preVFP")
+    declare  -a era_list=("2018")
 
     for i in "${era_list[@]}"
     do
-        SKFlat.py -a $analyzer  -l $datapath/DL/${i}_DiLepton_EE.txt      -n 100    --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLepBDT   --userflags SSMultiLep&
+        SKFlat.py -a $analyzer  -l $datapath/DL/${i}_DiLepton_EE.txt      -n 300    --nmax ${nmax}   -e ${i} --skim SkimTree_DileptonBDT  --userflags SSMultiLep,RunCF
     done
 fi
 

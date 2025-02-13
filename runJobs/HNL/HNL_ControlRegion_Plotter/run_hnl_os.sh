@@ -8,7 +8,7 @@ datapath=${SKFlat_WD}/runJobs/SampleLists/Data/
 njobs=30
 njobs_sig=2
 njobs_data=200
-nmax=600
+nmax=700
 skim=' '
 
 
@@ -23,18 +23,18 @@ if [[ $1 == "OS" ]]; then
     do
 	
 	
-	SKFlat.py -a $analyzer  -l $datapath/DL/${i}_DiLepton_MuMu.txt       -n ${njobs_data}  --nmax ${nmax}   -e ${i}  --skim SkimTree_HNMultiLepBDT --userflags $FLAG,RunFake  &
-        SKFlat.py -a $analyzer  -l $mcpath/Prompt/VVOS.txt                  -n ${njobs_data}  --nmax ${nmax}   -e ${i}  --skim SkimTree_HNMultiLepBDT --userflags $FLAG,RunFake  &
+	#SKFlat.py -a $analyzer  -l $datapath/DL/${i}_DiLepton_MuMu.txt       -n ${njobs_data}  --nmax ${nmax}   -e ${i}  --skim SkimTree_HNMultiLepBDT --userflags $FLAG,RunFake  &
+        #SKFlat.py -a $analyzer  -l $mcpath/Prompt/VVOS.txt                  -n ${njobs_data}  --nmax ${nmax}   -e ${i}  --skim SkimTree_HNMultiLepBDT --userflags $FLAG,RunFake  &
 	
 	#### Prompt
-	SKFlat.py -a $analyzer  -l $mcpath/Prompt/PromptOS.txt            -n 200    --nmax ${nmax}   -e ${i}  --skim SkimTree_DileptonBDT  --userflags $FLAG,RunPrompt &
-	SKFlat.py -a $analyzer  -l $mcpath/Prompt/PromptOS2.txt            -n 200    --nmax ${nmax}   -e ${i}  --skim SkimTree_DileptonBDT  --userflags $FLAG,RunPrompt &
+	#SKFlat.py -a $analyzer  -l $mcpath/Prompt/PromptOS.txt            -n 200    --nmax ${nmax}   -e ${i}  --skim SkimTree_DileptonBDT  --userflags $FLAG,RunPrompt &
+	#SKFlat.py -a $analyzer  -l $mcpath/Prompt/PromptOS2.txt            -n 200    --nmax ${nmax}   -e ${i}  --skim SkimTree_DileptonBDT  --userflags $FLAG,RunPrompt &
 	SKFlat.py -a $analyzer  -l $mcpath/Prompt/DY_Ext.txt   -n 400    --nmax ${nmax}   -e ${i}  --skim SkimTree_DileptonBDT  --userflags $FLAG,RunPrompt &
 
 	### Conv
-	SKFlat.py -a $analyzer  -l $mcpath/Conv/ConvOS.txt          -n 50        --nmax ${nmax}   -e ${i} --skim SkimTree_DileptonBDT --userflags $FLAG,RunConv&
+	#SKFlat.py -a $analyzer  -l $mcpath/Conv/ConvOS.txt          -n 50        --nmax ${nmax}   -e ${i} --skim SkimTree_DileptonBDT --userflags $FLAG,RunConv&
 
-        SKFlat.py -a $analyzer  -l $datapath/DL/${i}_DiLepton_MuMu.txt      -n 100    --nmax ${nmax}   -e ${i}  --skim SkimTree_DileptonBDT  --userflags $FLAG &
+        #SKFlat.py -a $analyzer  -l $datapath/DL/${i}_DiLepton_MuMu.txt      -n 100    --nmax ${nmax}   -e ${i}  --skim SkimTree_DileptonBDT  --userflags $FLAG &
 	   
 		
     done
