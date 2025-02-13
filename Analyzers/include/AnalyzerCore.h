@@ -84,6 +84,11 @@ public:
   }
 
 
+  //// Check User
+  inline bool User(const TString& user) {
+    const char* sysUser = getenv("USER"); // Get system username
+    return (sysUser && user == sysUser);  // Check if it matches the input user
+  }
 
   //==================
   //==== Get objects

@@ -103,7 +103,7 @@ float MCCorrection::TriggerEfficiency(vector<Electron>& EleColl, vector<Muon>& M
     HistEff2 = map_hist_Muon["Trigger_Eff_"+StrMCorData+"_"+Key2];
   }
   else if(SFKey.Contains("DiElIso")){
-    DiElTrig=true; MinPt1=25., MinPt2=15., MaxPt1=199., MaxPt2=199., MaxfEta1=2.5;
+    DiElTrig=true; MinPt1=25., MinPt2=15., MaxPt1=999., MaxPt2=999., MaxfEta1=2.5;
     TString Key1(SFKey), Key2(SFKey); Key1.ReplaceAll("DiElIso","DiElIsoEl23"); Key2.ReplaceAll("DiElIso","DiElIsoEl12");
     HistEff1 = map_hist_Electron["Trigger_Eff_"+StrMCorData+"_"+Key1];
     HistEff2 = map_hist_Electron["Trigger_Eff_"+StrMCorData+"_"+Key2];
@@ -112,8 +112,8 @@ float MCCorrection::TriggerEfficiency(vector<Electron>& EleColl, vector<Muon>& M
     EMuTrig=true;
     //    TString SSLabel = SFKey.Contains("IDSS")? "SS":"";
     TString TrEl2Pt = DataEra=="2016preVFP"? "8":"12";
-    MinPt1=25., MinPt2=15., MaxPt1=199, MaxPt2=199., MaxfEta1=2.5;
-    MinPt3=25., MinPt4=10., MaxPt3=199., MaxPt4=199., MaxfEta2=2.4;
+    MinPt1=25., MinPt2=15., MaxPt1=999, MaxPt2=999., MaxfEta1=2.5;
+    MinPt3=25., MinPt4=10., MaxPt3=999., MaxPt4=999., MaxfEta2=2.4;
     HistEff1 = map_hist_Electron["Trigger_Eff_"+StrMCorData+"_EMuIsoEl23_HNL_ULID"];
     HistEff2 = map_hist_Electron["Trigger_Eff_"+StrMCorData+"_EMuIsoEl"+TrEl2Pt+"_HNL_ULID"];
     HistEff3 = map_hist_Muon["Trigger_Eff_"+StrMCorData+"_EMuIsoMu23_HNL_ULID"];
@@ -123,8 +123,8 @@ float MCCorrection::TriggerEfficiency(vector<Electron>& EleColl, vector<Muon>& M
     EMuTrig=true;
     //    TString SSLabel = SFKey.Contains("IDSS")? "SS":"";                                                                                                                                                        
     TString TrEl2Pt = DataEra=="2016preVFP"? "8":"12";
-    MinPt1=25., MinPt2=15., MaxPt1=199, MaxPt2=199., MaxfEta1=2.5;
-    MinPt3=25., MinPt4=10., MaxPt3=199., MaxPt4=199., MaxfEta2=2.4;
+    MinPt1=25., MinPt2=15., MaxPt1=999, MaxPt2=999., MaxfEta1=2.5;
+    MinPt3=25., MinPt4=10., MaxPt3=999., MaxPt4=999., MaxfEta2=2.4;
     HistEff1 = map_hist_Electron["Trigger_Eff_"+StrMCorData+"_EMuIsoEl23_HNL_ULIDv2"];
     HistEff2 = map_hist_Electron["Trigger_Eff_"+StrMCorData+"_EMuIsoEl"+TrEl2Pt+"_HNL_ULIDv2"];
     HistEff3 = map_hist_Muon["Trigger_Eff_"+StrMCorData+"_EMuIsoMu23_HNL_ULIDv2"];
@@ -208,15 +208,15 @@ float MCCorrection::TriggerEfficiency(vector<Electron>& EleColl, vector<Muon>& M
 
   }
   else if(DiMuTrig){
-    if(NMu==2){
+    if(NMu >1){
 
       double faileff=1;
 
-      for(int ilep=0; ilep < 2; ilep ++){
+      for(int ilep=0; ilep < NMu; ilep ++){
 	float pt1  = MuColl.at(ilep).Pt();
 	float feta1 = fabs(MuColl.at(ilep).Eta());
 
-	for(int ilep2=0; ilep2 < 2; ilep2 ++){
+	for(int ilep2=0; ilep2 < NMu; ilep2 ++){
 	  if(ilep == ilep2) continue;
 	  float pt2 = MuColl.at(ilep2).Pt();
 	  float feta2 = fabs(MuColl.at(ilep2).Eta());
@@ -237,43 +237,18 @@ float MCCorrection::TriggerEfficiency(vector<Electron>& EleColl, vector<Muon>& M
       TriggerEff = 1-faileff;
       
     }
-    if(NMu==3){
-      float pt1  = MuColl.at(0).Pt() , pt2  = MuColl.at(1).Pt() , pt3  = MuColl.at(2).Pt(), eps=1E-5;
-      float feta1 = fabs(MuColl.at(0).Eta()), feta2 = fabs(MuColl.at(1).Eta()), feta3 = fabs(MuColl.at(2).Eta());
-      pt1  = min(max(pt1,MinPt1),MaxPt1), pt2 = min(max(pt2,MinPt2),MaxPt2), pt3 = min(max(pt3,MinPt2),MaxPt2);
-      feta1 = min(max(feta1,eps),MaxfEta1), feta2 = min(max(feta2,eps),MaxfEta1), feta3 = min(max(feta3,eps),MaxfEta1);
-      float EffLeg1_Mu1 = HistEff1->GetBinContent(HistEff1->FindBin(feta1, pt1));
-      float EffLeg1_Mu2 = HistEff1->GetBinContent(HistEff1->FindBin(feta2, pt2));
-      float EffLeg2_Mu2 = HistEff2->GetBinContent(HistEff2->FindBin(feta2, pt2));
-      float EffLeg2_Mu3 = HistEff2->GetBinContent(HistEff2->FindBin(feta3, pt3));
-      float EffDZ       = DZEfficiency(SFKey, ReturnDataEff, "");
-      TriggerEff = EffLeg1_Mu1*( EffLeg2_Mu2+(1.-EffLeg2_Mu2*EffDZ)*EffLeg2_Mu3 )*EffDZ + (1.-EffLeg1_Mu1*EffDZ)*EffLeg1_Mu2*EffLeg2_Mu3*EffDZ;
-    }
-    //// TMP Fix for 4Mu events  Assume only first 3 mu trigger
-    if(NMu==4){
-      float pt1  = MuColl.at(0).Pt() , pt2  = MuColl.at(1).Pt() , pt3  = MuColl.at(2).Pt(), eps=1E-5;
-      float feta1 = fabs(MuColl.at(0).Eta()), feta2 = fabs(MuColl.at(1).Eta()), feta3 = fabs(MuColl.at(2).Eta());
-      pt1  = min(max(pt1,MinPt1),MaxPt1), pt2 = min(max(pt2,MinPt2),MaxPt2), pt3 = min(max(pt3,MinPt2),MaxPt2);
-      feta1 = min(max(feta1,eps),MaxfEta1), feta2 = min(max(feta2,eps),MaxfEta1), feta3 = min(max(feta3,eps),MaxfEta1);
-      float EffLeg1_Mu1 = HistEff1->GetBinContent(HistEff1->FindBin(feta1, pt1));
-      float EffLeg1_Mu2 = HistEff1->GetBinContent(HistEff1->FindBin(feta2, pt2));
-      float EffLeg2_Mu2 = HistEff2->GetBinContent(HistEff2->FindBin(feta2, pt2));
-      float EffLeg2_Mu3 = HistEff2->GetBinContent(HistEff2->FindBin(feta3, pt3));
-      float EffDZ       = DZEfficiency(SFKey, ReturnDataEff, "");
-      TriggerEff = EffLeg1_Mu1*( EffLeg2_Mu2+(1.-EffLeg2_Mu2*EffDZ)*EffLeg2_Mu3 )*EffDZ + (1.-EffLeg1_Mu1*EffDZ)*EffLeg1_Mu2*EffLeg2_Mu3*EffDZ;
-    }
-
   }
   else if(DiElTrig){
-    if(NEl==2){
+
+    if(NEl > 1){
 
       double faileff=1;
 
-      for(int ilep=0; ilep < 2; ilep ++){
+      for(int ilep=0; ilep < NEl; ilep ++){
         float pt1  = EleColl.at(ilep).Pt();
         float feta1 = fabs(EleColl.at(ilep).Eta());
 	
-        for(int ilep2=0; ilep2 < 2; ilep2 ++){
+        for(int ilep2=0; ilep2 < NEl; ilep2 ++){
           if(ilep == ilep2) continue;
 	  
 	  float pt2 = EleColl.at(1).Pt();
@@ -296,21 +271,6 @@ float MCCorrection::TriggerEfficiency(vector<Electron>& EleColl, vector<Muon>& M
       TriggerEff = 1-faileff;
     }
 
-    if(NEl==3 || NEl==4){
-      float pt1  = EleColl.at(0).Pt(), pt2 = EleColl.at(1).Pt(), pt3 = EleColl.at(2).Pt();
-      float eta1 = fabs(EleColl.at(0).scEta()), eta2 = fabs(EleColl.at(1).scEta()), eta3 = fabs(EleColl.at(2).scEta());
-      
-      pt1 = min(max(pt1,MinPt1),MaxPt1), pt2 = min(max(pt2,MinPt2),MaxPt2), pt3 = min(max(pt3,MinPt2),MaxPt2);
-      eta1 = min(max(eta1,((float)-1.)*MaxfEta1),MaxfEta1), eta2 = min(max(eta2,((float)-1.)*MaxfEta1),MaxfEta1);
-      eta3 = min(max(eta3,((float)-1.)*MaxfEta1),MaxfEta1);
-
-      float EffLeg1_El1 = HistEff1->GetBinContent(HistEff1->FindBin(eta1, pt1));
-      float EffLeg1_El2 = HistEff1->GetBinContent(HistEff1->FindBin(eta2, pt2));
-      float EffLeg2_El2 = HistEff2->GetBinContent(HistEff2->FindBin(eta2, pt2));
-      float EffLeg2_El3 = HistEff2->GetBinContent(HistEff2->FindBin(eta3, pt3));
-      float EffDZ       = DZEfficiency(SFKey, ReturnDataEff, "");
-      TriggerEff = EffLeg1_El1*( EffLeg2_El2+(1.-EffLeg2_El2*EffDZ)*EffLeg2_El3 )*EffDZ + (1.-EffLeg1_El1*EffDZ)*EffLeg1_El2*EffLeg2_El3*EffDZ ;
-    }
   }
   else if(EMuTrig){
     if(NEl==1 && NMu==1){
@@ -319,29 +279,42 @@ float MCCorrection::TriggerEfficiency(vector<Electron>& EleColl, vector<Muon>& M
       feta_m = min(feta_m,MaxfEta2), feta_e = min(feta_e,MaxfEta1);
 
       float Eff_Mu = 0., Eff_El=0., Eff_DZ=0., Err_Mu=0., Err_El=0.;
-      if(pt_e>MinPt1){
-        pt_m   = min(max(pt_m,MinPt4),MaxPt4);
-        Eff_Mu = HistEff4->GetBinContent(HistEff4->FindBin(pt_m, feta_m));
-        Err_Mu = HistEff4->GetBinError(HistEff4->FindBin(pt_m, feta_m));
+
+      double faileff=1;
+      
+      /*
+	HistEff1 = map_hist_Electron["Trigger_Eff_"+StrMCorData+"_EMuIsoEl23_HNL_ULIDv2"];
+	HistEff2 = map_hist_Electron["Trigger_Eff_"+StrMCorData+"_EMuIsoEl"+TrEl2Pt+"_HNL_ULIDv2"];
+	HistEff3 = map_hist_Muon["Trigger_Eff_"+StrMCorData+"_EMuIsoMu23_HNL_ULIDv2"];
+	HistEff4 = map_hist_Muon["Trigger_Eff_"+StrMCorData+"_EMuIsoMu8_HNL_ULIDv2"];
+       */
+      for(int itrigs = 0 ; itrigs > 2; itrigs++){
+	//itrigs = 0 :MuE  
+	//itrigs = 1 :EMu
+	if(itrigs ==0){
+	  if(pt_m > 25 && pt_e > 10){
+	    Eff_Mu = HistEff3->GetBinContent(HistEff3->FindBin(pt_m, feta_m));
+	    Err_Mu = HistEff3->GetBinError(HistEff3->FindBin(pt_m, feta_m));
+
+	    Eff_El = HistEff2->GetBinContent(HistEff2->FindBin(pt_e, feta_e));
+	    Err_El = HistEff2->GetBinError(HistEff2->FindBin(pt_e, feta_e));
+	  }
+	}
+	else{
+	  if(pt_m >10 && pt_e > 25){
+            Eff_Mu = HistEff4->GetBinContent(HistEff4->FindBin(pt_m, feta_m));
+            Err_Mu = HistEff4->GetBinError(HistEff4->FindBin(pt_m, feta_m));
+
+            Eff_El = HistEff1->GetBinContent(HistEff1->FindBin(pt_e, feta_e));
+            Err_El = HistEff1->GetBinError(HistEff1->FindBin(pt_e, feta_e));
+          }
+	}
+	Eff_DZ = DZEfficiency(SFKey, ReturnDataEff, "");
+	if(SystDir!=0){ Eff_Mu+=float(SystDir)*Err_Mu; Eff_El+=float(SystDir)*Err_El; }
+	double triggereff = Eff_El*Eff_Mu*EffDZ;
+	faileff *= 1 - triggereff;
       }
-      else{
-        pt_m   = min(max(pt_m,MinPt3),MaxPt3);
-        Eff_Mu = HistEff3->GetBinContent(HistEff3->FindBin(pt_m, feta_m));
-        Err_Mu = HistEff3->GetBinError(HistEff3->FindBin(pt_m, feta_m));
-      }
-      if(pt_m>MinPt3){  
-        pt_e   = min(max(pt_e,MinPt2),MaxPt2);
-        Eff_El = HistEff2->GetBinContent(HistEff2->FindBin(pt_e, feta_e));
-        Err_El = HistEff2->GetBinError(HistEff2->FindBin(pt_e, feta_e));
-      }
-      else{
-        pt_e   = min(max(pt_e,MinPt1),MaxPt1);
-        Eff_El = HistEff1->GetBinContent(HistEff1->FindBin(pt_e, feta_e));
-        Err_El = HistEff1->GetBinError(HistEff1->FindBin(pt_e, feta_e));
-      }
-      Eff_DZ = DZEfficiency(SFKey, ReturnDataEff, "");
-      if(SystDir!=0){ Eff_Mu+=float(SystDir)*Err_Mu; Eff_El+=float(SystDir)*Err_El; }
-      TriggerEff = Eff_Mu*Eff_El*Eff_DZ;
+      TriggerEff = 1-faileff;
     }
     if(NEl==1 && NMu==2){
       float pt_e  = EleColl.at(0).Pt(), pt_m1 = MuColl.at(0).Pt(), pt_m2 = MuColl.at(1).Pt();
