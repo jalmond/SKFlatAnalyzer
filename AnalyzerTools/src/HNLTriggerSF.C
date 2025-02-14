@@ -301,22 +301,31 @@ float MCCorrection::TriggerEfficiency(vector<Electron>& EleColl, vector<Muon>& M
 	HistEff3 = map_hist_Muon["Trigger_Eff_"+StrMCorData+"_EMuIsoMu23_HNL_ULIDv2"];
 	HistEff4 = map_hist_Muon["Trigger_Eff_"+StrMCorData+"_EMuIsoMu8_HNL_ULIDv2"];
        */
-      for(int itrigs = 0 ; itrigs > 2; itrigs++){
+      for(int itrigs = 0 ; itrigs < 2; itrigs++){
 	//itrigs = 0 :MuE  
 	//itrigs = 1 :EMu
 	//    TString TrEl2Pt = DataEra=="2016preVFP"? "8":"12";
 
 	if(itrigs==0){
 	  /// Since Eff file has [8]12/23 lower bins in emu  triggers we have to remove pt lower than this else we use incorrect eff in turn on 
-	  double pt_el_min= DataEra=="2016preVFP"? 8:12;
-	  if(pt_m < 23) continue;
+	  float pt_el_min = (DataEra.EqualTo("2016preVFP")) ? 8.0 : 12.0;
+	  float pt_mu_min=23.0;
+	  if(pt_m < pt_mu_min) continue;
 	  if(pt_e < pt_el_min) continue;
+
+	  float pt_max = 999.0;
+	  pt_m = std::min(std::max(pt_m, pt_mu_min), pt_max);
+	  pt_e = std::min(std::max(pt_e, pt_el_min), pt_max);
 	}
 	else{
-	  
-	  if(pt_m < 8) continue;
-          if(pt_e < 23) continue;
+	  float pt_max = 999.0;
+	  float pt_el_min = 23;
+	  float pt_mu_min = 8;
+	  if(pt_m < pt_mu_min) continue;
+          if(pt_e < pt_el_min) continue;
 
+          pt_m   = std::min(std::max(pt_m,pt_mu_min),pt_max);
+          pt_e   = std::min(std::max(pt_e,pt_el_min),pt_max);
 	}
 	if(itrigs==0){
 	  Eff_Mu = HistEff3->GetBinContent(HistEff3->FindBin(pt_m, feta_m));
@@ -381,13 +390,13 @@ float MCCorrection::TriggerEfficiency(vector<Electron>& EleColl, vector<Muon>& M
         pt_e1 = min(pt_e1,MaxPt2), pt_e2 = min(pt_e2,MaxPt2);
         Eff_ElLeg_El1 = HistEff2->GetBinContent(HistEff2->FindBin(pt_e1, feta_e1));
         Eff_ElLeg_El2 = HistEff2->GetBinContent(HistEff2->FindBin(pt_e2, feta_e2));
-        Eff_e = Eff_ElLeg_El1 + (1.-Eff_ElLeg_El1*Eff_DZ)*Eff_ElLeg_El2;
+        Eff_e = Eff_ElLeg_El1 + (1.-Eff_ElLeg_El1)*Eff_ElLeg_El2;
       }
       else{
         pt_e1 = min(pt_e1,MaxPt1), pt_e2 = min(pt_e2,MaxPt1);
         Eff_ElLeg_El1 = HistEff1->GetBinContent(HistEff1->FindBin(pt_e1, feta_e1));
         Eff_ElLeg_El2 = HistEff1->GetBinContent(HistEff1->FindBin(pt_e2, feta_e2));
-        Eff_e = Eff_ElLeg_El1 + (1.-Eff_ElLeg_El1*Eff_DZ)*Eff_ElLeg_El2;
+        Eff_e = Eff_ElLeg_El1 + (1.-Eff_ElLeg_El1)*Eff_ElLeg_El2;
       }
       if(pt_e1>MinPt1){
         pt_m  = min(pt_m,MaxPt4);
