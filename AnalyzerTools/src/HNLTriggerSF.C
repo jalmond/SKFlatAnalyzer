@@ -361,13 +361,13 @@ float MCCorrection::TriggerEfficiency(vector<Electron>& EleColl, vector<Muon>& M
         pt_m1 = min(pt_m1,MaxPt4), pt_m2 = min(pt_m2,MaxPt4);
         Eff_MuLeg_Mu1 = HistEff4->GetBinContent(HistEff4->FindBin(pt_m1, feta_m1));
         Eff_MuLeg_Mu2 = HistEff4->GetBinContent(HistEff4->FindBin(pt_m2, feta_m2));
-        Eff_m = Eff_MuLeg_Mu1 + (1.-Eff_MuLeg_Mu1*Eff_DZ)*Eff_MuLeg_Mu2;
+        Eff_m = Eff_MuLeg_Mu1 + (1.-Eff_MuLeg_Mu1)*Eff_MuLeg_Mu2;
       }
       else{
         pt_m1 = min(pt_m1,MaxPt3), pt_m2 = min(pt_m2,MaxPt3);
         Eff_MuLeg_Mu1 = HistEff3->GetBinContent(HistEff3->FindBin(pt_m1, feta_m1));
         Eff_MuLeg_Mu2 = HistEff3->GetBinContent(HistEff3->FindBin(pt_m2, feta_m2));
-        Eff_m = Eff_MuLeg_Mu1 + (1.-Eff_MuLeg_Mu1*Eff_DZ)*Eff_MuLeg_Mu2;
+        Eff_m = Eff_MuLeg_Mu1 + (1.-Eff_MuLeg_Mu1)*Eff_MuLeg_Mu2;
       }
       if(pt_m1>MinPt3){
         pt_e  = min(pt_e,MaxPt2);
