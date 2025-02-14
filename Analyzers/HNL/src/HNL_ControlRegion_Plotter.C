@@ -161,6 +161,7 @@ void HNL_ControlRegion_Plotter::RunControlRegions(AnalyzerParameter param, vecto
   std::vector<Electron>   ElectronTightColl = SelectElectrons(ElectronTightColl_Init,Electron_ID, Min_Electron_Pt, 2.5);
 
 
+
   //// Change this so now Truth matching does not remove Leptons but in Definition code the GenFIlter removes events 
   //  std::vector<Muon>       MuonTightColl      =  GetLepCollByRunType    (MuonTightCollInit,    param);  
   //std::vector<Electron>   ElectronTightColl  =  GetLepCollByRunType    (ElectronTightCollInit,param);
@@ -173,7 +174,7 @@ void HNL_ControlRegion_Plotter::RunControlRegions(AnalyzerParameter param, vecto
   std::vector<Jet>    AK4_JetCollLoose            = GetHNLJets("Loose",     param);
   std::vector<Jet>    AK4_BJetColl                = GetHNLJets("BJet", param);
   
-  EvalJetWeight(AK4_JetColl, AK8_JetColl, weight, param);
+  EvalJetWeight(AK4_JetColl,AK4_VBF_JetColl, AK8_JetColl, weight, param);
 
   Particle METv = GetvMET("PuppiT1xyULCorr", param, AK4_VBF_JetColl, AK8_JetColl, MuonTightColl,ElectronTightColl);
 
@@ -184,12 +185,61 @@ void HNL_ControlRegion_Plotter::RunControlRegions(AnalyzerParameter param, vecto
   else RunEl = {-1};
 
 
-  for(auto ir : RunEl){
-    RunAllControlRegions(ElectronTightColl,ElectronVetoColl,MuonTightColl,MuonVetoColl, 
-			 AK4_JetCollLoose,AK4_JetColl,AK4_VBF_JetColl,AK8_JetColl, AK4_BJetColl, 
-			 ev,METv, param, CRs,ir,weight);
-  }
+  if(HasFlag("OS"))  {
+    
+    
+    if(!MCSample.Contains("DYJets_Pt")){
 
+      /// Run MiNNLO only
+      RunAllControlRegions(ElectronTightColl,ElectronVetoColl,MuonTightColl,MuonVetoColl,
+			   AK4_JetCollLoose,AK4_JetColl,AK4_VBF_JetColl,AK8_JetColl, AK4_BJetColl,
+			   ev,METv, param, CRs,-1,weight);
+      
+    }
+    
+    
+    
+    param.Name=param.Name+"_PtBinnedDY";
+    param.DefName=param.DefName+"_PtBinnedDY";
+
+    
+    if(MCSample == "DYJetsToMuMu_MiNNLO" || MCSample.Contains("DYJets_Pt") ) {
+
+      if(MuonTightColl.size()==2 && !(SameCharge(MuonTightColl))){
+	Lepton l1(MuonTightColl[0]);
+	Lepton l2(MuonTightColl[1]);
+
+	int Idx1_Closest = GenMatchedIdx(l1, All_Gens);
+	int Idx2_Closest = GenMatchedIdx(l2, All_Gens);
+	if(Idx1_Closest >=0 && Idx2_Closest >= 0){
+
+	  if (std::abs(All_Gens[Idx1_Closest].PID()) != 13 || std::abs(All_Gens[Idx2_Closest].PID()) != 13) return;
+
+	  Particle Z = All_Gens[Idx1_Closest] + All_Gens[Idx2_Closest];
+
+	  if(MCSample == "DYJetsToMuMu_MiNNLO"){
+	    if(Z.Pt() > 150) return;
+	  }
+	  else if(Z.Pt() <= 150) return;
+	}
+	else return;
+      } // DY loop                                                                                                                                                                                              
+    }
+
+
+    RunAllControlRegions(ElectronTightColl,ElectronVetoColl,MuonTightColl,MuonVetoColl,
+			 AK4_JetCollLoose,AK4_JetColl,AK4_VBF_JetColl,AK8_JetColl, AK4_BJetColl,
+			 ev,METv, param, CRs,-1,weight);
+
+  }
+  else{
+    
+    for(auto ir : RunEl){
+      RunAllControlRegions(ElectronTightColl,ElectronVetoColl,MuonTightColl,MuonVetoColl, 
+			   AK4_JetCollLoose,AK4_JetColl,AK4_VBF_JetColl,AK8_JetColl, AK4_BJetColl, 
+			   ev,METv, param, CRs,ir,weight);
+    }
+  }
 }
 
 

@@ -764,7 +764,7 @@ void HNL_Lepton_FakeRate::MakeDiLepPlots(HNL_LeptonCore::Channel channel, Analyz
   std::vector<Jet>    AK4_BJetColl                = GetHNLJets("BJet", param); 
   std::vector<FatJet> AK8_JetColl                 = GetHNLAK8Jets(param.AK8JetColl,param);
 
-  EvalJetWeight(AK4_JetColl, AK8_JetColl, d_event_weight, param);
+  EvalJetWeight(AK4_JetColl,AK4_JetColl, AK8_JetColl, d_event_weight, param);
 
   if(AK4_BJetColl.size() > 0) return;
 
@@ -1224,7 +1224,7 @@ void HNL_Lepton_FakeRate::GetElFakeRates(TString Method, std::vector<Lepton *> l
     if(!(Method == "PtCone"    || Method == "Pt")) return;
   }
   
-  double   isocut  = (Method.Contains("PtCone")) ? GetIsoFromID(*leps[0], param.Electron_Tight_ID) : 0. ;
+  double   isocut  = (Method.Contains("PtCone")) ? GetIsolationCutFromID(*leps[0], param.Electron_Tight_ID) : 0. ;
   TString  LooseID =  param.Electron_Loose_ID ;
   TString  TightID =  param.Electron_Tight_ID ;
   double MVACut = leps[0]->MVAFakeCut(TightID,GetYearString());
@@ -1475,7 +1475,7 @@ void HNL_Lepton_FakeRate::GetMuFakeRates(TString Method, std::vector<Lepton *> l
     if(! (Method.Contains("PtCone") || Method.Contains("Pt"))) return;
   }
   
-  double   isocut  = (Method == "PtCone") ? GetIsoFromID(*leps[0], param.Muon_Tight_ID) : 0.;
+  double   isocut  = (Method == "PtCone") ? GetIsolationCutFromID(*leps[0], param.Muon_Tight_ID) : 0.;
   TString  LooseID =  param.Muon_Loose_ID ;
   TString  TightID =  param.Muon_Tight_ID ;
   double MVACut = leps[0]->MVAFakeCut(TightID,GetYearString());

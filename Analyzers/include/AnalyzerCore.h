@@ -72,6 +72,23 @@ public:
   void beginEvent();
 
 
+  template <typename T>
+    void checkReturnType(T value) {
+    if constexpr (std::is_same_v<T, bool>) {
+	std::cout << "The returned value is a boolean.\n";
+      } else if constexpr (std::is_same_v<T, std::string>) {
+	std::cout << "The returned value is a string.\n";
+      } else {
+      std::cout << "The returned value is neither bool nor string.\n";
+    }
+  }
+
+
+  //// Check User
+  inline bool User(const TString& user) {
+    const char* sysUser = getenv("USER"); // Get system username
+    return (sysUser && user == sysUser);  // Check if it matches the input user
+  }
 
   //==================
   //==== Get objects

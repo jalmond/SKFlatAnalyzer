@@ -660,27 +660,29 @@ void HNL_LeptonCore::DefineBDTLimitBins(){
   
 }
 
+void HNL_LeptonCore::SetBinningBDT(const TString& channel, const TString& mass, const TString& RegionTag, 
+                                   const TString& BinBoundaries_label, std::vector<std::pair<TString, double>>& BDTLimitBins) {
+  auto mit = map_bdt_limit_bins.find(BinBoundaries_label);
 
-void HNL_LeptonCore::SetBinningBDT(TString channel, TString mass,TString RegionTag, TString BinBoundaries_label, vector<pair<TString, double > >& BDTLimitBins){
-
-  map<TString, vector<double> >::iterator mit = map_bdt_limit_bins.find(BinBoundaries_label);
-
-  if(mit == map_bdt_limit_bins.end()) {
-    cout << "SetBinningBDT ERROR " << BinBoundaries_label << endl;
-    for(auto imap : map_bdt_limit_bins) cout << imap.first << endl;
+  // Check if the label exists in the map
+  if (mit == map_bdt_limit_bins.end()) {
+    std::cout << "SetBinningBDT ERROR: " << BinBoundaries_label << " not found." << std::endl;
+    for (const auto& imap : map_bdt_limit_bins) {
+      std::cout << imap.first << std::endl;
+    }
     exit(EXIT_FAILURE);
   }
-  vector<double> BinBoundaries = mit->second;
-    
-  BDTLimitBins.clear();
-  for(unsigned int i=0; i < BinBoundaries.size(); i++){
-    BDTLimitBins.push_back( make_pair(RegionTag+"_bin"+to_string(i+1) , BinBoundaries[i]));
-  }
-  
-  
 
-  return;
-}                                                                                                        
+  // Retrieve the bin boundaries
+  const std::vector<double>& BinBoundaries = mit->second;
+
+  // Clear existing BDT bins and populate with new data
+  BDTLimitBins.clear();
+  for (size_t i = 0; i < BinBoundaries.size(); ++i) {
+    BDTLimitBins.emplace_back(RegionTag + "_bin" + std::to_string(i + 1), BinBoundaries[i]);
+  }
+}
+
 
 void HNL_LeptonCore::InitializeTreeVars(){
 

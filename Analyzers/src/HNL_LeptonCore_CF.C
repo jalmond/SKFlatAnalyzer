@@ -9,7 +9,7 @@ double HNL_LeptonCore::ReturnCFWeight(double CFRates){
 }
 
 
-double HNL_LeptonCore::ReturnCFWeight(vector<double> CFRates){
+double HNL_LeptonCore::ReturnCFWeight(const std::vector<double>& CFRates){
 
   double W = 0.;
   for(auto i : CFRates) W += (i/(1-i));

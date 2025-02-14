@@ -6,10 +6,6 @@ void HNL_SignalRegion_TestRun::initializeAnalyzer(){
 
   HNL_LeptonCore::initializeAnalyzer();
   
-  bool run_ee_bdt=false;
-  bool run_mm_bdt=false;
-  bool run_em_bdt=false;
-  
   SetupEventMVAReader("V2");
 
   nLog = 100000;
@@ -107,7 +103,7 @@ void HNL_SignalRegion_TestRun::RunULAnalysis(AnalyzerParameter param){
   //Particle METv = GetvMET("PuppiT1xyULCorr",param);
   Particle METv = GetvMET("PuppiT1xyULCorr", param, AK4_VBF_JetColl, AK8_JetColl, MuonCollT, ElectronCollT); // returns MET with systematic correction; run this after all object selection done; NOTE that VBF jet is used here
   
-  EvalJetWeight(AK4_JetColl, AK8_JetColl, weight, param);
+  EvalJetWeight(AK4_JetColl, AK4_VBF_JetColl,AK8_JetColl, weight, param);
 
   FillTimer("START_SR");
 

@@ -8,6 +8,13 @@ skim=' '
 
 
 
+declare  -a era_list=( "2016preVFP" "2016postVFP" "2018" "2017")
+for i in "${era_list[@]}"
+do
+    SKFlat.py -a $analyzer  -l ${SKFlat_WD}/runJobs/SampleLists/Bkg/Prompt/DY_Ext.txt -n 300  --nmax 500  -e ${i}   --skim SkimTree_DileptonBDT --userflags DYPeak &
+done
+
+
 if [[ $1 == "DATA" ]]; then
 
 

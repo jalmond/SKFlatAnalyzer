@@ -24,6 +24,18 @@
 
 
 
+void HNL_RegionDefinitions::CheckBin(TString signal,TString binvalue, TString checkbin,HNL_LeptonCore::Channel channel, AnalyzerParameter param,std::vector<Lepton *> leps,std::vector<Jet> jets,vector<FatJet>  fatjets, std::vector<Jet> bjets, Particle METv, double w){
+
+  if(binvalue!= checkbin) return;
+  if(!MCSample.Contains(signal)) return;
+
+  cout << "Event  " << event << " param.GetSystType() = " << param.GetSystType()  << " channel " << GetChannelString(channel) << " weight = " << w<< endl;
+  cout << "MET = " << METv.Pt() << endl;
+  for(auto ilep : leps) cout << "Lepton pt " << ilep->Pt() << endl;
+
+}
+
+
 void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq, 
 						std::vector<Electron> electronsInitial, std::vector<Electron> electrons_veto, std::vector<Muon> muons, std::vector<Muon> muons_veto, std::vector<Tau> TauColl, 
 						std::vector<Jet> AK4_JetCollLoose,std::vector<Jet> JetColl, std::vector<Jet> VBF_JetColl,std::vector<FatJet>  AK8_JetColl, std::vector<Jet> B_JetColl, 
@@ -351,13 +363,6 @@ void   HNL_RegionDefinitions::RunMainRegionCode(bool IsSR,HNL_LeptonCore::Channe
     
     if(RegionBin != "false") {
 
-      if(RunFake && channel==EE && RegionBin.Contains("MNbin3")){
-	cout << "Name : " << param.Name << endl;
-	cout << "MNbin3 Fake Check" << endl;
-	for(auto ilep : LepsT) cout << "Pt lep = " << ilep->Pt() << " eta=  "<< ilep->Eta() << endl;
-	cout << "Weight = " << weight_reg << endl;
-      }
-
       /// Region 1+2+3                                                                                                                                                                  
       //FillLimitInput(LimitRegions, weight_reg,   RegionBin,  "LimitExtraction/"+param.Name,"SR1_"+channel_string,channel_string);
 
@@ -442,6 +447,9 @@ void   HNL_RegionDefinitions::RunMainRegionCode(bool IsSR,HNL_LeptonCore::Channe
       
       RegionBin  = RunSignalRegionAK4String (IsSR,channel,qq, LepsT, LepsV, TauColl, JetColl, AK8_JetColl, B_JetColl, ev, METv ,param,weight_reg);
       if(RegionBin != "false") {
+
+	//CheckBin("DYType",RegionBin,"SR3_bin4",channel,param,LepsT,JetColl, AK8_JetColl,B_JetColl, METv,weight_reg);
+
 	if(IsSR&&param.IsCentral()) Fill_RegionPlots(param,"AllSR" , TauColl, JetColl, AK8_JetColl, LepsT,  METv, nPV, weight_reg);
 	if(IsSR) FillCutflow(HNL_LeptonCore::ChannelDepSR3HM, weight_reg, channel_string +"_SR3",param);
 	else FillCutflow(HNL_LeptonCore::ChannelDepCR3HM, weight_reg, channel_string +"_CR3",param);
@@ -527,9 +535,10 @@ TString HNL_RegionDefinitions::RunSignalRegionAK8String(bool ApplyForSR,
   if(channel == MuMu) met_cut     = 15;
 
   double met2_st     = ev.MET2ST(); 
-  bool PassHMMet     = ApplyForSR ? (met2_st < met_cut) :  (met2_st > met_cut);
+  bool PassHMMet     = ApplyForSR ? (met2_st <= met_cut) :  (met2_st > met_cut);
   bool PassBJetMVeto = ApplyForSR ? (B_JetColl.size()==0) : (B_JetColl.size()== 1);
-  bool PassRegionReq = ApplyForSR ? (PassHMMet && PassBJetMVeto) :  (PassHMMet ||  PassBJetMVeto) ;
+  //  bool PassRegionReq = ApplyForSR ? (PassHMMet && PassBJetMVeto) :  (PassHMMet ||  PassBJetMVeto) ;
+  bool PassRegionReq = ApplyForSR ? (PassHMMet && PassBJetMVeto) :  ((PassHMMet &&B_JetColl.size()==0)|| (PassBJetMVeto && met2_st < met_cut)) ;
 
 
   TString RegionTag                = ApplyForSR ? "SR1" : "CR1";
@@ -554,6 +563,10 @@ TString HNL_RegionDefinitions::RunSignalRegionAK8String(bool ApplyForSR,
   FillCutflow(Reg, w, RegionTag+"_dilep_mass",param);
     
   if(AK8_JetColl.size() != 1)  return "false";
+  if(channel == EMu && JetColl.size() > 3) {
+    if(User("jalmond"))Fill_RegionPlots(param,"EMU_HighJets"+RegionTag , TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);
+    return "false";
+  }
   FillCutflow(Reg, w, RegionTag+"_1AK8",param);
 
   if(ApplyForSR) FillCutflow(HNL_LeptonCore::SRLowMass,  w, "SR1",param);
@@ -569,8 +582,19 @@ TString HNL_RegionDefinitions::RunSignalRegionAK8String(bool ApplyForSR,
 
   //Fill Limit plot
   
+  Particle Wcand = AK8_JetColl[0] + *leps[0] + *leps[1];
+  //  if(Wcand.M() < 300) return "false";
+
   //// Fill Plots before All SR cuts for better stats 
-  if(ApplyForSR&&param.IsCentral())   Fill_RegionPlots(param,"Pass"+RegionTag ,  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);
+  if(param.IsCentral())  {
+    Fill_RegionPlots(param,"Pass"+RegionTag ,  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);
+    if(B_JetColl.size() == 1)     Fill_RegionPlots(param,"Pass"+RegionTag +"_BJet",  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);
+    else Fill_RegionPlots(param,"Pass"+RegionTag +"_MET",  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);
+
+    if(RunFake){
+      Fill_RegionPlots(param,"NoWeight_Pass"+RegionTag ,  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, 1);
+    }
+  }
 
   //// WMass cut removed for now to increase bkg 
   // Particle Wcand = AK8_JetColl[m] + *leps[0]+*leps[1];
@@ -579,7 +603,7 @@ TString HNL_RegionDefinitions::RunSignalRegionAK8String(bool ApplyForSR,
   Particle N1cand = AK8_JetColl[0] + *leps[0];
   double MN1 = (N1cand.M() > 2000.) ? 1999. : N1cand.M();
 
- 
+
   if(!ApplyForSR){
     double nbin_reg;
     double binvalue = GetLimitBin("CR_SR1_Inv",leps,JetColl,AK8_JetColl,ev,nbin_reg);    
@@ -599,7 +623,6 @@ TString HNL_RegionDefinitions::RunSignalRegionAK8String(bool ApplyForSR,
   return "true";
 
 }
-
 
 
 
@@ -626,7 +649,7 @@ TString HNL_RegionDefinitions::RunSignalRegionWWString(bool ApplyForSR,HNL_Lepto
   bool PassHMMet     = ApplyForSR ? (met2_st < met_cut) :  (met2_st > met_cut);
   bool PassBJetMVeto = ApplyForSR ? (B_JetColl.size()==0) : (B_JetColl.size() ==1);
 
-  bool PassRegionReq = ApplyForSR ? (PassHMMet && PassBJetMVeto) :  (PassHMMet ||  PassBJetMVeto) ;
+  bool PassRegionReq = ApplyForSR ? (PassHMMet && PassBJetMVeto) :  ((PassHMMet &&B_JetColl.size()==0)|| (PassBJetMVeto && met2_st < met_cut)) ;
 
 
   if (leps_veto.size() != 2) return "false";
@@ -677,13 +700,13 @@ TString HNL_RegionDefinitions::RunSignalRegionWWString(bool ApplyForSR,HNL_Lepto
   if(ApplyForSR&&param.IsCentral()) Fill_RegionPlots(param,"Inclusive"+RegionTag ,  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);
   
   FillCutflow(Reg, w, RegionTag+"_VBF",param);
-  
+
   if(PassRegionReq){
 
     if(PassHMMet) FillCutflow(Reg, w, RegionTag+"_met",param);
     if(PassBJetMVeto) FillCutflow(Reg, w, RegionTag+"_bveto",param);
 
-    if(ApplyForSR&&param.IsCentral())Fill_RegionPlots(param,"Pass"+RegionTag ,  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);      
+    if(param.IsCentral())Fill_RegionPlots(param,"Pass"+RegionTag ,  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);      
 
     double HTOverPT = leps[0]->HTOverPt();
     
@@ -789,7 +812,8 @@ TString HNL_RegionDefinitions::RunSignalRegionAK4StringBDT(bool ApplyForSR, TStr
 
   bool PassHMMet     = ApplyForSR ? (met2_st < met_cut) :  (met2_st > met_cut);
   bool PassBJetMVeto = ApplyForSR ? (B_JetColl.size()==0) : (B_JetColl.size() ==1);
-  bool PassRegionReq = ApplyForSR ? (PassHMMet && PassBJetMVeto) :  (PassHMMet ||  PassBJetMVeto) ;
+  //bool PassRegionReq = ApplyForSR ? (PassHMMet && PassBJetMVeto) :  (PassHMMet ||  PassBJetMVeto) ;
+  bool PassRegionReq = ApplyForSR ? (PassHMMet && PassBJetMVeto) :  ((PassHMMet &&B_JetColl.size()==0)|| (PassBJetMVeto &&  met2_st < met_cut)) ;
 
   TString RegionTag                = ApplyForSR ? "SR3BDT" : "CR3BDT";
 
@@ -903,7 +927,9 @@ TString HNL_RegionDefinitions::RunSignalRegionAK4String(bool ApplyForSR,HNL_Lept
   double met2_st     = ev.MET2ST();
   bool PassHMMet     = ApplyForSR ? (met2_st < met_cut) :  (met2_st > met_cut);
   bool PassBJetMVeto = ApplyForSR ? (B_JetColl.size()==0) : (B_JetColl.size() == 1);
-  bool PassRegionReq = ApplyForSR ? (PassHMMet && PassBJetMVeto) :  (PassHMMet ||  PassBJetMVeto) ;
+  //bool PassRegionReq = ApplyForSR ? (PassHMMet && PassBJetMVeto) :  (PassHMMet ||  PassBJetMVeto) ;
+
+  bool PassRegionReq = ApplyForSR ? (PassHMMet && PassBJetMVeto) :  ((PassHMMet &&B_JetColl.size()==0)|| (PassBJetMVeto && met2_st < met_cut)) ;
 
   TString RegionTag                = ApplyForSR ? "SR3" : "CR3";
   HNL_LeptonCore::SearchRegion Reg = ApplyForSR ? HNL_LeptonCore::SR3 : HNL_LeptonCore::CR3;
@@ -915,7 +941,7 @@ TString HNL_RegionDefinitions::RunSignalRegionAK4String(bool ApplyForSR,HNL_Lept
   if(!CheckLeptonFlavourForChannel(channel, leps)) return "false";
 
   FillCutflow(Reg, w, RegionTag+"_lep_pt",param);
-  if(ApplyForSR&&param.IsCentral()) Fill_RegionPlots(param,"InclusiveSR3" ,TauColl,  JetColl, AK8_JetColl, leps,  METv, nPV, w);
+  if(param.IsCentral()) Fill_RegionPlots(param,"Inclusive"+RegionTag ,TauColl,  JetColl, AK8_JetColl, leps,  METv, nPV, w);
 
   if (leps_veto.size() != 2) return "false";
 
@@ -960,7 +986,7 @@ TString HNL_RegionDefinitions::RunSignalRegionAK4String(bool ApplyForSR,HNL_Lept
   ////// Set Limit Binned 
   if(JetColl.size() < 2){
     FillCutflow(Reg, w, RegionTag+"_lowjet",param);
-    if(ApplyForSR&&param.IsCentral())Fill_RegionPlots(param,"PassSR3_LowJet" ,TauColl,  JetColl, AK8_JetColl, leps,  METv, nPV, w);
+    if(param.IsCentral())Fill_RegionPlots(param,"Pass"+RegionTag+"_LowJet" ,TauColl,  JetColl, AK8_JetColl, leps,  METv, nPV, w);
     //// These cuts are temp HL will check
     return GetSR3StringBin(RegionTag,GetChannelString(channel), true, met2_st,LT,ll_dphi);
   }  
@@ -990,7 +1016,7 @@ TString HNL_RegionDefinitions::RunSignalRegionAK4String(bool ApplyForSR,HNL_Lept
     if(Wcand.M() < 400) return "false";
   }
 
-  if(ApplyForSR&&param.IsCentral())Fill_RegionPlots(param,"PassSR3_HighJet" ,TauColl,  JetColl, AK8_JetColl, leps,  METv, nPV, w);
+  if(param.IsCentral())Fill_RegionPlots(param,"Pass"+RegionTag+"_HighJet" ,TauColl,  JetColl, AK8_JetColl, leps,  METv, nPV, w);
 
   TString LimitBin = GetSR3StringBin(RegionTag,GetChannelString(channel), false, met2_st,LT,ll_dphi);
     
