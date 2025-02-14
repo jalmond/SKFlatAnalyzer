@@ -22,6 +22,17 @@ if [[ $1 == "Resubmit" ]]; then
     done
 fi
 
+if [[ $1 == "" ]]; then
+
+    declare  -a era_list=("2017" "2016postVFP" "2016preVFP" "2018")
+
+    for i in "${era_list[@]}"
+    do
+        SKFlat.py -a $analyzer  -l $mcpath/Prompt/PromptSSEMu.txt             -n 20        --nmax ${nmax}   -e ${i}  --skim SkimTree_HNMultiLepBDT --userflags  SSMultiLep,RunPrompt &
+    done
+fi
+
+
 if [[ $1 == "Main" ]]; then
 
     declare  -a era_list=("2017" "2016postVFP" "2016preVFP" "2018")

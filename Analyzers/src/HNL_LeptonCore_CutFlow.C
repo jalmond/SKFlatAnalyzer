@@ -236,6 +236,12 @@ void HNL_LeptonCore::FillLimitInput(HNL_LeptonCore::SearchRegion sr, double even
 
   FillCutflowDef(hist_path,   histname, event_weight,lables, label);
   FillCutflow2D (hist_path+"_2D",   histname, event_weight,lables, label);
+  
+  TString hist_pathLL = hist_path;
+  hist_pathLL=hist_pathLL.ReplaceAll("EE","LL");
+  hist_pathLL=hist_pathLL.ReplaceAll("MuMu","LL");
+  hist_pathLL=hist_pathLL.ReplaceAll("EMu","LL");
+  FillCutflowDef(hist_pathLL,   histname, event_weight,lables, label);
 
 
   /// Fill SingleBinned                                                                                                                                                                                           
