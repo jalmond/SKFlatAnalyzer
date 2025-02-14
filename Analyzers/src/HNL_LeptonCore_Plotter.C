@@ -107,20 +107,24 @@ void HNL_LeptonCore::Fill_PlotsAK8(AnalyzerParameter param, TString region, TStr
   
   //// Main plots on AK8 Jets
   
-  FillHist( plot_dir+region+ "/AK8J_NB", fatjets.size() ,     w, 5, 0., 5., "N_{AK8 jets}");
+  FillHist( plot_dir+region+ "/AK8J_N", fatjets.size() ,     w, 5, 0., 5., "N_{AK8 jets}");
+  int NAK8B=0;
   for(unsigned int i=0; i < fatjets.size(); i++){
     FillHist( plot_dir+region+ "/AK8J_Eta",          fatjets[i].Eta()       , w, 100, -5., 5.   , "AK8 Jet #eta");
     FillHist( plot_dir+region+ "/AK8J_Pt",           fatjets[i].Pt()        , w, 100, 0., 2000. , "AK8 Jet p_{T} GeV");
     FillHist( plot_dir+region+"/AK8J_Tagger_particleNet_WvsQCD" , fatjets[i].GetTaggerResult(JetTagging::particleNet_WvsQCD), w, 50, 0, 1., "JetTagging::particleNet_WvsQCD");
+    if(fatjets[i].GetTaggerResult(JetTagging::DeepJet) > mcCorr->GetJetTaggingCutValue(JetTagging::DeepJet , JetTagging::Medium)) NAK8B++; 
   }
+  FillHist( plot_dir+region+ "/AK8J_NB", NAK8B ,     w, 5, 0., 5., "N_{AK8 jets}");
+
 
   Particle N1Cand  = fatjets[0] + *leps[0] ;
   Particle N2Cand  = fatjets[0] + *leps[1] ;
   Particle llJCand =  *leps[0] + *leps[1]+ fatjets[0];
 
-  FillHist( plot_dir+region+ "/AK8J_Mass/l1J",  N1Cand.M(),  w, 50, 0, 2500, "Reco M_{l1J}");
-  FillHist( plot_dir+region+ "/AK8J_Mass/l2J",  N2Cand.M(),  w, 50, 0, 2500, "Reco M_{l2J}");
-  FillHist( plot_dir+region+ "/AK8J_Mass/llJ",  llJCand.M(),  w, 50, 0, 2500, "Reco M_{llJ}");
+  FillHist( plot_dir+region+ "/AK8J_Mass/l1J",  N1Cand.M(),  w, 100, 0, 5000, "Reco M_{l1J}");
+  FillHist( plot_dir+region+ "/AK8J_Mass/l2J",  N2Cand.M(),  w, 100, 0, 5000, "Reco M_{l2J}");
+  FillHist( plot_dir+region+ "/AK8J_Mass/llJ",  llJCand.M(),  w, 100, 0, 5000, "Reco M_{llJ}");
 
   //// Now Add detailed plots by adding userflag
   if(!HasFlag("Plots")) return;
@@ -359,6 +363,8 @@ void HNL_LeptonCore::Fill_Main_Plots(AnalyzerParameter param, TString region,  T
 
     FillHist( plot_dir+ region+ "/MainPlots/Lepton_1_pt", PTLep1  ,  w, 9999, 0, 9999,"l_{1} p_{T} GeV");
     FillHist( plot_dir+ region+ "/MainPlots/Lepton_2_pt", PTLep2  ,  w, 9999, 0, 9999,"l_{2} p_{T} GeV");
+    FillHist( plot_dir+ region+ "/MainPlots/Lepton_pt",   PTLep1  ,  w, 9999, 0, 9999,"l_{2} p_{T} GeV");
+    FillHist( plot_dir+ region+ "/MainPlots/Lepton_pt",   PTLep2  ,  w, 9999, 0, 9999,"l_{2} p_{T} GeV");
     FillHist( plot_dir+ region+ "/MainPlots/L_T", LT  ,  w, 9999, 0, 9999,"l_{T} p_{T} GeV");
 
     return;
