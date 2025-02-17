@@ -103,8 +103,8 @@ std::vector<FatJet> HNL_LeptonCore::GetHNLAK8Jets(const TString& JetType, Analyz
   if(JetType=="HNL")            return SelectAK8Jets  (AK8JetColl,  200., 2.7,  true,   1., false, -999, true,  40., 130.,    "",  ElectronCollV, MuonCollV);
   if(JetType=="HNL_NoMass")     return SelectAK8Jets  (AK8JetColl,  200., 2.7,  true,   1., false, -999, false, 0.,  200000., "",  ElectronCollV, MuonCollV);
   if(JetType=="BDT")            return SelectAK8Jets  (AK8JetColl,  200., 2.7,  true,   1., false, -999, false, 0.,  200000., "",  ElectronCollV, MuonCollV);
-  if(JetType=="HNL_PN")         return SelectAK8Jets  (AK8JetColl,  200., 2.7,  true,   1., false, -999, true,  40., 130.,    "particleNet_WvsQCD", ElectronCollV, MuonCollV);
-  if(JetType=="HNL_PN_NoMass")  return SelectAK8Jets  (AK8JetColl,  200., 2.7,  true,   1., false, -999, true,  0., 200000.,    "particleNet_WvsQCD", ElectronCollV, MuonCollV);
+  //if(JetType=="HNL_PN")         return SelectAK8Jets  (AK8JetColl,  200., 2.7,  true,   1., false, -999, true,  40., 130.,    "particleNet_WvsQCD", ElectronCollV, MuonCollV);
+  if(JetType=="HNL_PN")          return SelectAK8Jets  (AK8JetColl,  200., 2.4,  true,   1., false, -999, true,  0., 200000.,    "particleNet_WvsQCD", ElectronCollV, MuonCollV);
   if(JetType=="EXO17028")        return SelectAK8Jets  (AK8JetColl,  200., 2.7,  true,   1., true, -999, true,  60., 130.,    "",  ElectronCollV, MuonCollV);
 
 

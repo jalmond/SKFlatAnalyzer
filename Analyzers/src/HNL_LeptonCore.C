@@ -633,7 +633,7 @@ AnalyzerParameter HNL_LeptonCore::SetupFakeParameter(AnalyzerParameter::Syst Sys
 
   param.AK4JetColl       = "TightPUL";
   param.AK4VBFJetColl    = "VBFTightPUL";
-  param.AK8JetColl       = "HNL_PN_NoMass";
+  param.AK8JetColl       = "HNL_PN";
   param.BJetColl         = "Tight";
 
   //// Weights                                                                                                                                              
