@@ -113,7 +113,7 @@ void HNL_LeptonCore::Fill_PlotsAK8(AnalyzerParameter param, TString region, TStr
     FillHist( plot_dir+region+ "/AK8J_Eta",          fatjets[i].Eta()       , w, 100, -5., 5.   , "AK8 Jet #eta");
     FillHist( plot_dir+region+ "/AK8J_Pt",           fatjets[i].Pt()        , w, 100, 0., 2000. , "AK8 Jet p_{T} GeV");
     FillHist( plot_dir+region+"/AK8J_Tagger_particleNet_WvsQCD" , fatjets[i].GetTaggerResult(JetTagging::particleNet_WvsQCD), w, 50, 0, 1., "JetTagging::particleNet_WvsQCD");
-    if(fatjets[i].GetTaggerResult(JetTagging::DeepJet) > mcCorr->GetJetTaggingCutValue(JetTagging::DeepJet , JetTagging::Medium)) NAK8B++; 
+    if(fatjets[i].GetTaggerResult(JetTagging::DeepCSV) > mcCorr->GetJetTaggingCutValue(JetTagging::DeepCSV , JetTagging::Medium)) NAK8B++; 
   }
   FillHist( plot_dir+region+ "/AK8J_NB", NAK8B ,     w, 5, 0., 5., "N_{AK8 jets}");
 

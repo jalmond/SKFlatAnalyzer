@@ -104,7 +104,7 @@ std::vector<FatJet> HNL_LeptonCore::GetHNLAK8Jets(const TString& JetType, Analyz
   if(JetType=="HNL_NoMass")     return SelectAK8Jets  (AK8JetColl,  200., 2.7,  true,   1., false, -999, false, 0.,  200000., "",  ElectronCollV, MuonCollV);
   if(JetType=="BDT")            return SelectAK8Jets  (AK8JetColl,  200., 2.7,  true,   1., false, -999, false, 0.,  200000., "",  ElectronCollV, MuonCollV);
   if(JetType=="HNL_PN")         return SelectAK8Jets  (AK8JetColl,  200., 2.7,  true,   1., false, -999, true,  40., 130.,    "particleNet_WvsQCD", ElectronCollV, MuonCollV);
-  if(JetType=="HNL_PN_NoMass")  return SelectAK8Jets  (AK8JetColl,  200., 2.7,  true,   1., false, -999, true,  0., 200000.,    "particleNet_WvsQCD", ElectronCollV, MuonCollV);
+  if(JetType=="HNL_PN_NoMass")  return SelectAK8Jets  (AK8JetColl,  200., 2.7,  true,   1., false, -999, false,  0., 200000.,    "particleNet_WvsQCD", ElectronCollV, MuonCollV);
   if(JetType=="EXO17028")        return SelectAK8Jets  (AK8JetColl,  200., 2.7,  true,   1., true, -999, true,  60., 130.,    "",  ElectronCollV, MuonCollV);
 
 
@@ -493,9 +493,13 @@ vector<Jet>   HNL_LeptonCore::SelectAK4Jets(vector<Jet> jets, double pt_cut ,  d
 
 vector<FatJet>  HNL_LeptonCore::SelectAK8Jets(vector<FatJet> fatjets, double pt_cut ,  double eta_cut, bool lepton_cleaning  , double dr_lep_clean , bool apply_tau21, double tau21_cut , bool apply_masscut, double sdmass_lower_cut,  double sdmass_upper_cut, TString  tagger,  vector<Electron>  veto_electrons, vector<Muon>  veto_muons){
 
+  bool DEBUGMode=false;
 
   vector<FatJet> output_fatjets;
   for(unsigned int ijet =0; ijet < fatjets.size(); ijet++){
+    
+    if(abs(fatjets[ijet].Eta()) > 2.3) DEBUGMode=true;
+    else DEBUGMode=false;
 
     bool jetok=true;
 
@@ -506,7 +510,7 @@ vector<FatJet>  HNL_LeptonCore::SelectAK8Jets(vector<FatJet> fatjets, double pt_
     for(unsigned int iel=0 ; iel < veto_muons.size(); iel++){
       if(fatjets[ijet].DeltaR(veto_muons[iel]) < dr_lep_clean) jetok = false;
     }
-
+    
     if( tagger != ""){
       if (!fatjets[ijet].PassTagger(JetTagging::StringToTagger(string(tagger)), DataEra)) continue;
     }

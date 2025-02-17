@@ -24,6 +24,8 @@
 
 
 
+///// CheckBin Used to scan events in a particular Limit bin, to debug
+
 void HNL_RegionDefinitions::CheckBin(TString signal,TString binvalue, TString checkbin,HNL_LeptonCore::Channel channel, AnalyzerParameter param,std::vector<Lepton *> leps,std::vector<Jet> jets,vector<FatJet>  fatjets, std::vector<Jet> bjets, Particle METv, double w){
 
   if(binvalue!= checkbin) return;
@@ -35,14 +37,14 @@ void HNL_RegionDefinitions::CheckBin(TString signal,TString binvalue, TString ch
 
 }
 
-
+/// Main code for running SR
 void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq, 
 						std::vector<Electron> electronsInitial, std::vector<Electron> electrons_veto, std::vector<Muon> muons, std::vector<Muon> muons_veto, std::vector<Tau> TauColl, 
 						std::vector<Jet> AK4_JetCollLoose,std::vector<Jet> JetColl, std::vector<Jet> VBF_JetColl,std::vector<FatJet>  AK8_JetColl, std::vector<Jet> B_JetColl, 
 						Event ev,   Particle METv, AnalyzerParameter param, int nElForRunCF,   float weight_ll){
 
 
-
+  //// Need to correct MET/Energy of electrons in the case of CF bkg estimate
   std::vector<Electron> electrons;
   if(RunCF) {
     /// Add code to smear individual electron for CF Bkg                                                                                                                                                                                                                                   
@@ -60,7 +62,7 @@ void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq,
   }
   else  electrons = electronsInitial;
 
-
+  
   vector<HNL_LeptonCore::Channel> channels = {GetChannelENum(param.Channel)};
 
   if(GetChannelENum(param.Channel) == HNL_LeptonCore::NONE){
@@ -70,6 +72,7 @@ void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq,
 
   HNL_LeptonCore::SearchRegion CutFlow_Region = SignalRegion;
 
+  //// Loop over channels is remnany of old code, now we only have one channel, but keep loop in case 
   for(auto dilep_channel : channels){
     
     // Make channel speciific AnalyzerParameter                                                                                                                             
@@ -96,11 +99,11 @@ void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq,
 
     if(param.IsCentral()){
       if(MCSample.Contains("Type"))Fill_RegionPlots(param,"Signal_NoCut" , TauColl,
-						    JetColl, AK8_JetColl, LepsT,
-						    METv, nPV, weight_channel);
+						    All_Jets,  All_FatJets, LepsV,
+						    METv, nPV, weight_ll);
     }
 
-   
+
     //// Set METST value after shifting Electrons                                                                                                                                                                                             
     ev.SetMET2ST(GetMET2ST(LepsT, JetColl, AK8_JetColl, METv));
     

@@ -69,7 +69,7 @@ AnalyzerParameter  HNL_LeptonCore::DefaultParam(const TString& s_setup_version, 
 
   param_default.AK4JetColl       = "TightPUL";
   param_default.AK4VBFJetColl    = "VBFTightPUL";
-  param_default.AK8JetColl       = "HNL_PN";
+  param_default.AK8JetColl       = "HNL_PN_NoMass";
   param_default.BJetColl         = "Tight";
 
   //// Weights                                                                                                                                                        
