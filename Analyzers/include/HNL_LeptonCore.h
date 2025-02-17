@@ -81,6 +81,8 @@ class HNL_LeptonCore : public AnalyzerCore {
     MuonCR2, ElectronCR2, ElectronMuonCR2,
     MuonCR3, ElectronCR3, ElectronMuonCR3,
     MuonCR3BDT, ElectronCR3BDT, ElectronMuonCR3BDT,
+    MuonInvBJetCR3BDT, ElectronInvBJetCR3BDT, ElectronMuonInvBJetCR3BDT,
+    MuonInvMETCR3BDT, ElectronInvMETCR3BDT, ElectronMuonInvMETCR3BDT,
 
     // General SR and CR
     MuonSR, ElectronSR, ElectronMuonSR,

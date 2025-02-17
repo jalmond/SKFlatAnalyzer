@@ -96,7 +96,8 @@ void HNL_SignalRegion_Plotter::executeEvent(){
       if(MCSample.Contains("Type")&& !SelectChannel(channel)) continue;
 
       AnalyzerParameter param = HNL_LeptonCore::InitialiseHNLParameter(id,channel);
-      
+  
+    
       param.PlottingVerbose = 0; //// Draw basic plots
       if(id.Contains("ULID"))  param.PlottingVerbose = 1; /// Draw more plots
       if(id.Contains("HEEP"))  param.PlottingVerbose = 1;
@@ -184,7 +185,6 @@ void HNL_SignalRegion_Plotter::RunULAnalysis(AnalyzerParameter param){
   std::vector<Electron>   ElectronCollT = SelectElectrons(ElectronTightColl_Init,el_ID, Min_Electron_Pt, 2.5);
 
   
-
 
   std::vector<Lepton *> leps_veto  = MakeLeptonPointerVector(MuonCollV,ElectronCollV);
   std::vector<Tau>        TauColl        = SelectTaus   (leps_veto,param.Tau_Veto_ID,20., 2.3);

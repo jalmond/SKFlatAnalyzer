@@ -547,12 +547,13 @@ float MCCorrection::DZEfficiency(TString SFKey, bool ReturnDataEff, TString Opti
   }
   else if(SFKey.Contains("DiElIso")){
     if     (DataEra=="2016preVFP" ) Eff = ReturnDataEff? 0.9873 : 0.9888;
-    else if(DataEra=="2016postVFP") Eff = ReturnDataEff? 0.981 : 0.9822;
+    else if(DataEra=="2016postVFP") Eff = ReturnDataEff? 0.9811 : 0.9822;
     else                            Eff = 1.;
   }
   else if(SFKey.Contains("EMuIso")){
     if(DataEra=="2016postVFP") Eff = ReturnDataEff? 0.9691:0.9890;
-    //else if(DataEra=="2017"  ) Eff = 0.9951; //for now included in muleg
+    //else if(DataEra=="2017"  ) Eff = ReturnDataEff? 0.9938:0.9954; // Included in Mu leg efficiency
+    else if(DataEra=="2018"  ) Eff = ReturnDataEff? 0.9961:0.9984;
     else                       Eff = 1.;
   }
 

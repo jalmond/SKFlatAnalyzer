@@ -353,7 +353,7 @@ double HNL_LeptonCore::GetLimitBin(const TString& region, const std::vector<Lept
   if(region=="CR_SR1_Inv"){
 
     Particle l1J =  *leps[0] +  AK8_JetColl[0];
-    if(l1J.M() < 200) Binvalue=0.5;
+    if(l1J.M() < 300) Binvalue=0.5;
     else if(l1J.M() < 500)  Binvalue=1.5;
     else if(l1J.M() < 750)  Binvalue= 2.5;
     else if(l1J.M() < 1000) Binvalue= 3.5;
@@ -364,12 +364,11 @@ double HNL_LeptonCore::GetLimitBin(const TString& region, const std::vector<Lept
   }
   if(region=="CR_SR2_Inv"){
     double SR2BinValue = leps[0]->HTOverPt();
-    if(SR2BinValue < 1) Binvalue = 0.5;
-    else if(SR2BinValue < 2) Binvalue = 1.5;
-    else   if(SR2BinValue < 5) Binvalue = 2.5;
-    else   Binvalue = 3.5;
+    if(SR2BinValue < 2) Binvalue = 0.5;
+    else   if(SR2BinValue < 5) Binvalue = 1.5;
+    else   Binvalue = 2.5;
 
-    nbins_reg=4;
+    nbins_reg=3;
     return Binvalue;
     
   }

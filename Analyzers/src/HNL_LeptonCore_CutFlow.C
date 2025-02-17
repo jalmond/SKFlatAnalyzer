@@ -245,9 +245,9 @@ void HNL_LeptonCore::FillLimitInput(HNL_LeptonCore::SearchRegion sr, double even
 
 
   /// Fill SingleBinned                                                                                                                                                                                           
-  vector<HNL_LeptonCore::SearchRegion> SingleBinned = {MuonCR1,        MuonCR2,        MuonCR3,        MuonCR3BDT,
-                                                       ElectronCR1,    ElectronCR2,    ElectronCR3,    ElectronCR3BDT,
-						       ElectronMuonCR1,ElectronMuonCR2,ElectronMuonCR3,ElectronMuonCR3BDT,
+  vector<HNL_LeptonCore::SearchRegion> SingleBinned = {MuonCR1,        MuonCR2,        MuonCR3,        MuonCR3BDT, MuonInvBJetCR3BDT, MuonInvMETCR3BDT,
+                                                       ElectronCR1,    ElectronCR2,    ElectronCR3,    ElectronCR3BDT, ElectronInvBJetCR3BDT, ElectronInvMETCR3BDT,
+						       ElectronMuonCR1,ElectronMuonCR2,ElectronMuonCR3,ElectronMuonCR3BDT, ElectronMuonInvBJetCR3BDT, ElectronMuonInvMETCR3BDT,
 						       MuonSR1,        MuonSR2,        MuonSR3,        MuonSR3BDT,
                                                        ElectronSR1,    ElectronSR2,    ElectronSR3,    ElectronSR3BDT,
                                                        ElectronMuonSR1,ElectronMuonSR2,ElectronMuonSR3,ElectronMuonSR3BDT};
@@ -403,6 +403,7 @@ TString HNL_LeptonCore::GetCutFlowNameFromRegion(HNL_LeptonCore::SearchRegion sr
   if(sr==ElectronSR3BDT)   EVHistName ="ElectronSR3BDT";
   if(sr==ElectronMuonSR3BDT)   EVHistName ="ElectronMuonSR3BDT";
 
+
   ///// CR Names                                                                                     
   if(sr==MuonCR1)   EVHistName ="MuonCR1";
   if(sr==MuonCR2)   EVHistName ="MuonCR2";
@@ -416,6 +417,15 @@ TString HNL_LeptonCore::GetCutFlowNameFromRegion(HNL_LeptonCore::SearchRegion sr
   if(sr==MuonCR3BDT)   EVHistName ="MuonCR3BDT";
   if(sr==ElectronCR3BDT)   EVHistName ="ElectronCR3BDT";
   if(sr==ElectronMuonCR3BDT)   EVHistName ="ElectronMuonCR3BDT";
+
+  if(sr==MuonInvBJetCR3BDT)   EVHistName ="MuonInvBJetCR3BDT";
+  if(sr==ElectronInvBJetCR3BDT)   EVHistName ="ElectronInvBJetCR3BDT";
+  if(sr==ElectronMuonInvBJetCR3BDT)   EVHistName ="ElectronMuonInvBJetCR3BDT";
+
+  if(sr==MuonInvMETCR3BDT)   EVHistName ="MuonInvMETCR3BDT";
+  if(sr==ElectronInvMETCR3BDT)   EVHistName ="ElectronInvMETCR3BDT";
+  if(sr==ElectronMuonInvMETCR3BDT)   EVHistName ="ElectronMuonInvMETCR3BDT";
+
 
   /// Channel Summary plots
   if(sr==ChannelDepInc )    EVHistName ="ChannelDependant_Inclusive";
@@ -479,6 +489,8 @@ vector<TString>  HNL_LeptonCore::GetLimitLabelsFromRegion(HNL_LeptonCore::Search
 
 
   if(sr==MuonCR3BDT || sr==ElectronCR3BDT || sr==ElectronMuonCR3BDT)  return  GetBDTLimitLabels("CR3BDT_"+channel);
+  if(sr==MuonInvBJetCR3BDT || sr==ElectronInvBJetCR3BDT || sr==ElectronMuonInvBJetCR3BDT)  return  GetBDTLimitLabels("CR3BDT_"+channel);
+  if(sr==MuonInvMETCR3BDT || sr==ElectronInvMETCR3BDT || sr==ElectronMuonInvMETCR3BDT)  return  GetBDTLimitLabels("CR3BDT_"+channel);
 
   return {""};
 
