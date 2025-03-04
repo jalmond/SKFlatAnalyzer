@@ -45,7 +45,8 @@ void HNL_ControlRegion_Plotter::executeEvent(){
   if(RunHighPtID) LepIDs = {"HighPt"};
   if(RunPekingID) LepIDs = {"Peking"};
 
-  //  if(strcmp(std::getenv("USER"),"jalmond")==0) LepIDs = {"HNL_ULID","POGTight","TopHN","HNTightV2","MVAPOG"};//,"HNTightV2","POGTight","TopHN","HighPt"};                               
+  if(strcmp(std::getenv("USER"),"jalmond")==0) LepIDs = {"HNL_ULIDv2","POGTight","HNTightV2"};
+
 
   vector<HNL_LeptonCore::Channel> ChannelsToRun = {};
   if(RunEE)   ChannelsToRun.push_back(EE);

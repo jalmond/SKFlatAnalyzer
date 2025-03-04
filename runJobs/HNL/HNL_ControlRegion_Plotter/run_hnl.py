@@ -173,7 +173,6 @@ if args.SSMultiLep:
 elif args.LLL:
     flags_alt.append("LLL")
 
-flags_alt.append("Alt")
 
 # Run command for individual sample if provided
 if IndividualSample:

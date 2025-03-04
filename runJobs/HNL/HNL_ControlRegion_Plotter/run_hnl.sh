@@ -18,8 +18,8 @@ if [[ $1 == "GT36" ]]; then
 
     for i in "${era_list[@]}"
     do
-        SKFlat.py -a $analyzer  -l runJobs/SampleLists/Data/DL/2018_GT34.txt         -n 20        --nmax ${nmax}   -e ${i}  --skim SkimTree_HNMultiLep --userflags  SSMultiLep,TEST34 &
-        SKFlat.py -a $analyzer  -l runJobs/SampleLists/Data/DL/2018_GT36.txt         -n 20        --nmax ${nmax}   -e ${i}  --skim SkimTree_HNMultiLep --userflags  SSMultiLep,TEST36 &
+        SKFlat.py -a $analyzer  -l runJobs/SampleLists/Data/DL/2018_GT34.txt         -n 20        --nmax ${nmax}   -e ${i}  --skim SkimTree_HNMultiLepBDT --userflags  SSMultiLep,TEST34 &
+        SKFlat.py -a $analyzer  -l runJobs/SampleLists/Data/DL/2018_GT36.txt         -n 20        --nmax ${nmax}   -e ${i}  --skim SkimTree_HNMultiLepBDT --userflags  SSMultiLep,TEST36 &
     done
 fi
 
