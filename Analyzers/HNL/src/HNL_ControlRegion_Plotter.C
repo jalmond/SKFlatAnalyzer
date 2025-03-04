@@ -10,12 +10,12 @@ void HNL_ControlRegion_Plotter::initializeAnalyzer(){
     bool run_mm_bdt=false;
     bool run_em_bdt=false;
 
-    if (this->DataStream == "DoubleMuon") run_mm_bdt=true;
+    if (this->DataStream.Contains("DoubleMuon")) run_mm_bdt=true;
     if (this->DataStream == "SingleMuon") run_mm_bdt=true;
     if (this->DataStream == "DoubleEG") run_ee_bdt=true;
     if (this->DataStream == "SingleElectron") run_ee_bdt=true;
     if (this->DataStream == "EGamma") run_ee_bdt=true;
-    if (this->DataStream == "MuonEG") run_em_bdt=true;
+    if (this->DataStream.Contains("MuonEG")) run_em_bdt=true;
 
     SetupEventMVAReader("V2",run_ee_bdt,run_mm_bdt,run_em_bdt);
 
@@ -68,15 +68,13 @@ void HNL_ControlRegion_Plotter::executeEvent(){
 
 
   if(IsDATA){
-    if (this->DataStream == "DoubleMuon") ChannelsToRun = {MuMu};
+    if (this->DataStream.Contains("DoubleMuon")) ChannelsToRun = {MuMu};
     if (this->DataStream == "SingleMuon") ChannelsToRun = {MuMu};
     if (this->DataStream == "DoubleEG") ChannelsToRun = {EE};
     if (this->DataStream == "SingleElectron") ChannelsToRun = {EE};
     if (this->DataStream == "EGamma") ChannelsToRun = {EE};
-    if (this->DataStream == "MuonEG") ChannelsToRun = {EMu};
+    if (this->DataStream.Contains("MuonEG")) ChannelsToRun = {EMu};
   }
-
-
 
   for (auto id: LepIDs){
 

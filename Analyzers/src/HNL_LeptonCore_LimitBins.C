@@ -71,11 +71,9 @@ void HNL_LeptonCore::DefineLimitBins(){
   map_bins_labels ["SR3_EE"]   = EE_SR3;
   map_bins_labels ["SR3_EMu"]  = EMu_SR3;
 
-  std::vector<TString> CR3 = {"CR3_bin1","CR3_bin2","CR3_bin3","CR3_bin4","CR3_bin5","CR3_bin6"};
+  std::vector<TString> CR3 = {"CR3_bin1","CR3_bin2","CR3_bin3","CR3_bin4"};
   map_bins_labels ["CR3"]    = CR3;
- 
-
-  
+   
 
 		 
   return ;
@@ -119,15 +117,11 @@ TString HNL_LeptonCore::GetSR3StringBin(const TString& RegionTag, const TString&
   
   /// Detailed binning for High Mass SR3
   
-  if (RegionTag == "CR3") {
-    if (LowJet) {
-      return (LT <= 150) ? RegionTag + "_bin1" : RegionTag + "_bin2";
-    } else {
-      if (LT < 150) return RegionTag + "_bin3";
-      if (LT < 200) return RegionTag + "_bin4";
-      if (LT < 300) return RegionTag + "_bin5";
-      return RegionTag + "_bin6";
-    }
+  if (RegionTag.Contains("CR3")) {
+    if (LT < 150) return RegionTag + "_bin1";
+    if (LT < 200) return RegionTag + "_bin2";
+    if (LT < 300) return RegionTag + "_bin3";
+    return RegionTag + "_bin4";
   }
   
   double met2_st_boundary = 5.;
@@ -349,7 +343,17 @@ double HNL_LeptonCore::GetLimitBin(const TString& region, const std::vector<Lept
 
   double Binvalue=0;
   
-  
+  if(region=="CR_SR3_WZ") {
+    double LT = leps[0]->Pt() + leps[1]->Pt();
+    if(LT < 100) Binvalue=0.5;
+    else     if(LT < 200) Binvalue=1.5;
+    else if(LT < 300) Binvalue=2.5;
+    else if(LT < 400) Binvalue=3.5;
+    else  Binvalue=4.5;
+    nbins_reg=5;
+    return Binvalue;
+
+  }
   if(region=="CR_SR1_Inv"){
 
     Particle l1J =  *leps[0] +  AK8_JetColl[0];
@@ -362,6 +366,7 @@ double HNL_LeptonCore::GetLimitBin(const TString& region, const std::vector<Lept
     nbins_reg=5;
     return Binvalue;
   }
+ 
   if(region=="CR_SR2_Inv"){
     double SR2BinValue = leps[0]->HTOverPt();
     if(SR2BinValue < 2) Binvalue = 0.5;
@@ -374,7 +379,7 @@ double HNL_LeptonCore::GetLimitBin(const TString& region, const std::vector<Lept
   }
 
 
-  if((region == ("CR_SR1_WZ")) || (region ==  "CR_SR1_ZZ")){
+  if(region == ("CR_SR1_WZ")){
     
     Particle l1J =  *leps[0] +  AK8_JetColl[0];
     if(l1J.M() < 750) Binvalue= 0.5;
@@ -383,7 +388,7 @@ double HNL_LeptonCore::GetLimitBin(const TString& region, const std::vector<Lept
     nbins_reg=2;
     return Binvalue;
   }
-
+  
 
 
   if(region.Contains("CR_SR1")){
@@ -408,7 +413,7 @@ double HNL_LeptonCore::GetLimitBin(const TString& region, const std::vector<Lept
 
   }
 
-  if((region =="CR_SR2_WZB") || (region =="CR_SR2_ZZ") ){
+  if(region =="CR_SR2_WZB") {
     double SR2BinValue = leps[0]->HTOverPt();
     if(SR2BinValue < 3) Binvalue = 0.5;
     else   Binvalue = 1.5;
@@ -429,81 +434,7 @@ double HNL_LeptonCore::GetLimitBin(const TString& region, const std::vector<Lept
 
   }
   
-  if(region == "ZG_CR_SR3"){
-    if((AK4Jets.size()<2) && (leps[1]->Pt()  < 25)) Binvalue=0.5;
-    else   if((AK4Jets.size()<2) && (leps[1]->Pt()  < 40)) Binvalue=1.5;
-    else   if((AK4Jets.size()<2)) Binvalue=2.5;
-    else   {
-      Particle llJJ =  *leps[0] + *leps[1]+AK4Jets[0]+AK4Jets[1];
-      if(llJJ.M() < 175) Binvalue= 3.5;
-      else     if(llJJ.M() < 300) Binvalue= 4.5;
-      else Binvalue= 5.5;
-    }
-    nbins_reg=6;
-    return Binvalue;
-
-  }
-
-
-  if(region.Contains("CR_SR3")){
-    if((AK4Jets.size()<2) && (leps[1]->Pt()  < 50)) Binvalue=0.5;
-    else   if((AK4Jets.size()<2) && (leps[1]->Pt()  < 125)) Binvalue=1.5;
-    else   if((AK4Jets.size()<2)) Binvalue=2.5;
-    else   {
-      Particle llJJ =  *leps[0] + *leps[1]+AK4Jets[0]+AK4Jets[1];
-      if(llJJ.M() < 175) Binvalue= 3.5;
-      else     if(llJJ.M() < 400) Binvalue= 4.5;
-      else Binvalue= 5.5;
-    }
-    nbins_reg=6;
-    return Binvalue;
-    
-  }
-
-  if(region.Contains("CR_CF_SR1")){
-
-    Particle l1JJ =  *leps[0] + AK8_JetColl[0];
-
-    if(l1JJ.M() < 750) Binvalue= 0.5;
-    else Binvalue= 1.5;
-    nbins_reg=2;
-    return Binvalue;
-    
-  }
-
-  if(region.Contains("CR_CF_SR2")){
-
-    double SR2BinValue = leps[0]->HTOverPt();
-    if(SR2BinValue < 2) Binvalue=0.5;
-    else if(SR2BinValue < 5) Binvalue=1.5;
-    else if(SR2BinValue < 10) Binvalue=2.5;
-    nbins_reg=3;
-    return Binvalue;
-   
-
-  }
-  
-  if(region.Contains("CR_CF_SR3")){
-
-    if(leps[0]->Pt() < 50) Binvalue = 0.5;
-    else if(leps[0]->Pt() < 200) Binvalue = 1.5;
-    else Binvalue = 2.5;
-    nbins_reg=3;
-    return Binvalue;
-
-  }
-
-  if(region.Contains("CR_WW_SR2")){
-    double VBFBinValue = leps[0]->HTOverPt();
-    if(VBFBinValue < 2) Binvalue= 0.5;
-    else     if(VBFBinValue < 5) Binvalue= 1.5;
-    else Binvalue= 2.5;
-    nbins_reg=3;
-
-    return Binvalue;
-  }
-
-  cout << "No Limit Region set" << endl;
+  cout << "No Limit Region set " << region << endl;
   exit(EXIT_FAILURE);
 
 }

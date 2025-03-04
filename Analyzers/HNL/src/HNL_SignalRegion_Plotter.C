@@ -42,6 +42,8 @@ void HNL_SignalRegion_Plotter::executeEvent(){
     cout << "HNL_SignalRegion_Plotter::IsData = " << IsData << endl;
   }
 
+  if(_jentry < 1000 && HasFlag("PrintGen"))PrintGen(All_Gens);
+
   if(HasFlag("ScanSystematic")){
     ///Only scan 1000 events
     if(_jentry > 100) return;
@@ -114,6 +116,7 @@ void HNL_SignalRegion_Plotter::executeEvent(){
       else if(HasFlag("Syst_Muon")) SystLabel= "Muon";
       else if(HasFlag("Syst_Muon_Reco")) SystLabel= "Muon_Reco";
       else if(HasFlag("Syst_Jet")) SystLabel= "Jet";
+      else if(HasFlag("Syst_MET")) SystLabel= "MET";      
       else SystLabel=GetChannelString(channel);
 
 

@@ -20,14 +20,13 @@ void HNL_SignalRegion_TestRun::executeEvent(){
   if(_jentry == 0){
     cout << "HNL_SignalRegion_TestRun::IsData = " << IsData << endl;
   }
-  vector<TString> LepIDs = {"HNL_ULID"};
+  vector<TString> LepIDs = {"HNL_ULIDv2"};
 
 
   //  if(strcmp(std::getenv("USER"),"jalmond")==0) LepIDs = {"HNL_ULID","POGTight","TopHN","HNTightV2","MVAPOG"};//,"HNTightV2","POGTight","TopHN","HighPt"};
 
   vector<HNL_LeptonCore::Channel> ChannelsToRun = {MuMu};
   if(ChannelsToRun.size() == 0) ChannelsToRun = {EE,MuMu,EMu};
-
 
   for (auto id: LepIDs){
 

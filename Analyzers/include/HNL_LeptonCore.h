@@ -81,6 +81,15 @@ class HNL_LeptonCore : public AnalyzerCore {
     MuonCR2, ElectronCR2, ElectronMuonCR2,
     MuonCR3, ElectronCR3, ElectronMuonCR3,
     MuonCR3BDT, ElectronCR3BDT, ElectronMuonCR3BDT,
+    MuonInvBJetCR1, ElectronInvBJetCR1, ElectronMuonInvBJetCR1,
+    MuonInvMETCR1, ElectronInvMETCR1, ElectronMuonInvMETCR1,
+
+    MuonInvBJetCR2, ElectronInvBJetCR2, ElectronMuonInvBJetCR2,
+    MuonInvMETCR2, ElectronInvMETCR2, ElectronMuonInvMETCR2,
+
+    MuonInvBJetCR3, ElectronInvBJetCR3, ElectronMuonInvBJetCR3,
+    MuonInvMETCR3, ElectronInvMETCR3, ElectronMuonInvMETCR3,
+
     MuonInvBJetCR3BDT, ElectronInvBJetCR3BDT, ElectronMuonInvBJetCR3BDT,
     MuonInvMETCR3BDT, ElectronInvMETCR3BDT, ElectronMuonInvMETCR3BDT,
 
@@ -280,6 +289,10 @@ class HNL_LeptonCore : public AnalyzerCore {
   double GetDYWeakWeight(double mass);
   
 
+  //==== Kfactors                                                                                                                              
+  double GetKFactor();
+
+
   // ================= MC weight functions: HNL_LeptonCore_EvCorr.C ================= 
 
   // Sets the Lepton ID based on the lepton type and the provided parameters
@@ -420,6 +433,8 @@ class HNL_LeptonCore : public AnalyzerCore {
   TH1D* h_SumW_PDF;
   TH1D* h_SumW_Scale;
   TH1D* h_SumW_AlphaS;
+
+  TH1D* h_VV_KF_CMS;
 
   TDirectory *TheoryDir;
 

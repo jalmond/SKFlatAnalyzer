@@ -12,15 +12,17 @@ nmax=800
 skim=' '
 
 
-if [[ $1 == "Resubmit" ]]; then
+if [[ $1 == "GT36" ]]; then
 
     declare  -a era_list=("2018")
 
     for i in "${era_list[@]}"
     do
-        SKFlat.py -a $analyzer  -l $mcpath/Prompt/PromptSS.txt             -n 20        --nmax ${nmax}   -e ${i}  --skim SkimTree_HNMultiLepBDT --userflags  SSMultiLep,RunPrompt &
+        SKFlat.py -a $analyzer  -l runJobs/SampleLists/Data/DL/2018_GT34.txt         -n 20        --nmax ${nmax}   -e ${i}  --skim SkimTree_HNMultiLep --userflags  SSMultiLep,RunPrompt,TEST34 &
+        SKFlat.py -a $analyzer  -l runJobs/SampleLists/Data/DL/2018_GT36.txt         -n 20        --nmax ${nmax}   -e ${i}  --skim SkimTree_HNMultiLep --userflags  SSMultiLep,RunPrompt,TEST36 &
     done
 fi
+
 
 if [[ $1 == "" ]]; then
 
@@ -28,9 +30,9 @@ if [[ $1 == "" ]]; then
 
     for i in "${era_list[@]}"
     do
-        SKFlat.py -a $analyzer  -l $datapath/DL/${i}_DiLepton_MuMu.txt      -n 100  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLepBDT   --userflags SSMultiLep,LLL &
-        SKFlat.py -a $analyzer  -l $datapath/DL/${i}_DiLepton_EMu.txt      -n 100  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLepBDT   --userflags SSMultiLep,LLL &
-        SKFlat.py -a $analyzer  -l $datapath/DL/${i}_DiLepton_EE.txt      -n 100    --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLepBDT   --userflags SSMultiLep,LLL&
+        SKFlat.py -a $analyzer  -l $datapath/DL/${i}_DiLepton_MuMu.txt      -n 100  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLepBDT   --userflags SSMultiLep &
+        SKFlat.py -a $analyzer  -l $datapath/DL/${i}_DiLepton_EMu.txt      -n 100  --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLepBDT   --userflags SSMultiLep &
+        SKFlat.py -a $analyzer  -l $datapath/DL/${i}_DiLepton_EE.txt      -n 100    --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLepBDT   --userflags SSMultiLep&
 
     done
 fi
