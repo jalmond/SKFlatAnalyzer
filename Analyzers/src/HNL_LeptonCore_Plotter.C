@@ -113,7 +113,7 @@ void HNL_LeptonCore::Fill_PlotsAK8(AnalyzerParameter param, TString region, TStr
     FillHist( plot_dir+region+ "/AK8J_Eta",          fatjets[i].Eta()       , w, 100, -5., 5.   , "AK8 Jet #eta");
     FillHist( plot_dir+region+ "/AK8J_Pt",           fatjets[i].Pt()        , w, 100, 0., 2000. , "AK8 Jet p_{T} GeV");
     FillHist( plot_dir+region+"/AK8J_Tagger_particleNet_WvsQCD" , fatjets[i].GetTaggerResult(JetTagging::particleNet_WvsQCD), w, 50, 0, 1., "JetTagging::particleNet_WvsQCD");
-    if(fatjets[i].GetTaggerResult(JetTagging::DeepJet) > mcCorr->GetJetTaggingCutValue(JetTagging::DeepJet , JetTagging::Medium)) NAK8B++; 
+    if(fatjets[i].GetTaggerResult(JetTagging::DeepCSV) > mcCorr->GetJetTaggingCutValue(JetTagging::DeepCSV , JetTagging::Medium)) NAK8B++; 
   }
   FillHist( plot_dir+region+ "/AK8J_NB", NAK8B ,     w, 5, 0., 5., "N_{AK8 jets}");
 
@@ -282,7 +282,7 @@ void HNL_LeptonCore::Fill_Standard_Plots(AnalyzerParameter param, TString region
   //// Draw stndard plots, not Limit setting  variables, so only default Systs ran
   if(!DrawSyst(param)) return;
   
-  if(leps.size() != 2) return;
+  if(leps.size() < 2) return;
 
   FillHist( plot_dir+ region+ "/Standard/N_AK4J",    jets.size() , w, 10,  0., 10., "N_{AK4 jets}");
   FillHist( plot_dir+ region+ "/Standard/Ev_MET",    met.Pt()    , w, 200, 0., 400.,"MET GeV");
@@ -412,7 +412,70 @@ void HNL_LeptonCore::Fill_Plots(AnalyzerParameter param, TString region,  TStrin
 
 
   if(leps.size() < 2) return;
-  
+
+  if(MCSample.Contains("ZZ")){
+    Particle ZZ;
+
+    vector<int> MotherPID;
+    for (auto i : leps) {
+      int Idx_Closest = GenMatchedIdx(*i, All_Gens);
+    
+      // Ensure the index is valid
+      if (Idx_Closest < 0 || static_cast<size_t>(Idx_Closest) >= All_Gens.size()) continue;
+
+      Gen MatchedGen = All_Gens.at(Idx_Closest);
+      //      std::cout << "MatchedGen " << Idx_Closest << " gen.Status = " << MatchedGen.Status()//
+      //		<< " PID = " << MatchedGen.PID() << std::endl;
+
+      int Idx_Closest_Mother = Idx_Closest;
+
+      // Check that MotherIndex is within bounds before accessing
+      while (Idx_Closest_Mother >= 0 &&
+	     ( std::abs(All_Gens.at(Idx_Closest_Mother).PID()) == 11 || 
+	       std::abs(All_Gens.at(Idx_Closest_Mother).PID()) == 13 ) && 
+	     static_cast<size_t>(Idx_Closest_Mother) < All_Gens.size() &&
+	     All_Gens.at(Idx_Closest_Mother).MotherIndex() >= 0 &&
+	     static_cast<size_t>(All_Gens.at(Idx_Closest_Mother).MotherIndex()) < All_Gens.size()) {
+        
+
+        Idx_Closest_Mother = All_Gens.at(Idx_Closest_Mother).MotherIndex();
+        int motherPID = std::abs(All_Gens.at(Idx_Closest_Mother).PID());
+	//	std::cout << "fabs(All_Gens[All_Gens[" << Idx_Closest_Mother
+	//        << "].MotherIndex()].PID()) = " << motherPID << std::endl;
+
+        if (!( motherPID == 11 || motherPID == 13)) break;
+        
+      }
+      
+      //cout << "Mother PID = " << std::abs(All_Gens.at(Idx_Closest_Mother).PID())  << endl;
+      if (std::find(MotherPID.begin(), MotherPID.end(), Idx_Closest_Mother) == MotherPID.end()) {
+	MotherPID.push_back(All_Gens.at(Idx_Closest_Mother).PID());
+      }      
+    }
+    if(MotherPID.size() != 2 || 
+       ( abs(MotherPID[0]) != 23 || abs(MotherPID[1]) != 23)) {
+      PrintGen(All_Gens);
+      cout << "PID Check " << endl;
+      for (auto i : MotherPID) cout << "PID " <<  i << endl;
+      for (auto i : leps)  PrintMatchedGen(All_Gens,*i);
+	
+    }
+    for(auto ip : MotherPID) {
+      FillHist( plot_dir+ region+ "/GenZZ/ZMass", All_Gens[ip].M(),  w, 500, 0, 500, "M_{ZZ} GeV");
+    }
+
+    
+    for(int i=2; i<int(All_Gens.size()); i++){
+      Gen gen = All_Gens.at(i);
+      if(gen.Status()==1){
+	if(abs(gen.PID()) == 13 || abs(gen.PID()) == 11){
+	  ZZ=ZZ+gen;
+	}
+      }
+    }
+    FillHist( plot_dir+ region+ "/GenZZ/ZZMass", ZZ.M(),  w, 500, 0, 1000, "M_{ZZ} GeV");
+  }
+
   FillHist( plot_dir+ region+ "/Leptons/SumQ", sumQ,  w, 10, -5, 5, "Q size");
 
   //// Lepton plots 
@@ -462,6 +525,8 @@ void HNL_LeptonCore::Fill_Plots(AnalyzerParameter param, TString region,  TStrin
     FillHist( plot_dir+ region+ "/Mass/M_BestZ", LeptonMassBestZ(leps,LeptonPairBestZCand(leps)) , w, 200, 0., 800.,"M(Z1) GeV");
     FillHist( plot_dir+ region+ "/Mass/M_OtherZ", LeptonMassNonZ(leps,LeptonPairBestZCand(leps)) , w, 200, 0., 800.,"M(Z1) GeV");
     FillHist( plot_dir+ region+ "/Mass/M_BestZAlt", GetMassBestZ(leps,true) , w, 200, 0., 800.,"M(Z1) GeV");
+    
+
   }
   
   //// Jet plots                                                                                                                                                                                                  

@@ -18,7 +18,7 @@ Particle HNL_LeptonCore::GetvCorrMET(const TString& METType, const std::vector<M
     std::vector<Muon> loose_muons = GetMuons("POGLoose",     10.,  2.4);
     
     std::vector<Jet> jets_corr;
-   for(auto ij : Jets){
+    for(auto ij : Jets){
      if(ij.Pt() < 15.) continue;
      if(fabs(ij.Eta()) > 2.5) continue;
      bool overlap_mu(false);
@@ -141,6 +141,15 @@ Particle HNL_LeptonCore::GetvMET(const TString& METType, AnalyzerParameter param
 
     if(UsePuppi) {
       if(isfinite(PuppiMET_Type1_pt_shifts->at(IdxSyst))){
+	if(HasFlag("ScanSystematicMET")){
+	  if(IdxSyst == 10) cout <<" Uncluster Up PuppiMET_Type1_pt = " << PuppiMET_Type1_pt << " PuppiMET_Type1_pt_shifts->at(IdxSyst) = " << PuppiMET_Type1_pt_shifts->at(IdxSyst) << endl;
+	  else cout <<" Uncluster Down PuppiMET_Type1_pt = " << PuppiMET_Type1_pt << " PuppiMET_Type1_pt_shifts->at(IdxSyst) = " << PuppiMET_Type1_pt_shifts->at(IdxSyst) << endl;
+
+	  if(IdxSyst == 10) cout <<" Uncluster Up pfMET_Type1_pt = " << pfMET_Type1_pt << " pfMET_Type1_pt_shifts->at(IdxSyst) = " << pfMET_Type1_pt_shifts->at(IdxSyst) << endl;
+          else cout <<" Uncluster Down pfMET_Type1_pt = " << pfMET_Type1_pt << " pfMET_Type1_pt_shifts->at(IdxSyst) = " << pfMET_Type1_pt_shifts->at(IdxSyst) << endl;
+	  
+
+	}
         vMETFinal = UpdateMETSyst(PuppiMET_Type1_pt, PuppiMET_Type1_phi, PuppiMET_Type1_pt_shifts->at(IdxSyst),PuppiMET_Type1_phi_shifts->at(IdxSyst), vMETCorr);
       }
     }

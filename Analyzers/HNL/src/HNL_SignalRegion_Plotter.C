@@ -42,6 +42,8 @@ void HNL_SignalRegion_Plotter::executeEvent(){
     cout << "HNL_SignalRegion_Plotter::IsData = " << IsData << endl;
   }
 
+  if(_jentry < 1000 && HasFlag("PrintGen"))PrintGen(All_Gens);
+
   if(HasFlag("ScanSystematic")){
     ///Only scan 1000 events
     if(_jentry > 100) return;
@@ -96,7 +98,8 @@ void HNL_SignalRegion_Plotter::executeEvent(){
       if(MCSample.Contains("Type")&& !SelectChannel(channel)) continue;
 
       AnalyzerParameter param = HNL_LeptonCore::InitialiseHNLParameter(id,channel);
-      
+  
+    
       param.PlottingVerbose = 0; //// Draw basic plots
       if(id.Contains("ULID"))  param.PlottingVerbose = 1; /// Draw more plots
       if(id.Contains("HEEP"))  param.PlottingVerbose = 1;
@@ -113,6 +116,7 @@ void HNL_SignalRegion_Plotter::executeEvent(){
       else if(HasFlag("Syst_Muon")) SystLabel= "Muon";
       else if(HasFlag("Syst_Muon_Reco")) SystLabel= "Muon_Reco";
       else if(HasFlag("Syst_Jet")) SystLabel= "Jet";
+      else if(HasFlag("Syst_MET")) SystLabel= "MET";      
       else SystLabel=GetChannelString(channel);
 
 
@@ -185,7 +189,6 @@ void HNL_SignalRegion_Plotter::RunULAnalysis(AnalyzerParameter param){
 
   
 
-
   std::vector<Lepton *> leps_veto  = MakeLeptonPointerVector(MuonCollV,ElectronCollV);
   std::vector<Tau>        TauColl        = SelectTaus   (leps_veto,param.Tau_Veto_ID,20., 2.3);
 
@@ -195,8 +198,24 @@ void HNL_SignalRegion_Plotter::RunULAnalysis(AnalyzerParameter param){
   std::vector<Jet>    AK4_JetAllColl              = GetHNLJets("NoCut_Eta3",param);
   std::vector<Jet>    AK4_JetCollLoose            = GetHNLJets("Loose",     param);
   std::vector<Jet>    AK4_BJetColl                = GetHNLJets("BJet", param);
- 
-  //Particle METv = GetvMET("PuppiT1xyULCorr",param);
+
+  if(HasFlag("TestAK8")){
+    vector<TString> AK8Tag = {"Loose","HNL","HNL_NoMass","HNL_PN","HNL_PN_NoMass","EXO17028"};
+    for (auto akg_tag : AK8Tag){
+      std::vector<FatJet> ak8_jetcoll         = GetHNLAK8Jets(akg_tag,param);
+      for(const auto& ijet : ak8_jetcoll)            FillHist( "AK8_Plots_"+akg_tag+"/AK8J_Eta",     ijet.Eta()       , weight, 100, -5., 5.   , "AK8 Jet #eta");
+      double weight_jets=weight;
+      EvalJetWeight(AK4_JetColl,AK4_VBF_JetColl, AK8_JetColl, weight_jets, param);
+      for(const auto& ijet : ak8_jetcoll)            FillHist( "AK8_Plots_"+akg_tag+"/AK8J_Eta_weighted",     ijet.Eta()       , weight_jets, 100, -5., 5.   , "AK8 Jet #eta");
+      for(const auto& ijet : ak8_jetcoll)            FillHist(  "AK8_Plots_"+akg_tag+"/AK8J_SDMass",      ijet.SDMass()    , weight_jets, 100, 0., 500.  , "Mass_{softdrop} GeV");
+      for(const auto& ijet : ak8_jetcoll)    {
+	if(ijet.SDMass()    < 40) FillHist( "AK8_Plots_"+akg_tag+"/AK8J_SB1_Eta_weighted",     ijet.Eta()       , weight_jets, 100, -5., 5.   , "AK8 Jet #eta");
+	if(ijet.SDMass()    > 130) FillHist( "AK8_Plots_"+akg_tag+"/AK8J_SB2_Eta_weighted",     ijet.Eta()       , weight_jets, 100, -5., 5.   , "AK8 Jet #eta");
+      }
+    }
+  }
+  
+
   Particle METv = GetvMET("PuppiT1xyULCorr", param, AK4_VBF_JetColl, AK8_JetColl, MuonCollT, ElectronCollT); // returns MET with systematic correction; run this after all object selection done; NOTE that VBF jet is used here
   
   EvalJetWeight(AK4_JetColl,AK4_VBF_JetColl, AK8_JetColl, weight, param);

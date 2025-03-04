@@ -846,13 +846,25 @@ std::vector<Photon> AnalyzerCore::GetAllPhotons(){
 
 std::vector<Jet> AnalyzerCore::GetAllJets(bool applySmear){
 
+  if(HasFlag("DEBUG")) cout << "GetAllJets " << " step : " << jet_pt->size() <<  endl;
+
   std::vector<Jet> out;
   for(unsigned int i=0; i<jet_pt->size(); i++){
     Jet jet;
-    jet.SetPtEtaPhiM(jet_pt->at(i), jet_eta->at(i), jet_phi->at(i), jet_m->at(i));
+    if(HasFlag("DEBUG")) cout << "GetAllJets " << i <<  " step 0" << endl;
 
+    if(HasFlag("DEBUG")){
+      cout << jet_pt->size() << endl;
+      cout << jet_eta->size() << endl;
+      cout << jet_phi->size() << endl; 
+      cout << jet_m->size() << endl;
+    }
+    jet.SetPtEtaPhiM(jet_pt->at(i), jet_eta->at(i), jet_phi->at(i), jet_m->at(i));
     jet.SetPxUnSmeared(jet.Px());
     jet.SetPyUnSmeared(jet.Py());
+
+    if(HasFlag("DEBUG")) cout << "GetAllJets " << i <<  " step 1" << endl;
+
 
     jet.SetJEC(jet_JECL1FastJet->at(i), jet_JECFull->at(i));
     //jet.SetNTracks(jet_vtxNtracks->at(i));
@@ -872,6 +884,8 @@ std::vector<Jet> AnalyzerCore::GetAllJets(bool applySmear){
     jet.SetCJetNNCorrection(jet_cJetNN_corr->at(i),jet_cJetNN_res->at(i));
     jet.SetCharge(jet_charge->at(i));
 
+    if(HasFlag("DEBUG")) cout << "GetAllJets " << i <<  " step 2" << endl;
+
     jet.SetArea(jet_area->at(i));
     std::vector<double> tvs = {
       jet_DeepCSV->at(i),
@@ -882,12 +896,18 @@ std::vector<Jet> AnalyzerCore::GetAllJets(bool applySmear){
       jet_DeepJet_CvsB->at(i),
     };
     jet.SetTaggerResults(tvs);
+
+    if(HasFlag("DEBUG")) cout << "GetAllJets " << i <<  " step 3" << endl;
+
     jet.SetEnergyFractions(jet_chargedHadronEnergyFraction->at(i), jet_neutralHadronEnergyFraction->at(i), jet_neutralEmEnergyFraction->at(i), jet_chargedEmEnergyFraction->at(i), jet_muonEnergyFraction->at(i));
+
+    if(HasFlag("DEBUG")) cout << "GetAllJets " << i <<  " step 4" << endl;
     jet.SetMultiplicities(jet_chargedMultiplicity->at(i), jet_neutralMultiplicity->at(i));
     jet.SetPileupJetId(jet_PileupJetId->at(i));
     jet.SetTightJetID(jet_tightJetID->at(i));
     jet.SetTightLepVetoJetID(jet_tightLepVetoJetID->at(i));
     
+    if(HasFlag("DEBUG")) cout << "GetAllJets " << i <<  " step 5" << endl;
     out.push_back(jet);
   }
 
@@ -1164,9 +1184,14 @@ void AnalyzerCore::beginEvent(){
 
     }
   }
+  if(HasFlag("DEBUG")) cout << "GetAllJets " << endl;
   All_Jets      = GetAllJets();
   All_FatJets   = GetAllFatJets();
+  if(HasFlag("DEBUG")) cout << "GetAllMuons " <<endl;
+
   All_Muons     = GetAllMuons();
+  if(HasFlag("DEBUG")) cout << "GetAllElectrons " <<endl;
+
   All_Electrons = GetAllElectrons();
   _Event = GetEvent();
   
@@ -1186,48 +1211,6 @@ void AnalyzerCore::initializeAnalyzerTools(){
     vector<Jet> jets_AbsoluteStatUp = ScaleJetsIndividualSource(jets, 1, "AbsoluteStat");                                                                                                                                                                                     
   */
 
-
-}
-
-
-double AnalyzerCore::GetKFactor(){
-
-  if(IsDATA) return 1.;
-
-  double weight = 1.;
-
-  if(MCSample.Contains("WZTo3LNu_powheg") or MCSample.Contains("WZTo3LNu_mllmin4p0_powheg") or MCSample.Contains("WZTo2L2Q")){
-    //Physics Letters B 761 (2016) 197 
-    //http://dx.doi.org/10.1016/j.physletb.2016.08.017 
-    weight = 1.109;
-  }
-  else if(MCSample.Contains("ZZTo4L_powheg") or MCSample.Contains("ZZTo2L2Nu") or MCSample.Contains("ZZTo2L2Q")){
-    // Physics Letters B 735 (2014) 311-313
-    // https://doi.org/10.1016/j.physletb.2014.06.056
-    weight = 1.16; 
-  }
-  else if(MCSample.Contains("GluGluToZZto")){
-    //  1.67 brings gg->ZZ from LO to NLO (http://arxiv.org/abs/1509.06734)
-    return 1.67;
-  }
-  else if(MCSample.Contains("GluGluHToZZ")){
-    return 1.67;
-    //AN2016_359
-  }
-  else if(MCSample.Contains("ttZ") && !MCSample.Contains("To")){
-    weight = 839.3/780.;
-  }
-  else if(MCSample.Contains("ttW") && !MCSample.Contains("To")){
-    weight = 600.8/610.;
-  }
-  else if(MCSample.Contains("WJet") && MCSample.Contains("HT")){
-    return 1.21;
-  }
-
-  if(MCSample.Contains("WZTo3LNu_mllmin0p1_powheg"))     weight = 0.632; //// This is done from WZ CR Norm 
-  
-  
-  return weight;
 
 }
 

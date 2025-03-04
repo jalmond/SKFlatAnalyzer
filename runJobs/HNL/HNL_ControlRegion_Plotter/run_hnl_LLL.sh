@@ -13,7 +13,7 @@ skim=' '
 
 if [[ $1 == "Failed" ]]; then
     
-    #SKFlat.py -a $analyzer  -i ZZTo4L_powheg -n 100 --nmax 600 -e 2016postVFP --skim SkimTree_HNMultiLepBDT --userflags  SSMultiLep,RunPrompt &
+-    #SKFlat.py -a $analyzer  -i ZZTo4L_powheg -n 100 --nmax 600 -e 2016postVFP --skim SkimTree_HNMultiLepBDT --userflags  SSMultiLep,RunPrompt &
     #SKFlat.py -a $analyzer  -i ZZTo4L_powheg -n 100 --nmax 600 -e 2016postVFP --skim SkimTree_HNMultiLepBDT --userflags  LLL,RunPrompt &
 
     #SKFlat.py -a $analyzer  -i ttZToLLNuNu -n 100 --nmax 600 -e 2018 --skim SkimTree_HNMultiLepBDT --userflags  LLL,RunPrompt &

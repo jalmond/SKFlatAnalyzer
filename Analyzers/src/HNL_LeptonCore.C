@@ -182,7 +182,45 @@ void HNL_LeptonCore::initializeAnalyzer(bool READBKGHISTS, bool SETUPIDBDT){
   }
   if(SETUPIDBDT) SetupIDMVAReaderDefault(false,false);
 
+ 
+  ///// Setup Theory files
   TheoryDir = TDirectoryHelper::GetTempDirectory("Theory");
+
+  ///// Setup K factor code
+  const char* skflat_wd = getenv("SKFlat_WD");
+  if (!skflat_wd) {
+    std::cerr << "Error: SKFlat_WD environment variable not set!" << std::endl;
+    return;
+  }
+
+  TString VV_EWK_Path = TString(skflat_wd) + "/data/Run2UltraLegacy_v3/Run2/Sample/VV_NLO_LO_CMS_mjj.root";
+
+  h_VV_KF_CMS=nullptr;
+  //  h_WW_KF_CMS=nullptr;
+  
+  vector<TString> EWK_Corr_VV_Samples = {"WZ_EWK","WpWp_EWK"};
+  if (std::find(EWK_Corr_VV_Samples.begin(), EWK_Corr_VV_Samples.end(), MCSample) != EWK_Corr_VV_Samples.end()) {
+
+    TDirectory* origDir = gDirectory;
+
+    TFile* VVKFactorFile= new TFile(VV_EWK_Path);
+
+    TheoryDir->cd();
+    if(MCSample=="WZ_EWK") h_VV_KF_CMS = ((TH1D*) VVKFactorFile->Get("hWZ_KF_CMS")->Clone());
+    if(MCSample=="WpWp_EWK") h_VV_KF_CMS = ((TH1D*) VVKFactorFile->Get("hWW_KF_CMS")->Clone());
+    
+    origDir->cd();
+
+    if(h_VV_KF_CMS == nullptr){
+      std::cerr << "Error: h_VV_KF_CMS  not set!" << std::endl;
+      exit(EXIT_FAILURE);
+    }
+
+    VVKFactorFile->Close();
+    cout << "Close " << VV_EWK_Path <<  " file" << endl;
+    delete VVKFactorFile;
+
+  }
 
   TString TheoryPath = "/data9/Users/jalmond_public/PDFSyst/"+GetEra()+"/Theory/GetEffLumi_SkimTree_HNMultiLepBDT_"+MCSample+".root";
   std::ifstream infile(TheoryPath);
@@ -451,6 +489,10 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
     SystList.push_back(AnalyzerParameter::JetEnDown);
     return SystList;
   }
+  if(SystType == "MET"){
+    SystList = {AnalyzerParameter::METUnclUp,AnalyzerParameter::METUnclDown};
+    return SystList;
+  }
 
   if(!HasFlag("RunSyst")) return SystList;
   
@@ -477,9 +519,13 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
     }
   }
   else {
-  
+    
     if(IsData) return {};
     
+    if(HasFlag("ScanSystematicMET")) {
+      SystList = {AnalyzerParameter::METUnclUp,AnalyzerParameter::METUnclDown};
+      return SystList;
+    }
     if(HasFlag("RunSyst")){
       
       SystList = {AnalyzerParameter::JetResUp,AnalyzerParameter::JetResDown,
@@ -497,24 +543,24 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
 	SystList.push_back(AnalyzerParameter::MuonRecoSFDown);
 	SystList.push_back(AnalyzerParameter::MuonEnUp);
 	SystList.push_back(AnalyzerParameter::MuonEnDown);
-	//SystList.push_back(AnalyzerParameter::MuonIDSFUp);
-	//SystList.push_back(AnalyzerParameter::MuonIDSFDown);
+	SystList.push_back(AnalyzerParameter::MuonIDSFUp);
+	SystList.push_back(AnalyzerParameter::MuonIDSFDown);
 	SystList.push_back(AnalyzerParameter::MuonResUp);
         SystList.push_back(AnalyzerParameter::MuonResDown);
-	//SystList.push_back(AnalyzerParameter::MuonTriggerSFUp);
-	//SystList.push_back(AnalyzerParameter::MuonTriggerSFDown);
+	SystList.push_back(AnalyzerParameter::MuonTriggerSFUp);
+	SystList.push_back(AnalyzerParameter::MuonTriggerSFDown);
       }
       if(SystType=="EE" || SystType=="EMu"){
-	//SystList.push_back(AnalyzerParameter::ElectronRecoSFUp);
-	//SystList.push_back(AnalyzerParameter::ElectronRecoSFDown);
+	SystList.push_back(AnalyzerParameter::ElectronRecoSFUp);
+	SystList.push_back(AnalyzerParameter::ElectronRecoSFDown);
 	SystList.push_back(AnalyzerParameter::ElectronResUp);
 	SystList.push_back(AnalyzerParameter::ElectronResDown);
 	SystList.push_back(AnalyzerParameter::ElectronEnUp);
 	SystList.push_back(AnalyzerParameter::ElectronEnDown);
-	//SystList.push_back(AnalyzerParameter::ElectronIDSFUp);
-	//SystList.push_back(AnalyzerParameter::ElectronIDSFDown);
-	//SystList.push_back(AnalyzerParameter::ElectronTriggerSFUp);
-	//SystList.push_back(AnalyzerParameter::ElectronTriggerSFDown);
+	SystList.push_back(AnalyzerParameter::ElectronIDSFUp);
+	SystList.push_back(AnalyzerParameter::ElectronIDSFDown);
+	SystList.push_back(AnalyzerParameter::ElectronTriggerSFUp);
+	SystList.push_back(AnalyzerParameter::ElectronTriggerSFDown);
       }
     }
   }
@@ -691,15 +737,15 @@ bool  HNL_LeptonCore::UpdateParamBySyst(TString JobID, AnalyzerParameter& paramE
   //// Setup FR ID
   if(paramEv.syst_ == AnalyzerParameter::FRLooseIDDJUp){
     paramEv.Muon_FR_ID        = "HNL_ULID_FO_Up";
-    paramEv.Electron_FR_ID    = "HNL_ULID_FO_Up";
+    paramEv.Electron_FR_ID    = "HNL_HighPt_ULID_FO_Up";
   }
   else if(paramEv.syst_ == AnalyzerParameter::FRLooseIDDJDown){
     paramEv.Muon_FR_ID        = "HNL_ULID_FO_Down";
-    paramEv.Electron_FR_ID    = "HNL_ULID_FO_Down";
+    paramEv.Electron_FR_ID    = "HNL_HighPt_ULID_FO_Down";
   }
   else{
     paramEv.Muon_FR_ID        = "HNL_ULID_FO";
-    paramEv.Electron_FR_ID    = "HNL_ULID_FO";
+    paramEv.Electron_FR_ID    = "HNL_HighPt_ULID_FO";
   }
 
   TString MuFRBin = (paramEv.syst_ ==AnalyzerParameter::FRAltBinning) ? "_Binv2" : "";
@@ -713,59 +759,59 @@ bool  HNL_LeptonCore::UpdateParamBySyst(TString JobID, AnalyzerParameter& paramE
 
     if(paramEv.syst_ == AnalyzerParameter::FRLooseIDDJUp){
       paramEv.k.Muon_FR            = "HNL_ULID_FO_v1_a"+JFRJetPt+MuFRBin;
-      paramEv.k.Electron_FR        = "HNL_ULID_FO_v8_a"+JFRJetPt+ElFRBin;
+      paramEv.k.Electron_FR        = "HNL_HighPt_ULID_FO_v8_a"+JFRJetPt+ElFRBin;
     }
     else  if(paramEv.syst_ == AnalyzerParameter::FRLooseIDDJDown){
       paramEv.k.Muon_FR            = "HNL_ULID_FO_v2_a"+JFRJetPt+MuFRBin;
-      paramEv.k.Electron_FR        = "HNL_ULID_FO_v0"+JFRJetPt+ElFRBin;
+      paramEv.k.Electron_FR        = "HNL_HighPt_ULID_FO_v0"+JFRJetPt+ElFRBin;
     }
     else{
       paramEv.k.Muon_FR            = "HNL_ULID_FO_v1_a"+JFRJetPt+MuFRBin;
-      paramEv.k.Electron_FR        = "HNL_ULID_FO_v9_a"+JFRJetPt+ElFRBin;
+      paramEv.k.Electron_FR        = "HNL_HighPt_ULID_FO_v9_a"+JFRJetPt+ElFRBin;
     }
   }
   if(GetEra() == "2016postVFP"){
 
     if(paramEv.syst_ == AnalyzerParameter::FRLooseIDDJUp){
       paramEv.k.Muon_FR            = "HNL_ULID_FO_v1_a"+JFRJetPt+MuFRBin;
-      paramEv.k.Electron_FR        = "HNL_ULID_FO_v8_a"+JFRJetPt+ElFRBin;
+      paramEv.k.Electron_FR        = "HNL_HighPt_ULID_FO_v8_a"+JFRJetPt+ElFRBin;
     }
     else  if(paramEv.syst_ == AnalyzerParameter::FRLooseIDDJDown){
       paramEv.k.Muon_FR            = "HNL_ULID_FO_v3_a"+JFRJetPt+MuFRBin;
-      paramEv.k.Electron_FR        = "HNL_ULID_FO_v0"+JFRJetPt+ElFRBin;
+      paramEv.k.Electron_FR        = "HNL_HighPt_ULID_FO_v0"+JFRJetPt+ElFRBin;
     }
     else {
       paramEv.k.Muon_FR            = "HNL_ULID_FO_v2_a"+JFRJetPt+MuFRBin;
-      paramEv.k.Electron_FR        = "HNL_ULID_FO_v9_a"+JFRJetPt+ElFRBin;
+      paramEv.k.Electron_FR        = "HNL_HighPt_ULID_FO_v9_a"+JFRJetPt+ElFRBin;
     }
   }
   if(GetYearString() == "2017"){
     if(paramEv.syst_ == AnalyzerParameter::FRLooseIDDJUp){
       paramEv.k.Muon_FR            = "HNL_ULID_FO_v1_a"+JFRJetPt+MuFRBin;
-      paramEv.k.Electron_FR        = "HNL_ULID_FO_v8_a"+JFRJetPt+ElFRBin;
+      paramEv.k.Electron_FR        = "HNL_HighPt_ULID_FO_v8_a"+JFRJetPt+ElFRBin;
 
     }
     else  if(paramEv.syst_ == AnalyzerParameter::FRLooseIDDJDown){
       paramEv.k.Muon_FR            = "HNL_ULID_FO_v3_a"+JFRJetPt+MuFRBin;;
-      paramEv.k.Electron_FR        = "HNL_ULID_FO_v0"+JFRJetPt+ElFRBin;
+      paramEv.k.Electron_FR        = "HNL_HighPt_ULID_FO_v0"+JFRJetPt+ElFRBin;
     }
     else {
       paramEv.k.Muon_FR            = "HNL_ULID_FO_v2_a"+JFRJetPt+MuFRBin;;
-      paramEv.k.Electron_FR        = "HNL_ULID_FO_v9_a"+JFRJetPt+ElFRBin;
+      paramEv.k.Electron_FR        = "HNL_HighPt_ULID_FO_v9_a"+JFRJetPt+ElFRBin;
     }
   }
   if(GetYearString() == "2018"){
     if(paramEv.syst_ == AnalyzerParameter::FRLooseIDDJUp){
       paramEv.k.Muon_FR            = "HNL_ULID_FO_v1_a"+JFRJetPt+MuFRBin;
-      paramEv.k.Electron_FR        = "HNL_ULID_FO_v8_a"+JFRJetPt+ElFRBin;
+      paramEv.k.Electron_FR        = "HNL_HighPt_ULID_FO_v8_a"+JFRJetPt+ElFRBin;
     }
     else  if(paramEv.syst_ == AnalyzerParameter::FRLooseIDDJDown){
       paramEv.k.Muon_FR            = "HNL_ULID_FO_v4_a"+JFRJetPt+MuFRBin;
-      paramEv.k.Electron_FR        = "HNL_ULID_FO_v0"+JFRJetPt+ElFRBin;
+      paramEv.k.Electron_FR        = "HNL_HighPt_ULID_FO_v0"+JFRJetPt+ElFRBin;
     }
     else {
       paramEv.k.Muon_FR         = "HNL_ULID_FO_v3_a"+JFRJetPt+MuFRBin;;
-      paramEv.k.Electron_FR     = "HNL_ULID_FO_v9_a"+JFRJetPt+ElFRBin;
+      paramEv.k.Electron_FR     = "HNL_HighPt_ULID_FO_v9_a"+JFRJetPt+ElFRBin;
     }
   }
 
@@ -825,6 +871,59 @@ AnalyzerParameter HNL_LeptonCore::SetupHNLParameter(const TString& s_setup_versi
 }
 
   
+
+double HNL_LeptonCore::GetKFactor(){
+
+  if(IsDATA) return 1.;
+
+  double weight = 1.;
+
+  if(MCSample.Contains("WZTo3LNu_powheg") or MCSample.Contains("WZTo3LNu_mllmin4p0_powheg") or MCSample.Contains("WZTo2L2Q")){
+    //Physics Letters B 761 (2016) 197                                                                                                                                                                                                                                          
+    //http://dx.doi.org/10.1016/j.physletb.2016.08.017                                                                                                                                                                                                                          
+    weight = 1.109;
+  }
+  else if(MCSample.Contains("ZZTo4L_powheg") or MCSample.Contains("ZZTo2L2Nu") or MCSample.Contains("ZZTo2L2Q")){
+    // Physics Letters B 735 (2014) 311-313                                                                                                                                                                                                                                     
+    // https://doi.org/10.1016/j.physletb.2014.06.056                                                                                                                                                                                                                           
+    weight = 1.16;
+  }
+  else if(MCSample.Contains("GluGluToZZto")){
+    //  2.3 brings gg->ZZ from LO to NNLO (https://www.arxiv.org/pdf/1504.02388)
+    return 2.3; /// Need to update
+  }
+  else if(MCSample.Contains("GluGluHToZZ")){
+    return 1.67;
+    //AN2016_359                                                                                                                                                                                                                                                                
+  }
+  else if(MCSample.Contains("ttZ") && !MCSample.Contains("To")){
+    weight = 839.3/780.;
+  }
+  else if(MCSample.Contains("ttW") && !MCSample.Contains("To")){
+    weight = 600.8/610.;
+  }
+  else if(MCSample.Contains("WJet") && MCSample.Contains("HT")){
+    return 1.21;
+  }
+
+  if(MCSample.Contains("WZTo3LNu_mllmin0p1_powheg"))     weight = 0.632; //// This is done from WZ CR Norm                                                                                                                                                                      
+  vector<TString> EWK_Corr_VV_Samples = {"WZ_EWK","WpWp_EWK"};
+  if (std::find(EWK_Corr_VV_Samples.begin(), EWK_Corr_VV_Samples.end(), MCSample) != EWK_Corr_VV_Samples.end()) {
+
+    double  mymjj_EW = GetGenLevelJJMass();
+    if(mymjj_EW < 525) mymjj_EW=525;
+    if(mymjj_EW > 1975) mymjj_EW=1900;
+
+    float nominal_EW_correction = h_VV_KF_CMS->GetBinContent(h_VV_KF_CMS->GetXaxis()->FindFixBin(mymjj_EW));                                                            
+    return nominal_EW_correction;
+  }
+
+
+  return weight;
+
+}
+
+
 
 double HNL_LeptonCore::SetupWeight(Event ev, AnalyzerParameter& param){
 
@@ -1038,6 +1137,12 @@ HNL_LeptonCore::~HNL_LeptonCore(){
       //}
     }
   }
+
+  if (h_VV_KF_CMS != nullptr){
+    delete h_VV_KF_CMS;
+    h_VV_KF_CMS = nullptr;
+  }
+
   DeleteZptWeight();
 
 }

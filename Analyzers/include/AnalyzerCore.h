@@ -274,6 +274,8 @@ public:
   bool IsCF(Muon mu, std::vector<Gen> gens);
   bool HasPromptConv(Electron el);
 
+  double GetGenLevelJJMass();
+
   bool HasMEPhoton(Lepton lep);
   bool GenIsPrompt(Gen gen);
   Gen GenGetMother(Gen gen);
@@ -505,9 +507,6 @@ public:
 
   //==== MCweight
   double MCweight(bool usesign=true, bool norm_1invpb=true) const;
-
-  //==== Kfactors
-  double GetKFactor();
 
   //==== Muon GeneralizedEngpoint momentum scaling
   GeneralizedEndpoint *muonGE=NULL;

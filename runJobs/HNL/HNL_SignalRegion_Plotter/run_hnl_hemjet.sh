@@ -15,20 +15,20 @@ declare  -a era_list=("2018")
 
 
 
+
 if [[ $1 == "" ]]; then
 
-    declare  -a flag_list=("ScaleHEMJet" "RemoveHEMJet")
+    declare  -a flag_list=()
 
     for i in "${flag_list[@]}"
     do
 	
-	SKFlat.py -a $analyzer  -l $sigpath/Private/SSWW.txt  -n $njobs_sig  --nmax ${nmax}  -e 2018  --skim SkimTree_HNMultiLepBDT --userflags ${i} &
-        SKFlat.py -a $analyzer  -l $sigpath/Private/DY.txt    -n $njobs_sig  --nmax ${nmax}   -e 2018 --skim SkimTree_HNMultiLepBDT --userflags ${i}&
-        SKFlat.py -a $analyzer  -l $sigpath/Private/VBF.txt   -n $njobs_sig  --nmax ${nmax}   -e 2018 --skim SkimTree_HNMultiLepBDT --userflags ${i} &
+	#SKFlat.py -a $analyzer  -l $sigpath/Private/SSWW.txt  -n $njobs_sig  --nmax ${nmax}  -e 2018  --skim SkimTree_HNMultiLepBDT --userflags ${i} &
+        #SKFlat.py -a $analyzer  -l $sigpath/Private/DY.txt    -n $njobs_sig  --nmax ${nmax}   -e 2018 --skim SkimTree_HNMultiLepBDT --userflags ${i}&
+        #SKFlat.py -a $analyzer  -l $sigpath/Private/VBF.txt   -n $njobs_sig  --nmax ${nmax}   -e 2018 --skim SkimTree_HNMultiLepBDT --userflags ${i} &
 	
-	#SKFlat.py -a $analyzer  -l $datapath/DL/2018_DiLepton_MuMu.txt      -n 100  --nmax ${nmax}   -e 2018  --skim SkimTree_HNMultiLepBDT  --userflags ${i},RunFake   &
-        #SKFlat.py -a $analyzer  -l $datapath/DL/2018_DiLepton_EE.txt      -n 100    --nmax ${nmax}   -e 2018  --skim SkimTree_HNMultiLepBDT  --userflags ${i},RunFake   &
-        #SKFlat.py -a $analyzer  -l $datapath/DL/2018_DiLepton_EMu.txt      -n 100    --nmax ${nmax}   -e 2018  --skim SkimTree_HNMultiLepBDT  --userflags ${i},RunFake   &
+	SKFlat.py -a $analyzer  -l $datapath/DL/2018_DiLepton_MuMu.txt      -n 100  --nmax ${nmax}   -e 2018  --skim SkimTree_HNMultiLepBDT  --userflags ${i},RunFake   &
+        SKFlat.py -a $analyzer  -l $datapath/DL/2018_DiLepton_EMu.txt      -n 100    --nmax ${nmax}   -e 2018  --skim SkimTree_HNMultiLepBDT  --userflags ${i},RunFake   &
 
 	#SKFlat.py -a $analyzer  -l $mcpath/Prompt/PromptSS.txt             -n 50        --nmax ${nmax}   -e 2018  --skim SkimTree_HNMultiLepBDT --userflags ${i},RunPrompt &
         #SKFlat.py -a $analyzer  -l $mcpath/Prompt/PromptSS2.txt            -n 200       --nmax ${nmax}   -e 2018  --skim SkimTree_HNMultiLepBDT --userflags ${i},RunPrompt &

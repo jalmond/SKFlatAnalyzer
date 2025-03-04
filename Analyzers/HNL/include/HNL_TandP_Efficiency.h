@@ -18,6 +18,8 @@ class HNL_TandP_Efficiency : public HNL_RegionDefinitions {
   void RunTaPMuon(TString ID,AnalyzerParameter param, double weight);
   void RunPeking(AnalyzerParameter param, double weight);
 
+  bool IsTag(Electron el_tag);
+  bool IsGoodTagProbe(Electron el_tag, Electron el_probe);
 
 };
 
