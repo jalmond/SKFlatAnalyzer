@@ -32,15 +32,8 @@ if [[ $1 == "PDF" ]]; then
 
     for i in "${era_list[@]}"
     do
-	#SKFlat.py -a $analyzer  -i SSWWTypeI_SF_M25000_private  -n ${njobs} --nmax ${nmax}   -e ${i}  &
-	#SKFlat.py -a $analyzer  -i SSWWTypeI_SF_M30000_private  -n ${njobs} --nmax ${nmax}   -e ${i}  
-	#SKFlat.py -a $analyzer  -i SSWWTypeI_DF_M25000_private -n ${njobs}  --nmax ${nmax}   -e ${i}  &
-	#SKFlat.py -a $analyzer  -i SSWWTypeI_DF_M30000_private -n ${njobs}  --nmax ${nmax}   -e ${i}  
-	#SKFlat.py -a $analyzer  -i SSWWTypeI_DF_M40000_private -n ${njobs}  --nmax ${nmax}   -e ${i}  &
-	#SKFlat.py -a $analyzer  -i SSWWTypeI_DF_M50000_private -n ${njobs}  --nmax ${nmax}   -e ${i}  
-	SKFlat.py -a $analyzer  -i SSWWTypeI_DF_M60000_private -n ${njobs}  --nmax ${nmax}   -e ${i}  &
-	#SKFlat.py -a $analyzer  -i WZ_EWK  -n ${njobs}  --nmax ${nmax}   -e ${i} --skim  SkimTree_HNMultiLep &
-	#SKFlat.py -a $analyzer  -i WpWp_EWK  -n ${njobs}  --nmax ${nmax} -e ${i} --skim  SkimTree_HNMultiLep &
+	SKFlat.py -a $analyzer  -i WZ_EWK  -n ${njobs}  --nmax ${nmax}   -e ${i} --skim  SkimTree_HNMultiLep &
+	SKFlat.py -a $analyzer  -i WpWp_EWK  -n ${njobs}  --nmax ${nmax} -e ${i} --skim  SkimTree_HNMultiLep &
 
     done
 fi
