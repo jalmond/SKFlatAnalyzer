@@ -614,10 +614,18 @@ TString AnalyzerParameter::GetSystType(){
   else if(syst_==Syst::ElectronIDSFDown)  return "ElectronIDSFDown";
   else if(syst_==Syst::ElectronTriggerSFUp)  return "ElectronTriggerSFUp";
   else if(syst_==Syst::ElectronTriggerSFDown)  return "ElectronTriggerSFDown";
-  else if(syst_==Syst::BTagSFHTagUp)   return "BTagSFHTagUp";
-  else if(syst_==Syst::BTagSFHTagDown)   return "BTagSFHTagDown";
-  else if(syst_==Syst::BTagSFLTagUp)   return "BTagSFLTagUp";
-  else if(syst_==Syst::BTagSFLTagDown)   return "BTagSFLTagDown";
+
+  else if(syst_==Syst::BTagSFHTagCorrUp)   return "BTagSFHTagCorrUp";
+  else if(syst_==Syst::BTagSFHTagCorrDown)   return "BTagSFHTagCorrDown";
+  else if(syst_==Syst::BTagSFLTagCorrUp)   return "BTagSFLTagCorrUp";
+  else if(syst_==Syst::BTagSFLTagCorrDown)   return "BTagSFLTagCorrDown";
+
+  else if(syst_==Syst::BTagSFHTagUnCorrUp)   return "BTagSFHTagUnCorrUp";
+  else if(syst_==Syst::BTagSFHTagUnCorrDown)   return "BTagSFHTagUnCorrDown";
+  else if(syst_==Syst::BTagSFLTagUnCorrUp)   return "BTagSFLTagUnCorrUp";
+  else if(syst_==Syst::BTagSFLTagUnCorrDown)   return "BTagSFLTagUnCorrDown";
+
+
   else if(syst_==Syst::METUnclUp)   return "METUnclUp";
   else if(syst_==Syst::METUnclDown)  return "METUnclDown";
   else if(syst_==Syst::CFRateUp)    return "CFRateUp";

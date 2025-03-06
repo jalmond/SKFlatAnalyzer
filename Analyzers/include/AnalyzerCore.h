@@ -274,7 +274,8 @@ public:
   bool IsCF(Muon mu, std::vector<Gen> gens);
   bool HasPromptConv(Electron el);
 
-  double GetGenLevelJJMass();
+  double GetGenJJMass();
+  double GetGenZZMass();
 
   bool HasMEPhoton(Lepton lep);
   bool GenIsPrompt(Gen gen);

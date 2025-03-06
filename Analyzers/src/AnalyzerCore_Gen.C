@@ -1,7 +1,25 @@
 #include "AnalyzerCore.h"
 
 
-double AnalyzerCore::GetGenLevelJJMass(){
+double AnalyzerCore::GetGenZZMass(){
+  
+  Particle ZZ;
+    
+  int nmatched=0;
+  for(int i=2; i<int(All_Gens.size()); i++){
+    Gen gen = All_Gens.at(i);
+    if(gen.Status()==1){
+      if(abs(gen.PID() ) ==11) ZZ=ZZ+gen;
+      if(abs(gen.PID() ) ==13) ZZ=ZZ+gen;
+      if(abs(gen.PID() ) ==11)         nmatched++;
+      if(abs(gen.PID() ) ==13)         nmatched++;      
+    }
+  }
+  if(nmatched != 4) PrintGen(All_Gens);
+  return ZZ.M();
+}
+
+double AnalyzerCore::GetGenJJMass(){
   
   double mjj=0.0;
   int nmatched=0;
@@ -17,6 +35,58 @@ double AnalyzerCore::GetGenLevelJJMass(){
   }
   
   if(nmatched < 2) PrintGen(All_Gens);
+
+  if(fChain->GetBranch("genjet_pt")){
+    
+    //// MJJ dependant 
+    int ngoodjet=0;
+    bool goodjet;
+    float mjj=-999;
+    vector<Particle> parts;
+
+    // select good leptons
+    vector<int> goodleptons;
+    for(int i=2; i<int(All_Gens.size()); i++){
+      Gen gen = All_Gens.at(i);
+      if ((abs(gen.PID())==13 || abs(gen.PID())==11) && gen.Pt() > 10){ // is lepton, and pt > 10
+	if (gen.isPrompt()){ // is prompt flag
+	  goodleptons.push_back(i);
+	}
+      }
+    }
+    
+    for (std::vector<float>::size_type i = 0; i < genjet_pt->size(); ++i) {
+      goodjet=true;
+      // check if this jet is cleaned
+
+      for (std::vector<float>::size_type j=0; j<goodleptons.size();j++){
+	// conesize 0.4
+	if(sqrt(pow(genjet_eta->at(i)-All_Gens[goodleptons[j]].Eta(),2)+pow(genjet_phi->at(i) - All_Gens[goodleptons[j]].Phi(),2))<0.4){ // not cleaned
+	  goodjet=false;
+	  break;
+	}
+      }
+      // save this jet if goodjet
+      if (goodjet){
+	Particle p;
+	p.SetPtEtaPhiM(genjet_pt->at(i), genjet_eta->at(i), genjet_phi->at(i), genjet_mass->at(i));
+	parts.push_back(p);
+	ngoodjet++;
+      }
+      // break if get 2 goodjets
+      if (ngoodjet>1) break;
+    }
+    
+    if (ngoodjet>1){
+      mjj=(parts[0]+parts[1]).M();
+
+      cout << "Method 1 = " << JJ.M() << " method 2 = " << mjj << endl;
+      return mjj;
+    }else{
+      // no genmjj, return 1.
+      return 1.;
+    }
+  }
 
   return JJ.M();
 }

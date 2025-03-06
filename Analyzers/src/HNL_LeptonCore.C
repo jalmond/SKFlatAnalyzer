@@ -532,8 +532,13 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
 		  AnalyzerParameter::JetEnUp, AnalyzerParameter::JetEnDown,
 		  AnalyzerParameter::JetPUIDUp,AnalyzerParameter::JetPUIDDown,
 		  AnalyzerParameter::JetPNETUp,AnalyzerParameter::JetPNETDown,
-		  AnalyzerParameter::BTagSFHTagUp,AnalyzerParameter::BTagSFHTagDown,
-                  AnalyzerParameter::BTagSFLTagUp,AnalyzerParameter::BTagSFLTagDown,
+		  AnalyzerParameter::BTagSFHTagCorrUp,AnalyzerParameter::BTagSFHTagCorrDown,
+                  AnalyzerParameter::BTagSFLTagCorrUp,AnalyzerParameter::BTagSFLTagCorrDown,
+
+                  AnalyzerParameter::BTagSFHTagUnCorrUp,AnalyzerParameter::BTagSFHTagUnCorrDown,
+                  AnalyzerParameter::BTagSFLTagUnCorrUp,AnalyzerParameter::BTagSFLTagUnCorrDown,
+
+
                   AnalyzerParameter::METUnclUp,AnalyzerParameter::METUnclDown,
                   AnalyzerParameter::PrefireUp,AnalyzerParameter::PrefireDown,
                   AnalyzerParameter::PUUp,AnalyzerParameter::PUDown};
@@ -890,7 +895,12 @@ double HNL_LeptonCore::GetKFactor(){
   }
   else if(MCSample.Contains("GluGluToZZto")){
     //  2.3 brings gg->ZZ from LO to NNLO (https://www.arxiv.org/pdf/1504.02388)
-    return 2.3; /// Need to update
+    double ZZMass=GetGenZZMass();
+    if(ZZMass < 140)  return  1.87; 
+    if(ZZMass < 300)  return  1.87 + (2.1-1.87) * (ZZMass - 140); 
+    if(ZZMass > 500)  return 2.2;
+    else return 2.25;
+
   }
   else if(MCSample.Contains("GluGluHToZZ")){
     return 1.67;
@@ -910,7 +920,7 @@ double HNL_LeptonCore::GetKFactor(){
   vector<TString> EWK_Corr_VV_Samples = {"WZ_EWK","WpWp_EWK"};
   if (std::find(EWK_Corr_VV_Samples.begin(), EWK_Corr_VV_Samples.end(), MCSample) != EWK_Corr_VV_Samples.end()) {
 
-    double  mymjj_EW = GetGenLevelJJMass();
+    double  mymjj_EW = GetGenJJMass();
     if(mymjj_EW < 525) mymjj_EW=525;
     if(mymjj_EW > 1975) mymjj_EW=1900;
 

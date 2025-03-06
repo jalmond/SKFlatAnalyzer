@@ -568,10 +568,14 @@ double  HNL_LeptonCore::GetBJetSF(AnalyzerParameter param,vector<Jet> jets, JetT
 
   if(IsData) return 1.;
   string syst = "";
-  if(param.syst_ == AnalyzerParameter::BTagSFHTagUp)         syst="SystHTagUp";
-  else if (param.syst_ == AnalyzerParameter::BTagSFHTagDown) syst="SystHTagDown";
-  else if (param.syst_ == AnalyzerParameter::BTagSFLTagUp)   syst="SystLTagUp";
-  else if (param.syst_ == AnalyzerParameter::BTagSFLTagDown) syst="SystLTagDown";
+  if(param.syst_ == AnalyzerParameter::BTagSFHTagCorrUp)         syst="SystUpHTagCorr";
+  else if (param.syst_ == AnalyzerParameter::BTagSFHTagCorrDown) syst="SystDownHTagCorr";
+  else if (param.syst_ == AnalyzerParameter::BTagSFLTagCorrUp)   syst="SystUpLTagCorr";
+  else if (param.syst_ == AnalyzerParameter::BTagSFLTagCorrDown) syst="SystDownLTagCorr";
+  else if (param.syst_ == AnalyzerParameter::BTagSFHTagUnCorrUp)   syst="SystUpHTagUnCorr";
+  else if (param.syst_ == AnalyzerParameter::BTagSFHTagUnCorrDown) syst="SystDownHTagUnCorr";
+  else if (param.syst_ == AnalyzerParameter::BTagSFLTagUnCorrUp)   syst="SystUpLTagUnCorr";
+  else if (param.syst_ == AnalyzerParameter::BTagSFLTagUnCorrDown) syst="SystLTagUnCorr";
 
   return mcCorr->GetBTaggingReweight_1a(jets, jtp, syst);
 }

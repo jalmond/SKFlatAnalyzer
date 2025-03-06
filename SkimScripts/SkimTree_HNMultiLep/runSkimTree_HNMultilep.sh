@@ -8,6 +8,20 @@ njobs_data=100
 nmax=350
 declare  -a era_list=("2016postVFP" "2016preVFP"  "2017" "2018")
 
+
+
+if [[ $1 == "PDF" ]]; then
+
+    for i in "${era_list[@]}"
+    do
+        SKFlat.py -a $analyzer  -i WZ_EWK  -n ${njobs}  --nmax ${nmax}   -e ${i}  &
+        SKFlat.py -a $analyzer  -i WpWp_EWK  -n ${njobs}  --nmax ${nmax} -e ${i}  &
+
+    done
+fi
+
+
+
 if [[ $1 == "GT36" ]]; then
 
     declare  -a era_list=("2018")
