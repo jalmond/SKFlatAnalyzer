@@ -276,6 +276,8 @@ std::vector<Jet> HNL_LeptonCore::SelectJets(AnalyzerParameter param,TString id, 
   else if(param.syst_ == AnalyzerParameter::JetResUp)      jets    = SmearJets(jets_uncorr, +1 );
   else if(param.syst_ == AnalyzerParameter::JetResDown)    jets    = SmearJets(jets_uncorr, -1 );
   else jets =jets_uncorr;
+  //    vector<Jet> jets_AbsoluteStatUp = ScaleJetsIndividualSource(jets, 1, "AbsoluteStat"); \
+  // if(param.syst_ == AnalyzerParameter::Jet_AbsoluteStat)    jets = ScaleJetsIndividualSource(jets_uncorr, 1, "AbsoluteStat");
 
 
   std::vector<Jet> out;
@@ -291,7 +293,7 @@ std::vector<Jet> HNL_LeptonCore::SelectJets(AnalyzerParameter param,TString id, 
         }
       }
     }
-    if(HasFlag("ScaleHEMJet")){
+    if(param.syst_ == AnalyzerParameter::HEMJet || HasFlag("ScaleHEMJet")){
       Jet this_jet = jets.at(i);
 
       if((jets.at(i).Phi() < -0.87) && (jets.at(i).Phi() > -1.57)){

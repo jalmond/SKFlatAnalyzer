@@ -1,21 +1,69 @@
 #include "AnalyzerCore.h"
 
 
-double AnalyzerCore::GetGenZZMass(){
-  
-  Particle ZZ;
-    
-  int nmatched=0;
+int AnalyzerCore::GetZZFinalState(){
+
+  //https://twiki.cern.ch/twiki/bin/viewauth/CMS/HiggsZZ4l2015#gg_H_ZZ
+  // finalState=1 : 4e/4mu/4tau
+  // finalState=2 : 2e2mu/2mutau/2e2tau
+
+  int nel_gen=0; 
+  int nmu_gen=0;
+  int ntau_gen=0;
   for(int i=2; i<int(All_Gens.size()); i++){
     Gen gen = All_Gens.at(i);
     if(gen.Status()==1){
-      if(abs(gen.PID() ) ==11) ZZ=ZZ+gen;
-      if(abs(gen.PID() ) ==13) ZZ=ZZ+gen;
-      if(abs(gen.PID() ) ==11)         nmatched++;
-      if(abs(gen.PID() ) ==13)         nmatched++;      
+      if(abs(gen.PID() ) ==11 && gen.isPromptFinalState() && (abs(All_Gens.at(gen.MotherIndex()).PID()) != 13 ) ) nel_gen++;
+      if(abs(gen.PID() ) ==13 && gen.isPromptFinalState()) nmu_gen++;
+      if(abs(gen.PID() ) ==15 && gen.isPrompt() && gen.isPromptDecayed()) ntau_gen++;
     }
   }
-  if(nmatched != 4) PrintGen(All_Gens);
+  
+  if((nel_gen + nmu_gen+ntau_gen) > 4) {
+    cout << nel_gen << " "<< nmu_gen << " " << ntau_gen << endl;
+    PrintGen(All_Gens);                                                                                                                                                                                          
+  }
+  if(nel_gen ==4) return 1;
+  if(nmu_gen ==4) return 1;
+  if(ntau_gen ==4) return 1;
+  return 2;
+}
+
+Particle AnalyzerCore::GetZZ(){
+  
+  //https://twiki.cern.ch/twiki/bin/viewauth/CMS/HiggsZZ4l2015#gg_H_ZZ
+  // The NNLO/NLO QCD k-factors will be applied as a function of either dPhi(ZZ), mass(ZZ) or pt(ZZ), so all three quantities should be stored. The Z's are formed using the four final state leptons at gen level before FSR or subsequent decay if it is a tau. In case it makes a difference (e.g. for dPhi(ZZ)), for 4e,4mu, and 4tau the Z1 is the Z candidate which has mass closest to 91.1876 and the Z2 is the other combination.
+
+  Particle ZZ;
+  int nmatched_lep(0);
+  for(int i=2; i<int(All_Gens.size()); i++){
+    Gen gen = All_Gens.at(i);
+
+    if(abs(gen.PID() ) ==11 && gen.isPromptFinalState()) ZZ=ZZ+gen;
+    if(abs(gen.PID() ) ==13 && gen.isPromptFinalState()) ZZ=ZZ+gen;
+    if(abs(gen.PID() ) ==15 && gen.isPrompt()&& gen.isPromptDecayed()) ZZ=ZZ+gen;
+    //if(abs(gen.PID() ) ==11 && gen.isPromptFinalState())nmatched_lep++;
+    //if(abs(gen.PID() ) ==13 && gen.isPromptFinalState())nmatched_lep++;
+    //if(abs(gen.PID() ) ==15 && gen.isPrompt()&& gen.isPromptDecayed())nmatched_lep++;
+  }
+
+  //if(nmatched_lep != 4) {
+  //  cout << "nmatched_lep = " << nmatched_lep << endl;
+  //  PrintGen(All_Gens);
+  // }
+
+  return ZZ;
+}
+
+double AnalyzerCore::GetGenZZPt(){
+  
+  Particle ZZ = GetZZ();
+  return ZZ.Pt();
+}
+
+double AnalyzerCore::GetGenZZMass(){
+  
+  Particle ZZ = GetZZ();
   return ZZ.M();
 }
 
@@ -34,7 +82,7 @@ double AnalyzerCore::GetGenJJMass(){
     }    
   }
   
-  if(nmatched < 2) PrintGen(All_Gens);
+  //  if(nmatched < 2) PrintGen(All_Gens);
 
   if(fChain->GetBranch("genjet_pt")){
     
@@ -48,7 +96,7 @@ double AnalyzerCore::GetGenJJMass(){
     vector<int> goodleptons;
     for(int i=2; i<int(All_Gens.size()); i++){
       Gen gen = All_Gens.at(i);
-      if ((abs(gen.PID())==13 || abs(gen.PID())==11) && gen.Pt() > 10){ // is lepton, and pt > 10
+      if ((abs(gen.PID())==13 || abs(gen.PID())==11  ) && gen.Pt() > 10){ // is lepton, and pt > 10
 	if (gen.isPrompt()){ // is prompt flag
 	  goodleptons.push_back(i);
 	}
@@ -79,8 +127,6 @@ double AnalyzerCore::GetGenJJMass(){
     
     if (ngoodjet>1){
       mjj=(parts[0]+parts[1]).M();
-
-      cout << "Method 1 = " << JJ.M() << " method 2 = " << mjj << endl;
       return mjj;
     }else{
       // no genmjj, return 1.
@@ -232,6 +278,13 @@ void AnalyzerCore::PrintGen(const std::vector<Gen>& gens){
     else     cout << i << "\t" << gen.PID() << "\t" << gen.Status() << "\t" << gen.MotherIndex() << "\t"  ;
 
     printf("%.2f\t%.2f\t%.2f\t%.2f\n",gen.Pt(), gen.Eta(), gen.Phi(), gen.M());
+    if(fabs(gen.PID()) == 11 || fabs(gen.PID()) == 13 || fabs(gen.PID()) == 15) {
+      if( (fabs(gen.PID()) == 11 && gen.isPromptFinalState()) || (fabs(gen.PID()) == 13 && gen.isPromptFinalState()) ||(fabs(gen.PID()) == 15 && gen.isPrompt()) ){
+	cout << "GenIsPrompt(gen) = " << GenIsPrompt(gen) << endl;
+	cout << "gen.IsPrompt() = " <<  gen.isPrompt() <<  " gen.IsPromptTauDecayProduct() =  " << gen.isPromptTauDecayProduct() << " gen.isPromptFinalState() " << gen.isPromptFinalState() << endl;
+	cout <<  gen.isPromptFinalState()  << " " <<  gen.isPromptDecayed() << endl;
+      }
+    }
   }
 
 }

@@ -487,6 +487,7 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
     SystList.push_back(AnalyzerParameter::JetResDown);
     SystList.push_back(AnalyzerParameter::JetEnUp);
     SystList.push_back(AnalyzerParameter::JetEnDown);
+
     return SystList;
   }
   if(SystType == "MET"){
@@ -532,13 +533,11 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
 		  AnalyzerParameter::JetEnUp, AnalyzerParameter::JetEnDown,
 		  AnalyzerParameter::JetPUIDUp,AnalyzerParameter::JetPUIDDown,
 		  AnalyzerParameter::JetPNETUp,AnalyzerParameter::JetPNETDown,
+		  AnalyzerParameter::HEMJet,
 		  AnalyzerParameter::BTagSFHTagCorrUp,AnalyzerParameter::BTagSFHTagCorrDown,
                   AnalyzerParameter::BTagSFLTagCorrUp,AnalyzerParameter::BTagSFLTagCorrDown,
-
                   AnalyzerParameter::BTagSFHTagUnCorrUp,AnalyzerParameter::BTagSFHTagUnCorrDown,
                   AnalyzerParameter::BTagSFLTagUnCorrUp,AnalyzerParameter::BTagSFLTagUnCorrDown,
-
-
                   AnalyzerParameter::METUnclUp,AnalyzerParameter::METUnclDown,
                   AnalyzerParameter::PrefireUp,AnalyzerParameter::PrefireDown,
                   AnalyzerParameter::PUUp,AnalyzerParameter::PUDown};
@@ -889,20 +888,22 @@ double HNL_LeptonCore::GetKFactor(){
     weight = 1.109;
   }
   else if(MCSample.Contains("ZZTo4L_powheg") or MCSample.Contains("ZZTo2L2Nu") or MCSample.Contains("ZZTo2L2Q")){
-    // Physics Letters B 735 (2014) 311-313                                                                                                                                                                                                                                     
+    // Physics Letters B 735 (2014) 311-313                                                                                                                                                                                                                                    
     // https://doi.org/10.1016/j.physletb.2014.06.056                                                                                                                                                                                                                           
-    weight = 1.16;
+    weight =  1.16;
+    if(HasFlag("ZZKFMass"))  weight = ZZKfactor("ZZMass");
+    if(HasFlag("ZZKFPt"))    weight = ZZKfactor("ZZPt");
+    //    if(_jentry % 1000) cout << "K-Factor ZZMass = " << ZZKfactor("ZZMass") << " K-Factor ZZPt " << ZZKfactor("ZZPt") << " " << endl;
+    
+    return weight;
   }
   else if(MCSample.Contains("GluGluToZZto")){
     //  2.3 brings gg->ZZ from LO to NNLO (https://www.arxiv.org/pdf/1504.02388)
-    double ZZMass=GetGenZZMass();
-    if(ZZMass < 140)  return  1.87; 
-    if(ZZMass < 300)  return  1.87 + (2.1-1.87) * (ZZMass - 140); 
-    if(ZZMass > 500)  return 2.2;
-    else return 2.25;
+    return 2.2;
 
   }
   else if(MCSample.Contains("GluGluHToZZ")){
+
     return 1.67;
     //AN2016_359                                                                                                                                                                                                                                                                
   }
@@ -933,7 +934,136 @@ double HNL_LeptonCore::GetKFactor(){
 
 }
 
+double HNL_LeptonCore::ZZKfactor(TString method){
+  
+  // finalState=1 : 4e/4mu/4tau
+  // finalState=2 : 2e2mu/2mutau/2e2tau
+  
+  int finalState = GetZZFinalState();
+  float k=0.0;
+  //  cout << "GetGenZZPt() = " << GetGenZZPt() << "  " << GetGenZZMass() << endl;
+  if(method=="ZZPt"){
+    double GENpTZZ = GetGenZZPt();
+    if (finalState==1) {
+      k+=0.64155491983*(abs(GENpTZZ)>0.0&&abs(GENpTZZ)<=5.0);
+      k+=1.09985240531*(abs(GENpTZZ)>5.0&&abs(GENpTZZ)<=10.0);
+      k+=1.29390628654*(abs(GENpTZZ)>10.0&&abs(GENpTZZ)<=15.0);
+      k+=1.37859998571*(abs(GENpTZZ)>15.0&&abs(GENpTZZ)<=20.0);
+      k+=1.42430263312*(abs(GENpTZZ)>20.0&&abs(GENpTZZ)<=25.0);
+      k+=1.45038493266*(abs(GENpTZZ)>25.0&&abs(GENpTZZ)<=30.0);
+      k+=1.47015377651*(abs(GENpTZZ)>30.0&&abs(GENpTZZ)<=35.0);
+      k+=1.48828685748*(abs(GENpTZZ)>35.0&&abs(GENpTZZ)<=40.0);
+      k+=1.50573440448*(abs(GENpTZZ)>40.0&&abs(GENpTZZ)<=45.0);
+      k+=1.50211655928*(abs(GENpTZZ)>45.0&&abs(GENpTZZ)<=50.0);
+      k+=1.50918720827*(abs(GENpTZZ)>50.0&&abs(GENpTZZ)<=55.0);
+      k+=1.52463089491*(abs(GENpTZZ)>55.0&&abs(GENpTZZ)<=60.0);
+      k+=1.52400838378*(abs(GENpTZZ)>60.0&&abs(GENpTZZ)<=65.0);
+      k+=1.52418067701*(abs(GENpTZZ)>65.0&&abs(GENpTZZ)<=70.0);
+      k+=1.55424382578*(abs(GENpTZZ)>70.0&&abs(GENpTZZ)<=75.0);
+      k+=1.52544284222*(abs(GENpTZZ)>75.0&&abs(GENpTZZ)<=80.0);
+      k+=1.57896384602*(abs(GENpTZZ)>80.0&&abs(GENpTZZ)<=85.0);
+      k+=1.53034682567*(abs(GENpTZZ)>85.0&&abs(GENpTZZ)<=90.0);
+      k+=1.56147329708*(abs(GENpTZZ)>90.0&&abs(GENpTZZ)<=95.0);
+      k+=1.54468169268*(abs(GENpTZZ)>95.0&&abs(GENpTZZ)<=100.0);
+      k+=1.57222952415*(abs(GENpTZZ)>100.0);
+    }
+    
+    if (finalState==2) {
+      k+=0.743602533303*(abs(GENpTZZ)>0.0&&abs(GENpTZZ)<=5.0);
+      k+=1.14789453219*(abs(GENpTZZ)>5.0&&abs(GENpTZZ)<=10.0);
+      k+=1.33815867892*(abs(GENpTZZ)>10.0&&abs(GENpTZZ)<=15.0);
+      k+=1.41420044104*(abs(GENpTZZ)>15.0&&abs(GENpTZZ)<=20.0);
+      k+=1.45511318916*(abs(GENpTZZ)>20.0&&abs(GENpTZZ)<=25.0);
+      k+=1.47569225244*(abs(GENpTZZ)>25.0&&abs(GENpTZZ)<=30.0);
+      k+=1.49053003693*(abs(GENpTZZ)>30.0&&abs(GENpTZZ)<=35.0);
+      k+=1.50622827695*(abs(GENpTZZ)>35.0&&abs(GENpTZZ)<=40.0);
+      k+=1.50328889799*(abs(GENpTZZ)>40.0&&abs(GENpTZZ)<=45.0);
+      k+=1.52186945281*(abs(GENpTZZ)>45.0&&abs(GENpTZZ)<=50.0);
+      k+=1.52043468754*(abs(GENpTZZ)>50.0&&abs(GENpTZZ)<=55.0);
+      k+=1.53977869986*(abs(GENpTZZ)>55.0&&abs(GENpTZZ)<=60.0);
+      k+=1.53491994434*(abs(GENpTZZ)>60.0&&abs(GENpTZZ)<=65.0);
+      k+=1.51772882172*(abs(GENpTZZ)>65.0&&abs(GENpTZZ)<=70.0);
+      k+=1.54494489131*(abs(GENpTZZ)>70.0&&abs(GENpTZZ)<=75.0);
+      k+=1.57762411697*(abs(GENpTZZ)>75.0&&abs(GENpTZZ)<=80.0);
+      k+=1.55078339014*(abs(GENpTZZ)>80.0&&abs(GENpTZZ)<=85.0);
+      k+=1.57078191891*(abs(GENpTZZ)>85.0&&abs(GENpTZZ)<=90.0);
+      k+=1.56162666568*(abs(GENpTZZ)>90.0&&abs(GENpTZZ)<=95.0);
+      k+=1.54183774627*(abs(GENpTZZ)>95.0&&abs(GENpTZZ)<=100.0);
+      k+=1.58485762205*(abs(GENpTZZ)>100.0);
+    }
 
+    if (k==0.0) return 1.1;
+    else return k; // if something goes wrong return inclusive k-factor
+    
+  }
+
+  if(method=="ZZMass") {
+    
+    // finalState=1 : 4e/4mu/4tau
+    // finalState=2 : 2e2mu/2mutau/2e2tau
+    
+    double GENmassZZ = GetGenZZMass();
+
+    float k=0.0;
+    
+    if (finalState==1) {
+      k+=1.23613311013*(abs(GENmassZZ)>0.0&&abs(GENmassZZ)<=25.0);
+      k+=1.17550314639*(abs(GENmassZZ)>25.0&&abs(GENmassZZ)<=50.0);
+      k+=1.17044565911*(abs(GENmassZZ)>50.0&&abs(GENmassZZ)<=75.0);
+      k+=1.03141209689*(abs(GENmassZZ)>75.0&&abs(GENmassZZ)<=100.0);
+      k+=1.05285574912*(abs(GENmassZZ)>100.0&&abs(GENmassZZ)<=125.0);
+      k+=1.11287217794*(abs(GENmassZZ)>125.0&&abs(GENmassZZ)<=150.0);
+      k+=1.13361441158*(abs(GENmassZZ)>150.0&&abs(GENmassZZ)<=175.0);
+      k+=1.10355603327*(abs(GENmassZZ)>175.0&&abs(GENmassZZ)<=200.0);
+      k+=1.10053981637*(abs(GENmassZZ)>200.0&&abs(GENmassZZ)<=225.0);
+      k+=1.10972676811*(abs(GENmassZZ)>225.0&&abs(GENmassZZ)<=250.0);
+      k+=1.12069120525*(abs(GENmassZZ)>250.0&&abs(GENmassZZ)<=275.0);
+      k+=1.11589101635*(abs(GENmassZZ)>275.0&&abs(GENmassZZ)<=300.0);
+      k+=1.13906170314*(abs(GENmassZZ)>300.0&&abs(GENmassZZ)<=325.0);
+      k+=1.14854594271*(abs(GENmassZZ)>325.0&&abs(GENmassZZ)<=350.0);
+      k+=1.14616229031*(abs(GENmassZZ)>350.0&&abs(GENmassZZ)<=375.0);
+      k+=1.14573157789*(abs(GENmassZZ)>375.0&&abs(GENmassZZ)<=400.0);
+      k+=1.13829430515*(abs(GENmassZZ)>400.0&&abs(GENmassZZ)<=425.0);
+      k+=1.15521193686*(abs(GENmassZZ)>425.0&&abs(GENmassZZ)<=450.0);
+      k+=1.13679822698*(abs(GENmassZZ)>450.0&&abs(GENmassZZ)<=475.0);
+      k+=1.13223956942*(abs(GENmassZZ)>475.0);
+    }
+
+    if (finalState==2) {
+      k+=1.25094466582*(abs(GENmassZZ)>0.0&&abs(GENmassZZ)<=25.0);
+      k+=1.22459455362*(abs(GENmassZZ)>25.0&&abs(GENmassZZ)<=50.0);
+      k+=1.19287368979*(abs(GENmassZZ)>50.0&&abs(GENmassZZ)<=75.0);
+      k+=1.04597506451*(abs(GENmassZZ)>75.0&&abs(GENmassZZ)<=100.0);
+      k+=1.08323413771*(abs(GENmassZZ)>100.0&&abs(GENmassZZ)<=125.0);
+      k+=1.09994968030*(abs(GENmassZZ)>125.0&&abs(GENmassZZ)<=150.0);
+      k+=1.16698455800*(abs(GENmassZZ)>150.0&&abs(GENmassZZ)<=175.0);
+      k+=1.10399053155*(abs(GENmassZZ)>175.0&&abs(GENmassZZ)<=200.0);
+      k+=1.10592664340*(abs(GENmassZZ)>200.0&&abs(GENmassZZ)<=225.0);
+      k+=1.10690381480*(abs(GENmassZZ)>225.0&&abs(GENmassZZ)<=250.0);
+      k+=1.11194928918*(abs(GENmassZZ)>250.0&&abs(GENmassZZ)<=275.0);
+      k+=1.13522586553*(abs(GENmassZZ)>275.0&&abs(GENmassZZ)<=300.0);
+      k+=1.11895090244*(abs(GENmassZZ)>300.0&&abs(GENmassZZ)<=325.0);
+      k+=1.13898508615*(abs(GENmassZZ)>325.0&&abs(GENmassZZ)<=350.0);
+      k+=1.15463977506*(abs(GENmassZZ)>350.0&&abs(GENmassZZ)<=375.0);
+      k+=1.17341664594*(abs(GENmassZZ)>375.0&&abs(GENmassZZ)<=400.0);
+      k+=1.20093349763*(abs(GENmassZZ)>400.0&&abs(GENmassZZ)<=425.0);
+      k+=1.18915554919*(abs(GENmassZZ)>425.0&&abs(GENmassZZ)<=450.0);
+      k+=1.18546007375*(abs(GENmassZZ)>450.0&&abs(GENmassZZ)<=475.0);
+      k+=1.12864505708*(abs(GENmassZZ)>475.0);
+    }
+
+    if (k==0.0) return 1.1;
+    else return k; // if something goes wrong return inclusive k-factor
+    
+  }
+
+  cout << "[HNL_LeptonCore::ZZKFatcor ] method not found.." << endl;
+  exit(EXIT_FAILURE);
+
+
+
+  return -99999999999;
+}
 
 double HNL_LeptonCore::SetupWeight(Event ev, AnalyzerParameter& param){
 
