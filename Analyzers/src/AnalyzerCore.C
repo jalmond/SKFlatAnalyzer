@@ -1200,12 +1200,12 @@ void AnalyzerCore::beginEvent(){
 }
 void AnalyzerCore::initializeAnalyzerTools(){
 
-  /*                                                                                                                                                                                                                                                                         
+  
                                                                                                                                                                                                                                                                               
-    // In your analyser code add this line to constructor to fill map with JEC source values.                                                                                                                                                                                 
-    for(auto jec_source : JECSources)   SetupJECUncertainty(jec_source, "AK4PFchs");                                                                                                                                                                                          
+  // In your analyser code add this line to constructor to fill map with JEC source values.                                                                                                                                                                                 
+  for(auto jec_source : JECSources)   SetupJECUncertainty(jec_source, "AK4PFchs");                                                                                                                                                                                          
                                                                                                                                                                                                                                                                               
-  }                                                                                                                                                                                                                                                                           
+  /*
     // Then you can get vector of jets with shift calling                                                                                                                                                                                                                     
     std::vector<Jet> AnalyzerCore::ScaleJetsIndividualSource(const std::vector<Jet>& jets, int sys, TString source);                                                                                                                                                          
     vector<Jet> jets_AbsoluteStatUp = ScaleJetsIndividualSource(jets, 1, "AbsoluteStat");                                                                                                                                                                                     
