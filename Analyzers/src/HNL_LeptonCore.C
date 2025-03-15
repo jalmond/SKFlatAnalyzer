@@ -456,9 +456,9 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
 
   vector<AnalyzerParameter::Syst> SystList = {};
   if(SystType=="Theory"){
-    SystList.push_back(AnalyzerParameter::PDFUp);
-    SystList.push_back(AnalyzerParameter::PDFDown);
-    //    SystList.push_back(AnalyzerParameter::PDF);
+    //SystList.push_back(AnalyzerParameter::PDFUp);
+    //SystList.push_back(AnalyzerParameter::PDFDown);
+    SystList.push_back(AnalyzerParameter::PDF);
     SystList.push_back(AnalyzerParameter::ScaleUp);
     SystList.push_back(AnalyzerParameter::ScaleDown);
     return SystList;
@@ -566,6 +566,61 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
 	SystList.push_back(AnalyzerParameter::ElectronTriggerSFUp);
 	SystList.push_back(AnalyzerParameter::ElectronTriggerSFDown);
       }
+
+      
+      SystList.push_back(AnalyzerParameter::JetAbsoluteStatUp);
+      SystList.push_back(AnalyzerParameter::JetAbsoluteStatDown);
+      SystList.push_back(AnalyzerParameter::JetAbsoluteScaleUp);
+      SystList.push_back(AnalyzerParameter::JetAbsoluteScaleDown);
+      SystList.push_back(AnalyzerParameter::JetAbsoluteMPFBiasUp);
+      SystList.push_back(AnalyzerParameter::JetAbsoluteMPFBiasDown);
+      SystList.push_back(AnalyzerParameter::JetFragmentationUp);
+      SystList.push_back(AnalyzerParameter::JetFragmentationDown);
+      SystList.push_back(AnalyzerParameter::JetSinglePionECALUp);
+      SystList.push_back(AnalyzerParameter::JetSinglePionECALDown);
+      SystList.push_back(AnalyzerParameter::JetSinglePionHCALUp);
+      SystList.push_back(AnalyzerParameter::JetSinglePionHCALDown);
+      SystList.push_back(AnalyzerParameter::JetFlavorQCDUp);
+      SystList.push_back(AnalyzerParameter::JetFlavorQCDDown);
+      SystList.push_back(AnalyzerParameter::JetTimePtEtaUp);
+      SystList.push_back(AnalyzerParameter::JetTimePtEtaDown);
+      SystList.push_back(AnalyzerParameter::JetRelativeJEREC1Up);
+      SystList.push_back(AnalyzerParameter::JetRelativeJEREC1Down);
+      SystList.push_back(AnalyzerParameter::JetRelativeJEREC2Up);
+      SystList.push_back(AnalyzerParameter::JetRelativeJEREC2Down);
+      SystList.push_back(AnalyzerParameter::JetRelativePtHFUp);
+      SystList.push_back(AnalyzerParameter::JetRelativePtHFDown);
+      SystList.push_back(AnalyzerParameter::JetRelativePtBBUp);
+      SystList.push_back(AnalyzerParameter::JetRelativePtBBDown);
+      SystList.push_back(AnalyzerParameter::JetRelativePtEC1Up);
+      SystList.push_back(AnalyzerParameter::JetRelativePtEC1Down);
+      SystList.push_back(AnalyzerParameter::JetRelativePtEC2Up);
+      SystList.push_back(AnalyzerParameter::JetRelativePtEC2Down);
+      SystList.push_back(AnalyzerParameter::JetRelativeBalUp);
+      SystList.push_back(AnalyzerParameter::JetRelativeBalDown);
+      SystList.push_back(AnalyzerParameter::JetRelativeSampleUp);
+      SystList.push_back(AnalyzerParameter::JetRelativeSampleDown);
+      SystList.push_back(AnalyzerParameter::JetRelativeFSRUp);
+      SystList.push_back(AnalyzerParameter::JetRelativeFSRDown);
+      SystList.push_back(AnalyzerParameter::JetRelativeStatFSRUp);
+      SystList.push_back(AnalyzerParameter::JetRelativeStatFSRDown);
+      SystList.push_back(AnalyzerParameter::JetRelativeStatECUp);
+      SystList.push_back(AnalyzerParameter::JetRelativeStatECDown);
+      SystList.push_back(AnalyzerParameter::JetRelativeStatHFUp);
+      SystList.push_back(AnalyzerParameter::JetRelativeStatHFDown);
+      SystList.push_back(AnalyzerParameter::JetPileUpDataMCUp);
+      SystList.push_back(AnalyzerParameter::JetPileUpDataMCDown);
+      SystList.push_back(AnalyzerParameter::JetPileUpPtRefUp);
+      SystList.push_back(AnalyzerParameter::JetPileUpPtRefDown);
+      SystList.push_back(AnalyzerParameter::JetPileUpPtBBUp);
+      SystList.push_back(AnalyzerParameter::JetPileUpPtBBDown);
+      SystList.push_back(AnalyzerParameter::JetPileUpPtEC1Up);
+      SystList.push_back(AnalyzerParameter::JetPileUpPtEC1Down);
+      SystList.push_back(AnalyzerParameter::JetPileUpPtEC2Up);
+      SystList.push_back(AnalyzerParameter::JetPileUpPtEC2Down);
+      SystList.push_back(AnalyzerParameter::JetPileUpPtHFUp);
+    SystList.push_back(AnalyzerParameter::JetPileUpPtHFDown);
+
     }
   }
   

@@ -271,15 +271,45 @@ std::vector<Jet> HNL_LeptonCore::SelectJets(AnalyzerParameter param,TString id, 
 
   std::vector<Jet> jets_uncorr = All_Jets;
   std::vector<Jet> jets;
+  
+  std::unordered_map<AnalyzerParameter::Syst, std::pair<int, std::string>> syst_map = {
+    {AnalyzerParameter::JetAbsoluteStatUp, {1, "AbsoluteStat"}},       {AnalyzerParameter::JetAbsoluteStatDown, {-1, "AbsoluteStat"}},
+    {AnalyzerParameter::JetAbsoluteScaleUp, {1, "AbsoluteScale"}},     {AnalyzerParameter::JetAbsoluteScaleDown, {-1, "AbsoluteScale"}},
+    {AnalyzerParameter::JetAbsoluteMPFBiasUp, {1, "AbsoluteMPFBias"}}, {AnalyzerParameter::JetAbsoluteMPFBiasDown, {-1, "AbsoluteMPFBias"}},
+    {AnalyzerParameter::JetFragmentationUp, {1, "Fragmentation"}},     {AnalyzerParameter::JetFragmentationDown, {-1, "Fragmentation"}},
+    {AnalyzerParameter::JetSinglePionECALUp, {1, "SinglePionECAL"}},   {AnalyzerParameter::JetSinglePionECALDown, {-1, "SinglePionECAL"}},
+    {AnalyzerParameter::JetSinglePionHCALUp, {1, "SinglePionHCAL"}},   {AnalyzerParameter::JetSinglePionHCALDown, {-1, "SinglePionHCAL"}},
+    {AnalyzerParameter::JetFlavorQCDUp, {1, "FlavorQCD"}},             {AnalyzerParameter::JetFlavorQCDDown, {-1, "FlavorQCD"}},
+    {AnalyzerParameter::JetTimePtEtaUp, {1, "TimePtEta"}},             {AnalyzerParameter::JetTimePtEtaDown, {-1, "TimePtEta"}},
+    {AnalyzerParameter::JetRelativeJEREC1Up, {1, "RelativeJEREC1"}},   {AnalyzerParameter::JetRelativeJEREC1Down, {-1, "RelativeJEREC1"}},
+    {AnalyzerParameter::JetRelativeJEREC2Up, {1, "RelativeJEREC2"}},   {AnalyzerParameter::JetRelativeJEREC2Down, {-1, "RelativeJEREC2"}},
+    {AnalyzerParameter::JetRelativePtHFUp, {1, "RelativePtHF"}},       {AnalyzerParameter::JetRelativePtHFDown, {-1, "RelativePtHF"}},
+    {AnalyzerParameter::JetRelativePtBBUp, {1, "RelativePtBB"}},       {AnalyzerParameter::JetRelativePtBBDown, {-1, "RelativePtBB"}},
+    {AnalyzerParameter::JetRelativePtEC1Up, {1, "RelativePtEC1"}},     {AnalyzerParameter::JetRelativePtEC1Down, {-1, "RelativePtEC1"}},
+    {AnalyzerParameter::JetRelativePtEC2Up, {1, "RelativePtEC2"}},     {AnalyzerParameter::JetRelativePtEC2Down, {-1, "RelativePtEC2"}},
+    {AnalyzerParameter::JetRelativeBalUp, {1, "RelativeBal"}},         {AnalyzerParameter::JetRelativeBalDown, {-1, "RelativeBal"}},
+    {AnalyzerParameter::JetRelativeSampleUp, {1, "RelativeSample"}},   {AnalyzerParameter::JetRelativeSampleDown, {-1, "RelativeSample"}},
+    {AnalyzerParameter::JetRelativeFSRUp, {1, "RelativeFSR"}},         {AnalyzerParameter::JetRelativeFSRDown, {-1, "RelativeFSR"}},
+    {AnalyzerParameter::JetRelativeStatFSRUp, {1, "RelativeStatFSR"}}, {AnalyzerParameter::JetRelativeStatFSRDown, {-1, "RelativeStatFSR"}},
+    {AnalyzerParameter::JetRelativeStatECUp, {1, "RelativeStatEC"}},   {AnalyzerParameter::JetRelativeStatECDown, {-1, "RelativeStatEC"}},
+    {AnalyzerParameter::JetRelativeStatHFUp, {1, "RelativeStatHF"}},   {AnalyzerParameter::JetRelativeStatHFDown, {-1, "RelativeStatHF"}},
+    {AnalyzerParameter::JetPileUpDataMCUp, {1, "PileUpDataMC"}},       {AnalyzerParameter::JetPileUpDataMCDown, {-1, "PileUpDataMC"}},
+    {AnalyzerParameter::JetPileUpPtRefUp, {1, "PileUpPtRef"}},         {AnalyzerParameter::JetPileUpPtRefDown, {-1, "PileUpPtRef"}},
+    {AnalyzerParameter::JetPileUpPtBBUp, {1, "PileUpPtBB"}},           {AnalyzerParameter::JetPileUpPtBBDown, {-1, "PileUpPtBB"}},
+    {AnalyzerParameter::JetPileUpPtEC1Up, {1, "PileUpPtEC1"}},         {AnalyzerParameter::JetPileUpPtEC1Down, {-1, "PileUpPtEC1"}},
+    {AnalyzerParameter::JetPileUpPtEC2Up, {1, "PileUpPtEC2"}},         {AnalyzerParameter::JetPileUpPtEC2Down, {-1, "PileUpPtEC2"}},
+    {AnalyzerParameter::JetPileUpPtHFUp, {1, "PileUpPtHF"}},           {AnalyzerParameter::JetPileUpPtHFDown, {-1, "PileUpPtHF"}}
+  };
+  
   if(param.syst_ == AnalyzerParameter::JetEnUp)            jets    = ScaleJets( jets_uncorr, +1 );
   else if(param.syst_ == AnalyzerParameter::JetEnDown)     jets    = ScaleJets( jets_uncorr, -1 );
   else if(param.syst_ == AnalyzerParameter::JetResUp)      jets    = SmearJets(jets_uncorr, +1 );
   else if(param.syst_ == AnalyzerParameter::JetResDown)    jets    = SmearJets(jets_uncorr, -1 );
+  else if (syst_map.find(param.syst_) != syst_map.end()) {
+    jets = ScaleJetsIndividualSource(jets_uncorr, syst_map[param.syst_].first, syst_map[param.syst_].second);
+  }
   else jets =jets_uncorr;
-  //    vector<Jet> jets_AbsoluteStatUp = ScaleJetsIndividualSource(jets, 1, "AbsoluteStat"); \
-  // if(param.syst_ == AnalyzerParameter::Jet_AbsoluteStat)    jets = ScaleJetsIndividualSource(jets_uncorr, 1, "AbsoluteStat");
-
-
+  
   std::vector<Jet> out;
   for(unsigned int i=0; i<jets.size(); i++){
     if(!( jets.at(i).Pt()> ptmin ))            continue;
