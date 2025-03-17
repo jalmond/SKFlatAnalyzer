@@ -69,7 +69,10 @@ void HNL_LeptonCore::initializeAnalyzer(bool READBKGHISTS, bool SETUPIDBDT){
   cout << "HNL_LeptonCore::initializeAnalyzer : Analyzer = " << Analyzer << endl;
   if(!IsDATA){
     mcCorr->ReadHistograms();
-    mcCorr->SetupJetTagging();
+    if(HasFlag("Use_TT_JetEff_2L"))    mcCorr->SetupJetTagging("MeasureJetTaggingEfficiency_TTLL_TTLJ_2L_hadded.root");
+    else if(HasFlag("Use_TT_JetEff_SS"))    mcCorr->SetupJetTagging("MeasureJetTaggingEfficiency_TTLL_TTLJ_SS_hadded.root");
+    else if(HasFlag("Use_DY_JetEff_2L"))    mcCorr->SetupJetTagging("MeasureJetTaggingEfficiency_DY_2L_hadded.root");
+    else mcCorr->SetupJetTagging("MeasureJetTaggingEfficiency_TTLL_TTLJ_hadded.root");
   }
 
   puppiCorr->SetEra(GetEra());
