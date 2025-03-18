@@ -62,10 +62,11 @@ void HNL_ControlRegion_Plotter::executeEvent(){
     CRToRun = {"OS_VR"};
     ChannelsToRun = {MuMu};
   }
-  else if(HasFlag("Dilepton"))        CRToRun = {"OS_VR","SS_CR","VBF_CR","LLL_VR"};
-  else if(HasFlag("SSMultiLep")) CRToRun = {"SS_CR","VBF_CR"};
-  else if(HasFlag("LLL")) CRToRun = {"LLL_VR"};
-  else CRToRun = {"SS_CR"};
+  else {
+    if(HasFlag("Dilepton"))   CRToRun = {"OS_VR","SS_CR","VBF_CR","LLL_VR"};
+    if(HasFlag("SSMultiLep")) CRToRun = {"SS_CR","VBF_CR"};
+    if(HasFlag("LLL")) CRToRun.push_back("LLL_VR");
+  }
 
 
   if(IsDATA){

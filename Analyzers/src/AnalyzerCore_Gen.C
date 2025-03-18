@@ -20,7 +20,7 @@ int AnalyzerCore::GetZZFinalState(){
   }
   
   if((nel_gen + nmu_gen+ntau_gen) > 4) {
-    cout << nel_gen << " "<< nmu_gen << " " << ntau_gen << endl;
+    cout << "FS  " << nel_gen << " "<< nmu_gen << " " << ntau_gen << endl;
     PrintGen(All_Gens);                                                                                                                                                                                          
   }
   if(nel_gen ==4) return 1;
@@ -29,6 +29,7 @@ int AnalyzerCore::GetZZFinalState(){
   return 2;
 }
 
+
 Particle AnalyzerCore::GetZZ(){
   
   //https://twiki.cern.ch/twiki/bin/viewauth/CMS/HiggsZZ4l2015#gg_H_ZZ
@@ -36,22 +37,44 @@ Particle AnalyzerCore::GetZZ(){
 
   Particle ZZ;
   int nmatched_lep(0);
+  vector<int> GenL_indices;
   for(int i=2; i<int(All_Gens.size()); i++){
     Gen gen = All_Gens.at(i);
+    Gen mother_p = All_Gens.at(gen.MotherIndex() );
+    
+    if(mother_p.IsEmpty() ) continue;
+    
+    if(abs(gen.PID() ) ==11 || abs(gen.PID() ) ==13 || abs(gen.PID() ) ==15){
+      if(abs(mother_p.PID() ) == 23 ){
+	GenL_indices.push_back(i);
+      }
+    }
 
-    if(abs(gen.PID() ) ==11 && gen.isPromptFinalState()) ZZ=ZZ+gen;
-    if(abs(gen.PID() ) ==13 && gen.isPromptFinalState()) ZZ=ZZ+gen;
-    if(abs(gen.PID() ) ==15 && gen.isPrompt()&& gen.isPromptDecayed()) ZZ=ZZ+gen;
+    /*if(abs(gen.PID() ) ==11 && gen.isPromptFinalState()) {
+      ZZ=ZZ+gen;
+      GenL_indices.push_back(i);
+    }
+    if(abs(gen.PID() ) ==13 && gen.isPromptFinalState()) {
+      ZZ=ZZ+gen;
+      GenL_indices.push_back(i);
+    }
+    if(abs(gen.PID() ) ==15 && gen.isPrompt()&& gen.isPromptDecayed()) {
+      ZZ=ZZ+gen;
+      GenL_indices.push_back(i);
+    }
     //if(abs(gen.PID() ) ==11 && gen.isPromptFinalState())nmatched_lep++;
     //if(abs(gen.PID() ) ==13 && gen.isPromptFinalState())nmatched_lep++;
     //if(abs(gen.PID() ) ==15 && gen.isPrompt()&& gen.isPromptDecayed())nmatched_lep++;
+    }
+    */
   }
-
-  //if(nmatched_lep != 4) {
-  //  cout << "nmatched_lep = " << nmatched_lep << endl;
-  //  PrintGen(All_Gens);
-  // }
-
+  
+  if(GenL_indices.size() != 4){
+    for(auto il : GenL_indices) cout << "Matched index  " << il << endl;
+    PrintGen(All_Gens);
+  }
+  for(auto il : GenL_indices) ZZ=ZZ+All_Gens.at(il);
+  
   return ZZ;
 }
 
