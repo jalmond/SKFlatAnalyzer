@@ -36,7 +36,6 @@ Particle AnalyzerCore::GetZZ(){
   // The NNLO/NLO QCD k-factors will be applied as a function of either dPhi(ZZ), mass(ZZ) or pt(ZZ), so all three quantities should be stored. The Z's are formed using the four final state leptons at gen level before FSR or subsequent decay if it is a tau. In case it makes a difference (e.g. for dPhi(ZZ)), for 4e,4mu, and 4tau the Z1 is the Z candidate which has mass closest to 91.1876 and the Z2 is the other combination.
 
   Particle ZZ;
-  int nmatched_lep(0);
   vector<int> GenL_indices;
   for(int i=2; i<int(All_Gens.size()); i++){
     Gen gen = All_Gens.at(i);
@@ -92,7 +91,7 @@ double AnalyzerCore::GetGenZZMass(){
 
 double AnalyzerCore::GetGenJJMass(){
   
-  double mjj=0.0;
+
   int nmatched=0;
   Particle JJ;
   for(int i=2; i<int(All_Gens.size()); i++){
