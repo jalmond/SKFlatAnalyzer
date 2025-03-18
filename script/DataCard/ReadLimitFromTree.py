@@ -10,27 +10,34 @@ parser.add_argument('--Full', action='store_true')
 args = parser.parse_args()
 
 #workdir = "/data6/Users/jihkim/CombineTool/CMSSW_10_2_13/src/DataCardsShape/HNL_SignalRegion_Plotter/Batch/"
-workdir = "/data6/Users/jihkim/NewCombine/CMSSW_14_1_0_pre4/src/DilepHN/Batch/"
+#workdir = "/data6/Users/jihkim/NewCombine/CMSSW_14_1_0_pre4/src/DilepHN/Batch/"
+workdir = "/data6/Users/jihkim/LatestCombine/CMSSW_14_1_0_pre4/src/DilepHN/Batch/"
 
 years = ["2016","2017","2018"]
 years = ["Run2"]
 years = ["2016preVFP","2016postVFP","2017","2018","Run2"]
-#years = ["Run2"]
-years = ["2017"]
-#channels = ["MuMu","EE","EMu"]
+years = ["Run2"]
+#years = ["2017"]
+#years = ["2018"]
+channels = ["MuMu","EE","EMu"]
 #channels = ["MuMu","EE"]
-channels = ["EE"]
+#channels = ["EE"]
+#channels = ["MuMu"]
 #masses = ["100","200","300","400","500","600","700","800","900","1000","1100","1200","1300","1500","1700","2000","2500","3000"]
 #masses = ["90","100","150","200","300","400","500","600","700","800","900","1000","1100","1200","1300","1500","1700","2000","2500","3000","5000","7500","10000","15000","20000"]
-#masses = ["90","100","150","200","300","400","500","600","700","800","900","1000","1100","1200","1300","1500","1700","2000","2500","3000","5000","7500","10000","15000","20000"]
-masses = ["85","90","95","100","125","150","200","250","300","400","500","600","700","800","900","1000","1100","1200","1300","1500","1700","2000","2500","3000","5000","7500","10000","15000","20000"]
+#masses = ["85","90","95","100","125","150","200","250","300","400","500","600","700","800","900","1000","1100","1200","1300","1500","1700","2000","2500","3000","5000","7500","10000","15000","20000"]
+#masses = ["90","95","100","125","150","200","250","300","400","500","600","700","800","900","1000","1100","1200","1300","1500","1700","2000","2500","3000","5000","7500","10000","15000","20000"]
 #masses = ["100","150","200","250","300","400","500","600","700","800","900","1000","1100","1200","1300","1500","1700","2000","2500","3000","5000","7500","10000","15000","20000"]
 #masses = ["100","200","300","400","1000","10000"]
+#masses = ["85","90","95","100","125","150","200","250","300","400","500","600","700","800","900","1000","1100","1200","1300","1500","1700","2000","2500","3000","5000","7500","10000","15000","20000","25000","30000"]
+#masses_EMu = ["85","90","95","100","125","150","200","250","300","400","500","600","700","800","900","1000","1100","1200","1300","1500","1700","2000","2500","3000","5000","7500","10000","15000","20000","25000","30000","40000","50000","60000"]
+masses = ["85","90","95","100","125","150","200","250","300","400","500","600","700","800","900","1000","1100","1200","1300","1500","1700","2000","2500","3000","5000","7500","10000","15000","20000"]
+masses_EMu = ["85","90","95","100","125","150","200","250","300","400","500","600","700","800","900","1000","1100","1200","1300","1500","1700","2000","2500","3000","5000","7500","10000","15000","20000"]
+#masses = ["85","90","95","100","125","150","200","250","300","400","500","600","700","800","900","1000","1100","1200","1300","1500","1700","2000","2500","3000"]
+#masses_EMu = ["85","90","95","100","125","150","200","250","300","400","500","600","700","800","900","1000","1100","1200","1300","1500","1700","2000","2500","3000"]
+
 IDs = [""] #["_ID"]
-#tags = ["_sronly_syst"] #["_DYVBF"]
-#tags = ["_sronly"] #["_DYVBF"]
-#tags = ["_syst"] #["_DYVBF"]
-tags = ["_sr_Combined"] #["_DYVBF"]
+
 #myWPs = ["240422_HNL_ULID"]
 #myWPs = ["240501_1704_HNL_ULID","240501_1704_HNTightV2"]
 #myWPs = ["240504_PR44_HNL_ULID"]
@@ -39,7 +46,34 @@ tags = ["_sr_Combined"] #["_DYVBF"]
 #myWPs = ["rateParam_HNL_ULID"]
 #myWPs = ["PR48_rateParam_HNL_ULID"]
 #myWPs = ["PR55_HNL_ULID","PR55_HighPt"]
-myWPs = ["PR55_NoMinPt_HighPt"]
+#myWPs = ["PR55_NoMinPt_HighPt"]
+#myWPs = ["PR86_HNL_ULID_Decorr"]
+#myWPs = ["PR95_HNL_ULID_Decorr"]
+#myWPs = ["PR95_HNL_ULID_Decorr","PR95_HNL_ULID_Decorr_NoMuSyst","PR95_HNL_ULID_MuSystOnly"] # WP of input limit file
+#myWPs = ["PR95_HNL_ULID_MuSystOnly"] # WP of input limit file
+#myWPs = ["PR95_HNL_ULID"] # WP of input limit file
+#myWPs = ["PR95_HNL_ULID_NoCR_Decorr"]
+#myWPs = ["PR89_HNL_ULID_HighPtIDComp_lnNsyst_Decorr","PR89_HighPt_HighPtIDComp_lnNsyst_Decorr"]
+#myWPs = ["PR97_HNL_ULIDv2_NoCR_NoSyst"]
+#myWPs = ["ANv3_HNL_ULIDv2_Decorr_NoCR"]
+#myWPs = ["ANv3_HNL_ULIDv2_Decorr_TEST_NoCR"]
+#myWPs = ["ANv3_HNL_ULIDv2_Decorr"]
+#myWPs = ["ANv3_HNL_ULIDv2_Decorr_Run2"]
+#myWPs = ["HEMJet_HNL_ULIDv2_RemoveHEMJet_NoCR_NoSyst","HEMJet_HNL_ULIDv2_ScaleHEMJet_NoCR_NoSyst","TuneP_HNL_ULIDv2_CompareTuneP_NoCR_NoSyst","TuneP_HNTightV2_CompareTuneP_NoCR_NoSyst","TuneP_POGTight_CompareTuneP_NoCR_NoSyst"]
+#myWPs = ["ANv3_HNL_ULIDv2_Decorr_NoCR_NoSyst"]
+#myWPs = ["ANv4_HNL_ULIDv2_RunSyst_Decorr_JetDecorr_NoCR"]
+myWPs = ["ANv4_HNL_ULIDv2_RunSyst_Decorr_JetDecorr"]
+
+#tags = ["_sronly_syst"]
+#tags = ["_sronly"]
+#tags = ["_syst"]
+#tags = ["_sr1_syst_Combined","_sr2_syst_Combined","_sr3_syst_Combined"]
+#tags = ["_sronly_sr123_syst"]
+#tags = ["_sronly_sr123"]
+#tags = ["_DYVBF_sronly_sr123_syst"]
+#tags = ["_DYVBF_syst"]
+#tags = ["_SSWW_syst"]
+tags = ["_syst","_sr1_syst_Combined","_sr2_syst_Combined","_sr3_syst_Combined"]
 
 for WP in myWPs:
   this_workdir = workdir+WP
@@ -51,23 +85,31 @@ for WP in myWPs:
       #with open("out/"+WP+"/"+year+"_"+channel+ID+tag+"_Run2Scaled_Asym_limit.txt", 'w') as f:
       #with open("out/"+WP+"/"+year+"_"+channel+ID+tag+"_Run23Scaled_Asym_limit.txt", 'w') as f:
   
-        for mass in masses:
+        for mass in (masses if channel!="EMu" else masses_EMu):
           this_name = year+"_"+channel+"_M"+mass+ID+tag
           print this_name
           path = this_workdir+"/Asymptotic/"+this_name+"/output/"+this_name+"_Asymptotic.root"
   
           f_Asym = TFile.Open(path)
-          tree_Asym = f_Asym.Get("limit")
+          try: tree_Asym = f_Asym.Get("limit")
+          except ReferenceError:
+            f.write("\n")
+            continue
   
-          tree_Asym.GetEntry(2) # substitute for obs. limit for now
+          try: tree_Asym.GetEntry(2) # substitute for obs. limit for now
+          except AttributeError:
+            f.write("\n")
+            continue
           f.write(mass+"\t"+str(round(tree_Asym.limit,3))+"\t")
-          #f.write(mass+"\t"+str(round(tree_Asym.limit/1.87,3))+"\t") # FIXME estimating full Run2 from 2017
+          #f.write(mass+"\t"+str(round(tree_Asym.limit/1.82,3))+"\t") # FIXME estimating full Run2 from 2017
+          #f.write(mass+"\t"+str(round(tree_Asym.limit/1.52,3))+"\t") # FIXME estimating full Run2 from 2018
           #f.write(mass+"\t"+str(round(tree_Asym.limit/3.16,3))+"\t") # FIXME estimating full Run2+3 from 2017
   
           for i in range(5): # expected limits
             tree_Asym.GetEntry(i)
             f.write(str(round(tree_Asym.limit,3))+"\t")
-            #f.write(str(round(tree_Asym.limit/1.87,3))+"\t") # FIXME estimating full Run2 from 2017
+            #f.write(str(round(tree_Asym.limit/1.82,3))+"\t") # FIXME estimating full Run2 from 2017
+            #f.write(str(round(tree_Asym.limit/1.52,3))+"\t") # FIXME estimating full Run2 from 2018
             #f.write(str(round(tree_Asym.limit/3.16,3))+"\t") # FIXME estimating full Run2+3 from 2017
           f.write("\n")
           print "done."
@@ -75,7 +117,7 @@ for WP in myWPs:
     if args.Full:
       with open("out/"+WP+"/"+year+"_"+channel+ID+tag+"_Full_limit.txt", 'w') as f:
   
-        for mass in masses:
+        for mass in (masses if channel!="EMu" else masses_EMu):
           this_name = year+"_"+channel+"_M"+mass+ID+tag
           paths = [
                   this_workdir+"/full_CLs/"+this_name+"/output/"+this_name+"_Q1.root",
