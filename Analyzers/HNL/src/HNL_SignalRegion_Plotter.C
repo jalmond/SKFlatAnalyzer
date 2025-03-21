@@ -48,10 +48,13 @@ void HNL_SignalRegion_Plotter::executeEvent(){
     ///Only scan 1000 events
     if(_jentry > 100) return;
   }
-  vector<TString> LepIDs = {"HNL_ULIDv2"};
-  if(HasFlag("AllID")) LepIDs = {"HNL_ULID","HNTightV2", "POGTight","HNL_ULIDv2"};
 
-  //// Allow ID setting by flag
+  /// Main ID only setting
+  vector<TString> LepIDs = {"HNL_ULIDv2"};
+
+  
+  //// Allow ID setting by flags
+  if(HasFlag("AllID")) LepIDs = {"HNL_ULID","HNTightV2", "POGTight","HNL_ULIDv2"};
   if(RunTopID) LepIDs = {"TopHN"};
   if(RunPOGID) LepIDs = {"POGTight"};
   if(RunHighPtID) LepIDs = {"HNL_ULID","HighPt"};
@@ -66,9 +69,10 @@ void HNL_SignalRegion_Plotter::executeEvent(){
   if(RunEMu)  ChannelsToRun.push_back(EMu);
   if(ChannelsToRun.size() == 0) ChannelsToRun = {EE,MuMu,EMu};
 
+  /// Flag specific settings for channel
   if(RunHighPtID) ChannelsToRun = {MuMu};
 
-
+  //// Match Channel to data stream
   if(IsDATA){
     if (this->DataStream == "DoubleMuon") ChannelsToRun = {MuMu};
     if (this->DataStream == "SingleMuon") ChannelsToRun = {MuMu};
@@ -77,13 +81,13 @@ void HNL_SignalRegion_Plotter::executeEvent(){
     if (this->DataStream == "EGamma") ChannelsToRun = {EE};
     if (this->DataStream == "MuonEG") ChannelsToRun = {EMu};
   }
+
+  //// Match Channel to signal process
   if(MCSample.Contains("Type")){
     //// Run channel based on MC Sample
     if(MCSample.Contains("SSWWTypeI_DF")) ChannelsToRun = {EMu};
     else if(MCSample.Contains("SSWWTypeI_SF")) ChannelsToRun = {EE,MuMu};
     else ChannelsToRun = {EE,MuMu,EMu};
-
-
   }
 
   if(HasFlag("CompareTuneP")) {
@@ -98,12 +102,7 @@ void HNL_SignalRegion_Plotter::executeEvent(){
       if(MCSample.Contains("Type")&& !SelectChannel(channel)) continue;
 
       AnalyzerParameter param = HNL_LeptonCore::InitialiseHNLParameter(id,channel);
-  
-    
-      param.PlottingVerbose = 0; //// Draw basic plots
-      if(id.Contains("ULID"))  param.PlottingVerbose = 1; /// Draw more plots
-      if(id.Contains("HEEP"))  param.PlottingVerbose = 1;
-            
+      
       if(HasFlag("HighPtTrigger")) param.TriggerSelection     = "HighPt";          
       if(HasFlag("HighPtTrigger")) param.Apply_Weight_TriggerSF = false;
 
@@ -190,7 +189,7 @@ void HNL_SignalRegion_Plotter::RunULAnalysis(AnalyzerParameter param){
   
 
   std::vector<Lepton *> leps_veto  = MakeLeptonPointerVector(MuonCollV,ElectronCollV);
-  std::vector<Tau>        TauColl        = SelectTaus   (leps_veto,param.Tau_Veto_ID,20., 2.3);
+
 
   std::vector<FatJet> AK8_JetColl                 = GetHNLAK8Jets(param.AK8JetColl,param);
   std::vector<Jet>    AK4_JetColl                 = GetHNLJets(param.AK4JetColl,     param);
@@ -227,6 +226,60 @@ void HNL_SignalRegion_Plotter::RunULAnalysis(AnalyzerParameter param){
   else RunEl = {-1};
 
 
+  /////////// RUN ANALYSE LOOP
+  
+  ///// Scan Tau ID
+
+  //// Add check for Taus                                                                                                                                                                                         
+  std::vector<Tau>    TauColl_Cleaned;
+
+  if(HasFlag("TauScan")){
+    vector<TString> TauIDs = {"NoCut","Default"};
+    vector<TString> TauJetIDs={"","JetVVL","JetVL"};
+    vector<TString> TauElIDs={"","ElVVL","ElVL"};
+    vector<TString> TauMuIDs={"","MuVL","MuL"};
+
+    for(auto ij : TauJetIDs){
+      for(auto ie: TauElIDs){
+	for(auto im: TauMuIDs){
+	  TauIDs.push_back(ij+"_"+ie+"_"+im);
+	}
+      }
+    }
+
+    TString ORIGName= param.Name;
+    TString ORIGDefName= param.DefName;
+
+    for(auto id_tau : TauIDs){
+
+      param.Name= ORIGName+id_tau;
+      param.DefName=ORIGDefName +id_tau;
+
+      std::vector<Tau>   TauColl_Uncleaned  = SelectTaus   (leps_veto,id_tau,20., 2.3);
+      TauColl_Cleaned.clear();
+     
+      for(auto ilep : TauColl_Uncleaned) {
+	if(id_tau == "Default") continue;
+	bool matched=false;
+	for(auto ilep2 : leps_veto) {
+	  if(ilep.DeltaR(*ilep2) < 0.4) matched=true;
+	}
+	if(matched) continue;
+	TauColl_Cleaned.push_back(ilep);
+      }
+
+      /// Run Analyser with Tau ID cleaned 
+      RunAllSignalRegions(Inclusive,
+                          ElectronCollT,ElectronCollV,MuonCollT,MuonCollV,  TauColl_Cleaned,
+                          AK4_JetCollLoose,AK4_JetColl,AK4_VBF_JetColl,AK8_JetColl, AK4_BJetColl,
+                          ev,METv, param, -1, weight);
+
+      
+    }
+    return;
+  }
+  
+  ///// PDF SCAN FOR SIGNAL 
   if(param.syst_ == AnalyzerParameter::PDF) {
     TString ORIGName= param.Name;
     TString ORIGDefName= param.DefName;
@@ -239,12 +292,13 @@ void HNL_SignalRegion_Plotter::RunULAnalysis(AnalyzerParameter param){
       param.DefName=ORIGDefName +PNAME_PDF;
 
       RunAllSignalRegions(Inclusive,
-			  ElectronCollT,ElectronCollV,MuonCollT,MuonCollV,  TauColl,
+			  ElectronCollT,ElectronCollV,MuonCollT,MuonCollV,  TauColl_Cleaned,
 			  AK4_JetCollLoose,AK4_JetColl,AK4_VBF_JetColl,AK8_JetColl, AK4_BJetColl,
 			  ev,METv, param, -1, weight*PDF_W);
 
       
     }
+    return;
   }
   else{
 		
@@ -252,7 +306,7 @@ void HNL_SignalRegion_Plotter::RunULAnalysis(AnalyzerParameter param){
     for(auto ir : RunEl){
       
       RunAllSignalRegions(Inclusive,
-			  ElectronCollT,ElectronCollV,MuonCollT,MuonCollV,  TauColl,
+			  ElectronCollT,ElectronCollV,MuonCollT,MuonCollV,  TauColl_Cleaned,
 			  AK4_JetCollLoose,AK4_JetColl,AK4_VBF_JetColl,AK8_JetColl, AK4_BJetColl, 
 			ev,METv, param, ir, weight);
     }

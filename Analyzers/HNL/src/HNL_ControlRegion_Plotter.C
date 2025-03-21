@@ -184,13 +184,69 @@ void HNL_ControlRegion_Plotter::RunControlRegions(AnalyzerParameter param, vecto
   else RunEl = {-1};
 
 
+  ///// Scan Tau ID                                              
+
+  std::vector<Lepton *> leps_veto  = MakeLeptonPointerVector(MuonVetoColl,ElectronVetoColl);
+                                                                                                                                                                                                             
+
+  //// Add check for Taus                                                                                                                                                                                                                                                     
+  std::vector<Tau>    TauColl_Cleaned;
+
+  if(HasFlag("TauScan")){
+    vector<TString> TauIDs = {"NoCut","Default"};
+    vector<TString> TauJetIDs={"","JetVVL","JetVL"};
+    vector<TString> TauElIDs={"","ElVVL","ElVL"};
+    vector<TString> TauMuIDs={"","MuVL","MuL"};
+    for(auto ij : TauJetIDs){
+      for(auto ie: TauElIDs){
+        for(auto im: TauMuIDs){
+          TauIDs.push_back(ij+"_"+ie+"_"+im);
+        }
+      }
+    }
+
+    TString ORIGName= param.Name;
+    TString ORIGDefName= param.DefName;
+
+    for(auto id_tau : TauIDs){
+
+      param.Name= ORIGName+id_tau;
+      param.DefName=ORIGDefName +id_tau;
+
+      std::vector<Tau>   TauColl_Uncleaned  = SelectTaus   (leps_veto,id_tau,20., 2.3);
+      TauColl_Cleaned.clear();
+
+      for(auto ilep : TauColl_Uncleaned) {
+        if(id_tau == "Default") continue;
+        bool matched=false;
+        for(auto ilep2 : leps_veto) {
+          if(ilep.DeltaR(*ilep2) < 0.4) matched=true;
+        }
+        if(matched) continue;
+        TauColl_Cleaned.push_back(ilep);
+      }
+
+      /// Run Analyser with Tau ID cleaned                                                                                                                                                                                                                                    
+      RunAllControlRegions(ElectronTightColl,ElectronVetoColl,MuonTightColl,MuonVetoColl, TauColl_Cleaned,
+                           AK4_JetCollLoose,AK4_JetColl,AK4_VBF_JetColl,AK8_JetColl, AK4_BJetColl,
+                           ev,METv, param, CRs,-1,weight);
+
+
+
+    }
+    return;
+  }
+
+
+
+
   if(HasFlag("OS"))  {
     
     
     if(!MCSample.Contains("DYJets_Pt")){
 
       /// Run MiNNLO only
-      RunAllControlRegions(ElectronTightColl,ElectronVetoColl,MuonTightColl,MuonVetoColl,
+      RunAllControlRegions(ElectronTightColl,ElectronVetoColl,MuonTightColl,MuonVetoColl,TauColl_Cleaned,
 			   AK4_JetCollLoose,AK4_JetColl,AK4_VBF_JetColl,AK8_JetColl, AK4_BJetColl,
 			   ev,METv, param, CRs,-1,weight);
       
@@ -226,7 +282,8 @@ void HNL_ControlRegion_Plotter::RunControlRegions(AnalyzerParameter param, vecto
     }
 
 
-    RunAllControlRegions(ElectronTightColl,ElectronVetoColl,MuonTightColl,MuonVetoColl,
+    RunAllControlRegions(ElectronTightColl,ElectronVetoColl,MuonTightColl,MuonVetoColl,TauColl_Cleaned,
+
 			 AK4_JetCollLoose,AK4_JetColl,AK4_VBF_JetColl,AK8_JetColl, AK4_BJetColl,
 			 ev,METv, param, CRs,-1,weight);
 
@@ -234,7 +291,8 @@ void HNL_ControlRegion_Plotter::RunControlRegions(AnalyzerParameter param, vecto
   else{
     
     for(auto ir : RunEl){
-      RunAllControlRegions(ElectronTightColl,ElectronVetoColl,MuonTightColl,MuonVetoColl, 
+      RunAllControlRegions(ElectronTightColl,ElectronVetoColl,MuonTightColl,MuonVetoColl, TauColl_Cleaned,
+
 			   AK4_JetCollLoose,AK4_JetColl,AK4_VBF_JetColl,AK8_JetColl, AK4_BJetColl, 
 			   ev,METv, param, CRs,ir,weight);
     }
