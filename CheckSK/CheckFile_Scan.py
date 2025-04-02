@@ -40,7 +40,7 @@ def test_branch(branch_name, event):
         return True  # Issue detected
 
 # Loop over every event number divisible by 1000
-for problematic_event in range(0, nentries, 100):
+for problematic_event in range(0, nentries, 1):
 
     bad_branches = []
     

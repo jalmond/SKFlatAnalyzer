@@ -821,59 +821,59 @@ bool  HNL_LeptonCore::UpdateParamBySyst(TString JobID, AnalyzerParameter& paramE
 
     if(paramEv.syst_ == AnalyzerParameter::FRLooseIDDJUp){
       paramEv.k.Muon_FR            = "HNL_ULID_FO_v1_a"+JFRJetPt+MuFRBin;
-      paramEv.k.Electron_FR        = "HNL_HighPt_ULID_FO_v8_a"+JFRJetPt+ElFRBin;
+      paramEv.k.Electron_FR        = "HNL_ULID_FO_v8_a"+JFRJetPt+ElFRBin;
     }
     else  if(paramEv.syst_ == AnalyzerParameter::FRLooseIDDJDown){
       paramEv.k.Muon_FR            = "HNL_ULID_FO_v2_a"+JFRJetPt+MuFRBin;
-      paramEv.k.Electron_FR        = "HNL_HighPt_ULID_FO_v0"+JFRJetPt+ElFRBin;
+      paramEv.k.Electron_FR        = "HNL_ULID_FO_v0"+JFRJetPt+ElFRBin;
     }
     else{
       paramEv.k.Muon_FR            = "HNL_ULID_FO_v1_a"+JFRJetPt+MuFRBin;
-      paramEv.k.Electron_FR        = "HNL_HighPt_ULID_FO_v9_a"+JFRJetPt+ElFRBin;
+      paramEv.k.Electron_FR        = "HNL_ULID_FO_v9_a"+JFRJetPt+ElFRBin;
     }
   }
   if(GetEra() == "2016postVFP"){
 
     if(paramEv.syst_ == AnalyzerParameter::FRLooseIDDJUp){
       paramEv.k.Muon_FR            = "HNL_ULID_FO_v1_a"+JFRJetPt+MuFRBin;
-      paramEv.k.Electron_FR        = "HNL_HighPt_ULID_FO_v8_a"+JFRJetPt+ElFRBin;
+      paramEv.k.Electron_FR        = "HNL_ULID_FO_v8_a"+JFRJetPt+ElFRBin;
     }
     else  if(paramEv.syst_ == AnalyzerParameter::FRLooseIDDJDown){
       paramEv.k.Muon_FR            = "HNL_ULID_FO_v3_a"+JFRJetPt+MuFRBin;
-      paramEv.k.Electron_FR        = "HNL_HighPt_ULID_FO_v0"+JFRJetPt+ElFRBin;
+      paramEv.k.Electron_FR        = "HNL_ULID_FO_v0"+JFRJetPt+ElFRBin;
     }
     else {
       paramEv.k.Muon_FR            = "HNL_ULID_FO_v2_a"+JFRJetPt+MuFRBin;
-      paramEv.k.Electron_FR        = "HNL_HighPt_ULID_FO_v9_a"+JFRJetPt+ElFRBin;
+      paramEv.k.Electron_FR        = "HNL_ULID_FO_v9_a"+JFRJetPt+ElFRBin;
     }
   }
   if(GetYearString() == "2017"){
     if(paramEv.syst_ == AnalyzerParameter::FRLooseIDDJUp){
       paramEv.k.Muon_FR            = "HNL_ULID_FO_v1_a"+JFRJetPt+MuFRBin;
-      paramEv.k.Electron_FR        = "HNL_HighPt_ULID_FO_v8_a"+JFRJetPt+ElFRBin;
+      paramEv.k.Electron_FR        = "HNL_ULID_FO_v8_a"+JFRJetPt+ElFRBin;
 
     }
     else  if(paramEv.syst_ == AnalyzerParameter::FRLooseIDDJDown){
       paramEv.k.Muon_FR            = "HNL_ULID_FO_v3_a"+JFRJetPt+MuFRBin;;
-      paramEv.k.Electron_FR        = "HNL_HighPt_ULID_FO_v0"+JFRJetPt+ElFRBin;
+      paramEv.k.Electron_FR        = "HNL_ULID_FO_v0"+JFRJetPt+ElFRBin;
     }
     else {
       paramEv.k.Muon_FR            = "HNL_ULID_FO_v2_a"+JFRJetPt+MuFRBin;;
-      paramEv.k.Electron_FR        = "HNL_HighPt_ULID_FO_v9_a"+JFRJetPt+ElFRBin;
+      paramEv.k.Electron_FR        = "HNL__ULID_FO_v9_a"+JFRJetPt+ElFRBin;
     }
   }
   if(GetYearString() == "2018"){
     if(paramEv.syst_ == AnalyzerParameter::FRLooseIDDJUp){
       paramEv.k.Muon_FR            = "HNL_ULID_FO_v1_a"+JFRJetPt+MuFRBin;
-      paramEv.k.Electron_FR        = "HNL_HighPt_ULID_FO_v8_a"+JFRJetPt+ElFRBin;
+      paramEv.k.Electron_FR        = "HNL_ULID_FO_v8_a"+JFRJetPt+ElFRBin;
     }
     else  if(paramEv.syst_ == AnalyzerParameter::FRLooseIDDJDown){
       paramEv.k.Muon_FR            = "HNL_ULID_FO_v4_a"+JFRJetPt+MuFRBin;
-      paramEv.k.Electron_FR        = "HNL_HighPt_ULID_FO_v0"+JFRJetPt+ElFRBin;
+      paramEv.k.Electron_FR        = "HNL_ULID_FO_v0"+JFRJetPt+ElFRBin;
     }
     else {
       paramEv.k.Muon_FR         = "HNL_ULID_FO_v3_a"+JFRJetPt+MuFRBin;;
-      paramEv.k.Electron_FR     = "HNL_HighPt_ULID_FO_v9_a"+JFRJetPt+ElFRBin;
+      paramEv.k.Electron_FR     = "HNL_ULID_FO_v9_a"+JFRJetPt+ElFRBin;
     }
   }
 
@@ -948,7 +948,8 @@ double HNL_LeptonCore::GetKFactor(){
   else if(MCSample.Contains("ZZTo4L_powheg") or MCSample.Contains("ZZTo2L2Nu") or MCSample.Contains("ZZTo2L2Q")){
     // Physics Letters B 735 (2014) 311-313                                                                                                                                                                                                                                    
     // https://doi.org/10.1016/j.physletb.2014.06.056                                                                                                                                                                                                                           
-    weight =  1.16;
+    weight = ZZKfactor("ZZMass");
+    //    weight =  1.16;
     if(HasFlag("ZZKFMass"))  weight = ZZKfactor("ZZMass");
     if(HasFlag("ZZKFPt"))    weight = ZZKfactor("ZZPt");
     //    if(_jentry % 1000) cout << "K-Factor ZZMass = " << ZZKfactor("ZZMass") << " K-Factor ZZPt " << ZZKfactor("ZZPt") << " " << endl;
