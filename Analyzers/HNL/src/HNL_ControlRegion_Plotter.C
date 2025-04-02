@@ -39,21 +39,18 @@ void HNL_ControlRegion_Plotter::executeEvent(){
 
   vector<TString> LepIDs = {"HNL_ULIDv2"};
 
-  /// Set ID by flag
-  if(RunTopID) LepIDs = {"TopHN"};
-  if(RunPOGID) LepIDs = {"POGTight"};
-  if(RunHighPtID) LepIDs = {"HighPt"};
-  if(RunPekingID) LepIDs = {"Peking"};
-
   if(strcmp(std::getenv("USER"),"jalmond")==0) LepIDs = {"HNL_ULIDv2","POGTight","HNTightV2"};
 
-
   vector<HNL_LeptonCore::Channel> ChannelsToRun = {};
+
+  //// Set Individual channel
   if(RunEE)   ChannelsToRun.push_back(EE);
   if(RunMuMu) ChannelsToRun.push_back(MuMu);
   if(RunEMu)  ChannelsToRun.push_back(EMu);
+  //   else run all 3 channels
   if(ChannelsToRun.size() == 0)ChannelsToRun = {EE,MuMu,EMu};
 
+  /// Check Alt FR IDs
   if(HasFlag("AltID")) {
     ChannelsToRun = {EE};
     LepIDs = {"HNL_ULIDv2"};
@@ -68,8 +65,10 @@ void HNL_ControlRegion_Plotter::executeEvent(){
     ChannelsToRun = {MuMu};
   }
   else {
-    if(HasFlag("Dilepton"))    CRToRun = {"OS_VR","SS_CR","VBF_CR"};
+    /// Run All CRs for AN
     if(HasFlag("MultiLepton")) CRToRun = {"SS_CR","VBF_CR","LLL_VR"};
+    /// Run selected CRs
+    if(HasFlag("Dilepton"))    CRToRun = {"OS_VR","SS_CR","VBF_CR"};
     if(HasFlag("SSMultiLep"))  CRToRun = {"SS_CR","VBF_CR"};
     if(HasFlag("LLL")) CRToRun.push_back("LLL_VR");
   }

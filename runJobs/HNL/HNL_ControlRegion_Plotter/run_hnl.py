@@ -163,14 +163,13 @@ flags = split_by_comma(args.flags)
 
 if args.MultiLep:
     flags.append("MultiLepton")
-    
-if args.SSMultiLep:
+elif args.SSMultiLep:
     flags.append("SSMultiLep")   
 elif args.LLL:
     flags.append("LLL")     
 else:
-    flags.append("SSMultiLep,LLL")
-    print("No Flag set.... using SSMultiLep,LLL")
+    flags.append("MultiLepton")
+    print("No Flag set.... using MultiLepton")
 
 if args.Systematics:
     flags.append("RunSyst")
@@ -178,12 +177,14 @@ if args.Systematics:
 flags_alt=[]
 flags_alt = split_by_comma(args.flags)
 flags_alt.append("Alt") 
-if args.SSMultiLep:
-    flags_alt.append("SSMultiLep")
-elif args.MultiLep:
+if args.MultiLep:
     flags_alt.append("MultiLepton")
+elif args.SSMultiLep:
+    flags_alt.append("SSMultiLep")
 elif args.LLL:
     flags_alt.append("LLL")
+else:
+    flags_alt.append("MultiLepton")
 
 
 # Run command for individual sample if provided

@@ -476,6 +476,7 @@ TString HNL_LeptonCore::GetCutFlowNameFromRegion(HNL_LeptonCore::SearchRegion sr
 
     
   if(sr==CR)    EVHistName ="ControlRegions";
+  if(sr==CRFull)    EVHistName ="ControlRegions";
   if(sr==sigmm) EVHistName ="SR_CutFlow";
   if(sr==sigee) EVHistName ="SR_CutFlow";
   if(sr==sigem) EVHistName ="SR_CutFlow";
@@ -626,13 +627,12 @@ vector<TString>  HNL_LeptonCore::GetLabelsFromRegion(HNL_LeptonCore::SearchRegio
   if(sr == ControlRegion)    labels = {"NoCut","HEMVeto","METFilter","GENMatched","LeptonFlavour","TauVeto","Trigger","OS_VR","VV_VR","VG_VR","SS_CR","VBF_CR"};
 
   //                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
-  if(sr==CR)   labels = {  "ZZ_CR","ZG_CR","WG_CR","WZ_SR1", "WZ_SR2", "WZ_SR3",
-			  "SR1_InvMET", "SR1_InvBJet","SR2_InvMET", "SR2_InvBJet","SR3_InvMET", "SR3_InvBJet"};			 
+  if(sr==CR)   labels = {  "ZZ_CR","ZG_CR","WG_CR","WZ_SR1", "WZ_SR2", "WZ_SR3", "SR1_InvMET", "SR1_InvBJet","SR2_InvMET", "SR2_InvBJet","SR3_InvMET", "SR3_InvBJet"};			 
 
                                                                                                                                                                                                                                                                                 
-  if(sr==CRFull)   labels = { "Z_CR","Top_CR","Top_CR2", "TopAK8_CR","ZAK8_CR",
+  if(sr==CRFull)   labels = { "SSPresel",  "Z_CR","Top_CR","Top_CR2", "TopAK8_CR","ZAK8_CR",
                           "WpWp_CR","WpWp_CR_NP","WpWp_CR_NP2","WpWp_CR_NP3",
-                          "WZ_CR", "ZZ_CR","ZG_CR","WG_CR","WZ_SR1", "WZ_SR2", "WZ_SR3","WZB_CR",
+			  "ZZ_CR","ZG_CR","WG_CR","WZ_SR1", "WZ_SR2", "WZ_SR3","WZB_CR",
                           "ZNPEl_CR", "ZNPMu_CR", "TopNP_CR",
                           "SR1_InvMET", "SR1_InvBJet","SR2_InvMET", "SR2_InvBJet","SR3_InvMET", "SR3_InvBJet",
                           "HighMassBJet_CR","HighMassNP_CR"} ;

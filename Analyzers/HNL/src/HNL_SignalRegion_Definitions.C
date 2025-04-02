@@ -637,10 +637,10 @@ TString HNL_RegionDefinitions::RunSignalRegionAK8String(bool ApplyForSR,
     
   if(AK8_JetColl.size() != 1)  return "false";
 
-  //if(channel == EMu && JetColl.size() > 3) {
-  //  if(User("jalmond"))Fill_RegionPlots(param,"EMU_HighJets"+RegionTag , TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);
-  //   return "false";
-  // }
+  if(channel == EMu && JetColl.size() > 3) {
+    if(User("jalmond"))Fill_RegionPlots(param,"EMU_HighJets"+RegionTag , TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);
+    return "false";
+  }
   FillCutflow(Reg, w, RegionTag+"_1AK8",param);
 
   if(ApplyForSR) FillCutflow(HNL_LeptonCore::SRLowMass,  w, "SR1",param);

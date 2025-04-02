@@ -372,22 +372,22 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
     vector<TString> cutlabels_main = {};
     
     if(RunCR("OS_VR",CRs)){
-      cutlabels.push_back("ZAK8_CR");
-      cutlabels.push_back("TopAK8_CR");
       cutlabels.push_back("Z_CR");
       cutlabels.push_back("Top_CR");
       cutlabels.push_back("Top_CR2");
       ControlLabel+="OS_VR";
     }
-    
+
     if(RunCR("LLL_VR",CRs)) {
       cutlabels_main.push_back("ZZ_CR");
-      cutlabels_main.push_back("WZ_CR");
       cutlabels_main.push_back("WG_CR");
       cutlabels_main.push_back("ZG_CR");
+      cutlabels_main.push_back("WZ_SR1");
       cutlabels_main.push_back("WZ_SR2");
-      cutlabels.push_back("WZ_SR2b");
+      cutlabels_main.push_back("WZ_SR3");
       cutlabels_main.push_back("WZB_CR");
+      
+      cutlabels.push_back("WZ_SR2b");
       cutlabels.push_back("Z_NP_El_CR");
       cutlabels.push_back("Z_NP_Mu_CR");
       cutlabels.push_back("Top_NP_CR");
@@ -395,16 +395,18 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
     }
 
     if(RunCR("SS_CR",CRs)) {
-      cutlabels.push_back("SSPresel");
       cutlabels_main.push_back("SR1_InvMET");
-      cutlabels_main.push_back("SR1_BJet");
+      cutlabels_main.push_back("SR1_InvBJet");
       cutlabels_main.push_back("SR2_InvMET");
-      cutlabels_main.push_back("SR2_BJet");
+      cutlabels_main.push_back("SR2_InvBJet");
       cutlabels_main.push_back("SR3_InvMET");
-      cutlabels_main.push_back("SR3_BJet");
+      cutlabels_main.push_back("SR3_InvBJet");
+
+      cutlabels.push_back("SSPresel");
       cutlabels.push_back("HighMass1Jet_CR");
       cutlabels.push_back("HighMassBJet_CR");
       cutlabels.push_back("HighMassNP_CR");
+
       ControlLabel+="SS";
     }
 
