@@ -28,6 +28,7 @@ parser.add_argument('-era', dest='era', default="NULL")
 parser.add_argument('-skim', dest='skim', default="SkimTree_HNMultiLepBDT")
 parser.add_argument('-flags', dest='flags', default="")
 
+parser.add_argument('--UseGT36', action='store_true')
 parser.add_argument('--RunPrompt', action='store_true')
 parser.add_argument('--RunData', action='store_true')
 parser.add_argument('--RunConv',   action='store_true')
@@ -36,8 +37,11 @@ parser.add_argument('--RunCF',     action='store_true')
 
 parser.add_argument('--Central',     action='store_true')
 parser.add_argument('--Systematics', action='store_true')
+
+#######   Flag options
 parser.add_argument('--LLL', action='store_true')
 parser.add_argument('--SSMultiLep', action='store_true')
+parser.add_argument('--MultiLep', action='store_true')
 
 parser.add_argument('--Run', action='store_true')
 
@@ -157,23 +161,30 @@ if TestMode:
 # Process flags                                                                                                                                                              
 flags = split_by_comma(args.flags)
 
-if args.SSMultiLep:
+if args.MultiLep:
+    flags.append("MultiLepton")
+elif args.SSMultiLep:
     flags.append("SSMultiLep")   
 elif args.LLL:
     flags.append("LLL")     
 else:
-    flags.append("SSMultiLep,LLL")
-    print("No Flag set.... using SSMultiLep,LLL")
+    flags.append("MultiLepton")
+    print("No Flag set.... using MultiLepton")
 
 if args.Systematics:
     flags.append("RunSyst")
 
 flags_alt=[]
 flags_alt = split_by_comma(args.flags)
-if args.SSMultiLep:
+flags_alt.append("Alt") 
+if args.MultiLep:
+    flags_alt.append("MultiLepton")
+elif args.SSMultiLep:
     flags_alt.append("SSMultiLep")
 elif args.LLL:
     flags_alt.append("LLL")
+else:
+    flags_alt.append("MultiLepton")
 
 
 # Run command for individual sample if provided
@@ -224,10 +235,15 @@ if args.Central or args.Systematics:
     for era in era_list:
         # Running background and fake data commands
 
+        DATADir = "DL"
+        
+        if RunData and args.UseGT36 and era == "2018":
+            DATADir = "DL_GT36"
+
         if RunData:
-            RunCommand(TestMode,f"SKFlat.py -a {analyzer}  -l {datapath}/DL/{era}_DiLepton_MuMu.txt     -n 100  --nmax {nmax}   -e {era} --skim SkimTree_HNMultiLepBDT  {FlagCommand('', flags)} &")   
-            RunCommand(TestMode,f"SKFlat.py -a {analyzer}  -l {datapath}/DL/{era}_DiLepton_EMu.txt      -n 100  --nmax {nmax}   -e {era} --skim SkimTree_HNMultiLepBDT  {FlagCommand('', flags)} &")   
-            RunCommand(TestMode,f"SKFlat.py -a {analyzer}  -l {datapath}/DL/{era}_DiLepton_EE.txt       -n 100  --nmax {nmax}   -e {era} --skim SkimTree_HNMultiLepBDT  {FlagCommand('', flags)} &")   
+            RunCommand(TestMode,f"SKFlat.py -a {analyzer}  -l {datapath}/{DATADir}/{era}_DiLepton_MuMu.txt     -n 100  --nmax {nmax}   -e {era} --skim SkimTree_HNMultiLepBDT  {FlagCommand('', flags)} &")   
+            RunCommand(TestMode,f"SKFlat.py -a {analyzer}  -l {datapath}/{DATADir}/{era}_DiLepton_EMu.txt      -n 100  --nmax {nmax}   -e {era} --skim SkimTree_HNMultiLepBDT  {FlagCommand('', flags)} &")   
+            RunCommand(TestMode,f"SKFlat.py -a {analyzer}  -l {datapath}/{DATADir}/{era}_DiLepton_EE.txt       -n 100  --nmax {nmax}   -e {era} --skim SkimTree_HNMultiLepBDT  {FlagCommand('', flags)} &")   
 
         #### Prompt            
         if RunPrompt:
@@ -243,12 +259,14 @@ if args.Central or args.Systematics:
 
         if RunFake:
             ### Fakes                                                                                                                                                                            
-            RunCommand(TestMode,f"SKFlat.py -a {analyzer}  -l {datapath}/DL/{era}_DiLepton_EMu.txt     -n 100  --nmax {nmax}   -e {era}  --skim SkimTree_HNMultiLepBDT   {FlagCommand('RunFake', flags)} &")
-            RunCommand(TestMode,f"SKFlat.py -a {analyzer}  -l {datapath}/DL/{era}_DiLepton_MuMu.txt    -n 100  --nmax {nmax}   -e {era}  --skim SkimTree_HNMultiLepBDT  {FlagCommand('RunFake', flags)} &")
-            RunCommand(TestMode,f"SKFlat.py -a {analyzer}  -l {datapath}/DL/{era}_DiLepton_EE.txt      -n 100    --nmax {nmax}   -e {era}  --skim SkimTree_HNMultiLepBDT  {FlagCommand('RunFake', flags)} ")
+            RunCommand(TestMode,f"SKFlat.py -a {analyzer}  -l {datapath}/{DATADir}/{era}_DiLepton_EMu.txt     -n 100  --nmax {nmax}   -e {era}  --skim SkimTree_HNMultiLepBDT   {FlagCommand('RunFake', flags)} &")
+            RunCommand(TestMode,f"SKFlat.py -a {analyzer}  -l {datapath}/{DATADir}/{era}_DiLepton_MuMu.txt    -n 100  --nmax {nmax}   -e {era}  --skim SkimTree_HNMultiLepBDT  {FlagCommand('RunFake', flags)} &")
+            RunCommand(TestMode,f"SKFlat.py -a {analyzer}  -l {datapath}/{DATADir}/{era}_DiLepton_EE.txt      -n 100    --nmax {nmax}   -e {era}  --skim SkimTree_HNMultiLepBDT  {FlagCommand('RunFake', flags)} ")
             
         if RunCF:
             ### CF                                                                                                                                                                               
             if args.SSMultiLep:
-                RunCommand(TestMode,f"SKFlat.py -a {analyzer}  -l {datapath}/DL/{era}_DiLepton_EE.txt      -n 100    --nmax {nmax}   -e {era} --skim SkimTree_DileptonBDT  {FlagCommand('RunCF', flags)} ") 
+                RunCommand(TestMode,f"SKFlat.py -a {analyzer}  -l {datapath}/{DATADir}/{era}_DiLepton_EE.txt      -n 100    --nmax {nmax}   -e {era} --skim SkimTree_DileptonBDT  {FlagCommand('RunCF', flags)} ") 
+            elif args.MultiLep:
+                RunCommand(TestMode,f"SKFlat.py -a {analyzer}  -l {datapath}/{DATADir}/{era}_DiLepton_EE.txt      -n 100    --nmax {nmax}   -e {era} --skim SkimTree_DileptonBDT  {FlagCommand('RunCF', flags)} ")
 
