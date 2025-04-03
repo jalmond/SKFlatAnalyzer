@@ -37,7 +37,7 @@ parser.add_argument('--RunCF',     action='store_true')
 
 parser.add_argument('--Central',     action='store_true')
 parser.add_argument('--Systematics', action='store_true')
-
+parser.add_argument('--RunAlternativePrompt', action='store_true')
 #######   Flag options
 parser.add_argument('--LLL', action='store_true')
 parser.add_argument('--SSMultiLep', action='store_true')
@@ -161,6 +161,9 @@ if TestMode:
 # Process flags                                                                                                                                                              
 flags = split_by_comma(args.flags)
 
+if args.Systematics:
+    flags.insert(0,"RunSyst")
+
 if args.MultiLep:
     flags.append("MultiLepton")
 elif args.SSMultiLep:
@@ -171,20 +174,10 @@ else:
     flags.append("MultiLepton")
     print("No Flag set.... using MultiLepton")
 
-if args.Systematics:
-    flags.append("RunSyst")
 
 flags_alt=[]
-flags_alt = split_by_comma(args.flags)
-flags_alt.append("Alt") 
-if args.MultiLep:
-    flags_alt.append("MultiLepton")
-elif args.SSMultiLep:
-    flags_alt.append("SSMultiLep")
-elif args.LLL:
-    flags_alt.append("LLL")
-else:
-    flags_alt.append("MultiLepton")
+flags_alt = flags
+flags_alt.insert(0,"Alt") 
 
 
 # Run command for individual sample if provided
@@ -197,7 +190,6 @@ if IndividualSample:
         SampleType=GetType(args)
         RunCommand(TestMode,f"SKFlat.py -a {analyzer} -i {args.samplename} -n {njob} --nmax {nmax} -e {args.era} --skim {args.skim} {FlagCommand(SampleType, flags)}&")
     exit()
-
 
 
 RunPrompt=True
@@ -249,7 +241,8 @@ if args.Central or args.Systematics:
         if RunPrompt:
             RunCommand(TestMode,f"SKFlat.py -a {analyzer}  -l {mcpath}/Prompt/PromptSS.txt             -n 20        --nmax {nmax}   -e {era}  --skim SkimTree_HNMultiLepBDT   {FlagCommand('RunPrompt', flags)}  &")   
             RunCommand(TestMode,f"SKFlat.py -a {analyzer}  -l {mcpath}/Prompt/PromptSS2.txt            -n 200       --nmax {nmax}   -e {era}  --skim SkimTree_HNMultiLepBDT   {FlagCommand('RunPrompt', flags)}  &")   
-            RunCommand(TestMode,f"SKFlat.py -a {analyzer}  -l {mcpath}/Prompt/PromptSSAlt.txt          -n 200       --nmax {nmax}   -e {era}  --skim SkimTree_HNMultiLepBDT   {FlagCommand('RunPrompt', flags_alt)}  ")   
+            if args.RunAlternativePrompt:
+                RunCommand(TestMode,f"SKFlat.py -a {analyzer}  -l {mcpath}/Prompt/PromptSSAlt.txt          -n 200       --nmax {nmax}   -e {era}  --skim SkimTree_HNMultiLepBDT   {FlagCommand('RunPrompt', flags_alt)}  ")   
 
         ### Conv                                                                                                                                                                             
 
