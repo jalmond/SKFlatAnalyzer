@@ -26,13 +26,7 @@ if [[ $1 == "GT36" ]]; then
     for i in "${era_list[@]}"
     do
 
-        SKFlat.py -a $analyzer  -i EGamma_GT36:A     -n ${njobs_data}  --nmax ${nmax}   -e ${i}   --skim  SkimTree_HNMultiLep &
-        SKFlat.py -a $analyzer  -i EGamma_GT36:B     -n ${njobs_data}  --nmax ${nmax}   -e ${i}   --skim  SkimTree_HNMultiLep &
-        SKFlat.py -a $analyzer  -i EGamma_GT36:C     -n ${njobs_data}  --nmax ${nmax}   -e ${i}   --skim  SkimTree_HNMultiLep &
-        SKFlat.py -a $analyzer  -i EGamma_GT36:D     -n ${njobs_data}  --nmax ${nmax}   -e ${i}   --skim  SkimTree_HNMultiLep &
-   
-	SKFlat.py -a $analyzer  -i DoubleMuon_GT36:A     -n ${njobs_data}  --nmax ${nmax}   -e ${i}   --skim  SkimTree_HNMultiLep &
-
+        SKFlat.py -a $analyzer  -i EGamma_GT36:D     -n 1000  --nmax ${nmax}   -e ${i}   --skim  SkimTree_HNMultiLep &
 
     done
 fi

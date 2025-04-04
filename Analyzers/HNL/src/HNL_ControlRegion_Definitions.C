@@ -1347,6 +1347,9 @@ bool HNL_RegionDefinitions::FillHighMass1JetCRPlots(HNL_LeptonCore::Channel chan
   if(!CheckLeptonFlavourForChannel(channel, leps)) return false;
   if (leps_veto.size() != 2) return false;
 
+  /// Remove signals 
+  if(leps[1]->Pt() > 50) return false; 
+  
   FillCutflow(Reg, w, "Step2",param);
 
   Particle ll =  (*leps[0]) + (*leps[1]);

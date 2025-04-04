@@ -175,13 +175,17 @@ void HNL_LeptonCore::Fill_RegionPlots(AnalyzerParameter& param, TString plot_dir
 
   Fill_RegionPlotsFull(param, plot_dir, taus,jets,fatjets, leps, met, nvtx, w);
 
-  TString Name= param.Name;
-  if(SameCharge(leps)){
-    if(leps[0]->Charge() > 0)param.Name= Name+"_PP";
-    else param.Name= Name+"_MM";
-    Fill_RegionPlotsFull(param, plot_dir, taus,jets,fatjets, leps, met, nvtx, w);
+  if(User("jalmond")){
+    TString Name= param.Name;
+    
+    if(SameCharge(leps)){
+      if(leps[0]->Charge() > 0)param.Name= Name+"_PP";
+      else param.Name= Name+"_MM";
+      Fill_RegionPlotsFull(param, plot_dir, taus,jets,fatjets, leps, met, nvtx, w);
+    }
+    
+    param.Name = Name;
   }
-
 }
 
 
@@ -190,13 +194,15 @@ void HNL_LeptonCore::Fill_RegionPlots(AnalyzerParameter& param, TString plot_dir
   vector<Tau> NullTaus;
   Fill_RegionPlotsFull(param, plot_dir, NullTaus,jets,fatjets, leps, met, nvtx, w);
 
-  TString Name= param.Name;
-  if(SameCharge(leps)){
-    if(leps[0]->Charge() > 0)param.Name= Name+"_PP";
-    else param.Name= Name+"_MM";
-    Fill_RegionPlotsFull(param, plot_dir, NullTaus,jets,fatjets, leps, met, nvtx, w);
+  if(User("jalmond")){
+    TString Name= param.Name;
+    if(SameCharge(leps)){
+      if(leps[0]->Charge() > 0)param.Name= Name+"_PP";
+      else param.Name= Name+"_MM";
+      Fill_RegionPlotsFull(param, plot_dir, NullTaus,jets,fatjets, leps, met, nvtx, w);
+    }
+    param.Name = Name;
   }
-  
 }
 
 

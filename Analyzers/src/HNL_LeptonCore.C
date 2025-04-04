@@ -860,7 +860,7 @@ bool  HNL_LeptonCore::UpdateParamBySyst(TString JobID, AnalyzerParameter& paramE
     }
     else {
       paramEv.k.Muon_FR            = "HNL_ULID_FO_v2_a"+JFRJetPt+MuFRBin;;
-      paramEv.k.Electron_FR        = "HNL__ULID_FO_v9_a"+JFRJetPt+ElFRBin;
+      paramEv.k.Electron_FR        = "HNL_ULID_FO_v9_a"+JFRJetPt+ElFRBin;
     }
   }
   if(GetYearString() == "2018"){
