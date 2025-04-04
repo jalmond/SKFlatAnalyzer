@@ -173,6 +173,9 @@ void HNL_LeptonCore::Fill_PlotsAK8(AnalyzerParameter& param, TString  region, TS
 
 void HNL_LeptonCore::Fill_RegionPlots(AnalyzerParameter& param, TString plot_dir, vector<Tau>& taus,   std::vector<Jet>& jets,    std::vector<FatJet>& fatjets, std::vector<Lepton *>& leps , Particle&  met, double nvtx,  double w){
 
+
+  if(HasFlag("RunSyst")) return;
+  
   Fill_RegionPlotsFull(param, plot_dir, taus,jets,fatjets, leps, met, nvtx, w);
 
   if(User("jalmond")){
@@ -190,6 +193,8 @@ void HNL_LeptonCore::Fill_RegionPlots(AnalyzerParameter& param, TString plot_dir
 
 
 void HNL_LeptonCore::Fill_RegionPlots(AnalyzerParameter& param, TString plot_dir,   std::vector<Jet>& jets,    std::vector<FatJet>& fatjets, std::vector<Lepton *>& leps , Particle&  met, double nvtx,  double w){
+
+  if(HasFlag("RunSyst")) return;
 
   vector<Tau> NullTaus;
   Fill_RegionPlotsFull(param, plot_dir, NullTaus,jets,fatjets, leps, met, nvtx, w);
