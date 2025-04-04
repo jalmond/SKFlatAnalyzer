@@ -23,9 +23,10 @@ def run_command(command):
 def run_gt36():
     for era in ["2018"]:
         for dataset in [
-                "DoubleMuon_GT36:A", "DoubleMuon_GT36:B", "DoubleMuon_GT36:C", "DoubleMuon_GT36:D",
-                "MuonEG_GT36:A", "MuonEG_GT36:B", "MuonEG_GT36:C", "MuonEG_GT36:D",
-                "EGamma_GT36:A", "EGamma_GT36:B", "EGamma_GT36:C",
+                #"DoubleMuon_GT36:A", "DoubleMuon_GT36:B", "DoubleMuon_GT36:C", "DoubleMuon_GT36:D",
+                #"MuonEG_GT36:A", "MuonEG_GT36:B", "MuonEG_GT36:C", "MuonEG_GT36:D",
+                #"EGamma_GT36:A", "EGamma_GT36:B", "EGamma_GT36:C",
+                "EGamma_GT36:D"
         ]:
             cmd = f"SKFlat.py -a {analyzer} -i {dataset} -n 10000 --nmax 600 -e {era} &"
             run_command(cmd)
