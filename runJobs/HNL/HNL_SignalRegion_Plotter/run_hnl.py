@@ -174,8 +174,8 @@ flags = split_by_comma(args.flags)
 
 
 if args.Systematics:
-    flags.append("RunSyst")
-
+    flags.insert(0,"RunSyst")
+    
 # Run command for individual sample if provided
 if IndividualSample:
     if not args.RunSignal and not args.RunPrompt and not args.RunCF and not args.RunConv and not args.RunFake:
@@ -188,10 +188,6 @@ if IndividualSample:
     exit()
 
 
-DATADir = "DL"
-if RunData and args.UseGT36 and era == "2018":
-    DATADir = "DL_GT36"
-
     
 if args.Signal:
     for era in era_list:
@@ -202,6 +198,11 @@ if args.Signal:
     exit()
 
 if args.RunData:
+
+    DATADir = "DL"
+    if args.UseGT36 and era == "2018":
+        DATADir = "DL_GT36"
+
     for era in era_list:
         RunCommand(TestMode,f"SKFlat.py -a {analyzer} -l {datapath}/{DATADir}/{era}_DiLepton_MuMu.txt -n 100 --nmax {nmax} -e {era} --skim SkimTree_HNMultiLepBDT {FlagCommand('RunData', flags)} &")
         RunCommand(TestMode,f"SKFlat.py -a {analyzer} -l {datapath}/{DATADir}/{era}_DiLepton_EE.txt   -n 100 --nmax {nmax} -e {era} --skim SkimTree_HNMultiLepBDT {FlagCommand('RunData', flags)} &")
@@ -209,6 +210,12 @@ if args.RunData:
     exit()
 
 if args.Central or args.Systematics:
+
+    DATADir = "DL"
+    if args.UseGT36 and era == "2018":
+        DATADir = "DL_GT36"
+        
+
     for era in era_list:
 
         # Running background and fake data commands
