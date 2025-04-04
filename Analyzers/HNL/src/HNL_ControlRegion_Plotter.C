@@ -11,11 +11,13 @@ void HNL_ControlRegion_Plotter::initializeAnalyzer(){
     bool run_em_bdt=false;
 
     if (this->DataStream.Contains("DoubleMuon")) run_mm_bdt=true;
+    if (this->DataStream.Contains("MuonEG")) run_em_bdt=true;
+    if (this->DataStream.Contains("EGamma")) run_ee_bdt=true;
+    
     if (this->DataStream == "SingleMuon") run_mm_bdt=true;
     if (this->DataStream == "DoubleEG") run_ee_bdt=true;
     if (this->DataStream == "SingleElectron") run_ee_bdt=true;
-    if (this->DataStream == "EGamma") run_ee_bdt=true;
-    if (this->DataStream.Contains("MuonEG")) run_em_bdt=true;
+
 
     SetupEventMVAReader("V2",run_ee_bdt,run_mm_bdt,run_em_bdt);
 
@@ -39,7 +41,7 @@ void HNL_ControlRegion_Plotter::executeEvent(){
 
   vector<TString> LepIDs = {"HNL_ULIDv2"};
 
-  if(strcmp(std::getenv("USER"),"jalmond")==0) LepIDs = {"HNL_ULIDv2","POGTight","HNTightV2"};
+  //  if(strcmp(std::getenv("USER"),"jalmond")==0) LepIDs = {"HNL_ULIDv2","POGTight","HNTightV2"};
 
   vector<HNL_LeptonCore::Channel> ChannelsToRun = {};
 

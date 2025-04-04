@@ -335,6 +335,7 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
       //// i.e., FillHighMassSR1CRPlots has no mW cut, so CR plots have more stats 
 
       if(FillSSPreselectionPlots(dilep_channel,    LepsT, LepsV,TauColl_Cleaned, JetColl,     AK8_JetColl, B_JetColl, ev, METv, param, weight_channel))	{
+	cout << "SS Preselection " << channel_string << " Event number = " << event << endl; 
 	passedFull.push_back("SSPresel");
 
 	// Fill High Mass SR1 and SR2 CR Plots
