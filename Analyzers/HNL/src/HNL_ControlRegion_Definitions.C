@@ -844,12 +844,6 @@ bool HNL_RegionDefinitions::FillZCRPlots(HNL_LeptonCore::Channel channel, std::v
     for(auto ilep: leps) cout << "HNL_ZAK8_TwoLepton_CR Type " <<  ilep->LeptonGenType() << endl;
   }
 
-  bool isBB=false;
-  bool isEE=false;
-  if(leps[0]->IsBB() && leps[1]->IsBB() ) isBB=true;
-  if(leps[0]->IsEC() &&leps[1]->IsEC())   isEE=true;
-
-
   if (RunFake) {
     if (SameCharge(leps)) {
       for (int i = 0; i < 25; ++i) {

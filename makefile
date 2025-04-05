@@ -1,4 +1,4 @@
-all: DataFormats AnalyzerTools GEScaleSyst Analyzers AnalyzersHNL AnalyzersHNLExternal AnalyzersHNLOpt Archive
+all: DataFormats AnalyzerTools GEScaleSyst Analyzers AnalyzersHNL Archive
 
 DataFormats::
 	(cd DataFormats; make)
@@ -25,16 +25,6 @@ AnalyzersHNL::
 	(mvexist.sh Analyzers/HNL/src/HNLAnalyzers_Dict_rdict.pcm lib/)
 	(mvexist.sh Analyzers/HNL/libHNLAnalyzers.rootmap lib/)
 
-AnalyzersHNLExternal::
-	(cd Analyzers/HNLExternal; make)
-	(mvexist.sh Analyzers/HNLExternal/src/HNLExternalAnalyzers_Dict_rdict.pcm lib/)
-	(mvexist.sh Analyzers/HNLExternal/libHNLExternalAnalyzers.rootmap lib/)
-
-AnalyzersHNLOpt::
-	(cd Analyzers/HNLOpt; make)
-	(mvexist.sh Analyzers/HNLOpt/src/HNLOptAnalyzers_Dict_rdict.pcm lib/)
-	(mvexist.sh Analyzers/HNLOpt/libHNLOptAnalyzers.rootmap lib/)
-
 
 Archive::
 	(tar -zcf lib/DataFormats.tar.gz DataFormats)
@@ -48,8 +38,6 @@ clean::
 	(cd external/GEScaleSyst; make clean)
 	(cd Analyzers; make clean)
 	(cd Analyzers/HNL; make clean)
-	(cd Analyzers/HNLExternal; make clean)
-	(cd Analyzers/HNLOpt; make clean)
 
 distclean::
 	(cd DataFormats; make distclean)
@@ -57,8 +45,6 @@ distclean::
 	(cd external/GEScaleSyst; make distclean)
 	(cd Analyzers; make distclean)
 	(cd Analyzers/HNL; make distclean)
-	(cd Analyzers/HNLExternal; make distclean)
-	(cd Analyzers/HNLOpt; make distclean)
 
 LibTarFile = tar/lib.tar.gz
 $(LibTarFile): $(wildcard ./lib/*)
