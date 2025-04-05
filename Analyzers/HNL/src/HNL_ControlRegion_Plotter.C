@@ -41,7 +41,7 @@ void HNL_ControlRegion_Plotter::executeEvent(){
 
   vector<TString> LepIDs = {"HNL_ULIDv2"};
 
-  //  if(strcmp(std::getenv("USER"),"jalmond")==0) LepIDs = {"HNL_ULIDv2","POGTight","HNTightV2"};
+  if(strcmp(std::getenv("USER"),"jalmond")==0) LepIDs = {"HNL_ULIDv2","POGTight","HNTightV2"};
 
   vector<HNL_LeptonCore::Channel> ChannelsToRun = {};
 
@@ -78,11 +78,12 @@ void HNL_ControlRegion_Plotter::executeEvent(){
 
   if(IsDATA){
     if (this->DataStream.Contains("DoubleMuon")) ChannelsToRun = {MuMu};
+    if (this->DataStream.Contains("MuonEG"))     ChannelsToRun = {EMu};
+    if (this->DataStream.Contains("DoubleEG")    ChannelsToRun = {EE};
+    
     if (this->DataStream == "SingleMuon") ChannelsToRun = {MuMu};
-    if (this->DataStream == "DoubleEG") ChannelsToRun = {EE};
     if (this->DataStream == "SingleElectron") ChannelsToRun = {EE};
     if (this->DataStream == "EGamma") ChannelsToRun = {EE};
-    if (this->DataStream.Contains("MuonEG")) ChannelsToRun = {EMu};
   }
 
   for (auto id: LepIDs){
