@@ -56,7 +56,7 @@ else:
 
 
 #Use GT36 samples by default                                                                                                                                                                                                                  
-UseGT36 = !args.preGT36
+UseGT36 = not args.preGT36
 
     
 # Determine if individual sample is provided
