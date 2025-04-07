@@ -811,10 +811,10 @@ TString HNL_RegionDefinitions::RunSignalRegionWWString(bool ApplyForSR,HNL_Lepto
 	else if(HTOverPT < 5.) FillHist(  "LimitExtraction/"+ param.Name+"/"+RegionTag+"/InvMET_SR2", 1,  w, 3,0,3 ,"Reco H_{T}/P_{T}^{lep1}");
 	else                   FillHist(  "LimitExtraction/"+ param.Name+"/"+RegionTag+"/InvMET_SR2", 2,  w, 3,0,3 ,"Reco H_{T}/P_{T}^{lep1}");
       }
-      if(B_JetColl.size() == 1)    return {"CR2_InvBJet"};
-      if(HTOverPT < 3.) return  {"CR2_InvMET_HTLT_Bin1"};
-      else if(HTOverPT < 5.) return  {"CR2_InvMET_HTLT_Bin2"};
-      else  return  {"CR2_InvMET_HTLT_Bin3"};
+      if(B_JetColl.size() == 1)    return "CR2_InvBJet";
+      if(HTOverPT < 3.) return  "CR2_InvMET_HTLT_Bin1";
+      else if(HTOverPT < 5.) return  "CR2_InvMET_HTLT_Bin2";
+      else  return  "CR2_InvMET_HTLT_Bin3";
     }
     else{
       if(DataYear == 2016){
@@ -1074,7 +1074,28 @@ TString HNL_RegionDefinitions::RunSignalRegionAK4String(bool ApplyForSR,HNL_Lept
     //// These cuts are temp HL will check
     return GetSR3StringBin(RegionTag,GetChannelString(channel), true, met2_st,LT,ll_dphi);
   }  
+
+  if(!ApplyForSR){
+
+    if(LT < 150) FillHist(  "LimitExtraction/"+ param.Name+"/"+RegionTag+"/Inv_SR3", 0,  w, 4,0,4,"LT");
+    else  if(LT < 200) FillHist(  "LimitExtraction/"+ param.Name+"/"+RegionTag+"/Inv_SR3", 1,  w, 4,0,4 ,"LT");
+    else  if(LT < 300) FillHist(  "LimitExtraction/"+ param.Name+"/"+RegionTag+"/Inv_SR3", 2,  w, 4,0,4 ,"LT");
+    else FillHist(  "LimitExtraction/"+ param.Name+"/"+RegionTag+"/Inv_SR3", 3,  w, 4,0,4 ,"LT");
     
+    if(B_JetColl.size() == 1)  {
+      if(LT < 150) FillHist(  "LimitExtraction/"+ param.Name+"/"+RegionTag+"/InvBJet_SR3", 0,  w, 4,0,4,"LT");
+      else  if(LT < 200) FillHist(  "LimitExtraction/"+ param.Name+"/"+RegionTag+"/InvBJet_SR3", 1,  w, 4,0,4 ,"LT");
+      else  if(LT < 300) FillHist(  "LimitExtraction/"+ param.Name+"/"+RegionTag+"/InvBJet_SR3", 2,  w, 4,0,4 ,"LT");
+      else FillHist(  "LimitExtraction/"+ param.Name+"/"+RegionTag+"/InvBJet_SR3", 3,  w, 4,0,4 ,"LT");
+    }
+    else{
+      if(LT < 150) FillHist(  "LimitExtraction/"+ param.Name+"/"+RegionTag+"/InvMET_SR3", 0,  w, 4,0,4,"LT");
+      else  if(LT < 200) FillHist(  "LimitExtraction/"+ param.Name+"/"+RegionTag+"/InvMET_SR3", 1,  w, 4,0,4 ,"LT");
+      else  if(LT < 300) FillHist(  "LimitExtraction/"+ param.Name+"/"+RegionTag+"/InvMET_SR3", 2,  w, 4,0,4 ,"LT");
+      else FillHist(  "LimitExtraction/"+ param.Name+"/"+RegionTag+"/InvMET_SR3", 3,  w, 4,0,4 ,"LT");
+    }
+  }
+  
   FillCutflow(Reg, w, RegionTag+"_dijet",param);
                                                           
   double dijetmass_tmp=999.;
