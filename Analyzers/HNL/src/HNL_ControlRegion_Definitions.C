@@ -418,20 +418,33 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
       ControlLabel+="SSVBF";
     }
 
-    /// Add all Main CR to Full
+    /// Add Main CR list to Full
     for(auto i : passedMain) passedFull.push_back(i);
     for(auto i : cutlabels_main) cutlabels.push_back(i);
+
     
+    TString ControlLabel_ChargeDep = ControlLabel;
+    bool isPositive = (LepsT[0]->Charge() > 0);
+    ControlLabel_ChargeDep += isPositive ? "_Plus" : "_Minus";
+
     
     for(auto ip : passedFull) {
-      FillCutflow(param.CutFlowDirChannel(), ControlLabel+"_ControlRegions", weight_channel, cutlabels,ip);
+      FillCutflow(param.CutFlowDirChannel(),    ControlLabel+"_ControlRegions", weight_channel, cutlabels,ip);
       FillCutflow(param.CutFlowDirIncChannel(), ControlLabel+"_ControlRegions", weight_channel, cutlabels,ip);
+
+      FillCutflow(param.CutFlowDirChannel(),    ControlLabel_ChargeDep+"_ControlRegions", weight_channel, cutlabels,ip);
+      FillCutflow(param.CutFlowDirIncChannel(), ControlLabel_ChargeDep+"_ControlRegions", weight_channel, cutlabels,ip);
+
       FillCutflow(HNL_LeptonCore::CRFull, weight_channel, ip,param);
     }
     
     for(auto ip : passedMain) {
       FillCutflow(param.CutFlowDirChannel(), ControlLabel+"_SelectedControlRegions", weight_channel, cutlabels_main,ip);
       FillCutflow(param.CutFlowDirIncChannel(), ControlLabel+"_SelectedControlRegions", weight_channel, cutlabels_main,ip);
+
+      FillCutflow(param.CutFlowDirChannel(),    ControlLabel_ChargeDep+"_SelectedControlRegions", weight_channel, cutlabels,ip);
+      FillCutflow(param.CutFlowDirIncChannel(), ControlLabel_ChargeDep+"_SelectedControlRegions", weight_channel, cutlabels,ip);
+	    
       FillCutflow(HNL_LeptonCore::CR, weight_channel, ip,param);
     }
 
@@ -1814,7 +1827,7 @@ bool HNL_RegionDefinitions::FillZZCRPlots(HNL_LeptonCore::Channel channel, std::
 
   FillCutflow(Reg, w, "Step3",param);
   
-  FillHist(  "LimitExtraction/"+ param.Name+"/LimitShape_ZZ/Binned",  1,  w, 1,0,1 ,"CR Binned");
+  FillHist(  "LimitExtraction/"+ param.Name+"/LimitShape_ZZ/Binned",  0,  w, 1,0,1 ,"CR Binned");
 
   Fill_RegionPlots(param,"HNL_ZZ_FourLepton_CR", taus ,  JetColl,  AK8_JetColl,  leps,  METv, nPV, w);
   OutCutFlow("HNL_ZZ_FourLepton_CR",w);
@@ -1999,9 +2012,10 @@ bool HNL_RegionDefinitions::FillZGCRPlots(HNL_LeptonCore::Channel channel, std::
   
   OutCutFlow("HNL_ZG_ThreeLepton_CR",w);
 
-  FillHist(  "LimitExtraction/"+ param.Name+"/LimitShape_ZG/Binned",  1,  w, 1,0,1 ,"CR Binned");
-
-    
+  FillHist(  "LimitExtraction/"+ param.Name+"/LimitShape_ZG/Binned",  0,  w, 1,0,1 ,"CR Binned");
+  
+  Fill_RegionPlots(param,"HNL_ZG_ThreeLepton_CR" ,  JetColl,  AK8_JetColl,  leps,  METv, nPV, w);
+  
   return true;
   
 }
@@ -2069,7 +2083,6 @@ bool HNL_RegionDefinitions::FillWGCRPlots(HNL_LeptonCore::Channel channel, std::
   FillCutflow(WGCR, w, "Step9",param);
   if(DEBUGWG)cout << "FillWGCRPlots 7" << endl;
 
-  if(JetColl.size() > 4)   FillHist(  "HighJet/"+ param.Name+"/WG_"+GetChannelString(channel),  1,  w, 1,0,1 ,"CR Binned");
   Fill_RegionPlots(param,"HNL_WG_ThreeLepton_CR", taus  ,  JetColl,  AK8_JetColl,  leps,  METv, nPV, w);
   OutCutFlow("HNL_WG_ThreeLepton_CR",w);
 
