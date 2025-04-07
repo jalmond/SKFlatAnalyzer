@@ -102,7 +102,6 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
     param.NameInclusive_Channel = param.DefName         + "/" + param.InclusiveChannelName();
     paramTrilep.NameInclusive_Channel = param.DefName   + "/" + paramTrilep.InclusiveChannelName();
     paramQuadlep.NameInclusive_Channel = param.DefName  + "/" + paramQuadlep.InclusiveChannelName();
-
    
     TString label    = param.Name;
     
@@ -1300,7 +1299,12 @@ TString HNL_RegionDefinitions::FillHighMassSR1CRPlots(HNL_LeptonCore::Channel ch
 
   Fill_RegionPlots(param,"HNL_HighMassSR1_TwoLepton_CR"  ,  taus,JetColl,  AK8_JetColl,  leps,   METv, nPV, w);
 
-  if(NB_JetColl>0) return "SR1_InvBJet";
+  if(NB_JetColl==1) {
+    Fill_RegionPlots(param,"HNL_HighMassSR1_InvBJet_TwoLepton_CR"  ,  taus,JetColl,  AK8_JetColl,  leps,   METv, nPV, w);
+    return "SR1_InvBJet";
+  }
+  Fill_RegionPlots(param,"HNL_HighMassSR1_InvMET_TwoLepton_CR"  ,  taus,JetColl,  AK8_JetColl,  leps,   METv, nPV, w);
+
   return "SR1_InvMET";
 }
 
