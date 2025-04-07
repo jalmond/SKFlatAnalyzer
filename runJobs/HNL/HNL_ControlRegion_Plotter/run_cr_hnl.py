@@ -35,6 +35,10 @@ parser.add_argument('--RunConv',   action='store_true')
 parser.add_argument('--RunFake',   action='store_true')
 parser.add_argument('--RunCF',     action='store_true')
 
+##### Predefined Functions
+parser.add_argument('--WZ',    action='store_true')
+
+
 parser.add_argument('--Central',     action='store_true')
 parser.add_argument('--Systematics', action='store_true')
 parser.add_argument('--RunAlternativePrompt', action='store_true')
@@ -61,7 +65,7 @@ UseGT36 = not args.preGT36
 # Determine if individual sample is provided
 IndividualSample = args.samplename != "NULL"
 
-if not IndividualSample:
+if not IndividualSample and not args.WZ:
     if not args.Central and not args.Systematics:
         print ("No inputs submitted. Run either :")
         print ("add -sample X --RunPrompt to run individual sample")
@@ -195,6 +199,10 @@ if IndividualSample:
     exit()
 
 
+if args.WZ:
+    RunCommand(TestMode,f"SKFlat.py -a {analyzer} -i WZTo3LNu_mllmin4p0_powheg -n 200 --nmax {nmax} -e 2018 --skim {args.skim} {FlagCommand('RunPrompt', flags)}&")
+    exit()
+    
 RunPrompt=True
 RunData=True
 RunFake=True

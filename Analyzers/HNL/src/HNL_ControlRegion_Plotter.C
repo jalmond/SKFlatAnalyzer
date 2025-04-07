@@ -79,11 +79,11 @@ void HNL_ControlRegion_Plotter::executeEvent(){
   if(IsDATA){
     if (this->DataStream.Contains("DoubleMuon")) ChannelsToRun = {MuMu};
     if (this->DataStream.Contains("MuonEG"))     ChannelsToRun = {EMu};
-    if (this->DataStream.Contains("DoubleEG"))    ChannelsToRun = {EE};
+    if (this->DataStream.Contains("EGamma"))    ChannelsToRun = {EE};
     
     if (this->DataStream == "SingleMuon") ChannelsToRun = {MuMu};
     if (this->DataStream == "SingleElectron") ChannelsToRun = {EE};
-    if (this->DataStream == "EGamma") ChannelsToRun = {EE};
+    if (this->DataStream == "DoubleEG") ChannelsToRun = {EE};
   }
 
   for (auto id: LepIDs){

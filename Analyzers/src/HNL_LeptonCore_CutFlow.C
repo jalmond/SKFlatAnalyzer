@@ -209,7 +209,7 @@ void HNL_LeptonCore::FillCutflowDef(TString cutflow_dirname,TString cutflow_hist
     TString cf_name = "Cutflows";
     
     // List of substrings to check for
-    std::vector<std::string> substrings = {"SR", "MuonCR", "ElectronCR", "Limit"};
+    std::vector<std::string> substrings = {"SR", "MuonCR", "ElectronCR", "Limit","InvBJet", "InvMET"};
     
     // Check if cutflow_histname contains any of the substrings
     for (const auto& substr : substrings) {
@@ -532,9 +532,10 @@ vector<TString>  HNL_LeptonCore::GetLimitLabelsFromRegion(HNL_LeptonCore::Search
   if(sr==MuonSR2    || sr==ElectronSR2   || sr==ElectronMuonSR2)      return GetLimitLabels("SR2");
   if(sr==MuonSR3    || sr==ElectronSR3   || sr==ElectronMuonSR3)      return GetLimitLabels("SR3",channel);
 
-  if(sr==MuonCR1    || sr==ElectronCR1   || sr==ElectronMuonCR1)      return GetLimitLabels("CR1");
-  if(sr==MuonCR2    || sr==ElectronCR2   || sr==ElectronMuonCR2)      return GetLimitLabels("CR2");
+  if(sr==MuonCR1    || sr==ElectronCR1   || sr==ElectronMuonCR1)      return {"CR1"};
+  if(sr==MuonCR2    || sr==ElectronCR2   || sr==ElectronMuonCR2)      return {"CR2"};
   if(sr==MuonCR3    || sr==ElectronCR3   || sr==ElectronMuonCR3)      return GetLimitLabels("CR3");
+
 
   if(sr==MuonInvBJetCR1 || sr==ElectronInvBJetCR1 || sr==ElectronMuonInvBJetCR1)  return  {"CR1_InvBJet"};
   if(sr==MuonInvMETCR1 || sr==ElectronInvMETCR1 || sr==ElectronMuonInvMETCR1)  return  {"CR1_InvMET"};
