@@ -8,7 +8,21 @@ commands_template = [
     ("CF", "MultiLepton__RunCF__/DATA/HNL_ControlRegion_Plotter_SkimTree_DileptonBDT_*"),
     ("Fake", "MultiLepton__RunFake__/DATA/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_*"),
     ("Data", "MultiLepton__/DATA/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_*"),
-    ("Conv", "MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_*"),
+    ("ZG", [
+        "MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_ZGToLLG.root",
+        "MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_DYJets_MG.root",
+        ]),
+    ("WG", [
+        "MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_DileptonBDT_WGToLNuG_MG.root",
+        "MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_DileptonBDT_WGToLNuG.root",
+        "MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_WGJJToLNu.root",
+    ]),
+    ("Other_Conv", [
+        "MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_TTG.root",
+        "MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_WWG.root",
+        "MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_WZG.root",
+        "MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_TG.root",
+        ]),
     ("ggZZ", [
         "MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_GluGluToZZto4e.root",
         "MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_GluGluToZZto2e2tau.root",
@@ -49,9 +63,7 @@ commands_template = [
 ]
 
 
-commands_template = [
-    ("Data", "MultiLepton__/DATA/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_*"),
-]
+
 
 for era in eras:
     era_path = os.path.join(base_path, era)
@@ -64,9 +76,19 @@ for era in eras:
         if isinstance(input_files, str):
             input_path = os.path.join(base_path, era, input_files)
             cmd = f"hadd {output_file} {input_path}"
+            # If the tag is 'Data', copy the files as well
+            if tag == "Data":
+                cmd_cp = f"cp {input_path} {era}/"
+                print(f"Running: {cmd_cp}")
+                subprocess.run(cmd_cp, shell=True, check=True)
         else:
             input_paths = [os.path.join(era_path, f) for f in input_files]
             cmd = f"hadd {output_file} " + " ".join(input_paths)
+            # If the tag is 'Data', copy the files as well
+            if tag == "Data":
+                cmd_cp = f"cp " + " ".join(input_paths) + f" {era}/"
+                print(f"Running: {cmd_cp}")
+                subprocess.run(cmd_cp, shell=True, check=True)
 
         print(f"Running: {cmd}")
         subprocess.run(cmd, shell=True, check=True)
