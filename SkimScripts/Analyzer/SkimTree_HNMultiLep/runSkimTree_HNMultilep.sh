@@ -17,10 +17,10 @@ era_list=("2016postVFP" "2016preVFP" "2017" "2018")
 # Helper function to run SKFlat for a given era
 run_new_samples() {
     echo "Running new samples for analyzer: ${analyzer}"
-    era_list=("2017")
     for era in "${era_list[@]}"; do
         echo "Launching jobs for era: ${era}"
         SKFlat.py -a "${analyzer}" -i "DYJets10to50" -n "${njobs}" --nmax "${nmax}" -e "${era}" &
+        SKFlat.py -a "${analyzer}" -i "ZGToLLG_PtG_130" -n "${njobs}" --nmax "${nmax}" -e "${era}" &
     done
     wait  # Ensure all background jobs finish before the script exits
     echo "All SKFlat jobs launched for new samples."
