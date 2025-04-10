@@ -16,6 +16,17 @@ void HNL_Lepton_Conversion_Studies::executeEvent(){
   AnalyzerParameter param = HNL_LeptonCore::InitialiseHNLParameter("HNL_ULID");
   double weight =SetupWeight(ev,param);
 
+  if(_jentry < 100) PrintGen(All_Gens);
+    
+  for(unsigned int i=2; i<All_Gens.size(); i++){
+    Gen gen = All_Gens.at(i);
+    
+    if(gen.PID() == 22 && gen.Status()==23)  FillHist( ("Photon_Status23"), gen.Pt(), weight, 250, 0, 1000);
+    if(gen.PID() == 22 && gen.Status()==1)  FillHist( ("Photon_Status1"), gen.Pt(), weight, 250, 0, 1000);
+  }
+  
+  return;
+  
 
   std::vector<Electron>   ElectronCollV = GetElectrons("HNL_ULID_Baseline", 15., 2.5);
   std::vector<Muon>       MuonCollV     = GetMuons    ("HNL_ULID_Baseline", 10., 2.4);

@@ -21,10 +21,8 @@ if [[ $1 == "" ]]; then
 	#SKFlat.py -a $analyzer  -l $mcpath/Conv2.txt  -n 400  --nmax 100   -e ${i}  --skim SkimTree_HNMultiLepBDT &
 	#SKFlat.py -a $analyzer  -i TTLL_powheg  -n 400  --nmax 400   -e ${i}  --skim SkimTree_HNMultiLepBDT &
 	#SKFlat.py -a $analyzer  -i TTLJ_powheg  -n 400  --nmax 400   -e ${i}  --skim SkimTree_HNMultiLepBDT &
-	SKFlat.py -a $analyzer  -i DYJets_MG  -n 400  --nmax 400   -e ${i}  --skim SkimTree_HNMultiLepBDT &
-        SKFlat.py -a $analyzer  -l $datapath/${i}_DiLepton_EE.txt     -n 100    --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLepBDT  &
+	SKFlat.py -a $analyzer  -l runJobs/SampleLists/Bkg/Conv/ConvExt.txt  -n 100  --nmax 400   -e ${i}  --skim SkimTree_DileptonBDT &
 
-	SKFlat.py -a $analyzer  -l $datapath/${i}_DiLepton_EMu.txt     -n 100    --nmax ${nmax}   -e ${i} --skim SkimTree_HNMultiLepBDT  &
 
     done
 

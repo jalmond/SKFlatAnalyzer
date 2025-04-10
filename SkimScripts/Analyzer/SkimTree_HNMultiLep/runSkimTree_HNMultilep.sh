@@ -9,9 +9,9 @@ qrundir="runSkims"
 mcpath="${SKFlat_WD}/SkimScripts/SampleLists/Bkg/"
 datapath="${SKFlat_WD}/SkimScripts/SampleLists/Data/"
 sigpath="${SKFlat_WD}/SkimScripts/SampleLists/Signals/"
-njobs=600
+njobs=50
 njobs_data=100
-nmax=350
+nmax=600
 era_list=("2016postVFP" "2016preVFP" "2017" "2018")
 
 # Helper function to run SKFlat for a given era
