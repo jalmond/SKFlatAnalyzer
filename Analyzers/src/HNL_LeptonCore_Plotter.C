@@ -172,74 +172,88 @@ void HNL_LeptonCore::Fill_PlotsAK8(AnalyzerParameter& param, TString  region, TS
 }
 
 void HNL_LeptonCore::Fill_RegionPlots(AnalyzerParameter& param, TString plot_dir, vector<Tau>& taus,   std::vector<Jet>& jets,    std::vector<FatJet>& fatjets, std::vector<Lepton *>& leps , Particle&  met, double nvtx,  double w){
-
-
-  if(HasFlag("RunSyst")) return;
   
-  Fill_RegionPlotsFull(param, plot_dir, taus,jets,fatjets, leps, met, nvtx, w);
+  if (HasFlag("RunSyst")) return;
+  
+  // Initial region plots
+  Fill_RegionPlotsFull(param, plot_dir, taus, jets, fatjets, leps, met, nvtx, w);
+  
+  // Only do charge-separated plots for certain user/configs
+  if (!User("jalmond")) return;
+  
+  bool doChargeSplit =
+      (RunCF && leps.size() == 2 && !SameCharge(leps)) ||
+      (!RunCF && SameCharge(leps));
 
-  if(User("jalmond")){
-    TString Name= param.Name;
+  if (!doChargeSplit) return;
 
-    if((RunCF && leps.size() == 2 && !SameCharge(leps)) || (SameCharge(leps) && !RunCF) ){
-      if(leps[0]->Charge() > 0)param.Name= Name+"_PP";
-      else param.Name= Name+"_MM";
-      Fill_RegionPlotsFull(param, plot_dir, taus,jets,fatjets, leps, met, nvtx, w);
-    }
-    
-    param.Name = Name;
-  }
+  // Backup param.Name and mutate safely
+  TString baseName = param.Name;
+
+  param.Name = baseName + (leps[0]->Charge() > 0 ? "_PP" : "_MM");
+  Fill_RegionPlotsFull(param, plot_dir, taus, jets, fatjets, leps, met, nvtx, w);
+
+  // Restore original name
+  param.Name = baseName;
 }
-
+ 
 
 void HNL_LeptonCore::Fill_RegionPlots(AnalyzerParameter& param, TString plot_dir,   std::vector<Jet>& jets,    std::vector<FatJet>& fatjets, std::vector<Lepton *>& leps , Particle&  met, double nvtx,  double w){
 
-  if(HasFlag("RunSyst")) return;
 
-  vector<Tau> NullTaus;
-  Fill_RegionPlotsFull(param, plot_dir, NullTaus,jets,fatjets, leps, met, nvtx, w);
+  if (HasFlag("RunSyst")) return;
 
-  if(User("jalmond")){
-    TString Name= param.Name;
+  std::vector<Tau> emptyTaus;
+  Fill_RegionPlotsFull(param, plot_dir, emptyTaus, jets, fatjets, leps, met, nvtx, w);
 
-    if((RunCF && leps.size() == 2 && !SameCharge(leps)) || (SameCharge(leps) && !RunCF) ){
-      if(leps[0]->Charge() > 0)param.Name= Name+"_PP";
-      else param.Name= Name+"_MM";
-      Fill_RegionPlotsFull(param, plot_dir, NullTaus,jets,fatjets, leps, met, nvtx, w);
-    }
-    param.Name = Name;
-  }
+  if (!User("jalmond")) return;
+
+  bool doChargeSplit =
+      (RunCF && leps.size() == 2 && !SameCharge(leps)) ||
+      (!RunCF && SameCharge(leps));
+
+  if (!doChargeSplit) return;
+
+  TString baseName = param.Name;
+  param.Name = baseName + (leps[0]->Charge() > 0 ? "_PP" : "_MM");
+
+  Fill_RegionPlotsFull(param, plot_dir, emptyTaus, jets, fatjets, leps, met, nvtx, w);
+
+  param.Name = baseName;
 }
 
 
 void HNL_LeptonCore::Fill_RegionPlotsFull(AnalyzerParameter& param, TString plot_dir, vector<Tau>& Taus,  std::vector<Jet>& jets,    std::vector<FatJet>& fatjets, std::vector<Lepton *>& leps , Particle&  met, double nvtx,  double w, int DrawConfig){
 
-  //// param.PlottingVerbose == 0 means no plots made
-  if(param.PlottingVerbose == 0) return;
-  
-  TString region ="/"+param.Name + param.hprefix;
-  TString regionL = "/"+param.NameInclusive_Channel + param.hprefix;
+  if (param.PlottingVerbose == 0) return;
 
-  //  cout << region << " " << regionL << endl;
+  TString region = "/" + param.Name + param.hprefix;
+  TString regionL = "/" + param.NameInclusive_Channel + param.hprefix;
 
-  /// Draw Main plot with All syst
-  Fill_Main_Plots(param, region, plot_dir , Taus,jets,fatjets, leps, met, nvtx, w);
-  Fill_Main_Plots(param, regionL,plot_dir , Taus,jets,fatjets, leps, met, nvtx, w);
+  if (_jentry < 200) {
+    std::cout << "[Plotting] plot_dir: " << plot_dir
+              << ", region: " << region
+              << ", regionL: " << regionL << std::endl;
+  }
 
-  /// Draw for main systematics only
-  Fill_Standard_Plots(param, region ,plot_dir , Taus,jets,fatjets, leps, met, nvtx, w);
-  Fill_Standard_Plots(param, regionL,plot_dir , Taus,jets,fatjets, leps, met, nvtx, w);
+  std::vector<TString> regions;
+  regions.push_back(region);
+  if (!param.NameInclusive_Channel.IsNull() && !param.NameInclusive_Channel.IsWhitespace())
+    regions.push_back(regionL);
 
-  if(region.Contains("HNL_OS")) return;
+  for (const TString& r : regions) {
+    Fill_Main_Plots(param, r, plot_dir, Taus, jets, fatjets, leps, met, nvtx, w);
+    Fill_Standard_Plots(param, r, plot_dir, Taus, jets, fatjets, leps, met, nvtx, w);
+  }
 
-  if(param.syst_ != AnalyzerParameter::Syst::Central) return;
+  if (region.Contains("HNL_OS")) return;
+  if (param.syst_ != AnalyzerParameter::Syst::Central) return;
 
-  Fill_Plots(param, region,   plot_dir , Taus, jets, fatjets, leps, met, nvtx, w);
-  Fill_Plots(param, regionL , plot_dir , Taus, jets ,fatjets, leps, met, nvtx, w);
-  
-  return;
+  for (const TString& r : regions) {
+    Fill_Plots(param, r, plot_dir, Taus, jets, fatjets, leps, met, nvtx, w);
+  }
 }
-
+  
 
 void HNL_LeptonCore::Fill_Standard_Plots(AnalyzerParameter& param, TString  region,  TString plot_dir,
 				     vector<Tau>& TauColl,  std::vector<Jet>& jets, std::vector<FatJet>& fatjets, std::vector<Lepton *>& leps ,

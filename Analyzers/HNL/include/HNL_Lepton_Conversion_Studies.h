@@ -14,6 +14,17 @@ class HNL_Lepton_Conversion_Studies : public HNL_RegionDefinitions {
   HNL_Lepton_Conversion_Studies();
   ~HNL_Lepton_Conversion_Studies();
 
+  void ProcessLeptonCategory( const std::string& labelPrefix,
+			      std::vector<Lepton*>& leptons,
+			      std::vector<Tau>& TauColl_Uncleaned,
+			      std::vector<Jet>& AK4_JetColl,
+			      std::vector<FatJet>& AK8_JetColl,
+			      Particle& METv,
+			      int nPV,
+			      AnalyzerParameter& param,
+			      double PhotonPt,
+			      double weight) ;
+
 
 
 

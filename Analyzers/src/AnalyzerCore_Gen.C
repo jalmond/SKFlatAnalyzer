@@ -775,6 +775,10 @@ bool AnalyzerCore::ConversionSplitting(std::vector<Lepton *> leps, bool RunConvM
   if(!RunConvMode) return true;
   if(IsData) return true;
 
+  if(HasFlag("PtBinned")){
+    
+  }
+  
 
   bool IsSampleConvSplit = false;
   vector<TString> ConvSamples  = {"ZGTo","DYJet","WGToLNuG"};

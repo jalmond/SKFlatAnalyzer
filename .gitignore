@@ -1,6 +1,6 @@
 *~
-data_validation/EraComparison/EE_2016/results*
-data_validation/EraComparison/EE_2016/201*
+data_validation/analysis_validation/era_comparison/EE_2016/results*
+data_validation/analysis_validation/era_comparison/EE_2016/201*
 Tag_Probe/Results
 data/Run2UltraLegacy_v3/*/*/copyFiles.sh
 TMVA/LeptonID/BATCHSubmit
