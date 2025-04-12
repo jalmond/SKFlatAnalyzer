@@ -42,7 +42,8 @@ print_help() {
 run_mc() {
   echo "Running MC background submissions..."
   for era in "${era_list[@]}"; do
-    run_cmd "SKFlat.py -a $analyzer -l ${mcpath}/MC.txt -n $njobs_data --nmax $nmax -e $era --skim $skim --userflags SS"
+      #run_cmd "SKFlat.py -a $analyzer -l ${mcpath}/JetEff/MC_dilep_Jet.txt -n $njobs_data --nmax $nmax -e $era --skim $skim --userflags DiLeptonReq"
+      run_cmd "SKFlat.py -a $analyzer -l ${mcpath}/JetEff/MC_multilep_Jet.txt -n $njobs_data --nmax $nmax -e $era --skim SkimTree_HNMultiLepBDT --userflags DiLeptonReq"
   done
 }
 
@@ -56,13 +57,20 @@ run_sig_and_extended() {
   )
 
   file_list=(
-    "${mcpath}/JetEff/MC_Jet.txt"
+    "${mcpath}/JetEff/MC_dilep_Jet.txt"
+  )
+  file_multilep_list=(
+    "${mcpath}/JetEff/MC_multilep_Jet.txt"
   )
 
   for era in "${era_list[@]}"; do
     for file in "${file_list[@]}"; do
-      run_cmd "SKFlat.py -a $analyzer -l $file -n $njobs --nmax $nmax -e $era --skim $skim --userflags DiLeptonReq"
+	run_cmd "SKFlat.py -a $analyzer -l $file -n $njobs --nmax $nmax -e $era --skim $skim --userflags DiLeptonReq"
     done
+    for file in "${file_multilep_list[@]}"; do
+	run_cmd "SKFlat.py -a $analyzer -l $file -n $njobs --nmax $nmax -e $era --skim SkimTree_HNMultiLepBDT --userflags DiLeptonReq"
+    done
+
     for file in "${sig_list[@]}"; do
       run_cmd "SKFlat.py -a $analyzer -l $file -n $njobs --nmax $nmax -e $era --skim SkimTree_HNMultiLepBDT --userflags DiLeptonReq"
     done
