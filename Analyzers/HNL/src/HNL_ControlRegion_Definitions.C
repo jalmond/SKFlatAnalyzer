@@ -3,6 +3,8 @@
 
 void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electronsInitial, std::vector<Electron> electrons_veto, std::vector<Muon> muons, std::vector<Muon> muons_veto, vector<Tau> TauColl_Cleaned,std::vector<Jet> AK4_JetCollLoose, std::vector<Jet> JetColl, std::vector<Jet> VBF_JetColl,   std::vector<FatJet> AK8_JetColl, std::vector<Jet> B_JetColl,  Event ev, Particle METv, AnalyzerParameter param, vector<TString> CRs, int nElRun_ForCF, float weight_ll ){
 
+
+
   std::vector<Electron> electrons;
   if(RunCF) {
     /// Add code to smear individual electron for CF Bkg
@@ -138,6 +140,7 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
 
     FillCutflow(CutFlow_Region, weight_channel, "Trigger",param);
 
+
     double weight_OS = weight_channel;
   
     /// For OS Fakes use SS TT events - VV , but RunFake uses LL so need to apply Tight ID 
@@ -253,7 +256,7 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
       if(ConversionSplitting(LepsT,RunConv,4,param)){
 	//////  SR1+3 ZZ
 	if(FillZZCRPlots (fourlep_channel, LepsT, LepsV,TauColl_Cleaned, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramQuadlep, weight_channel)) passedMain.push_back("ZZ_CR");
-	if(FillZZVBFCRPlots  (fourlep_channel, LepsT, LepsV,TauColl_Cleaned, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramQuadlep, weight_channel)) passedMain.push_back("ZZ_SR2");
+	if(FillZZVBFCRPlots  (fourlep_channel, LepsT, LepsV,TauColl_Cleaned, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramQuadlep, weight_channel)) passedMain.push_back("ZZ_SR2"); 
 
       }
       
@@ -286,7 +289,6 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
     }
 
 
-   
     if(RunCR("SS_CR",CRs) || RunCR("VBF_CR",CRs)){
 
       if(RunCR("SS_CR",CRs))  FillCutflow(CutFlow_Region, weight_channel, "SS_CR",param);

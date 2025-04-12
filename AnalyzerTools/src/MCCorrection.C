@@ -6145,6 +6145,8 @@ void MCCorrection::SetupMCJetTagEff(TString EffFile){
 	    }
         }
     }
+
+    // === Check denominator histogram bins before division ===
     // Set any 0 or negative bins to 1                                                                                                                                                       
     for (int x = 1; x <= map_hist_mcjet[hden]->GetNbinsX(); ++x) {
         for (int y = 1; y <= map_hist_mcjet[hden]->GetNbinsY(); ++y) {
@@ -6156,14 +6158,30 @@ void MCCorrection::SetupMCJetTagEff(TString EffFile){
                      << " bin (" << x << "," << y
                      << ") had content " << bin_content
                      << " -> set to 1.0" << endl;
-                exit(EXIT_FAILURE);                                                                                                                                                        
 
             }
         }
     }
 
-    
+    // === Divide numerator by denominator ===
     this_hist->Divide(this_hist, map_hist_mcjet[hden], 1., 1., "b");
+
+    // === Optional: Print efficiencies and warnings ===
+
+    /*
+      for (int x = 1; x <= this_hist->GetNbinsX(); ++x) {
+      for (int y = 1; y <= this_hist->GetNbinsY(); ++y) {
+      double eff = this_hist->GetBinContent(x, y);
+      cout << "[Efficiency] " << hnum << " bin (" << x << "," << y << ") = " << eff << endl;
+      
+      if (eff <= 0 || eff >= 1) {
+      cout << "[Warning] Efficiency out of range: " << hnum
+      << " bin (" << x << "," << y << ") = " << eff << endl;
+      }
+      }
+      }
+    */
+
     
     map_hist_mcjet[hnum] = this_hist;
     this_hist->SetDirectory(0);

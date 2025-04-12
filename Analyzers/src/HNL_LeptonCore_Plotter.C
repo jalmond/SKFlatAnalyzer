@@ -172,7 +172,7 @@ void HNL_LeptonCore::Fill_RegionPlotsFull(AnalyzerParameter& param, TString plot
   TString region = "/" + param.Name + param.hprefix;
   TString regionL = "/" + param.NameInclusive_Channel + param.hprefix;
 
-  if (_jentry < 200) {
+  if (_jentry < 1) {
     std::cout << "[Plotting] plot_dir: " << plot_dir
               << ", region: " << region
               << ", regionL: " << regionL << std::endl;
@@ -342,7 +342,8 @@ void HNL_LeptonCore::Fill_Plots(AnalyzerParameter& param, TString  region,  TStr
   
   //// Run AK8 Plots
   if(fatjets.size() > 0) Fill_PlotsAK8(param, regionAK8, plot_dir,TauColl,jets , fatjets, leps, met, nvtx,w);
-  
+
+ 
   ///// Run resolved pliots
   FillHist( plot_dir+ region+ "/NObj/N_El", nel,  w, 5, 0, 5, "El size");
   FillHist( plot_dir+ region+ "/NObj/N_Mu", nmu,  w, 5, 0, 5, "Mu size");
@@ -354,7 +355,7 @@ void HNL_LeptonCore::Fill_Plots(AnalyzerParameter& param, TString  region,  TStr
   for(auto ijet : jets){
     if(ijet.Pass_tightLepVetoJetID()) NJet_Veto++;
   }
-  FillHist( plot_dir+ region+ "/NObj/N_ak4jet_lepveto", jets.size(),  w, 6, 0, 6, "AK4 size");
+  FillHist( plot_dir+ region+ "/NObj/N_ak4jet_lepveto", NJet_Veto,  w, 6, 0, 6, "AK4 size");
 
   
   if(leps.size() < 2) return;
@@ -411,12 +412,10 @@ void HNL_LeptonCore::Fill_Plots(AnalyzerParameter& param, TString  region,  TStr
         
         // Fill the histogram with the deltaR value
         // Using the key of the first particle (it1->first) for the histogram path
-        FillHist(plot_dir + region + "/dR/" + it1->first, deltaR, w, 100,0, 5, "#Delta R");
+        FillHist(plot_dir + region + "/dR/" + it1->first+"_"+it2->first, deltaR, w, 100,0, 5, "#Delta R");
     }
   }
 
-  
-  
   if(MCSample.Contains("ZZ")){
     Particle ZZ;
 

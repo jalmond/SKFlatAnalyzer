@@ -389,6 +389,7 @@ TString HNL_LeptonCore::GetCutFlowNameFromRegion(HNL_LeptonCore::SearchRegion sr
   if(sr==WZCR)    EVHistName= "WZCR";
   if(sr==WZBCR)   EVHistName= "WZBCR";
   if(sr==ZZCR)    EVHistName= "ZZCR";
+  if(sr==ZZVBFCR)    EVHistName= "ZZVBFCR";
   if(sr==WGCR)    EVHistName= "WGCR";
   if(sr==ZGCR)    EVHistName= "ZGCR";
   if(sr==WZBCR)   EVHistName= "WZBCR";
@@ -569,6 +570,7 @@ vector<TString>  HNL_LeptonCore::GetLabelsFromRegion(HNL_LeptonCore::SearchRegio
   if(sr==ZGCR)  nstep = 11;
   if(sr==WZCR)  nstep = 11;
   if(sr==ZZCR)  nstep = 6;
+  if(sr==ZZVBFCR)  nstep = 10;
   if(sr==WGCR)   nstep = 10;
   if(sr==WZBCR)   nstep = 15;
   if(sr==WZVBFCR)   nstep = 7;
