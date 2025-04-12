@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Configuration
+# === Configuration ===
 analyzer="HNL_Lepton_Conversion_Studies"
 rundir="HNL_Lepton_Conversion_Studies"
 mcpath="${SKFlat_WD}/runJobs/HNL/${analyzer}/Bkg/"
@@ -8,29 +8,82 @@ datapath="${SKFlat_WD}/runJobs/HNL/${analyzer}/DATA/"
 njobs=100
 njobs_data=100
 nmax=300
-skim=""
+skim="SkimTree_DileptonBDT"
 
-# Select eras
-era_list=("2017")  # For individual era testing
-
-# Parse optional user flags
+dryrun=false
 userflags=""
-if [[ "$1" == "--userflags" && -n "$2" ]]; then
-  userflags="--userflags $2"
-fi
+mode=""
+era_list=("2017")
+joblist=("MC")  # You can add more modes here in future
 
-# Run job submission
-for era in "${era_list[@]}"; do
-  echo "Submitting jobs for era: $era"
-
-  # Submit MC jobs
-  SKFlat.py -a "$analyzer" -i ZGToLLG     -n "$njobs" --nmax "$nmax" -e "$era" --skim SkimTree_DileptonBDT $userflags &
-  SKFlat.py -a "$analyzer" -i WGToLNuG    -n "$njobs" --nmax "$nmax" -e "$era" --skim SkimTree_DileptonBDT $userflags &
-  SKFlat.py -a "$analyzer" -l runJobs/SampleLists/Bkg/Conv/ConvExt.txt -n "$njobs" --nmax "$nmax" -e "$era" --skim SkimTree_DileptonBDT $userflags &
-
-  # Add more submissions below if needed
+# === Parse Arguments ===
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --mode)
+      mode="$2"
+      shift 2
+      ;;
+    --userflags)
+      userflags="--userflags $2"
+      shift 2
+      ;;
+    --dryrun)
+      dryrun=true
+      shift
+      ;;
+    --help)
+      echo "Usage: ./run_lepton_conversion_studies.sh --mode <MODE> [--userflags AltMC] [--dryrun]"
+      echo "Available modes:"
+      for m in "${joblist[@]}"; do echo " - $m"; done
+      exit 0
+      ;;
+    *)
+      echo "[Error] Unknown option: $1. Use --help to see available options."
+      exit 1
+      ;;
+  esac
 done
 
-wait  # Wait for all background jobs to finish
-echo "All submissions complete."
+# === Require mode ===
+if [[ -z "$mode" ]]; then
+  echo "[Error] --mode is required. Use --help to list available modes."
+  exit 1
+fi
+
+# === Command Wrapper ===
+run_cmd() {
+  if $dryrun; then
+    echo "[DryRun] $*"
+  else
+    eval "$@" &
+  fi
+}
+
+# === Mode Dispatcher ===
+run_mc() {
+  for era in "${era_list[@]}"; do
+    echo "[Info] Submitting MC jobs for era: $era"
+    run_cmd "SKFlat.py -a $analyzer -i ZGToLLG -n $njobs --nmax $nmax -e $era --skim $skim $userflags"
+    run_cmd "SKFlat.py -a $analyzer -i WGToLNuG -n $njobs --nmax $nmax -e $era --skim $skim $userflags"
+    run_cmd "SKFlat.py -a $analyzer -l runJobs/SampleLists/Bkg/Conv/ConvExt.txt -n $njobs --nmax $nmax -e $era --skim $skim $userflags"
+  done
+}
+
+# === Main Dispatch ===
+case "$mode" in
+  MC) run_mc ;;
+  *)
+    echo "[Error] Unsupported mode: $mode"
+    exit 1
+    ;;
+esac
+
+# === Finalize ===
+if ! $dryrun; then
+  wait
+  echo "[Done] All jobs submitted for analyzer: $analyzer"
+else
+  echo "[DryRun] No jobs were actually submitted."
+fi
+
 

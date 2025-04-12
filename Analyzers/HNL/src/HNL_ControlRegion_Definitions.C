@@ -1845,8 +1845,6 @@ bool HNL_RegionDefinitions::FillZZCRPlots(HNL_LeptonCore::Channel channel, std::
     return false;
   }
 
-  FillCutflow(Reg, w, "Step3",param);
-  
   FillHist(  "LimitExtraction/"+ param.Name+"/LimitShape_ZZ/Binned",  0,  w, 1,0,1 ,"CR Binned");
 
   Fill_RegionPlots(param,"HNL_ZZ_FourLepton_CR", taus ,  JetColl,  AK8_JetColl,  leps,  METv, nPV, w);

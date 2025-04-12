@@ -258,7 +258,7 @@ if args.Central or args.Systematics:
         ### Conv                                                                                                                                                                             
 
         if RunConv:
-            RunCommand(TestMode,f"SKFlat.py -a {analyzer}  -l {mcpath}/Conv/ConvWG.txt         -n 50        --nmax {nmax}   -e {era} --skim SkimTree_DileptonBDT  {FlagCommand('RunConv', flags)}  &")
+            RunCommand(TestMode,f"SKFlat.py -a {analyzer}  -l {mcpath}/Conv/ConvWG.txt        -n 50        --nmax {nmax}   -e {era} --skim SkimTree_DileptonBDT  {FlagCommand('RunConv', flags)}  &")
             RunCommand(TestMode,f"SKFlat.py -a {analyzer}  -l {mcpath}/Conv/Conv.txt          -n 50        --nmax {nmax}   -e {era} --skim SkimTree_HNMultiLepBDT  {FlagCommand('RunConv', flags)}  &")
 
         if RunFake:

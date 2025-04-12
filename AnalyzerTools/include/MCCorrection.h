@@ -55,6 +55,8 @@ public:
   bool IsDATA;
   void SetIsDATA(bool b);
 
+  bool DEBUG;
+  
   int run,lumi,event;
   void SetEventInfo(int r, int l, int e);
 

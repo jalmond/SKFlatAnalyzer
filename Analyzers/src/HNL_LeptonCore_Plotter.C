@@ -41,8 +41,8 @@ void HNL_LeptonCore::Fill_PlotsAK8(AnalyzerParameter& param, TString  region, TS
   if(param.ChannelType() != "Lepton"){
     if(param.ChannelType() != channelTypeMap[leps.size()]) return;
   }
-  
 
+  
   // Main plots for AK8 Jets
   FillHist(plot_dir + region + "/AK8J_N", fatjets.size(), w, 5, 0., 5., "N_{AK8 jets}");
 
@@ -70,11 +70,16 @@ void HNL_LeptonCore::Fill_PlotsAK8(AnalyzerParameter& param, TString  region, TS
   FillHist(plot_dir + region + "/AK8J_Mass/l1J", N1Cand.M(), w, 100, 0, 5000, "Reco M_{l1J}");
   FillHist(plot_dir + region + "/AK8J_Mass/l2J", N2Cand.M(), w, 100, 0, 5000, "Reco M_{l2J}");
   FillHist(plot_dir + region + "/AK8J_Mass/llJ", llJCand.M(), w, 100, 0, 5000, "Reco M_{llJ}");
+
+  /// Fill MainPlots 
+  FillHist(plot_dir + region + "/Leptons/Lep1_Pt", leps[0]->Pt(), w, 100, 0, 500);
+  FillHist(plot_dir + region + "/Leptons/Lep2_Pt", leps[1]->Pt(), w, 100, 0, 500);
+  if(leps.size() > 2)FillHist(plot_dir + region + "/Leptons/Lep3_Pt", leps[2]->Pt(), w, 100, 0, 500);
+  if(leps.size() > 3)FillHist(plot_dir + region + "/Leptons/Lep4_Pt", leps[3]->Pt(), w, 100, 0, 500);
+
   
-
   //// Now Add detailed plots by adding userflag
-  if(!HasFlag("Plots")) return;
-
+  if(!User("jalmond")) return;
 
   double minDRTauAK8 = 9999., minDRLepAK8 = 9999.;
   
@@ -100,8 +105,6 @@ void HNL_LeptonCore::Fill_PlotsAK8(AnalyzerParameter& param, TString  region, TS
   Particle NCand = (leps[1]->Pt() < leps[0]->Pt()) ? N2Cand : N1Cand;
   Lepton Nlep = (leps[1]->Pt() < 100.) ? *leps[1] : *leps[0];
   Lepton Wlep = (leps[1]->Pt() > 100.) ? *leps[1] : *leps[0];
-
-    
   
   for(unsigned int ij =0; ij < jets.size(); ij++){
    FillHist( plot_dir+region+ "/AK8J_DeltaR/AK8J_AK4J",   fatjets[0].DeltaR(jets[ij]),  w, 50, 0, 5, "#DeltaR (WAK8,j)");    
@@ -338,7 +341,7 @@ void HNL_LeptonCore::Fill_Plots(AnalyzerParameter& param, TString  region,  TStr
     
   
   //// Run AK8 Plots
-  Fill_PlotsAK8(param, regionAK8, plot_dir,TauColl,jets , fatjets, leps, met, nvtx,w);
+  if(fatjets.size() > 0) Fill_PlotsAK8(param, regionAK8, plot_dir,TauColl,jets , fatjets, leps, met, nvtx,w);
   
   ///// Run resolved pliots
   FillHist( plot_dir+ region+ "/NObj/N_El", nel,  w, 5, 0, 5, "El size");
@@ -347,6 +350,13 @@ void HNL_LeptonCore::Fill_Plots(AnalyzerParameter& param, TString  region,  TStr
   FillHist( plot_dir+ region+ "/NObj/N_ak4jet", jets.size(),  w, 6, 0, 6, "AK4 size");
   FillHist( plot_dir+ region+ "/NObj/N_ak8jet", fatjets.size(),  w, 4, 0, 4, "AK8 size");
 
+  int NJet_Veto = 0;
+  for(auto ijet : jets){
+    if(ijet.Pass_tightLepVetoJetID()) NJet_Veto++;
+  }
+  FillHist( plot_dir+ region+ "/NObj/N_ak4jet_lepveto", jets.size(),  w, 6, 0, 6, "AK4 size");
+
+  
   if(leps.size() < 2) return;
 
   ////// Make dR full loop
@@ -511,7 +521,6 @@ void HNL_LeptonCore::Fill_Plots(AnalyzerParameter& param, TString  region,  TStr
   if(threelep) {
     Particle lllCand = *leps[0] + *leps[1] + *leps[2] ;
 
-    FillHist( plot_dir+ region+ "/Leptons/Lep_3_pt", leps[2]->PtMaxed(1000.)  , w, 200, 0., 1000.,"l_{3} p_{T} GeV");
     FillHist( plot_dir+ region+ "/Leptons/Lep_3_eta", leps[2]->Eta()  , w, 60, -3., 3.,"l_{3} #eta");
     FillHist( plot_dir+ region+ "/Leptons/Lep_3_phi", leps[2]->Phi()  , w, 200, -10, 10.,"l_{3} #phi");
     FillHist( plot_dir+ region+ "/Mass/M_lll", lllCand.M() , w, 200, 0., 800.,"M(lll) GeV");
@@ -672,26 +681,9 @@ void HNL_LeptonCore::Fill_Plots(AnalyzerParameter& param, TString  region,  TStr
   if(minDRLep1Tau < 999)FillHist( plot_dir+ region+ "/DeltaR/dRMin_Lep1_Tau", minDRLep1Tau  ,w, 50, 0, 5, "#DeltaR (Tau,lep1)");
   if(minDRLep2Tau < 999)FillHist( plot_dir+ region+ "/DeltaR/dRMin_Lep2_Tau", minDRLep2Tau  ,w, 50, 0, 5, "#DeltaR (Tau,lep2)");
   
-  int HasHighEndcapLep=1;
-  int HasHighEndcapLep_200=1;
-
   for(auto il : leps){
-    double PTLep =  il->Pt();
     TString LepType = (IsData) ? "Data" : il->sLepGenType();
     if (LepType == "") continue;
-    
-    if(PTLep > 500 && il->fEta() > 2.) HasHighEndcapLep=3;
-    else if(PTLep > 500 && il->fEta() > 1.5 && HasHighEndcapLep < 3) HasHighEndcapLep=2;
-    
-    if(PTLep > 200 && il->fEta() > 2.) HasHighEndcapLep_200=3;
-    else if(PTLep > 200 && il->fEta() > 1.5 && HasHighEndcapLep < 3) HasHighEndcapLep_200=2;
-
-        
-    if(PTLep > 500)FillHist( plot_dir+ region+ "/Leptons/"+LepType+"_Lep_eta_pt500", il->Eta() ,  1, 100,-2.5,2.5,"l_{1} p_{T} GeV");
-    else if(PTLep > 300)FillHist( plot_dir+ region+ "/Leptons/"+LepType+"_Lep_eta_pt300", il->Eta() ,  1, 100,-2.5,2.5,"l_{1} p_{T} GeV");
-    else if(PTLep > 200)FillHist( plot_dir+ region+ "/Leptons/"+LepType+"_Lep_eta_pt200", il->Eta() ,  1, 100,-2.5,2.5,"l_{1} p_{T} GeV");
-    else if(PTLep > 100)FillHist( plot_dir+ region+ "/Leptons/"+LepType+"_Lep_eta_pt100", il->Eta() ,  1, 100,-2.5,2.5,"l_{1} p_{T} GeV");
-    else FillHist( plot_dir+ region+ "/Leptons/"+LepType+"_Lep_eta_pt20", il->Eta() ,  1, 100,-2.5,2.5,"l_{1} p_{T} GeV");
     
     map<TString, double> lep_bdt_map = il->MAPBDT();
     for(auto i : lep_bdt_map)  {
@@ -701,20 +693,6 @@ void HNL_LeptonCore::Fill_Plots(AnalyzerParameter& param, TString  region,  TStr
     }
   }
  
-  FillHist( plot_dir+ region+ "/Leptons/HighPtEtaCheck", 0  ,  w, 5,0, 5,"");
-  FillHist( plot_dir+ region+ "/Leptons/HighPtEtaCheck", HasHighEndcapLep  ,  w,5, 0, 5,"");
-
-  FillHist( plot_dir+ region+ "/Leptons/HighPtEtaCheck_200", 0  ,  w, 5,0, 5,"");
-  FillHist( plot_dir+ region+ "/Leptons/HighPtEtaCheck_200", HasHighEndcapLep_200  ,  w,5, 0, 5,"");
-
-
-  if(leps.size() > 1){
-    int nPtbins2D=11;
-    double Pt2Dbins[nPtbins2D+1] = {0,20.,25.,30., 40.,50., 70., 100.,  150.,  200.,400.,1000};
-    FillHist( plot_dir+ region+ "/Leptons/Lep_pt_eta", leps[0]->Pt() , leps[0]->Eta(),  fabs(w), nPtbins2D,Pt2Dbins , 50, -2.5, 2.5);
-    FillHist( plot_dir+ region+ "/Leptons/Lep_pt_eta", leps[1]->Pt()  , leps[1]->Eta(),  fabs(w), nPtbins2D,Pt2Dbins,  50, -2.5, 2.5);
-  }
-  
 
   double HT = GetHT(jets, fatjets);
   FillHist( plot_dir+ region+ "/SKEvent/Ev_HT", HT  , w, 200, 0., 2000.,"H_{T} GeV");

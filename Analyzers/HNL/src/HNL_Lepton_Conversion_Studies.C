@@ -60,6 +60,54 @@ void HNL_Lepton_Conversion_Studies::executeEvent(){
     
   }
 
+  double PhotonPt_with_Status1=0;
+    
+  /// Check Photon code
+  bool checkPhoton = true;
+  
+  if (checkPhoton) {
+    int NearPhotonIdx = -1;
+    
+    // Step 1: Look for status 23 photon
+    for (unsigned int i = 2; i < All_Gens.size(); ++i) {
+      const Gen& gen = All_Gens[i];
+      if (gen.MotherIndex() < 0) continue;
+      if (gen.PID() == 22 && gen.Status() == 23) {
+	NearPhotonIdx = static_cast<int>(i);
+	break; // Found status 23 photon, use first one
+      }
+    }
+    
+    // Step 2: Fallback to highest-pt status 1 prompt photon
+    if (NearPhotonIdx < 0) {
+      double maxPt = 0;
+      for (unsigned int i = 2; i < All_Gens.size(); ++i) {
+	const Gen& gen = All_Gens[i];
+	if (gen.MotherIndex() < 0) continue;
+	if (gen.PID() != 22 || gen.Status() != 1) continue;
+	if (gen.isPromptFinalState() && gen.Pt() > maxPt) {
+	  NearPhotonIdx = static_cast<int>(i);
+	  maxPt = gen.Pt();
+	}
+      }
+    }
+
+    // Step 3: Comparison
+    if (NearPhotonIdx >= 0) {
+      double phPt = All_Gens[NearPhotonIdx].Pt();
+
+      PhotonPt_with_Status1=phPt;
+      
+      if (std::abs(phPt - PhotonPt) > 1e-3) { // Use epsilon for float comparison
+	std::cout << "[PhotonCheck] Photon mismatch: PhotonPt = " << PhotonPt
+		  << ", FoundGenPt = " << phPt << std::endl;
+	PrintGen(All_Gens);
+      }
+    } else {
+      std::cout << "[PhotonCheck] No suitable photon found in gen collection." << std::endl;
+    }
+  }
+  
 
   if (HasFlag("AltMC")) {
     if (MCSample.Contains("ZG")) {
@@ -112,6 +160,7 @@ void HNL_Lepton_Conversion_Studies::executeEvent(){
   ProcessLeptonCategory("VetoID", Veto_Leptons, TauColl_Uncleaned, AK4_JetColl, AK8_JetColl, METv, nPV,  param, PhotonPt, weight);
   ProcessLeptonCategory("TightID", Tight_Leptons, TauColl_Uncleaned, AK4_JetColl, AK8_JetColl, METv, nPV, param, PhotonPt, weight);
   if(Veto_Leptons.size()==2) ProcessLeptonCategory("TightID_Cleaned", Tight_Leptons, TauColl_Uncleaned, AK4_JetColl, AK8_JetColl, METv, nPV, param, PhotonPt, weight);
+  if(Veto_Leptons.size()==2) ProcessLeptonCategory("TightID_Cleaned_PhStatus1", Tight_Leptons, TauColl_Uncleaned, AK4_JetColl, AK8_JetColl, METv, nPV, param, PhotonPt_with_Status1, weight);
   
   return;
   
