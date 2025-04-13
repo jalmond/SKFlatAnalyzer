@@ -4,6 +4,8 @@ MCCorrection::MCCorrection() :
 IgnoreNoHist(false)
 {
 
+  DEBUG=false;
+  
   MissingHists.clear();
 
   histDir = TDirectoryHelper::GetTempDirectory("MCCorrection");
@@ -65,13 +67,13 @@ void MCCorrection::ReadHistograms(){
     }
   }
 
-  cout << "[MCCorrection::MCCorrection] map_hist_Electron :" << endl;
+  if(DEBUG) cout << "[MCCorrection::MCCorrection] map_hist_Electron :" << endl;
   for(std::map< TString, TH2F* >::iterator it=map_hist_Electron.begin(); it!=map_hist_Electron.end(); it++){
-    cout << "[MCCorrection::MCCorrection] key = " << it->first << endl;
+    if(DEBUG) cout << "[MCCorrection::MCCorrection] key = " << it->first << endl;
   }
-  cout << "[MCCorrection::MCCorrection] map_graph_Electron :" << endl;
+  if(DEBUG)   cout << "[MCCorrection::MCCorrection] map_graph_Electron :" << endl;
   for(std::map< TString, TGraphAsymmErrors* >::iterator it=map_graph_Electron.begin(); it!=map_graph_Electron.end(); it++){
-    cout << "[MCCorrection::MCCorrection] key = " << it->first << endl;
+    if(DEBUG)  cout << "[MCCorrection::MCCorrection] key = " << it->first << endl;
   }
 
   
@@ -100,9 +102,9 @@ void MCCorrection::ReadHistograms(){
     }
   }
 
-  cout << "[MCCorrection::MCCorrection] map_hist_Muon :" << endl;
+  if(DEBUG) cout << "[MCCorrection::MCCorrection] map_hist_Muon :" << endl;
   for(std::map< TString, TH2F* >::iterator it=map_hist_Muon.begin(); it!=map_hist_Muon.end(); it++){
-    cout << "[MCCorrection::MCCorrection] key = " << it->first << endl;
+    if(DEBUG) cout << "[MCCorrection::MCCorrection] key = " << it->first << endl;
   }
 
 
@@ -6115,21 +6117,77 @@ void MCCorrection::SetupMCJetTagEff(TString EffFile){
     this_hist->SetDirectory(0);
     cout<<"[MCCorrection::SetupMCJetTagEff] setting "<<hden<<endl;
   }
-  // Numerator histogram setup and divided using "binomial option"
-  for(const auto& obj:*(fmcjet.GetListOfKeys())){
-    TH2F* this_hist=(TH2F*)((TKey*)obj)->ReadObj();
-    TString hnum=this_hist->GetName();
-    if(!hnum.Contains("num")) continue;
-    TString hden="";
-    if(hnum.Contains("_B_")) hden="Jet_"+DataEra+"_eff_B_denom";
-    else if(hnum.Contains("_C_")) hden="Jet_"+DataEra+"_eff_C_denom";
-    else hden="Jet_"+DataEra+"_eff_Light_denom";
 
-    this_hist->Divide(this_hist,map_hist_mcjet[hden],1.,1.,"b");
-    map_hist_mcjet[hnum]=this_hist;
+  // Numerator histogram setup and divide using "binomial option"
+  for (const auto& obj : *(fmcjet.GetListOfKeys())) {
+    TH2F* this_hist = (TH2F*)((TKey*)obj)->ReadObj();
+    TString hnum = this_hist->GetName();
+    if (!hnum.Contains("num")) continue;
+
+    TString hden = "";
+    if (hnum.Contains("_B_")) hden = "Jet_" + DataEra + "_eff_B_denom";
+    else if (hnum.Contains("_C_")) hden = "Jet_" + DataEra + "_eff_C_denom";
+    else hden = "Jet_" + DataEra + "_eff_Light_denom";
+
+    // Set any 0 or negative bins to 1
+    for (int x = 1; x <= this_hist->GetNbinsX(); ++x) {
+        for (int y = 1; y <= this_hist->GetNbinsY(); ++y) {
+            double bin_content = this_hist->GetBinContent(x, y);
+            if (bin_content <= 0) {
+                this_hist->SetBinContent(x, y, 1.0);
+                this_hist->SetBinError(x, y, 0.0); // optional: remove error for fake bin
+                cout << "[BinFix] " << hnum 
+                     << " bin (" << x << "," << y 
+                     << ") had content " << bin_content 
+                     << " -> set to 1.0" << endl;
+		//exit(EXIT_FAILURE);
+
+	    }
+        }
+    }
+
+    // === Check denominator histogram bins before division ===
+    // Set any 0 or negative bins to 1                                                                                                                                                       
+    for (int x = 1; x <= map_hist_mcjet[hden]->GetNbinsX(); ++x) {
+        for (int y = 1; y <= map_hist_mcjet[hden]->GetNbinsY(); ++y) {
+            double bin_content = map_hist_mcjet[hden]->GetBinContent(x, y);
+            if (bin_content <= 0) {
+                map_hist_mcjet[hden]->SetBinContent(x, y, 1.0);
+                map_hist_mcjet[hden]->SetBinError(x, y, 0.0); // optional: remove error for fake bin                                                                                                    
+                cout << "[BinFix] " << hnum
+                     << " bin (" << x << "," << y
+                     << ") had content " << bin_content
+                     << " -> set to 1.0" << endl;
+
+            }
+        }
+    }
+
+    // === Divide numerator by denominator ===
+    this_hist->Divide(this_hist, map_hist_mcjet[hden], 1., 1., "b");
+
+    // === Optional: Print efficiencies and warnings ===
+
+    /*
+      for (int x = 1; x <= this_hist->GetNbinsX(); ++x) {
+      for (int y = 1; y <= this_hist->GetNbinsY(); ++y) {
+      double eff = this_hist->GetBinContent(x, y);
+      cout << "[Efficiency] " << hnum << " bin (" << x << "," << y << ") = " << eff << endl;
+      
+      if (eff <= 0 || eff >= 1) {
+      cout << "[Warning] Efficiency out of range: " << hnum
+      << " bin (" << x << "," << y << ") = " << eff << endl;
+      }
+      }
+      }
+    */
+
+    
+    map_hist_mcjet[hnum] = this_hist;
     this_hist->SetDirectory(0);
-    cout<<"[MCCorrection::SetupMCJetTagEff] setting "<<hnum<<endl;
+    cout << "[MCCorrection::SetupMCJetTagEff] setting " << hnum << endl;
   }
+ 
 }
 
 double MCCorrection::GetMCJetTagEff(JetTagging::Tagger tagger, JetTagging::WP wp, int JetFlavor, double JetPt, double JetEta, int sys){

@@ -64,12 +64,12 @@ void MeasureJetTaggingEfficiency::executeEvent(){
 
   std::vector<Muon>       MuonCollV     = SelectMuons    (param_signal,param_signal.Muon_Veto_ID,     10., 2.4);
   std::vector<Electron>   ElectronCollV = SelectElectrons(param_signal,param_signal.Electron_Veto_ID, 10., 2.5);
-  int nV=MuonCollV.size() + ElectronCollV.size();
+  int n_veto_leptons=MuonCollV.size() + ElectronCollV.size();
   if(HasFlag("2L")){
-    if(nV !=2) return;
+    if(n_veto_leptons !=2) return;
   }
   if(HasFlag("SS")){
-    if(nV !=2) return;
+    if(n_veto_leptons !=2) return;
     int Q = 0;
     for(auto iq : MuonCollV) Q=Q+iq.Charge();
     for(auto iq : ElectronCollV) Q=Q+iq.Charge();
@@ -81,10 +81,10 @@ void MeasureJetTaggingEfficiency::executeEvent(){
 
   vector<Jet> jets = GetJets("tightLepVeto", 20., 2.5);
   float weight = 1.;
-  float w_Gen  = MCweight();
-  float w_Norm = ev.GetTriggerLumi("Full");
+  float w_Gen  = MCweight(true,false);
+  //  float w_Norm = ev.GetTriggerLumi("Full");
   float w_PU   = GetPileUpWeight(nPileUp, 0);
-  weight *= w_Gen*w_Norm*w_PU; 
+  weight *= w_Gen*w_PU; 
   //tagging performance depends on PU, so it is better reweight to proper PU profile
 
   vector<double> vec_etabins = {0.0, 0.8, 1.6, 2., 2.5};
@@ -114,6 +114,9 @@ void MeasureJetTaggingEfficiency::executeEvent(){
     double this_Pt = jets.at(ij).Pt()<PtMax ? jets.at(ij).Pt() : PtMax-1; // put overflows in the last bin
 
     //==== First, fill the denominator
+    if(HasFlag("DiLeptonReq")){
+      if(n_veto_leptons <2 &&this_Pt < 300) continue;
+    }
     FillHist("Jet_"+DataEra+"_eff_"+flav+"_denom", this_Eta, this_Pt, weight, NEtaBin, etabins, NPtBin, ptbins);
 
     //==== Now looping over (tagger,working point)

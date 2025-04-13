@@ -3,6 +3,8 @@
 
 void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electronsInitial, std::vector<Electron> electrons_veto, std::vector<Muon> muons, std::vector<Muon> muons_veto, vector<Tau> TauColl_Cleaned,std::vector<Jet> AK4_JetCollLoose, std::vector<Jet> JetColl, std::vector<Jet> VBF_JetColl,   std::vector<FatJet> AK8_JetColl, std::vector<Jet> B_JetColl,  Event ev, Particle METv, AnalyzerParameter param, vector<TString> CRs, int nElRun_ForCF, float weight_ll ){
 
+
+
   std::vector<Electron> electrons;
   if(RunCF) {
     /// Add code to smear individual electron for CF Bkg
@@ -138,6 +140,7 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
 
     FillCutflow(CutFlow_Region, weight_channel, "Trigger",param);
 
+
     double weight_OS = weight_channel;
   
     /// For OS Fakes use SS TT events - VV , but RunFake uses LL so need to apply Tight ID 
@@ -253,6 +256,8 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
       if(ConversionSplitting(LepsT,RunConv,4,param)){
 	//////  SR1+3 ZZ
 	if(FillZZCRPlots (fourlep_channel, LepsT, LepsV,TauColl_Cleaned, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramQuadlep, weight_channel)) passedMain.push_back("ZZ_CR");
+	if(FillZZVBFCRPlots  (fourlep_channel, LepsT, LepsV,TauColl_Cleaned, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramQuadlep, weight_channel)) passedMain.push_back("ZZ_SR2"); 
+
       }
       
       if(ConversionSplitting(LepsT,RunConv,3,param)){
@@ -284,7 +289,6 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
     }
 
 
-   
     if(RunCR("SS_CR",CRs) || RunCR("VBF_CR",CRs)){
 
       if(RunCR("SS_CR",CRs))  FillCutflow(CutFlow_Region, weight_channel, "SS_CR",param);
@@ -305,7 +309,9 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
 	else continue;
       }
       else if(LepsT.size() == 2){
-	if(MCSample.Contains("WGTo")){
+
+	std::vector<TString> WGSamples = {"WGJJToLNu","WGToLNuG_MG","WGToLNuG"};
+	if (std::find(WGSamples.begin(), WGSamples.end(), MCSample) != WGSamples.end()) {
 	  //// Set Weight to half and not apply SS cut
 	  weight_channel *= 0.5;
 	}
@@ -381,13 +387,16 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
 
     if(RunCR("LLL_VR",CRs)) {
       cutlabels_main.push_back("ZZ_CR");
+      cutlabels_main.push_back("ZZ_SR2");
       cutlabels_main.push_back("WG_CR");
       cutlabels_main.push_back("ZG_CR");
       cutlabels_main.push_back("WZ_SR1");
       cutlabels_main.push_back("WZ_SR2");
       cutlabels_main.push_back("WZ_SR3");
       cutlabels_main.push_back("WZB_CR");
-      
+
+
+
       cutlabels.push_back("WZ_SR2b");
       cutlabels.push_back("Z_NP_El_CR");
       cutlabels.push_back("Z_NP_Mu_CR");
@@ -677,6 +686,7 @@ bool HNL_RegionDefinitions::FillZ_MuonNPCRPlots(HNL_LeptonCore::Channel channel,
     for(auto ilep: leps) cout << "HNL_ZNP_ThreeLepton_CR Type " <<  ilep->LeptonGenType() << endl;
   }
 
+  if(AK8_JetColl.size() == 1)   Fill_RegionPlots(param,"HNL_ZNPMu_AK8_ThreeLepton_CR" ,  JetColl,  AK8_JetColl,  leps,  METv, nPV, w);
   Fill_RegionPlots(param,"HNL_ZNPMu_ThreeLepton_CR" ,  JetColl,  AK8_JetColl,  leps,  METv, nPV, w);
 
   return true;
@@ -720,6 +730,8 @@ bool HNL_RegionDefinitions::FillZ_ElNPCRPlots(HNL_LeptonCore::Channel channel, s
     cout << "HNL_ZNP_ThreeLepton_CR " << param.Name << " " << event  << endl;
     for(auto ilep: leps) cout << "HNL_ZNP_ThreeLepton_CR Type " <<  ilep->LeptonGenType() << endl;
   }
+
+  if(AK8_JetColl.size() == 1) 	  Fill_RegionPlots(param,"HNL_ZNPEl_AK8_ThreeLepton_CR", taus ,  JetColl,  AK8_JetColl,  leps,  METv, nPV, w);
 
   Fill_RegionPlots(param,"HNL_ZNPEl_ThreeLepton_CR", taus ,  JetColl,  AK8_JetColl,  leps,  METv, nPV, w);
 
@@ -1829,10 +1841,12 @@ bool HNL_RegionDefinitions::FillZZCRPlots(HNL_LeptonCore::Channel channel, std::
   if(!z_cr_pass)  return false;
   FillCutflow(Reg, w, "Step5",param);
 
-  if(AK8_JetColl.size() > 0)  return false;
-
-  FillCutflow(Reg, w, "Step3",param);
   
+  if(AK8_JetColl.size() > 0) {
+    Fill_RegionPlots(param,"HNL_ZZ_AK8_FourLepton_CR", taus ,  JetColl,  AK8_JetColl,  leps,  METv, nPV, w);
+    return false;
+  }
+
   FillHist(  "LimitExtraction/"+ param.Name+"/LimitShape_ZZ/Binned",  0,  w, 1,0,1 ,"CR Binned");
 
   Fill_RegionPlots(param,"HNL_ZZ_FourLepton_CR", taus ,  JetColl,  AK8_JetColl,  leps,  METv, nPV, w);

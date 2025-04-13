@@ -69,10 +69,43 @@ void HNL_LeptonCore::initializeAnalyzer(bool READBKGHISTS, bool SETUPIDBDT){
   cout << "HNL_LeptonCore::initializeAnalyzer : Analyzer = " << Analyzer << endl;
   if(!IsDATA){
     mcCorr->ReadHistograms();
-    if(HasFlag("Use_TT_JetEff_2L"))    mcCorr->SetupJetTagging("MeasureJetTaggingEfficiency_TTLL_TTLJ_2L_hadded.root");
-    else if(HasFlag("Use_TT_JetEff_SS"))    mcCorr->SetupJetTagging("MeasureJetTaggingEfficiency_TTLL_TTLJ_SS_hadded.root");
-    else if(HasFlag("Use_DY_JetEff_2L"))    mcCorr->SetupJetTagging("MeasureJetTaggingEfficiency_DY_2L_hadded.root");
-    else mcCorr->SetupJetTagging("MeasureJetTaggingEfficiency_TTLL_TTLJ_hadded.root");
+
+    TString tagEffFile = "";
+    
+    if (HasFlag("Use_TT_JetEff_2L"))
+      tagEffFile = "MeasureJetTaggingEfficiency_TTLL_TTLJ_2L_hadded.root";
+    else if (HasFlag("Use_TT_JetEff_SS"))
+      tagEffFile = "MeasureJetTaggingEfficiency_TTLL_TTLJ_SS_hadded.root";
+    else if (HasFlag("Use_DY_JetEff_2L"))
+      tagEffFile = "MeasureJetTaggingEfficiency_DY_2L_hadded.root";
+    else if (MCSample.Contains("WZ"))
+      tagEffFile = "MeasureJetTaggingEfficiency_WZ_2L_hadded.root";
+    else if (MCSample.Contains("WW"))
+      tagEffFile = "MeasureJetTaggingEfficiency_WW_2L_hadded.root";
+    else if (MCSample.Contains("ZZ"))
+      tagEffFile = "MeasureJetTaggingEfficiency_ZZ_2L_hadded.root";
+    else if (MCSample.Contains("ZG"))
+      tagEffFile = "MeasureJetTaggingEfficiency_ZG_2L_hadded.root";
+    else if (MCSample.Contains("ttW") || MCSample.Contains("ttZ"))
+      tagEffFile = "MeasureJetTaggingEfficiency_TTV_2L_hadded.root";
+    else if (MCSample.Contains("WG"))
+      tagEffFile = "MeasureJetTaggingEfficiency_WG_2L_hadded.root";
+    else if (MCSample.Contains("DYType"))
+      tagEffFile = "MeasureJetTaggingEfficiency_HNL_DY_2L_hadded.root";
+    else if (MCSample.Contains("VBFType"))
+      tagEffFile = "MeasureJetTaggingEfficiency_HNL_VBF_2L_hadded.root";
+    else if (MCSample.Contains("SSWW"))
+      tagEffFile = "MeasureJetTaggingEfficiency_HNL_SSWW_2L_hadded.root";
+    else
+      tagEffFile = "MeasureJetTaggingEfficiency_TTLL_TTLJ_2L_hadded.root"; // default fallback
+
+    // Optional: log what is being loaded
+    cout << "[JetEff] Using file: " << tagEffFile << endl;
+    
+    // Apply
+    mcCorr->SetupJetTagging(tagEffFile);
+    
+
   }
 
   puppiCorr->SetEra(GetEra());

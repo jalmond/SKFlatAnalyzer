@@ -527,14 +527,11 @@ vector<Jet>   HNL_LeptonCore::SelectAK4Jets(vector<Jet> jets, double pt_cut ,  d
 
 vector<FatJet>  HNL_LeptonCore::SelectAK8Jets(vector<FatJet> fatjets, double pt_cut ,  double eta_cut, bool lepton_cleaning  , double dr_lep_clean , bool apply_tau21, double tau21_cut , bool apply_masscut, double sdmass_lower_cut,  double sdmass_upper_cut, TString  tagger,  vector<Electron>  veto_electrons, vector<Muon>  veto_muons){
 
-  bool DEBUGMode=false;
+  //  bool DEBUGMode=false;
 
   vector<FatJet> output_fatjets;
   for(unsigned int ijet =0; ijet < fatjets.size(); ijet++){
     
-    if(abs(fatjets[ijet].Eta()) > 2.3) DEBUGMode=true;
-    else DEBUGMode=false;
-
     bool jetok=true;
 
     for(unsigned int iel=0 ; iel < veto_electrons.size(); iel++){

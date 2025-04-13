@@ -273,7 +273,8 @@ public:
   bool IsCF(Electron el, std::vector<Gen> gens, bool checcloseel=true);
   bool IsCF(Muon mu, std::vector<Gen> gens);
   bool HasPromptConv(Electron el);
-
+  bool PassGenFilterPhotonPt();
+  
   double GetGenJJMass();
   double GetGenZZMass();
   double GetGenZZPt();

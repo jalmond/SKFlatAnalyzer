@@ -200,7 +200,10 @@ void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq,
     if(param.IsCentral()) PassJetHEMVeto(JetColl,param.Name+"_Jet",weight_channel);
 
     if(LepsT.size() ==2)  FillCutflow(HNL_LeptonCore::ChannelDepDilep, weight_channel, GetChannelString(dilep_channel) +"_Dilep",param);
-    
+
+
+    std::vector<TString> WGSamples = {"WGJJToLNu","WGToLNuG_MG","WGToLNuG"};
+       
     if(RunCF){
       if(dilep_channel == MuMu) continue;
       
@@ -215,7 +218,7 @@ void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq,
       /// used to test conv with SS cut
       if(!SameCharge(LepsT)) continue;
     }
-    else if(MCSample.Contains("WGTo")){
+    else if (std::find(WGSamples.begin(), WGSamples.end(), MCSample) != WGSamples.end()) {
       /// USE SS+OS / 2 using dilepton skim
       weight_channel*= 0.5;
       if(LepsT.size() != 2) continue;
