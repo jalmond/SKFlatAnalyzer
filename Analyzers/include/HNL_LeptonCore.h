@@ -161,17 +161,17 @@ class HNL_LeptonCore : public AnalyzerCore {
   TString GetSR3StringBin(const TString& RegionTag, const TString& channel, bool LowJet, double met2_st, double LT, double ll_dphi);
 
   /// List of Setups
-  void GetSetup_POGTight(AnalyzerParameter& paramEv);
-  void GetSetup_MVAPOG(AnalyzerParameter& paramEv);
-  void GetSetup_HighPt(AnalyzerParameter& paramEv);
-  void GetSetup_HNTightV2(AnalyzerParameter& paramEv);
-  void GetSetup_HNL16(AnalyzerParameter& paramEv);
-  void GetSetup_HNLTopID(AnalyzerParameter& paramEv);
-  void GetSetup_HNLID(AnalyzerParameter& paramEv);
-  void GetSetup_HNLHPTID(AnalyzerParameter& paramEv);
-  void GetSetup_Peking(AnalyzerParameter& paramEv);
-  void GetSetup_HNLOpt(AnalyzerParameter& paramEv);
-  void GetSetup_BDT(AnalyzerParameter& paramEv);
+  AnalyzerParameter Setup_Param_POGTight(const TString& s_setup_version, const TString& channel_st);
+  AnalyzerParameter Setup_Param_MVAPOG(const TString& s_setup_version, const TString& channel_st);
+  AnalyzerParameter Setup_Param_HighPt(const TString& s_setup_version, const TString& channel_st);
+  AnalyzerParameter Setup_Param_HNTightV2(const TString& s_setup_version, const TString& channel_st);
+  AnalyzerParameter Setup_Param_HNL16(const TString& s_setup_version, const TString& channel_st);
+  AnalyzerParameter Setup_Param_HNLTopID(const TString& s_setup_version, const TString& channel_st);
+  AnalyzerParameter Setup_Param_HNL_ULID(const TString& s_setup_version, const TString& channel_st);
+  AnalyzerParameter Setup_Param_HNL_ULIDv2(const TString& s_setup_version, const TString& channel_st);
+  AnalyzerParameter Setup_Param_Peking(const TString& s_setup_version, const TString& channel_st);
+  AnalyzerParameter Setup_Param_HNLOpt(const TString& s_setup_version, const TString& channel_st);
+  AnalyzerParameter Setup_Param_BDT(const TString& s_setup_version, const TString& channel_st);
 
 
   bool UpdateParamBySyst(TString JobID, AnalyzerParameter& paramEv, AnalyzerParameter::Syst systname, const TString& OrigParamName);

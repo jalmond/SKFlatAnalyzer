@@ -3,9 +3,9 @@
 
 AnalyzerParameter  HNL_LeptonCore::DefaultParam(const TString& s_setup_version, const TString& channel_st){
 
-
   AnalyzerParameter param_default;
-  
+
+  //// Setup Directory and hist anmes
   param_default.SetChannel(channel_st);
   param_default.Name     = s_setup_version;
   param_default.DefName  = s_setup_version;
@@ -17,6 +17,7 @@ AnalyzerParameter  HNL_LeptonCore::DefaultParam(const TString& s_setup_version, 
   /// Default BKG                                                                                                                                                                                                   
   param_default.ApplyPR=false;
 
+  //// set weights used for analysis by default
   param_default.Apply_Weight_Norm1Ipb  = true;
   param_default.Apply_Weight_LumiNorm = true;
   param_default.Apply_Weight_SumQ     = true;
@@ -29,26 +30,24 @@ AnalyzerParameter  HNL_LeptonCore::DefaultParam(const TString& s_setup_version, 
   param_default.Apply_Weight_PNETSF   = true;
   param_default.Apply_Weight_JetPUID   = true;
 
-
-
-  //// By default dont apply ID/Trigger SF                                                                                                                            
+  //// By default dont apply ID/Trigger SF
   param_default.Apply_Weight_IDSF     = false;
   param_default.Apply_Weight_TriggerSF= false;
 
   // Default settings if NOT s_setup_version is set                                                                                                                   
-
+  //// Set Systematic to central
   param_default.syst_ = AnalyzerParameter::Central;
   param_default.MCCorrrectionIgnoreNoHist = false;
 
-  /// Lepton ID DEFAULT                                                                                                                                               
-  param_default.k.Electron_RECO_SF   = "RECO_SF";  // RECO_SF_AFB is alternative SF                                                                                           
+  /// Set ID parameters (default)
+  param_default.k.Electron_RECO_SF   = "RECO_SF";  
   param_default.k.Muon_RECO_SF   = "HighPtMuonRecoSF";
   param_default.Muon_Veto_ID     = "NoCut";  param_default.Muon_Tight_ID     = "NoCut";
   param_default.Electron_Veto_ID = "NoCut";  param_default.Electron_Tight_ID = "NoCut";
 
   param_default.Tau_Veto_ID      = "JetVLElVLMuVL";
 
-  /// ---------                                                                                                                                                       
+  /// ---------  CUTS on leptons                                                                                                                                                      
   param_default.Muon_MinPt = 5.;       param_default.Muon_MaxEta = 2.4;
   param_default.Electron_MinPt = 10.;  param_default.Electron_MaxEta = 2.5;
   /// JET ID DEFAULT                                                                                                                                                  
@@ -126,6 +125,7 @@ AnalyzerParameter  HNL_LeptonCore::DefaultParam(const TString& s_setup_version, 
 
     if(IsTTSample)   param_default.w.topptweight=mcCorr->GetTopPtReweight(All_Gens);
   }
+
   return param_default;  
 }
 

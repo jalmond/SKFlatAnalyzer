@@ -42,6 +42,7 @@ void HNL_LeptonCore::Fill_PlotsAK8(AnalyzerParameter& param, TString  region, TS
     if(param.ChannelType() != channelTypeMap[leps.size()]) return;
   }
 
+  FillLeptonPlots(param, leps, plot_dir +  region, w);
   
   // Main plots for AK8 Jets
   FillHist(plot_dir + region + "/AK8J_N", fatjets.size(), w, 5, 0., 5., "N_{AK8 jets}");
@@ -362,61 +363,28 @@ void HNL_LeptonCore::Fill_Plots(AnalyzerParameter& param, TString  region,  TStr
 
   ////// Make dR full loop
 
-  map<TString,Particle> ParticleMap;
+  std::map<Particle*, TString> ParticleMap;
+  for (auto& tau : TauColl) ParticleMap[&tau] = "Tau";
+  for (auto& jet : jets) ParticleMap[&jet] = "AK4_Jet";
+  for (auto& fatjet : fatjets) ParticleMap[&fatjet] = "AK8_Jet";
+  for (auto& lepton : leps) ParticleMap[lepton] = lepton->GetFlavour();  // lepton already a pointer
 
-  int itau = 1;
-  for (auto& tau : TauColl) {
-    ParticleMap["Tau_" + TString::Itoa(itau, 10)] = tau;
-    ++itau;
-  }
-  
-  // For the jets collection (AK4 jets)
-  int ijet = 1;
-  for (auto& jet : jets) {
-    ParticleMap["AK4_Jet_" + TString::Itoa(ijet, 10)] = jet;
-    ++ijet;
-  }
-  
-  // For the fatjets collection (AK8 jets)
-  int ifatjet = 1;
-  for (auto& fatjet : fatjets) {
-    ParticleMap["AK8_Jet_" + TString::Itoa(ifatjet, 10)] = fatjet;
-    ++ifatjet;
-  }
-  
-  // For the leptons collection (based on flavour)
-  int ilep = 1;
-  for (auto& lepton : leps) {
-    TString flavour = lepton->GetFlavour();  // Assuming `GetFlavour()` is a method of the lepton object
-    ParticleMap[flavour + "_" + TString::Itoa(ilep, 10)] = *lepton;
-    ++ilep;
-  }
-  int index = 1;  // Starting from 1
-  for (auto& i : TauColl) {
-    ParticleMap["Tau_" + TString::Itoa(index, 10)] = i;  // Use the index in the map key
-    ++index;  // Increment the index manually
-  }
-
-  // ParticleMap is the map that holds all the particles
   for (auto it1 = ParticleMap.begin(); it1 != ParticleMap.end(); ++it1) {
-    Particle& particle1 = it1->second;  // First particle in the pair
+    Particle* particle1 = it1->first;
     
-    // Loop over all other particles in the map
     for (auto it2 = ParticleMap.begin(); it2 != ParticleMap.end(); ++it2) {
-        if (it1 == it2) continue;  // Skip if it's the same particle
-        
-        Particle& particleX = it2->second;  // Second particle in the pair
-        
-        // Calculate the deltaR between particle1 and particleX
-        double deltaR = particle1.DeltaR(particleX);
-        
-        // Fill the histogram with the deltaR value
-        // Using the key of the first particle (it1->first) for the histogram path
-        FillHist(plot_dir + region + "/dR/" + it1->first+"_"+it2->first, deltaR, w, 100,0, 5, "#Delta R");
+      if (it1 == it2) continue;
+
+      Particle* particleX = it2->first;
+      double deltaR = particle1->DeltaR(*particleX);  // dereference for method
+      
+      FillHist(plot_dir + region + "/dR/" + it1->second + "_" + it2->second,
+                 deltaR, w, 100, 0, 5, "#Delta R");
     }
   }
-
-  if(MCSample.Contains("ZZ")){
+  
+  bool PlotZZ = MCSample.Contains("ZZ_");
+  if(PlotZZ){
     Particle ZZ;
 
     vector<int> MotherPID;
@@ -532,8 +500,8 @@ void HNL_LeptonCore::Fill_Plots(AnalyzerParameter& param, TString  region,  TStr
   if(fourlep) {
     Particle llllCand = *leps[0] + *leps[1] + *leps[2] + *leps[3] ;
     if(llllCand.M() > 70 && llllCand.M() < 170)     FillHist( plot_dir+ region+ "/Mass/M_ZZ", llllCand.M() , w, 100, 70., 170.,"M_{4l} (GeV)");
-    FillHist( plot_dir+ region+ "/Mass/M_llll_gen", GetGenZZMass(), w, 200, 0., 800.,"Pt(llll) GeV");
-    FillHist( plot_dir+ region+ "/Pt/M_llll_gen", GetGenZZPt(), w, 200, 0., 800.,"M(llll) GeV");
+    //FillHist( plot_dir+ region+ "/Mass/M_llll_gen", GetGenZZMass(), w, 200, 0., 800.,"Pt(llll) GeV");
+    //FillHist( plot_dir+ region+ "/Pt/M_llll_gen", GetGenZZPt(), w, 200, 0., 800.,"M(llll) GeV");
     FillHist( plot_dir+ region+ "/Mass/M_llll", llllCand.M() , w, 200, 0., 800.,"M(llll) GeV");
     FillHist( plot_dir+ region+ "/Mass/M_BestZ", LeptonMassBestZ(leps,LeptonPairBestZCand(leps)) , w, 200, 0., 800.,"M(Z1) GeV");
     FillHist( plot_dir+ region+ "/Mass/M_OtherZ", LeptonMassNonZ(leps,LeptonPairBestZCand(leps)) , w, 200, 0., 800.,"M(Z1) GeV");

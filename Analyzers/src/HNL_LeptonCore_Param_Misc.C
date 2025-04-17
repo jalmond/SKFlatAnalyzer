@@ -1,6 +1,8 @@
 #include "HNL_LeptonCore.h"
 
-void HNL_LeptonCore::GetSetup_Peking(AnalyzerParameter& param_default ){
+AnalyzerParameter HNL_LeptonCore::Setup_Param_Peking(const TString& s_setup_version, const TString& channel_st){
+
+  AnalyzerParameter param_default  =  DefaultParam(s_setup_version, channel_st);
 
   param_default.Apply_Weight_TriggerSF = false;
   param_default.Apply_Weight_IDSF      = false;
@@ -16,13 +18,15 @@ void HNL_LeptonCore::GetSetup_Peking(AnalyzerParameter& param_default ){
   param_default.k.Electron_FR        = "FR_cent";
   param_default.k.Electron_CF  = "CFRate_InvPtEta3_PBSExtrap_Central_TopHNSST"; //// FIX                                                                                                                            
 
-  return;
+  return param_default;
 
 }
 
 
 
-void HNL_LeptonCore::GetSetup_HNLOpt(AnalyzerParameter& param_default ){
+AnalyzerParameter HNL_LeptonCore::Setup_Param_HNLOpt(const TString& s_setup_version, const TString& channel_st){
+
+  AnalyzerParameter param_default  =  DefaultParam(s_setup_version, channel_st);
 
   param_default.Apply_Weight_TriggerSF = false;
   param_default.Apply_Weight_IDSF      = false;
@@ -36,11 +40,13 @@ void HNL_LeptonCore::GetSetup_HNLOpt(AnalyzerParameter& param_default ){
   param_default.Muon_FR_ID        = "HNLooseV1";
   param_default.Electron_FR_ID = "HNLooseV4";
 
-  return;
+  return param_default;
 
 }
 
-void HNL_LeptonCore::GetSetup_BDT(AnalyzerParameter& param_default ){
+AnalyzerParameter HNL_LeptonCore::Setup_Param_BDT(const TString& s_setup_version, const TString& channel_st){
+
+  AnalyzerParameter param_default  =  DefaultParam(s_setup_version, channel_st);
 
   param_default.Apply_Weight_TriggerSF = false;
   param_default.Apply_Weight_IDSF      = false;
@@ -58,7 +64,7 @@ void HNL_LeptonCore::GetSetup_BDT(AnalyzerParameter& param_default ){
   param_default.Muon_FR_ID        = "HNL_ULID_FO";
   param_default.Electron_FR_ID    = "HNL_ULID_FO";
 
-  return;
+  return param_default;
 
 }
 

@@ -106,10 +106,18 @@ void MeasureJetTaggingEfficiency::executeEvent(){
   //==== Reference : https://github.com/rappoccio/usercode/blob/Dev_53x/EDSHyFT/plugins/BTaggingEffAnalyzer.cc
   for(unsigned int ij = 0 ; ij < jets.size(); ij++){
 
-    TString flav= "B";
+    TString flav= "NULL";
     if(fabs(jets.at(ij).hadronFlavour()) == 4) flav= "C";
     if(fabs(jets.at(ij).hadronFlavour()) == 0) flav= "Light";
+    if(fabs(jets.at(ij).hadronFlavour()) == 5) flav= "B";
 
+    if(flav == "NULL"){
+      jets.at(ij).Print();
+      cout << "Flavour of jet = " <<flav << " jets.at(ij).hadronFlavour() = " << jets.at(ij).hadronFlavour() << endl;
+      PrintMatchedGen(All_Gens,jets.at(ij));
+      //PrintGen(All_Gens);
+    }
+    
     double this_Eta = fabs(jets.at(ij).Eta());//POG recommendation is to use |eta|
     double this_Pt = jets.at(ij).Pt()<PtMax ? jets.at(ij).Pt() : PtMax-1; // put overflows in the last bin
 

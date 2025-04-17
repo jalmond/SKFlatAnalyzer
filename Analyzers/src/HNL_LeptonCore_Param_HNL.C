@@ -1,6 +1,9 @@
 #include "HNL_LeptonCore.h"
 
-void HNL_LeptonCore::GetSetup_HNL16(AnalyzerParameter& param_default ){
+AnalyzerParameter HNL_LeptonCore::Setup_Param_HNL16(const TString& s_setup_version, const TString& channel_st ){
+
+  /// Setup Default AnalyzerParameter
+  AnalyzerParameter param_default  =  DefaultParam(s_setup_version, channel_st);
 
   param_default.Apply_Weight_PNETSF   = false;
 
@@ -33,13 +36,17 @@ void HNL_LeptonCore::GetSetup_HNL16(AnalyzerParameter& param_default ){
   if(param_default.Channel.Contains("MuMu")) param_default.k.Muon_Trigger_SF = "DiMuIso_HNL_ULIDv2";
   if(param_default.Channel.Contains("EMu"))  param_default.k.EMu_Trigger_SF = "EMuIso_HNL_ULIDv2";
 
-  return ;
+  return param_default;
 }
 
 
 
 
-void HNL_LeptonCore::GetSetup_HNTightV2(AnalyzerParameter& param_default ){
+AnalyzerParameter HNL_LeptonCore::Setup_Param_HNTightV2(const TString& s_setup_version, const TString& channel_st ){
+
+  /// Setup Default AnalyzerParameter                                                                                                                                                                              
+  AnalyzerParameter param_default  =  DefaultParam(s_setup_version, channel_st);
+
   
   //// Trun on SF weights                                                                                                                                           
   param_default.Apply_Weight_IDSF     = true;
@@ -69,14 +76,13 @@ void HNL_LeptonCore::GetSetup_HNTightV2(AnalyzerParameter& param_default ){
 
   param_default.AK8JetColl       = "HNL";
 
-
-
-
-  return;
+  return  param_default;
 }
 
 
-void HNL_LeptonCore::GetSetup_HNLTopID(AnalyzerParameter& param_default ){
+AnalyzerParameter HNL_LeptonCore::Setup_Param_HNLTopID(const TString& s_setup_version, const TString& channel_st){
+
+  AnalyzerParameter param_default  =  DefaultParam(s_setup_version, channel_st);
 
   param_default.Apply_Weight_IDSF     = true;
   param_default.Apply_Weight_TriggerSF= true;
@@ -106,11 +112,7 @@ void HNL_LeptonCore::GetSetup_HNLTopID(AnalyzerParameter& param_default ){
   if(param_default.Channel.Contains("MuMu")) param_default.k.Muon_Trigger_SF = "DiMuIso_HNL_ULIDv2";
   if(param_default.Channel.Contains("EMu"))  param_default.k.EMu_Trigger_SF = "EMuIso_HNL_ULIDv2";
 
-
-
-
-
-  return;
+  return  param_default;
 }
 
 

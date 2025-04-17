@@ -678,8 +678,7 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
 //====================================================/====================================================
 
 AnalyzerParameter HNL_LeptonCore::InitialiseHNLParameter(const TString& s_setup){
-  AnalyzerParameter p = SetupHNLParameter(s_setup,"Default");
-  return p;  
+  return SetupHNLParameter(s_setup,"Default");
 }
 
 AnalyzerParameter HNL_LeptonCore::InitialiseHNLParameter(const TString& s_setup, HNL_LeptonCore::Channel channel){
@@ -918,31 +917,31 @@ bool  HNL_LeptonCore::UpdateParamBySyst(TString JobID, AnalyzerParameter& paramE
 
 AnalyzerParameter HNL_LeptonCore::SetupHNLParameter(const TString& s_setup_version, const TString& channel_str_name){
 
-  
-  AnalyzerParameter param  =  DefaultParam(s_setup_version, channel_str_name);
+  /// Main IDs
+  if (s_setup_version=="HNL_ULID")   return Setup_Param_HNL_ULID(s_setup_version,channel_str_name);
+  if (s_setup_version=="HNL_ULIDv2") return Setup_Param_HNL_ULIDv2(s_setup_version,channel_str_name);
+  if (s_setup_version=="POGTight")   return Setup_Param_POGTight(s_setup_version,channel_str_name);
+  if (s_setup_version=="HNTightV2")  return Setup_Param_HNTightV2(s_setup_version,channel_str_name);
 
+  /// Other configurations
+  if (s_setup_version=="MVAPOG")     return Setup_Param_MVAPOG(s_setup_version,channel_str_name);
+  if (s_setup_version=="HighPt")     return Setup_Param_HighPt(s_setup_version,channel_str_name);
+  if (s_setup_version=="EXO17028")   return Setup_Param_HNL16(s_setup_version,channel_str_name);
+  if (s_setup_version=="TopHN")      return Setup_Param_HNLTopID(s_setup_version,channel_str_name);
+  if (s_setup_version=="Peking")     return Setup_Param_Peking(s_setup_version,channel_str_name);
+  if (s_setup_version=="HNL_Opt")    return Setup_Param_HNLOpt(s_setup_version,channel_str_name);
+  if (s_setup_version=="BDT")        return Setup_Param_BDT(s_setup_version,channel_str_name);
+  
+  /// Other non defined setups
+  AnalyzerParameter param  =  DefaultParam(s_setup_version, channel_str_name);
   if (s_setup_version=="")      return param;
   if (s_setup_version=="Basic") return param;
 
- 
-  if (s_setup_version=="POGTight") GetSetup_POGTight(param);
-  if (s_setup_version=="MVAPOG")    GetSetup_MVAPOG(param);
-  if (s_setup_version=="HighPt")    GetSetup_HighPt(param);
-
-  if (s_setup_version=="HNTightV2") GetSetup_HNTightV2(param);  
-  if (s_setup_version=="EXO17028")  GetSetup_HNL16(param);
-  if (s_setup_version=="TopHN")     GetSetup_HNLTopID(param);
-  if (s_setup_version=="HNL_ULID")  GetSetup_HNLID(param);
-  if (s_setup_version=="HNL_ULIDv2")  GetSetup_HNLHPTID(param);
-  if (s_setup_version=="Peking")  GetSetup_Peking(param);
-  if (s_setup_version=="HNL_Opt") GetSetup_HNLOpt(param);
-  if (s_setup_version=="BDT")     GetSetup_BDT(param);
-
-
   if (s_setup_version == "FakeRate" ){
     param.Apply_Weight_LumiNorm = false;
-    return param;  }
-
+    return param;
+  }
+  
   if (s_setup_version=="SignalStudy" || s_setup_version=="MCBkg"){
     param.FakeMethod = "MC";
     param.CFMethod   = "MC";
@@ -962,7 +961,6 @@ AnalyzerParameter HNL_LeptonCore::SetupHNLParameter(const TString& s_setup_versi
 
   cout << "[HNL_LeptonCore::InitialiseHNLParameters ] ID not found.." << endl;
   exit(EXIT_FAILURE);
-  
   
 }
 
@@ -1028,10 +1026,10 @@ double HNL_LeptonCore::GetKFactor(){
 }
 
 double HNL_LeptonCore::ZZKfactor(TString method){
-  
+
   // finalState=1 : 4e/4mu/4tau
   // finalState=2 : 2e2mu/2mutau/2e2tau
-  
+
   int finalState = GetZZFinalState();
   float k=0.0;
   //  cout << "GetGenZZPt() = " << GetGenZZPt() << "  " << GetGenZZMass() << endl;

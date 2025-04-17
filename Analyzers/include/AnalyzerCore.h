@@ -292,6 +292,7 @@ public:
   vector<TString> GetGenListPlot();
 
   void PrintGen(const std::vector<Gen>& gens);
+  void PrintMatchedGen(std::vector<Gen>& gens,Particle p);
   void PrintMatchedGen(std::vector<Gen>& gens,const Lepton& Lep);
   int  HotFixLeptonType(Lepton lep);
 

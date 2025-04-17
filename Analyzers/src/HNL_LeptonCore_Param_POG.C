@@ -1,6 +1,8 @@
 #include "HNL_LeptonCore.h"
 
-void HNL_LeptonCore::GetSetup_POGTight(AnalyzerParameter& param_default ){
+AnalyzerParameter HNL_LeptonCore::Setup_Param_POGTight(const TString& s_setup_version, const TString& channel_st){
+
+  AnalyzerParameter param_default  =  DefaultParam(s_setup_version, channel_st);
 
   param_default.Apply_Weight_IDSF     = true;
   param_default.Apply_Weight_TriggerSF= true;
@@ -30,13 +32,13 @@ void HNL_LeptonCore::GetSetup_POGTight(AnalyzerParameter& param_default ){
 
 
 
-  return;
+  return param_default;
 }
 
 
+AnalyzerParameter HNL_LeptonCore::Setup_Param_HighPt(const TString& s_setup_version, const TString& channel_st){
 
-
-void HNL_LeptonCore::GetSetup_HighPt(AnalyzerParameter& param_default ){
+  AnalyzerParameter param_default  =  DefaultParam(s_setup_version, channel_st);
 
   param_default.Apply_Weight_IDSF     = false;
   param_default.Apply_Weight_TriggerSF= false;
@@ -68,13 +70,13 @@ void HNL_LeptonCore::GetSetup_HighPt(AnalyzerParameter& param_default ){
   //  param_default.TriggerSelection     = "HighPt";
 
 
-  return;
+  return param_default;
 }
 
 
+AnalyzerParameter HNL_LeptonCore::Setup_Param_MVAPOG(const TString& s_setup_version, const TString& channel_st){
 
-void HNL_LeptonCore::GetSetup_MVAPOG(AnalyzerParameter& param_default ){
-
+  AnalyzerParameter param_default  =  DefaultParam(s_setup_version, channel_st);
 
   param_default.Apply_Weight_IDSF     = false;
   param_default.Apply_Weight_TriggerSF= false;
@@ -100,7 +102,7 @@ void HNL_LeptonCore::GetSetup_MVAPOG(AnalyzerParameter& param_default ){
 
   param_default.AK8JetColl       = "HNL";
 
-  return;
+  return param_default;
 
 }
 
