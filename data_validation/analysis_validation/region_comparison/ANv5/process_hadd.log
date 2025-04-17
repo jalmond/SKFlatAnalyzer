@@ -1,0 +1,471 @@
+HaddJob:  2025-04-16 17:41:51,107 - INFO - ==================================================
+HaddJob:  2025-04-16 17:41:51,107 - INFO - STARTING SECTION: Merging 2016preVFP
+HaddJob:  2025-04-16 17:41:51,107 - INFO - ==================================================
+HaddJob:  2025-04-16 17:41:51,107 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 17:41:51,107 - INFO - STARTING SUBSECTION: Merging -->2016preVFP/HNL_ControlRegion_Plotter_CF.root
+HaddJob:  2025-04-16 17:41:51,107 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 17:42:07,348 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 17:42:07,349 - INFO - STARTING SUBSECTION: Merging -->2016preVFP/HNL_ControlRegion_Plotter_Fake.root
+HaddJob:  2025-04-16 17:42:07,349 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 17:42:57,494 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 17:42:57,495 - INFO - STARTING SUBSECTION: Merging -->2016preVFP/HNL_ControlRegion_Plotter_Data.root
+HaddJob:  2025-04-16 17:42:57,495 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 17:43:37,729 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 17:43:37,730 - INFO - STARTING SUBSECTION: Merging -->2016preVFP/HNL_ControlRegion_Plotter_ZG.root
+HaddJob:  2025-04-16 17:43:37,730 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 17:43:55,697 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 17:43:55,697 - INFO - STARTING SUBSECTION: Merging -->2016preVFP/HNL_ControlRegion_Plotter_WG.root
+HaddJob:  2025-04-16 17:43:55,697 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 17:52:01,904 - INFO - Removing old directory 2016preVFP
+HaddJob:  2025-04-16 17:52:01,964 - INFO - ==================================================
+HaddJob:  2025-04-16 17:52:01,964 - INFO - STARTING SECTION: Merging 2016preVFP
+HaddJob:  2025-04-16 17:52:01,964 - INFO - ==================================================
+HaddJob:  2025-04-16 17:52:01,964 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 17:52:01,964 - INFO - STARTING SUBSECTION: Merging -->2016preVFP/HNL_ControlRegion_Plotter_ZG.root
+HaddJob:  2025-04-16 17:52:01,965 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 17:52:01,966 - ERROR - Error: The following files do not exist: /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016preVFP/MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBD_ZGToLLG.root
+HaddJob:  2025-04-16 17:52:14,693 - INFO - Removing old directory 2016preVFP
+HaddJob:  2025-04-16 17:52:14,694 - INFO - ==================================================
+HaddJob:  2025-04-16 17:52:14,694 - INFO - STARTING SECTION: Merging 2016preVFP
+HaddJob:  2025-04-16 17:52:14,694 - INFO - ==================================================
+HaddJob:  2025-04-16 17:52:14,694 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 17:52:14,695 - INFO - STARTING SUBSECTION: Merging -->2016preVFP/HNL_ControlRegion_Plotter_ZG.root
+HaddJob:  2025-04-16 17:52:14,695 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 17:52:14,695 - ERROR - Error: The following files do not exist: /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016preVFP/MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBD_ZGToLLG.root
+HaddJob:  2025-04-16 17:55:02,002 - INFO - Removing old directory 2016preVFP
+HaddJob:  2025-04-16 17:55:02,004 - INFO - ==================================================
+HaddJob:  2025-04-16 17:55:02,004 - INFO - STARTING SECTION: Checking 2016preVFP
+HaddJob:  2025-04-16 17:55:02,004 - INFO - ==================================================
+HaddJob:  2025-04-16 17:55:02,004 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 17:55:02,004 - INFO - STARTING SUBSECTION: Merging -->2016preVFP/HNL_ControlRegion_Plotter_ZG.root
+HaddJob:  2025-04-16 17:55:02,004 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 17:55:02,005 - WARNING - Error: The following files do not exist: /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016preVFP/MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBD_ZGToLLG.root
+HaddJob:  2025-04-16 17:55:34,293 - INFO - Removing old directory 2016preVFP
+HaddJob:  2025-04-16 17:55:34,296 - INFO - ==================================================
+HaddJob:  2025-04-16 17:55:34,296 - INFO - STARTING SECTION: Checking 2016preVFP
+HaddJob:  2025-04-16 17:55:34,296 - INFO - ==================================================
+HaddJob:  2025-04-16 17:55:34,296 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 17:55:34,296 - INFO - STARTING SUBSECTION: Checking inputs to 2016preVFP/HNL_ControlRegion_Plotter_ZG.root
+HaddJob:  2025-04-16 17:55:34,296 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 17:55:34,296 - WARNING - Error: The following files do not exist: /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016preVFP/MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBD_ZGToLLG.root
+HaddJob:  2025-04-16 17:56:01,804 - INFO - Removing old directory 2016preVFP
+HaddJob:  2025-04-16 17:56:01,806 - INFO - ==================================================
+HaddJob:  2025-04-16 17:56:01,806 - INFO - STARTING SECTION: Checking 2016preVFP
+HaddJob:  2025-04-16 17:56:01,806 - INFO - ==================================================
+HaddJob:  2025-04-16 17:56:01,806 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 17:56:01,807 - INFO - STARTING SUBSECTION: Checking inputs to 2016preVFP/HNL_ControlRegion_Plotter_ZG.root
+HaddJob:  2025-04-16 17:56:01,807 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 17:56:01,807 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 17:56:01,807 - INFO - STARTING SUBSECTION: Checking inputs to 2016preVFP/HNL_ControlRegion_Plotter_CF.root
+HaddJob:  2025-04-16 17:56:01,807 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 17:56:01,807 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 17:56:01,808 - INFO - STARTING SUBSECTION: Checking inputs to 2016preVFP/HNL_ControlRegion_Plotter_Fake.root
+HaddJob:  2025-04-16 17:56:01,808 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 17:56:01,808 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 17:56:01,808 - INFO - STARTING SUBSECTION: Checking inputs to 2016preVFP/HNL_ControlRegion_Plotter_Data.root
+HaddJob:  2025-04-16 17:56:01,808 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 17:56:01,808 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 17:56:01,808 - INFO - STARTING SUBSECTION: Checking inputs to 2016preVFP/HNL_ControlRegion_Plotter_WG.root
+HaddJob:  2025-04-16 17:56:01,808 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 17:56:01,810 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 17:56:01,810 - INFO - STARTING SUBSECTION: Checking inputs to 2016preVFP/HNL_ControlRegion_Plotter_Other_Conv.root
+HaddJob:  2025-04-16 17:56:01,810 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 17:56:01,810 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 17:56:01,811 - INFO - STARTING SUBSECTION: Checking inputs to 2016preVFP/HNL_ControlRegion_Plotter_ggZZ.root
+HaddJob:  2025-04-16 17:56:01,811 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 17:56:01,812 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 17:56:01,812 - INFO - STARTING SUBSECTION: Checking inputs to 2016preVFP/HNL_ControlRegion_Plotter_qqZZ.root
+HaddJob:  2025-04-16 17:56:01,812 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 17:56:01,812 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 17:56:01,813 - INFO - STARTING SUBSECTION: Checking inputs to 2016preVFP/HNL_ControlRegion_Plotter_TTV.root
+HaddJob:  2025-04-16 17:56:01,813 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 17:56:01,813 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 17:56:01,813 - INFO - STARTING SUBSECTION: Checking inputs to 2016preVFP/HNL_ControlRegion_Plotter_WW.root
+HaddJob:  2025-04-16 17:56:01,813 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 17:56:01,814 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 17:56:01,814 - INFO - STARTING SUBSECTION: Checking inputs to 2016preVFP/HNL_ControlRegion_Plotter_Other.root
+HaddJob:  2025-04-16 17:56:01,814 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 17:56:01,815 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 17:56:01,815 - INFO - STARTING SUBSECTION: Checking inputs to 2016preVFP/HNL_ControlRegion_Plotter_Extra.root
+HaddJob:  2025-04-16 17:56:01,815 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 17:56:01,815 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 17:56:01,815 - INFO - STARTING SUBSECTION: Checking inputs to 2016preVFP/HNL_ControlRegion_Plotter_VVV.root
+HaddJob:  2025-04-16 17:56:01,816 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 17:56:01,816 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 17:56:01,816 - INFO - STARTING SUBSECTION: Checking inputs to 2016preVFP/HNL_ControlRegion_Plotter_WZ.root
+HaddJob:  2025-04-16 17:56:01,816 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 17:56:01,817 - INFO - ==================================================
+HaddJob:  2025-04-16 17:56:01,817 - INFO - STARTING SECTION: Merging 2016preVFP
+HaddJob:  2025-04-16 17:56:01,817 - INFO - ==================================================
+HaddJob:  2025-04-16 17:56:01,817 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 17:56:01,817 - INFO - STARTING SUBSECTION: Merging -->2016preVFP/HNL_ControlRegion_Plotter_ZG.root
+HaddJob:  2025-04-16 17:56:01,817 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 17:56:01,817 - INFO - Running: hadd 2016preVFP/HNL_ControlRegion_Plotter_ZG.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016preVFP/MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_ZGToLLG.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016preVFP/MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_ZGToLLG_PtG_130.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016preVFP/MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_DYJets10to50_MG.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016preVFP/MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_DYJets_MG.root
+HaddJob:  2025-04-16 17:56:22,111 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 17:56:22,111 - INFO - STARTING SUBSECTION: Merging -->2016preVFP/HNL_ControlRegion_Plotter_CF.root
+HaddJob:  2025-04-16 17:56:22,111 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 17:56:22,111 - INFO - Running: hadd 2016preVFP/HNL_ControlRegion_Plotter_CF.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016preVFP/MultiLepton__RunCF__/DATA/HNL_ControlRegion_Plotter_SkimTree_DileptonBDT_*
+HaddJob:  2025-04-16 17:56:37,711 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 17:56:37,711 - INFO - STARTING SUBSECTION: Merging -->2016preVFP/HNL_ControlRegion_Plotter_Fake.root
+HaddJob:  2025-04-16 17:56:37,711 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 17:56:37,711 - INFO - Running: hadd 2016preVFP/HNL_ControlRegion_Plotter_Fake.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016preVFP/MultiLepton__RunFake__/DATA/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_*
+HaddJob:  2025-04-16 17:57:26,076 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 17:57:26,077 - INFO - STARTING SUBSECTION: Merging -->2016preVFP/HNL_ControlRegion_Plotter_Data.root
+HaddJob:  2025-04-16 17:57:26,077 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 17:57:26,077 - INFO - Running: cp /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016preVFP/MultiLepton__/DATA/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_* 2016preVFP/
+HaddJob:  2025-04-16 17:57:26,267 - INFO - Running: hadd 2016preVFP/HNL_ControlRegion_Plotter_Data.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016preVFP/MultiLepton__/DATA/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_*
+HaddJob:  2025-04-16 17:58:04,466 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 17:58:04,467 - INFO - STARTING SUBSECTION: Merging -->2016preVFP/HNL_ControlRegion_Plotter_WG.root
+HaddJob:  2025-04-16 17:58:04,467 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 17:58:04,467 - INFO - Running: hadd 2016preVFP/HNL_ControlRegion_Plotter_WG.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016preVFP/MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_DileptonBDT_WGToLNuG_MG.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016preVFP/MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_DileptonBDT_WGToLNuG.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016preVFP/MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_DileptonBDT_WGToLNuG_01J_PtG_130.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016preVFP/MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_DileptonBDT_WGToLNuG_01J_PtG_300.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016preVFP/MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_DileptonBDT_WGToLNuG_01J_PtG_500.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016preVFP/MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_DileptonBDT_WGJJToLNu.root
+HaddJob:  2025-04-16 17:58:44,186 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 17:58:44,187 - INFO - STARTING SUBSECTION: Merging -->2016preVFP/HNL_ControlRegion_Plotter_Other_Conv.root
+HaddJob:  2025-04-16 17:58:44,187 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 17:58:44,187 - INFO - Running: hadd 2016preVFP/HNL_ControlRegion_Plotter_Other_Conv.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016preVFP/MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_TTG.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016preVFP/MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_WWG.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016preVFP/MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_WZG.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016preVFP/MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_TG.root
+HaddJob:  2025-04-16 17:59:13,130 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 17:59:13,130 - INFO - STARTING SUBSECTION: Merging -->2016preVFP/HNL_ControlRegion_Plotter_ggZZ.root
+HaddJob:  2025-04-16 17:59:13,130 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 17:59:13,130 - INFO - Running: hadd 2016preVFP/HNL_ControlRegion_Plotter_ggZZ.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016preVFP/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_GluGluToZZto4e.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016preVFP/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_GluGluToZZto2e2tau.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016preVFP/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_GluGluToZZto2e2mu.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016preVFP/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_GluGluToZZto4mu.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016preVFP/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_GluGluToZZto2mu2tau.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016preVFP/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_GluGluHToZZTo4L.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016preVFP/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_VBF_HToZZTo4L.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016preVFP/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_GluGluToZZto4tau.root
+HaddJob:  2025-04-16 17:59:54,082 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 17:59:54,083 - INFO - STARTING SUBSECTION: Merging -->2016preVFP/HNL_ControlRegion_Plotter_qqZZ.root
+HaddJob:  2025-04-16 17:59:54,083 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 17:59:54,083 - INFO - Running: hadd 2016preVFP/HNL_ControlRegion_Plotter_qqZZ.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016preVFP/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_ZZTo4L_powheg.root
+HaddJob:  2025-04-16 18:00:21,226 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:00:21,226 - INFO - STARTING SUBSECTION: Merging -->2016preVFP/HNL_ControlRegion_Plotter_TTV.root
+HaddJob:  2025-04-16 18:00:21,227 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:00:21,227 - INFO - Running: hadd 2016preVFP/HNL_ControlRegion_Plotter_TTV.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016preVFP/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_ttZToLLNuNu.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016preVFP/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_ttWToLNu.root
+HaddJob:  2025-04-16 18:00:54,287 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:00:54,287 - INFO - STARTING SUBSECTION: Merging -->2016preVFP/HNL_ControlRegion_Plotter_WW.root
+HaddJob:  2025-04-16 18:00:54,287 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:00:54,287 - INFO - Running: hadd 2016preVFP/HNL_ControlRegion_Plotter_WW.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016preVFP/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_WpWp_EWK.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016preVFP/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_WpWp_QCD.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016preVFP/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_WWTo2L2Nu_DS.root
+HaddJob:  2025-04-16 18:01:25,094 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:01:25,095 - INFO - STARTING SUBSECTION: Merging -->2016preVFP/HNL_ControlRegion_Plotter_Other.root
+HaddJob:  2025-04-16 18:01:25,095 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:01:25,095 - INFO - Running: hadd 2016preVFP/HNL_ControlRegion_Plotter_Other.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016preVFP/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_tZq.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016preVFP/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_TTTT.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016preVFP/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_ttHToNonbb.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016preVFP/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_VHToNonbb.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016preVFP/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_TTZZ.root
+HaddJob:  2025-04-16 18:02:11,848 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:02:11,849 - INFO - STARTING SUBSECTION: Merging -->2016preVFP/HNL_ControlRegion_Plotter_Extra.root
+HaddJob:  2025-04-16 18:02:11,849 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:02:11,849 - INFO - Running: hadd 2016preVFP/HNL_ControlRegion_Plotter_Extra.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016preVFP/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_tHq.root
+HaddJob:  2025-04-16 18:02:34,274 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:02:34,275 - INFO - STARTING SUBSECTION: Merging -->2016preVFP/HNL_ControlRegion_Plotter_VVV.root
+HaddJob:  2025-04-16 18:02:34,275 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:02:34,275 - INFO - Running: hadd 2016preVFP/HNL_ControlRegion_Plotter_VVV.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016preVFP/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_WZZ.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016preVFP/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_ZZZ.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016preVFP/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_WWZ.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016preVFP/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_WWW.root
+HaddJob:  2025-04-16 18:03:19,975 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:03:19,976 - INFO - STARTING SUBSECTION: Merging -->2016preVFP/HNL_ControlRegion_Plotter_WZ.root
+HaddJob:  2025-04-16 18:03:19,976 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:03:19,976 - INFO - Running: hadd 2016preVFP/HNL_ControlRegion_Plotter_WZ.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016preVFP/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_WZ_EWK.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016preVFP/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_WZTo3LNu_mllmin4p0_powheg.root
+HaddJob:  2025-04-16 18:03:49,571 - INFO - ==================================================
+HaddJob:  2025-04-16 18:03:49,571 - INFO - STARTING SECTION: Checking 2016postVFP
+HaddJob:  2025-04-16 18:03:49,571 - INFO - ==================================================
+HaddJob:  2025-04-16 18:03:49,572 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:03:49,572 - INFO - STARTING SUBSECTION: Checking inputs to 2016postVFP/HNL_ControlRegion_Plotter_ZG.root
+HaddJob:  2025-04-16 18:03:49,572 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:03:49,583 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:03:49,583 - INFO - STARTING SUBSECTION: Checking inputs to 2016postVFP/HNL_ControlRegion_Plotter_CF.root
+HaddJob:  2025-04-16 18:03:49,583 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:03:49,584 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:03:49,584 - INFO - STARTING SUBSECTION: Checking inputs to 2016postVFP/HNL_ControlRegion_Plotter_Fake.root
+HaddJob:  2025-04-16 18:03:49,584 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:03:49,584 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:03:49,584 - INFO - STARTING SUBSECTION: Checking inputs to 2016postVFP/HNL_ControlRegion_Plotter_Data.root
+HaddJob:  2025-04-16 18:03:49,584 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:03:49,584 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:03:49,584 - INFO - STARTING SUBSECTION: Checking inputs to 2016postVFP/HNL_ControlRegion_Plotter_WG.root
+HaddJob:  2025-04-16 18:03:49,584 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:03:49,585 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:03:49,585 - INFO - STARTING SUBSECTION: Checking inputs to 2016postVFP/HNL_ControlRegion_Plotter_Other_Conv.root
+HaddJob:  2025-04-16 18:03:49,586 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:03:49,586 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:03:49,586 - INFO - STARTING SUBSECTION: Checking inputs to 2016postVFP/HNL_ControlRegion_Plotter_ggZZ.root
+HaddJob:  2025-04-16 18:03:49,586 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:03:49,588 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:03:49,588 - INFO - STARTING SUBSECTION: Checking inputs to 2016postVFP/HNL_ControlRegion_Plotter_qqZZ.root
+HaddJob:  2025-04-16 18:03:49,588 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:03:49,588 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:03:49,588 - INFO - STARTING SUBSECTION: Checking inputs to 2016postVFP/HNL_ControlRegion_Plotter_TTV.root
+HaddJob:  2025-04-16 18:03:49,588 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:03:49,589 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:03:49,589 - INFO - STARTING SUBSECTION: Checking inputs to 2016postVFP/HNL_ControlRegion_Plotter_WW.root
+HaddJob:  2025-04-16 18:03:49,589 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:03:49,589 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:03:49,589 - INFO - STARTING SUBSECTION: Checking inputs to 2016postVFP/HNL_ControlRegion_Plotter_Other.root
+HaddJob:  2025-04-16 18:03:49,590 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:03:49,590 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:03:49,590 - INFO - STARTING SUBSECTION: Checking inputs to 2016postVFP/HNL_ControlRegion_Plotter_Extra.root
+HaddJob:  2025-04-16 18:03:49,590 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:03:49,590 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:03:49,590 - INFO - STARTING SUBSECTION: Checking inputs to 2016postVFP/HNL_ControlRegion_Plotter_VVV.root
+HaddJob:  2025-04-16 18:03:49,590 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:03:49,591 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:03:49,591 - INFO - STARTING SUBSECTION: Checking inputs to 2016postVFP/HNL_ControlRegion_Plotter_WZ.root
+HaddJob:  2025-04-16 18:03:49,591 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:03:49,592 - INFO - ==================================================
+HaddJob:  2025-04-16 18:03:49,592 - INFO - STARTING SECTION: Merging 2016postVFP
+HaddJob:  2025-04-16 18:03:49,592 - INFO - ==================================================
+HaddJob:  2025-04-16 18:03:49,592 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:03:49,592 - INFO - STARTING SUBSECTION: Merging -->2016postVFP/HNL_ControlRegion_Plotter_ZG.root
+HaddJob:  2025-04-16 18:03:49,592 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:03:49,592 - INFO - Running: hadd 2016postVFP/HNL_ControlRegion_Plotter_ZG.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016postVFP/MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_ZGToLLG.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016postVFP/MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_ZGToLLG_PtG_130.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016postVFP/MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_DYJets10to50_MG.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016postVFP/MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_DYJets_MG.root
+HaddJob:  2025-04-16 18:04:09,352 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:04:09,353 - INFO - STARTING SUBSECTION: Merging -->2016postVFP/HNL_ControlRegion_Plotter_CF.root
+HaddJob:  2025-04-16 18:04:09,353 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:04:09,353 - INFO - Running: hadd 2016postVFP/HNL_ControlRegion_Plotter_CF.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016postVFP/MultiLepton__RunCF__/DATA/HNL_ControlRegion_Plotter_SkimTree_DileptonBDT_*
+HaddJob:  2025-04-16 18:04:21,645 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:04:21,646 - INFO - STARTING SUBSECTION: Merging -->2016postVFP/HNL_ControlRegion_Plotter_Fake.root
+HaddJob:  2025-04-16 18:04:21,646 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:04:21,646 - INFO - Running: hadd 2016postVFP/HNL_ControlRegion_Plotter_Fake.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016postVFP/MultiLepton__RunFake__/DATA/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_*
+HaddJob:  2025-04-16 18:04:57,557 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:04:57,557 - INFO - STARTING SUBSECTION: Merging -->2016postVFP/HNL_ControlRegion_Plotter_Data.root
+HaddJob:  2025-04-16 18:04:57,558 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:04:57,558 - INFO - Running: cp /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016postVFP/MultiLepton__/DATA/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_* 2016postVFP/
+HaddJob:  2025-04-16 18:04:58,515 - INFO - Running: hadd 2016postVFP/HNL_ControlRegion_Plotter_Data.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016postVFP/MultiLepton__/DATA/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_*
+HaddJob:  2025-04-16 18:05:26,907 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:05:26,908 - INFO - STARTING SUBSECTION: Merging -->2016postVFP/HNL_ControlRegion_Plotter_WG.root
+HaddJob:  2025-04-16 18:05:26,908 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:05:26,908 - INFO - Running: hadd 2016postVFP/HNL_ControlRegion_Plotter_WG.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016postVFP/MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_DileptonBDT_WGToLNuG_MG.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016postVFP/MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_DileptonBDT_WGToLNuG.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016postVFP/MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_DileptonBDT_WGToLNuG_01J_PtG_130.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016postVFP/MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_DileptonBDT_WGToLNuG_01J_PtG_300.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016postVFP/MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_DileptonBDT_WGToLNuG_01J_PtG_500.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016postVFP/MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_DileptonBDT_WGJJToLNu.root
+HaddJob:  2025-04-16 18:06:06,295 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:06:06,295 - INFO - STARTING SUBSECTION: Merging -->2016postVFP/HNL_ControlRegion_Plotter_Other_Conv.root
+HaddJob:  2025-04-16 18:06:06,295 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:06:06,295 - INFO - Running: hadd 2016postVFP/HNL_ControlRegion_Plotter_Other_Conv.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016postVFP/MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_TTG.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016postVFP/MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_WWG.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016postVFP/MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_WZG.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016postVFP/MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_TG.root
+HaddJob:  2025-04-16 18:06:34,148 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:06:34,148 - INFO - STARTING SUBSECTION: Merging -->2016postVFP/HNL_ControlRegion_Plotter_ggZZ.root
+HaddJob:  2025-04-16 18:06:34,148 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:06:34,148 - INFO - Running: hadd 2016postVFP/HNL_ControlRegion_Plotter_ggZZ.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016postVFP/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_GluGluToZZto4e.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016postVFP/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_GluGluToZZto2e2tau.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016postVFP/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_GluGluToZZto2e2mu.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016postVFP/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_GluGluToZZto4mu.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016postVFP/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_GluGluToZZto2mu2tau.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016postVFP/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_GluGluHToZZTo4L.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016postVFP/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_VBF_HToZZTo4L.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016postVFP/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_GluGluToZZto4tau.root
+HaddJob:  2025-04-16 18:07:15,944 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:07:15,944 - INFO - STARTING SUBSECTION: Merging -->2016postVFP/HNL_ControlRegion_Plotter_qqZZ.root
+HaddJob:  2025-04-16 18:07:15,944 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:07:15,944 - INFO - Running: hadd 2016postVFP/HNL_ControlRegion_Plotter_qqZZ.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016postVFP/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_ZZTo4L_powheg.root
+HaddJob:  2025-04-16 18:07:43,685 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:07:43,685 - INFO - STARTING SUBSECTION: Merging -->2016postVFP/HNL_ControlRegion_Plotter_TTV.root
+HaddJob:  2025-04-16 18:07:43,686 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:07:43,686 - INFO - Running: hadd 2016postVFP/HNL_ControlRegion_Plotter_TTV.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016postVFP/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_ttZToLLNuNu.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016postVFP/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_ttWToLNu.root
+HaddJob:  2025-04-16 18:08:17,053 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:08:17,054 - INFO - STARTING SUBSECTION: Merging -->2016postVFP/HNL_ControlRegion_Plotter_WW.root
+HaddJob:  2025-04-16 18:08:17,054 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:08:17,054 - INFO - Running: hadd 2016postVFP/HNL_ControlRegion_Plotter_WW.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016postVFP/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_WpWp_EWK.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016postVFP/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_WpWp_QCD.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016postVFP/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_WWTo2L2Nu_DS.root
+HaddJob:  2025-04-16 18:08:48,141 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:08:48,141 - INFO - STARTING SUBSECTION: Merging -->2016postVFP/HNL_ControlRegion_Plotter_Other.root
+HaddJob:  2025-04-16 18:08:48,142 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:08:48,142 - INFO - Running: hadd 2016postVFP/HNL_ControlRegion_Plotter_Other.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016postVFP/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_tZq.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016postVFP/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_TTTT.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016postVFP/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_ttHToNonbb.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016postVFP/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_VHToNonbb.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016postVFP/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_TTZZ.root
+HaddJob:  2025-04-16 18:09:34,777 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:09:34,778 - INFO - STARTING SUBSECTION: Merging -->2016postVFP/HNL_ControlRegion_Plotter_Extra.root
+HaddJob:  2025-04-16 18:09:34,778 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:09:34,778 - INFO - Running: hadd 2016postVFP/HNL_ControlRegion_Plotter_Extra.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016postVFP/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_tHq.root
+HaddJob:  2025-04-16 18:09:57,207 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:09:57,208 - INFO - STARTING SUBSECTION: Merging -->2016postVFP/HNL_ControlRegion_Plotter_VVV.root
+HaddJob:  2025-04-16 18:09:57,208 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:09:57,208 - INFO - Running: hadd 2016postVFP/HNL_ControlRegion_Plotter_VVV.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016postVFP/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_WZZ.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016postVFP/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_ZZZ.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016postVFP/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_WWZ.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016postVFP/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_WWW.root
+HaddJob:  2025-04-16 18:10:43,225 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:10:43,225 - INFO - STARTING SUBSECTION: Merging -->2016postVFP/HNL_ControlRegion_Plotter_WZ.root
+HaddJob:  2025-04-16 18:10:43,225 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:10:43,225 - INFO - Running: hadd 2016postVFP/HNL_ControlRegion_Plotter_WZ.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016postVFP/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_WZ_EWK.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2016postVFP/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_WZTo3LNu_mllmin4p0_powheg.root
+HaddJob:  2025-04-16 18:11:13,205 - INFO - ==================================================
+HaddJob:  2025-04-16 18:11:13,205 - INFO - STARTING SECTION: Checking 2017
+HaddJob:  2025-04-16 18:11:13,205 - INFO - ==================================================
+HaddJob:  2025-04-16 18:11:13,205 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:11:13,205 - INFO - STARTING SUBSECTION: Checking inputs to 2017/HNL_ControlRegion_Plotter_ZG.root
+HaddJob:  2025-04-16 18:11:13,205 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:11:13,206 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:11:13,206 - INFO - STARTING SUBSECTION: Checking inputs to 2017/HNL_ControlRegion_Plotter_CF.root
+HaddJob:  2025-04-16 18:11:13,207 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:11:13,207 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:11:13,207 - INFO - STARTING SUBSECTION: Checking inputs to 2017/HNL_ControlRegion_Plotter_Fake.root
+HaddJob:  2025-04-16 18:11:13,207 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:11:13,207 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:11:13,207 - INFO - STARTING SUBSECTION: Checking inputs to 2017/HNL_ControlRegion_Plotter_Data.root
+HaddJob:  2025-04-16 18:11:13,207 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:11:13,207 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:11:13,207 - INFO - STARTING SUBSECTION: Checking inputs to 2017/HNL_ControlRegion_Plotter_WG.root
+HaddJob:  2025-04-16 18:11:13,207 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:11:13,209 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:11:13,209 - INFO - STARTING SUBSECTION: Checking inputs to 2017/HNL_ControlRegion_Plotter_Other_Conv.root
+HaddJob:  2025-04-16 18:11:13,209 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:11:13,209 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:11:13,210 - INFO - STARTING SUBSECTION: Checking inputs to 2017/HNL_ControlRegion_Plotter_ggZZ.root
+HaddJob:  2025-04-16 18:11:13,210 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:11:13,211 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:11:13,211 - INFO - STARTING SUBSECTION: Checking inputs to 2017/HNL_ControlRegion_Plotter_qqZZ.root
+HaddJob:  2025-04-16 18:11:13,211 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:11:13,211 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:11:13,212 - INFO - STARTING SUBSECTION: Checking inputs to 2017/HNL_ControlRegion_Plotter_TTV.root
+HaddJob:  2025-04-16 18:11:13,212 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:11:13,212 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:11:13,212 - INFO - STARTING SUBSECTION: Checking inputs to 2017/HNL_ControlRegion_Plotter_WW.root
+HaddJob:  2025-04-16 18:11:13,212 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:11:13,213 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:11:13,213 - INFO - STARTING SUBSECTION: Checking inputs to 2017/HNL_ControlRegion_Plotter_Other.root
+HaddJob:  2025-04-16 18:11:13,213 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:11:13,214 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:11:13,214 - INFO - STARTING SUBSECTION: Checking inputs to 2017/HNL_ControlRegion_Plotter_Extra.root
+HaddJob:  2025-04-16 18:11:13,214 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:11:13,214 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:11:13,214 - INFO - STARTING SUBSECTION: Checking inputs to 2017/HNL_ControlRegion_Plotter_VVV.root
+HaddJob:  2025-04-16 18:11:13,214 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:11:13,215 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:11:13,215 - INFO - STARTING SUBSECTION: Checking inputs to 2017/HNL_ControlRegion_Plotter_WZ.root
+HaddJob:  2025-04-16 18:11:13,215 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:11:13,216 - INFO - ==================================================
+HaddJob:  2025-04-16 18:11:13,216 - INFO - STARTING SECTION: Merging 2017
+HaddJob:  2025-04-16 18:11:13,216 - INFO - ==================================================
+HaddJob:  2025-04-16 18:11:13,216 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:11:13,216 - INFO - STARTING SUBSECTION: Merging -->2017/HNL_ControlRegion_Plotter_ZG.root
+HaddJob:  2025-04-16 18:11:13,216 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:11:13,216 - INFO - Running: hadd 2017/HNL_ControlRegion_Plotter_ZG.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2017/MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_ZGToLLG.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2017/MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_ZGToLLG_PtG_130.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2017/MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_DYJets10to50_MG.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2017/MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_DYJets_MG.root
+HaddJob:  2025-04-16 18:11:33,765 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:11:33,766 - INFO - STARTING SUBSECTION: Merging -->2017/HNL_ControlRegion_Plotter_CF.root
+HaddJob:  2025-04-16 18:11:33,766 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:11:33,766 - INFO - Running: hadd 2017/HNL_ControlRegion_Plotter_CF.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2017/MultiLepton__RunCF__/DATA/HNL_ControlRegion_Plotter_SkimTree_DileptonBDT_*
+HaddJob:  2025-04-16 18:11:50,125 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:11:50,125 - INFO - STARTING SUBSECTION: Merging -->2017/HNL_ControlRegion_Plotter_Fake.root
+HaddJob:  2025-04-16 18:11:50,125 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:11:50,125 - INFO - Running: hadd 2017/HNL_ControlRegion_Plotter_Fake.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2017/MultiLepton__RunFake__/DATA/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_*
+HaddJob:  2025-04-16 18:12:45,463 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:12:45,464 - INFO - STARTING SUBSECTION: Merging -->2017/HNL_ControlRegion_Plotter_Data.root
+HaddJob:  2025-04-16 18:12:45,464 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:12:45,464 - INFO - Running: cp /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2017/MultiLepton__/DATA/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_* 2017/
+HaddJob:  2025-04-16 18:12:47,194 - INFO - Running: hadd 2017/HNL_ControlRegion_Plotter_Data.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2017/MultiLepton__/DATA/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_*
+HaddJob:  2025-04-16 18:13:31,011 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:13:31,011 - INFO - STARTING SUBSECTION: Merging -->2017/HNL_ControlRegion_Plotter_WG.root
+HaddJob:  2025-04-16 18:13:31,011 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:13:31,011 - INFO - Running: hadd 2017/HNL_ControlRegion_Plotter_WG.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2017/MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_DileptonBDT_WGToLNuG_MG.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2017/MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_DileptonBDT_WGToLNuG.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2017/MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_DileptonBDT_WGToLNuG_01J_PtG_130.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2017/MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_DileptonBDT_WGToLNuG_01J_PtG_300.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2017/MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_DileptonBDT_WGToLNuG_01J_PtG_500.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2017/MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_DileptonBDT_WGJJToLNu.root
+HaddJob:  2025-04-16 18:14:08,985 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:14:08,986 - INFO - STARTING SUBSECTION: Merging -->2017/HNL_ControlRegion_Plotter_Other_Conv.root
+HaddJob:  2025-04-16 18:14:08,986 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:14:08,986 - INFO - Running: hadd 2017/HNL_ControlRegion_Plotter_Other_Conv.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2017/MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_TTG.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2017/MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_WWG.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2017/MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_WZG.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2017/MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_TG.root
+HaddJob:  2025-04-16 18:14:38,179 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:14:38,180 - INFO - STARTING SUBSECTION: Merging -->2017/HNL_ControlRegion_Plotter_ggZZ.root
+HaddJob:  2025-04-16 18:14:38,180 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:14:38,180 - INFO - Running: hadd 2017/HNL_ControlRegion_Plotter_ggZZ.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2017/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_GluGluToZZto4e.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2017/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_GluGluToZZto2e2tau.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2017/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_GluGluToZZto2e2mu.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2017/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_GluGluToZZto4mu.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2017/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_GluGluToZZto2mu2tau.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2017/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_GluGluHToZZTo4L.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2017/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_VBF_HToZZTo4L.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2017/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_GluGluToZZto4tau.root
+HaddJob:  2025-04-16 18:15:17,038 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:15:17,039 - INFO - STARTING SUBSECTION: Merging -->2017/HNL_ControlRegion_Plotter_qqZZ.root
+HaddJob:  2025-04-16 18:15:17,039 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:15:17,039 - INFO - Running: hadd 2017/HNL_ControlRegion_Plotter_qqZZ.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2017/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_ZZTo4L_powheg.root
+HaddJob:  2025-04-16 18:15:43,866 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:15:43,867 - INFO - STARTING SUBSECTION: Merging -->2017/HNL_ControlRegion_Plotter_TTV.root
+HaddJob:  2025-04-16 18:15:43,867 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:15:43,867 - INFO - Running: hadd 2017/HNL_ControlRegion_Plotter_TTV.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2017/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_ttZToLLNuNu.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2017/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_ttWToLNu.root
+HaddJob:  2025-04-16 18:16:16,357 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:16:16,358 - INFO - STARTING SUBSECTION: Merging -->2017/HNL_ControlRegion_Plotter_WW.root
+HaddJob:  2025-04-16 18:16:16,358 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:16:16,358 - INFO - Running: hadd 2017/HNL_ControlRegion_Plotter_WW.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2017/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_WpWp_EWK.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2017/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_WpWp_QCD.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2017/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_WWTo2L2Nu_DS.root
+HaddJob:  2025-04-16 18:16:46,932 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:16:46,933 - INFO - STARTING SUBSECTION: Merging -->2017/HNL_ControlRegion_Plotter_Other.root
+HaddJob:  2025-04-16 18:16:46,933 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:16:46,933 - INFO - Running: hadd 2017/HNL_ControlRegion_Plotter_Other.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2017/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_tZq.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2017/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_TTTT.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2017/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_ttHToNonbb.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2017/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_VHToNonbb.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2017/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_TTZZ.root
+HaddJob:  2025-04-16 18:17:36,512 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:17:36,512 - INFO - STARTING SUBSECTION: Merging -->2017/HNL_ControlRegion_Plotter_Extra.root
+HaddJob:  2025-04-16 18:17:36,512 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:17:36,513 - INFO - Running: hadd 2017/HNL_ControlRegion_Plotter_Extra.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2017/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_tHq.root
+HaddJob:  2025-04-16 18:17:59,956 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:17:59,957 - INFO - STARTING SUBSECTION: Merging -->2017/HNL_ControlRegion_Plotter_VVV.root
+HaddJob:  2025-04-16 18:17:59,957 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:17:59,957 - INFO - Running: hadd 2017/HNL_ControlRegion_Plotter_VVV.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2017/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_WZZ.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2017/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_ZZZ.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2017/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_WWZ.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2017/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_WWW.root
+HaddJob:  2025-04-16 18:18:44,039 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:18:44,039 - INFO - STARTING SUBSECTION: Merging -->2017/HNL_ControlRegion_Plotter_WZ.root
+HaddJob:  2025-04-16 18:18:44,040 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:18:44,040 - INFO - Running: hadd 2017/HNL_ControlRegion_Plotter_WZ.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2017/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_WZ_EWK.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2017/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_WZTo3LNu_mllmin4p0_powheg.root
+HaddJob:  2025-04-16 18:19:14,393 - INFO - ==================================================
+HaddJob:  2025-04-16 18:19:14,394 - INFO - STARTING SECTION: Checking 2018
+HaddJob:  2025-04-16 18:19:14,394 - INFO - ==================================================
+HaddJob:  2025-04-16 18:19:14,394 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:19:14,394 - INFO - STARTING SUBSECTION: Checking inputs to 2018/HNL_ControlRegion_Plotter_ZG.root
+HaddJob:  2025-04-16 18:19:14,394 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:19:14,395 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:19:14,395 - INFO - STARTING SUBSECTION: Checking inputs to 2018/HNL_ControlRegion_Plotter_CF.root
+HaddJob:  2025-04-16 18:19:14,395 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:19:14,395 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:19:14,395 - INFO - STARTING SUBSECTION: Checking inputs to 2018/HNL_ControlRegion_Plotter_Fake.root
+HaddJob:  2025-04-16 18:19:14,396 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:19:14,396 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:19:14,396 - INFO - STARTING SUBSECTION: Checking inputs to 2018/HNL_ControlRegion_Plotter_Data.root
+HaddJob:  2025-04-16 18:19:14,396 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:19:14,396 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:19:14,396 - INFO - STARTING SUBSECTION: Checking inputs to 2018/HNL_ControlRegion_Plotter_WG.root
+HaddJob:  2025-04-16 18:19:14,396 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:19:14,397 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:19:14,397 - INFO - STARTING SUBSECTION: Checking inputs to 2018/HNL_ControlRegion_Plotter_Other_Conv.root
+HaddJob:  2025-04-16 18:19:14,397 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:19:14,398 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:19:14,398 - INFO - STARTING SUBSECTION: Checking inputs to 2018/HNL_ControlRegion_Plotter_ggZZ.root
+HaddJob:  2025-04-16 18:19:14,398 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:19:14,399 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:19:14,399 - INFO - STARTING SUBSECTION: Checking inputs to 2018/HNL_ControlRegion_Plotter_qqZZ.root
+HaddJob:  2025-04-16 18:19:14,399 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:19:14,399 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:19:14,399 - INFO - STARTING SUBSECTION: Checking inputs to 2018/HNL_ControlRegion_Plotter_TTV.root
+HaddJob:  2025-04-16 18:19:14,399 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:19:14,400 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:19:14,400 - INFO - STARTING SUBSECTION: Checking inputs to 2018/HNL_ControlRegion_Plotter_WW.root
+HaddJob:  2025-04-16 18:19:14,400 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:19:14,400 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:19:14,401 - INFO - STARTING SUBSECTION: Checking inputs to 2018/HNL_ControlRegion_Plotter_Other.root
+HaddJob:  2025-04-16 18:19:14,401 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:19:14,402 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:19:14,402 - INFO - STARTING SUBSECTION: Checking inputs to 2018/HNL_ControlRegion_Plotter_Extra.root
+HaddJob:  2025-04-16 18:19:14,402 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:19:14,402 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:19:14,402 - INFO - STARTING SUBSECTION: Checking inputs to 2018/HNL_ControlRegion_Plotter_VVV.root
+HaddJob:  2025-04-16 18:19:14,402 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:19:14,403 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:19:14,403 - INFO - STARTING SUBSECTION: Checking inputs to 2018/HNL_ControlRegion_Plotter_WZ.root
+HaddJob:  2025-04-16 18:19:14,403 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:19:14,403 - INFO - ==================================================
+HaddJob:  2025-04-16 18:19:14,403 - INFO - STARTING SECTION: Merging 2018
+HaddJob:  2025-04-16 18:19:14,403 - INFO - ==================================================
+HaddJob:  2025-04-16 18:19:14,404 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:19:14,404 - INFO - STARTING SUBSECTION: Merging -->2018/HNL_ControlRegion_Plotter_ZG.root
+HaddJob:  2025-04-16 18:19:14,404 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:19:14,404 - INFO - Running: hadd 2018/HNL_ControlRegion_Plotter_ZG.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2018/MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_ZGToLLG.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2018/MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_ZGToLLG_PtG_130.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2018/MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_DYJets10to50_MG.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2018/MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_DYJets_MG.root
+HaddJob:  2025-04-16 18:19:34,636 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:19:34,636 - INFO - STARTING SUBSECTION: Merging -->2018/HNL_ControlRegion_Plotter_CF.root
+HaddJob:  2025-04-16 18:19:34,636 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:19:34,636 - INFO - Running: hadd 2018/HNL_ControlRegion_Plotter_CF.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2018/MultiLepton__RunCF__/DATA/HNL_ControlRegion_Plotter_SkimTree_DileptonBDT_*
+HaddJob:  2025-04-16 18:19:49,107 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:19:49,108 - INFO - STARTING SUBSECTION: Merging -->2018/HNL_ControlRegion_Plotter_Fake.root
+HaddJob:  2025-04-16 18:19:49,108 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:19:49,108 - INFO - Running: hadd 2018/HNL_ControlRegion_Plotter_Fake.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2018/MultiLepton__RunFake__/DATA/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_*
+HaddJob:  2025-04-16 18:20:37,541 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:20:37,541 - INFO - STARTING SUBSECTION: Merging -->2018/HNL_ControlRegion_Plotter_Data.root
+HaddJob:  2025-04-16 18:20:37,541 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:20:37,541 - INFO - Running: cp /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2018/MultiLepton__/DATA/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_* 2018/
+HaddJob:  2025-04-16 18:20:39,084 - INFO - Running: hadd 2018/HNL_ControlRegion_Plotter_Data.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2018/MultiLepton__/DATA/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_*
+HaddJob:  2025-04-16 18:21:17,860 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:21:17,860 - INFO - STARTING SUBSECTION: Merging -->2018/HNL_ControlRegion_Plotter_WG.root
+HaddJob:  2025-04-16 18:21:17,860 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:21:17,861 - INFO - Running: hadd 2018/HNL_ControlRegion_Plotter_WG.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2018/MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_DileptonBDT_WGToLNuG_MG.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2018/MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_DileptonBDT_WGToLNuG.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2018/MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_DileptonBDT_WGToLNuG_01J_PtG_130.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2018/MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_DileptonBDT_WGToLNuG_01J_PtG_300.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2018/MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_DileptonBDT_WGToLNuG_01J_PtG_500.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2018/MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_DileptonBDT_WGJJToLNu.root
+HaddJob:  2025-04-16 18:21:54,579 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:21:54,579 - INFO - STARTING SUBSECTION: Merging -->2018/HNL_ControlRegion_Plotter_Other_Conv.root
+HaddJob:  2025-04-16 18:21:54,579 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:21:54,580 - INFO - Running: hadd 2018/HNL_ControlRegion_Plotter_Other_Conv.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2018/MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_TTG.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2018/MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_WWG.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2018/MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_WZG.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2018/MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_TG.root
+HaddJob:  2025-04-16 18:22:25,802 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:22:25,803 - INFO - STARTING SUBSECTION: Merging -->2018/HNL_ControlRegion_Plotter_ggZZ.root
+HaddJob:  2025-04-16 18:22:25,803 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:22:25,803 - INFO - Running: hadd 2018/HNL_ControlRegion_Plotter_ggZZ.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2018/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_GluGluToZZto4e.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2018/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_GluGluToZZto2e2tau.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2018/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_GluGluToZZto2e2mu.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2018/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_GluGluToZZto4mu.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2018/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_GluGluToZZto2mu2tau.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2018/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_GluGluHToZZTo4L.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2018/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_VBF_HToZZTo4L.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2018/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_GluGluToZZto4tau.root
+HaddJob:  2025-04-16 18:23:04,412 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:23:04,412 - INFO - STARTING SUBSECTION: Merging -->2018/HNL_ControlRegion_Plotter_qqZZ.root
+HaddJob:  2025-04-16 18:23:04,412 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:23:04,412 - INFO - Running: hadd 2018/HNL_ControlRegion_Plotter_qqZZ.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2018/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_ZZTo4L_powheg.root
+HaddJob:  2025-04-16 18:23:31,169 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:23:31,170 - INFO - STARTING SUBSECTION: Merging -->2018/HNL_ControlRegion_Plotter_TTV.root
+HaddJob:  2025-04-16 18:23:31,170 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:23:31,170 - INFO - Running: hadd 2018/HNL_ControlRegion_Plotter_TTV.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2018/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_ttZToLLNuNu.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2018/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_ttWToLNu.root
+HaddJob:  2025-04-16 18:24:04,492 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:24:04,492 - INFO - STARTING SUBSECTION: Merging -->2018/HNL_ControlRegion_Plotter_WW.root
+HaddJob:  2025-04-16 18:24:04,492 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:24:04,493 - INFO - Running: hadd 2018/HNL_ControlRegion_Plotter_WW.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2018/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_WpWp_EWK.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2018/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_WpWp_QCD.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2018/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_WWTo2L2Nu_DS.root
+HaddJob:  2025-04-16 18:24:35,435 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:24:35,435 - INFO - STARTING SUBSECTION: Merging -->2018/HNL_ControlRegion_Plotter_Other.root
+HaddJob:  2025-04-16 18:24:35,435 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:24:35,435 - INFO - Running: hadd 2018/HNL_ControlRegion_Plotter_Other.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2018/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_tZq.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2018/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_TTTT.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2018/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_ttHToNonbb.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2018/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_VHToNonbb.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2018/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_TTZZ.root
+HaddJob:  2025-04-16 18:25:24,745 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:25:24,745 - INFO - STARTING SUBSECTION: Merging -->2018/HNL_ControlRegion_Plotter_Extra.root
+HaddJob:  2025-04-16 18:25:24,745 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:25:24,745 - INFO - Running: hadd 2018/HNL_ControlRegion_Plotter_Extra.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2018/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_tHq.root
+HaddJob:  2025-04-16 18:25:47,323 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:25:47,324 - INFO - STARTING SUBSECTION: Merging -->2018/HNL_ControlRegion_Plotter_VVV.root
+HaddJob:  2025-04-16 18:25:47,324 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:25:47,324 - INFO - Running: hadd 2018/HNL_ControlRegion_Plotter_VVV.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2018/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_WZZ.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2018/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_ZZZ.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2018/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_WWZ.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2018/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_WWW.root
+HaddJob:  2025-04-16 18:26:33,124 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:26:33,125 - INFO - STARTING SUBSECTION: Merging -->2018/HNL_ControlRegion_Plotter_WZ.root
+HaddJob:  2025-04-16 18:26:33,125 - INFO - --------------------------------------------------
+HaddJob:  2025-04-16 18:26:33,125 - INFO - Running: hadd 2018/HNL_ControlRegion_Plotter_WZ.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2018/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_WZ_EWK.root /data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter/2018/MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_WZTo3LNu_mllmin4p0_powheg.root
