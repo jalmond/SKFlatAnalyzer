@@ -581,6 +581,26 @@ TString AnalyzerCore::MatchGenDef(std::vector<Gen>& gens,const Lepton& Lep, bool
 }
 
 
+void AnalyzerCore::PrintMatchedGen(std::vector<Gen>& gens,Particle p){
+
+  cout << "===========================================================" << endl;
+  cout << "RunNumber:EventNumber = " << run << ":" << event << endl;
+  cout << "index\tPID\tStatus\tMIdx\tMPID\tStart\tPt\tEta\tPhi\tM" << endl;
+
+  for(unsigned int i=2; i<gens.size(); i++){
+
+    Gen gen = gens.at(i);
+
+    if(p.DeltaR(gen) < 0.4)  {
+      vector<int> history = TrackGenSelfHistory(gen, gens);
+      cout <<  i << "\t" << gen.SPID() << "\t" << gen.Status() << "\t" << gen.MotherIndex() << "\t" << gens.at(gen.MotherIndex()).SPID()<< "\t" << history[0] << "\t";
+      printf("%.2f\t%.2f\t%.2f\t%.2f =======> DrMatched %.2f\t \n",gen.Pt(), gen.Eta(), gen.Phi(), gen.M(),p.DeltaR(gen));
+      
+    }
+  }
+  return;
+}
+
 
 
 void AnalyzerCore::PrintMatchedGen(std::vector<Gen>& gens,const Lepton& Lep){

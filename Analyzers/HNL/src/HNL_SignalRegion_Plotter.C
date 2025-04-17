@@ -132,14 +132,17 @@ void HNL_SignalRegion_Plotter::executeEvent(){
       
       if(MCSample.Contains("Type")&& !SelectChannel(channel)) continue;
 
-      AnalyzerParameter param = HNL_LeptonCore::InitialiseHNLParameter(id,channel);
+      AnalyzerParameter param_sr;
+      if(id=="HNL_ULIDv2") param_sr = Setup_Param_HNL_ULIDv2(id,channel);
+      else param_sr = HNL_LeptonCore::InitialiseHNLParameter(id,channel);
+
       
-      if(HasFlag("HighPtTrigger")) param.TriggerSelection     = "HighPt";          
-      if(HasFlag("HighPtTrigger")) param.Apply_Weight_TriggerSF = false;
+      if(HasFlag("HighPtTrigger")) param_sr.TriggerSelection     = "HighPt";          
+      if(HasFlag("HighPtTrigger")) param_sr.Apply_Weight_TriggerSF = false;
 
-      RunULAnalysis(param);
+      RunULAnalysis(param_sr);
 
-      TString param_name = param.Name;
+      TString param_sr_name = param_sr.Name;
 
       TString SystLabel = "";
       if(HasFlag("Syst_Theory")) SystLabel= "Theory";
@@ -158,12 +161,12 @@ void HNL_SignalRegion_Plotter::executeEvent(){
 
 	if(channel==EE){
 	  if(!ev.PassTrigger(TrigList_HNL_DblEG)) continue;
-	  std::vector<Muon>       MuonCollV     = SelectMuons    (param,param.Muon_Veto_ID,     5., 2.4);
+	  std::vector<Muon>       MuonCollV     = SelectMuons    (param_sr,param_sr.Muon_Veto_ID,     5., 2.4);
 	  if(MuonCollV.size() > 0) continue;
 	}
 	if(channel==MuMu){
 	  if(!ev.PassTrigger(TrigList_HNL_DblMu)) continue;
-	  std::vector<Electron>   ElectronCollV = SelectElectrons(param,param.Electron_Veto_ID, 10., 2.5);
+	  std::vector<Electron>   ElectronCollV = SelectElectrons(param_sr,param_sr.Electron_Veto_ID, 10., 2.5);
 	  if(ElectronCollV.size() >0) continue;
 	}
 	if(channel==EMu){
@@ -174,8 +177,8 @@ void HNL_SignalRegion_Plotter::executeEvent(){
 
       //// Run Systematics
       for(auto isyst : GetSystList(SystLabel)){
-	bool runJob = UpdateParamBySyst(id,param,AnalyzerParameter::Syst(isyst),param_name);
-	if(runJob) RunULAnalysis(param);
+	bool runJob = UpdateParam_SrBySyst(id,param_sr,AnalyzerParam_Sreter::Syst(isyst),param_sr_name);
+	if(runJob) RunULAnalysis(param_sr);
       }
     }
   }
@@ -184,28 +187,28 @@ void HNL_SignalRegion_Plotter::executeEvent(){
   return ;
 }
 
-void HNL_SignalRegion_Plotter::RunULAnalysis(AnalyzerParameter param){
+void HNL_SignalRegion_Plotter::RunULAnalysis(AnalyzerParameter param_sr){
 
-  if(_jentry< 10) cout << "HNL_SignalRegion_Plotter::executeEvent " << param.Name << endl;
+  if(_jentry< 10) cout << "HNL_SignalRegion_Plotter::executeEvent " << param_sr.Name << endl;
   
   Event ev = GetEvent();
-  double weight =SetupWeight(ev,param);
+  double weight =SetupWeight(ev,param_sr);
   
   // HL ID
-  std::vector<Electron>   ElectronCollV = SelectElectrons(param,param.Electron_Veto_ID, 10., 2.5); 
-  std::vector<Muon>       MuonCollV     = SelectMuons    (param,param.Muon_Veto_ID,     5., 2.4);
+  std::vector<Electron>   ElectronCollV = SelectElectrons(param_sr,param_sr.Electron_Veto_ID, 10., 2.5); 
+  std::vector<Muon>       MuonCollV     = SelectMuons    (param_sr,param_sr.Muon_Veto_ID,     5., 2.4);
   
-  TString el_ID = SetLeptonID("Electron",param);
-  TString mu_ID = SetLeptonID("Muon", param);
+  TString el_ID = SetLeptonID("Electron",param_sr);
+  TString mu_ID = SetLeptonID("Muon", param_sr);
   
-  if(param.syst_ == AnalyzerParameter::ScaleUp) weight *= GetScaleUncertainty(1);
-  if(param.syst_ == AnalyzerParameter::ScaleDown) weight *= GetScaleUncertainty(-1);
+  if(param_sr.syst_ == AnalyzerParam_Sreter::ScaleUp) weight *= GetScaleUncertainty(1);
+  if(param_sr.syst_ == AnalyzerParam_Sreter::ScaleDown) weight *= GetScaleUncertainty(-1);
 
 
   double Min_FakeMuon_Pt      =  5;
   double Min_FakeElectron_Pt =  10 ;
-  std::vector<Muon>       MuonTightColl_Init     = SelectMuons    ( param,mu_ID,     Min_FakeMuon_Pt,     2.4,weight);
-  std::vector<Electron>   ElectronTightColl_Init = SelectElectrons( param,el_ID, Min_FakeElectron_Pt, 2.5,weight);
+  std::vector<Muon>       MuonTightColl_Init     = SelectMuons    ( param_sr,mu_ID,     Min_FakeMuon_Pt,     2.4,weight);
+  std::vector<Electron>   ElectronTightColl_Init = SelectElectrons( param_sr,el_ID, Min_FakeElectron_Pt, 2.5,weight);
 
   if(HasFlag("CompareTuneP")){
     MuonTightColl_Init = GetHighPtMuons("TuneP_POG",mu_ID, Min_FakeMuon_Pt,     2.4);
@@ -222,20 +225,20 @@ void HNL_SignalRegion_Plotter::RunULAnalysis(AnalyzerParameter param){
   std::vector<Lepton *> leps_veto  = MakeLeptonPointerVector(MuonCollV,ElectronCollV);
 
 
-  std::vector<FatJet> AK8_JetColl                 = GetHNLAK8Jets(param.AK8JetColl,param);
-  std::vector<Jet>    AK4_JetColl                 = GetHNLJets(param.AK4JetColl,     param);
-  std::vector<Jet>    AK4_VBF_JetColl             = GetHNLJets(param.AK4VBFJetColl,  param);
-  std::vector<Jet>    AK4_JetAllColl              = GetHNLJets("NoCut_Eta3",param);
-  std::vector<Jet>    AK4_JetCollLoose            = GetHNLJets("Loose",     param);
-  std::vector<Jet>    AK4_BJetColl                = GetHNLJets("BJet", param);
+  std::vector<FatJet> AK8_JetColl                 = GetHNLAK8Jets(param_sr.AK8JetColl,param_sr);
+  std::vector<Jet>    AK4_JetColl                 = GetHNLJets(param_sr.AK4JetColl,     param_sr);
+  std::vector<Jet>    AK4_VBF_JetColl             = GetHNLJets(param_sr.AK4VBFJetColl,  param_sr);
+  std::vector<Jet>    AK4_JetAllColl              = GetHNLJets("NoCut_Eta3",param_sr);
+  std::vector<Jet>    AK4_JetCollLoose            = GetHNLJets("Loose",     param_sr);
+  std::vector<Jet>    AK4_BJetColl                = GetHNLJets("BJet", param_sr);
 
   if(HasFlag("TestAK8")){
     vector<TString> AK8Tag = {"Loose","HNL","HNL_NoMass","HNL_PN","HNL_PN_NoMass","EXO17028"};
     for (auto akg_tag : AK8Tag){
-      std::vector<FatJet> ak8_jetcoll         = GetHNLAK8Jets(akg_tag,param);
+      std::vector<FatJet> ak8_jetcoll         = GetHNLAK8Jets(akg_tag,param_sr);
       for(const auto& ijet : ak8_jetcoll)            FillHist( "AK8_Plots_"+akg_tag+"/AK8J_Eta",     ijet.Eta()       , weight, 100, -5., 5.   , "AK8 Jet #eta");
       double weight_jets=weight;
-      EvalJetWeight(AK4_JetColl,AK4_VBF_JetColl, AK8_JetColl, weight_jets, param);
+      EvalJetWeight(AK4_JetColl,AK4_VBF_JetColl, AK8_JetColl, weight_jets, param_sr);
       for(const auto& ijet : ak8_jetcoll)            FillHist( "AK8_Plots_"+akg_tag+"/AK8J_Eta_weighted",     ijet.Eta()       , weight_jets, 100, -5., 5.   , "AK8 Jet #eta");
       for(const auto& ijet : ak8_jetcoll)            FillHist(  "AK8_Plots_"+akg_tag+"/AK8J_SDMass",      ijet.SDMass()    , weight_jets, 100, 0., 500.  , "Mass_{softdrop} GeV");
       for(const auto& ijet : ak8_jetcoll)    {
@@ -246,9 +249,9 @@ void HNL_SignalRegion_Plotter::RunULAnalysis(AnalyzerParameter param){
   }
   
 
-  Particle METv = GetvMET("PuppiT1xyULCorr", param, AK4_VBF_JetColl, AK8_JetColl, MuonCollT, ElectronCollT); // returns MET with systematic correction; run this after all object selection done; NOTE that VBF jet is used here
+  Particle METv = GetvMET("PuppiT1xyULCorr", param_sr, AK4_VBF_JetColl, AK8_JetColl, MuonCollT, ElectronCollT); // returns MET with systematic correction; run this after all object selection done; NOTE that VBF jet is used here
   
-  EvalJetWeight(AK4_JetColl,AK4_VBF_JetColl, AK8_JetColl, weight, param);
+  EvalJetWeight(AK4_JetColl,AK4_VBF_JetColl, AK8_JetColl, weight, param_sr);
 
   FillTimer("START_SR");
 
@@ -266,7 +269,7 @@ void HNL_SignalRegion_Plotter::RunULAnalysis(AnalyzerParameter param){
 
   if(HasFlag("TauScan")){
 
-    param.PlottingVerbose=0;
+    param_sr.PlottingVerbose=0;
     vector<TString> TauIDs = {"NoCut","Default"};
     vector<TString> TauJetIDs={"JetVVL","JetVL","JetL","JetM","JetT","JetVT","JetVVT"};
     vector<TString> TauElIDs={"ElVVL","ElT"};
@@ -281,13 +284,13 @@ void HNL_SignalRegion_Plotter::RunULAnalysis(AnalyzerParameter param){
       }
     }
 
-    TString ORIGName= param.Name;
-    TString ORIGDefName= param.DefName;
+    TString ORIGName= param_sr.Name;
+    TString ORIGDefName= param_sr.DefName;
 
     for(auto id_tau : TauIDs){
 
-      param.Name= ORIGName+id_tau;
-      param.DefName=ORIGDefName +id_tau;
+      param_sr.Name= ORIGName+id_tau;
+      param_sr.DefName=ORIGDefName +id_tau;
 
       std::vector<Tau>   TauColl_Uncleaned  = SelectTaus   (leps_veto,id_tau,20., 2.3);
       TauColl_Cleaned.clear();
@@ -314,7 +317,7 @@ void HNL_SignalRegion_Plotter::RunULAnalysis(AnalyzerParameter param){
       RunAllSignalRegions(Inclusive,
                           ElectronCollT,ElectronCollV,MuonCollT,MuonCollV,  TauColl_Cleaned,
                           AK4_JetCollLoose,AK4_JetColl,AK4_VBF_JetColl,AK8_JetColl, AK4_BJetColl,
-                          ev,METv, param, -1, weight);
+                          ev,METv, param_sr, -1, weight);
 
       
     }
@@ -331,21 +334,21 @@ void HNL_SignalRegion_Plotter::RunULAnalysis(AnalyzerParameter param){
 
      
   ///// PDF SCAN FOR SIGNAL 
-  if(param.syst_ == AnalyzerParameter::PDF) {
-    TString ORIGName= param.Name;
-    TString ORIGDefName= param.DefName;
+  if(param_sr.syst_ == AnalyzerParameter::PDF) {
+    TString ORIGName= param_sr.Name;
+    TString ORIGDefName= param_sr.DefName;
 
     for(unsigned int iw=0; iw<weight_PDF->size()+1; iw++){
       double PDF_W=1;
       TString PNAME_PDF = GetPDFUncertainty(iw,PDF_W);
 
-      param.Name= ORIGName+PNAME_PDF;
-      param.DefName=ORIGDefName +PNAME_PDF;
+      param_sr.Name= ORIGName+PNAME_PDF;
+      param_sr.DefName=ORIGDefName +PNAME_PDF;
 
       RunAllSignalRegions(Inclusive,
 			  ElectronCollT,ElectronCollV,MuonCollT,MuonCollV,  TauColl_Cleaned,
 			  AK4_JetCollLoose,AK4_JetColl,AK4_VBF_JetColl,AK8_JetColl, AK4_BJetColl,
-			  ev,METv, param, -1, weight*PDF_W);
+			  ev,METv, param_sr, -1, weight*PDF_W);
 
       
     }
@@ -359,7 +362,7 @@ void HNL_SignalRegion_Plotter::RunULAnalysis(AnalyzerParameter param){
       RunAllSignalRegions(Inclusive,
 			  ElectronCollT,ElectronCollV,MuonCollT,MuonCollV,  TauColl_Cleaned,
 			  AK4_JetCollLoose,AK4_JetColl,AK4_VBF_JetColl,AK8_JetColl, AK4_BJetColl, 
-			ev,METv, param, ir, weight);
+			ev,METv, param_sr, ir, weight);
     }
   }
 

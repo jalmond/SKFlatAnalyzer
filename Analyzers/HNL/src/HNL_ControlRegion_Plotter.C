@@ -41,7 +41,7 @@ void HNL_ControlRegion_Plotter::executeEvent(){
 
   vector<TString> LepIDs = {"HNL_ULIDv2"};
 
-  if(strcmp(std::getenv("USER"),"jalmond")==0) LepIDs = {"HNL_ULIDv2","POGTight","HNTightV2"};
+  if(strcmp(std::getenv("USER"),"jalmond")==0) LepIDs = {"HNL_ULIDv2","HNTightV2"};
 
   vector<HNL_LeptonCore::Channel> ChannelsToRun = {};
 
@@ -90,11 +90,13 @@ void HNL_ControlRegion_Plotter::executeEvent(){
 
     for(auto channel : ChannelsToRun){
       if(channel != MuMu  && id =="TopHN") continue;
-	
-      AnalyzerParameter param_signal = HNL_LeptonCore::InitialiseHNLParameter(id,channel);
-      if(channel == EMu) param_signal.CFMethod   = "MC";
 
-      for(auto iCR : CRToRun) RunControlRegions(param_signal , {iCR} );
+      //// Make it clearer the param used in CR/SR for HNL ID
+      AnalyzerParameter param_cr;
+      if(id=="HNL_ULIDv2") param_cr = Setup_Param_HNL_ULIDv2(id,channel);
+      else param_cr = HNL_LeptonCore::InitialiseHNLParameter(id,channel);
+
+      if(channel == EMu) param_cr.CFMethod   = "MC";
 
       if(HasFlag("AltID")){
 	AnalyzerParameter param_loose = HNL_LeptonCore::InitialiseHNLParameter(id,channel);
@@ -106,8 +108,7 @@ void HNL_ControlRegion_Plotter::executeEvent(){
         for(auto iCR : CRToRun) RunControlRegions(param_loose , {iCR} );
       }
       
-      bool RunLooseAK8=false;
-      if(RunLooseAK8){
+      else if(HasFlag("LooseAK8")){
 	AnalyzerParameter param_looseAK8 = HNL_LeptonCore::InitialiseHNLParameter(id,channel);
 	param_looseAK8.Name = param_looseAK8.Name + "_AK8Loose";
 	param_looseAK8.DefName = param_looseAK8.DefName + "_AK8Loose";
@@ -115,12 +116,32 @@ void HNL_ControlRegion_Plotter::executeEvent(){
 	param_looseAK8.Apply_Weight_PNETSF=false;
 	for(auto iCR : CRToRun) RunControlRegions(param_looseAK8 , {iCR} );
       }
+      else{
+	//// Main Jobs for analysis
+
+	for(auto iCR : CRToRun){
+	  RunControlRegions(param_cr , {iCR} );
+
+	  /// grab name for central job
+	  TString param_name = param_cr.Name;
+	  
+	  TString SystString = "";
+	  if(HasFlag("OS")) SystString = "Muon";
+	  else SystString=GetChannelString(channel);
+	  
+	  for(auto isyst : GetSystList(SystString)){
+	    bool runJob = UpdateParamBySyst(id,param_cr,AnalyzerParameter::Syst(isyst),param_name);
+	    if(runJob)         RunControlRegions(param_cr , {iCR} );
+	  }
+	  
+	}
+      }
     }
   }
   return;
 }
 
-void HNL_ControlRegion_Plotter::RunControlRegions(AnalyzerParameter param, vector<TString> CRs){
+void HNL_ControlRegion_Plotter::RunControlRegions(AnalyzerParameter param_cr, vector<TString> CRs){
 
   run_Debug = (_jentry%nLog==0);
 
@@ -129,20 +150,20 @@ void HNL_ControlRegion_Plotter::RunControlRegions(AnalyzerParameter param, vecto
   Event ev = GetEvent();
 
   /// SetupWeight applies w_GenNorm=1., w_BR=1., w_PU  w_Pref  
-  double weight =SetupWeight(ev,param);
+  double weight =SetupWeight(ev,param_cr);
   
   // HL ID                                                                                                                                                   
-  std::vector<Electron>   ElectronVetoColl = GetElectrons(param.Electron_Veto_ID, 10.,  2.5);
-  std::vector<Muon>       MuonVetoColl     = GetMuons    (param.Muon_Veto_ID,     5.,  2.4);
+  std::vector<Electron>   ElectronVetoColl = GetElectrons(param_cr.Electron_Veto_ID, 10.,  2.5);
+  std::vector<Muon>       MuonVetoColl     = GetMuons    (param_cr.Muon_Veto_ID,     5.,  2.4);
 
   /// IF ruunning fake then use FR_ID not Tight
-  TString Electron_ID = SetLeptonID("Electron",param);
-  TString Muon_ID     = SetLeptonID("Muon", param);
+  TString Electron_ID = SetLeptonID("Electron",param_cr);
+  TString Muon_ID     = SetLeptonID("Muon", param_cr);
 
   double Min_FakeMuon_Pt     =  5;
   double Min_FakeElectron_Pt =  10 ;
-  std::vector<Muon>       MuonTightColl_Init     = SelectMuons    ( param,Muon_ID,     Min_FakeMuon_Pt,     2.4,weight); 
-  std::vector<Electron>   ElectronTightColl_Init = SelectElectrons( param,Electron_ID, Min_FakeElectron_Pt, 2.5,weight);
+  std::vector<Muon>       MuonTightColl_Init     = SelectMuons    ( param_cr,Muon_ID,     Min_FakeMuon_Pt,     2.4,weight); 
+  std::vector<Electron>   ElectronTightColl_Init = SelectElectrons( param_cr,Electron_ID, Min_FakeElectron_Pt, 2.5,weight);
 
   //// Apply Full Pt cut after pt corrected in fakes  
   double Min_Muon_Pt     =  10.;
@@ -150,16 +171,16 @@ void HNL_ControlRegion_Plotter::RunControlRegions(AnalyzerParameter param, vecto
   std::vector<Muon>       MuonTightColl  = SelectMuons(MuonTightColl_Init,Muon_ID,     Min_Muon_Pt,     2.4);
   std::vector<Electron>   ElectronTightColl = SelectElectrons(ElectronTightColl_Init,Electron_ID, Min_Electron_Pt, 2.5);
 
-  std::vector<FatJet> AK8_JetColl                 = GetHNLAK8Jets(param.AK8JetColl,param);
-  std::vector<Jet>    AK4_JetColl                 = GetHNLJets(param.AK4JetColl,     param);
-  std::vector<Jet>    AK4_VBF_JetColl             = GetHNLJets(param.AK4VBFJetColl,  param);
-  std::vector<Jet>    AK4_JetAllColl              = GetHNLJets("NoCut_Eta3",param);
-  std::vector<Jet>    AK4_JetCollLoose            = GetHNLJets("Loose",     param);
-  std::vector<Jet>    AK4_BJetColl                = GetHNLJets("BJet", param);
+  std::vector<FatJet> AK8_JetColl                 = GetHNLAK8Jets(param_cr.AK8JetColl,param_cr);
+  std::vector<Jet>    AK4_JetColl                 = GetHNLJets(param_cr.AK4JetColl,     param_cr);
+  std::vector<Jet>    AK4_VBF_JetColl             = GetHNLJets(param_cr.AK4VBFJetColl,  param_cr);
+  std::vector<Jet>    AK4_JetAllColl              = GetHNLJets("NoCut_Eta3",param_cr);
+  std::vector<Jet>    AK4_JetCollLoose            = GetHNLJets("Loose",     param_cr);
+  std::vector<Jet>    AK4_BJetColl                = GetHNLJets("BJet", param_cr);
   
-  EvalJetWeight(AK4_JetColl,AK4_VBF_JetColl, AK8_JetColl, weight, param);
+  EvalJetWeight(AK4_JetColl,AK4_VBF_JetColl, AK8_JetColl, weight, param_cr);
 
-  Particle METv = GetvMET("PuppiT1xyULCorr", param, AK4_VBF_JetColl, AK8_JetColl, MuonTightColl,ElectronTightColl);
+  Particle METv = GetvMET("PuppiT1xyULCorr", param_cr, AK4_VBF_JetColl, AK8_JetColl, MuonTightColl,ElectronTightColl);
 
   if(CRs.size() == 0) return;
   
@@ -180,7 +201,7 @@ void HNL_ControlRegion_Plotter::RunControlRegions(AnalyzerParameter param, vecto
       if(AK4_JetColl.size() < 4) return;
     }
     
-    param.PlottingVerbose = 0;
+    param_cr.PlottingVerbose = 0;
     vector<TString> TauIDs = {"NoCut","Default"};
     vector<TString> TauJetIDs={"JetVVL","JetVL","JetL","JetM","JetT","JetVT","JetVVT"};
     vector<TString> TauElIDs={"ElVVL","ElT"};
@@ -195,13 +216,13 @@ void HNL_ControlRegion_Plotter::RunControlRegions(AnalyzerParameter param, vecto
       }
     }
 
-    TString ORIGName= param.Name;
-    TString ORIGDefName= param.DefName;
+    TString ORIGName= param_cr.Name;
+    TString ORIGDefName= param_cr.DefName;
 
     for(auto id_tau : TauIDs){
 
-      param.Name= ORIGName+id_tau;
-      param.DefName=ORIGDefName +id_tau;
+      param_cr.Name= ORIGName+id_tau;
+      param_cr.DefName=ORIGDefName +id_tau;
 
       std::vector<Tau>   TauColl_Uncleaned  = SelectTaus   (leps_veto,id_tau,20., 2.3);
       TauColl_Cleaned.clear();
@@ -227,7 +248,7 @@ void HNL_ControlRegion_Plotter::RunControlRegions(AnalyzerParameter param, vecto
       /// Run Analyser with Tau ID cleaned                                                                                                                                                                                                                                    
       RunAllControlRegions(ElectronTightColl,ElectronVetoColl,MuonTightColl,MuonVetoColl, TauColl_Cleaned,
                            AK4_JetCollLoose,AK4_JetColl,AK4_VBF_JetColl,AK8_JetColl, AK4_BJetColl,
-                           ev,METv, param, CRs,-1,weight);
+                           ev,METv, param_cr, CRs,-1,weight);
 
 
 
@@ -250,14 +271,14 @@ void HNL_ControlRegion_Plotter::RunControlRegions(AnalyzerParameter param, vecto
 	/// Run MiNNLO only
       RunAllControlRegions(ElectronTightColl,ElectronVetoColl,MuonTightColl,MuonVetoColl,TauColl_Cleaned,
 			   AK4_JetCollLoose,AK4_JetColl,AK4_VBF_JetColl,AK8_JetColl, AK4_BJetColl,
-			   ev,METv, param, CRs,-1,weight);
+			   ev,METv, param_cr, CRs,-1,weight);
       
     }
     
     
     
-    param.Name=param.Name+"_PtBinnedDY";
-    param.DefName=param.DefName+"_PtBinnedDY";
+    param_cr.Name=param_cr.Name+"_PtBinnedDY";
+    param_cr.DefName=param_cr.DefName+"_PtBinnedDY";
 
     
     if(MCSample == "DYJetsToMuMu_MiNNLO" || MCSample.Contains("DYJets_Pt") ) {
@@ -287,7 +308,7 @@ void HNL_ControlRegion_Plotter::RunControlRegions(AnalyzerParameter param, vecto
     RunAllControlRegions(ElectronTightColl,ElectronVetoColl,MuonTightColl,MuonVetoColl,TauColl_Cleaned,
 
 			 AK4_JetCollLoose,AK4_JetColl,AK4_VBF_JetColl,AK8_JetColl, AK4_BJetColl,
-			 ev,METv, param, CRs,-1,weight);
+			 ev,METv, param_cr, CRs,-1,weight);
 
   }
   else{
@@ -296,7 +317,7 @@ void HNL_ControlRegion_Plotter::RunControlRegions(AnalyzerParameter param, vecto
       RunAllControlRegions(ElectronTightColl,ElectronVetoColl,MuonTightColl,MuonVetoColl, TauColl_Cleaned,
 
 			   AK4_JetCollLoose,AK4_JetColl,AK4_VBF_JetColl,AK8_JetColl, AK4_BJetColl, 
-			   ev,METv, param, CRs,ir,weight);
+			   ev,METv, param_cr, CRs,ir,weight);
     }
   }
 }

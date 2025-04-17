@@ -1,5 +1,8 @@
 import os
 import argparse
+import getpass
+
+user = getpass.getuser()
 
 # Define paths using environment variable
 base_path = os.getenv("SKFlat_WD")
@@ -252,8 +255,8 @@ if args.Central or args.Systematics:
         if RunPrompt:
             RunCommand(TestMode,f"SKFlat.py -a {analyzer}  -l {mcpath}/Prompt/PromptSS.txt             -n 20        --nmax {nmax}   -e {era}  --skim SkimTree_HNMultiLepBDT   {FlagCommand('RunPrompt', flags)}  &")   
             RunCommand(TestMode,f"SKFlat.py -a {analyzer}  -l {mcpath}/Prompt/PromptSS2.txt            -n 200       --nmax {nmax}   -e {era}  --skim SkimTree_HNMultiLepBDT   {FlagCommand('RunPrompt', flags)}  &")   
-            if args.RunAlternativePrompt:
-                RunCommand(TestMode,f"SKFlat.py -a {analyzer}  -l {mcpath}/Prompt/PromptSSAlt.txt          -n 200       --nmax {nmax}   -e {era}  --skim SkimTree_HNMultiLepBDT   {FlagCommand('RunPrompt', flags_alt)}  ")   
+            if args.RunAlternativePrompt or user == "jalmond":
+                RunCommand(TestMode,f"SKFlat.py -a {analyzer}  -l {mcpath}/Prompt/PromptSSAlt.txt          -n 200       --nmax {nmax}   -e {era}  --skim SkimTree_HNMultiLepBDT   {FlagCommand('RunPrompt', flags)}  ")   
 
         ### Conv                                                                                                                                                                             
 
