@@ -6214,10 +6214,18 @@ double MCCorrection::GetMCJetTagEff(JetTagging::Tagger tagger, JetTagging::WP wp
   int this_bin = this_hist->FindBin(fabs(JetEta),JetPt);
   value = this_hist->GetBinContent(this_bin);
   error = this_hist->GetBinError(this_bin);
-
+  
   out = value+double(sys)*error;
-  if(out<=0.) out = 1E-10;
-  if(out>=1.) out = 1.-1E-10;
+  if(out<=0.0){
+    cout<<"GetMCJetTagEff value " << out << "  is too low.... "<<endl; exit(ENODATA);
+  }  
+  else if(out>=0.98) {
+    if(JetPt > 600.0)   return GetMCJetTagEff(tagger,  wp, JetFlavor, 499.0,JetEta, sys);
+    else {
+      cout<<"GetMCJetTagEff value " << out << "  is too high.... "<<endl;
+      exit(ENODATA);
+    }
+  }
   return out;
 }
 
@@ -6273,6 +6281,7 @@ double MCCorrection::GetBTaggingReweight_1a(const vector<Jet>& jets, JetTagging:
       Prob_MC *= 1.-this_MC_Eff;
       Prob_DATA *= 1.-this_DATA_Eff;
     }
+    if(DEBUG) cout << "Jet " << i << " this_SF = " << this_SF  << " this_MC_Eff = " << this_MC_Eff << " this_DATA_Eff = " << this_DATA_Eff << " isTagged = " << isTagged << endl;
   }
 
   if(Prob_MC>0. && Prob_DATA>0.) SF=Prob_DATA/Prob_MC;

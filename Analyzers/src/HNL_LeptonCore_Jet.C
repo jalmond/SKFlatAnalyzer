@@ -41,10 +41,14 @@ void  HNL_LeptonCore::EvalJetWeight(const std::vector<Jet>&    AK4_JetColl, cons
     double sf_btag = GetBJetSF(param, BJetColl, param_jets);
     w *= sf_btag;
     if(sf_btag > 10){
+      mcCorr->DEBUG=true;
+      sf_btag = GetBJetSF(param, BJetColl, param_jets);
       cout << "sf_btag  = " << sf_btag << " event = " << event  << endl;
       for(auto ijet : BJetColl){
 	cout << ijet.Pt() << " :  " << ijet.Eta() << " flavour " << ijet.hadronFlavour() << endl;
       }
+      mcCorr->DEBUG=false;
+	    
     }
     // Store the SF and fill the histogram
     param.w.btagSF = sf_btag;

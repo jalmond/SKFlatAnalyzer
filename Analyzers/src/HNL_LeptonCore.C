@@ -1032,7 +1032,7 @@ double HNL_LeptonCore::ZZKfactor(TString method){
 
   // finalState=1 : 4e/4mu/4tau
   // finalState=2 : 2e2mu/2mutau/2e2tau
-  
+
   int finalState = GetZZFinalState();
   float k=0.0;
   //  cout << "GetGenZZPt() = " << GetGenZZPt() << "  " << GetGenZZMass() << endl;

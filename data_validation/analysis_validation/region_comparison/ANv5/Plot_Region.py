@@ -41,7 +41,7 @@ luminosities = {
 base_channels = ["MuMuMu", "EEE", "EMuL"]
 background_files = [
     #["HNL_ControlRegion_Plotter_CF.root", "Chargeflip"],
-    ["HNL_ControlRegion_Plotter_Conv.root", "X+#gamma"],
+    ["HNL_ControlRegion_Plotter_Conv.root", "X#gamma"],
     ["HNL_ControlRegion_Plotter_Fake.root", "Nonprompt"],
     ["HNL_ControlRegion_Plotter_TTV.root", "TTV"],
     #["HNL_ControlRegion_Plotter_VVV.root", "VVV"],
@@ -93,8 +93,8 @@ for hist_base, flavour, channels in hist_bases:
     dummy_hist.LabelsOption("v")
 
     # Draw the dummy histogram first to set the x-axis labels
-    dummy_hist.SetTitle("Stacked Backgrounds: All Years and Channels")
-    dummy_hist.GetXaxis().SetTitle("Years and Channels")
+    dummy_hist.SetTitle("Stacked Backgrounds: Channels")
+    dummy_hist.GetXaxis().SetTitle("Channels")
     dummy_hist.GetYaxis().SetTitle("Events")
     
     histograms = {}
@@ -117,6 +117,7 @@ for hist_base, flavour, channels in hist_bases:
         "WZ": ROOT.kGreen,
         "ggZZ": ROOT.kSpring + 1,
         "qqZZ": ROOT.kTeal,
+        "ZZ": ROOT.kTeal,
     }
     
     # Loop over each year and channel, extract the corresponding histogram
@@ -201,8 +202,9 @@ for hist_base, flavour, channels in hist_bases:
     # Now `max_value` contains the maximum value from all histograms in the stack
     print(f"Maximum value in the THStack: {max_value}")
 
-    # Draw the stacked histogram                                                                                                                                                                                    
-    dummy_hist.GetYaxis().SetRangeUser(0,max_value*1.5)
+    # Draw the stacked histogram
+    ymax=max_value*1.5
+    dummy_hist.GetYaxis().SetRangeUser(0,ymax)
     dummy_hist.Draw("hist")
 
     stacked_hist.Draw("histsame")
@@ -220,35 +222,46 @@ for hist_base, flavour, channels in hist_bases:
     
     # Add vertical lines and era labels                                                                                                                                                                             
     eras = [f"{years[0]}", f"{years[1]}", f"{years[2]}", f"{years[3]}"]
-    bin_positions = [4, 8, 12, 16]
+    bin_positions = [4.0, 8.0, 12.0, 16.0]
 
-    for i, pos in enumerate(bin_positions):
-        line = ROOT.TLine(pos, 0, pos, stacked_hist.GetMaximum())  # Vertical line at bin position                                                                                                                  
-        line.SetLineColor(ROOT.kBlack)
-        line.SetLineStyle(2)  # Dashed line                                                                                                                                                                         
-        line.Draw("same")
+    line = ROOT.TLine(4.0, 0, 4.0, ymax)  # Vertical line at bin position                                                                                                                  
+    line.SetLineColor(ROOT.kBlack)
+    line.SetLineStyle(2)  # Dashed line                                                                                                                                                                         
+    line.Draw("same")
+    line2 = ROOT.TLine(8.0, 0, 8.0, ymax)  # Vertical line at bin position
+    line2.SetLineColor(ROOT.kBlack)
+    line2.SetLineStyle(2)  # Dashed line
+    line2.Draw("same")
+    line3 = ROOT.TLine(12.0, 0, 12.0, ymax)  # Vertical line at bin position
+    line3.SetLineColor(ROOT.kBlack)
+    line3.SetLineStyle(2)  # Dashed line
+    line3.Draw("same")    
 
+
+    canvas.Update()
+    for i, pos in enumerate(bin_positions):        
         latex = ROOT.TLatex()
         latex.SetTextSize(0.04)
         latex.SetTextAlign(22)
-        latex.DrawLatex(pos - 2, stacked_hist.GetMaximum() * 0.95, eras[i])  # Label near the line                                                                                                                  
+        latex.DrawLatex(pos - 2, ymax*0.9, eras[i])  # Label near the line                                                                                                                  
     gr_Data_dummy = ROOT.TGraphAsymmErrors(gr_Data)
     gr_Data_dummy.SetMarkerStyle(20)
     gr_Data_dummy.SetMarkerSize(1.2)
+    canvas.Update()
 
         
     # Add a legend
-    legend = ROOT.TLegend(0.7, 0.5, 0.88, 0.88)
+    legend = ROOT.TLegend(0.2, 0.5, 0.35, 0.8)
     legend.SetBorderSize(0)
     legend.SetFillStyle(0)
+    legend.SetTextSize(0.03)
     legend.AddEntry(gr_Data_dummy, "Data", "ep")
 
     for bkg_file, label in background_files:
         legend.AddEntry(histograms[bkg_file], label, "f")  # Using label for the legend
     legend.Draw()
+    canvas.Update()
 
-    canvas.cd()
-    
     # Add CMS luminosity and logo
     
 

@@ -177,7 +177,7 @@ void HNL_SignalRegion_Plotter::executeEvent(){
 
       //// Run Systematics
       for(auto isyst : GetSystList(SystLabel)){
-	bool runJob = UpdateParam_SrBySyst(id,param_sr,AnalyzerParam_Sreter::Syst(isyst),param_sr_name);
+	bool runJob = UpdateParamBySyst(id,param_sr,AnalyzerParameter::Syst(isyst),param_sr_name);
 	if(runJob) RunULAnalysis(param_sr);
       }
     }
@@ -201,8 +201,8 @@ void HNL_SignalRegion_Plotter::RunULAnalysis(AnalyzerParameter param_sr){
   TString el_ID = SetLeptonID("Electron",param_sr);
   TString mu_ID = SetLeptonID("Muon", param_sr);
   
-  if(param_sr.syst_ == AnalyzerParam_Sreter::ScaleUp) weight *= GetScaleUncertainty(1);
-  if(param_sr.syst_ == AnalyzerParam_Sreter::ScaleDown) weight *= GetScaleUncertainty(-1);
+  if(param_sr.syst_ == AnalyzerParameter::ScaleUp) weight *= GetScaleUncertainty(1);
+  if(param_sr.syst_ == AnalyzerParameter::ScaleDown) weight *= GetScaleUncertainty(-1);
 
 
   double Min_FakeMuon_Pt      =  5;

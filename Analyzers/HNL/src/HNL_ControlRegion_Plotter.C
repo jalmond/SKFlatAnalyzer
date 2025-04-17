@@ -93,7 +93,7 @@ void HNL_ControlRegion_Plotter::executeEvent(){
 
       //// Make it clearer the param used in CR/SR for HNL ID
       AnalyzerParameter param_cr;
-      if(id=="HNL_ULIDv2") param_cr = Setup_Param_HNL_ULIDv2(id,channel);
+      if(id=="HNL_ULIDv2") param_cr = Setup_Param_HNL_ULIDv2(id,GetChannelString(channel));
       else param_cr = HNL_LeptonCore::InitialiseHNLParameter(id,channel);
 
       if(channel == EMu) param_cr.CFMethod   = "MC";

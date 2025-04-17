@@ -383,8 +383,8 @@ void HNL_LeptonCore::Fill_Plots(AnalyzerParameter& param, TString  region,  TStr
     }
   }
   
-
-  if(MCSample.Contains("ZZ_")){
+  bool PlotZZ = MCSample.Contains("ZZ_");
+  if(PlotZZ){
     Particle ZZ;
 
     vector<int> MotherPID;
@@ -500,8 +500,8 @@ void HNL_LeptonCore::Fill_Plots(AnalyzerParameter& param, TString  region,  TStr
   if(fourlep) {
     Particle llllCand = *leps[0] + *leps[1] + *leps[2] + *leps[3] ;
     if(llllCand.M() > 70 && llllCand.M() < 170)     FillHist( plot_dir+ region+ "/Mass/M_ZZ", llllCand.M() , w, 100, 70., 170.,"M_{4l} (GeV)");
-    FillHist( plot_dir+ region+ "/Mass/M_llll_gen", GetGenZZMass(), w, 200, 0., 800.,"Pt(llll) GeV");
-    FillHist( plot_dir+ region+ "/Pt/M_llll_gen", GetGenZZPt(), w, 200, 0., 800.,"M(llll) GeV");
+    //FillHist( plot_dir+ region+ "/Mass/M_llll_gen", GetGenZZMass(), w, 200, 0., 800.,"Pt(llll) GeV");
+    //FillHist( plot_dir+ region+ "/Pt/M_llll_gen", GetGenZZPt(), w, 200, 0., 800.,"M(llll) GeV");
     FillHist( plot_dir+ region+ "/Mass/M_llll", llllCand.M() , w, 200, 0., 800.,"M(llll) GeV");
     FillHist( plot_dir+ region+ "/Mass/M_BestZ", LeptonMassBestZ(leps,LeptonPairBestZCand(leps)) , w, 200, 0., 800.,"M(Z1) GeV");
     FillHist( plot_dir+ region+ "/Mass/M_OtherZ", LeptonMassNonZ(leps,LeptonPairBestZCand(leps)) , w, 200, 0., 800.,"M(Z1) GeV");
