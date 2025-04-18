@@ -102,7 +102,7 @@ for hist_base, flavour, channels in hist_bases:
         histograms[bkg_file] = ROOT.TH1F(f"hist_{bkg_file}", label, 16, 0, 16)  # 16 bins for 4 eras and 3 channels
         logging.info(f"Creating histogram for {bkg_file}")
 
-    h_Data = ROOT.TH1F(f"hist_{bkg_file}", label, 16, 0, 16)  # 16 bins for 4 eras and 3 channels               
+    h_Data = ROOT.TH1F(f"hist_data", label, 16, 0, 16)  # 16 bins for 4 eras and 3 channels               
     colors = {
         "Chargeflip": ROOT.kYellow,
         "W#gamma": ROOT.kBlue,
@@ -122,7 +122,7 @@ for hist_base, flavour, channels in hist_bases:
     
     # Loop over each year and channel, extract the corresponding histogram
     for year_idx, year in enumerate(years):
-        for channel_idx, channel in enumerate(channels):
+        for channel_idx, channel in enumesrate(channels):
             logging.info(f"Filling bins for {year}:{channel}")
 
             input_dir ="/data6/Users/jalmond/2020/HL_SKFlatAnalyzer_UL_LONG/SKFlatAnalyzer/data_validation/analysis_validation/merged_samples/ANv5/"
@@ -241,7 +241,7 @@ for hist_base, flavour, channels in hist_bases:
     canvas.Update()
     for i, pos in enumerate(bin_positions):        
         latex = ROOT.TLatex()
-        latex.SetTextSize(0.04)
+        latex.SetTextSize(0.03)
         latex.SetTextAlign(22)
         latex.DrawLatex(pos - 2, ymax*0.9, eras[i])  # Label near the line                                                                                                                  
     gr_Data_dummy = ROOT.TGraphAsymmErrors(gr_Data)
