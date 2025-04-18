@@ -41,7 +41,7 @@ void HNL_ControlRegion_Plotter::executeEvent(){
 
   vector<TString> LepIDs = {"HNL_ULIDv2"};
 
-  if(strcmp(std::getenv("USER"),"jalmond")==0) LepIDs = {"HNL_ULIDv2","HNTightV2"};
+  //  if(strcmp(std::getenv("USER"),"jalmond")==0) LepIDs = {"HNL_ULIDv2","HNTightV2"};
 
   vector<HNL_LeptonCore::Channel> ChannelsToRun = {};
 
@@ -68,7 +68,11 @@ void HNL_ControlRegion_Plotter::executeEvent(){
   }
   else {
     /// Run All CRs for AN
-    if(HasFlag("MultiLepton")) CRToRun = {"SS_CR","VBF_CR","LLL_VR"};
+    if(HasFlag("MultiLepton")) {
+      if(HasFlag("RunSyst"))CRToRun = {"SS_CR","LLL_VR"};
+      else CRToRun = {"SS_CR","VBF_CR","LLL_VR"};
+    }
+    
     /// Run selected CRs
     if(HasFlag("Dilepton"))    CRToRun = {"OS_VR","SS_CR","VBF_CR"};
     if(HasFlag("SSMultiLep"))  CRToRun = {"SS_CR","VBF_CR"};
@@ -96,8 +100,31 @@ void HNL_ControlRegion_Plotter::executeEvent(){
       if(id=="HNL_ULIDv2") param_cr = Setup_Param_HNL_ULIDv2(id,GetChannelString(channel));
       else param_cr = HNL_LeptonCore::InitialiseHNLParameter(id,channel);
 
-      if(channel == EMu) param_cr.CFMethod   = "MC";
+      
+      if(HasFlag("RunSyst")){
+	/// Some code to remove unnecessary Syst runs                                                                                                                                                              
+	if(!PassMETFilter()) return;
+	
+	Event ev = GetEvent();
+	
+	if(channel==EE){
+	  if(!ev.PassTrigger(TrigList_HNL_DblEG)) continue;
+	  std::vector<Muon>       MuonCollV     = SelectMuons    (param_cr,param_cr.Muon_Veto_ID,     5., 2.4);  
+	  if(MuonCollV.size() > 0) continue;
+	}
+	if(channel==MuMu){
+	  if(!ev.PassTrigger(TrigList_HNL_DblMu)) continue;
+	  std::vector<Electron>   ElectronCollV = SelectElectrons(param_cr,param_cr.Electron_Veto_ID, 10., 2.5);	    
+	  if(ElectronCollV.size() >0) continue;
+	}
+	if(channel==EMu){
+	  if(!(ev.PassTrigger(TrigList_HNL_MuEG) || ev.PassTrigger(TrigList_HNL_EGMu) )) continue;
+	}
+      }
 
+
+
+      //// Run Jobs 
       if(HasFlag("AltID")){
 	AnalyzerParameter param_loose = HNL_LeptonCore::InitialiseHNLParameter(id,channel);
         param_loose.Name = param_loose.Name + "_AltID";
@@ -119,11 +146,12 @@ void HNL_ControlRegion_Plotter::executeEvent(){
       else{
 	//// Main Jobs for analysis
 
+	for(auto iCR : CRToRun)	  RunControlRegions(param_cr , {iCR} );
+	
 	for(auto iCR : CRToRun){
-	  RunControlRegions(param_cr , {iCR} );
-
 	  /// grab name for central job
 	  TString param_name = param_cr.Name;
+	  TString param_defname = param_cr.DefName;
 	  
 	  TString SystString = "";
 	  if(HasFlag("OS")) SystString = "Muon";
@@ -132,8 +160,10 @@ void HNL_ControlRegion_Plotter::executeEvent(){
 	  for(auto isyst : GetSystList(SystString)){
 	    bool runJob = UpdateParamBySyst(id,param_cr,AnalyzerParameter::Syst(isyst),param_name);
 	    if(runJob)         RunControlRegions(param_cr , {iCR} );
-	  }
-	  
+	    /// Reset 
+	    param_cr.Name=param_name;
+	    param_cr.DefName=param_defname;
+	  }	  
 	}
       }
     }
