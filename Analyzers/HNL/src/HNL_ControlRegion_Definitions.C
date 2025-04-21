@@ -1850,8 +1850,14 @@ bool HNL_RegionDefinitions::FillZZCRPlots(HNL_LeptonCore::Channel channel, std::
   FillHist(  "LimitExtraction/"+ param.Name+"/LimitShape_ZZ/Binned",  0,  w, 1,0,1 ,"CR Binned");
 
   Fill_RegionPlots(param,"HNL_ZZ_FourLepton_CR", taus ,  JetColl,  AK8_JetColl,  leps,  METv, nPV, w);
-  OutCutFlow("HNL_ZZ_FourLepton_CR",w);
+  double weight_orig_kfactor = 1.;
+  if(MCSample.Contains("ZZTo4L_powheg")) weight_orig_kfactor =  1.16/ZZKfactor("ZZMass");
 
+  if(User("jalmond"))Fill_RegionPlots(param,"HNL_ZZ_OrigKF_FourLepton_CR", taus ,  JetColl,  AK8_JetColl,  leps,  METv, nPV, w*weight_orig_kfactor);
+
+  
+  OutCutFlow("HNL_ZZ_FourLepton_CR",w);
+  
   return true;
 }
 

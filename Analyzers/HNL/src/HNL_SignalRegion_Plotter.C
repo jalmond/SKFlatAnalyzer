@@ -133,10 +133,9 @@ void HNL_SignalRegion_Plotter::executeEvent(){
       if(MCSample.Contains("Type")&& !SelectChannel(channel)) continue;
 
       AnalyzerParameter param_sr;
-      if(id=="HNL_ULIDv2") param_sr = Setup_Param_HNL_ULIDv2(id,channel);
+      if(id=="HNL_ULIDv2") param_sr = Setup_Param_HNL_ULIDv2(id,GetChannelString(channel));
       else param_sr = HNL_LeptonCore::InitialiseHNLParameter(id,channel);
 
-      
       if(HasFlag("HighPtTrigger")) param_sr.TriggerSelection     = "HighPt";          
       if(HasFlag("HighPtTrigger")) param_sr.Apply_Weight_TriggerSF = false;
 
