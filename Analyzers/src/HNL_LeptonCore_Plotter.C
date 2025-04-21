@@ -168,8 +168,6 @@ void HNL_LeptonCore::Fill_RegionPlots(AnalyzerParameter& param, TString plot_dir
 
 void HNL_LeptonCore::Fill_RegionPlotsFull(AnalyzerParameter& param, TString plot_dir, vector<Tau>& Taus,  std::vector<Jet>& jets,    std::vector<FatJet>& fatjets, std::vector<Lepton *>& leps , Particle&  met, double nvtx,  double w, int DrawConfig){
 
-  if (param.PlottingVerbose == 0) return;
-
   TString region = "/" + param.Name + param.hprefix;
   TString regionL = "/" + param.NameInclusive_Channel + param.hprefix;
 
@@ -181,9 +179,13 @@ void HNL_LeptonCore::Fill_RegionPlotsFull(AnalyzerParameter& param, TString plot
 
   std::vector<TString> regions;
   regions.push_back(region);
-  if (!param.NameInclusive_Channel.IsNull() && !param.NameInclusive_Channel.IsWhitespace())
-    regions.push_back(regionL);
 
+  //// If name has _q_ then plots are for charge split, so do not draw Inclusivce lepton as it double counts
+  if(!param.Name.Contains("_q_")){
+    if (!param.NameInclusive_Channel.IsNull() && !param.NameInclusive_Channel.IsWhitespace())
+      regions.push_back(regionL);
+  }
+    
   for (const TString& r : regions) {
     Fill_Main_Plots(param, r, plot_dir, Taus, jets, fatjets, leps, met, nvtx, w);
     Fill_Standard_Plots(param, r, plot_dir, Taus, jets, fatjets, leps, met, nvtx, w);
