@@ -4,9 +4,14 @@ import argparse
 import subprocess
 import shutil
 import logging
+from pathlib import Path
 
 
-# A helper function to add clear breaks in logging                                                                                                                                                                                                                                                                                                                                          
+# A helper function to add clear breaks in logging
+
+
+Plot_Version="ANv5"
+
 def log_section_start(section_name):
     logging.info("=" * 50)  # Print 50 '=' characters as a separator                                                                                                                                                                                                                                                                                                                        
     logging.info(f"STARTING SECTION: {section_name}")
@@ -193,3 +198,26 @@ for era in eras:
 
         logging.info(f"Running: {cmd}")
         subprocess.run(cmd, shell=True, check=True)
+
+
+# move outfiles to plot version directory
+
+# Define target directory
+target_dir = Path(Plot_Version)
+
+# Delete if it already exists
+if target_dir.exists() and target_dir.is_dir():
+    shutil.rmtree(target_dir)
+
+# Create the directory
+target_dir.mkdir(parents=True, exist_ok=True)
+
+
+# Move all directories starting with "20" into the new directory
+for entry in os.listdir():
+    if entry.startswith("20") and os.path.isdir(entry):
+        shutil.move(entry, target_dir / entry)
+
+
+
+        

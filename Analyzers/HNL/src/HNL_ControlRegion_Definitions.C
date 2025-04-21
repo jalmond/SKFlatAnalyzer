@@ -1585,7 +1585,6 @@ bool HNL_RegionDefinitions::FillWZVBFCRPlots(HNL_LeptonCore::Channel channel, st
   std::vector<Jet> JetColl                  = SelectAK4Jets(jets_eta5, 20., 2.5, true,  0.4,0.8,"",    leps_veto,AK8_JetColl);
   int NB_JetColl = B_JetColl.size();
 
-
   int ijet1(0), ijet2(1);
 
   if(GetIndexNonBestZ(leps,M_ZWINDOW_CR) < 0) return false;
