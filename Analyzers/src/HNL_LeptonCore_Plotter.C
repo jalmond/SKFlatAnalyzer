@@ -514,100 +514,74 @@ void HNL_LeptonCore::Fill_Plots(AnalyzerParameter& param, TString  region,  TStr
 
   //// Plot properties of extra lepton
 
-  if(User("jalmond")){
-    if(SameCharge(leps)){
-      int all_mu(0);
-      int nmatched_mu = 0;
-      int n_nonmatched_mu=0;
-      for(auto imuon : All_Muons){
-	if(!imuon.isPOGLoose()) continue;
-	if(imuon.Pt() < 5) continue;
-	all_mu++;
-
-	bool matched=false;
-	for(auto i : leps){
-	  if(i->DeltaR(imuon) <  0.1) {
-	    matched=true;
-	    nmatched_mu++;
-	  }
+  if(leps.size() > 1){
+    
+    int n_nonmatched_mu=0;
+    for(auto imuon : All_Muons){
+      if(!imuon.isPOGLoose()) continue;
+      if(imuon.Pt() < 5) continue;
+      
+      bool matched=false;
+      for(auto i : leps){
+	if(i->DeltaR(imuon) <  0.1) {
+	  matched=true;
 	}
-	if(!matched) n_nonmatched_mu++;
-		       
       }
-      
-
-      FillHist( plot_dir+ region + "/ExtraLep/All_Muon"      , all_mu, w, 10, 0., 10., "");
-      FillHist( plot_dir+ region + "/ExtraLep/All_Muon_Matched"    , nmatched_mu, w, 10, 0., 10., "");
-      FillHist( plot_dir+ region + "/ExtraLep/All_Muon_NonMatched"    , n_nonmatched_mu, w, 10, 0., 10., "");
-      
-      int all_el(0);
-      int nmatched_el = 0;
-      int n_nonmatched_el_mva=0;
-      int n_nonmatched_el_cbveto=0;
-
-      for(auto iel : All_Electrons){
-	if(iel.Pt() < 10)  continue;
-	all_el++;
-	bool matched=false;
-
-	for(auto i : leps){
-	  if(i->DeltaR(iel) <  0.1) {
-	    nmatched_el++;
-	    matched=true;
-	  }
-	}
-	if(!matched){
-	  if(iel.passMVAID_noiso_WPLoose()) n_nonmatched_el_mva++;
-	  if(iel.passVetoID()) n_nonmatched_el_cbveto++;
-	  
-	}
-      }   
-      FillHist( plot_dir+ region + "/ExtraLep/All_El"      , all_el, w, 10, 0., 10., "");
-      FillHist( plot_dir+ region + "/ExtraLep/All_El_Matched"    , nmatched_el, w, 10, 0., 10., "");
-      FillHist( plot_dir+ region + "/ExtraLep/All_El_NonMatched_MVA"  , n_nonmatched_el_mva, w, 10, 0., 10., "");
-      FillHist( plot_dir+ region + "/ExtraLep/All_El_NonMatched_CBVeto" ,n_nonmatched_el_cbveto , w, 10, 0., 10., "");
-      
-      
-      int all_tau(0);
-      int nmatched_tau = 0;
-
-      int n_nonnmatched_tau=0;
-      for(auto itau : GetAllTaus()){
-	if(!itau.PassID("JetVL_MuVL_ELVL"))continue;
-	if(itau.Pt() < 20) continue;
-	if(fabs(itau.Eta()) > 2.3) continue;
-	all_tau++;
-
-	bool matched=false;
-	for(auto i : leps){
-	  if(i->DeltaR(itau) <  0.1) {
-	    nmatched_tau++;
-	    matched=true;
-	  }
-	}
-	if(!matched) n_nonnmatched_tau++;		       
-      }
-      FillHist( plot_dir+ region + "/ExtraLep/All_Tau"      , all_tau, w, 10, 0., 10., "");
-      FillHist( plot_dir+ region + "/ExtraLep/All_Tau_Matched"    , nmatched_tau, w, 10, 0., 10., "");
-      FillHist( plot_dir+ region + "/ExtraLep/All_Tau_NonMatched"    , n_nonnmatched_tau, w, 10, 0., 10., "");
-      
+      if(!matched) n_nonmatched_mu++;
     }
     
-    for(auto ijet : jets){
-      FillHist( plot_dir+ region + "/Jets/CHFracCJ"      , ijet.ChargedHadEnergyFraction(), w, 100, 0., 1., "");
-      FillHist( plot_dir+ region + "/Jets/NEMFracCJ"     , ijet.NeutralEmEnergyFraction(), w, 100, 0., 1., "");
-      FillHist( plot_dir+ region + "/Jets/CEMFracCJ"     , ijet.ChargedEmEnergyFraction(), w, 100, 0., 1., "");
-      FillHist( plot_dir+ region + "/Jets/NFracCJ"       , ijet.NeutralHadEnergyFraction(), w, 100, 0., 1., "");
-      FillHist( plot_dir+ region + "/Jets/MuonEnergyFraction", ijet.MuonEnergyFraction(), w, 100, 0., 1., "");
-      FillHist( plot_dir+ region + "/Jets/NVtxTracks", ijet.NVtxTracks(), w, 50, 0., 50, "");
-      FillHist( plot_dir+ region + "/Jets/Multiplicity", ijet.NMult() + ijet.CHMult(),w, 50, 0., 50, "");
-      if(fabs(ijet.Eta()) < 2.4) FillHist( plot_dir+ region + "/Jets/PileupJetId_Central",ijet.PileupJetId() , w, 100, 0., 1., "");
-      else FillHist( plot_dir+ region + "/Jets/PileupJetId_Endcap",ijet.PileupJetId() , w, 100, 0., 1., "");
+    FillHist( plot_dir+ region + "/ExtraLep/All_Muon_NonMatched"    , n_nonmatched_mu, w, 10, 0., 10., "");
+    
+    int n_nonmatched_el_mva=0;
+    int n_nonmatched_el_cbveto=0;
+    
+    for(auto iel : All_Electrons){
+      if(iel.Pt() < 10)  continue;
+      bool matched=false;
       
+      for(auto i : leps){
+	if(i->DeltaR(iel) <  0.1) {
+	  matched=true;
+	}
+      }
+      if(!matched){
+	if(iel.passMVAID_noiso_WPLoose()) n_nonmatched_el_mva++;
+	if(iel.passVetoID()) n_nonmatched_el_cbveto++;
+	
+      }
+    }   
+    FillHist( plot_dir+ region + "/ExtraLep/All_El_NonMatched_MVA"  , n_nonmatched_el_mva, w, 10, 0., 10., "");
+    FillHist( plot_dir+ region + "/ExtraLep/All_El_NonMatched_CBVeto" ,n_nonmatched_el_cbveto , w, 10, 0., 10., "");
+    
+    int n_nonnmatched_tau=0;
+    for(auto itau : GetAllTaus()){
+      if(!itau.PassID("JetVL_MuVL_ELVL"))continue;
+      if(itau.Pt() < 20) continue;
+      if(fabs(itau.Eta()) > 2.3) continue;
+      
+      bool matched=false;
+      for(auto i : leps){
+	if(i->DeltaR(itau) <  0.1) {
+	  matched=true;
+	}
+      }
+      if(!matched) n_nonnmatched_tau++;		       
     }
-
+    FillHist( plot_dir+ region + "/ExtraLep/All_Tau_NonMatched"    , n_nonnmatched_tau, w, 10, 0., 10., "");
   }
-
+  
+  for(auto ijet : jets){
+    FillHist( plot_dir+ region + "/Jets/CHFracCJ"      , ijet.ChargedHadEnergyFraction(), w, 100, 0., 1., "");
+    FillHist( plot_dir+ region + "/Jets/NEMFracCJ"     , ijet.NeutralEmEnergyFraction(), w, 100, 0., 1., "");
+    FillHist( plot_dir+ region + "/Jets/CEMFracCJ"     , ijet.ChargedEmEnergyFraction(), w, 100, 0., 1., "");
+    FillHist( plot_dir+ region + "/Jets/NFracCJ"       , ijet.NeutralHadEnergyFraction(), w, 100, 0., 1., "");
+    FillHist( plot_dir+ region + "/Jets/MuonEnergyFraction", ijet.MuonEnergyFraction(), w, 100, 0., 1., "");
+    FillHist( plot_dir+ region + "/Jets/NVtxTracks", ijet.NVtxTracks(), w, 50, 0., 50, "");
+    FillHist( plot_dir+ region + "/Jets/Multiplicity", ijet.NMult() + ijet.CHMult(),w, 50, 0., 50, "");
+    if(fabs(ijet.Eta()) < 2.4) FillHist( plot_dir+ region + "/Jets/PileupJetId_Central",ijet.PileupJetId() , w, 100, 0., 1., "");
+    else FillHist( plot_dir+ region + "/Jets/PileupJetId_Endcap",ijet.PileupJetId() , w, 100, 0., 1., "");
+  }
+    
   FillHist( plot_dir+ region+ "/Leptons/SumQ", sumQ,  w, 10, -5, 5, "Q size");
 
   //// Lepton plots 
@@ -625,16 +599,6 @@ void HNL_LeptonCore::Fill_Plots(AnalyzerParameter& param, TString  region,  TStr
   FillHist( plot_dir+ region+ "/Leptons/Lep_2_eta", leps[1]->Eta()  , w, 60, -3., 3.,"l_{2} #eta");
   FillHist( plot_dir+ region+ "/Leptons/Lep_1_phi", leps[0]->Phi()  , w, 200, -10, 10.,"l_{3} #phi");
   FillHist( plot_dir+ region+ "/Leptons/Lep_2_phi", leps[1]->Phi()  , w, 200, -10, 10.,"l_{3} #phi");
-
-  for(auto i : leps){
-    FillHist( plot_dir+ region+ "/Leptons/CloseJet_BScore_"+i->GetEtaRegion("2bin"), i->CloseJet_BScore() ,  w, 200, -1, 1 );
-  }
-
-  for(auto itau  : TauColl){
-    FillHist( plot_dir+ region+ "/Taus/Tau_pt",  itau.Pt()  ,  w, 200, 0, 1000,"1_{2} p_{T} GeV");
-    FillHist( plot_dir+ region+ "/Taus/Tau_eta", itau.Eta()  , w, 60, -3., 3,"l_{1} #eta");
-  }
-
 
   int nHTPTbins=5;
   double HTPTbins[nHTPTbins+1] = {0,1, 2,4,6,10};
@@ -677,7 +641,7 @@ void HNL_LeptonCore::Fill_Plots(AnalyzerParameter& param, TString  region,  TStr
   for(unsigned int i=0; i < jets.size(); i++){
     if(fabs(jets.at(i).Eta()) > 2.4) continue;
     if( jets[i].GetTaggerResult(JPForPlots.j_Tagger) > mcCorr->GetJetTaggingCutValue(JPForPlots.j_Tagger, JPForPlots.j_WP) ) nBJet++;
-    
+   
     FillHist( plot_dir+ region+ "/AK4Jets/Jet_pt",  jets[i].Pt() , w, 400, 0., 2000., "AK4 Jet p_{T} GeV");
     FillHist( plot_dir+ region+ "/AK4Jets/Jet_eta",  jets[i].Eta() , w, 100, -5., 5., "AK4 Jet #eta ");
   }

@@ -6,9 +6,6 @@ AnalyzerParameter HNL_LeptonCore::Setup_Param_HNL_ULIDv2(const TString& s_setup_
   //// Set param same as HNL_ULID
   AnalyzerParameter param_default  =  Setup_Param_HNL_ULID(s_setup_version,channel_st);
   
-  //param_default.FatJet_ID = "tightLepVeto"; 
-  //param_default.BJetColl = "Tight_NoAK8Cleaning";
-
   /// Update some electron settings for v2
   param_default.Electron_Tight_ID = "HNL_HighPt_ULID_"+GetYearString();
   param_default.Electron_FR_ID    = "HNL_HighPt_ULID_FO";

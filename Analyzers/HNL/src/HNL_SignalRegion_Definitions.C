@@ -770,7 +770,7 @@ if(param.IsCentral()) Fill_RegionPlots(param,"Inclusive"+RegionTag ,  TauColl, J
  
   
   Particle JJ = JetColl[ijet1] + JetColl[ijet2];
-  if(JJ.M() < 750) return "false";
+  if(JJ.M() < 500) return "false";
   FillCutflow(Reg, w, RegionTag+"_DiJetMass",param);
   
   double Av_JetEta= 0.5*(JetColl[ijet1].Eta()+ JetColl[ijet2].Eta());
@@ -779,7 +779,7 @@ if(param.IsCentral()) Fill_RegionPlots(param,"Inclusive"+RegionTag ,  TauColl, J
   
   if(zeppenfeld > 0.75) return "false";
   
-  if(!PassVBF(JetColl,leps,750., true)) return "false";
+  if(!PassVBF(JetColl,leps,500., true)) return "false";
     
   if(ApplyForSR) FillCutflow(HNL_LeptonCore::SRLowMass, w, "SR2",param);
   if(ApplyForSR) FillCutflow(HNL_LeptonCore::SRHighMass, w, "SR2",param);
@@ -1185,7 +1185,7 @@ bool HNL_RegionDefinitions::PassVBFInitial(vector<Jet>&  JetColl){
 
   if(maxDiJetDeta < 2.5) return false;
   Particle JJ = JetColl[ijet1] + JetColl[ijet2];
-  if(JJ.M() < 450.) return false;
+  if(JJ.M() < 500.) return false;
 
   return true;
 

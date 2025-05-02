@@ -270,7 +270,7 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
 	
 	if(FillWZCRPlots (trilep_channel,  LepsT, LepsV,TauColl_Cleaned, JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTrilep, weight_channel))  {
 	  if(AK8_JetColl.size() > 0) passedMain.push_back("WZ_SR1");
-	  else if(!PassVBF(VBF_JetColl,LepsT,750))  passedMain.push_back("WZ_SR3");
+	  else if(!PassVBF(VBF_JetColl,LepsT,500))  passedMain.push_back("WZ_SR3");
 	}
 	//// AN[2] Table 13 
 	if(FillWZVBFCRPlots      (trilep_channel, LepsT, LepsV,TauColl_Cleaned, VBF_JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTrilep, weight_channel)) passedMain.push_back("WZ_SR2");
@@ -365,7 +365,7 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
 	if(RunCR("SS_CR3",CRs)){
 	  
 	  // Check VBF condition and fill SR3 CR Plots
-	  if (!PassVBF(VBF_JetColl, LepsT, 750)) {
+	  if (!PassVBF(VBF_JetColl, LepsT, 500)) {
 	    TString  passSR3 = FillHighMassSR3CRPlots(dilep_channel, LepsT, LepsV, TauColl_Cleaned, JetColl, AK8_JetColl, B_JetColl, ev, METv, param, weight_channel);
 	    if ( passSR3 != "false"){
 	      passedMain.push_back(passSR3);
@@ -1134,7 +1134,7 @@ bool HNL_RegionDefinitions::FillWWCRNP2Plots(HNL_LeptonCore::Channel channel, st
   FillCutflow(Reg, w, "Step6",param);
 
   if ((j1+j2).M() < 150.) return false;
-  if ((j1+j2).M() > 750.) return false;
+  if ((j1+j2).M() > 500.) return false;
   FillCutflow(Reg, w, "Step7",param);
 
   if (channel==EE  && (fabs(ll.M()-M_Z) < M_ZWINDOW_VETO)) return false;
@@ -1592,24 +1592,18 @@ TString  HNL_RegionDefinitions::FillHighMassSR2CRPlots(HNL_LeptonCore::Channel c
 
   if(AK8_JetColl.size() > 0) return "false";
 
-  Fill_RegionPlots(param,"HNL_HighMassSR2_Inclusive", taus  ,  JetColl,  AK8_JetColl,  leps,METv, nPV, w);
-  
   if(PassVBFInitial(JetColl)){
-      
+    
     if(PassHMMet && NB_JetColl==0) return "false"; /// SR                                                                                                                                       
     if(NB_JetColl >1) return "false"; /// Dont consider Multi BJet events                                                                                                                       
     Fill_RegionPlots(param,"HNL_HighMassSR2_Inclusive_CR", taus  ,  JetColl,  AK8_JetColl,  leps,METv, nPV, w);
-    
-    if(PassVBF(JetColl, leps,750)){
-      Fill_RegionPlots(param,"HNL_HighMassSR2_M750_CR", taus  ,  JetColl,  AK8_JetColl,  leps,METv, nPV, w);	  
-    }
+   
     if(PassVBF(JetColl, leps,500)){
-      Fill_RegionPlots(param,"HNL_HighMassSR2_M500_CR", taus  ,  JetColl,  AK8_JetColl,  leps,METv, nPV, w);
+      
+      if(NB_JetColl==1) Fill_RegionPlots(param,"HNL_HighMassSR2_InvBJet_CR", taus  ,  JetColl,  AK8_JetColl,  leps,METv, nPV, w);
+      else Fill_RegionPlots(param,"HNL_HighMassSR2_InvMET_CR", taus  ,  JetColl,  AK8_JetColl,  leps,METv, nPV, w);
     }
     
-    if(NB_JetColl==1) Fill_RegionPlots(param,"HNL_HighMassSR2_InvBJet_CR", taus  ,  JetColl,  AK8_JetColl,  leps,METv, nPV, w);
-    else Fill_RegionPlots(param,"HNL_HighMassSR2_InvMET_CR", taus  ,  JetColl,  AK8_JetColl,  leps,METv, nPV, w);
-      
     FillCutflow(Reg, w, "Step6",param);
     
     if(NB_JetColl>0) return "SR2_InvBJet";
