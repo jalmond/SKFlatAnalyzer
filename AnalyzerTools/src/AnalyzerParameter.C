@@ -37,6 +37,7 @@ void AnalyzerParameter::Clear(){
   JetPUID           = "Default";
   Jet_ID            = "Default";
   FatJet_ID         = "Default";
+  FatJet_CleaningColl= "Default";
   AK4JetColl        = "Default";
   AK4VBFJetColl     = "Default";
   AK8JetColl        = "Default";

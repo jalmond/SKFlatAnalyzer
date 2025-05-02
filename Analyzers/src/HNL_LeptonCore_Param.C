@@ -14,6 +14,10 @@ AnalyzerParameter  HNL_LeptonCore::DefaultParam(const TString& s_setup_version, 
   param_default.hpostfix = "";
   param_default.PlottingVerbose = 1;
 
+  /// Default Tau aways fails
+  param_default.Tau_Tight_ID = "Default";
+  param_default.Tau_Veto_ID      = "JetVLElVLMuVL";
+    
   /// Default BKG                                                                                                                                                                                                   
   param_default.ApplyPR=false;
 
@@ -45,7 +49,6 @@ AnalyzerParameter  HNL_LeptonCore::DefaultParam(const TString& s_setup_version, 
   param_default.Muon_Veto_ID     = "NoCut";  param_default.Muon_Tight_ID     = "NoCut";
   param_default.Electron_Veto_ID = "NoCut";  param_default.Electron_Tight_ID = "NoCut";
 
-  param_default.Tau_Veto_ID      = "JetVLElVLMuVL";
 
   /// ---------  CUTS on leptons                                                                                                                                                      
   param_default.Muon_MinPt = 5.;       param_default.Muon_MaxEta = 2.4;
@@ -57,6 +60,7 @@ AnalyzerParameter  HNL_LeptonCore::DefaultParam(const TString& s_setup_version, 
   param_default.BJet_Method                = "1a";
   /// ---------                                                                                                                                                       
   param_default.FatJet_ID                  = "tight";
+  param_default.FatJet_CleaningColl        = "Loose";
   param_default.FatJet_MinPt = 200.;  param_default.FatJet_MaxEta = 5.;
 
   /// Default Trigger                                                                                                                                                 

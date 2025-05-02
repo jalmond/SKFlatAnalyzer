@@ -58,7 +58,8 @@ void HNL_SignalRegion_Plotter::executeEvent(){
   
   // Override with flags (only one set of IDs will apply)
   if(User("jalmond")){
-    LepIDs = {"HNTightV2", "POGTight", "HNL_ULIDv2"};
+    //LepIDs = {"HNTightV2", "POGTight", "HNL_ULIDv2"};
+    LepIDs = {"HNL_ULIDv2"};
   }
   else if (RunTopID) {
     LepIDs = {"TopHN"};

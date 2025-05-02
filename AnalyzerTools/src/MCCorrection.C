@@ -213,7 +213,7 @@ double MCCorrection::JetPileUpSF(Jet j, TString WP, int sys){
 
   if(!j.IsGenMatched()) return 1.;
 
-  double pt = j.Pt();
+  double pt = j.UnsmearedPt();
   double eta = j.Eta();
 
   if (pt > 50) return 1.;

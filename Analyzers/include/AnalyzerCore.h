@@ -353,7 +353,8 @@ public:
   Particle UpdateMET(const Particle& METv, const std::vector<Muon>& muons);
   Particle UpdateMETTuneP(const Particle& METv, const std::vector<Muon>& muons);
   Particle UpdateMETSmearedJet(const Particle& METv, const std::vector<Jet>& jets);
-  Particle UpdateMETSyst(AnalyzerParameter param, const Particle& METv, std::vector<Jet> jets, std::vector<FatJet> fatjets, std::vector<Muon> muons, std::vector<Electron> electrons);
+  Particle UpdateMETSmearedFatJet(const Particle& METv, const std::vector<FatJet>& jets);
+  Particle UpdateMETSyst(AnalyzerParameter param, const Particle& METv, std::vector<Electron> electrons);
   Particle UpdateMETSyst(double met_pt, double met_phi, double met_shift_pt, double met_shift_phi, const Particle& METv);
   Particle UpdateMETCF(const Particle METv, const std::vector<Electron> electrons, const std::vector<Electron> electrons_shifted);
 

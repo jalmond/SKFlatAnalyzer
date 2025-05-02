@@ -104,48 +104,72 @@ void  HNL_LeptonCore::EvalJetWeight(const std::vector<Jet>&    AK4_JetColl, cons
 std::vector<FatJet> HNL_LeptonCore::GetHNLAK8Jets(const TString& JetType, AnalyzerParameter& param){
   
   std::vector<FatJet>   AK8JetColl  = SelectFatJets(param, param.FatJet_ID, param.FatJet_MinPt, param.FatJet_MaxEta);
-  if(JetType=="Loose")  return AK8JetColl;
 
-  std::vector<Electron>   ElectronCollV = GetElectrons(param.Electron_Veto_ID, param.Electron_MinPt, param.Electron_MaxEta);
+  /// Loose AK8 Jets used for AK4 veto : No PNET/tau21 cuts
+  if(JetType=="Loose")      return AK8JetColl;
+
+  /// No lepton veto in  jets used for MET smearing
+  if(JetType=="SmearCorr")  return SelectFatJets(param, "tightLepVeto", param.FatJet_MinPt, param.FatJet_MaxEta);
+
+    std::vector<Electron>   ElectronCollV = GetElectrons(param.Electron_Veto_ID, param.Electron_MinPt, param.Electron_MaxEta);
   std::vector<Muon>       MuonCollV     = GetMuons    (param.Muon_Veto_ID,     param.Muon_MinPt,  param.Muon_MaxEta);
 
-  if(JetType=="HNL")            return SelectAK8Jets  (AK8JetColl,  200., 2.7,  true,   1., false, -999, true,  40., 130.,    "",  ElectronCollV, MuonCollV);
-  if(JetType=="HNL_NoMass")     return SelectAK8Jets  (AK8JetColl,  200., 2.7,  true,   1., false, -999, false, 0.,  200000., "",  ElectronCollV, MuonCollV);
-  if(JetType=="BDT")            return SelectAK8Jets  (AK8JetColl,  200., 2.7,  true,   1., false, -999, false, 0.,  200000., "",  ElectronCollV, MuonCollV);
+  bool priavte_lepton_cleaning = true;
+  if(param.FatJet_ID == "tightLepVeto")  priavte_lepton_cleaning = false;
 
-  //if(JetType=="HNL_PN")         return SelectAK8Jets  (AK8JetColl,  200., 2.7,  true,   1., false, -999, true,  40., 130.,    "particleNet_WvsQCD", ElectronCollV, MuonCollV);
-  if(JetType=="HNL_PN")          return SelectAK8Jets  (AK8JetColl,  200., 2.4,  true,   1., false, -999, false,  0., 200000.,    "particleNet_WvsQCD", ElectronCollV, MuonCollV);
+  
+  if(JetType=="HNL")            return SelectAK8Jets  (AK8JetColl,  200., 2.7,  priavte_lepton_cleaning,   1., false, -999, true,  40., 130.,    "",  ElectronCollV, MuonCollV);
+  if(JetType=="HNL_NoMass")     return SelectAK8Jets  (AK8JetColl,  200., 2.7,  priavte_lepton_cleaning,   1., false, -999, false, 0.,  200000., "",  ElectronCollV, MuonCollV);
+  if(JetType=="BDT")            return SelectAK8Jets  (AK8JetColl,  200., 2.7,  priavte_lepton_cleaning,   1., false, -999, false, 0.,  200000., "",  ElectronCollV, MuonCollV);
 
-  if(JetType=="EXO17028")        return SelectAK8Jets  (AK8JetColl,  200., 2.7,  true,   1., true, -999, true,  60., 130.,    "",  ElectronCollV, MuonCollV);
+  if(JetType=="HNL_PN")          return SelectAK8Jets  (AK8JetColl,  200., 2.4,  priavte_lepton_cleaning,   1., false, -999, false,  0., 200000.,    "particleNet_WvsQCD", ElectronCollV, MuonCollV);
+
+  if(JetType=="EXO17028")        return SelectAK8Jets  (AK8JetColl,  200., 2.7,  priavte_lepton_cleaning,   1., true, -999, true,  60., 130.,    "",  ElectronCollV, MuonCollV);
 
 
-  return SelectAK8Jets  (AK8JetColl,  200., 5.,   true,   1., false, -999, false, 0., 20000., "", ElectronCollV, MuonCollV);
+  return SelectAK8Jets  (AK8JetColl,  200., 5.,   priavte_lepton_cleaning,   1., false, -999, false, 0., 20000., "", ElectronCollV, MuonCollV);
 
 }
 
 std::vector<Jet> HNL_LeptonCore::GetHNLJets(const TString& JetType, AnalyzerParameter& param){
-  /// AK4                                                                                                                                                                    
+
+  /// Inclusive AK4                                                                                                                                                                    
   if(JetType=="All")          return SelectJets   ( param, "NoID",      param.Jet_MinPt,  param.Jet_MaxEta);
   if(JetType=="NoCut_Eta3")   return SelectJets   ( param, "NoID",      param.Jet_MinPt,  3.); 
-  if(JetType=="SmearCorr")    return SelectJets   ( param, param.Jet_ID,15.,  2.5); /// Used in MET syst
 
+
+  ///// Selected AK4 collections
+  
   std::vector<Jet> AK4_Loose      =  SelectJets   ( param, param.Jet_ID, param.Jet_MinPt,  param.Jet_MaxEta);
-  // AK8  
-  std::vector<FatJet> AK8_JetColl  = GetHNLAK8Jets(param.AK8JetColl, param);
 
+  // AK8 for cleaning
+  // Do we clean using all AK8?
+  std::vector<FatJet> AK8_Cleaning_JetColl = GetHNLAK8Jets(param.FatJet_CleaningColl, param);
+  
   /// Lepotns for cleaning                                                                                                                                                 
   std::vector<Electron>   ElectronCollV = GetElectrons(param.Electron_Veto_ID, param.Electron_MinPt, param.Electron_MaxEta);
   std::vector<Muon>       MuonCollV     = GetMuons    (param.Muon_Veto_ID,     param.Muon_MinPt,  param.Muon_MaxEta);
-  
-  if(JetType=="Loose")    return SelectAK4Jets(AK4_Loose,     15., 4.7, true,  0.4,0.8, "",   ElectronCollV,MuonCollV, AK8_JetColl);
-  if(JetType=="Tight")    return SelectAK4Jets(AK4_Loose,     20., 2.7, true,  0.4,0.8, "",   ElectronCollV,MuonCollV, AK8_JetColl);
-  if(JetType=="VBFTight") return SelectAK4Jets(AK4_Loose,     30., 4.7, true,  0.4,0.8, "",   ElectronCollV,MuonCollV, AK8_JetColl);
-  if(JetType=="TightPUL") return SelectAK4Jets(AK4_Loose,     20., 2.7, true,  0.4,0.8, "Loose",   ElectronCollV,MuonCollV, AK8_JetColl);
-  if(JetType=="VBFTightPUL") return SelectAK4Jets(AK4_Loose,     30., 4.7, true,  0.4,0.8, "Loose",   ElectronCollV,MuonCollV, AK8_JetColl);
 
+  bool private_lepton_cleaning = true;
+  if(param.Jet_ID == "tightLepVeto")  private_lepton_cleaning = false;
+
+  if(JetType=="Loose")    return SelectAK4Jets(AK4_Loose,     15., 4.7, private_lepton_cleaning,  0.4,0.8, "",   ElectronCollV,MuonCollV, AK8_Cleaning_JetColl);
+  if(JetType=="Tight")    return SelectAK4Jets(AK4_Loose,     20., 2.7, private_lepton_cleaning,  0.4,0.8, "",   ElectronCollV,MuonCollV, AK8_Cleaning_JetColl);
+  if(JetType=="VBFTight") return SelectAK4Jets(AK4_Loose,     30., 4.7, private_lepton_cleaning,  0.4,0.8, "",   ElectronCollV,MuonCollV, AK8_Cleaning_JetColl);
+  if(JetType=="TightPUL") return SelectAK4Jets(AK4_Loose,     20., 2.7, private_lepton_cleaning,  0.4,0.8, "Loose",   ElectronCollV,MuonCollV, AK8_Cleaning_JetColl);
+  if(JetType=="VBFTightPUL") return SelectAK4Jets(AK4_Loose,  30., 4.7, private_lepton_cleaning,  0.4,0.8, "Loose",   ElectronCollV,MuonCollV, AK8_Cleaning_JetColl);
+  if(JetType=="VBFTightPUM") return SelectAK4Jets(AK4_Loose,  30., 4.7, private_lepton_cleaning,  0.4,0.8, "Medium",   ElectronCollV,MuonCollV, AK8_Cleaning_JetColl);
+  if(JetType=="TightLepCleaned")    return SelectAK4Jets(AK4_Loose,     20., 2.7, true,  0.4,0.8, "",   ElectronCollV,MuonCollV, {});
+
+  
+  //// clean only from AK8 Jets
+  if(JetType=="SmearCorr") {
+    std::vector<FatJet> AK8_Smear_JetColl = GetHNLAK8Jets("SmearCorr", param);
+    return SelectAK4Jets(AK4_Loose,     15., 2.5, true,  0.4,0.8, "",   {},{}, AK8_Smear_JetColl);
+  }
+  
   /// Jets with no AK8 cleaning 
-  std::vector<FatJet> DUMMY_AK8_JetColl;
-  if(JetType=="Tight_NoAk8Cleaning")    return SelectAK4Jets(AK4_Loose,     20., 2.7, true,  0.4,0.8, "",   ElectronCollV,MuonCollV, DUMMY_AK8_JetColl);
+  if(JetType=="Tight_NoAK8Cleaning")    return SelectAK4Jets(AK4_Loose,     20., 2.7, private_lepton_cleaning,  0.4,0.8, "",   ElectronCollV,MuonCollV, {});
 
   /// BJET                                                                                                                                                                 
   JetTagging::Parameters param_jets = GetParamJetTagger(param);
@@ -154,13 +178,9 @@ std::vector<Jet> HNL_LeptonCore::GetHNLJets(const TString& JetType, AnalyzerPara
     return SelectBJets(param, BJetCollLoose, param_jets);
   }
 
-  if(JetType=="BJet_NoAk8Cleaning"){
-    std::vector<Jet> BJetCollLoose    = GetHNLJets("Tight_NoAk8Cleaning",     param);
-    return SelectBJets(param, BJetCollLoose, param_jets);
-  }
   
   // Else just return Standard Jet coll for HNL                                                                                                                             
-  return SelectAK4Jets(AK4_Loose,     20., 2.7, true,  0.4,0.8, "",   ElectronCollV,MuonCollV, AK8_JetColl);
+  return SelectAK4Jets(AK4_Loose,     20., 2.7, private_lepton_cleaning,  0.4,0.8, "",   ElectronCollV,MuonCollV, AK8_Cleaning_JetColl);
 
 }
 
@@ -281,7 +301,7 @@ std::vector<Jet> HNL_LeptonCore::SelectJets(AnalyzerParameter param,TString id, 
   std::vector<Jet> jets_uncorr = All_Jets;
   std::vector<Jet> jets;
   
-  std::unordered_map<AnalyzerParameter::Syst, std::pair<int, std::string>> syst_map = {
+  /*std::unordered_map<AnalyzerParameter::Syst, std::pair<int, std::string>> syst_map = {
     {AnalyzerParameter::JetAbsoluteStatUp, {1, "AbsoluteStat"}},       {AnalyzerParameter::JetAbsoluteStatDown, {-1, "AbsoluteStat"}},
     {AnalyzerParameter::JetAbsoluteScaleUp, {1, "AbsoluteScale"}},     {AnalyzerParameter::JetAbsoluteScaleDown, {-1, "AbsoluteScale"}},
     {AnalyzerParameter::JetAbsoluteMPFBiasUp, {1, "AbsoluteMPFBias"}}, {AnalyzerParameter::JetAbsoluteMPFBiasDown, {-1, "AbsoluteMPFBias"}},
@@ -309,14 +329,15 @@ std::vector<Jet> HNL_LeptonCore::SelectJets(AnalyzerParameter param,TString id, 
     {AnalyzerParameter::JetPileUpPtEC2Up, {1, "PileUpPtEC2"}},         {AnalyzerParameter::JetPileUpPtEC2Down, {-1, "PileUpPtEC2"}},
     {AnalyzerParameter::JetPileUpPtHFUp, {1, "PileUpPtHF"}},           {AnalyzerParameter::JetPileUpPtHFDown, {-1, "PileUpPtHF"}}
   };
+  */
   
   if(param.syst_ == AnalyzerParameter::JetEnUp)            jets    = ScaleJets( jets_uncorr, +1 );
   else if(param.syst_ == AnalyzerParameter::JetEnDown)     jets    = ScaleJets( jets_uncorr, -1 );
   else if(param.syst_ == AnalyzerParameter::JetResUp)      jets    = SmearJets(jets_uncorr, +1 );
   else if(param.syst_ == AnalyzerParameter::JetResDown)    jets    = SmearJets(jets_uncorr, -1 );
-  else if (syst_map.find(param.syst_) != syst_map.end()) {
-    jets = ScaleJetsIndividualSource(jets_uncorr, syst_map[param.syst_].first, syst_map[param.syst_].second);
-  }
+  //else if (syst_map.find(param.syst_) != syst_map.end()) {
+  //  jets = ScaleJetsIndividualSource(jets_uncorr, syst_map[param.syst_].first, syst_map[param.syst_].second);
+  // }
   else jets =jets_uncorr;
   
   std::vector<Jet> out;
@@ -483,11 +504,14 @@ vector<Jet>   HNL_LeptonCore::SelectAK4Jets(vector<Jet> jets, double pt_cut ,  d
       if(ilep->DeltaR(jets[ijet]) < dr_lep_clean) jetok = false;
     }
 
+    if(lepton_cleaning&&!jetok) continue;
+    
     for(unsigned int ifjet =0; ifjet < fatjets.size(); ifjet++){
       if(jets[ijet].DeltaR(fatjets[ifjet]) <dr_ak8_clean) jetok = false;
     }
 
-    if(lepton_cleaning&&!jetok) continue;
+    if(!jetok) continue;
+
     if(pu_tag=="")output_jets.push_back(jets[ijet]);
     else {
       if(jets[ijet].PassPileupMVA(pu_tag,GetEra())) output_jets.push_back(jets[ijet]);
@@ -519,11 +543,13 @@ vector<Jet>   HNL_LeptonCore::SelectAK4Jets(vector<Jet> jets, double pt_cut ,  d
     for(unsigned int iel=0 ; iel < veto_muons.size(); iel++){
       if(jets[ijet].DeltaR(veto_muons[iel]) < dr_lep_clean) jetok = false;
     }
+    if(lepton_cleaning&&!jetok) continue;
+    
     for(unsigned int ifjet =0; ifjet < fatjets.size(); ifjet++){
       if(jets[ijet].DeltaR(fatjets[ifjet]) <dr_ak8_clean) jetok = false;
     }
 
-    if(lepton_cleaning&&!jetok) continue;
+    if(!jetok) continue;
     if(pu_tag=="")output_jets.push_back(jets[ijet]);
     else if(jets[ijet].PassPileupMVA(pu_tag,GetEra())) output_jets.push_back(jets[ijet]);
   }
