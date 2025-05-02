@@ -114,20 +114,24 @@ std::vector<FatJet> HNL_LeptonCore::GetHNLAK8Jets(const TString& JetType, Analyz
     std::vector<Electron>   ElectronCollV = GetElectrons(param.Electron_Veto_ID, param.Electron_MinPt, param.Electron_MaxEta);
   std::vector<Muon>       MuonCollV     = GetMuons    (param.Muon_Veto_ID,     param.Muon_MinPt,  param.Muon_MaxEta);
 
-  bool priavte_lepton_cleaning = true;
-  if(param.FatJet_ID == "tightLepVeto")  priavte_lepton_cleaning = false;
+  bool private_lepton_cleaning = true;
+  if(param.FatJet_ID == "tightLepVeto")  private_lepton_cleaning = false;
 
   
-  if(JetType=="HNL")            return SelectAK8Jets  (AK8JetColl,  200., 2.7,  priavte_lepton_cleaning,   1., false, -999, true,  40., 130.,    "",  ElectronCollV, MuonCollV);
-  if(JetType=="HNL_NoMass")     return SelectAK8Jets  (AK8JetColl,  200., 2.7,  priavte_lepton_cleaning,   1., false, -999, false, 0.,  200000., "",  ElectronCollV, MuonCollV);
-  if(JetType=="BDT")            return SelectAK8Jets  (AK8JetColl,  200., 2.7,  priavte_lepton_cleaning,   1., false, -999, false, 0.,  200000., "",  ElectronCollV, MuonCollV);
+  if(JetType=="HNL")
+    return SelectAK8Jets  (AK8JetColl,  200., 2.7,  private_lepton_cleaning,   1., false, -999, true,  40., 130.,    "",  ElectronCollV, MuonCollV);
 
-  if(JetType=="HNL_PN")          return SelectAK8Jets  (AK8JetColl,  200., 2.4,  priavte_lepton_cleaning,   1., false, -999, false,  0., 200000.,    "particleNet_WvsQCD", ElectronCollV, MuonCollV);
+  if(JetType=="HNL_NoMass")
+    return SelectAK8Jets  (AK8JetColl,  200., 2.7,  private_lepton_cleaning,   1., false, -999, false, 0.,  200000., "",  ElectronCollV, MuonCollV);
 
-  if(JetType=="EXO17028")        return SelectAK8Jets  (AK8JetColl,  200., 2.7,  priavte_lepton_cleaning,   1., true, -999, true,  60., 130.,    "",  ElectronCollV, MuonCollV);
+  if(JetType=="BDT")
+    return SelectAK8Jets  (AK8JetColl,  200., 2.7,  private_lepton_cleaning,   1., false, -999, false, 0.,  200000., "",  ElectronCollV, MuonCollV);
+
+  if(JetType=="HNL_ParticleNet")
+    return SelectAK8Jets  (AK8JetColl,  200., 2.4,  private_lepton_cleaning,   1., false, -999, false,  0., 200000.,    "particleNet_WvsQCD", ElectronCollV, MuonCollV);
 
 
-  return SelectAK8Jets  (AK8JetColl,  200., 5.,   priavte_lepton_cleaning,   1., false, -999, false, 0., 20000., "", ElectronCollV, MuonCollV);
+  return SelectAK8Jets  (AK8JetColl,  200., 5.,   private_lepton_cleaning,   1., false, -999, false, 0., 20000., "", ElectronCollV, MuonCollV);
 
 }
 

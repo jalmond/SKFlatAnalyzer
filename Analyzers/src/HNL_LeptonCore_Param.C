@@ -1,6 +1,5 @@
 #include "HNL_LeptonCore.h"
 
-
 AnalyzerParameter  HNL_LeptonCore::DefaultParam(const TString& s_setup_version, const TString& channel_st){
 
   AnalyzerParameter param_default;
@@ -73,7 +72,7 @@ AnalyzerParameter  HNL_LeptonCore::DefaultParam(const TString& s_setup_version, 
 
   param_default.AK4JetColl       = "TightPUL";
   param_default.AK4VBFJetColl    = "VBFTightPUL";
-  param_default.AK8JetColl       = "HNL_PN";
+  param_default.AK8JetColl       = "HNL_ParticleNet";
   param_default.BJetColl = "Tight_NoAK8Cleaning"; //// Updated May 1st 2025   
 
 

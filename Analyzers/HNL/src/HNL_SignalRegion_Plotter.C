@@ -233,7 +233,7 @@ void HNL_SignalRegion_Plotter::RunULAnalysis(AnalyzerParameter param_sr){
   std::vector<Jet>    AK4_BJetColl                = GetHNLJets("BJet", param_sr);
 
   if(HasFlag("TestAK8")){
-    vector<TString> AK8Tag = {"Loose","HNL","HNL_NoMass","HNL_PN","HNL_PN_NoMass","EXO17028"};
+    vector<TString> AK8Tag = {"Loose","HNL","HNL_NoMass","HNL_PN","HNL_PN_NoMass"};
     for (auto akg_tag : AK8Tag){
       std::vector<FatJet> ak8_jetcoll         = GetHNLAK8Jets(akg_tag,param_sr);
       for(const auto& ijet : ak8_jetcoll)            FillHist( "AK8_Plots_"+akg_tag+"/AK8J_Eta",     ijet.Eta()       , weight, 100, -5., 5.   , "AK8 Jet #eta");
