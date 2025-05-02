@@ -52,7 +52,7 @@ void HNL_ControlRegion_Plotter::executeEvent(){
   //   else run all 3 channels
   if(ChannelsToRun.size() == 0)ChannelsToRun = {EE,MuMu,EMu};
 
-  vector<TString> Run_Config = {"presel_mod","bjet_noak8","veto_id_one","veto_id_two","veto_id_three"};
+  vector<TString> Run_Config = {""};
   
   ///// Run command 
 
@@ -127,81 +127,11 @@ void HNL_ControlRegion_Plotter::executeEvent(){
 	  
 	  for(auto iCR : CRToRun) RunControlRegions(param_loose , {iCR} );
 	}
-	else if(iconfig == "presel_mod"){
 
-	  param_cr.Name = param_cr.Name + "_"+iconfig;
-          param_cr.DefName = param_cr.DefName + "_"+iconfig;
-          param_cr.Electron_Veto_ID = "passLooseID";
-          param_cr.Muon_Veto_ID = "HNLoosePOG";
-
-          param_cr.Jet_ID = "tightLepVeto";
-          param_cr.FatJet_ID = "tightLepVeto";
-
-	  param_cr.SRConfig = "PreselectionV2";
+	else{
 	  
-          for(auto iCR : CRToRun)         RunControlRegions(param_cr , {iCR} );
-
-        }
-
-	else if(iconfig == "veto_id_one"){
 	  //// Make it clearer the param used in CR/SR for HNL ID                                                       
-	  param_cr.Name = param_cr.Name + "_"+iconfig;
-	  param_cr.DefName = param_cr.DefName + "_"+iconfig;
-	  param_cr.Electron_Veto_ID = "passLooseID";
-	  param_cr.Muon_Veto_ID = "HNLoosePOG";
-
-	  param_cr.Jet_ID = "tightLepVeto";
-	  param_cr.FatJet_ID = "tightLepVeto";
 	  
-          for(auto iCR : CRToRun)         RunControlRegions(param_cr , {iCR} );
-	  
-	}
-	else if(iconfig == "veto_id_two"){
-	  //// Make it clearer the param used in CR/SR for HNL ID                                                                                                                                                                         
-          param_cr.Name = param_cr.Name + "_"+iconfig;
-          param_cr.DefName = param_cr.DefName + "_"+iconfig;
-
-          param_cr.Electron_Veto_ID = "passPOGMedium";
-          param_cr.Muon_Veto_ID = "POGIDMPrIsoM";
-
-          param_cr.Jet_ID = "tightLepVeto";
-          param_cr.FatJet_ID = "tightLepVeto";
-	  
-          for(auto iCR : CRToRun)         RunControlRegions(param_cr , {iCR} );
-
-        }
-	else if(iconfig == "veto_id_three"){
-	  
-          param_cr.Name = param_cr.Name + "_"+iconfig;
-          param_cr.DefName = param_cr.DefName + "_"+iconfig;
-
-          param_cr.Electron_Veto_ID = "HNTightV2";
-          param_cr.Muon_Veto_ID = "HNTightV2";
-	  
-          param_cr.Jet_ID = "tightLepVeto";
-          param_cr.FatJet_ID = "tightLepVeto";
-
-          for(auto iCR : CRToRun)         RunControlRegions(param_cr , {iCR} );
-	  
-        }
-	 else if(iconfig == "bjet_noak8"){
-
-	   param_cr.Name = param_cr.Name + "_"+iconfig;
-	   param_cr.DefName = param_cr.DefName + "_"+iconfig;
-	   
-	   param_cr.Jet_ID = "tightLepVeto";
-	   param_cr.FatJet_ID = "tightLepVeto";
-	   
-	   param_cr.BJetColl = "Tight_NoAK8Cleaning";
-	   
-	   for(auto iCR : CRToRun)         RunControlRegions(param_cr , {iCR} );
-	 }
-
-	
-	 else{
-	   
-	  //// Make it clearer the param used in CR/SR for HNL ID                                                       
-
 	  //// Main Jobs for analysis
 	  
 	  for(auto iCR : CRToRun)	  RunControlRegions(param_cr , {iCR} );
@@ -221,11 +151,11 @@ void HNL_ControlRegion_Plotter::executeEvent(){
 	      /// Reset 
 	      param_cr.Name=param_name;
 	      param_cr.DefName=param_defname;
-	    }	  
-	  }
-	 }
-      }
-    }
+	    } // Systematics	  
+	  } /// CRs
+	}/// Main config
+      } // Channels
+    } /// Lepton ID
   } /// config loop
   return;
 }

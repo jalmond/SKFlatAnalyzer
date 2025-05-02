@@ -1336,7 +1336,7 @@ TString HNL_RegionDefinitions::FillHighMassSR1CRPlots(HNL_LeptonCore::Channel ch
   if(!PassHMMet)     runCutCounts[run].Cut("HNL_HighMassSR1_MET");
   if( JetColl.size() > 3)  runCutCounts[run].Cut("HNL_HighMassSR1_HighJet");
  
-  if(!(channel == EMu && JetColl.size() > 3))  Fill_RegionPlots(param,"HNL_HighMassSR1_Cleaned"  ,  JetColl,  AK8_JetColl,  leps,  METv, nPV, w);
+  //if(!(channel == EMu && JetColl.size() > 3))  Fill_RegionPlots(param,"HNL_HighMassSR1_Cleaned"  ,  JetColl,  AK8_JetColl,  leps,  METv, nPV, w);
 
 
   if(PassHMMet && NB_JetColl==0) return "false"; /// SR
@@ -1560,8 +1560,7 @@ TString  HNL_RegionDefinitions::FillHighMassSR2CRPlots(HNL_LeptonCore::Channel c
 
   
   if(!CheckLeptonFlavourForChannel(channel, leps)) return "false";
-  if(leps[1]->Pt() < 15) return "false"; 
-
+  if(leps[1]->Pt() < 25) return "false"; 
 
   if (param.SRConfig == "SR2_Pt20") {
     if(leps[1]->Pt() < 20) return "false";
