@@ -23,7 +23,8 @@ Particle HNL_LeptonCore::GetvCorrMET(const TString& METType, const std::vector<M
     std::vector<Jet> jets_corr;
     for(auto ij : Jets){
       if(ij.Pt() < 15.) continue;
-      if(fabs(ij.Eta()) > 2.5) continue;
+
+      //// Same Selection as Type-1 MET correction
       bool overlap_mu(false);
       for(auto imu : loose_muons) {
 	if(imu.DeltaR(ij) < 0.4) {
@@ -35,10 +36,11 @@ Particle HNL_LeptonCore::GetvCorrMET(const TString& METType, const std::vector<M
       double jetEMFrac = ij.ChargedEmEnergyFraction() + ij.NeutralEmEnergyFraction();
       if (jetEMFrac > 0.9) continue;
 
+      //// Since we use AK8 Jets veto AK4 overlap
+      
       bool overlap_ak8(false);
       for(auto ifatjet : FatJets) {
 	if(ij.Pt() < 200.) continue;
-	if(fabs(ij.Eta()) > 2.5) continue;
         if(ifatjet.DeltaR(ij) < 0.8) {
           overlap_ak8=true;
           break;
@@ -57,7 +59,6 @@ Particle HNL_LeptonCore::GetvCorrMET(const TString& METType, const std::vector<M
     std::vector<FatJet> fatjets_corr;
     for(auto ij : FatJets){
       if(ij.Pt() < 200.) continue;
-      if(fabs(ij.Eta()) > 2.5) continue;
       bool overlap_mu(false);
       for(auto imu : loose_muons) {
         if(imu.DeltaR(ij) < 0.4) {
@@ -111,14 +112,12 @@ Particle HNL_LeptonCore::GetvMET(const TString& METType, AnalyzerParameter& para
 
 
 
-Particle HNL_LeptonCore::GetvMET(const TString& METType, AnalyzerParameter param, const std::vector<Jet>& jets, const std::vector<FatJet>& fatjets,
+Particle HNL_LeptonCore::GetvMET(const TString& METType, AnalyzerParameter param, 
 				 const std::vector<Muon>& muons, const std::vector<Electron>& electrons, bool propsmear ){
 
 
   ////// This function is used to get MET both central and systematic                                                                                                                                                                                                                                                         
-
   bool ApplySyst      = (!IsDATA) && (param.syst_ != AnalyzerParameter::Central);
-  
 
   Particle vStandMET = GetMiniAODvMET(METType);
 

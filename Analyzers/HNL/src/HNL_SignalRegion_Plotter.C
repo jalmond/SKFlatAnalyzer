@@ -249,7 +249,7 @@ void HNL_SignalRegion_Plotter::RunULAnalysis(AnalyzerParameter param_sr){
   }
   
 
-  Particle METv = GetvMET("PuppiT1xyULCorr", param_sr, AK4_VBF_JetColl, AK8_JetColl, MuonCollT, ElectronCollT); // returns MET with systematic correction; run this after all object selection done; NOTE that VBF jet is used here
+  Particle METv = GetvMET("PuppiT1xyULCorr", param_sr, MuonCollT, ElectronCollT); // returns MET with systematic correction; run this after all object selection done; NOTE that VBF jet is used here
   
   EvalJetWeight(AK4_JetColl,AK4_VBF_JetColl, AK8_JetColl, weight, param_sr);
 

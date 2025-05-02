@@ -255,8 +255,7 @@ class HNL_LeptonCore : public AnalyzerCore {
 
 
   // Returns the MET (Missing Transverse Energy) based on various parameters
-  Particle GetvMET(const TString& METType, AnalyzerParameter param, const std::vector<Jet>& jets, const std::vector<FatJet>& fatjets, 
-		   const std::vector<Muon>& muons, const std::vector<Electron>& electrons, bool propsmear = true);
+  Particle GetvMET(const TString& METType, AnalyzerParameter param, const std::vector<Muon>& muons, const std::vector<Electron>& electrons, bool propsmear = true);
 
   Particle GetvMET(const TString& METType, AnalyzerParameter& param, bool propsmear = true );
 

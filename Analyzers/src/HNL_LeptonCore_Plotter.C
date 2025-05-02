@@ -80,24 +80,11 @@ void HNL_LeptonCore::Fill_PlotsAK8(AnalyzerParameter& param, TString  region, TS
   //// Now Add detailed plots by adding userflag
   if(!User("jalmond")) return;
 
-  double minDRTauAK8 = 9999., minDRLepAK8 = 9999.;
-
   
-  int ndRbins=7;
-
-  double dRbins[ndRbins+1] = { 0, 0.4, 1.0, 1.5, 2.0, 2.5, 3.5, 5};
-
-
   // Loop over FatJets and perform necessary calculations
   for (auto& fatjet : fatjets) {
-    // Tau and Lepton DeltaR calculations
-    for (auto& itau : TauColl) {
-      if (fatjet.DeltaR(itau) < minDRTauAK8) minDRTauAK8 = fatjet.DeltaR(itau);
-      FillHist(plot_dir + region + "/AK8J_dR_Tau", fatjet.DeltaR(itau), w, ndRbins,dRbins, "#DeltaR (WAK8,Tau)");
-    }
 
     for (auto& ilep : leps) {
-      if (fatjet.DeltaR(*ilep) < minDRLepAK8) minDRLepAK8 = fatjet.DeltaR(*ilep);
       FillHist(plot_dir + region + "/AK8Jet_dR_" + ilep->GetFlavour(), fatjet.DeltaR(*ilep), w, 50, 0, 10, "#DeltaR (WAK8," + ilep->GetFlavour() + ")");
     }
     
@@ -238,37 +225,6 @@ void HNL_LeptonCore::Fill_Standard_Plots(AnalyzerParameter& param, TString  regi
   
   if(!User("jalmond")) return;
 
-  vector<Tau> TauColl_Cleaned  = SelectTaus   (leps, fatjets, "JetVL_MuVL_ELVL",20., 2.3);
-
-  int pass_jet_30=0;
-  int pass_tau_veto = 0;
-  for(auto ijet : jets){
-    if(ijet.Pt() > 30) pass_jet_30++;
-    bool tau_veto=false;
-    for(auto itau : TauColl_Cleaned){
-      if(itau.DeltaR(ijet) < 0.4) tau_veto=true;
-    }
-    if(!tau_veto) pass_tau_veto++;
-  }
-
-
-  int cleaned_taus=0;
-  for(auto itau : GetAllTaus()){
-    if(!itau.PassID("JetVL_MuVL_ELVL"))continue;
-    if(itau.Pt() < 20) continue;
-        
-    bool matched=false;
-    for(auto i : leps){
-      if(i->DeltaR(itau) <  0.1) matched=true;
-    }
-    if(!matched) cleaned_taus++;
-  } 
-  
-
-  FillHist( plot_dir+ region+ "/Standard/N_cleaned_taus", cleaned_taus, w, 10,  0., 10., "N_tau");
-  FillHist( plot_dir+ region+ "/Standard/N_AK4J_30",  pass_jet_30 , w, 10,  0., 10., "N_{AK4 jets}");
-  FillHist( plot_dir+ region+ "/Standard/N_AK4J_tau",  pass_tau_veto , w, 10,  0., 10., "N_{AK4 jets}");
-
   //// Binned plots , these are duplicate of other plots but used to check without need to rebin in macro
 
   int nPtbins=15;
@@ -407,44 +363,15 @@ void HNL_LeptonCore::Fill_Plots(AnalyzerParameter& param, TString  region,  TStr
   FillHist( plot_dir+ region+ "/NObj/N_tau", TauColl.size(),  w, 5, 0, 5, "Tau size");
   FillHist( plot_dir+ region+ "/NObj/N_ak4jet", jets.size(),  w, 10, 0, 10, "AK4 size");
   FillHist( plot_dir+ region+ "/NObj/N_ak8jet", fatjets.size(),  w, 4, 0, 4, "AK8 size");
-  FillHist( plot_dir+ region+ "/NObj/N_photon_loose", n_loose_ph ,  w, 4, 0, 4, "AK8 size");
-  FillHist( plot_dir+ region+ "/NObj/N_photon_medium", n_medium_ph ,  w, 4, 0, 4, "AK8 size");
-	    
-  
-  int NJet_Veto = 0;
-  for(auto ijet : jets){
-    if(ijet.Pass_tightLepVetoJetID()) NJet_Veto++;
-  }
-  FillHist( plot_dir+ region+ "/NObj/N_ak4jet_lepveto", NJet_Veto,  w, 10, 0, 10, "AK4 size");
 
+  //// Check Loose AK8 Count
+  std::vector<FatJet>   AK8_Loose_JetColl  = SelectFatJets(param, param.FatJet_ID, param.FatJet_MinPt, param.FatJet_MaxEta);
+  FillHist( plot_dir+ region+ "/NObj/N_ak8_loose_jet", AK8_Loose_JetColl.size(),  w, 4, 0, 4, "AK8 size");
+  
   
   if(leps.size() < 2) return;
 
-  ////// Make dR full loop
-
-  std::map<Particle*, TString> ParticleMap;
-  for (auto& tau : TauColl) ParticleMap[&tau] = "Tau";
-  for (auto& jet : jets) ParticleMap[&jet] = "AK4_Jet";
-  for (auto& fatjet : fatjets) ParticleMap[&fatjet] = "AK8_Jet";
-  for (auto& lepton : leps) ParticleMap[lepton] = lepton->GetFlavour();  // lepton already a pointer
-  for (auto& photon : phs_loose) ParticleMap[&photon] = "Photon";
-    
-  for (auto it1 = ParticleMap.begin(); it1 != ParticleMap.end(); ++it1) {
-    continue;
-    Particle* particle1 = it1->first;
-    
-    for (auto it2 = ParticleMap.begin(); it2 != ParticleMap.end(); ++it2) {
-      if (it1 == it2) continue;
-
-      Particle* particleX = it2->first;
-      double deltaR = particle1->DeltaR(*particleX);  // dereference for method
-      
-      FillHist(plot_dir + region + "/dR/" + it1->second + "_" + it2->second,
-                 deltaR, w, 100, 0, 10, "#Delta R");
-    }
-  }
-  
-  bool PlotZZ = MCSample.Contains("ZZ_");
+  //  bool PlotZZ = MCSample.Contains("ZZ_");
   if(false){
     Particle ZZ;
 
@@ -1142,8 +1069,6 @@ void HNL_LeptonCore::FillJetPlots(AnalyzerParameter& param,std::vector<Jet>& jet
     FillHist(this_region+"/FatJet_"+this_itoa+"_SDMass_"+this_region, fatjets.at(i).SDMass(), weight, 3000, 0., 3000.);
     FillHist(this_region+"/FatJet_"+this_itoa+"_LSF_"+this_region, fatjets.at(i).LSF(), weight, 100, 0., 1.);
     FillHist(this_region+"/FatJet_"+this_itoa+"_PuppiTau21_"+this_region, fatjets.at(i).PuppiTau2()/fatjets.at(i).PuppiTau1(), weight, 100, 0., 1.);
-    FillHist(this_region+"/FatJet_"+this_itoa+"_PuppiTau31_"+this_region, fatjets.at(i).PuppiTau3()/fatjets.at(i).PuppiTau1(), weight, 100, 0., 1.);
-    FillHist(this_region+"/FatJet_"+this_itoa+"_PuppiTau32_"+this_region, fatjets.at(i).PuppiTau3()/fatjets.at(i).PuppiTau2(), weight, 100, 0., 1.);
   }
 
 }

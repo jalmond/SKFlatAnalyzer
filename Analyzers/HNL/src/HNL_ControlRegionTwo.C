@@ -228,7 +228,7 @@ void HNL_ControlRegionTwo::RunControlRegions(AnalyzerParameter param_cr, vector<
   
   EvalJetWeight(AK4_JetColl,AK4_VBF_JetColl, AK8_JetColl, weight, param_cr);
 
-  Particle METv = GetvMET("PuppiT1xyULCorr", param_cr, AK4_VBF_JetColl, AK8_JetColl, MuonTightColl,ElectronTightColl);
+  Particle METv = GetvMET("PuppiT1xyULCorr", param_cr,  MuonTightColl,ElectronTightColl);
 
   
   vector<int> RunEl ;

@@ -199,7 +199,7 @@ void HNL_ControlRegion_Plotter::RunControlRegions(AnalyzerParameter param_cr, ve
   
   EvalJetWeight(AK4_JetColl,AK4_VBF_JetColl, AK8_JetColl, weight, param_cr);
 
-  Particle METv = GetvMET("PuppiT1xyULCorr", param_cr, AK4_JetCollLoose, AK8_JetColl, MuonTightColl,ElectronTightColl);
+  Particle METv = GetvMET("PuppiT1xyULCorr", param_cr, MuonTightColl,ElectronTightColl);
 
   if(CRs.size() == 0) return;
   

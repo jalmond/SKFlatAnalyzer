@@ -50,7 +50,7 @@ void HNL_GenericObject_Studies::executeEvent(){
     
     if(!CheckLeptonFlavourForChannel(GetQuadLeptonChannel(EMu),Leps)) return;
 
-    Particle METv = GetvMET("PuppiT1xyULCorr", param, AK4_VBF_JetColl, AK8_JetColl, MuonTightColl_Init,ElectronTightColl_Init);
+    Particle METv = GetvMET("PuppiT1xyULCorr", param, MuonTightColl_Init,ElectronTightColl_Init);
 
     if(Leps.size() ==4 &&  AK4_JetColl.size() > 3){
       cout << "Event Number = " << event << endl;
