@@ -156,7 +156,7 @@ void HNL_Lepton_Conversion_Studies::executeEvent(){
 
   std::vector<Tau>   TauColl_Uncleaned  = SelectTaus   (Veto_Leptons,"JetT_MuT_ELT",20., 2.3);
 
-  Particle METv = GetvMET("PuppiT1xyULCorr", param, AK4_VBF_JetColl, AK8_JetColl, MuonCollT, ElectronCollT); // returns MET with systematic correction; run this afte 
+  Particle METv = GetvMET("PuppiT1xyULCorr", param, MuonCollT, ElectronCollT); // returns MET with systematic correction; run this afte 
   ProcessLeptonCategory("VetoID", Veto_Leptons, TauColl_Uncleaned, AK4_JetColl, AK8_JetColl, METv, nPV,  param, PhotonPt, weight);
   ProcessLeptonCategory("TightID", Tight_Leptons, TauColl_Uncleaned, AK4_JetColl, AK8_JetColl, METv, nPV, param, PhotonPt, weight);
   if(Veto_Leptons.size()==2) ProcessLeptonCategory("TightID_Cleaned", Tight_Leptons, TauColl_Uncleaned, AK4_JetColl, AK8_JetColl, METv, nPV, param, PhotonPt, weight);

@@ -138,6 +138,26 @@ class HNL_LeptonCore : public AnalyzerCore {
   ~HNL_LeptonCore();
 
 
+  
+  struct CutCounts {
+    std::map<std::string, int> cutCounts;  // Store counts for cuts using string keys
+    
+    // Method to increment the count for a specific cut
+    void Cut(const std::string& cutName) {
+      cutCounts[cutName]++;  // Increment the count for the given cut
+    }
+    
+    // Method to print the counts for all cuts for a specific run
+    void printCounts(int runNumber) const {
+      std::cout << "Run number " << runNumber << ":\n";
+      for (const auto& cut : cutCounts) {
+	std::cout << "  " << cut.first << ": " << cut.second << " events\n";
+      }
+    }
+  };
+  
+    
+    
   // ========== Main Analyzer Functions
 
   // ----- Setup Analyzer
@@ -175,9 +195,14 @@ class HNL_LeptonCore : public AnalyzerCore {
 
 
   bool UpdateParamBySyst(TString JobID, AnalyzerParameter& paramEv, AnalyzerParameter::Syst systname, const TString& OrigParamName);
+
+
   
   // ------ Analysis Obj   
   // Function to calculate METXY corrections for uncorrected MET
+
+  std::map<int, CutCounts> runCutCounts;
+  
   std::pair<double, double> METXYCorr_Met_MetPhi(double uncormet, double uncormet_phi, int runnb, const TString& year, bool isMC, int npv, bool isUL = false, bool ispuppi = false);
   // A map to store correction factors
   std::map<TString, double> cfmap;
@@ -230,8 +255,7 @@ class HNL_LeptonCore : public AnalyzerCore {
 
 
   // Returns the MET (Missing Transverse Energy) based on various parameters
-  Particle GetvMET(const TString& METType, AnalyzerParameter param, const std::vector<Jet>& jets, const std::vector<FatJet>& fatjets, 
-		   const std::vector<Muon>& muons, const std::vector<Electron>& electrons, bool propsmear = true);
+  Particle GetvMET(const TString& METType, AnalyzerParameter param, const std::vector<Muon>& muons, const std::vector<Electron>& electrons, bool propsmear = true);
 
   Particle GetvMET(const TString& METType, AnalyzerParameter& param, bool propsmear = true );
 
@@ -363,7 +387,7 @@ class HNL_LeptonCore : public AnalyzerCore {
 
   // Selects taus based on ID, pt minimum, eta maximum, and leptons in the collection
   std::vector<Tau> SelectTaus(std::vector<Lepton*>& leps, const TString& id, double ptmin, double fetamax);
-  std::vector<Tau> SelectTaus(std::vector<Lepton*>& leps, std::vector<FatJet> ak8jets, const TString& id, double ptmin, double fetamax);
+  std::vector<Tau> SelectTaus(std::vector<Lepton*>& leps, std::vector<FatJet> ak8jets, const TString& id, double ptmin, double fetamax, bool cleanAK8=true);
 
   // Selects taus based on ID, pt minimum, and eta maximum from a default source
   std::vector<Tau> SelectTaus(const TString& id, double ptmin, double fetamax);

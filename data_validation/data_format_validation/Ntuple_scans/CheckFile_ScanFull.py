@@ -29,10 +29,22 @@ with open(log_file, "w") as log:
         # Get the TTree
         tree = file.Get("recoTree/SKFlat")  # Update with the correct tree name if necessary
         if not tree:
-            print("Error: Tree 'recoTree/SKFlat' not found in the file.")
+            print(f"Error: Tree 'recoTree/SKFlat' not found in the file {file_path}.")
             file.Close()
+            
+            response = input(f"Do you want to delete the file '{file_path}'? [y/N]: ").strip().lower()
+            if response == 'y':
+                import os
+                try:
+                    os.remove(file_path)
+                    print(f"File '{file_path}' has been deleted.")
+                except Exception as e:
+                    print(f"Failed to delete file: {e}")
+            else:
+                print("File not deleted.")
+                
             return
-        
+
         # Get the total number of entries
         nentries = tree.GetEntries()
         print(f"Total entries in the tree: {nentries}")

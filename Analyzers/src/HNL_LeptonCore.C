@@ -18,6 +18,8 @@ void HNL_LeptonCore::initializeAnalyzer(bool READBKGHISTS, bool SETUPIDBDT){
   cfEst           = new CFBackgroundEstimator();
   pdfReweight     = new PDFReweight();
 
+  runCutCounts.clear(); 
+  
 
   //=== VERBOSE                                                                                                                                        
   run_Debug = HasFlag("DEBUG");
@@ -774,7 +776,7 @@ AnalyzerParameter HNL_LeptonCore::SetupFakeParameter(AnalyzerParameter::Syst Sys
 
   param.AK4JetColl       = "TightPUL";
   param.AK4VBFJetColl    = "VBFTightPUL";
-  param.AK8JetColl       = "HNL_PN";
+  param.AK8JetColl       = "HNL_ParticleNet";
   param.BJetColl         = "Tight";
 
   //// Weights                                                                                                                                              
@@ -1340,6 +1342,13 @@ HNL_LeptonCore::~HNL_LeptonCore(){
     cout << "Cutflow key = " <<  mapit->first << " = " << mapit->second << endl;
   }
 
+  // Printing results for each run
+  cout << "Print cut count "<< endl;
+  for (const auto& entry : runCutCounts) {
+    entry.second.printCounts(entry.first);  // Print counts for each run
+  }
+
+  
   //==== Tools                         
   if(mcCorr) delete mcCorr;
   if(puppiCorr) delete puppiCorr;

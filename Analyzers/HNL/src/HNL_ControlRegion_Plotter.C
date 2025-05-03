@@ -52,11 +52,7 @@ void HNL_ControlRegion_Plotter::executeEvent(){
   //   else run all 3 channels
   if(ChannelsToRun.size() == 0)ChannelsToRun = {EE,MuMu,EMu};
 
-  /// Check Alt FR IDs
-  if(HasFlag("AltID")) {
-    ChannelsToRun = {EE};
-    LepIDs = {"HNL_ULIDv2"};
-  }
+  vector<TString> Run_Config = {""};
   
   ///// Run command 
 
@@ -90,84 +86,77 @@ void HNL_ControlRegion_Plotter::executeEvent(){
     if (this->DataStream == "DoubleEG") ChannelsToRun = {EE};
   }
 
-  for (auto id: LepIDs){
+  for(auto iconfig : Run_Config){
+    for (auto id: LepIDs){
+      for(auto channel : ChannelsToRun){
+	if(channel != MuMu  && id =="TopHN") continue;
 
-    for(auto channel : ChannelsToRun){
-      if(channel != MuMu  && id =="TopHN") continue;
-
-      //// Make it clearer the param used in CR/SR for HNL ID
-      AnalyzerParameter param_cr;
-      if(id=="HNL_ULIDv2") param_cr = Setup_Param_HNL_ULIDv2(id,GetChannelString(channel));
-      else param_cr = HNL_LeptonCore::InitialiseHNLParameter(id,channel);
-
-      
-      if(HasFlag("RunSyst")){
-	/// Some code to remove unnecessary Syst runs                                                                                                                                                              
-	if(!PassMETFilter()) return;
+	AnalyzerParameter param_cr;
+	if(id=="HNL_ULIDv2") param_cr = Setup_Param_HNL_ULIDv2(id,GetChannelString(channel));
+	else param_cr = HNL_LeptonCore::InitialiseHNLParameter(id,channel);
 	
-	Event ev = GetEvent();
+	if(HasFlag("RunSyst")){
+	  /// Some code to remove unnecessary Syst runs                                                                                                                                                              
+	  if(!PassMETFilter()) return;
+	  
+	  Event ev = GetEvent();
+	  
+	  if(channel==EE){
+	    if(!ev.PassTrigger(TrigList_HNL_DblEG)) continue;
+	    std::vector<Muon>       MuonCollV     = SelectMuons    (param_cr,param_cr.Muon_Veto_ID,     5., 2.4);  
+	    if(MuonCollV.size() > 0) continue;
+	  }
+	  if(channel==MuMu){
+	    if(!ev.PassTrigger(TrigList_HNL_DblMu)) continue;
+	    std::vector<Electron>   ElectronCollV = SelectElectrons(param_cr,param_cr.Electron_Veto_ID, 10., 2.5);	    
+	    if(ElectronCollV.size() >0) continue;
+	  }
+	  if(channel==EMu){
+	    if(!(ev.PassTrigger(TrigList_HNL_MuEG) || ev.PassTrigger(TrigList_HNL_EGMu) )) continue;
+	  }
+	}
+
+	//// Config different settings
 	
-	if(channel==EE){
-	  if(!ev.PassTrigger(TrigList_HNL_DblEG)) continue;
-	  std::vector<Muon>       MuonCollV     = SelectMuons    (param_cr,param_cr.Muon_Veto_ID,     5., 2.4);  
-	  if(MuonCollV.size() > 0) continue;
-	}
-	if(channel==MuMu){
-	  if(!ev.PassTrigger(TrigList_HNL_DblMu)) continue;
-	  std::vector<Electron>   ElectronCollV = SelectElectrons(param_cr,param_cr.Electron_Veto_ID, 10., 2.5);	    
-	  if(ElectronCollV.size() >0) continue;
-	}
-	if(channel==EMu){
-	  if(!(ev.PassTrigger(TrigList_HNL_MuEG) || ev.PassTrigger(TrigList_HNL_EGMu) )) continue;
-	}
-      }
-
-
-
-      //// Run Jobs 
-      if(HasFlag("AltID")){
-	AnalyzerParameter param_loose = HNL_LeptonCore::InitialiseHNLParameter(id,channel);
-        param_loose.Name = param_loose.Name + "_AltID";
-        param_loose.DefName = param_loose.DefName + "_AltID";
-	param_loose.k.Electron_FR        = "HNL_ULID_FO_v0_AJ40_El12";
-	param_loose.Electron_FR_ID    = "HNL_HighPt_ULID_FO_v0";
+	if(iconfig == "alt_fake"){
+	  AnalyzerParameter param_loose = HNL_LeptonCore::InitialiseHNLParameter(id,channel);
+	  param_loose.Name = param_loose.Name + "_AltID";
+	  param_loose.DefName = param_loose.DefName + "_AltID";
+	  param_loose.k.Electron_FR        = "HNL_ULID_FO_v0_AJ40_El12";
+	  param_loose.Electron_FR_ID    = "HNL_HighPt_ULID_FO_v0";
 	  
-        for(auto iCR : CRToRun) RunControlRegions(param_loose , {iCR} );
-      }
-      
-      else if(HasFlag("LooseAK8")){
-	AnalyzerParameter param_looseAK8 = HNL_LeptonCore::InitialiseHNLParameter(id,channel);
-	param_looseAK8.Name = param_looseAK8.Name + "_AK8Loose";
-	param_looseAK8.DefName = param_looseAK8.DefName + "_AK8Loose";
-	param_looseAK8.AK8JetColl = "HNL_NoMass";
-	param_looseAK8.Apply_Weight_PNETSF=false;
-	for(auto iCR : CRToRun) RunControlRegions(param_looseAK8 , {iCR} );
-      }
-      else{
-	//// Main Jobs for analysis
-
-	for(auto iCR : CRToRun)	  RunControlRegions(param_cr , {iCR} );
-	
-	for(auto iCR : CRToRun){
-	  /// grab name for central job
-	  TString param_name = param_cr.Name;
-	  TString param_defname = param_cr.DefName;
-	  
-	  TString SystString = "";
-	  if(HasFlag("OS")) SystString = "Muon";
-	  else SystString=GetChannelString(channel);
-	  
-	  for(auto isyst : GetSystList(SystString)){
-	    bool runJob = UpdateParamBySyst(id,param_cr,AnalyzerParameter::Syst(isyst),param_name);
-	    if(runJob)         RunControlRegions(param_cr , {iCR} );
-	    /// Reset 
-	    param_cr.Name=param_name;
-	    param_cr.DefName=param_defname;
-	  }	  
+	  for(auto iCR : CRToRun) RunControlRegions(param_loose , {iCR} );
 	}
-      }
-    }
-  }
+
+	else{
+	  
+	  //// Make it clearer the param used in CR/SR for HNL ID                                                       
+	  
+	  //// Main Jobs for analysis
+	  
+	  for(auto iCR : CRToRun)	  RunControlRegions(param_cr , {iCR} );
+	  
+	  for(auto iCR : CRToRun){
+	    /// grab name for central job
+	    TString param_name = param_cr.Name;
+	    TString param_defname = param_cr.DefName;
+	    
+	    TString SystString = "";
+	    if(HasFlag("OS")) SystString = "Muon";
+	    else SystString=GetChannelString(channel);
+	    
+	    for(auto isyst : GetSystList(SystString)){
+	      bool runJob = UpdateParamBySyst(id,param_cr,AnalyzerParameter::Syst(isyst),param_name);
+	      if(runJob)         RunControlRegions(param_cr , {iCR} );
+	      /// Reset 
+	      param_cr.Name=param_name;
+	      param_cr.DefName=param_defname;
+	    } // Systematics	  
+	  } /// CRs
+	}/// Main config
+      } // Channels
+    } /// Lepton ID
+  } /// config loop
   return;
 }
 
@@ -181,8 +170,7 @@ void HNL_ControlRegion_Plotter::RunControlRegions(AnalyzerParameter param_cr, ve
 
   /// SetupWeight applies w_GenNorm=1., w_BR=1., w_PU  w_Pref  
   double weight =SetupWeight(ev,param_cr);
-  
-  // HL ID                                                                                                                                                   
+
   std::vector<Electron>   ElectronVetoColl = GetElectrons(param_cr.Electron_Veto_ID, 10.,  2.5);
   std::vector<Muon>       MuonVetoColl     = GetMuons    (param_cr.Muon_Veto_ID,     5.,  2.4);
 
@@ -201,16 +189,17 @@ void HNL_ControlRegion_Plotter::RunControlRegions(AnalyzerParameter param_cr, ve
   std::vector<Muon>       MuonTightColl  = SelectMuons(MuonTightColl_Init,Muon_ID,     Min_Muon_Pt,     2.4);
   std::vector<Electron>   ElectronTightColl = SelectElectrons(ElectronTightColl_Init,Electron_ID, Min_Electron_Pt, 2.5);
 
+
   std::vector<FatJet> AK8_JetColl                 = GetHNLAK8Jets(param_cr.AK8JetColl,param_cr);
   std::vector<Jet>    AK4_JetColl                 = GetHNLJets(param_cr.AK4JetColl,     param_cr);
   std::vector<Jet>    AK4_VBF_JetColl             = GetHNLJets(param_cr.AK4VBFJetColl,  param_cr);
-  std::vector<Jet>    AK4_JetAllColl              = GetHNLJets("NoCut_Eta3",param_cr);
+
   std::vector<Jet>    AK4_JetCollLoose            = GetHNLJets("Loose",     param_cr);
   std::vector<Jet>    AK4_BJetColl                = GetHNLJets("BJet", param_cr);
   
   EvalJetWeight(AK4_JetColl,AK4_VBF_JetColl, AK8_JetColl, weight, param_cr);
 
-  Particle METv = GetvMET("PuppiT1xyULCorr", param_cr, AK4_VBF_JetColl, AK8_JetColl, MuonTightColl,ElectronTightColl);
+  Particle METv = GetvMET("PuppiT1xyULCorr", param_cr, MuonTightColl,ElectronTightColl);
 
   if(CRs.size() == 0) return;
   

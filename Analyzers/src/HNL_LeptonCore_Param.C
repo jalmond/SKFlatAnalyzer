@@ -1,6 +1,5 @@
 #include "HNL_LeptonCore.h"
 
-
 AnalyzerParameter  HNL_LeptonCore::DefaultParam(const TString& s_setup_version, const TString& channel_st){
 
   AnalyzerParameter param_default;
@@ -14,6 +13,10 @@ AnalyzerParameter  HNL_LeptonCore::DefaultParam(const TString& s_setup_version, 
   param_default.hpostfix = "";
   param_default.PlottingVerbose = 1;
 
+  /// Default Tau aways fails
+  param_default.Tau_Tight_ID = "Default";
+  param_default.Tau_Veto_ID      = "JetVLElVLMuVL";
+    
   /// Default BKG                                                                                                                                                                                                   
   param_default.ApplyPR=false;
 
@@ -45,18 +48,19 @@ AnalyzerParameter  HNL_LeptonCore::DefaultParam(const TString& s_setup_version, 
   param_default.Muon_Veto_ID     = "NoCut";  param_default.Muon_Tight_ID     = "NoCut";
   param_default.Electron_Veto_ID = "NoCut";  param_default.Electron_Tight_ID = "NoCut";
 
-  param_default.Tau_Veto_ID      = "JetVLElVLMuVL";
 
   /// ---------  CUTS on leptons                                                                                                                                                      
   param_default.Muon_MinPt = 5.;       param_default.Muon_MaxEta = 2.4;
   param_default.Electron_MinPt = 10.;  param_default.Electron_MaxEta = 2.5;
   /// JET ID DEFAULT                                                                                                                                                  
-  param_default.Jet_ID                     = "tight";
+
+  param_default.Jet_ID = "tightLepVeto"; //// Updated May 1st 2025
   param_default.Jet_MinPt                  = 10.;
   param_default.Jet_MaxEta                 = 5.;
   param_default.BJet_Method                = "1a";
   /// ---------                                                                                                                                                       
-  param_default.FatJet_ID                  = "tight";
+  param_default.FatJet_ID = "tightLepVeto"; //// Updated May 1st 2025  
+  param_default.FatJet_CleaningColl        = "Loose"; //// Updated May 1st 2025
   param_default.FatJet_MinPt = 200.;  param_default.FatJet_MaxEta = 5.;
 
   /// Default Trigger                                                                                                                                                 
@@ -68,8 +72,9 @@ AnalyzerParameter  HNL_LeptonCore::DefaultParam(const TString& s_setup_version, 
 
   param_default.AK4JetColl       = "TightPUL";
   param_default.AK4VBFJetColl    = "VBFTightPUL";
-  param_default.AK8JetColl       = "HNL_PN";
-  param_default.BJetColl         = "Tight";
+  param_default.AK8JetColl       = "HNL_ParticleNet";
+  param_default.BJetColl = "Tight_NoAK8Cleaning"; //// Updated May 1st 2025   
+
 
   //// Weights                                                                                                                                                        
   param_default.w.lumiweight= 1;

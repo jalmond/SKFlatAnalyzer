@@ -58,7 +58,8 @@ void HNL_SignalRegion_Plotter::executeEvent(){
   
   // Override with flags (only one set of IDs will apply)
   if(User("jalmond")){
-    LepIDs = {"HNTightV2", "POGTight", "HNL_ULIDv2"};
+    //LepIDs = {"HNTightV2", "POGTight", "HNL_ULIDv2"};
+    LepIDs = {"HNL_ULIDv2"};
   }
   else if (RunTopID) {
     LepIDs = {"TopHN"};
@@ -232,7 +233,7 @@ void HNL_SignalRegion_Plotter::RunULAnalysis(AnalyzerParameter param_sr){
   std::vector<Jet>    AK4_BJetColl                = GetHNLJets("BJet", param_sr);
 
   if(HasFlag("TestAK8")){
-    vector<TString> AK8Tag = {"Loose","HNL","HNL_NoMass","HNL_PN","HNL_PN_NoMass","EXO17028"};
+    vector<TString> AK8Tag = {"Loose","HNL","HNL_NoMass","HNL_PN","HNL_PN_NoMass"};
     for (auto akg_tag : AK8Tag){
       std::vector<FatJet> ak8_jetcoll         = GetHNLAK8Jets(akg_tag,param_sr);
       for(const auto& ijet : ak8_jetcoll)            FillHist( "AK8_Plots_"+akg_tag+"/AK8J_Eta",     ijet.Eta()       , weight, 100, -5., 5.   , "AK8 Jet #eta");
@@ -248,7 +249,7 @@ void HNL_SignalRegion_Plotter::RunULAnalysis(AnalyzerParameter param_sr){
   }
   
 
-  Particle METv = GetvMET("PuppiT1xyULCorr", param_sr, AK4_VBF_JetColl, AK8_JetColl, MuonCollT, ElectronCollT); // returns MET with systematic correction; run this after all object selection done; NOTE that VBF jet is used here
+  Particle METv = GetvMET("PuppiT1xyULCorr", param_sr, MuonCollT, ElectronCollT); // returns MET with systematic correction; run this after all object selection done; NOTE that VBF jet is used here
   
   EvalJetWeight(AK4_JetColl,AK4_VBF_JetColl, AK8_JetColl, weight, param_sr);
 

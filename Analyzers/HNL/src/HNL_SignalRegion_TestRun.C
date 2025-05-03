@@ -100,7 +100,7 @@ void HNL_SignalRegion_TestRun::RunULAnalysis(AnalyzerParameter param){
   std::vector<Jet>    AK4_BJetColl                = GetHNLJets("BJet", param);
  
   //Particle METv = GetvMET("PuppiT1xyULCorr",param);
-  Particle METv = GetvMET("PuppiT1xyULCorr", param, AK4_VBF_JetColl, AK8_JetColl, MuonCollT, ElectronCollT); // returns MET with systematic correction; run this after all object selection done; NOTE that VBF jet is used here
+  Particle METv = GetvMET("PuppiT1xyULCorr", param, MuonCollT, ElectronCollT); // returns MET with systematic correction; run this after all object selection done; NOTE that VBF jet is used here
   
   EvalJetWeight(AK4_JetColl, AK4_VBF_JetColl,AK8_JetColl, weight, param);
 

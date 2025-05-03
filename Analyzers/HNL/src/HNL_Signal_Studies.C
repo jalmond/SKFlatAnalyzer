@@ -110,7 +110,7 @@ void HNL_Signal_Studies::executeEvent(){
 
     std::vector<Tau> TauColl                        = SelectTaus(LepsV,param.Tau_Veto_ID,20., 2.3);
     
-    Particle METv = GetvMET("PuppiT1xyULCorr", param, AK4_VBF_JetColl, AK8_JetColl, MuonCollT, ElectronCollT);
+    Particle METv = GetvMET("PuppiT1xyULCorr", param,  MuonCollT, ElectronCollT);
 
     // returns MET with systematic correction; run this after all object selection done; NOTE that VBF jet is used here
 

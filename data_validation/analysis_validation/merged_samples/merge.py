@@ -6,11 +6,17 @@ import shutil
 import logging
 from pathlib import Path
 
+from datetime import datetime
 
+
+Analyzer="HNL_ControlRegionTwo"
+skim="SkimTree_HNMultiLepBDT"
+skim_dilep="SkimTree_DileptonBDT"
+
+
+    
 # A helper function to add clear breaks in logging
 
-
-Plot_Version="ANv5"
 
 def log_section_start(section_name):
     logging.info("=" * 50)  # Print 50 '=' characters as a separator                                                                                                                                                                                                                                                                                                                        
@@ -35,105 +41,143 @@ logging.basicConfig(
        
 )
 eras = ["2016preVFP", "2016postVFP", "2017", "2018"]
-base_path = "/data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/HNL_ControlRegion_Plotter"
+
+parser = argparse.ArgumentParser(description="Example script with string flag")
+# Add a string flag, like --mode somevalue
+parser.add_argument('--mode', type=str, default='default', help='Mode of operation (e.g., test, prod, debug)')
+parser.add_argument("--analyzer", choices=["HNL_ControlRegionTwo", "HNL_ControlRegionOne"], required=True, help="Select the analyzer.")
+
+args = parser.parse_args()
+
+if args.analyzer == "HNL_ControlRegionTwo":
+    Analyzer = "HNL_ControlRegionTwo"
+    skim = "SkimTree_HNMultiLepBDT"
+    skim_dilep = "SkimTree_DileptonBDT"
+elif args.analyzer == "HNL_ControlRegionOne":
+    Analyzer = "HNL_ControlRegionOne"
+    skim = "SkimTree_AK8BDT"
+    skim_dilep = "SkimTree_AK8BDT"
+
+# Create a string with the analyzer name and current date
+date_str = datetime.now().strftime("%Y-%m-%d")
+analyzer_with_date = f"{Analyzer}_{date_str}"
+
+eras = ["2016preVFP", "2016postVFP", "2017", "2018"]
+base_path = f"/data6/Users/jalmond/SKFlatOutput/Run2UltraLegacy_v3/{Analyzer}"
+
+
+# Output the result
+print(f"Analyzer: {analyzer_with_date}")
+print(f"Skim: {skim}")
+print(f"Skim Dilep: {skim_dilep}")
+
+print(f"Selected mode: {args.mode}")
+
+mode=""
+
+if args.mode != "default":
+    mode=args.mode+"__"
+
+
+Plot_Version=analyzer_with_date
 
 commands_template = [
 
     
     ("Conv", [
-        "MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_ZGToLLG.root",
-        "MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_ZGToLLG_PtG_130.root",
-        "MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_DYJets10to50_MG.root",
-        "MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_DYJets_MG.root",
-        "MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_DileptonBDT_WGToLNuG_MG.root",
-        "MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_DileptonBDT_WGToLNuG.root",
-        "MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_DileptonBDT_WGToLNuG_01J_PtG_130.root",
-        "MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_DileptonBDT_WGToLNuG_01J_PtG_300.root",
-        "MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_DileptonBDT_WGToLNuG_01J_PtG_500.root",
-        "MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_DileptonBDT_WGJJToLNu.root",
-        "MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_TTG.root",
-        "MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_WWG.root",
-        "MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_WZG.root",
-        "MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_TG.root",
+        f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim_dilep}_ZGToLLG.root",
+        f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim_dilep}_ZGToLLG_PtG_130.root",
+        f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim_dilep}_DYJets10to50_MG.root",
+        f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim_dilep}_DYJets_MG.root",
+        f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim_dilep}_WGToLNuG_MG.root",
+        f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim_dilep}_WGToLNuG.root",
+        f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim_dilep}_WGToLNuG_01J_PtG_130.root",
+        f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim_dilep}_WGToLNuG_01J_PtG_300.root",
+        f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim_dilep}_WGToLNuG_01J_PtG_500.root",
+        f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim_dilep}_WGJJToLNu.root",
+        f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim_dilep}_TTG.root",
+        f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim_dilep}_WWG.root",
+        f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim_dilep}_WZG.root",
+        f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim_dilep}_TG.root",
     ]),
 
     ("ZG", [
-        "MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_ZGToLLG.root",
-        "MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_ZGToLLG_PtG_130.root",
-        "MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_DYJets10to50_MG.root",
-        "MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_DYJets_MG.root",
+        f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim_dilep}_ZGToLLG.root",
+        f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim_dilep}_ZGToLLG_PtG_130.root",
+        f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim_dilep}_DYJets10to50_MG.root",
+        f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim_dilep}_DYJets_MG.root",
         ]),
-    ("CF", "MultiLepton__RunCF__/DATA/HNL_ControlRegion_Plotter_SkimTree_DileptonBDT_*"),
-    ("Fake", "MultiLepton__RunFake__/DATA/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_*"),
-    ("Data", "MultiLepton__/DATA/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_*"),
+    ("CF", f"{mode}MultiLepton__RunCF__/DATA/{Analyzer}_{skim_dilep}_*"),
+    ("Fake", f"{mode}MultiLepton__RunFake__/DATA/{Analyzer}_{skim}_*"),
+    ("Data", f"{mode}MultiLepton__/DATA/{Analyzer}_{skim}_*"),
 
     ("WG", [
-        "MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_DileptonBDT_WGToLNuG_MG.root",
-        "MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_DileptonBDT_WGToLNuG.root",
-        "MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_DileptonBDT_WGToLNuG_01J_PtG_130.root",
-        "MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_DileptonBDT_WGToLNuG_01J_PtG_300.root",
-        "MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_DileptonBDT_WGToLNuG_01J_PtG_500.root",
-        "MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_DileptonBDT_WGJJToLNu.root",
+        f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim_dilep}_WGToLNuG_MG.root",
+        f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim_dilep}_WGToLNuG.root",
+        f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim_dilep}_WGToLNuG_01J_PtG_130.root",
+        f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim_dilep}_WGToLNuG_01J_PtG_300.root",
+        f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim_dilep}_WGToLNuG_01J_PtG_500.root",
+        f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim_dilep}_WGJJToLNu.root",
     ]),
     ("Other_Conv", [
-        "MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_TTG.root",
-        "MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_WWG.root",
-        "MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_WZG.root",
-        "MultiLepton__RunConv__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_TG.root",
+        f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim_dilep}_TTG.root",
+        f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim_dilep}_WWG.root",
+        f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim_dilep}_WZG.root",
+        f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim_dilep}_TG.root",
     ]),
 
     ("ZZ", [
-        "MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_GluGluToZZto4e.root",
-        "MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_GluGluToZZto2e2tau.root",
-        "MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_GluGluToZZto2e2mu.root",
-        "MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_GluGluToZZto4mu.root",
-        "MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_GluGluToZZto2mu2tau.root",
-        "MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_GluGluHToZZTo4L.root",
-        "MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_VBF_HToZZTo4L.root",
-        "MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_GluGluToZZto4tau.root",
-        "MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_ZZTo4L_powheg.root",
+        f"{mode}MultiLepton__RunPrompt__/{Analyzer}_{skim}_GluGluToZZto4e.root",
+        f"{mode}MultiLepton__RunPrompt__/{Analyzer}_{skim}_GluGluToZZto2e2tau.root",
+        f"{mode}MultiLepton__RunPrompt__/{Analyzer}_{skim}_GluGluToZZto2e2mu.root",
+        f"{mode}MultiLepton__RunPrompt__/{Analyzer}_{skim}_GluGluToZZto4mu.root",
+        f"{mode}MultiLepton__RunPrompt__/{Analyzer}_{skim}_GluGluToZZto2mu2tau.root",
+        f"{mode}MultiLepton__RunPrompt__/{Analyzer}_{skim}_GluGluHToZZTo4L.root",
+        f"{mode}MultiLepton__RunPrompt__/{Analyzer}_{skim}_VBF_HToZZTo4L.root",
+        f"{mode}MultiLepton__RunPrompt__/{Analyzer}_{skim}_GluGluToZZto4tau.root",
+        f"{mode}MultiLepton__RunPrompt__/{Analyzer}_{skim}_ZZTo4L_powheg.root",
      ]),
 
     ("ggZZ", [
-        "MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_GluGluToZZto4e.root",
-        "MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_GluGluToZZto2e2tau.root",
-        "MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_GluGluToZZto2e2mu.root",
-        "MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_GluGluToZZto4mu.root",
-        "MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_GluGluToZZto2mu2tau.root",
-        "MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_GluGluHToZZTo4L.root",
-        "MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_VBF_HToZZTo4L.root",
-        "MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_GluGluToZZto4tau.root"
+        f"{mode}MultiLepton__RunPrompt__/{Analyzer}_{skim}_GluGluToZZto4e.root",
+        f"{mode}MultiLepton__RunPrompt__/{Analyzer}_{skim}_GluGluToZZto2e2tau.root",
+        f"{mode}MultiLepton__RunPrompt__/{Analyzer}_{skim}_GluGluToZZto2e2mu.root",
+        f"{mode}MultiLepton__RunPrompt__/{Analyzer}_{skim}_GluGluToZZto4mu.root",
+        f"{mode}MultiLepton__RunPrompt__/{Analyzer}_{skim}_GluGluToZZto2mu2tau.root",
+        f"{mode}MultiLepton__RunPrompt__/{Analyzer}_{skim}_GluGluHToZZTo4L.root",
+        f"{mode}MultiLepton__RunPrompt__/{Analyzer}_{skim}_VBF_HToZZTo4L.root",
+        f"{mode}MultiLepton__RunPrompt__/{Analyzer}_{skim}_GluGluToZZto4tau.root"
     ]),
-    ("qqZZ", ["MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_ZZTo4L_powheg.root"]),
+    ("qqZZ", [f"{mode}MultiLepton__RunPrompt__/{Analyzer}_{skim}_ZZTo4L_powheg.root"]),
     ("TTV", [
-        "MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_ttZToLLNuNu.root",
-        "MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_ttWToLNu.root"
+        f"{mode}MultiLepton__RunPrompt__/{Analyzer}_{skim}_ttZToLLNuNu.root",
+        f"{mode}MultiLepton__RunPrompt__/{Analyzer}_{skim}_ttWToLNu.root"
     ]),
     ("WW", [
-        "MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_WpWp_EWK.root",
-        "MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_WpWp_QCD.root",
-        "MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_WWTo2L2Nu_DS.root"
+        f"{mode}MultiLepton__RunPrompt__/{Analyzer}_{skim}_WpWp_EWK.root",
+        f"{mode}MultiLepton__RunPrompt__/{Analyzer}_{skim}_WpWp_QCD.root",
+        f"{mode}MultiLepton__RunPrompt__/{Analyzer}_{skim}_WWTo2L2Nu_DS.root"
     ]),
     
     ("Other", [
-        "MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_tZq.root",
-        "MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_TTTT.root",
-        "MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_ttHToNonbb.root",
-        "MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_VHToNonbb.root",
-        "MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_TTZZ.root"
+        f"{mode}MultiLepton__RunPrompt__/{Analyzer}_{skim}_tZq.root",
+        f"{mode}MultiLepton__RunPrompt__/{Analyzer}_{skim}_TTTT.root",
+        f"{mode}MultiLepton__RunPrompt__/{Analyzer}_{skim}_ttHToNonbb.root",
+        f"{mode}MultiLepton__RunPrompt__/{Analyzer}_{skim}_VHToNonbb.root",
+        f"{mode}MultiLepton__RunPrompt__/{Analyzer}_{skim}_TTZZ.root"
     ]),
     ("Extra", [
-        "MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_tHq.root",
+        f"{mode}MultiLepton__RunPrompt__/{Analyzer}_{skim}_tHq.root",
     ]),
     ("VVV", [
-        "MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_WZZ.root",
-        "MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_ZZZ.root",
-        "MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_WWZ.root",
-        "MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_WWW.root"
+        f"{mode}MultiLepton__RunPrompt__/{Analyzer}_{skim}_WZZ.root",
+        f"{mode}MultiLepton__RunPrompt__/{Analyzer}_{skim}_ZZZ.root",
+        f"{mode}MultiLepton__RunPrompt__/{Analyzer}_{skim}_WWZ.root",
+        f"{mode}MultiLepton__RunPrompt__/{Analyzer}_{skim}_WWW.root"
     ]),
     ("WZ", [
-        "MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_WZ_EWK.root",
-        "MultiLepton__RunPrompt__/HNL_ControlRegion_Plotter_SkimTree_HNMultiLepBDT_WZTo3LNu_mllmin4p0_powheg.root"
+        f"{mode}MultiLepton__RunPrompt__/{Analyzer}_{skim}_WZ_EWK.root",
+        f"{mode}MultiLepton__RunPrompt__/{Analyzer}_{skim}_WZTo3LNu_mllmin4p0_powheg.root"
     ])
 ]
 
@@ -154,7 +198,7 @@ for era in eras:
     log_section_start(f"Checking {era}")
     for tag, input_files in commands_template:
         
-        output_file = f"{era}/HNL_ControlRegion_Plotter_{tag}.root"
+        output_file = f"{era}/{Analyzer}_{tag}.root"
         log_subsection_start(f"Checking inputs to {output_file}")
         
         # If the input is a wildcard pattern (string), expand with full path                                                                                                                                        
@@ -172,7 +216,7 @@ for era in eras:
    
     for tag, input_files in commands_template:
        
-        output_file = f"{era}/HNL_ControlRegion_Plotter_{tag}.root"
+        output_file = f"{era}/{Analyzer}_{tag}.root"
         log_subsection_start(f"Merging -->{output_file}")
         
         # If the input is a wildcard pattern (string), expand with full path
