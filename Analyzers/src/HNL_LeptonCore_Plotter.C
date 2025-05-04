@@ -372,6 +372,124 @@ void HNL_LeptonCore::Fill_Plots(AnalyzerParameter& param, TString  region,  TStr
   if(leps.size() < 2) return;
 
   //  bool PlotZZ = MCSample.Contains("ZZ_");
+  if(MCSample.Contains("SSWWType")){
+    Gen Lep1;
+    Gen Lep2;
+    Gen j1,j2;
+    bool j1IsSet(false);
+    bool l1IsSet(false);
+    
+    TString LepFl_l1, LepFl_l2;
+    int Lep_Mother_ind(-1);
+    
+    for(unsigned int i=2; i<All_Gens.size(); i++){
+      Gen gen = All_Gens.at(i);
+      if( ! ( ( fabs(gen.PID()) == 13)  || (fabs(gen.PID()) == 11) )) continue;
+      if (gen.Status() == 23){
+	TString LepFl = (fabs(gen.PID()) == 13) ? "Mu" : "El";
+	
+	if(!l1IsSet) {  Lep1= gen; l1IsSet=true;LepFl_l1= LepFl;}
+	else { Lep2 = gen; LepFl_l2= LepFl;}
+	Lep_Mother_ind = gen.MotherIndex();
+      }
+    }
+    
+    for(unsigned int i=2; i<All_Gens.size(); i++){
+      Gen gen = All_Gens.at(i);
+      
+      if (gen.MotherIndex() == Lep_Mother_ind){
+	if(fabs(gen.PID()) > 6) continue;
+	if(!j1IsSet) {  j1= gen; j1IsSet=true;}
+	else j2 = gen;
+      }
+    }
+    FillHist( plot_dir+ region+ "/SignalProcess/Dijet_mass",  (j1+j2).M(),  1., 50, 0., 5000.,"m(jj) GeV");
+
+    std::vector<Jet>    AK4_VBF_JetColl             = GetHNLJets("VBFLoose",  param);
+    Particle LL =  *leps[0] + *leps[1] ;
+    double HT_VBF = GetHT(AK4_VBF_JetColl,{});
+    Particle PuppiMETvULPhiCorr = GetMiniAODvMET("PuppiT1xyULCorr");
+    if((j1+j2).M() < 700){
+      FillHist( plot_dir+ region+ "/SignalProcess_LowMass/MET", PuppiMETvULPhiCorr.Pt() ,  1., 100, 0., 200.,"");
+      FillHist( plot_dir+ region+ "/SignalProcess_LowMass/HT", HT_VBF ,  1., 200, 0., 5000.,"");
+      if(AK4_VBF_JetColl.size() == 1) {
+	FillHist( plot_dir+ region+ "/SignalProcess_LowMass/DR_rj_l1", AK4_VBF_JetColl[0].DeltaR(*leps[0]) ,  1., 100, 0., 10.,"");
+	FillHist( plot_dir+ region+ "/SignalProcess_LowMass/DR_rj_l2", AK4_VBF_JetColl[0].DeltaR(*leps[1]) ,  1., 100, 0., 10.,"");
+      }
+      else  if(AK4_VBF_JetColl.size() > 1) {
+        FillHist( plot_dir+ region+ "/SignalProcess_LowMass/DR_rj_l1", AK4_VBF_JetColl[0].DeltaR(*leps[0]) ,  1., 100, 0., 10.,"");
+        FillHist( plot_dir+ region+ "/SignalProcess_LowMass/DR_rj_l2", AK4_VBF_JetColl[0].DeltaR(*leps[1]) ,  1., 100, 0., 10.,"");
+	FillHist( plot_dir+ region+ "/SignalProcess_LowMass/DR_j1_j2", AK4_VBF_JetColl[0].DeltaR(AK4_VBF_JetColl[1]) ,  1., 100, 0., 10.,"");
+      }
+      FillHist( plot_dir+ region+ "/SignalProcess_LowMass/drll", leps[0]->DeltaR(*leps[1]) ,  1., 100, 0., 10,"");
+
+      FillHist( plot_dir+ region+ "/SignalProcess_LowMass/Dijet_mass",  (j1+j2).M(),  1., 50, 0., 5000.,"m(jj) GeV");
+      FillHist( plot_dir+ region+ "/SignalProcess_LowMass/DEta", fabs(j1.Eta() - j2.Eta()) ,  1., 100, -20., 20.,"");
+      FillHist( plot_dir+ region+ "/SignalProcess_LowMass/DR", j1.DeltaR(j2) ,  1., 100, 0., 10.,"");
+      FillHist( plot_dir+ region+ "/SignalProcess_LowMass/J1_Pt", j1.Pt() ,  1., 500, 0., 2000.,"");
+      FillHist( plot_dir+ region+ "/SignalProcess_LowMass/J2_Pt", j2.Pt() ,  1., 500, 0., 2000.,"");
+      FillHist( plot_dir+ region+ "/SignalProcess_LowMass/MLL", LL.M() ,  1., 100, 0., 1000.,"");
+      //      FillHist( plot_dir+ region+ "/SignalProcess_LowMass/", LL.M() ,  1., 100, 0., 1000.,"");
+
+      //cout << "Low Mass  (j1+j2).M() = " << (j1+j2).M()   << " LL mass =  " << LL.M() << " dR ll = " << leps[0]->DeltaR(*leps[1]) << endl;
+      
+	//for(auto i : AK4_VBF_JetColl ) {
+	//  for(auto ilep : leps) cout << "dr = " << ilep->DeltaR(i) << endl;
+	//	}
+	
+	/*cout << "Low Mass pt j1 = " ;
+	j1.Print()  ;
+	cout << "Low Mass pt j2 = " ;
+	j2.Print() ;
+	cout << "Low Mass deta = " << fabs(j1.Eta() - j2.Eta()) << endl;
+	cout << "LL mass =  " << LL.M() << " dR ll = " << leps[0]->DeltaR(*leps[1]) << endl;*/
+    }
+    else{
+
+      FillHist( plot_dir+ region+ "/SignalProcess_HighMass/MET", PuppiMETvULPhiCorr.Pt() ,  1., 100, 0., 200.,"");
+      FillHist( plot_dir+ region+ "/SignalProcess_HighMass/HT", HT_VBF ,  1., 200, 0., 5000.,"");
+
+      if(AK4_VBF_JetColl.size() == 1) {
+        FillHist( plot_dir+ region+ "/SignalProcess_HighMass/DR_rj_l1", AK4_VBF_JetColl[0].DeltaR(*leps[0]) ,  1., 100, 0., 10.,"");
+        FillHist( plot_dir+ region+ "/SignalProcess_HighMass/DR_rj_l2", AK4_VBF_JetColl[0].DeltaR(*leps[1]) ,  1., 100, 0., 10.,"");
+      }
+      else  if(AK4_VBF_JetColl.size() > 1) {
+        FillHist( plot_dir+ region+ "/SignalProcess_HighMass/DR_rj_l1", AK4_VBF_JetColl[0].DeltaR(*leps[0]) ,  1., 100, 0., 10.,"");
+        FillHist( plot_dir+ region+ "/SignalProcess_HighMass/DR_rj_l2", AK4_VBF_JetColl[0].DeltaR(*leps[1]) ,  1., 100, 0., 10.,"");
+	FillHist( plot_dir+ region+ "/SignalProcess_HighMass/DR_j1_j2", AK4_VBF_JetColl[0].DeltaR(AK4_VBF_JetColl[1]) ,  1., 100, 0., 10.,"");
+      }
+
+      FillHist( plot_dir+ region+ "/SignalProcess_HighMass/drll", leps[0]->DeltaR(*leps[1]) ,  1., 100, 0., 10.,"");
+
+      FillHist( plot_dir+ region+ "/SignalProcess_HighMass/Dijet_mass",  (j1+j2).M(),  1., 50, 0., 5000.,"m(jj) GeV");
+      FillHist( plot_dir+ region+ "/SignalProcess_HighMass/DEta", fabs(j1.Eta() - j2.Eta()) ,  1., 100, -20., 20.,"");
+      FillHist( plot_dir+ region+ "/SignalProcess_HighMass/DR", j1.DeltaR(j2) ,  1., 100, 0., 10.,"");
+      FillHist( plot_dir+ region+ "/SignalProcess_HighMass/J1_Pt", j1.Pt() ,  1., 500, 0., 2000.,"");
+      FillHist( plot_dir+ region+ "/SignalProcess_HighMass/J2_Pt", j2.Pt() ,  1., 500, 0., 2000.,"");
+      FillHist( plot_dir+ region+ "/SignalProcess_HighMass/MLL", LL.M() ,  1., 100, 0., 1000.,"");
+      
+      
+      //cout << "High Mass  (j1+j2).M() = " << (j1+j2).M()   << " LL mass =  " << LL.M() << " dR ll = " << leps[0]->DeltaR(*leps[1]) << endl;
+      
+      //for(auto i : AK4_VBF_JetColl ) {
+      //	  for(auto ilep : leps) cout << "HM dr = " << ilep->DeltaR(i) << endl;
+      //        }
+      
+      /*	cout << "High Mass pt j1 = " ;
+		j1.Print() ;
+		cout << "High Mass pt j2 = " ;
+		j2.Print();
+	cout << "High Mass deta = " << fabs(j1.Eta() - j2.Eta()) << endl;
+	cout <<	"LL mass =  " << LL.M() << " dR ll = " << leps[0]->DeltaR(*leps[1]) << endl;*/
+      
+
+    }
+  
+      
+    if(AK4_VBF_JetColl.size() < 2)     FillHist( plot_dir+ region+ "/SignalProcess/Dijet_mass_01J",  (j1+j2).M(),  1., 50, 0., 5000.,"m(jj) GeV");
+    
+    
+  }
   if(false){
     Particle ZZ;
 

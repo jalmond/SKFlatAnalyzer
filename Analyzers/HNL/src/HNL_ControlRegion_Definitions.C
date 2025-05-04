@@ -2226,13 +2226,14 @@ bool HNL_RegionDefinitions::FillWZCRPlots(HNL_LeptonCore::Channel channel, std::
     FillHist(  "LimitExtraction/"+ param.Name+"/LimitShape_WZ_SR3/Binned",  binvalue,  w, int(nbin_reg),0,nbin_reg ,"CR Binned");
    
   }
-  else if(AK8_JetColl.size() > 0){
+  else if(AK8_JetColl.size() == 1){
 
     double nbin_reg;
     double binvalue = GetLimitBin("CR_SR1_WZ",leps,JetColl,AK8_JetColl,ev,nbin_reg);
     FillHist(  "LimitExtraction/"+ param.Name+"/LimitShape_WZ_SR1/Binned",  binvalue,  w, int(nbin_reg),0,nbin_reg ,"CR Binned");
   }
-
+  else return false;
+  
   //// SR1  
   if(AK8_JetColl.size() == 1 )   Fill_RegionPlots(param,"HNL_WZ_SR1_ThreeLepton_CR", taus ,  JetColl,  AK8_JetColl,  leps,  METv, nPV, w);  
   //// SR3
