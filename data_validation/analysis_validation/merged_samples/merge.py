@@ -45,7 +45,7 @@ eras = ["2016preVFP", "2016postVFP", "2017", "2018"]
 parser = argparse.ArgumentParser(description="Example script with string flag")
 # Add a string flag, like --mode somevalue
 parser.add_argument('--mode', type=str, default='default', help='Mode of operation (e.g., test, prod, debug)')
-parser.add_argument("--analyzer", choices=["HNL_ControlRegionTwo", "HNL_ControlRegionOne"], required=True, help="Select the analyzer.")
+parser.add_argument("--analyzer", choices=["HNL_ControlRegionTwo", "HNL_ControlRegionOne","HNL_ControlRegion_Plotter"], required=True, help="Select the analyzer.")
 
 args = parser.parse_args()
 
@@ -58,6 +58,12 @@ elif args.analyzer == "HNL_ControlRegionOne":
     skim = "SkimTree_AK8BDT"
     skim_dilep = "SkimTree_AK8BDT"
 
+elif args.analyzer == "HNL_ControlRegion_Plotter":
+    Analyzer = "HNL_ControlRegion_Plotter"
+    skim = "SkimTree_HNMultiLepBDT"
+    skim_dilep = "SkimTree_DileptonBDT"
+
+    
 # Create a string with the analyzer name and current date
 date_str = datetime.now().strftime("%Y-%m-%d")
 analyzer_with_date = f"{Analyzer}_{date_str}"
@@ -85,27 +91,27 @@ commands_template = [
 
     
     ("Conv", [
-        f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim_dilep}_ZGToLLG.root",
-        f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim_dilep}_ZGToLLG_PtG_130.root",
-        f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim_dilep}_DYJets10to50_MG.root",
-        f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim_dilep}_DYJets_MG.root",
+        f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim}_ZGToLLG.root",
+        f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim}_ZGToLLG_PtG_130.root",
+        f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim}_DYJets10to50_MG.root",
+        f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim}_DYJets_MG.root",
         f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim_dilep}_WGToLNuG_MG.root",
         f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim_dilep}_WGToLNuG.root",
         f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim_dilep}_WGToLNuG_01J_PtG_130.root",
         f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim_dilep}_WGToLNuG_01J_PtG_300.root",
         f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim_dilep}_WGToLNuG_01J_PtG_500.root",
         f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim_dilep}_WGJJToLNu.root",
-        f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim_dilep}_TTG.root",
-        f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim_dilep}_WWG.root",
-        f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim_dilep}_WZG.root",
-        f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim_dilep}_TG.root",
+        f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim}_TTG.root",
+        f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim}_WWG.root",
+        f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim}_WZG.root",
+        f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim}_TG.root",
     ]),
 
     ("ZG", [
-        f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim_dilep}_ZGToLLG.root",
-        f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim_dilep}_ZGToLLG_PtG_130.root",
-        f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim_dilep}_DYJets10to50_MG.root",
-        f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim_dilep}_DYJets_MG.root",
+        f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim}_ZGToLLG.root",
+        f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim}_ZGToLLG_PtG_130.root",
+        f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim}_DYJets10to50_MG.root",
+        f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim}_DYJets_MG.root",
         ]),
     ("CF", f"{mode}MultiLepton__RunCF__/DATA/{Analyzer}_{skim_dilep}_*"),
     ("Fake", f"{mode}MultiLepton__RunFake__/DATA/{Analyzer}_{skim}_*"),
@@ -120,10 +126,10 @@ commands_template = [
         f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim_dilep}_WGJJToLNu.root",
     ]),
     ("Other_Conv", [
-        f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim_dilep}_TTG.root",
-        f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim_dilep}_WWG.root",
-        f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim_dilep}_WZG.root",
-        f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim_dilep}_TG.root",
+        f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim}_TTG.root",
+        f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim}_WWG.root",
+        f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim}_WZG.root",
+        f"{mode}MultiLepton__RunConv__/{Analyzer}_{skim}_TG.root",
     ]),
 
     ("ZZ", [

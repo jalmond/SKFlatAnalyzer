@@ -449,7 +449,10 @@ void   HNL_RegionDefinitions::RunMainRegionCode(bool IsSR,HNL_LeptonCore::Channe
     //// Fail AK8 Req
 
     TString RegionBin = RunSignalRegionWWString(IsSR, channel,qq, LepsT, LepsV,  TauColl, VBF_JetColl,  AK8_JetColl, B_JetColl,ev, METv, param,  weight_reg);
-    
+
+    //// SR events with  MJJ < 700
+    if(RegionBin == "NULL")  return;
+
     if(RegionBin != "false") {
 
       if(param.syst_ == AnalyzerParameter::PDFUp)   weight_reg*=GetPDFUncertainty("SR2",1);
@@ -743,8 +746,7 @@ TString HNL_RegionDefinitions::RunSignalRegionWWString(bool ApplyForSR,HNL_Lepto
   FillCutflow(Reg, w, RegionTag+"_lep_pt",param);
 
   bool use_leadjets=true;
-  //  double ll_dphi = fabs(TVector2::Phi_mpi_pi( ( (*leps[0]).Phi() - (*leps[1]).Phi() )) );
-  //  if(ll_dphi < 2.) return "false";
+
   FillCutflow(Reg, w, RegionTag+"_DPhi",param);
   
   if( ( (*leps[0]) + (*leps[1]) ).M() < 20.) return "false";
@@ -762,20 +764,24 @@ TString HNL_RegionDefinitions::RunSignalRegionWWString(bool ApplyForSR,HNL_Lepto
   if(maxDiJetDeta < 2.5) return "false";
   FillCutflow(Reg, w, RegionTag+"_DiJetEta",param);
 
-if(param.IsCentral()) Fill_RegionPlots(param,"Inclusive"+RegionTag ,  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);
+  if(param.IsCentral()) Fill_RegionPlots(param,"Inclusive"+RegionTag ,  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);
  
   
   Particle JJ = JetColl[ijet1] + JetColl[ijet2];
-  if(JJ.M() < 500) return "false";
+  if(ApplyForSR) {
+    if(JJ.M() < 750) return "NULL";
+  }
+  else     if(JJ.M() < 500) return "NULL";
+  
   FillCutflow(Reg, w, RegionTag+"_DiJetMass",param);
   
   double Av_JetEta= 0.5*(JetColl[ijet1].Eta()+ JetColl[ijet2].Eta());
   double zeppenfeld = CalulateMaxZeppenfeld(leps, Av_JetEta,maxDiJetDeta);
-
   
   if(zeppenfeld > 0.75) return "false";
-  
-  if(!PassVBF(JetColl,leps,500., true)) return "false";
+
+  /// remove mjj cut set to 0
+  //  if(!PassVBF(JetColl,leps,0., true)) return "false";
     
   if(ApplyForSR) FillCutflow(HNL_LeptonCore::SRLowMass, w, "SR2",param);
   if(ApplyForSR) FillCutflow(HNL_LeptonCore::SRHighMass, w, "SR2",param);
@@ -1181,7 +1187,6 @@ bool HNL_RegionDefinitions::PassVBFInitial(vector<Jet>&  JetColl){
 
   if(maxDiJetDeta < 2.5) return false;
   Particle JJ = JetColl[ijet1] + JetColl[ijet2];
-  if(JJ.M() < 500.) return false;
 
   return true;
 

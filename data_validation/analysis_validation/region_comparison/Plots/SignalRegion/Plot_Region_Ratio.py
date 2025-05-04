@@ -13,7 +13,7 @@ import numpy as np
 import CMS_lumi, tdrstyle
 
 
-Analyzer = "HNL_ControlRegionOne"
+Analyzer = "HNL_ControlRegion_Plotter"
 result_dir = "results_ratio_" +Analyzer
 
 # A helper function to add clear breaks in logging
@@ -28,15 +28,18 @@ logging.basicConfig(
     handlers=[logging.StreamHandler()]  # Log to console (screen)
 )
 
-def create_dummy_pads(datahist, y_max):
+def create_dummy_pads(datahist, y_max,xmin,xmax):
 
     dummy_up= GetNullHist(datahist)
     dummy_up.SetTitle("Stacked Backgrounds: Channels")
     dummy_up.GetYaxis().SetTitle("Events")
 
+    dummy_up.GetXaxis().SetRangeUser(xmin,xmax)
+
     dummy_down = GetNullHist(datahist)
 
-
+    dummy_down.GetXaxis().SetRangeUser(xmin,xmax)
+   
     dummy_down.GetYaxis().SetRangeUser(0.5,1.5)
     dummy_down.SetNdivisions(504,"Y")
 
@@ -119,7 +122,10 @@ def GetDataHist(year, channel, data_files, input_dir, hist_base, hist_config, hi
         # Retrieve the histogram from the file
         h_DATA = file.Get(hist_path)
         if not h_DATA:
-            raise ValueError(f"Skipping {data_file} since histogram {hist_path} is missing")
+            return "skip"
+        #raise ValueError(f"Skipping {data_file} since histogram {hist_path} is missing")
+
+        h_DATA = mylib.MakeOverflowBin(h_DATA)
 
         # Clone the histogram immediately (while the file is still open)
         h_data = h_DATA.Clone()
@@ -179,7 +185,7 @@ def process_histograms(NULLHist,year, channel, input_dir, background_files, hist
             histograms[bkg_file] = NULLHist
             continue  # Skip if histogram not found
 
-
+        hist = mylib.MakeOverflowBin(hist)
         hist_clone = hist.Clone()
         hist_clone.SetDirectory(0) 
         
@@ -447,28 +453,37 @@ def main():
     args = parser.parse_args()
 
     Plots = [["AK8/AK8J_Mass/l1J","M_l1J",[10]], ["ExtraLep/All_El_NonMatched","All_El_NonMatched",[1]],  ["ExtraLep/All_Muon_NonMatched","All_Muon_NonMatched",[1]], ["ExtraLep/All_Tau_NonMatched","All_Tau_NonMatched",[1]], ["Standard/Lepton_pt","Lepton_pt",[2]]]
-    IDs = ["HNL_ULIDv2_bjet_noak8","HNL_ULIDv2_ANv4"]
 
-    Flavours = ["MuMu","EE","EMu","LL"]
-    
-    hist_bases = [
-        ["HNL_HighMassSR1_InvBJet_TwoLepton_CR", "HNL_ULIDv2_bjet_noak8", "AK8/AK8Jet_dR_Electron","AK8Jet_dR_Electron", [2] , "EE"],
-        ["HNL_HighMassSR1_InvBJet_TwoLepton_CR", "HNL_ULIDv2_bjet_noak8", "AK8/AK8Jet_dR_Electron","AK8Jet_dR_Electron", [2] , "EMu"],
-        ["HNL_HighMassSR1_InvMET_TwoLepton_CR", "HNL_ULIDv2_bjet_noak8", "AK8/AK8Jet_dR_Electron","AK8Jet_dR_Electron", [2] , "EE"],
-        ["HNL_HighMassSR1_InvMET_TwoLepton_CR", "HNL_ULIDv2_bjet_noak8", "AK8/AK8Jet_dR_Electron","AK8Jet_dR_Electron", [2] , "EMu"],
-        ["HNL_HighMassSR1_InvBJet_TwoLepton_CR", "HNL_ULIDv2_bjet_noak8", "AK8/AK8Jet_dR_Muon","AK8Jet_dR_Muon", [2] , "MuMu"],
-	["HNL_HighMassSR1_InvBJet_TwoLepton_CR", "HNL_ULIDv2_bjet_noak8", "AK8/AK8Jet_dR_Muon","AK8Jet_dR_Muon", [2] , "EMu"],
-        ["HNL_HighMassSR1_InvMET_TwoLepton_CR", "HNL_ULIDv2_bjet_noak8", "AK8/AK8Jet_dR_Muon","AK8Jet_dR_Muon", [2] , "MuMu"],
-        ["HNL_HighMassSR1_InvMET_TwoLepton_CR", "HNL_ULIDv2_bjet_noak8", "AK8/AK8Jet_dR_Muon","AK8Jet_dR_Muon", [2] , "EMu"],
+    IDs = ["HNL_ULIDv2"]
+
+    Flavours = ["MuMuMu","EEE","EMuL","LLL"]
+
+    Plots = [
+        ["Leptons/Lep_1_pt","Lepton_pt",[2],0,500],
+        ["Leptons/Lep_2_pt","Lepton_pt",[2],0,300],
+        ["Standard/M_ll","Lepton mass",[2],0,400],
+        ["MainPlots/Ev_MET2_ST","",[2],0,20],
+        ["MainPlots/L_T","",[10],0,400],
+        ["MainPlots/M_l1J","",[5],0,2000],
+        ["MainPlots/Lepton_3_pt","",[2],0,200],
+        ["AK8/AK8J_Eta","",[2],-5,5],
+        ["AK8/AK8J_Pt","",[2],0,500],
+        ["AK8/AK8Jet_dR_Muon","",[2],0,10],
+        ["AK8/AK8Jet_dR_Electron","",[2],0,10],
+        ["dR/dR_ll","",[2],0,10],
+        ["Mass/M_lll","",[2],0,400],
+
     ]
 
-    for j_histname, j_label,j_rebin in Plots:
+    hist_bases = [
+    ]
+
+    for j_histname, j_label,j_rebin,j_min,j_max in Plots:
         for j_id in IDs:
             for j_flavour in Flavours:
-                hist_bases.append(["HNL_HighMassSR1_InvBJet_TwoLepton_CR", j_id,j_histname, j_label, j_rebin, j_flavour])
-                hist_bases.append(["HNL_HighMassSR1_InvMET_TwoLepton_CR",  j_id,j_histname, j_label, j_rebin, j_flavour])
+                hist_bases.append(["HNL_WZ_SR1_ThreeLepton_CR", j_id,j_histname, j_label, j_rebin, j_flavour,j_min,j_max])
 
-    
+
     
     input_dir ="/data6/Users/jalmond/2020/HL_SKFlatAnalyzer_UL_LONG/SKFlatAnalyzer/data_validation/analysis_validation/merged_samples/"+Plot_Version+"/"
 
@@ -476,19 +491,20 @@ def main():
             
     # Path and File Output
     Path(result_dir).mkdir(exist_ok=True)
-    Path(result_dir + Plot_Version).mkdir(exist_ok=True)
 
     # Set TDR style for CMS plotting
     tdrstyle.setTDRStyle()
 
     # Main execution loop
     try:
-        for hist_base, hist_config, histname, hist_axis, hist_rebin, flavour in hist_bases:
+        for hist_base, hist_config, histname, hist_axis, hist_rebin, flavour,xmin,xmax in hist_bases:
             log_section_start(f"Running {hist_base}")
             histname_syntaxfix = histname.replace("/", "_")
 
             for year_idx, year in enumerate(years):
-                output_file = f"{result_dir}/{year}_{hist_base}_{hist_config}_{histname_syntaxfix}_{flavour}_ratio_stacked_histogram.png"
+                Path(f"{result_dir}/{histname_syntaxfix}").mkdir(exist_ok=True)
+
+                output_file = f"{result_dir}/histname_syntaxfix/{year}_{hist_base}_{hist_config}_{histname_syntaxfix}_{flavour}_ratio_stacked_histogram.png"
                 logging.info(f"Running code to make {output_file}")
                 
                 stacked_hist = ROOT.THStack(f"stacked_hist_{flavour}_{year}", "Stacked Backgrounds")
@@ -497,6 +513,8 @@ def main():
 
                 # Extract data histogram
                 h_Data = GetDataHist(year, flavour, data_files, input_dir, hist_base, hist_config, histname, hist_axis, hist_rebin)
+                if h_Data == "skip":
+                    continue
                 if not h_Data:
                     logging.warning("h_Data is NULL")
 
@@ -526,7 +544,7 @@ def main():
                 ymax = max_value * 1.5
 
                 # Create dummy histograms for axis labels
-                h_dummy_up, h_dummy_down = create_dummy_pads(h_Data, ymax)
+                h_dummy_up, h_dummy_down = create_dummy_pads(h_Data, ymax,xmin,xmax)
 
                 # Create background and error histograms
                 bkg_hist, scaled_up_hist, scaled_down_hist = get_hists_from_stack(stacked_hist, 0.15)

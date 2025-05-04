@@ -162,7 +162,7 @@ std::vector<Jet> HNL_LeptonCore::GetHNLJets(const TString& JetType, AnalyzerPara
   if(JetType=="VBFTight") return SelectAK4Jets(AK4_Loose,     30., 4.7, private_lepton_cleaning,  0.4,0.8, "",   ElectronCollV,MuonCollV, AK8_Cleaning_JetColl);
   if(JetType=="TightPUL") return SelectAK4Jets(AK4_Loose,     20., 2.7, private_lepton_cleaning,  0.4,0.8, "Loose",   ElectronCollV,MuonCollV, AK8_Cleaning_JetColl);
   if(JetType=="VBFTightPUL") return SelectAK4Jets(AK4_Loose,  30., 4.7, private_lepton_cleaning,  0.4,0.8, "Loose",   ElectronCollV,MuonCollV, AK8_Cleaning_JetColl);
-  if(JetType=="VBFTightPUM") return SelectAK4Jets(AK4_Loose,  30., 4.7, private_lepton_cleaning,  0.4,0.8, "Medium",   ElectronCollV,MuonCollV, AK8_Cleaning_JetColl);
+  if(JetType=="VBFLoose") return SelectAK4Jets(AK4_Loose,     15., 4.7, false,  0.4,0.8, "",   ElectronCollV,MuonCollV, AK8_Cleaning_JetColl);
   if(JetType=="TightLepCleaned")    return SelectAK4Jets(AK4_Loose,     20., 2.7, true,  0.4,0.8, "",   ElectronCollV,MuonCollV, {});
 
   
