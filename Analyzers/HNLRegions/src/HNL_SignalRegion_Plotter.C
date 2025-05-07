@@ -7,22 +7,18 @@ void HNL_SignalRegion_Plotter::initializeAnalyzer(){
   HNL_LeptonCore::initializeAnalyzer();
   
   if(IsDATA){
-    bool run_ee_bdt=false;
-    bool run_mm_bdt=false;
-    bool run_em_bdt=false;
-
+    bool run_ee_bdt=false;    bool run_mm_bdt=false;    bool run_em_bdt=false;
 
     if (this->DataStream.Contains("DoubleMuon")) run_mm_bdt=true;
-    if (this->DataStream.Contains("MuonEG")) run_em_bdt=true;
-    if (this->DataStream.Contains("EGamma")) run_ee_bdt=true;
+    if (this->DataStream.Contains("MuonEG"))     run_em_bdt=true;
+    if (this->DataStream.Contains("EGamma"))     run_ee_bdt=true;
 
-    if (this->DataStream == "SingleMuon") run_mm_bdt=true;
-    if (this->DataStream == "DoubleEG") run_ee_bdt=true;
+    if (this->DataStream == "SingleMuon")     run_mm_bdt=true;
+    if (this->DataStream == "DoubleEG")       run_ee_bdt=true;
     if (this->DataStream == "SingleElectron") run_ee_bdt=true;
-
     
     SetupEventMVAReader("V2",run_ee_bdt,run_mm_bdt,run_em_bdt);
-    
+
   }
   else SetupEventMVAReader("V2");
 
@@ -79,7 +75,6 @@ void HNL_SignalRegion_Plotter::executeEvent(){
       AnalyzerParameter param_sr = Setup_Param_HNL_ULIDv2(id,GetChannelString(channel));
       RunULAnalysis(param_sr);
 
-
       /// Systematic run ...
       TString param_sr_name = param_sr.Name;
       TString param_sr_defname = param_sr.DefName;
@@ -123,7 +118,7 @@ void HNL_SignalRegion_Plotter::executeEvent(){
 
 void HNL_SignalRegion_Plotter::RunULAnalysis(AnalyzerParameter param_sr){
 
-  if(_jentry< 10) cout << "HNL_SignalRegion_Plotter::executeEvent " << param_sr.Name << endl;
+  if(_jentry< 1) cout << "HNL_SignalRegion_Plotter::executeEvent " << param_sr.Name <<  " " << param_sr.Channel << endl;
   
   Event ev = GetEvent();
   double weight =SetupWeight(ev,param_sr);
@@ -135,53 +130,28 @@ void HNL_SignalRegion_Plotter::RunULAnalysis(AnalyzerParameter param_sr){
   TString el_ID = SetLeptonID("Electron",param_sr);
   TString mu_ID = SetLeptonID("Muon", param_sr);
   
-  if(param_sr.syst_ == AnalyzerParameter::ScaleUp) weight *= GetScaleUncertainty(1);
+  if(param_sr.syst_ == AnalyzerParameter::ScaleUp)   weight *= GetScaleUncertainty(1);
   if(param_sr.syst_ == AnalyzerParameter::ScaleDown) weight *= GetScaleUncertainty(-1);
 
-
-  double Min_FakeMuon_Pt      =  5;
-  double Min_FakeElectron_Pt =  10 ;
-  std::vector<Muon>       MuonTightColl_Init     = SelectMuons    ( param_sr,mu_ID,     Min_FakeMuon_Pt,     2.4,weight);
-  std::vector<Electron>   ElectronTightColl_Init = SelectElectrons( param_sr,el_ID, Min_FakeElectron_Pt, 2.5,weight);
-
-  if(HasFlag("CompareTuneP")){
-    MuonTightColl_Init = GetHighPtMuons("TuneP_POG",mu_ID, Min_FakeMuon_Pt,     2.4);
-  }
+  double Min_FakeMuon_Pt     =  5;   double Min_FakeElectron_Pt =  10 ;
+  std::vector<Muon>       MuonTightColl_Init     = SelectMuons    ( param_sr,mu_ID,     Min_FakeMuon_Pt, 2.4, weight);
+  std::vector<Electron>   ElectronTightColl_Init = SelectElectrons( param_sr,el_ID, Min_FakeElectron_Pt, 2.5, weight);
 
   //// Apply Full Pt cut after pt corrected in fakes                                                                            
-  double Min_Muon_Pt     =  10.;
-  double Min_Electron_Pt =  15;
+  double Min_Muon_Pt     =  10.;   double Min_Electron_Pt =  15;
   std::vector<Muon>       MuonCollT  = SelectMuons(MuonTightColl_Init,mu_ID,     Min_Muon_Pt,     2.4);
   std::vector<Electron>   ElectronCollT = SelectElectrons(ElectronTightColl_Init,el_ID, Min_Electron_Pt, 2.5);
 
-  
-
+  // create lepton collection
   std::vector<Lepton *> leps_veto  = MakeLeptonPointerVector(MuonCollV,ElectronCollV);
 
-
-  std::vector<FatJet> AK8_JetColl                 = GetHNLAK8Jets(param_sr.AK8JetColl,param_sr);
+  std::vector<FatJet> AK8_JetColl                 = GetHNLAK8Jets(param_sr.AK8JetColl,  param_sr);
   std::vector<Jet>    AK4_JetColl                 = GetHNLJets(param_sr.AK4JetColl,     param_sr);
   std::vector<Jet>    AK4_VBF_JetColl             = GetHNLJets(param_sr.AK4VBFJetColl,  param_sr);
-  std::vector<Jet>    AK4_JetAllColl              = GetHNLJets("NoCut_Eta3",param_sr);
-  std::vector<Jet>    AK4_JetCollLoose            = GetHNLJets("Loose",     param_sr);
-  std::vector<Jet>    AK4_BJetColl                = GetHNLJets("BJet", param_sr);
 
-  if(HasFlag("TestAK8")){
-    vector<TString> AK8Tag = {"Loose","HNL","HNL_NoMass","HNL_PN","HNL_PN_NoMass"};
-    for (auto akg_tag : AK8Tag){
-      std::vector<FatJet> ak8_jetcoll         = GetHNLAK8Jets(akg_tag,param_sr);
-      for(const auto& ijet : ak8_jetcoll)            FillHist( "AK8_Plots_"+akg_tag+"/AK8J_Eta",     ijet.Eta()       , weight, 100, -5., 5.   , "AK8 Jet #eta");
-      double weight_jets=weight;
-      EvalJetWeight(AK4_JetColl,AK4_VBF_JetColl, AK8_JetColl, weight_jets, param_sr);
-      for(const auto& ijet : ak8_jetcoll)            FillHist( "AK8_Plots_"+akg_tag+"/AK8J_Eta_weighted",     ijet.Eta()       , weight_jets, 100, -5., 5.   , "AK8 Jet #eta");
-      for(const auto& ijet : ak8_jetcoll)            FillHist(  "AK8_Plots_"+akg_tag+"/AK8J_SDMass",      ijet.SDMass()    , weight_jets, 100, 0., 500.  , "Mass_{softdrop} GeV");
-      for(const auto& ijet : ak8_jetcoll)    {
-	if(ijet.SDMass()    < 40) FillHist( "AK8_Plots_"+akg_tag+"/AK8J_SB1_Eta_weighted",     ijet.Eta()       , weight_jets, 100, -5., 5.   , "AK8 Jet #eta");
-	if(ijet.SDMass()    > 130) FillHist( "AK8_Plots_"+akg_tag+"/AK8J_SB2_Eta_weighted",     ijet.Eta()       , weight_jets, 100, -5., 5.   , "AK8 Jet #eta");
-      }
-    }
-  }
-  
+  //// Alternate jet samples 
+  std::vector<Jet>    AK4_JetCollLoose            = GetHNLJets("Loose",param_sr);
+  std::vector<Jet>    AK4_BJetColl                = GetHNLJets("BJet", param_sr);
 
   Particle METv = GetvMET("PuppiT1xyULCorr", param_sr, MuonCollT, ElectronCollT); // returns MET with systematic correction; run this after all object selection done; NOTE that VBF jet is used here
   
@@ -199,74 +169,9 @@ void HNL_SignalRegion_Plotter::RunULAnalysis(AnalyzerParameter param_sr){
   ///// Scan Tau ID
 
   //// Add check for Taus                                                                                                                                                                                         
-  std::vector<Tau>    TauColl_Cleaned;
+  std::vector<Tau>  TauColl_Cleaned= SelectTaus   (leps_veto, AK8_JetColl, param_sr.Tau_Tight_ID,20., 2.3,false);
 
-  if(HasFlag("TauScan")){
-
-    param_sr.PlottingVerbose=0;
-    vector<TString> TauIDs = {"NoCut","Default"};
-    vector<TString> TauJetIDs={"JetVVL","JetVL","JetL","JetM","JetT","JetVT","JetVVT"};
-    vector<TString> TauElIDs={"ElVVL","ElT"};
-    vector<TString> TauMuIDs={"MuVL","MuT"};
-    
-    for(auto ij : TauJetIDs){
-      for(auto ie: TauElIDs){
-	for(auto im: TauMuIDs){
-	  TauIDs.push_back(ij+"_"+ie+"_"+im);
-	  TauIDs.push_back("AK8_"+ij+"_"+ie+"_"+im);
-	}
-      }
-    }
-
-    TString ORIGName= param_sr.Name;
-    TString ORIGDefName= param_sr.DefName;
-
-    for(auto id_tau : TauIDs){
-
-      param_sr.Name= ORIGName+id_tau;
-      param_sr.DefName=ORIGDefName +id_tau;
-
-      std::vector<Tau>   TauColl_Uncleaned  = SelectTaus   (leps_veto,id_tau,20., 2.3);
-      TauColl_Cleaned.clear();
-     
-      for(auto ilep : TauColl_Uncleaned) {
-	if(id_tau == "Default") continue;
-	bool matched=false;
-	for(auto ilep2 : leps_veto) {
-	  if(ilep.DeltaR(*ilep2) < 0.4) matched=true;
-	}
-
-	if(id_tau.Contains("AK8")){
-	  for(auto ijet : AK8_JetColl){
-	    if(ijet.DeltaR(ilep) < 0.8) matched=true;
-	  }
-	}
-	
-	if(matched) continue;
-	
-	TauColl_Cleaned.push_back(ilep);
-      }
-
-      /// Run Analyser with Tau ID cleaned 
-      RunAllSignalRegions(Inclusive,
-                          ElectronCollT,ElectronCollV,MuonCollT,MuonCollV,  TauColl_Cleaned,
-                          AK4_JetCollLoose,AK4_JetColl,AK4_VBF_JetColl,AK8_JetColl, AK4_BJetColl,
-                          ev,METv, param_sr, -1, weight);
-
-      
-    }
-    return;
-  } //// Tau Scan code
-
-
-
-  //// Select Taus, and clean with AK8 jets and light-leptons                                                                                                                                                                                              
-
-  //TauColl_Cleaned  = SelectTaus   (leps_veto, AK8_JetColl, "JetT_MuT_ELT",20., 2.3);
-
-  TauColl_Cleaned.clear();
-
-     
+  
   ///// PDF SCAN FOR SIGNAL 
   if(param_sr.syst_ == AnalyzerParameter::PDF) {
     TString ORIGName= param_sr.Name;

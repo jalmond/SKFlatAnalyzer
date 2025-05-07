@@ -1,4 +1,4 @@
-[ libUtilsAnalyzers.so libAnalyzers.so libAnalyzerTools.so libGEScaleSyst.so libDataFormats.so libTree.so ]
+[ libUtilsAnalyzers.so libHNLRegionsAnalyzers.so libAnalyzers.so libAnalyzerTools.so libGEScaleSyst.so libDataFormats.so libTree.so ]
 # List of selected classes
 class HNL_CrossCheck
 class HNL_ElectronID_HighPt
