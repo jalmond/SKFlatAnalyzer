@@ -478,9 +478,6 @@ void   HNL_RegionDefinitions::RunMainRegionCode(bool IsSR,HNL_LeptonCore::Channe
 
 
       }
-      //// Low Mass BDT Binned R1+2+3 only limit                                                                                                                          
-      //      for(unsigned int im=0; im<MNStrList.size(); im++) FillLimitInput(LimitRegionsBDT, weight_reg, RegionBin,"LimitExtractionBDT/"+param.Name+"/M"+MNStrList[im],"SR3_"+channel_string+"_"+GetYearString()+"_"+MNStrList[im],channel_string);
-	
     }
     else{
 
@@ -779,7 +776,7 @@ TString HNL_RegionDefinitions::RunSignalRegionWWString(bool ApplyForSR,HNL_Lepto
   double zeppenfeld = CalulateMaxZeppenfeld(leps, Av_JetEta,maxDiJetDeta);
   
   if(zeppenfeld > 0.75) return "false";
-
+  
   /// remove mjj cut set to 0
   //  if(!PassVBF(JetColl,leps,0., true)) return "false";
     
@@ -1180,10 +1177,8 @@ bool HNL_RegionDefinitions::PassVBFInitial(vector<Jet>&  JetColl){
 
   if(JetColl.size() < 2) return false;
 
-
   int ijet1(0), ijet2(1);
   double maxDiJetDeta = fabs(JetColl[ijet1].Eta() - JetColl[ijet2].Eta());
-
 
   if(maxDiJetDeta < 2.5) return false;
   Particle JJ = JetColl[ijet1] + JetColl[ijet2];
