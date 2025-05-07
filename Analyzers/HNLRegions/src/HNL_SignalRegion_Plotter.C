@@ -27,12 +27,6 @@ void HNL_SignalRegion_Plotter::initializeAnalyzer(){
   else SetupEventMVAReader("V2");
 
   nLog = 100000;
-
-  RunTopID = HasFlag("RunHNTop");
-  RunPOGID = HasFlag("RunPOG");
-  RunHighPtID = HasFlag("RunHighPt");
-  RunPekingID = HasFlag("RunPeking");
-  
 }
 
 
@@ -40,59 +34,15 @@ void HNL_SignalRegion_Plotter::executeEvent(){
 
   FillTimer("START_EV");
   
-
-  if(_jentry == 0){
-    cout << "HNL_SignalRegion_Plotter::IsData = " << IsData << endl;
-  }
-
-  if(_jentry < 1000 && HasFlag("PrintGen"))PrintGen(All_Gens);
-
-  if(HasFlag("ScanSystematic")){
-    ///Only scan 1000 events
-    if(_jentry > 100) return;
-  }
-
-
+  if(_jentry == 0)    cout << "HNL_SignalRegion_Plotter::IsData = " << IsData << endl;
+  
   // Default ID setting
   vector<TString> LepIDs = {"HNL_ULIDv2"};
   
-  // Override with flags (only one set of IDs will apply)
-  if(User("jalmond")){
-    //LepIDs = {"HNTightV2", "POGTight", "HNL_ULIDv2"};
-    LepIDs = {"HNL_ULIDv2"};
-  }
-  else if (RunTopID) {
-    LepIDs = {"TopHN"};
-  }
-  else if (RunPOGID) {
-    LepIDs = {"POGTight"};
-  }
-  else if (RunHighPtID) {
-    LepIDs = {"HNL_ULID", "HighPt"};
-  }
-  else if (RunPekingID) {
-    LepIDs = {"Peking"};
-  }
-
+  vector<HNL_LeptonCore::Channel> ChannelsToRun= {EE, MuMu, EMu};
 
   
-  vector<HNL_LeptonCore::Channel> ChannelsToRun;
-  
-  // Apply overrides first, if any
-  if (RunHighPtID)     ChannelsToRun = {MuMu};
-  else {
-    if (RunEE)   ChannelsToRun.push_back(EE);
-    if (RunMuMu) ChannelsToRun.push_back(MuMu);
-    if (RunEMu)  ChannelsToRun.push_back(EMu);
-    
-    // Default fallback if no specific channel is selected
-    if (ChannelsToRun.empty()) {
-      ChannelsToRun = {EE, MuMu, EMu};
-    }
-  }
- 
-
-  //// Match Channel to data stream
+  /// Match Channel to data stream
   if (IsDATA) {
     const auto& ds = this->DataStream;
     
@@ -120,38 +70,20 @@ void HNL_SignalRegion_Plotter::executeEvent(){
     }
   }
   
-  // Override for specific flag
-  if (HasFlag("CompareTuneP")) {
-    ChannelsToRun = {MuMu};
-    LepIDs = {"HNTightV2", "POGTight", "HNL_ULIDv2"};
-  }
-
-  
   for (auto id: LepIDs){
-
     for(auto channel : ChannelsToRun){
       
       if(MCSample.Contains("Type")&& !SelectChannel(channel)) continue;
 
-      AnalyzerParameter param_sr;
-      if(id=="HNL_ULIDv2") param_sr = Setup_Param_HNL_ULIDv2(id,GetChannelString(channel));
-      else param_sr = HNL_LeptonCore::InitialiseHNLParameter(id,channel);
-
-      if(HasFlag("HighPtTrigger")) param_sr.TriggerSelection     = "HighPt";          
-      if(HasFlag("HighPtTrigger")) param_sr.Apply_Weight_TriggerSF = false;
-
+      //// Central run...
+      AnalyzerParameter param_sr = Setup_Param_HNL_ULIDv2(id,GetChannelString(channel));
       RunULAnalysis(param_sr);
 
+
+      /// Systematic run ...
       TString param_sr_name = param_sr.Name;
-
-      TString SystLabel = "";
-      if(HasFlag("Syst_Theory")) SystLabel= "Theory";
-      else if(HasFlag("Syst_Muon")) SystLabel= "Muon";
-      else if(HasFlag("Syst_Muon_Reco")) SystLabel= "Muon_Reco";
-      else if(HasFlag("Syst_Jet")) SystLabel= "Jet";
-      else if(HasFlag("Syst_MET")) SystLabel= "MET";      
-      else SystLabel=GetChannelString(channel);
-
+      TString param_sr_defname = param_sr.DefName;
+      TString SystLabel = GetChannelString(channel);
 
       if(HasFlag("RunSyst")){
 
@@ -172,13 +104,15 @@ void HNL_SignalRegion_Plotter::executeEvent(){
 	if(channel==EMu){
 	  if(!(ev.PassTrigger(TrigList_HNL_MuEG) || ev.PassTrigger(TrigList_HNL_EGMu) )) continue;
 	}
-
       }
 
       //// Run Systematics
       for(auto isyst : GetSystList(SystLabel)){
 	bool runJob = UpdateParamBySyst(id,param_sr,AnalyzerParameter::Syst(isyst),param_sr_name);
 	if(runJob) RunULAnalysis(param_sr);
+	/// Just in case reset param names
+	param_sr.Name=param_sr_name;
+	param_sr.DefName=param_sr_defname;
       }
     }
   }
