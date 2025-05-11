@@ -67,18 +67,20 @@ void HNL_LeptonCore::Fill_PlotsAK8(AnalyzerParameter& param, TString  region, TS
   Particle N2Cand = fatjets[0] + *leps[1];
   Particle llJCand = *leps[0] + *leps[1] + fatjets[0];
 
-  int nAk8bins=4;
-  double AK8bins[nAk8bins+1] = { 0,400.,500,2000,4000};
+  int nAk8bins=3;
+  double AK8bins[nAk8bins+1] = { 0,300.,500,2000};
 
   // Fill mass histograms [binned for python plotter, Main plots for unbinned]
   FillHist(plot_dir + region + "/AK8J_Mass/l1J", N1Cand.M(), w, nAk8bins,AK8bins, "Reco M_{l1J}");
   FillHist(plot_dir + region + "/AK8J_Mass/l2J", N2Cand.M(), w,nAk8bins,AK8bins , "Reco M_{l2J}");
   FillHist(plot_dir + region + "/AK8J_Mass/llJ", llJCand.M(), w, nAk8bins,AK8bins, "Reco M_{llJ}");
-
-
   
   //// Now Add detailed plots by adding userflag
   if(!User("jalmond")) return;
+
+  FillHist(plot_dir + region + "/AK8J_Unbinned_Mass/l1J", N1Cand.M(), w, 100,0,5000, "Reco M_{l1J}");
+  FillHist(plot_dir + region + "/AK8J_Unbinned_Mass/l2J", N2Cand.M(), w,  100,0,5000, "Reco M_{l2J}");
+  FillHist(plot_dir + region + "/AK8J_Unbinned_Mass/llJ", llJCand.M(), w, 100,0,5000, "Reco M_{llJ}");
 
   
   // Loop over FatJets and perform necessary calculations

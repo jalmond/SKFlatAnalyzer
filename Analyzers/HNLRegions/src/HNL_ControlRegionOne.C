@@ -19,8 +19,9 @@ void HNL_ControlRegionOne::executeEvent(){
   //   else run all 3 channels
   if(ChannelsToRun.size() == 0)ChannelsToRun = {EE,MuMu,EMu};
 
-  vector<TString> Run_Config = {"ANv4","AK8CleanLoose", "presel_mod","presel","bjet_noak8","veto_id_one","veto_id_two","bjet_noak8_hnlveto", "TauVeto","TauVeto2","TauVeto3","NoOverlap","presel_bjetlepclean"};
+  vector<TString> Run_Config = {"ANv4","AK8CleanLoose", "presel_mod","presel","bjet_noak8","veto_id_one","veto_id_two","bjet_noak8_hnlveto", "TauVeto","TauVeto2","TauVeto3","NoOverlap","presel_bjetlepclean","presel_bjetmod","presel_ak8_tight","presel_bjetmod_ak8_tight","presel_bjetmodx"};
 
+  //Run_Config = {"presel"};
   
   ///// Run command 
 
@@ -46,19 +47,54 @@ void HNL_ControlRegionOne::executeEvent(){
           param_cr.DefName = param_cr.DefName + "_"+iconfig;
           param_cr.Jet_ID = "tightLepVeto";
           param_cr.FatJet_ID = "tightLepVeto";
-          param_cr.SRConfig = "PreselectionV2";
-
-	  param_cr.BJetColl = "Tight_NoAK8Cleaning";
+	  param_cr.BJetColl = "Tight";
 
 	  RunControlRegions(param_cr , {"SS_CR1"} );
 
         }
+	else if(iconfig == "presel_bjetmod"){
+          AnalyzerParameter param_cr= Setup_Param_HNL_ULIDv2(id,GetChannelString(channel));
+          param_cr.Name = param_cr.Name + "_"+iconfig;
+          param_cr.DefName = param_cr.DefName + "_"+iconfig;
+          param_cr.Jet_ID = "tightLepVeto";
+          param_cr.FatJet_ID = "tightLepVeto";
+          param_cr.BJetColl = "Tight_LV_NoAK8Cleaning";
+          RunControlRegions(param_cr , {"SS_CR1"} );
+        }
+	else if(iconfig == "presel_bjetmodx"){
+	  AnalyzerParameter param_cr= Setup_Param_HNL_ULIDv2(id,GetChannelString(channel));
+          param_cr.Name = param_cr.Name + "_"+iconfig;
+          param_cr.DefName = param_cr.DefName + "_"+iconfig;
+          param_cr.Jet_ID = "tightLepVeto";
+          param_cr.FatJet_ID = "tightLepVeto";
+          param_cr.BJetColl = "Tight_xLV_NoAK8Cleaning";
+          RunControlRegions(param_cr , {"SS_CR1"} );
+        }
+
 	else if(iconfig == "presel"){
           AnalyzerParameter param_cr= Setup_Param_HNL_ULIDv2(id,GetChannelString(channel));
           param_cr.Name = param_cr.Name + "_"+iconfig;
           param_cr.DefName = param_cr.DefName + "_"+iconfig;
           param_cr.Jet_ID = "tightLepVeto";
           param_cr.FatJet_ID = "tightLepVeto";
+          param_cr.BJetColl = "Tight_NoAK8Cleaning";
+          RunControlRegions(param_cr , {"SS_CR1"} );
+        }
+	else if(iconfig == "presel_bjetmod_ak8_tight"){
+	  AnalyzerParameter param_cr= Setup_Param_HNL_ULIDv2(id,GetChannelString(channel));
+          param_cr.Name = param_cr.Name + "_"+iconfig;
+          param_cr.DefName = param_cr.DefName + "_"+iconfig;
+          param_cr.Jet_ID = "tightLepVeto";
+          param_cr.FatJet_ID = "tight";
+          param_cr.BJetColl = "Tight_LV_NoAK8Cleaning";
+          RunControlRegions(param_cr , {"SS_CR1"} );
+        }
+        else if(iconfig == "presel_ak8_tight"){
+          AnalyzerParameter param_cr= Setup_Param_HNL_ULIDv2(id,GetChannelString(channel));
+          param_cr.Name = param_cr.Name + "_"+iconfig;
+          param_cr.DefName = param_cr.DefName + "_"+iconfig;
+          param_cr.Jet_ID = "tightLepVeto";
+          param_cr.FatJet_ID = "tight";
           param_cr.BJetColl = "Tight_NoAK8Cleaning";
           RunControlRegions(param_cr , {"SS_CR1"} );
         }
@@ -247,7 +283,53 @@ void HNL_ControlRegionOne::RunControlRegions(AnalyzerParameter param_cr, vector<
 
   std::vector<Jet>    AK4_JetCollLoose            = GetHNLJets("Loose",     param_cr);
   std::vector<Jet>    AK4_BJetColl                = GetHNLJets("BJet", param_cr);
+
+  std::vector<Jet>    AK4_BJetColl2               = GetHNLJets("BJet2", param_cr);
+  std::vector<Jet>    AK4_BJetColl3               = GetHNLJets("BJet3", param_cr);
+  std::vector<Jet>    AK4_BJetColl4               = GetHNLJets("BJet4", param_cr);
+  std::vector<Jet>    AK4_BJetColl5               = GetHNLJets("BJet5", param_cr);
+
+  std::vector<Lepton *> leps_veto  = MakeLeptonPointerVector(MuonVetoColl,ElectronVetoColl);
+
+  /*
+  int sb1 = AK4_BJetColl.size();
+  int sb2 = AK4_BJetColl2.size();
+  int sb3 = AK4_BJetColl3.size();
+  int sb4 = AK4_BJetColl4.size();
+  int sb5 = AK4_BJetColl5.size();
+ 
+  bool check_Ev=false;
+  for(auto ijet : AK4_BJetColl){
+    for(auto ilep : leps_veto) {
+      if(ilep->DeltaR(ijet) < 0.4){
+	cout << "Lep BJet dr = " << ilep->DeltaR(ijet) << endl;
+	check_Ev=true;
+      }
+    }
+  }
   
+  if (check_Ev){
+    //&& sb2 != sb3 || sb2 != sb4 || sb2 != sb5) {
+    
+    cout << event  << " : " << param_cr.Name << "  AK4_BJetColl = " << AK4_BJetColl.size() << " param.Jet_ID = " << param_cr.Jet_ID << endl;
+    cout << "AK4_BJetColl1.size = " << sb1 << endl;
+    cout << "AK4_BJetColl2.size = " << sb2 << endl;
+    cout << "AK4_BJetColl3.size = " << sb3 << endl;
+    cout << "AK4_BJetColl4.size = " << sb4 << endl;
+    cout << "AK4_BJetColl5.size = " << sb5 << endl;
+    std::vector<FatJet> AK8L_JetColl             = GetHNLAK8Jets("Loose",param_cr);
+    cout << "AK8L_JetColl size = " << AK8L_JetColl.size() << endl;
+    cout << "AK8_JetColl size = " << AK8_JetColl.size() << endl;
+    for(auto ijet : AK4_BJetColl2){
+      for(auto ifjet : AK8L_JetColl) {
+	cout << "AK8 BJet dr = " << ifjet.DeltaR(ijet) << endl;
+      }
+      cout << "TightID LepV pass = " << ijet.PassID("tightLepVeto") << endl;
+      for(auto ilep : leps_veto) cout << "Lep BJet dr = " << ilep->DeltaR(ijet) << endl;
+
+    }
+  }
+  */
   EvalJetWeight(AK4_JetColl,AK4_VBF_JetColl, AK8_JetColl, weight, param_cr);
 
   Particle METv = GetvMET("PuppiT1xyULCorr", param_cr, MuonTightColl,ElectronTightColl);
@@ -260,7 +342,6 @@ void HNL_ControlRegionOne::RunControlRegions(AnalyzerParameter param_cr, vector<
 
   ///// Scan Tau ID                                              
 
-  std::vector<Lepton *> leps_veto  = MakeLeptonPointerVector(MuonVetoColl,ElectronVetoColl);
   
   //// Add check for Taus
 

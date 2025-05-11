@@ -3,7 +3,9 @@
 void HNL_LeptonCore::DefineLimitBins(){
   
   //// Define SR 1 binning to allow nevents >= 1 per bin per era
-  
+
+  vector<double> sr1bins_ll = {0.,  500, 750,  2000.};
+
   vector<double> sr1bins_mm;
   vector<double> sr1bins_ee;
   vector<double> sr1bins_em;
