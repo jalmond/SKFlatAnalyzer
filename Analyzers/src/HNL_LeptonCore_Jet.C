@@ -123,7 +123,11 @@ std::vector<FatJet> HNL_LeptonCore::GetHNLAK8Jets(const TString& JetType, Analyz
 
   if(JetType=="HNL_NoMass")
     return SelectAK8Jets  (AK8JetColl,  200., 2.7,  private_lepton_cleaning,   1., false, -999, false, 0.,  200000., "",  ElectronCollV, MuonCollV);
+  
+  if(JetType=="HNL_Loose")
+    return SelectAK8Jets  (AK8JetColl,  200., 2.7,  true,   1., false, -999, true,  40., 130.,    "",  ElectronCollV, MuonCollV);
 
+  
   if(JetType=="BDT")
     return SelectAK8Jets  (AK8JetColl,  200., 2.7,  private_lepton_cleaning,   1., false, -999, false, 0.,  200000., "",  ElectronCollV, MuonCollV);
 
@@ -144,7 +148,8 @@ std::vector<Jet> HNL_LeptonCore::GetHNLJets(const TString& JetType, AnalyzerPara
 
   ///// Selected AK4 collections
   
-  std::vector<Jet> AK4_Loose      =  SelectJets   ( param, param.Jet_ID, param.Jet_MinPt,  param.Jet_MaxEta);
+  std::vector<Jet> AK4_Loose          =  SelectJets   ( param, param.Jet_ID, param.Jet_MinPt,  param.Jet_MaxEta);
+  std::vector<Jet> AK4_Loose_TightID =  SelectJets   ( param, "tight", param.Jet_MinPt,  param.Jet_MaxEta);
 
   // AK8 for cleaning
   // Do we clean using all AK8?
@@ -173,12 +178,37 @@ std::vector<Jet> HNL_LeptonCore::GetHNLJets(const TString& JetType, AnalyzerPara
   }
   
   /// Jets with no AK8 cleaning 
-  if(JetType=="Tight_NoAK8Cleaning")    return SelectAK4Jets(AK4_Loose,     20., 2.7, private_lepton_cleaning,  0.4,0.8, "",   ElectronCollV,MuonCollV, {});
+  if(JetType=="Tight_NoAK8Cleaning")         return SelectAK4Jets(AK4_Loose,     20., 2.7, private_lepton_cleaning,  0.4,0.8, "",   ElectronCollV,MuonCollV, {});
+  if(JetType=="Tight_LV_NoAK8Cleaning")      return SelectAK4Jets(AK4_Loose_TightID,     20., 2.7, true,  0.4,0.8, "",   ElectronCollV,MuonCollV, {});
+  if(JetType=="Tight_xLV_NoAK8Cleaning")     return SelectAK4Jets(AK4_Loose,     20., 2.7, true,  0.4,0.8, "",   ElectronCollV,MuonCollV, {});
+  if(JetType=="Tight_noLV_NoAK8Cleaning")    return SelectAK4Jets(AK4_Loose,     20., 2.7, false,  0.4,0.8, "",   ElectronCollV,MuonCollV, {});
 
   /// BJET                                                                                                                                                                 
   JetTagging::Parameters param_jets = GetParamJetTagger(param);
   if(JetType=="BJet"){
+    
     std::vector<Jet> BJetCollLoose    = GetHNLJets(param.BJetColl,     param);
+    return SelectBJets(param, BJetCollLoose, param_jets);
+  }
+  if(JetType=="BJet2"){
+
+    std::vector<Jet> BJetCollLoose    = GetHNLJets("Tight_LV_NoAK8Cleaning",     param);
+    return SelectBJets(param, BJetCollLoose, param_jets);
+  }
+  if(JetType=="BJet3"){
+    
+    std::vector<Jet> BJetCollLoose    = GetHNLJets("Tight_xLV_NoAK8Cleaning",     param);
+    return SelectBJets(param, BJetCollLoose, param_jets);
+  }
+  if(JetType=="BJet4"){
+
+    std::vector<Jet> BJetCollLoose    = GetHNLJets("Tight_NoAK8Cleaning",     param);
+    return SelectBJets(param, BJetCollLoose, param_jets);
+  }
+
+   if(JetType=="BJet5"){
+
+    std::vector<Jet> BJetCollLoose    = GetHNLJets("Tight_noLV_NoAK8Cleaning",     param);
     return SelectBJets(param, BJetCollLoose, param_jets);
   }
 

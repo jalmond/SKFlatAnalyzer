@@ -203,11 +203,11 @@ if args.Signal:
 
 if args.RunData:
 
-    DATADir = "DL"
-    if UseGT36 and era == "2018":
-        DATADir = "DL_GT36"
-
     for era in era_list:
+        DATADir = "DL"
+        if UseGT36 and era == "2018":
+            DATADir = "DL_GT36"
+
         RunCommand(TestMode,f"SKFlat.py -a {analyzer} -l {datapath}/{DATADir}/{era}_DiLepton_MuMu.txt -n 100 --nmax {nmax} -e {era} --skim SkimTree_HNMultiLepBDT {FlagCommand('RunData', flags)} &")
         RunCommand(TestMode,f"SKFlat.py -a {analyzer} -l {datapath}/{DATADir}/{era}_DiLepton_EE.txt   -n 100 --nmax {nmax} -e {era} --skim SkimTree_HNMultiLepBDT {FlagCommand('RunData', flags)} &")
         RunCommand(TestMode,f"SKFlat.py -a {analyzer} -l {datapath}/{DATADir}/{era}_DiLepton_EMu.txt  -n 100 --nmax {nmax} -e {era} --skim SkimTree_HNMultiLepBDT {FlagCommand('RunData', flags)} &")
@@ -216,12 +216,11 @@ if args.RunData:
 if args.Central or args.Systematics:
 
     ### DATA JOBS NOT CODED YET SINCE BLINDED
-    DATADir = "DL"
-    if UseGT36 and era == "2018":
-        DATADir = "DL_GT36"
-        
 
     for era in era_list:
+        DATADir = "DL"
+        if UseGT36 and era == "2018":
+            DATADir = "DL_GT36"
 
         # Running background and fake data commands
         RunCommand(TestMode,f"SKFlat.py -a {analyzer} -l {sigpath}/Private/SSWW.txt -n 20    --nmax {nmax} -e {era} --skim SkimTree_HNMultiLepBDT {FlagCommand('RunSignal', flags)} &")

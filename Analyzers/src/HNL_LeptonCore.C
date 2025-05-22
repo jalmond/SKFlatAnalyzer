@@ -561,8 +561,11 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
     
     if(IsData) return {};
     
-    if(HasFlag("ScanSystematicMET")) {
-      SystList = {AnalyzerParameter::METUnclUp,AnalyzerParameter::METUnclDown};
+    if(HasFlag("ScanSystematic")) {
+      SystList = {AnalyzerParameter::METUnclUp,AnalyzerParameter::METUnclDown,
+	AnalyzerParameter::JetResUp,AnalyzerParameter::JetResDown,
+	AnalyzerParameter::JetEnUp, AnalyzerParameter::JetEnDown};
+      
       return SystList;
     }
     if(HasFlag("RunSyst")){

@@ -1,6 +1,6 @@
-#include "HNL_ControlRegion_Plotter.h"
+#include "HNL_ControlRegion_TestRun.h"
 
-void HNL_ControlRegion_Plotter::initializeAnalyzer(){
+void HNL_ControlRegion_TestRun::initializeAnalyzer(){
 
   HNL_LeptonCore::initializeAnalyzer();
 
@@ -34,7 +34,7 @@ void HNL_ControlRegion_Plotter::initializeAnalyzer(){
 }
 
 
-void HNL_ControlRegion_Plotter::executeEvent(){
+void HNL_ControlRegion_TestRun::executeEvent(){
 
   if(!(_jentry%10000)) run_Debug=true;
   else run_Debug=false;
@@ -160,7 +160,7 @@ void HNL_ControlRegion_Plotter::executeEvent(){
   return;
 }
 
-void HNL_ControlRegion_Plotter::RunControlRegions(AnalyzerParameter param_cr, vector<TString> CRs){
+void HNL_ControlRegion_TestRun::RunControlRegions(AnalyzerParameter param_cr, vector<TString> CRs){
 
   run_Debug = (_jentry%nLog==0);
 
@@ -344,12 +344,12 @@ void HNL_ControlRegion_Plotter::RunControlRegions(AnalyzerParameter param_cr, ve
 
 
 
-HNL_ControlRegion_Plotter::HNL_ControlRegion_Plotter(){
+HNL_ControlRegion_TestRun::HNL_ControlRegion_TestRun(){
 
   SetupEvMVA();
 }
  
-HNL_ControlRegion_Plotter::~HNL_ControlRegion_Plotter(){
+HNL_ControlRegion_TestRun::~HNL_ControlRegion_TestRun(){
 
   DeleteEvMVA();
 }

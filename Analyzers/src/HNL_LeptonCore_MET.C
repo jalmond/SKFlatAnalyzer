@@ -128,9 +128,6 @@ Particle HNL_LeptonCore::GetvMET(const TString& METType, AnalyzerParameter param
     Particle a = GetvCorrMET(METType,muons,param,vStandMET) ;
     cout << "GetvMET smear = " << a.Pt() << " " << vStandMET.Pt()<<endl;
 
-    Particle b = GetvCorrMET(METType,muons,param,vStandMET) ;
-    cout << "GetvMET smear2 = " << b.Pt() << " " << vStandMET.Pt()<<endl;
-
   }
   
   if(!ApplySyst && propsmear)  return GetvCorrMET(METType,muons,param,vStandMET);

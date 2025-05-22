@@ -122,6 +122,7 @@ def GetDataHist(year, channel, data_files, input_dir, hist_base, hist_config, hi
         # Retrieve the histogram from the file
         h_DATA = file.Get(hist_path)
         if not h_DATA:
+            return "NULL"
             raise ValueError(f"Skipping {data_file} since histogram {hist_path} is missing")
 
         # Clone the histogram immediately (while the file is still open)
@@ -450,7 +451,8 @@ def main():
     args = parser.parse_args()
 
     Plots = [
-        ["AK8/AK8J_Mass/l1J","M_l1J",[10],0,2000],
+        ["AK8/AK8J_Mass/l1J","M_l1J",[10],0,4000],
+        ["AK8/AK8J_Mass/llJ","M_llJ",[10],0,4000],
         ["ExtraLep/All_El_NonMatched_CBVeto","All_El_NonMatched CB",[1],0,10],
         ["ExtraLep/All_El_NonMatched_MVA","All_El_NonMatched MVA",[1],0,10],
         ["ExtraLep/All_Muon_NonMatched","All_Muon_NonMatched",[1],0,10],
@@ -463,11 +465,13 @@ def main():
         ["Standard/M_ll","Lepton mass",[2],0,300],
         ["Standard/N_AK4J","N_AK4J",[1],0,10],
         ["DeltaR/dR_ll","Lepton mass",[2],0,5],
-        ]
+        ["NObj/N_ak8_loose_jet","N_AK4J",[1],0,10]]
+    
+    IDs = ["HNL_ULIDv2_bjet_noak8","HNL_ULIDv2_ANv4","HNL_ULIDv2_TauVeto","HNL_ULIDv2_veto_id_one","HNL_ULIDv2_veto_id_two","HNL_ULIDv2_TauVeto2","HNL_ULIDv2_TauVeto3","HNL_ULIDv2_presel","HNL_ULIDv2_NoOverlap","HNL_ULIDv2_presel_bjetmod","HNL_ULIDv2_presel_bjetmod_ak8_tight"]
 
-    IDs = ["HNL_ULIDv2_bjet_noak8","HNL_ULIDv2_ANv4","HNL_ULIDv2_TauVeto","HNL_ULIDv2_veto_id_one","HNL_ULIDv2_veto_id_two","HNL_ULIDv2_TauVeto2","HNL_ULIDv2_TauVeto3","HNL_ULIDv2_presel","HNL_ULIDv2_NoOverlap"]
+    IDs = ["HNL_ULIDv2_AK8_Veto1","HNL_ULIDv2_AK8_Veto2","HNL_ULIDv2_AK8_Veto3"]
 
-
+    
     
     Flavours = ["MuMu","EE","EMu","LL"]
     
@@ -519,9 +523,11 @@ def main():
 
                 # Extract data histogram
                 h_Data = GetDataHist(year, flavour, data_files, input_dir, hist_base, hist_config, histname, hist_axis, hist_rebin)
+                if h_Data == "NULL":
+                    continue
                 if not h_Data:
                     logging.warning("h_Data is NULL")
-
+                
                 NULLHist = GetNullHist(h_Data)
                
                 log_section_start("Making Stack")

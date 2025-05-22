@@ -1,5 +1,6 @@
 *~
-data_validation/analysis_validation/region_comparison/Plots/ControlRegion*/results*
+data_validation/analysis_validation/region_comparison/FlavourSplitPlots/*/results_*
+data_validation/analysis_validation/region_comparison/Plots/*/results*
 data_validation/analysis_validation/merged_samples
 data_validation/analysis_validation/region_comparison/ANv5/results*
 data_validation/analysis_validation/merged_samples/AN*

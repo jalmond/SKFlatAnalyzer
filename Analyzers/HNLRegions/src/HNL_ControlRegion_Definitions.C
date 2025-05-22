@@ -367,7 +367,7 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
 	if(RunCR("SS_CR",CRs) || RunCR("SS_CR3",CRs)){
 	  
 	  // Check VBF condition and fill SR3 CR Plots
-	  if (!PassVBF(VBF_JetColl, LepsT, 500)) {
+	  if (!PassVBF(VBF_JetColl, LepsT, 0)) {
 	    TString  passSR3 = FillHighMassSR3CRPlots(dilep_channel, LepsT, LepsV, TauColl_Cleaned, JetColl, AK8_JetColl, B_JetColl, ev, METv, param, weight_channel);
 	    if ( passSR3 != "false"){
 	      passedMain.push_back(passSR3);
@@ -1261,7 +1261,8 @@ TString HNL_RegionDefinitions::FillHighMassSR1CRPlots(HNL_LeptonCore::Channel ch
   FillCutflow(Reg, w, "Step0",param);
   if(!CheckLeptonFlavourForChannel(channel, leps)) return "false";
 
-  if(leps[1]->Pt() < 20) return "false"; 
+  if((leps[0]->Pt()+ leps[1]->Pt()) < 50) return "false"; 
+
   FillCutflow(Reg, w, "Step1",param);
 
   if (leps_veto.size() != 2) return "false";
@@ -1336,9 +1337,6 @@ TString HNL_RegionDefinitions::FillHighMassSR1CRPlots(HNL_LeptonCore::Channel ch
 
   }
   if(!PassHMMet)     runCutCounts[run].Cut("HNL_HighMassSR1_MET");
-  if( JetColl.size() > 3)  runCutCounts[run].Cut("HNL_HighMassSR1_HighJet");
- 
-  //if(!(channel == EMu && JetColl.size() > 3))  Fill_RegionPlots(param,"HNL_HighMassSR1_Cleaned"  ,  JetColl,  AK8_JetColl,  leps,  METv, nPV, w);
 
 
   if(PassHMMet && NB_JetColl==0) return "false"; /// SR
@@ -1562,8 +1560,8 @@ TString  HNL_RegionDefinitions::FillHighMassSR2CRPlots(HNL_LeptonCore::Channel c
 
   
   if(!CheckLeptonFlavourForChannel(channel, leps)) return "false";
-  if(leps[1]->Pt() < 25) return "false"; 
-
+  if(leps[1]->Pt() < 15) return "false"; 
+  
   if (param.SRConfig == "SR2_Pt20") {
     if(leps[1]->Pt() < 20) return "false";
   }
@@ -1657,7 +1655,7 @@ bool HNL_RegionDefinitions::FillWZVBFCRPlots(HNL_LeptonCore::Channel channel, st
   if(!passJetPt)  return false;
 
   if (NB_JetColl>0) return false;
-  if ((j1+j2).M() < 400.) return false; ///// FIX
+  if ((j1+j2).M() < 400.) return false;
   if (maxDiJetDeta<2.5) return false;
 
   double Av_JetEta= 0.5*(jets_eta5[ijet1].Eta()+ jets_eta5[ijet2].Eta());

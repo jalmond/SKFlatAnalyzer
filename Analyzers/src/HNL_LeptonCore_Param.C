@@ -15,7 +15,8 @@ AnalyzerParameter  HNL_LeptonCore::DefaultParam(const TString& s_setup_version, 
 
   /// Default Tau aways fails
   param_default.Tau_Tight_ID = "Default";
-  param_default.Tau_Veto_ID      = "JetVLElVLMuVL";
+  param_default.Tau_Veto_ID  = "Default";
+  //  param_default.Tau_Veto_ID      = "JetVLElVLMuVL";
     
   /// Default BKG                                                                                                                                                                                                   
   param_default.ApplyPR=false;

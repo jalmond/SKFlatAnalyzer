@@ -459,22 +459,31 @@ def main():
     Flavours = ["MuMuMu","EEE","EMuL","LLL"]
 
     Plots = [
-        ["Leptons/Lep_1_pt","Lepton_pt",[2],0,500],
-        ["Leptons/Lep_2_pt","Lepton_pt",[2],0,300],
+        ["AK8/AK8J_Mass/l1J","M_l1J",[5],0,2000] ,
+        ["ExtraLep/All_El_NonMatched","All_El_NonMatched",[1],0,5],
+        ["ExtraLep/All_Muon_NonMatched","All_Muon_NonMatched",[1],0,5],
+        ["ExtraLep/All_Tau_NonMatched","All_Tau_NonMatched",[1],0,5],
+        ["Leptons/Lep_1_pt","Lepton_pt",[2],0,1000],
+        ["Leptons/Lep_2_pt","Lepton_pt",[2],0,500],
         ["Standard/M_ll","Lepton mass",[2],0,400],
-        ["MainPlots/Ev_MET2_ST","",[2],0,20],
-        ["MainPlots/L_T","",[10],0,400],
-        ["MainPlots/M_l1J","",[5],0,2000],
-        ["MainPlots/Lepton_3_pt","",[2],0,200],
+        ["Standard/Ev_MET","",[10],0,300],
+        ["MainPlots/Ev_MET2_ST","",[10],0,50],
+        ["MainPlots/L_T","",[20],0,400],
+        ["MainPlots/M_l1J","",[20],0,2000],
+        ["MainPlots/Lepton_3_pt","",[10],0,200],
         ["AK8/AK8J_Eta","",[2],-5,5],
-        ["AK8/AK8J_Pt","",[2],0,500],
+        ["AK8/AK8J_Pt","",[2],0,2000],
         ["AK8/AK8Jet_dR_Muon","",[2],0,10],
         ["AK8/AK8Jet_dR_Electron","",[2],0,10],
         ["dR/dR_ll","",[2],0,10],
         ["Mass/M_lll","",[2],0,400],
+        ["VBF/Lead_MJJ","MJJ",[1],0,2000],
 
     ]
-
+    Plots = [
+	["MainPlots/M_l1J","",[50],0,2000],
+    ]
+    
     hist_bases = [
     ]
 
@@ -482,6 +491,7 @@ def main():
         for j_id in IDs:
             for j_flavour in Flavours:
                 hist_bases.append(["HNL_WZ_SR1_ThreeLepton_CR", j_id,j_histname, j_label, j_rebin, j_flavour,j_min,j_max])
+                hist_bases.append(["HNL_WZVBF_ThreeLepton_CR", j_id,j_histname, j_label, j_rebin, j_flavour,j_min,j_max])
 
 
     
@@ -504,7 +514,7 @@ def main():
             for year_idx, year in enumerate(years):
                 Path(f"{result_dir}/{histname_syntaxfix}").mkdir(exist_ok=True)
 
-                output_file = f"{result_dir}/histname_syntaxfix/{year}_{hist_base}_{hist_config}_{histname_syntaxfix}_{flavour}_ratio_stacked_histogram.png"
+                output_file = f"{result_dir}/{histname_syntaxfix}/{year}_{hist_base}_{hist_config}_{histname_syntaxfix}_{flavour}_ratio_stacked_histogram.png"
                 logging.info(f"Running code to make {output_file}")
                 
                 stacked_hist = ROOT.THStack(f"stacked_hist_{flavour}_{year}", "Stacked Backgrounds")
