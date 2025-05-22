@@ -15,7 +15,7 @@ void HNL_LeptonCore::DefineLimitBins(){
   
   if(DataEra == "2016preVFP") {
     //sr1bins_mm = { 0., 400, 550,  2000.}; ANv4
-    sr1bins_mm = { 0.,400, 600, 2000.}; // ANv5
+    sr1bins_mm = { 0.,450, 750, 2000.}; // ANv5
     sr1bins_ee = { 0.,450, 600, 800,  2000.};
     sr1bins_em = { 0.,450, 600, 800, 2000.};
   }
@@ -25,7 +25,7 @@ void HNL_LeptonCore::DefineLimitBins(){
     sr1bins_em = { 0., 450, 550,  800, 2000.};
   }
   if(DataEra == "2017") {
-    sr1bins_mm  = { 0., 450, 550,  700,  2000.};
+    sr1bins_mm  = { 0., 450, 550,  800,  2000.};
     sr1bins_ee  = { 0., 500, 600,  800., 2000.};
     sr1bins_em  = { 0., 500, 650, 850., 2000.};
   }
@@ -35,9 +35,8 @@ void HNL_LeptonCore::DefineLimitBins(){
     sr1bins_em = { 0.,   500., 650, 900., 2000.};
   }
 
-  vector<TString> MuMu_SR1_BinTags,MuMu_SR1_Mu16_BinTags,  EE_SR1_BinTags ,EMu_SR1_BinTags, CR1_BinTags;
+  vector<TString> MuMu_SR1_BinTags,  EE_SR1_BinTags ,EMu_SR1_BinTags, CR1_BinTags;
   for(unsigned int i_d =1 ; i_d <  sr1bins_mm.size()+3; i_d++)  MuMu_SR1_BinTags.push_back("SR1_MNbin"+to_string(i_d));
-  for(unsigned int i_d =1 ; i_d <  sr1bins_mm.size()+4; i_d++)  MuMu_SR1_Mu16_BinTags.push_back("SR1_MNbin"+to_string(i_d));
   for(unsigned int i_d =1 ; i_d <  sr1bins_ee.size()+3; i_d++)  EE_SR1_BinTags.push_back("SR1_MNbin"+to_string(i_d));
   for(unsigned int i_d =1 ; i_d <  sr1bins_em.size()+3; i_d++)  EMu_SR1_BinTags.push_back("SR1_MNbin"+to_string(i_d));
   for(unsigned int i_d =1 ; i_d <  cr1bins.size(); i_d++)     CR1_BinTags.push_back("CR1_MNbin"+to_string(i_d));
