@@ -237,6 +237,8 @@ double FakeBackgroundEstimator::GetElectronFakeRate(TString ID, TString key, TSt
 
 double FakeBackgroundEstimator::GetMuonFakeRate(TString ID, TString key, TString BinningMethod, TString BinningParam,  double eta, double pt, TString FakeTagger, int sys){
 
+  if(fabs(sys)==10)  sys=0;
+    
   TString PtType = "pt_eta_";
   if(key.Contains("MC")){
     key=key.ReplaceAll("MC_","");

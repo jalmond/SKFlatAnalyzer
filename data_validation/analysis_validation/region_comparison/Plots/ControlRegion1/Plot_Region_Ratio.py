@@ -465,12 +465,11 @@ def main():
         ["Standard/M_ll","Lepton mass",[2],0,300],
         ["Standard/N_AK4J","N_AK4J",[1],0,10],
         ["DeltaR/dR_ll","Lepton mass",[2],0,5],
-    ]
+        ["NObj/N_ak8_loose_jet","N_AK4J",[1],0,10]]
     
     IDs = ["HNL_ULIDv2_bjet_noak8","HNL_ULIDv2_ANv4","HNL_ULIDv2_TauVeto","HNL_ULIDv2_veto_id_one","HNL_ULIDv2_veto_id_two","HNL_ULIDv2_TauVeto2","HNL_ULIDv2_TauVeto3","HNL_ULIDv2_presel","HNL_ULIDv2_NoOverlap","HNL_ULIDv2_presel_bjetmod","HNL_ULIDv2_presel_bjetmod_ak8_tight"]
 
-    IDs = ["HNL_ULIDv2_presel", "HNL_ULIDv2_presel_mod"]
-    
+    IDs = ["HNL_ULIDv2_AK8_Veto1","HNL_ULIDv2_AK8_Veto2","HNL_ULIDv2_AK8_Veto3"]
 
     
     

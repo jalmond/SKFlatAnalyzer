@@ -9,7 +9,7 @@ from pathlib import Path
 from datetime import datetime
 
 
-Analyzer="HNL_ControlRegionTwo"
+Analyzer="HNL_ControlRegionOne"
 skim="SkimTree_HNMultiLepBDT"
 skim_dilep="SkimTree_DileptonBDT"
 

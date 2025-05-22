@@ -127,7 +127,9 @@ void HNL_LeptonCore::Fill_PlotsAK8(AnalyzerParameter& param, TString  region, TS
 void HNL_LeptonCore::Fill_RegionPlots(AnalyzerParameter& param, TString plot_dir, vector<Tau>& taus,   std::vector<Jet>& jets,    std::vector<FatJet>& fatjets, std::vector<Lepton *>& leps , Particle&  met, double nvtx,  double w){
   
   if (HasFlag("RunSyst")) return;
-  
+  if (Analyzer == "HNL_SignalRegion_TestRun")  return;
+
+    
   // Initial region plots
   Fill_RegionPlotsFull(param, plot_dir, taus, jets, fatjets, leps, met, nvtx, w);
   
@@ -291,6 +293,13 @@ void HNL_LeptonCore::Fill_Main_Plots(AnalyzerParameter& param, TString  region, 
   else{
     
     FillHist( plot_dir+ region+ "/MainPlots/HT_PT1",     leps[0]->HTOverPt(),     w, 100, 0, 10, "H_{T}/p_{T}");
+    double ll_dphi = fabs(TVector2::Phi_mpi_pi( ( (*leps[0]).Phi() - (*leps[1]).Phi() )) );
+    if(ll_dphi > 2.)     FillHist( plot_dir+ region+ "/MainPlots/HT_PT1_LowDphi",     leps[0]->HTOverPt(),     w, 100, 0, 10, "H_{T}/p_{T}");
+    else     FillHist( plot_dir+ region+ "/MainPlots/HT_PT1_HighDPhi",     leps[0]->HTOverPt(),     w, 100, 0, 10, "H_{T}/p_{T}");
+    if(leps[1]->Pt() >  20){
+      if(ll_dphi > 2.)     FillHist( plot_dir+ region+ "/MainPlots/HT_PT1_Pt20_LowDphi",     leps[0]->HTOverPt(),     w, 100, 0, 10, "H_{T}/p_{T}");
+      else     FillHist( plot_dir+ region+ "/MainPlots/HT_Pt20_PT1_HighDPhi",     leps[0]->HTOverPt(),     w, 100, 0, 10, "H_{T}/p_{T}");
+    }
   }
 
   double PTLep1  = leps[0]->Pt();
@@ -367,9 +376,16 @@ void HNL_LeptonCore::Fill_Plots(AnalyzerParameter& param, TString  region,  TStr
   FillHist( plot_dir+ region+ "/NObj/N_ak8jet", fatjets.size(),  w, 4, 0, 4, "AK8 size");
 
   //// Check Loose AK8 Count
-  std::vector<FatJet>   AK8_Loose_JetColl  = SelectFatJets(param, param.FatJet_ID, param.FatJet_MinPt, param.FatJet_MaxEta);
+  std::vector<FatJet>   AK8_Loose_JetColl  = SelectFatJets(param, param.FatJet_ID, param.FatJet_MinPt, 2.7);
   FillHist( plot_dir+ region+ "/NObj/N_ak8_loose_jet", AK8_Loose_JetColl.size(),  w, 4, 0, 4, "AK8 size");
-  
+  for(auto iak8_loose : AK8_Loose_JetColl){
+    for(auto ilep : leps)   FillHist( plot_dir+region+ "/AK8J_DeltaR/AK8LooseJ_lep",  ilep->DeltaR(iak8_loose) ,  w, 50, 0, 5, "#DeltaR (WAK8,j)");
+
+    for(auto iak8 : fatjets){
+      if(iak8.Pt() == iak8_loose.Pt()) continue;
+      FillHist( plot_dir+region+ "/AK8J_DeltaR/AK8J_AK8LooseJ",   iak8.DeltaR(iak8_loose),  w, 50, 0, 5, "#DeltaR (WAK8,j)");
+    }     
+  }
   
   if(leps.size() < 2) return;
 

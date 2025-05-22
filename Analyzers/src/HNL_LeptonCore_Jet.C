@@ -123,7 +123,11 @@ std::vector<FatJet> HNL_LeptonCore::GetHNLAK8Jets(const TString& JetType, Analyz
 
   if(JetType=="HNL_NoMass")
     return SelectAK8Jets  (AK8JetColl,  200., 2.7,  private_lepton_cleaning,   1., false, -999, false, 0.,  200000., "",  ElectronCollV, MuonCollV);
+  
+  if(JetType=="HNL_Loose")
+    return SelectAK8Jets  (AK8JetColl,  200., 2.7,  true,   1., false, -999, true,  40., 130.,    "",  ElectronCollV, MuonCollV);
 
+  
   if(JetType=="BDT")
     return SelectAK8Jets  (AK8JetColl,  200., 2.7,  private_lepton_cleaning,   1., false, -999, false, 0.,  200000., "",  ElectronCollV, MuonCollV);
 

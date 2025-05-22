@@ -194,14 +194,26 @@ void HNL_SignalRegion_Plotter::RunULAnalysis(AnalyzerParameter param_sr){
     return;
   }
   else{
-		
 
-    for(auto ir : RunEl){
-      
-      RunAllSignalRegions(Inclusive,
-			  ElectronCollT,ElectronCollV,MuonCollT,MuonCollV,  TauColl_Cleaned,
-			  AK4_JetCollLoose,AK4_JetColl,AK4_VBF_JetColl,AK8_JetColl, AK4_BJetColl, 
-			ev,METv, param_sr, ir, weight);
+    vector<TString> config_list = {""};
+    TString ORIGName= param_sr.Name;
+    TString ORIGDefName= param_sr.DefName;
+
+    for(auto iconfig : config_list){
+
+      param_sr.Name= ORIGName+iconfig;
+      param_sr.DefName=ORIGDefName +iconfig;
+      param_sr.SRConfig  =iconfig;
+      for(auto ir : RunEl){
+	
+	RunAllSignalRegions(Inclusive,
+			    ElectronCollT,ElectronCollV,MuonCollT,MuonCollV,  TauColl_Cleaned,
+			    AK4_JetCollLoose,AK4_JetColl,AK4_VBF_JetColl,AK8_JetColl, AK4_BJetColl, 
+			    ev,METv, param_sr, ir, weight);
+      }
+      param_sr.Name= ORIGName;
+      param_sr.DefName=ORIGDefName;
+
     }
   }
 
