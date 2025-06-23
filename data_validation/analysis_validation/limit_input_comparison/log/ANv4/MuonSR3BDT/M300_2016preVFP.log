@@ -1,0 +1,95 @@
+
+==> Era: 2016preVFP, Mass: M300, Histogram: MuonSR3BDT
+Bin 1: [Bkg] Content: 418.63, Error: 10.38, % Error: 2.48%
+  [Conv] Content: 43.75, Error: 2.80
+  [Fake] Content: 253.69, Error: 9.50
+  [Other] Content: 3.19, Error: 0.82
+  [TTV] Content: 0.14, Error: 0.02
+  [VVV] Content: 0.55, Error: 0.02
+  [WW] Content: 10.63, Error: 0.26
+  [WZ] Content: 90.75, Error: 2.98
+  [ZZ] Content: 15.92, Error: 0.09
+Bin 2: [Bkg] Content: 223.75, Error: 6.90, % Error: 3.08%
+  [Conv] Content: 22.31, Error: 1.59
+  [Fake] Content: 96.23, Error: 6.06
+  [Other] Content: 7.87, Error: 0.98
+  [TTV] Content: 0.66, Error: 0.05
+  [VVV] Content: 1.66, Error: 0.04
+  [WW] Content: 10.51, Error: 0.24
+  [WZ] Content: 76.28, Error: 2.70
+  [ZZ] Content: 8.24, Error: 0.07
+Bin 3: [Bkg] Content: 58.94, Error: 3.59, % Error: 6.09%
+  [Conv] Content: 4.31, Error: 0.83
+  [Fake] Content: 23.73, Error: 3.12
+  [Other] Content: 2.62, Error: 0.61
+  [TTV] Content: 0.41, Error: 0.05
+  [VVV] Content: 1.09, Error: 0.03
+  [WW] Content: 3.27, Error: 0.10
+  [WZ] Content: 22.05, Error: 1.45
+  [ZZ] Content: 1.45, Error: 0.03
+Bin 4: [Bkg] Content: 44.11, Error: 2.98, % Error: 6.76%
+  [Conv] Content: 3.64, Error: 0.58
+  [Fake] Content: 15.85, Error: 2.55
+  [Other] Content: 0.89, Error: 0.51
+  [TTV] Content: 0.54, Error: 0.05
+  [VVV] Content: 0.92, Error: 0.03
+  [WW] Content: 2.91, Error: 0.08
+  [WZ] Content: 18.47, Error: 1.33
+  [ZZ] Content: 0.90, Error: 0.02
+Bin 5: [Bkg] Content: 26.45, Error: 2.08, % Error: 7.88%
+  [Conv] Content: 3.51, Error: 0.49
+  [Fake] Content: 7.86, Error: 1.75
+  [Other] Content: 0.38, Error: 0.30
+  [TTV] Content: 0.38, Error: 0.04
+  [VVV] Content: 0.81, Error: 0.03
+  [WW] Content: 2.43, Error: 0.06
+  [WZ] Content: 10.52, Error: 0.97
+  [ZZ] Content: 0.55, Error: 0.02
+Bin 6: [Bkg] Content: 13.32, Error: 1.44, % Error: 10.78%
+  [Conv] Content: 0.96, Error: 0.38
+  [Fake] Content: 3.53, Error: 1.17
+  [Other] Content: 0.55, Error: 0.29
+  [TTV] Content: 0.33, Error: 0.04
+  [VVV] Content: 0.64, Error: 0.02
+  [WW] Content: 1.69, Error: 0.05
+  [WZ] Content: 5.33, Error: 0.68
+  [ZZ] Content: 0.28, Error: 0.01
+Bin 7: [Bkg] Content: 4.45, Error: 0.97, % Error: 21.85%
+  [Conv] Content: 0.33, Error: 0.13
+  [Fake] Content: 1.63, Error: 0.87
+  [Other] Content: -0.11, Error: 0.11
+  [TTV] Content: 0.11, Error: 0.02
+  [VVV] Content: 0.21, Error: 0.01
+  [WW] Content: 0.44, Error: 0.02
+  [WZ] Content: 1.78, Error: 0.40
+  [ZZ] Content: 0.06, Error: 0.01
+Bin 8: [Bkg] Content: 2.44, Error: 0.40, % Error: 16.41%
+  [Conv] Content: 0.12, Error: 0.10
+  [Fake] Content: 0.00, Error: 0.00
+  [Other] Content: 0.11, Error: 0.10
+  [TTV] Content: 0.08, Error: 0.02
+  [VVV] Content: 0.14, Error: 0.01
+  [WW] Content: 0.35, Error: 0.02
+  [WZ] Content: 1.59, Error: 0.37
+  [ZZ] Content: 0.04, Error: 0.00
+[31mBin 9: [Bkg] Content: 0.48, Error: 0.27, % Error: 56.60%[0m
+  [Conv] Content: 0.07, Error: 0.11
+  [Fake] Content: -0.17, Error: 0.17
+  [Other] Content: 0.06, Error: 0.06
+  [TTV] Content: 0.03, Error: 0.01
+  [VVV] Content: 0.06, Error: 0.01
+  [WW] Content: 0.12, Error: 0.01
+  [WZ] Content: 0.29, Error: 0.17
+  [ZZ] Content: 0.02, Error: 0.00
+Bin 10: [Bkg] Content: 2.44, Error: 0.51, % Error: 20.77%
+  [Conv] Content: 0.15, Error: 0.07
+  [Fake] Content: 0.40, Error: 0.40
+  [Other] Content: -0.09, Error: 0.10
+  [TTV] Content: 0.13, Error: 0.03
+  [VVV] Content: 0.26, Error: 0.02
+  [WW] Content: 0.53, Error: 0.02
+  [WZ] Content: 1.00, Error: 0.28
+  [ZZ] Content: 0.06, Error: 0.01
+
+Lines with percentage error > 30%:
+2016preVFP M300 MuonSR3BDT Bin 9: 56.60%
