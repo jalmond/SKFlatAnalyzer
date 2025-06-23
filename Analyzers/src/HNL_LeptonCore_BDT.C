@@ -394,6 +394,16 @@ void HNL_LeptonCore::SetupEventMVAReader(TString version, bool ee, bool mm, bool
       if(im == 9){ NTreeMM = "1000", NCutMM = "100", NTreeEE = "1000", NCutEE = "300", NTreeEM = "1000", NCutEM = "100"; }  // mN = 400 GeV
       if(im == 10){ NTreeMM = "1000", NCutMM = "150", NTreeEE = "850", NCutEE = "250", NTreeEM = "1000", NCutEM = "150"; }  // mN = 500 GeV
     }
+    if(version == "V3"){
+      if(im < 4){ NTreeMM = "700", NCutMM = "150", NTreeEE = "500", NCutEE = "150", NTreeEM = "600", NCutEM = "100"; }      // mN = 85, 90, 95, 100 GeV
+      if(im == 4){ NTreeMM = "600", NCutMM = "150", NTreeEE = "600", NCutEE = "100", NTreeEM = "600", NCutEM = "100"; }     // mN = 125 GeV
+      if(im == 5){ NTreeMM = "850", NCutMM = "150", NTreeEE = "500", NCutEE = "300", NTreeEM = "1000", NCutEM = "400"; }    // mN = 150 GeV
+      if(im == 6){ NTreeMM = "1000", NCutMM = "400", NTreeEE = "700", NCutEE = "100", NTreeEM = "1000", NCutEM = "200"; }   // mN = 200 GeV
+      if(im == 7){ NTreeMM = "1000", NCutMM = "250", NTreeEE = "1000", NCutEE = "100", NTreeEM = "1000", NCutEM = "100"; }  // mN = 250 GeV
+      if(im == 8){ NTreeMM = "1000", NCutMM = "400", NTreeEE = "500", NCutEE = "250", NTreeEM = "600", NCutEM = "400"; }    // mN = 300 GeV
+      if(im == 9){ NTreeMM = "1000", NCutMM = "100", NTreeEE = "1000", NCutEE = "400", NTreeEM = "1000", NCutEM = "400"; }  // mN = 400 GeV
+      if(im == 10){ NTreeMM = "1000", NCutMM = "150", NTreeEE = "1000", NCutEE = "100", NTreeEM = "1000", NCutEM = "150"; } // mN = 500 GeV
+    }
 
     TString FileNameMM        = "output_DY_MuMu_M"+MNStrList.at(im)+"_Incl_Run2_NTrees"+NTreeMM+"_NCuts"+NCutMM+"_MaxDepth3_BDT.weights.xml";
     TString FileNameMMFake    = "output_DY_MuMu_M"+MNStrList.at(im)+"_Fake_Run2_NTrees850_NCuts200_MaxDepth3_BDT.weights.xml";
