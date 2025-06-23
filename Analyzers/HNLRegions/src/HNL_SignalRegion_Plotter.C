@@ -17,10 +17,10 @@ void HNL_SignalRegion_Plotter::initializeAnalyzer(){
     if (this->DataStream == "DoubleEG")       run_ee_bdt=true;
     if (this->DataStream == "SingleElectron") run_ee_bdt=true;
     
-    SetupEventMVAReader("V2",run_ee_bdt,run_mm_bdt,run_em_bdt);
+    SetupEventMVAReader("V3",run_ee_bdt,run_mm_bdt,run_em_bdt);
 
   }
-  else SetupEventMVAReader("V2");
+  else SetupEventMVAReader("V3");
 
   nLog = 100000;
 }

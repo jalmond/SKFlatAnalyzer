@@ -17,10 +17,10 @@ void HNL_ControlRegion_Plotter::initializeAnalyzer(){
     if (this->DataStream == "SingleElectron") run_ee_bdt=true;
 
 
-    SetupEventMVAReader("V2",run_ee_bdt,run_mm_bdt,run_em_bdt);
+    SetupEventMVAReader("V3",run_ee_bdt,run_mm_bdt,run_em_bdt);
 
   }
-  else SetupEventMVAReader("V2");
+  else SetupEventMVAReader("V3");
 }
 
 
@@ -45,7 +45,7 @@ void HNL_ControlRegion_Plotter::executeEvent(){
   
   if(HasFlag("SSMultiLep"))  CRToRun = {"SS_CR","VBF_CR"};
   if(HasFlag("LLL")) CRToRun.push_back("LLL_VR");
-  
+  if(HasFlag("SSDilepBDT")) CRToRun = {"SS_CR"};
 
   if(IsDATA){
     if (this->DataStream.Contains("DoubleMuon")) ChannelsToRun = {MuMu};
