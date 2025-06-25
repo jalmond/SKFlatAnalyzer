@@ -228,7 +228,6 @@ void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq,
     }
     
     if(RunFake&& IsData){
-      //if(_jentry < 100) cout << "Event " << event << " param = " << param.Name << " Running Fakes... FR=" <<  GetFakeWeight(LepsT, param) << endl;
       
       weight_channel = GetFakeWeight(LepsT, param);
       FillFakeWeightHist(param.Name+"/FakeWeight", LepsT,param, weight_channel);
@@ -484,51 +483,78 @@ void   HNL_RegionDefinitions::RunMainRegionCode(bool IsSR,HNL_LeptonCore::Channe
     }
     else{
 
-      //// Fail VBF Req
 
-      if(param.syst_ == AnalyzerParameter::PDFUp)   weight_reg*=GetPDFUncertainty("SR3",1);
-      if(param.syst_ == AnalyzerParameter::PDFDown) weight_reg*=GetPDFUncertainty("SR3",-1);
+      //// Fail VBF Req ---> SR3
+      // This block handles events that fail the VBF (Vector Boson Fusion) requirements and are assigned to signal region SR3
       
-      /// RunBDT checks if signal mc and mass <= 500
+      /// If using up/down : note Jihun should use PDF weights in limit step so this should be depreciated
+      // Apply PDF systematic variations if specified
+      // The usage here is legacy and should be replaced by proper handling in the limit-setting step
+      if(param.syst_ == AnalyzerParameter::PDFUp)   
+	weight_reg *= GetPDFUncertainty("SR3", 1);   // Apply PDF uncertainty upward variation
       
-      if(IsSR && B_JetColl.size()==0 && ev.MET2ST() < 15) FillCutflow(HNL_LeptonCore::SRLowMass, weight_reg, "SR3_LowMass",param);
+      if(param.syst_ == AnalyzerParameter::PDFDown) 
+	weight_reg *= GetPDFUncertainty("SR3", -1);  // Apply PDF uncertainty downward variation
 
+      
+      if(IsSR && B_JetColl.size() == 0 && ev.MET2ST() < 15) 
+	FillCutflow(HNL_LeptonCore::SRLowMass, weight_reg, "SR3_LowMass", param);
 
+      
+      /// RunBDT checks if:
+      // a) signal mc and mass <= 500 --> Pass
+      // b) non signal --> Pass
       if(RunBDT()){
 
+	/// FinalBDTHyperParamMap: This has NCut/NTree info for each Mass/Version/channel scenario
 	for(auto imapHP :FinalBDTHyperParamMap){
 
-	  if(_jentry < 100){
-	    cout << "FinalBDTHyperParamMap " << _jentry << " imapHP = " << imapHP.first << " : " << imapHP.second.first << " " << imapHP.second.second << endl;
-	  }
-	  
+	  // Only run BDT for this channel                                                                                                                          
 	  if(!imapHP.first.Contains(channel_string)) continue;
-	  for(auto iversion : {"V2","V3"}){
+
+	  /// Loop over BDT versions
+	  for(auto iversion : BDTVersions_to_run){
 	    
-	    // Only run BDT for this channel 	  
+	    // Only run BDT for version in BDTVersions_to_run 	  
 	    if(!imapHP.first.Contains(iversion)) continue;
-	    if(_jentry < 100)  cout << "Running " << iversion << endl;
 
-	    
+	    /// GetBDTSignalMass gets for :
+	    // a) bkg: TString of mass of sample i.e., M200, based on imapHP key
+	    // b) signal : gets mass string but if mass string is not in sample name it returns NULL
+	    /// -->  Only plot limits for BDT if signal is same mass as imapHP.first
 	    TString SampleMass = GetBDTSignalMass(imapHP.first);
-	    //// Fill SR Cutflow for just one mass and channel BUT loop over versions
-            if(_jentry < 100)  cout << "Checking " << SampleMass+"_"+channel_string+"_"+TString(iversion) << endl;
 
+	    //// Fill SR Cutflow for just one mass and channel BUT loop over versions
+            
 	    if(imapHP.first.Contains(SampleMass+"_"+channel_string+"_"+TString(iversion))){
 	      
-	      /// Only plot limits for BDT if same signal is same mass as imapHP.first
-	      
 	      TString RegBDT = RunSignalRegionAK4StringBDT(IsSR,SampleMass , iversion,  imapHP.second.first, imapHP.second.second, channel,qq, LepsT, JetColl,  B_JetColl, ev, METv ,param,weight_reg);
-	    
+
 	      if(RegBDT != "false"){
-		
-		//// Low Mass BDT Binned R1+2+3 only limit input
-		
-		FillLimitInput(LimitRegionsBDTR3, weight_reg, RegBDT,"LimitExtractionBDT/"+param.Name+"_"+iversion+"/M"+SampleMass,"SR3BDT_"+channel_string+"_"+DataEra+"_"+SampleMass+"_"+iversion,channel_string);
+
+		//// iversion now added to direrctory structure
+		FillLimitInput(LimitRegionsBDTR3,
+			       weight_reg,
+			       RegBDT,
+			       "LimitExtractionBDT/"+param.Name+"_"+iversion+"/M"+SampleMass,
+			       "SR3BDT_"+channel_string+"_"+DataEra+"_"+SampleMass+"_"+iversion,
+			       channel_string);
+
 
 		if(!IsSR){
-		  if(B_JetColl.size()==1) FillLimitInput(LimitRegionsInvBJetBDTR3, weight_reg, RegBDT,"LimitExtractionBDT/"+param.Name+"/M"+SampleMass,"SR3BDT_"+channel_string+"_"+DataEra+"_"+SampleMass+"_"+iversion,channel_string);
-		  else FillLimitInput(LimitRegionsInvMETBDTR3, weight_reg, RegBDT,"LimitExtractionBDT/"+param.Name+"/M"+SampleMass,"SR3BDT_"+channel_string+"_"+DataEra+"_"+SampleMass+"_"+iversion,channel_string);
+		  if(B_JetColl.size()==1) FillLimitInput(LimitRegionsInvBJetBDTR3,
+							 weight_reg,
+							 RegBDT,
+							 "LimitExtractionBDT/"+param.Name+"/M"+SampleMass,
+							 "SR3BDT_"+channel_string+"_"+DataEra+"_"+SampleMass+"_"+iversion,
+							 channel_string);
+
+		  else FillLimitInput(LimitRegionsInvMETBDTR3,
+				      weight_reg,
+				      RegBDT,
+				      "LimitExtractionBDT/"+param.Name+"/M"+SampleMass,
+				      "SR3BDT_"+channel_string+"_"+DataEra+"_"+SampleMass+"_"+iversion,
+				      channel_string);
 		}
 	      }
 	    }

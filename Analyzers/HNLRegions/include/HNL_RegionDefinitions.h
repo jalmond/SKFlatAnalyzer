@@ -118,7 +118,7 @@ class HNL_RegionDefinitions : public HNL_LeptonCore {
   bool RunHighPtID;
   bool RunPekingID;
   
-
+  vector<TString> BDTVersions_to_run;
 };
 
 
