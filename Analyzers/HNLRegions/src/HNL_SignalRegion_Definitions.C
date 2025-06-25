@@ -228,7 +228,6 @@ void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq,
     }
     
     if(RunFake&& IsData){
-      //if(_jentry < 100) cout << "Event " << event << " param = " << param.Name << " Running Fakes... FR=" <<  GetFakeWeight(LepsT, param) << endl;
       
       weight_channel = GetFakeWeight(LepsT, param);
       FillFakeWeightHist(param.Name+"/FakeWeight", LepsT,param, weight_channel);
@@ -484,34 +483,79 @@ void   HNL_RegionDefinitions::RunMainRegionCode(bool IsSR,HNL_LeptonCore::Channe
     }
     else{
 
-      //// Fail VBF Req
 
-      if(param.syst_ == AnalyzerParameter::PDFUp)   weight_reg*=GetPDFUncertainty("SR3",1);
-      if(param.syst_ == AnalyzerParameter::PDFDown) weight_reg*=GetPDFUncertainty("SR3",-1);
+      //// Fail VBF Req ---> SR3
+      // This block handles events that fail the VBF (Vector Boson Fusion) requirements and are assigned to signal region SR3
       
-      /// RunBDT checks if signal mc and mass <= 500
+      /// If using up/down : note Jihun should use PDF weights in limit step so this should be depreciated
+      // Apply PDF systematic variations if specified
+      // The usage here is legacy and should be replaced by proper handling in the limit-setting step
+      if(param.syst_ == AnalyzerParameter::PDFUp)   
+	weight_reg *= GetPDFUncertainty("SR3", 1);   // Apply PDF uncertainty upward variation
       
-      if(IsSR && B_JetColl.size()==0 && ev.MET2ST() < 15) FillCutflow(HNL_LeptonCore::SRLowMass, weight_reg, "SR3_LowMass",param);
+      if(param.syst_ == AnalyzerParameter::PDFDown) 
+	weight_reg *= GetPDFUncertainty("SR3", -1);  // Apply PDF uncertainty downward variation
+
+      
+      if(IsSR && B_JetColl.size() == 0 && ev.MET2ST() < 15) 
+	FillCutflow(HNL_LeptonCore::SRLowMass, weight_reg, "SR3_LowMass", param);
+
+      
+      /// RunBDT checks if:
+      // a) signal mc and mass <= 500 --> Pass
+      // b) non signal --> Pass
       if(RunBDT()){
 
+	/// FinalBDTHyperParamMap: This has NCut/NTree info for each Mass/Version/channel scenario
 	for(auto imapHP :FinalBDTHyperParamMap){
 
-	  //// Fill SR Cutflow for just one mass 
-	  if(GetBDTSignalMass(imapHP.first) == imapHP.first){
-	    /// Only plot limits for BDT if same signal is same mass as imapHP.first
+	  // Only run BDT for this channel                                                                                                                          
+	  if(!imapHP.first.Contains(channel_string)) continue;
 
-	    TString RegBDT = RunSignalRegionAK4StringBDT(IsSR,imapHP.first , imapHP.second.first, imapHP.second.second, channel,qq, LepsT, JetColl,  B_JetColl, ev, METv ,param,weight_reg);
+	  /// Loop over BDT versions
+	  for(auto iversion : BDTVersions_to_run){
 	    
-	    if(RegBDT != "false"){
-	      
-	      //// Low Mass BDT Binned R1+2+3 only limit input
-	      //	  FillLimitInput(LimitRegionsBDT, weight_reg, RegBDT,"LimitExtractionBDT/"+param.Name+"/M"+imapHP.first,"SR3_"+channel_string+"_"+GetYearString()+"_"+imapHP.first);
-	      /// R3 LowMass BDt Only limit input
-	      FillLimitInput(LimitRegionsBDTR3, weight_reg, RegBDT,"LimitExtractionBDT/"+param.Name+"/M"+imapHP.first,"SR3BDT_"+channel_string+"_"+DataEra+"_"+imapHP.first,channel_string);
+	    // Only run BDT for version in BDTVersions_to_run 	  
+	    if(!imapHP.first.Contains(iversion)) continue;
 
-	      if(!IsSR){
-		if(B_JetColl.size()==1) FillLimitInput(LimitRegionsInvBJetBDTR3, weight_reg, RegBDT,"LimitExtractionBDT/"+param.Name+"/M"+imapHP.first,"SR3BDT_"+channel_string+"_"+DataEra+"_"+imapHP.first,channel_string);
-		else FillLimitInput(LimitRegionsInvMETBDTR3, weight_reg, RegBDT,"LimitExtractionBDT/"+param.Name+"/M"+imapHP.first,"SR3BDT_"+channel_string+"_"+DataEra+"_"+imapHP.first,channel_string);
+	    /// GetBDTSignalMass gets for :
+	    // a) bkg: TString of mass of sample i.e., M200, based on imapHP key
+	    // b) signal : gets mass string but if mass string is not in sample name it returns NULL
+	    /// -->  Only plot limits for BDT if signal is same mass as imapHP.first
+	    TString SampleMass = GetBDTSignalMass(imapHP.first);
+
+	    //// Fill SR Cutflow for just one mass and channel BUT loop over versions
+            
+	    if(imapHP.first.Contains(SampleMass+"_"+channel_string+"_"+TString(iversion))){
+	      
+	      TString RegBDT = RunSignalRegionAK4StringBDT(IsSR,SampleMass , iversion,  imapHP.second.first, imapHP.second.second, channel,qq, LepsT, JetColl,  B_JetColl, ev, METv ,param,weight_reg);
+
+	      if(RegBDT != "false"){
+
+		//// iversion now added to direrctory structure
+		FillLimitInput(LimitRegionsBDTR3,
+			       weight_reg,
+			       RegBDT,
+			       "LimitExtractionBDT/"+param.Name+"_"+iversion+"/M"+SampleMass,
+			       "SR3BDT_"+channel_string+"_"+DataEra+"_"+SampleMass+"_"+iversion,
+			       channel_string);
+
+
+		if(!IsSR){
+		  if(B_JetColl.size()==1) FillLimitInput(LimitRegionsInvBJetBDTR3,
+							 weight_reg,
+							 RegBDT,
+							 "LimitExtractionBDT/"+param.Name+"/M"+SampleMass,
+							 "SR3BDT_"+channel_string+"_"+DataEra+"_"+SampleMass+"_"+iversion,
+							 channel_string);
+
+		  else FillLimitInput(LimitRegionsInvMETBDTR3,
+				      weight_reg,
+				      RegBDT,
+				      "LimitExtractionBDT/"+param.Name+"/M"+SampleMass,
+				      "SR3BDT_"+channel_string+"_"+DataEra+"_"+SampleMass+"_"+iversion,
+				      channel_string);
+		}
 	      }
 	    }
 	  }
@@ -865,12 +909,12 @@ bool  HNL_RegionDefinitions::RunSignalRegionAK4(bool ApplyForSR,HNL_LeptonCore::
 
 
 
-TString HNL_RegionDefinitions::RunSignalRegionAK4StringBDT(bool ApplyForSR, TString mN, TString NCut, TString NTree, HNL_LeptonCore::Channel channel, HNL_LeptonCore::ChargeType qq ,std::vector<Lepton *>& LepTColl, std::vector<Jet>& JetColl, std::vector<Jet>& B_JetColl,Event& ev, Particle& METv, AnalyzerParameter& param,  float w){
+TString HNL_RegionDefinitions::RunSignalRegionAK4StringBDT(bool ApplyForSR, TString mN, TString version, TString NCut, TString NTree, HNL_LeptonCore::Channel channel, HNL_LeptonCore::ChargeType qq ,std::vector<Lepton *>& LepTColl, std::vector<Jet>& JetColl, std::vector<Jet>& B_JetColl,Event& ev, Particle& METv, AnalyzerParameter& param,  float w){
   
-  //// Only fill Cutflow/plots for 1 mass point
-  bool FillCutFlow = (mN=="100") ;
+  //// Only fill Cutflow/plots for 1 mass point and version
+  bool FillCutFlow = (mN=="100" && version == "V3") ;
 
-  TString BDTLabel = "M"+mN+"_NTrees"+NTree+"_NCuts"+NCut+"_MaxDepth3";
+  TString BDTLabel = "M"+mN+"_NTrees"+NTree+"_NCuts"+NCut+"_MaxDepth3_"+version;
   
   double met_cut     = 15; /// Apply buffer between SR and CR MET cuts
   vector<FatJet> AK8_JetColl;
@@ -916,15 +960,16 @@ TString HNL_RegionDefinitions::RunSignalRegionAK4StringBDT(bool ApplyForSR, TStr
   bool isBDTVar = false;
   if(HasFlag("SSDilepBDT")) isBDTVar = true;
 
-  float MVAvalueIncl    = EvaluateEventMVA(mN, "Incl", NCut, NTree, channel, LepTColl, ev, METv, param, w, isBDTVar); // true : fill MVA variables
-  //float MVAvalueFake    = EvaluateEventMVA(mN, "Fake", NCut, NTree, channel, LepTColl, ev, METv, param, w);
-  //float MVAvalueNonFake = EvaluateEventMVA(mN, "NonFake", NCut, NTree, channel, LepTColl, ev, METv, param, w);
+  float MVAvalueIncl    = EvaluateEventMVA(mN, "Incl", version, NCut, NTree, channel, LepTColl, ev, METv, param, w, isBDTVar); // true : fill MVA variables
+
+  cout << "Predetermined value = " << MVAvalueIncl  << endl;
   
   if(!ApplyForSR|| HasFlag("PlotBDT")){
     FillHist("LimitExtraction/"+param.Name+"/"+RegionTag+"BDT/"+BDTLabel, MVAvalueIncl, w, 400, -1., 1.);
   }
 
   if(ApplyForSR && param.syst_ ==AnalyzerParameter::Central)     FillHist("LimitExtraction/"+param.Name+"/"+RegionTag+"BDT/"+BDTLabel, MVAvalueIncl, w, 400, -1., 1.);
+
 
   vector<Tau> TauColl;
   if(FillCutFlow&&ApplyForSR&&param.IsCentral()) Fill_RegionPlots(param,"Pass"+RegionTag+"BDT" ,TauColl,  JetColl, AK8_JetColl, LepTColl,  METv, nPV, w);
@@ -1136,23 +1181,7 @@ HNL_RegionDefinitions::~HNL_RegionDefinitions(){
 
 void HNL_RegionDefinitions::RunSR3BDT(HNL_LeptonCore::ChargeType qq, std::vector<Electron>& electrons, std::vector<Electron>& electrons_veto, std::vector<Muon>& muons, std::vector<Muon>& muons_veto,  std::vector<Tau>& TauColl, std::vector<Jet>& JetColl, std::vector<Jet>& VBF_JetColl,std::vector<FatJet>&  AK8_JetColl, std::vector<Jet>& B_JetColl, Event& ev,   Particle& METv, AnalyzerParameter& param,   float weight_ll){
 
-  /// Function plots BDT for all Setup in MNStrList[im], NCutList[ic], NTreeList[]                                                                                                                                
-  // The string returned can be ignored, since this is for use in Limit plot, but function make plot in LimitInputSR3BDT/param.Name                                                                               
 
-  vector<HNL_LeptonCore::Channel> channels = {EE,MuMu, EMu};
-  std::vector<Lepton *> leps_veto  = MakeLeptonPointerVector(muons_veto,electrons_veto,param);
-  std::vector<Lepton *> leps       = MakeLeptonPointerVector(muons,electrons,param);
-  for(auto dilep_channel : channels){
-
-    for(unsigned int im=0; im<MNStrList.size(); im++){
-      for(unsigned int ic=0; ic<NCutList.size(); ic++){
-        for(unsigned int it=0; it<NTreeList.size(); it++){
-          RunSignalRegionAK4StringBDT(true,MNStrList[im], NCutList[ic], NTreeList[it], dilep_channel,qq, leps, JetColl,B_JetColl, ev, METv ,param,weight_ll);
-
-        }
-      }
-    }
-  }
 
 
   return;

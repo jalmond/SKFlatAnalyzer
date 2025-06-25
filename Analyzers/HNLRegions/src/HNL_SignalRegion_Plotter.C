@@ -5,6 +5,9 @@ void HNL_SignalRegion_Plotter::initializeAnalyzer(){
   // All default settings like trigger/ PD/ BJet are decalred in HNL_LeptonCore::initializeAnalyzer to make them consistent for all HNL codes
 
   HNL_LeptonCore::initializeAnalyzer();
+
+  /// Select BDT versions to plot
+  BDTVersions_to_run ={"V2","V3"};
   
   if(IsDATA){
     bool run_ee_bdt=false;    bool run_mm_bdt=false;    bool run_em_bdt=false;
@@ -16,11 +19,12 @@ void HNL_SignalRegion_Plotter::initializeAnalyzer(){
     if (this->DataStream == "SingleMuon")     run_mm_bdt=true;
     if (this->DataStream == "DoubleEG")       run_ee_bdt=true;
     if (this->DataStream == "SingleElectron") run_ee_bdt=true;
-    
-    SetupEventMVAReader("V3",run_ee_bdt,run_mm_bdt,run_em_bdt);
+
+
+    SetupEventMVAReaders(BDTVersions_to_run,run_ee_bdt,run_mm_bdt,run_em_bdt);
 
   }
-  else SetupEventMVAReader("V3");
+  else SetupEventMVAReaders(BDTVersions_to_run);
 
   nLog = 100000;
 }

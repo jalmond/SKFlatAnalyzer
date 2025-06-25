@@ -1,0 +1,132 @@
+
+==> Era: 2018, Mass: M300, Histogram: ElectronSR3BDT
+Bin 1: [Bkg] Content: 1332.98, Error: 20.78, % Error: 1.56%
+  [CF] Content: 303.59, Error: 0.29
+  [Conv] Content: 404.04, Error: 17.94
+  [Fake] Content: 404.62, Error: 9.44
+  [Other] Content: 8.07, Error: 1.03
+  [TTV] Content: 0.43, Error: 0.04
+  [VVV] Content: 1.68, Error: 0.04
+  [WW] Content: 18.01, Error: 0.51
+  [WZ] Content: 150.09, Error: 4.38
+  [ZZ] Content: 42.44, Error: 0.17
+Bin 2: [Bkg] Content: 396.09, Error: 10.15, % Error: 2.56%
+  [CF] Content: 77.80, Error: 0.25
+  [Conv] Content: 114.69, Error: 8.54
+  [Fake] Content: 86.61, Error: 4.17
+  [Other] Content: 5.45, Error: 0.85
+  [TTV] Content: 0.73, Error: 0.05
+  [VVV] Content: 1.94, Error: 0.05
+  [WW] Content: 6.32, Error: 0.22
+  [WZ] Content: 91.58, Error: 3.45
+  [ZZ] Content: 10.95, Error: 0.09
+Bin 3: [Bkg] Content: 293.27, Error: 6.79, % Error: 2.32%
+  [CF] Content: 62.06, Error: 0.46
+  [Conv] Content: 85.79, Error: 4.93
+  [Fake] Content: 66.18, Error: 3.64
+  [Other] Content: 2.21, Error: 0.67
+  [TTV] Content: 1.13, Error: 0.06
+  [VVV] Content: 2.29, Error: 0.05
+  [WW] Content: 6.43, Error: 0.15
+  [WZ] Content: 61.05, Error: 2.82
+  [ZZ] Content: 6.13, Error: 0.06
+Bin 4: [Bkg] Content: 102.98, Error: 4.97, % Error: 4.83%
+  [CF] Content: 22.50, Error: 0.34
+  [Conv] Content: 33.98, Error: 4.21
+  [Fake] Content: 21.05, Error: 2.07
+  [Other] Content: 0.54, Error: 0.34
+  [TTV] Content: 0.67, Error: 0.05
+  [VVV] Content: 1.10, Error: 0.04
+  [WW] Content: 2.96, Error: 0.09
+  [WZ] Content: 18.25, Error: 1.56
+  [ZZ] Content: 1.94, Error: 0.04
+Bin 5: [Bkg] Content: 59.16, Error: 2.72, % Error: 4.60%
+  [CF] Content: 12.42, Error: 0.25
+  [Conv] Content: 17.35, Error: 1.78
+  [Fake] Content: 12.19, Error: 1.57
+  [Other] Content: 1.01, Error: 0.31
+  [TTV] Content: 0.39, Error: 0.04
+  [VVV] Content: 0.75, Error: 0.03
+  [WW] Content: 1.83, Error: 0.06
+  [WZ] Content: 12.22, Error: 1.27
+  [ZZ] Content: 1.00, Error: 0.03
+Bin 6: [Bkg] Content: 33.82, Error: 1.89, % Error: 5.58%
+  [CF] Content: 7.52, Error: 0.21
+  [Conv] Content: 11.16, Error: 1.18
+  [Fake] Content: 5.66, Error: 1.09
+  [Other] Content: 0.34, Error: 0.23
+  [TTV] Content: 0.34, Error: 0.03
+  [VVV] Content: 0.48, Error: 0.02
+  [WW] Content: 1.12, Error: 0.03
+  [WZ] Content: 6.69, Error: 0.93
+  [ZZ] Content: 0.50, Error: 0.02
+Bin 7: [Bkg] Content: 17.78, Error: 1.32, % Error: 7.41%
+  [CF] Content: 4.06, Error: 0.17
+  [Conv] Content: 4.72, Error: 0.74
+  [Fake] Content: 2.98, Error: 0.74
+  [Other] Content: 0.51, Error: 0.19
+  [TTV] Content: 0.18, Error: 0.03
+  [VVV] Content: 0.25, Error: 0.02
+  [WW] Content: 0.58, Error: 0.03
+  [WZ] Content: 4.21, Error: 0.76
+  [ZZ] Content: 0.28, Error: 0.01
+Bin 8: [Bkg] Content: 11.59, Error: 1.11, % Error: 9.57%
+  [CF] Content: 3.00, Error: 0.14
+  [Conv] Content: 3.28, Error: 0.69
+  [Fake] Content: 1.70, Error: 0.61
+  [Other] Content: 0.09, Error: 0.14
+  [TTV] Content: 0.17, Error: 0.02
+  [VVV] Content: 0.21, Error: 0.02
+  [WW] Content: 0.42, Error: 0.03
+  [WZ] Content: 2.55, Error: 0.58
+  [ZZ] Content: 0.19, Error: 0.01
+Bin 9: [Bkg] Content: 8.76, Error: 0.96, % Error: 10.96%
+  [CF] Content: 1.98, Error: 0.10
+  [Conv] Content: 2.84, Error: 0.60
+  [Fake] Content: 1.72, Error: 0.60
+  [Other] Content: 0.09, Error: 0.08
+  [TTV] Content: 0.11, Error: 0.02
+  [VVV] Content: 0.15, Error: 0.01
+  [WW] Content: 0.28, Error: 0.02
+  [WZ] Content: 1.45, Error: 0.43
+  [ZZ] Content: 0.13, Error: 0.01
+Bin 10: [Bkg] Content: 4.09, Error: 0.60, % Error: 14.71%
+  [CF] Content: 1.12, Error: 0.09
+  [Conv] Content: 1.21, Error: 0.39
+  [Fake] Content: 0.37, Error: 0.27
+  [Other] Content: 0.16, Error: 0.11
+  [TTV] Content: 0.06, Error: 0.02
+  [VVV] Content: 0.10, Error: 0.01
+  [WW] Content: 0.17, Error: 0.01
+  [WZ] Content: 0.83, Error: 0.34
+  [ZZ] Content: 0.07, Error: 0.01
+Bin 11: [Bkg] Content: 2.30, Error: 0.51, % Error: 22.15%
+  [CF] Content: 0.43, Error: 0.05
+  [Conv] Content: 0.74, Error: 0.25
+  [Fake] Content: 0.82, Error: 0.42
+  [Other] Content: 0.01, Error: 0.00
+  [TTV] Content: 0.03, Error: 0.01
+  [VVV] Content: 0.04, Error: 0.01
+  [WW] Content: 0.06, Error: 0.01
+  [WZ] Content: 0.14, Error: 0.14
+  [ZZ] Content: 0.03, Error: 0.00
+Bin 12: [Bkg] Content: 2.55, Error: 0.53, % Error: 20.76%
+  [CF] Content: 0.71, Error: 0.06
+  [Conv] Content: 0.19, Error: 0.15
+  [Fake] Content: 0.58, Error: 0.38
+  [Other] Content: 0.10, Error: 0.10
+  [TTV] Content: 0.04, Error: 0.01
+  [VVV] Content: 0.08, Error: 0.01
+  [WW] Content: 0.09, Error: 0.01
+  [WZ] Content: 0.71, Error: 0.32
+  [ZZ] Content: 0.04, Error: 0.00
+Bin 13: [Bkg] Content: 3.63, Error: 0.44, % Error: 12.13%
+  [CF] Content: 1.47, Error: 0.11
+  [Conv] Content: 1.12, Error: 0.29
+  [Fake] Content: 0.00, Error: 0.00
+  [Other] Content: -0.06, Error: 0.07
+  [TTV] Content: 0.07, Error: 0.02
+  [VVV] Content: 0.14, Error: 0.01
+  [WW] Content: 0.13, Error: 0.01
+  [WZ] Content: 0.68, Error: 0.31
+  [ZZ] Content: 0.06, Error: 0.01

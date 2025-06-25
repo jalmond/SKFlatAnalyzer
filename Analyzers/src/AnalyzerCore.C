@@ -2113,11 +2113,17 @@ bool AnalyzerCore::RunBDT(){
 TString AnalyzerCore::GetBDTSignalMass(TString bdt_mass){
 
   /// For bkg return original string
-  if(!MCSample.Contains("Type")) return bdt_mass;
   
   /// For signal return mass of signal 
   vector<TString> BDTMasses = {"85","90","95","100","125","150","200","250","300","400","500"};
 
+
+  if(!MCSample.Contains("Type")) {
+    for (auto it : BDTMasses){
+      if(bdt_mass.Contains(it)) return it;
+    }
+  }
+  
   for (auto it : BDTMasses){
     TString postfix = "M"+it+"_private";
     if(MCSample.Contains(postfix))  {

@@ -1,18 +1,30 @@
 #include "HNL_LeptonCore.h"
 
+void HNL_LeptonCore::SetupEventMVAReaders(vector<TString> versions, bool ee, bool mm, bool emu){
+
+  /// Setup variables
+  /// Set up V2 and V3 are the same
+  SetupEventMVAReaderInit("V3",ee,mm,emu);
+
+  /// load xml files for V2 and/or  V3
+  for(auto iversion : versions) SetupEventMVAReaderXML(iversion,ee,mm,emu);
+}
+
 void HNL_LeptonCore::SetupEventMVAReader(TString version, bool ee, bool mm, bool emu){
+    /// Setup variables                                                                                                                                 
+  SetupEventMVAReaderInit(version,ee,mm,emu);
+  /// load xml files                                                                                                                                  
+  SetupEventMVAReaderXML(version,ee,mm,emu);
+
+}
+
+
+void HNL_LeptonCore::SetupEventMVAReaderInit(TString version, bool ee, bool mm, bool emu){
+
 
   cout << "HNL_LeptonCore::SetupEventMVAReader [start]" << endl;
   InitializeTreeVars();
   cout << "HNL_LeptonCore::SetupEventMVAReader [InitializeTreeVars Done]" << endl;
-
-  TString AnalyzerPath=std::getenv("SKFlat_WD");
-  TString MVAPath = "/data/Run2UltraLegacy_v3/Run2/BDTClassifier/results_xml/HNL_ULID/"+version+"/";
-  TString MVAPathV1 = "/data/Run2UltraLegacy_v3/Run2/BDTClassifier/results_xml/HNL_ULID/V1/";
-  MNStrList = {"85", "90", "95", "100", "125", "150", "200", "250", "300", "400", "500"};
-  NCutList  = {"200"};
-  NTreeList = {"850"};
-
 
   if(mm){
 
@@ -365,12 +377,20 @@ void HNL_LeptonCore::SetupEventMVAReader(TString version, bool ee, bool mm, bool
       MVAReaderEMNonFake->AddSpectator("w_tot", &w_tot);
     }
   }
+}
+void HNL_LeptonCore::SetupEventMVAReaderXML(TString version, bool ee, bool mm, bool emu){
+
+  TString AnalyzerPath=std::getenv("SKFlat_WD");
+  TString MVAPath = "/data/Run2UltraLegacy_v3/Run2/BDTClassifier/results_xml/HNL_ULID/"+version+"/";
+  TString MVAPathV1 = "/data/Run2UltraLegacy_v3/Run2/BDTClassifier/results_xml/HNL_ULID/V1/";
+
+  MNStrList = {"85", "90", "95", "100", "125", "150", "200", "250", "300", "400", "500"};
 
   for(unsigned int im=0; im<MNStrList.size(); im++){
 
     //// This can be changed after checking Hyper paramters                                                                                                                                                                                                                                                                   
     //FinalBDTHyperParamMap settings are whats used in limit for SR/CR                                                                                                                                                                                                                                                        
-    FinalBDTHyperParamMap[MNStrList.at(im)] = make_pair("200","850");
+    //    FinalBDTHyperParamMap[MNStrList.at(im)] = make_pair("200","850");
  
     TString NTreeMM = "850", NCutMM = "200", NTreeEE = "850", NCutEE = "200", NTreeEM = "850", NCutEM = "200";
 
@@ -409,18 +429,19 @@ void HNL_LeptonCore::SetupEventMVAReader(TString version, bool ee, bool mm, bool
     TString FileNameMMFake    = "output_DY_MuMu_M"+MNStrList.at(im)+"_Fake_Run2_NTrees850_NCuts200_MaxDepth3_BDT.weights.xml";
     TString FileNameMMNonFake = "output_DY_MuMu_M"+MNStrList.at(im)+"_NonFake_Run2_NTrees850_NCuts200_MaxDepth3_BDT.weights.xml";
 
-    TString MVATagStrMM        = "BDT_MuMu_M"+MNStrList.at(im)+"_Incl_NTrees"+NTreeMM+"_NCuts"+NCutMM+"_MaxDepth3";
-    TString MVATagStrMMFake    = "BDT_MuMu_M"+MNStrList.at(im)+"_Fake_NTrees850_NCuts200_MaxDepth3";
-    TString MVATagStrMMNonFake = "BDT_MuMu_M"+MNStrList.at(im)+"_NonFake_NTrees850_NCuts200_MaxDepth3";
+    TString MVATagStrMM        = "BDT_"+version+"_MuMu_M"+MNStrList.at(im)+"_Incl_NTrees"+NTreeMM+"_NCuts"+NCutMM+"_MaxDepth3";
+    TString MVATagStrMMFake    = "BDT_"+version+"_MuMu_M"+MNStrList.at(im)+"_Fake_NTrees850_NCuts200_MaxDepth3";
+    TString MVATagStrMMNonFake = "BDT_"+version+"_MuMu_M"+MNStrList.at(im)+"_NonFake_NTrees850_NCuts200_MaxDepth3";
     
     if(mm){
+      FinalBDTHyperParamMap[MNStrList.at(im)+"_MuMu_"+version] = make_pair(NCutMM,NTreeMM);     
       MVAReaderMM->BookMVA(MVATagStrMM, AnalyzerPath+MVAPath+FileNameMM);
 
       if(version=="V1") MVAReaderMMFake->BookMVA(MVATagStrMMFake, AnalyzerPath+MVAPathV1+FileNameMMFake);
       if(version=="V1") MVAReaderMMNonFake->BookMVA(MVATagStrMMNonFake, AnalyzerPath+MVAPathV1+FileNameMMNonFake);
-      map_bdt_booked["Incl_MuMu_M"+MNStrList.at(im)] = MVATagStrMM;
-      if(version=="V1") map_bdt_booked["Fake_MuMu_M"+MNStrList.at(im)] = MVATagStrMMFake;
-      if(version=="V1") map_bdt_booked["NonFake_MuMu_M"+MNStrList.at(im)] = MVATagStrMMNonFake;
+      map_bdt_booked["Incl_"+version+"_MuMu_M"+MNStrList.at(im)] = MVATagStrMM;
+      if(version=="V1") map_bdt_booked["Fake_"+version+"_MuMu_M"+MNStrList.at(im)] = MVATagStrMMFake;
+      if(version=="V1") map_bdt_booked["NonFake_"+version+"_MuMu_M"+MNStrList.at(im)] = MVATagStrMMNonFake;
 
     }
 
@@ -428,34 +449,38 @@ void HNL_LeptonCore::SetupEventMVAReader(TString version, bool ee, bool mm, bool
     TString FileNameEEFake    = "output_DY_EE_M"+MNStrList.at(im)+"_Fake_Run2_NTrees850_NCuts200_MaxDepth3_BDT.weights.xml";
     TString FileNameEENonFake = "output_DY_EE_M"+MNStrList.at(im)+"_NonFake_Run2_NTrees850_NCuts200_MaxDepth3_BDT.weights.xml";
 
-    TString MVATagStrEE        = "BDT_EE_M"+MNStrList.at(im)+"_Incl_NTrees"+NTreeEE+"_NCuts"+NCutEE+"_MaxDepth3";
-    TString MVATagStrEEFake    = "BDT_EE_M"+MNStrList.at(im)+"_Fake_NTrees850_NCuts200_MaxDepth3";
-    TString MVATagStrEENonFake = "BDT_EE_M"+MNStrList.at(im)+"_NonFake_NTrees850_NCuts200_MaxDepth3";
+    TString MVATagStrEE        = "BDT_"+version+"_EE_M"+MNStrList.at(im)+"_Incl_NTrees"+NTreeEE+"_NCuts"+NCutEE+"_MaxDepth3";
+    TString MVATagStrEEFake    = "BDT_"+version+"_EE_M"+MNStrList.at(im)+"_Fake_NTrees850_NCuts200_MaxDepth3";
+    TString MVATagStrEENonFake = "BDT_"+version+"_EE_M"+MNStrList.at(im)+"_NonFake_NTrees850_NCuts200_MaxDepth3";
     
     if(ee){
+      FinalBDTHyperParamMap[MNStrList.at(im)+"_EE_"+version] = make_pair(NCutEE,NTreeEE);
+
       MVAReaderEE->BookMVA(MVATagStrEE, AnalyzerPath+MVAPath+FileNameEE);
       if(version=="V1") MVAReaderEEFake->BookMVA(MVATagStrEEFake, AnalyzerPath+MVAPathV1+FileNameEEFake);
       if(version=="V1") MVAReaderEENonFake->BookMVA(MVATagStrEENonFake, AnalyzerPath+MVAPathV1+FileNameEENonFake);
-      map_bdt_booked["Incl_EE_M"+MNStrList.at(im)] = MVATagStrEE;
-      if(version=="V1") map_bdt_booked["Fake_EE_M"+MNStrList.at(im)] = MVATagStrEEFake;
-      if(version=="V1") map_bdt_booked["NonFake_EE_M"+MNStrList.at(im)] = MVATagStrEENonFake;
+      map_bdt_booked["Incl_"+version+"_EE_M"+MNStrList.at(im)] = MVATagStrEE;
+      if(version=="V1") map_bdt_booked["Fake_"+version+"_EE_M"+MNStrList.at(im)] = MVATagStrEEFake;
+      if(version=="V1") map_bdt_booked["NonFake_"+version+"_EE_M"+MNStrList.at(im)] = MVATagStrEENonFake;
     }
 
     TString FileNameEM        = "output_DY_EMu_M"+MNStrList.at(im)+"_Incl_Run2_NTrees"+NTreeEM+"_NCuts"+NCutEM+"_MaxDepth3_BDT.weights.xml";
     TString FileNameEMFake    = "output_DY_EMu_M"+MNStrList.at(im)+"_Fake_Run2_NTrees850_NCuts200_MaxDepth3_BDT.weights.xml";
     TString FileNameEMNonFake = "output_DY_EMu_M"+MNStrList.at(im)+"_NonFake_Run2_NTrees850_NCuts200_MaxDepth3_BDT.weights.xml";
 
-    TString MVATagStrEM        = "BDT_EMu_M"+MNStrList.at(im)+"_Incl_NTrees"+NTreeEM+"_NCuts"+NCutEM+"_MaxDepth3";
-    TString MVATagStrEMFake    = "BDT_EMu_M"+MNStrList.at(im)+"_Fake_NTrees850_NCuts200_MaxDepth3";
-    TString MVATagStrEMNonFake = "BDT_EMu_M"+MNStrList.at(im)+"_NonFake_NTrees850_NCuts200_MaxDepth3";
+    TString MVATagStrEM        = "BDT_"+version+"_EMu_M"+MNStrList.at(im)+"_Incl_NTrees"+NTreeEM+"_NCuts"+NCutEM+"_MaxDepth3";
+    TString MVATagStrEMFake    = "BDT_"+version+"_EMu_M"+MNStrList.at(im)+"_Fake_NTrees850_NCuts200_MaxDepth3";
+    TString MVATagStrEMNonFake = "BDT_"+version+"_EMu_M"+MNStrList.at(im)+"_NonFake_NTrees850_NCuts200_MaxDepth3";
 
     if(emu){
+      FinalBDTHyperParamMap[MNStrList.at(im)+"_EMu_"+version] = make_pair(NCutEM,NTreeEM);
+
       MVAReaderEM->BookMVA(MVATagStrEM, AnalyzerPath+MVAPath+FileNameEM);
       if(version=="V1") MVAReaderEMFake->BookMVA(MVATagStrEMFake, AnalyzerPath+MVAPathV1+FileNameEMFake);
       if(version=="V1") MVAReaderEMNonFake->BookMVA(MVATagStrEMNonFake, AnalyzerPath+MVAPathV1+FileNameEMNonFake);
-      map_bdt_booked["Incl_EMu_M"+MNStrList.at(im)] = MVATagStrEM;
-      if(version=="V1") map_bdt_booked["Fake_EMu_M"+MNStrList.at(im)] = MVATagStrEMFake;
-      if(version=="V1") map_bdt_booked["NonFake_EMu_M"+MNStrList.at(im)] = MVATagStrEMNonFake;
+      map_bdt_booked["Incl_"+version+"_EMu_M"+MNStrList.at(im)] = MVATagStrEM;
+      if(version=="V1") map_bdt_booked["Fake_"+version+"_EMu_M"+MNStrList.at(im)] = MVATagStrEMFake;
+      if(version=="V1") map_bdt_booked["NonFake_"+version+"_EMu_M"+MNStrList.at(im)] = MVATagStrEMNonFake;
 
     }
   }
@@ -659,7 +684,8 @@ void HNL_LeptonCore::DefineBDTLimitBins(){
       if(imap.first.Contains("SR"))SR_BinTags.push_back("SR3BDT_bin"+to_string(i_d+1));
       else SR_BinTags.push_back("CR3BDT_bin"+to_string(i_d+1));
     }
-    map_BDT_bins_labels [imap.first]=SR_BinTags;
+    map_BDT_bins_labels [imap.first+"_V2"]=SR_BinTags;
+    map_BDT_bins_labels [imap.first+"_V3"]=SR_BinTags;
 
     
     /// For now have CR and SR sample binning
@@ -672,6 +698,8 @@ void HNL_LeptonCore::DefineBDTLimitBins(){
 
 void HNL_LeptonCore::SetBinningBDT(const TString& channel, const TString& mass, const TString& RegionTag, 
                                    const TString& BinBoundaries_label, std::vector<std::pair<TString, double>>& BDTLimitBins) {
+
+
   auto mit = map_bdt_limit_bins.find(BinBoundaries_label);
 
   // Check if the label exists in the map
@@ -765,6 +793,8 @@ void HNL_LeptonCore::InitializeTreeVars(){
 void HNL_LeptonCore::SetupEventBDTVariables(std::vector<Lepton *> LepTColl,
                                             std::vector<Jet> JetAllColl,std::vector<Jet> JetColl, std::vector<Jet> JetVBFColl, std::vector<Jet> B_JetColl,
                                             Event  ev, Particle METv, AnalyzerParameter param){
+
+
 
   /// Ensure obj def is correct                                                                                                                                                                                                                                                                                                                                                               
   // All Jets = 10 GeV, noID and eta 3                                                                                                                                                                                                                                                                                                                                                        
@@ -932,7 +962,7 @@ void HNL_LeptonCore::SetupEventBDTVariables(std::vector<Lepton *> LepTColl,
 }
 
 
-double HNL_LeptonCore::EvaluateEventMVA(TString mN, TString bkgType, TString NCut, TString NTree, HNL_LeptonCore::Channel channel,
+double HNL_LeptonCore::EvaluateEventMVA(TString mN, TString bkgType, TString version, TString NCut, TString NTree, HNL_LeptonCore::Channel channel,
                                         std::vector<Lepton *> LepTColl, Event ev, Particle METv, AnalyzerParameter param, double weight, bool isVarPlots){
 
   std::vector<FatJet> FatjetColl                  = GetHNLAK8Jets("HNL_ParticleNet",param);
@@ -990,7 +1020,7 @@ double HNL_LeptonCore::EvaluateEventMVA(TString mN, TString bkgType, TString NCu
 
   }
 
-  map<TString,TString>::iterator mapit = map_bdt_booked.find(bkgType+"_"+GetChannelString(channel)+"_M"+mN);
+  map<TString,TString>::iterator mapit = map_bdt_booked.find(bkgType+"_"+version+"_"+GetChannelString(channel)+"_M"+mN);
   if(mapit == map_bdt_booked.end()) {
     //Incl_EE_M100
     cout << "[EvaluateEventMVA] : Wrong configuration of map_bdt_booked " << bkgType+"_"+GetChannelString(channel)+"_M"+mN << " was not found as key...." << endl;
