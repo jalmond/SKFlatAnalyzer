@@ -3,6 +3,9 @@
 void HNL_ControlRegion_Plotter::initializeAnalyzer(){
 
   HNL_LeptonCore::initializeAnalyzer();
+  
+  /// Select BDT versions to plot                                                                                                       
+  BDTVersions_to_run ={"V2","V3"};
 
 
   if(IsDATA){
@@ -17,10 +20,10 @@ void HNL_ControlRegion_Plotter::initializeAnalyzer(){
     if (this->DataStream == "SingleElectron") run_ee_bdt=true;
 
 
-    SetupEventMVAReader("V3",run_ee_bdt,run_mm_bdt,run_em_bdt);
+    SetupEventMVAReaders(BDTVersions_to_run,run_ee_bdt,run_mm_bdt,run_em_bdt);
 
   }
-  else SetupEventMVAReader("V3");
+  else SetupEventMVAReaders(BDTVersions_to_run);
 }
 
 

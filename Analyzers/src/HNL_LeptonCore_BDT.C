@@ -682,14 +682,14 @@ void HNL_LeptonCore::DefineBDTLimitBins(){
     vector<TString> SR_BinTags,CR_BinTags;
     for(unsigned int i_d =0 ; i_d <  imap.second.size(); i_d++){
       if(imap.first.Contains("SR"))SR_BinTags.push_back("SR3BDT_bin"+to_string(i_d+1));
-      else SR_BinTags.push_back("CR3BDT_bin"+to_string(i_d+1));
+      else CR_BinTags.push_back("CR3BDT_bin"+to_string(i_d+1));
     }
     map_BDT_bins_labels [imap.first+"_V2"]=SR_BinTags;
     map_BDT_bins_labels [imap.first+"_V3"]=SR_BinTags;
 
     
     /// For now have CR and SR sample binning
-    //    map_BDT_bins_labels [imap.first+"_CR"]=CR_BinTags_Mass;
+    map_BDT_bins_labels [imap.first]=CR_BinTags;
 
   }
   return;
