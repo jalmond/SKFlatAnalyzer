@@ -511,13 +511,13 @@ void   HNL_RegionDefinitions::RunMainRegionCode(bool IsSR,HNL_LeptonCore::Channe
 
 	  // Only run BDT for this channel                                                                                                                          
 	  if(!imapHP.first.Contains(channel_string)) continue;
-
+	  
 	  /// Loop over BDT versions
 	  for(auto iversion : BDTVersions_to_run){
 	    
 	    // Only run BDT for version in BDTVersions_to_run 	  
 	    if(!imapHP.first.Contains(iversion)) continue;
-
+	    
 	    /// GetBDTSignalMass gets for :
 	    // a) bkg: TString of mass of sample i.e., M200, based on imapHP key
 	    // b) signal : gets mass string but if mass string is not in sample name it returns NULL
@@ -545,14 +545,14 @@ void   HNL_RegionDefinitions::RunMainRegionCode(bool IsSR,HNL_LeptonCore::Channe
 		  if(B_JetColl.size()==1) FillLimitInput(LimitRegionsInvBJetBDTR3,
 							 weight_reg,
 							 RegBDT,
-							 "LimitExtractionBDT/"+param.Name+"/M"+SampleMass,
+							 "LimitExtractionBDT/"+param.Name+"_"+iversion+"/M"+SampleMass,
 							 "SR3BDT_"+channel_string+"_"+DataEra+"_"+SampleMass+"_"+iversion,
 							 channel_string);
 
 		  else FillLimitInput(LimitRegionsInvMETBDTR3,
 				      weight_reg,
 				      RegBDT,
-				      "LimitExtractionBDT/"+param.Name+"/M"+SampleMass,
+				      "LimitExtractionBDT/"+param.Name+"_"+iversion+"/M"+SampleMass,
 				      "SR3BDT_"+channel_string+"_"+DataEra+"_"+SampleMass+"_"+iversion,
 				      channel_string);
 		}
