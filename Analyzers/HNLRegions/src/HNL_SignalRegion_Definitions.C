@@ -453,9 +453,10 @@ void   HNL_RegionDefinitions::RunMainRegionCode(bool IsSR,HNL_LeptonCore::Channe
     TString RegionBin = RunSignalRegionWWString(IsSR, channel,qq, LepsT, LepsV,  TauColl, VBF_JetColl,  AK8_JetColl, B_JetColl,ev, METv, param,  weight_reg);
 
     //// SR events with  MJJ < 700
-    if(RegionBin == "NULL")  return;
 
-    if(RegionBin != "false") {
+    bool SSWWVeto= (RegionBin == "NULL") ;
+    
+    if(RegionBin != "false" && !SSWWVeto) {
 
       if(param.syst_ == AnalyzerParameter::PDFUp)   weight_reg*=GetPDFUncertainty("SR2",1);
       if(param.syst_ == AnalyzerParameter::PDFDown) weight_reg*=GetPDFUncertainty("SR2",-1);
@@ -561,6 +562,8 @@ void   HNL_RegionDefinitions::RunMainRegionCode(bool IsSR,HNL_LeptonCore::Channe
 	  }
 	}
       }
+
+      if(SSWWVeto) return;
       
       RegionBin  = RunSignalRegionAK4String (IsSR,channel,qq, LepsT, LepsV, TauColl, JetColl, AK8_JetColl, B_JetColl, ev, METv ,param,weight_reg);
       if(RegionBin != "false") {
@@ -742,6 +745,10 @@ TString HNL_RegionDefinitions::RunSignalRegionAK8String(bool ApplyForSR,
     else return RegionTag+"_MNbin3";
   }
 
+  if(param.IsCentral())  {
+    Fill_RegionPlots(param,"Pass"+RegionTag+"_MNBins" ,  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);
+  }
+  
   /// Bins defined in  HNL_LeptonCore::DefineLimitBins() in HNL_LeptonCore_LimitBins.C 
   vector<double> ml1jbins = GetLimitBinBoundary("SR1",GetChannelString(channel));
   
@@ -819,7 +826,10 @@ TString HNL_RegionDefinitions::RunSignalRegionWWString(bool ApplyForSR,HNL_Lepto
   
   Particle JJ = JetColl[ijet1] + JetColl[ijet2];
   if(ApplyForSR) {
-    if(JJ.M() < 750) return "NULL";
+    if(JJ.M() < 700) {
+      Fill_RegionPlots(param,"LowMJJ"+RegionTag ,  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);
+      return "NULL";
+    }
   }
   else     if(JJ.M() < 500) return "NULL";
   
@@ -968,7 +978,7 @@ TString HNL_RegionDefinitions::RunSignalRegionAK4StringBDT(bool ApplyForSR, TStr
     FillHist("LimitExtraction/"+param.Name+"/"+RegionTag+"BDT/"+BDTLabel, MVAvalueIncl, w, 400, -1., 1.);
   }
 
-  if(ApplyForSR && param.syst_ ==AnalyzerParameter::Central)     FillHist("LimitExtraction/"+param.Name+"/"+RegionTag+"BDT/"+BDTLabel, MVAvalueIncl, w, 400, -1., 1.);
+  if(ApplyForSR && param.syst_ ==AnalyzerParameter::Central && !HasFlag("RunSyst"))   FillHist("LimitExtraction/"+param.Name+"/"+RegionTag+"BDT/"+BDTLabel, MVAvalueIncl, w, 400, -1., 1.);
 
 
   vector<Tau> TauColl;
