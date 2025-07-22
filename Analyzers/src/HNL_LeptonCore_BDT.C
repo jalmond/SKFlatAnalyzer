@@ -4,7 +4,7 @@ void HNL_LeptonCore::SetupEventMVAReaders(vector<TString> versions, bool ee, boo
 
   /// Setup variables
   /// Set up V2 and V3 are the same
-  SetupEventMVAReaderInit("V3",ee,mm,emu);
+  SetupEventMVAReaderInit("V4",ee,mm,emu);
 
   /// load xml files for V2 and/or  V3
   for(auto iversion : versions) SetupEventMVAReaderXML(iversion,ee,mm,emu);
@@ -423,6 +423,16 @@ void HNL_LeptonCore::SetupEventMVAReaderXML(TString version, bool ee, bool mm, b
       if(im == 8){ NTreeMM = "1000", NCutMM = "400", NTreeEE = "500", NCutEE = "250", NTreeEM = "600", NCutEM = "400"; }    // mN = 300 GeV
       if(im == 9){ NTreeMM = "1000", NCutMM = "100", NTreeEE = "1000", NCutEE = "400", NTreeEM = "1000", NCutEM = "400"; }  // mN = 400 GeV
       if(im == 10){ NTreeMM = "1000", NCutMM = "150", NTreeEE = "1000", NCutEE = "100", NTreeEM = "1000", NCutEM = "150"; } // mN = 500 GeV
+    }
+    if(version == "V4"){
+      if(im < 4){ NTreeMM = "700", NCutMM = "100", NTreeEE = "600", NCutEE = "300", NTreeEM = "500", NCutEM = "250"; }      // mN = 85, 90, 95, 100 GeV
+      if(im == 4){ NTreeMM = "850", NCutMM = "150", NTreeEE = "600", NCutEE = "200", NTreeEM = "700", NCutEM = "100"; }     // mN = 125 GeV
+      if(im == 5){ NTreeMM = "850", NCutMM = "150", NTreeEE = "600", NCutEE = "400", NTreeEM = "500", NCutEM = "100"; }     // mN = 150 GeV
+      if(im == 6){ NTreeMM = "1000", NCutMM = "250", NTreeEE = "600", NCutEE = "150", NTreeEM = "1000", NCutEM = "200"; }   // mN = 200 GeV
+      if(im == 7){ NTreeMM = "600", NCutMM = "400", NTreeEE = "1000", NCutEE = "100", NTreeEM = "600", NCutEM = "250"; }    // mN = 250 GeV
+      if(im == 8){ NTreeMM = "1000", NCutMM = "400", NTreeEE = "500", NCutEE = "150", NTreeEM = "600", NCutEM = "400"; }    // mN = 300 GeV
+      if(im == 9){ NTreeMM = "1000", NCutMM = "100", NTreeEE = "1000", NCutEE = "200", NTreeEM = "1000", NCutEM = "300"; }  // mN = 400 GeV
+      if(im == 10){ NTreeMM = "1000", NCutMM = "150", NTreeEE = "700", NCutEE = "300", NTreeEM = "1000", NCutEM = "150"; }  // mN = 500 GeV
     }
 
     TString FileNameMM        = "output_DY_MuMu_M"+MNStrList.at(im)+"_Incl_Run2_NTrees"+NTreeMM+"_NCuts"+NCutMM+"_MaxDepth3_BDT.weights.xml";
@@ -1435,7 +1445,7 @@ void HNL_LeptonCore::DefineBDTLimitBins(){
     }
     map_BDT_bins_labels [imap.first+"_V2"]=SR_BinTags;
     map_BDT_bins_labels [imap.first+"_V3"]=SR_BinTags;
-
+    map_BDT_bins_labels [imap.first+"_V4"]=SR_BinTags;
     
     /// For now have CR and SR sample binning
     map_BDT_bins_labels [imap.first]=CR_BinTags;
@@ -1724,7 +1734,7 @@ double HNL_LeptonCore::EvaluateEventMVA(TString mN, TString bkgType, TString ver
                          All_JetColl, JetColl,VBF_JetColl,B_JetColl,
                          ev,METv,param);
 
-  if(isVarPlots && mN=="100" && bkgType=="Incl"){
+  if(isVarPlots && version=="V4" && mN=="100" && bkgType=="Incl"){
 
     FillHist("HNL_HighMassSR3_TwoLepton_CR/"+param.Name+"/BDT/Nvbfj", ev_bdt_Nvbfj, weight, 10, 0., 10.);
     FillHist("HNL_HighMassSR3_TwoLepton_CR/"+param.Name+"/BDT/Nb", ev_bdt_Nb, weight, 10, 0., 10.);
