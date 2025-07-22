@@ -2235,7 +2235,6 @@ bool HNL_RegionDefinitions::FillWZCRPlots(HNL_LeptonCore::Channel channel, std::
   }
   else return false;
 
-  if(channel == MuMuMu && AK8_JetColl.size() == 1 ) cout << "WZ SR1 " << event <<  endl;
   //// SR1  
   if(AK8_JetColl.size() == 1 )   Fill_RegionPlots(param,"HNL_WZ_SR1_ThreeLepton_CR", taus ,  JetColl,  AK8_JetColl,  leps,  METv, nPV, w);  
   //// SR3

@@ -454,9 +454,10 @@ void   HNL_RegionDefinitions::RunMainRegionCode(bool IsSR,HNL_LeptonCore::Channe
 
     TString RegionBin = RunSignalRegionWWString(IsSR, channel,qq, LepsT, LepsV,  TauColl, VBF_JetColl,  AK8_JetColl, B_JetColl,ev, METv, param,  weight_reg);
 
-    //// SR events with  MJJ < 700
+    //// SSWW SR events with  MJJ < 700 removed frmo analysis 
 
-    bool SSWWVeto= (RegionBin == "NULL") ;
+    double ll_dphi = fabs(TVector2::Phi_mpi_pi( ( (*LepsT[0]).Phi() - (*LepsT[1]).Phi() )) );
+    bool SSWWVeto= (RegionBin == "NULL" && ll_dphi > 2 && LepsT[0]->HTOverPt() < 1);
     
     if(RegionBin != "false" && !SSWWVeto) {
 
@@ -859,10 +860,6 @@ TString HNL_RegionDefinitions::RunSignalRegionWWString(bool ApplyForSR,HNL_Lepto
 
     if(param.IsCentral()){
       Fill_RegionPlots(param,"Pass"+RegionTag ,  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);      
-      if(User("jalmond")){
-	if(B_JetColl.size() == 1)     Fill_RegionPlots(param,"Pass"+RegionTag +"_BJet",  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);
-	else Fill_RegionPlots(param,"Pass"+RegionTag +"_MET",  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);
-      }
     }
 
     double HTOverPT = leps[0]->HTOverPt();
