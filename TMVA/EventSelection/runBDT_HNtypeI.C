@@ -25,8 +25,9 @@ void runBDT_HNtypeI(TString channel, int mass, TString bkgType, TString era, TSt
   }
   if(bkgType == "Incl"){
     outBkgName = "Inclusive";
-    if(channel == "EE") bkgName = "AllBkg_EE";
-    else bkgName = "AllBkg_MuMu";
+    bkgName = "AllBkg_"+channel;
+    //if(channel == "EE") bkgName = "AllBkg_EE";
+    //else bkgName = "AllBkg_MuMu";
     //if(channel == "EE") bkgName = "AllBkg_NoWJets_EE";
     //else bkgName = "AllBkg_NoWJets_MuMu";
   }
@@ -796,9 +797,9 @@ void runBDT_HNtypeI(TString channel, int mass, TString bkgType, TString era, TSt
   //factory->BookMethod( data_loader,TMVA::Types::kBDT, "BDT", "!H:!V:NTrees="+NTrees_txt+":nEventsMin=400:MaxDepth=3:nCuts="+NCuts_txt+":BoostType=AdaBoost:SeparationType=GiniIndex:PruneMethod=NoPruning" );
   if(BDTMethod == "BDT"){
     //factory->BookMethod( data_loader,TMVA::Types::kBDT, "BDT", "!H:!V:NTrees="+NTrees_txt+":MinNodeSize=1.0%:MaxDepth="+MaxDepth_txt+":nCuts="+NCuts_txt+":BoostType=AdaBoost:SeparationType=GiniIndex:PruneMethod=NoPruning:NegWeightTreatment=IgnoreNegWeightsInTraining" ); // Without negative weights
-    //factory->BookMethod( data_loader,TMVA::Types::kBDT, "BDT", "!H:!V:NTrees="+NTrees_txt+":MinNodeSize=0.5%:MaxDepth="+MaxDepth_txt+":nCuts="+NCuts_txt+":BoostType=AdaBoost:SeparationType=GiniIndex:PruneMethod=NoPruning:NegWeightTreatment=IgnoreNegWeightsInTraining" );  // MinNodeSize 0.5%
+    factory->BookMethod( data_loader,TMVA::Types::kBDT, "BDT", "!H:!V:NTrees="+NTrees_txt+":MinNodeSize=0.5%:MaxDepth="+MaxDepth_txt+":nCuts="+NCuts_txt+":BoostType=AdaBoost:SeparationType=GiniIndex:PruneMethod=NoPruning:NegWeightTreatment=IgnoreNegWeightsInTraining" );  // MinNodeSize 0.5%
     //factory->BookMethod( data_loader,TMVA::Types::kBDT, "BDT", "!H:!V:NTrees="+NTrees_txt+":MinNodeSize=0.25%:MaxDepth="+MaxDepth_txt+":nCuts="+NCuts_txt+":BoostType=AdaBoost:SeparationType=GiniIndex:PruneMethod=NoPruning:NegWeightTreatment=IgnoreNegWeightsInTraining" );  // MinNodeSize 0.25%
-    factory->BookMethod( data_loader,TMVA::Types::kBDT, "BDT", "!H:!V:NTrees="+NTrees_txt+":MinNodeSize=1.5%:MaxDepth="+MaxDepth_txt+":nCuts="+NCuts_txt+":BoostType=AdaBoost:SeparationType=GiniIndex:PruneMethod=NoPruning:NegWeightTreatment=IgnoreNegWeightsInTraining" );  // MinNodeSize 1.5%
+    //factory->BookMethod( data_loader,TMVA::Types::kBDT, "BDT", "!H:!V:NTrees="+NTrees_txt+":MinNodeSize=1.5%:MaxDepth="+MaxDepth_txt+":nCuts="+NCuts_txt+":BoostType=AdaBoost:SeparationType=GiniIndex:PruneMethod=NoPruning:NegWeightTreatment=IgnoreNegWeightsInTraining" );  // MinNodeSize 1.5%
   }
 
   //==== Gradient Boost
