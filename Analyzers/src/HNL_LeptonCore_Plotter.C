@@ -300,12 +300,9 @@ void HNL_LeptonCore::Fill_Main_Plots(AnalyzerParameter& param, TString  region, 
     }
     
     
-    if(ll_dphi > 2.)     FillHist( plot_dir+ region+ "/MainPlots/HT_PT1_LowDphi",     leps[0]->HTOverPt(),     w, 100, 0, 10, "H_{T}/p_{T}");
-    else     FillHist( plot_dir+ region+ "/MainPlots/HT_PT1_HighDPhi",     leps[0]->HTOverPt(),     w, 100, 0, 10, "H_{T}/p_{T}");
-    if(leps[1]->Pt() >  20){
-      if(ll_dphi > 2.)     FillHist( plot_dir+ region+ "/MainPlots/HT_PT1_Pt20_LowDphi",     leps[0]->HTOverPt(),     w, 100, 0, 10, "H_{T}/p_{T}");
-      else     FillHist( plot_dir+ region+ "/MainPlots/HT_Pt20_PT1_HighDPhi",     leps[0]->HTOverPt(),     w, 100, 0, 10, "H_{T}/p_{T}");
-    }
+    if(ll_dphi > 2.)     FillHist( plot_dir+ region+ "/MainPlots/HT_PT1_HighDphi",     leps[0]->HTOverPt(),     w, 100, 0, 10, "H_{T}/p_{T}");
+    else     FillHist( plot_dir+ region+ "/MainPlots/HT_PT1_LowDPhi",     leps[0]->HTOverPt(),     w, 100, 0, 10, "H_{T}/p_{T}");
+
   }
 
   double PTLep1  = leps[0]->Pt();

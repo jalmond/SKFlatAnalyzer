@@ -58,7 +58,7 @@ void HNL_SignalRegion_Plotter::executeEvent(){
   }
   
   // Match Channel to signal process based on MC sample
-  if (MCSample.Contains("Type")) {
+  if (IsSignal()){
     if (MCSample.Contains("SSWWTypeI_DF")) {
       ChannelsToRun = {EMu};
     }
@@ -73,7 +73,7 @@ void HNL_SignalRegion_Plotter::executeEvent(){
   for (auto id: LepIDs){
     for(auto channel : ChannelsToRun){
       
-      if(MCSample.Contains("Type")&& !SelectChannel(channel)) continue;
+      if(IsSignal() && !SelectChannel(channel)) continue;
 
       //// Central run...
       AnalyzerParameter param_sr = Setup_Param_HNL_ULIDv2(id,GetChannelString(channel));

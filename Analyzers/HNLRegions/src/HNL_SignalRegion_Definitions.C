@@ -79,7 +79,7 @@ void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq,
     double  weight_channel = weight_ll;
 
     //// Select CHannel used for Signals to check if signal is EE/MM/Emu using gen info
-    if(MCSample.Contains("Type")&& !SelectChannel(dilep_channel)) continue;
+    if(IsSignal()&& !SelectChannel(dilep_channel)) continue;
   
     if(param.IsCentral()) FillHist( "AllChannel/RunAllSignalRegions_NOCUT_ALLCHANNEL_"+param.Name,  1,  weight_ll, 2,0,2);
 
@@ -98,7 +98,7 @@ void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq,
     std::vector<Lepton *> LepsV       = MakeLeptonPointerVector(muons_veto,electrons_veto,param);
 
     if(param.IsCentral()){
-      if(MCSample.Contains("Type"))Fill_RegionPlots(param,"Signal_NoCut" , TauColl,
+      if(IsSignal())Fill_RegionPlots(param,"Signal_NoCut" , TauColl,
 						    All_Jets,  All_FatJets, LepsV,
 						    METv, nPV, weight_ll);
     }
@@ -407,6 +407,8 @@ void   HNL_RegionDefinitions::RunMainRegionCode(bool IsSR,HNL_LeptonCore::Channe
 		       ev, METv ,param, weight_reg)) return;
   
 
+
+  
   if(AK8_JetColl.size() > 0) {
     
     TString RegionBin= RunSignalRegionAK8String (IsSR,channel,qq, LepsT, LepsV, TauColl, 
@@ -633,6 +635,7 @@ bool  HNL_RegionDefinitions::PassPreselection(bool ApplyForSR,HNL_LeptonCore::Ch
   if(ApplyForSR) FillCutflow(HNL_LeptonCore::SRHighMass, w, "Preselection",param);
 
   if(param.IsCentral())Fill_RegionPlots(param,"Preselection" , TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);
+  if(param.IsCentral())Fill_RegionPlots(param,"Preselection_vbf" , TauColl, VBF_JetColl, AK8_JetColl, leps,  METv, nPV, w);
   
   FillCutflow(HNL_LeptonCore::ChannelDepPresel, w, GetChannelString(channel) +"_Presel",param);
   
@@ -661,7 +664,7 @@ TString HNL_RegionDefinitions::RunSignalRegionAK8String(bool ApplyForSR,
 							std::vector<Jet>& JetColl, std::vector<FatJet>&  AK8_JetColl, std::vector<Jet>& B_JetColl, 
 							Event& ev, Particle& METv, AnalyzerParameter& param,  float w){
    
-  double met_cut     = 10;
+  double met_cut     = 10; 
   if(channel == MuMu) met_cut     = 15;
 
   double met2_st     = ev.MET2ST(); 
@@ -972,7 +975,6 @@ TString HNL_RegionDefinitions::RunSignalRegionAK4StringBDT(bool ApplyForSR, TStr
 
   float MVAvalueIncl    = EvaluateEventMVA(mN, "Incl", version, NCut, NTree, channel, LepTColl, ev, METv, param, w, isBDTVar); // true : fill MVA variables
 
-  cout << "Predetermined value = " << MVAvalueIncl  << endl;
   
   if(!ApplyForSR|| HasFlag("PlotBDT")){
     FillHist("LimitExtraction/"+param.Name+"/"+RegionTag+"BDT/"+BDTLabel, MVAvalueIncl, w, 400, -1., 1.);

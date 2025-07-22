@@ -13,8 +13,8 @@ import numpy as np
 import CMS_lumi, tdrstyle
 
 
-Analyzer = "HNL_ControlRegionOne"
-result_dir = "results_ratio_" +Analyzer
+Analyzer = "HNL_ControlRegionLLL"
+result_dir = "results_lll_ratio_" +Analyzer
 
 # A helper function to add clear breaks in logging
 def log_section_start(section_name):
@@ -375,7 +375,6 @@ def main():
     }
     
     background_files = [
-        [f"{Analyzer}_CF.root", "Chargeflip"],
         [f"{Analyzer}_Conv.root", "X#gamma"],
         [f"{Analyzer}_Fake.root", "Nonprompt"],
         [f"{Analyzer}_TTV.root", "TTV"],
@@ -447,12 +446,17 @@ def main():
 
     parser = argparse.ArgumentParser(description="Script with verbosity flags.")
     parser.add_argument('--plot-version', type=str, choices=directories, help='Select the directory for Plot_Version')
+    parser.add_argument('--usewz-alt', action='store_true', help='Use alternative WZ normalization')
     
     args = parser.parse_args()
 
-
-
+    if args.usewz_alt:
+        for entry in background_files:
+            if entry[1] == "WZ":
+                entry[0] = f"{Analyzer}_WZAlt.root"
+    
     Plots = [
+        ["AK8/AK8J_Unbinned_Mass/l1J","M_l1J",[10],0,4000],
         ["AK8/AK8J_Mass/l1J","M_l1J",[10],0,4000],
         ["AK8/AK8J_Mass/llJ","M_llJ",[10],0,4000],
         ["ExtraLep/All_El_NonMatched_CBVeto","All_El_NonMatched CB",[1],0,10],
@@ -461,6 +465,7 @@ def main():
         ["ExtraLep/All_Tau_NonMatched","All_Tau_NonMatched",[1],0,10],
         ["Leptons/Lep_1_pt","Lepton_pt",[2],0,400],
         ["Leptons/Lep_2_pt","Lepton_pt",[2],0,400],
+        ["Leptons/Lep_3_pt","Lepton_pt",[2],0,400],
         ["Leptons/Lep_1_eta","Lepton_eta",[2],-3,3],
         ["Leptons/Lep_2_eta","Lepton_eta",[2],-3,3],
 
@@ -490,49 +495,43 @@ def main():
         ["Jets/CHFracCJ","",[10],0,1],
         ["Jets/Multiplicity","",[2],0,50],
         ["Jets/MuonEnergyFraction","",[1],0,1],
-        ["Jets/NEMFracCJ","",[4],0,1],
-        ["Jets/NFracCJ","",[4],0,1],
+	["Jets/NEMFracCJ","",[4],0,1],
+	["Jets/NFracCJ","",[4],0,1],
         ["Jets/PileupJetId_Central","",[2],0,1],
         ["Jets/PileupJetId_Endcap","",[5],0,1],
 
         ["Leptons/SumQ","",[1],-3,3],
         ["MainPlots/Ev_MET2_ST","",[20],0,60],
+        ["Mass/M_lll","",[5],0,1000],
         ["Mass/M_minOSSF","",[5],0,500],
         ["SKEvent/HToLepPt1","",[1],0,10],
         ["NObj/N_ak8_loose_jet","N_AK4J",[1],0,10]]
-
-
-    IDs = [ "HNL_ULIDv2_ANv4","HNL_ULIDv2_AK8_Veto1","HNL_ULIDv2_AK8_Veto2","HNL_ULIDv2_AK8_Veto3", "HNL_ULIDv2_presel_mod","HNL_ULIDv2_presel","HNL_ULIDv2_bjet_noak8","HNL_ULIDv2_veto_id_one","HNL_ULIDv2_veto_id_two","HNL_ULIDv2_bjet_noak8_hnlveto", "TauVeto","HNL_ULIDv2_TauVeto2","HNL_ULIDv2_TauVeto3","HNL_ULIDv2_NoOverlap","HNL_ULIDv2_presel_bjetlepclean","HNL_ULIDv2_presel_bjetmod","HNL_ULIDv2_presel_ak8_tight","HNL_ULIDv2_presel_bjetmod_ak8_tight","HNL_ULIDv2_presel_bjetmodx"]
-
-
-    IDs = ["HNL_ULIDv2_presel_mod"]
     
-    Flavours = ["MuMu","EE","EMu","LL"]
+
+    IDs = ["HNL_ULIDv2_ANv5", "HNL_ULIDv2_ANv4","HNL_ULIDv2_AK8_Veto1","HNL_ULIDv2_AK8_Veto2","HNL_ULIDv2_AK8_Veto3", "presel_mod","HNL_ULIDv2_presel","HNL_ULIDv2_bjet_noak8","HNL_ULIDv2_veto_id_one","HNL_ULIDv2_veto_id_two","HNL_ULIDv2_bjet_noak8_hnlveto", "TauVeto","HNL_ULIDv2_TauVeto2","HNL_ULIDv2_TauVeto3","HNL_ULIDv2_NoOverlap","HNL_ULIDv2_presel_bjetlepclean","HNL_ULIDv2_presel_bjetmod","HNL_ULIDv2_presel_ak8_tight","HNL_ULIDv2_presel_bjetmod_ak8_tight","HNL_ULIDv2_presel_bjetmodx"]
+    
+    Flavours = ["MuMuMu","EEE","EMuL","LLL"]
     
     hist_bases = [ ]
     for j_id in IDs:
-        hist_bases.append(["HNL_HighMassSR1_InvBJet_TwoLepton_CR",j_id, "AK8/AK8Jet_dR_Electron","AK8Jet_dR_Electron", [2] , "EE",0,6])
-        hist_bases.append(["HNL_HighMassSR1_InvBJet_TwoLepton_CR", j_id, "AK8/AK8Jet_dR_Electron","AK8Jet_dR_Electron", [2] , "EMu",0,6])
-        hist_bases.append(["HNL_HighMassSR1_InvMET_TwoLepton_CR", j_id, "AK8/AK8Jet_dR_Electron","AK8Jet_dR_Electron", [2] , "EE",0,6])
-        hist_bases.append(["HNL_HighMassSR1_InvMET_TwoLepton_CR", j_id, "AK8/AK8Jet_dR_Electron","AK8Jet_dR_Electron", [2] , "EMu",0,6])
-        hist_bases.append(["HNL_HighMassSR1_InvBJet_TwoLepton_CR", j_id, "AK8/AK8Jet_dR_Muon","AK8Jet_dR_Muon", [2] , "MuMu",0,6])
-        hist_bases.append(["HNL_HighMassSR1_InvBJet_TwoLepton_CR", j_id, "AK8/AK8Jet_dR_Muon","AK8Jet_dR_Muon", [2] , "EMu",0,6])
-        hist_bases.append(["HNL_HighMassSR1_InvMET_TwoLepton_CR", j_id, "AK8/AK8Jet_dR_Muon","AK8Jet_dR_Muon", [2] , "MuMu",0,6])
-        hist_bases.append(["HNL_HighMassSR1_InvMET_TwoLepton_CR", j_id, "AK8/AK8Jet_dR_Muon","AK8Jet_dR_Muon", [2] , "EMu",0,6])
+        hist_bases.append(["HNL_WZ_SR1_ThreeLepton_CR",j_id, "AK8/AK8Jet_dR_Electron","AK8Jet_dR_Electron", [2] , "EEE",0,6])
+        hist_bases.append(["HNL_WZ_SR1_ThreeLepton_CR", j_id, "AK8/AK8Jet_dR_Electron","AK8Jet_dR_Electron", [2] , "EMuL",0,6])
+        hist_bases.append(["HNL_WZ_SR1_ThreeLepton_CR", j_id, "AK8/AK8Jet_dR_Muon","AK8Jet_dR_Muon", [2] , "MuMuMu",0,6])
+        hist_bases.append(["HNL_WZ_SR1_ThreeLepton_CR", j_id, "AK8/AK8Jet_dR_Muon","AK8Jet_dR_Muon", [2] , "EMuL",0,6])
         
     
     for j_histname, j_label,j_rebin,j_xmin,j_xmax in Plots:
         for j_id in IDs:
             for j_flavour in Flavours:
-                hist_bases.append(["HNL_HighMassSR1_InvBJet_TwoLepton_CR", j_id,j_histname, j_label, j_rebin, j_flavour,j_xmin,j_xmax])
-                hist_bases.append(["HNL_HighMassSR1_InvMET_TwoLepton_CR",  j_id,j_histname, j_label, j_rebin, j_flavour,j_xmin,j_xmax])
-                hist_bases.append(["HNL_HighMassSR1_Inclusive",  j_id,j_histname, j_label, j_rebin, j_flavour,j_xmin,j_xmax])
-
-    
+                hist_bases.append(["HNL_WZ_SR1_ThreeLepton_CR", j_id,j_histname, j_label, j_rebin, j_flavour,j_xmin,j_xmax])
+                
     
     input_dir ="/data6/Users/jalmond/2020/HL_SKFlatAnalyzer_UL_LONG/SKFlatAnalyzer/data_validation/analysis_validation/merged_samples/"+Plot_Version+"/"
 
-
+    result_dir = "results_lll_ratio_" + Analyzer
+    
+    if args.usewz_alt:
+        result_dir=result_dir+"_WZAlt"
             
     # Path and File Output
     Path(result_dir).mkdir(exist_ok=True)
@@ -548,7 +547,14 @@ def main():
             Path(f"{result_dir}/{histname_syntaxfix}").mkdir(exist_ok=True)
 
             for year_idx, year in enumerate(years):
-                output_file = f"{result_dir}/{histname_syntaxfix}/{year}_{hist_base}_{hist_config}_{histname_syntaxfix}_{flavour}_ratio_stacked_histogram.png"
+
+                output_file = f"{result_dir}/{histname_syntaxfix}/{flavour}"
+                Path(output_file).mkdir(exist_ok=True)
+                output_file = f"{result_dir}/{histname_syntaxfix}/{flavour}/{year}"
+                Path(output_file).mkdir(exist_ok=True)
+                                
+                
+                output_file = f"{result_dir}/{histname_syntaxfix}/{flavour}/{year}/{hist_base}_{hist_config}_ratio_stacked_histogram.png"
                 logging.info(f"Running code to make {output_file}")
                 
                 stacked_hist = ROOT.THStack(f"stacked_hist_{flavour}_{year}", "Stacked Backgrounds")

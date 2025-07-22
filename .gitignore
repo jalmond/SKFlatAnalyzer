@@ -1,4 +1,7 @@
 *~
+data_validation/analysis_validation/bdt_input/plots_v2_vs_v3/
+data_validation/analysis_validation/limit_input_comparison/SR1/log*
+data_validation/analysis_validation/region_comparison/Plots/ControlRegionLLL/results_lll_ratio*
 data_validation/analysis_validation/limit_input_comparison/NonBDT/log_scan/
 data_validation/analysis_validation/limit_input_comparison/NonBDT/logs
 data_validation/analysis_validation/limit_input_comparison/NonBDT/log

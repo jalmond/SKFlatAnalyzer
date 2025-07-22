@@ -89,7 +89,7 @@ void HNL_LeptonCore::FillCutflow2D(TString cutflow_dirname,TString cutflow_histn
   if (IsSignal()) {
     if (cutflow_dirname.Contains("BDT")) {
       // If it's a BDT signal and MCSample contains certain values, assign the corresponding label
-      if (!MCSample.Contains("Type")) return;
+      if (!IsSignal()) return;
       
       // Define mapping of MCSample to corresponding bkg_label
       std::map<std::string, std::string> signal_map = {

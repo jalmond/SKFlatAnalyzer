@@ -265,24 +265,36 @@ def process_histograms(years, channels,input_dir, background_files, hist_base,hi
                 err = array('d', [0.0])  # Array to store the error
 
                 norm = hist.IntegralAndError(1, hist.GetNbinsX(), err)
-                uncer = 0.1
-                if "WW" in file_path:
-                    uncer = 0.2
-                if "VVV" in file_path:
-                    uncer = 0.3
-                if "ZZ" in file_path:
-                    uncer = 0.15
-                
-                if "Fake" in file_path:
-                    uncer = 0.3
-                if "CF" in file_path:
-                    uncer = 0.25
-                if "Conv" in file_path:
-                    uncer = 0.2
+                d_err = err[0]  # start with statistical error
 
+                # Custom treatment for WZ uncertainty using WZAlt
+                if "WZ" in bkg_file:
+                    alt_file_path = os.path.join(input_dir, year, "HNL_ControlRegionLLL_WZAlt.root")
+                    alt_file = ROOT.TFile.Open(alt_file_path, "READ")
+                    if alt_file and not alt_file.IsZombie():
+                        alt_hist = alt_file.Get(hist_path)
+                        if alt_hist:
+                            alt_norm = alt_hist.Integral(1, alt_hist.GetNbinsX())
+                            wz_diff = abs(norm - alt_norm)
+                            d_err = math.sqrt(d_err**2 + wz_diff**2 + (0.2 * norm)**2)
+                        alt_file.Close()
+                else:
+                    # Use default systematics
+                    uncer = 0.1
+                    if "WW" in file_path:
+                        uncer = 0.2
+                    if "VVV" in file_path:
+                        uncer = 0.3
+                    if "ZZ" in file_path:
+                        uncer = 0.15
+                    if "Fake" in file_path:
+                        uncer = 0.3
+                    if "CF" in file_path:
+                        uncer = 0.25
+                    if "Conv" in file_path:
+                        uncer = 0.2
+                    d_err = math.sqrt(d_err**2 + (uncer * norm)**2)
 
-                d_err = err[0]  # extract the float value
-                d_err = math.sqrt(d_err**2 + (uncer * norm)**2)
                 
                 # Mapping the year and channel to bins
                 bin_idx = year_idx * 4 + channel_idx  # Mapping year and channel to bins
@@ -503,17 +515,17 @@ luminosities = {
     "2018": 59827
 }
 
-base_channels = ["MuMuMuMu", "EEEE", "EMuLL"]
+base_channels = ["MuMuMu", "EEE", "EMuL"]
 background_files = [
-    ["HNL_ControlRegionOne_CF.root", "Chargeflip"],
-    ["HNL_ControlRegionOne_Conv.root", "X#gamma"],
-    ["HNL_ControlRegionOne_Fake.root", "Nonprompt"],
-    ["HNL_ControlRegionOne_TTV.root", "TTV"],
-    ["HNL_ControlRegionOne_VVV.root", "VVV"],
-    ["HNL_ControlRegionOne_WZ.root", "WZ"],
-    ["HNL_ControlRegionOne_WW.root", "WW"],
-    ["HNL_ControlRegionOne_ZZ.root", "ZZ"],
-    ["HNL_ControlRegionOne_Other.root", "Other"],
+    ["HNL_ControlRegionLLL_CF.root", "Chargeflip"],
+    ["HNL_ControlRegionLLL_Conv.root", "X#gamma"],
+    ["HNL_ControlRegionLLL_Fake.root", "Nonprompt"],
+    ["HNL_ControlRegionLLL_TTV.root", "TTV"],
+    ["HNL_ControlRegionLLL_VVV.root", "VVV"],
+    ["HNL_ControlRegionLLL_WZ.root", "WZ"],
+    ["HNL_ControlRegionLLL_WW.root", "WW"],
+    ["HNL_ControlRegionLLL_ZZ.root", "ZZ"],
+    ["HNL_ControlRegionLLL_Other.root", "Other"],
 ]
 
 colors = {
@@ -535,11 +547,11 @@ colors = {
 
 
 data_files = [
-    "HNL_ControlRegionOne_Data.root",
+    "HNL_ControlRegionLLL_Data.root",
 ]
 
 
-data_file = "HNL_ControlRegionOne_Data.root"
+data_file = "HNL_ControlRegionLLL_Data.root"
 all_files = [file[0] for file in background_files] + [data_file]
 
 
@@ -588,34 +600,33 @@ parser.add_argument('--plot-version', type=str, choices=directories, help='Selec
 parser.add_argument('--usewz-alt', action='store_true', help='Use alternative WZ normalization')
 
 args = parser.parse_args()
-# Update WZ file if --usewz-alt flag is set                                                                                                                                  
+# Update WZ file if --usewz-alt flag is set
 if args.usewz_alt:
     for entry in background_files:
         if entry[1] == "WZ":
-            entry[0] = "HNL_ControlRegionOne_WZAlt.root"
-            
-bin_labels = ["#mu#mu", "ee", "e#mu", "ll"]
+            entry[0] = "HNL_ControlRegionLLL_WZAlt.root"
+
+
+bin_labels = ["#mu#mu#mu", "eee", "e#mul", "lll"]
 
 IDs = ["HNL_ULIDv2_NoOverlap","HNL_ULIDv2_TauVeto3","HNL_ULIDv2_TauVeto","HNL_ULIDv2_TauVeto2","HNL_ULIDv2_bjet_noak8","HNL_ULIDv2_presel","HNL_ULIDv2_presel_bjetlepclean","HNL_ULIDv2_presel_mod","HNL_ULIDv2_bjet_noak8_hnlveto","HNL_ULIDv2_veto_id_one","HNL_ULIDv2_veto_id_two","HNL_ULIDv2_ANv4","HNL_ULIDv2_presel_bjetmod","HNL_ULIDv2_presel_bjetmod_ak8_tight","HNL_ULIDv2_presel_bjetmodx"]
 
-regions = ["HNL_HighMassSR1_Inclusive","HNL_HighMassSR1_InvBJet_TwoLepton_CR","HNL_HighMassSR1_InvMET_TwoLepton_CR"]
+regions = ["HNL_WZ_SR1_ThreeLepton_CR","HNL_WZVBF_ThreeLepton_CR","HNL_WZB_ThreeLepton_CR","HNL_WZ_SR3_ThreeLepton_CR"]
 
 hist_bases = []
 for j_region in regions:
     for j_id in IDs:
-        hist_bases.append([j_region, j_id, "LL", ["MuMu", "EE", "EMu", "LL"]])
+        hist_bases.append([j_region, j_id, "LL", ["MuMuMu", "EEE", "EMuL", "LLL"]])
 
 
 input_dir ="/data6/Users/jalmond/2020/HL_SKFlatAnalyzer_UL_LONG/SKFlatAnalyzer/data_validation/analysis_validation/merged_samples/"+Plot_Version+"/"
 
-
 if args.usewz_alt:
     Plot_Version=Plot_Version+"_WZAlt"
 
-
 # --- Path and File Output ---
-Path("results_cr1_ratio/").mkdir(exist_ok=True)
-Path("results_cr1_ratio/"+Plot_Version).mkdir(exist_ok=True)
+Path("results_lll_ratio/").mkdir(exist_ok=True)
+Path("results_lll_ratio/"+Plot_Version).mkdir(exist_ok=True)
 
 # Set TDR style for CMS plotting
 
@@ -632,7 +643,7 @@ try:
         
         log_section_start(f"Running {hist_base}")
 
-        output_file = f"results_cr1_ratio/{Plot_Version}/{hist_base}_{hist_config}_{flavour}_ratio_stacked_histogram.png"
+        output_file = f"results_lll_ratio/{Plot_Version}/{hist_base}_{hist_config}_{flavour}_ratio_stacked_histogram.png"
         logging.info(f"Running code to make {output_file}")
 
         Run=True
