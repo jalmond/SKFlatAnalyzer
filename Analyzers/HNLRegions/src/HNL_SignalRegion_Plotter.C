@@ -7,7 +7,7 @@ void HNL_SignalRegion_Plotter::initializeAnalyzer(){
   HNL_LeptonCore::initializeAnalyzer();
 
   /// Select BDT versions to plot
-  BDTVersions_to_run ={"V2","V3"};
+  BDTVersions_to_run ={"V3","V4"};
   
   if(IsDATA){
     bool run_ee_bdt=false;    bool run_mm_bdt=false;    bool run_em_bdt=false;
@@ -58,7 +58,7 @@ void HNL_SignalRegion_Plotter::executeEvent(){
   }
   
   // Match Channel to signal process based on MC sample
-  if (MCSample.Contains("Type")) {
+  if (IsSignal()){
     if (MCSample.Contains("SSWWTypeI_DF")) {
       ChannelsToRun = {EMu};
     }
@@ -73,7 +73,7 @@ void HNL_SignalRegion_Plotter::executeEvent(){
   for (auto id: LepIDs){
     for(auto channel : ChannelsToRun){
       
-      if(MCSample.Contains("Type")&& !SelectChannel(channel)) continue;
+      if(IsSignal() && !SelectChannel(channel)) continue;
 
       //// Central run...
       AnalyzerParameter param_sr = Setup_Param_HNL_ULIDv2(id,GetChannelString(channel));

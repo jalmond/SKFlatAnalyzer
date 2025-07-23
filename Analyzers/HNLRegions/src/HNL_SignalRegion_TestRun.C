@@ -56,7 +56,7 @@ void HNL_SignalRegion_TestRun::executeEvent(){
   }
   
   // Match Channel to signal process based on MC sample
-  if (MCSample.Contains("Type")) {
+  if (IsSignal()){
     if (MCSample.Contains("SSWWTypeI_DF")) {
       ChannelsToRun = {EMu};
     }
@@ -72,7 +72,7 @@ void HNL_SignalRegion_TestRun::executeEvent(){
     for(auto iconfig : Run_Config){
       for(auto channel : ChannelsToRun){
 	
-	if(MCSample.Contains("Type")&& !SelectChannel(channel)) continue;
+	if(IsSignal() && !SelectChannel(channel)) continue;
 
 
 	if(iconfig=="SR1_Pt15"){

@@ -268,7 +268,7 @@ void HNL_LeptonCore::initializeAnalyzer(bool READBKGHISTS, bool SETUPIDBDT){
   h_SumW_Scale=nullptr;
 
   if(HasFlag("RunSyst")){
-    if(MCSample.Contains("Type")){
+    if(IsSignal()){
       if(infile.good()){
 	
 	TDirectory* origDir = gDirectory;
@@ -666,7 +666,7 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
     }
   }
   
-  if(MCSample.Contains("Type")){
+  if(IsSignal()){
     SystList.push_back(AnalyzerParameter::PDF);
     SystList.push_back(AnalyzerParameter::PDFUp);
     SystList.push_back(AnalyzerParameter::PDFDown);
@@ -1364,7 +1364,7 @@ HNL_LeptonCore::~HNL_LeptonCore(){
   delete rand_;
   
   if(HasFlag("RunSyst")){
-    if(MCSample.Contains("Type")){
+    if(IsSignal()){
 
       if (h_SumW_PDF != nullptr) {
 	delete h_SumW_PDF;
@@ -1548,7 +1548,7 @@ vector<Gen> HNL_LeptonCore::GetGenLepronsSignal(){
 
 bool HNL_LeptonCore::SelectChannel(HNL_LeptonCore::Channel channel) {
   TString process = GetProcess();
-
+  //  if(_jentry < 10000) cout << "process = " << process << endl;
   // Define matching process strings for each channel
   switch (channel) {
   case LL:
@@ -1577,7 +1577,8 @@ bool HNL_LeptonCore::SelectChannel(HNL_LeptonCore::Channel channel) {
 TString HNL_LeptonCore::GetProcess(){
 
   if (IsData) return "";
-  if(!MCSample.Contains("Type")) return "";
+  if(!IsSignal()) return "";
+
 
   int N_Mother(0);
 
@@ -1889,7 +1890,8 @@ vector<Muon> HNL_LeptonCore::GetLepCollByRunType(const std::vector<Muon>& MuColl
 
 
   if(IsData)  return MuColl;
-  if(MCSample.Contains("Type")) return MuColl;
+  if(IsSignal()) return MuColl;
+
 
 
   vector<Muon> ReturnVec;
@@ -1916,7 +1918,7 @@ vector<Electron> HNL_LeptonCore::GetSignalLeptons(const std::vector<Electron>& E
 
   std::vector<Electron>   ElectronColl;
 
-  if(MCSample.Contains("Type")){
+  if(IsSignal()){
 
     vector<Gen> gen_lep= GetGenLepronsSignal();
 
@@ -1939,7 +1941,7 @@ vector<Muon> HNL_LeptonCore::GetSignalLeptons(const std::vector<Muon>& MuColl, v
 
   std::vector<Muon>   MuonColl;
 
-  if(MCSample.Contains("Type")){
+  if(IsSignal()){
 
     vector<Gen> gen_lep= GetGenLepronsSignal();
     //for(auto igen : gen_lep) cout << "GetGenLepronsSignal " << igen.Pt() << " " << igen.Eta() << endl;                                                                                                                                                                                                   
@@ -1987,7 +1989,7 @@ vector<Electron> HNL_LeptonCore::GetLepCollByRunType(const vector<Electron>& ElC
   if(Option=="Fake")                   {GetHadFake  = true; GetNHExtConv=true;}
   
   if(IsData)  return ElColl;
-  if(MCSample.Contains("Type")) return ElColl;
+  if(IsSignal()) return ElColl;
 
   vector<Electron> ReturnVec;
   for(unsigned int i=0; i<ElColl.size(); i++){
