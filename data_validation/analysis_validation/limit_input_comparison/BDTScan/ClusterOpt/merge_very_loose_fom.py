@@ -53,7 +53,7 @@ def compare_limitbins_fom(bkg_file, sig_file, flavours, masses, log):
     log_print("\n[INFO] Comparing summed FOMs from LimitBins histograms (bin-by-bin breakdown):")
     for flav in flavours:
         for mass in masses:
-            for version_tag in ["V2", "V3"]:
+            for version_tag in ["V3", "V4"]:
                 bkg_path = f"LimitExtractionBDT/HNL_ULIDv2/{flav}_{version_tag}/M{mass}/LimitBins"
                 sig_path = bkg_path  # same directory for signal and background
 
@@ -150,7 +150,8 @@ def find_best_bin_merge(strict_bins, n_final_bins, mass, calculate_fom, log_prin
             best_merge = merge_points
             best_bins = merged_bins
 
-    log_print(f"\n[RESULT] Best total FOM: {best_total_fom:.2f} using {len(best_bins)} bins with strict-bin merge scan:")
+    log_print(f"\n[RESULT] Best total FOM {version}: {best_total_fom:.2f} using {len(best_bins)} bins with strict-bin merge scan:")
+
     for i, (group, bkg, sig, rel_err, fom) in enumerate(best_bins):
         x_high = group[0][2]
         x_low = group[-1][1]
@@ -197,7 +198,7 @@ base_dir = '/data6/Users/jalmond/2020/Plotter/HNDiLeptonWorskspace/InputFiles/Me
 eras = [era]#, '2016postVFP', '2017', '2018']
 masses = [mass]#, '200', '300', '400', '500']
 flavours = [flavour]#, 'MuMu', 'EMu']
-version = 'V3'
+versions = ["V3", "V4"]
 os.makedirs("log_scan", exist_ok=True)
 dir_path = select_directory(base_dir)
 
@@ -234,17 +235,18 @@ for era in eras:
 
             for key in hist_dir.GetListOfKeys():
                 name = key.GetName()
-                if "Binned" in name or f"M{mass}" not in name or version not in name:
+                if "Binned" in name or f"M{mass}" not in name:
                     continue
                 hist = hist_dir.Get(name)
                 if not hist or not isinstance(hist, ROOT.TH1):
                     continue
 
+                version = "V3" if "V3" in name else "V4"
                 log_file = f"log_scan/{era}_{flav}_{name}.log"
                 with open(log_file, "w") as log:
                     def log_print(msg): print(msg); log.write(msg + "\n")
                     
-                    log_print(f"[INFO] Processing: {era} {flav} {name}")
+                    log_print(f"[INFO] Processing: {era} {flav} {name} {version}")
                     compare_limitbins_fom(bkg_file, sig_file, [flav], [mass], log)
 
                     sig_hist = None
@@ -375,7 +377,7 @@ for era in eras:
                         if x_low_last > -1.0:
                             last_bin[-1] = (*last_bin[-1][:1], -1.000, *last_bin[-1][3:])
 
-                    log_print("\n[INFO] Final merged bin boundaries:")
+                    log_print(f"\n[INFO] Final merged bin boundaries {version}:")
                     for i, (group, *_rest) in enumerate(strict_bins, 1):
                         x_high = group[0][2]
                         x_low = group[-1][1]

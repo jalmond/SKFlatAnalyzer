@@ -1,3 +1,4 @@
+
 #include "HNL_RegionDefinitions.h"
 
 /*
@@ -922,7 +923,7 @@ bool  HNL_RegionDefinitions::RunSignalRegionAK4(bool ApplyForSR,HNL_LeptonCore::
 TString HNL_RegionDefinitions::RunSignalRegionAK4StringBDT(bool ApplyForSR, TString mN, TString version, TString NCut, TString NTree, HNL_LeptonCore::Channel channel, HNL_LeptonCore::ChargeType qq ,std::vector<Lepton *>& LepTColl, std::vector<Jet>& JetColl, std::vector<Jet>& B_JetColl,Event& ev, Particle& METv, AnalyzerParameter& param,  float w){
   
   //// Only fill Cutflow/plots for 1 mass point and version
-  bool FillCutFlow = (mN=="100" && version == "V3") ;
+  bool FillCutFlow = (mN=="100" && version == "V4") ;
 
   TString BDTLabel = "M"+mN+"_NTrees"+NTree+"_NCuts"+NCut+"_MaxDepth3_"+version;
   
