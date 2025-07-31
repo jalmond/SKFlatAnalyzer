@@ -1,4 +1,10 @@
 *~
+data_validation/analysis_validation/limit_input_comparison/BDTScan/ClusterOpt/logs_v0/
+data_validation/analysis_validation/bdt_input/plots_v3_vs_v4/
+data_validation/analysis_validation/bdt_input/Plot_BDT_Shape/plots/
+data_validation/analysis_validation/limit_input_comparison/BDTScan/ClusterOpt/plots
+data_validation/analysis_validation/limit_input_comparison/BDTScan/ClusterOpt/plots_fomratios/
+data_validation/analysis_validation/limit_input_comparison/BDTScan/ClusterOpt/plots_version0/
 data_validation/analysis_validation/limit_input_comparison/SR2/log_scan/
 data_validation/analysis_validation/bdt_input/plots_v2_vs_v3/
 data_validation/analysis_validation/limit_input_comparison/SR1/log*

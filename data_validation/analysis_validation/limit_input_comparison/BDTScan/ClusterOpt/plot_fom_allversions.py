@@ -15,8 +15,8 @@ if not os.path.exists(out_dir):
     os.makedirs(out_dir)
 
 # Compile regex
-result_pattern = re.compile(r"\[RESULT\] Best total FOM (V4): ([\d.]+)")
-summary_pattern = re.compile(r"\[SUMMARY\] \[.*?\] Summed Azimov FOM from LimitBins: ([\d.]+)")
+result_pattern = re.compile(r"\[RESULT\] Best total FOM (V[34]): ([\d.]+)")
+summary_pattern = re.compile(r"\[SUMMARY\] \[.*_(V[34]) M(\d+)\] Summed Azimov FOM from LimitBins: ([\d.]+)")
 
 # Source patterns and labels
 configs = [
@@ -33,7 +33,8 @@ configs = [
 
 # Helpers
 def extract_fom_points(dirpath, pattern_template, mass, flav, era):
-    points = []
+    points_v3 = []
+    points_v4 = []
     for nbin in range(5, 51):
         fname = pattern_template.format(mass=mass, flavour=flav, era=era, X=nbin)
         fpath = os.path.join(dirpath, fname)
@@ -43,11 +44,14 @@ def extract_fom_points(dirpath, pattern_template, mass, flav, era):
             for line in f:
                 match = result_pattern.search(line)
                 if match:
-                    ver, fom = match.groups()
+                    version, fom = match.groups()
                     fom = float(fom)
-                    points.append((nbin, fom))
-                    break
-    return sorted(points)
+                    if version == "V3":
+                        points_v3.append((nbin, fom))
+                    elif version == "V4":
+                        points_v4.append((nbin, fom))
+
+    return sorted(points_v3), sorted(points_v4)
 
 def extract_v2_fom(mass, flav, era):
     summary_file = f"logs_v0/scan_{mass}_{flav}_{era}_35_30.out"
@@ -57,18 +61,21 @@ def extract_v2_fom(mass, flav, era):
         for line in f:
             match = summary_pattern.search(line)
             if match:
-                return float(match.group(1))
+                version, _, fom = match.groups()
+                if version == "V3":  # Only show V3 legacy FOM
+                    return float(fom)
     return None
 
-def make_graph(points, color):
+def make_graph(points, color, marker_style=20):
     graph = ROOT.TGraph(len(points))
     for i, (x, y) in enumerate(points):
         graph.SetPoint(i, x, y)
     graph.SetLineColor(color)
     graph.SetMarkerColor(color)
-    graph.SetMarkerStyle(20)
+    graph.SetMarkerStyle(marker_style)
     graph.SetLineWidth(2)
     return graph
+
 
 # Main loop
 for mass in masses:
@@ -80,13 +87,19 @@ for mass in masses:
             legend.SetFillStyle(0)
 
             all_foms = []
+
             for dirpath, pattern, label, color in configs:
-                points = extract_fom_points(dirpath, pattern, mass, flav, era)
-                if not points:
-                    continue
-                g = make_graph(points, color)
-                graphs.append((g, label))
-                all_foms.extend(y for _, y in points)
+                points_v3, points_v4 = extract_fom_points(dirpath, pattern, mass, flav, era)
+                if points_v3:
+                    g_v3 = make_graph(points_v3, color + 1, marker_style=24)  # e.g. open triangle up
+                    graphs.append((g_v3, f"{label} (V3)"))
+                    all_foms.extend(y for _, y in points_v3)
+                    
+                if points_v4:
+                    g_v4 = make_graph(points_v4, color, marker_style=20)  # e.g. solid circle
+                    graphs.append((g_v4, f"{label} (V4)"))
+                    all_foms.extend(y for _, y in points_v4)
+
 
             v2_fom = extract_v2_fom(mass, flav, era)
             if v2_fom:
@@ -100,16 +113,16 @@ for mass in masses:
             c = ROOT.TCanvas("c", "c", 800, 600)
             plotted = False
 
-            leg_labels=[]
+            leg_labels = []
             for graph, label in graphs:
-                graph.GetXaxis().SetLimits(5, 45)  # Set x-axis range
+                graph.GetXaxis().SetLimits(5, 45)
                 graph.GetYaxis().SetRangeUser(0, ymax)
                 graph.GetXaxis().SetTitle("Number of bins (X)")
                 graph.GetYaxis().SetTitle("FOM")
                 graph.GetYaxis().SetTitleOffset(1.3)
                 graph.SetTitle(f"FOM Scan: M={mass}, {flav}, {era}")
                 graph.Draw("APL" if not plotted else "PL")
-                if not label in leg_labels:
+                if label not in leg_labels:
                     legend.AddEntry(graph, label, "lp")
                     leg_labels.append(label)
                 plotted = True
@@ -117,11 +130,13 @@ for mass in masses:
             if v2_fom:
                 line = ROOT.TLine(5, v2_fom, 45, v2_fom)
                 line.SetLineStyle(2)
-                line.SetLineColor(ROOT.kGray+2)
+                line.SetLineColor(ROOT.kGray + 2)
                 line.SetLineWidth(2)
                 line.Draw()
-                legend.AddEntry(line, "V2", "l")
+                legend.AddEntry(line, "V2 (Legacy)", "l")
 
             c.SetGrid()
             legend.Draw()
-            c.SaveAs(f"{out_dir}/Updated_FOMScan_{mass}_{flav}_{era}.pdf")
+            c.SaveAs(f"{out_dir}/FOMScan_V3V4_{mass}_{flav}_{era}.pdf")
+
+print(f"[DONE] All plots written to: {out_dir}")

@@ -52,7 +52,7 @@ def compare_limitbins_fom(bkg_file, sig_file, flavours, masses, log):
     log_print("\n[INFO] Comparing summed FOMs from LimitBins histograms (bin-by-bin breakdown):")
     for flav in flavours:
         for mass in masses:
-            for version_tag in ["V2", "V3"]:
+            for version_tag in ["V3", "V4"]:
                 bkg_path = f"LimitExtractionBDT/HNL_ULIDv2/{flav}_{version_tag}/M{mass}/LimitBins"
                 sig_path = bkg_path  # same directory for signal and background
 
@@ -213,7 +213,7 @@ base_dir = '/data6/Users/jalmond/2020/Plotter/HNDiLeptonWorskspace/InputFiles/Me
 eras = [era]#, '2016postVFP', '2017', '2018']
 masses = [mass]#, '200', '300', '400', '500']
 flavours = [flavour]#, 'MuMu', 'EMu']
-version = 'V3'
+version = 'V4'
 os.makedirs("log_scan", exist_ok=True)
 dir_path = select_directory(base_dir)
 

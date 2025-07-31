@@ -7,8 +7,8 @@ ROOT.gROOT.SetBatch(True)
 eras = ["2016postVFP", "2016preVFP", "2017", "2018"]
 trees = ["Tree_mm", "Tree_ee", "Tree_em"]
 input_dir_v3 = "/data9/Users/HNL_public/SUS-24-014/BDTInput/HNL_SR3_BDT_KinVar_BDTV3"
-input_dir_v2 = "/data9/Users/HNL_public/SUS-24-014/BDTInput/HNL_SR3_BDT_KinVar_BDTV2"
-output_dir = "plots_v2_vs_v3"
+input_dir_v4 = "/data9/Users/HNL_public/SUS-24-014/BDTInput/HNL_SR3_BDT_KinVar_BDTV4"
+output_dir = "plots_v3_vs_v4"
 range_file = "variable_ranges.txt"
 
 file_dirs = {
@@ -113,8 +113,8 @@ def plot_comparison(hist1, hist2, branch_name, tree_name, era):
     hist2.Draw("hist same")
 
     leg = ROOT.TLegend(0.65, 0.75, 0.88, 0.88)
-    leg.AddEntry(hist1, "BDTV3", "l")
-    leg.AddEntry(hist2, "BDTV2", "l")
+    leg.AddEntry(hist1, "BDTV4", "l")
+    leg.AddEntry(hist2, "BDTV3", "l")
     leg.Draw()
 
     # Create nested output directory
@@ -133,16 +133,16 @@ for era in eras:
         for i, branch in enumerate(variable_ranges.keys(), 1):
             print(f"  - {i}/{len(variable_ranges)}: {branch}")
 
+            hist_v4 = get_combined_hist(tree_name, era, input_dir_v4, branch)
             hist_v3 = get_combined_hist(tree_name, era, input_dir_v3, branch)
-            hist_v2 = get_combined_hist(tree_name, era, input_dir_v2, branch)
 
+            if not hist_v4:
+                print(f"    [SKIP] No valid BDTV4 hist for {branch} in {tree_name} | {era}")
+                continue
             if not hist_v3:
                 print(f"    [SKIP] No valid BDTV3 hist for {branch} in {tree_name} | {era}")
                 continue
-            if not hist_v2:
-                print(f"    [SKIP] No valid BDTV2 hist for {branch} in {tree_name} | {era}")
-                continue
 
-            plot_comparison(hist_v3, hist_v2, branch, tree_name, era)
+            plot_comparison(hist_v4, hist_v3, branch, tree_name, era)
 
 print(f"\n[OK] All comparison plots saved under: {output_dir}")
