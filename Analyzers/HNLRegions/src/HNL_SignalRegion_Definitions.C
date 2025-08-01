@@ -459,8 +459,9 @@ void   HNL_RegionDefinitions::RunMainRegionCode(bool IsSR,HNL_LeptonCore::Channe
 
     double ll_dphi = fabs(TVector2::Phi_mpi_pi( ( (*LepsT[0]).Phi() - (*LepsT[1]).Phi() )) );
     bool SSWWVeto= (RegionBin == "NULL" && ll_dphi > 2 && LepsT[0]->HTOverPt() < 1);
-    
-    if(RegionBin != "false" && !SSWWVeto) {
+
+    /// NULL means MJJ is low 
+    if(RegionBin != "false" && RegionBin != "NULL") {
 
       if(param.syst_ == AnalyzerParameter::PDFUp)   weight_reg*=GetPDFUncertainty("SR2",1);
       if(param.syst_ == AnalyzerParameter::PDFDown) weight_reg*=GetPDFUncertainty("SR2",-1);
@@ -488,7 +489,7 @@ void   HNL_RegionDefinitions::RunMainRegionCode(bool IsSR,HNL_LeptonCore::Channe
     }
     else{
 
-
+      
       //// Fail VBF Req ---> SR3
       // This block handles events that fail the VBF (Vector Boson Fusion) requirements and are assigned to signal region SR3
       
@@ -567,7 +568,7 @@ void   HNL_RegionDefinitions::RunMainRegionCode(bool IsSR,HNL_LeptonCore::Channe
 	}
       }
 
-      if(SSWWVeto) return;
+      if(IsSR&&SSWWVeto) return;
       
       RegionBin  = RunSignalRegionAK4String (IsSR,channel,qq, LepsT, LepsV, TauColl, JetColl, AK8_JetColl, B_JetColl, ev, METv ,param,weight_reg);
       if(RegionBin != "false") {
