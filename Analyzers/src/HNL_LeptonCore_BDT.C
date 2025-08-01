@@ -1205,7 +1205,11 @@ void HNL_LeptonCore::DefineBDTLimitBins(){
       else CR_BinTags.push_back("CR3BDT_bin"+to_string(i_d+1));
     }
     if(HasFlag("BinnningV2"))   map_BDT_bins_labels [imap.first+"_V2"]=SR_BinTags;
-    else map_BDT_bins_labels [imap.first+"_V4"]=SR_BinTags;
+    else {
+      map_BDT_bins_labels [imap.first+"_V2"]=SR_BinTags;
+      map_BDT_bins_labels [imap.first+"_V3"]=SR_BinTags;
+      map_BDT_bins_labels [imap.first+"_V4"]=SR_BinTags;
+    }
     
     /// For now have CR and SR sample binning
     map_BDT_bins_labels [imap.first]=CR_BinTags;

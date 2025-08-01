@@ -550,15 +550,15 @@ vector<TString>  HNL_LeptonCore::GetLimitLabelsFromRegion(HNL_LeptonCore::Search
   if(sr==MuonInvBJetCR3 || sr==ElectronInvBJetCR3 || sr==ElectronMuonInvBJetCR3)  return GetLimitLabels("CR3");
   if(sr==MuonInvMETCR3 || sr==ElectronInvMETCR3 || sr==ElectronMuonInvMETCR3)  return  GetLimitLabels("CR3");
 
-  
-  vector<TString> SR3BDTlabels = GetBDTLimitLabels(bin_key);
-  if(sr==MuonSR3BDT || sr==ElectronSR3BDT || sr==ElectronMuonSR3BDT)  return SR3BDTlabels;
-
 
   if(sr==MuonCR3BDT || sr==ElectronCR3BDT || sr==ElectronMuonCR3BDT)  return  GetBDTLimitLabels("CR3BDT_"+channel);
   if(sr==MuonInvBJetCR3BDT || sr==ElectronInvBJetCR3BDT || sr==ElectronMuonInvBJetCR3BDT)  return  GetBDTLimitLabels("CR3BDT_"+channel);
   if(sr==MuonInvMETCR3BDT || sr==ElectronInvMETCR3BDT || sr==ElectronMuonInvMETCR3BDT)  return  GetBDTLimitLabels("CR3BDT_"+channel);
 
+  vector<TString> SR3BDTlabels = GetBDTLimitLabels(bin_key);
+  if(sr==MuonSR3BDT || sr==ElectronSR3BDT || sr==ElectronMuonSR3BDT)  return SR3BDTlabels;
+
+  
   return {""};
 
 }
