@@ -1,11 +1,11 @@
-#include "SkimTree_HNMultiLep.h"
+#include "SkimTree_SSDilepton.h"
 
-void SkimTree_HNMultiLep::initializeAnalyzer(){
+void SkimTree_SSDilepton::initializeAnalyzer(){
 
   HNL_LeptonCore::initializeAnalyzer({},false,false);
 
   outfile->cd();
-  cout << "[SkimTree_HNMultiLep::initializeAnalyzer()] gDirectory = " << gDirectory->GetName() << endl;
+  cout << "[SkimTree_SSDilepton::initializeAnalyzer()] gDirectory = " << gDirectory->GetName() << endl;
   newtree = fChain->CloneTree(0);
 
   triggers_dimu.clear();
@@ -146,54 +146,26 @@ void SkimTree_HNMultiLep::initializeAnalyzer(){
     };
   }
   else{
-    cout << "[SkimTree_HNMultiLep::initializeAnalyzer] DataYear is wrong : " << DataYear << endl;
+    cout << "[SkimTree_SSDilepton::initializeAnalyzer] DataYear is wrong : " << DataYear << endl;
   }
 
-  cout << "[SkimTree_HNMultiLep::initializeAnalyzer] triggers to skim = " << endl;
+  cout << "[SkimTree_SSDilepton::initializeAnalyzer] triggers to skim = " << endl;
   for(unsigned int i=0; i<triggers.size(); i++){
-    cout << "[SkimTree_HNMultiLep::initializeAnalyzer]   " << triggers.at(i) << endl;
+    cout << "[SkimTree_SSDilepton::initializeAnalyzer]   " << triggers.at(i) << endl;
   }
 
 }
 
-void SkimTree_HNMultiLep::executeEvent(){
+void SkimTree_SSDilepton::executeEvent(){
 
-  Event ev;
-  ev.SetTrigger(*HLT_TriggerName);
+  AnalyzerParameter param_sr = Setup_Param_HNL_ULIDv2("HNL_ULIDv2","MuMu");
+
+  std::vector<Muon>       muonPreColl     = SelectMuons    (param_sr,param_sr.Muon_Veto_ID,     5., 2.4);
+  std::vector<Electron>   electronPreColl = SelectElectrons(param_sr,param_sr.Electron_Veto_ID, 10., 2.5);
   
-
-  //==== Skim 1 ) trigger
-  if(! (ev.PassTrigger(triggers)) ) return;
-
-  if(this->DataStream == "SingleElectron" && (ev.PassTrigger(triggers_di_el))) return;
-
-  std::vector<Muon>     muonPreColl     = GetMuons("HNLoosest", 5., 2.4);
-  std::vector<Electron> electronPreColl = GetElectrons("HNLoosest", 8., 2.5);
-
   std::sort(muonPreColl.begin(), muonPreColl.end(), PtComparing);
   std::sort(electronPreColl.begin(), electronPreColl.end(), PtComparing);
 
-
-  if(this->DataStream == "SingleMuon" && (ev.PassTrigger(triggers_dimu))) {
-    int imuPt15=0;
-    for(auto imu : muonPreColl){
-      if(imu.Pt() > 15.) imuPt15++;
-    }
-    if(imuPt15 > 1) return;
-  }
-
-  
-  int NEl  = electronPreColl.size();
-  int NMu  = muonPreColl.size();
-  int NLep = NEl+NMu;
-  bool HasSS2lOR3l = false;
-  bool LeadLepPt = false;
-
-  bool HasFatJet(false);
-  
-  vector<FatJet> allfatjets = puppiCorr->Correct( GetFatJets("tight", 200., 2.7) ); //==== corret SDMass                                                     
-
-  HasFatJet = (allfatjets.size() > 0);
 
   std::vector<Lepton *> leps;
   for(unsigned int i=0; i<electronPreColl.size(); i++){
@@ -205,41 +177,8 @@ void SkimTree_HNMultiLep::executeEvent(){
     leps.push_back( &mu );
   }
 
-  if      ( NLep >= 3 ){ 
-    HasSS2lOR3l = true; 
-    if(NMu==0 ){
-      if(electronPreColl.at(0).Pt() > 23.) LeadLepPt = true;
-    }  
-    else if(NEl==0){
-      if(muonPreColl.at(0).Pt() > 17.) LeadLepPt = true;
-    }
-    else if((electronPreColl.at(0).Pt() > 23.) || (muonPreColl.at(0).Pt() > 17.))LeadLepPt = true;
-    
-  }
-  else if ( NLep == 2 ){
-    if(muonPreColl.size()==2){
-      if (muonPreColl[0].Charge() == muonPreColl[1].Charge())   HasSS2lOR3l = true;
-      else if (HasFatJet) HasSS2lOR3l = true;
-    }
-    else if(electronPreColl.size()==2){
-      
-      if( electronPreColl[0].Charge() == electronPreColl[1].Charge() ) HasSS2lOR3l = true;
-      else if (HasFatJet) HasSS2lOR3l = true;
-    }
-
-    else if(electronPreColl.size() == 1 &&  muonPreColl.size() == 1){
-      if( electronPreColl[0].Charge() ==  muonPreColl[0].Charge()) HasSS2lOR3l = true;
-      else if (HasFatJet) HasSS2lOR3l = true;
-    }
-    
-    if(NMu==2 && muonPreColl.at(0).Pt()>  17.    ) LeadLepPt = true;
-    if(NEl==2 && electronPreColl.at(0).Pt()>23 ) LeadLepPt = true;
-    if(NMu==1 && NEl==1 && electronPreColl.at(0).Pt()>23 ) LeadLepPt = true;
-    if(NMu==1 && NEl==1 && muonPreColl.at(0).Pt()>23 ) LeadLepPt = true;
-  }
-
-  if( !(HasSS2lOR3l && LeadLepPt) ) return;
-
+  if (! SameCharge(leps)) return;
+  
   //=============================
   //==== If survived, fill tree
   //=============================
@@ -248,21 +187,21 @@ void SkimTree_HNMultiLep::executeEvent(){
 
 }
 
-void SkimTree_HNMultiLep::executeEventFromParameter(AnalyzerParameter param){
+void SkimTree_SSDilepton::executeEventFromParameter(AnalyzerParameter param){
 
 }
 
-SkimTree_HNMultiLep::SkimTree_HNMultiLep(){
+SkimTree_SSDilepton::SkimTree_SSDilepton(){
 
   newtree = NULL;
 
 }
 
-SkimTree_HNMultiLep::~SkimTree_HNMultiLep(){
+SkimTree_SSDilepton::~SkimTree_SSDilepton(){
 
 }
 
-void SkimTree_HNMultiLep::WriteHist(){
+void SkimTree_SSDilepton::WriteHist(){
 
   outfile->mkdir("recoTree");
   outfile->cd("recoTree");

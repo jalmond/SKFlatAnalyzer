@@ -1,12 +1,61 @@
-#include "SkimTree_HNMultiLep.h"
+#include "SkimTree_SSDileptonBDT.h"
 
-void SkimTree_HNMultiLep::initializeAnalyzer(){
-
-  HNL_LeptonCore::initializeAnalyzer({},false,false);
+void SkimTree_SSDileptonBDT::initializeAnalyzer(){
 
   outfile->cd();
-  cout << "[SkimTree_HNMultiLep::initializeAnalyzer()] gDirectory = " << gDirectory->GetName() << endl;
+  cout << "[SkimTree_SSDileptonBDT::initializeAnalyzer()] gDirectory = " << gDirectory->GetName() << endl;
   newtree = fChain->CloneTree(0);
+
+  HNL_LeptonCore::initializeAnalyzer({},false,true);
+
+  InitialiseLeptonBDTSKFlat();
+
+
+  ///// ELECTRON BRANCHES                                                                                                                                                                                                                
+  if(!fChain->GetBranch("electron_mva_cf_v2")){
+    newtree->Branch("electron_ptrel",      &velectron_ptrel);
+    newtree->Branch("electron_ptratio",    &velectron_ptratio);
+    newtree->Branch("electron_lepton_type",&velectron_lepton_type);
+  }
+
+  newtree->Branch("electron_mva_fake_ed_v5",&velectron_mva_fake_ed_v5);
+  newtree->Branch("electron_mva_fakeHFB_v5",&velectron_mva_fakeHFB_v5);
+  newtree->Branch("electron_mva_fakeHFC_v5",&velectron_mva_fakeHFC_v5);
+  newtree->Branch("electron_mva_fakeLF_v5", &velectron_mva_fakeLF_v5);
+  newtree->Branch("electron_mva_conv_ed_v5",&velectron_mva_conv_ed_v5);
+  newtree->Branch("electron_mva_cf_ed_v5",  &velectron_mva_cf_ed_v5 );
+  newtree->Branch("electron_mva_cf_ed_v5pt",&velectron_mva_cf_ed_v5pt );
+
+  newtree->Branch("electron_mva_fake_QCD_LFvsHF_v5",  &velectron_mva_fake_QCD_LFvsHF_v5);
+  newtree->Branch("electron_mva_fake_QCD_HFBvsHFC_v5",&velectron_mva_fake_QCD_HFBvsHFC_v5);
+  newtree->Branch("electron_mva_fake_QCD_LF1_v5",     &velectron_mva_fake_QCD_LF1_v5);
+  newtree->Branch("electron_mva_fake_QCD_LF2_v5",     &velectron_mva_fake_QCD_LF2_v5);
+
+  newtree->Branch("electron_v2_cj_bjetdisc",&velectron_v2_cj_bjetdisc);
+  newtree->Branch("electron_v2_cj_cvsbjetdisc",&velectron_v2_cj_cvsbjetdisc);
+  newtree->Branch("electron_v2_cj_cvsljetdisc",&velectron_v2_cj_cvsljetdisc);
+  newtree->Branch("electron_v2_cj_flavour", &velectron_v2_cj_flavour);
+
+  //// MUON BRANCH                                                                                                                                                                                                                                                                                                                                                          
+
+  if(!fChain->GetBranch("muon_mva_fake_ed_v4")){
+    newtree->Branch("muon_ptrel",         &vmuon_ptrel);
+    newtree->Branch("muon_ptratio",       &vmuon_ptratio);
+    newtree->Branch("muon_lepton_type",   &vmuon_lepton_type);
+    newtree->Branch("SKWeight", &vSKWeight);
+  }
+
+  newtree->Branch("muon_mva_fake_QCD_LFvsHF_v5",  &vmuon_mva_fake_QCD_LFvsHF_v5);
+  newtree->Branch("muon_mva_fake_QCD_HFBvsHFC_v5",&vmuon_mva_fake_QCD_HFBvsHFC_v5);
+  newtree->Branch("muon_mva_fake_QCD_LF1_v5",     &vmuon_mva_fake_QCD_LF1_v5);
+  newtree->Branch("muon_mva_fake_QCD_LF2_v5",     &vmuon_mva_fake_QCD_LF2_v5);
+
+  newtree->Branch("muon_v2_cj_bjetdisc",   &vmuon_v2_cj_bjetdisc);
+  newtree->Branch("muon_v2_cj_cvsbjetdisc",&vmuon_v2_cj_cvsbjetdisc);
+  newtree->Branch("muon_v2_cj_cvsljetdisc"   ,&vmuon_v2_cj_cvsljetdisc);
+  newtree->Branch("muon_v2_cj_flavour",    &vmuon_v2_cj_flavour);
+
+
 
   triggers_dimu.clear();
 
@@ -146,123 +195,51 @@ void SkimTree_HNMultiLep::initializeAnalyzer(){
     };
   }
   else{
-    cout << "[SkimTree_HNMultiLep::initializeAnalyzer] DataYear is wrong : " << DataYear << endl;
+    cout << "[SkimTree_SSDileptonBDT::initializeAnalyzer] DataYear is wrong : " << DataYear << endl;
   }
 
-  cout << "[SkimTree_HNMultiLep::initializeAnalyzer] triggers to skim = " << endl;
+  cout << "[SkimTree_SSDileptonBDT::initializeAnalyzer] triggers to skim = " << endl;
   for(unsigned int i=0; i<triggers.size(); i++){
-    cout << "[SkimTree_HNMultiLep::initializeAnalyzer]   " << triggers.at(i) << endl;
+    cout << "[SkimTree_SSDileptonBDT::initializeAnalyzer]   " << triggers.at(i) << endl;
   }
 
 }
 
-void SkimTree_HNMultiLep::executeEvent(){
-
-  Event ev;
-  ev.SetTrigger(*HLT_TriggerName);
-  
-
-  //==== Skim 1 ) trigger
-  if(! (ev.PassTrigger(triggers)) ) return;
-
-  if(this->DataStream == "SingleElectron" && (ev.PassTrigger(triggers_di_el))) return;
-
-  std::vector<Muon>     muonPreColl     = GetMuons("HNLoosest", 5., 2.4);
-  std::vector<Electron> electronPreColl = GetElectrons("HNLoosest", 8., 2.5);
-
-  std::sort(muonPreColl.begin(), muonPreColl.end(), PtComparing);
-  std::sort(electronPreColl.begin(), electronPreColl.end(), PtComparing);
+void SkimTree_SSDileptonBDT::executeEvent(){
 
 
-  if(this->DataStream == "SingleMuon" && (ev.PassTrigger(triggers_dimu))) {
-    int imuPt15=0;
-    for(auto imu : muonPreColl){
-      if(imu.Pt() > 15.) imuPt15++;
-    }
-    if(imuPt15 > 1) return;
-  }
 
-  
-  int NEl  = electronPreColl.size();
-  int NMu  = muonPreColl.size();
-  int NLep = NEl+NMu;
-  bool HasSS2lOR3l = false;
-  bool LeadLepPt = false;
+  if(!fChain->GetBranch("electron_mva_cf_v2"))  ResetLeptonBDTSKFlat();
+  ResetLeptonBDTSKFlatV5();
 
-  bool HasFatJet(false);
-  
-  vector<FatJet> allfatjets = puppiCorr->Correct( GetFatJets("tight", 200., 2.7) ); //==== corret SDMass                                                     
+  vSKWeight=MCweight(true,true);
 
-  HasFatJet = (allfatjets.size() > 0);
-
-  std::vector<Lepton *> leps;
-  for(unsigned int i=0; i<electronPreColl.size(); i++){
-    Electron& el = electronPreColl.at(i);
-    leps.push_back( &el );
-  }
-  for(unsigned int i=0; i<muonPreColl.size(); i++){
-    Muon& mu = muonPreColl.at(i);
-    leps.push_back( &mu );
-  }
-
-  if      ( NLep >= 3 ){ 
-    HasSS2lOR3l = true; 
-    if(NMu==0 ){
-      if(electronPreColl.at(0).Pt() > 23.) LeadLepPt = true;
-    }  
-    else if(NEl==0){
-      if(muonPreColl.at(0).Pt() > 17.) LeadLepPt = true;
-    }
-    else if((electronPreColl.at(0).Pt() > 23.) || (muonPreColl.at(0).Pt() > 17.))LeadLepPt = true;
-    
-  }
-  else if ( NLep == 2 ){
-    if(muonPreColl.size()==2){
-      if (muonPreColl[0].Charge() == muonPreColl[1].Charge())   HasSS2lOR3l = true;
-      else if (HasFatJet) HasSS2lOR3l = true;
-    }
-    else if(electronPreColl.size()==2){
-      
-      if( electronPreColl[0].Charge() == electronPreColl[1].Charge() ) HasSS2lOR3l = true;
-      else if (HasFatJet) HasSS2lOR3l = true;
-    }
-
-    else if(electronPreColl.size() == 1 &&  muonPreColl.size() == 1){
-      if( electronPreColl[0].Charge() ==  muonPreColl[0].Charge()) HasSS2lOR3l = true;
-      else if (HasFatJet) HasSS2lOR3l = true;
-    }
-    
-    if(NMu==2 && muonPreColl.at(0).Pt()>  17.    ) LeadLepPt = true;
-    if(NEl==2 && electronPreColl.at(0).Pt()>23 ) LeadLepPt = true;
-    if(NMu==1 && NEl==1 && electronPreColl.at(0).Pt()>23 ) LeadLepPt = true;
-    if(NMu==1 && NEl==1 && muonPreColl.at(0).Pt()>23 ) LeadLepPt = true;
-  }
-
-  if( !(HasSS2lOR3l && LeadLepPt) ) return;
-
-  //=============================
-  //==== If survived, fill tree
-  //=============================
+  if(!fChain->GetBranch("electron_mva_cf_v2"))SetupLeptonBDTSKFlat();
+  SetupLeptonBDTSKFlatV5();
 
   newtree->Fill();
 
+
+  return;
+
+
 }
 
-void SkimTree_HNMultiLep::executeEventFromParameter(AnalyzerParameter param){
+void SkimTree_SSDileptonBDT::executeEventFromParameter(AnalyzerParameter param){
 
 }
 
-SkimTree_HNMultiLep::SkimTree_HNMultiLep(){
+SkimTree_SSDileptonBDT::SkimTree_SSDileptonBDT(){
 
   newtree = NULL;
 
 }
 
-SkimTree_HNMultiLep::~SkimTree_HNMultiLep(){
+SkimTree_SSDileptonBDT::~SkimTree_SSDileptonBDT(){
 
 }
 
-void SkimTree_HNMultiLep::WriteHist(){
+void SkimTree_SSDileptonBDT::WriteHist(){
 
   outfile->mkdir("recoTree");
   outfile->cd("recoTree");

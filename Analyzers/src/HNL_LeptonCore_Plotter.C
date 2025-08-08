@@ -515,7 +515,7 @@ void HNL_LeptonCore::Fill_Plots(AnalyzerParameter& param, TString  region,  TStr
     
     
   }
-  if(false){
+  if(HasFlag("PlotZZ")){
     Particle ZZ;
 
     vector<int> MotherPID;
@@ -703,8 +703,6 @@ void HNL_LeptonCore::Fill_Plots(AnalyzerParameter& param, TString  region,  TStr
     FillHist( plot_dir+ region+ "/Mass/M_BestZ", LeptonMassBestZ(leps,LeptonPairBestZCand(leps)) , w, 200, 0.0, 800.0,"M(Z1) GeV");
     FillHist( plot_dir+ region+ "/Mass/M_OtherZ", LeptonMassNonZ(leps,LeptonPairBestZCand(leps)) , w, 200, 0.0, 800.0,"M(Z1) GeV");
     FillHist( plot_dir+ region+ "/Mass/M_BestZAlt", GetMassBestZ(leps,true) , w, 200, 0.0, 800.0,"M(Z1) GeV");
-    
-
   }
   
   //// Jet plots                                                                                                                                                                                                  

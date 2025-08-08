@@ -246,7 +246,7 @@ class HNL_LeptonCore : public AnalyzerCore {
   void DefineLimitBins();
 
   // Define BDT limit bins
-  void DefineBDTLimitBins();
+  void DefineBDTLimitBins(vector<TString> bdt_versions);
 
   // Set binning for BDT with specific parameters
   void SetBinningBDT(const TString& channel, const TString& mass, const TString& RegionTag, 
@@ -296,7 +296,7 @@ class HNL_LeptonCore : public AnalyzerCore {
 
 
   //---- BDT Related    HNL_LeptonCore_BDT                                                                                                                                                                                           
-  void initializeAnalyzer(bool READBKGHISTS=true, bool SETUPIDBDT=true);
+  void initializeAnalyzer(vector<TString> BDTVersions={"V4"},bool READBKGHISTS=true, bool SETUPIDBDT=true);
   void SetupEventMVAReader(TString version, bool ee=true, bool mm=true, bool emu=true);
   void SetupEventMVAReaders(vector<TString> version, bool ee=true, bool mm=true, bool emu=true);
   void SetupEventMVAReaderInit(TString version, bool ee=true, bool mm=true, bool emu=true);
