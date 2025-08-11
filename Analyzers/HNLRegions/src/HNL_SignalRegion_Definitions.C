@@ -522,9 +522,14 @@ void   HNL_RegionDefinitions::RunMainRegionCode(bool IsSR,HNL_LeptonCore::Channe
 	  for(auto iversion : BDTVersions_to_run){
 	    vector<TString> bin_criteria;
 	    if (IsSR) {
-	      if(iversion == "V2") bin_criteria = {"StrictBin"};
-	      if(iversion == "V3") bin_criteria = {"StrictBin","Strict_10_Bin", "Strict_15_Bin", "Strict_20_Bin"};
-	      if(iversion == "V4") bin_criteria = {"Strict_10_Bin", "Strict_15_Bin", "Strict_20_Bin"};
+	      /*
+		If checking comparison of V2-4 uncomment
+		if(iversion == "V2") bin_criteria = {"StrictBin"};
+		if(iversion == "V3") bin_criteria = {"StrictBin","Strict_10_Bin", "Strict_15_Bin", "Strict_20_Bin"};
+		if(iversion == "V4") bin_criteria = {"Strict_10_Bin", "Strict_15_Bin", "Strict_20_Bin"};*
+	      */
+	      bin_criteria = {"Strict_10_Bin"};
+
 	    } else {
 	      bin_criteria = {""};
 	    }

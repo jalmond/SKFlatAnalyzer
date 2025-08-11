@@ -4,7 +4,8 @@ void HNL_ControlRegion_Plotter::initializeAnalyzer(){
 
   
   /// Select BDT versions to plot                                                                                                       
-  BDTVersions_to_run ={"V2","V3","V4"};
+  //BDTVersions_to_run ={"V2","V3","V4"};
+  BDTVersions_to_run ={"V3"};
 
 
   HNL_LeptonCore::initializeAnalyzer(BDTVersions_to_run);

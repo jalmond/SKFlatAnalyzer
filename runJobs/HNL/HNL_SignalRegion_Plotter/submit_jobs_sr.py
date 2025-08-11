@@ -266,7 +266,7 @@ if args.Central:
         RunCommand(TestMode,f"SKFlat.py -a {analyzer} -l {datapath}/{DATADir}/{era}_DiLepton_EMu.txt  -n 100 --nmax {nmax} -e {era} --skim SkimTree_HNMultiLepBDT {FlagCommand('RunFake', flags)} &")
 
         RunCommand(TestMode,f"SKFlat.py -a {analyzer} -l {mcpath}/Prompt/PromptSS.txt  -n 50  --nmax {nmax} -e {era} --skim SkimTree_HNMultiLepBDT {FlagCommand('RunPrompt', flags)} &")
-        RunCommand(TestMode,f"SKFlat.py -a {analyzer} -l {mcpath}/Prompt/PromptSS2.txt -n 100 --nmax {nmax} -e {era} --skim SkimTree_SSDileptonBDT {FlagCommand('RunPrompt', flags)} &")
+        RunCommand(TestMode,f"SKFlat.py -a {analyzer} -l {mcpath}/Prompt/PromptSS2.txt -n 200 --nmax {nmax} -e {era} --skim SkimTree_SSDileptonBDT {FlagCommand('RunPrompt', flags)} &")
 
         RunCommand(TestMode,f"SKFlat.py -a {analyzer} -l {mcpath}/Conv/Conv.txt   -n 50 --nmax {nmax} -e {era} --skim SkimTree_HNMultiLepBDT {FlagCommand('RunConv', flags)} &")
         RunCommand(TestMode,f"SKFlat.py -a {analyzer} -l {mcpath}/Conv/ConvWG.txt -n 50 --nmax {nmax} -e {era} --skim SkimTree_DileptonBDT  {FlagCommand('RunConv', flags)} &")
@@ -294,16 +294,16 @@ if args.Systematics:
         RunCommand(TestMode,f"SKFlat.py -a {analyzer} -l {datapath}/{DATADir}/{era}_DiLepton_EMu.txt  -n 20 --nmax {nmax} -e {era} --skim SkimTree_HNMultiLepBDT {FlagCommand('RunFake', flags)} &")
         
         RunCommand(TestMode,f"SKFlat.py -a {analyzer} -l {mcpath}/Prompt/PromptSS.txt  -n 20  --nmax {nmax} -e {era} --skim SkimTree_HNMultiLepBDT {FlagCommand('RunPrompt', flags)} &")
-        RunCommand(TestMode,f"SKFlat.py -a {analyzer} -l {mcpath}/Prompt/PromptSS2.txt -n 30 --nmax {nmax} -e {era} --skim SkimTree_SSDileptonBDT {FlagCommand('RunPrompt', flags)} &")
+        RunCommand(TestMode,f"SKFlat.py -a {analyzer} -l {mcpath}/Prompt/PromptSS2.txt -n 40 --nmax {nmax} -e {era} --skim SkimTree_SSDileptonBDT {FlagCommand('RunPrompt', flags)} &")
 
         RunCommand(TestMode,f"SKFlat.py -a {analyzer} -l {mcpath}/Conv/Conv.txt   -n 20 --nmax {nmax} -e {era} --skim SkimTree_HNMultiLepBDT {FlagCommand('RunConv', flags)} &")
         RunCommand(TestMode,f"SKFlat.py -a {analyzer} -l {mcpath}/Conv/ConvWG.txt -n 20 --nmax {nmax} -e {era} --skim SkimTree_DileptonBDT  {FlagCommand('RunConv', flags)} &")
 
-        RunCommand(TestMode,f"SKFlat.py -a {analyzer} -l {datapath}/{DATADir}/{era}_DiLepton_EE.txt -n 20 --nmax {nmax} -e {era} --skim SkimTree_DileptonBDT {FlagCommand('RunCF', flags)} &")
+        RunCommand(TestMode,f"SKFlat.py -a {analyzer} -l {datapath}/{DATADir}/{era}_DiLepton_EE.txt -n 100 --nmax {nmax} -e {era} --skim SkimTree_DileptonBDT {FlagCommand('RunCF', flags)} &")
         # -- Wait + Monitor 'hadd' after job submission for this era --
         if not TestMode:
             print(f"\n[INFO] Waiting 1 hour after launching all jobs for era {era}...\n")
-            time.sleep(3600)  # Wait 1 hour before monitoring
+            time.sleep(7200)  # Wait 1 hour before monitoring
 
             while True:
                 long_hadds = get_long_running_hadd_processes(min_minutes=20)
