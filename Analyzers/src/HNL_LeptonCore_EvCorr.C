@@ -344,6 +344,9 @@ bool HNL_LeptonCore::PassHEMVeto(const std::vector<Lepton*>& leps, double& weigh
 
 
 void HNL_LeptonCore::PassJetHEMVeto(const std::vector<Jet>& jets, const TString& Flag, double& weight_hem) {
+
+  if(HasFlag("RunSyst")) return;
+  
   // Check status of Jets in HEM region
   int nJets_orig = jets.size();
   int nJets_HEMVeto = 0;

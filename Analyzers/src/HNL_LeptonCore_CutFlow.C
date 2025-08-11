@@ -3,6 +3,8 @@
 
 void HNL_LeptonCore::FillCutflow2D(TString cutflow_dirname,TString cutflow_histname, double weight, vector<TString> bin_lables, TString fill_label){
 
+  if(HasFlag("RunSyst")) return;
+  
 
   // Check if the last character is a '/'
   if (cutflow_dirname[cutflow_dirname.Length() - 1] == '/') {
@@ -192,6 +194,10 @@ void HNL_LeptonCore::FillCutflow2D(TString cutflow_dirname,TString cutflow_histn
 
 void HNL_LeptonCore::FillCutflowDef(TString cutflow_dirname,TString cutflow_histname, double weight, vector<TString> bin_lables, TString fill_label){
 
+  if(HasFlag("RunSyst")) {
+    if (!cutflow_dirname.Contains("LimitExtraction"))    return;
+  }
+
 
   // Check if the directory name ends with a '/'
 
@@ -273,6 +279,9 @@ void HNL_LeptonCore::FillLimitInput(HNL_LeptonCore::SearchRegion sr, double even
   TString histname = GetCutFlowNameFromRegion(sr);
 
   FillCutflowDef(hist_path,   histname, event_weight,lables, label);
+
+  if(HasFlag("RunSyst")) return;
+  
   FillCutflow2D (hist_path+"_2D",   histname, event_weight,lables, label);
   
   TString hist_pathLL = hist_path;
@@ -280,7 +289,6 @@ void HNL_LeptonCore::FillLimitInput(HNL_LeptonCore::SearchRegion sr, double even
   hist_pathLL=hist_pathLL.ReplaceAll("MuMu","LL");
   hist_pathLL=hist_pathLL.ReplaceAll("EMu","LL");
   FillCutflowDef(hist_pathLL,   histname, event_weight,lables, label);
-
 
   /// Fill SingleBinned                                                                                                                                                                                           
   vector<HNL_LeptonCore::SearchRegion> SingleBinned = {MuonCR1,        MuonCR2,        MuonCR3,        MuonCR3BDT, 
