@@ -57,6 +57,8 @@ class HNL_RegionDefinitions : public HNL_LeptonCore {
   bool PassVBFInitial(vector<Jet>&  jets);
   
 
+  TString GetSingleBinnedWWString(double HTOverPT, double ll_dphi);
+  
   // CR
 
 

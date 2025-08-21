@@ -12,27 +12,31 @@ void HNL_LeptonCore::DefineLimitBins(){
 
   
   if(DataEra == "2016preVFP") {
-    //sr1bins_mm = { 0., 400, 550,  2000.}; ANv4
-    sr1bins_mm = { 0.,450, 750, 2000.}; // ANv5
-    sr1bins_ee = { 0.,450, 600, 800,  2000.};
-    sr1bins_em = { 0.,450, 600, 800, 2000.};
-  }
-  if(DataEra == "2016postVFP") {
-    sr1bins_mm = { 0., 400, 550, 2000.};
-    sr1bins_ee = { 0., 450, 650,  800,  2000.};
-    sr1bins_em = { 0., 450, 550,  800, 2000.};
-  }
-  if(DataEra == "2017") {
-    sr1bins_mm  = { 0., 450, 550,  800,  2000.};
-    sr1bins_ee  = { 0., 500, 600,  800., 2000.};
-    sr1bins_em  = { 0., 500, 650, 850., 2000.};
-  }
-  if(DataEra == "2018") {
-    sr1bins_mm = { 0.,   450., 550, 750., 2000.};
-    sr1bins_ee = { 0.,   500., 700, 900., 2000.};
-    sr1bins_em = { 0.,   500., 650, 900., 2000.};
+    sr1bins_mm = { 0., 125.0, 375.0, 435.0, 495.0, 575.0, 755.0  , 2000.};
+    sr1bins_ee = { 0., 440.0, 510.0,  605.0, 670.0, 755.0, 985.0 , 2000.};
+    sr1bins_em = { 0., 215.0, 495.0, 600.0, 715.0, 860.0, 1030.0, 2000};
   }
 
+
+  if(DataEra == "2016postVFP") {
+    sr1bins_mm = { 0., 90.0, 190.0, 420.0, 505.0, 565.0, 765.0, 2000};
+    sr1bins_ee = { 0., 470.0, 535.0, 635.0, 700.0, 870.0, 1135.0, 2000}; 
+    sr1bins_em = { 0., 470.0, 510.0, 540.0, 660.0, 770.0, 1015.0, 2000};
+  }
+
+  if(DataEra == "2017") {
+    sr1bins_mm  = { 0., 450.0, 510.0, 555.0, 610.0, 790.0, 955.0, 2000};
+    sr1bins_ee  = { 0., 545.0, 595.0, 670.0, 770.0, 900.0, 1085.0, 2000};
+    sr1bins_em  = { 0., 505.0, 580.0, 735.0, 835.0, 940.0, 1215.0, 2000};
+  }
+
+  if(DataEra == "2018") {
+    sr1bins_mm = { 0., 470.0, 555.0, 645.0, 720.0, 840.0, 1045.0, 2000};  
+    sr1bins_ee = { 0., 500.0, 530.0, 575.0, 730.0, 945.0, 1260.0, 2000};  
+    sr1bins_em = { 0., 440.0, 635.0, 755.0, 930.0, 1045.0, 1315.0, 2000};  
+  }
+
+    
   vector<TString> MuMu_SR1_BinTags,  EE_SR1_BinTags ,EMu_SR1_BinTags, CR1_BinTags;
   for(unsigned int i_d =1 ; i_d <  sr1bins_mm.size()+3; i_d++)  MuMu_SR1_BinTags.push_back("SR1_MNbin"+to_string(i_d));
   for(unsigned int i_d =1 ; i_d <  sr1bins_ee.size()+3; i_d++)  EE_SR1_BinTags.push_back("SR1_MNbin"+to_string(i_d));

@@ -476,7 +476,13 @@ void   HNL_RegionDefinitions::RunMainRegionCode(bool IsSR,HNL_LeptonCore::Channe
       //      FillLimitInput(LimitRegions, weight_reg, RegionBin,"LimitExtraction/"+param.Name);
 
       /// Region 2 only Limit
-      if(IsSR) FillLimitInput(LimitRegionR2, weight_reg, RegionBin,  "LimitExtraction/"+param.Name,"SR2",channel_string);
+      if(IsSR) {
+	FillLimitInput(LimitRegionR2, weight_reg, RegionBin,  "LimitExtraction/"+param.Name,"SR2",channel_string);
+
+	/// Use an alternative binning
+	TString RegionBinAlt = GetSingleBinnedWWString(LepsT[0]->HTOverPt(),ll_dphi);
+	FillLimitInput(LimitRegionR2, weight_reg, RegionBinAlt,  "LimitExtractionAlt/"+param.Name,"SR2",channel_string);
+      }
       else {
 	FillLimitInput(LimitRegionR2, weight_reg, "CR2",  "LimitExtraction/"+param.Name,"CR2",channel_string);
 
@@ -751,23 +757,23 @@ TString HNL_RegionDefinitions::RunSignalRegionAK8String(bool ApplyForSR,
   Particle N1cand = AK8_JetColl[0] + *leps[0];
   double MN1 = (N1cand.M() > 2000.) ? 1999. : N1cand.M();
   
-  bool Matched_AK8L=false;
-  for(auto ifj : AK8_JetColl){
-    for(auto ilep : leps) {
-      if(ilep->DeltaR(ifj) < 0.8) Matched_AK8L=true;
-    }
-  }
+  //  bool Matched_AK8L=false;
+  //for(auto ifj : AK8_JetColl){
+  //  for(auto ilep : leps) {
+  //    if(ilep->DeltaR(ifj) < 0.8) Matched_AK8L=true;
+  //  }
+  // }
 
-  double closelep_mn_cut = 500.0;
-  if(Wcand.M() < 400.0) return RegionTag+"_MNbin1";
-  if(Matched_AK8L)    {
-    if(MN1 < closelep_mn_cut ) return RegionTag+"_MNbin2";
-    else return RegionTag+"_MNbin3";
-  }
+  //  double closelep_mn_cut = 500.0;
+  //if(Wcand.M() < 400.0) return RegionTag+"_MNbin1";
+  //if(Matched_AK8L)    {
+  //  if(MN1 < closelep_mn_cut ) return RegionTag+"_MNbin2";
+  //  else return RegionTag+"_MNbin3";
+  // }
 
-  if(param.IsCentral())  {
-    Fill_RegionPlots(param,"Pass"+RegionTag+"_MNBins" ,  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);
-  }
+  //if(param.IsCentral())  {
+  //  Fill_RegionPlots(param,"Pass"+RegionTag+"_MNBins" ,  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);
+  // }
   
   /// Bins defined in  HNL_LeptonCore::DefineLimitBins() in HNL_LeptonCore_LimitBins.C 
   vector<double> ml1jbins = GetLimitBinBoundary("SR1",GetChannelString(channel));
@@ -901,21 +907,62 @@ TString HNL_RegionDefinitions::RunSignalRegionWWString(bool ApplyForSR,HNL_Lepto
       else  return  "CR2_InvMET_HTLT_Bin3";
     }
     else{
+      
+      // Define cuts by era and channel
+      struct CutValues {
+	double cut1, cut2, cut3, cut4;
+      };
+      
+      std::map<std::string, std::map<int, CutValues>> sr2_cuts = {
+	{"2016preVFP", {
+	    {HNL_LeptonCore::Channel::MuMu, {2.0, 2.5, 1.5, 2.5}},
+	    {HNL_LeptonCore::Channel::EE,   {1.6, 2.4, 1.0, 2.0}},
+	    {HNL_LeptonCore::Channel::EMu,  {1.5, 2.5, 1.2, 1.7}}
+	  }},
+	{"2016postVFP", {
+	    {HNL_LeptonCore::Channel::MuMu, {2.0, 3.0, 1.7, 2.4}},
+	    {HNL_LeptonCore::Channel::EE,   {1.5, 2.0, 1.5, 2.5}},
+	    {HNL_LeptonCore::Channel::EMu,  {1.5, 2.5, 1.1, 1.6}}
+	  }},
+	{"2017", {
+	    {HNL_LeptonCore::Channel::MuMu, {1.5, 2.5, 1.5, 2.5}},
+	    {HNL_LeptonCore::Channel::EE,   {1.5, 2.5, 1.0, 2.0}},
+	    {HNL_LeptonCore::Channel::EMu,  {1.5, 2.5, 1.0, 2.0}}
+	  }},
+	{"2018", {
+	    {HNL_LeptonCore::Channel::MuMu, {1.5, 2.5, 1.0, 2.0}},
+	    {HNL_LeptonCore::Channel::EE,   {1.5, 2.5, 1.0, 2.0}},
+	    {HNL_LeptonCore::Channel::EMu,  {1.5, 2.5, 1.0, 2.0}}
+	  }}
+      };
+      
+      // Default cuts
+      CutValues cuts{0.0, 0.0, 0.0, 0.0};
 
-      double sr2_pt = 100;
-      if(DataYear == 2016) sr2_pt = 80;
-      //// Try same cuts for all eras
-      if(ll_dphi > 2.) {
-	if(HTOverPT < 2.){
-	  if (leps[1]->Pt() > sr2_pt)      return RegionTag+"_HTLT_Bin1";
-	  else return RegionTag+"_HTLT_Bin2";
+      // Convert TString -> std::string for the map key
+      const std::string era = DataEra.Data();
+      // Use your real channel variable name here (assumed 'channel')
+      const HNL_LeptonCore::Channel chan = channel;
+      
+      // Safe lookup without creating entries
+      if (auto eraIt = sr2_cuts.find(era); eraIt != sr2_cuts.end()) {
+	if (auto chIt = eraIt->second.find(chan); chIt != eraIt->second.end()) {
+	  cuts = chIt->second;
 	}
-	else return RegionTag+"_HTLT_Bin3";
       }
-      else{
-	if(HTOverPT < 3.)  return RegionTag+"_HTLT_Bin4";
-	else return RegionTag+"_HTLT_Bin5";
+      
+      // Bin selection (preserves your original logic)
+      if (ll_dphi > 2.0) {
+	if (HTOverPT < cuts.cut3) return RegionTag + "_HTLT_Bin1";
+	if (HTOverPT < cuts.cut4) return RegionTag + "_HTLT_Bin2";
+	return RegionTag + "_HTLT_Bin3";
+      } else {
+	if (HTOverPT < cuts.cut1) return RegionTag + "_HTLT_Bin4";
+	if (HTOverPT < cuts.cut2) return RegionTag + "_HTLT_Bin5";
+	return RegionTag + "_HTLT_Bin6";
       }
+      
+      
     }
   }
   return "false";
@@ -1199,6 +1246,20 @@ HNL_RegionDefinitions::~HNL_RegionDefinitions(){
   
 }
 
+TString HNL_RegionDefinitions::GetSingleBinnedWWString(double HTOverPT, double ll_dphi){
+  
+  //// Try same cuts for all eras                                                                                                                                        
+  if(ll_dphi > 2.) {
+    if(HTOverPT < 1.5)  return "SR2_HTLT_Bin1";
+    if(HTOverPT < 2.5)  return "SR2_HTLT_Bin2";
+    return "SR2_HTLT_Bin3";
+  }
+  else{
+    if(HTOverPT < 2)  return "SR2_HTLT_Bin4";
+    if(HTOverPT < 3)  return "SR2_HTLT_Bin5";
+    return "SR2_HTLT_Bin6";
+  }
+}
 
 void HNL_RegionDefinitions::RunSR3BDT(HNL_LeptonCore::ChargeType qq, std::vector<Electron>& electrons, std::vector<Electron>& electrons_veto, std::vector<Muon>& muons, std::vector<Muon>& muons_veto,  std::vector<Tau>& TauColl, std::vector<Jet>& JetColl, std::vector<Jet>& VBF_JetColl,std::vector<FatJet>&  AK8_JetColl, std::vector<Jet>& B_JetColl, Event& ev,   Particle& METv, AnalyzerParameter& param,   float weight_ll){
 
