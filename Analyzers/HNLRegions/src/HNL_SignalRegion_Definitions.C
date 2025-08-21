@@ -437,7 +437,6 @@ void   HNL_RegionDefinitions::RunMainRegionCode(bool IsSR,HNL_LeptonCore::Channe
       //// Region1 only limit
       if(IsSR){
 	FillLimitInput(LimitRegionR1, weight_reg,   RegionBin,  "LimitExtraction/"+param.Name,"SR1_"+channel_string,channel_string);
-	FillLimitInput(LimitRegionR1, weight_reg,   RegionBin,  "LimitExtraction_PlotVersion/"+param.Name,"SR1_PlotVersion",channel_string);
       }
       else{
 	FillLimitInput(LimitRegionR1, weight_reg,   RegionBin,  "LimitExtraction/"+param.Name,"CR1_"+channel_string,channel_string);
