@@ -504,8 +504,8 @@ void   HNL_RegionDefinitions::RunMainRegionCode(bool IsSR,HNL_LeptonCore::Channe
 	FillLimitInput(LimitRegionR2, weight_reg, RegionBin,  "LimitExtraction/"+param.Name,"SR2",channel_string);
 
 	/// Use an alternative binning
-	TString RegionBinAlt = GetSingleBinnedWWString(LepsT[0]->HTOverPt(),ll_dphi);
-	FillLimitInput(LimitRegionR2, weight_reg, RegionBinAlt,  "LimitExtractionAlt/"+param.Name,"SR2",channel_string);
+	//TString RegionBinAlt = GetSingleBinnedWWString(LepsT[0]->HTOverPt(),ll_dphi);
+	//FillLimitInput(LimitRegionR2, weight_reg, RegionBinAlt,  "LimitExtractionAlt/"+param.Name,"SR2",channel_string);
       }
       else {
 	FillLimitInput(LimitRegionR2, weight_reg, "CR2",  "LimitExtraction/"+param.Name,"CR2",channel_string);
