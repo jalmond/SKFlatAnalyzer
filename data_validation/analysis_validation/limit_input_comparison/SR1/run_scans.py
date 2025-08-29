@@ -8,12 +8,20 @@ SETUP = "/data6/Users/jalmond/2020/HL_SKFlatAnalyzer_UL_LONG/SKFlatAnalyzer/setu
 MAX_PARALLEL = 5
 POLL_SECS = 5
 
-# Put your commands here (NO leading '#')
-RAW_CMDS = [
+# Masses, flavours, eras
+MASSES   = [500, 600, 700, 800, 900, 1000]
+FLAVOURS = ["EE", "MuMu", "EMu"]
+ERAS     = ["2016preVFP", "2016postVFP", "2017", "2018"]
 
-    "scan_sr1_memory.py --mass 700 --flavour MuMu --era 2016preVFP --n_bins 6 --mnonly",
-
-]
+# === Build RAW_CMDS automatically ===
+RAW_CMDS = []
+for m in MASSES:
+    for f in FLAVOURS:
+        for e in ERAS:
+            RAW_CMDS.append(
+                f"scan_sr1_memory.py --mass {m} --flavour {f} --era {e} --n_bins 6 --mnonly"
+            )
+            
 
 def wrap(cmd: str) -> str:
     """

@@ -474,7 +474,7 @@ void AnalyzerCore::WriteHist() {
 
     for (auto& i : TimerMap) {
       if (i.first != "LATEST") {
-        std::cout << i.first << " processing time = " << i.second << std::endl;
+        //std::cout << i.first << " processing time = " << i.second << std::endl;
         timer_hist->Fill(i.first, i.second);
       }
     }
@@ -486,13 +486,7 @@ void AnalyzerCore::WriteHist() {
     outfile->cd();
     delete timer_hist;
   }
-
-  //==== TimingMap print ====
-  if (TimingMap.size() > 0) {
-    double start_time = TimingMap.find("start")->second;
-    for (auto& i : TimingMap)
-      std::cout << i.first << " processing time = " << (i.second - start_time) / CLOCKS_PER_SEC << std::endl;
-  }
+  
 }
 
 

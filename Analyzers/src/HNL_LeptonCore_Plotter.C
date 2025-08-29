@@ -89,6 +89,15 @@ void HNL_LeptonCore::Fill_PlotsAK8(AnalyzerParameter& param, TString  region, TS
     for (auto& ilep : leps) {
       FillHist(plot_dir + region + "/AK8Jet_dR_" + ilep->GetFlavour(), fatjet.DeltaR(*ilep), w, 50, 0.0, 10.0, "#DeltaR (WAK8," + ilep->GetFlavour() + ")");
     }
+
+    FillHist(plot_dir + region + "/AK8Jet_dR_lep1" , fatjet.DeltaR(*leps[0]), w, 50, 0.0, 10.0, "#DeltaR (WAK8,lep1)");
+    FillHist(plot_dir + region + "/AK8Jet_dR_lep2" , fatjet.DeltaR(*leps[1]), w, 50, 0.0, 10.0, "#DeltaR (WAK8,lep2)");
+    
+    double J_l1_dphi = fabs(TVector2::Phi_mpi_pi( ( (*leps[0]).Phi() - (fatjet).Phi() )) );
+    double J_l2_dphi = fabs(TVector2::Phi_mpi_pi( ( (*leps[1]).Phi() - (fatjet).Phi() )) );
+    FillHist(plot_dir + region + "/AK8Jet_dPhi_lep1", J_l1_dphi , w, 50, -5.5, 100, "");
+    FillHist(plot_dir + region + "/AK8Jet_dPhi_lep2", J_l2_dphi , w, 50, -5.5, 100, "");
+    
     
     // Additional Histograms for FatJets
     FillHist(plot_dir + region + "/AK8J_SDMass", fatjet.SDMass(), w, 100, 0.0, 500.0, "Mass_{softdrop} GeV");
@@ -663,6 +672,7 @@ void HNL_LeptonCore::Fill_Plots(AnalyzerParameter& param, TString  region,  TStr
   FillHist( plot_dir+ region+ "/DeltaEta/dEta_lep1_lep2", ll_deta  , w, 200, -5.0, 5.0, "#Delta #Phi(l1,l2)") ;
   FillHist( plot_dir+ region+"/DeltaR/dR_ll", leps[0]->DeltaR(*leps[1] ) ,w, 100,  0.0, 10,"#DeltaR(l,l)");
   
+  FillHist( plot_dir+ region+ "/Leptons/Lep_r_pt",  leps[1]->Pt()/leps[0]->Pt()  ,  w, 200, 0, 1,"l_{1} p_{T} GeV");
   FillHist( plot_dir+ region+ "/Leptons/Lep_1_pt",  leps[0]->Pt()  ,  w, 200, 0, 2000,"l_{1} p_{T} GeV");
   FillHist( plot_dir+ region+ "/Leptons/Lep_2_pt",  leps[1]->Pt()  ,  w, 200, 0, 1000,"1_{2} p_{T} GeV");
   FillHist( plot_dir+ region+ "/Leptons/Lep_1_eta", leps[0]->Eta()  , w, 60, -3.0, 3,"l_{1} #eta");

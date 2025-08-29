@@ -136,7 +136,7 @@ def exhaustive_binning(bins, last_bin, sig_hist, n_bins_total, mass, log_print, 
     all_edges = sorted(set([b[1] for b in bins if x_min is not None and x_min <= b[1] < x_last]))
 
     k = n_bins_total - 1
-    max_combos = 200000  # cap
+    max_combos = 2000000  # cap
     comb_count = math.comb(len(all_edges), k) if len(all_edges) >= k and k >= 0 else 0
 
     if comb_count == 0:
@@ -264,7 +264,7 @@ def compute_existing_fom_first3(sig_file, bkg_file, flavour, mass):
 
 def evaluate_binning_for_masses(selected_dir, era, flavour, base_path, hname,
                                 bins, last_bin, full_edges, log_print, f_bkg, mnonly):
-    masses = ["400", "500", "600", "700", "1000", "1500", "2000"]
+    masses = ["500", "600", "700", "800","900","1000"]
 
     per_mass = {}
     summed_fom = 0.0

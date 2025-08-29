@@ -6,7 +6,7 @@ import itertools
 # Configurations
 flavours = ['MuMu', 'EE', 'EMu']
 masses = ['0', 'SSWW_600', 'SSWW_1000', 'SSWW_20000']
-nbins_list = ['5', '6']
+nbins_list = ['6']
 eras = ['2016preVFP', '2016postVFP', '2017', '2018']
 
 # Script to run
