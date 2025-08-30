@@ -1,53 +1,179 @@
 #include "HNL_LeptonCore.h"
 
+// helper: return mass-specific bins if present and non-empty, else era default                                                              
+const vector<double>& HNL_LeptonCore::choose_bins(const map<TString, vector<double>>& per_mass, TString mass)
+{
+  auto it = per_mass.find(mass);
+  if (it != per_mass.end() && !it->second.empty()) return it->second;
+
+  auto it_fallback = per_mass.find("900");
+  if (it_fallback != per_mass.end() && !it_fallback->second.empty()) return it_fallback->second;
+  
+  cout << "choose_bins " << mass << " missing" << endl;
+  exit(EXIT_FAILURE);
+
+  
+}
+
 void HNL_LeptonCore::DefineLimitBins(){
   
   //// Define SR 1 binning to allow nevents >= 1 per bin per era
 
   vector<double> sr1bins_ll = {0.,  500, 750,  2000.};
 
-  vector<double> sr1bins_mm;
-  vector<double> sr1bins_ee;
-  vector<double> sr1bins_em;
+  map<TString, vector<double>> sr1bins_mm_byMass;
+  map<TString, vector<double>> sr1bins_ee_byMass;
+  map<TString, vector<double>> sr1bins_em_byMass;
+
+  vector<double> sr1bins_mm, sr1bins_ee, sr1bins_em;
 
   
   if(DataEra == "2016preVFP") {
-    //sr1bins_mm = { 0., 400, 550,  2000.}; ANv4
-    sr1bins_mm = { 0.,450, 750, 2000.}; // ANv5
-    sr1bins_ee = { 0.,450, 600, 800,  2000.};
-    sr1bins_em = { 0.,450, 600, 800, 2000.};
+    sr1bins_mm = { 0., 125.0, 375.0, 435.0, 495.0, 575.0, 755.0  , 2000.};
+    sr1bins_ee = { 0., 440.0, 510.0,  605.0, 670.0, 755.0, 985.0 , 2000.};
+    sr1bins_em = { 0., 215.0, 495.0, 600.0, 715.0, 860.0, 1030.0, 2000};
+    
+    sr1bins_mm_byMass["400"] = {0.0, 325.0, 390.0, 430.0, 485.0, 565.0, 755.0, 2000};
+    sr1bins_mm_byMass["500"] = {0.0, 150.0, 385.0, 455.0, 510.0, 575.0, 755.0, 2000};
+    sr1bins_mm_byMass["600"] = {0.0, 105.0, 395.0, 440.0, 510.0, 575.0, 755.0, 2000};
+    sr1bins_mm_byMass["700"] = {0.0, 120.0, 220.0, 455.0, 510.0, 575.0, 755.0, 2000};
+    sr1bins_mm_byMass["800"] = {0.0, 125.0, 170.0, 435.0, 510.0, 575.0, 755.0, 2000};// 800+
+    sr1bins_mm_byMass["900"] = {0.0, 125.0, 305.0, 430.0, 490.0, 570.0, 755.0, 2000.0};
+    
+    sr1bins_ee_byMass["400"] = {0.0, 400.0, 430.0, 470.0, 580.0, 720.0, 985.0, 2000.0};
+    sr1bins_ee_byMass["500"] = {0.0, 470.0, 505.0, 550.0, 665.0, 760.0, 985.0, 2000.0};
+    sr1bins_ee_byMass["600"] = {0.0, 500.0, 555.0, 605.0, 660.0, 760.0, 985.0, 2000.0};
+    sr1bins_ee_byMass["700"] = {0.0, 500.0, 555.0, 610.0, 675.0, 735.0, 985.0, 2000.0};
+    sr1bins_ee_byMass["800"] = {0.0, 500.0, 560.0, 610.0, 675.0, 765.0, 985.0, 2000.0};
+    sr1bins_ee_byMass["900"] = {0.0, 550.0, 560.0, 615.0, 680.0, 765.0, 985.0, 2000.0};
+
+    sr1bins_em_byMass["400"] = {0.0, 405.0, 440.0, 520.0, 635.0, 760.0, 1030.0, 2000.0};
+    sr1bins_em_byMass["500"] = {0.0, 470.0, 520.0, 555.0, 665.0, 825.0, 1030.0, 2000.0};
+    sr1bins_em_byMass["600"] = {0.0, 445.0, 545.0, 585.0, 645.0, 810.0, 1030.0, 2000.0};
+    sr1bins_em_byMass["700"] = {0.0, 450.0, 500.0, 615.0, 715.0, 850.0, 1030.0, 2000.0};
+    sr1bins_em_byMass["800"] = {0.0, 480.0, 540.0, 600.0, 710.0, 835.0, 1030.0, 2000.0};
+    sr1bins_em_byMass["900"] = {0.0, 480.0, 540.0, 610.0, 715.0, 860.0, 1030.0, 2000.0};
+       
   }
+
+
   if(DataEra == "2016postVFP") {
-    sr1bins_mm = { 0., 400, 550, 2000.};
-    sr1bins_ee = { 0., 450, 650,  800,  2000.};
-    sr1bins_em = { 0., 450, 550,  800, 2000.};
+    sr1bins_mm = { 0., 90.0, 190.0, 420.0, 505.0, 565.0, 765.0, 2000};
+    sr1bins_ee = { 0., 470.0, 535.0, 635.0, 700.0, 870.0, 1135.0, 2000}; 
+    sr1bins_em = { 0., 470.0, 510.0, 540.0, 660.0, 770.0, 1015.0, 2000};
+    
+    
+    sr1bins_mm_byMass["400"] = {0.0, 250.0, 385.0, 420.0, 485.0, 560.0, 765.0, 2000.0};
+    sr1bins_mm_byMass["500"] = {0.0, 210.0, 400.0, 450.0, 510.0, 565.0, 765.0, 2000.0};
+    sr1bins_mm_byMass["600"] = {0.0, 210.0, 400.0, 450.0, 510.0, 565.0, 765.0, 2000.0};
+    sr1bins_mm_byMass["700"] = {0.0, 325.0, 395.0, 445.0, 510.0, 565.0, 765.0, 2000.0};
+    sr1bins_mm_byMass["800"] = {0.0, 325.0, 395.0, 445.0, 510.0, 565.0, 765.0, 2000.0};
+    sr1bins_mm_byMass["900"] = {0.0, 325.0, 395.0, 445.0, 510.0, 565.0, 765.0, 2000.0};
+
+    sr1bins_ee_byMass["400"] = {0.0, 385.0, 430.0, 475.0, 555.0, 705.0, 1135.0, 2000.0};
+    sr1bins_ee_byMass["500"] = {0.0, 460.0, 515.0, 575.0, 660.0, 755.0, 1135.0, 2000.0};
+    sr1bins_ee_byMass["600"] = {0.0, 570.0, 605.0, 650.0, 750.0, 885.0, 1135.0, 2000.0};
+    sr1bins_ee_byMass["700"] = {0.0, 520.0, 610.0, 670.0, 725.0, 805.0, 1135.0, 2000.0};
+    sr1bins_ee_byMass["800"] = {0.0, 520.0, 635.0, 680.0, 775.0, 895.0, 1135.0, 2000.0};
+    sr1bins_ee_byMass["900"] = {0.0, 520.0, 635.0, 680.0, 775.0, 900.0, 1135.0, 2000.0};
+
+    sr1bins_em_byMass["400"] = {0.0, 365.0, 420.0, 455.0, 540.0, 745.0, 1015.0, 2000.0};
+    sr1bins_em_byMass["500"] = {0.0, 475.0, 510.0, 540.0, 620.0, 780.0, 1015.0, 2000.0};
+    sr1bins_em_byMass["600"] = {0.0, 505.0, 565.0, 620.0, 665.0, 770.0, 1015.0, 2000.0};
+    sr1bins_em_byMass["700"] = {0.0, 505.0, 600.0, 655.0, 740.0, 830.0, 1015.0, 2000.0};
+    sr1bins_em_byMass["800"] = {0.0, 505.0, 600.0, 655.0, 740.0, 830.0, 1015.0, 2000.0};
+    sr1bins_em_byMass["900"] = {0.0, 505.0, 600.0, 655.0, 740.0, 830.0, 1015.0, 2000.0};
   }
+  
   if(DataEra == "2017") {
-    sr1bins_mm  = { 0., 450, 550,  800,  2000.};
-    sr1bins_ee  = { 0., 500, 600,  800., 2000.};
-    sr1bins_em  = { 0., 500, 650, 850., 2000.};
+    sr1bins_mm  = { 0., 450.0, 510.0, 555.0, 610.0, 790.0, 955.0, 2000};
+    sr1bins_ee  = { 0., 545.0, 595.0, 670.0, 770.0, 900.0, 1085.0, 2000};
+    sr1bins_em  = { 0., 505.0, 580.0, 735.0, 835.0, 940.0, 1215.0, 2000};
+
+    
+    sr1bins_mm_byMass["400"] = {0.0, 405.0, 435.0, 480.0, 605.0, 715.0, 955.0, 2000.0};
+    sr1bins_mm_byMass["500"] = {0.0, 465.0, 515.0, 545.0, 595.0, 765.0, 955.0, 2000.0};
+    sr1bins_mm_byMass["600"] = {0.0, 325.0, 485.0, 555.0, 615.0, 705.0, 955.0, 2000.0};
+    sr1bins_mm_byMass["700"] = {0.0, 440.0, 510.0, 560.0, 615.0, 715.0, 955.0, 2000.0};
+    sr1bins_mm_byMass["800"] = {0.0, 440.0, 505.0, 555.0, 615.0, 790.0, 955.0, 2000.0};
+    sr1bins_mm_byMass["900"] = {0.0, 440.0, 490.0, 545.0, 615.0, 785.0, 955.0, 2000.0};
+
+    sr1bins_ee_byMass["400"] = {0.0, 390.0, 420.0, 485.0, 595.0, 750.0, 1085.0, 2000.0};
+    sr1bins_ee_byMass["500"] = {0.0, 460.0, 510.0, 540.0, 585.0, 785.0, 1085.0, 2000.0};
+    sr1bins_ee_byMass["600"] = {0.0, 585.0, 630.0, 680.0, 730.0, 895.0, 1085.0, 2000.0};
+    sr1bins_ee_byMass["700"] = {0.0, 575.0, 675.0, 715.0, 770.0, 880.0, 1085.0, 2000.0};
+    sr1bins_ee_byMass["800"] = {0.0, 570.0, 655.0, 725.0, 800.0, 900.0, 1085.0, 2000.0};
+    sr1bins_ee_byMass["900"] = {0.0, 580.0, 675.0, 725.0, 795.0, 900.0, 1085.0, 2000.0};
+
+    sr1bins_em_byMass["400"] = {0.0, 390.0, 420.0, 445.0, 580.0, 730.0, 1215.0, 2000.0};
+    sr1bins_em_byMass["500"] = {0.0, 495.0, 520.0, 545.0, 610.0, 875.0, 1215.0, 2000.0};
+    sr1bins_em_byMass["600"] = {0.0, 535.0, 600.0, 630.0, 680.0, 845.0, 1215.0, 2000.0};
+    sr1bins_em_byMass["700"] = {0.0, 580.0, 675.0, 725.0, 790.0, 890.0, 1215.0, 2000.0};
+    sr1bins_em_byMass["800"] = {0.0, 540.0, 695.0, 760.0, 835.0, 905.0, 1215.0, 2000.0};
+    sr1bins_em_byMass["900"] = {0.0, 530.0, 680.0, 750.0, 825.0, 940.0, 1215.0, 2000.0};
+    
   }
+
   if(DataEra == "2018") {
-    sr1bins_mm = { 0.,   450., 550, 750., 2000.};
-    sr1bins_ee = { 0.,   500., 700, 900., 2000.};
-    sr1bins_em = { 0.,   500., 650, 900., 2000.};
+    sr1bins_mm = { 0., 470.0, 555.0, 645.0, 720.0, 840.0, 1045.0, 2000};  
+    sr1bins_ee = { 0., 500.0, 530.0, 575.0, 730.0, 945.0, 1260.0, 2000};  
+    sr1bins_em = { 0., 440.0, 635.0, 755.0, 930.0, 1045.0, 1315.0, 2000};  
+
+    
+    sr1bins_mm_byMass["400"] = {0.0, 395.0, 420.0, 470.0, 590.0, 775.0, 1045.0, 2000.0};
+    sr1bins_mm_byMass["500"] = {0.0, 480.0, 520.0, 560.0, 600.0, 820.0, 1045.0, 2000};
+    sr1bins_mm_byMass["600"] = {0.0, 550.0, 610.0, 650.0, 750.0, 830.0, 1045.0, 2000};
+    sr1bins_mm_byMass["700"] = {0.0, 535.0, 600.0, 680.0, 745.0, 840.0, 1045.0, 2000};
+    sr1bins_mm_byMass["800"] = {0.0, 435.0, 575.0, 685.0, 770.0, 840.0, 1045.0, 2000};
+    sr1bins_mm_byMass["900"] = {0.0, 435.0, 575.0, 685.0, 770.0, 840.0, 1045.0, 2000}; //900+
+
+    sr1bins_ee_byMass["400"] = {0.0, 395.0, 430.0, 480.0, 610.0, 805.0, 1260.0, 2000.0};
+    sr1bins_ee_byMass["500"] = {0.0, 470.0, 505.0, 530.0, 560.0, 715.0, 1260.0, 2000.0};
+    sr1bins_ee_byMass["600"] = {0.0, 565.0, 600.0, 645.0, 730.0, 915.0, 1260.0, 2000.0};
+    sr1bins_ee_byMass["700"] = {0.0, 625.0, 690.0, 720.0, 790.0, 990.0, 1260.0, 2000.0};
+    sr1bins_ee_byMass["800"] = {0.0, 575.0, 685.0, 760.0, 840.0, 1000.0, 1260.0, 2000.0};
+    sr1bins_ee_byMass["900"] = {0.0, 465.0, 635.0, 740.0, 805.0, 930.0, 1260.0, 2000.0};
+
+    sr1bins_em_byMass["400"] = {0.0, 385.0, 420.0, 465.0, 650.0, 845.0, 1315.0, 2000.0};
+    sr1bins_em_byMass["500"] = {0.0, 485.0, 505.0, 525.0, 555.0, 730.0, 1315.0, 2000.0};
+    sr1bins_em_byMass["600"] = {0.0, 550.0, 600.0, 635.0, 675.0, 925.0, 1315.0, 2000.0};
+    sr1bins_em_byMass["700"] = {0.0, 625.0, 680.0, 730.0, 785.0, 995.0, 1315.0, 2000.0};
+    sr1bins_em_byMass["800"] = {0.0, 650.0, 695.0, 735.0, 810.0, 970.0, 1315.0, 2000.0};
+    sr1bins_em_byMass["900"] = {0.0, 540.0, 705.0, 760.0, 910.0, 1015.0, 1315.0, 2000.0};
   }
-
+  
+  
   vector<TString> MuMu_SR1_BinTags,  EE_SR1_BinTags ,EMu_SR1_BinTags, CR1_BinTags;
-  for(unsigned int i_d =1 ; i_d <  sr1bins_mm.size()+3; i_d++)  MuMu_SR1_BinTags.push_back("SR1_MNbin"+to_string(i_d));
-  for(unsigned int i_d =1 ; i_d <  sr1bins_ee.size()+3; i_d++)  EE_SR1_BinTags.push_back("SR1_MNbin"+to_string(i_d));
-  for(unsigned int i_d =1 ; i_d <  sr1bins_em.size()+3; i_d++)  EMu_SR1_BinTags.push_back("SR1_MNbin"+to_string(i_d));
-
-
+  for(unsigned int i_d =1 ; i_d <  sr1bins_mm.size(); i_d++)  MuMu_SR1_BinTags.push_back("SR1_MNbin"+to_string(i_d));
+  for(unsigned int i_d =1 ; i_d <  sr1bins_ee.size(); i_d++)  EE_SR1_BinTags.push_back("SR1_MNbin"+to_string(i_d));
+  for(unsigned int i_d =1 ; i_d <  sr1bins_em.size(); i_d++)  EMu_SR1_BinTags.push_back("SR1_MNbin"+to_string(i_d));
+  
+  
   //// EE/EMu have most bins
-  map_bins_labels ["SR1_PlotVersion_MuMu"]= EE_SR1_BinTags;
-  map_bins_labels ["SR1_PlotVersion_EE"]  = EE_SR1_BinTags;
-  map_bins_labels ["SR1_PlotVersion_EMu"] = EE_SR1_BinTags;
   
   map_bins_labels ["SR1_MuMu"]= MuMu_SR1_BinTags;
   map_bins_labels ["SR1_EE"]  = EE_SR1_BinTags;
   map_bins_labels ["SR1_EMu"] = EMu_SR1_BinTags;
 
+
+  // masses with string labels
+  vector<TString> masses_to_prepare = {"400", "500", "600", "700", "800","900"  };
+  
+  
+  for (const auto& m : masses_to_prepare) {
+    const TString& mass_str = m;
+    
+    // labels: use the correct tag vectors per channel
+    map_bins_labels["SR1_MuMu_" + mass_str] = MuMu_SR1_BinTags;
+    map_bins_labels["SR1_EE_"   + mass_str] = EE_SR1_BinTags;
+    map_bins_labels["SR1_EMu_"  + mass_str] = EMu_SR1_BinTags;
+    
+    // boundaries: choose mass-dependent bins if available, else era defaults
+    map_bins_boundaries["SR1_MuMu_" + mass_str] = choose_bins(sr1bins_mm_byMass, mass_str);
+    map_bins_boundaries["SR1_EE_"   + mass_str] = choose_bins(sr1bins_ee_byMass, mass_str);
+    map_bins_boundaries["SR1_EMu_"  + mass_str] = choose_bins(sr1bins_em_byMass, mass_str);
+  }
+  
   map_bins_boundaries  ["SR1_MuMu"] = sr1bins_mm;
   map_bins_boundaries  ["SR1_EE"]   = sr1bins_ee;
   map_bins_boundaries  ["SR1_EMu"]  = sr1bins_em;
@@ -58,8 +184,8 @@ void HNL_LeptonCore::DefineLimitBins(){
 
 
   //// Define SR 2 binning  
-  
-  map_bins_labels ["SR2"]       = {"SR2_HTLT_Bin1",       "SR2_HTLT_Bin2",       "SR2_HTLT_Bin3",     "SR2_HTLT_Bin4","SR2_HTLT_Bin5"};
+
+  map_bins_labels ["SR2"]       = {"SR2_HTLT_Bin1",       "SR2_HTLT_Bin2",       "SR2_HTLT_Bin3",     "SR2_HTLT_Bin4","SR2_HTLT_Bin5","SR2_HTLT_Bin6"};
   map_bins_labels ["CR2"] = {"CR2_HTLT_Bin1", "CR2_HTLT_Bin2", "CR2_HTLT_Bin3"};
 
   //// Define SR 3 binning                                                                                                                              
@@ -83,10 +209,10 @@ void HNL_LeptonCore::DefineLimitBins(){
   
 }
 
-vector<double> HNL_LeptonCore::GetLimitBinBoundary(const TString& SR, const TString& channel){
+vector<double> HNL_LeptonCore::GetLimitBinBoundary(const TString& SR, TString mass_ref, const TString& channel){
 
 
-  TString key = (channel == "") ? SR : SR+"_"+channel;
+  TString key = (channel == "") ? SR : SR+"_"+channel+"_"+mass_ref;
   
   map<TString,vector<double> >::iterator mit = map_bins_boundaries.find(key);
   if(mit == map_bins_boundaries.end()) {

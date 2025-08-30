@@ -35,9 +35,9 @@ class HNL_RegionDefinitions : public HNL_LeptonCore {
 
   //// SIGNAL REGION DEFINITIONS
 
-  bool  RunSignalRegionAK8(bool ApplyForSR,HNL_LeptonCore::Channel channel,HNL_LeptonCore::ChargeType q, std::vector<Lepton *>& leps,std::vector<Lepton *>& leps_veto, std::vector<Tau>& Taus, std::vector<Jet>& jets, std::vector<FatJet>&  fatjets, std::vector<Jet>& bjets, Event& ev,  Particle& METv, AnalyzerParameter& param,   float w);
+  bool  RunSignalRegionAK8(bool ApplyForSR,TString mass_ref,HNL_LeptonCore::Channel channel,HNL_LeptonCore::ChargeType q, std::vector<Lepton *>& leps,std::vector<Lepton *>& leps_veto, std::vector<Tau>& Taus, std::vector<Jet>& jets, std::vector<FatJet>&  fatjets, std::vector<Jet>& bjets, Event& ev,  Particle& METv, AnalyzerParameter& param,   float w);
   
-  TString  RunSignalRegionAK8String(bool ApplyForSR,HNL_LeptonCore::Channel channel,HNL_LeptonCore::ChargeType q, std::vector<Lepton *>& leps,std::vector<Lepton *>& leps_veto, std::vector<Tau>& Taus, std::vector<Jet>& jets, std::vector<FatJet>&  fatjets, std::vector<Jet>& bjets, Event& ev,  Particle& METv, AnalyzerParameter& param,   float w);
+  TString  RunSignalRegionAK8String(bool ApplyForSR,TString mass_ref,HNL_LeptonCore::Channel channel,HNL_LeptonCore::ChargeType q, std::vector<Lepton *>& leps,std::vector<Lepton *>& leps_veto, std::vector<Tau>& Taus, std::vector<Jet>& jets, std::vector<FatJet>&  fatjets, std::vector<Jet>& bjets, Event& ev,  Particle& METv, AnalyzerParameter& param,   float w);
 
 
   
@@ -57,6 +57,8 @@ class HNL_RegionDefinitions : public HNL_LeptonCore {
   bool PassVBFInitial(vector<Jet>&  jets);
   
 
+  TString GetSingleBinnedWWString(double HTOverPT, double ll_dphi);
+  
   // CR
 
 
