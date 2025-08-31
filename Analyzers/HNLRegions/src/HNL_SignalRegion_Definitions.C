@@ -413,7 +413,7 @@ void   HNL_RegionDefinitions::RunMainRegionCode(bool IsSR,HNL_LeptonCore::Channe
   if(AK8_JetColl.size() > 0) {
     
     std::vector<std::pair<std::string, std::vector<std::string>>> mass_ranges = {
-      {"400", {"300","400"}},
+      {"400", {"125", "150", "200", "250", "300","400"}},
       {"500", {"500"}},
       {"600", {"600"}},
       {"700", {"700"}},
