@@ -350,7 +350,7 @@ class HNL_LeptonCore : public AnalyzerCore {
   double GetZ0Weight(double valX);
 
   // Returns the scale uncertainty for a given systematic variation
-  double GetScaleUncertainty(int sys);
+  double GetScaleUncertainty(int sys, TString tag="");
 
   // Returns the PDF uncertainty for the given weight index and event weight reference
   TString GetPDFUncertainty(int weightIndex, double& eventWeight);

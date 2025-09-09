@@ -84,7 +84,7 @@ TString HNL_LeptonCore::GetPDFUncertainty(int weightIndex, double& ev_weight) {
 }
 
 
-double HNL_LeptonCore::GetScaleUncertainty(int sys) {
+double HNL_LeptonCore::GetScaleUncertainty(int sys, TString tag_debug) {
   // Basic guards
   if (!IsSignal() || sys == 0 || !weight_Scale || weight_Scale->empty()) {
     return 1.0;
@@ -94,29 +94,43 @@ double HNL_LeptonCore::GetScaleUncertainty(int sys) {
     return 1.0;
   }
 
-  // Scan valid (finite) weights among [0, size()-2)
-  const size_t n = weight_Scale->size() - 2;
+  // Scan valid (finite) weights among all entries, but ignore 6th (i=5) and 8th (i=7)
+  const size_t n = weight_Scale->size();
   double max_w = -std::numeric_limits<double>::infinity();
   double min_w =  std::numeric_limits<double>::infinity();
   size_t n_valid = 0;
-
+  
   for (size_t i = 0; i < n; ++i) {
+    if (i == 5 || i == 7) continue;  // skip 6th and 8th weight
+    
     const double w = static_cast<double>(weight_Scale->at(i));
     if (!std::isfinite(w)) continue;  // skip NaN, +Inf, -Inf
+    
     ++n_valid;
     if (w > max_w) max_w = w;
     if (w < min_w) min_w = w;
   }
-
+  
   // If nothing usable, fall back to neutral
   if (n_valid == 0) {
     return 1.0;
   }
 
   // Note: original logic was effectively "up = max", "down = min"
+
+  if(tag_debug != "") {
+    if(max_w < 0) {
+      cout << "Scale Uncertainty " << sys << "  " << max_w << "  " << min_w <<  " " << tag_debug << endl;
+      for (size_t i = 0; i < n; ++i) {
+	const double w = static_cast<double>(weight_Scale->at(i));
+	cout << "i " << i <<  " w = " << w << endl;
+      }
+    }   
+  }
   if (sys == 1)  return max_w;
   if (sys == -1) return min_w;
 
+ 
   return 1.0;
 }
 
