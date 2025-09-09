@@ -382,7 +382,7 @@ def main():
         if os.path.isdir(os.path.join(base_dir, d))
     ], key=os.path.getmtime)
 
-    sig_file_path = os.path.join(selected_dir, args.era, f"HNL_SignalRegion_Plotter_HNL_{args.mass}.root")
+    sig_file_path = os.path.join(selected_dir, args.era, f"HNL_SignalRegion_Plotter_HNL_DYVBF_{args.mass}.root")
     bkg_file_path = os.path.join(selected_dir, args.era, "HNL_SignalRegion_Plotter_Bkg.root")
 
     f_sig = ROOT.TFile(sig_file_path)
