@@ -461,7 +461,7 @@ void   HNL_RegionDefinitions::RunMainRegionCode(bool IsSR,HNL_LeptonCore::Channe
       }
 
       
-      TString RegionBin= RunSignalRegionAK8String (IsSR, ref_mass,0,sr1_fill_plot, channel,qq, LepsT, LepsV, TauColl, 
+      TString RegionBin= RunSignalRegionAK8String (IsSR, TString::Format("%d", ref_mass),0,sr1_fill_plot, channel,qq, LepsT, LepsV, TauColl, 
 						   JetColl, AK8_JetColl,B_JetColl,
 						   ev, METv ,param,weight_reg) ;
       
@@ -484,7 +484,7 @@ void   HNL_RegionDefinitions::RunMainRegionCode(bool IsSR,HNL_LeptonCore::Channe
 	if(IsSR){
 	  FillLimitInput(LimitRegionR1, weight_reg,   RegionBin,  "LimitExtraction/"+param.Name+"/M"+ref_mass,"SR1_"+channel_string,channel_string);
 	  
-	  TString RegionBinAlt= RunSignalRegionAK8String (IsSR, ref_mass,1,false, channel,qq, LepsT, LepsV, TauColl,
+	  TString RegionBinAlt= RunSignalRegionAK8String (IsSR, TString::Format("%d", ref_mass),1,false, channel,qq, LepsT, LepsV, TauColl,
 							  JetColl, AK8_JetColl,B_JetColl,
 							  ev, METv ,param,weight_reg) ;
 
@@ -1091,6 +1091,8 @@ TString HNL_RegionDefinitions::RunSignalRegionAK4StringBDT(bool ApplyForSR, TStr
   
   if(!ApplyForSR|| HasFlag("PlotBDT")){
     FillHist("LimitExtraction/"+param.Name+"/"+RegionTag+"BDT/"+BDTLabel, MVAvalueIncl, w, 400, -1., 1.);
+    if(B_JetColl.size() == 1) FillHist("LimitExtraction/"+param.Name+"/"+RegionTag+"BDT/InvBJet_"+BDTLabel, MVAvalueIncl, w, 400, -1., 1.);
+    else FillHist("LimitExtraction/"+param.Name+"/"+RegionTag+"BDT/InvMET_"+BDTLabel, MVAvalueIncl, w, 400, -1., 1.);
   }
 
   if(ApplyForSR && param.syst_ ==AnalyzerParameter::Central && !HasFlag("RunSyst") && Binning == "Strict_15_Bin")   FillHist("LimitExtraction/"+param.Name+"/"+RegionTag+"BDT/"+BDTLabel_simple, MVAvalueIncl, w, 400, -1., 1.);
