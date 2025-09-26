@@ -68,12 +68,9 @@ TString HNL_LeptonCore::GetPDFUncertainty(int weightIndex, double& ev_weight) {
     return "";
   }
 
-  float NormNom = h_SumW_Scale->GetBinContent(1);
-
   // Check if weightIndex is within the bounds of weight_PDF
   if (static_cast<size_t>(weightIndex) < weight_PDF->size()) {
-    float Norm = h_SumW_PDF->GetBinContent(weightIndex + 1);
-    ev_weight = weight_PDF->at(weightIndex) * (NormNom / Norm);
+    ev_weight = weight_PDF->at(weightIndex);
 
     return "_Syst_PDF" + TString::Itoa(weightIndex, 10);
   }
