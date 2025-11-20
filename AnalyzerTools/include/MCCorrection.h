@@ -39,7 +39,9 @@ public:
   TDirectory *histDir;
   static vector<TString> Split(TString s,TString del);
   void ReadHistograms();
-
+  void ReadMuonRecoSFs_LowPt(const std::string& json_file);
+  void ReadMuonRecoSFs_HighPt(const std::string& json_file);
+  
   TString MCSample;
   void SetMCSample(TString s);
 
@@ -63,6 +65,21 @@ public:
   void SetIsFastSim(bool b);
 
   bool IgnoreNoHist;
+
+
+  struct MuonSFEntry {
+    double eta_min;
+    double eta_max;
+    double p_min;
+    double p_max;
+    
+    double nominal;
+    double stat;
+    double syst;
+  };
+  
+  std::vector<MuonSFEntry> MuonSFTable;
+  const MuonSFEntry* GetMuonRecoSF(double abseta, double p);
 
 
   double JetPileUpSF(Jet j, TString WP, int sys=0);

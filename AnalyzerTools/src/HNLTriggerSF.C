@@ -56,6 +56,8 @@ float MCCorrection::TriggerEfficiency(vector<Electron>& EleColl, vector<Muon>& M
   float MinPt5=-1, MaxPt5=-1, MinPt6=-1, MaxPt6=-1, MinPt7=-1, MaxPt7=-1, MinPt8=-1, MaxPt8=-1;
   TH2F* HistEff1=NULL; TH2F* HistEff2=NULL; TH2F* HistEff3=NULL; TH2F* HistEff4=NULL;
   TH2F* HistEff5=NULL; TH2F* HistEff6=NULL; TH2F* HistEff7=NULL; TH2F* HistEff8=NULL;
+
+  TH2F* StatHistEff1=NULL; TH2F* StatHistEff2=NULL; TH2F* StatHistEff3=NULL; TH2F* StatHistEff4=NULL;
   if(DataYear==2016 && SFKey.Contains("IsoORTkIsoMu24_POGTight")){
     SiglMuTrig=true, MinPt1=26., MaxPt1=500., MaxfEta1=2.4; 
     HistEff1 = map_hist_Muon["Trigger_Eff_"+StrMCorData+"_IsoMu24_POGTight"];
@@ -101,12 +103,20 @@ float MCCorrection::TriggerEfficiency(vector<Electron>& EleColl, vector<Muon>& M
     TString Key1(SFKey), Key2(SFKey); Key1.ReplaceAll("DiMuIso","DiMuIsoMu17"); Key2.ReplaceAll("DiMuIso","DiMuIsoMu8");
     HistEff1 = map_hist_Muon["Trigger_Eff_"+StrMCorData+"_"+Key1];
     HistEff2 = map_hist_Muon["Trigger_Eff_"+StrMCorData+"_"+Key2];
+
+    //StatHistEff1 = map_hist_Muon["Trigger_Stat_"+StrMCorData+"_"+Key1];
+    //StatHistEff2 = map_hist_Muon["Trigger_Stat_"+StrMCorData+"_"+Key2];
+
   }
   else if(SFKey.Contains("DiElIso")){
     DiElTrig=true; MinPt1=25., MinPt2=15., MaxPt1=999., MaxPt2=999., MaxfEta1=2.5;
     TString Key1(SFKey), Key2(SFKey); Key1.ReplaceAll("DiElIso","DiElIsoEl23"); Key2.ReplaceAll("DiElIso","DiElIsoEl12");
     HistEff1 = map_hist_Electron["Trigger_Eff_"+StrMCorData+"_"+Key1];
     HistEff2 = map_hist_Electron["Trigger_Eff_"+StrMCorData+"_"+Key2];
+
+    //StatHistEff1 = map_hist_Electron["Trigger_Stat_"+StrMCorData+"_"+Key1];
+    //StatHistEff2 = map_hist_Electron["Trigger_Stat_"+StrMCorData+"_"+Key2];
+
   }
   else if(SFKey=="EMuIso_HNL_ULID" or SFKey=="EMuIso_HNL_ULID"){
     EMuTrig=true;
@@ -129,6 +139,12 @@ float MCCorrection::TriggerEfficiency(vector<Electron>& EleColl, vector<Muon>& M
     HistEff2 = map_hist_Electron["Trigger_Eff_"+StrMCorData+"_EMuIsoEl"+TrEl2Pt+"_HNL_ULIDv2"];
     HistEff3 = map_hist_Muon["Trigger_Eff_"+StrMCorData+"_EMuIsoMu23_HNL_ULIDv2"];
     HistEff4 = map_hist_Muon["Trigger_Eff_"+StrMCorData+"_EMuIsoMu8_HNL_ULIDv2"];
+
+    //StatHistEff1 = map_hist_Electron["Trigger_Stat_"+StrMCorData+"_EMuIsoEl23_HNL_ULIDv2"];
+    //StatHistEff2 = map_hist_Electron["Trigger_Stat_"+StrMCorData+"_EMuIsoEl"+TrEl2Pt+"_HNL_ULIDv2"];
+    //StatHistEff3 = map_hist_Muon["Trigger_Stat_"+StrMCorData+"_EMuIsoMu23_HNL_ULIDv2"];
+    //StatHistEff4 = map_hist_Muon["Trigger_Stat_"+StrMCorData+"_EMuIsoMu8_HNL_ULIDv2"];
+
   }
 
   else if(SFKey.Contains("TrigSoup2L")){

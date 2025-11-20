@@ -12,10 +12,20 @@ ID      SF        passTopHNSST      	Files/IDEff_TopHNSST_2017.root  		  	EGamma
 ID      SF        passHNTightV2      	Files/IDEff_HNTightV2_v1_2017.root			sf          			 TH2F
 ID      SF        passHNL_ULID_2017     Files/IDEff_HNL_v1_2017.root				sf          			 TH2F
 ID      SF        passHNL_ULIDv2_2017   Files/efficiency_V3_ID_2017.root                        sf                          TH2F
+ID      SF_stat      passHNL_ULIDv2_2017     Files/efficiency_V3_ID_2017.root                   sf_s0m0                     TH2F
 ### RECO SF
 Reco_AFB SF       ptgt20                Files/2017_RECO_v17.root				sf                               TH2F
 RECO    SF        ptgt20                Files/egammaEffi_ptAbove20.txt_EGM2D_UL2017.root      	EGamma_SF2D                      TH2F
 RECO    SF        ptlt20                Files/egammaEffi_ptBelow20.txt_EGM2D_UL2017.root      	EGamma_SF2D                      TH2F
+RECO    EFF_MC      ptgt20                  Files/egammaEffi_ptAbove20.txt_EGM2D_UL2017.root        EGamma_EffMC2D                 TH2F
+RECO    EFF_MC      ptlt20                  Files/egammaEffi_ptBelow20.txt_EGM2D_UL2017.root        EGamma_EffMC2D                 TH2F
+RECO    EFF_DATA      ptgt20                  Files/egammaEffi_ptAbove20.txt_EGM2D_UL2017.root        EGamma_EffData2D                 TH2F
+RECO    EFF_DATA      ptlt20                  Files/egammaEffi_ptBelow20.txt_EGM2D_UL2017.root        EGamma_EffData2D                 TH2F
+RECO    STAT_MC      ptgt20                  Files/egammaEffi_ptAbove20.txt_EGM2D_UL2017.root        statMC                 TH2F
+RECO    STAT_MC      ptlt20                  Files/egammaEffi_ptBelow20.txt_EGM2D_UL2017.root        statMC                 TH2F
+RECO    STAT_DATA      ptgt20                  Files/egammaEffi_ptAbove20.txt_EGM2D_UL2017.root      statData               TH2F
+RECO    STAT_DATA      ptlt20                  Files/egammaEffi_ptBelow20.txt_EGM2D_UL2017.root      statData               TH2F
+
 ### TRIGGER 
 Trigger Eff_DATA  DiElIsoEl23_HNL_ULIDv2  Files/efficiency_V3_Ele23Leg1_2017.root		data				TH2F
 Trigger Eff_MC    DiElIsoEl23_HNL_ULIDv2  Files/efficiency_V3_Ele23Leg1_2017.root              	sim    				TH2F

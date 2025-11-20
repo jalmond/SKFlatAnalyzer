@@ -1,5 +1,9 @@
 #include "MCCorrection.h"
 
+#include <fstream>
+#include <nlohmann/json.hpp>
+
+
 MCCorrection::MCCorrection() : 
 IgnoreNoHist(false)
 {
@@ -20,6 +24,196 @@ vector<TString> MCCorrection::Split(TString s,TString del){
   for(const auto& obj:*array) out.push_back(((TObjString*)obj)->String());
   array->Delete();
   return out;
+
+}
+
+using json = nlohmann::json;
+
+
+
+void MCCorrection::ReadMuonRecoSFs_LowPt(const std::string& json_file)
+{
+  MuonSFTable.clear();
+
+  std::ifstream fin(json_file);
+  if (!fin.is_open()) {
+    std::cerr << "ERROR: Could not open low-pt muon SF JSON: "
+              << json_file << std::endl;
+    return;
+  }
+
+  json j;
+  fin >> j;
+
+  // Expected structure:
+  // j["NUM_TrackerMuons_DEN_genTracks"]["abseta_pt"]
+  if (!j.contains("NUM_TrackerMuons_DEN_genTracks")) {
+    std::cerr << "ERROR: Low-pt muon SF JSON missing NUM_TrackerMuons_DEN_genTracks: "
+              << json_file << std::endl;
+    return;
+  }
+
+  const json& node =
+    j["NUM_TrackerMuons_DEN_genTracks"]["abseta_pt"];
+
+  if (!node.contains("binning")) {
+    std::cerr << "ERROR: Low-pt muon SF JSON missing binning array: "
+              << json_file << std::endl;
+    return;
+  }
+
+  const json& binning = node["binning"];
+  const json& eta_bins = binning[0]["binning"];
+  const json& pt_bins  = binning[1]["binning"];
+
+  // Loop over eta bins
+  for (size_t i = 0; i + 1 < eta_bins.size(); ++i) {
+
+    double eta_min = eta_bins[i];
+    double eta_max = eta_bins[i+1];
+
+    std::ostringstream eta_key;
+    eta_key << "abseta:[" << eta_min << "," << eta_max << "]";
+
+    if (!node.contains(eta_key.str())) continue;
+
+    const json& eta_node = node[eta_key.str()];
+
+    // Loop over pT bins
+    for (size_t jbin = 0; jbin + 1 < pt_bins.size(); ++jbin) {
+
+      double pt_min = pt_bins[jbin];
+      double pt_max = pt_bins[jbin+1];
+
+      std::ostringstream pt_key;
+      pt_key << "pt:[" << pt_min << "," << pt_max << "]";
+
+      if (!eta_node.contains(pt_key.str())) continue;
+
+      const json& leaf = eta_node[pt_key.str()];
+
+      MuonSFEntry e;
+      e.eta_min = eta_min;
+      e.eta_max = eta_max;
+      e.p_min   = pt_min;
+      e.p_max   = pt_max;
+
+      e.nominal = leaf.value("value", 1.0);
+      e.stat    = leaf.value("stat", 0.0);
+      e.syst    = leaf.value("syst", 0.0);
+
+      MuonSFTable.push_back(e);
+    }
+  }
+
+  std::cout << "Loaded " << MuonSFTable.size()
+            << " muon low-pt RECO SF entries from "
+            << json_file << std::endl;
+}
+
+
+void MCCorrection::ReadMuonRecoSFs_HighPt(const std::string& json_file)
+{
+  MuonSFTable.clear();
+
+  std::ifstream fin(json_file);
+  if (!fin.is_open()) {
+    std::cerr << "ERROR: Could not open SF JSON file: "
+              << json_file << std::endl;
+    return;
+  }
+
+  json j;
+  fin >> j;
+
+  // CorrectionLib schema
+  const json& corr = j["corrections"][0];
+
+  const json& data = corr["data"];
+  const std::string nodetype = data["nodetype"];
+
+  if (nodetype != "binning") {
+    std::cerr << "ERROR: Expected a binning node, got: "
+              << nodetype << std::endl;
+    return;
+  }
+
+  const json& eta_bins = data["edges"];
+  const json& eta_content = data["content"];
+
+  // Loop over abseta bins
+  for (size_t i = 0; i < eta_content.size(); ++i) {
+
+    double eta_min = eta_bins[i];
+    double eta_max = eta_bins[i+1];
+
+    const json& pnode = eta_content[i]; // next binning level
+    const json& p_bins = pnode["edges"];
+    const json& p_content = pnode["content"];
+
+    // Loop over momentum bins
+    for (size_t jbin = 0; jbin < p_content.size(); ++jbin) {
+
+      double p_min = p_bins[jbin];
+      double p_max = p_bins[jbin+1];
+
+      const json& catnode = p_content[jbin]; // category: scale_factors
+      const json& categories = catnode["content"];
+
+      // Find the scale_factors category
+      const json* scale_cat = nullptr;
+
+      for (const auto& c : categories) {
+        if (c["nodetype"] == "category" &&
+            c["input"] == "scale_factors") {
+          scale_cat = &c;
+          break;
+        }
+      }
+      if (!scale_cat) continue;
+
+      // Extract numerical entries
+      double nominal = 1.0;
+      double stat = 0.0;
+      double syst = 0.0;
+
+      for (const auto& kv : (*scale_cat)["content"]) {
+        std::string key = kv["key"].get<std::string>();
+        double val = kv["value"].get<double>();
+        if (key == "nominal") nominal = val;
+        else if (key == "stat") stat = val;
+        else if (key == "syst") syst = val;
+      }
+
+      // Store
+      MuonSFEntry entry;
+      entry.eta_min = eta_min;
+      entry.eta_max = eta_max;
+      entry.p_min   = p_min;
+      entry.p_max   = p_max;
+
+      entry.nominal = nominal;
+      entry.stat    = stat;
+      entry.syst    = syst;
+
+      MuonSFTable.push_back(entry);
+    }
+  }
+
+  std::cout << "Loaded " << MuonSFTable.size()
+            << " muon RECO SF entries from "
+            << json_file << std::endl;
+}
+
+const MCCorrection::MuonSFEntry* MCCorrection::GetMuonRecoSF(double abseta, double p)
+{
+  for (const auto& e : MuonSFTable) {
+    if (abseta >= e.eta_min && abseta < e.eta_max &&
+        p      >= e.p_min   && p      < e.p_max) {
+      return &e;
+    }
+  }
+  return nullptr;
 }
 
 void MCCorrection::ReadHistograms(){
@@ -3455,6 +3649,17 @@ double MCCorrection::MuonReco_SF(TString key, double eta, double p, int sys){
     if(p>=3500.) p = 3499.;
     if(eta>=2.4) eta = 2.39;
 
+    
+    const MCCorrection::MuonSFEntry* e = GetMuonRecoSF(eta, p);
+    if (!e) return 1.0;
+    
+    if (sys == 0) return e->nominal;
+    if (sys == +1) return e->nominal + e->syst;
+    if (sys == -1) return e->nominal - e->syst;
+    if (sys == +2) return e->nominal + e->stat;
+    if (sys == -2) return e->nominal - e->stat;
+    
+    
     //https://twiki.cern.ch/twiki/bin/view/CMS/MuonUL2016#RECO_efficiencies
 
     if(DataEra  == "2016preVFP"){
@@ -5072,8 +5277,6 @@ double MCCorrection::MuonID_SF(TString ID, double eta, double pt, int sys){
   //cout << "[MCCorrection::MuonID_SF] ID = " << ID << endl;
   //cout << "[MCCorrection::MuonID_SF] eta = " << eta << ", pt = " << pt << endl;
 
-  double value = 1. ,error = 0.;
-  
   //// Set Eta as |eta|
   eta = fabs(eta);
 
@@ -5094,31 +5297,96 @@ double MCCorrection::MuonID_SF(TString ID, double eta, double pt, int sys){
     ptmin=10.1, ptmax=199., etamin=0.01, etamax=2.39; 
   }
 
-  pt = min(max(pt,ptmin),ptmax); 
-  eta = min(max(eta,etamin),etamax);
   
-  TH2F *this_hist = map_hist_Muon["ID_SF_"+ID];
-  if(!this_hist){
-    if(IgnoreNoHist) {
-
-      TString MapK = "ID_SF_"+ID;
-      if (std::find(MissingHists.begin(), MissingHists.end(), MapK ) == MissingHists.end())   MissingHists.push_back(MapK);
-      return 1.;
-
-    }
-    else{
-      cerr << "[MCCorrection::MuonID_SF] No "<<"ID_SF_"+ID<<endl;
-      exit(ENODATA);
+  pt  = std::min(std::max(pt,  ptmin),  ptmax);
+  eta = std::min(std::max(eta, etamin), etamax);
+  
+  // Central SF histogram
+  TH2F *this_hist = map_hist_Muon["ID_SF_" + ID];
+  
+  if (!this_hist) {
+    if (IgnoreNoHist) {
+      TString MapK = "ID_SF_" + ID;
+      if (std::find(MissingHists.begin(), MissingHists.end(), MapK) == MissingHists.end())
+	MissingHists.push_back(MapK);
+      return 1.0;
+    } else {
+      std::cerr << "[MCCorrection::MuonID_SF] No ID_SF_" << ID << std::endl;
+      std::exit(ENODATA);
     }
   }
+  
+  
+  // Find bin (assumed same binning)
+  int this_bin = this_hist->FindBin(eta, pt);
+  
+  double value     = this_hist->GetBinContent(this_bin);
+  double error_tot = this_hist->GetBinError(this_bin); // total (stat + syst)
+  
+  // sys == 0: return central value
+  if (sys == 0) return value;
+  
+  // Stat-only SF histogram (sf+s0m0)                                                                                                                                                                                                                                                                                       
+  TH2F *this_hist_stat = map_hist_Muon["ID_SF_stat_" + ID];
 
-  int this_bin = this_hist->FindBin(eta,pt);
-  value = this_hist->GetBinContent(this_bin);
-  error = this_hist->GetBinError(this_bin);
-
-  //cout << "[MCCorrection::MuonID_SF] value = " << value << endl;
-
-  return value+double(sys)*error;
+  
+  // If stat histogram missing
+  if (!this_hist_stat) {
+    if (IgnoreNoHist) {
+      TString MapK_stat = "ID_SF_stat_" + ID;
+      if (std::find(MissingHists.begin(), MissingHists.end(), MapK_stat) == MissingHists.end())
+	MissingHists.push_back(MapK_stat);
+      
+      // If stat map missing: cannot split stat/syst
+      int sign = (sys > 0 ? 1 : -1);
+      
+      if (abs(sys) == 2) {
+	// stat requested but unknown -> no shift
+	return value;
+      }
+      if (abs(sys) == 1) {
+	// syst requested -> use total error
+	return value + sign * error_tot;
+      }
+      
+      return value;
+    } else {
+      std::cerr << "[MCCorrection::MuonID_SF] No ID_SF_stat_" << ID << std::endl;
+      std::exit(ENODATA);
+    }
+  }
+  
+  // We have a stat-only histogram
+  int this_bin_stat = this_hist_stat->FindBin(eta, pt);
+  
+  // According to you: stat-only error is in GetBinError of this_hist_stat
+  double error_stat = this_hist_stat->GetBinError(this_bin_stat);
+  
+  // Compute syst error: error_tot^2 = error_stat^2 + error_syst^2
+  double error_syst = 0.0;
+  
+  double diff2 = error_tot*error_tot - error_stat*error_stat;
+  if (diff2 > 0.0)
+    error_syst = std::sqrt(diff2);
+  else
+    error_syst = 0.0;
+  
+  // sys codes:
+  //   abs(sys) == 2 -> stat up/down
+  //   abs(sys) == 1 -> syst up/down
+  int sign = (sys > 0 ? 1 : -1);
+  
+  if (abs(sys) == 2) {
+    return value + sign * error_stat;
+  }
+  if (abs(sys) == 1) {
+    return value + sign * error_syst;
+  }
+  
+  // Fallback
+  return value;
+    
+  
 
 }
 
@@ -5422,31 +5690,91 @@ double MCCorrection::ElectronID_SF(TString ID, double sceta, double pt, int sys)
   }
   else{
 
-    if(ID.Contains("HN") && pt < 15.)  pt = 15.1;
-
-    TH2F *this_hist = map_hist_Electron["ID_SF_"+ID];
-    if(!this_hist){
-      if(IgnoreNoHist) {
-	TString MapK = "ID_SF_"+ID;
-	if (std::find(MissingHists.begin(), MissingHists.end(), MapK ) == MissingHists.end())   MissingHists.push_back(MapK);
-	return 1.;	
-      }
-      else{
-        cerr << "[MCCorrection::ElectronID_SF] (Hist) No "<<"ID_SF_"+ID<<endl;
-        exit(ENODATA);
+    if (ID.Contains("HN") && pt < 15.) pt = 15.1;
+    
+    TH2F *this_hist = map_hist_Electron["ID_SF_" + ID];
+    if (!this_hist) {
+      if (IgnoreNoHist) {
+	TString MapK = "ID_SF_" + ID;
+	if (std::find(MissingHists.begin(), MissingHists.end(), MapK) == MissingHists.end())
+	  MissingHists.push_back(MapK);
+	return 1.;
+      } else {
+	cerr << "[MCCorrection::ElectronID_SF] (Hist) No ID_SF_" << ID << endl;
+	exit(ENODATA);
       }
     }
-
+    
     // TMP ID variables
     sceta = fabs(sceta);
-
-    int this_bin = this_hist->FindBin(sceta,pt);
-
+    
+    // Find bin in central SF hist
+    int this_bin = this_hist->FindBin(sceta, pt);
+    
     value = this_hist->GetBinContent(this_bin);
-    error = this_hist->GetBinError(this_bin);
-
-    return value+double(sys)*error;
-
+    double error_tot = this_hist->GetBinError(this_bin); // total (stat + syst)
+    error = error_tot; // keep old behavior if error is used elsewhere
+    
+    // No variation requested: return central SF
+    if (sys == 0) return value;
+    
+    // Try to get stat-only SF hist (sf+s0m0)
+    TH2F *this_hist_stat = map_hist_Electron["ID_SF_Stat_" + ID];
+    
+    if (!this_hist_stat) {
+      if (IgnoreNoHist) {
+	TString MapKStat = "ID_SF_Stat_" + ID;
+	if (std::find(MissingHists.begin(), MissingHists.end(), MapKStat) == MissingHists.end())
+	  MissingHists.push_back(MapKStat);
+	
+	int sign = (sys > 0 ? 1 : -1);
+	
+	// If stat map is missing:
+	//  - for |sys| == 2 (stat) we cannot do anything -> no shift
+	//  - for |sys| == 1 (syst) use total error as syst
+	if (abs(sys) == 2) {
+	  return value;
+	}
+	if (abs(sys) == 1) {
+	  return value + sign * error_tot;
+	}
+	
+	return value;
+      } else {
+	cerr << "[MCCorrection::ElectronID_SF] (Hist) No ID_SF_Stat_" << ID << endl;
+	exit(ENODATA);
+      }
+    }
+    
+    // We have the stat-only histogram
+    int this_bin_stat = this_hist_stat->FindBin(sceta, pt);
+    
+    // According to your setup: stat-only error is in GetBinError of ID_SF_Stat
+    double error_stat = this_hist_stat->GetBinError(this_bin_stat);
+    
+    // Compute syst-only error from total and stat: error_tot^2 = error_stat^2 + error_syst^2
+    double error_syst = 0.0;
+    double diff2 = error_tot * error_tot - error_stat * error_stat;
+    if (diff2 > 0.0)
+      error_syst = sqrt(diff2);
+    else
+      error_syst = 0.0;
+    
+    int sign = (sys > 0 ? 1 : -1);
+    
+    // |sys| == 2 -> stat variation
+    if (abs(sys) == 2) {
+      return value + sign * error_stat;
+    }
+    
+    // |sys| == 1 -> syst variation
+    if (abs(sys) == 1) {
+      return value + sign * error_syst;
+    }
+    
+    // Fallback for unexpected sys codes
+    return value;
+    
   }
 
 }
@@ -5457,7 +5785,7 @@ double MCCorrection::ElectronReco_SF(TString key, double sceta, double pt, int s
   double error = 0.;
   
   if(key == "Default") return 1.;
-
+  
   if(key == "RECO_SF") {
     TString ptrange = "ptgt20";
     if(pt<20.) ptrange = "ptlt20";
@@ -5467,24 +5795,117 @@ double MCCorrection::ElectronReco_SF(TString key, double sceta, double pt, int s
     if(sceta>=2.5) sceta = 2.49;
     if(sceta<-2.5) sceta = -2.5;
     
-    TH2F *this_hist = map_hist_Electron["RECO_SF_"+ptrange];
-    if(!this_hist){
-      if(IgnoreNoHist) {
-	TString MapK = "RECO_SF_"+ptrange;
-        if (std::find(MissingHists.begin(), MissingHists.end(), MapK ) == MissingHists.end())   MissingHists.push_back(MapK);
-        return 1.;
-      }
-      else{
-	cerr << "[MCCorrection::ElectronReco_SF] No "<<"RECO_SF_"+ptrange<<endl;
-	exit(ENODATA);
+    
+    // Adjust ptrange, sfKey, eff keys and stat keys to your actual names
+    TString sfKey       = "RECO_SF_"       + ptrange;      // EGamma_SF_2D
+    TString effMcKey    = "RECO_EFF_MC_"   + ptrange;
+    TString effDataKey  = "RECO_EFF_DATA_" + ptrange;
+    TString statMcKey   = "RECO_STAT_MC_"  + ptrange;      // bin content = abs stat error in MC eff
+    TString statDataKey = "RECO_STAT_DATA_"+ ptrange;      // bin content = abs stat error in Data eff
+    
+    // Central SF histogram (EGamma_SF_2D)
+    TH2F *hSF = map_hist_Electron[sfKey];
+    if (!hSF) {
+      if (IgnoreNoHist) {
+	if (std::find(MissingHists.begin(), MissingHists.end(), sfKey) == MissingHists.end()) {
+	  MissingHists.push_back(sfKey);
+	}
+	return 1.0; // default SF if no map
+      } else {
+	std::cerr << "[MCCorrection::ElectronReco_SF] No " << sfKey << std::endl;
+      std::exit(ENODATA);
       }
     }
-    int this_bin = this_hist->FindBin(sceta,pt);
-    value = this_hist->GetBinContent(this_bin);
-    error = this_hist->GetBinError(this_bin);
-
-    return value+double(sys)*error;
+    
+    // Find bin (assumes same binning for all involved histograms)
+    int bin = hSF->FindBin(sceta, pt);
+    
+    double sfValue    = hSF->GetBinContent(bin);
+    double sfTotError = hSF->GetBinError(bin); // total (stat + syst)
+    
+    // If no variation requested, just return central SF
+    if (sys == 0) {
+      return sfValue;
+    }
+    
+    // MC, Data eff and their stat hists
+    TH2F *hEffMc    = map_hist_Electron[effMcKey];
+    TH2F *hEffData  = map_hist_Electron[effDataKey];
+    TH2F *hStatMc   = map_hist_Electron[statMcKey];
+    TH2F *hStatData = map_hist_Electron[statDataKey];
+    
+    // Basic safety checks on eff and stat hists
+    auto checkAndMaybeRecordMissing = [&](TH2F *h, const TString &key) {
+      if (h) return true;
+      if (IgnoreNoHist) {
+	if (std::find(MissingHists.begin(), MissingHists.end(), key) == MissingHists.end()) {
+	  MissingHists.push_back(key);
+	}
+	return false;
+      } else {
+	std::cerr << "[MCCorrection::ElectronReco_SF] No " << key << std::endl;
+	std::exit(ENODATA);
+      }
+    };
+    
+    bool haveEffMc    = checkAndMaybeRecordMissing(hEffMc,    effMcKey);
+    bool haveEffData  = checkAndMaybeRecordMissing(hEffData,  effDataKey);
+    bool haveStatMc   = checkAndMaybeRecordMissing(hStatMc,   statMcKey);
+    bool haveStatData = checkAndMaybeRecordMissing(hStatData, statDataKey);
+    
+    double sfStatError  = 0.0;
+    double sfSystError  = 0.0;
+    
+    if (haveEffMc && haveEffData && haveStatMc && haveStatData) {
+      double eff_mc          = hEffMc->GetBinContent(bin);
+      double eff_data        = hEffData->GetBinContent(bin);
+      double stat_error_mc   = hStatMc->GetBinContent(bin);   // abs stat error in MC eff
+      double stat_error_data = hStatData->GetBinContent(bin); // abs stat error in Data eff
+      
+      // Protect against zero or negative efficiencies
+      if (eff_mc > 0.0 && eff_data > 0.0) {
+	double rel_mc   = stat_error_mc   / eff_mc;
+	double rel_data = stat_error_data / eff_data;
+	
+	// SF stat error from MC and data stat errors
+	sfStatError = sfValue * std::sqrt(rel_mc * rel_mc + rel_data * rel_data);
+	
+	// Now get syst from total and stat: tot^2 = stat^2 + syst^2
+	double diff2 = sfTotError * sfTotError - sfStatError * sfStatError;
+	if (diff2 > 0.0) {
+	  sfSystError = std::sqrt(diff2);
+	} else {
+	  // Numerical issues or total < stat: fall back to 0 syst
+	  sfSystError = 0.0;
+	}
+      } else {
+	// Eff is zero or negative: cannot define relative stat. Just treat total as syst.
+	sfStatError = 0.0;
+	sfSystError = sfTotError;
+      }
+    } else {
+      // Missing some of the needed maps: fall back to using total error as "syst" only
+      sfStatError = 0.0;
+      sfSystError = sfTotError;
+    }
+    
+    // Apply requested variation:
+    // sys = +/-2 -> stat up/down
+    // sys = +/-1 -> syst up/down
+    if (sys == 2) {
+      return sfValue + sfStatError;
+    } else if (sys == -2) {
+      return sfValue - sfStatError;
+    } else if (sys == 1) {
+      return sfValue + sfSystError;
+    } else if (sys == -1) {
+      return sfValue - sfSystError;
+    }
+    
+    // Unknown sys code: just return central value
+    return sfValue;
   }
+    
 
   if(key == "RECO_SF_AFB") {
 
