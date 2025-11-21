@@ -104,8 +104,8 @@ float MCCorrection::TriggerEfficiency(vector<Electron>& EleColl, vector<Muon>& M
     HistEff1 = map_hist_Muon["Trigger_Eff_"+StrMCorData+"_"+Key1];
     HistEff2 = map_hist_Muon["Trigger_Eff_"+StrMCorData+"_"+Key2];
 
-    //StatHistEff1 = map_hist_Muon["Trigger_Stat_"+StrMCorData+"_"+Key1];
-    //StatHistEff2 = map_hist_Muon["Trigger_Stat_"+StrMCorData+"_"+Key2];
+    StatHistEff1 = map_hist_Muon["Trigger_Stat_"+StrMCorData+"_"+Key1];
+    StatHistEff2 = map_hist_Muon["Trigger_Stat_"+StrMCorData+"_"+Key2];
 
   }
   else if(SFKey.Contains("DiElIso")){
@@ -114,8 +114,8 @@ float MCCorrection::TriggerEfficiency(vector<Electron>& EleColl, vector<Muon>& M
     HistEff1 = map_hist_Electron["Trigger_Eff_"+StrMCorData+"_"+Key1];
     HistEff2 = map_hist_Electron["Trigger_Eff_"+StrMCorData+"_"+Key2];
 
-    //StatHistEff1 = map_hist_Electron["Trigger_Stat_"+StrMCorData+"_"+Key1];
-    //StatHistEff2 = map_hist_Electron["Trigger_Stat_"+StrMCorData+"_"+Key2];
+    StatHistEff1 = map_hist_Electron["Trigger_Stat_"+StrMCorData+"_"+Key1];
+    StatHistEff2 = map_hist_Electron["Trigger_Stat_"+StrMCorData+"_"+Key2];
 
   }
   else if(SFKey=="EMuIso_HNL_ULID" or SFKey=="EMuIso_HNL_ULID"){
@@ -128,6 +128,8 @@ float MCCorrection::TriggerEfficiency(vector<Electron>& EleColl, vector<Muon>& M
     HistEff2 = map_hist_Electron["Trigger_Eff_"+StrMCorData+"_EMuIsoEl"+TrEl2Pt+"_HNL_ULID"];
     HistEff3 = map_hist_Muon["Trigger_Eff_"+StrMCorData+"_EMuIsoMu23_HNL_ULID"];
     HistEff4 = map_hist_Muon["Trigger_Eff_"+StrMCorData+"_EMuIsoMu8_HNL_ULID"];
+
+
   }
   else if(SFKey=="EMuIso_HNL_ULIDv2" or SFKey=="EMuIso_HNL_ULIDv2"){
     EMuTrig=true;
@@ -140,10 +142,10 @@ float MCCorrection::TriggerEfficiency(vector<Electron>& EleColl, vector<Muon>& M
     HistEff3 = map_hist_Muon["Trigger_Eff_"+StrMCorData+"_EMuIsoMu23_HNL_ULIDv2"];
     HistEff4 = map_hist_Muon["Trigger_Eff_"+StrMCorData+"_EMuIsoMu8_HNL_ULIDv2"];
 
-    //StatHistEff1 = map_hist_Electron["Trigger_Stat_"+StrMCorData+"_EMuIsoEl23_HNL_ULIDv2"];
-    //StatHistEff2 = map_hist_Electron["Trigger_Stat_"+StrMCorData+"_EMuIsoEl"+TrEl2Pt+"_HNL_ULIDv2"];
-    //StatHistEff3 = map_hist_Muon["Trigger_Stat_"+StrMCorData+"_EMuIsoMu23_HNL_ULIDv2"];
-    //StatHistEff4 = map_hist_Muon["Trigger_Stat_"+StrMCorData+"_EMuIsoMu8_HNL_ULIDv2"];
+    StatHistEff1 = map_hist_Electron["Trigger_Stat_"+StrMCorData+"_EMuIsoEl23_HNL_ULIDv2"];
+    StatHistEff2 = map_hist_Electron["Trigger_Stat_"+StrMCorData+"_EMuIsoEl"+TrEl2Pt+"_HNL_ULIDv2"];
+    StatHistEff3 = map_hist_Muon["Trigger_Stat_"+StrMCorData+"_EMuIsoMu23_HNL_ULIDv2"];
+    StatHistEff4 = map_hist_Muon["Trigger_Stat_"+StrMCorData+"_EMuIsoMu8_HNL_ULIDv2"];
 
   }
 
@@ -248,8 +250,9 @@ float MCCorrection::TriggerEfficiency(vector<Electron>& EleColl, vector<Muon>& M
 	  
 	  float EffLeg1_Mu1 = HistEff1->GetBinContent(HistEff1->FindBin(feta1, pt1));
 	  float EffLeg2_Mu2 = HistEff2->GetBinContent(HistEff2->FindBin(feta2, pt2));
-	  float ErrLeg1_Mu1 = HistEff1->GetBinError(HistEff1->FindBin(feta1, pt1));
-	  float ErrLeg2_Mu2 = HistEff2->GetBinError(HistEff2->FindBin(feta2, pt2));
+	  /// Set unc to stat or syst
+	  float ErrLeg1_Mu1 = (abs(SystDir==1)) ? HistEff1->GetBinError(HistEff1->FindBin(feta1, pt1)) : StatHistEff1->GetBinError(StatHistEff1->FindBin(feta1, pt1)) ;
+	  float ErrLeg2_Mu2 = (abs(SystDir==1)) ? HistEff2->GetBinError(HistEff2->FindBin(feta2, pt2)) : StatHistEff2->GetBinError(StatHistEff2->FindBin(feta2, pt2));
 	  
 	  if(SystDir!=0){ EffLeg1_Mu1+=float(SystDir)*ErrLeg1_Mu1; EffLeg2_Mu2+=float(SystDir)*ErrLeg2_Mu2; }
 	  double triggereff = EffLeg1_Mu1*EffLeg2_Mu2;
@@ -286,8 +289,8 @@ float MCCorrection::TriggerEfficiency(vector<Electron>& EleColl, vector<Muon>& M
 
 	  float EffLeg1_El1 = HistEff1->GetBinContent(HistEff1->FindBin(feta1, pt1));
 	  float EffLeg2_El2 = HistEff2->GetBinContent(HistEff2->FindBin(feta2, pt2));
-	  float ErrLeg1_El1 = HistEff1->GetBinError(HistEff1->FindBin(feta1, pt1));
-	  float ErrLeg2_El2 = HistEff2->GetBinError(HistEff2->FindBin(feta2, pt2));
+	  float ErrLeg1_El1 = (abs(SystDir==1)) ? HistEff1->GetBinError(HistEff1->FindBin(feta1, pt1)) : StatHistEff1->GetBinError(StatHistEff1->FindBin(feta1, pt1));
+	  float ErrLeg2_El2 = (abs(SystDir==1)) ? HistEff2->GetBinError(HistEff2->FindBin(feta2, pt2)) : StatHistEff2->GetBinError(StatHistEff2->FindBin(feta2, pt2));;
 	  if(SystDir!=0){ EffLeg1_El1+=float(SystDir)*ErrLeg1_El1; EffLeg2_El2+=float(SystDir)*ErrLeg2_El2; }
 
           double triggereff = EffLeg1_El1*EffLeg2_El2;
@@ -311,12 +314,6 @@ float MCCorrection::TriggerEfficiency(vector<Electron>& EleColl, vector<Muon>& M
 
       double faileff=1;
       
-      /*
-	HistEff1 = map_hist_Electron["Trigger_Eff_"+StrMCorData+"_EMuIsoEl23_HNL_ULIDv2"];
-	HistEff2 = map_hist_Electron["Trigger_Eff_"+StrMCorData+"_EMuIsoEl"+TrEl2Pt+"_HNL_ULIDv2"];
-	HistEff3 = map_hist_Muon["Trigger_Eff_"+StrMCorData+"_EMuIsoMu23_HNL_ULIDv2"];
-	HistEff4 = map_hist_Muon["Trigger_Eff_"+StrMCorData+"_EMuIsoMu8_HNL_ULIDv2"];
-       */
       for(int itrigs = 0 ; itrigs < 2; itrigs++){
 	//itrigs = 0 :MuE  
 	//itrigs = 1 :EMu
@@ -345,17 +342,17 @@ float MCCorrection::TriggerEfficiency(vector<Electron>& EleColl, vector<Muon>& M
 	}
 	if(itrigs==0){
 	  Eff_Mu = HistEff3->GetBinContent(HistEff3->FindBin(pt_m, feta_m));
-	  Err_Mu = HistEff3->GetBinError(HistEff3->FindBin(pt_m, feta_m));
+	  Err_Mu = (abs(SystDir==1)) ? HistEff3->GetBinError(HistEff3->FindBin(pt_m, feta_m)) : StatHistEff3->GetBinError(StatHistEff3->FindBin(pt_m, feta_m));
 	  
 	  Eff_El = HistEff2->GetBinContent(HistEff2->FindBin(pt_e, feta_e));
-	  Err_El = HistEff2->GetBinError(HistEff2->FindBin(pt_e, feta_e));
+	  Err_El = (abs(SystDir==1)) ? HistEff2->GetBinError(HistEff2->FindBin(pt_e, feta_e)) : StatHistEff2->GetBinError(StatHistEff2->FindBin(pt_e, feta_e));
 	}
 	else{
 	  Eff_Mu = HistEff4->GetBinContent(HistEff4->FindBin(pt_m, feta_m));
-	  Err_Mu = HistEff4->GetBinError(HistEff4->FindBin(pt_m, feta_m));
+	  Err_Mu = (abs(SystDir==1)) ?HistEff4->GetBinError(HistEff4->FindBin(pt_m, feta_m)) : StatHistEff4->GetBinError(StatHistEff4->FindBin(pt_m, feta_m));
 	  
 	  Eff_El = HistEff1->GetBinContent(HistEff1->FindBin(pt_e, feta_e));
-	  Err_El = HistEff1->GetBinError(HistEff1->FindBin(pt_e, feta_e));
+	  Err_El = (abs(SystDir==1)) ?HistEff1->GetBinError(HistEff1->FindBin(pt_e, feta_e)) : StatHistEff1->GetBinError(StatHistEff1->FindBin(pt_e, feta_e));
 	}
 	if(SystDir!=0){ Eff_Mu+=float(SystDir)*Err_Mu; Eff_El+=float(SystDir)*Err_El; }
 	double triggereff = Eff_El*Eff_Mu;
@@ -372,26 +369,47 @@ float MCCorrection::TriggerEfficiency(vector<Electron>& EleColl, vector<Muon>& M
       feta_e = min(feta_e,MaxfEta1), feta_m1 = min(feta_m1,MaxfEta2), feta_m2 = min(feta_m2,MaxfEta2);
       float Eff_e = 0., Eff_m = 0., Eff_DZ = 0., Eff_MuLeg_Mu1 = 0., Eff_MuLeg_Mu2 = 0.;
 
+      float Err_MuLeg_Mu1=0.0;
+      float Err_MuLeg_Mu2=0.0;
+      float Err_e=0.0;
+      
       Eff_DZ = DZEfficiency(SFKey, ReturnDataEff, "");
       if(pt_e>MinPt1){
         pt_m1 = min(pt_m1,MaxPt4), pt_m2 = min(pt_m2,MaxPt4);
         Eff_MuLeg_Mu1 = HistEff4->GetBinContent(HistEff4->FindBin(pt_m1, feta_m1));
         Eff_MuLeg_Mu2 = HistEff4->GetBinContent(HistEff4->FindBin(pt_m2, feta_m2));
+	Err_MuLeg_Mu1 = (abs(SystDir==1)) ? HistEff4->GetBinError(HistEff4->FindBin(pt_m1, feta_m1)) : StatHistEff4->GetBinError(StatHistEff4->FindBin(pt_m1, feta_m1)) ;
+	Err_MuLeg_Mu2 = (abs(SystDir==1)) ? HistEff4->GetBinError(HistEff4->FindBin(pt_m2, feta_m2)) : StatHistEff4->GetBinError(StatHistEff4->FindBin(pt_m2, feta_m2)) ;
+	if(SystDir!=0){
+	  Eff_MuLeg_Mu1 += Err_MuLeg_Mu1;
+	  Eff_MuLeg_Mu2 += Err_MuLeg_Mu2;
+	}
         Eff_m = Eff_MuLeg_Mu1 + (1.-Eff_MuLeg_Mu1)*Eff_MuLeg_Mu2;
       }
       else{
         pt_m1 = min(pt_m1,MaxPt3), pt_m2 = min(pt_m2,MaxPt3);
         Eff_MuLeg_Mu1 = HistEff3->GetBinContent(HistEff3->FindBin(pt_m1, feta_m1));
         Eff_MuLeg_Mu2 = HistEff3->GetBinContent(HistEff3->FindBin(pt_m2, feta_m2));
+	Err_MuLeg_Mu1 = (abs(SystDir==1)) ? HistEff3->GetBinError(HistEff3->FindBin(pt_m1, feta_m1)) : StatHistEff3->GetBinError(StatHistEff3->FindBin(pt_m1, feta_m1)) ;
+        Err_MuLeg_Mu2 = (abs(SystDir==1)) ? HistEff3->GetBinError(HistEff3->FindBin(pt_m2, feta_m2)) : StatHistEff3->GetBinError(StatHistEff3->FindBin(pt_m2, feta_m2)) ;
+        if(SystDir!=0){
+          Eff_MuLeg_Mu1 += Err_MuLeg_Mu1;
+          Eff_MuLeg_Mu2 += Err_MuLeg_Mu2;
+	}
         Eff_m = Eff_MuLeg_Mu1 + (1.-Eff_MuLeg_Mu1)*Eff_MuLeg_Mu2;
       }
       if(pt_m1>MinPt3){
         pt_e  = min(pt_e,MaxPt2);
         Eff_e = HistEff2->GetBinContent(HistEff2->FindBin(pt_e, feta_e));
+	Err_e = (abs(SystDir==1)) ?  HistEff2->GetBinError(HistEff2->FindBin(pt_e, feta_e)) : StatHistEff2->GetBinError(StatHistEff2->FindBin(pt_e, feta_e)) ;
+	if(SystDir!=0){ Eff_e += Err_e ;}
       }
       else{
         pt_e  = min(pt_e,MaxPt1);
         Eff_e = HistEff1->GetBinContent(HistEff1->FindBin(pt_e, feta_e));
+	Err_e = (abs(SystDir==1)) ?  HistEff1->GetBinError(HistEff1->FindBin(pt_e, feta_e)) : StatHistEff1->GetBinError(StatHistEff1->FindBin(pt_e, feta_e)) ;
+	if(SystDir!=0){ Eff_e += Err_e ;}
+
       }
       TriggerEff = Eff_e*Eff_m*Eff_DZ;
     }
@@ -401,26 +419,53 @@ float MCCorrection::TriggerEfficiency(vector<Electron>& EleColl, vector<Muon>& M
       feta_m = min(feta_m,MaxfEta2), feta_e1 = min(feta_e1,MaxfEta1), feta_e2 = min(feta_e2,MaxfEta1);
       float Eff_e = 0., Eff_m = 0., Eff_DZ = 0., Eff_ElLeg_El1 = 0., Eff_ElLeg_El2 = 0.;
 
+      float Err_ElLeg_El1=0.0;
+      float Err_ElLeg_El2=0.0;
+      float Err_m=0.0;
+
       Eff_DZ = DZEfficiency(SFKey, ReturnDataEff, "");
       if(pt_m>MinPt3){
         pt_e1 = min(pt_e1,MaxPt2), pt_e2 = min(pt_e2,MaxPt2);
         Eff_ElLeg_El1 = HistEff2->GetBinContent(HistEff2->FindBin(pt_e1, feta_e1));
         Eff_ElLeg_El2 = HistEff2->GetBinContent(HistEff2->FindBin(pt_e2, feta_e2));
-        Eff_e = Eff_ElLeg_El1 + (1.-Eff_ElLeg_El1)*Eff_ElLeg_El2;
+
+        Err_ElLeg_El1 = (abs(SystDir==1)) ? HistEff2->GetBinError(HistEff2->FindBin(pt_e1, feta_e1)) : StatHistEff2->GetBinError(StatHistEff2->FindBin(pt_e1, feta_e1)) ;
+        Err_ElLeg_El2 = (abs(SystDir==1)) ? HistEff2->GetBinError(HistEff2->FindBin(pt_e2, feta_e2)) : StatHistEff2->GetBinError(StatHistEff2->FindBin(pt_e2, feta_e2)) ;
+        if(SystDir!=0){
+          Eff_ElLeg_El1 += Err_ElLeg_El1;
+          Eff_ElLeg_El2 += Err_ElLeg_El2;
+        }
+
+	Eff_e = Eff_ElLeg_El1 + (1.-Eff_ElLeg_El1)*Eff_ElLeg_El2;
       }
       else{
         pt_e1 = min(pt_e1,MaxPt1), pt_e2 = min(pt_e2,MaxPt1);
         Eff_ElLeg_El1 = HistEff1->GetBinContent(HistEff1->FindBin(pt_e1, feta_e1));
         Eff_ElLeg_El2 = HistEff1->GetBinContent(HistEff1->FindBin(pt_e2, feta_e2));
+	Err_ElLeg_El1 = (abs(SystDir==1)) ? HistEff1->GetBinError(HistEff1->FindBin(pt_e1, feta_e1)) : StatHistEff1->GetBinError(StatHistEff1->FindBin(pt_e1, feta_e1)) ;
+        Err_ElLeg_El2 = (abs(SystDir==1)) ? HistEff1->GetBinError(HistEff1->FindBin(pt_e2, feta_e2)) : StatHistEff1->GetBinError(StatHistEff1->FindBin(pt_e2, feta_e2)) ;
+        if(SystDir!=0){
+          Eff_ElLeg_El1 += Err_ElLeg_El1;
+          Eff_ElLeg_El2 += Err_ElLeg_El2;
+        }
+	
         Eff_e = Eff_ElLeg_El1 + (1.-Eff_ElLeg_El1)*Eff_ElLeg_El2;
+	
       }
       if(pt_e1>MinPt1){
         pt_m  = min(pt_m,MaxPt4);
         Eff_m = HistEff4->GetBinContent(HistEff4->FindBin(pt_m, feta_m));
+
+        Err_m = (abs(SystDir==1)) ?  HistEff4->GetBinError(HistEff4->FindBin(pt_m, feta_m)) : StatHistEff4->GetBinError(StatHistEff4->FindBin(pt_m, feta_m)) ;
+        if(SystDir!=0){ Eff_m += Err_m ;}
+
       }
       else{
         pt_m  = min(pt_m,MaxPt3);
         Eff_m = HistEff3->GetBinContent(HistEff3->FindBin(pt_m, feta_m));
+	Err_m = (abs(SystDir==1)) ?  HistEff3->GetBinError(HistEff3->FindBin(pt_m, feta_m)) : StatHistEff3->GetBinError(StatHistEff3->FindBin(pt_m, feta_m)) ;
+        if(SystDir!=0){ Eff_m += Err_m ;}
+
       }
       TriggerEff = Eff_e*Eff_m*Eff_DZ;
     }
@@ -430,24 +475,51 @@ float MCCorrection::TriggerEfficiency(vector<Electron>& EleColl, vector<Muon>& M
       feta_m1 = min(feta_m1,MaxfEta2), feta_m2 = min(feta_m2,MaxfEta2), feta_e1 = min(feta_e1,MaxfEta1), feta_e2 = min(feta_e2,MaxfEta1);
       float Eff_e = 0., Eff_m = 0., Eff_DZ = 0., Eff_ElLeg_El1 = 0., Eff_ElLeg_El2 = 0., Eff_MuLeg_Mu1 = 0., Eff_MuLeg_Mu2 = 0.;
 
+      float Err_ElLeg_El1=0.0;
+      float Err_ElLeg_El2=0.0;
+      float Err_MuLeg_Mu1=0.0;
+      float Err_MuLeg_Mu2=0.0;
+
+
       Eff_DZ = DZEfficiency(SFKey, ReturnDataEff, "");
       if(pt_m1<MinPt3&&pt_m2<MinPt3){
         pt_e1 = min(pt_e1,MaxPt1), pt_e2 = min(pt_e2,MaxPt1);
         Eff_ElLeg_El1 = HistEff1->GetBinContent(HistEff1->FindBin(pt_e1, feta_e1));
         Eff_ElLeg_El2 = HistEff1->GetBinContent(HistEff1->FindBin(pt_e2, feta_e2));
-        Eff_e = Eff_ElLeg_El1 + (1.-Eff_ElLeg_El1)*Eff_ElLeg_El2;
+	
+	Err_ElLeg_El1 = (abs(SystDir==1)) ? HistEff1->GetBinError(HistEff1->FindBin(pt_e1, feta_e1)) : StatHistEff1->GetBinError(StatHistEff1->FindBin(pt_e1, feta_e1)) ;
+	Err_ElLeg_El2 = (abs(SystDir==1)) ? HistEff1->GetBinError(HistEff1->FindBin(pt_e2, feta_e2)) : StatHistEff1->GetBinError(StatHistEff1->FindBin(pt_e2, feta_e2)) ;
+	if(SystDir!=0){
+	  Eff_ElLeg_El1 += Err_ElLeg_El1;
+          Eff_ElLeg_El2 += Err_ElLeg_El2;
+        }
+	Eff_e = Eff_ElLeg_El1 + (1.-Eff_ElLeg_El1)*Eff_ElLeg_El2;
       }
       else{
         pt_e1 = min(pt_e1,MaxPt2), pt_e2 = min(pt_e2,MaxPt2);
         Eff_ElLeg_El1 = HistEff2->GetBinContent(HistEff2->FindBin(pt_e1, feta_e1));
         Eff_ElLeg_El2 = HistEff2->GetBinContent(HistEff2->FindBin(pt_e2, feta_e2));
-        Eff_e = Eff_ElLeg_El1 + (1.-Eff_ElLeg_El1)*Eff_ElLeg_El2;
+
+	Err_ElLeg_El1 = (abs(SystDir==1)) ? HistEff2->GetBinError(HistEff2->FindBin(pt_e1, feta_e1)) : StatHistEff2->GetBinError(StatHistEff2->FindBin(pt_e1, feta_e1)) ;
+	Err_ElLeg_El2 = (abs(SystDir==1)) ? HistEff2->GetBinError(HistEff2->FindBin(pt_e2, feta_e2)) : StatHistEff2->GetBinError(StatHistEff2->FindBin(pt_e2, feta_e2)) ;
+	if(SystDir!=0){
+          Eff_ElLeg_El1 += Err_ElLeg_El1;
+          Eff_ElLeg_El2 += Err_ElLeg_El2;
+        }
+	Eff_e = Eff_ElLeg_El1 + (1.-Eff_ElLeg_El1)*Eff_ElLeg_El2;
       }
       if(pt_e1<MinPt1&&pt_e2<MinPt1){
         pt_m1 = min(pt_m1,MaxPt3), pt_m2 = min(pt_m2,MaxPt3);
         Eff_MuLeg_Mu1 = HistEff3->GetBinContent(HistEff3->FindBin(pt_m1, feta_m1));
         Eff_MuLeg_Mu2 = HistEff3->GetBinContent(HistEff3->FindBin(pt_m2, feta_m2));
-        Eff_m = Eff_MuLeg_Mu1 + (1.-Eff_MuLeg_Mu1)*Eff_MuLeg_Mu2;
+
+	Err_MuLeg_Mu1 = (abs(SystDir==1)) ? HistEff3->GetBinError(HistEff3->FindBin(pt_m1, feta_m1)) : StatHistEff3->GetBinError(StatHistEff3->FindBin(pt_m1, feta_m1)) ;
+	Err_MuLeg_Mu2 = (abs(SystDir==1)) ? HistEff3->GetBinError(HistEff3->FindBin(pt_m2, feta_m2)) : StatHistEff3->GetBinError(StatHistEff3->FindBin(pt_m2, feta_m2)) ;
+	if(SystDir!=0){
+          Eff_MuLeg_Mu1 += Err_MuLeg_Mu1;
+          Eff_MuLeg_Mu2 += Err_MuLeg_Mu2;
+        }
+	Eff_m = Eff_MuLeg_Mu1 + (1.-Eff_MuLeg_Mu1)*Eff_MuLeg_Mu2;
       }
       else{
         pt_m1 = min(pt_m1,MaxPt4), pt_m2 = min(pt_m2,MaxPt4);
