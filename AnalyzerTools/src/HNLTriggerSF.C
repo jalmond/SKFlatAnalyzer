@@ -54,10 +54,10 @@ float MCCorrection::TriggerEfficiency(vector<Electron>& EleColl, vector<Muon>& M
   bool SiglMuTrig=false, SiglElTrig=false, DiMuTrig=false, DiElTrig=false, EMuTrig=false, TrigSoup2L=false;
   float MinPt1=-1, MaxPt1=-1, MinPt2=-1, MaxPt2=-1, MinPt3=-1, MaxPt3=-1., MinPt4=-1, MaxPt4=-1, MaxfEta1=-1, MaxfEta2=-1;
   float MinPt5=-1, MaxPt5=-1, MinPt6=-1, MaxPt6=-1, MinPt7=-1, MaxPt7=-1, MinPt8=-1, MaxPt8=-1;
-  TH2F* HistEff1=NULL; TH2F* HistEff2=NULL; TH2F* HistEff3=NULL; TH2F* HistEff4=NULL;
-  TH2F* HistEff5=NULL; TH2F* HistEff6=NULL; TH2F* HistEff7=NULL; TH2F* HistEff8=NULL;
+  TH2* HistEff1=NULL; TH2* HistEff2=NULL; TH2* HistEff3=NULL; TH2* HistEff4=NULL;
+  TH2* HistEff5=NULL; TH2* HistEff6=NULL; TH2* HistEff7=NULL; TH2* HistEff8=NULL;
 
-  TH2F* StatHistEff1=NULL; TH2F* StatHistEff2=NULL; TH2F* StatHistEff3=NULL; TH2F* StatHistEff4=NULL;
+  TH2* StatHistEff1=NULL; TH2* StatHistEff2=NULL; TH2* StatHistEff3=NULL; TH2* StatHistEff4=NULL;
   if(DataYear==2016 && SFKey.Contains("IsoORTkIsoMu24_POGTight")){
     SiglMuTrig=true, MinPt1=26., MaxPt1=500., MaxfEta1=2.4; 
     HistEff1 = map_hist_Muon["Trigger_Eff_"+StrMCorData+"_IsoMu24_POGTight"];

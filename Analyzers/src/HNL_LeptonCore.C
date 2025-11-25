@@ -72,12 +72,26 @@ void HNL_LeptonCore::initializeAnalyzer(vector<TString> BDTVersions, bool READBK
   if(!IsDATA){
     mcCorr->ReadHistograms();
 
-    TString muon_reco_lowpt_path = "/data6/Users/jalmond/2020/HL_SKFlatAnalyzer_UL_LONG/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2016preVFP/ID/Muon/Files/NUM_TrackerMuons_DEN_genTracks_Z_abseta_pt_"+GetEra()+".json";
-    TString muon_reco_highpt_path = "/data6/Users/jalmond/2020/HL_SKFlatAnalyzer_UL_LONG/SKFlatAnalyzer/data/Run2UltraLegacy_v3/2016preVFP/ID/Muon/Files/ScaleFactors_Muon_highPt_RECO_"+GetEra()+"_schemaV2.json";
+    TString muon_reco_lowpt_path = "/data6/Users/jalmond/2020/HL_SKFlatAnalyzer_UL_LONG/SKFlatAnalyzer/data/Run2UltraLegacy_v3/"+GetEra()+"/ID/Muon/json/NUM_TrackerMuons_DEN_genTracks_Z_abseta_pt_"+GetEra()+".json";
+    TString muon_reco_highpt_path = "/data6/Users/jalmond/2020/HL_SKFlatAnalyzer_UL_LONG/SKFlatAnalyzer/data/Run2UltraLegacy_v3/"+GetEra()+"/ID/Muon/json/ScaleFactors_Muon_highPt_RECO_"+GetEra()+"_schemaV2.json";
 
+    
+    std::cout << "[DEBUG] Calling ReadMuonRecoSFs_LowPt with: "
+	      << muon_reco_lowpt_path.Data() << std::endl;
+    
     mcCorr->ReadMuonRecoSFs_LowPt(muon_reco_lowpt_path.Data());
+    
+    std::cout << "[DEBUG] Finished ReadMuonRecoSFs_LowPt" << std::endl;
+    
+    
+    std::cout << "[DEBUG] Calling ReadMuonRecoSFs_HighPt with: "
+	      << muon_reco_highpt_path.Data() << std::endl;
+    
     mcCorr->ReadMuonRecoSFs_HighPt(muon_reco_highpt_path.Data());
-        
+    
+    std::cout << "[DEBUG] Finished ReadMuonRecoSFs_HighPt" << std::endl;
+    
+    
     TString tagEffFile = "";
     
     if (HasFlag("Use_TT_JetEff_2L"))
