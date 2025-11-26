@@ -72,6 +72,26 @@ void HNL_LeptonCore::initializeAnalyzer(vector<TString> BDTVersions, bool READBK
   if(!IsDATA){
     mcCorr->ReadHistograms();
 
+    TString muon_reco_lowpt_path = "/data6/Users/jalmond/2020/HL_SKFlatAnalyzer_UL_LONG/SKFlatAnalyzer/data/Run2UltraLegacy_v3/"+GetEra()+"/ID/Muon/json/NUM_TrackerMuons_DEN_genTracks_Z_abseta_pt_"+GetEra()+".json";
+    TString muon_reco_highpt_path = "/data6/Users/jalmond/2020/HL_SKFlatAnalyzer_UL_LONG/SKFlatAnalyzer/data/Run2UltraLegacy_v3/"+GetEra()+"/ID/Muon/json/ScaleFactors_Muon_highPt_RECO_"+GetEra()+"_schemaV2.json";
+
+    
+    std::cout << "[DEBUG] Calling ReadMuonRecoSFs_LowPt with: "
+	      << muon_reco_lowpt_path.Data() << std::endl;
+    
+    mcCorr->ReadMuonRecoSFs_LowPt(muon_reco_lowpt_path.Data());
+    
+    std::cout << "[DEBUG] Finished ReadMuonRecoSFs_LowPt" << std::endl;
+    
+    
+    std::cout << "[DEBUG] Calling ReadMuonRecoSFs_HighPt with: "
+	      << muon_reco_highpt_path.Data() << std::endl;
+    
+    mcCorr->ReadMuonRecoSFs_HighPt(muon_reco_highpt_path.Data());
+    
+    std::cout << "[DEBUG] Finished ReadMuonRecoSFs_HighPt" << std::endl;
+    
+    
     TString tagEffFile = "";
     
     if (HasFlag("Use_TT_JetEff_2L"))
@@ -594,6 +614,14 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
         SystList.push_back(AnalyzerParameter::MuonResDown);
 	SystList.push_back(AnalyzerParameter::MuonTriggerSFUp);
 	SystList.push_back(AnalyzerParameter::MuonTriggerSFDown);
+
+	SystList.push_back(AnalyzerParameter::MuonRecoSFStatUp);
+        SystList.push_back(AnalyzerParameter::MuonRecoSFStatDown);
+        SystList.push_back(AnalyzerParameter::MuonIDSFStatUp);
+        SystList.push_back(AnalyzerParameter::MuonIDSFStatDown);
+        SystList.push_back(AnalyzerParameter::MuonTriggerSFStatUp);
+        SystList.push_back(AnalyzerParameter::MuonTriggerSFStatDown);
+
       }
       if(SystType=="EE" || SystType=="EMu"){
 	SystList.push_back(AnalyzerParameter::ElectronRecoSFUp);
@@ -606,6 +634,14 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
 	SystList.push_back(AnalyzerParameter::ElectronIDSFDown);
 	SystList.push_back(AnalyzerParameter::ElectronTriggerSFUp);
 	SystList.push_back(AnalyzerParameter::ElectronTriggerSFDown);
+
+	SystList.push_back(AnalyzerParameter::ElectronRecoSFStatUp);
+        SystList.push_back(AnalyzerParameter::ElectronRecoSFStatDown);
+        SystList.push_back(AnalyzerParameter::ElectronIDSFStatUp);
+        SystList.push_back(AnalyzerParameter::ElectronIDSFStatDown);
+        SystList.push_back(AnalyzerParameter::ElectronTriggerSFStatUp);
+        SystList.push_back(AnalyzerParameter::ElectronTriggerSFStatDown);
+
       }
 
       bool RunFullJEC=false;

@@ -442,8 +442,8 @@ void   HNL_RegionDefinitions::RunMainRegionCode(bool IsSR,HNL_LeptonCore::Channe
       // --- CR (control region) runs only for the first ref mass (400) ---
       // This matches your comment "CR only run in first loop as CR is not mass dependant"
 
-      bool sr1_fill_plot = (ref_mass == 400);
-      if (!isSR && !sr1_fill_plot) continue;
+      bool sr1_fill_plot = (ref_mass == 400 || isSignal);
+      if (!isSR && !sr1_fill_plot && !isSignal) continue;
             
       // --- For signal samples, restrict to allowed mass range(s) ---
       // We assume sample names contain exact tokens like "M500_private".
@@ -1088,18 +1088,21 @@ TString HNL_RegionDefinitions::RunSignalRegionAK4StringBDT(bool ApplyForSR, TStr
 
   float MVAvalueIncl    = EvaluateEventMVA(mN, "Incl", version, NCut, NTree, channel, LepTColl, ev, METv, param, w, isBDTVar); // true : fill MVA variables
 
+  vector<Tau> TauColl;
   
   if(!ApplyForSR|| HasFlag("PlotBDT")){
-    FillHist("LimitExtraction/"+param.Name+"/"+RegionTag+"/"+BDTLabel, MVAvalueIncl, w, 400, -1., 1.);
-    if(B_JetColl.size() == 1) FillHist("LimitExtraction/"+param.Name+"/"+RegionTag+"/InvBJet_"+BDTLabel, MVAvalueIncl, w, 400, -1., 1.);
-    else FillHist("LimitExtraction/"+param.Name+"/"+RegionTag+"/InvMET_"+BDTLabel, MVAvalueIncl, w, 400, -1., 1.);
+    FillHist("LimitExtraction/"+param.Name+"/"+RegionTag+"BDT/"+BDTLabel, MVAvalueIncl, w, 400, -1., 1.);
+    if(B_JetColl.size() == 1) FillHist("LimitExtraction/"+param.Name+"/"+RegionTag+"BDT/InvBJet_"+BDTLabel, MVAvalueIncl, w, 400, -1., 1.);
+    else FillHist("LimitExtraction/"+param.Name+"/"+RegionTag+"BDT/InvMET_"+BDTLabel, MVAvalueIncl, w, 400, -1., 1.);
   }
 
   if(ApplyForSR && param.syst_ ==AnalyzerParameter::Central && !HasFlag("RunSyst") && Binning == "Strict_15_Bin")   FillHist("LimitExtraction/"+param.Name+"/"+RegionTag+"BDT/"+BDTLabel_simple, MVAvalueIncl, w, 400, -1., 1.);
 
 
-  vector<Tau> TauColl;
-  if(FillCutFlow&&ApplyForSR&&param.IsCentral()) Fill_RegionPlots(param,"Pass"+RegionTag+"BDT" ,TauColl,  JetColl, AK8_JetColl, LepTColl,  METv, nPV, w);
+
+  if(FillCutFlow&&ApplyForSR&&param.IsCentral()) {
+    Fill_RegionPlots(param,"Pass"+RegionTag+"BDT" ,TauColl,  JetColl, AK8_JetColl, LepTColl,  METv, nPV, w);
+  }
 
   if(FillCutFlow){
     if(ApplyForSR)FillCutflow(HNL_LeptonCore::ChannelDepSR3, w, GetChannelString(channel) +"_"+RegionTag,param);
