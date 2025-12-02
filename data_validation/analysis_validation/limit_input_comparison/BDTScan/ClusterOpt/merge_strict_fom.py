@@ -42,7 +42,7 @@ def calculate_fom(s, b,mass):
     if mass == "500":
         s = s / 10        
         
-    return math.sqrt(2 * ((s + b) * math.log(1 + s / b) - s)) if b > 0 and s > 0 else (math.sqrt(2 * s) if s > 0 else 0)
+    return 2 * ((s + b) * math.log(1 + s / b) - s) if b > 0 and s > 0 else (math.sqrt(2 * s) if s > 0 else 0)
 
 
 def compare_limitbins_fom(bkg_file, sig_file, flavours, masses, log):
