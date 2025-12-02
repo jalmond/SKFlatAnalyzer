@@ -2,11 +2,12 @@
 
 SCRIPT="scan_sr1_dp.py"
 
-masses=(400 500 600 700 800 900 1000)
+masses=(450)
+#500 600 700 800 900 1000)
 flavours=(EE EMu MuMu)
 eras=(2016preVFP 2016postVFP 2017 2018)
 
-n_bins=3
+n_bins=7
 
 for era in "${eras[@]}"; do
   for flav in "${flavours[@]}"; do

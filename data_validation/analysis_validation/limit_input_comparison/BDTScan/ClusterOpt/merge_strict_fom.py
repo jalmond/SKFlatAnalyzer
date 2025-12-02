@@ -197,7 +197,7 @@ base_dir = '/data6/Users/jalmond/2020/Plotter/HNDiLeptonWorskspace/InputFiles/Me
 eras = [era]#, '2016postVFP', '2017', '2018']
 masses = [mass]#, '200', '300', '400', '500']
 flavours = [flavour]#, 'MuMu', 'EMu']
-versions = ["V2","V3", "V4"]
+versions = ["V3"]
 os.makedirs("log_scan", exist_ok=True)
 dir_path = select_directory(base_dir)
 
@@ -221,7 +221,7 @@ for era in eras:
 
     for mass in masses:
 
-        sig_path = os.path.join(dir_path, era, f'HNL_SignalRegion_Plotter_HNL_{mass}.root')
+        sig_path = os.path.join(dir_path, era, f'HNL_SignalRegion_Plotter_HNL_DYVBF_{mass}.root')
         sig_file = ROOT.TFile.Open(sig_path) if os.path.exists(sig_path) else None
 
         for flav in flavours:
