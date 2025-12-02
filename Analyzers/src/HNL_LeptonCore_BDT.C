@@ -4,7 +4,7 @@ void HNL_LeptonCore::SetupEventMVAReaders(vector<TString> versions, bool ee, boo
 
   /// Setup variables
   /// Set up V2 and V3 are the same
-  SetupEventMVAReaderInit("V4",ee,mm,emu);
+  SetupEventMVAReaderInit("V3",ee,mm,emu);
 
   /// load xml files for V2 and/or  V3
   for(auto iversion : versions) SetupEventMVAReaderXML(iversion,ee,mm,emu);
@@ -692,9 +692,10 @@ void HNL_LeptonCore::DefineBDTLimitBins(vector<TString> BDT_Version_List){
   }
   if (std::find(BDT_Version_List.begin(), BDT_Version_List.end(), "V3") != BDT_Version_List.end()) {
 
-    
+    // 350 + 450 masses added 
     // Updated V3 (WZ SF applied)
-    //========== Mass 100 ==========SR3BDT_EMu_2017_350_V3_Strict_15_Bin
+
+    //========== Mass 100 ==========
     
     map_bdt_limit_bins["SR3BDT_EE_2016preVFP_100_V3_Strict_15_Bin"] = {0.105,0.145,0.165,0.200,0.220,0.230,0.240,0.250,0.255,0.265,0.280,0.285,0.300,0.320, 1};
     map_bdt_limit_bins["SR3BDT_EE_2016preVFP_85_V3_Strict_15_Bin"] = {0.105,0.145,0.165,0.200,0.220,0.230,0.240,0.250,0.255,0.265,0.280,0.285,0.300,0.320, 1};
