@@ -11,6 +11,50 @@ from tqdm import tqdm
 # FOM and histogram helpers
 # -------------------------
 
+def check_custom_edges(edges, PB, PE, PS, edge_list, log_print,
+                       name="custom", min_width=20.0,
+                       min_bkg=0.5, strong_bkg=1.0, max_rel_err=0.3):
+    """
+    Evaluate a given list of bin edges on the same histogram used by DP.
+    Prints per-bin B, S, relErr, FOM and total FOM.
+    Also checks whether each bin would satisfy the DP constraints.
+    """
+    # Map requested edges to nearest indices in the fine-bin edges array
+    idxs = [int(np.argmin(np.abs(edges - e))) for e in edge_list]
+
+    log_print(f"[CHECK-{name}] Requested edges = {edge_list}")
+    log_print(f"[CHECK-{name}] Mapped to indices/edges:")
+    for e, idx in zip(edge_list, idxs):
+        log_print(f"  target {e:.1f} -> idx {idx}, edges[idx] = {edges[idx]:.1f}")
+
+    total_fom = 0.0
+    log_print(f"[CHECK-{name}] Bin-by-bin:")
+    for k in range(len(idxs) - 1):
+        p = idxs[k]
+        q = idxs[k + 1]
+        lo = edges[p]
+        hi = edges[q]
+        width = hi - lo
+        B = PB[q] - PB[p]
+        E = PE[q] - PE[p]
+        S = PS[q] - PS[p]
+        rel = math.sqrt(E) / B if B > 0 else float("inf")
+        fom = calculate_fom(S, B, mass="NA")
+        total_fom += fom
+
+        # Check DP-style constraints for this interval
+        passes_width = (width >= min_width)
+        passes_stats = (B >= min_bkg) and ((B >= strong_bkg) or (rel <= max_rel_err))
+
+        log_print(
+            f"  Bin {k+1}: [{lo:.1f}, {hi:.1f}) "
+            f"W={width:.1f}, B={B:.3f}, S={S:.3f}, relErr={rel:.3f}, "
+            f"FOM={fom:.2f}, width_ok={passes_width}, stats_ok={passes_stats}"
+        )
+
+    log_print(f"[CHECK-{name}] Total FOM = {total_fom:.2f}")
+    return total_fom
+
 def calculate_fom(s, b, mass):
     # Mass-dependent signal scaling
 
@@ -218,31 +262,84 @@ def compute_existing_total_fom_allbins(sig_file, bkg_file, flavour, mass):
     return total_fom
 
 
+
+import ROOT
+import math
+
 def get_existing_fom(sig_file, bkg_file, flavour, mass, log_print):
     path_map = {
         "MuMu": "LimitExtraction/HNL_ULIDv2/MuMu/LimitBins/MuonSR1",
-        "EE": "LimitExtraction/HNL_ULIDv2/EE/LimitBins/ElectronSR1",
-        "EMu": "LimitExtraction/HNL_ULIDv2/EMu/LimitBins/ElectronMuonSR1",
+        "EE":   "LimitExtraction/HNL_ULIDv2/EE/LimitBins/ElectronSR1",
+        "EMu":  "LimitExtraction/HNL_ULIDv2/EMu/LimitBins/ElectronMuonSR1",
     }
+
     path = path_map.get(flavour)
-    sig_hist = sig_file.Get(path)
-    bkg_hist = bkg_file.Get(path)
+    log_print("=== DEBUG inside get_existing_fom ===")
+    log_print(f"  flavour = {flavour}")
+    log_print(f"  mass    = {mass}")
+    log_print(f"  base path = {path}")
+
+    sig_obj = sig_file.Get(path)
+    bkg_obj = bkg_file.Get(path)
+
+    if not sig_obj:
+        log_print("  ERROR: sig_file.Get(path) returned None")
+    else:
+        log_print(f"  sig_obj: class={sig_obj.ClassName()}, name={sig_obj.GetName()}")
+
+    if not bkg_obj:
+        log_print("  ERROR: bkg_file.Get(path) returned None")
+    else:
+        log_print(f"  bkg_obj: class={bkg_obj.ClassName()}, name={bkg_obj.GetName()}")
+
+    # If these are directories, list their contents so we can see the actual hist name
+    if sig_obj and isinstance(sig_obj, ROOT.TDirectory):
+        log_print("  sig_obj is a TDirectory, listing keys:")
+        for key in sig_obj.GetListOfKeys():
+            log_print(f"    [sig] key: {key.GetName()} ({key.GetClassName()})")
+
+    if bkg_obj and isinstance(bkg_obj, ROOT.TDirectory):
+        log_print("  bkg_obj is a TDirectory, listing keys:")
+        for key in bkg_obj.GetListOfKeys():
+            log_print(f"    [bkg] key: {key.GetName()} ({key.GetClassName()})")
+
+    # If they are not TH1, do not try GetBinContent
+    if not (sig_obj and isinstance(sig_obj, ROOT.TH1)):
+        log_print("  ERROR: signal object is not a TH1, cannot compute FOM")
+        return
+    if not (bkg_obj and isinstance(bkg_obj, ROOT.TH1)):
+        log_print("  ERROR: background object is not a TH1, cannot compute FOM")
+        return
+
+    sig_hist = sig_obj
+    bkg_hist = bkg_obj
+
     total_allbins = 0.0
     log_print(f"[INFO] Bin-by-bin FOMs from {path}:")
-    for i in range(1, bkg_hist.GetNbinsX() + 1):
+    nbins = bkg_hist.GetNbinsX()
+    log_print(f"  Histogram nbins = {nbins}")
+
+    for i in range(1, nbins + 1):
         b = bkg_hist.GetBinContent(i)
         s = sig_hist.GetBinContent(i)
         err = bkg_hist.GetBinError(i)
         rel_err = (err / b) if b > 0 else float('inf')
         fom = calculate_fom(s, b, mass)
         total_allbins += fom
+
         if math.isfinite(rel_err):
-            log_print(f"  Bin {i:2d}: Bkg = {b:.2f}, Sig = {s:.2f}, "
-                      f"FOM = {fom:.2f}, RelErr = {rel_err:.2f}")
+            log_print(
+                f"  Bin {i:2d}: Bkg = {b:.2f}, Sig = {s:.2f}, "
+                f"FOM = {fom:.2f}, RelErr = {rel_err:.2f}"
+            )
         else:
-            log_print(f"  Bin {i:2d}: Bkg = {b:.2f}, Sig = {s:.2f}, "
-                      f"FOM = {fom:.2f}, RelErr = inf")
+            log_print(
+                f"  Bin {i:2d}: Bkg = {b:.2f}, Sig = {s:.2f}, "
+                f"FOM = {fom:.2f}, RelErr = inf"
+            )
+
     log_print(f"[INFO] Total EXISTING FOM over all bins: {total_allbins:.2f}")
+
 
 
 # -------------------------
@@ -251,13 +348,13 @@ def get_existing_fom(sig_file, bkg_file, flavour, mass, log_print):
 
 def evaluate_binning_for_masses(selected_dir, era, flavour, base_path, hname,
                                 edges, bkg, err2, best_edges, log_print, f_bkg, mnonly):
-    masses = ["400", "500", "600", "700", "800", "900", "1000"]
+    masses = ["400", "450","500", "600", "700", "800", "900", "1000"]
     PB = prefix_sums(bkg)
     PE = prefix_sums(err2)
     cut_indices = [int(np.argmin(np.abs(edges - e))) for e in best_edges]
 
     for m in masses:
-        sig_path = os.path.join(selected_dir, era, f"HNL_SignalRegion_Plotter_HNL_{m}.root")
+        sig_path = os.path.join(selected_dir, era, f"HNL_SignalRegion_Plotter_HNL_DYVBF_{m}.root")
         f_sig_tmp = ROOT.TFile(sig_path)
         sig_hist = f_sig_tmp.Get(f"{base_path}/HNL_ULIDv2/{flavour}/AK8/AK8J_Unbinned_Mass/{hname}")
         if not sig_hist:
@@ -311,6 +408,8 @@ def main():
 
     path = f"PassSR1/HNL_ULIDv2/{args.flavour}/AK8/AK8J_Unbinned_Mass"
     hname = "l1J"
+    full_path = f"{path}/{hname}"     # <-- define it here
+
     sig_hist = f_sig.Get(f"{path}/{hname}")
     bkg_hist = f_bkg.Get(f"{path}/{hname}")
 
@@ -321,7 +420,24 @@ def main():
             print(msg, flush=True)
             log.write(msg + "\n")
 
+        log_print("=== DEBUG before get_existing_fom ===")
+        log_print(f"sig_file_path = {sig_file_path}")
+        log_print(f"bkg_file_path = {bkg_file_path}")
+        log_print(f"full_path    = {full_path}")
 
+        if not sig_hist:
+            log_print("ERROR: sig_hist is None")
+        else:
+            log_print(f"sig_hist: type={type(sig_hist)}, class={sig_hist.ClassName()}, name={sig_hist.GetName()}")
+
+        if not bkg_hist:
+            log_print("ERROR: bkg_hist is None")
+        else:
+            log_print(f"bkg_hist: type={type(bkg_hist)}, class={bkg_hist.ClassName()}, name={bkg_hist.GetName()}")
+
+        log_print("Calling get_existing_fom...")
+
+            
         get_existing_fom(f_sig, f_bkg, args.flavour, args.mass, log_print)
 
         # Right-merge to get constraints for the final bin
@@ -342,6 +458,28 @@ def main():
         
         PS = prefix_sums(sig_scaled)
 
+        # ==========================================================
+        # CHECK: evaluate predefined MuMu SR1 binning on this l1J hist
+        # ==========================================================
+        if args.flavour == "MuMu" and args.mass == "450":
+            predef_edges_450 = [0.0, 395.0, 420.0, 450.0, 540.0, 635.0, 850.0, 5000.0]
+            log_print("")
+            log_print("[CHECK] Evaluating predefined sr1bins_mm_byMass[\"450\"] on l1J histogram:")
+            check_custom_edges(
+                edges=edges,
+                PB=PB,
+                PE=PE,
+                PS=PS,
+                edge_list=predef_edges_450,
+                log_print=log_print,
+                name="predef_450",
+                min_width=args.min_width,
+                min_bkg=args.min_bkg,
+                strong_bkg=args.strong_bkg,
+                max_rel_err=args.max_rel_err,
+            )
+            log_print("")
+        
         # Run DP
         start = time.time()
         best_fom, best_edges = dp_optimal_bins(
