@@ -454,7 +454,7 @@ void   HNL_RegionDefinitions::RunMainRegionCode(bool IsSR,HNL_LeptonCore::Channe
     const TString mcSampleName = MCSample; // or however you get it
 
     // Top level debug
-    if(0)std::cout << "[DEBUG] New event: sample=" << mcSampleName
+    if(run_Debug)std::cout << "[DEBUG] New event: sample=" << mcSampleName
 	      << " isSignal=" << isSignal
 	      << " isSR=" << isSR
 	      << " nAK8=" << AK8_JetColl.size()
@@ -471,11 +471,11 @@ void   HNL_RegionDefinitions::RunMainRegionCode(bool IsSR,HNL_LeptonCore::Channe
 
       bool sr1_fill_plot = (ref_mass == 400 || isSignal);
 
-      if(0)std::cout << "[DEBUG]  Mass group loop: ref_mass=" << ref_mass
+      if(run_Debug)std::cout << "[DEBUG]  Mass group loop: ref_mass=" << ref_mass
 		<< " sr1_fill_plot=" << sr1_fill_plot << std::endl;
 
       if (!isSR && !sr1_fill_plot && !isSignal) {
-	 if(0)std::cout << "[DEBUG]   -> Skipping group ref_mass=" << ref_mass
+	 if(run_Debug)std::cout << "[DEBUG]   -> Skipping group ref_mass=" << ref_mass
 		  << " due to CR condition "
 		  << "(isSR=" << isSR
 		  << ", sr1_fill_plot=" << sr1_fill_plot
@@ -862,12 +862,10 @@ TString HNL_RegionDefinitions::RunSignalRegionAK8String(bool ApplyForSR,
   double MN1 = (N1cand.M() > 2000.) ? 1999. : N1cand.M();
 
 
-  if(fill_plots){
-    vector<double> ml1jbins = GetLimitBinBoundary("SR1",ref_mass,GetChannelString(channel));
-    
-    for(unsigned int ibin=1; ibin < ml1jbins.size(); ibin++){
-      if(MN1 < ml1jbins[ibin]) return RegionTag+"_MNbin"+to_string(ibin);
-    }
+  vector<double> ml1jbins = GetLimitBinBoundary("SR1",ref_mass,GetChannelString(channel));
+  
+  for(unsigned int ibin=1; ibin < ml1jbins.size(); ibin++){
+    if(MN1 < ml1jbins[ibin]) return RegionTag+"_MNbin"+to_string(ibin);
   }
   
   return "true";
