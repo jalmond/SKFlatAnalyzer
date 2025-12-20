@@ -10,8 +10,8 @@ float MCCorrection::GetTriggerSF(vector<Electron>& EleColl, vector<Muon>& MuColl
 
   //  cout << "SFKey = " << SFKey << " Option = " << Option << endl;
  
-  TString NominalOpt=Option; NominalOpt.ReplaceAll("Syst","");
-  bool SystRun=Option.Contains("Syst");
+  TString NominalOpt=Option; NominalOpt.ReplaceAll("Syst",""); NominalOpt.ReplaceAll("Stat","");
+  bool SystRun=Option.Contains("Syst") || Option.Contains("Stat");
   float SystDir=0., RelSystData=0., RelSystMC=0., TotRelSyst=0.;
 
   float TriggerEff_Data = TriggerEfficiency(EleColl, MuColl, SFKey, true,  NominalOpt);
@@ -48,6 +48,10 @@ float MCCorrection::TriggerEfficiency(vector<Electron>& EleColl, vector<Muon>& M
   if(Option.Contains("Syst")){
     if     (Option.Contains("Up"))   SystDir= 1.;
     else if(Option.Contains("Down")) SystDir=-1.;
+  }
+  else if(Option.Contains("Stat")){
+    if     (Option.Contains("Up"))   SystDir= 2.;
+    else if(Option.Contains("Down")) SystDir=-2.;
   }
   
 
