@@ -1037,6 +1037,8 @@ TString HNL_RegionDefinitions::RunSignalRegionWWString(bool ApplyForSR,HNL_Lepto
 	}
       }
       
+      if(HasFlag("SingularBinning")) cuts  ={2.0, 2.5, 1.5, 2.5};
+      
       // Bin selection (preserves your original logic)
       if (ll_dphi > 2.0) {
 	if (HTOverPT < cuts.cut3) return RegionTag + "_HTLT_Bin1";
