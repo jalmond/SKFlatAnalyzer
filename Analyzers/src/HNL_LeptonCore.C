@@ -649,7 +649,7 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
 
       }
 
-      bool RunFullJEC=false;
+      bool RunFullJEC=HasFlag("FullJESNS");
       if(RunFullJEC){
 	SystList.push_back(AnalyzerParameter::JetAbsoluteStatUp);
 	SystList.push_back(AnalyzerParameter::JetAbsoluteStatDown);
