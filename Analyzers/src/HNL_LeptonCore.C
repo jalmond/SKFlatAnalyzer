@@ -707,7 +707,7 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
     }
   }
   
-  if(IsSignal()){
+  if(IsSignal() || MCSample.Contains("WZ")){
     SystList.push_back(AnalyzerParameter::PDF);
     SystList.push_back(AnalyzerParameter::PDFUp);
     SystList.push_back(AnalyzerParameter::PDFDown);
