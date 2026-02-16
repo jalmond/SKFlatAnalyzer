@@ -67,7 +67,13 @@ void HNL_ControlRegion_Plotter::executeEvent(){
       
       AnalyzerParameter param_cr = Setup_Param_HNL_ULIDv2(id,GetChannelString(channel));
       if(HasFlag("RunSyst")){
-	/// Some code to remove unnecessary Syst runs                                                                                                                                                              
+	/// Some code to remove unnecessary Syst runs
+	std::vector<Muon>       sMuonCollV     = SelectMuons    (param_cr,param_cr.Muon_Veto_ID,     5., 2.4);
+	std::vector<Electron>   sElectronCollV = SelectElectrons(param_cr,param_cr.Electron_Veto_ID, 10., 2.5);
+
+	if(sMuonCollV.size() != 4) return;
+	if(sElectronCollV.size() !=0) continue;
+
 	if(!PassMETFilter()) return;
 	
 	Event ev = GetEvent();
