@@ -772,7 +772,7 @@ bool  HNL_RegionDefinitions::RunSignalRegionAK8(bool ApplyForSR, TString mass_ra
   if(SR1String == "false") return false;
   else return true;
   
-}
+
 
 
 /// Return TString for Limit bin
@@ -845,17 +845,19 @@ TString HNL_RegionDefinitions::RunSignalRegionAK8String(bool ApplyForSR,
   
   //// Fill Plots before All SR cuts for better stats 
   if(param.IsCentral())  {
-    if(ApplyForSR) Fill_RegionPlots(param,"Pass"+RegionTag ,  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);
-    else{
-      
-      if(B_JetColl.size() ==1) Fill_RegionPlots(param,"Pass"+RegionTag+"_InvBJet" ,  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);
-      else    Fill_RegionPlots(param,"Pass"+RegionTag+"_InvMET" ,  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);
+    if(fill_plots){
+      if(ApplyForSR) Fill_RegionPlots(param,"Pass"+RegionTag ,  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);
+      else{
+	
+	if(B_JetColl.size() ==1) Fill_RegionPlots(param,"Pass"+RegionTag+"_InvBJet" ,  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);
+	else    Fill_RegionPlots(param,"Pass"+RegionTag+"_InvMET" ,  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);
+      }
     }
   }
   
   //// Apply CR Binning
   if(!ApplyForSR){
-    if(HasFlag("ApplyWMassCut") && (Wcand.M() < 300)) return "false";
+    //    if(HasFlag("ApplyWMassCut") && (Wcand.M() < 300)) return "false";
     if(fill_plots){
       FillHist(  "LimitExtraction/"+ param.Name+"/"+RegionTag+"/Inv_SR1",0,  w, 1,0,1 ,"CR Binned");
       if(B_JetColl.size() == 1)      FillHist(  "LimitExtraction/"+ param.Name+"/"+RegionTag+"/InvBJet_SR1",0,  w, 1,0,1 ,"CR Binned");
@@ -988,13 +990,13 @@ TString HNL_RegionDefinitions::RunSignalRegionWWString(bool ApplyForSR,HNL_Lepto
     
     if(!ApplyForSR){
 
-      double Wmass = GetRecoObjMass("HNL_SR3_NLL",JetColl, AK8_JetColl, leps);
+      //double Wmass = GetRecoObjMass("HNL_SR3_NLL",JetColl, AK8_JetColl, leps);
 
-      if(HasFlag("WMassWindow")  && Wmass > 200 && Wmass < 250.) {
-	if(B_JetColl.size() ==1)   Fill_RegionPlots(param,"Pass"+RegionTag+"_Window_InvBJet" ,  TauColl, JetColl, AK8_JetColl, leps,  METv,    nPV, w);
-      }
+      //if(HasFlag("WMassWindow")  && Wmass > 200 && Wmass < 250.) {
+      //if(B_JetColl.size() ==1)   Fill_RegionPlots(param,"Pass"+RegionTag+"_Window_InvBJet" ,  TauColl, JetColl, AK8_JetColl, leps,  METv,    nPV, w);
+      // }
 
-      if(HasFlag("ApplyWMassCut") && (Wmass > 0) &&  (Wmass < 300)) return "false";
+      //if(HasFlag("ApplyWMassCut") && (Wmass > 0) &&  (Wmass < 300)) return "false";
       //////// CR LIMIT BINS
       
       FillHist(  "LimitExtraction/"+ param.Name+"/"+RegionTag+"/Inv_SR2", 0,  w, 1,0,1 ,"Reco H_{T}/P_{T}^{lep1}");
