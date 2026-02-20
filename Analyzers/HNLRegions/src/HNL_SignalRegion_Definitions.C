@@ -772,7 +772,7 @@ bool  HNL_RegionDefinitions::RunSignalRegionAK8(bool ApplyForSR, TString mass_ra
   if(SR1String == "false") return false;
   else return true;
   
-
+}
 
 
 /// Return TString for Limit bin
