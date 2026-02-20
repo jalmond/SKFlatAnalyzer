@@ -67,7 +67,8 @@ void HNL_ControlRegion_Plotter::executeEvent(){
       
       AnalyzerParameter param_cr = Setup_Param_HNL_ULIDv2(id,GetChannelString(channel));
       if(HasFlag("RunSyst")){
-	/// Some code to remove unnecessary Syst runs                                                                                                                                                              
+	/// Some code to remove unnecessary Syst runs
+
 	if(!PassMETFilter()) return;
 	
 	Event ev = GetEvent();
@@ -165,11 +166,11 @@ void HNL_ControlRegion_Plotter::RunControlRegions(AnalyzerParameter param_cr, ve
   if(CRs.size() == 0) return;
   
   vector<int> RunEl ;
-  if(RunCF) RunEl =  {0,1} ;
+  if(RunCF) {
+    if(param_cr.Channel == "EE") RunEl =  {0,1} ;
+    else  RunEl =  {0};
+  }
   else RunEl = {-1};
-
-   
-
   ///// Scan Tau ID                                              
 
   std::vector<Lepton *> leps_veto  = MakeLeptonPointerVector(MuonVetoColl,ElectronVetoColl);
