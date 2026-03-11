@@ -719,6 +719,10 @@ TString AnalyzerParameter::GetSystType(){
   else if(syst_==Syst::PDFDown)   return "PDFDown";
   else if(syst_==Syst::ScaleUp)   return "ScaleUp";
   else if(syst_==Syst::ScaleDown)   return "ScaleDown";
+  else if(syst_==Syst::RenScaleUp)     return "RenScaleUp";
+  else if(syst_==Syst::RenScaleDown)   return "RenScaleDown";
+  else if(syst_==Syst::FacScaleUp)     return "FacScaleUp";
+  else if(syst_==Syst::FacScaleDown)   return "FacScaleDown";
   
   else{
     cout << "[AnalyzerParameter::GetSystType] Wrong Syst" << endl;
