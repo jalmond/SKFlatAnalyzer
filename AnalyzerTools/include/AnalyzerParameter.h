@@ -195,6 +195,8 @@ class AnalyzerParameter{
     JetPUIDUp, JetPUIDDown,
     PDF,PDFUp,PDFDown,
     ScaleUp,ScaleDown,
+    RenScaleUp,RenScaleDown,
+    FacScaleUp,FacScaleDown,
     NSyst
   };
 

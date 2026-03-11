@@ -522,8 +522,12 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
     //SystList.push_back(AnalyzerParameter::PDFUp);
     //SystList.push_back(AnalyzerParameter::PDFDown);
     SystList.push_back(AnalyzerParameter::PDF);
-    SystList.push_back(AnalyzerParameter::ScaleUp);
-    SystList.push_back(AnalyzerParameter::ScaleDown);
+    //SystList.push_back(AnalyzerParameter::ScaleUp);
+    //SystList.push_back(AnalyzerParameter::ScaleDown);
+    SystList.push_back(AnalyzerParameter::RenScaleUp);
+    SystList.push_back(AnalyzerParameter::RenScaleDown);
+    SystList.push_back(AnalyzerParameter::FacScaleUp);
+    SystList.push_back(AnalyzerParameter::FacScaleDown);
     return SystList;
   }
 
@@ -707,12 +711,16 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
     }
   }
   
-  if(IsSignal() || MCSample.Contains("WZ")){
+  if(IsSignal() || IsMainPrompt()){
     SystList.push_back(AnalyzerParameter::PDF);
-    SystList.push_back(AnalyzerParameter::PDFUp);
-    SystList.push_back(AnalyzerParameter::PDFDown);
-    SystList.push_back(AnalyzerParameter::ScaleUp);
-    SystList.push_back(AnalyzerParameter::ScaleDown);
+    //SystList.push_back(AnalyzerParameter::PDFUp);
+    //SystList.push_back(AnalyzerParameter::PDFDown);
+    //SystList.push_back(AnalyzerParameter::ScaleUp);
+    //SystList.push_back(AnalyzerParameter::ScaleDown);
+    SystList.push_back(AnalyzerParameter::RenScaleUp);
+    SystList.push_back(AnalyzerParameter::RenScaleDown);
+    SystList.push_back(AnalyzerParameter::FacScaleUp);
+    SystList.push_back(AnalyzerParameter::FacScaleDown);
   }
   
   return SystList;
