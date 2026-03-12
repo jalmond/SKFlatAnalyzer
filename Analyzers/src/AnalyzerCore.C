@@ -14,6 +14,7 @@ AnalyzerCore::AnalyzerCore(){
   IsDYSample=false;
   IsTTSample=false;
 
+  runSyst = HasFlag("RunSyst") || HasFlag("RunPlotterSyst");
   /// SETUP PREDEFINED HIST VARIABLE BINNINGS
   SetHistBins();
 }
@@ -1205,7 +1206,7 @@ void AnalyzerCore::initializeAnalyzerTools(){
                                                                                                                                                                                                                                                                               
   // In your analyser code add this line to constructor to fill map with JEC source values.                                                                                                                        
   if(HasFlag("RunSyst")){
-    for(auto jec_source : JECSources)   SetupJECUncertainty(jec_source, "AK4PFchs");                                                                                                                                           
+    for(auto jec_source : JECSources)   SetupJECUncertainty(jec_source, "AK4PFchs");                                                                                                                                          
   }                                             
                                                                                                                                                                                                                                                                               
   /*

@@ -288,7 +288,6 @@ void HNL_LeptonCore::initializeAnalyzer(vector<TString> BDTVersions, bool READBK
   TString TheoryPath = "/data9/Users/HNL_public/PDFSyst/"+GetEra()+"/Theory/GetEffLumi_SkimTree_HNMultiLepBDT_"+MCSample+".root";
   std::ifstream infile(TheoryPath);
 
-  
   h_SumW_PDF=nullptr;
   h_SumW_Scale=nullptr;
 
@@ -558,7 +557,7 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
     return SystList;
   }
 
-  if(!HasFlag("RunSyst")) return SystList;
+  if(!runSyst) return SystList;
   
   //// Runs All Syst for Bkg types
   if(RunCF){
@@ -593,6 +592,27 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
       
       return SystList;
     }
+
+    if(HasFlag("RunPlotterSyst")){
+      SystList = {AnalyzerParameter::JetResUp,AnalyzerParameter::JetResDown,
+	AnalyzerParameter::JetEnUp, AnalyzerParameter::JetEnDown,
+	AnalyzerParameter::JetPNETUp,AnalyzerParameter::JetPNETDown,
+      };
+
+      if(SystType=="MuMu" || SystType=="EMu"){
+	SystList.push_back(AnalyzerParameter::MuonEnUp);
+	SystList.push_back(AnalyzerParameter::MuonEnDown);
+	SystList.push_back(AnalyzerParameter::MuonResUp);
+	SystList.push_back(AnalyzerParameter::MuonResDown);
+      }
+      if(SystType=="EE" || SystType=="EMu"){
+	SystList.push_back(AnalyzerParameter::ElectronResUp);
+	SystList.push_back(AnalyzerParameter::ElectronResDown);
+	SystList.push_back(AnalyzerParameter::ElectronEnUp);
+	SystList.push_back(AnalyzerParameter::ElectronEnDown);
+      }
+    }
+    
     if(HasFlag("RunSyst")){
       
       SystList = {AnalyzerParameter::JetResUp,AnalyzerParameter::JetResDown,
@@ -707,8 +727,7 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
     }
   }
   
-  if(IsSignal() || MCSample.Contains("WZ")){
-    SystList.push_back(AnalyzerParameter::PDF);
+  if(IsSignal() || IsMainPrompt()){
     SystList.push_back(AnalyzerParameter::PDFUp);
     SystList.push_back(AnalyzerParameter::PDFDown);
     SystList.push_back(AnalyzerParameter::ScaleUp);

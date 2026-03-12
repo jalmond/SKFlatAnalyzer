@@ -20,7 +20,7 @@ bool HNL_LeptonCore::DrawSyst(AnalyzerParameter& param_sys){
     
   }
   else {
-    SystToPlot= {AnalyzerParameter::Syst::JetEnUp, AnalyzerParameter::Syst::JetEnDown};
+    SystToPlot= {AnalyzerParameter::Syst::JetEnUp, AnalyzerParameter::Syst::JetEnDown,AnalyzerParameter::ScaleUp,AnalyzerParameter::ScaleDown};
   }
   
   SystToPlot.push_back(AnalyzerParameter::Syst::Central);
@@ -328,6 +328,8 @@ void HNL_LeptonCore::Fill_Main_Plots(AnalyzerParameter& param, TString  region, 
   if(leps.size() > 2) FillHist( plot_dir + region + "/MainPlots/Lepton_pt", leps[2]->Pt(), w, 9999, 0, 9999, "l p_{T} GeV");
   if(leps.size() > 3) FillHist( plot_dir + region + "/MainPlots/Lepton_pt", leps[3]->Pt(), w, 9999, 0, 9999, "l p_{T} GeV");
 
+  if(leps.size() > 2)  LT+= leps[2]->Pt();
+  if(leps.size() > 3)  LT+= leps[3]->Pt();
   FillHist( plot_dir + region + "/MainPlots/L_T", LT, w, 9999, 0, 9999, "l_{T} p_{T} GeV");
 
   if(User("jalmond"))  {
