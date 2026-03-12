@@ -383,6 +383,7 @@ void HNL_LeptonCore::SetupEventMVAReaderXML(TString version, bool ee, bool mm, b
   TString AnalyzerPath=std::getenv("SKFlat_WD");
   TString MVAPath = "/data/Run2UltraLegacy_v3/Run2/BDTClassifier/results_xml/HNL_ULID/"+version+"/";
   TString MVAPathV1 = "/data/Run2UltraLegacy_v3/Run2/BDTClassifier/results_xml/HNL_ULID/V1/";
+  if(HasFlag("Merged")) MVAPath = "/data/Run2UltraLegacy_v3/Run2/BDTClassifier/results_xml_merged/HNL_ULID/V3/"; // Only valid for V3
 
   MNStrList = {"85", "90", "95", "100", "125", "150", "200", "250", "300", "400", "500"};
   if(version == "V3")   MNStrList = {"85", "90", "95", "100", "125", "150", "200", "250", "300","350", "400", "450","500"};
@@ -439,6 +440,8 @@ void HNL_LeptonCore::SetupEventMVAReaderXML(TString version, bool ee, bool mm, b
       if(im == 9){ NTreeMM = "1000", NCutMM = "100", NTreeEE = "1000", NCutEE = "200", NTreeEM = "1000", NCutEM = "300"; }  // mN = 400 GeV
       if(im == 10){ NTreeMM = "1000", NCutMM = "150", NTreeEE = "700", NCutEE = "300", NTreeEM = "1000", NCutEM = "150"; }  // mN = 500 GeV
     }
+
+    if(HasFlag("Merged")){ NTreeMM = "850", NCutMM = "200", NTreeEE = "850", NCutEE = "200", NTreeEM = "850", NCutEM = "200"; }
 
     TString FileNameMM        = "output_DY_MuMu_M"+MNStrList.at(im)+"_Incl_Run2_NTrees"+NTreeMM+"_NCuts"+NCutMM+"_MaxDepth3_BDT.weights.xml";
     TString FileNameMMFake    = "output_DY_MuMu_M"+MNStrList.at(im)+"_Fake_Run2_NTrees850_NCuts200_MaxDepth3_BDT.weights.xml";
