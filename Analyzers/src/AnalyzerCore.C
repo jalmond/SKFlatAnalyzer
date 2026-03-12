@@ -14,7 +14,6 @@ AnalyzerCore::AnalyzerCore(){
   IsDYSample=false;
   IsTTSample=false;
 
-  runSyst = HasFlag("RunSyst") || HasFlag("RunPlotterSyst");
   /// SETUP PREDEFINED HIST VARIABLE BINNINGS
   SetHistBins();
 }

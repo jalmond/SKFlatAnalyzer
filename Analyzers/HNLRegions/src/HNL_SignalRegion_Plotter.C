@@ -162,8 +162,12 @@ void HNL_SignalRegion_Plotter::RunULAnalysis(AnalyzerParameter param_sr){
 
   //std::vector<FatJet> AK8_JetColl2 = GetHNLAK8Jets(param_sr.AK8JetColl,  param_sr);
   //if(AK8_JetColl2.size()==1) ScaleTag = param_sr.Name+param_sr.Channel;
-  if(param_sr.syst_ == AnalyzerParameter::ScaleUp)   weight *= GetScaleUncertainty(1, ScaleTag);
-  if(param_sr.syst_ == AnalyzerParameter::ScaleDown) weight *= GetScaleUncertainty(-1,ScaleTag);
+  //if(param_sr.syst_ == AnalyzerParameter::ScaleUp)   weight *= GetScaleUncertainty(1, ScaleTag);
+  //if(param_sr.syst_ == AnalyzerParameter::ScaleDown) weight *= GetScaleUncertainty(-1,ScaleTag);
+  if(param_sr.syst_ == AnalyzerParameter::RenScaleUp)   weight *= GetRenScaleUncertainty(1, ScaleTag);
+  if(param_sr.syst_ == AnalyzerParameter::RenScaleDown) weight *= GetRenScaleUncertainty(-1,ScaleTag);
+  if(param_sr.syst_ == AnalyzerParameter::FacScaleUp)   weight *= GetFacScaleUncertainty(1, ScaleTag);
+  if(param_sr.syst_ == AnalyzerParameter::FacScaleDown) weight *= GetFacScaleUncertainty(-1,ScaleTag);
 
   double Min_FakeMuon_Pt     =  5;   double Min_FakeElectron_Pt =  10 ;
   std::vector<Muon>       MuonTightColl_Init     = SelectMuons    ( param_sr,mu_ID,     Min_FakeMuon_Pt, 2.4, weight);

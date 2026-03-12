@@ -49,6 +49,9 @@ void HNL_LeptonCore::initializeAnalyzer(vector<TString> BDTVersions, bool READBK
 
   HEM1516 = HasFlag("HEM1516");
 
+  runSyst = HasFlag("RunSyst") || HasFlag("RunPlotterSyst");
+
+  
   /// clear map
   map_bdt_booked.clear();
 
@@ -521,8 +524,12 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
     //SystList.push_back(AnalyzerParameter::PDFUp);
     //SystList.push_back(AnalyzerParameter::PDFDown);
     SystList.push_back(AnalyzerParameter::PDF);
-    SystList.push_back(AnalyzerParameter::ScaleUp);
-    SystList.push_back(AnalyzerParameter::ScaleDown);
+    //SystList.push_back(AnalyzerParameter::ScaleUp);
+    //SystList.push_back(AnalyzerParameter::ScaleDown);
+    SystList.push_back(AnalyzerParameter::RenScaleUp);
+    SystList.push_back(AnalyzerParameter::RenScaleDown);
+    SystList.push_back(AnalyzerParameter::FacScaleUp);
+    SystList.push_back(AnalyzerParameter::FacScaleDown);
     return SystList;
   }
 
@@ -563,15 +570,16 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
   if(RunCF){
     SystList = {
       AnalyzerParameter::CFRateUp,
-      AnalyzerParameter::CFRateDown,
-      //AnalyzerParameter::CFSFUp,
-      //AnalyzerParameter::CFSFDown
+      AnalyzerParameter::CFRateDown
     };
   }
   
   else if(RunFake){
     SystList.push_back(AnalyzerParameter::FRUp); //// Add 
     SystList.push_back(AnalyzerParameter::FRDown);
+    SystList.push_back(AnalyzerParameter::FRRateUp); //// Add
+    SystList.push_back(AnalyzerParameter::FRRateDown);
+
     //SystList.push_back(AnalyzerParameter::FRAJUp); /// Apply 15% in DataCard
     //SystList.push_back(AnalyzerParameter::FRAJDown); 
     //SystList.push_back(AnalyzerParameter::FRPartonSFUp); /// Apply 10% in DataCard
@@ -728,10 +736,13 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
   }
   
   if(IsSignal() || IsMainPrompt()){
-    SystList.push_back(AnalyzerParameter::PDFUp);
-    SystList.push_back(AnalyzerParameter::PDFDown);
-    SystList.push_back(AnalyzerParameter::ScaleUp);
-    SystList.push_back(AnalyzerParameter::ScaleDown);
+
+    SystList.push_back(AnalyzerParameter::PDF);
+    SystList.push_back(AnalyzerParameter::RenScaleUp);
+    SystList.push_back(AnalyzerParameter::RenScaleDown);
+    SystList.push_back(AnalyzerParameter::FacScaleUp);
+    SystList.push_back(AnalyzerParameter::FacScaleDown);
+
   }
   
   return SystList;

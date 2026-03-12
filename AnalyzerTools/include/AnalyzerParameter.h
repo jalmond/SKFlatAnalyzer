@@ -190,11 +190,14 @@ class AnalyzerParameter{
     CFRateUp,CFRateDown,
     CFSFUp,CFSFDown,
     FRUp,FRDown,
+    FRRateUp,FRRateDown,
     PrefireUp,PrefireDown,
     PUUp,PUDown,
     JetPUIDUp, JetPUIDDown,
     PDF,PDFUp,PDFDown,
     ScaleUp,ScaleDown,
+    RenScaleUp,RenScaleDown,
+    FacScaleUp,FacScaleDown,
     NSyst
   };
 

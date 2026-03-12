@@ -142,8 +142,12 @@ void HNL_ControlRegion_Plotter::RunControlRegions(AnalyzerParameter param_cr, ve
 
   TString ScaleTag = "";
 
-  if(param_cr.syst_ == AnalyzerParameter::ScaleUp)   weight *= GetScaleUncertainty(1, ScaleTag);
-  if(param_cr.syst_ == AnalyzerParameter::ScaleDown) weight *= GetScaleUncertainty(-1,ScaleTag);
+  //if(param_cr.syst_ == AnalyzerParameter::ScaleUp)   weight *= GetScaleUncertainty(1, ScaleTag);
+  //if(param_cr.syst_ == AnalyzerParameter::ScaleDown) weight *= GetScaleUncertainty(-1,ScaleTag);
+  if(param_cr.syst_ == AnalyzerParameter::RenScaleUp)   weight *= GetRenScaleUncertainty(1, ScaleTag);
+  if(param_cr.syst_ == AnalyzerParameter::RenScaleDown) weight *= GetRenScaleUncertainty(-1,ScaleTag);
+  if(param_cr.syst_ == AnalyzerParameter::FacScaleUp)   weight *= GetFacScaleUncertainty(1, ScaleTag);
+  if(param_cr.syst_ == AnalyzerParameter::FacScaleDown) weight *= GetFacScaleUncertainty(-1,ScaleTag);
 
   
   double Min_FakeMuon_Pt     =  5;
