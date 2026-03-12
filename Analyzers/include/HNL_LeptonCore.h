@@ -487,6 +487,7 @@ class HNL_LeptonCore : public AnalyzerCore {
 
   /// Function to check which hists to plot whening running systematics
   bool DrawSyst(AnalyzerParameter& param_sys);
+  bool RunPlotter(AnalyzerParameter& param_sys,TString label );
 
   void FillTandP(bool passProbe, TString Tag, TString ID, double pr_pt,double eta , double weight, TString binstring);
   void FillMuonCollPlots     (bool passSel, TString sel, AnalyzerParameter& param, TString cut,  std::vector<Muon>& muons, double w);

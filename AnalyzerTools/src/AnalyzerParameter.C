@@ -714,6 +714,9 @@ TString AnalyzerParameter::GetSystType(){
   else if(syst_==Syst::CFSFDown)   return "CFSFDown";
   else if(syst_==Syst::FRUp)   return "FRUp";
   else if(syst_==Syst::FRDown)   return "FRDown";
+  else if(syst_==Syst::FRRateUp)   return "FRRateUp";
+  else if(syst_==Syst::FRRateDown)   return "FRRateDown";
+
   else if(syst_==Syst::PDF)   return "PDF";
   else if(syst_==Syst::PDFUp)   return "PDFUp";
   else if(syst_==Syst::PDFDown)   return "PDFDown";

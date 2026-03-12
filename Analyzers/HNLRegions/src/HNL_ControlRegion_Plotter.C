@@ -43,7 +43,7 @@ void HNL_ControlRegion_Plotter::executeEvent(){
 
   /// Run All CRs for AN
   if(HasFlag("MultiLepton")) {
-    if(HasFlag("RunSyst"))CRToRun = {"SS_CR","LLL_VR"};
+    if(runSyst)CRToRun = {"SS_CR","LLL_VR"};
     else CRToRun = {"SS_CR","VBF_CR","LLL_VR"};
   }
   
@@ -66,7 +66,7 @@ void HNL_ControlRegion_Plotter::executeEvent(){
       if(channel != MuMu  && id =="TopHN") continue;
       
       AnalyzerParameter param_cr = Setup_Param_HNL_ULIDv2(id,GetChannelString(channel));
-      if(HasFlag("RunSyst")){
+      if(runSyst){
 	/// Some code to remove unnecessary Syst runs
 
 	if(!PassMETFilter()) return;
