@@ -116,12 +116,13 @@ void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq,
     std::vector<Lepton *> LepsT       = MakeLeptonPointerVector(muons,     electrons,     param);
     std::vector<Lepton *> LepsV       = MakeLeptonPointerVector(muons_veto,electrons_veto,param);
 
-    if(param.IsCentral()){
-      if(IsSignal())Fill_RegionPlots(param,"Signal_NoCut" , TauColl,
-						    All_Jets,  All_FatJets, LepsV,
-						    METv, nPV, weight_ll);
+    if(!runSyst){
+      if(param.IsCentral()){
+	if(IsSignal())Fill_RegionPlots(param,"Signal_NoCut" , TauColl,
+				       All_Jets,  All_FatJets, LepsV,
+				       METv, nPV, weight_ll);
+      }
     }
-
 
     //// Set METST value after shifting Electrons                                                                                                                                                                                             
     ev.SetMET2ST(GetMET2ST(LepsT, JetColl, AK8_JetColl, METv));
@@ -511,10 +512,12 @@ void   HNL_RegionDefinitions::RunMainRegionCode(bool IsSR,HNL_LeptonCore::Channe
 	//FillLimitInput(LimitRegionsR1, weight_reg,   RegionBin,  "LimitExtraction/"+param.Name,"SR1_"+channel_string,channel_string);
 	
 	
-	if(IsSR&&param.IsCentral() && sr1_fill_plot) Fill_RegionPlots(param,"AllSR" , TauColl, 
-									    JetColl, AK8_JetColl, LepsT, 
-									    METv, nPV, weight_reg);
-
+	if(!runSyst){
+	  if(IsSR&&param.IsCentral() && sr1_fill_plot) Fill_RegionPlots(param,"AllSR" , TauColl, 
+									JetColl, AK8_JetColl, LepsT, 
+									METv, nPV, weight_reg);
+	}
+	
 	if(sr1_fill_plot){
 	  if(IsSR)FillCutflow(HNL_LeptonCore::ChannelDepSR1, weight_reg, channel_string +"_SR1",param);
 	  else FillCutflow(HNL_LeptonCore::ChannelDepCR1, weight_reg, channel_string +"_CR1",param);
@@ -558,9 +561,11 @@ void   HNL_RegionDefinitions::RunMainRegionCode(bool IsSR,HNL_LeptonCore::Channe
       if(param.syst_ == AnalyzerParameter::PDFUp)   weight_reg*=GetPDFUncertainty("SR2",1);
       if(param.syst_ == AnalyzerParameter::PDFDown) weight_reg*=GetPDFUncertainty("SR2",-1);
 
-     
-      if(IsSR&&param.IsCentral()) Fill_RegionPlots(param,"AllSR" , TauColl, JetColl, AK8_JetColl, LepsT,  METv, nPV, weight_reg);
 
+      if(!runSyst){
+	if(IsSR&&param.IsCentral()) Fill_RegionPlots(param,"AllSR" , TauColl, JetColl, AK8_JetColl, LepsT,  METv, nPV, weight_reg);
+      }
+      
       if(IsSR)FillCutflow(HNL_LeptonCore::ChannelDepSR2, weight_reg, channel_string +"_SR2",param);
       else FillCutflow(HNL_LeptonCore::ChannelDepCR2, weight_reg, channel_string +"_CR2",param);
       
@@ -687,8 +692,11 @@ void   HNL_RegionDefinitions::RunMainRegionCode(bool IsSR,HNL_LeptonCore::Channe
 
 	//CheckBin("DYType",RegionBin,"SR3_bin4",channel,param,LepsT,JetColl, AK8_JetColl,B_JetColl, METv,weight_reg);
 	
+
+	if(!runSyst){
+	  if(IsSR&&param.IsCentral()) Fill_RegionPlots(param,"AllSR" , TauColl, JetColl, AK8_JetColl, LepsT,  METv, nPV, weight_reg);
+	}
 	
-	if(IsSR&&param.IsCentral()) Fill_RegionPlots(param,"AllSR" , TauColl, JetColl, AK8_JetColl, LepsT,  METv, nPV, weight_reg);
 	if(IsSR) FillCutflow(HNL_LeptonCore::ChannelDepSR3HM, weight_reg, channel_string +"_SR3",param);
 	else  FillCutflow(HNL_LeptonCore::ChannelDepCR3HM, weight_reg, channel_string +"_CR3",param)  ;
 	
@@ -753,8 +761,10 @@ bool  HNL_RegionDefinitions::PassPreselection(bool ApplyForSR,HNL_LeptonCore::Ch
   if(ApplyForSR) FillCutflow(HNL_LeptonCore::SRLowMass, w, "Preselection",param);
   if(ApplyForSR) FillCutflow(HNL_LeptonCore::SRHighMass, w, "Preselection",param);
 
-  if(param.IsCentral())Fill_RegionPlots(param,"Preselection" , TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);
-  if(param.IsCentral())Fill_RegionPlots(param,"Preselection_vbf" , TauColl, VBF_JetColl, AK8_JetColl, leps,  METv, nPV, w);
+  if(!runSyst){
+    if(param.IsCentral())Fill_RegionPlots(param,"Preselection" , TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);
+    if(param.IsCentral())Fill_RegionPlots(param,"Preselection_vbf" , TauColl, VBF_JetColl, AK8_JetColl, leps,  METv, nPV, w);
+  }
   
   FillCutflow(HNL_LeptonCore::ChannelDepPresel, w, GetChannelString(channel) +"_Presel",param);
   
@@ -810,7 +820,9 @@ TString HNL_RegionDefinitions::RunSignalRegionAK8String(bool ApplyForSR,
   if (leps_veto.size() != 2) return "false";
 
   if(fill_plots){
-    if(param.IsCentral()) Fill_RegionPlots(param,"Inclusive"+RegionTag , TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);
+    if(!runSyst){
+      if(param.IsCentral()) Fill_RegionPlots(param,"Inclusive"+RegionTag , TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);
+    }
   }
   
   if(leps[1]->Pt() < 20) return "false";
@@ -844,14 +856,12 @@ TString HNL_RegionDefinitions::RunSignalRegionAK8String(bool ApplyForSR,
   Particle Wcand = AK8_JetColl[0] + *leps[0] + *leps[1];
   
   //// Fill Plots before All SR cuts for better stats 
-  if(param.IsCentral())  {
-    if(fill_plots){
-      if(ApplyForSR) Fill_RegionPlots(param,"Pass"+RegionTag ,  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);
-      else{
-	
-	if(B_JetColl.size() ==1) Fill_RegionPlots(param,"Pass"+RegionTag+"_InvBJet" ,  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);
-	else    Fill_RegionPlots(param,"Pass"+RegionTag+"_InvMET" ,  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);
-      }
+  if(fill_plots){
+    if(ApplyForSR) Fill_RegionPlots(param,"Pass"+RegionTag ,  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);
+    else{
+      
+      if(B_JetColl.size() ==1) Fill_RegionPlots(param,"Pass"+RegionTag+"_InvBJet" ,  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);
+      else    Fill_RegionPlots(param,"Pass"+RegionTag+"_InvMET" ,  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);
     }
   }
   
@@ -941,8 +951,9 @@ TString HNL_RegionDefinitions::RunSignalRegionWWString(bool ApplyForSR,HNL_Lepto
   if(maxDiJetDeta < 2.5) return "false";
   FillCutflow(Reg, w, RegionTag+"_DiJetEta",param);
 
-  if(param.IsCentral()) Fill_RegionPlots(param,"Inclusive"+RegionTag ,  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);
- 
+  if(!runSyst){
+    if(param.IsCentral()) Fill_RegionPlots(param,"Inclusive"+RegionTag ,  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);
+  }
   
   Particle JJ = JetColl[ijet1] + JetColl[ijet2];
   if(ApplyForSR) {
@@ -964,7 +975,9 @@ TString HNL_RegionDefinitions::RunSignalRegionWWString(bool ApplyForSR,HNL_Lepto
     
   if(ApplyForSR) FillCutflow(HNL_LeptonCore::SRLowMass, w, "SR2",param);
   if(ApplyForSR) FillCutflow(HNL_LeptonCore::SRHighMass, w, "SR2",param);
-  if(param.IsCentral()) Fill_RegionPlots(param,"PassVBF"+RegionTag ,  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);
+  if(!runSyst){
+    if(param.IsCentral()) Fill_RegionPlots(param,"PassVBF"+RegionTag ,  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);
+  }
   
   FillCutflow(Reg, w, RegionTag+"_VBF",param);
 
@@ -973,14 +986,12 @@ TString HNL_RegionDefinitions::RunSignalRegionWWString(bool ApplyForSR,HNL_Lepto
     if(PassHMMet) FillCutflow(Reg, w, RegionTag+"_met",param);
     if(PassBJetMVeto) FillCutflow(Reg, w, RegionTag+"_bveto",param);
 
-    if(param.IsCentral()){
-      if(ApplyForSR)        Fill_RegionPlots(param,"Pass"+RegionTag ,  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);      
-      else{
-	if(B_JetColl.size() ==1)   Fill_RegionPlots(param,"Pass"+RegionTag+"_InvBJet" ,  TauColl, JetColl, AK8_JetColl, leps,  METv,    nPV, w);
-	else     Fill_RegionPlots(param,"Pass"+RegionTag+"_InvMET" ,  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);
-      }
+    if(ApplyForSR)        Fill_RegionPlots(param,"Pass"+RegionTag ,  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);      
+    else{
+      if(B_JetColl.size() ==1)   Fill_RegionPlots(param,"Pass"+RegionTag+"_InvBJet" ,  TauColl, JetColl, AK8_JetColl, leps,  METv,    nPV, w);
+      else     Fill_RegionPlots(param,"Pass"+RegionTag+"_InvMET" ,  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);
     }
-
+    
     double HTOverPT = leps[0]->HTOverPt();
     
     FillCutflow(Reg, w, RegionTag+"_ht_lt1",param);
@@ -1150,17 +1161,14 @@ TString HNL_RegionDefinitions::RunSignalRegionAK4StringBDT(bool ApplyForSR, TStr
     else FillHist("LimitExtraction/"+param.Name+"/"+RegionTag+"BDT/InvMET_"+BDTLabel, MVAvalueIncl, w, 400, -1., 1.);
   }
 
-  if(ApplyForSR && param.syst_ ==AnalyzerParameter::Central && !HasFlag("RunSyst") && Binning == "Strict_15_Bin")   FillHist("LimitExtraction/"+param.Name+"/"+RegionTag+"BDT/"+BDTLabel_simple, MVAvalueIncl, w, 400, -1., 1.);
+  if((ApplyForSR && param.syst_ ==AnalyzerParameter::Central && !runSyst) && Binning == "Strict_15_Bin")   FillHist("LimitExtraction/"+param.Name+"/"+RegionTag+"BDT/"+BDTLabel_simple, MVAvalueIncl, w, 400, -1., 1.);
+  
 
-
-  if(param.IsCentral()) {
-  //if(FillCutFlow&&ApplyForSR&&param.IsCentral()) {
-    if(ApplyForSR ) Fill_RegionPlots(param,"Pass"+RegionTag+"BDT" ,TauColl,  JetColl, AK8_JetColl, LepTColl,  METv, nPV, w);
-    else{
-      if(B_JetColl.size() ==1)   Fill_RegionPlots(param,"Pass"+RegionTag+"BDT_InvBJet" ,  TauColl, JetColl, AK8_JetColl, LepTColl,  METv,    nPV, w);
-      else     Fill_RegionPlots(param,"Pass"+RegionTag+"BDT_InvMET" ,  TauColl, JetColl, AK8_JetColl, LepTColl,  METv, nPV, w);
-    } 
-  }
+  if(ApplyForSR ) Fill_RegionPlots(param,"Pass"+RegionTag+"BDT" ,TauColl,  JetColl, AK8_JetColl, LepTColl,  METv, nPV, w);
+  else{
+    if(B_JetColl.size() ==1)   Fill_RegionPlots(param,"Pass"+RegionTag+"BDT_InvBJet" ,  TauColl, JetColl, AK8_JetColl, LepTColl,  METv,    nPV, w);
+    else     Fill_RegionPlots(param,"Pass"+RegionTag+"BDT_InvMET" ,  TauColl, JetColl, AK8_JetColl, LepTColl,  METv, nPV, w);
+  } 
 
   if(FillCutFlow){
     if(ApplyForSR)FillCutflow(HNL_LeptonCore::ChannelDepSR3, w, GetChannelString(channel) +"_"+RegionTag,param);
@@ -1242,8 +1250,10 @@ TString HNL_RegionDefinitions::RunSignalRegionAK4String(bool ApplyForSR,HNL_Lept
   if(!CheckLeptonFlavourForChannel(channel, leps)) return "false";
 
   FillCutflow(Reg, w, RegionTag+"_lep_pt",param);
-  if(param.IsCentral()) Fill_RegionPlots(param,"Inclusive"+RegionTag ,TauColl,  JetColl, AK8_JetColl, leps,  METv, nPV, w);
-
+  if(!runSyst){
+    if(param.IsCentral()) Fill_RegionPlots(param,"Inclusive"+RegionTag ,TauColl,  JetColl, AK8_JetColl, leps,  METv, nPV, w);
+  }
+  
   if (leps_veto.size() != 2) return "false";
 
   //  if(TauColl.size() > 0) return "false";
@@ -1285,19 +1295,19 @@ TString HNL_RegionDefinitions::RunSignalRegionAK4String(bool ApplyForSR,HNL_Lept
 
   //Fill_RegionPlots(param,"Pass"+RegionTag ,TauColl,  JetColl, AK8_JetColl, leps,  METv, nPV, w);
 
-  if(param.IsCentral()){
-    if(ApplyForSR)        Fill_RegionPlots(param,"Pass"+RegionTag ,  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);
-    else{
-      if(B_JetColl.size() ==1)   Fill_RegionPlots(param,"Pass"+RegionTag+"_InvBJet" ,  TauColl, JetColl, AK8_JetColl, leps,  METv,    nPV, w);
-      else     Fill_RegionPlots(param,"Pass"+RegionTag+"_InvMET" ,  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);
-    }
+  if(ApplyForSR)        Fill_RegionPlots(param,"Pass"+RegionTag ,  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);
+  else{
+    if(B_JetColl.size() ==1)   Fill_RegionPlots(param,"Pass"+RegionTag+"_InvBJet" ,  TauColl, JetColl, AK8_JetColl, leps,  METv,    nPV, w);
+    else     Fill_RegionPlots(param,"Pass"+RegionTag+"_InvMET" ,  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);
   }
 
   ////// Set Limit Binned 
   if(ApplyForSR && JetColl.size() < 2){
     FillCutflow(Reg, w, RegionTag+"_lowjet",param);
-    if(param.IsCentral()){
-      Fill_RegionPlots(param,"Pass"+RegionTag+"_LowJet" ,TauColl,  JetColl, AK8_JetColl, leps,  METv, nPV, w);
+    if(!runSyst){
+      if(param.IsCentral()){
+	Fill_RegionPlots(param,"Pass"+RegionTag+"_LowJet" ,TauColl,  JetColl, AK8_JetColl, leps,  METv, nPV, w);
+      }
     }
 
 
@@ -1351,8 +1361,10 @@ TString HNL_RegionDefinitions::RunSignalRegionAK4String(bool ApplyForSR,HNL_Lept
     if(Wcand.M() < 400) return "false";
   }
 
-  if(ApplyForSR&&param.IsCentral()){
-    Fill_RegionPlots(param,"Pass"+RegionTag +"_DiJet",  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);
+  if(!runSyst){
+    if(ApplyForSR&&param.IsCentral()){
+      Fill_RegionPlots(param,"Pass"+RegionTag +"_DiJet",  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);
+    }
   }
 
   TString LimitBin = GetSR3StringBin(RegionTag,GetChannelString(channel), false, met2_st,LT,ll_dphi);

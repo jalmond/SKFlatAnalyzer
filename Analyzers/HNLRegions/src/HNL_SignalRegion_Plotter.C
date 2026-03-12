@@ -96,8 +96,8 @@ void HNL_SignalRegion_Plotter::executeEvent(){
       TString param_sr_defname = param_sr.DefName;
       TString SystLabel = GetChannelString(channel);
 
-      if(HasFlag("RunSyst")){
-
+      if(runSyst){
+	
 	if(!PassMETFilter()) return;
 
 	Event ev = GetEvent();
