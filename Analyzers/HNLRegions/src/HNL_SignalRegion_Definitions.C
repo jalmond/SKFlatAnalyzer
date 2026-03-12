@@ -1153,8 +1153,8 @@ TString HNL_RegionDefinitions::RunSignalRegionAK4StringBDT(bool ApplyForSR, TStr
   if(ApplyForSR && param.syst_ ==AnalyzerParameter::Central && !HasFlag("RunSyst") && Binning == "Strict_15_Bin")   FillHist("LimitExtraction/"+param.Name+"/"+RegionTag+"BDT/"+BDTLabel_simple, MVAvalueIncl, w, 400, -1., 1.);
 
 
-
-  if(FillCutFlow&&ApplyForSR&&param.IsCentral()) {
+  if(param.IsCentral()) {
+  //if(FillCutFlow&&ApplyForSR&&param.IsCentral()) {
     if(ApplyForSR ) Fill_RegionPlots(param,"Pass"+RegionTag+"BDT" ,TauColl,  JetColl, AK8_JetColl, LepTColl,  METv, nPV, w);
     else{
       if(B_JetColl.size() ==1)   Fill_RegionPlots(param,"Pass"+RegionTag+"BDT_InvBJet" ,  TauColl, JetColl, AK8_JetColl, LepTColl,  METv,    nPV, w);
@@ -1283,7 +1283,15 @@ TString HNL_RegionDefinitions::RunSignalRegionAK4String(bool ApplyForSR,HNL_Lept
   
   double ll_dphi = fabs(TVector2::Phi_mpi_pi( ( (*leps[0]).Phi() - (*leps[1]).Phi() )) );                                                        
 
-  Fill_RegionPlots(param,"Pass"+RegionTag ,TauColl,  JetColl, AK8_JetColl, leps,  METv, nPV, w);
+  //Fill_RegionPlots(param,"Pass"+RegionTag ,TauColl,  JetColl, AK8_JetColl, leps,  METv, nPV, w);
+
+  if(param.IsCentral()){
+    if(ApplyForSR)        Fill_RegionPlots(param,"Pass"+RegionTag ,  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);
+    else{
+      if(B_JetColl.size() ==1)   Fill_RegionPlots(param,"Pass"+RegionTag+"_InvBJet" ,  TauColl, JetColl, AK8_JetColl, leps,  METv,    nPV, w);
+      else     Fill_RegionPlots(param,"Pass"+RegionTag+"_InvMET" ,  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);
+    }
+  }
 
   ////// Set Limit Binned 
   if(ApplyForSR && JetColl.size() < 2){
