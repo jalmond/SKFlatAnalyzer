@@ -63,7 +63,9 @@ void HNL_LeptonCore::SetupEventMVAReaderInit(TString version, bool ee, bool mm, 
     MVAReaderMM->AddVariable("M_W2_jj", &ev_bdt_M_W2_jj);
     MVAReaderMM->AddVariable("M_N1_l1jj", &ev_bdt_M_N1_l1jj);
     MVAReaderMM->AddVariable("M_N2_l2jj", &ev_bdt_M_N2_l2jj);
-    MVAReaderMM->AddSpectator("w_tot", &w_tot);
+
+    if(HasFlag("Merged")) MVAReaderMM->AddSpectator("w_norm", &w_tot);
+    else MVAReaderMM->AddSpectator("w_tot", &w_tot);
 
     if(version=="V1"){
       MVAReaderMMFake->AddVariable("Nvbfj", &ev_bdt_Nvbfj);
@@ -180,7 +182,9 @@ void HNL_LeptonCore::SetupEventMVAReaderInit(TString version, bool ee, bool mm, 
     MVAReaderEE->AddVariable("M_W2_jj", &ev_bdt_M_W2_jj);
     MVAReaderEE->AddVariable("M_N1_l1jj", &ev_bdt_M_N1_l1jj);
     MVAReaderEE->AddVariable("M_N2_l2jj", &ev_bdt_M_N2_l2jj);
-    MVAReaderEE->AddSpectator("w_tot", &w_tot);
+
+    if(HasFlag("Merged")) MVAReaderEE->AddSpectator("w_norm", &w_tot);
+    else MVAReaderEE->AddSpectator("w_tot", &w_tot);
 
     if(version=="V1"){
 
@@ -299,7 +303,9 @@ void HNL_LeptonCore::SetupEventMVAReaderInit(TString version, bool ee, bool mm, 
     MVAReaderEM->AddVariable("M_W2_jj", &ev_bdt_M_W2_jj);
     MVAReaderEM->AddVariable("M_N1_l1jj", &ev_bdt_M_N1_l1jj);
     MVAReaderEM->AddVariable("M_N2_l2jj", &ev_bdt_M_N2_l2jj);
-    MVAReaderEM->AddSpectator("w_tot", &w_tot);
+
+    if(HasFlag("Merged")) MVAReaderEM->AddSpectator("w_norm", &w_tot);
+    else MVAReaderEM->AddSpectator("w_tot", &w_tot);
 
     if(version=="V1"){
       MVAReaderEMFake->AddVariable("Nvbfj", &ev_bdt_Nvbfj);
