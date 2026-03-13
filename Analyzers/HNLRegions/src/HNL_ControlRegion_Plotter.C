@@ -88,8 +88,25 @@ void HNL_ControlRegion_Plotter::executeEvent(){
 	}
       }
       
+      /// set runplotter true for non syst and if runsyst only for RunSystPlotter runs
+      if(HasFlag("RunSyst")&& !HasFlag("RunSystPlotter"))  param_cr.runPlotter = false;
+      else if(HasFlag("RunSyst")&&HasFlag("RunSystPlotter")) param_cr.runPlotter = true;
+      else  param_cr.runPlotter = true;
       
       for(auto iCR : CRToRun)	  RunControlRegions(param_cr , {iCR} );
+
+
+      //// Run plotter for specific systematics                                                                                                                                                                    
+      vector<AnalyzerParameter::Syst> SystToPlot = {AnalyzerParameter::Syst::Central};
+      if(HasFlag("RunSyst") && HasFlag("RunSystPlotter")){
+        if(IsData){
+          if(RunFake) SystToPlot= {AnalyzerParameter::Syst::FRUp,AnalyzerParameter::Syst::FRDown};
+	  if(RunCF)   SystToPlot= {AnalyzerParameter::Syst::CFRateUp,AnalyzerParameter::Syst::CFRateDown};
+        }
+        else {
+	  SystToPlot= {AnalyzerParameter::Syst::JetEnUp, AnalyzerParameter::Syst::JetEnDown,AnalyzerParameter::ScaleUp,AnalyzerParameter::ScaleDown, AnalyzerParameter::JetResUp,AnalyzerParameter::JetResDown,AnalyzerParameter::JetPNETUp,AnalyzerParameter::JetPNETDown,AnalyzerParameter::MuonResUp,AnalyzerParameter::MuonResDown,AnalyzerParameter::MuonEnUp,AnalyzerParameter::MuonEnDown,AnalyzerParameter::ElectronEnUp,AnalyzerParameter::ElectronEnDown,AnalyzerParameter::ElectronResUp,AnalyzerParameter::ElectronResDown,AnalyzerParameter::RenScaleUp,AnalyzerParameter::RenScaleDown,AnalyzerParameter::FacScaleUp,AnalyzerParameter::FacScaleDown};
+        }
+      } 
       
       for(auto iCR : CRToRun){
 
@@ -100,6 +117,10 @@ void HNL_ControlRegion_Plotter::executeEvent(){
 	TString SystString=GetChannelString(channel);
 	
 	for(auto isyst : GetSystList(SystString)){
+
+	  if(std::find(SystToPlot.begin(), SystToPlot.end(), isyst) != SystToPlot.end()) param_cr.runPlotter = true;
+	  else  param_cr.runPlotter = false;
+
 	  bool runJob = UpdateParamBySyst(id,param_cr,AnalyzerParameter::Syst(isyst),param_name);
 	  if(runJob)         RunControlRegions(param_cr , {iCR} );
 	  /// Reset 

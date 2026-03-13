@@ -278,7 +278,9 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
 	//if(FillWZVBF2CRPlots      (trilep_channel, LepsT, LepsV,TauColl_Cleaned, VBF_JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTrilep, weight_channel)) passedFull.push_back("WZ_SR2b");
 
 
+	//// Dont run these extra CRs if running full syst jobs
 	if(!runSyst){
+
 	  ///// Top CR
 	  ///// AN [1] :   FillWZBCRPlots is Table11 WZ SR anti-bjet AM2019_089_v7 (Jet cut 50 -> 30 ; m(lll) > 100 ->105)
 	  if(FillWZBCRPlots      (trilep_channel, LepsT, LepsV,TauColl_Cleaned, VBF_JetColl, AK8_JetColl, B_JetColl, ev, METv, paramTrilep, weight_channel)) passedMain.push_back("WZB_CR");
@@ -346,6 +348,7 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
       if(FillSSPreselectionPlots(dilep_channel,    LepsT, LepsV,TauColl_Cleaned, JetColl,     AK8_JetColl, B_JetColl, ev, METv, param, weight_channel))	{
 	passedFull.push_back("SSPresel");
 
+	//// Dont run these extra CRs if running full syst jobs                                                                                                                               
 	if(!runSyst){
 	  if(RunCR("SS_CR",CRs) || RunCR("SS_CR1",CRs)){
 	    // Fill High Mass SR1 and SR2 CR Plots
@@ -382,8 +385,9 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
 	
 	  FillSSZPeakCRPlots(dilep_channel, LepsT, LepsV,TauColl_Cleaned, JetColl, VBF_JetColl, AK8_JetColl, B_JetColl, ev, METv, param, weight_channel);
 	
-	}
-	
+	} // end of runsyst check
+
+	/// Run Main CRs
 	RunMainRegionCode(false, dilep_channel, Inclusive, LepsT, LepsV,TauColl_Cleaned,JetColl, VBF_JetColl, AK8_JetColl, B_JetColl, ev, METv, param, weight_channel);
 	
       }

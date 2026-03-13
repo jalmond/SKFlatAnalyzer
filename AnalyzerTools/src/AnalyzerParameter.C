@@ -14,7 +14,8 @@ void AnalyzerParameter::Clear(){
   MCCorrrectionIgnoreNoHist = false;
   DEBUG = false;
   isocut = -1;
-  
+
+  runPlotter=true;
   PlottingVerbose = 1;
   WriteOutVerbose = 1;
   SRConfig="";
@@ -181,6 +182,8 @@ AnalyzerParameter::AnalyzerParameter(){
 
   MCCorrrectionIgnoreNoHist = false;
   DEBUG = false;
+
+  runPlotter=true;
 
   PlottingVerbose=1;
   WriteOutVerbose =1;
