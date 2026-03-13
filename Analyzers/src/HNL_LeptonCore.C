@@ -49,7 +49,7 @@ void HNL_LeptonCore::initializeAnalyzer(vector<TString> BDTVersions, bool READBK
 
   HEM1516 = HasFlag("HEM1516");
 
-  runSyst = HasFlag("RunSyst") || HasFlag("RunPlotterSyst");
+  runSyst = HasFlag("RunSyst") ;
 
   
   /// clear map
@@ -601,25 +601,6 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
       return SystList;
     }
 
-    if(HasFlag("RunPlotterSyst")){
-      SystList = {AnalyzerParameter::JetResUp,AnalyzerParameter::JetResDown,
-	AnalyzerParameter::JetEnUp, AnalyzerParameter::JetEnDown,
-	AnalyzerParameter::JetPNETUp,AnalyzerParameter::JetPNETDown,
-      };
-
-      if(SystType=="MuMu" || SystType=="EMu"){
-	SystList.push_back(AnalyzerParameter::MuonEnUp);
-	SystList.push_back(AnalyzerParameter::MuonEnDown);
-	SystList.push_back(AnalyzerParameter::MuonResUp);
-	SystList.push_back(AnalyzerParameter::MuonResDown);
-      }
-      if(SystType=="EE" || SystType=="EMu"){
-	SystList.push_back(AnalyzerParameter::ElectronResUp);
-	SystList.push_back(AnalyzerParameter::ElectronResDown);
-	SystList.push_back(AnalyzerParameter::ElectronEnUp);
-	SystList.push_back(AnalyzerParameter::ElectronEnDown);
-      }
-    }
     
     if(HasFlag("RunSyst")){
       

@@ -142,22 +142,23 @@ bool  HNL_LeptonCore::RunPlotter(AnalyzerParameter& param,TString label ){
 
     /// Only run main nuisance but not if running runsyst
     if (HasFlag("RunSyst")) return false;
-    if(!DrawSyst(param)) return false;
+    //  if(!DrawSyst(param)) return false;
     return true;
   }
   if (label == "Main") {
-    if(!DrawSyst(param)) return false;
+    //if(!DrawSyst(param)) return false;
     return true;
   }
 
   if (HasFlag("RunSyst")) return false;
-
   return false;
 
 }
 
 void HNL_LeptonCore::Fill_RegionPlots(AnalyzerParameter& param, TString plot_dir, vector<Tau>& taus,   std::vector<Jet>& jets,    std::vector<FatJet>& fatjets, std::vector<Lepton *>& leps , Particle&  met, double nvtx,  double w){
 
+  if(!param.runPlotter)  return;
+  
   // Initial region plots
   Fill_RegionPlotsFull(param, plot_dir, taus, jets, fatjets, leps, met, nvtx, w);
   
@@ -185,7 +186,7 @@ void HNL_LeptonCore::Fill_RegionPlots(AnalyzerParameter& param, TString plot_dir
 void HNL_LeptonCore::Fill_RegionPlots(AnalyzerParameter& param, TString plot_dir,   std::vector<Jet>& jets,    std::vector<FatJet>& fatjets, std::vector<Lepton *>& leps , Particle&  met, double nvtx,  double w){
 
 
-  if (HasFlag("RunSyst")) return;
+  if(!param.runPlotter)  return;
 
   std::vector<Tau> emptyTaus;
   Fill_RegionPlotsFull(param, plot_dir, emptyTaus, jets, fatjets, leps, met, nvtx, w);
@@ -325,9 +326,9 @@ void HNL_LeptonCore::Fill_Main_Plots(AnalyzerParameter& param, TString  region, 
     FillHist( plot_dir+ region+ "/MainPlots/HT_PT1",     leps[0]->HTOverPt(),     w, 100, 0, 10, "H_{T}/p_{T}");
     double ll_dphi = fabs(TVector2::Phi_mpi_pi( ( (*leps[0]).Phi() - (*leps[1]).Phi() )) );
 
-    if(User("jalmond"))  {
-      FillHist( plot_dir+ region+ "/MainPlots/SR2_Scan",  min(9.0,leps[0]->HTOverPt()), ll_dphi, min(199.0,(*leps[1]).Pt()), w, 100, 0, 10,50, 0, 5.0, 20, 0, 200);
-    }
+    //    if(User("jalmond"))  {
+    //   FillHist( plot_dir+ region+ "/MainPlots/SR2_Scan",  min(9.0,leps[0]->HTOverPt()), ll_dphi, min(199.0,(*leps[1]).Pt()), w, 100, 0, 10,50, 0, 5.0, 20, 0, 200);
+    // }
     
     
     if(ll_dphi > 2.)     FillHist( plot_dir+ region+ "/MainPlots/HT_PT1_HighDphi",     leps[0]->HTOverPt(),     w, 100, 0, 10, "H_{T}/p_{T}");

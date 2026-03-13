@@ -53,7 +53,8 @@ class AnalyzerParameter{
   /// Other
   TString SRConfig;
   int SystDir_PU,WriteOutVerbose, PlottingVerbose;
-
+  bool runPlotter;
+  
   std::string SystDir_BTag,  BJet_Method,   FakeMethod,CFMethod,  ConvMethod;
 
   vector<TString> Jobs;
