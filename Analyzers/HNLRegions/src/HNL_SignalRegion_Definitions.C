@@ -1078,6 +1078,12 @@ TString HNL_RegionDefinitions::RunSignalRegionWWString(bool ApplyForSR,HNL_Lepto
       }
       
       if(HasFlag("SingularBinning")) cuts  ={2.0, 2.5, 1.5, 2.5};
+      if(HasFlag("SR_FlavDep")){
+	if(chan == HNL_LeptonCore::Channel::MuMu) cuts = {2.0, 2.5, 1.5, 2.5};
+	if(chan == HNL_LeptonCore::Channel::EE)  cuts =   {1.6, 2.4, 1.0, 2.0};
+	if(chan == HNL_LeptonCore::Channel::EMu) cuts =   {1.5, 2.5, 1.2, 1.7};
+      }
+
       
       // Bin selection (preserves your original logic)
       if (ll_dphi > 2.0) {
