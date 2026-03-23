@@ -138,7 +138,7 @@ bool  HNL_LeptonCore::RunPlotter(AnalyzerParameter& param,TString label ){
 
   if (Analyzer == "HNL_SignalRegion_TestRun")  return false;
 
-  if (label == "Fill_Plots) {
+  if (label == "Fill_Plots") {
     if (HasFlag("RunSyst")) return false;
     return true;
   }
