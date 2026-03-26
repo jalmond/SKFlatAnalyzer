@@ -261,6 +261,9 @@ vector<double> HNL_LeptonCore::GetLimitBinBoundary(const TString& SR, TString ma
     if(channel=="EE")   return { 0., 440.0, 510.0, 605.0, 670.0, 755.0, 985.0 , 2000.};
     if(channel=="EMu")  return { 0., 215.0, 495.0, 600.0, 715.0, 860.0, 1030.0, 2000};
   }
+  if(HasFlag("SingularBinning")){
+    return { 0., 125.0, 375.0, 435.0, 495.0, 575.0, 755.0 , 2000.};
+  }
   
   TString key = (channel == "") ? SR : SR+"_"+channel+"_"+mass_ref;
   
