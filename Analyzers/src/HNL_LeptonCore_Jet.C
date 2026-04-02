@@ -45,7 +45,7 @@ void  HNL_LeptonCore::EvalJetWeight(const std::vector<Jet>&    AK4_JetColl, cons
     // Apply b-tagging SF and update weights
     double sf_btag = GetBJetSF(param, BJetColl, param_jets);
     w *= sf_btag;
-
+    
     if (run_Debug) {
       std::cout << "[DEBUG] BTagSF applied: sf_btag=" << sf_btag
 		<< "  new_weight=" << w
@@ -64,6 +64,9 @@ void  HNL_LeptonCore::EvalJetWeight(const std::vector<Jet>&    AK4_JetColl, cons
     // Store the SF and fill the histogram
     param.w.btagSF = sf_btag;
     FillWeightHist(param.ChannelDir() + "/" + param.BTagger + "SF" + param.BWP, sf_btag);
+    // store Tight SF
+    if(Analyzer=="HNL_ControlRegion_Plotter") param.w.btagSF_tight =  GetBJetSF(param, BJetColl, JetTagging::Parameters(JetTagging::DeepJet, JetTagging::Tight, JetTagging::incl, JetTagging::mujets));;
+    
   }
 
 
