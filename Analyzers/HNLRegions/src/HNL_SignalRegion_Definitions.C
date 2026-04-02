@@ -896,7 +896,7 @@ TString HNL_RegionDefinitions::RunSignalRegionAK8String(bool ApplyForSR,
     //    if(HasFlag("ApplyWMassCut") && (Wcand.M() < 300)) return "false";
     if(fill_plots){
       FillHist(  "LimitExtraction/"+ param.Name+"/"+RegionTag+"/Inv_SR1",0,  w, 1,0,1 ,"CR Binned");
-      if(B_JetColl_CR.size() == 1)      FillHist(  "LimitExtraction/"+ param.Name+"/"+RegionTag+"/InvBJet_SR1",0,  w, 1,0,1 ,"CR Binned");
+      if(B_JetColl_CR.size() == 1)      FillHist(  "LimitExtraction/"+ param.Name+"/"+RegionTag+"/InvBJet_SR1",0,  w*param.w.btagSF_tight/param.w.btagSF, 1,0,1 ,"CR Binned");
       else  FillHist(  "LimitExtraction/"+ param.Name+"/"+RegionTag+"/InvMET_SR1",0,  w, 1,0,1 ,"CR Binned");
     }
     return "CR1";
