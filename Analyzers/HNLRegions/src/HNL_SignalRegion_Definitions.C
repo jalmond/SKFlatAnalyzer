@@ -612,6 +612,9 @@ void   HNL_RegionDefinitions::RunMainRegionCode(bool IsSR,HNL_LeptonCore::Channe
       if(IsSR && B_JetColl.size() == 0 && ev.MET2ST() < 15) 
 	FillCutflow(HNL_LeptonCore::SRLowMass, weight_reg, "SR3_LowMass", param);
 
+      if(!IsSR  && B_JetColl.size() == 1 && ev.MET2ST() < 15) FillCutflow(HNL_LeptonCore::CRLowMass, weight_reg, "CR3_IB",param);
+      if(!IsSR  && B_JetColl.size() == 0 && ev.MET2ST() > 15) FillCutflow(HNL_LeptonCore::CRLowMass, weight_reg, "CR3_IM",param);
+
       
       /// RunBDT checks if:
       // a) signal mc and mass <= 500 --> Pass
@@ -765,6 +768,8 @@ bool  HNL_RegionDefinitions::PassPreselection(bool ApplyForSR,HNL_LeptonCore::Ch
   if(ApplyForSR) FillCutflow(HNL_LeptonCore::SRLowMass, w, "Preselection",param);
   if(ApplyForSR) FillCutflow(HNL_LeptonCore::SRHighMass, w, "Preselection",param);
 
+  if(!ApplyForSR) FillCutflow(HNL_LeptonCore::CRLowMass, w, "Preselection",param);
+  
   //// Dont plot if running all systematics
   if(!runSyst&&param.runPlotter){
     if(param.IsCentral())Fill_RegionPlots(param,"Preselection" , TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);
@@ -847,7 +852,10 @@ TString HNL_RegionDefinitions::RunSignalRegionAK8String(bool ApplyForSR,
     
     if(ApplyForSR) FillCutflow(HNL_LeptonCore::SRLowMass,  w, "SR1",param);
     if(ApplyForSR) FillCutflow(HNL_LeptonCore::SRHighMass, w, "SR1",param);
-    
+    if(!ApplyForSR && ((met2_st <= met_cut) &&B_JetColl.size()==1)) FillCutflow(HNL_LeptonCore::CRLowMass, w, "CR1_IB",param);
+    if(!ApplyForSR && ((met2_st > met_cut) &&B_JetColl.size()==0) ) FillCutflow(HNL_LeptonCore::CRLowMass, w, "CR1_IM",param);
+
+      
     if(PassHMMet)FillCutflow(Reg, w, RegionTag+"_MET",param);
     if(!ApplyForSR&&PassBJetMVeto) FillCutflow(Reg, w, RegionTag+"_bveto",param);
     
@@ -991,6 +999,9 @@ TString HNL_RegionDefinitions::RunSignalRegionWWString(bool ApplyForSR,HNL_Lepto
     
   if(ApplyForSR) FillCutflow(HNL_LeptonCore::SRLowMass, w, "SR2",param);
   if(ApplyForSR) FillCutflow(HNL_LeptonCore::SRHighMass, w, "SR2",param);
+  if(!ApplyForSR && ((met2_st <= met_cut) &&B_JetColl.size()==1)) FillCutflow(HNL_LeptonCore::CRLowMass, w, "CR2_IB",param);
+  if(!ApplyForSR && ((met2_st > met_cut) &&B_JetColl.size()==0)) FillCutflow(HNL_LeptonCore::CRLowMass, w, "CR2_IM",param);
+    
   //// Dont plot if running all systematics
   if(!runSyst&&param.runPlotter){
     if(param.IsCentral()) Fill_RegionPlots(param,"PassVBF"+RegionTag ,  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);
