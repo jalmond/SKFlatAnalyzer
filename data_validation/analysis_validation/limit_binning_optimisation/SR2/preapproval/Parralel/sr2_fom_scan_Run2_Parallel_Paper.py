@@ -13,6 +13,8 @@ RESET = "\033[0m"
 STAT_THRESHOLD_PERERA = 0.5
 STAT_THRESHOLD_RUN2  = 1.0
 
+n_bin_torun = [2,3,4,5,6]
+
 # =========================================================
 # CONFIG
 # =========================================================
@@ -500,11 +502,13 @@ def run_scan(name, bins, n, mode, sig_cache, fake_bins, all_low=None):
 
     with Pool(cpu_count()) as p:
         args = [(e, bins, sig_cache, mode, all_low, fake_bins) for e in edges]
-
+        valid = 0
         for r in tqdm(p.imap(worker,args),total=len(edges)):
-            if r and r[0]>best[0]:
-                best=r
-
+            if r:
+                valid += 1
+                if r and r[0]>best[0]:
+                    best=r
+        print(f"[DEBUG] valid combos = {valid}")
     return best
 
 # =========================================================
@@ -759,13 +763,70 @@ def format_edges(edges):
     return ",".join("{:.2f}".format(x) for x in edges[1:-1])
 
 
+def evaluate_per_era_variable(edges_low_per_era, edges_high_per_era,
+                             low, high, cache,
+                             fake_low_per_era, fake_high_per_era):
+
+    results = {}
+
+    for era in ERAS:
+
+        total = 0
+
+        for m, c in cache.items():
+
+            f_bins = []
+
+            # LOW
+            edges_low = edges_low_per_era[era]
+            for i in range(len(edges_low)-1):
+                lo, hi = edges_low[i], edges_low[i+1]
+
+                sub = [b for b in low[era] if lo <= b[0] < hi]
+
+                bkg = correct_bkg(lo, hi, sub, fake_low_per_era[era])
+                sig = sum(v for x, v in c.items() if lo <= x < hi)
+
+                f_bins.append(fom(sig, bkg))
+
+            # HIGH
+            edges_high = edges_high_per_era[era]
+            for i in range(len(edges_high)-1):
+                lo, hi = edges_high[i], edges_high[i+1]
+
+                sub = [b for b in high[era] if lo <= b[0] < hi]
+
+                bkg = correct_bkg(lo, hi, sub, fake_high_per_era[era])
+                sig = sum(v for x, v in c.items() if lo <= x < hi)
+
+                f_bins.append(fom(sig, bkg))
+
+            total += sum(x*x for x in f_bins)
+
+        results[era] = math.sqrt(total)
+
+    return results
+
 def make_plot_v2(results, flav,
                  best_scan_run,
+                 best_scan_per,      # NEW
                  best_combined_run,
-                 best_pre_run,        # <-- ADD THIS
+                 cfg_pre_run,        # NEW
+                 best_pre_run,
                  OPT_MASSES,
                  EVAL_MASSES):
 
+    
+    # PerEra
+    per_low  = format_edges(best_scan_per[1])
+    per_high = format_edges(best_scan_per[2])
+    
+    
+    # Predefined
+    edges_low_pre, edges_high_pre = cfg_pre_run
+    pre_low  = format_edges(edges_low_pre)
+    pre_high = format_edges(edges_high_pre)
+    
     c = ROOT.TCanvas("c","",800,700)
 
     mg = ROOT.TMultiGraph()
@@ -782,6 +843,7 @@ def make_plot_v2(results, flav,
 
         return g
 
+    
     # -----------------------------
     # GRAPHS
     # -----------------------------
@@ -833,7 +895,7 @@ def make_plot_v2(results, flav,
     
     label_scan = "Scan (flavour, Run2) ({}) | ({})".format(scan_low, scan_high)
     label_comb = "Combined (all flav) ({}) | ({})".format(comb_low, comb_high)
-    
+    label_per = "Scan (flavour, per-era) ({}) | ({})".format(per_low, per_high)
     
     # -----------------------------
     # LEGEND
@@ -841,7 +903,7 @@ def make_plot_v2(results, flav,
     leg = ROOT.TLegend(0.15,0.55,0.55,0.80)
     leg.AddEntry(g_scan, label_scan, "lp")
     leg.AddEntry(g_comb, label_comb, "lp")
-    leg.AddEntry(g_per, "Scan (flavour, per-era)", "lp")
+    leg.AddEntry(g_per, label_per, "lp")
     leg.AddEntry(g_era, "Scan (era-dependent)", "lp")
 
 
@@ -872,8 +934,10 @@ def make_plot_v2(results, flav,
     g_pre.SetMarkerSize(2)
     g_pre.Draw("P SAME")
     
-    leg.AddEntry(line_pre, "Predefined (Run2 grid)", "l")
+    #leg.AddEntry(line_pre, "Predefined (Run2 grid)", "l")
     
+    label_pre = "Predefined ({}) | ({})".format(pre_low, pre_high)
+    leg.AddEntry(line_pre, label_pre, "l")
     leg.Draw()
 
     # -----------------------------
@@ -1002,7 +1066,7 @@ def main():
 
     combined_results_per_n = {}
     
-    for n in [3,4,5,6]:
+    for n in n_bin_torun: #3,4,5,6]:
 
         nL = n // 2
         nH = (n + 1) // 2
@@ -1023,6 +1087,7 @@ def main():
         high_run = run_scan("HIGH", combined_high, nH, "run2",
                             combined_cache_high, combined_fake_high, all_low)
 
+        print(f"[DEBUG] n={n} best_run =", low_run, high_run)
         f_run = math.sqrt(low_run[0]**2 + high_run[0]**2)
 
         if f_run > best_combined_run[0]:
@@ -1119,8 +1184,11 @@ def main():
             fake_high_per_era
 
         )
+
+        best_era_dep = (-1, None, None)
+        best_era_edges = None
         
-        for n in [3, 4, 5, 6]:
+        for n in n_bin_torun:
 
             results["predefined_run"].append((n, f_pre_run))
             results["predefined_per"].append((n, f_pre_per))
@@ -1159,17 +1227,17 @@ def main():
             f_this = evaluate_fixed_bins(
                 edges_low_c,
                 edges_high_c,
-                combined_low,
-                combined_high,
-                combined_cache_low,
-                combined_fake_low,
-                combined_fake_high
+                low,
+                high,
+                cache_low,
+                fake_low_per_era,
+                fake_high_per_era
             )
 
             results["combined_run"].append((n, f_this))
             era_edges_low  = {}
             era_edges_high = {}
-
+            
             
             for era in ERAS:
                 
@@ -1193,7 +1261,10 @@ def main():
                 fake_low_per_era,
                 fake_high_per_era
             )
+            if f_era > best_era_dep[0]:
+                best_era_dep = (f_era, era_edges_low, era_edges_high)
 
+                
             results["era_run"].append((n, f_era))
             edges_per_n[n] = {
                 "run2": (low_run[1], high_run[1]),
@@ -1202,7 +1273,45 @@ def main():
                 "era":  (era_edges_low, era_edges_high)
             }
             
+        per_era_eraDep = {}
 
+        best_edges_low  = best_era_dep[1]
+        best_edges_high = best_era_dep[2]
+        
+        for era in ERAS:
+
+            f = 0
+            
+            for m, c in cache_low.items():
+                
+                f_bins = []
+
+                # LOW
+                edges_low = best_edges_low[era]
+                for i in range(len(edges_low)-1):
+                    lo, hi = edges_low[i], edges_low[i+1]
+                    sub = [b for b in low[era] if lo <= b[0] < hi]
+                    
+                    bkg = correct_bkg(lo, hi, sub, fake_low_per_era[era])
+                    sig = sum(v for x,v in c.items() if lo <= x < hi)
+                    
+                    f_bins.append(fom(sig, bkg))
+
+                # HIGH
+                edges_high = best_edges_high[era]
+                for i in range(len(edges_high)-1):
+                    lo, hi = edges_high[i], edges_high[i+1]
+                    sub = [b for b in high[era] if lo <= b[0] < hi]
+                    
+                    bkg = correct_bkg(lo, hi, sub, fake_high_per_era[era])
+                    sig = sum(v for x,v in c.items() if lo <= x < hi)
+
+                    f_bins.append(fom(sig, bkg))
+
+                f += sum(x*x for x in f_bins)
+
+            per_era_eraDep[era] = math.sqrt(f)
+            
         
         # ----------------------------------
         # FINAL PRINT
@@ -1218,7 +1327,6 @@ def main():
         print("FOM  =", round(best_scan_per[0], 3))
         print("LOW  =", fmt(best_scan_per[1]))
         print("HIGH =", fmt(best_scan_per[2]))
-        
         print_bkg_with_stat(best_scan_per[1], best_scan_per[2], low, high,"perera")
 
         
@@ -1267,6 +1375,17 @@ def main():
             print(f"   {era} = {round(per_era_foms[era],3)}")
             
         print_bkg_with_stat(edges_low_c, edges_high_c, low, high,"run2")
+
+
+        per_era_run2 = evaluate_per_era(
+            best_scan_run[1],
+            best_scan_run[2],
+            low,
+            high,
+            cache_low,
+            fake_low_per_era,
+            fake_high_per_era
+        )
         
         # =========================
         # PREDEFINED PER-ERA
@@ -1293,10 +1412,30 @@ def main():
         print("HIGH =", fmt(edges_high_pre_run))
         
         print_bkg_with_stat(edges_low_pre_run, edges_high_pre_run, low, high,"run2")
-        
+
+        per_era_per = evaluate_per_era(
+            best_scan_per[1],
+            best_scan_per[2],
+            low,
+            high,
+            cache_low,
+            fake_low_per_era,
+            fake_high_per_era
+        )
+
+
+        print("\n--- Per-era FOM comparison (BEST binning per strategy) ---")
+
+        for era in ERAS:
+            print("{:<12} Run2={:<6.3f}  PerEra={:<6.3f}  EraDep={:<6.3f}".format(
+                era,
+                per_era_run2[era],
+                per_era_per[era],
+                per_era_eraDep[era]
+            ))
 
         os.makedirs("plots", exist_ok=True)
-
+        
         print("\n====================================")
         print(f" SUMMARY TABLE ({flav})")
         print("====================================")
@@ -1306,7 +1445,7 @@ def main():
 
         all_strategies = []
 
-        for i, n in enumerate([3,4,5,6]):
+        for i, n in enumerate(n_bin_torun):
 
             all_strategies.append(("Run2", n, results["scan_run"][i][1]))
             all_strategies.append(("PerEra", n, results["scan_per"][i][1]))
@@ -1332,7 +1471,7 @@ def main():
         print(f" BKG PER ERA (BIN-BY-BIN, n = 6, {flav})")
         print("====================================")
         
-        cfg = edges_per_n[6]
+        cfg = edges_per_n[n_bin_torun[-1]]
 
         def get_bkg_bins(edges_low, edges_high, low, high, era,fake_low_per_era, fake_high_per_era):
 
@@ -1392,7 +1531,7 @@ def main():
         
         print("{:<12} {:<10} {:<10} {:<12} {:<10} {:<10}".format(
         "Era", "Run2", "PerEra", "Combined", "EraDep", "Predef"))        
-        cfg = edges_per_n[6]
+        cfg = edges_per_n[n_bin_torun[-1]]
 
         def get_total_bkg(edges_low, edges_high, era, fake_low_per_era, fake_high_per_era):
             total = 0
@@ -1443,13 +1582,17 @@ def main():
         print("Strategy =", best_global[0])
         print("nBins    =", best_global[1])
         print("FOM      =", round(best_global[2],3))
-        
+
+
         make_plot_v2(results, flav,
                      best_scan_run,
+                     best_scan_per,        # NEW
                      best_combined_run,
-                     best_pre_run, 
+                     cfg_pre_run,          # NEW (edges!)
+                     best_pre_run,
                      OPT_MASSES,
                      EVAL_MASSES)
+
         
 if __name__=="__main__":
     main()
