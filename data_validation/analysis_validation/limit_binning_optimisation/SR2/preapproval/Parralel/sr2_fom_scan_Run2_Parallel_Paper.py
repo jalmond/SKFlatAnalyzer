@@ -13,7 +13,7 @@ RESET = "\033[0m"
 STAT_THRESHOLD_PERERA = 0.5
 STAT_THRESHOLD_RUN2  = 1.0
 
-n_bin_torun = [2,3,4,5,6]
+n_bin_torun = [2,3,4,5,6,7,8]
 
 # =========================================================
 # CONFIG
@@ -40,6 +40,12 @@ class TeeLogger:
 
 def fmt(edges):
     return "[" + ", ".join(f"{x:.2f}" for x in edges) + "]"
+
+def format_bin_range(n_bins):
+    return "{}to{}bins".format(min(n_bins), max(n_bins))
+
+def combine_per_era_fom(per_era_dict):
+    return math.sqrt(sum(v*v for v in per_era_dict.values()))
 
 def check_bins(edges, bins, threshold):
     results = []
@@ -544,7 +550,15 @@ def scan_predefined_verbose(bins_low, bins_high,
                     if not r_low or not r_high:
                         continue
 
-                    f_run = math.sqrt(r_low[0]**2 + r_high[0]**2)
+                    per_era_tmp = evaluate_per_era(
+                        low, high,
+                        bins_low, bins_high,
+                        sig_cache,
+                        fake_low_per_era,
+                        fake_high_per_era
+                    )
+                    
+                    f_run = combine_per_era_fom(per_era_tmp)
 
                     # per-era FOM
                     f_per = evaluate_fixed_bins(
@@ -807,6 +821,118 @@ def evaluate_per_era_variable(edges_low_per_era, edges_high_per_era,
 
     return results
 
+def color_val(v):
+    if v < 0.5:
+        return f"{RED}{v:.2f}{RESET}"
+    elif v < 5.0:
+        return f"\033[93m{v:.2f}{RESET}"   # yellow
+    else:
+        return f"{GREEN}{v:.2f}{RESET}"
+
+def fmt_colored(vals):
+    return "[" + ", ".join(color_val(v) for v in vals) + "]"
+
+
+def make_lastbin_zoom_plot(results, flav):
+
+    c = ROOT.TCanvas("c_zoom","",1000,700)
+    c.SetBottomMargin(0.25)
+    g = ROOT.TGraph()
+
+    labels = ["Run2", "PerEra", "Combined", "EraDep", "PreRun2", "PrePer"]
+
+    values = [
+        results["scan_run"][-1][1],
+        results["scan_per"][-1][1],
+        results["combined_run"][-1][1],
+        results["era_run"][-1][1],
+        results["predefined_run"][-1][1],
+        results["predefined_per"][-1][1]
+    ]
+
+    # Fill graph
+    for i, v in enumerate(values):
+        g.SetPoint(i, i+1, v)
+
+    g.SetMarkerStyle(20)
+    g.SetMarkerSize(1.8)
+    g.SetLineWidth(2)
+
+    g.Draw("AP")
+
+    # -----------------------------
+    # Axis setup
+    # -----------------------------
+    g.GetXaxis().SetLimits(0.5, len(labels)+0.5)
+    g.GetYaxis().SetTitle("FOM (n = {})".format(n_bin_torun[-1]))
+    g.GetYaxis().SetTitleOffset(1.4)
+
+    # ---- Rotate labels (KEY FIX)
+    g.GetXaxis().SetLabelSize(0)
+
+    # -----------------------------
+    # Better Y range (KEY FIX)
+    # -----------------------------
+    ymin = min(values)
+    ymax = max(values)
+    
+    center = 0.5 * (ymin + ymax)
+    half_range = 0.5 * (ymax - ymin)
+    
+    # protect against flat case
+    if half_range == 0:
+        half_range = 0.1
+
+    half_range *= 1.6
+
+    g.SetMinimum(center - half_range)
+    g.SetMaximum(center + half_range)
+    g.SetMarkerSize(1.2)
+
+    c.Modified()
+    c.Update()
+
+    
+    # -----------------------------
+    # Draw rotated X labels
+    # -----------------------------
+    g.GetXaxis().SetLabelSize(0)
+    txt = ROOT.TLatex()
+    txt.SetTextSize(0.028)
+    txt.SetTextAlign(23)
+    c.cd()
+    
+    for i, lab in enumerate(labels):
+        x = i+1
+        y = g.GetMinimum() - 0.1*(g.GetMaximum() - g.GetMinimum())
+        txt.SetTextAngle(90)
+        txt.DrawLatex(x, y, lab)
+    txt.SetTextAngle(0)
+
+
+    # -----------------------------
+    # Draw values on points
+    # -----------------------------
+    txt.SetTextAlign(22)
+    txt.SetTextSize(0.03)
+
+    for i, v in enumerate(values):
+        offset = 0.03 * (g.GetMaximum() - g.GetMinimum())
+        txt.DrawLatex(i+1, v + offset, "{:.3f}".format(v))
+
+    # -----------------------------
+    # Add same text block as main plot
+    # -----------------------------
+    info = ROOT.TLatex()
+    info.SetNDC()
+    info.SetTextSize(0.035)
+
+    info.DrawLatex(0.75, 0.87, "Flavour: {}".format(flav))
+    info.DrawLatex(0.75, 0.82, "n bins = {}".format(n_bin_torun[-1]))
+
+    bin_tag = format_bin_range(n_bin_torun)
+    c.SaveAs("plots/fom_lastbin_zoom_{}_{}.pdf".format(flav, bin_tag))
+    
 def make_plot_v2(results, flav,
                  best_scan_run,
                  best_scan_per,      # NEW
@@ -872,8 +998,8 @@ def make_plot_v2(results, flav,
             
     # protect against empty
     if ymin < ymax:
-        ymin *= 0.8
-        ymax *= 1.5
+        ymin *= 0.9
+        ymax *= 1.3
         
         mg.SetMinimum(ymin)
         mg.SetMaximum(ymax)
@@ -893,18 +1019,22 @@ def make_plot_v2(results, flav,
     comb_low  = format_edges(best_combined_run[1])
     comb_high = format_edges(best_combined_run[2])
     
-    label_scan = "Scan (flavour, Run2) ({}) | ({})".format(scan_low, scan_high)
-    label_comb = "Combined (all flav) ({}) | ({})".format(comb_low, comb_high)
-    label_per = "Scan (flavour, per-era) ({}) | ({})".format(per_low, per_high)
+    label_scan = "Run2 binning (1 flav, Run2 stat) ({})|({})".format(scan_low, scan_high)
+    label_comb = "Run2 binning (3 flav, Run2 stat) ({})|({})".format(comb_low, comb_high)
+    label_per  = "Run2 binning (1 flav, per-era stat) ({})|({})".format(per_low, per_high)
     
     # -----------------------------
     # LEGEND
     # -----------------------------
-    leg = ROOT.TLegend(0.15,0.55,0.55,0.80)
+    leg = ROOT.TLegend(0.12, 0.72, 0.45, 0.88)
+    leg.SetTextSize(0.02)
+    leg.SetBorderSize(0)
+    leg.SetFillStyle(0)
+    leg.SetEntrySeparation(0.01)
     leg.AddEntry(g_scan, label_scan, "lp")
     leg.AddEntry(g_comb, label_comb, "lp")
     leg.AddEntry(g_per, label_per, "lp")
-    leg.AddEntry(g_era, "Scan (era-dependent)", "lp")
+    leg.AddEntry(g_era, "Era-dependent binning (1 flav, per-era stat)", "lp")
 
 
     # --- horizontal band (thin box)
@@ -936,7 +1066,7 @@ def make_plot_v2(results, flav,
     
     #leg.AddEntry(line_pre, "Predefined (Run2 grid)", "l")
     
-    label_pre = "Predefined ({}) | ({})".format(pre_low, pre_high)
+    label_pre = "Grid Scan Run2 ({}) | ({})".format(pre_low, pre_high)
     leg.AddEntry(line_pre, label_pre, "l")
     leg.Draw()
 
@@ -955,13 +1085,14 @@ def make_plot_v2(results, flav,
 
     txt = ROOT.TLatex()
     txt.SetNDC()
-    txt.SetTextSize(0.03)
+    txt.SetTextSize(0.025)
 
-    txt.DrawLatex(0.6,0.83, "Flavour: {}".format(flav))
-    txt.DrawLatex(0.6,0.78, "Opt: {}".format(opt_str))
-    txt.DrawLatex(0.6,0.73, "Eval: {}".format(eval_str))
+    txt.DrawLatex(0.65,0.83, "Flavour: {}".format(flav))
+    txt.DrawLatex(0.65,0.78, "Opt: {}".format(opt_str))
+    txt.DrawLatex(0.65,0.73, "Eval: {}".format(eval_str))
 
-    c.SaveAs("plots/fom_vs_nbins_{}.pdf".format(flav))
+    bin_tag = format_bin_range(n_bin_torun)
+    c.SaveAs("plots/fom_vs_nbins_{}_{}.pdf".format(flav, bin_tag))
 
 
 # =========================================================
@@ -1076,7 +1207,17 @@ def main():
         
         high_per = run_scan("HIGH", combined_high, nH, "perera",
                             combined_cache_high, combined_fake_high)
-        f_per = math.sqrt(low_per[0]**2 + high_per[0]**2)
+        per_era_per = evaluate_per_era(
+            low_per[1],
+            high_per[1],
+            combined_low,
+            combined_high,
+            combined_cache_low,
+            combined_fake_low,
+            combined_fake_high
+        )
+
+        f_per = combine_per_era_fom(per_era_per)
 
         if f_per > best_combined_per[0]:
             best_combined_per = (f_per, low_per[1], high_per[1])
@@ -1088,7 +1229,18 @@ def main():
                             combined_cache_high, combined_fake_high, all_low)
 
         print(f"[DEBUG] n={n} best_run =", low_run, high_run)
-        f_run = math.sqrt(low_run[0]**2 + high_run[0]**2)
+
+        per_era_run2 = evaluate_per_era(
+            low_run[1],
+            high_run[1],
+            combined_low,
+            combined_high,
+            combined_cache_low,
+            combined_fake_low,
+            combined_fake_high
+        )
+        
+        f_run = combine_per_era_fom(per_era_run2)
 
         if f_run > best_combined_run[0]:
             best_combined_run = (f_run, low_run[1], high_run[1])
@@ -1164,7 +1316,7 @@ def main():
             fake_high_per_era
         )
         # predefined evaluated on THIS flavour                                                                                    
-        f_pre_run = evaluate_fixed_bins(
+        per_era_pre_run = evaluate_per_era(
             cfg_pre_run[0],
             cfg_pre_run[1],
             low,
@@ -1174,7 +1326,9 @@ def main():
             fake_high_per_era
         )
         
-        f_pre_per = evaluate_fixed_bins(
+        f_pre_run = combine_per_era_fom(per_era_pre_run)
+        
+        per_era_pre_per = evaluate_per_era(
             cfg_pre_per[0],
             cfg_pre_per[1],
             low,
@@ -1182,8 +1336,9 @@ def main():
             cache_low,
             fake_low_per_era,
             fake_high_per_era
-
         )
+        
+        f_pre_per = combine_per_era_fom(per_era_pre_per)
 
         best_era_dep = (-1, None, None)
         best_era_edges = None
@@ -1203,7 +1358,17 @@ def main():
             high_per = run_scan("HIGH", high, nH, "perera",
                                 cache_high, fake_high_per_era)
         
-            f_per = math.sqrt(low_per[0]**2 + high_per[0]**2)
+            per_era_per = evaluate_per_era(
+                low_per[1],
+                high_per[1],
+                low,
+                high,
+                cache_low,
+                fake_low_per_era,
+                fake_high_per_era
+            )
+            
+            f_per = combine_per_era_fom(per_era_per)
             
             if f_per > best_scan_per[0]:
                 best_scan_per = (f_per, low_per[1], high_per[1])
@@ -1215,7 +1380,17 @@ def main():
             high_run = run_scan("HIGH", high, nH, "run2",
                                 cache_high, fake_high_per_era, all_low)
             
-            f_run = math.sqrt(low_run[0]**2 + high_run[0]**2)
+            per_era_run2 = evaluate_per_era(
+                low_run[1],
+                high_run[1],
+                low,
+                high,
+                cache_low,
+                fake_low_per_era,
+                fake_high_per_era
+            )
+            
+            f_run = combine_per_era_fom(per_era_run2)
 
             if f_run > best_scan_run[0]:
                 best_scan_run = (f_run, low_run[1], high_run[1])
@@ -1224,7 +1399,7 @@ def main():
             results["scan_run"].append((n, f_run))
             edges_low_c, edges_high_c, _ = combined_results_per_n[n]
             
-            f_this = evaluate_fixed_bins(
+            per_era_comb = evaluate_per_era(
                 edges_low_c,
                 edges_high_c,
                 low,
@@ -1233,6 +1408,8 @@ def main():
                 fake_low_per_era,
                 fake_high_per_era
             )
+            
+            f_this = combine_per_era_fom(per_era_comb)
 
             results["combined_run"].append((n, f_this))
             era_edges_low  = {}
@@ -1251,8 +1428,8 @@ def main():
                 
                 era_edges_low[era]  = low_best[1]
                 era_edges_high[era] = high_best[1]
-
-            f_era = evaluate_variable_binning(
+                
+            per_era_eraDep = evaluate_per_era_variable(
                 era_edges_low,
                 era_edges_high,
                 low,
@@ -1261,6 +1438,9 @@ def main():
                 fake_low_per_era,
                 fake_high_per_era
             )
+
+            f_era = combine_per_era_fom(per_era_eraDep)
+
             if f_era > best_era_dep[0]:
                 best_era_dep = (f_era, era_edges_low, era_edges_high)
 
@@ -1343,7 +1523,7 @@ def main():
         # --- COMBINED RESULT
         edges_low_c, edges_high_c = best_combined_run[1], best_combined_run[2]
         
-        f_this = evaluate_fixed_bins(
+        per_era_comb = evaluate_per_era(
             edges_low_c,
             edges_high_c,
             low,
@@ -1352,6 +1532,8 @@ def main():
             fake_low_per_era,
             fake_high_per_era
         )
+        
+        f_this = combine_per_era_fom(per_era_comb)
         
         per_era_foms = evaluate_per_era(
             edges_low_c,
@@ -1519,11 +1701,11 @@ def main():
             )
             
             print(f"\n{era}")
-            print("  Run2    :", b_run)
-            print("  PerEra  :", b_per)
-            print("  Combined:", b_com)
-            print("  EraDep  :", b_era)
-            print("  Predef  :", b_pre)
+            print("  Run2    :", fmt_colored(b_run))
+            print("  PerEra  :", fmt_colored(b_per))
+            print("  Combined:", fmt_colored(b_com))
+            print("  EraDep  :", fmt_colored(b_era))
+            print("  Predef  :", fmt_colored(b_pre))
         
         print("\n====================================")
         print(f" BKG PER ERA (n = 6, {flav})")
@@ -1593,6 +1775,7 @@ def main():
                      OPT_MASSES,
                      EVAL_MASSES)
 
+        make_lastbin_zoom_plot(results, flav)
         
 if __name__=="__main__":
     main()
