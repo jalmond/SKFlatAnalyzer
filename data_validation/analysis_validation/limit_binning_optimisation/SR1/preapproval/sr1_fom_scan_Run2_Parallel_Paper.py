@@ -3,6 +3,8 @@
 import ROOT, os, math, itertools, argparse, sys, datetime
 from tqdm import tqdm
 import ctypes
+import time
+
 
 DEBUG=False
 
@@ -15,9 +17,133 @@ RESET = "\033[0m"
 STAT_THRESHOLD_PERERA = 0.5
 STAT_THRESHOLD_RUN2  = 1.0
 
-TOTAL_BINS_TO_SCAN = [2,3]
+TOTAL_BINS_TO_SCAN = [2,3,4,5,6,7]
 
 VALID_CACHE = {}
+
+REF_BINS = {
+
+    "2016preVFP": {
+        "MuMu": {
+            "400": [0.0, 270.0, 340.0, 385.0, 465.0, 555.0, 730.0, 5000.0],
+            "450": [0.0, 330.0, 385.0, 435.0, 515.0, 580.0, 740.0, 5000.0],
+            "500": [0.0, 330.0, 385.0, 430.0, 485.0, 550.0, 730.0, 5000.0],
+            "600": [0.0, 115.0, 355.0, 430.0, 485.0, 565.0, 690.0, 5000.0],
+            "700": [0.0, 120.0, 320.0, 360.0, 445.0, 530.0, 620.0, 5000.0],
+            "800": [0.0, 115.0, 160.0, 265.0, 435.0, 570.0, 730.0, 5000.0],
+            "900": [0.0, 115.0, 150.0, 310.0, 445.0, 570.0, 740.0, 5000.0],
+        },
+        "EE": {
+            "400": [0.0, 365.0, 445.0, 520.0, 590.0, 670.0, 750.0, 5000.0],
+            "450": [0.0, 365.0, 435.0, 455.0, 490.0, 590.0, 750.0, 5000.0],
+            "500": [0.0, 365.0, 455.0, 500.0, 565.0, 670.0, 750.0, 5000.0],
+            "600": [0.0, 500.0, 550.0, 595.0, 655.0, 750.0, 930.0, 5000.0],
+            "700": [0.0, 475.0, 550.0, 595.0, 625.0, 685.0, 780.0, 5000.0],
+            "800": [0.0, 360.0, 520.0, 590.0, 635.0, 750.0, 980.0, 5000.0],
+            "900": [0.0, 345.0, 475.0, 560.0, 635.0, 750.0, 980.0, 5000.0],
+        },
+        "EMu": {
+            "400": [0.0, 335.0, 405.0, 440.0, 550.0, 595.0, 865.0, 5000.0],
+            "450": [0.0, 410.0, 450.0, 490.0, 550.0, 595.0, 865.0, 5000.0],
+            "500": [0.0, 410.0, 450.0, 480.0, 550.0, 595.0, 770.0, 5000.0],
+            "600": [0.0, 410.0, 510.0, 580.0, 690.0, 765.0, 950.0, 5000.0],
+            "700": [0.0, 410.0, 510.0, 590.0, 660.0, 805.0, 950.0, 5000.0],
+            "800": [0.0, 115.0, 410.0, 510.0, 620.0, 730.0, 885.0, 5000.0],
+            "900": [0.0, 415.0, 465.0, 585.0, 665.0, 830.0, 1010.0, 5000.0],
+        }
+    },
+
+    "2016postVFP": {
+        "MuMu": {
+            "400": [0.0, 350.0, 395.0, 445.0, 505.0, 565.0, 765.0, 5000.0],
+            "450": [0.0, 330.0, 375.0, 425.0, 495.0, 550.0, 685.0, 5000.0],
+            "500": [0.0, 215.0, 345.0, 400.0, 460.0, 545.0, 685.0, 5000.0],
+            "600": [0.0, 205.0, 355.0, 425.0, 500.0, 565.0, 765.0, 5000.0],
+            "700": [0.0, 125.0, 350.0, 395.0, 460.0, 540.0, 650.0, 5000.0],
+            "800": [0.0, 135.0, 195.0, 410.0, 460.0, 565.0, 730.0, 5000.0],
+            "900": [0.0, 130.0, 345.0, 400.0, 460.0, 565.0, 735.0, 5000.0],
+        },
+        "EE": {
+            "400": [0.0, 340.0, 385.0, 440.0, 555.0, 710.0, 1010.0, 5000.0],
+            "450": [0.0, 330.0, 420.0, 495.0, 565.0, 825.0, 1095.0, 5000.0],
+            "500": [0.0, 330.0, 435.0, 480.0, 555.0, 825.0, 1125.0, 5000.0],
+            "600": [0.0, 465.0, 530.0, 585.0, 645.0, 705.0, 825.0, 5000.0],
+            "700": [0.0, 420.0, 515.0, 615.0, 680.0, 765.0, 875.0, 5000.0],
+            "800": [0.0, 490.0, 565.0, 600.0, 690.0, 780.0, 940.0, 5000.0],
+            "900": [0.0, 485.0, 565.0, 610.0, 715.0, 825.0, 1030.0, 5000.0],
+        },
+        "EMu": {
+            "400": [0.0, 350.0, 385.0, 450.0, 675.0, 805.0, 880.0, 5000.0],
+            "450": [0.0, 370.0, 425.0, 500.0, 675.0, 805.0, 880.0, 5000.0],
+            "500": [0.0, 425.0, 475.0, 510.0, 545.0, 590.0, 675.0, 5000.0],
+            "600": [0.0, 515.0, 550.0, 600.0, 685.0, 805.0, 880.0, 5000.0],
+            "700": [0.0, 385.0, 550.0, 605.0, 670.0, 780.0, 880.0, 5000.0],
+            "800": [0.0, 405.0, 550.0, 605.0, 665.0, 765.0, 870.0, 5000.0],
+            "900": [0.0, 415.0, 525.0, 605.0, 675.0, 830.0, 1005.0, 5000.0],
+        }
+    },
+
+    "2017": {
+        "MuMu": {
+            "400": [0.0, 335.0, 380.0, 420.0, 470.0, 505.0, 540.0, 5000.0],
+            "450": [0.0, 380.0, 430.0, 480.0, 505.0, 540.0, 755.0, 5000.0],
+            "500": [0.0, 430.0, 485.0, 520.0, 565.0, 755.0, 930.0, 5000.0],
+            "600": [0.0, 430.0, 510.0, 545.0, 595.0, 710.0, 930.0, 5000.0],
+            "700": [0.0, 420.0, 500.0, 520.0, 575.0, 630.0, 745.0, 5000.0],
+            "800": [0.0, 430.0, 470.0, 540.0, 610.0, 755.0, 925.0, 5000.0],
+            "900": [0.0, 385.0, 435.0, 480.0, 555.0, 625.0, 825.0, 5000.0],
+        },
+        "EE": {
+            "400": [0.0, 330.0, 390.0, 435.0, 480.0, 595.0, 885.0, 5000.0],
+            "450": [0.0, 395.0, 445.0, 500.0, 615.0, 690.0, 720.0, 5000.0],
+            "500": [0.0, 445.0, 490.0, 560.0, 690.0, 720.0, 885.0, 5000.0],
+            "600": [0.0, 545.0, 595.0, 655.0, 700.0, 730.0, 905.0, 5000.0],
+            "700": [0.0, 615.0, 670.0, 720.0, 790.0, 885.0, 1085.0, 5000.0],
+            "800": [0.0, 545.0, 620.0, 710.0, 770.0, 870.0, 1085.0, 5000.0],
+            "900": [0.0, 615.0, 690.0, 725.0, 795.0, 885.0, 1075.0, 5000.0],
+        },
+        "EMu": {
+            "400": [0.0, 355.0, 385.0, 410.0, 445.0, 490.0, 530.0, 5000.0],
+            "450": [0.0, 410.0, 450.0, 490.0, 515.0, 535.0, 915.0, 5000.0],
+            "500": [0.0, 410.0, 450.0, 480.0, 525.0, 570.0, 915.0, 5000.0],
+            "600": [0.0, 450.0, 530.0, 585.0, 650.0, 765.0, 915.0, 5000.0],
+            "700": [0.0, 530.0, 640.0, 690.0, 765.0, 835.0, 970.0, 5000.0],
+            "800": [0.0, 530.0, 675.0, 725.0, 800.0, 885.0, 1075.0, 5000.0],
+            "900": [0.0, 440.0, 530.0, 660.0, 735.0, 855.0, 1030.0, 5000.0],
+        }
+    },
+
+    "2018": {
+        "MuMu": {
+            "400": [0.0, 365.0, 395.0, 435.0, 460.0, 480.0, 850.0, 5000.0],
+            "450": [0.0, 370.0, 420.0, 455.0, 495.0, 520.0, 850.0, 5000.0],
+            "500": [0.0, 395.0, 455.0, 480.0, 525.0, 590.0, 850.0, 5000.0],
+            "600": [0.0, 480.0, 540.0, 580.0, 635.0, 680.0, 850.0, 5000.0],
+            "700": [0.0, 540.0, 600.0, 650.0, 710.0, 795.0, 850.0, 5000.0],
+            "800": [0.0, 395.0, 480.0, 580.0, 670.0, 755.0, 915.0, 5000.0],
+            "900": [0.0, 480.0, 540.0, 610.0, 670.0, 755.0, 850.0, 5000.0],
+        },
+        "EE": {
+            "400": [0.0, 325.0, 390.0, 430.0, 465.0, 490.0, 905.0, 5000.0],
+            "450": [0.0, 395.0, 450.0, 475.0, 520.0, 545.0, 905.0, 5000.0],
+            "500": [0.0, 390.0, 460.0, 490.0, 530.0, 560.0, 905.0, 5000.0],
+            "600": [0.0, 500.0, 570.0, 605.0, 645.0, 680.0, 905.0, 5000.0],
+            "700": [0.0, 580.0, 630.0, 675.0, 710.0, 785.0, 905.0, 5000.0],
+            "800": [0.0, 580.0, 710.0, 760.0, 845.0, 1015.0, 1150.0, 5000.0],
+            "900": [0.0, 545.0, 670.0, 735.0, 800.0, 905.0, 1080.0, 5000.0],
+        },
+        "EMu": {
+            "400": [0.0, 335.0, 385.0, 440.0, 535.0, 640.0, 665.0, 5000.0],
+            "450": [0.0, 385.0, 445.0, 485.0, 510.0, 640.0, 665.0, 5000.0],
+            "500": [0.0, 445.0, 470.0, 495.0, 555.0, 640.0, 665.0, 5000.0],
+            "600": [0.0, 495.0, 540.0, 595.0, 640.0, 865.0, 960.0, 5000.0],
+            "700": [0.0, 540.0, 620.0, 665.0, 710.0, 790.0, 1085.0, 5000.0],
+            "800": [0.0, 535.0, 665.0, 705.0, 740.0, 895.0, 1085.0, 5000.0],
+            "900": [0.0, 535.0, 665.0, 730.0, 870.0, 990.0, 1165.0, 5000.0],
+        }
+    }
+}
+
 
 # =========================================================
 # CONFIG
@@ -59,23 +185,23 @@ def evaluate_variable_binning_run2(edges_per_era,
     total = 0.0
 
     # pick ONE binning (reference)
-    ref_era = ERAS[0]
+    ref_era = list(edges_per_era.keys())[0]
     edges = edges_per_era[ref_era]
-
+    
     for m, c in cache.items():
 
         f_bins = []
 
-        for i in range(len(edges)-1):
+        for i in range(len(edges) - 1):
 
             lo = edges[i]
-            hi = edges[i+1]
+            hi = edges[i + 1]
 
             bkg = 0.0
             sig = 0.0
 
             # combine eras ONCE
-            for era in ERAS:
+            for era in edges_per_era:
 
                 sub = [b for b in bins[era] if lo <= b[0] < hi]
                 bkg += correct_bkg(lo, hi, sub, fake_bins[era])
@@ -84,10 +210,12 @@ def evaluate_variable_binning_run2(edges_per_era,
 
             f_bins.append(fom(sig, bkg))
 
-        total += sum(z*z for z in f_bins)
+        # sum Z^2 for this mass
+        Zm2 = sum(z * z for z in f_bins)
+
+        total += Zm2
 
     return math.sqrt(total)
-
 
 
 
@@ -116,6 +244,47 @@ def evaluate_run2(edges, bins_per_era, cache, fake_per_era):
 
     return math.sqrt(total)
 
+
+
+def get_ref_mass_key(mass):
+    m = int(mass)
+
+    if m >= 1000:
+        return "900"
+    else:
+        return str(m)
+def evaluate_reference_run2(all_bins, all_fake, all_sig, mass):
+
+    total = 0.0
+
+    for i_flav, flav in enumerate(FLAVOURS):
+
+        bins_f = all_bins[i_flav]
+        fake_f = all_fake[i_flav]
+
+        # build per-flavour signal
+        cache = build_sig_cache({
+            mass: all_sig[i_flav][mass]
+        })
+
+        # build edges_per_era from reference
+        edges_per_era = {}
+
+        for era in ERAS:
+            mass_key = get_ref_mass_key(mass.split("_")[1])
+            edges_per_era[era] = REF_BINS[era][flav][mass_key]
+
+        # evaluate
+        f = evaluate_variable_binning_run2(
+            edges_per_era,
+            bins_f,
+            cache,
+            fake_f
+        )
+
+        total += f * f
+
+    return math.sqrt(total)
 
 def print_best_binning_summary(edges, bins_per_era, cache, fake_bins, label=""):
 
@@ -229,7 +398,7 @@ def print_mass_summary(mass, results_mass, n):
     print(f"Mass = {mass} (n = {n})")
     print("====================================\n")
 
-    scenarios = ["global", "perflav", "sum_global", "sum_perflav", "era"]
+    scenarios = ["global", "perflav", "sum_global", "sum_perflav", "era","era_run2"]
 
     for scen in scenarios:
 
@@ -250,12 +419,68 @@ def print_mass_summary(mass, results_mass, n):
             print(f"  ({flav}) = {val_str}")
 
         print()  # spacing
-            
 
-def dp_global(edges, PB, PE, PS,
+def print_scan_window(edges, min_idx, max_idx):
+    print(
+        "[SCAN WINDOW] "
+        f"[{edges[0]:.1f}, {edges[-1]:.1f}] --> "
+        f"[{edges[min_idx]:.1f}, {edges[max_idx]:.1f}]"
+    )        
+
+
+
+def debug_dp_failure(edges, valid, PB, PE, PB_era_flav, PS_mass):
+
+    print("\n--- DEBUG DP FAILURE ---")
+
+    M = len(edges) - 1
+
+    # -----------------------------
+    # 1. Check valid matrix density
+    # -----------------------------
+    total = (M+1)*(M+1)
+    n_valid = valid.sum()
+
+    print(f"[VALID MATRIX] {n_valid}/{total} = {n_valid/total:.6f}")
+
+    if n_valid == 0:
+        print(">>> NO VALID INTERVALS AT ALL <<<")
+
+    # -----------------------------
+    # 2. Check per-bin background
+    # -----------------------------
+    print("\n[PER-BIN BACKGROUND]")
+
+    for i in range(M):
+        b = PB[i+1] - PB[i]
+        print(f"  bin {i}: edge [{edges[i]:.1f}, {edges[i+1]:.1f}] -> B = {b:.4f}")
+
+    # -----------------------------
+    # 3. Check tail behaviour
+    # -----------------------------
+    print("\n[TAIL BACKGROUND]")
+
+    for i in range(M):
+        tail = sum(
+            PB_era_flav[f][era][M] - PB_era_flav[f][era][i]
+            for f in range(len(PB_era_flav))
+            for era in PB_era_flav[f]
+        )
+        print(f"  edge {edges[i]:.1f} -> tail = {tail:.4f}")
+
+    # -----------------------------
+    # 4. Check signal presence
+    # -----------------------------
+    print("\n[SIGNAL CHECK]")
+
+    for m in PS_mass:
+        total_s = PS_mass[m][-1]
+        print(f"  mass {m} total S = {total_s:.6f}")
+    
+def dp_global(edges, PB, PE, PS_mass,
               PB_era, PE_era,
-              PB_era_flav, PF_era_flav,
-              n_bins, use_per_era_stat):
+              PB_era_flav,PE_era_flav, PF_era_flav,
+              n_bins, use_per_era_stat,no_scan_window,norm=None):
     
     def interval_bkg_fast(p, i):
         return PB[i] - PB[p]
@@ -265,7 +490,7 @@ def dp_global(edges, PB, PE, PS,
         b_sum = 0.0
         
         for f in range(len(PB_era_flav)):
-            for era in ERAS:
+            for era in PB_era_flav[f]:
                 
                 b = PB_era_flav[f][era][i] - PB_era_flav[f][era][p]
                 fake = PF_era_flav[f][era][i] - PF_era_flav[f][era][p]
@@ -276,6 +501,8 @@ def dp_global(edges, PB, PE, PS,
             b_sum += b
 
         return b_sum
+
+    print("[DEBUG] active eras in DP:", list(PB_era.keys()))
     
     key = (
         tuple(edges),
@@ -284,11 +511,11 @@ def dp_global(edges, PB, PE, PS,
         use_per_era_stat
     )
 
-    
-    if key in VALID_CACHE:
-        print("[DEBUG] Using cached valid matrix")
-    else:
-        print("[DEBUG] Computing NEW valid matrix")
+    if DEBUG:
+        if key in VALID_CACHE:
+            print("[DEBUG] Using cached valid matrix")
+        else:
+            print("[DEBUG] Computing NEW valid matrix")
     if key in VALID_CACHE:
         valid = VALID_CACHE[key]
     else:
@@ -299,12 +526,74 @@ def dp_global(edges, PB, PE, PS,
         )
         VALID_CACHE[key] = valid
 
-        
+
+    print("\n[DEBUG] Valid transitions per era")
+
+    for era in PB_era:
+
+        count = 0
+
+        for p in range(len(edges)):
+            for i in range(p+1, len(edges)):
+                
+                # use SAME logic as DP
+                B = PB_era[era][i] - PB_era[era][p]
+                E = PE_era[era][i] - PE_era[era][p]
+                
+                rel = math.sqrt(E)/B if B > 0 else 999
+                
+                if use_per_era_stat:
+                    ok = (B >= STAT_THRESHOLD_PERERA) or (rel <= 0.3)
+                else:
+                    ok = (B >= STAT_THRESHOLD_RUN2) or (rel <= 0.3)
+                    
+                if ok:
+                    count += 1
+                    
+    for i in range(len(edges)):
+        n_valid_i = np.sum(valid[:, i])
+    
     M = len(edges) - 1
     # rebuild per-bin bkg from prefix sums
     bkg = [PB[i+1] - PB[i] for i in range(M)]
 
-    max_boundary = compute_last_valid_boundary(edges, PB_era_flav,use_per_era_stat)
+    S_total = sum(PS_mass[m][-1] for m in PS_mass)
+
+    min_edge_idx = 0
+    
+    for i in range(len(edges)-1):
+        
+        S_cum = sum(PS_mass[m][i] for m in PS_mass)
+        
+        if S_total > 0 and (S_cum / S_total) > 0.01:
+            min_edge_idx = i
+            break
+
+    
+    max_boundary = compute_last_valid_boundary(edges, PB_era_flav,PE_era_flav,use_per_era_stat)
+    print("\n[DEBUG] max_boundary =", max_boundary)
+    # ----------------------------------
+    # FIND MAX EDGE INDEX
+    # ----------------------------------
+    max_edge_idx = len(edges) - 1
+    
+    for i in range(len(edges)):
+        if edges[i] >= max_boundary:
+            max_edge_idx = i
+            break
+
+    if no_scan_window:
+        min_edge_idx = 0
+        max_boundary = edges[-1]
+
+
+    print_scan_window(edges, min_edge_idx, max_edge_idx)
+    print(
+        "[SCAN REDUCTION] "
+        f"{len(edges)-1} bins -> {max_edge_idx - min_edge_idx} bins"
+    )
+
+    
     NEG = -1e300
 
     dp  = np.full((n_bins + 1, M + 1), NEG, dtype=float)
@@ -318,47 +607,104 @@ def dp_global(edges, PB, PE, PS,
     # ----------------------------------
     # FOM for interval [p, i]
     # ----------------------------------
-    def interval_fom(p, i):
+    def interval_fom_multi(p, i):
+        
         B = interval_bkg(p, i)
-        S = PS[i] - PS[p]
-
-        if B <= 0 or S <= 0:
+        
+        if B <= 0:
             return 0.0
 
-        val = 2.0 * ((S + B) * math.log(1.0 + S / B) - S)
+        total = 0.0
+        
+        for m in PS_mass:
+            
+            S = PS_mass[m][i] - PS_mass[m][p]
+    
+            if S <= 0:
+                continue
+            
+            val = 2.0 * ((S + B) * math.log(1.0 + S / B) - S)
 
-        if val <= 0:
-            return 0.0
+            if val <= 0:
+                continue
+            
+            z2 = val  # this is already Z^2
 
-        return math.sqrt(val)
+            if norm is not None:
+                total += z2 / norm[m]
+            else:
+                total += z2
+
+        return total   # IMPORTANT: returns Z^2, not sqrt
 
     # ----------------------------------
-    # DP
+    # DP JOHN (CORRECTED)
     # ----------------------------------
     if DEBUG:
         print("[DEBUG] valid_transitions...")
 
     valid_transitions = {i: np.where(valid[:, i])[0] for i in range(M+1)}
+
     for j in range(1, n_bins + 1):
         for i in range(1, M + 1):
-
+            
             best = NEG
             best_p = -1
+            
+            # ----------------------------------
+            # Choose candidate p
+            # ----------------------------------
+            if j == 1:
+                p_list = [0]   # first bin must start at 0
+            else:
+                p_list = valid_transitions[i]
+            if j == 2 and DEBUG:
+                print(f"[CHECK] i={i}, valid p:", valid_transitions[i])
+            for p in p_list:
 
-            for p in valid_transitions[i]:
-
-                if j == n_bins and i == M:
-                    if edges[p] > max_boundary:
-                        continue
                 
+                if DEBUG:
+                    print(f"[DP] j={j} i={i} ({edges[i]:.1f}) <- p={p} ({edges[p]:.1f})")
+
+                # ----------------------------------
+                # FIRST BIN: enforce scan window lower bound
+                # ----------------------------------
+                if j == 1 and i < min_edge_idx:
+                    if DEBUG:
+                        print("   -> rejected: first bin below min_edge_idx")
+                    continue
+
+                # ----------------------------------
+                # LAST BIN: enforce scan window upper bound
+                # ----------------------------------
+                if j == n_bins and edges[p] > max_boundary:
+                    if DEBUG:
+                        print("   -> rejected: last bin starts above max_boundary")
+                    continue
+                
+                # ----------------------------------
+                # DP recursion validity
+                # ----------------------------------
                 if dp[j - 1, p] <= NEG / 2:
+                    if DEBUG:
+                        print("   -> rejected: dp previous invalid")
                     continue
 
-                if not valid[p, i]:
+                # ----------------------------------
+                # VALID MATRIX (skip for first bin)
+                # ----------------------------------
+                if j != 1 and not valid[p, i]:
+                    if DEBUG:
+                        print("   -> rejected: not valid[p,i]")
                     continue
 
-                val = dp[j - 1, p] + interval_fom(p, i)
-
+                # ----------------------------------
+                # Compute value
+                # ----------------------------------
+                #val = dp[j - 1, p] + interval_fom(p, -i)
+                z2 = interval_fom_multi(p, i)
+                val = dp[j - 1, p] + z2
+                
                 if val > best:
                     best = val
                     best_p = p
@@ -367,14 +713,18 @@ def dp_global(edges, PB, PE, PS,
             prv[j, i] = best_p
 
     if DEBUG:
-        print("[DEBUG] valid_transitions done...")
-                
+        print("[DEBUG] DP done...")
+
     # ----------------------------------
     # No solution
     # ----------------------------------
     if dp[n_bins, M] <= NEG / 2:
+        print("\n[DP FAILURE]")
+        print(f"  n_bins = {n_bins}")
+        print(f"  M = {M}")
+        debug_dp_failure(edges, valid, PB, PE, PB_era_flav, PS_mass)
         return None, None
-
+    
     # ----------------------------------
     # Backtrack
     # ----------------------------------
@@ -384,49 +734,92 @@ def dp_global(edges, PB, PE, PS,
     while j > 0:
         p = prv[j, i]
         if p < 0:
-            return None, None  # safety
+            return None, None
         idx.append(p)
         i = p
         j -= 1
 
     idx = list(reversed(idx))
-
+    
     best_edges = [edges[0]] + [edges[k] for k in idx if k != 0] + [edges[-1]]
+    
+    return math.sqrt(dp[n_bins, M]), best_edges
 
-    return dp[n_bins, M], best_edges
+def run_global_dp(all_bins, all_fake, sig_cache, n,no_scan_window, norm=None):
 
 
-def run_global_dp(all_bins, all_fake, sig_cache, n):
-
-
-    edges, bkg, err2, sig, bkg_per_era, err2_per_era, bkg_per_era_flav, fake_per_era_flav =    build_global_arrays(
+    active_eras = list(all_bins[0].keys())
+    
+    edges, bkg, err2, sig, bkg_per_era, err2_per_era, bkg_per_era_flav, fake_per_era_flav,err2_per_era_flav =    build_global_arrays(
         all_bins, all_fake, sig_cache
     )
 
     PF_era_flav = [
-        {era: prefix_sums(fake_per_era_flav[f][era]) for era in ERAS}
+        {era: prefix_sums(fake_per_era_flav[f][era]) for era in active_eras}
 	for f in range(len(fake_per_era_flav))
     ]
+    PE_era_flav = [
+    {era: prefix_sums(err2_per_era_flav[f][era]) for era in active_eras}
+        for f in range(len(err2_per_era_flav))
+]
+    # ----------------------------------
+    # BUILD SIGNAL PER MASS
+    # ----------------------------------
+    sig_per_mass = {}
+    
+    n_bins_local = len(edges) - 1
+
+    for m, c in sig_cache.items():
+        
+        sig_arr = np.zeros(n_bins_local)
+        
+        for i in range(n_bins_local):
+            lo = edges[i]
+            hi = edges[i+1]
+            
+            for x, v in c.items():
+                if lo <= x < hi:
+                    sig_arr[i] += v
+
+        sig_per_mass[m] = sig_arr
+    n_bins_local = len(edges) - 1
     
     PB = prefix_sums(bkg)
     PE = prefix_sums(err2)
-    PS = prefix_sums(sig)
-    PB_era = {era: prefix_sums(bkg_per_era[era]) for era in ERAS}
-    PE_era = {era: prefix_sums(err2_per_era[era]) for era in ERAS}
+    
+    PB_era = {era: prefix_sums(bkg_per_era[era]) for era in active_eras}
+    PE_era = {era: prefix_sums(err2_per_era[era]) for era in active_eras}
     PB_era_flav = [
-        {era: prefix_sums(bkg_per_era_flav[f][era]) for era in ERAS}
+        {era: prefix_sums(bkg_per_era_flav[f][era]) for era in active_eras}
         for f in range(len(bkg_per_era_flav))
     ]
-    return dp_global(
+    PS_mass = {
+        m: prefix_sums(sig_per_mass[m])
+        for m in sig_per_mass
+    }
+    for m in PS_mass:
+        if len(PS_mass[m]) != len(edges):
+            raise RuntimeError(f"Mismatch: PS_mass[{m}] has wrong length")
+    t0_dp = time.perf_counter()
+
+    result = dp_global(
         edges,
-        PB, PE, PS,
+        PB, PE, PS_mass,
         PB_era,
         PE_era,
         PB_era_flav,
+        PE_era_flav,   # <-- ADD THIS
         PF_era_flav,
         n,
-        USE_PER_ERA_STAT
+        USE_PER_ERA_STAT,
+        no_scan_window,
+        norm=norm
     )
+    
+    t_dp = time.perf_counter() - t0_dp
+    print(f"[TIME][DP] n={n} -> {t_dp:.3f}s")
+    
+    return result
 
 
 # =========================================================
@@ -435,7 +828,8 @@ def run_global_dp(all_bins, all_fake, sig_cache, n):
 
 def build_global_arrays(all_bins, all_fake, sig_cache):
 
-    ref = all_bins[0]["2016preVFP"]
+    active_eras = list(all_bins[0].keys())
+    ref = all_bins[0][active_eras[0]]
 
     edges = np.array([b[0] for b in ref] + [ref[-1][1]], dtype=float)
     n = len(ref)
@@ -445,17 +839,20 @@ def build_global_arrays(all_bins, all_fake, sig_cache):
     sig  = np.zeros(n)
 
     bkg_per_era_flav = [
-        {era: np.zeros(n) for era in ERAS}
+        {era: np.zeros(n) for era in active_eras}
         for _ in range(len(all_bins))
     ]
-
+    err2_per_era_flav = [
+        {era: np.zeros(n) for era in active_eras}
+        for _ in range(len(all_bins))
+    ]
     fake_per_era_flav = [
-        {era: np.zeros(n) for era in ERAS}
+        {era: np.zeros(n) for era in active_eras}
         for _ in range(len(all_bins))
     ]
 
-    err2_per_era = {era: np.zeros(n) for era in ERAS}
-    bkg_per_era  = {era: np.zeros(n) for era in ERAS}
+    err2_per_era = {era: np.zeros(n) for era in active_eras}
+    bkg_per_era  = {era: np.zeros(n) for era in active_eras}
 
     # ----------------------------------
     # LOOP OVER FLAVOURS + ERAS
@@ -465,7 +862,7 @@ def build_global_arrays(all_bins, all_fake, sig_cache):
         bins_f = all_bins[f_idx]
         fake_f = all_fake[f_idx]
 
-        for era in ERAS:
+        for era in active_eras:
 
             bins = bins_f[era]
             fake = fake_f[era]
@@ -478,18 +875,23 @@ def build_global_arrays(all_bins, all_fake, sig_cache):
                 sub = [b for b in bins if lo <= b[0] < hi]
 
                 b_val = correct_bkg(lo, hi, sub, fake, apply_fake_fix=False)
-
+                
                 bkg_per_era_flav[f_idx][era][i] += b_val
                 fake_per_era_flav[f_idx][era][i] += fake[i][2]
-
                 bkg[i] += b_val
 
                 rel = bins[i][3]
-                if rel < 999:
-                    err2[i] += (b_val * rel) ** 2
 
+                if rel < 999:
+                    e2 = (b_val * rel) ** 2
+                    
+                    err2[i] += e2
+                    err2_per_era_flav[f_idx][era][i] += e2
+                    err2_per_era[era][i] += e2
+                else:
+                    e2 = 0.0
+                    
                 bkg_per_era[era][i] += b_val
-                err2_per_era[era][i] += (b_val * rel) ** 2
 
     # ----------------------------------
     # SIGNAL
@@ -503,10 +905,14 @@ def build_global_arrays(all_bins, all_fake, sig_cache):
                 if lo <= x < hi:
                     sig[i] += v
 
-    return edges, bkg, err2, sig, bkg_per_era, err2_per_era, bkg_per_era_flav, fake_per_era_flav
+    return edges, bkg, err2, sig, \
+        bkg_per_era, err2_per_era, \
+        bkg_per_era_flav, fake_per_era_flav, \
+        err2_per_era_flav
 
 
-def compute_last_valid_boundary(edges, PB_era_flav,use_per_era_stat):
+
+def compute_last_valid_boundary(edges, PB_era_flav, PE_era_flav, use_per_era_stat):
 
     n = len(edges) - 1
     n_flav = len(PB_era_flav)
@@ -515,39 +921,79 @@ def compute_last_valid_boundary(edges, PB_era_flav,use_per_era_stat):
 
         ok = True
 
+        # ----------------------------------
+        # LOOP OVER FLAVOURS
+        # ----------------------------------
         for f in range(n_flav):
-            if use_per_era_stat:
-                for era in ERAS:
-                    
-                    tail = PB_era_flav[f][era][n] - PB_era_flav[f][era][i]
-                    if use_per_era_stat:
-                    
-                        if tail < STAT_THRESHOLD_PERERA:
-                            ok = False
-                            break
-            else:
-                
-                tail_run2 = sum(
-                    PB_era_flav[f][era][n] - PB_era_flav[f][era][i]
-                    for era in ERAS
-                )
-                if tail_run2 < STAT_THRESHOLD_RUN2:
-                    ok = False
-                    
-            if not ok:
-                break
 
-            
-            
+            if use_per_era_stat:
+                # ----------------------------------
+                # PER-ERA REQUIREMENT
+                # ----------------------------------
+                for era in PB_era_flav[f]:
+
+                    B = PB_era_flav[f][era][n] - PB_era_flav[f][era][i]
+                    E = PE_era_flav[f][era][n] - PE_era_flav[f][era][i]
+
+                    rel = math.sqrt(E) / B if B > 0 else 999
+
+                    if not ((B >= STAT_THRESHOLD_PERERA) or (rel <= 0.3)):
+
+                        if DEBUG:
+                            print("\n[FAIL PER-ERA STAT DEBUG]")
+                            print(f"  Edge = {edges[i]:.1f}")
+                            print(f"  Flavour = {FLAVOURS[f]}")
+                            print(f"  Era = {era}")
+                            print(f"  B = {B:.4f}, rel = {rel:.3f}")
+
+                        ok = False
+                        break
+
+                if not ok:
+                    break
+
+            else:
+                # ----------------------------------
+                # RUN2 COMBINED REQUIREMENT
+                # ----------------------------------
+                B = sum(
+                    PB_era_flav[f][era][n] - PB_era_flav[f][era][i]
+                    for era in PB_era_flav[f]
+                )
+
+                E = sum(
+                    PE_era_flav[f][era][n] - PE_era_flav[f][era][i]
+                    for era in PB_era_flav[f]
+                )
+
+                rel = math.sqrt(E) / B if B > 0 else 999
+
+                if not ((B >= STAT_THRESHOLD_RUN2) or (rel <= 0.3)):
+
+                    if DEBUG:
+                        print("\n[FAIL RUN2 STAT DEBUG]")
+                        print(f"  Edge = {edges[i]:.1f}")
+                        print(f"  Flavour = {FLAVOURS[f]}")
+                        print(f"  B_run2 = {B:.4f}, rel = {rel:.3f}")
+
+                    ok = False
+                    break
+
+        # ----------------------------------
+        # ACCEPT EDGE
+        # ----------------------------------
         if ok:
             if DEBUG:
-                print(f"[DEBUG] --> boundary chosen at {edges[i]}")
+                print(f"[DEBUG] --> boundary chosen at {edges[i]:.1f}")
             return edges[i]
 
+    # ----------------------------------
+    # FALLBACK
+    # ----------------------------------
     if DEBUG:
         print("[DEBUG] --> fallback to first edge")
-    return edges[0]
 
+    return edges[0]
 
 
 # =========================================================
@@ -584,14 +1030,14 @@ def build_valid_matrix_global(edges, PB, PE, PB_era, PE_era, interval_bkg, use_p
 
                 pass_per_era = True
 
-                for era in ERAS:
+                for era in PB_era:
                     B_e = PB_era[era][i] - PB_era[era][p]
                     E_e = PE_era[era][i] - PE_era[era][p]
                     rel_e = math.sqrt(E_e)/B_e if B_e > 0 else 999
                     
                     if not ((B_e >= STAT_THRESHOLD_PERERA) or (rel_e <= 0.3)):
                         pass_per_era = False
-                    break
+                        break
 
                 if not pass_per_era:
                     continue
@@ -1163,7 +1609,7 @@ def evaluate_variable_binning(edges_per_era,
 
         f = []
 
-        for era in ERAS:
+        for era in edges_per_era:
 
             edges = edges_per_era[era]
 
@@ -1240,6 +1686,32 @@ def fmt_colored(vals):
 
 
 
+def find_min_signal_edge(sig_cache, edges, threshold=0.01):
+
+    # total signal
+    S_total = sum(sum(c.values()) for c in sig_cache.values())
+
+    cumulative = 0.0
+
+    for i in range(len(edges)-1):
+
+        lo = edges[i]
+        hi = edges[i+1]
+
+        S_bin = 0.0
+        for m, c in sig_cache.items():
+            for x, v in c.items():
+                if lo <= x < hi:
+                    S_bin += v
+
+        cumulative += S_bin
+
+        if cumulative / S_total > threshold:
+            return lo
+
+    return edges[0]
+
+
 def enforce_sr1_window(edges, bins_per_era, fake_per_era,use_per_era_stat):
 
     # compute combined bkg per bin using edges
@@ -1313,10 +1785,137 @@ def evaluate_run2_single_flavour(edges, bins_per_era, cache, fake_per_era):
 
 
 
+def make_mass_scan_plot_per_flavour(mass_plot_data, flav, tag,all_bins, all_fake, all_sig):
+
+    c = ROOT.TCanvas(f"c_mass_scan_{flav}","",900,700)
+
+    graphs = {}
+
+    markers = {
+        "global": 20,
+        "perflav": 21,
+        "sum_global": 22,
+        "sum_perflav": 23,
+        "era": 24,
+        "era_run2": 25
+    }
+
+    styles = {
+        "global": 1,
+        "perflav": 2,
+        "sum_global": 3,
+        "sum_perflav": 4,
+        "era": 5,
+        "era_run2": 6
+    }
+
+    first = True
+    all_y = []
+
+    for scen in ["global", "perflav", "sum_global", "sum_perflav", "era", "era_run2"]:
+
+        g = ROOT.TGraph()
+
+        points = sorted(mass_plot_data[scen])
+
+        for i, (m, f) in enumerate(points):
+            g.SetPoint(i, m, f)
+            all_y.append(f)
+
+        g.SetMarkerStyle(markers[scen])
+        g.SetLineStyle(styles[scen])
+        g.SetLineWidth(2)
+
+        if first:
+            g.Draw("APL")
+            g.GetXaxis().SetTitle("Mass [GeV]")
+            g.GetYaxis().SetTitle("FOM")
+            first = False
+        else:
+            g.Draw("PL SAME")
+
+        graphs[scen] = g
+    
+    # -----------------------------
+    # Axis control
+    # -----------------------------
+    if all_y:
+        ymin = 0.0
+        ymax_data = max(all_y)
+        
+        if ymax_data < 1.0:
+            ymax = ymax_data * 1.5
+        else:
+            ymax = ymax_data * 1.3
+            
+        graphs["global"].SetMinimum(ymin)
+        graphs["global"].SetMaximum(ymax)
+
+        
+        ROOT.gPad.Modified()
+        ROOT.gPad.Update()
+    xmin = min(m for scen in mass_plot_data for m, _ in mass_plot_data[scen])
+    xmax = max(m for scen in mass_plot_data for m, _ in mass_plot_data[scen])
+
+    graphs["global"].GetXaxis().SetLimits(xmin * 0.95, xmax * 1.05)
+
+    ROOT.gPad.Modified()
+    ROOT.gPad.Update()
+
+    ref_points = []
+
+    ref_cache = {}
+    for mass in OPT_MASSES:
+        ref_cache[mass] = evaluate_reference_run2(all_bins, all_fake, all_sig, mass)
+        
+    for m, _ in sorted(mass_plot_data["global"]):
+        mass_str = f"DYVBF_{int(m)}"
+        ref_val = ref_cache[mass_str]
+        ref_points.append((m, ref_val))
+    g_ref = ROOT.TGraph()
+
+    for i, (m, f) in enumerate(ref_points):
+        g_ref.SetPoint(i, m, f)
+        
+    g_ref.SetLineStyle(7)
+    g_ref.SetLineWidth(3)
+    g_ref.Draw("PL SAME")
+        
+    # -----------------------------
+    # Legend (top-left)
+    # -----------------------------
+    leg = ROOT.TLegend(0.15,0.65,0.45,0.88)
+    leg.SetTextSize(0.025)
+
+    leg.AddEntry(graphs["global"], "Global", "lp")
+    leg.AddEntry(graphs["perflav"], "Per flavour", "lp")
+    leg.AddEntry(graphs["sum_global"], "Sum global", "lp")
+    leg.AddEntry(graphs["sum_perflav"], "Sum per flavour", "lp")
+    leg.AddEntry(graphs["era"], "Era-by-era", "lp")
+    leg.AddEntry(graphs["era_run2"], "Era Run2 combined", "lp")
+    leg.AddEntry(g_ref, "Reference (7-bin)", "l")
+    leg.Draw()
+
+    # -----------------------------
+    # Flavour label
+    # -----------------------------
+    txt = ROOT.TLatex()
+    txt.SetNDC()
+    txt.SetTextSize(0.04)
+    txt.DrawLatex(0.18, 0.92, flav)
+
+    # -----------------------------
+    # Save
+    # -----------------------------
+    os.makedirs("plots", exist_ok=True)
+    c.SaveAs(f"plots/fom_vs_mass_{flav}_{tag}.pdf")
+
+
 def make_mass_plot(mass, results, flav, tag=""):
 
     c = ROOT.TCanvas(f"c_{mass}_{flav}", "", 800, 700)
-
+    c.SetLeftMargin(0.12)
+    c.SetBottomMargin(0.12)
     g_global = ROOT.TGraph()
     g_perflav = ROOT.TGraph()
     g_sum_global = ROOT.TGraph()
@@ -1359,6 +1958,16 @@ def make_mass_plot(mass, results, flav, tag=""):
     g_era.SetLineStyle(5)
     g_era_run2.SetLineStyle(6)
 
+    g_global.SetMinimum(0.0)
+    
+    yvals = []
+    for key in ["global","perflav","sum_global","sum_perflav","era","era_run2"]:
+        for _, v in results[key][flav]:
+            yvals.append(v)
+            
+    if yvals:
+        g_global.SetMaximum(max(yvals) * 1.5)
+    
     # -----------------------------
     # Draw
     # -----------------------------
@@ -1376,8 +1985,9 @@ def make_mass_plot(mass, results, flav, tag=""):
     # -----------------------------
     # Legend
     # -----------------------------
-    leg = ROOT.TLegend(0.5,0.7,0.88,0.88)
-
+    leg = ROOT.TLegend(0.15,0.65,0.45,0.88)
+    leg.SetTextSize(0.025)
+    
     leg.AddEntry(g_global, "Mass-opt global", "lp")
     leg.AddEntry(g_perflav, "Mass-opt per flavour", "lp")
     leg.AddEntry(g_sum_global, "Summed global", "lp")
@@ -1386,6 +1996,11 @@ def make_mass_plot(mass, results, flav, tag=""):
     leg.AddEntry(g_era_run2, "Era-by-era (Run2 combined)", "lp")
     leg.Draw()
 
+    txt = ROOT.TLatex()
+    txt.SetNDC()
+    txt.SetTextSize(0.04)
+    txt.DrawLatex(0.18, 0.92, flav)
+    
     os.makedirs("plots", exist_ok=True)
     c.SaveAs(f"plots/fom_vs_nbins_mass_{int(mass)}_{flav}_{tag}.pdf")
 
@@ -1442,37 +2057,6 @@ def make_global_dp_plot(results, tag):
 
     
     
-def make_mass_comparison_plot(results):
-
-    c = ROOT.TCanvas("c_mass","",900,700)
-
-    g_mass = ROOT.TGraph()
-    g_global = ROOT.TGraph()
-
-    for i,(m,f_mass,f_global) in enumerate(results):
-        g_mass.SetPoint(i, m, f_mass)
-        g_global.SetPoint(i, m, f_global)
-
-    g_mass.SetMarkerStyle(20)
-    g_mass.SetLineWidth(2)
-
-    g_global.SetMarkerStyle(24)
-    g_global.SetLineStyle(2)
-    g_global.SetLineWidth(2)
-
-    g_mass.Draw("APL")
-    g_global.Draw("PL SAME")
-
-    g_mass.GetXaxis().SetTitle("Mass [GeV]")
-    g_mass.GetYaxis().SetTitle("FOM")
-
-    leg = ROOT.TLegend(0.6,0.75,0.88,0.88)
-    leg.AddEntry(g_mass,"Mass-optimised bins","lp")
-    leg.AddEntry(g_global,"Global bins","lp")
-    leg.Draw()
-
-    os.makedirs("plots", exist_ok=True)
-    c.SaveAs("plots/fom_vs_mass_comparison.pdf")
     
 # =========================================================
 # MAIN
@@ -1482,6 +2066,9 @@ def make_mass_comparison_plot(results):
 
 def main():
 
+    t0_total = time.perf_counter()
+
+    
     global OPT_MASSES, EVAL_MASSES
     global USE_PER_ERA_STAT
     global DEBUG
@@ -1492,6 +2079,8 @@ def main():
                     help="Run debug printout and exit")
     parser.add_argument("--EraStatCheck", action="store_true",
                         help="Require stat threshold per era instead of Run2")
+    parser.add_argument("--no-scan-window", action="store_true")
+    
     args = parser.parse_args()
     USE_PER_ERA_STAT = args.EraStatCheck
 
@@ -1508,7 +2097,7 @@ def main():
     ]
 
     # testing
-    DYVBF_MASSES = ["700"]
+    DYVBF_MASSES = ["500","700","1000"]
 
     OPT_MASSES = ["DYVBF_" + m for m in DYVBF_MASSES]
     EVAL_MASSES = OPT_MASSES
@@ -1518,7 +2107,7 @@ def main():
     ts = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
     os.makedirs("logs", exist_ok=True)
 
-    tag = "perEra" if USE_PER_ERA_STAT else "run2"
+    tag = ("perEra" if USE_PER_ERA_STAT else "run2") + ("_noScanWindow" if args.no_scan_window else "")
     
     sys.stdout = TeeLogger(f"logs/scan_{tag}_{ts}.txt")
 
@@ -1529,9 +2118,10 @@ def main():
     all_sig  = []
     all_fake = []
 
+    t0_load = time.perf_counter()
     
     for flav in FLAVOURS:
-
+        print(f"[TIME] Load = {time.perf_counter() - t0_load:.2f} s")
         print("\n[LOAD]", flav)
 
         bins = load_flavour(base, flav)
@@ -1571,10 +2161,47 @@ def main():
     global_cache = combined_cache
 
     # ----------------------------------
+    # Compute per-mass normalisation
+    # ----------------------------------
+    print("\n[INFO] Computing per-mass normalisation...")
+    
+    norm = {}
+    
+    for mass in OPT_MASSES:
+        
+        print(f"[NORM] Mass = {mass}")
+        
+        # build single-mass cache
+        single_cache = build_sig_cache({
+            mass: combined_sig[mass]
+        })
+        
+        # run DP with that mass only
+        best = run_global_dp(
+            all_bins,
+            all_fake,
+            single_cache,
+            max(TOTAL_BINS_TO_SCAN),
+            args.no_scan_window
+        )
+        
+        if best[1] is None:
+            print(f"[WARNING] No valid binning for {mass}")
+            norm[mass] = 1.0
+            continue
+        
+        Z_best = best[0]
+        norm[mass] = Z_best * Z_best
+        
+        print(f"[NORM] {mass} -> Z = {Z_best:.3f}, Z^2 = {norm[mass]:.3f}")
+    
+    # ----------------------------------
     # GLOBAL DP PER FLAVOUR (used later)
     # ----------------------------------
     best_global_flav = {}
 
+    t0_global_dp = time.perf_counter()
+    
     for i_flav, flav in enumerate(FLAVOURS):
 
         print("\n==============================")
@@ -1589,11 +2216,14 @@ def main():
                 [all_bins[i_flav]],
                 [all_fake[i_flav]],
                 global_cache,
-                n
+                n,
+                args.no_scan_window
             )
 
             best_global_flav[flav][n] = best_edges_global
+    print(f"[TIME] Global DP per flavour = {time.perf_counter() - t0_global_dp:.2f} s")
 
+    t0_mass_loop = time.perf_counter()
     # ----------------------------------
     # MASS LOOP
     # ----------------------------------
@@ -1626,11 +2256,13 @@ def main():
         # LOOP OVER N BINS
         # ----------------------------------
         for n in tqdm(TOTAL_BINS_TO_SCAN, desc=f"{mass}", leave=False):
+            t0 = time.perf_counter()
 
             # =========================
             # SCENARIO 1: mass-opt global
             # =========================
-            best_global = run_global_dp(all_bins, all_fake, single_cache_global, n)
+            best_global = run_global_dp(all_bins, all_fake, single_cache_global, n,args.no_scan_window)
+            t_global = time.perf_counter() - t0
             if best_global[1] is None:
                 continue
             edges_global = best_global[1]
@@ -1639,7 +2271,7 @@ def main():
             combined_fake = combine_flavours(all_fake)
 
             for i_flav, flav in enumerate(FLAVOURS):
-
+                
                 bins_f = all_bins[i_flav]
                 fake_f = all_fake[i_flav]
                 
@@ -1655,7 +2287,8 @@ def main():
             # SCENARIO 2: mass-opt per flavour
             # =========================
             f_perflav_total = 0.0
-
+            t0 = time.perf_counter()
+            
             for i_flav, flav in enumerate(FLAVOURS):
                 
                 bins_f = all_bins[i_flav]
@@ -1663,7 +2296,7 @@ def main():
                 
                 cache_flav = build_sig_cache({mass: all_sig[i_flav][mass]})
 
-                best_flav = run_global_dp([bins_f], [fake_f], cache_flav, n)
+                best_flav = run_global_dp([bins_f], [fake_f], cache_flav, n,args.no_scan_window)
                 if best_flav[1] is None:
                     continue
                 
@@ -1676,12 +2309,15 @@ def main():
                 f_perflav_total += f_flav * f_flav
 
             f_perflav = math.sqrt(f_perflav_total)
-
+            t_perflav = time.perf_counter() - t0
+            
             # =========================
             # SCENARIO 3: summed global
             # =========================
-            res = run_global_dp(all_bins, all_fake, combined_cache, n)
-
+            t0 = time.perf_counter()
+            
+            res = run_global_dp(all_bins, all_fake, combined_cache, n,args.no_scan_window,norm=norm)
+            t_sum_global = time.perf_counter() - t0
             if res[1] is None:
                 continue
 
@@ -1705,6 +2341,7 @@ def main():
             # SCENARIO 4: summed per flavour
             # =========================
             f_sum_flav_total = 0.0
+            t0 = time.perf_counter()
             
             for i_flav, flav in enumerate(FLAVOURS):
 
@@ -1715,7 +2352,7 @@ def main():
                 cache_flav_sum = build_sig_cache({
                     m: all_sig[i_flav][m] for m in OPT_MASSES
                 })
-                edges_flav_sum = run_global_dp([bins_f], [fake_f], cache_flav_sum, n)[1]
+                edges_flav_sum = run_global_dp([bins_f], [fake_f], cache_flav_sum, n,args.no_scan_window,norm=norm)[1]
 
                 
                 # evaluation (FIX HERE)
@@ -1728,42 +2365,59 @@ def main():
                 
                 f_sum_flav_total += f_flav_sum * f_flav_sum
 
+                if i_flav ==0:
+                    print("[CHECK]")
+                    print("Scenario: sum_perflav")
+                    print("Optimisation masses:", list(cache_flav_sum.keys()))
+                    print("Evaluation masses:", list(cache_eval.keys()))
+                 
+
             f_sum_flav = math.sqrt(f_sum_flav_total)
+            t_sum_perflav = time.perf_counter() - t0
 
             # =========================
             # SCENARIO 5: era-by-era
             # =========================
             edges_per_era = {}
+            t0 = time.perf_counter()
             
             for era in ERAS:
-                res = run_global_dp(
-                    [{era: all_bins[f][era] for era in ERAS} for f in range(len(FLAVOURS))],
-                    [{era: all_fake[f][era] for era in ERAS} for f in range(len(FLAVOURS))],
-                    single_cache_global,
-                    n
-                )
+
+                bins_era = []
+                fake_era = []
                 
-                if res[1] is None:
-                    continue
+                for f in range(len(FLAVOURS)):
+                    
+                    bins_tmp = {}
+                    fake_tmp = {}
+                    
+                    for e in ERAS:
+                        if e == era:
+                            bins_tmp[e] = all_bins[f][e]
+                            fake_tmp[e] = all_fake[f][e]
+                        else:
+                            ref_bins = all_bins[f][era]
+                            ref_fake = all_fake[f][era]
+                            
+                            bins_tmp[e] = [(b[0], b[1], 0.0, 999) for b in ref_bins]
+                            fake_tmp[e] = [(b[0], b[1], 0.0, 999) for b in ref_fake]
+                            
+                bins_era.append(bins_tmp)
+                fake_era.append(fake_tmp)
 
-                edges_per_era[era] = res[1]
+            res = run_global_dp(
+                bins_era,
+                fake_era,
+                single_cache_global,
+                n,
+                args.no_scan_window
+            )
 
-            for i_flav, flav in enumerate(FLAVOURS):
+            if res[1] is None:
+                continue
 
-                bins_f = all_bins[i_flav]
-                fake_f = all_fake[i_flav]
-                
-                cache_flav = build_sig_cache({
-                    mass: all_sig[i_flav][mass]
-                })
-
-                f = evaluate_variable_binning_run2(
-                    edges_per_era,
-                    combine_flavours(all_bins),
-                    single_cache_global,
-                    combine_flavours(all_fake)
-                )
-                results_mass[mass]["era_run2"][flav].append((n, f))
+            edges_per_era[era] = res[1]
+            t_era = time.perf_counter() - t0
 
             # =========================
             # STORE
@@ -1776,19 +2430,70 @@ def main():
                 cache_flav = build_sig_cache({
                     mass: all_sig[i_flav][mass]
                 })
+
+                # --- ERA (per-era sum in quadrature)
+                f_era = evaluate_variable_binning(
+                    edges_per_era,
+                    bins_f,
+                    cache_flav,
+                    fake_f
+                )
                 
-                f = evaluate_variable_binning(edges_per_era, bins_f, cache_flav, fake_f)
-                
-                results_mass[mass]["era"][flav].append((n, f))
+                results_mass[mass]["era"][flav].append((n, f_era))
+
+
+                # --- ERA (Run2 combined)
+                f_era_run2 = evaluate_variable_binning_run2(
+                    edges_per_era,
+                    bins_f,
+                    cache_flav,
+                    fake_f
+                )
+
+                results_mass[mass]["era_run2"][flav].append((n, f_era_run2))
+
+
+            print(f"[TIME][n={n}] "
+                  f"global={t_global:.3f}s | "
+                  f"perflav={t_perflav:.3f}s | "
+                  f"sum_global={t_sum_global:.3f}s | "
+                  f"sum_perflav={t_sum_perflav:.3f}s | "
+                  f"era={t_era:.3f}s")
                 
         results_all[mass] = results_mass[mass]        
 
-    
-    print("[CHECK]")
-    print("Scenario: sum_perflav")
-    print("Optimisation masses:", list(cache_flav_sum.keys()))
-    print("Evaluation masses:", list(cache_eval.keys()))
+    print(f"[TIME] Mass loop total = {time.perf_counter() - t0_mass_loop:.2f} s")
 
+    n_target = max(TOTAL_BINS_TO_SCAN)
+
+    mass_plot_data_flav = {
+        flav: {
+            "global": [],
+            "perflav": [],
+            "sum_global": [],
+            "sum_perflav": [],
+            "era": [],
+            "era_run2": []
+        }
+        for flav in FLAVOURS
+    }
+    
+    for mass in results_all:
+        
+        m_val = float(mass.split("_")[1])
+        
+        for flav in FLAVOURS:
+            
+            for scen in mass_plot_data_flav[flav]:
+                
+                vals = results_all[mass][scen][flav]
+                
+                val = next((f for nn, f in vals if nn == n_target), None)
+                
+                if val is not None:
+                    mass_plot_data_flav[flav][scen].append((m_val, val))
+                
+                
     # ----------------------------------
     # CLEAN SUMMARY PRINT
     # ----------------------------------
@@ -1820,7 +2525,7 @@ def main():
         # =========================
         # Scenario 1: global (mass-opt)
         # =========================
-        res = run_global_dp(all_bins, all_fake, combined_cache, n)
+        res = run_global_dp(all_bins, all_fake, combined_cache, n,args.no_scan_window, norm=norm)
         if res[1] is None:
             continue
         edges_global = res[1]
@@ -1839,7 +2544,7 @@ def main():
                 m: all_sig[i_flav][m] for m in OPT_MASSES
             })
             
-            res = run_global_dp([all_bins[i_flav]], [all_fake[i_flav]], cache_flav_sum, n)
+            res = run_global_dp([all_bins[i_flav]], [all_fake[i_flav]], cache_flav_sum, n,args.no_scan_window)
             
             if res[1] is None:
                 continue
@@ -1872,32 +2577,24 @@ def main():
         # Scenario 5: era-by-era
         # =========================
         edges_per_era = {}
-    
+
         for era in ERAS:
-            
+
             bins_era = []
             fake_era = []
             
             for f in range(len(FLAVOURS)):
-                
-                bins_tmp = {}
-                fake_tmp = {}
-                
-                for e in ERAS:
-                    if e == era:
-                        bins_tmp[e] = all_bins[f][e]
-                        fake_tmp[e] = all_fake[f][e]
-                    else:
-                        ref_bins = all_bins[f][era]
-                        ref_fake = all_fake[f][era]
-                        
-                        bins_tmp[e] = [(b[0], b[1], 0.0, 999) for b in ref_bins]
-                        fake_tmp[e] = [(b[0], b[1], 0.0, 999) for b in ref_fake]
 
-                bins_era.append(bins_tmp)
-                fake_era.append(fake_tmp)
-
-            res = run_global_dp(bins_era, fake_era, combined_cache, n)
+                bins_era.append({era: all_bins[f][era]})
+                fake_era.append({era: all_fake[f][era]})
+                
+            res = run_global_dp(
+                bins_era,
+                fake_era,
+                single_cache_global,
+                n,
+                args.no_scan_window
+            )
 
             if res[1] is None:
                 continue
@@ -1965,12 +2662,27 @@ def main():
                 combine_flavours(all_fake)
             )
             print("  ERA =", round(f_era,4))
+            f_era_run2 = evaluate_variable_binning_run2(
+                edges_per_era,
+                combine_flavours(all_bins),
+                cache_eval_global,
+                combine_flavours(all_fake)
+            )
             print("  ERA (Run2 combined) =", round(f_era_run2,4))
             
     # ----------------------------------
     # Plot
     # ----------------------------------
-    #make_global_dp_plot(results_global,tag)
+    for flav in FLAVOURS:
+        make_mass_scan_plot_per_flavour(
+            mass_plot_data_flav[flav],
+            flav,
+            tag,
+            all_bins,
+            all_fake,
+            all_sig
+        )
+        
     # ----------------------------------                                                                                            
     # PLOTTING (PER FLAVOUR)                                                                                                                 
     # ----------------------------------                                                                                                        
@@ -1984,6 +2696,10 @@ def main():
                 flav,
                 tag
             )
+    print("\n==============================")
+    print(f"[TIME] TOTAL = {time.perf_counter() - t0_total:.2f} s")
+    print("==============================")
+
 
 if __name__=="__main__":
     main()
