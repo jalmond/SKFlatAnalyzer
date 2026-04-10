@@ -562,7 +562,7 @@ void   HNL_RegionDefinitions::RunMainRegionCode(bool IsSR,HNL_LeptonCore::Channe
 
     //// Fail AK8 Req
 
-    TString RegionBin = RunSignalRegionWWString(IsSR, channel,qq, LepsT, LepsV,  TauColl, VBF_JetColl,  AK8_JetColl, B_JetColl,B_JetColl_CR,ev, METv, param,  weight_reg);
+    TString RegionBin = RunSignalRegionWWString(IsSR, channel, qq, LepsT, LepsV, TauColl, VBF_JetColl, AK8_JetColl, B_JetColl, B_JetColl, ev, METv, param, weight_reg); // In IB CR2, we use Medium WP for b tag
 
     //// SSWW SR events with  MJJ < 700 removed frmo analysis 
 
@@ -598,9 +598,8 @@ void   HNL_RegionDefinitions::RunMainRegionCode(bool IsSR,HNL_LeptonCore::Channe
       else {
 	FillLimitInput(LimitRegionR2, weight_reg, "CR2",  "LimitExtraction/"+param.Name,"CR2",channel_string);
 
-	if(B_JetColl_CR.size() ==1)       FillLimitInput(LimitRegionsInvBJetR2, weight_reg*param.w.btagSF_tight/param.w.btagSF, RegionBin,  "LimitExtraction/"+param.Name,"CR2",channel_string);
-
-	else if(B_JetColl.size()==0) FillLimitInput(LimitRegionsInvMETR2, weight_reg, RegionBin,  "LimitExtraction/"+param.Name,"CR2",channel_string);
+        if(B_JetColl.size() == 1)      FillLimitInput(LimitRegionsInvBJetR2, weight_reg, RegionBin, "LimitExtraction/"+param.Name, "CR2", channel_string); // In IB CR2, we use Medium WP for b tag
+        else if(B_JetColl.size() == 0) FillLimitInput(LimitRegionsInvMETR2, weight_reg, RegionBin, "LimitExtraction/"+param.Name, "CR2", channel_string);
 
 
       }
@@ -1011,8 +1010,8 @@ TString HNL_RegionDefinitions::RunSignalRegionWWString(bool ApplyForSR,HNL_Lepto
     
   if(ApplyForSR) FillCutflow(HNL_LeptonCore::SRLowMass, w, "SR2",param);
   if(ApplyForSR) FillCutflow(HNL_LeptonCore::SRHighMass, w, "SR2",param);
-  if(!ApplyForSR && ((met2_st <= met_cut) &&B_JetColl_CR.size()==1)) FillCutflow(HNL_LeptonCore::CRLowMass, w*param.w.btagSF_tight/param.w.btagSF, "CR2_IB",param);
-  if(!ApplyForSR && ((met2_st > met_cut) &&B_JetColl.size()==0)) FillCutflow(HNL_LeptonCore::CRLowMass, w, "CR2_IM",param);
+  if(!ApplyForSR && ((met2_st <= met_cut) && B_JetColl_CR.size()==1)) FillCutflow(HNL_LeptonCore::CRLowMass, w, "CR2_IB",param);
+  if(!ApplyForSR && ((met2_st > met_cut) && B_JetColl.size()==0)) FillCutflow(HNL_LeptonCore::CRLowMass, w, "CR2_IM",param);
     
   //// Dont plot if running all systematics
   if(!runSyst&&param.runPlotter){
@@ -1029,8 +1028,8 @@ TString HNL_RegionDefinitions::RunSignalRegionWWString(bool ApplyForSR,HNL_Lepto
     if(param.runPlotter){
       if(ApplyForSR)        Fill_RegionPlots(param,"Pass"+RegionTag ,  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);      
       else{
-	if(B_JetColl_CR.size() ==1)   Fill_RegionPlots(param,"Pass"+RegionTag+"_InvBJet" ,  TauColl, JetColl, AK8_JetColl, leps,  METv,    nPV, w*param.w.btagSF_tight/param.w.btagSF);
-	else     Fill_RegionPlots(param,"Pass"+RegionTag+"_InvMET" ,  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);
+        if(B_JetColl_CR.size() == 1) Fill_RegionPlots(param,"Pass"+RegionTag+"_InvBJet", TauColl, JetColl, AK8_JetColl, leps, METv, nPV, w);
+        else Fill_RegionPlots(param,"Pass"+RegionTag+"_InvMET", TauColl, JetColl, AK8_JetColl, leps, METv, nPV, w);
       }
     }
     
@@ -1053,7 +1052,7 @@ TString HNL_RegionDefinitions::RunSignalRegionWWString(bool ApplyForSR,HNL_Lepto
       //////// CR LIMIT BINS
       
       FillHist(  "LimitExtraction/"+ param.Name+"/"+RegionTag+"/Inv_SR2", 0,  w, 1,0,1 ,"Reco H_{T}/P_{T}^{lep1}");
-      if(B_JetColl_CR.size() == 1)         FillHist(  "LimitExtraction/"+ param.Name+"/"+RegionTag+"/InvBJet_SR2", 0,  w*param.w.btagSF_tight/param.w.btagSF, 1,0,1 ,"Reco H_{T}/P_{T}^{lep1}");
+      if(B_JetColl_CR.size() == 1)  FillHist("LimitExtraction/"+param.Name+"/"+RegionTag+"/InvBJet_SR2", 0, w, 1, 0, 1, "Reco H_{T}/P_{T}^{lep1}");
       else{
 	if(HTOverPT < 3.)  FillHist(  "LimitExtraction/"+ param.Name+"/"+RegionTag+"/InvMET_SR2", 0,  w, 3,0,3 ,"Reco H_{T}/P_{T}^{lep1}");
 	else if(HTOverPT < 5.) FillHist(  "LimitExtraction/"+ param.Name+"/"+RegionTag+"/InvMET_SR2", 1,  w, 3,0,3 ,"Reco H_{T}/P_{T}^{lep1}");
