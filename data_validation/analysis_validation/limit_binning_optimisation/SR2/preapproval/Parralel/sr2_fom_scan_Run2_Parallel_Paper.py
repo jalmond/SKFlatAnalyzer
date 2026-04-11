@@ -21,6 +21,7 @@ n_bin_torun = [2,3,4,5,6,7,8]
 ERAS = ["2016preVFP","2016postVFP","2017","2018"]
 FLAVOURS = ["MuMu","EE","EMu"]
 
+USE_TRUE_RUN2_FOM = False
 USE_FAKE_FIX = True
 FAKE_FLOOR = 0.15 * 0.645
 
@@ -104,6 +105,7 @@ def print_bkg_with_stat(edges_low, edges_high, low_per_era, high_per_era, mode):
 
 
 
+
 def evaluate_fixed_bins(edges_low, edges_high, low, high, cache,
                         fake_low_per_era, fake_high_per_era):
 
@@ -111,33 +113,78 @@ def evaluate_fixed_bins(edges_low, edges_high, low, high, cache,
 
     for m, c in cache.items():
 
-        f = []
+        f_bins = []
 
-        for era in ERAS:
+        # =========================================================
+        # TRUE RUN2 MODE
+        # =========================================================
+        if USE_TRUE_RUN2_FOM:
 
-            # LOW
+            # -------------------------
+            # LOW bins
+            # -------------------------
             for i in range(len(edges_low)-1):
-                lo,hi = edges_low[i], edges_low[i+1]
-                sub=[b for b in low[era] if lo<=b[0]<hi]
+                lo = edges_low[i]
+                hi = edges_low[i+1]
 
-                bkg = correct_bkg(lo, hi, sub, fake_low_per_era[era])
-                sig=sum(v for x,v in c.items() if lo<=x<hi)
+                bkg_sum = 0
+                for era in ERAS:
+                    sub = [b for b in low[era] if lo <= b[0] < hi]
+                    bkg_sum += correct_bkg(lo, hi, sub, fake_low_per_era[era])
 
-                f.append(fom(sig,bkg))
+                sig = sum(v for x, v in c.items() if lo <= x < hi)
+                f_bins.append(fom(sig, bkg_sum))
 
-            # HIGH
+            # -------------------------
+            # HIGH bins
+            # -------------------------
             for i in range(len(edges_high)-1):
-                lo,hi = edges_high[i], edges_high[i+1]
-                sub=[b for b in high[era] if lo<=b[0]<hi]
+                lo = edges_high[i]
+                hi = edges_high[i+1]
 
-                bkg = correct_bkg(lo, hi, sub, fake_high_per_era[era])
-                sig=sum(v for x,v in c.items() if lo<=x<hi)
+                bkg_sum = 0
+                for era in ERAS:
+                    sub = [b for b in high[era] if lo <= b[0] < hi]
+                    bkg_sum += correct_bkg(lo, hi, sub, fake_high_per_era[era])
 
-                f.append(fom(sig,bkg))
+                sig = sum(v for x, v in c.items() if lo <= x < hi)
+                f_bins.append(fom(sig, bkg_sum))
 
-        total += sum(x*x for x in f)
+        # =========================================================
+        # ORIGINAL PER-ERA MODE
+        # =========================================================
+        else:
+
+            for era in ERAS:
+
+                # LOW
+                for i in range(len(edges_low)-1):
+                    lo = edges_low[i]
+                    hi = edges_low[i+1]
+
+                    sub = [b for b in low[era] if lo <= b[0] < hi]
+                    bkg = correct_bkg(lo, hi, sub, fake_low_per_era[era])
+
+                    sig = sum(v for x, v in c.items() if lo <= x < hi)
+                    f_bins.append(fom(sig, bkg))
+
+                # HIGH
+                for i in range(len(edges_high)-1):
+                    lo = edges_high[i]
+                    hi = edges_high[i+1]
+
+                    sub = [b for b in high[era] if lo <= b[0] < hi]
+                    bkg = correct_bkg(lo, hi, sub, fake_high_per_era[era])
+
+                    sig = sum(v for x, v in c.items() if lo <= x < hi)
+                    f_bins.append(fom(sig, bkg))
+
+        total += sum(x*x for x in f_bins)
 
     return math.sqrt(total)
+
+
+
         
 def print_bkg_summary(edges_low, edges_high, low_per_era, high_per_era):
 
@@ -449,16 +496,33 @@ def worker(args):
         f=[]
         eras_to_use = bins.keys()
 
-        for era in eras_to_use:
+        if USE_TRUE_RUN2_FOM:
+            
+            # --- merge background over eras ---
             for i in range(len(edges)-1):
-                lo,hi=edges[i],edges[i+1]
-                sub=[b for b in bins[era] if lo<=b[0]<hi]
+                lo, hi = edges[i], edges[i+1]
 
-                bkg = correct_bkg(lo, hi, sub, fake_bins[era])
+                bkg_sum = 0
+                for era in eras_to_use:
+                    sub = [b for b in bins[era] if lo <= b[0] < hi]
+                    bkg_sum += correct_bkg(lo, hi, sub, fake_bins[era])
+                    
                 sig = sum(v for x,v in cache.items() if lo <= x < hi)
-                
-                f.append(fom(sig, bkg))
 
+                f.append(fom(sig, bkg_sum))
+
+        else:
+            
+
+            for era in eras_to_use:
+                for i in range(len(edges)-1):
+                    lo, hi = edges[i], edges[i+1]
+                    sub = [b for b in bins[era] if lo <= b[0] < hi]
+                    
+                    bkg = correct_bkg(lo, hi, sub, fake_bins[era])
+                    sig = sum(v for x, v in cache.items() if lo <= x < hi)
+                    
+                    f.append(fom(sig, bkg))
         total+=sum(x*x for x in f)
 
     return math.sqrt(total),edges
@@ -666,43 +730,107 @@ def scan_predefined_binnings(bins_low, bins_high,
 
     return best
 
-def evaluate_per_era(edges_low, edges_high, low, high, cache,fake_low_per_era, fake_high_per_era):
+
+def evaluate_per_era(edges_low, edges_high, low, high, cache,
+                     fake_low_per_era, fake_high_per_era):
 
     results = {}
 
+    # =========================================================
+    # TRUE RUN2 MODE: FOM(s_Run2, sum b_era)
+    # =========================================================
+    if USE_TRUE_RUN2_FOM:
+
+        total = 0
+
+        for m, c in cache.items():
+
+            f_bins = []
+
+            # -------------------------
+            # LOW bins
+            # -------------------------
+            for i in range(len(edges_low)-1):
+                lo = edges_low[i]
+                hi = edges_low[i+1]
+
+                bkg_sum = 0
+                for era2 in ERAS:
+                    sub = [b for b in low[era2] if lo <= b[0] < hi]
+                    bkg_sum += correct_bkg(lo, hi, sub, fake_low_per_era[era2])
+
+                sig = sum(v for x, v in c.items() if lo <= x < hi)
+                f_bins.append(fom(sig, bkg_sum))
+
+            # -------------------------
+            # HIGH bins
+            # -------------------------
+            for i in range(len(edges_high)-1):
+                lo = edges_high[i]
+                hi = edges_high[i+1]
+
+                bkg_sum = 0
+                for era2 in ERAS:
+                    sub = [b for b in high[era2] if lo <= b[0] < hi]
+                    bkg_sum += correct_bkg(lo, hi, sub, fake_high_per_era[era2])
+
+                sig = sum(v for x, v in c.items() if lo <= x < hi)
+                f_bins.append(fom(sig, bkg_sum))
+
+            total += sum(x*x for x in f_bins)
+
+        f_total = math.sqrt(total)
+
+        # In Run2 mode, per-era breakdown is not meaningful
+        # Assign same value for compatibility with existing code
+        for era in ERAS:
+            results[era] = f_total
+
+        return results
+
+    # =========================================================
+    # ORIGINAL MODE: per-era FOM
+    # =========================================================
     for era in ERAS:
 
         total = 0
 
         for m, c in cache.items():
 
-            f = []
+            f_bins = []
 
-            # LOW
+            # -------------------------
+            # LOW bins
+            # -------------------------
             for i in range(len(edges_low)-1):
-                lo,hi = edges_low[i], edges_low[i+1]
-                sub=[b for b in low[era] if lo<=b[0]<hi]
+                lo = edges_low[i]
+                hi = edges_low[i+1]
 
+                sub = [b for b in low[era] if lo <= b[0] < hi]
                 bkg = correct_bkg(lo, hi, sub, fake_low_per_era[era])
-                sig=sum(v for x,v in c.items() if lo<=x<hi)
 
-                f.append(fom(sig,bkg))
+                sig = sum(v for x, v in c.items() if lo <= x < hi)
+                f_bins.append(fom(sig, bkg))
 
-            # HIGH
+            # -------------------------
+            # HIGH bins
+            # -------------------------
             for i in range(len(edges_high)-1):
-                lo,hi = edges_high[i], edges_high[i+1]
-                sub=[b for b in high[era] if lo<=b[0]<hi]
+                lo = edges_high[i]
+                hi = edges_high[i+1]
 
+                sub = [b for b in high[era] if lo <= b[0] < hi]
                 bkg = correct_bkg(lo, hi, sub, fake_high_per_era[era])
-                sig=sum(v for x,v in c.items() if lo<=x<hi)
 
-                f.append(fom(sig,bkg))
+                sig = sum(v for x, v in c.items() if lo <= x < hi)
+                f_bins.append(fom(sig, bkg))
 
-            total += sum(x*x for x in f)
+            total += sum(x*x for x in f_bins)
 
         results[era] = math.sqrt(total)
 
     return results
+
 
 # =========================================================
 # LOAD
@@ -741,34 +869,82 @@ def evaluate_variable_binning(edges_low_per_era, edges_high_per_era,
 
     for m, c in cache.items():
 
-        f = []
+        f_bins = []
 
-        for era in ERAS:
+        # =========================================================
+        # TRUE RUN2 MODE
+        # =========================================================
+        if USE_TRUE_RUN2_FOM:
 
-            edges_low  = edges_low_per_era[era]
-            edges_high = edges_high_per_era[era]
+            # Loop over eras ONLY for bin definitions
+            for era in ERAS:
 
-            # LOW
-            for i in range(len(edges_low)-1):
-                lo, hi = edges_low[i], edges_low[i+1]
-                sub = [b for b in low[era] if lo <= b[0] < hi]
+                edges_low  = edges_low_per_era[era]
+                edges_high = edges_high_per_era[era]
 
-                bkg = correct_bkg(lo, hi, sub, fake_low_per_era[era])
-                sig = sum(v for x,v in c.items() if lo <= x < hi)
+                # -------------------------
+                # LOW bins
+                # -------------------------
+                for i in range(len(edges_low)-1):
+                    lo = edges_low[i]
+                    hi = edges_low[i+1]
 
-                f.append(fom(sig, bkg))
+                    bkg_sum = 0
+                    for era2 in ERAS:
+                        sub = [b for b in low[era2] if lo <= b[0] < hi]
+                        bkg_sum += correct_bkg(lo, hi, sub, fake_low_per_era[era2])
 
-            # HIGH
-            for i in range(len(edges_high)-1):
-                lo, hi = edges_high[i], edges_high[i+1]
-                sub = [b for b in high[era] if lo <= b[0] < hi]
+                    sig = sum(v for x, v in c.items() if lo <= x < hi)
+                    f_bins.append(fom(sig, bkg_sum))
 
-                bkg = correct_bkg(lo, hi, sub, fake_high_per_era[era])
-                sig = sum(v for x,v in c.items() if lo <= x < hi)
+                # -------------------------
+                # HIGH bins
+                # -------------------------
+                for i in range(len(edges_high)-1):
+                    lo = edges_high[i]
+                    hi = edges_high[i+1]
 
-                f.append(fom(sig, bkg))
+                    bkg_sum = 0
+                    for era2 in ERAS:
+                        sub = [b for b in high[era2] if lo <= b[0] < hi]
+                        bkg_sum += correct_bkg(lo, hi, sub, fake_high_per_era[era2])
 
-        total += sum(x*x for x in f)
+                    sig = sum(v for x, v in c.items() if lo <= x < hi)
+                    f_bins.append(fom(sig, bkg_sum))
+
+        # =========================================================
+        # ORIGINAL PER-ERA MODE
+        # =========================================================
+        else:
+
+            for era in ERAS:
+
+                edges_low  = edges_low_per_era[era]
+                edges_high = edges_high_per_era[era]
+
+                # LOW
+                for i in range(len(edges_low)-1):
+                    lo = edges_low[i]
+                    hi = edges_low[i+1]
+
+                    sub = [b for b in low[era] if lo <= b[0] < hi]
+                    bkg = correct_bkg(lo, hi, sub, fake_low_per_era[era])
+
+                    sig = sum(v for x, v in c.items() if lo <= x < hi)
+                    f_bins.append(fom(sig, bkg))
+
+                # HIGH
+                for i in range(len(edges_high)-1):
+                    lo = edges_high[i]
+                    hi = edges_high[i+1]
+
+                    sub = [b for b in high[era] if lo <= b[0] < hi]
+                    bkg = correct_bkg(lo, hi, sub, fake_high_per_era[era])
+
+                    sig = sum(v for x, v in c.items() if lo <= x < hi)
+                    f_bins.append(fom(sig, bkg))
+
+        total += sum(x*x for x in f_bins)
 
     return math.sqrt(total)
 
@@ -783,6 +959,66 @@ def evaluate_per_era_variable(edges_low_per_era, edges_high_per_era,
 
     results = {}
 
+    # =========================================================
+    # TRUE RUN2 MODE
+    # =========================================================
+    if USE_TRUE_RUN2_FOM:
+
+        total = 0
+
+        for m, c in cache.items():
+
+            f_bins = []
+
+            # Loop over eras ONLY for bin definitions
+            for era in ERAS:
+
+                edges_low  = edges_low_per_era[era]
+                edges_high = edges_high_per_era[era]
+
+                # -------------------------
+                # LOW bins
+                # -------------------------
+                for i in range(len(edges_low)-1):
+                    lo = edges_low[i]
+                    hi = edges_low[i+1]
+
+                    bkg_sum = 0
+                    for era2 in ERAS:
+                        sub = [b for b in low[era2] if lo <= b[0] < hi]
+                        bkg_sum += correct_bkg(lo, hi, sub, fake_low_per_era[era2])
+
+                    sig = sum(v for x, v in c.items() if lo <= x < hi)
+                    f_bins.append(fom(sig, bkg_sum))
+
+                # -------------------------
+                # HIGH bins
+                # -------------------------
+                for i in range(len(edges_high)-1):
+                    lo = edges_high[i]
+                    hi = edges_high[i+1]
+
+                    bkg_sum = 0
+                    for era2 in ERAS:
+                        sub = [b for b in high[era2] if lo <= b[0] < hi]
+                        bkg_sum += correct_bkg(lo, hi, sub, fake_high_per_era[era2])
+
+                    sig = sum(v for x, v in c.items() if lo <= x < hi)
+                    f_bins.append(fom(sig, bkg_sum))
+
+            total += sum(x*x for x in f_bins)
+
+        f_total = math.sqrt(total)
+
+        # Same value for all eras (Run2 merged)
+        for era in ERAS:
+            results[era] = f_total
+
+        return results
+
+    # =========================================================
+    # ORIGINAL PER-ERA MODE
+    # =========================================================
     for era in ERAS:
 
         total = 0
@@ -791,28 +1027,33 @@ def evaluate_per_era_variable(edges_low_per_era, edges_high_per_era,
 
             f_bins = []
 
-            # LOW
-            edges_low = edges_low_per_era[era]
+            edges_low  = edges_low_per_era[era]
+            edges_high = edges_high_per_era[era]
+
+            # -------------------------
+            # LOW bins
+            # -------------------------
             for i in range(len(edges_low)-1):
-                lo, hi = edges_low[i], edges_low[i+1]
+                lo = edges_low[i]
+                hi = edges_low[i+1]
 
                 sub = [b for b in low[era] if lo <= b[0] < hi]
-
                 bkg = correct_bkg(lo, hi, sub, fake_low_per_era[era])
-                sig = sum(v for x, v in c.items() if lo <= x < hi)
 
+                sig = sum(v for x, v in c.items() if lo <= x < hi)
                 f_bins.append(fom(sig, bkg))
 
-            # HIGH
-            edges_high = edges_high_per_era[era]
+            # -------------------------
+            # HIGH bins
+            # -------------------------
             for i in range(len(edges_high)-1):
-                lo, hi = edges_high[i], edges_high[i+1]
+                lo = edges_high[i]
+                hi = edges_high[i+1]
 
                 sub = [b for b in high[era] if lo <= b[0] < hi]
-
                 bkg = correct_bkg(lo, hi, sub, fake_high_per_era[era])
-                sig = sum(v for x, v in c.items() if lo <= x < hi)
 
+                sig = sum(v for x, v in c.items() if lo <= x < hi)
                 f_bins.append(fom(sig, bkg))
 
             total += sum(x*x for x in f_bins)
@@ -820,6 +1061,8 @@ def evaluate_per_era_variable(edges_low_per_era, edges_high_per_era,
         results[era] = math.sqrt(total)
 
     return results
+
+
 
 def color_val(v):
     if v < 0.5:
@@ -831,6 +1074,34 @@ def color_val(v):
 
 def fmt_colored(vals):
     return "[" + ", ".join(color_val(v) for v in vals) + "]"
+
+
+def compute_run2_fom(edges, bins_per_era, sig_cache, fake_bins_per_era):
+
+    total = 0
+
+    for m, cache in sig_cache.items():
+
+        f_bins = []
+
+        for i in range(len(edges)-1):
+            lo, hi = edges[i], edges[i+1]
+
+            # --- SUM BACKGROUND OVER ERAS ---
+            bkg_sum = 0
+
+            for era in ERAS:
+                sub = [b for b in bins_per_era[era] if lo <= b[0] < hi]
+                bkg_sum += correct_bkg(lo, hi, sub, fake_bins_per_era[era])
+
+            # --- SIGNAL (already Run2 combined) ---
+            sig = sum(v for x, v in cache.items() if lo <= x < hi)
+
+            f_bins.append(fom(sig, bkg_sum))
+
+        total += sum(x*x for x in f_bins)
+
+    return math.sqrt(total)
 
 
 def make_lastbin_zoom_plot(results, flav):
@@ -1106,6 +1377,7 @@ def main():
     parser.add_argument('--opt_weinberg',action='store_true')
     parser.add_argument('--opt_ssww',action='store_true')
     parser.add_argument('--weinberg',action='store_true')
+    parser.add_argument('--true-run2-fom', action='store_true')
     args=parser.parse_args()
 
     if args.opt_weinberg:
@@ -1117,6 +1389,9 @@ def main():
 
     EVAL_MASSES=OPT_MASSES
 
+    global USE_TRUE_RUN2_FOM
+    USE_TRUE_RUN2_FOM = args.true_run2_fom
+    
     base="/data6/Users/jalmond/HNL/Plotter/HNDiLeptonWorskspace/InputFiles/MergedFiles/HNL_SignalRegion_Plotter"
 
     ts=datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
