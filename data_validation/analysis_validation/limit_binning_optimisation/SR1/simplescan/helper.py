@@ -1,6 +1,14 @@
 import math
-
+import os
 from config import ERAS, FLAVOURS, FAKE_FLOOR, USE_FAKE_FIX
+
+def get_latest_dir(base):
+    dirs = [os.path.join(base, d)
+            for d in os.listdir(base)
+            if os.path.isdir(os.path.join(base, d))]
+    return max(dirs, key=os.path.getmtime)
+
+
 
 
 def debug_data_summary(data, max_bins=5):

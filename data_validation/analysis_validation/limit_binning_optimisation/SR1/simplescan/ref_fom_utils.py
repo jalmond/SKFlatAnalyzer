@@ -41,7 +41,7 @@ def evaluate_ref_bins_fakecorr(data,DEBUG=False):
     print("\n==============================")
     print(" REF BIN EVALUATION (FAKE CORR)")
     print("==============================")
-
+    
     results = []
     corrected_bins = []
     
@@ -215,7 +215,10 @@ def evaluate_ref_bins_fakecorr(data,DEBUG=False):
                 "ratio": ratio,
                 "binning": {
                     "Run2": None,
-                    "per_era": {era: REF_BINS[era][flav][ref_mass] for era in ERAS if ref_mass in REF_BINS[era][flav]}
+                    "per_era": {
+                        era: REF_BINS[era][flav][ref_mass]
+                        for era in ERAS if ref_mass in REF_BINS[era][flav]
+                    }
                 }
             })
             

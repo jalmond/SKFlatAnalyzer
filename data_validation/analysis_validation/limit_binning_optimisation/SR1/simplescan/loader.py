@@ -73,7 +73,9 @@ def get_bins(h):
         hi = h.GetBinLowEdge(i+1)
         val = h.GetBinContent(i)
         err = h.GetBinError(i)
-        rel = err/val if val > 0 else 0
-        out.append((lo, hi, val, rel))
+        #rel = err/val if val > 0 else 0
+        err2 = err * err
+        
+        out.append((lo, hi, val, err2))
     return out
 

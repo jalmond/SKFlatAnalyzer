@@ -2,13 +2,27 @@
 def format_edges(edges):
     return ", ".join(f"{e:.0f}" for e in edges)
 
+
 def print_final_summary(results):
 
     print("\n==============================")
     print(" FINAL SUMMARY (WITH BINNING)")
     print("==============================")
 
-    for r in results:
+    # ----------------------------------
+    # Handle dict-of-lists format
+    # ----------------------------------
+    if isinstance(results, dict):
+        iterable = []
+        for flav in results:
+            iterable.extend(results[flav])
+    else:
+        iterable = results
+
+    # ----------------------------------
+    # Loop
+    # ----------------------------------
+    for r in iterable:
 
         flav = r["flav"]
         mass = r["mass"]
@@ -25,9 +39,9 @@ def print_final_summary(results):
         print(f"Run2  = {run2:.4f}")
         print(f"Ratio = {ratio:.4f}")
 
-        # ------------------------                                                                                                                                                       
-        # Binning                                                                                                                                                                        
-        # ------------------------                                                                                                                                                       
+        # ------------------------
+        # Binning
+        # ------------------------
         binning = r["binning"]
 
         if binning["Run2"] is not None:
@@ -38,6 +52,7 @@ def print_final_summary(results):
             print("\n[Per-era binning]")
             for era, edges in binning["per_era"].items():
                 print(f"{era:10s} : {edges}")
+
 
 
                 
