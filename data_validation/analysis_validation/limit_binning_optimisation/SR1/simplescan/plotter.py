@@ -47,7 +47,10 @@ def make_mass_plot_multi(results_list, flav, out_tag="default"):
 
         results = entry["results"]
         label   = entry["label"]
-
+        if not isinstance(results, dict):
+            print(f"[ERROR] Bad results format for label {label}: {type(results)}")
+            continue
+        
         if flav not in results:
             print(f"[DEBUG] {label} missing {flav}")
             continue
@@ -88,7 +91,7 @@ def make_mass_plot_multi(results_list, flav, out_tag="default"):
         if first:
             g.Draw("APL")
             g.GetXaxis().SetTitle("Mass [GeV]")
-            g.GetYaxis().SetTitle("FOM")
+            g.GetYaxis().SetTitle("Significance Z (asymptotic)")
             g.SetMinimum(0.0)
             first = False
         else:
@@ -101,8 +104,13 @@ def make_mass_plot_multi(results_list, flav, out_tag="default"):
     # Legend
     # ------------------
     leg = ROOT.TLegend(0.15,0.65,0.45,0.88)
-    leg.SetTextSize(0.025)
-
+    #leg.SetNColumns(2)
+    leg.SetTextFont(42)   # cleaner font spacing
+    leg.SetBorderSize(0)
+    leg.SetFillStyle(0)
+    leg.SetTextSize(0.022)
+    leg.SetEntrySeparation(0.005)
+    leg.SetMargin(0.12)
     for g, label in graphs:
         leg.AddEntry(g, label, "lp")
 
@@ -112,7 +120,8 @@ def make_mass_plot_multi(results_list, flav, out_tag="default"):
     txt.SetNDC()
     txt.SetTextSize(0.04)
     txt.DrawLatex(0.18, 0.92, flav)
-
+    txt.DrawLatex(0.6, 0.92, "13 TeV, Run2")
+    
     # ------------------
     # Save
     # ------------------

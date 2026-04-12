@@ -5,7 +5,7 @@ MASSES = [
         "600","700","800","900",
 	"1000","1500","2000"
 ]
-NBINS_TO_SCAN=[2,3,4,5]
+NBINS_TO_SCAN=[1,2,3,4,5,6,7]
 FAKE_FLOOR = 0.15 * 0.645
 USE_FAKE_FIX = True   
 RUN_REF=True

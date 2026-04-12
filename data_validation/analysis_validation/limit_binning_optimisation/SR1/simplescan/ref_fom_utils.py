@@ -73,6 +73,8 @@ def evaluate_ref_bins_fakecorr(data,DEBUG=False):
             # ----------------------------------
             # Loop eras
             # ----------------------------------
+            bin_stats_per_era = {era: [] for era in ERAS}
+            
             for era in ERAS:
 
                 if ref_mass not in REF_BINS[era][flav]:
@@ -90,7 +92,7 @@ def evaluate_ref_bins_fakecorr(data,DEBUG=False):
                 S_arr = data["signal"][flav][mass][era]
                 B_arr = data["background"][flav][era]
                 F_arr = data["fake"][flav][era]
-
+                E_arr = data["bkg_err2"][flav][era]
                 Z2_era = 0.0
 
                 # ----------------------------------
@@ -106,12 +108,19 @@ def evaluate_ref_bins_fakecorr(data,DEBUG=False):
                     S = S_arr[mask].sum()
                     B = B_arr[mask].sum()
                     F = F_arr[mask].sum()
-
+                    E = E_arr[mask].sum()
+                    
                     # Apply fake correction
                     F_orig = F
                     B_orig = B
 
                     F, B = fix_fake_and_bkg(F, B, FAKE_FLOOR, era=era, flavour=flav)
+
+                    bin_stats_per_era[era].append({
+                        "S": S,
+                        "B": B,
+                        "E": E
+                    })
                     
                     # Record only if something changed
                     if (abs(F - F_orig) > 1e-6) or (abs(B - B_orig) > 1e-6):
@@ -145,10 +154,12 @@ def evaluate_ref_bins_fakecorr(data,DEBUG=False):
                     S_run2 = S_arr.copy()
                     B_run2 = B_arr.copy()
                     F_run2 = F_arr.copy()
+                    E_run2 = E_arr.copy()
                 else:
                     S_run2 += S_arr
                     B_run2 += B_arr
                     F_run2 += F_arr
+                    E_run2 += E_arr
 
             quad_total = math.sqrt(quad_total)
 
@@ -156,7 +167,8 @@ def evaluate_ref_bins_fakecorr(data,DEBUG=False):
             # Run2 FOM
             # ----------------------------------
             run2_Z2 = 0.0
-
+            bin_stats_run2 = []
+            
             if S_run2 is not None:
 
                 edges_ref = REF_BINS[ERAS[-1]][flav].get(ref_mass, None)
@@ -173,13 +185,20 @@ def evaluate_ref_bins_fakecorr(data,DEBUG=False):
                         S = S_run2[mask].sum()
                         B = B_run2[mask].sum()
                         F = F_run2[mask].sum()
-
+                        E = E_run2[mask].sum()
+                                                
+                                                
                         # Apply fake correction
                         F_orig = F
                         B_orig = B
                         
                         F, B = fix_fake_and_bkg(F, B, FAKE_FLOOR, flavour=flav, era="Run2")
 
+                        bin_stats_run2.append({
+                            "S": S,
+                            "B": B,
+                            "E": E
+                        })
                         if (abs(F - F_orig) > 1e-6) or (abs(B - B_orig) > 1e-6):
                             corrected_bins.append({
                                 "era": "Run2",
@@ -213,6 +232,10 @@ def evaluate_ref_bins_fakecorr(data,DEBUG=False):
                 "quad": quad_total,
                 "run2": run2_total,
                 "ratio": ratio,
+                "bin_stats": {
+                    "Run2": bin_stats_run2,
+                    "per_era": bin_stats_per_era
+                },
                 "binning": {
                     "Run2": None,
                     "per_era": {
