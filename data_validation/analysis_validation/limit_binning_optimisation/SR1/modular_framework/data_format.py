@@ -3,7 +3,7 @@
 # =========================================================                                             
 import math
 
-from config import ERAS, FLAVOURS, FAKE_FLOOR, USE_FAKE_FIX
+from config import ERAS, FLAVOURS
 
 
 from loader import load_histogram,load_background, load_signal,load_fake

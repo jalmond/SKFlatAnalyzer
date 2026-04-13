@@ -1,6 +1,22 @@
 import math
 import os
-from config import ERAS, FLAVOURS, FAKE_FLOOR, USE_FAKE_FIX
+from default_config import ERAS, FLAVOURS, FAKE_FLOOR,
+
+def ReadConfig(cfg):
+
+    def get(name):
+        if not hasattr(cfg, name):
+            raise AttributeError(f"[CONFIG ERROR] Missing '{name}' in config")
+        return getattr(cfg, name)
+    
+    return (
+        get("MASSES"),
+        get("NBINS_TO_SCAN"),
+        get("USE_FAKE_FIX"),
+        get("RUN_Z_NO_UNC"),
+        get("LOG_TAG"),
+    )
+
 
 def get_latest_dir(base):
     dirs = [os.path.join(base, d)

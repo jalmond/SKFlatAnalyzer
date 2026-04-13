@@ -3,7 +3,7 @@
 # =========================================================
 
 from ref_bins import REF_BINS
-from config import ERAS, FLAVOURS, FAKE_FLOOR, USE_FAKE_FIX
+from default_config import ERAS, FLAVOURS, FAKE_FLOOR
 from logger import fmt_ratio
 from helper import fix_fake_and_bkg,compute_bin_Z
 import math

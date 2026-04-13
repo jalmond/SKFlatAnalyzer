@@ -1,7 +1,7 @@
 # =========================================================                                                                                                                        # LOADERS                                                                                                                                                                          
 # =========================================================
 import os,ROOT
-from config import ERAS, FLAVOURS, FAKE_FLOOR, USE_FAKE_FIX
+from config import ERAS, FLAVOURS
 
 def load_histogram(file_path, hist_path):
     f = ROOT.TFile(file_path)

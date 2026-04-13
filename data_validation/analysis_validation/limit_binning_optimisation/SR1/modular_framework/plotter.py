@@ -1,7 +1,5 @@
 import ROOT
 
-from config import LOG_TAG
-
 def convert_results_for_plot(results, mode="run2"):
 
     out = {}
@@ -31,7 +29,7 @@ def convert_results_for_plot(results, mode="run2"):
 
     return out
 
-def make_mass_plot_multi(results_list, flav, out_tag="default"):
+def make_mass_plot_multi(results_list, flav, LOG_TAG, out_tag="default"):
 
     import os
     c = ROOT.TCanvas(f"c_mass_{flav}", "", 800, 700)
