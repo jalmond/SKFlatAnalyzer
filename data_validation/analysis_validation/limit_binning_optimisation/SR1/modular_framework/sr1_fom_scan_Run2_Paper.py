@@ -8,7 +8,7 @@ import time
 ROOT.gROOT.SetBatch(True)
 
 #### Read config
-from config import ERAS, FLAVOURS, FAKE_FLOOR, USE_FAKE_FIX, MASSES, RUN_REF,RUN_SCANS,NBINS_TO_SCAN,LOG_TAG
+from config import FLAVOURS, MASSES, RUN_REF,RUN_SCANS,NBINS_TO_SCAN,LOG_TAG
 #### Build data
 from data_format import hist_to_array,bins_to_array_with_err,build_data
 
@@ -110,6 +110,8 @@ def main():
     # Make scans and save results for plots
     results_for_plots = []
     scan_results_for_plots= []
+    scan_results_for_plots_eradep= []
+
     if run_ref:
         print("==============================")
         print("Plot Reference bins in ref_bins.py")
@@ -200,6 +202,17 @@ def main():
                 "raw": res_dp_raw,
                 "label": f"Scan (Run2, N_bins={nb})"
             })
+            scan_results_for_plots_eradep.append({
+                "results": convert_results_for_plot(res_dp_raw, mode="run2"),
+                "raw": res_dp_raw,
+                "label": f"Scan (Run2, N_bins={nb})"
+            })
+            scan_results_for_plots_eradep.append({
+                "results": convert_results_for_plot(res_dp_raw, mode="quad"),
+                "raw": res_dp_raw,
+                "label": f"Scan (Run2, N_bins={nb} [QUAD])"
+            })
+
 
 
     for nb in NBINS_TO_SCAN:
@@ -265,6 +278,18 @@ def main():
                 "raw": res_dp_raw_perera,
                 "label": f"Scan (Era-Dep, Run2, N_bins={nb})"
             })
+            scan_results_for_plots_eradep.append({
+                "results": convert_results_for_plot(res_dp_raw_perera, mode="run2"),
+                "raw": res_dp_raw_perera,
+                "label": f"Scan (Era-Dep, Run2, N_bins={nb})"
+            })
+            scan_results_for_plots_eradep.append({
+                "results": convert_results_for_plot(res_dp_raw_perera, mode="quad"),
+                "raw": res_dp_raw_perera,
+                "label": f"Scan (Era-Dep, Run2, N_bins={nb} [QUAD])"
+            })
+
+            
 
         
                 
@@ -307,7 +332,13 @@ def main():
                 flav=flav,
                 out_tag="scan_results_perflav_persigmass_perera_Nbins"
             )
-            
+        if len(scan_results_for_plots_eradep) > 0:
+            make_mass_plot_multi(
+                results_list=scan_results_for_plots_eradep,
+                flav=flav,
+                out_tag="scan_results_eradep_Nbins"
+            )
+
     print_scan_summary_table(scan_results_for_plots)
     print_scan_summary_table(scan_results_for_plots, use_quad=True)  # NEW
     print_scan_binning_table(scan_results_for_plots)

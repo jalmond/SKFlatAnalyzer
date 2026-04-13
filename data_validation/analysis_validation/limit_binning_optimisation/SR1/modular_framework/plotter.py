@@ -41,8 +41,10 @@ def make_mass_plot_multi(results_list, flav, out_tag="default"):
     graphs = []
     all_y = []
 
-    marker_styles = [20, 21, 22, 23, 24]
-    line_styles   = [1, 2, 3, 4, 5]
+    marker_styles = [20, 21, 22, 23, 24, 25, 26, 27, 28, 30]
+    line_styles   = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    # ROOT color palette (good contrast)
+    colors = [1,2,4,6,8,9,28,46,38,41,30,12,14,15]
 
     for idx, entry in enumerate(results_list):
 
@@ -74,8 +76,15 @@ def make_mass_plot_multi(results_list, flav, out_tag="default"):
             g.SetPoint(i, m, f)
             all_y.append(f)
 
-        g.SetMarkerStyle(marker_styles[idx % len(marker_styles)])
         g.SetLineStyle(line_styles[idx % len(line_styles)])
+        n_markers = len(marker_styles)
+        n_colors  = len(colors)
+
+        g.SetMarkerStyle(marker_styles[idx % n_markers])
+
+        if idx >= n_markers:
+            g.SetLineColor(colors[1])
+            
         g.SetLineWidth(2)
 
         graphs.append((g, label))
