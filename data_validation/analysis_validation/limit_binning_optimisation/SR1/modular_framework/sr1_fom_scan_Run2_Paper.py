@@ -8,7 +8,7 @@ import time
 ROOT.gROOT.SetBatch(True)
 
 #### Read config
-from config import ERAS, FLAVOURS, FAKE_FLOOR, USE_FAKE_FIX, MASSES, RUN_REF,RUN_SCANS,NBINS_TO_SCAN
+from config import ERAS, FLAVOURS, FAKE_FLOOR, USE_FAKE_FIX, MASSES, RUN_REF,RUN_SCANS,NBINS_TO_SCAN,LOG_TAG
 #### Build data
 from data_format import hist_to_array,bins_to_array_with_err,build_data
 
@@ -63,7 +63,7 @@ def main():
     ts = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
     os.makedirs("logs", exist_ok=True)
 
-    log_file = f"logs/build_data_{ts}.txt"
+    log_file = f"logs/build_{LOG_TAG}_data_{ts}.txt"
     sys.stdout = TeeLogger(log_file)
 
     print("==============================")
@@ -183,7 +183,7 @@ def main():
         print("======================================")
         print(f" Running DP scan Per Flavour, Using Run2 shape, per signal mass")
         
-        res_dp_raw = evaluate_dp_per_mass(data, nb)
+        res_dp_raw = evaluate_dp_per_flavour_per_mass_run2(data, nb)
         
         print_final_summary(res_dp_raw)
         
@@ -208,7 +208,7 @@ def main():
         print("======================================")
         print(f" Running DP scan Per Flavour, Using Run2 shape, combined signal mass")
         
-        res_dp_raw_global_sig =  evaluate_dp_global_per_flavour(data, nb)
+        res_dp_raw_global_sig =  evaluate_dp_per_flavour_global_mass_run2(data, nb)
         print_final_summary(res_dp_raw_global_sig)
         scan_results_for_plots_globalsig_perNB.append({
             "results": convert_results_for_plot(res_dp_raw_global_sig, mode="run2"),
@@ -230,7 +230,7 @@ def main():
         print("======================================")
         print(f" Running DP scan Summed Flavour, Using Run2 shape, per signal mass")
         
-        res_dp_raw_globalflav = evaluate_dp_combined_flavours(data, nb)
+        res_dp_raw_globalflav = evaluate_dp_flavour_per_mass_combined_stat_split_run2(data, nb)
         
         print_final_summary(res_dp_raw_globalflav)
         
@@ -312,6 +312,10 @@ def main():
     print_scan_summary_table(scan_results_for_plots, use_quad=True)  # NEW
     print_scan_binning_table(scan_results_for_plots)
             
-        
+    print("\n==============================")
+    print("[INFO] Log file saved to:")
+    print(log_file)
+    print("==============================")
+    
 if __name__ == "__main__":
     main()

@@ -1,5 +1,6 @@
 import ROOT
 
+from config import LOG_TAG
 
 def convert_results_for_plot(results, mode="run2"):
 
@@ -125,7 +126,7 @@ def make_mass_plot_multi(results_list, flav, out_tag="default"):
     # ------------------
     # Save
     # ------------------
-    outdir = f"plots/{out_tag}"
+    outdir = f"plots/{out_tag}_{LOG_TAG}"
     os.makedirs(outdir, exist_ok=True)
 
     c.SaveAs(f"{outdir}/fom_vs_mass_{flav}.pdf")

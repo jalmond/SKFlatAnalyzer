@@ -3,7 +3,7 @@
 # =========================================================
 
 from ref_bins import REF_BINS
-from config import ERAS, FLAVOURS, FAKE_FLOOR, USE_FAKE_FIX,MASSES
+from config import ERAS, FLAVOURS, FAKE_FLOOR, USE_FAKE_FIX,MASSES,RUN_Z_NO_UNC
 from logger import fmt_ratio
 from helper import fix_fake_and_bkg,compute_bin_Z
 import math
@@ -19,12 +19,16 @@ DEBUG = False
 def pass_stat(B):
     return (B >= 1.0)
 
-
 def pass_stat_and_err(B, rel):
     return (B >= 1.0) or (B >= 0.5 and rel < 0.3)
 
+#### compute_bin_Z in helper.py
+
 def compute_bin_Z_with_unc(S, B, E):
 
+    if RUN_Z_NO_UNC:
+        return compute_bin_Z(S,B)
+    
     if S <= 0 or B <= 0:
         return 0.0
 
@@ -40,7 +44,9 @@ def compute_bin_Z_with_unc(S, B, E):
 
     return math.sqrt(Z2) if Z2 > 0 else 0.0
 
-
+#=============================================
+### Scan functions rundp_*
+#=============================================
 
 def run_dp_on_arrays_with_flav_stat(
     S, B, E, F,
@@ -64,13 +70,6 @@ def run_dp_on_arrays_with_flav_stat(
     prev = [[-1]*(n_bins+1) for _ in range(nbins+1)]
 
     dp[0][0] = 0.0
-
-    def pass_stat(s, b, e):
-        if b <= 0:
-            return False
-        if e > b*b:
-            return False
-        return True
 
     for i in range(nbins):
 
@@ -224,8 +223,13 @@ def run_dp_on_arrays(
 
     for i in reversed(range(N)):
         B_tail = PB[N] - PB[i]
+        if B_tail <= 0:
+            continue
+        
+        E_tail = PE[N] - PE[i]
+        rel_tail = math.sqrt(E_tail) / B_tail
 
-        if pass_stat(B_tail):
+        if pass_stat_and_err(B_tail,rel_tail):
             max_edge_idx = i
             break
 
@@ -384,7 +388,7 @@ def run_dp_on_arrays(
 # =========================================================
 
 
-def evaluate_dp_per_mass(data, n_bins=6, use_fake_corr=True):
+def evaluate_dp_per_flavour_per_mass_run2(data, n_bins=6, use_fake_corr=True):
 
     # =========================================================
     # DP BINNING (PER MASS, PER FLAVOUR)
@@ -609,7 +613,7 @@ def evaluate_dp_per_mass(data, n_bins=6, use_fake_corr=True):
     return results
 
 
-def evaluate_dp_global_per_flavour(data, n_bins=6, use_fake_corr=True):
+def evaluate_dp_per_flavour_global_mass_run2(data, n_bins=6, use_fake_corr=True):
 
     # =========================================================
     # GLOBAL DP BINNING (PER FLAVOUR)
@@ -818,7 +822,7 @@ def evaluate_dp_global_per_flavour(data, n_bins=6, use_fake_corr=True):
 
 
 
-def evaluate_dp_combined_flavours(data, n_bins=6, use_fake_corr=True):
+def evaluate_dp_flavour_per_mass_combined_stat_split_run2(data, n_bins=6, use_fake_corr=True):
 
     print("\n==============================")
     print(" GLOBAL DP BINNING (ALL FLAVOURS)")

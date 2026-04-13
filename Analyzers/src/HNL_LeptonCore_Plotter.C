@@ -320,7 +320,10 @@ void HNL_LeptonCore::Fill_Main_Plots(AnalyzerParameter& param, TString  region, 
   double met2_st = pow(met.Pt(),2.)/ ST;
 
   FillHist( plot_dir+ region+ "/MainPlots/Ev_MET2_ST", met2_st  , w, 1000, 0.0, 100.0,"MET2/ST GeV");
-  
+
+  double PTLep1  = leps[0]->Pt();
+  double PTLep2  = leps[1]->Pt();
+  double LT = PTLep1 + PTLep2;
   if(fatjets.size() > 0){
     Particle N1Cand  = fatjets[0] + *leps[0] ;
     FillHist( plot_dir+ region+ "/MainPlots/M_l1J",          N1Cand.M(),       w, 9999, 0, 9999, "M_{Jl_{1}} GeV" );
@@ -334,19 +337,34 @@ void HNL_LeptonCore::Fill_Main_Plots(AnalyzerParameter& param, TString  region, 
     FillHist( plot_dir+ region+ "/MainPlots/HT_PT1",     leps[0]->HTOverPt(),     w, 100, 0, 10, "H_{T}/p_{T}");
     double ll_dphi = fabs(TVector2::Phi_mpi_pi( ( (*leps[0]).Phi() - (*leps[1]).Phi() )) );
 
-    //    if(User("jalmond"))  {
-    //   FillHist( plot_dir+ region+ "/MainPlots/SR2_Scan",  min(9.0,leps[0]->HTOverPt()), ll_dphi, min(199.0,(*leps[1]).Pt()), w, 100, 0, 10,50, 0, 5.0, 20, 0, 200);
-    // }
-    
-    
-    if(ll_dphi > 2.)     FillHist( plot_dir+ region+ "/MainPlots/HT_PT1_HighDphi",     leps[0]->HTOverPt(),     w, 100, 0, 10, "H_{T}/p_{T}");
-    else     FillHist( plot_dir+ region+ "/MainPlots/HT_PT1_LowDPhi",     leps[0]->HTOverPt(),     w, 100, 0, 10, "H_{T}/p_{T}");
-
+    if(!HasFlag("RunSyst")){
+      if(ll_dphi > 2.)     FillHist( plot_dir+ region+ "/MainPlots/HT_PT1_HighDphi",     leps[0]->HTOverPt(),     w, 100, 0, 10, "H_{T}/p_{T}");
+      else     FillHist( plot_dir+ region+ "/MainPlots/HT_PT1_LowDPhi",     leps[0]->HTOverPt(),     w, 100, 0, 10, "H_{T}/p_{T}");
+      
+      
+      if(jets.size() < 2) {
+	if(met2_st < 2) FillHist( plot_dir + region + "/MainPlots/LowJet_METLT2_LT", LT, w, 240, 0, 1200, "l_{T} p_{T} GeV");
+	else  FillHist( plot_dir + region + "/MainPlots/LowJet_METLT2_LT", LT, w, 240, 0, 1200, "l_{T} p_{T} GeV");
+	if(met2_st < 3) FillHist( plot_dir + region + "/MainPlots/LowJet_METLT3_LT", LT, w, 240, 0, 1200, "l_{T} p_{T} GeV");
+	else  FillHist( plot_dir + region + "/MainPlots/LowJet_METLT3_LT", LT, w, 240, 0, 1200, "l_{T} p_{T} GeV");
+	if(met2_st < 4) FillHist( plot_dir + region + "/MainPlots/LowJet_METLT4_LT", LT, w, 240, 0, 1200, "l_{T} p_{T} GeV");
+	else  FillHist( plot_dir + region + "/MainPlots/LowJet_METLT4_LT", LT, w, 240, 0, 1200, "l_{T} p_{T} GeV");
+	if(met2_st < 5) FillHist( plot_dir + region + "/MainPlots/LowJet_METLT5_LT", LT, w, 240, 0, 1200, "l_{T} p_{T} GeV");
+	else  FillHist( plot_dir + region + "/MainPlots/LowJet_METLT5_LT", LT, w, 240, 0, 1200, "l_{T} p_{T} GeV");
+      }
+      else{
+	if(met2_st < 2) FillHist( plot_dir + region + "/MainPlots/HighJet_METLT2_LT", LT, w, 240, 0, 1200, "l_{T} p_{T} GeV");
+        else  FillHist( plot_dir + region + "/MainPlots/HighJet_METLT2_LT", LT, w, 240, 0, 1200, "l_{T} p_{T} GeV");
+        if(met2_st < 3) FillHist( plot_dir + region + "/MainPlots/HighJet_METLT3_LT", LT, w, 240, 0, 1200, "l_{T} p_{T} GeV");
+        else  FillHist( plot_dir + region + "/MainPlots/HighJet_METLT3_LT", LT, w, 240, 0, 1200, "l_{T} p_{T} GeV");
+        if(met2_st < 4) FillHist( plot_dir + region + "/MainPlots/HighJet_METLT4_LT", LT, w, 240, 0, 1200, "l_{T} p_{T} GeV");
+        else  FillHist( plot_dir + region + "/MainPlots/HighJet_METLT4_LT", LT, w, 240, 0, 1200, "l_{T} p_{T} GeV");
+        if(met2_st < 5) FillHist( plot_dir + region + "/MainPlots/HighJet_METLT5_LT", LT, w, 240, 0, 1200, "l_{T} p_{T} GeV");
+        else  FillHist( plot_dir + region + "/MainPlots/HighJet_METLT5_LT", LT, w, 240, 0, 1200, "l_{T} p_{T} GeV");
+      }
+    }
   }
 
-  double PTLep1  = leps[0]->Pt();
-  double PTLep2  = leps[1]->Pt();
-  double LT = PTLep1 + PTLep2;
   
   FillHist( plot_dir + region + "/MainPlots/Lepton_1_pt", PTLep1, w, 9999, 0, 9999, "l_{1} p_{T} GeV");
   FillHist( plot_dir + region + "/MainPlots/Lepton_2_pt", PTLep2, w, 9999, 0, 9999, "l_{2} p_{T} GeV");
