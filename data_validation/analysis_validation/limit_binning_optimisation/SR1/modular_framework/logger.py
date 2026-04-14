@@ -19,6 +19,21 @@ def normalize_results(raw):
         out.setdefault(flav, []).append(r)
     return out
 
+def print_config_file(module, title="CONFIG"):
+    import inspect
+
+    print("\n====================================")
+    print(f" {title}")
+    print("====================================")
+
+    try:
+        source = inspect.getsource(module)
+        print(source)
+    except Exception as e:
+        print(f"[WARNING] Could not read source: {e}")
+
+    print("====================================\n")
+    
 def print_scan_binning_table(scan_results_for_plots):
 
     print("\n==============================")

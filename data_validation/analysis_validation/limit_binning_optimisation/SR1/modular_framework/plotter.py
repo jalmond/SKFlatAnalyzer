@@ -133,7 +133,7 @@ def make_mass_plot_multi(results_list, flav, LOG_TAG, out_tag="default"):
     # ------------------
     # Save
     # ------------------
-    outdir = f"plots/{out_tag}_{LOG_TAG}"
+    outdir = f"plots/{LOG_TAG}/{out_tag}/"
     os.makedirs(outdir, exist_ok=True)
 
     c.SaveAs(f"{outdir}/fom_vs_mass_{flav}.pdf")

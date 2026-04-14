@@ -12,9 +12,10 @@ ROOT.gROOT.SetBatch(True)
 #### Build data
 from data_format import hist_to_array, bins_to_array_with_err, build_data
 
-from helper import debug_data_summary, get_latest_dir,ReadConfig
+from helper import debug_data_summary, get_latest_dir,ReadConfig,ConvertConfPath
 from plotter import make_mass_plot_multi, convert_results_for_plot
-
+from default_config import RUN_REF,RUN_SCANS,BASE_DIR
+import default_config
 from ref_fom_utils import evaluate_ref_bins_no_fakecorr, evaluate_ref_bins_fakecorr, compare_fake_impact
 from fom_utils import *
 
@@ -46,7 +47,16 @@ class Timer:
 # =========================================================
 # LOGGER
 # =========================================================
+class SimpleLogger:
+    def __init__(self, filename):
+        self.file = open(filename, "w")
 
+    def write(self, message):
+        self.file.write(message)
+
+    def flush(self):
+        self.file.flush()
+        
 class TeeLogger:
     def __init__(self, filename):
         self.file = open(filename, "w")
@@ -61,7 +71,7 @@ class TeeLogger:
         self.file.flush()
 
 
-from logger import print_final_summary, print_scan_summary_table, print_scan_binning_table
+from logger import print_final_summary, print_scan_summary_table, print_scan_binning_table,print_config_file
 
 
 # =========================================================
@@ -73,30 +83,38 @@ def main():
     timer = Timer()
     timer.start("TOTAL")
 
-    base = "/data6/Users/jalmond/HNL/Plotter/HNDiLeptonWorskspace/InputFiles/MergedFiles/HNL_SignalRegion_Plotter"
-
     # ----------------------------------
     # Use latest production directory
     # ----------------------------------
-    base = get_latest_dir(base)
 
+    if BASE_DIR is not None:
+        if not os.path.isdir(BASE_DIR):
+            raise ValueError(f"[ERROR] BASE_DIR does not exist: {BASE_DIR}")
+
+        base = BASE_DIR
+        print(f"[INFO] Using BASE_DIR from config: {base}")
+    else:
+        base = get_latest_dir("/data6/Users/jalmond/HNL/Plotter/HNDiLeptonWorskspace/InputFiles/MergedFiles/HNL_SignalRegion_Plotter")
+        print(f"[INFO] Using latest directory: {base}")
+
+        
     parser = argparse.ArgumentParser(description="FOM scan runner")
     parser.add_argument("--runRef", action="store_true", default=None)
     parser.add_argument("--runDP",  action="store_true", default=None)
-    parser.add_argument("--config", default="config.quick_scan_config")
-    
+    parser.add_argument("--config", default="config.config")
+    parser.add_argument("--tag", default=None, help="Tag string for this run")
     args = parser.parse_args()
-
+    tag = args.tag
+    
     #### Read config
+    conf_path = ConvertConfPath(args.config)
     import importlib.util
-    if importlib.util.find_spec(args.config) is None:
-        raise ImportError(f"[ERROR] Config module '{args.config}' not found")
+    if importlib.util.find_spec(conf_path) is None:
+        raise ImportError(f"[ERROR] Config module '{conf_path}' not found")
     
-    config_module = importlib.import_module(args.config)
+    config_module = importlib.import_module(conf_path)
     MASSES, NBINS_TO_SCAN, USE_FAKE_FIX, RUN_Z_NO_UNC, LOG_TAG = ReadConfig(config_module)
-    
-    
-    
+
     run_ref = args.runRef if args.runRef is not None else RUN_REF
     run_dp  = args.runDP  if args.runDP  is not None else RUN_SCANS
 
@@ -105,10 +123,26 @@ def main():
     # ----------------------------------
     ts = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
     os.makedirs("logs", exist_ok=True)
+    outtag=""
 
-    log_file = f"logs/build_{LOG_TAG}_data_{ts}.txt"
+    if tag:
+        os.makedirs(f"logs/{tag}", exist_ok=True)
+        os.makedirs(f"logs/{tag}/{LOG_TAG}", exist_ok=True)
+        outtag=f"{tag}/{LOG_TAG}"
+
+    else:
+        os.makedirs(f"logs/{LOG_TAG}", exist_ok=True)
+        outtag=f"{LOG_TAG}"
+
+    log_file = f"logs/{outtag}/build_data_{ts}.txt"
     sys.stdout = TeeLogger(log_file)
+    
+    print_config_file(default_config, title="DEFAULT CONFIG")
+    print_config_file(config_module, title=f"USER CONFIG ({conf_path})")
 
+    results_log_file = f"logs/{outtag}/results_{ts}.txt"
+    results_logger = SimpleLogger(results_log_file)
+    
     print("==============================")
     if run_ref:
         print("Plot Reference bins in ref_bins.py")
@@ -213,7 +247,7 @@ def main():
             make_mass_plot_multi(
                 results_list=results_for_plots,
                 flav=flav,
-                LOG_TAG=LOG_TAG,
+                LOG_TAG=outtag,
                 out_tag="fake_comparison"
             )
         timer.stop("Reference plotting")
@@ -372,14 +406,14 @@ def main():
         make_mass_plot_multi(
             results_list=scan_results_for_plots,
             flav=flav,
-            LOG_TAG=LOG_TAG,
+            LOG_TAG=outtag,
             out_tag="scan_results"
         )
         if len(scan_results_for_plots_perNB) > 0:
             make_mass_plot_multi(
                 results_list=scan_results_for_plots_perNB,
                 flav=flav,
-                LOG_TAG=LOG_TAG,
+                LOG_TAG=outtag,
                 out_tag="scan_results_perflav_persigmass_Nbins"
             )
 
@@ -387,7 +421,7 @@ def main():
             make_mass_plot_multi(
                 results_list=scan_results_for_plots_globalsig_perNB,
                 flav=flav,
-                LOG_TAG=LOG_TAG,
+                LOG_TAG=outtag,
                 out_tag="scan_results_perflav_globalsigmass_Nbins"
             )
 
@@ -395,21 +429,21 @@ def main():
             make_mass_plot_multi(
                 results_list=scan_results_for_plots_globalflav_perNB,
                 flav=flav,
-                LOG_TAG=LOG_TAG,
+                LOG_TAG=outtag,
                 out_tag="scan_results_globalflav_persigmass_Nbins"
             )
         if len(scan_results_for_plots_pererabinning_perNB) > 0:
             make_mass_plot_multi(
                 results_list=scan_results_for_plots_pererabinning_perNB,
                 flav=flav,
-                LOG_TAG=LOG_TAG,
+                LOG_TAG=outtag,
                 out_tag="scan_results_perflav_persigmass_perera_Nbins"
             )
         if len(scan_results_for_plots_eradep) > 0:
             make_mass_plot_multi(
                 results_list=scan_results_for_plots_eradep,
                 flav=flav,
-                LOG_TAG=LOG_TAG,
+                LOG_TAG=outtag,
                 out_tag="scan_results_eradep_Nbins"
             )
     
@@ -420,12 +454,36 @@ def main():
     # =====================================================
     # SUMMARY
     # =====================================================
-
-    print_scan_summary_table(scan_results_for_plots)
-    print_scan_summary_table(scan_results_for_plots, use_quad=True)
-    print_scan_binning_table(scan_results_for_plots)
-
+    
     print("\n==============================")
+    print("[INFO] Writing clean results summary...")
+    print("==============================")
+    
+    # Save current stdout
+    original_stdout = sys.stdout
+    
+    # Redirect to results file
+    sys.stdout = results_logger
+    
+    print("====================================")
+    print(" FINAL SUMMARY")
+    print("====================================\n")
+    
+    print_scan_summary_table(scan_results_for_plots)
+    print("\n------------------------------------\n")
+    print_scan_summary_table(scan_results_for_plots, use_quad=True)
+    print("\n------------------------------------\n")
+    print_scan_binning_table(scan_results_for_plots)
+    
+    print("\n====================================")
+    print(" END OF SUMMARY")
+    print("====================================\n")
+    
+    # Restore stdout
+    sys.stdout = original_stdout
+
+    print(f"[INFO] Results summary saved to: {results_log_file}")
+    
     print("[INFO] Log file saved to:")
     print(log_file)
     print("==============================")

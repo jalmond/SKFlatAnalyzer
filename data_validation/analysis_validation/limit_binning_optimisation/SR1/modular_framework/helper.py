@@ -1,6 +1,22 @@
 import math
 import os
-from default_config import ERAS, FLAVOURS, FAKE_FLOOR,
+from default_config import ERAS, FLAVOURS, FAKE_FLOOR
+
+def ConvertConfPath(path):
+    # remove .py if present
+    if path.endswith(".py"):
+        path = path[:-3]
+    else:
+        return path
+
+    # replace / with .
+    path = path.replace("/", ".")
+
+    # remove leading ./ if present
+    if path.startswith("."):
+        path = path[1:]
+
+    return path
 
 def ReadConfig(cfg):
 
