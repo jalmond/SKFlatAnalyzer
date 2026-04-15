@@ -130,3 +130,102 @@ def fix_fake_and_bkg(F, B, FAKE_FLOOR, flavour=None, era=None, debug=False):
 
     return F, B
 
+
+def compute_run2_fom_for_edges(edges, data, flav, mass, bin_lo,
+                               use_fake_corr=True, run_z_no_unc=True):
+
+    run2_Z2 = 0.0
+
+    print("\n======================================")
+    print(f"[DEBUG] Run2 FOM for {flav}, mass={mass}")
+    print("Edges:", edges)
+    print("======================================")
+
+    for i in range(len(edges)-1):
+
+        lo = edges[i]
+        hi = edges[i+1]
+
+        if i == len(edges)-2:
+            mask = (bin_lo >= lo) & (bin_lo <= hi)
+        else:
+            mask = (bin_lo >= lo) & (bin_lo < hi)
+
+        S_tot = 0.0
+        B_tot = 0.0
+        E_tot = 0.0
+
+        print(f"\n--- Bin {i}: [{lo}, {hi}] ---")
+
+        for era in ERAS:
+
+            S = data["signal"][flav][mass][era][mask].sum()
+            B = data["background"][flav][era][mask].sum()
+            F = data["fake"][flav][era][mask].sum()
+            E = data["bkg_err2"][flav][era][mask].sum()
+
+            if use_fake_corr:
+                F, B = fix_fake_and_bkg(
+                    F, B, FAKE_FLOOR,
+                    flavour=flav, era=era
+                )
+
+            print(f"{era}: S={S:.4f}, B={B:.4f}, E={E:.4f}")
+
+            S_tot += S
+            B_tot += B
+            E_tot += E
+
+        if S_tot > 0 and B_tot > 0:
+            Z = compute_bin_Z_with_unc(
+                S_tot, B_tot, E_tot,
+                run_z_no_unc=run_z_no_unc
+            )
+        else:
+            Z = 0.0
+
+        print(f"TOTAL: S={S_tot:.4f}, B={B_tot:.4f}, Z={Z:.6f}")
+
+        run2_Z2 += Z * Z
+
+    run2_total = math.sqrt(run2_Z2)
+
+    print("\n======================================")
+    print(f"[RESULT] Run2 FOM = {run2_total:.6f}")
+    print("======================================\n")
+
+    return run2_total
+
+def edges_to_indices(edges, bin_lo):
+    idx = []
+    for e in edges[:-1]:  # ignore last edge (hi)                                                                                                                                                                                                                              
+        i = np.where(bin_lo == e)[0]
+        if len(i) == 0:
+            raise ValueError(f"Edge {e} not found in bin_lo")
+        idx.append(int(i[0]))
+    idx.append(len(bin_lo))  # final N                                                                                                                                                                                                                                         
+    return idx
+def debug_check_path(dp, prv, edges, bin_lo):
+
+    idx = edges_to_indices(edges, bin_lo)
+
+    print("\n======================================")
+    print("[DEBUG] Checking DP path for edges:", edges)
+    print("Indices:", idx)
+    print("======================================")
+
+    for j in range(1, len(idx)):
+
+        i = idx[j]
+        p = idx[j-1]
+
+        val = dp[j, i]
+        prev_p = prv[j, i]
+
+        print(f"\nStep {j}: p={p} -> i={i}")
+        print(f"dp[{j},{i}] = {val}")
+        print(f"prv[{j},{i}] = {prev_p}")
+        if prev_p != p:
+            print(" NOT chosen by DP")
+        else:
+            print(" matches DP choice")

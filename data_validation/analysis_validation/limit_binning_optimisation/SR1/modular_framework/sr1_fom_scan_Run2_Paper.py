@@ -115,9 +115,12 @@ def main():
     config_module = importlib.import_module(conf_path)
     MASSES, NBINS_TO_SCAN, USE_FAKE_FIX, RUN_Z_NO_UNC, LOG_TAG = ReadConfig(config_module)
 
+    import fom_utils
+    fom_utils.set_stat_config(config_module)
+    
     run_ref = args.runRef if args.runRef is not None else RUN_REF
     run_dp  = args.runDP  if args.runDP  is not None else RUN_SCANS
-
+    
     # ----------------------------------
     # Setup logging
     # ----------------------------------
