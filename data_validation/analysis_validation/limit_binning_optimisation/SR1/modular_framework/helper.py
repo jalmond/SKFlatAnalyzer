@@ -1,7 +1,32 @@
 import math
-import os
+import os,sys
 from default_config import ERAS, FLAVOURS, FAKE_FLOOR
 
+def list_available_configs(config_dir="config", script_name=None):
+    print("\n====================================")
+    print(" AVAILABLE CONFIG FILES")
+    print("====================================\n")
+
+    if not os.path.isdir(config_dir):
+        print(f"[ERROR] Config directory not found: {config_dir}")
+        return
+
+    files = sorted(os.listdir(config_dir))
+    py_files = [f for f in files if f.endswith(".py") and not f.startswith("__")]
+
+    if len(py_files) == 0:
+        print("[WARNING] No config files found")
+        return
+
+    if script_name is None:
+        script_name = os.path.basename(sys.argv[0])
+
+    for f in py_files:
+        mod = f.replace(".py", "")
+        print(f"python {script_name} --config config.{mod}")
+
+    print("\n====================================\n")
+    
 def ConvertConfPath(path):
     # remove .py if present
     if path.endswith(".py"):
@@ -31,6 +56,7 @@ def ReadConfig(cfg):
         get("USE_FAKE_FIX"),
         get("RUN_Z_NO_UNC"),
         get("LOG_TAG"),
+        get("TAG"),
     )
 
 
@@ -103,6 +129,28 @@ def rebin_array(arr, edges_full, edges_target):
         out.append(arr[mask].sum())
 
     return np.array(out)
+
+def compute_bin_Z_with_unc(S, B, E,run_z_no_unc=True):
+
+    if run_z_no_unc:
+        return compute_bin_Z(S,B)
+
+    if S <= 0 or B <= 0:
+        return 0.0
+
+    sigma2 = E
+
+    if sigma2 <= 0:
+        return compute_bin_Z(S, B)
+
+    term1 = (S + B) * math.log((S + B)*(B + sigma2) / (B*B + (S + B)*sigma2))
+    term2 = (B*B / sigma2) * math.log(1 + sigma2*S / (B*(B + sigma2)))
+
+    Z2 = 2 * (term1 - term2)
+
+    return math.sqrt(Z2) if Z2 > 0 else 0.0
+
+
 
 def compute_bin_Z(s, b):
     if s <= 0 or b <= 0:

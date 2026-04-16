@@ -55,14 +55,25 @@ def load_signal(base, flav, mass):
     path = f"PassSR1/HNL_ULIDv2/{flav}/AK8/AK8J_Unbinned_Mass/l1J"
     sig_name = f"HNL_DYVBF_{mass}"
 
+    total_integral = 0.0
+
+    # ----------------------------------
+    # Load histograms WITHOUT scaling
+    # ----------------------------------
     for era in ERAS:
         fname = os.path.join(base, era, f"HNL_SignalRegion_Plotter_{sig_name}.root")
         h = load_histogram(fname, path)
 
-        if h.Integral() > 0:
-            h.Scale(1.0 / h.Integral())
-
         hist[era] = h
+        total_integral += h.Integral()
+
+    # ----------------------------------
+    # Normalise at Run2 level
+    # ----------------------------------
+    if total_integral > 0:
+        for era in ERAS:
+            h = hist[era]
+            h.Scale(10.0 / total_integral)
 
     return hist
 

@@ -340,27 +340,18 @@ void HNL_LeptonCore::Fill_Main_Plots(AnalyzerParameter& param, TString  region, 
       if(ll_dphi > 2.)     FillHist( plot_dir+ region+ "/MainPlots/HT_PT1_HighDphi",     leps[0]->HTOverPt(),     w, 100, 0, 10, "H_{T}/p_{T}");
       else     FillHist( plot_dir+ region+ "/MainPlots/HT_PT1_LowDPhi",     leps[0]->HTOverPt(),     w, 100, 0, 10, "H_{T}/p_{T}");
       
+      const TString jetTag = (jets.size() < 2) ? "LowJet" : "HighJet";
       
-      if(jets.size() < 2) {
-	if(met2_st < 2) FillHist( plot_dir + region + "/MainPlots/LowJet_METLT2_LT", LT, w, 240, 0, 1200, "l_{T} p_{T} GeV");
-	else  FillHist( plot_dir + region + "/MainPlots/LowJet_METLT2_LT", LT, w, 240, 0, 1200, "l_{T} p_{T} GeV");
-	if(met2_st < 3) FillHist( plot_dir + region + "/MainPlots/LowJet_METLT3_LT", LT, w, 240, 0, 1200, "l_{T} p_{T} GeV");
-	else  FillHist( plot_dir + region + "/MainPlots/LowJet_METLT3_LT", LT, w, 240, 0, 1200, "l_{T} p_{T} GeV");
-	if(met2_st < 4) FillHist( plot_dir + region + "/MainPlots/LowJet_METLT4_LT", LT, w, 240, 0, 1200, "l_{T} p_{T} GeV");
-	else  FillHist( plot_dir + region + "/MainPlots/LowJet_METLT4_LT", LT, w, 240, 0, 1200, "l_{T} p_{T} GeV");
-	if(met2_st < 5) FillHist( plot_dir + region + "/MainPlots/LowJet_METLT5_LT", LT, w, 240, 0, 1200, "l_{T} p_{T} GeV");
-	else  FillHist( plot_dir + region + "/MainPlots/LowJet_METLT5_LT", LT, w, 240, 0, 1200, "l_{T} p_{T} GeV");
+      for(int thr = 2; thr <= 5; ++thr){
+	TString thrStr = TString::Format("%d", thr);
+	
+	TString hist_LT = plot_dir + region + "/MainPlots/" + jetTag + "_LT_MET" + thrStr + "_LTcut";
+	TString hist_GT = plot_dir + region + "/MainPlots/" + jetTag + "_LT_MET" + thrStr + "_GTcut";
+	
+	if(met2_st < thr) FillHist(hist_LT, LT, w, 240, 0, 1200, "l_{T} p_{T} GeV");
+	else              FillHist(hist_GT, LT, w, 240, 0, 1200, "l_{T} p_{T} GeV");
       }
-      else{
-	if(met2_st < 2) FillHist( plot_dir + region + "/MainPlots/HighJet_METLT2_LT", LT, w, 240, 0, 1200, "l_{T} p_{T} GeV");
-        else  FillHist( plot_dir + region + "/MainPlots/HighJet_METLT2_LT", LT, w, 240, 0, 1200, "l_{T} p_{T} GeV");
-        if(met2_st < 3) FillHist( plot_dir + region + "/MainPlots/HighJet_METLT3_LT", LT, w, 240, 0, 1200, "l_{T} p_{T} GeV");
-        else  FillHist( plot_dir + region + "/MainPlots/HighJet_METLT3_LT", LT, w, 240, 0, 1200, "l_{T} p_{T} GeV");
-        if(met2_st < 4) FillHist( plot_dir + region + "/MainPlots/HighJet_METLT4_LT", LT, w, 240, 0, 1200, "l_{T} p_{T} GeV");
-        else  FillHist( plot_dir + region + "/MainPlots/HighJet_METLT4_LT", LT, w, 240, 0, 1200, "l_{T} p_{T} GeV");
-        if(met2_st < 5) FillHist( plot_dir + region + "/MainPlots/HighJet_METLT5_LT", LT, w, 240, 0, 1200, "l_{T} p_{T} GeV");
-        else  FillHist( plot_dir + region + "/MainPlots/HighJet_METLT5_LT", LT, w, 240, 0, 1200, "l_{T} p_{T} GeV");
-      }
+            
     }
   }
 

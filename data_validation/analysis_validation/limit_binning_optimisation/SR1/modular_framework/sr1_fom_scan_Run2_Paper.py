@@ -12,13 +12,13 @@ ROOT.gROOT.SetBatch(True)
 #### Build data
 from data_format import hist_to_array, bins_to_array_with_err, build_data
 
-from helper import debug_data_summary, get_latest_dir,ReadConfig,ConvertConfPath
+from helper import debug_data_summary, get_latest_dir,ReadConfig,ConvertConfPath,list_available_configs
 from plotter import make_mass_plot_multi, convert_results_for_plot
 from default_config import RUN_REF,RUN_SCANS,BASE_DIR
 import default_config
 from ref_fom_utils import evaluate_ref_bins_no_fakecorr, evaluate_ref_bins_fakecorr, compare_fake_impact
 from fom_utils import *
-
+from config_utils import validate_config
 # =========================================================
 # TIMER HELPER
 # =========================================================
@@ -101,20 +101,35 @@ def main():
     parser = argparse.ArgumentParser(description="FOM scan runner")
     parser.add_argument("--runRef", action="store_true", default=None)
     parser.add_argument("--runDP",  action="store_true", default=None)
-    parser.add_argument("--config", default="config.config")
+    parser.add_argument("--config", default=None)
     parser.add_argument("--tag", default=None, help="Tag string for this run")
     args = parser.parse_args()
-    tag = args.tag
     
-    #### Read config
+
+    # ----------------------------------
+    # Config handling
+    # ----------------------------------
+
+    if args.config is None:
+        print("[ERROR] No config provided\n")
+        list_available_configs("config")
+        sys.exit(1)
+        
     conf_path = ConvertConfPath(args.config)
+
     import importlib.util
     if importlib.util.find_spec(conf_path) is None:
-        raise ImportError(f"[ERROR] Config module '{conf_path}' not found")
-    
+        print(f"[ERROR] Config module '{conf_path}' not found\n")
+        list_available_configs("config")
+        sys.exit(1)
+        
     config_module = importlib.import_module(conf_path)
-    MASSES, NBINS_TO_SCAN, USE_FAKE_FIX, RUN_Z_NO_UNC, LOG_TAG = ReadConfig(config_module)
 
+    print(f"[INFO] Using config: {conf_path}")
+    validate_config(config_module)
+    
+    MASSES, NBINS_TO_SCAN, USE_FAKE_FIX, RUN_Z_NO_UNC, LOG_TAG, TAG = ReadConfig(config_module)
+    
     import fom_utils
     fom_utils.set_stat_config(config_module)
     
@@ -122,21 +137,23 @@ def main():
     run_dp  = args.runDP  if args.runDP  is not None else RUN_SCANS
     
     # ----------------------------------
+    # Tag logic
+    # ----------------------------------
+    if args.tag is not None:
+        tag = args.tag
+    else:
+        tag = TAG
+
+    
+    # ----------------------------------
     # Setup logging
     # ----------------------------------
     ts = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
     os.makedirs("logs", exist_ok=True)
-    outtag=""
-
-    if tag:
-        os.makedirs(f"logs/{tag}", exist_ok=True)
-        os.makedirs(f"logs/{tag}/{LOG_TAG}", exist_ok=True)
-        outtag=f"{tag}/{LOG_TAG}"
-
-    else:
-        os.makedirs(f"logs/{LOG_TAG}", exist_ok=True)
-        outtag=f"{LOG_TAG}"
-
+    os.makedirs(f"logs/{tag}", exist_ok=True)
+    os.makedirs(f"logs/{tag}/{LOG_TAG}", exist_ok=True)
+    outtag = f"{tag}/{LOG_TAG}"
+    
     log_file = f"logs/{outtag}/build_data_{ts}.txt"
     sys.stdout = TeeLogger(log_file)
     
@@ -262,6 +279,7 @@ def main():
     scan_results_for_plots_perNB = []
     scan_results_for_plots_globalflav_perNB = []
     scan_results_for_plots_globalsig_perNB = []
+    scan_results_for_plots_globalsig_w_perNB = []
     scan_results_for_plots_pererabinning_perNB = []
 
     # ----------------------------------
@@ -313,13 +331,19 @@ def main():
 
         
         res_dp_raw_global_sig = evaluate_dp_per_flavour_global_mass_run2(data, nb,use_fake_corr=USE_FAKE_FIX,run_z_no_unc=RUN_Z_NO_UNC)
-        
-
         print_final_summary(res_dp_raw_global_sig)
+        res_dp_raw_global_sig_w = evaluate_dp_per_flavour_global_mass_run2_weighted_refbins(data, nb,use_fake_corr=USE_FAKE_FIX,run_z_no_unc=RUN_Z_NO_UNC)
+        print_final_summary(res_dp_raw_global_sig_w)
+        
         scan_results_for_plots_globalsig_perNB.append({
             "results": convert_results_for_plot(res_dp_raw_global_sig, mode="run2"),
             "raw": res_dp_raw_global_sig,
             "label": f"Scan (GlobSig, Run2, N_bins={nb})"
+        })
+        scan_results_for_plots_globalsig_w_perNB.append({
+            "results": convert_results_for_plot(res_dp_raw_global_sig_w, mode="run2"),
+            "raw": res_dp_raw_global_sig_w,
+            "label": f"Scan (GlobSig[weighted], Run2, N_bins={nb})"
         })
         if nb == NBINS_TO_SCAN[-1]:
 
@@ -327,6 +351,11 @@ def main():
                 "results": convert_results_for_plot(res_dp_raw_global_sig, mode="run2"),
                 "raw": res_dp_raw_global_sig,
                 "label": f"Scan (GlobSig, Run2, N_bins={nb})"
+            })
+            scan_results_for_plots.append({
+                "results": convert_results_for_plot(res_dp_raw_global_sig_w, mode="run2"),
+                "raw": res_dp_raw_global_sig_w,
+                "label": f"Scan (GlobSig[weighted], Run2, N_bins={nb})"
             })
         timer.stop(f"DP global signal (nb={nb})")
 
@@ -426,6 +455,13 @@ def main():
                 flav=flav,
                 LOG_TAG=outtag,
                 out_tag="scan_results_perflav_globalsigmass_Nbins"
+            )
+        if len(scan_results_for_plots_globalsig_w_perNB) > 0:
+            make_mass_plot_multi(
+                results_list=scan_results_for_plots_globalsig_w_perNB,
+                flav=flav,
+                LOG_TAG=outtag,
+                out_tag="scan_results_perflav_globalsigmass_w_Nbins"
             )
 
         if len(scan_results_for_plots_globalflav_perNB) > 0:
