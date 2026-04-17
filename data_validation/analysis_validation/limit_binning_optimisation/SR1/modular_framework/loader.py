@@ -73,7 +73,7 @@ def load_signal(base, flav, mass):
     if total_integral > 0:
         for era in ERAS:
             h = hist[era]
-            h.Scale(10.0 / total_integral)
+            h.Scale(1.0 / total_integral)
 
     return hist
 

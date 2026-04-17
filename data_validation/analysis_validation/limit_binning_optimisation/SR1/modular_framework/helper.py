@@ -138,6 +138,9 @@ def compute_bin_Z_with_unc(S, B, E,run_z_no_unc=True):
     if S <= 0 or B <= 0:
         return 0.0
 
+    if B <= 1e-9:
+        return 0.0
+    
     sigma2 = E
 
     if sigma2 <= 0:
@@ -151,11 +154,27 @@ def compute_bin_Z_with_unc(S, B, E,run_z_no_unc=True):
     return math.sqrt(Z2) if Z2 > 0 else 0.0
 
 
-
 def compute_bin_Z(s, b):
-    if s <= 0 or b <= 0:
+
+    if b <= 0:
         return 0.0
-    return math.sqrt(2*((s+b)*math.log(1+s/b) - s))
+
+    if s <= 0:
+        return 0.0
+
+    # Protect against tiny s/b
+    x = s / b
+
+    if x < 1e-6:
+        return s / math.sqrt(b)
+
+    val = 2 * ((s + b) * math.log(1 + x) - s)
+
+    if val <= 0:
+        return 0.0
+
+    return math.sqrt(val)
+
 
 def fix_fake_and_bkg(F, B, FAKE_FLOOR, flavour=None, era=None, debug=False):
 

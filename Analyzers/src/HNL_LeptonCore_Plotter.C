@@ -341,15 +341,19 @@ void HNL_LeptonCore::Fill_Main_Plots(AnalyzerParameter& param, TString  region, 
       else     FillHist( plot_dir+ region+ "/MainPlots/HT_PT1_LowDPhi",     leps[0]->HTOverPt(),     w, 100, 0, 10, "H_{T}/p_{T}");
       
       const TString jetTag = (jets.size() < 2) ? "LowJet" : "HighJet";
-      
-      for(int thr = 2; thr <= 5; ++thr){
-	TString thrStr = TString::Format("%d", thr);
+
+      for(double thr = 2.0; thr <= 5.0; thr += 1.0){
+
+	TString thrStr = TString::Format("%.0f", thr);
 	
 	TString hist_LT = plot_dir + region + "/MainPlots/" + jetTag + "_LT_MET" + thrStr + "_LTcut";
 	TString hist_GT = plot_dir + region + "/MainPlots/" + jetTag + "_LT_MET" + thrStr + "_GTcut";
 	
-	if(met2_st < thr) FillHist(hist_LT, LT, w, 240, 0, 1200, "l_{T} p_{T} GeV");
-	else              FillHist(hist_GT, LT, w, 240, 0, 1200, "l_{T} p_{T} GeV");
+	// Clamp LT into [0, 1199]
+	double LT_clamped = std::max(0.0, std::min(1199.0, LT));
+	
+	if(met2_st < thr) FillHist(hist_LT, LT_clamped, w, 240, 0, 1200, "l_{T} p_{T} GeV");
+	else              FillHist(hist_GT, LT_clamped, w, 240, 0, 1200, "l_{T} p_{T} GeV");
       }
             
     }

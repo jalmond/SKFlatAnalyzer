@@ -1385,6 +1385,7 @@ TString HNL_RegionDefinitions::RunSignalRegionAK4String(bool ApplyForSR,HNL_Lept
       }
     }
 
+    if(ApplyForSR)        Fill_RegionPlots(param,"FullPass"+RegionTag ,  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);
 
     //// These cuts are temp HL will check
     return GetSR3StringBin(RegionTag,GetChannelString(channel), true, met2_st,LT,ll_dphi);
@@ -1441,7 +1442,11 @@ TString HNL_RegionDefinitions::RunSignalRegionAK4String(bool ApplyForSR,HNL_Lept
       Fill_RegionPlots(param,"Pass"+RegionTag +"_DiJet",  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);
     }
   }
-
+  
+  if(!runSyst&&param.runPlotter){
+    if(ApplyForSR)        Fill_RegionPlots(param,"FullPass"+RegionTag ,  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);
+  }
+  
   TString LimitBin = GetSR3StringBin(RegionTag,GetChannelString(channel), false, met2_st,LT,ll_dphi);
 
   return LimitBin;
