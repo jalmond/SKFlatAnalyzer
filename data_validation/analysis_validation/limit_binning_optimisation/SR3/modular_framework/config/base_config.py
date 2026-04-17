@@ -3,7 +3,7 @@ MASSES = [
         "600","700","800","900",
 	"1000","1500","2000"
 ]
-NBINS_TO_SCAN=[1,2,3,4,5,6,7]
+
 
 #### Fake correction
 USE_FAKE_FIX = True   
@@ -15,7 +15,8 @@ Bin_NBKG_REQ_Tight = 0.5
 Bin_BKG_RelUnc = 0.3
 
 TAG = "Default"
-DPScan=False
+NBinScan=False
+RunGlobalSig=True
 
 def build_log_tag():
     parts = []
@@ -31,12 +32,16 @@ def build_log_tag():
         parts.append("FakeFix")
     else:
         parts.append("NoFakeFix")
-
-    # Nbins
-    if len(NBINS_TO_SCAN) > 1:
-        parts.append(f"NBin{min(NBINS_TO_SCAN)}to{max(NBINS_TO_SCAN)}")
+    if NBinScan:
+        parts.append("VaryNBin")
     else:
-        parts.append(f"NBin{NBINS_TO_SCAN[0]}")
+        parts.append("NoVaryNBin")
+
+    if RunGlobalSig:
+        parts.append("GlobalSigScan")
+    else:
+        parts.append("NoGlobalSigScan")
+
 
     # ----------------------------------
     # Stat config (NEW)

@@ -7,13 +7,23 @@ import time
 import importlib
 ROOT.gROOT.SetBatch(True)
 
+from contextlib import contextmanager
+
+@contextmanager
+def redirect_stdout(target):
+    old_stdout = sys.stdout
+    sys.stdout = target
+    try:
+        yield
+    finally:
+        sys.stdout = old_stdout
 
 
 #### Build data
 from data_format import hist_to_array, bins_to_array_with_err, build_data_sr3
 from helper import debug_data_summary, get_latest_dir,ReadConfig,ConvertConfPath,list_available_configs,print_sr3_bin_table
 from plotter import make_mass_plot_multi, convert_results_for_plot,extract_fixed_met
-from default_config import RUN_REF,RUN_SCANS,BASE_DIR,FLAVOURS
+from default_config import RUN_REF,RUN_SCANS,BASE_DIR,FLAVOURS,NCORE
 import default_config
 
 from ref_fom_utils import *
@@ -122,7 +132,7 @@ def main():
     
         
     config_module = importlib.import_module(conf_path)
-    MASSES, NBINS_TO_SCAN, USE_FAKE_FIX, RUN_Z_NO_UNC, LOG_TAG, TAG, DPScan = ReadConfig(config_module)
+    MASSES, USE_FAKE_FIX, RUN_Z_NO_UNC, LOG_TAG, TAG, NBinScan,RunGlobalSig = ReadConfig(config_module)
 
     import helper
     helper.set_stat_config(config_module)
@@ -135,7 +145,13 @@ def main():
         tag = config_module.TAG
     else:
         tag = "Default"
-    
+
+    scan_type=""
+    if NBinScan:
+        scan_type="Nbin"
+
+        
+        
     # ----------------------------------
     # Setup logging
     # ----------------------------------
@@ -191,11 +207,17 @@ def main():
             for m in MASSES:
                 print(f"  {m} -> {data[met][cat]['norm'][m]:.6f}")
 
-
     print_bin_summary()
 
     results = evaluate_sr3_run2_with_boundary(data)
-    print_sr3_fom_summary(results)
+    with redirect_stdout(results_logger):
+
+        print("\n==============================")
+        print(" REFERENCE RESULTS")
+        print("==============================")
+        
+        print_sr3_fom_summary(results)
+
     
     results_for_plots = build_sr3_plot_results(data)
     plot_data = results_for_plots[0]["results"]
@@ -215,43 +237,65 @@ def main():
             out_tag="sr3_ref"
         )
 
-
-
     RunScan=True
     if RunScan:
         # ----------------------------------
         # NORMAL SCAN MODE
         # ----------------------------------
-        timer.start("Scan [parallel]")
+
+
+        timer.start("Scan [parallel] GlobalMass")
+
+        if RunGlobalSig:
+            results_scan_globalsig = evaluate_sr3_scan_parallel(
+                data,
+                MASSES,
+                run_scan="GlobalMass",
+                n_workers=NCORE
+            )
+            for r in results_scan_globalsig:
+                print(f"Global Mass {r['flav']} {r['mass']} -> MET={r['met']} Z={r['run2']:.4f}")
+        timer.stop("Scan [parallel] GlobalMass")
+       
+        timer.start("Scan [parallel] PerMass")
         
         results_scan = evaluate_sr3_scan_parallel(
             data,
             MASSES,
-            run_dp_scan=DPScan,
-            n_workers=6
+            run_scan="PerMass"+scan_type,
+            n_workers=NCORE
         )
-        timer.stop("Scan [parallel]")
-
-        #timer.start("Scan [serial]")
-        #                
-        #results_scan_non_parallel = evaluate_sr3_scan(data, MASSES,run_dp_scan=DPScan)
-        #timer.stop("Scan [serial]")
+        timer.stop("Scan [parallel] PerMass")
         
-        #for r in results_scan_non_parallel:
-        #    print(f"Non Parralel {r['flav']} {r['mass']} -> MET={r['met']} Z={r['run2']:.4f}")
-            
         for r in results_scan:
-            print(f"{r['flav']} {r['mass']} -> MET={r['met']} Z={r['run2']:.4f}")
+            print(f"Per Mass {r['flav']} {r['mass']} -> MET={r['met']} Z={r['run2']:.4f}")
 
-        #for r_par, r_ser in zip(results_scan, results_scan_non_parallel):
-        #    if abs(r_par["run2"] - r_ser["run2"]) > 1e-6:
-        #        print(f"[WARNING] mismatch {r_par['flav']} {r_par['mass']}")
+
+        with redirect_stdout(results_logger):
+
+            print("\n==============================")
+            print(" FINAL SCAN SUMMARY")
+            print("==============================")
             
-        print_scan_summary(results_scan)
+            print_scan_summary(results_scan)
+            
+            for MASS in MASSES:
+                for FLAV in FLAVOURS:
+                    print_scan_details(results_scan, FLAV, MASS)
 
-        for MASS in MASSES:
-            for FLAV in FLAVOURS:
-                print_scan_details(results_scan, FLAV, MASS)
+
+            if RunGlobalSig:
+                
+                print("\n==============================")
+                print(" FINAL GLOBAL MASS SCAN SUMMARY")
+                print("==============================")
+
+                print_scan_summary(results_scan_globalsig)
+                
+                for MASS in MASSES:
+                    for FLAV in FLAVOURS:
+                        print_scan_details(results_scan_globalsig, FLAV, MASS)
+                        
         
         combined_results_for_plots = []
             
@@ -264,7 +308,13 @@ def main():
             "results": convert_results_for_plot(results_scan, mode="run2"),
             "label": "SR3 Scan [best MET/mass]",
         })
-        scan_plot_data = combined_results_for_plots[0]["results"]
+
+        if RunGlobalSig:
+            
+            combined_results_for_plots.append({
+                "results": convert_results_for_plot(results_scan_globalsig, mode="run2"),
+                "label": "SR3 Scan GlobalSig [best MET/mass]",
+            })
         
         for flav in FLAVOURS:            
             print("\n==============================")

@@ -148,11 +148,11 @@ def make_mass_plot_multi(results_list, flav, LOG_TAG, out_tag="default"):
     leg.SetEntrySeparation(0.005)
     leg.SetMargin(0.12)
 
-    #for g, label, points in graphs:
-    #E    # include MET in legend (use first point's MET)
-    #    met = points[0][2] if len(points[0]) > 2 else "NA"
-    #    label_with_met = f"{label} (MET={met})"
-    #    leg.AddEntry(g, label_with_met, "lp")
+    for g, label, points in graphs:
+        # include MET in legend (use first point's MET)
+        #    met = points[0][2] if len(points[0]) > 2 else "NA"
+        label_with_met = f"{label}"
+        leg.AddEntry(g, label_with_met, "lp")
 
     leg.Draw()
 

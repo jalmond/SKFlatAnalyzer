@@ -6,12 +6,11 @@ def validate_config(cfg):
 
     required_fields = [
         "MASSES",
+        "NBINS_TO_SCAN",
         "USE_FAKE_FIX",
         "RUN_Z_NO_UNC",
         "LOG_TAG",
         "TAG",
-        "NBinScan",
-        "RunGlobalSig"
     ]
 
     optional_fields = [
@@ -54,6 +53,9 @@ def validate_config(cfg):
 
     if len(cfg.MASSES) == 0:
         raise ValueError("[CONFIG ERROR] MASSES is empty")
+
+    if len(cfg.NBINS_TO_SCAN) == 0:
+        raise ValueError("[CONFIG ERROR] NBINS_TO_SCAN is empty")
 
     if not isinstance(cfg.USE_FAKE_FIX, bool):
         raise TypeError("[CONFIG ERROR] USE_FAKE_FIX must be True/False")

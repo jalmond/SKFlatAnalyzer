@@ -31,7 +31,12 @@ def set_stat_config(cfg):
 def pass_stat(B):
     return (B >= Bin_NBKG_REQ)
 
-def pass_stat_and_err(B, rel):
+def pass_stat_and_err(B, rel, debug=False):
+    if debug:
+        print(f"  Bin_NBKG_REQ       = {Bin_NBKG_REQ}")
+        print(f"  Bin_NBKG_REQ_Tight = {Bin_NBKG_REQ_Tight}")
+        print(f"  Bin_BKG_RelUnc     = {Bin_BKG_RelUnc}")
+        
     return (B >= Bin_NBKG_REQ) or (B >= Bin_NBKG_REQ_Tight and rel < Bin_BKG_RelUnc)
 
 
@@ -119,12 +124,13 @@ def ReadConfig(cfg):
     
     return (
         get("MASSES"),
-        get("NBINS_TO_SCAN"),
         get("USE_FAKE_FIX"),
         get("RUN_Z_NO_UNC"),
         get("LOG_TAG"),
         get("TAG"),
-        get("DPScan"),
+        get("NBinScan"),
+        get("RunGlobalSig"),
+        
     )
 
 
