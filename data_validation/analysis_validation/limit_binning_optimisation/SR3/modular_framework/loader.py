@@ -32,7 +32,7 @@ def load_histogram(file_path, hist_path):
 # Path builder (SR3 only)
 # =========================================================
 def build_sr3_path(flav, hist_name):
-    return f"PassSR3/HNL_ULIDv2/{flav}/MainPlots/{hist_name}"
+    return f"FullPassSR3/HNL_ULIDv2/{flav}/MainPlots/{hist_name}"
 
 
 # =========================================================

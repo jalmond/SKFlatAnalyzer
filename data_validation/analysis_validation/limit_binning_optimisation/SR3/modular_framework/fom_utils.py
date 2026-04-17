@@ -11,48 +11,79 @@ import itertools
 from tqdm import tqdm
 
 
+from multiprocessing import Pool, cpu_count
+
+
+def run_scan_single(args):
+    data, flav, mass, run_dp = args
+
+    if run_dp:
+        return scan_sr3_dp(data, flav, mass)
+    else:
+        return scan_sr3(data, flav, mass)
+    
+
 def compare_binnings_physics(data, flav, mass, met, cat, bins_a, bins_b):
 
     print("\n========================================")
     print(f"COMPARE PHYSICS | {cat} | MET={met}")
     print("========================================")
 
-    # Run2-combined arrays
-    S, B, F, E = build_run2_arrays(data, flav, mass, met, cat)
-
-    edges_full = data[met][cat]["edges"]
-    bin_lo = edges_full[:-1]
 
     def extract(bins):
 
         out = []
 
-        for i in range(len(bins)-1):
+        for i in range(len(bins) - 1):
 
             lo = bins[i]
-            hi = bins[i+1]
+            hi = bins[i + 1]
 
-            if i == len(bins)-2:
-                mask = (bin_lo >= lo) & (bin_lo <= hi)
-            else:
-                mask = (bin_lo >= lo) & (bin_lo < hi)
+            # accumulate per-era (correct physics)
+            S_tot = 0.0
+            B_tot = 0.0
+            E_tot = 0.0
 
-            s = S[mask].sum()
-            b = B[mask].sum()
-            f = F[mask].sum()
-            e = E[mask].sum()
+            edges_full = data[met][cat]["edges"]
+            bin_lo = edges_full[:-1]
+            
+            for era in ERAS:
 
-            # Apply fake fix AFTER summing (Run2-level)
-            f, b = fix_fake_and_bkg(f, b, FAKE_FLOOR,
-                                   flavour=flav, era=None)
+                sub = data[met][cat]
 
-            # Numerical safety (important)
-            if s > 0 and b > 1e-12:
-                z = compute_bin_Z_with_unc(s, b, e)
+                S_arr = sub["signal"][flav][mass][era]
+                B_arr = sub["background"][flav][era]
+                F_arr = sub["fake"][flav][era]
+                E_arr = sub["bkg_err2"][flav][era]
+
+                if i == len(bins) - 2:
+                    mask = (bin_lo >= lo) & (bin_lo <= hi)
+                else:
+                    mask = (bin_lo >= lo) & (bin_lo < hi)
+
+                s = S_arr[mask].sum()
+                b = B_arr[mask].sum()
+                f = F_arr[mask].sum()
+                e = E_arr[mask].sum()
+
+                # fake fix per era (correct place)
+                f, b = fix_fake_and_bkg(
+                    f, b, FAKE_FLOOR,
+                    flavour=flav, era=era
+                )
+
+                # accumulate AFTER fix
+                S_tot += s
+                B_tot += b
+                E_tot += e
+
+            # compute Z on summed (Run2-equivalent after correct fix)
+            if S_tot > 0 and B_tot > 1e-12:
+                z = compute_bin_Z_with_unc(S_tot, B_tot, E_tot)
             else:
                 z = 0.0
 
-            out.append((lo, hi, s, b, e, z))
+            out.append((lo, hi, S_tot, B_tot, E_tot, z))
 
         return out
 
@@ -73,6 +104,7 @@ def compare_binnings_physics(data, flav, mass, met, cat, bins_a, bins_b):
 
         print(f"{i:3d} | [{loA:5.0f},{hiA:5.0f}] | [{loB:5.0f},{hiB:5.0f}] "
               f"| {sA-sB:+7.3e} {bA-bB:+7.3e} {zA-zB:+7.3e}")
+
 
 
 def snap_to_variable_grid(e):
@@ -98,7 +130,6 @@ def get_nbins_for_region(cat):
         return 4
 
     raise ValueError(f"Unknown category: {cat}")
-
 
 
 
@@ -130,7 +161,6 @@ def build_run2_arrays(data, flav, mass, met, cat):
 
 
 
-
 def generate_fixed_nbin_binnings(edges, nbins, min_width=20):
 
     out = []
@@ -157,7 +187,7 @@ def generate_fixed_nbin_binnings(edges, nbins, min_width=20):
 
     return out
 
-def passes_all_bins(edges, S, B, F, E, bin_lo, flav=None):
+def passes_all_bins(edges, S, B,  E, bin_lo, flav=None):
 
     for i in range(len(edges) - 1):
 
@@ -170,14 +200,8 @@ def passes_all_bins(edges, S, B, F, E, bin_lo, flav=None):
             mask = (bin_lo >= lo) & (bin_lo < hi)
 
         b = B[mask].sum()
-        f = F[mask].sum()
         e = E[mask].sum()
 
-        # Apply fake fix AFTER summing (Run2-level)
-        f, b = fix_fake_and_bkg(
-            f, b, FAKE_FLOOR,
-            flavour=flav, era=None
-        )
 
         rel = math.sqrt(e) / b if b > 0 else 0
 
@@ -189,7 +213,7 @@ def passes_all_bins(edges, S, B, F, E, bin_lo, flav=None):
     return True
 
 
-def compute_fom(edges, S, B, F, E, bin_lo, flav=None):
+def compute_fom(edges, S, B,  E, bin_lo, flav=None):
 
     Z2 = 0.0
 
@@ -205,16 +229,8 @@ def compute_fom(edges, S, B, F, E, bin_lo, flav=None):
 
         s = S[mask].sum()
         b = B[mask].sum()
-        f = F[mask].sum()
         e = E[mask].sum()
 
-        # Apply fake fix AFTER summing (Run2-level)
-        f, b = fix_fake_and_bkg(
-            f, b, FAKE_FLOOR,
-            flavour=flav, era=None
-        )
-
-        # Numerical safety (important)
         if s > 0 and b > 1e-12:
             Z = compute_bin_Z_with_unc(s, b, e)
             Z2 += Z * Z
@@ -227,6 +243,7 @@ def scan_sr3(data, flav, mass):
 
     from tqdm import tqdm
     import math
+    import numpy as np
 
     METS = ["2", "3", "4", "5"]
 
@@ -238,19 +255,46 @@ def scan_sr3(data, flav, mass):
     ]
 
     MIN_EDGE = 150
+    MIN_WIDTH = 10
 
     best_global = None
     best_fom = -1
 
-    # NEW: store all MET results
     per_met_results = {}
 
+    print("\n==============================")
+    print(" SR3 SCAN | {} | mass={}".format(flav, mass))
+    print("==============================")
+
+    # ----------------------------------------
+    # helper: tail-based stat boundary
+    # ----------------------------------------
+    def find_tail_threshold(B, E, edges):
+
+        total_B = 0.0
+        total_E = 0.0
+
+        for i in reversed(range(len(B))):
+
+            total_B += B[i]
+            total_E += E[i]
+
+            rel = math.sqrt(total_E) / total_B if total_B > 0 else 0
+
+            if pass_stat_and_err(total_B, rel):
+                return edges[i]
+
+        return edges[-2]
+
+    # ----------------------------------------
+    # MET loop
+    # ----------------------------------------
     for met in METS:
+
+        print("\n================ MET {} =================".format(met))
 
         total_Z2 = 0.0
         region_results = {}
-
-        print("\n================ MET {} =================".format(met))
 
         for cat_template in CATEGORIES:
 
@@ -258,16 +302,52 @@ def scan_sr3(data, flav, mass):
 
             print("\n--- REGION: {} ---".format(cat))
 
-            # Build Run2 arrays
-            S, B, F, E = build_run2_arrays(data, flav, mass, met, cat)
+            sub = data[met][cat]
 
-            edges = data[met][cat]["edges"]
-            bin_lo = edges[:-1]
+            edges_full = sub["edges"]
+            bin_lo = edges_full[:-1]
+            nbins = len(bin_lo)
 
-            MAX_EDGE = edges[-1]
+            MAX_EDGE = edges_full[-1]
 
+            # ----------------------------------------
+            # Build Run2 arrays WITH fake fix
+            # ----------------------------------------
+            S = np.zeros(nbins)
+            B = np.zeros(nbins)
+            E = np.zeros(nbins)
+
+            for era in ERAS:
+
+                S_arr = sub["signal"][flav][mass][era]
+                B_arr = sub["background"][flav][era]
+                F_arr = sub["fake"][flav][era]
+                E_arr = sub["bkg_err2"][flav][era]
+
+                for i in range(nbins):
+
+                    f = F_arr[i]
+                    b = B_arr[i]
+
+                    # apply fake fix per bin per era
+                    f, b = fix_fake_and_bkg(
+                        f, b, FAKE_FLOOR,
+                        flavour=flav, era=era
+                    )
+
+                    S[i] += S_arr[i]
+                    B[i] += b
+                    E[i] += E_arr[i]
+
+            # ----------------------------------------
+            # Tail threshold
+            # ----------------------------------------
+            X_tail = find_tail_threshold(B, E, edges_full)
+
+            # ----------------------------------------
             # Build valid edges
-            valid_edges = [e for e in edges if e >= MIN_EDGE]
+            # ----------------------------------------
+            valid_edges = [e for e in edges_full if e >= MIN_EDGE]
             valid_edges = sorted(set(snap_to_variable_grid(e) for e in valid_edges))
 
             if MIN_EDGE not in valid_edges:
@@ -279,14 +359,20 @@ def scan_sr3(data, flav, mass):
             valid_edges = sorted(set(valid_edges))
 
             print("[SCAN RANGE] {} MET={}".format(cat, met))
-            print("  Original range: [{}, {}]".format(edges[0], edges[-1]))
+            print("  Original range: [{}, {}]".format(edges_full[0], edges_full[-1]))
             print("  Scan range:     [{}, {}]".format(valid_edges[0], valid_edges[-1]))
+            print("  Tail threshold: {}".format(X_tail))
             print("  N edges: {}".format(len(valid_edges)))
 
+            # ----------------------------------------
+            # Generate candidates
+            # ----------------------------------------
             nbins_target = get_nbins_for_region(cat)
 
             binnings = generate_fixed_nbin_binnings(
-                valid_edges, nbins_target, min_width=10
+                valid_edges,
+                nbins_target,
+                min_width=MIN_WIDTH
             )
 
             print("[SCAN] candidates={}".format(len(binnings)))
@@ -294,15 +380,21 @@ def scan_sr3(data, flav, mass):
             best_Z = -1
             best_bins = None
 
+            # ----------------------------------------
+            # Scan loop
+            # ----------------------------------------
             for b in tqdm(binnings, desc="{} MET{}".format(cat, met), leave=False):
 
                 if abs(b[-1] - MAX_EDGE) > 1e-6:
                     continue
 
-                if not passes_all_bins(b, S, B, F, E, bin_lo, flav):
+                if b[-2] > X_tail:
                     continue
 
-                Z = compute_fom(b, S, B, F, E, bin_lo, flav)
+                if not passes_all_bins(b, S, B, E, bin_lo, flav):
+                    continue
+
+                Z = compute_fom(b, S, B, E, bin_lo, flav)
 
                 if Z > best_Z:
                     best_Z = Z
@@ -312,7 +404,9 @@ def scan_sr3(data, flav, mass):
                 print("[WARN] No valid binning found")
                 continue
 
+            # ----------------------------------------
             # Build bin details
+            # ----------------------------------------
             bin_details = []
 
             for i in range(len(best_bins) - 1):
@@ -327,13 +421,7 @@ def scan_sr3(data, flav, mass):
 
                 s = S[mask].sum()
                 b = B[mask].sum()
-                f = F[mask].sum()
                 e = E[mask].sum()
-
-                f, b = fix_fake_and_bkg(
-                    f, b, FAKE_FLOOR,
-                    flavour=flav, era=None
-                )
 
                 if s > 0 and b > 1e-12:
                     z = compute_bin_Z_with_unc(s, b, e)
@@ -361,6 +449,9 @@ def scan_sr3(data, flav, mass):
 
             total_Z2 += best_Z * best_Z
 
+        # ----------------------------------------
+        # MET summary
+        # ----------------------------------------
         if total_Z2 <= 0:
             continue
 
@@ -368,13 +459,11 @@ def scan_sr3(data, flav, mass):
 
         print("\n[MET {}] TOTAL Z = {:.4f}".format(met, total_Z))
 
-        # NEW: store per-MET result
         per_met_results[met] = {
             "Z": total_Z,
             "regions": region_results
         }
 
-        # Track best MET
         if total_Z > best_fom:
             best_fom = total_Z
             best_global = {
@@ -386,7 +475,6 @@ def scan_sr3(data, flav, mass):
     if best_global is None:
         return None
 
-    # FINAL RETURN (UPDATED)
     return {
         "best_met": best_global["met"],
         "best_Z": best_global["Z"],
@@ -395,11 +483,10 @@ def scan_sr3(data, flav, mass):
     }
 
 
-
-
 def scan_sr3_dp(data, flav, mass):
 
     import math
+    import numpy as np
     from tqdm import tqdm
 
     METS = ["2", "3", "4", "5"]
@@ -417,13 +504,35 @@ def scan_sr3_dp(data, flav, mass):
     best_global = None
     best_fom = -1
 
-    # NEW: store all MET results
     per_met_results = {}
 
     print("\n==============================")
     print(" DP SCAN START | {} | mass={}".format(flav, mass))
     print("==============================")
 
+    # ----------------------------------------
+    # helper: tail-based stat boundary
+    # ----------------------------------------
+    def find_tail_threshold(B, E, edges):
+
+        total_B = 0.0
+        total_E = 0.0
+
+        for i in reversed(range(len(B))):
+
+            total_B += B[i]
+            total_E += E[i]
+
+            rel = math.sqrt(total_E) / total_B if total_B > 0 else 0
+
+            if pass_stat_and_err(total_B, rel):
+                return edges[i]
+
+        return edges[-2]
+
+    # ----------------------------------------
+    # MET loop
+    # ----------------------------------------
     for met in METS:
 
         print("\n[MET = {}]".format(met))
@@ -437,15 +546,50 @@ def scan_sr3_dp(data, flav, mass):
 
             print("\n--- REGION: {} ---".format(cat))
 
-            # Build Run2 arrays
-            S, B, F, E = build_run2_arrays(data, flav, mass, met, cat)
+            sub = data[met][cat]
 
-            edges_full = data[met][cat]["edges"]
+            edges_full = sub["edges"]
             bin_lo = edges_full[:-1]
+            nbins = len(bin_lo)
 
             MAX_EDGE = edges_full[-1]
 
+            # ----------------------------------------
+            # Build Run2 arrays WITH fake fix
+            # ----------------------------------------
+            S = np.zeros(nbins)
+            B = np.zeros(nbins)
+            E = np.zeros(nbins)
+
+            for era in ERAS:
+
+                S_arr = sub["signal"][flav][mass][era]
+                B_arr = sub["background"][flav][era]
+                F_arr = sub["fake"][flav][era]
+                E_arr = sub["bkg_err2"][flav][era]
+
+                for i in range(nbins):
+
+                    f = F_arr[i]
+                    b = B_arr[i]
+
+                    f, b = fix_fake_and_bkg(
+                        f, b, FAKE_FLOOR,
+                        flavour=flav, era=era
+                    )
+
+                    S[i] += S_arr[i]
+                    B[i] += b
+                    E[i] += E_arr[i]
+
+            # ----------------------------------------
+            # Tail threshold
+            # ----------------------------------------
+            X_tail = find_tail_threshold(B, E, edges_full)
+
+            # ----------------------------------------
             # Build valid edges
+            # ----------------------------------------
             valid_edges = [e for e in edges_full if e >= MIN_EDGE]
             valid_edges = sorted(set(snap_to_variable_grid(e) for e in valid_edges))
 
@@ -460,6 +604,7 @@ def scan_sr3_dp(data, flav, mass):
             print("[SCAN RANGE] {} MET={}".format(cat, met))
             print("  Original range: [{}, {}]".format(edges_full[0], edges_full[-1]))
             print("  Scan range:     [{}, {}]".format(valid_edges[0], valid_edges[-1]))
+            print("  Tail threshold: {}".format(X_tail))
             print("  N edges: {}".format(len(valid_edges)))
 
             nbins_target = get_nbins_for_region(cat)
@@ -473,6 +618,9 @@ def scan_sr3_dp(data, flav, mass):
 
             pbar = tqdm(desc="{} MET{}".format(cat, met), unit="nodes")
 
+            # ----------------------------------------
+            # DP recursion
+            # ----------------------------------------
             def recurse(current_edges, start_idx, Z2_accum):
 
                 nonlocal counter, pruned, valid_final
@@ -489,10 +637,15 @@ def scan_sr3_dp(data, flav, mass):
                 if nbins_now > nbins_target:
                     return
 
+                # ----------------------------------------
                 # Final candidate
+                # ----------------------------------------
                 if nbins_now == nbins_target:
 
                     if abs(current_edges[-1] - MAX_EDGE) > 1e-6:
+                        return
+
+                    if current_edges[-2] > X_tail:
                         return
 
                     valid_final += 1
@@ -505,6 +658,9 @@ def scan_sr3_dp(data, flav, mass):
 
                     return
 
+                # ----------------------------------------
+                # Try extending bins
+                # ----------------------------------------
                 for i in range(start_idx, len(valid_edges)):
 
                     next_edge = valid_edges[i]
@@ -518,31 +674,27 @@ def scan_sr3_dp(data, flav, mass):
                     lo = current_edges[-1]
                     hi = next_edge
 
-                    if i == len(valid_edges) - 1:
+                    if next_edge == MAX_EDGE:
                         mask = (bin_lo >= lo) & (bin_lo <= hi)
                     else:
                         mask = (bin_lo >= lo) & (bin_lo < hi)
 
                     s = S[mask].sum()
                     b = B[mask].sum()
-                    f = F[mask].sum()
                     e = E[mask].sum()
 
-                    f, b = fix_fake_and_bkg(
-                        f, b, FAKE_FLOOR,
-                        flavour=flav, era=None
-                    )
-
-                    rel = math.sqrt(e) / b if b > 0 else 0
-
+                    # ----------------------------------------
                     # Only enforce stat on last bin
-                    is_last_edge = (i == len(valid_edges) - 1)
-
-                    if is_last_edge:
+                    # ----------------------------------------
+                    if next_edge == MAX_EDGE:
+                        rel = math.sqrt(e) / b if b > 0 else 0
                         if not pass_stat_and_err(b, rel):
                             pruned += 1
                             continue
 
+                    # ----------------------------------------
+                    # Incremental Z
+                    # ----------------------------------------
                     if s > 0 and b > 1e-12:
                         Z_bin = compute_bin_Z_with_unc(s, b, e)
                         Z2_new = Z2_accum + Z_bin * Z_bin
@@ -558,7 +710,9 @@ def scan_sr3_dp(data, flav, mass):
                 best_bins = [MIN_EDGE, MAX_EDGE]
                 best_Z = 0.0
 
+            # ----------------------------------------
             # Build bin details
+            # ----------------------------------------
             bin_details = []
 
             for i in range(len(best_bins) - 1):
@@ -573,13 +727,7 @@ def scan_sr3_dp(data, flav, mass):
 
                 s = S[mask].sum()
                 b = B[mask].sum()
-                f = F[mask].sum()
                 e = E[mask].sum()
-
-                f, b = fix_fake_and_bkg(
-                    f, b, FAKE_FLOOR,
-                    flavour=flav, era=None
-                )
 
                 if s > 0 and b > 1e-12:
                     z = compute_bin_Z_with_unc(s, b, e)
@@ -614,7 +762,6 @@ def scan_sr3_dp(data, flav, mass):
 
         print("\n[MET {}] TOTAL Z = {:.4f}".format(met, total_Z))
 
-        # NEW: store per-MET
         per_met_results[met] = {
             "Z": total_Z,
             "regions": region_results
@@ -639,7 +786,172 @@ def scan_sr3_dp(data, flav, mass):
     }
 
 
+
+def evaluate_sr3_scan_parallel(data, masses, run_dp_scan=False, n_workers=None):
+
+    import numpy as np
+    import math
+
+    if n_workers is None:
+        n_workers = max(1, cpu_count() - 1)
+
+    print("\n==============================")
+    print(" SR3 SCAN RESULTS (PARALLEL)")
+    print("==============================")
+    print("Workers:", n_workers)
+
+    # ----------------------------------------
+    # Prepare tasks
+    # ----------------------------------------
+    tasks = []
+    for flav in FLAVOURS:
+        for mass in masses:
+            tasks.append((data, flav, mass, run_dp_scan))
+
+    # ----------------------------------------
+    # Run in parallel
+    # ----------------------------------------
+    with Pool(n_workers) as pool:
+        outputs = pool.map(run_scan_single, tasks)
+
+    results = []
+
+    pairs = [(f, m) for f in FLAVOURS for m in masses]
+
+    for (flav, mass), best in zip(pairs, outputs):
+
+        if mass == masses[0]:
+            print("\n================ {} =================".format(flav))
+
+        if best is None:
+            print("[WARN] No valid result for {} {}".format(flav, mass))
+            continue
+
+        met = best["best_met"]
+        regions = best["best_regions"]
+
+        total_Z2_run2 = 0.0
+        total_Z2_quad = 0.0
+
+        for cat in regions:
+
+            bins = regions[cat]["bins"]
+
+            sub = data[met][cat]
+
+            edges_full = sub["edges"]
+            bin_lo = edges_full[:-1]
+            nbins = len(bin_lo)
+
+            # ======================================================
+            # FIXED RUN2: build arrays WITH fake fix (like scan)
+            # ======================================================
+            S = np.zeros(nbins)
+            B = np.zeros(nbins)
+            E = np.zeros(nbins)
+
+            for era in ERAS:
+
+                S_arr = sub["signal"][flav][mass][era]
+                B_arr = sub["background"][flav][era]
+                F_arr = sub["fake"][flav][era]
+                E_arr = sub["bkg_err2"][flav][era]
+
+                for i in range(nbins):
+
+                    f = F_arr[i]
+                    b = B_arr[i]
+
+                    f, b = fix_fake_and_bkg(
+                        f, b, FAKE_FLOOR,
+                        flavour=flav, era=era
+                    )
+
+                    S[i] += S_arr[i]
+                    B[i] += b
+                    E[i] += E_arr[i]
+
+            # ---------- Run2 ----------
+            Z_run2 = compute_fom(bins, S, B, E, bin_lo, flav)
+            total_Z2_run2 += Z_run2 * Z_run2
+
+            # ======================================================
+            # QUAD (already correct)
+            # ======================================================
+            Z2_quad_region = 0.0
+
+            for era in ERAS:
+
+                S_arr = sub["signal"][flav][mass][era]
+                B_arr = sub["background"][flav][era]
+                F_arr = sub["fake"][flav][era]
+                E_arr = sub["bkg_err2"][flav][era]
+
+                Z2_era = 0.0
+
+                for i_bin in range(len(bins) - 1):
+
+                    lo = bins[i_bin]
+                    hi = bins[i_bin + 1]
+
+                    if i_bin == len(bins) - 2:
+                        mask = (bin_lo >= lo) & (bin_lo <= hi)
+                    else:
+                        mask = (bin_lo >= lo) & (bin_lo < hi)
+
+                    s = S_arr[mask].sum()
+                    b = B_arr[mask].sum()
+                    f = F_arr[mask].sum()
+                    e = E_arr[mask].sum()
+
+                    # fake fix per era
+                    f, b = fix_fake_and_bkg(
+                        f, b, FAKE_FLOOR,
+                        flavour=flav, era=era
+                    )
+
+                    if s > 0 and b > 1e-12:
+                        Z = compute_bin_Z_with_unc(s, b, e)
+                        Z2_era += Z * Z
+
+                Z2_quad_region += Z2_era
+
+            total_Z2_quad += Z2_quad_region
+
+        run2 = math.sqrt(total_Z2_run2)
+        quad = math.sqrt(total_Z2_quad)
+
+        # ----------------------------------------
+        # Consistency check (now meaningful)
+        # ----------------------------------------
+        scan_Z = best["best_Z"]
+
+        if abs(scan_Z - run2) > 1e-6:
+            print(f"[WARNING] mismatch for {flav} {mass}: "
+                  f"scan={scan_Z:.6f}, recomputed={run2:.6f}")
+
+        print("{} {} -> MET={} Run2={:.4f} Quad={:.4f}".format(
+            flav, mass, met, run2, quad
+        ))
+
+        results.append({
+            "flav": flav,
+            "mass": mass,
+            "run2": run2,
+            "quad": quad,
+            "met": met,
+            "regions": regions,
+            "per_met": best["per_met"]
+        })
+
+    return results
+
+
+
 def evaluate_sr3_scan(data, masses, run_dp_scan=False):
+
+    import numpy as np
+    import math
 
     results = []
 
@@ -665,44 +977,63 @@ def evaluate_sr3_scan(data, masses, run_dp_scan=False):
                 print(f"[WARN] No valid result for {flav}, {mass}")
                 continue
 
-            # UPDATED KEYS
             met = best["best_met"]
             regions = best["best_regions"]
             per_met = best["per_met"]
 
-            # --------------------------
-            # Recompute Run2 FOM
-            # --------------------------
             total_Z2_run2 = 0.0
-
-            # --------------------------
-            # QUAD per-era accumulation
-            # --------------------------
             total_Z2_quad = 0.0
 
             for cat in regions:
 
                 bins = regions[cat]["bins"]
 
-                # --------------------------
-                # Run2 arrays
-                # --------------------------
-                S, B, F, E = build_run2_arrays(data, flav, mass, met, cat)
+                sub = data[met][cat]
 
-                edges_full = data[met][cat]["edges"]
+                edges_full = sub["edges"]
                 bin_lo = edges_full[:-1]
+                nbins = len(bin_lo)
 
-                Z_run2 = compute_fom(bins, S, B, F, E, bin_lo, flav)
-                total_Z2_run2 += Z_run2 * Z_run2
-
-                # --------------------------
-                # QUAD: sum per-era Z^2
-                # --------------------------
-                Z2_quad_region = 0.0
+                # ======================================================
+                # FIXED RUN2: build arrays WITH fake fix (like scan)
+                # ======================================================
+                S = np.zeros(nbins)
+                B = np.zeros(nbins)
+                E = np.zeros(nbins)
 
                 for era in ERAS:
 
-                    sub = data[met][cat]
+                    S_arr = sub["signal"][flav][mass][era]
+                    B_arr = sub["background"][flav][era]
+                    F_arr = sub["fake"][flav][era]
+                    E_arr = sub["bkg_err2"][flav][era]
+
+                    for i in range(nbins):
+
+                        f = F_arr[i]
+                        b = B_arr[i]
+
+                        f, b = fix_fake_and_bkg(
+                            f, b, FAKE_FLOOR,
+                            flavour=flav, era=era
+                        )
+
+                        S[i] += S_arr[i]
+                        B[i] += b
+                        E[i] += E_arr[i]
+
+                # --------------------------
+                # Run2 FOM
+                # --------------------------
+                Z_run2 = compute_fom(bins, S, B, E, bin_lo, flav)
+                total_Z2_run2 += Z_run2 * Z_run2
+
+                # ======================================================
+                # QUAD: per-era accumulation (already correct)
+                # ======================================================
+                Z2_quad_region = 0.0
+
+                for era in ERAS:
 
                     S_arr = sub["signal"][flav][mass][era]
                     B_arr = sub["background"][flav][era]
@@ -714,7 +1045,7 @@ def evaluate_sr3_scan(data, masses, run_dp_scan=False):
                     for i in range(len(bins) - 1):
 
                         lo = bins[i]
-                        hi = bins[i+1]
+                        hi = bins[i + 1]
 
                         if i == len(bins) - 2:
                             mask = (bin_lo >= lo) & (bin_lo <= hi)
@@ -761,7 +1092,10 @@ def evaluate_sr3_scan(data, masses, run_dp_scan=False):
                 "quad": quad,
                 "met": met,
                 "regions": regions,
-                "per_met": per_met,   # NEW
+                "per_met": per_met,
             })
 
     return results
+
+
+

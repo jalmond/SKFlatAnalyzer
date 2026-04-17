@@ -12,7 +12,7 @@ ROOT.gROOT.SetBatch(True)
 #### Build data
 from data_format import hist_to_array, bins_to_array_with_err, build_data_sr3
 from helper import debug_data_summary, get_latest_dir,ReadConfig,ConvertConfPath,list_available_configs,print_sr3_bin_table
-from plotter import make_mass_plot_multi, convert_results_for_plot
+from plotter import make_mass_plot_multi, convert_results_for_plot,extract_fixed_met
 from default_config import RUN_REF,RUN_SCANS,BASE_DIR,FLAVOURS
 import default_config
 
@@ -216,16 +216,36 @@ def main():
         )
 
 
+
     RunScan=True
     if RunScan:
         # ----------------------------------
         # NORMAL SCAN MODE
         # ----------------------------------
-        results_scan = evaluate_sr3_scan(data, MASSES,run_dp_scan=DPScan)
+        timer.start("Scan [parallel]")
         
+        results_scan = evaluate_sr3_scan_parallel(
+            data,
+            MASSES,
+            run_dp_scan=DPScan,
+            n_workers=6
+        )
+        timer.stop("Scan [parallel]")
+
+        #timer.start("Scan [serial]")
+        #                
+        #results_scan_non_parallel = evaluate_sr3_scan(data, MASSES,run_dp_scan=DPScan)
+        #timer.stop("Scan [serial]")
+        
+        #for r in results_scan_non_parallel:
+        #    print(f"Non Parralel {r['flav']} {r['mass']} -> MET={r['met']} Z={r['run2']:.4f}")
+            
         for r in results_scan:
             print(f"{r['flav']} {r['mass']} -> MET={r['met']} Z={r['run2']:.4f}")
 
+        #for r_par, r_ser in zip(results_scan, results_scan_non_parallel):
+        #    if abs(r_par["run2"] - r_ser["run2"]) > 1e-6:
+        #        print(f"[WARNING] mismatch {r_par['flav']} {r_par['mass']}")
             
         print_scan_summary(results_scan)
 
@@ -246,8 +266,7 @@ def main():
         })
         scan_plot_data = combined_results_for_plots[0]["results"]
         
-        for flav in scan_plot_data:
-            
+        for flav in FLAVOURS:            
             print("\n==============================")
             print(f"Plotting flavour: {flav} (SCAN)")
             print("==============================")
@@ -260,7 +279,7 @@ def main():
             )
         combined_results_for_permet_plots = []
         # Ref
-        combined_results_for_plots.append({
+        combined_results_for_permet_plots.append({
             "results": convert_results_for_plot(results, mode="run2"),
         "label": "SR3 Ref",
         })
@@ -269,7 +288,7 @@ def main():
             
             fixed = extract_fixed_met(results_scan, met)
             
-            combined_results_for_plots.append({
+            combined_results_for_permet_plots.append({
                 "results": convert_results_for_plot(fixed, mode="run2"),
                 "label": f"SR3 Scan (MET={met})",
             })
