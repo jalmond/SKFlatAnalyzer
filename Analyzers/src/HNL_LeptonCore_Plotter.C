@@ -73,12 +73,12 @@ void HNL_LeptonCore::Fill_PlotsAK8(AnalyzerParameter& param, TString  region, TS
 
   // Fill mass histograms [binned for python plotter, Main plots for unbinned]
   FillHist(plot_dir + region + "/AK8J_Mass/l1J", N1Cand.M(), w, nAk8bins,AK8bins, "Reco M_{l1J}");
-  FillHist(plot_dir + region + "/AK8J_Mass/l2J", N2Cand.M(), w,nAk8bins,AK8bins , "Reco M_{l2J}");
+  FillHist(plot_dir + region + "/AK8J_Mass/l2J", N2Cand.M(), w, nAk8bins,AK8bins, "Reco M_{l2J}");
   FillHist(plot_dir + region + "/AK8J_Mass/llJ", llJCand.M(), w, nAk8bins,AK8bins, "Reco M_{llJ}");
-  
-  FillHist(plot_dir + region + "/AK8J_Unbinned_Mass/l1J", N1Cand.M(),  w, 9999, 0.0, 9999.0, "Reco M_{l1J}");
-  FillHist(plot_dir + region + "/AK8J_Unbinned_Mass/l2J", N2Cand.M(),  w, 9999, 0.0, 9999.0, "Reco M_{l2J}");
-  FillHist(plot_dir + region + "/AK8J_Unbinned_Mass/llJ", llJCand.M(), w, 9999, 0.0, 9999.0, "Reco M_{llJ}");
+
+  FillHist(plot_dir + region + "/AK8J_Unbinned_Mass/l1J", N1Cand.M(),  w, 1000, 0.0, 5000.0, "Reco M_{l1J}");
+  FillHist(plot_dir + region + "/AK8J_Unbinned_Mass/l2J", N2Cand.M(),  w, 1000, 0.0, 5000.0, "Reco M_{l2J}");
+  FillHist(plot_dir + region + "/AK8J_Unbinned_Mass/llJ", llJCand.M(), w, 1000, 0.0, 5000.0, "Reco M_{llJ}");
 
   //// Now Add detailed plots by adding userflag
   if(!User("jalmond")) return;
