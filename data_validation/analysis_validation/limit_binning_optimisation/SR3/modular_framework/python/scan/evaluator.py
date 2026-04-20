@@ -3,6 +3,7 @@ from python.config.default_config import ERAS, FLAVOURS, FAKE_FLOOR
 
 from python.utils.helper import fix_fake_and_bkg,compute_bin_Z_with_unc,parse_sr3_category,get_met_boundary,pass_stat_and_err
 
+import math 
 
 def evaluate_scan_results(data, scan_outputs, config):
 
@@ -419,3 +420,84 @@ def evaluate_scan_results_v0(data, scan_outputs, config):
     print("\nCombined Run2 significance (quadrature): {:.4f}".format(Z_combined))
 
     return results
+
+
+def find_best_met_per_flavour(scan_outputs, mass_weights):
+
+    best_met_per_flav = {}
+
+    # flatten (same as evaluator)
+    flat = []
+    for item in scan_outputs:
+        if isinstance(item, list):
+            flat.extend(item)
+        else:
+            flat.append(item)
+
+    # ----------------------------------------
+    # collect per flavour
+    # ----------------------------------------
+    per_flav = {}
+
+    for res in flat:
+
+        if res is None:
+            continue
+
+        flavs = res["flavs"]
+        masses = res["masses"]
+
+        for flav in flavs:
+            for mass in masses:
+
+                key = (flav, mass)
+
+                if key not in per_flav:
+                    per_flav[key] = res["per_met"]
+
+    # ----------------------------------------
+    # group by flavour
+    # ----------------------------------------
+    flav_to_mass = {}
+
+    for (flav, mass), per_met in per_flav.items():
+
+        if flav not in flav_to_mass:
+            flav_to_mass[flav] = []
+
+        flav_to_mass[flav].append((mass, per_met))
+
+    # ----------------------------------------
+    # compute best MET per flavour
+    # ----------------------------------------
+    for flav in flav_to_mass:
+
+        met_scores = {}
+
+        for mass, per_met_list in flav_to_mass[flav]:
+
+            weight = mass_weights.get(mass, 1.0)
+
+            for entry in per_met_list:
+
+                met = entry["met"]
+                Z   = entry["Z"]
+
+                if met not in met_scores:
+                    met_scores[met] = 0.0
+
+                # combine in quadrature with weight
+                met_scores[met] += (weight * Z) ** 2
+
+        # final sqrt
+        for met in met_scores:
+            met_scores[met] = math.sqrt(met_scores[met])
+
+        best_met = max(met_scores, key=met_scores.get)
+
+        best_met_per_flav[flav] = {
+            "best_met": best_met,
+            "scores": met_scores
+        }
+
+    return best_met_per_flav

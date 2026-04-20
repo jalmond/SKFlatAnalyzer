@@ -25,6 +25,8 @@ def normalize_results(raw):
     return out
 
 
+
+    
 def print_sr3_scan_table_from_results(result, data):
 
     import math
@@ -96,7 +98,7 @@ def print_sr3_scan_table_from_results(result, data):
             E_tot = 0.0
 
             # ----------------------------------------
-            # PER ERA: merge, then fake fix, then sum
+            # PER ERA: merge -> fake fix -> sum
             # ----------------------------------------
             for era in ERAS:
 
@@ -110,7 +112,7 @@ def print_sr3_scan_table_from_results(result, data):
                 f = float(F_arr[mask].sum())
                 e = float(E_arr[mask].sum())
 
-                # Apply fake fix at merged-bin level per era
+                # Apply fake fix per era (CORRECT)
                 f, b = fix_fake_and_bkg(
                     f, b, FAKE_FLOOR,
                     flavour=flav,
@@ -155,146 +157,6 @@ def print_sr3_scan_table_from_results(result, data):
     print(" TOTAL B (Run2) = {:.3f}".format(total_B))
     print(" TOTAL Z (Run2) = {:.4f}".format(total_Z))
     print("========================================================")
-
-    
-def print_sr3_scan_table_from_results(result, data):
-
-    import math
-    import numpy as np
-
-    # ----------------------------------------
-    # Handle list input
-    # ----------------------------------------
-    if isinstance(result, list):
-        for r in result:
-            print_sr3_scan_table_from_results(r, data)
-        return
-
-    flav = result["flav"]
-    mass = result["mass"]
-    met  = result["met"]
-
-    print("\n========================================================")
-    print(f" SCAN TABLE (RUN2) | {flav} | mass={mass} | MET={met}")
-    print("========================================================")
-
-    header = (
-        "Bin | Jet     | MET   | LT range        | "
-        "   S      B      rel_unc     Z"
-    )
-    print(header)
-    print("-" * len(header))
-
-    idx = 0
-    total_B = 0.0
-    total_Z2 = 0.0
-
-    # ======================================================
-    # LOOP OVER REGIONS
-    # ======================================================
-    for cat, info in result["regions"].items():
-
-        edges = info["bins"]
-        sub = data[met][cat]
-
-        edges_full = np.array(sub["edges"])
-        bin_lo = edges_full[:-1]
-        nbins = len(bin_lo)
-
-        # ----------------------------------------
-        # Build Run2 arrays WITH fake fix
-        # (IDENTICAL to evaluate_sr3_scan_parallel)
-        # ----------------------------------------
-        S_run2 = np.zeros(nbins)
-        B_run2 = np.zeros(nbins)
-        E_run2 = np.zeros(nbins)
-        F_run2 = np.zeros(nbins)
-
-        for era in ERAS:
-
-            S_arr = sub["signal"][flav][mass][era]
-            B_arr = sub["background"][flav][era]
-            F_arr = sub["fake"][flav][era]
-            E_arr = sub["bkg_err2"][flav][era]
-
-            for i in range(nbins):
-                #f, b = fix_fake_and_bkg(
-                #    F_arr[i], B_arr[i], FAKE_FLOOR,
-                #flavour=flav, era=era
-                    #)
-                S_run2[i] += S_arr[i]
-                B_run2[i] += B_arr[i]
-                E_run2[i] += E_arr[i]
-                F_run2[i] += F_arr[i]
-        # ----------------------------------------
-        # Print region
-        # ----------------------------------------
-        print("\n--------------------------------------------------------")
-        print(f" REGION: {cat}")
-        print("--------------------------------------------------------")
-
-        region_B = 0.0
-        region_Z2 = 0.0
-
-        jet = "LowJet" if "LowJet" in cat else "HighJet"
-        met_label = "<" if "LTcut" in cat else ">="
-
-        # ----------------------------------------
-        # LOOP BINS
-        # ----------------------------------------
-        for i in range(len(edges) - 1):
-
-            lo = edges[i]
-            hi = edges[i + 1]
-
-            if i == len(edges) - 2:
-                mask = (bin_lo >= lo) & (bin_lo <= hi)
-            else:
-                mask = (bin_lo >= lo) & (bin_lo < hi)
-
-            S = float(S_run2[mask].sum())
-            B = float(B_run2[mask].sum())
-            E = float(E_run2[mask].sum())
-            F = float(F_run2[mask].sum())
-
-            F, B = fix_fake_and_bkg(                                                                                                                                                                          
-                F, B, FAKE_FLOOR,                                                                                                                                                               
-                flavour=flav, era=era
-            )      
-            
-            if B > 0:
-                Z = compute_bin_Z_with_unc(S, B, E)
-                rel = math.sqrt(E) / B
-            else:
-                Z = 0.0
-                rel = 0.0
-
-            print(f"{idx:3d} | {jet:7s} | {met_label:3s}{str(met):>2s} | "
-                  f"[{lo:5.0f},{hi:5.0f}] | "
-                  f"{S:7.3f} {B:7.3f} {rel:6.3f} {Z:6.3f}")
-
-            idx += 1
-            region_B += B
-            region_Z2 += Z * Z
-
-        region_Z = math.sqrt(region_Z2)
-
-        print(f"\n>>> Region B = {region_B:.3f} | Region Z = {region_Z:.4f}")
-
-        total_B += region_B
-        total_Z2 += region_Z2
-
-    # ----------------------------------------
-    # TOTAL
-    # ----------------------------------------
-    total_Z = math.sqrt(total_Z2)
-
-    print("\n========================================================")
-    print(f" TOTAL B (Run2) = {total_B:.3f}")
-    print(f" TOTAL Z (Run2) = {total_Z:.4f}")
-    print("========================================================")
-
-
     
 
 def print_sr3_z_per_boundary(data, MASSES, FLAVOURS, ERAS):

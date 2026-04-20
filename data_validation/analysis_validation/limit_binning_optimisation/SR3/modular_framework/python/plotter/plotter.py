@@ -27,29 +27,6 @@ def build_sr3_plot_results(data):
 
 
 
-def extract_fixed_met(results_scan, met_value):
-
-    out = []
-
-    for r in results_scan:
-
-        if met_value not in r["per_met"]:
-            continue
-
-        entry = r["per_met"][met_value]
-
-        out.append({
-            "flav": r["flav"],
-            "mass": r["mass"],
-            "run2": entry["Z"],
-            "quad": entry["Z"],
-            "met": met_value,
-            "regions": entry["regions"],
-        })
-
-    return out
-
-
 def convert_results_for_plot(results, mode="run2"):
 
     out = {}

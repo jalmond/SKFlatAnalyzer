@@ -31,6 +31,512 @@ def build_mass_weights_from_ref(ref_results, mode="run2"):
 
     return weights
 
+def recompute_per_mass_with_fixed_binning(data, global_results):
+
+    import math
+
+    import numpy as np
+
+    # ----------------------------------------
+
+    # FLATTEN INPUT (CRITICAL FIX)
+
+    # ----------------------------------------
+
+    flat_results = []
+
+    for item in global_results:
+
+        if isinstance(item, list):
+
+            flat_results.extend(item)
+
+        else:
+
+            flat_results.append(item)
+
+    output = []
+
+    # ----------------------------------------
+
+    # LOOP OVER FLAT RESULTS
+
+    # ----------------------------------------
+
+    for res in flat_results:
+
+        flavs    = res.get("flavs", [])
+        masses   = res.get("masses", [])
+        met      = res["best_met"]
+        regions  = res["best_regions"]
+
+        for flav in flavs:
+            for mass in masses:
+
+                total_Z2 = 0.0
+
+                new_result = {
+                    "flav": flav,
+                    "mass": mass,
+                    "met": met,
+                    "regions": {},
+                }
+
+                # ----------------------------------------
+                # LOOP REGIONS (fixed binning)
+                # ----------------------------------------
+                for cat, info in regions.items():
+
+                    edges = info["bins"]
+
+                    sub = data[met][cat]
+
+                    edges_full = np.array(sub["edges"])
+                    bin_lo = edges_full[:-1]
+
+                    region_Z2 = 0.0
+
+                    for i in range(len(edges) - 1):
+
+                        lo = edges[i]
+                        hi = edges[i + 1]
+
+                        if i == len(edges) - 2:
+                            mask = (bin_lo >= lo) & (bin_lo <= hi)
+                        else:
+                            mask = (bin_lo >= lo) & (bin_lo < hi)
+
+                        S_tot = 0.0
+                        B_tot = 0.0
+                        E_tot = 0.0
+
+                        for era in ERAS:
+
+                            if flav not in sub["signal"]:
+                                continue
+                            if mass not in sub["signal"][flav]:
+                                continue
+                            if era not in sub["signal"][flav][mass]:
+                                continue
+                            
+                            S_arr = sub["signal"][flav][mass][era]
+                            B_arr = sub["background"][flav][era]
+                            F_arr = sub["fake"][flav][era]
+                            E_arr = sub["bkg_err2"][flav][era]
+
+                            s = float(S_arr[mask].sum())
+                            b = float(B_arr[mask].sum())
+                            f = float(F_arr[mask].sum())
+                            e = float(E_arr[mask].sum())
+
+                            f, b = fix_fake_and_bkg(
+                                f, b, FAKE_FLOOR,
+                                flavour=flav,
+                                era=era
+                            )
+
+                            S_tot += s
+                            B_tot += b
+                            E_tot += e
+
+                        if B_tot > 0:
+                            Z = compute_bin_Z_with_unc(S_tot, B_tot, E_tot)
+                        else:
+                            Z = 0.0
+
+                        region_Z2 += Z * Z
+
+                    total_Z2 += region_Z2
+
+                    new_result["regions"][cat] = {
+                        "bins": edges
+                    }
+
+                
+                new_result["run2"] = math.sqrt(total_Z2)
+                new_result["quad"] = new_result["run2"]
+                output.append(new_result)
+
+    return output
+
+
+def print_bkg_per_bin(data, scan_outputs, config):
+
+    import numpy as np
+    import math
+
+    print("\n==============================")
+    print(" BKG PER BIN DEBUG")
+    print("==============================")
+
+    opt_mode = config.get("opt_mode", "Run2")
+
+    # ----------------------------------------
+    # flatten outputs
+    # ----------------------------------------
+    flat = []
+    for item in scan_outputs:
+        if isinstance(item, list):
+            flat.extend(item)
+        else:
+            flat.append(item)
+
+    for res in flat:
+
+        if res is None:
+            continue
+
+        flavs  = res["flavs"]
+        masses = res["masses"]
+        best_met = res["best_met"]
+        regions  = res["best_regions"]
+
+        for flav in flavs:
+            for mass in masses:
+
+                print("\n--------------------------------------------------")
+                print(f"{flav} | mass={mass} | MET={best_met} | mode={opt_mode}")
+                print("--------------------------------------------------")
+
+                for cat in regions:
+
+                    print(f"\n[{cat}]")
+
+                    bins = regions[cat]["bins"]
+
+                    sub = data[best_met][cat]
+                    edges_full = np.array(sub["edges"])
+                    bin_lo = edges_full[:-1]
+
+                    for i in range(len(bins) - 1):
+
+                        lo = bins[i]
+                        hi = bins[i+1]
+
+                        if i == len(bins) - 2:
+                            mask = (bin_lo >= lo) & (bin_lo <= hi)
+                        else:
+                            mask = (bin_lo >= lo) & (bin_lo < hi)
+
+                        # =====================================
+                        # RUN2 MODE
+                        # =====================================
+                        if opt_mode == "Run2":
+
+                            B_tot = 0.0
+                            E_tot = 0.0
+
+                            for era in ERAS:
+
+                                if flav not in sub["background"]:
+                                    continue
+                                if era not in sub["background"][flav]:
+                                    continue
+
+                                B_arr = sub["background"][flav][era]
+                                F_arr = sub["fake"][flav][era]
+                                E_arr = sub["bkg_err2"][flav][era]
+
+                                b = B_arr[mask].sum()
+                                f = F_arr[mask].sum()
+                                e = E_arr[mask].sum()
+
+                                # correct place
+                                f, b = fix_fake_and_bkg(
+                                    f, b, FAKE_FLOOR,
+                                    flavour=flav,
+                                    era=era
+                                )
+
+                                B_tot += b
+                                E_tot += e
+
+                            rel = math.sqrt(E_tot)/B_tot if B_tot > 0 else 0
+
+                            line = f"[{lo:5.0f},{hi:5.0f}]  B={B_tot:8.3f}  rel={rel:6.3f}"
+
+                            if B_tot < 1.0:
+                                print(red(line))
+                            else:
+                                print(line)
+
+                        # =====================================
+                        # ERA MODE
+                        # =====================================
+                        elif opt_mode == "Era":
+
+                            for era in ERAS:
+
+                                if flav not in sub["background"]:
+                                    continue
+                                if era not in sub["background"][flav]:
+                                    continue
+
+                                B_arr = sub["background"][flav][era]
+                                F_arr = sub["fake"][flav][era]
+                                E_arr = sub["bkg_err2"][flav][era]
+
+                                b = B_arr[mask].sum()
+                                f = F_arr[mask].sum()
+                                e = E_arr[mask].sum()
+
+                                f, b = fix_fake_and_bkg(
+                                    f, b, FAKE_FLOOR,
+                                    flavour=flav,
+                                    era=era
+                                )
+
+                                rel = math.sqrt(e)/b if b > 0 else 0
+
+                                line = f"[{lo:5.0f},{hi:5.0f}] {era:10s}  B={b:8.3f}  rel={rel:6.3f}"
+
+                                if b < 1.0:
+                                    print(red(line))
+                                else:
+                                    print(line)
+
+                        else:
+                            raise ValueError(f"Unknown opt_mode: {opt_mode}")
+
+def recompute_per_met_results(data, scan_outputs, met_target):
+
+    import math
+    import numpy as np
+
+    results = []
+
+    # flatten
+    flat = []
+    for item in scan_outputs:
+        if isinstance(item, list):
+            flat.extend(item)
+        else:
+            flat.append(item)
+
+    for res in flat:
+
+        if res is None:
+            continue
+
+        flavs  = res.get("flavs", [])
+        masses = res.get("masses", [])
+
+        # find this MET entry
+        per_met = res.get("per_met", [])
+
+        met_entry = None
+        for m in per_met:
+            if str(m["met"]) == str(met_target):
+                met_entry = m
+                break
+
+        if met_entry is None:
+            continue
+
+        regions = met_entry["regions"]
+
+        # ----------------------------------------
+        # NOW recompute per (flav, mass)
+        # ----------------------------------------
+        for flav in flavs:
+            for mass in masses:
+
+                total_Z2 = 0.0
+
+                for cat in regions:
+
+                    bins = regions[cat]["bins"]
+                    sub = data[str(met_target)][cat]
+
+                    edges_full = np.array(sub["edges"])
+                    bin_lo = edges_full[:-1]
+
+                    Z2_region = 0.0
+
+                    for i in range(len(bins) - 1):
+
+                        lo = bins[i]
+                        hi = bins[i + 1]
+
+                        if i == len(bins) - 2:
+                            mask = (bin_lo >= lo) & (bin_lo <= hi)
+                        else:
+                            mask = (bin_lo >= lo) & (bin_lo < hi)
+
+                        S_tot = 0.0
+                        B_tot = 0.0
+                        E_tot = 0.0
+
+                        for era in ERAS:
+
+                            if flav not in sub["signal"]:
+                                continue
+                            if mass not in sub["signal"][flav]:
+                                continue
+                            if era not in sub["signal"][flav][mass]:
+                                continue
+
+                            S_arr = sub["signal"][flav][mass][era]
+                            B_arr = sub["background"][flav][era]
+                            F_arr = sub["fake"][flav][era]
+                            E_arr = sub["bkg_err2"][flav][era]
+
+                            s = S_arr[mask].sum()
+                            b = B_arr[mask].sum()
+                            f = F_arr[mask].sum()
+                            e = E_arr[mask].sum()
+
+                            f, b = fix_fake_and_bkg(
+                                f, b, FAKE_FLOOR,
+                                flavour=flav,
+                                era=era
+                            )
+
+                            S_tot += s
+                            B_tot += b
+                            E_tot += e
+
+                        if S_tot > 0 and B_tot > 0:
+                            Z = compute_bin_Z_with_unc(S_tot, B_tot, E_tot)
+                            Z2_region += Z * Z
+
+                    total_Z2 += Z2_region
+
+                Z_final = math.sqrt(total_Z2)
+
+                results.append({
+                    "flav": flav,
+                    "mass": mass,
+                    "run2": Z_final,
+                    "quad": Z_final,
+                    "met": met_target,
+                    "regions": regions
+                })
+
+    return results
+
+
+def build_fixed_met_results(data, scan_outputs, best_met_map, config):
+
+    import math
+    import numpy as np
+
+    results = []
+
+    # flatten
+    flat = []
+    for item in scan_outputs:
+        if isinstance(item, list):
+            flat.extend(item)
+        else:
+            flat.append(item)
+
+    for res in flat:
+
+        if res is None:
+            continue
+
+        flavs  = res["flavs"]
+        masses = res["masses"]
+        per_met = res.get("per_met", [])
+
+        for flav in flavs:
+
+            best_met = str(best_met_map[flav]["best_met"])
+
+            # find MET binning
+            met_entry = None
+            for m in per_met:
+                if str(m["met"]) == best_met:
+                    met_entry = m
+                    break
+
+            if met_entry is None:
+                continue
+
+            regions = met_entry["regions"]
+
+            # ----------------------------------------
+            # RECOMPUTE Z per (flav, mass)
+            # ----------------------------------------
+            for mass in masses:
+
+                total_Z2 = 0.0
+
+                for cat in regions:
+
+                    bins = regions[cat]["bins"]
+                    sub = data[best_met][cat]
+
+                    edges_full = np.array(sub["edges"])
+                    bin_lo = edges_full[:-1]
+
+                    Z2_region = 0.0
+
+                    for i in range(len(bins) - 1):
+
+                        lo = bins[i]
+                        hi = bins[i + 1]
+
+                        if i == len(bins) - 2:
+                            mask = (bin_lo >= lo) & (bin_lo <= hi)
+                        else:
+                            mask = (bin_lo >= lo) & (bin_lo < hi)
+
+                        S_tot = 0.0
+                        B_tot = 0.0
+                        E_tot = 0.0
+
+                        for era in ERAS:
+
+                            if flav not in sub["signal"]:
+                                continue
+                            if mass not in sub["signal"][flav]:
+                                continue
+                            if era not in sub["signal"][flav][mass]:
+                                continue
+
+                            S_arr = sub["signal"][flav][mass][era]
+                            B_arr = sub["background"][flav][era]
+                            F_arr = sub["fake"][flav][era]
+                            E_arr = sub["bkg_err2"][flav][era]
+
+                            s = S_arr[mask].sum()
+                            b = B_arr[mask].sum()
+                            f = F_arr[mask].sum()
+                            e = E_arr[mask].sum()
+
+                            f, b = fix_fake_and_bkg(
+                                f, b, FAKE_FLOOR,
+                                flavour=flav,
+                                era=era
+                            )
+
+                            S_tot += s
+                            B_tot += b
+                            E_tot += e
+
+                        if S_tot > 0 and B_tot > 0:
+                            Z = compute_bin_Z_with_unc(S_tot, B_tot, E_tot)
+                            Z2_region += Z * Z
+
+                    total_Z2 += Z2_region
+
+                Z_final = math.sqrt(total_Z2)
+
+                results.append({
+                    "flav": flav,
+                    "mass": mass,
+                    "run2": Z_final,
+                    "quad": Z_final,
+                    "met": best_met,
+                    "regions": regions
+                })
+
+    return results
+
+
+
 def build_run2_bkg_per_flavour(arrays, flavs):
 
     import numpy as np
