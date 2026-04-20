@@ -1,5 +1,31 @@
 import ROOT
 
+from python.scan.ref_fom_utils import evaluate_sr3_run2_with_boundary
+
+def build_sr3_plot_results(data):
+
+    # run main evaluator                                                                                                                                                                                    
+    res = evaluate_sr3_run2_with_boundary(data)
+
+    results_for_plots = []
+
+    # Run2                                                                                                                                                                                                  
+    results_for_plots.append({
+        "results": convert_results_for_plot(res, mode="run2"),
+        "raw": res,
+        "label": "SR3 Run2",
+    })
+
+    # Quad                                                                                                                                                                                                  
+    results_for_plots.append({
+        "results": convert_results_for_plot(res, mode="quad"),
+        "raw": res,
+        "label": "SR3 Quad",
+    })
+
+    return results_for_plots
+
+
 
 def extract_fixed_met(results_scan, met_value):
 
@@ -40,6 +66,45 @@ def convert_results_for_plot(results, mode="run2"):
     for r in iterable:
         flav = r["flav"]
         mass = r["mass"]
+        met = r.get("met", "NA")
+
+        key = (flav, mass, met)   # safer                                                                                                                                                                                                                             
+
+        if key in seen:
+            continue
+        seen.add(key)
+
+        if flav not in out:
+            out[flav] = []
+
+        m = float(mass)
+        val = r["run2"] if mode == "run2" else r["quad"]
+
+        out[flav].append((m, val, met))
+
+    for flav in out:
+        out[flav].sort(key=lambda x: x[0])
+
+    return out
+
+
+
+def convert_scan_results_for_plot(results, mode="run2"):
+
+    out = {}
+
+    if isinstance(results, dict):
+        iterable = []
+        for flav in results:
+            iterable.extend(results[flav])
+    else:
+        iterable = results
+
+    seen = set()
+
+    for r in iterable:
+        flav = r["flavs"]
+        mass = r["masses"]
         met = r.get("met", "NA")
 
         key = (flav, mass, met)   # safer
@@ -168,7 +233,10 @@ def make_mass_plot_multi(results_list, flav, LOG_TAG, out_tag="default"):
     # ------------------
     # Save
     # ------------------
-    outdir = f"plots/{LOG_TAG}/{out_tag}/"
+
+    BASE_DIR = "/data6/Users/jalmond/HNL/SKFlatAnalyzer/data_validation/analysis_validation/limit_binning_optimisation/SR3/modular_framework/"
+    #os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    outdir = os.path.join(BASE_DIR, "output", "plots", LOG_TAG, out_tag)
     os.makedirs(outdir, exist_ok=True)
 
     c.SaveAs(f"{outdir}/fom_vs_mass_{flav}.pdf")

@@ -4,27 +4,27 @@
 import os
 import ROOT
 
-from default_config import ERAS, FLAVOURS
+from python.config.default_config import ERAS, FLAVOURS
 
 
 def load_histogram(file_path, hist_path):
     f = ROOT.TFile(file_path)
 
     if not f or f.IsZombie():
-        print(f"[WARNING] Cannot open {file_path}")
-        return None
-
+        raise RuntimeError(f"Cannot open file: {file_path}")
+        
+    
     h = f.Get(hist_path)
 
     if not h:
-        print(f"[WARNING] Missing {hist_path} in {file_path}")
         f.Close()
-        return None
-
+        raise RuntimeError(f"Missing histogram: {hist_path} in {file_path}")
+    
     h = h.Clone()
     h.SetDirectory(0)
     f.Close()
 
+    print(f"Integral of {hist_path} in {file_path} is : {h.Integral()}")
     return h
 
 
@@ -80,12 +80,12 @@ def load_fake(base, flav, hist_name):
 # =========================================================
 # SIGNAL
 # =========================================================
-def load_signal(base, flav, mass, hist_name):
+def load_signal(base, flav, mass, hist_name,sig_name):
 
     hist = {}
 
     path = build_sr3_path(flav, hist_name)
-    sig_name = f"HNL_DYVBF_{mass}"
+    #sig_name = f"HNL_{mass}"
 
     for era in ERAS:
         fname = os.path.join(base, era, f"HNL_SignalRegion_Plotter_{sig_name}.root")

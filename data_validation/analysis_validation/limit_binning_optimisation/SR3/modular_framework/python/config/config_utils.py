@@ -1,3 +1,19 @@
+def GetScanName(config):
+
+    scan_type = config.get("scan_type", "Unknown")
+    nbin_mode = config.get("nbin_mode", "Unknown")
+    opt_mode  = config.get("opt_mode", "Unknown")
+
+    # format nbin nicely
+    if isinstance(nbin_mode, int):
+        nbin_str = f"{nbin_mode}bin"
+    else:
+        nbin_str = str(nbin_mode)
+
+    name = f"{scan_type}_{nbin_str}_{opt_mode}"
+
+    return name
+
 def validate_config(cfg):
     """
     Validate required config fields and print a clear summary.

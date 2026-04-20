@@ -4,8 +4,8 @@
 import math
 import numpy as np
 
-from default_config import ERAS, FLAVOURS
-from loader import load_background, load_signal, load_fake
+from python.config.default_config import ERAS, FLAVOURS
+from python.utils.loader import load_background, load_signal, load_fake
 
 
 def hist_to_array(h):
@@ -28,7 +28,7 @@ def bins_to_array_with_err(bins):
 # ========================================================
 # BUILD MAIN DATA STRUCTURE
 # =========================================================
-def build_data_sr3(base, masses):
+def build_data_sr3(base, masses, sig_name = "HNL" ):
 
     data = {}
 
@@ -42,9 +42,9 @@ def build_data_sr3(base, masses):
     ]
 
     for met in MET_CUTS:
-
+        print(100*"_")
         data[met] = {}
-
+        
         for cat_template in CATEGORIES:
 
             cat = cat_template.format(X=met)
@@ -67,7 +67,7 @@ def build_data_sr3(base, masses):
 
                 sig_all[flav] = {}
                 for m in masses:
-                    sig_all[flav][m] = load_signal(base, flav, m, hist_name=cat)
+                    sig_all[flav][m] = load_signal(base, flav, m, hist_name=cat,    sig_name = f"{sig_name}_{m}")
 
             # ----------------------------------
             # Find valid reference histogram for edges

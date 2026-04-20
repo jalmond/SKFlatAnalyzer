@@ -1,37 +1,14 @@
-# =========================================================                                                                                                                                                                                 # EVALUATORs                                                                                                                                                                                                                                # =========================================================                                                                                                                                                                                                                                                                                                                                                                                                                              
+# =========================================================
+# EVALUATORs
+# =========================================================                                                                                                                                                                                                                                                                                                                                                                                                                             
 
-from default_config import ERAS, FLAVOURS, FAKE_FLOOR
+from python.config.default_config import ERAS, FLAVOURS, FAKE_FLOOR
 
-from ref_bins import get_sr3_ref_edges
+from python.utils.ref_bins import get_sr3_ref_edges
 
-from helper import fix_fake_and_bkg,compute_bin_Z_with_unc,parse_sr3_category,get_met_boundary
-
-from plotter import convert_results_for_plot
+from python.utils.helper import fix_fake_and_bkg,compute_bin_Z_with_unc,parse_sr3_category,get_met_boundary
 
 import math
-
-def build_sr3_plot_results(data):
-
-    # run main evaluator
-    res = evaluate_sr3_run2_with_boundary(data)
-
-    results_for_plots = []
-
-    # Run2
-    results_for_plots.append({
-        "results": convert_results_for_plot(res, mode="run2"),
-        "raw": res,
-        "label": "SR3 Run2",
-    })
-
-    # Quad
-    results_for_plots.append({
-        "results": convert_results_for_plot(res, mode="quad"),
-        "raw": res,
-        "label": "SR3 Quad",
-    })
-
-    return results_for_plots
 
 
 def print_bin_summary():
@@ -39,22 +16,14 @@ def print_bin_summary():
     print(" SR3 BINNING DEBUG")
     print("==============================")
     
-    tests = [
-        ("MuMu", "2016preVFP", "LowJet", True),
-        ("MuMu", "2016preVFP", "LowJet", False),
-        ("MuMu", "2017", "HighJet", True),
-        ("EE",   "2018", "LowJet", True),
-        ("EMu",  "2017", "HighJet", False),
-    ]
-    
-    for flav, era, jet, is_ltcut in tests:
-        
-        edges = get_sr3_ref_edges(flav, era, jet, is_ltcut)
-        
-        tag = "LTcut" if is_ltcut else "GTcut"
-        
-        print(f"\n{flav} | {era} | {jet} | {tag}")
-        print("Edges:", edges)
+    for flav in FLAVOURS:
+        for era in ERAS:
+            for jet in ["LowJet","HighJet"]:
+
+                edges = get_sr3_ref_edges(flav, era, jet, True)
+                print(f"{flav} | {era} | {jet} |  MET <  | Edges:", edges)
+                edges = get_sr3_ref_edges(flav, era, jet, False)            
+                print(f"{flav} | {era} | {jet} |  MET >  | Edges:", edges)
 
 
 
@@ -86,7 +55,7 @@ def evaluate_sr3_run2_with_boundary(data):
             total_quad_Z2 = 0.0
 
             region_results = {}
-
+            total_b=0.0
             for era in ERAS:
 
                 boundary = get_met_boundary(flav, era)
@@ -131,6 +100,8 @@ def evaluate_sr3_run2_with_boundary(data):
                     F_arr = sub["fake"][flav][era]
                     E_arr = sub["bkg_err2"][flav][era]
 
+                    
+                    
                     era_Z2 = 0.0
 
                     for i in range(len(edges_ref) - 1):
@@ -148,7 +119,7 @@ def evaluate_sr3_run2_with_boundary(data):
                         B = B_arr[mask].sum()
                         F = F_arr[mask].sum()
                         E = E_arr[mask].sum()
-
+                        total_b+=B
                         # --- fake fix AFTER summing ---
                         F, B = fix_fake_and_bkg(F, B, FAKE_FLOOR,
                                                 flavour=flav, era=era)

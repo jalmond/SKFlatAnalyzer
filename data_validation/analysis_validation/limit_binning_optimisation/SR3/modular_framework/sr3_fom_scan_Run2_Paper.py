@@ -1,13 +1,9 @@
 #!/usr/bin/env python3
 
-import ROOT, os, math, itertools, argparse, sys, datetime
-from tqdm import tqdm
-import ctypes
-import time
-import importlib
-ROOT.gROOT.SetBatch(True)
-
+import ROOT, os, argparse, sys, datetime, time, importlib
 from contextlib import contextmanager
+
+ROOT.gROOT.SetBatch(True)
 
 @contextmanager
 def redirect_stdout(target):
@@ -19,20 +15,30 @@ def redirect_stdout(target):
         sys.stdout = old_stdout
 
 
-#### Build data
-from data_format import hist_to_array, bins_to_array_with_err, build_data_sr3
-from helper import debug_data_summary, get_latest_dir,ReadConfig,ConvertConfPath,list_available_configs,print_sr3_bin_table
-from plotter import make_mass_plot_multi, convert_results_for_plot,extract_fixed_met
-from default_config import RUN_REF,RUN_SCANS,BASE_DIR,FLAVOURS,NCORE
-import default_config
+# ---- Imports ----
+from python.utils.data_format import build_data_sr3
 
-from ref_fom_utils import *
-from fom_utils import *
+from python.utils.helper import (
+    debug_data_summary, get_latest_dir, ReadConfig, ConvertConfPath,
+    list_available_configs, print_sr3_bin_table,debug_fixed_binning_stat_failures,print_sr3_z_ref_summary,debug_compare_binnings_per_boundary
+)
+from python.plotter.plotter import make_mass_plot_multi, convert_results_for_plot, extract_fixed_met,build_sr3_plot_results,convert_scan_results_for_plot
+from python.config.default_config import RUN_REF, BASE_DIR, FLAVOURS, NCORE, ERAS
+import python.config.default_config
+
+from python.config.config_utils import GetScanName
+
+from python.utils.logger import (
+    print_config_file, print_scan_summary, print_scan_details,print_sr3_scan_table_from_results,debug_print_yields_integral,print_sr3_z_summary_per_metcat_flat,print_sr3_z_per_boundary
+)
+
+from python.scan.ref_fom_utils import *
+from python.scan.fom_utils import *
+from python.scan.evaluator import evaluate_scan_results
 
 # =========================================================
-# TIMER HELPER
+# TIMER
 # =========================================================
-
 class Timer:
     def __init__(self):
         self.times = {}
@@ -55,7 +61,7 @@ class Timer:
 
 
 # =========================================================
-# LOGGER
+# LOGGING
 # =========================================================
 class SimpleLogger:
     def __init__(self, filename):
@@ -66,7 +72,8 @@ class SimpleLogger:
 
     def flush(self):
         self.file.flush()
-        
+
+
 class TeeLogger:
     def __init__(self, filename):
         self.file = open(filename, "w")
@@ -81,273 +88,235 @@ class TeeLogger:
         self.file.flush()
 
 
-from logger import print_final_summary, print_scan_summary_table, print_scan_binning_table,print_config_file, print_scan_summary,print_scan_details 
-
-
 # =========================================================
 # MAIN
 # =========================================================
-
 def main():
 
     timer = Timer()
     timer.start("TOTAL")
 
     # ----------------------------------
-    # Use latest production directory
+    # Input directory
     # ----------------------------------
-
     if BASE_DIR is not None:
         if not os.path.isdir(BASE_DIR):
             raise ValueError(f"[ERROR] BASE_DIR does not exist: {BASE_DIR}")
-
         base = BASE_DIR
-        print(f"[INFO] Using BASE_DIR from config: {base}")
     else:
         base = get_latest_dir("/data6/Users/jalmond/HNL/Plotter/HNDiLeptonWorskspace/InputFiles/MergedFiles/HNL_SignalRegion_Plotter")
-        print(f"[INFO] Using latest directory: {base}")
 
-        
+    # ----------------------------------
+    # Args
+    # ----------------------------------
     parser = argparse.ArgumentParser(description="FOM scan runner")
-    parser.add_argument("--runRef", action="store_true", default=None)
+    parser.add_argument("--debug", action="store_true", default=None)
     parser.add_argument("--config", default=None)
-    parser.add_argument("--tag", default=None, help="Tag string for this run")
+    parser.add_argument("--tag", default=None)
+    parser.add_argument("--test", type=int, default=None,
+                    help="Run in test mode with test ID")
+
+
     args = parser.parse_args()
     
-    
-    #### Read config
+    if args.test is not None:
+        print(f"[INFO] Running in TEST mode (test={args.test})")
+        print("[INFO] Overriding config with test_scan for test mode")
+        args.config = "python.config.test_scan"
+        
     if args.config is None:
-        print("[ERROR] No config provided\n")
-        list_available_configs("config")
+        print("[ERROR] No config provided")
+        list_available_configs("python/config")
         sys.exit(1)
-        
+
     conf_path = ConvertConfPath(args.config)
-    import importlib.util
-    if args.config is None or importlib.util.find_spec(conf_path) is None:
-        print(f"[ERROR] Config module '{conf_path}' not found or not provided")
-    
-        list_available_configs("config")
-    
-        sys.exit(1)
-    
-        
     config_module = importlib.import_module(conf_path)
-    MASSES, USE_FAKE_FIX, RUN_Z_NO_UNC, LOG_TAG, TAG, NBinScan,RunGlobalSig = ReadConfig(config_module)
 
-    import helper
-    helper.set_stat_config(config_module)
-    
-    run_ref = args.runRef if args.runRef is not None else RUN_REF
+    MASSES, USE_FAKE_FIX, RUN_Z_NO_UNC, LOG_TAG, TAG, NBinScan, RunGlobalSig = ReadConfig(config_module)
 
-    if args.tag is not None:
-        tag = args.tag
-    elif hasattr(config_module, "TAG"):
-        tag = config_module.TAG
-    else:
-        tag = "Default"
+    import python.utils.helper
+    python.utils.helper.set_stat_config(config_module)
 
-    scan_type=""
-    if NBinScan:
-        scan_type="Nbin"
+    tag = args.tag if args.tag else getattr(config_module, "TAG", "Default")
+    scan_type = "Nbin" if NBinScan else ""
 
-        
-        
     # ----------------------------------
-    # Setup logging
+    # Logging setup
     # ----------------------------------
     ts = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-    os.makedirs("logs", exist_ok=True)
-    outtag=""
 
-    os.makedirs(f"logs/{tag}", exist_ok=True)
-    os.makedirs(f"logs/{tag}/{LOG_TAG}", exist_ok=True)
-    outtag=f"{tag}/{LOG_TAG}"
+    os.makedirs(f"output/logs/{tag}/{LOG_TAG}", exist_ok=True)
+    outtag = f"{tag}/{LOG_TAG}"
 
-
-    log_file = f"logs/{outtag}/build_data_{ts}.txt"
+    log_file = f"output/logs/{outtag}/build_data_{ts}.txt"
     sys.stdout = TeeLogger(log_file)
-    
-    print_config_file(default_config, title="DEFAULT CONFIG")
+
+    results_log_file = f"output/logs/{outtag}/results_{ts}.txt"
+    results_logger = SimpleLogger(results_log_file)
+
+    print_config_file(python.config.default_config, title="DEFAULT CONFIG")
     print_config_file(config_module, title=f"USER CONFIG ({conf_path})")
 
-    results_log_file = f"logs/{outtag}/results_{ts}.txt"
-    results_logger = SimpleLogger(results_log_file)
-    
-    print("==============================")
-    if run_ref:
-        print("Plot Reference bins in ref_bins.py")
-
-    print("==============================")
-    print("[INFO] Log file:", log_file)
     print("[INFO] Using input directory:", base)
-
-    # ----------------------------------
-    # Mass list
-    # ----------------------------------
-    print("\n[INFO] Masses:", MASSES)
+    print("[INFO] Masses:", MASSES)
+    print("[INFO] Flavours:", FLAVOURS)
 
     # ----------------------------------
     # Build data
     # ----------------------------------
-    print("\n[STEP] Building data...")
     timer.start("Build data")
-    data = build_data_sr3(base, MASSES)
+    data = build_data_sr3(base, MASSES,sig_name="HNL")
     timer.stop("Build data")
 
-    debug_data_summary(data, 5)
-       
-    # ----------------------------------
-    # Norm check
-    # ----------------------------------
-    print("\n[NORM VALUES PER REGION]")
+    if args.debug:
+        debug_data_summary(data, 5)
 
-    for met in data:
-        for cat in data[met]:
-            print(f"\n--- MET {met} | {cat} ---")
-            for m in MASSES:
-                print(f"  {m} -> {data[met][cat]['norm'][m]:.6f}")
-
+        print("\n[NORM VALUES PER REGION]")
+        for met in data:
+            for cat in data[met]:
+                print(f"\n--- MET {met} | {cat} ---")
+                for m in MASSES:
+                    print(f"  {m} -> {data[met][cat]['norm'][m]:.6f}")
+                    
     print_bin_summary()
 
-    results = evaluate_sr3_run2_with_boundary(data)
-    with redirect_stdout(results_logger):
 
-        print("\n==============================")
-        print(" REFERENCE RESULTS")
-        print("==============================")
+    if args.debug:
+        debug_print_yields_integral(data)
+
         
-        print_sr3_fom_summary(results)
+        print (100*"#")
+        print(f"RUNNING [print_sr3_z_summary] [per MET Cat]")
+        print (100*"#")
+        print_sr3_z_summary_per_metcat_flat(data, MASSES, FLAVOURS,ERAS)
+        print (100*"#")
+        print(f"RUNNING [print_sr3_z_per_boundary] [[0,200,400,1200]")
+        print (100*"#")
+        print_sr3_z_per_boundary(data, MASSES, FLAVOURS,ERAS)
+        
+        debug_fixed_binning_stat_failures(data, MASSES, FLAVOURS)
+        
+        
+    # ----------------------------------
+    # Reference
+    # ----------------------------------
+    print (100*"#")
+    print (100*"#")
+    ref_results = evaluate_sr3_run2_with_boundary(data)
 
-    
-    results_for_plots = build_sr3_plot_results(data)
-    plot_data = results_for_plots[0]["results"]
-    
-    for flav in plot_data:
+    if args.debug:
+                        
+        print (100*"#")
+        print(f"RUNNING [print_sr3_z_ref_summary] Reference binning")
+        print (100*"#")
+        print_sr3_z_ref_summary(ref_results)
+        
+        print (100*"#")
+        print (100*"#")
+        print (100*"#")
+        print (100*"#")
+    else:
+        print_sr3_z_ref_summary(ref_results)
 
+    ref_results_for_plots = build_sr3_plot_results(data)
+
+    for flav in ref_results_for_plots[0]["results"]:
         print_sr3_bin_table(data, flav=flav, mass="2000")
-        
-        print("\n==============================")
-        print(f"Plotting flavour: {flav}")
-        print("==============================")
-        
+
         make_mass_plot_multi(
-            results_list=results_for_plots,
+            results_list=ref_results_for_plots,
             flav=flav,
             LOG_TAG=outtag,
             out_tag="sr3_ref"
         )
 
-    RunScan=True
-    if RunScan:
-        # ----------------------------------
-        # NORMAL SCAN MODE
-        # ----------------------------------
-
-
-        timer.start("Scan [parallel] GlobalMass")
-
-        if RunGlobalSig:
-            results_scan_globalsig = evaluate_sr3_scan_parallel(
-                data,
-                MASSES,
-                run_scan="GlobalMass",
-                n_workers=NCORE
-            )
-            for r in results_scan_globalsig:
-                print(f"Global Mass {r['flav']} {r['mass']} -> MET={r['met']} Z={r['run2']:.4f}")
-        timer.stop("Scan [parallel] GlobalMass")
-       
-        timer.start("Scan [parallel] PerMass")
         
-        results_scan = evaluate_sr3_scan_parallel(
-            data,
-            MASSES,
-            run_scan="PerMass"+scan_type,
-            n_workers=NCORE
-        )
-        timer.stop("Scan [parallel] PerMass")
+    standard_config = {
+        # -------------------------------
+        # Scan strategy
+        # -------------------------------
+        "scan_type": "PerMassPerFlav",
+        # options:
+        # "PerMassPerFlav"
+        # "GlobalMassPerSig"
+        # "PerMassGlobalSig"
+        # "GlobalMassGlobalSig"
         
-        for r in results_scan:
-            print(f"Per Mass {r['flav']} {r['mass']} -> MET={r['met']} Z={r['run2']:.4f}")
-
-
-        with redirect_stdout(results_logger):
-
-            print("\n==============================")
-            print(" FINAL SCAN SUMMARY")
-            print("==============================")
-            
-            print_scan_summary(results_scan)
-            
-            for MASS in MASSES:
-                for FLAV in FLAVOURS:
-                    print_scan_details(results_scan, FLAV, MASS)
-
-
-            if RunGlobalSig:
-                
-                print("\n==============================")
-                print(" FINAL GLOBAL MASS SCAN SUMMARY")
-                print("==============================")
-
-                print_scan_summary(results_scan_globalsig)
-                
-                for MASS in MASSES:
-                    for FLAV in FLAVOURS:
-                        print_scan_details(results_scan_globalsig, FLAV, MASS)
-                        
+        # -------------------------------
+        # Bin strategy
+        # -------------------------------
+        "nbin_mode": "fixed",
+        "nbin_mode": 4,
+        # options:
+        # "fixed"  -> use get_nbins_for_region
+        # "scan"   -> try 3-7 bins
+        # int      -> force number of bins
         
-        combined_results_for_plots = []
-            
-        combined_results_for_plots.append({
-            "results": convert_results_for_plot(results, mode="run2"),
-            "label": "SR3 Ref",
-        })
+        # -------------------------------
+        # Optimisation level
+        # -------------------------------
+        "opt_mode": "Run2", 
+        # options:
+        # "Run2"  -> combine eras before Z
+        # "Era"   -> optimise per era separately
         
-        combined_results_for_plots.append({
-            "results": convert_results_for_plot(results_scan, mode="run2"),
-            "label": "SR3 Scan [best MET/mass]",
-        })
-
-        if RunGlobalSig:
-            
-            combined_results_for_plots.append({
-                "results": convert_results_for_plot(results_scan_globalsig, mode="run2"),
-                "label": "SR3 Scan GlobalSig [best MET/mass]",
-            })
+        # -------------------------------
+        # MET selection
+        # -------------------------------
+        "mets": ["2", "3", "4", "5"],
         
-        for flav in FLAVOURS:            
-            print("\n==============================")
-            print(f"Plotting flavour: {flav} (SCAN)")
-            print("==============================")
-            
-            make_mass_plot_multi(
-                results_list=combined_results_for_plots,
-                flav=flav,
-                LOG_TAG=outtag,
-                out_tag="sr3_scan_permass_perflav"
-            )
-        combined_results_for_permet_plots = []
-        # Ref
-        combined_results_for_permet_plots.append({
-            "results": convert_results_for_plot(results, mode="run2"),
-        "label": "SR3 Ref",
-        })
-        # Fixed MET curves (from SAME scan)
-        for met in ["2", "3", "4", "5"]:
-            
-            fixed = extract_fixed_met(results_scan, met)
-            
-            combined_results_for_permet_plots.append({
-                "results": convert_results_for_plot(fixed, mode="run2"),
-                "label": f"SR3 Scan (MET={met})",
-            })
-        
-
+        # -------------------------------                                                                                                                               
+        # Scan parameters
+        # -------------------------------       
+        "min_bin_width": 10.0,
+        "min_lt_first_edge": 120.0,
+    }
+    standard_config["scan_name"] = GetScanName(standard_config)
+    standard_config["mass_weights"] = build_mass_weights_from_ref(ref_results)
     
-    timer.stop("TOTAL")
+    timer.start("Standard scan")
+        
+    scan_outputs = run_parallel_scans(data, FLAVOURS, MASSES, standard_config,n_workers=NCORE)
+    final_scan = evaluate_scan_results(data, scan_outputs, standard_config)
+
+    plot_results = [
+
+    {
+        "results": convert_results_for_plot(final_scan, "run2"),
+        "label": "Optimised "+standard_config["scan_name"]
+    },
+
+    {
+        "results": ref_results_for_plots[0]["results"],
+        "label": "Reference"
+    }
+    ]
+    
+    for flav in FLAVOURS:            
+        print("\n==============================")
+        print(f"Plotting flavour: {flav} (SCAN)")
+        print("==============================")
+        
+        make_mass_plot_multi(
+            
+            results_list=plot_results,
+            
+            flav=flav,
+            
+            LOG_TAG=outtag,
+            
+            out_tag="sr3_scan_"+standard_config["scan_name"] 
+            
+        )
+        
+    timer.stop("Standard scan")
+
     timer.summary()
-
-
+    print("\n==============================")
+    print(" OUTPUT PATHS")
+    print("==============================")
+    print(f"[INFO] Log (stdout)   : output/logs/{outtag}/build_data_{ts}.txt")
+    print(f"[INFO] Results log   : output/logs/{outtag}/results_{ts}.txt")
+    
 if __name__ == "__main__":
     main()
