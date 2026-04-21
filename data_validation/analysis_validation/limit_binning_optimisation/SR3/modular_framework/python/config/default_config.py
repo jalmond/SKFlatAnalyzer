@@ -1,9 +1,6 @@
 ERAS = ["2016preVFP","2016postVFP","2017","2018"]
-#EFLAVOURS = ["MuMu","EE","EMu"]
-METS = [ "4"]
-
-FLAVOURS = ["MuMu", "EE"]
-NCORE=4
+FLAVOURS = ["MuMu","EE","EMu"]
+NCORE=6
 
 #### Fake correction
 FAKE_FLOOR = 0.15 * 0.645

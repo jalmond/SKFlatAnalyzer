@@ -132,7 +132,7 @@ def main():
 
     conf_path = ConvertConfPath(args.config)
     config_module = importlib.import_module(conf_path)
-
+    
     MASSES, USE_FAKE_FIX, RUN_Z_NO_UNC, LOG_TAG, TAG, NBinScan, RunGlobalSig = ReadConfig(config_module)
 
     import python.utils.helper
@@ -145,7 +145,7 @@ def main():
     # Logging setup
     # ----------------------------------
     ts = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-
+    LOG_TAG=LOG_TAG+"_singlescan"
     os.makedirs(f"output/logs/{tag}/{LOG_TAG}", exist_ok=True)
     outtag = f"{tag}/{LOG_TAG}"
 
@@ -374,14 +374,6 @@ def main():
     # GLOBAL MASS SCAN (ADDITIONAL)
     # =========================================================
 
-    global_mass_config = {
-        "scan_type": "GlobalMassPerFlav",
-        "nbin_mode": "fixed",
-        "opt_mode": "Run2",
-        "mets": ["2", "3", "4", "5"],
-        "min_bin_width": 10.0,
-        "min_lt_first_edge": 120.0,
-    }
     global_binscan_mass_config = {
      	"scan_type": "GlobalMassPerFlav",
         "nbin_mode": "scan",
@@ -392,9 +384,6 @@ def main():
     }
 
     
-    global_mass_config["scan_name"] = GetScanName(global_mass_config)
-    global_mass_config["mass_weights"] = standard_config["mass_weights"]
-
     global_binscan_mass_config["scan_name"] = GetScanName(global_binscan_mass_config)
     global_binscan_mass_config["mass_weights"] = standard_config["mass_weights"]
 
@@ -405,39 +394,16 @@ def main():
 
     timer.start("GlobalMass scan")
 
-    global_scan_outputs = run_parallel_scans( data, FLAVOURS, MASSES, global_mass_config, n_workers=NCORE )
-    global_final_scan = evaluate_scan_results(data, global_scan_outputs, global_mass_config )
-    
     global_binscan_scan_outputs = run_parallel_scans( data, FLAVOURS, MASSES, global_binscan_mass_config, n_workers=NCORE )
     global_binscan_final_scan = evaluate_scan_results(data, global_binscan_scan_outputs, global_binscan_mass_config )
 
 
-    print("\n==============================")
-    print(" GLOBAL MASS SCAN TABLES")
-    print("==============================")
-
-    print_sr3_scan_table_from_results(global_final_scan, data)
-    
     print("\n==============================")
     print(" GLOBAL BinScan MASS SCAN TABLES")
     print("==============================")
 
     print_sr3_scan_table_from_results(global_binscan_final_scan, data)
     
-    # ----------------------------------
-    # BEST MET (GLOBAL)
-    # ----------------------------------
-    global_best_met_map = find_best_met_per_flavour(
-        global_scan_outputs,
-        global_mass_config["mass_weights"]
-    )
-
-    global_fixed_met_results = build_fixed_met_results(
-        data,
-        global_scan_outputs,
-        global_best_met_map,
-        global_mass_config
-    )
 
     # ----------------------------------                                                                                                                         
     # BEST MET (GLOBAL) BINSCAN                                                                                                                                 
@@ -458,32 +424,15 @@ def main():
     # ----------------------------------
     # COMPARISON PLOT (KEY ADDITION)
     # ----------------------------------
-    global_final_scan_recomputed = recompute_per_mass_with_fixed_binning(data, global_scan_outputs)
     global_binscan_final_scan_recomputed = recompute_per_mass_with_fixed_binning(data, global_binscan_scan_outputs)
         
-    comparison_plot_results = [
-
-        {
-            "results": convert_results_for_plot(final_scan, "run2"),
-            "label": "Per-Mass/Flavour optimised" 
-        },
-
-        {
-            "results": convert_results_for_plot(global_final_scan_recomputed, "run2"),
-            "label": "Global-Mass optimised"
-        },
-
-        {
-            "results": ref_results_for_plots[0]["results"],
-            "label": "Reference Binning"
-        }
-    ]
 
     comparison_plot_binscan_results = [
 
+        
         {
-            "results": convert_results_for_plot(global_final_scan_recomputed, "run2"),
-            "label": "Global-Mass optimised Fixed NBin"
+            "results": convert_results_for_plot(final_scan, "run2"),
+            "label": "Per-Mass/Flavour optimised Best MET",
         },
         {
             "results": convert_results_for_plot(global_binscan_final_scan_recomputed, "run2"),
@@ -498,16 +447,6 @@ def main():
         print("==============================")
 
         make_mass_plot_multi(
-
-            results_list=comparison_plot_results,
-
-            flav=flav,
-
-            LOG_TAG=outtag,
-
-            out_tag="sr3_compare_permass_vs_global" 
-        )
-        make_mass_plot_multi(
             
             results_list=comparison_plot_binscan_results,
 
@@ -515,30 +454,11 @@ def main():
 
             LOG_TAG=outtag,
 
-            out_tag="sr3_compare_global_binscan"
+            out_tag="sr3_compare_global_vs_standard"
         )
 
     # ----------------------------------
     # GLOBAL MET SCAN (same as standard)
-    # ----------------------------------
-    print("\n==============================")
-    print(" GLOBAL BEST MET PER FLAVOUR (WEIGHTED)")
-    print("==============================")
-
-    global_met_plot_results = []
-
-    for met in ["2","3","4","5"]:
-
-        met_results = recompute_per_met_results(
-            data, global_scan_outputs, met
-        )
-
-        global_met_plot_results.append({
-
-            "results": convert_results_for_plot(met_results, "run2"),
-            "label": f"MET {met}"
-
-        })
 
     global_binscan_met_plot_results = []
 
@@ -557,25 +477,6 @@ def main():
 
         
         
-    for flav in global_best_met_map:
-
-        info = global_best_met_map[flav]
-
-        print(f"\n{flav}: BEST MET = {info['best_met']}")
-
-        for met, val in sorted(info["scores"].items()):
-            print(f"  MET {met} -> Z = {val:.4f}")
-
-        make_mass_plot_multi(
-
-            results_list=global_met_plot_results,
-
-            flav=flav,
-
-            LOG_TAG=outtag,
-
-            out_tag="sr3_global_vs_permass_metscan"
-        )
         
     for flav in global_binscan_best_met_map:
 
@@ -601,7 +502,6 @@ def main():
     # ----------------------------------
     # PRINT BINNING + BKG (GLOBAL)
     # ----------------------------------
-    print_bkg_per_bin(data, global_scan_outputs, global_mass_config)
     print_bkg_per_bin(data, global_binscan_scan_outputs, global_binscan_mass_config)
 
     timer.stop("GlobalMass scan")

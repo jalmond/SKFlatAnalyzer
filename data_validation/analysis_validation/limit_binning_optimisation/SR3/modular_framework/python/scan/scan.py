@@ -83,7 +83,7 @@ def run_scan_group(data, flavs, masses, config):
 
         for cat in data[met]:
             
-            tqdm.write(f" MET = {met} CAT = {cat} [start]")
+            #tqdm.write(f" MET = {met} CAT = {cat} [start]")
             sub = data[met][cat]
             edges_full = np.array(sub["edges"])
             bin_lo = edges_full[:-1]
@@ -101,14 +101,26 @@ def run_scan_group(data, flavs, masses, config):
             
             import math
             
-            nbins_test = get_nbins_for_region(cat) if config["nbin_mode"] == "fixed" else config["nbin_mode"] 
+            if config["nbin_mode"] == "fixed":
+
+                nbins_test = get_nbins_for_region(cat)
+    
+            elif config["nbin_mode"] == "scan":
             
-            if len(internal_edges) >= (nbins_test - 1):
-                
-                ncomb = math.comb(len(internal_edges), nbins_test - 1)
-                
+                nbins_test = None  # not used for combination counting
+    
             else:
-                tqdm.write(f" MET = {met} CAT = {cat} N_internal_edges = {len(internal_edges)} : Not enough edges for combinations")
+                
+                nbins_test = int(config["nbin_mode"])
+
+            if nbins_test is not None:
+                if len(internal_edges) >= (nbins_test - 1):
+                    
+                    ncomb = math.comb(len(internal_edges), nbins_test - 1)
+                    
+                else:
+                    tqdm.write(f" MET = {met} CAT = {cat} N_internal_edges = {len(internal_edges)} : Not enough edges for combinations")
+                    
             # ----------------------------------------
             # BINNING CANDIDATES
             # ----------------------------------------

@@ -629,12 +629,12 @@ def generate_binnings(edges, nbin_mode, cat,
     #internal_edges = edges[1:-1]
     internal_edges = filter_edges_by_region(edges[1:-1])
 
-    if len(edges[1:-1]) > 100:
-        tqdm.write(f"[DEBUG] edges before = {len(edges[1:-1])}, after = {len(internal_edges)}")
-        
-        tqdm.write(f"[DEBUG] first edges: {internal_edges[:10]}")
-        
-        tqdm.write(f"[DEBUG] last edges : {internal_edges[-10:]}")
+    #if len(edges[1:-1]) > 100:
+    #    tqdm.write(f"[DEBUG] edges before = {len(edges[1:-1])}, after = {len(internal_edges)}")
+    #    
+    #    tqdm.write(f"[DEBUG] first edges: {internal_edges[:10]}")
+    #    
+    #    tqdm.write(f"[DEBUG] last edges : {internal_edges[-10:]}")
 
     # ----------------------------------------
     # Decide nbins list
@@ -661,7 +661,8 @@ def generate_binnings(edges, nbin_mode, cat,
     all_binnings = []
 
     for nbins in nbins_list:
-
+        tqdm.write(f"[INFO] Generating {nbins} bins")
+                
         for combo in itertools.combinations(internal_edges, nbins - 1):
 
             # First edge cut
