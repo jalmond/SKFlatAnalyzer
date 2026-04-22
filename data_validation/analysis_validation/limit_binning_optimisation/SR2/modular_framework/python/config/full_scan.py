@@ -4,12 +4,12 @@ Bin_NBKG_REQ = 1.0
 Bin_NBKG_REQ_Tight = 0.5
 Bin_BKG_RelUnc = 0.3
 
-TAG="Full_Scan_SingleJob"
+TAG="Full_Scan_Quick"
 # Rebuild tag AFTER override
 
 MASSES = [
-        "500","600",
-        "700","800","900",
+        "500",
+        "700","900",
         "1000","2000"
 ]
 

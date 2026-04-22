@@ -263,12 +263,12 @@ def main():
         # -------------------------------
         # MET selection
         # -------------------------------
-        "mets": ["2", "3", "4", "5"],
+        "mets": ["2"],
         
         # -------------------------------                                                                                                                               
         # Scan parameters
         # -------------------------------       
-        "min_bin_width": 10.0,
+        "min_bin_width": 20.0,
         "min_lt_first_edge": 120.0,
     }
     standard_config["scan_name"] = GetScanName(standard_config)
@@ -333,7 +333,7 @@ def main():
     print("==============================")
 
     met_plot_results = []
-    for met in ["2","3","4","5"]:
+    for met in ["2"]:
         
         met_results = recompute_per_met_results(data, scan_outputs, met)
         
@@ -376,10 +376,10 @@ def main():
 
     global_binscan_mass_config = {
      	"scan_type": "GlobalMassPerFlav",
-        "nbin_mode": "scan",
+        "nbin_mode": 5,
         "opt_mode": "Run2",
-        "mets": ["2", "3", "4", "5"],
-	"min_bin_width": 10.0,
+        "mets": ["2"],
+	"min_bin_width": 20.0,
         "min_lt_first_edge": 120.0,
     }
 
@@ -403,8 +403,7 @@ def main():
     print("==============================")
 
     print_sr3_scan_table_from_results(global_binscan_final_scan, data)
-    
-
+   
     # ----------------------------------                                                                                                                         
     # BEST MET (GLOBAL) BINSCAN                                                                                                                                 
     # ----------------------------------                                                                                                                             
@@ -462,7 +461,7 @@ def main():
 
     global_binscan_met_plot_results = []
 
-    for met in ["2","3","4","5"]:
+    for met in ["2"]:
 
         met_results_binscan = recompute_per_met_results(
             data, global_binscan_scan_outputs, met
