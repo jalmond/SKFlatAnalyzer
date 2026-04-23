@@ -457,7 +457,10 @@ void   HNL_RegionDefinitions::RunMainRegionCode(bool IsSR,HNL_LeptonCore::Channe
       {600, {600}},
       {700, {700}},
       {800, {800}},
-      {900, {900, 1000, 1100, 1200, 1300, 1500, 1700, 2000, 2500, 3000}},
+      {900, {900}},
+      {1000, {1000,1100, 1200, 1300}},
+      {1500, {1500, 1700}},
+      {2000, {2000, 2500, 3000}},
     };
     
     // Cache these once
@@ -1067,88 +1070,56 @@ TString HNL_RegionDefinitions::RunSignalRegionWWString(bool ApplyForSR,HNL_Lepto
       
       // Define cuts by era and channel
       struct CutValues {
-	double cut1, cut2, cut3, cut4;
-      };
-      
+	double cut1, cut2, cut3, cut4, cut5, cut6;};
+	
       std::map<std::string, std::map<int, CutValues>> sr2_cuts = {
-	{"2016preVFP", {
-	    {HNL_LeptonCore::Channel::MuMu, {2.0, 2.5, 1.5, 2.5}},
-	    {HNL_LeptonCore::Channel::EE,   {1.6, 2.4, 1.0, 2.0}},
-	    {HNL_LeptonCore::Channel::EMu,  {1.5, 2.5, 1.2, 1.7}}
+	{"Run2_PerFlavour", {
+	    {HNL_LeptonCore::Channel::MuMu, {2.2, 3.6, 4.4, 0.9, 1.4, 2.3}},
+	    {HNL_LeptonCore::Channel::EE,   {1.5, 2.4, 3.2, 0.7, 1.3, 2.5}},
+	    {HNL_LeptonCore::Channel::EMu,  {1.6, 2.1, 3.2, 0.7, 1.3, 2.5}}
 	  }},
-	{"2016postVFP", {
-	    {HNL_LeptonCore::Channel::MuMu, {2.0, 3.0, 1.7, 2.4}},
-	    {HNL_LeptonCore::Channel::EE,   {1.5, 2.0, 1.5, 2.5}},
-	    {HNL_LeptonCore::Channel::EMu,  {1.5, 2.5, 1.1, 1.6}}
-	  }},
-	{"2017", {
-	    {HNL_LeptonCore::Channel::MuMu, {1.5, 2.5, 1.5, 2.5}},
-	    {HNL_LeptonCore::Channel::EE,   {1.5, 2.5, 1.0, 2.0}},
-	    {HNL_LeptonCore::Channel::EMu,  {1.5, 2.5, 1.0, 2.0}}
-	  }},
-	{"2018", {
-	    {HNL_LeptonCore::Channel::MuMu, {1.5, 2.5, 1.0, 2.0}},
-	    {HNL_LeptonCore::Channel::EE,   {1.5, 2.5, 1.0, 2.0}},
-	    {HNL_LeptonCore::Channel::EMu,  {1.5, 2.5, 1.0, 2.0}}
-	  }}
+	{"Run2_Global", {
+            {HNL_LeptonCore::Channel::MuMu, {1.6, 2.2, 3.2, 0.9, 1.4, 2.4}},
+            {HNL_LeptonCore::Channel::EE,   {1.6, 2.2, 3.2, 0.9, 1.4, 2.4}},
+            {HNL_LeptonCore::Channel::EMu,  {1.6, 2.2, 3.2, 0.9, 1.4, 2.4}}
+          }},
+
       };
+
       
       // Default cuts
-      CutValues cuts{0.0, 0.0, 0.0, 0.0};
+      CutValues cuts{0.0, 0.0, 0.0, 0.0, 0.0,0.0};
 
       // Convert TString -> std::string for the map key
-      const std::string era = DataEra.Data();
+      //const std::string era = DataEra.Data();
       // Use your real channel variable name here (assumed 'channel')
       const HNL_LeptonCore::Channel chan = channel;
       
       // Safe lookup without creating entries
-      if (auto eraIt = sr2_cuts.find(era); eraIt != sr2_cuts.end()) {
+
+      std::string key = HasFlag("SR2_PerFlavour") ? "Run2_PerFlavour" : "Run2_Global";
+      if (auto eraIt = sr2_cuts.find(key); eraIt != sr2_cuts.end()) {
 	if (auto chIt = eraIt->second.find(chan); chIt != eraIt->second.end()) {
 	  cuts = chIt->second;
+	} else {
+	  throw std::runtime_error("Channel not found in sr2_cuts");
 	}
+      } else {
+	throw std::runtime_error("Key not found in sr2_cuts");
       }
       
-      if(HasFlag("SingularBinning")) cuts  ={2.0, 2.5, 1.5, 2.5};
-      if(HasFlag("SR_FlavDep")){
-	if(chan == HNL_LeptonCore::Channel::MuMu) cuts = {2.0, 2.5, 1.5, 2.5};
-	if(chan == HNL_LeptonCore::Channel::EE)  cuts =   {1.6, 2.4, 1.0, 2.0};
-	if(chan == HNL_LeptonCore::Channel::EMu) cuts =   {1.5, 2.5, 1.2, 1.7};
-      }
-      if(HasFlag("SR2_BinRefinement")){
-	sr2_cuts = {
-        {"2016preVFP", {
-            {HNL_LeptonCore::Channel::MuMu, {2.0, 2.5, 1.5, 2.5}},
-            {HNL_LeptonCore::Channel::EE,   {1.5, 2.5, 1.0, 2.0}},
-            {HNL_LeptonCore::Channel::EMu,  {1.5, 2.5, 1.0, 2.0}}
-          }},
-        {"2016postVFP", {
-            {HNL_LeptonCore::Channel::MuMu, {2.0, 2.5, 1.5, 2.5}},
-            {HNL_LeptonCore::Channel::EE,   {1.5, 2.5, 1.0, 2.0}},
-            {HNL_LeptonCore::Channel::EMu,  {1.5, 2.5, 1.0, 2.0}}
-          }},
-        {"2017", {
-            {HNL_LeptonCore::Channel::MuMu, {1.5, 2.5, 1.0, 2.0}},
-            {HNL_LeptonCore::Channel::EE,   {1.5, 2.5, 1.0, 2.0}},
-            {HNL_LeptonCore::Channel::EMu,  {1.5, 2.5, 1.0, 2.0}}
-          }},
-        {"2018", {
-            {HNL_LeptonCore::Channel::MuMu, {1.5, 2.5, 1.0, 2.0}},
-            {HNL_LeptonCore::Channel::EE,   {1.5, 2.5, 1.0, 2.0}},
-            {HNL_LeptonCore::Channel::EMu,  {1.5, 2.5, 1.0, 2.0}}
-          }}
-	};
-
-      }
       
       // Bin selection (preserves your original logic)
       if (ll_dphi > 2.0) {
-	if (HTOverPT < cuts.cut3) return RegionTag + "_HTLT_Bin1";
-	if (HTOverPT < cuts.cut4) return RegionTag + "_HTLT_Bin2";
-	return RegionTag + "_HTLT_Bin3";
+	if (HTOverPT < cuts.cut4) return RegionTag + "_HTLT_Bin1";
+	if (HTOverPT < cuts.cut5) return RegionTag + "_HTLT_Bin2";
+	if (HTOverPT < cuts.cut6) return RegionTag + "_HTLT_Bin3";
+	return RegionTag + "_HTLT_Bin4";
       } else {
-	if (HTOverPT < cuts.cut1) return RegionTag + "_HTLT_Bin4";
-	if (HTOverPT < cuts.cut2) return RegionTag + "_HTLT_Bin5";
-	return RegionTag + "_HTLT_Bin6";
+	if (HTOverPT < cuts.cut1) return RegionTag + "_HTLT_Bin5";
+	if (HTOverPT < cuts.cut2) return RegionTag + "_HTLT_Bin6";
+	if (HTOverPT < cuts.cut3) return RegionTag + "_HTLT_Bin7";
+	return RegionTag + "_HTLT_Bin8";
       }
       
       
@@ -1385,6 +1356,7 @@ TString HNL_RegionDefinitions::RunSignalRegionAK4String(bool ApplyForSR,HNL_Lept
       }
     }
 
+    if(ApplyForSR)        Fill_RegionPlots(param,"FullPass"+RegionTag ,  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);
 
     //// These cuts are temp HL will check
     return GetSR3StringBin(RegionTag,GetChannelString(channel), true, met2_st,LT,ll_dphi);
@@ -1441,7 +1413,11 @@ TString HNL_RegionDefinitions::RunSignalRegionAK4String(bool ApplyForSR,HNL_Lept
       Fill_RegionPlots(param,"Pass"+RegionTag +"_DiJet",  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);
     }
   }
-
+  
+  if(!runSyst&&param.runPlotter){
+    if(ApplyForSR)        Fill_RegionPlots(param,"FullPass"+RegionTag ,  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);
+  }
+  
   TString LimitBin = GetSR3StringBin(RegionTag,GetChannelString(channel), false, met2_st,LT,ll_dphi);
 
   return LimitBin;

@@ -2,8 +2,14 @@
 # EVALUATORs
 # =========================================================
 
-from default_config import ERAS, FLAVOURS, FAKE_FLOOR, MIN_SIGNAL_FRAC,NO_CUMSUM,TEST_COMPARE
-from helper import fix_fake_and_bkg,compute_bin_Z
+from default_config import ERAS, FLAVOURS, FAKE_FLOOR, MIN_SIGNAL_FRAC,NO_CUMSUM,TEST_COMPARE,MIN_WIDTH
+from helper import fix_fake_and_bkg,compute_bin_Z,compute_run2_fom_for_edges,debug_check_path,compute_bin_Z_with_unc
+
+
+# Default fallback values (will be overridden at runtime)
+Bin_NBKG_REQ = 1.0
+Bin_NBKG_REQ_Tight = 0.5
+Bin_BKG_RelUnc = 0.3
 
 import numpy as np
 import math
@@ -13,64 +19,42 @@ from tqdm import tqdm
 
 DEBUG = False
 
+def set_stat_config(cfg):
+    global Bin_NBKG_REQ, Bin_NBKG_REQ_Tight, Bin_BKG_RelUnc
+
+    Bin_NBKG_REQ = getattr(cfg, "Bin_NBKG_REQ", Bin_NBKG_REQ)
+    Bin_NBKG_REQ_Tight = getattr(cfg, "Bin_NBKG_REQ_Tight", Bin_NBKG_REQ_Tight)
+    Bin_BKG_RelUnc = getattr(cfg, "Bin_BKG_RelUnc", Bin_BKG_RelUnc)
+
+    print("\n[STAT CONFIG]")
+    print(f"  Bin_NBKG_REQ       = {Bin_NBKG_REQ}")
+    print(f"  Bin_NBKG_REQ_Tight = {Bin_NBKG_REQ_Tight}")
+    print(f"  Bin_BKG_RelUnc     = {Bin_BKG_RelUnc}")
+    
 def pass_stat(B):
-    return (B >= 1.0)
+    return (B >= Bin_NBKG_REQ)
 
 def pass_stat_and_err(B, rel):
-    return (B >= 1.0) or (B >= 0.5 and rel < 0.3)
-
-#### compute_bin_Z in helper.py
-
-def compute_bin_Z_with_unc(S, B, E,run_z_no_unc=True):
-
-    if run_z_no_unc:
-        return compute_bin_Z(S,B)
-    
-    if S <= 0 or B <= 0:
-        return 0.0
-
-    sigma2 = E
-
-    if sigma2 <= 0:
-        return compute_bin_Z(S, B)
-
-    term1 = (S + B) * math.log((S + B)*(B + sigma2) / (B*B + (S + B)*sigma2))
-    term2 = (B*B / sigma2) * math.log(1 + sigma2*S / (B*(B + sigma2)))
-
-    Z2 = 2 * (term1 - term2)
-
-    return math.sqrt(Z2) if Z2 > 0 else 0.0
+    return (B >= Bin_NBKG_REQ) or (B >= Bin_NBKG_REQ_Tight and rel < Bin_BKG_RelUnc)
 
 #=============================================
 ### Scan functions rundp_*
 #=============================================
 
-def run_dp_on_arrays_mass(
+
+def run_dp_on_arrays_mass_with_weight(
         S_mass_era, B, E, F,
         bin_lo,
         n_bins=6,
         use_fake_corr=True,
         flav=None,
         run_z_no_unc=True,
+        mass_weights=None   
 ):
 
-    if NO_CUMSUM:
-        print("[DEBUG] Using SLOW DP (no cumsum)")
-        return run_dp_on_arrays_mass_slow(
-            S_mass_era,
-            B,
-            E,
-            F,
-            bin_lo,
-            n_bins=n_bins,
-            use_fake_corr=use_fake_corr,
-            flav=flav,
-            run_z_no_unc=run_z_no_unc,
-        )
-    else:
-        print("[DEBUG] Using FAST DP (cumsum)")
-
     N = len(bin_lo)
+    if len(bin_lo) < 2:
+        raise ValueError("bin_lo must have at least 2 entries")
     bin_hi = np.append(bin_lo[1:], bin_lo[-1] + (bin_lo[1] - bin_lo[0]))
 
     masses = list(S_mass_era.keys())
@@ -122,21 +106,50 @@ def run_dp_on_arrays_mass(
                 # Skip invalid DP state early
                 if dp[j-1, p] <= NEG/2:
                     continue
-
+                
                 # Width cut (cheap, do early)
-                if (bin_hi[i-1] - bin_lo[p]) < 25:
+                if (bin_hi[i-1] - bin_lo[p]) < MIN_WIDTH:
                     continue
 
                 Z_bin2 = 0.0
 
-                # ==================================
-                # LOOP OVER MASSES
+                
+                B_int = 0.0
+                E_int = 0.0
+                # ----------------------------------                                                             
+                # LOOP OVER ERAS                                                                                 
+                # ----------------------------------                                                             
+                for era in eras:
+                    B_e = B_cum[era][i] - B_cum[era][p]
+                    F_e = F_cum[era][i] - F_cum[era][p]
+                    E_e = E_cum[era][i] - E_cum[era][p]
+                    
+                    if use_fake_corr:
+                        F_e, B_e = fix_fake_and_bkg(
+                            F_e, B_e, FAKE_FLOOR,
+                            flavour=flav, era=era
+                        )
+                        
+                    B_int += B_e
+                    E_int += E_e
+
+                # ----------------------------------                                                             
+                # STAT CHECK                                                                                     
+                # ----------------------------------                                                             
+                if B_int <= 1e-6:
+                    continue
+                                
+                rel = math.sqrt(E_int) / B_int
+                
+                if not pass_stat_and_err(B_int, rel):
+                    continue
+                    
+                # ==================================                                                        
+                # LOOP OVER MASSES                                                                        
                 # ==================================
                 for mass in masses:
-
                     S_int = 0.0
-                    B_int = 0.0
-                    E_int = 0.0
+                    Z2_mass = 0
 
                     # ----------------------------------
                     # LOOP OVER ERAS
@@ -144,30 +157,206 @@ def run_dp_on_arrays_mass(
                     for era in eras:
 
                         S_e = S_cum[mass][era][i] - S_cum[mass][era][p]
-                        B_e = B_cum[era][i] - B_cum[era][p]
-                        F_e = F_cum[era][i] - F_cum[era][p]
-                        E_e = E_cum[era][i] - E_cum[era][p]
-
-                        if use_fake_corr:
-                            F_e, B_e = fix_fake_and_bkg(
-                                F_e, B_e, FAKE_FLOOR,
-                                flavour=flav, era=era
-                            )
-
                         S_int += S_e
-                        B_int += B_e
-                        E_int += E_e
+                        
 
                     # ----------------------------------
-                    # STAT CHECK
+                    # Z per mass
                     # ----------------------------------
-                    if B_int <= 1e-6:
-                        continue
+                    if S_int > 0 and B_int > 0:
+                        Z = compute_bin_Z_with_unc(
+                            S_int, B_int, E_int,
+                            run_z_no_unc=run_z_no_unc
+                        )
+                        w= mass_weights.get(mass)
+                        Z2 = Z * Z *w*w
+                        Z_bin2 += Z2
 
-                    rel = math.sqrt(E_int) / B_int
+                # Skip empty bins
+                if Z_bin2 <= 0:
+                    continue
 
-                    if not pass_stat_and_err(B_int, rel):
-                        continue
+                val = dp[j-1, p] + Z_bin2
+
+                if val > best:
+                    best = val
+                    best_p = p
+
+            dp[j, i] = best
+            prv[j, i] = best_p
+
+    # =========================================
+    # BACKTRACK
+    # =========================================
+    if dp[n_bins, N] <= NEG/2:
+        return None, None
+
+    
+    idx = []
+    j, i = n_bins, N
+
+    while j > 0:
+        p = prv[j, i]
+        if p < 0:
+            return None, None
+        idx.append(p)
+        i = p
+        j -= 1
+
+    idx = list(reversed(idx))
+
+    edges = [bin_lo[0]]
+    for k in idx:
+        if k != 0:
+            edges.append(bin_lo[k])
+    edges.append(bin_hi[-1])
+
+    best_Z2 = dp[n_bins, N]
+    best_Z  = math.sqrt(best_Z2)
+    
+    print("\n======================================")
+    print("[DP Weighted RESULT]")
+    print(f"Edges : {edges}")
+    print(f"Best Z^2 = {best_Z2:.6f}")
+    print(f"Best Z   = {best_Z:.6f}")
+    print("======================================\n")
+    return edges, best_Z
+
+
+
+
+
+def run_dp_on_arrays_mass(
+        S_mass_era, B, E, F,
+        bin_lo,
+        n_bins=6,
+        use_fake_corr=True,
+        flav=None,
+        run_z_no_unc=True,
+):
+
+    if NO_CUMSUM:
+        print("[DEBUG] Using SLOW DP (no cumsum)")
+        return run_dp_on_arrays_mass_slow(
+            S_mass_era,
+            B,
+            E,
+            F,
+            bin_lo,
+            n_bins=n_bins,
+            use_fake_corr=use_fake_corr,
+            flav=flav,
+            run_z_no_unc=run_z_no_unc,
+        )
+    else:
+        print("[DEBUG] Using FAST DP (cumsum)")
+
+        
+    N = len(bin_lo)
+    if len(bin_lo) < 2:
+        raise ValueError("bin_lo must have at least 2 entries")
+    bin_hi = np.append(bin_lo[1:], bin_lo[-1] + (bin_lo[1] - bin_lo[0]))
+
+    masses = list(S_mass_era.keys())
+    eras = list(B.keys())
+
+    # =========================================
+    # BUILD CUMSUM ARRAYS
+    # =========================================
+    S_cum = {}
+    B_cum = {}
+    E_cum = {}
+    F_cum = {}
+
+    for mass in masses:
+        S_cum[mass] = {}
+        for era in eras:
+            arr = S_mass_era[mass][era]
+            tmp = np.zeros(N+1)
+            tmp[1:] = np.cumsum(arr)
+            S_cum[mass][era] = tmp
+
+    for era in eras:
+        for src, dst in [(B, B_cum), (E, E_cum), (F, F_cum)]:
+            arr = src[era]
+            tmp = np.zeros(N+1)
+            tmp[1:] = np.cumsum(arr)
+            dst[era] = tmp
+
+    # =========================================
+    # DP ARRAYS
+    # =========================================
+    NEG = -1e300
+    dp  = np.full((n_bins+1, N+1), NEG)
+    prv = np.full((n_bins+1, N+1), -1)
+
+    dp[0, 0] = 0.0
+
+    # =========================================
+    # DP LOOP
+    # =========================================
+    for j in range(1, n_bins+1):
+        for i in range(1, N+1):
+
+            best = NEG
+            best_p = -1
+
+            for p in range(i):
+
+                # Skip invalid DP state early
+                if dp[j-1, p] <= NEG/2:
+                    continue
+                
+                # Width cut (cheap, do early)
+                if (bin_hi[i-1] - bin_lo[p]) < MIN_WIDTH:
+                    continue
+
+                Z_bin2 = 0.0
+
+                
+                B_int = 0.0
+                E_int = 0.0
+                # ----------------------------------                                                             
+                # LOOP OVER ERAS                                                                                 
+                # ----------------------------------                                                             
+                for era in eras:
+                    B_e = B_cum[era][i] - B_cum[era][p]
+                    F_e = F_cum[era][i] - F_cum[era][p]
+                    E_e = E_cum[era][i] - E_cum[era][p]
+                    
+                    if use_fake_corr:
+                        F_e, B_e = fix_fake_and_bkg(
+                            F_e, B_e, FAKE_FLOOR,
+                            flavour=flav, era=era
+                        )
+                        
+                    B_int += B_e
+                    E_int += E_e
+
+                # ----------------------------------                                                             
+                # STAT CHECK                                                                                     
+                # ----------------------------------                                                             
+                if B_int <= 1e-6:
+                    continue
+                                
+                rel = math.sqrt(E_int) / B_int
+                
+                if not pass_stat_and_err(B_int, rel):
+                    continue
+                    
+                # ==================================                                                        
+                # LOOP OVER MASSES                                                                        
+                # ==================================
+                for mass in masses:
+                    S_int = 0.0
+                    # ----------------------------------
+                    # LOOP OVER ERAS
+                    # ----------------------------------
+                    for era in eras:
+
+                        S_e = S_cum[mass][era][i] - S_cum[mass][era][p]
+                        S_int += S_e
+                        
 
                     # ----------------------------------
                     # Z per mass
@@ -196,13 +385,16 @@ def run_dp_on_arrays_mass(
     # BACKTRACK
     # =========================================
     if dp[n_bins, N] <= NEG/2:
-        return None
+        return None, None
 
+    
     idx = []
     j, i = n_bins, N
 
     while j > 0:
         p = prv[j, i]
+        if p < 0:
+            return None, None
         idx.append(p)
         i = p
         j -= 1
@@ -215,7 +407,16 @@ def run_dp_on_arrays_mass(
             edges.append(bin_lo[k])
     edges.append(bin_hi[-1])
 
-    return edges
+    best_Z2 = dp[n_bins, N]
+    best_Z  = math.sqrt(best_Z2)
+
+    print("\n======================================")
+    print("[DP RESULT]")
+    print(f"Edges : {edges}")
+    print(f"Best Z^2 = {best_Z2:.6f}")
+    print(f"Best Z   = {best_Z:.6f}")
+    print("======================================\n")
+    return edges, best_Z
 
 
 def run_dp_on_arrays_mass_slow(
@@ -228,6 +429,8 @@ def run_dp_on_arrays_mass_slow(
 ):
 
     N = len(bin_lo)
+    if len(bin_lo) < 2:
+        raise ValueError("bin_lo must have at least 2 entries")
     bin_hi = np.append(bin_lo[1:], bin_lo[-1] + (bin_lo[1] - bin_lo[0]))
 
     masses = list(S_mass_era.keys())
@@ -291,13 +494,15 @@ def run_dp_on_arrays_mass_slow(
             prv[j, i] = best_p
 
     if dp[n_bins, N] <= NEG/2:
-        return None
+        return None, None
 
     idx = []
     j, i = n_bins, N
 
     while j > 0:
         p = prv[j, i]
+        if p < 0:
+            return None, None
         idx.append(p)
         i = p
         j -= 1
@@ -310,7 +515,11 @@ def run_dp_on_arrays_mass_slow(
             edges.append(bin_lo[k])
     edges.append(bin_hi[-1])
 
-    return edges
+
+    best_Z2 = dp[n_bins, N]
+    best_Z  = math.sqrt(best_Z2)
+
+    return edges, best_Z
 
 def run_dp_on_arrays_with_flav_stat(
         bin_lo,
@@ -333,6 +542,10 @@ def run_dp_on_arrays_with_flav_stat(
                                                      F_flav_era=F_flav_era,
 	                                             run_z_no_unc=run_z_no_unc
                                                      )
+
+    else:
+        print("[DEBUG] Using FAST DP (cumsum)")
+        
     
     nbins = len(bin_lo)
 
@@ -468,7 +681,7 @@ def run_dp_on_arrays_with_flav_stat(
             best_k = k
 
     if best_k == -1:
-        return None
+        return None, None
 
     # =====================================================
     # BACKTRACK
@@ -489,6 +702,8 @@ def run_dp_on_arrays_with_flav_stat(
     # =====================================================
     # BUILD EDGES
     # =====================================================
+    if len(bin_lo) < 2:
+        raise ValueError("bin_lo must have at least 2 entries")
     bin_hi = np.append(bin_lo[1:], bin_lo[-1] + (bin_lo[1] - bin_lo[0]))
 
     edges = [bin_lo[0]]
@@ -498,7 +713,13 @@ def run_dp_on_arrays_with_flav_stat(
 
     edges.append(bin_hi[-1])
 
-    return edges
+    # =====================================================
+    # FINAL Z
+    # =====================================================
+    best_Z2 = dp[nbins][best_k]
+    best_Z  = math.sqrt(best_Z2)
+
+    return edges, best_Z
 
 
 
@@ -627,7 +848,7 @@ def run_dp_on_arrays_with_flav_stat_slow(
             best_k = k
 
     if best_k == -1:
-        return None
+        return None, None
 
     # =========================
     # BACKTRACK
@@ -648,6 +869,8 @@ def run_dp_on_arrays_with_flav_stat_slow(
     # =========================
     # BUILD EDGES
     # =========================
+    if len(bin_lo) < 2:
+        raise ValueError("bin_lo must have at least 2 entries")
     bin_hi = np.append(bin_lo[1:], bin_lo[-1] + (bin_lo[1] - bin_lo[0]))
 
     edges = [bin_lo[0]]
@@ -657,7 +880,10 @@ def run_dp_on_arrays_with_flav_stat_slow(
 
     edges.append(bin_hi[-1])
 
-    return edges
+    best_Z2 = dp[nbins][best_k]
+    best_Z  = math.sqrt(best_Z2)
+
+    return edges, best_Z
 
 
 def run_dp_on_arrays(
@@ -684,6 +910,8 @@ def run_dp_on_arrays(
             use_low_edge_cut=use_low_edge_cut,
             run_z_no_unc=run_z_no_unc,
         )
+    else:
+        print("[DEBUG] Using FAST DP (cumsum)")
 
         
     N = len(bin_lo)
@@ -691,6 +919,8 @@ def run_dp_on_arrays(
     # ----------------------------------
     # Build bin_hi
     # ----------------------------------
+    if len(bin_lo) < 2:
+        raise ValueError("bin_lo must have at least 2 entries")
     bin_hi = np.append(bin_lo[1:], bin_lo[-1] + (bin_lo[1] - bin_lo[0]))
 
     # =====================================================
@@ -720,6 +950,16 @@ def run_dp_on_arrays(
             if S_total > 0 and (running / S_total) > MIN_SIGNAL_FRAC:
                 min_edge_idx = i
                 break
+        if bin_lo[min_edge_idx] > 500:
+            print(f"[INFO] Capping min edge from {bin_lo[min_edge_idx]:.1f} -> 500")
+            
+            for i in range(len(bin_lo)):
+                if bin_lo[i] >= 500:
+                    min_edge_idx = i
+                    break
+
+    else:
+        min_edge_idx = 0
 
     # ----------------------------------
     # HIGH-EDGE STAT CUT (PER ERA FIX)
@@ -755,6 +995,29 @@ def run_dp_on_arrays(
         if pass_stat_and_err(B_tail, rel_tail):
             max_edge_idx = i
             break
+    upper_edge = bin_hi[-1]
+    max_edge_val = bin_hi[-1] if max_edge_idx == N else bin_lo[max_edge_idx]
+
+    print(
+        f"[SCAN WINDOW] "
+        f"[{bin_lo[0]:.1f}, {upper_edge:.1f}] --> "
+        f"[{bin_lo[min_edge_idx]:.1f}, {max_edge_val:.1f}]"
+    )
+
+    print(
+        f"[SCAN REDUCTION] "
+        f"{len(bin_lo)} bins -> {max_edge_idx - min_edge_idx} bins"
+    )
+    
+    if DEBUG:
+        print("\n[DEBUG WINDOW DETAILS]")
+        print(f"min_edge_idx = {min_edge_idx} (edge = {bin_lo[min_edge_idx]:.1f})")
+        print(f"max_edge_idx = {max_edge_idx} (edge = {bin_lo[max_edge_idx]:.1f})")
+        
+        print("\n[TAIL BACKGROUND CHECK]")
+        for i in range(len(bin_lo)):
+            B_tail = sum(B_cum[era][-1] - B_cum[era][i] for era in B_cum)
+            print(f"edge {bin_lo[i]:.1f} -> tail B = {B_tail:.4f}")
 
     # ----------------------------------
     # DP arrays
@@ -806,10 +1069,10 @@ def run_dp_on_arrays(
                 # ----------------------------------
                 # Width cut
                 # ----------------------------------
-                if (bin_hi[i-1] - bin_lo[p]) < 25:
+                if (bin_hi[i-1] - bin_lo[p]) < MIN_WIDTH:
                     continue
 
-                rel = math.sqrt(E_int) / B_int
+                rel = math.sqrt(E_int) / B_int if B_int > 0 else 999.0
 
                 if not pass_stat_and_err(B_int, rel):
                     continue
@@ -823,7 +1086,7 @@ def run_dp_on_arrays(
                 # ----------------------------------
                 # HIGH EDGE
                 # ----------------------------------
-                if j == n_bins and p >= max_edge_idx:
+                if j == n_bins and p > max_edge_idx:
                     continue
 
                 # ----------------------------------
@@ -855,7 +1118,7 @@ def run_dp_on_arrays(
     # ----------------------------------
     if dp[n_bins, N] <= NEG/2:
         tqdm.write("[DP WARNING] No valid binning found")
-        return None
+        return None,None
 
     # ----------------------------------
     # Backtrack
@@ -866,7 +1129,7 @@ def run_dp_on_arrays(
     while j > 0:
         p = prv[j, i]
         if p < 0:
-            return None
+            return None, None
         idx.append(p)
         i = p
         j -= 1
@@ -884,7 +1147,16 @@ def run_dp_on_arrays(
 
     edges.append(bin_hi[-1])
 
-    return edges
+    best_Z2 = dp[n_bins, N]
+    best_Z  = math.sqrt(best_Z2)
+
+    #### TEST edge
+    #test_edges = [0.0, 1375.0, 1795.0, 5000.0]
+    
+    #debug_check_path(dp, prv, test_edges, bin_lo)
+    #debug_check_path(dp, prv, edges, bin_lo)
+    
+    return edges, best_Z
 
 def run_dp_on_arrays_slow(
         S, B, E, F,
@@ -901,6 +1173,8 @@ def run_dp_on_arrays_slow(
     # ----------------------------------
     # Build bin_hi
     # ----------------------------------
+    if len(bin_lo) < 2:
+        raise ValueError("bin_lo must have at least 2 entries")
     bin_hi = np.append(bin_lo[1:], bin_lo[-1] + (bin_lo[1] - bin_lo[0]))
 
     # ----------------------------------
@@ -1000,7 +1274,7 @@ def run_dp_on_arrays_slow(
                 # ----------------------------------
                 # Width cut
                 # ----------------------------------
-                if (bin_hi[i-1] - bin_lo[p]) < 25:
+                if (bin_hi[i-1] - bin_lo[p]) < MIN_WIDTH:
                     continue
 
                 rel = math.sqrt(E_int) / B_int
@@ -1017,7 +1291,7 @@ def run_dp_on_arrays_slow(
                 # ----------------------------------
                 # HIGH EDGE
                 # ----------------------------------
-                if j == n_bins and p >= max_edge_idx:
+                if j == n_bins and p > max_edge_idx:
                     continue
 
                 # ----------------------------------
@@ -1046,7 +1320,7 @@ def run_dp_on_arrays_slow(
     # ----------------------------------
     if dp[n_bins, N] <= NEG/2:
         tqdm.write("[DP WARNING] No valid binning found")
-        return None
+        return None,None
 
     # ----------------------------------
     # Backtrack
@@ -1057,7 +1331,7 @@ def run_dp_on_arrays_slow(
     while j > 0:
         p = prv[j, i]
         if p < 0:
-            return None
+            return None,None
         idx.append(p)
         i = p
         j -= 1
@@ -1075,7 +1349,10 @@ def run_dp_on_arrays_slow(
 
     edges.append(bin_hi[-1])
 
-    return edges
+    best_Z2 = dp[n_bins, N]
+    best_Z  = math.sqrt(best_Z2)
+    
+    return edges, best_Z
 
 
 
@@ -1121,17 +1398,36 @@ def evaluate_dp_per_flavour_per_mass_run2(data, n_bins=6, use_fake_corr=None,run
             B_per_era = {}
             E_per_era = {}
             F_per_era = {}
-
+            
             for era in ERAS:
                 S_per_era[era] = data["signal"][flav][mass][era]
                 B_per_era[era] = data["background"][flav][era]
                 E_per_era[era] = data["bkg_err2"][flav][era]
                 F_per_era[era] = data["fake"][flav][era]
+                
+            print("\n==============================")
+            print(f"[DEBUG] Signal yields for {flav}, mass={mass}")
+            print("==============================")
+            
+            total_run2 = 0.0
+            
+            for era in ERAS:
 
+                S_arr = data["signal"][flav][mass][era]
+                S_sum = S_arr.sum()
+                
+                print(f"{era:12s}: S_sum = {S_sum:.6e}")
+                
+                total_run2 += S_sum
+
+            print("----------------------------------")
+            print(f"Run2 total: S_sum = {total_run2:.6e}")
+            print("==================================\n")
+                
             # ----------------------------------
             # Run DP (PER-ERA CORRECT)
             # ----------------------------------
-            best_edges = run_dp_on_arrays(
+            best_edges, best_Z_dp = run_dp_on_arrays(
                 S_per_era,
                 B_per_era,
                 E_per_era,
@@ -1143,7 +1439,7 @@ def evaluate_dp_per_flavour_per_mass_run2(data, n_bins=6, use_fake_corr=None,run
                 run_z_no_unc=run_z_no_unc
             )
             if TEST_COMPARE:
-                edges_slow = run_dp_on_arrays_slow( S_per_era,
+                edges_slow, best_Z_dp = run_dp_on_arrays_slow( S_per_era,
                                                     B_per_era,
                                                     E_per_era,
                                                     F_per_era,
@@ -1167,7 +1463,7 @@ def evaluate_dp_per_flavour_per_mass_run2(data, n_bins=6, use_fake_corr=None,run
             if best_edges is None:
                 pbar.update(1)
                 continue
-
+            
             edges_run2 = best_edges
             edges_per_era = {era: best_edges for era in ERAS}
 
@@ -1269,7 +1565,12 @@ def evaluate_dp_per_flavour_per_mass_run2(data, n_bins=6, use_fake_corr=None,run
                     run2_Z2 += Z * Z
 
             run2_total = math.sqrt(run2_Z2)
-
+            print("--------------------------------------------------")
+            print(f"[DEBUG] DP Z (optimised) = {best_Z_dp:.6f}")
+            print(f"[DEBUG] Eval Run2 Z      = {run2_total:.6f}")
+            print(f"[DEBUG] Difference       = {run2_total - best_Z_dp:.6f}")
+            print("--------------------------------------------------")
+            
             ratio = run2_total / quad_total if quad_total > 0 else 0.0
 
             tqdm.write(
@@ -1296,11 +1597,273 @@ def evaluate_dp_per_flavour_per_mass_run2(data, n_bins=6, use_fake_corr=None,run
             pbar.update(1)
 
     pbar.close()
-
+    
     return results
 
 
 
+def evaluate_dp_per_flavour_global_mass_run2_weighted_refbins(
+        data, n_bins=6, use_fake_corr=None, run_z_no_unc=True):
+
+    print("\n==============================")
+    print(" GLOBAL DP BINNING (PER FLAVOUR, WEIGHTED)")
+    print("==============================")
+    print(" - Optimisation uses combined signal across all masses")
+    print(" - Masses weighted by reference Z (custom bins)")
+    print(" - One binning per flavour")
+    print("==============================\n")
+
+    if use_fake_corr is None:
+        raise ValueError("use_fake_corr must be provided from config")
+    if run_z_no_unc is None:
+        raise ValueError("run_z_no_unc must be provided from config")
+
+    # Reference binning
+    REF_EDGES = [0.0, 400.0, 600.0, 800.0,1200., 5000.0]
+
+    results = {flav: [] for flav in FLAVOURS}
+    bin_lo = data["edges"][:-1]
+
+    for flav in FLAVOURS:
+
+        print("\n[GLOBAL DP] Flavour = {}".format(flav))
+
+        masses = list(data["signal_combined_mass"][flav].keys())
+
+        # ----------------------------------
+        # Compute mass weights
+        # ----------------------------------
+        mass_weights = {}
+
+        print("\n[INFO] Computing reference Z weights")
+
+        for mass in masses:
+
+            Z_ref = compute_reference_Z_per_mass(
+                data, flav, mass,
+                REF_EDGES,
+                use_fake_corr,
+                run_z_no_unc
+            )
+
+            if Z_ref > 1e-6:
+                mass_weights[mass] = 1.0 / Z_ref
+            else:
+                mass_weights[mass] = 1.0
+
+                
+            print("  Mass {} : Z_ref={:.4f} -> weight={:.4f}".format(
+                mass, Z_ref, mass_weights[mass]))
+
+            # Normalize weights
+        #norm = sum(mass_weights.values())
+        #if norm > 0:
+        #    for m in mass_weights:
+        #        mass_weights[m] /= norm
+
+
+        #print("\n[INFO] Normalized mass weights")
+        #for m in mass_weights:
+        #   print("  Mass {} : weight_norm={:.4f}".format(m, mass_weights[m]))
+            
+        # ----------------------------------
+        # Build arrays
+        # ----------------------------------
+        S_mass_flav_era = {}
+        B_flav_era = {}
+        E_flav_era = {}
+        F_flav_era = {}
+
+        for mass in masses:
+            S_mass_flav_era[mass] = {}
+            for era in ERAS:
+                S_mass_flav_era[mass][era] = data["signal"][flav][mass][era]
+
+            print("\n==============================")
+            print(f"[DEBUG] GLOB Signal yields for {flav}, mass={mass}")
+            print("==============================")
+
+            total_run2 = 0.0
+
+            for era in ERAS:
+
+                S_arr = data["signal"][flav][mass][era]
+                S_sum = S_arr.sum()
+
+                print(f"{era:12s}: S_sum = {S_sum:.6e}")
+
+                total_run2 += S_sum
+
+            print("----------------------------------")
+            print(f"Run2 total: S_sum = {total_run2:.6e}")
+            print("==================================\n")
+
+                
+        for era in ERAS:
+            B_flav_era[era] = data["background"][flav][era]
+            E_flav_era[era] = data["bkg_err2"][flav][era]
+            F_flav_era[era] = data["fake"][flav][era]
+
+        # ----------------------------------
+        # Run DP with weights
+        # ----------------------------------
+        best_edges, best_Z_dp = run_dp_on_arrays_mass_with_weight(
+            S_mass_flav_era,
+            B_flav_era,
+            E_flav_era,
+            F_flav_era,
+            bin_lo,
+            n_bins=n_bins,
+            use_fake_corr=use_fake_corr,
+            flav=flav,
+            run_z_no_unc=run_z_no_unc,
+            mass_weights=mass_weights
+        )
+
+        if best_edges is None:
+            print("[WARNING] No binning found for {}".format(flav))
+            continue
+
+        print("[GLOBAL BINNING] {}: {}".format(flav, best_edges))
+
+        # ----------------------------------
+        # Evaluate per mass
+        # ----------------------------------
+        for mass in masses:
+
+            print("\n[Mass] {} (using global binning)".format(mass))
+
+            edges_run2 = best_edges
+            edges_per_era = {era: best_edges for era in ERAS}
+
+            quad_Z2 = 0.0
+            bin_stats_per_era = {era: [] for era in ERAS}
+            bin_stats_run2 = []
+
+            # ---- QUAD
+            for era in ERAS:
+
+                S_arr = data["signal"][flav][mass][era]
+                B_arr = data["background"][flav][era]
+                F_arr = data["fake"][flav][era]
+                E_arr = data["bkg_err2"][flav][era]
+
+                for i in range(len(best_edges)-1):
+
+                    lo = best_edges[i]
+                    hi = best_edges[i+1]
+
+                    if i == len(best_edges)-2:
+                        mask = (bin_lo >= lo) & (bin_lo <= hi)
+                    else:
+                        mask = (bin_lo >= lo) & (bin_lo < hi)
+
+                    S = S_arr[mask].sum()
+                    B = B_arr[mask].sum()
+                    F = F_arr[mask].sum()
+                    E = E_arr[mask].sum()
+
+                    if use_fake_corr:
+                        F, B = fix_fake_and_bkg(
+                            F, B, FAKE_FLOOR,
+                            flavour=flav, era=era
+                        )
+
+                    bin_stats_per_era[era].append({
+                        "S": S,
+                        "B": B,
+                        "E": E
+                    })
+
+                    if S > 0 and B > 0:
+                        Z = compute_bin_Z_with_unc(
+                            S, B, E,
+                            run_z_no_unc=run_z_no_unc
+                        )
+                        quad_Z2 += Z * Z
+
+            quad_total = math.sqrt(quad_Z2)
+
+            # ---- Run2
+            run2_Z2 = 0.0
+
+            for i in range(len(best_edges)-1):
+
+                lo = best_edges[i]
+                hi = best_edges[i+1]
+
+                if i == len(best_edges)-2:
+                    mask = (bin_lo >= lo) & (bin_lo <= hi)
+                else:
+                    mask = (bin_lo >= lo) & (bin_lo < hi)
+
+                S_tot = 0.0
+                B_tot = 0.0
+                E_tot = 0.0
+
+                for era in ERAS:
+
+                    S = data["signal"][flav][mass][era][mask].sum()
+                    B = data["background"][flav][era][mask].sum()
+                    F = data["fake"][flav][era][mask].sum()
+                    E = data["bkg_err2"][flav][era][mask].sum()
+
+                    if use_fake_corr:
+                        F, B = fix_fake_and_bkg(
+                            F, B, FAKE_FLOOR,
+                            flavour=flav, era=era
+                        )
+
+                    S_tot += S
+                    B_tot += B
+                    E_tot += E
+
+                bin_stats_run2.append({
+                    "S": S_tot,
+                    "B": B_tot,
+                    "E": E_tot
+                })
+
+                if S_tot > 0 and B_tot > 0:
+                    Z = compute_bin_Z_with_unc(
+                        S_tot, B_tot, E_tot,
+                        run_z_no_unc=run_z_no_unc
+                    )
+                    run2_Z2 += Z * Z
+
+            run2_total = math.sqrt(run2_Z2)
+
+            print("--------------------------------------------------")
+            print(f"[DEBUG] DP ZW (optimised) = {best_Z_dp:.6f}")
+            print(f"[DEBUG] Eval Run2 Z      = {run2_total:.6f}")
+            print(f"[DEBUG] Difference       = {run2_total - best_Z_dp:.6f}")
+            print("--------------------------------------------------")
+
+
+            
+            ratio = run2_total / quad_total if quad_total > 0 else 0.0
+
+            print("[SUMMARY] QUAD={:.4f} | Run2={:.4f}".format(
+                quad_total, run2_total))
+
+            results[flav].append({
+                "flav": flav,
+                "mass": mass,
+                "nbins": len(best_edges) - 1,
+                "quad": quad_total,
+                "run2": run2_total,
+                "ratio": ratio,
+                "binning": {
+                    "Run2": edges_run2,
+                    "per_era": edges_per_era
+                },
+                "bin_stats": {
+                    "Run2": bin_stats_run2,
+                    "per_era": bin_stats_per_era
+                }
+            })
+
+    return results
 
 def evaluate_dp_per_flavour_global_mass_run2(data, n_bins=6, use_fake_corr=None,run_z_no_unc=True):
 
@@ -1350,7 +1913,7 @@ def evaluate_dp_per_flavour_global_mass_run2(data, n_bins=6, use_fake_corr=None,
         # ==========================================
         # RUN DP (NEW MASS-AWARE VERSION)
         # ==========================================
-        best_edges = run_dp_on_arrays_mass(
+        best_edges, best_Z_dp = run_dp_on_arrays_mass(
             S_mass_flav_era,
             B_flav_era,
             E_flav_era,
@@ -1474,7 +2037,12 @@ def evaluate_dp_per_flavour_global_mass_run2(data, n_bins=6, use_fake_corr=None,
                     run2_Z2 += Z * Z
 
             run2_total = math.sqrt(run2_Z2)
-
+            print("--------------------------------------------------")
+            print(f"[DEBUG] DP Z (optimised) = {best_Z_dp:.6f}")
+            print(f"[DEBUG] Eval Run2 Z      = {run2_total:.6f}")
+            print(f"[DEBUG] Difference       = {run2_total - best_Z_dp:.6f}")
+            print("--------------------------------------------------")
+            
             ratio = run2_total / quad_total if quad_total > 0 else 0.0
 
             print(f"[SUMMARY] QUAD={quad_total:.4f} | Run2={run2_total:.4f}")
@@ -1499,8 +2067,51 @@ def evaluate_dp_per_flavour_global_mass_run2(data, n_bins=6, use_fake_corr=None,
     return results
 
 
+def compute_reference_Z_per_mass(data, flav, mass, ref_edges, use_fake_corr, run_z_no_unc):
 
-def evaluate_dp_flavour_per_mass_combined_stat_split_run2(data, n_bins=6, use_fake_corr=None,run_z_no_unc=True):
+    bin_lo = data["edges"][:-1]
+
+    Z2 = 0.0
+
+    for i in range(len(ref_edges) - 1):
+
+        lo = ref_edges[i]
+        hi = ref_edges[i+1]
+
+        if i == len(ref_edges) - 2:
+            mask = (bin_lo >= lo) & (bin_lo <= hi)
+        else:
+            mask = (bin_lo >= lo) & (bin_lo < hi)
+
+        S_tot = 0.0
+        B_tot = 0.0
+        E_tot = 0.0
+
+        for era in ERAS:
+
+            S = data["signal"][flav][mass][era][mask].sum()
+            B = data["background"][flav][era][mask].sum()
+            F = data["fake"][flav][era][mask].sum()
+            E = data["bkg_err2"][flav][era][mask].sum()
+
+            if use_fake_corr:
+                F, B = fix_fake_and_bkg(F, B, FAKE_FLOOR,
+                                        flavour=flav, era=era)
+
+            S_tot += S
+            B_tot += B
+            E_tot += E
+
+        if S_tot > 0 and B_tot > 0:
+            Z = compute_bin_Z_with_unc(S_tot, B_tot, E_tot,
+                                      run_z_no_unc=run_z_no_unc)
+            Z2 += Z * Z
+
+    return math.sqrt(Z2)
+
+
+def evaluate_dp_flavour_per_mass_combined_stat_split_run2(
+        data, n_bins=6, use_fake_corr=None, run_z_no_unc=True):
 
     print("\n==============================")
     print(" GLOBAL DP BINNING (ALL FLAVOURS)")
@@ -1514,9 +2125,8 @@ def evaluate_dp_flavour_per_mass_combined_stat_split_run2(data, n_bins=6, use_fa
     if use_fake_corr is None:
         raise ValueError("use_fake_corr must be provided from config")
     if run_z_no_unc is None:
-    	raise ValueError("run_z_no_unc must be provided from config")
+        raise ValueError("run_z_no_unc must be provided from config")
 
-        
     results = {}
 
     bin_lo = data["edges"][:-1]
@@ -1529,7 +2139,7 @@ def evaluate_dp_flavour_per_mass_combined_stat_split_run2(data, n_bins=6, use_fa
         tqdm.write("\n[Mass] {} (combined flavours)".format(mass))
 
         # ==================================================
-        # BUILD PER-ERA ARRAYS (NEW)
+        # BUILD PER-ERA ARRAYS (for DP)
         # ==================================================
         S_flav_era = {}
         B_flav_era = {}
@@ -1551,23 +2161,9 @@ def evaluate_dp_flavour_per_mass_combined_stat_split_run2(data, n_bins=6, use_fa
                 F_flav_era[flav][era] = data["fake"][flav][era]
 
         # ==================================================
-        # PER-FLAVOUR Run2 ARRAYS (unchanged)
+        # RUN DP
         # ==================================================
-        S_flav = {}
-        B_flav = {}
-        E_flav = {}
-        F_flav = {}
-
-        for flav in FLAVOURS:
-            S_flav[flav] = sum(data["signal"][flav][mass][era] for era in ERAS)
-            B_flav[flav] = sum(data["background"][flav][era] for era in ERAS)
-            E_flav[flav] = sum(data["bkg_err2"][flav][era] for era in ERAS)
-            F_flav[flav] = sum(data["fake"][flav][era] for era in ERAS)
-
-        # ==================================================
-        # RUN DP (FIXED)
-        # ==================================================
-        best_edges = run_dp_on_arrays_with_flav_stat(
+        best_edges, best_Z_dp = run_dp_on_arrays_with_flav_stat(
             bin_lo,
             n_bins=n_bins,
             use_fake_corr=use_fake_corr,
@@ -1583,51 +2179,72 @@ def evaluate_dp_flavour_per_mass_combined_stat_split_run2(data, n_bins=6, use_fa
             continue
 
         # ==================================================
-        # EVALUATION PER FLAVOUR (UNCHANGED)
+        # EVALUATION PER FLAVOUR (FIXED)
         # ==================================================
         for flav in FLAVOURS:
 
-            S_run2 = S_flav[flav]
-            B_run2 = B_flav[flav]
-            E_run2 = E_flav[flav]
-            F_run2 = F_flav[flav]
-
-            # -------------------------
-            # Run2
-            # -------------------------
             run2_Z2 = 0.0
             bin_stats_run2 = []
 
-            for i in range(len(best_edges)-1):
+            for i in range(len(best_edges) - 1):
 
                 lo = best_edges[i]
-                hi = best_edges[i+1]
+                hi = best_edges[i + 1]
 
-                if i == len(best_edges)-2:
+                if i == len(best_edges) - 2:
                     mask = (bin_lo >= lo) & (bin_lo <= hi)
                 else:
                     mask = (bin_lo >= lo) & (bin_lo < hi)
 
-                S = S_run2[mask].sum()
-                B = B_run2[mask].sum()
-                F = F_run2[mask].sum()
-                E = E_run2[mask].sum()
+                S_tot = 0.0
+                B_tot = 0.0
+                E_tot = 0.0
 
-                if use_fake_corr:
-                    F, B = fix_fake_and_bkg(F, B, FAKE_FLOOR,
-                                            flavour=flav, era="Run2")
+                # =========================================
+                # FIX: per-era fake correction BEFORE sum
+                # =========================================
+                for era in ERAS:
 
-                bin_stats_run2.append({"S": S, "B": B, "E": E})
+                    S = data["signal"][flav][mass][era][mask].sum()
+                    B = data["background"][flav][era][mask].sum()
+                    F = data["fake"][flav][era][mask].sum()
+                    E = data["bkg_err2"][flav][era][mask].sum()
 
-                if S > 0 and B > 0:
-                    Z = compute_bin_Z_with_unc(S, B, E,run_z_no_unc=run_z_no_unc)
+                    if use_fake_corr:
+                        F, B = fix_fake_and_bkg(
+                            F, B, FAKE_FLOOR,
+                            flavour=flav,
+                            era=era   # <-- FIXED (was "Run2")
+                        )
+
+                    S_tot += S
+                    B_tot += B
+                    E_tot += E
+
+                bin_stats_run2.append({
+                    "S": S_tot,
+                    "B": B_tot,
+                    "E": E_tot
+                })
+
+                if S_tot > 0 and B_tot > 0:
+                    Z = compute_bin_Z_with_unc(
+                        S_tot, B_tot, E_tot,
+                        run_z_no_unc=run_z_no_unc
+                    )
                     run2_Z2 += Z * Z
 
             run2_total = math.sqrt(run2_Z2)
 
-            # -------------------------
-            # QUAD (unchanged)
-            # -------------------------
+            print("--------------------------------------------------")
+            print(f"[DEBUG] DP Z (optimised) = {best_Z_dp:.6f}")
+            print(f"[DEBUG] Eval Run2 Z      = {run2_total:.6f}")
+            print(f"[DEBUG] Difference       = {run2_total - best_Z_dp:.6f}")
+            print("--------------------------------------------------")
+
+            # ==================================================
+            # QUAD (unchanged, already correct)
+            # ==================================================
             quad_Z2 = 0.0
             bin_stats_per_era = {}
 
@@ -1640,12 +2257,12 @@ def evaluate_dp_flavour_per_mass_combined_stat_split_run2(data, n_bins=6, use_fa
 
                 stats = []
 
-                for i in range(len(best_edges)-1):
+                for i in range(len(best_edges) - 1):
 
                     lo = best_edges[i]
-                    hi = best_edges[i+1]
+                    hi = best_edges[i + 1]
 
-                    if i == len(best_edges)-2:
+                    if i == len(best_edges) - 2:
                         mask = (bin_lo >= lo) & (bin_lo <= hi)
                     else:
                         mask = (bin_lo >= lo) & (bin_lo < hi)
@@ -1656,13 +2273,19 @@ def evaluate_dp_flavour_per_mass_combined_stat_split_run2(data, n_bins=6, use_fa
                     E = E_arr[mask].sum()
 
                     if use_fake_corr:
-                        F, B = fix_fake_and_bkg(F, B, FAKE_FLOOR,
-                                                flavour=flav, era=era)
+                        F, B = fix_fake_and_bkg(
+                            F, B, FAKE_FLOOR,
+                            flavour=flav,
+                            era=era
+                        )
 
                     stats.append({"S": S, "B": B, "E": E})
 
                     if S > 0 and B > 0:
-                        Z = compute_bin_Z_with_unc(S, B, E,run_z_no_unc=run_z_no_unc)
+                        Z = compute_bin_Z_with_unc(
+                            S, B, E,
+                            run_z_no_unc=run_z_no_unc
+                        )
                         quad_Z2 += Z * Z
 
                 bin_stats_per_era[era] = stats
@@ -1754,7 +2377,7 @@ def evaluate_dp_per_mass_per_flavour_per_era(data, n_bins=6, use_fake_corr=None,
                 E_dict = {era: E_arr}
                 F_dict = {era: F_arr}
 
-                best_edges = run_dp_on_arrays(
+                best_edges, best_Z_dp = run_dp_on_arrays(
                     S_dict,
                     B_dict,
                     E_dict,
@@ -1863,7 +2486,11 @@ def evaluate_dp_per_mass_per_flavour_per_era(data, n_bins=6, use_fake_corr=None,
                     run2_Z2 += Z * Z
 
             run2_total = math.sqrt(run2_Z2)
-
+            print("--------------------------------------------------")
+            print(f"[DEBUG] DP Z (optimised) = {best_Z_dp:.6f}")
+            print(f"[DEBUG] Eval Run2 Z      = {run2_total:.6f}")
+            print(f"[DEBUG] Difference       = {run2_total - best_Z_dp:.6f}")
+            print("--------------------------------------------------")
             ratio = run2_total / quad_total if quad_total > 0 else 0.0
 
             tqdm.write(
