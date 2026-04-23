@@ -130,18 +130,18 @@ double FakeBackgroundEstimator::HighPtCorr(bool isMuon, TString ID, double eta, 
 
           if (pt > 250) {
             if (sys == -1) correctionFactor = 1.0;
-            else if (sys == 0) correctionFactor = (GetEra() == "2016" ? 1.05 : 1.0);
-            else if (sys == 1) correctionFactor = (GetEra() == "2016" ? 1.1  : 1.0);
+            else if (sys == 0) correctionFactor = (GetEra().Contains("2016") ? 1.05 : 1.0);
+            else if (sys == 1) correctionFactor = (GetEra().Contains("2016") ? 1.1  : 1.0);
           }
           else if (pt > 150) {
             if (sys == -1) correctionFactor = 1.0;
-            else if (sys == 0) correctionFactor = (GetEra() == "2016" ? 1.125 : 1.0);
-            else if (sys == 1) correctionFactor = (GetEra() == "2016" ? 1.25  : 1.0);
+            else if (sys == 0) correctionFactor = (GetEra().Contains("2016") ? 1.125 : 1.0);
+            else if (sys == 1) correctionFactor = (GetEra().Contains("2016") ? 1.25  : 1.0);
           }
           else if (pt > 80) {
             if (sys == -1) correctionFactor = 1.0;
-            else if (sys == 0) correctionFactor = (GetEra() == "2016" ? 1.075 : 1.0);
-            else if (sys == 1) correctionFactor = (GetEra() == "2016" ? 1.15  : 1.0);
+            else if (sys == 0) correctionFactor = (GetEra().Contains("2016") ? 1.075 : 1.0);
+            else if (sys == 1) correctionFactor = (GetEra().Contains("2016") ? 1.15  : 1.0);
           }
 
         }
@@ -149,18 +149,18 @@ double FakeBackgroundEstimator::HighPtCorr(bool isMuon, TString ID, double eta, 
 
           if (pt > 250) {
             if (sys == -1) correctionFactor = 1.0;
-            else if (sys == 0) correctionFactor = (GetEra() == "2016" ? 1.225 : (GetEra() == "2017" ? 1.125 : 1.1));
-            else if (sys == 1) correctionFactor = (GetEra() == "2016" ? 1.45  : (GetEra() == "2017" ? 1.25  : 1.2));
+            else if (sys == 0) correctionFactor = (GetEra().Contains("2016") ? 1.225 : (GetEra() == "2017" ? 1.125 : 1.1));
+            else if (sys == 1) correctionFactor = (GetEra().Contains("2016") ? 1.45  : (GetEra() == "2017" ? 1.25  : 1.2));
           }
           else if (pt > 150) {
             if (sys == -1) correctionFactor = 1.0;
-            else if (sys == 0) correctionFactor = (GetEra() == "2016" ? 1.15 : (GetEra() == "2017" ? 1.05 : 1.075));
-            else if (sys == 1) correctionFactor = (GetEra() == "2016" ? 1.3  : (GetEra() == "2017" ? 1.1  : 1.15));
+            else if (sys == 0) correctionFactor = (GetEra().Contains("2016") ? 1.15 : (GetEra() == "2017" ? 1.05 : 1.075));
+            else if (sys == 1) correctionFactor = (GetEra().Contains("2016") ? 1.3  : (GetEra() == "2017" ? 1.1  : 1.15));
           }
           else if (pt > 80) {
             if (sys == -1) correctionFactor = 1.0;
-            else if (sys == 0) correctionFactor = (GetEra() == "2016" ? 1.1 : (GetEra() == "2017" ? 1.05 : 1.075));
-            else if (sys == 1) correctionFactor = (GetEra() == "2016" ? 1.2 : (GetEra() == "2017" ? 1.1  : 1.15));
+            else if (sys == 0) correctionFactor = (GetEra().Contains("2016") ? 1.1 : (GetEra() == "2017" ? 1.05 : 1.075));
+            else if (sys == 1) correctionFactor = (GetEra().Contains("2016") ? 1.2 : (GetEra() == "2017" ? 1.1  : 1.15));
           }
 
         }
@@ -180,13 +180,13 @@ double FakeBackgroundEstimator::HighPtCorr(bool isMuon, TString ID, double eta, 
 
           if (pt > 200) {
             if (sys == -1) correctionFactor = 1.0;
-            else if (sys == 0) correctionFactor = (GetEra() == "2016" ? 1.3 : (GetEra() == "2017" ? 1.25 : 1.2));
-            else if (sys == 1) correctionFactor = (GetEra() == "2016" ? 1.6 : (GetEra() == "2017" ? 1.5  : 1.4));
+            else if (sys == 0) correctionFactor = (GetEra().Contains("2016") ? 1.3 : (GetEra() == "2017" ? 1.25 : 1.2));
+            else if (sys == 1) correctionFactor = (GetEra().Contains("2016") ? 1.6 : (GetEra() == "2017" ? 1.5  : 1.4));
           } 
           else if (pt > 150) {
             if (sys == -1) correctionFactor = 1.0;
-            else if (sys == 0) correctionFactor = (GetEra() == "2016" ? 1.125 : (GetEra() == "2017" ? 1.125 : 1.05));
-            else if (sys == 1) correctionFactor = (GetEra() == "2016" ? 1.25  : (GetEra() == "2017" ? 1.25  : 1.1));
+            else if (sys == 0) correctionFactor = (GetEra().Contains("2016") ? 1.125 : (GetEra() == "2017" ? 1.125 : 1.05));
+            else if (sys == 1) correctionFactor = (GetEra().Contains("2016") ? 1.25  : (GetEra() == "2017" ? 1.25  : 1.1));
           }
           else if (pt > 80) correctionFactor = 1.0;
 
@@ -195,13 +195,13 @@ double FakeBackgroundEstimator::HighPtCorr(bool isMuon, TString ID, double eta, 
 
            if (pt > 250) {
             if (sys == 1) correctionFactor = 1.0;
-            else if (sys == 0)  correctionFactor = (GetEra() == "2016" ? 0.825 : (GetEra() == "2017" ? 0.775 : 0.75));
-            else if (sys == -1) correctionFactor = (GetEra() == "2016" ? 0.65  : (GetEra() == "2017" ? 0.55  : 0.5));
+            else if (sys == 0)  correctionFactor = (GetEra().Contains("2016") ? 0.825 : (GetEra() == "2017" ? 0.775 : 0.75));
+            else if (sys == -1) correctionFactor = (GetEra().Contains("2016") ? 0.65  : (GetEra() == "2017" ? 0.55  : 0.5));
           }
           else if (pt > 150) {
             if (sys == 1) correctionFactor = 1.0;
-            else if (sys == 0)  correctionFactor = (GetEra() == "2016" ? 0.95 : (GetEra() == "2017" ? 0.9 : 0.9));
-            else if (sys == -1) correctionFactor = (GetEra() == "2016" ? 0.9  : (GetEra() == "2017" ? 0.8 : 0.8));
+            else if (sys == 0)  correctionFactor = (GetEra().Contains("2016") ? 0.95 : (GetEra() == "2017" ? 0.9 : 0.9));
+            else if (sys == -1) correctionFactor = (GetEra().Contains("2016") ? 0.9  : (GetEra() == "2017" ? 0.8 : 0.8));
           }
           else if (pt > 80) {
             if (sys == 1) correctionFactor = 1.0;
