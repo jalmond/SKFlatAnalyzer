@@ -523,11 +523,7 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
 
   vector<AnalyzerParameter::Syst> SystList = {};
   if(SystType=="Theory"){
-    //SystList.push_back(AnalyzerParameter::PDFUp);
-    //SystList.push_back(AnalyzerParameter::PDFDown);
     SystList.push_back(AnalyzerParameter::PDF);
-    //SystList.push_back(AnalyzerParameter::ScaleUp);
-    //SystList.push_back(AnalyzerParameter::ScaleDown);
     SystList.push_back(AnalyzerParameter::RenScaleUp);
     SystList.push_back(AnalyzerParameter::RenScaleDown);
     SystList.push_back(AnalyzerParameter::FacScaleUp);
