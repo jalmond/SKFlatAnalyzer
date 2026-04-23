@@ -169,8 +169,8 @@ double HNL_LeptonCore::GetFakeRateMuon(Muon mu, AnalyzerParameter param){
   if(param.syst_ == AnalyzerParameter::FRAJDown) fr_key = fr_key.ReplaceAll("40","60");
   
   int FRStatSyst = 0;
-  if(param.syst_ == AnalyzerParameter::FRUp)   FRStatSyst=1;
-  if(param.syst_ == AnalyzerParameter::FRDown) FRStatSyst=-1;
+  if(param.syst_ == AnalyzerParameter::FRMuonUp)   FRStatSyst=1;
+  if(param.syst_ == AnalyzerParameter::FRMuonDown) FRStatSyst=-1;
 
   return fakeEst->GetMuonFakeRate(param.Muon_Tight_ID, fr_key,param.FakeRateMethod,param.FakeRateParam,LepEta, LepPt, mu.LeptonFakeTagger() ,FRStatSyst);
 
@@ -200,8 +200,8 @@ double HNL_LeptonCore::GetFakeWeight(std::vector<Lepton *> leps, AnalyzerParamet
     if(!leps[0]->LepIDSet()) {      cout << "Lepton ID not set" << endl;      exit(EXIT_FAILURE);    }
 
     int FRStatSyst = 0;
-    if(_param.syst_ == AnalyzerParameter::FRUp) FRStatSyst=1;
-    if(_param.syst_ == AnalyzerParameter::FRDown) FRStatSyst=-1;
+    if(_param.syst_ == AnalyzerParameter::FRElectronUp) FRStatSyst=1;
+    if(_param.syst_ == AnalyzerParameter::FRElectronDown) FRStatSyst=-1;
 
 
     double this_fr = fakeEst->GetFakeRate  (IsMuon, ID,  fr_key, _param.FakeRateMethod, _param.FakeRateParam, leps[0]->fEta(), leps[0]->Pt(),leps[0]->LeptonFakeTagger(),FRStatSyst);
@@ -247,18 +247,42 @@ double HNL_LeptonCore::GetFakeWeight(std::vector<Lepton *> leps, AnalyzerParamet
     bool IsMuon1  = (leps[0]->LeptonFlavour() != Lepton::ELECTRON);
     bool IsMuon2  = (leps[1]->LeptonFlavour() != Lepton::ELECTRON);
 
-    int FRStatSyst = 0;
-    if(_param.syst_ == AnalyzerParameter::FRUp)FRStatSyst=1;
-    if(_param.syst_ == AnalyzerParameter::FRDown) FRStatSyst=-1;
+    int FRStatSystLep1 = 0;
+    int FRStatSystLep2 = 0;
 
-    if(_param.syst_ == AnalyzerParameter::FRRateUp)FRStatSyst=2;
-    if(_param.syst_ == AnalyzerParameter::FRRateDown) FRStatSyst=-2;
+    if(IsMuon1){
+      if(_param.syst_ == AnalyzerParameter::FRMuonUp) FRStatSystLep=1;
+      if(_param.syst_ == AnalyzerParameter::FRMuonDown) FRStatSystLep=-1;
+      if(_param.syst_ == AnalyzerParameter::FRMuonRateUp)FRStatSystLep1=2;
+      if(_param.syst_ == AnalyzerParameter::FRMuonRateDown) FRStatSystLep1=-2;
+      if(_param.syst_ ==AnalyzerParameter::FRMuonHighPtUp)      FRStatSyst=10;
+      if(_param.syst_ ==AnalyzerParameter::FRMuonHighPtDown)    FRStatSyst=-10;
+    }
+    else{
+      if(_param.syst_ == AnalyzerParameter::FRElectronUp) FRStatSystLep=1;
+      if(_param.syst_ == AnalyzerParameter::FRElectronDown) FRStatSystLep=-1;
+      if(_param.syst_ == AnalyzerParameter::FRElectronRateUp)FRStatSystLep1=2;
+      if(_param.syst_ == AnalyzerParameter::FRElectronRateDown) FRStatSystLep1=-2;
+      if(_param.syst_ ==AnalyzerParameter::FRElectronHighPtUp)      FRStatSyst=10;
+      if(_param.syst_ ==AnalyzerParameter::FRElectronHighPtDown)    FRStatSyst=-10;
+    }
+    if(IsMuon2){
+       if(_param.syst_ == AnalyzerParameter::FRMuonUp) FRStatSystLep2=1;
+       if(_param.syst_ == AnalyzerParameter::FRMuonDown) FRStatSystLep2=-1;
+       if(_param.syst_ == AnalyzerParameter::FRMuonRateUp)FRStatSystLep2=2;
+       if(_param.syst_ == AnalyzerParameter::FRMuonRateDown) FRStatSystLep2=-2;
+      if(_param.syst_ ==AnalyzerParameter::FRMuonHighPtUp)      FRStatSystLep2=10;
+      if(_param.syst_ ==AnalyzerParameter::FRMuonHighPtDown)    FRStatSystLep2=-10;
+    }
+    else{
+      if(_param.syst_ == AnalyzerParameter::FRElectronUp) FRStatSystLep2=1;
+      if(_param.syst_ == AnalyzerParameter::FRElectronDown) FRStatSystLep2=-1;
+      if(_param.syst_ == AnalyzerParameter::FRElectronRateUp)FRStatSystLep2=2;
+      if(_param.syst_ == AnalyzerParameter::FRElectronRateDown) FRStatSystLep2=-2;
+      if(_param.syst_ ==AnalyzerParameter::FRElectronHighPtUp)      FRStatSystLep2=10;
+      if(_param.syst_ ==AnalyzerParameter::FRElectronHighPtDown)    FRStatSystLep2=-10;
+    }
 
-    /// Use FRStatSyst to set for High Pt syst
-    if(_param.syst_ ==AnalyzerParameter::FRMuonHighPtUp)      FRStatSyst=10;
-    if(_param.syst_ ==AnalyzerParameter::FRMuonHighPtDown)    FRStatSyst=-10;
-    if(_param.syst_ ==AnalyzerParameter::FRElectronHighPtUp)      FRStatSyst=20;
-    if(_param.syst_ ==AnalyzerParameter::FRElectronHighPtDown)    FRStatSyst=-20;
 
 
     double this_fr1 =  fakeEst->GetFakeRate(IsMuon1, ID1,  fr_key1, _param.FakeRateMethod, _param.FakeRateParam, leps[0]->fEta(), leps[0]->Pt(),leps[0]->LeptonFakeTagger(),FRStatSyst);

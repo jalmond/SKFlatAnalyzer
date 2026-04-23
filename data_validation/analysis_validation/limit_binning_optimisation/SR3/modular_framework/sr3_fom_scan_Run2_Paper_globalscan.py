@@ -174,39 +174,11 @@ def main():
 
     ref_plot = build_sr3_plot_results(data)
 
-    # ----------------------------------
-    # STANDARD SCAN
-    # ----------------------------------
-    standard_config = {
-        "scan_type": "PerMassPerFlav",
-        "nbin_mode": 4,
-        "opt_mode": "Run2",
-        "mets": ["2","3","4","5"],
-        "min_bin_width": 20.0,
-        "min_lt_first_edge": 120.0,
-    }
-
-    standard_config["scan_name"] = GetScanName(standard_config)
-    standard_config["mass_weights"] = build_mass_weights_from_ref(ref_results)
-
-    timer.start("Standard scan")
-
-    scan_outputs = run_parallel_global_scans(
-        data, FLAVOURS, MASSES, standard_config, n_workers=NCORE
-    )
-
-    final_scan = evaluate_scan_results(data, scan_outputs, standard_config)
-
-    print_sr3_scan_table_from_results(final_scan, data)
-
-    print_bkg_per_bin(data, scan_outputs, standard_config)
-
-    timer.stop("Standard scan")
 
     # =========================================================
     # GLOBAL NBIN STUDY
     # =========================================================
-    nbin_modes = ["scan"]
+    nbin_modes = [5]
     comparison_plot_results = []
 
     for nbin in nbin_modes:
@@ -219,13 +191,13 @@ def main():
             "scan_type": "GlobalMassPerFlav",
             "nbin_mode": nbin,
             "opt_mode": "Run2",
-            "mets": ["2","3","4","5"],
+            "mets": ["2"],
             "min_bin_width": 20.0,
             "min_lt_first_edge": 120.0,
         }
 
         cfg["scan_name"] = GetScanName(cfg)
-        cfg["mass_weights"] = standard_config["mass_weights"]
+        cfg["mass_weights"] = build_mass_weights_from_ref(ref_results)
 
         timer.start(f"Global scan {nbin}")
 

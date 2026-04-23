@@ -134,7 +134,7 @@ void HNL_LeptonCore::DefineLimitBins(){
 
   //// Define SR 3 binning                                                                                                                              
 
-  vector<TString> minBinsSR3={"SR3_bin1","SR3_bin2","SR3_bin3","SR3_bin4","SR3_bin5","SR3_bin6","SR3_bin7","SR3_bin8", "SR3_bin9","SR3_bin10","SR3_bin11","SR3_bin12","SR3_bin13","SR3_bin14","SR3_bin15","SR3_bin16","SR3_bin17","SR3_bin18","SR3_bin19","SR3_bin20","SR3_bin21","SR3_bin22","SR3_bin23","SR3_bin24"};
+  vector<TString> minBinsSR3={"SR3_bin1","SR3_bin2","SR3_bin3","SR3_bin4","SR3_bin5","SR3_bin6","SR3_bin7","SR3_bin8", "SR3_bin9","SR3_bin10","SR3_bin11","SR3_bin12","SR3_bin13","SR3_bin14","SR3_bin15","SR3_bin16","SR3_bin17","SR3_bin18","SR3_bin19","SR3_bin20"};
 
   std::vector<TString> MuMu_SR3 = minBinsSR3;
   std::vector<TString> EE_SR3   = minBinsSR3;
@@ -200,24 +200,24 @@ TString HNL_LeptonCore::GetSR3StringBin(const TString& RegionTag, const TString&
   double met2_st_boundary = 2.;
   
   TString binPrefix = RegionTag + "_bin";
-  double binLimit1 = 0.0, binLimit2 = 0.0, binLimit3 = 0.0, binLimit4 = 0.0, binLimit5 = 0.0;
+  double binLimit1 = 0.0, binLimit2 = 0.0, binLimit3 = 0.0, binLimit4 = 0.0;
   
   if (channel == "MuMu") {
     if (LowJet) {
 	  // LowJet Bins
       if (met2_st < met2_st_boundary) {
-	    binLimit1 = 150; binLimit2 = 220; binLimit3 = 290; binLimit4 = 360; binLimit5 = 500;
+	binLimit1 = 220; binLimit2 = 290; binLimit3 = 360; binLimit4 = 480;
       }
       else {
-	binLimit1 = 150; binLimit2 = 180; binLimit3 = 260; binLimit4 = 340; binLimit5 = 550;
+	binLimit1 = 260; binLimit2 = 360; binLimit3 = 460; binLimit4 = 650;
 	    
       }
     } else {
       // HighJet Bins
       if (met2_st < met2_st_boundary) {
-	binLimit1 = 150; binLimit2 = 250; binLimit3 = 340; binLimit4 = 460; binLimit5 = 700;
+	binLimit1 = 200; binLimit2 = 260; binLimit3 = 320; binLimit4 = 420;
       } else {
-	binLimit1 = 150; binLimit2 = 240; binLimit3 = 340; binLimit4 = 460; binLimit5 = 600;
+	binLimit1 = 230; binLimit2 = 290; binLimit3 = 340; binLimit4 = 480;
 
       }
     }
@@ -226,18 +226,18 @@ TString HNL_LeptonCore::GetSR3StringBin(const TString& RegionTag, const TString&
     if (LowJet) {
       // LowJet Bins
       if (met2_st < met2_st_boundary) {
-	binLimit1 = 150; binLimit2 = 340; binLimit3 = 600; binLimit4 = 800; binLimit5 = 1100;
+	binLimit1 = 340; binLimit2 = 600; binLimit3 = 800; binLimit4 = 1100;
 		    
       } else {
-	binLimit1 = 150; binLimit2 = 270; binLimit3 = 360; binLimit4 = 650; binLimit5 = 1100;
+	binLimit1 = 270; binLimit2 = 420; binLimit3 = 600; binLimit4 = 800;
 	    
       }
     } else {
 	  // HighJet Bins
-      if (met2_st < met2_st_boundary) {
-	    binLimit1 = 150; binLimit2 = 270; binLimit3 = 400; binLimit4 = 550; binLimit5 = 800;
+      if (met2_st < met2_st_boundary) 
+	binLimit1 = 270; binLimit2 = 360; binLimit3 = 650; binLimit4 = 1000;
       } else {
-	binLimit1 = 150; binLimit2 = 270; binLimit3 = 420; binLimit4 = 550; binLimit5 = 850;
+	binLimit1 = 280; binLimit2 = 420; binLimit3 = 550; binLimit4 = 850;
 		    
       }
     }
@@ -248,16 +248,16 @@ TString HNL_LeptonCore::GetSR3StringBin(const TString& RegionTag, const TString&
     if (LowJet) {
       // LowJet Bins
       if (met2_st < met2_st_boundary) {
-	binLimit1 = 200; binLimit2 = 300; binLimit3 = 460; binLimit4 = 550;  binLimit5 = 800;
+	binLimit1 = 300; binLimit2 = 460; binLimit3 = 550;  binLimit4 = 800;
       } else {
-	binLimit1 = 180; binLimit2 = 260;  binLimit3 = 360; binLimit4 = 480;  binLimit5 = 750;
+	binLimit1 = 300;  binLimit2 = 420; binLimit3 = 600;  binLimit4 = 850;
       }
     } else {
       // HighJet Bins
       if (met2_st < met2_st_boundary) {
-	binLimit1 = 200; binLimit2 = 320; binLimit3 = 550; binLimit4 = 800; binLimit5 = 1000;
+	binLimit1 = 260; binLimit2 = 360; binLimit3 = 460; binLimit4 = 550;
       } else {
-	binLimit1 = 180; binLimit2 = 250; binLimit3 = 360;   binLimit4 = 550;  binLimit5 = 800;
+	binLimit1 = 250; binLimit2 = 360;   binLimit3 = 460;  binLimit4 = 750;
       }
     }
   }
@@ -272,32 +272,28 @@ TString HNL_LeptonCore::GetSR3StringBin(const TString& RegionTag, const TString&
       if (LT <= binLimit2) return binPrefix + "2";
       if (LT <= binLimit3) return binPrefix + "3";
       if (LT <= binLimit4) return binPrefix + "4";
-      if (LT <= binLimit5) return binPrefix + "5";
-      return binPrefix + "6";
+        return binPrefix + "5";
     } else {
-      if (LT <= binLimit1) return binPrefix + "7";
-      if (LT <= binLimit2) return binPrefix + "8";
-      if (LT <= binLimit3) return binPrefix + "9";
-      if (LT <= binLimit4) return binPrefix + "10";
-      if (LT <= binLimit5) return binPrefix + "11";
-      return binPrefix + "12";
+      if (LT <= binLimit1) return binPrefix + "6";
+      if (LT <= binLimit2) return binPrefix + "7";
+      if (LT <= binLimit3) return binPrefix + "8";
+      if (LT <= binLimit4) return binPrefix + "9";
+      return binPrefix + "10";
     }
   } 
   else {
     if (met2_st < met2_st_boundary) {
-      if (LT < binLimit1) return binPrefix + "13";
-      if (LT < binLimit2) return binPrefix + "14";
-      if (LT < binLimit3) return binPrefix + "15";
-      if (LT < binLimit4) return binPrefix + "16";
-      if (LT < binLimit5) return binPrefix + "17";
-      return binPrefix + "18";
+      if (LT < binLimit1) return binPrefix + "11";
+      if (LT < binLimit2) return binPrefix + "12";
+      if (LT < binLimit3) return binPrefix + "13";
+      if (LT < binLimit4) return binPrefix + "14";
+      return binPrefix + "15";
     } else {
-      if (LT < binLimit1) return binPrefix + "19";
-      if (LT < binLimit2) return binPrefix + "20";
-      if (LT < binLimit3) return binPrefix + "21";
-      if (LT < binLimit3) return binPrefix + "22";
-      if (LT < binLimit3) return binPrefix + "23";
-      return binPrefix + "24";
+      if (LT < binLimit1) return binPrefix + "16";
+      if (LT < binLimit2) return binPrefix + "17";
+      if (LT < binLimit3) return binPrefix + "18";
+      if (LT < binLimit3) return binPrefix + "19";
+      return binPrefix + "20";
     }
   }
   

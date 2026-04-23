@@ -9,7 +9,7 @@ USE_FAKE_FIX = True
 RUN_Z_NO_UNC=True
 
 Bin_NBKG_REQ = 1.0
-Bin_NBKG_REQ_Tight = 0.5
+Bin_NBKG_REQ_Tight = 1.0
 Bin_BKG_RelUnc = 0.3
 
 TAG = "Default"

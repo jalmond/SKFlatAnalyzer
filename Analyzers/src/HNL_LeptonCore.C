@@ -577,22 +577,24 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
   }
   
   else if(RunFake){
-    SystList.push_back(AnalyzerParameter::FRUp); //// Add 
-    SystList.push_back(AnalyzerParameter::FRDown);
-    SystList.push_back(AnalyzerParameter::FRRateUp); //// Add
-    SystList.push_back(AnalyzerParameter::FRRateDown);
 
-    //SystList.push_back(AnalyzerParameter::FRAJUp); /// Apply 15% in DataCard
-    //SystList.push_back(AnalyzerParameter::FRAJDown); 
-    //SystList.push_back(AnalyzerParameter::FRPartonSFUp); /// Apply 10% in DataCard
-    //SystList.push_back(AnalyzerParameter::FRPartonSFDown);
     if(SystType!="MuMu" ){
       SystList.push_back(AnalyzerParameter::FRElectronHighPtUp);
       SystList.push_back(AnalyzerParameter::FRElectronHighPtDown);
+      SystList.push_back(AnalyzerParameter::FRElectronUp); //// Add
+      SystList.push_back(AnalyzerParameter::FRElectronDown);
+      SystList.push_back(AnalyzerParameter::FRElectronRateUp); //// Add
+      SystList.push_back(AnalyzerParameter::FRElectronRateDown);
+
     }
     if(SystType!="EE" ){
       SystList.push_back(AnalyzerParameter::FRMuonHighPtUp);
       SystList.push_back(AnalyzerParameter::FRMuonHighPtDown);
+      SystList.push_back(AnalyzerParameter::FRMuonUp); //// Add
+      SystList.push_back(AnalyzerParameter::FRMuonDown);
+      SystList.push_back(AnalyzerParameter::FRMuonRateUp); //// Add
+      SystList.push_back(AnalyzerParameter::FRMuonRateDown);
+
     }
   }
   else {

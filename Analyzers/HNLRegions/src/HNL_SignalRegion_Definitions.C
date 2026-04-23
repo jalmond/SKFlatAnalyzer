@@ -1071,14 +1071,14 @@ TString HNL_RegionDefinitions::RunSignalRegionWWString(bool ApplyForSR,HNL_Lepto
 	
       std::map<std::string, std::map<int, CutValues>> sr2_cuts = {
 	{"Run2_PerFlavour", {
-	    {HNL_LeptonCore::Channel::MuMu, {1.8, 2.3, 3.6, 0.7, 1.3, 2.3}},
-	    {HNL_LeptonCore::Channel::EE,   {1.5, 2.4, 3.2, 0.5, 1.0, 1.9}},
-	    {HNL_LeptonCore::Channel::EMu,  {1.6, 2.2, 3.2, 0.7, 1.3, 2.5}}
+	    {HNL_LeptonCore::Channel::MuMu, {2.2, 3.6, 4.4, 0.9, 1.4, 2.3}},
+	    {HNL_LeptonCore::Channel::EE,   {1.5, 2.4, 3.2, 0.7, 1.3, 2.5}},
+	    {HNL_LeptonCore::Channel::EMu,  {1.6, 2.1, 3.2, 0.7, 1.3, 2.5}}
 	  }},
 	{"Run2_Global", {
-            {HNL_LeptonCore::Channel::MuMu, {1.6, 2.2, 3.2, 0.7, 1.3, 2.4}},
-            {HNL_LeptonCore::Channel::EE,   {1.6, 2.2, 3.2, 0.7, 1.3, 2.4}},
-            {HNL_LeptonCore::Channel::EMu,  {1.6, 2.2, 3.2, 0.7, 1.3, 2.4}}
+            {HNL_LeptonCore::Channel::MuMu, {1.6, 2.2, 3.2, 0.9, 1.4, 2.4}},
+            {HNL_LeptonCore::Channel::EE,   {1.6, 2.2, 3.2, 0.9, 1.4, 2.4}},
+            {HNL_LeptonCore::Channel::EMu,  {1.6, 2.2, 3.2, 0.9, 1.4, 2.4}}
           }},
 
       };
