@@ -155,7 +155,7 @@ double HNL_LeptonCore::GetFakeRateElectron(Electron el, AnalyzerParameter param)
   if(param.syst_ == AnalyzerParameter::FRAJUp) fr_key = fr_key.ReplaceAll("40","30");
   if(param.syst_ == AnalyzerParameter::FRAJDown) fr_key = fr_key.ReplaceAll("40","60");
 
-  init FRStatSyst=0;
+  int FRStatSyst=0;
   if(param.syst_ == AnalyzerParameter::FRElectronUp)   FRStatSyst=1;
   if(param.syst_ == AnalyzerParameter::FRElectronDown) FRStatSyst=-1;
   if(param.syst_ == AnalyzerParameter::FRElectronRateUp)   FRStatSyst=2;
