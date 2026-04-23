@@ -19,15 +19,12 @@ RunGlobalSig=True
 
 
 def build_log_tag(
-    use_fake_fix=None,
     run_z_no_unc=None,
     bin_nbkg_req=None,
     bin_nbkg_req_tight=None,
     bin_bkg_relunc=None
 ):
     # fallback to globals if None
-    if use_fake_fix is None:
-        use_fake_fix = USE_FAKE_FIX
     if run_z_no_unc is None:
         run_z_no_unc = RUN_Z_NO_UNC
     if bin_nbkg_req is None:
@@ -43,12 +40,6 @@ def build_log_tag(
         parts.append("runZnoUnc")
     else:
         parts.append("runZwithUnc")
-
-    if use_fake_fix:
-        parts.append("FakeFix")
-    else:
-        parts.append("NoFakeFix")
-
 
     parts.append(
         f"StatNBkg{bin_nbkg_req}_Tight{bin_nbkg_req_tight}_RelErr{bin_bkg_relunc}"

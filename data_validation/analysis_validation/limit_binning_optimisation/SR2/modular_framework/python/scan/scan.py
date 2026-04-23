@@ -157,7 +157,8 @@ def run_scan_group(data, flavs, masses, config):
             min_width=config["min_bin_width"],
             B_dict=B_dict,
             E_dict=E_dict,
-            bin_lo=bin_lo
+            bin_lo=bin_lo,
+            coarse_grid=config.get("COARSE_GRID", None)   
         )
 
         best_Z_region = -1.0
@@ -169,6 +170,7 @@ def run_scan_group(data, flavs, masses, config):
             desc=f"{flav_label} | {region}",
             leave=False
         ):
+            
             Z2, info = evaluate_strategy_sr2(
                 edges, arrays, bin_lo, flavs, masses, config
             )

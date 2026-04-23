@@ -21,7 +21,7 @@ from python.utils.helper import (
     get_latest_dir, ReadConfig, ConvertConfPath,
     list_available_configs, print_sr2_bin_table,
     build_mass_weights_from_ref,
-    print_bkg_per_bin_sr2,recompute_per_mass_with_fixed_binning_sr2
+    print_bkg_per_bin_sr2,recompute_per_mass_with_fixed_binning_sr2,compute_sr2_z_for_binning_global
 )
 
 from python.plotter.plotter import (
@@ -151,7 +151,7 @@ def main():
     tag = args.tag if args.tag else TAG
 
     ts = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-    LOG_TAG = LOG_TAG + "_globalscan"
+    LOG_TAG = LOG_TAG + "_coursescan"
 
     os.makedirs(f"output/logs/{tag}/{LOG_TAG}", exist_ok=True)
     outtag = f"{tag}/{LOG_TAG}"
@@ -219,7 +219,13 @@ def main():
 
     )
     print_sr2_ref_bin_details(data, ref_results, "MuMu", "0")
+    print_sr2_ref_bin_details(data, ref_results, "EE", "0")
+    print_sr2_ref_bin_details(data, ref_results, "MuMu", "1000")
+    print_sr2_ref_bin_details(data, ref_results, "EE", "1000")
 
+
+    
+    
     # ----------------------------------
     # SCANS STEP 1
     # ----------------------------------
@@ -233,17 +239,27 @@ def main():
         "scan_type": "GlobalMassPerFlav",
 	"nbin_mode": 4,
         "opt_mode": "Run2",
-        "min_bin_width": 0.5
+        "min_bin_width": 0.5,
+        "label": "coarse", "COARSE_GRID": 0.5,
+        
     }
     global_flav_config = {
 	"scan_type": "GlobalMassGlobalFlav",
         "nbin_mode": 4,
         "opt_mode": "Run2",
-        "min_bin_width": 0.5
+        "min_bin_width": 0.5,
+        "label": "coarse", "COARSE_GRID": 0.5
     }
+    
     
     standard_config["scan_name"] = GetScanName(standard_config)
     standard_config["mass_weights"] = build_mass_weights_from_ref(ref_results)
+
+    print("\n=== MASS WEIGHTS ===")
+    
+    for m, w in standard_config["mass_weights"].items():
+
+        print(f"mass={m:>5}  weight={w:.6f}")
     
     global_mass_config["scan_name"] = GetScanName(global_mass_config)
     global_mass_config["mass_weights"] = build_mass_weights_from_ref(ref_results)
@@ -357,6 +373,42 @@ def main():
             out_tag="sr2_compare_ref_vs_standard" 
         )
 
+
+    best_binnings = {
+        "MuMu": {
+            "low":  [0, 0.9, 2.2, 3.6, 10],
+            "high": [0, 0.7, 1.4, 2.3, 10],
+        },
+        "EE": {
+            "low":  [0, 1.5, 2.4, 3.2, 10],
+            "high": [0, 0.5, 1.0, 1.9, 10],
+        },
+        "EMu": {
+            "low":  [0, 1.6, 2.2, 3.2, 10],
+            "high": [0, 0.7, 1.3, 2.5, 10],
+        }
+    }
+    
+    print("\n==============================")
+    print(" GLOBAL BEST BINNING Z")
+    print("==============================")
+    
+    for flav, bins in best_binnings.items():
+        
+        Z_best = compute_sr2_z_for_binning_global(
+            data,
+            bins,
+            flav,
+            "0"
+        )
+        Z_best_1000 = compute_sr2_z_for_binning_global(
+            data,
+	    bins,
+            flav,
+            "1000"
+        )
+        print(f"{flav:4s} | Z Weinberg = {Z_best:.4f}")
+        print(f"{flav:4s} | Z M1000 = {Z_best_1000:.4f}")
         
     # ----------------------------------
     # DONE

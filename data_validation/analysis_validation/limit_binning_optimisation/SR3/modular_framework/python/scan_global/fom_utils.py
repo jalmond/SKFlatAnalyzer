@@ -1,7 +1,7 @@
 # =========================================================                                                                                                                                                                                  
 # EVALUATORs                                                                                                                                                                                                                                 
 # =========================================================                                                                                                                                                                                
-from python.scan.scan import run_scan_multi
+from python.scan_global.scan import run_scan_multi
 
 import math
 import itertools
@@ -34,8 +34,10 @@ def run_parallel_global_scans(data, flavs, masses, config, n_workers=None):
         print(f" scan_type   = {config.get('scan_type')}")
         print(f" opt_mode    = {config.get('opt_mode')}")
         print(f" nbin_mode   = {config.get('nbin_mode')}")
+        print(f" mets        = {config.get('mets')}")
         print(f" scan_name   = {config.get('scan_name')}")
         print(f" min_bin_width:  {config.get('min_bin_width')}")
+        print(f" min_lt_first_edge:  {config.get('min_lt_first_edge')}")
         print(f" n_workers (limit) = {n_workers}")
         print("==============================\n")
 

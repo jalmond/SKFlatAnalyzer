@@ -1,9 +1,7 @@
 import math
 import os,sys
 from python.config.default_config import ERAS, FLAVOURS, FAKE_FLOOR
-from python.utils.ref_bins import  get_sr3_ref_edges
-from python.config.NBIN import get_nbins_for_region
-# Default fallback values (will be overridden at runtime)                                                                                                                                                                                                                                                                                                                                                                                                                               
+
 Bin_NBKG_REQ = 1.0
 Bin_NBKG_REQ_Tight = 0.5
 Bin_BKG_RelUnc = 0.3
@@ -39,6 +37,70 @@ def build_mass_weights_from_ref(ref_results, mode="run2"):
 
     return weights
 
+
+def compute_sr2_z_for_binning_global(data, bins_dict, flav, mass):
+
+    import numpy as np
+    import math
+
+    total_Z2 = 0.0
+
+    for region in ["low", "high"]:
+
+        sub = data[region]
+
+        edges = bins_dict[region]
+
+        edges_full = np.array(sub["edges"])
+        bin_lo = edges_full[:-1]
+
+        region_Z2 = 0.0
+
+        for i in range(len(edges) - 1):
+
+            lo = edges[i]
+            hi = edges[i + 1]
+
+            if i == len(edges) - 2:
+                mask = (bin_lo >= lo) & (bin_lo <= hi)
+            else:
+                mask = (bin_lo >= lo) & (bin_lo < hi)
+
+            S_tot = 0.0
+            B_tot = 0.0
+            E_tot = 0.0
+
+            for era in ERAS:
+
+                S_arr = sub["signal"][flav][mass][era]
+                B_arr = sub["background"][flav][era]
+                F_arr = sub["fake"][flav][era]
+                E_arr = sub["bkg_err2"][flav][era]
+
+                s = S_arr[mask].sum()
+                b = B_arr[mask].sum()
+                f = F_arr[mask].sum()
+                e = E_arr[mask].sum()
+
+                f, b = fix_fake_and_bkg(f, b, FAKE_FLOOR,
+                                        flavour=flav, era=era)
+
+                S_tot += s
+                B_tot += b
+                E_tot += e
+
+            if B_tot > 0:
+                Z = compute_bin_Z_with_unc(S_tot, B_tot, E_tot)
+            else:
+                Z = 0.0
+
+            region_Z2 += Z * Z
+
+        total_Z2 += region_Z2
+
+    return math.sqrt(total_Z2)
+
+
 def recompute_per_mass_with_fixed_binning_sr2(data, scan_results):
 
     import math
@@ -47,13 +109,29 @@ def recompute_per_mass_with_fixed_binning_sr2(data, scan_results):
     output = []
 
     # ----------------------------------------
-    # LOOP OVER SCAN RESULTS
+    # FLATTEN INPUT
     # ----------------------------------------
-    for res in scan_results:
+    flat = []
+    for item in scan_results:
+        if isinstance(item, list):
+            flat.extend(item)
+        else:
+            flat.append(item)
+
+    # ----------------------------------------
+    # LOOP OVER RESULTS
+    # ----------------------------------------
+    for res in flat:
+
+        if res is None:
+            continue
 
         flavs  = res.get("flavs", [])
         masses = res.get("masses", [])
-        regions = res["best_regions"]
+        regions = res.get("best_regions", {})
+
+        if not regions:
+            continue
 
         for flav in flavs:
             for mass in masses:
@@ -67,7 +145,7 @@ def recompute_per_mass_with_fixed_binning_sr2(data, scan_results):
                 }
 
                 # =========================================
-                # LOOP REGIONS (low / high)
+                # LOOP REGIONS
                 # =========================================
                 for region, info in regions.items():
 
@@ -80,9 +158,6 @@ def recompute_per_mass_with_fixed_binning_sr2(data, scan_results):
 
                     region_Z2 = 0.0
 
-                    # ----------------------------------------
-                    # LOOP BINS
-                    # ----------------------------------------
                     for i in range(len(edges) - 1):
 
                         lo = edges[i]
@@ -97,9 +172,6 @@ def recompute_per_mass_with_fixed_binning_sr2(data, scan_results):
                         b_tot = 0.0
                         e_tot = 0.0
 
-                        # ----------------------------------------
-                        # SUM OVER ERAS
-                        # ----------------------------------------
                         for era in ERAS:
 
                             if flav not in sub["signal"]:
@@ -119,7 +191,6 @@ def recompute_per_mass_with_fixed_binning_sr2(data, scan_results):
                             f = float(F_arr[mask].sum())
                             e = float(E_arr[mask].sum())
 
-                            # ---- fake correction ----
                             f, b = fix_fake_and_bkg(
                                 f, b, FAKE_FLOOR,
                                 flavour=flav,
@@ -130,9 +201,6 @@ def recompute_per_mass_with_fixed_binning_sr2(data, scan_results):
                             b_tot += b
                             e_tot += e
 
-                        # ----------------------------------------
-                        # COMPUTE Z
-                        # ----------------------------------------
                         if b_tot > 0:
                             z = compute_bin_Z_with_unc(s_tot, b_tot, e_tot)
                         else:
@@ -152,6 +220,8 @@ def recompute_per_mass_with_fixed_binning_sr2(data, scan_results):
                 output.append(new_result)
 
     return output
+
+
 
 def print_bkg_per_bin_sr2(data, scan_outputs, config):
 
@@ -248,7 +318,7 @@ def print_bkg_per_bin_sr2(data, scan_outputs, config):
 
                             rel = math.sqrt(E_tot)/B_tot if B_tot > 0 else 0
 
-                            line = f"[{lo:5.0f},{hi:5.0f}]  B={B_tot:8.3f}  rel={rel:6.3f}"
+                            line = f"[{lo:5.2f},{hi:5.2f}]  B={B_tot:8.3f}  rel={rel:6.3f}"
 
                             if B_tot < 1.0:
                                 print(line)  # replace red(line) if needed
@@ -283,7 +353,7 @@ def print_bkg_per_bin_sr2(data, scan_outputs, config):
 
                                 rel = math.sqrt(e)/b if b > 0 else 0
 
-                                line = f"[{lo:5.0f},{hi:5.0f}] {era:10s}  B={b:8.3f}  rel={rel:6.3f}"
+                                line = f"[{lo:5.2f},{hi:5.2f}] {era:10s}  B={b:8.3f}  rel={rel:6.3f}"
 
                                 if b < 1.0:
                                     print(line)
@@ -352,15 +422,39 @@ def generate_binnings(edges, nbin_mode, cat,
                       min_width=0.1,
                       B_dict=None,
                       E_dict=None,
-                      bin_lo=None):
+                      bin_lo=None,
+                      coarse_grid=None):
 
     import itertools
     import math
 
     edge_lo = edges[0]
     edge_hi = edges[-1]
-    internal_edges = edges[1:-1]
-    
+    #internal_edges = edges[1:-1]
+
+    # ----------------------------------------
+    # Build internal edges
+    # ----------------------------------------
+    if coarse_grid is not None:
+        
+        edge_lo = edges[0]
+        edge_hi = edges[-1]
+        
+        # build grid: 0.5, 1.0, ..., 9.5
+        internal_edges = [
+            round(edge_lo + coarse_grid * i, 6)
+            for i in range(1, int((edge_hi - edge_lo) / coarse_grid))
+        ]
+        
+    else:
+        internal_edges = edges[1:-1]
+
+    if coarse_grid is not None:
+        
+        print("\n[DEBUG] Using coarse grid =", coarse_grid)
+        
+        print("[DEBUG] internal_edges (first 10):", internal_edges[:10])
+        
     #if len(edges[1:-1]) > 100:
     #    tqdm.write(f"[DEBUG] edges before = {len(edges[1:-1])}, after = {len(internal_edges)}")
     #    
@@ -390,11 +484,7 @@ def generate_binnings(edges, nbin_mode, cat,
         tqdm.write(f"[INFO] Generating {nbins} bins")
                 
         for combo in itertools.combinations(internal_edges, nbins - 1):
-
-            # First edge cut
-            if combo[0] < min_first_edge:
-                continue
-
+            
             tail_ok = True
             # Tail stat check
             for flav in B_dict:
@@ -428,7 +518,7 @@ def generate_binnings(edges, nbin_mode, cat,
             
             # Build binning
             full = (edge_lo,) + combo + (edge_hi,)
-
+            
             # Min width check
             valid = True
             for i in range(len(full) - 1):
@@ -474,28 +564,6 @@ def red(text):
 def green(text):
     return f"\033[92m{text}\033[0m"
 
-
-def get_met_boundary(flav, era):
-    # default                                                                                                                                                                                                                                
-    boundary = 5
-
-    if flav == "EE":
-        if "2016" in era:
-            boundary = 4
-        else:
-            boundary = 3
-
-    return str(boundary)
-
-
-def parse_sr3_category(cat):
-
-    parts = cat.split("_")
-
-    jet = parts[0]                  # LowJet / HighJet                                                                                                                                                                                       
-    is_ltcut = "LTcut" in parts[3]  # True/False                                                                                                                                                                                             
-
-    return jet, is_ltcut
 
 
 import math
@@ -567,7 +635,7 @@ def debug_compare_binning_sr2(data, flavs, masses):
                     else:
                         Z = 0.0
 
-                    print(f"[{lo:4.0f},{hi:4.0f}] S={S_tot:7.3f} B={B_tot:7.3f} Z={Z:6.3f}")
+                    print(f"[{lo:5.2f},{hi:5.2f}] S={S_tot:7.3f} B={B_tot:7.3f} Z={Z:6.3f}")
 
                     Z2 += Z * Z
 
@@ -650,7 +718,7 @@ def debug_compare_binnings_sr2(data, scan_results, masses, flavours):
 
                         Z = compute_bin_Z_with_unc(S_tot, B_tot, E_tot) if B_tot > 0 else 0.0
 
-                        print(f"[SCAN {lo:4.0f},{hi:4.0f}] S={S_tot:7.3f} B={B_tot:7.3f} Z={Z:6.3f}")
+                        print(f"[SCAN {lo:5.2f},{hi:5.2f}] S={S_tot:7.3f} B={B_tot:7.3f} Z={Z:6.3f}")
 
                         Z2_scan += Z * Z
 
@@ -694,7 +762,7 @@ def debug_compare_binnings_sr2(data, scan_results, masses, flavours):
 
                         Z = compute_bin_Z_with_unc(S_tot, B_tot, E_tot) if B_tot > 0 else 0.0
 
-                        print(f"[FIX  {lo:4.0f},{hi:4.0f}] S={S_tot:7.3f} B={B_tot:7.3f} Z={Z:6.3f}")
+                        print(f"[FIX  {lo:5.2f},{hi:5.2f}] S={S_tot:7.3f} B={B_tot:7.3f} Z={Z:6.3f}")
 
                         Z2_fix += Z * Z
 
@@ -1026,7 +1094,7 @@ def print_sr2_bin_table(data, flav, mass):
 
                 line = (
                     f"{bin_counter:3d} | {era:9s} | {region:6s} | "
-                    f"[{lo:5.0f},{hi:5.0f}] | "
+                    f"[{lo:5.2f},{hi:5.2f}] | "
                     f"{S:6.3f} {B:7.2f} {rel_unc:9.3f} {Z:7.3f}"
                 )
 
@@ -1111,7 +1179,7 @@ def print_sr2_bin_table(data, flav, mass):
                 Z = 0.0
 
             print(f"{bin_counter:3d} | {region:6s} | "
-                  f"[{lo:5.0f},{hi:5.0f}] | "
+                  f"[{lo:5.2f},{hi:5.2f}] | "
                   f"{S:6.3f} {B:7.2f} {rel_unc:9.3f} {Z:7.3f}")
 
             bin_counter += 1

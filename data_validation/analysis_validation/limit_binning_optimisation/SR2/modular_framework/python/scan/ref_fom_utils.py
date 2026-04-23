@@ -1,428 +1,519 @@
-# =========================================================
-# EVALUATORs
-# =========================================================                                                                                                                                                                                                                                                                                                                                                                                                                             
-
 from python.config.default_config import ERAS, FLAVOURS, FAKE_FLOOR
+from python.utils.helper import (
+    fix_fake_and_bkg,
+    compute_bin_Z_with_unc,
+    pass_stat_and_err
+)
 
-from python.utils.ref_bins import get_sr3_ref_edges
+# =========================================================                                                                                                                                                                         
+# PREDEFINED SCAN                                                                                                                                                                                                                    
+# =========================================================
 
-from python.utils.helper import fix_fake_and_bkg,compute_bin_Z_with_unc,parse_sr3_category,get_met_boundary
+def compute_sr2_z_from_cuts(data, sr2_cuts, masses, flavours):
 
-import math
-
-
-def print_bin_summary():
-    print("\n==============================")
-    print(" SR3 BINNING DEBUG")
-    print("==============================")
-    
-    for flav in FLAVOURS:
-        for era in ERAS:
-            for jet in ["LowJet","HighJet"]:
-
-                edges = get_sr3_ref_edges(flav, era, jet, True)
-                print(f"{flav} | {era} | {jet} |  MET <  | Edges:", edges)
-                edges = get_sr3_ref_edges(flav, era, jet, False)            
-                print(f"{flav} | {era} | {jet} |  MET >  | Edges:", edges)
-
-
-
-
-def evaluate_sr3_run2_with_boundary(data):
+    import numpy as np
+    import math
 
     results = []
-
-    print("\n==============================")
-    print(" REF (RUN2 vs QUAD CORRECT)")
-    print("==============================")
-
-    example_met = next(iter(data))
-    example_cat = next(iter(data[example_met]))
-    masses = data[example_met][example_cat]["signal"][FLAVOURS[0]].keys()
-
-    CATEGORIES = [
-        "LowJet_LT_MET{X}_LTcut",
-        "HighJet_LT_MET{X}_LTcut",
-        "LowJet_LT_MET{X}_GTcut",
-        "HighJet_LT_MET{X}_GTcut",
-    ]
-
-    for flav in FLAVOURS:
-
-        for mass in masses:
-
-            total_run2_Z2 = 0.0
-            total_quad_Z2 = 0.0
-
-            region_results = {}
-            total_b=0.0
-            for era in ERAS:
-
-                boundary = get_met_boundary(flav, era)
-
-                for cat_template in CATEGORIES:
-
-                    cat = cat_template.format(X=boundary)
-
-                    sub = data[boundary][cat]
-
-                    jet, is_ltcut = parse_sr3_category(cat)
-
-                    edges_full = sub["edges"]
-                    bin_lo = edges_full[:-1]
-
-                    edges_ref = get_sr3_ref_edges(flav, era, jet, is_ltcut)
-
-                    # init region if needed
-                    if cat not in region_results:
-                        region_results[cat] = {
-                            "bins": edges_ref,
-                            "per_era": {},
-                            "run2_bins": [],
-                            "Z_quad": 0.0,
-                            "Z_run2": 0.0,
-                        }
-
-                    # store per-era bins
-                    region_results[cat]["per_era"][era] = []
-
-                    # per-bin accumulation containers for Run2
-                    if len(region_results[cat]["run2_bins"]) == 0:
-                        for i in range(len(edges_ref) - 1):
-                            region_results[cat]["run2_bins"].append({
-                                "S": 0.0,
-                                "B": 0.0,
-                                "E": 0.0
-                            })
-
-                    S_arr = sub["signal"][flav][mass][era]
-                    B_arr = sub["background"][flav][era]
-                    F_arr = sub["fake"][flav][era]
-                    E_arr = sub["bkg_err2"][flav][era]
-
-                    
-                    
-                    era_Z2 = 0.0
-
-                    for i in range(len(edges_ref) - 1):
-
-                        lo = edges_ref[i]
-                        hi = edges_ref[i+1]
-
-                        if i == len(edges_ref) - 2:
-                            mask = (bin_lo >= lo) & (bin_lo <= hi)
-                        else:
-                            mask = (bin_lo >= lo) & (bin_lo < hi)
-
-                        # --- sum bin FIRST ---
-                        S = S_arr[mask].sum()
-                        B = B_arr[mask].sum()
-                        F = F_arr[mask].sum()
-                        E = E_arr[mask].sum()
-                        total_b+=B
-                        # --- fake fix AFTER summing ---
-                        F, B = fix_fake_and_bkg(F, B, FAKE_FLOOR,
-                                                flavour=flav, era=era)
-
-                        # =========================
-                        # QUAD (per era)
-                        # =========================
-                        if S > 0 and B > 0:
-                            Z = compute_bin_Z_with_unc(S, B, E)
-                            era_Z2 += Z * Z
-                        else:
-                            Z = 0.0
-
-                        # store per-era bin
-                        region_results[cat]["per_era"][era].append({
-                            "lo": lo,
-                            "hi": hi,
-                            "S": S,
-                            "B": B,
-                            "E": E,
-                            "Z": Z
-                        })
-
-                        # =========================
-                        # RUN2 accumulation
-                        # =========================
-                        region_results[cat]["run2_bins"][i]["S"] += S
-                        region_results[cat]["run2_bins"][i]["B"] += B
-                        region_results[cat]["run2_bins"][i]["E"] += E
-
-                    # accumulate QUAD at region level
-                    region_results[cat]["Z_quad"] += era_Z2
-
-            # =========================
-            # FINALIZE per region
-            # =========================
-            for cat in region_results:
-
-                # ---- QUAD ----
-                region_results[cat]["Z_quad"] = math.sqrt(region_results[cat]["Z_quad"])
-                total_quad_Z2 += region_results[cat]["Z_quad"] ** 2
-
-                # ---- RUN2 ----
-                run2_Z2 = 0.0
-                run2_bin_details = []
-
-                bins = region_results[cat]["run2_bins"]
-                edges = region_results[cat]["bins"]
-
-                for i in range(len(bins)):
-
-                    S = bins[i]["S"]
-                    B = bins[i]["B"]
-                    E = bins[i]["E"]
-
-                    if S > 0 and B > 0:
-                        Z = compute_bin_Z_with_unc(S, B, E)
-                        run2_Z2 += Z * Z
-                    else:
-                        Z = 0.0
-
-                    run2_bin_details.append({
-                        "lo": edges[i],
-                        "hi": edges[i+1],
-                        "S": S,
-                        "B": B,
-                        "E": E,
-                        "Z": Z
-                    })
-
-                region_results[cat]["run2_bins"] = run2_bin_details
-                region_results[cat]["Z_run2"] = math.sqrt(run2_Z2)
-
-                total_run2_Z2 += region_results[cat]["Z_run2"] ** 2
-
-            # =========================
-            # FINAL totals
-            # =========================
-            total_run2 = math.sqrt(total_run2_Z2)
-            total_quad = math.sqrt(total_quad_Z2)
-
-            print(f"{flav} {mass}  Run2={total_run2:.4f}  Quad={total_quad:.4f}")
-
-            results.append({
-                "flav": flav,
-                "mass": mass,
-                "run2": total_run2,
-                "quad": total_quad,
-                "met": "boundary",
-                "regions": region_results,
-            })
-
-    return results
-
-
-
-
-def evaluate_sr3_run2_fom(data):
-
-    print("\n==============================")
-    print(" SR3 Run2 FOM (REF CORRECT)")
-    print("==============================")
-
-    results = []
-
-    example_met = next(iter(data))
-    example_cat = next(iter(data[example_met]))
-    masses = data[example_met][example_cat]["signal"][FLAVOURS[0]].keys()
-
-    CATEGORIES = [
-        "LowJet_LT_MET{X}_LTcut",
-        "HighJet_LT_MET{X}_LTcut",
-        "LowJet_LT_MET{X}_GTcut",
-        "HighJet_LT_MET{X}_GTcut",
-    ]
-
-    for flav in FLAVOURS:
-
-        print(f"\n================ {flav} =================")
-
-        for mass in masses:
-
-            print(f"\n--- Mass {mass} ---")
-
-            total_run2_Z2 = 0.0
-            total_quad_Z2 = 0.0
-
-            region_results = {}
-
-            for era in ERAS:
-
-                boundary = get_met_boundary(flav, era)
-
-                for cat_template in CATEGORIES:
-
-                    cat = cat_template.format(X=boundary)
-
-                    sub = data[boundary][cat]
-
-                    jet, is_ltcut = parse_sr3_category(cat)
-
-                    edges_full = sub["edges"]
-                    bin_lo = edges_full[:-1]
-
-                    edges_ref = get_sr3_ref_edges(flav, era, jet, is_ltcut)
-
-                    # init region
-                    if cat not in region_results:
-                        region_results[cat] = {
-                            "bins": edges_ref,
-                            "per_era": {},
-                            "run2_bins": [],
-                            "Z_quad": 0.0,
-                            "Z_run2": 0.0,
-                        }
-
-                    region_results[cat]["per_era"][era] = []
-
-                    # init run2 bins
-                    if len(region_results[cat]["run2_bins"]) == 0:
-                        for i in range(len(edges_ref) - 1):
-                            region_results[cat]["run2_bins"].append({
-                                "S": 0.0,
-                                "B": 0.0,
-                                "E": 0.0
-                            })
-
-                    S_arr = sub["signal"][flav][mass][era]
-                    B_arr = sub["background"][flav][era]
-                    F_arr = sub["fake"][flav][era]
-                    E_arr = sub["bkg_err2"][flav][era]
-
-                    era_Z2 = 0.0
-
-                    for i in range(len(edges_ref) - 1):
-
-                        lo = edges_ref[i]
-                        hi = edges_ref[i+1]
-
-                        if i == len(edges_ref) - 2:
-                            mask = (bin_lo >= lo) & (bin_lo <= hi)
-                        else:
-                            mask = (bin_lo >= lo) & (bin_lo < hi)
-
-                        # ---- sum FIRST ----
-                        S = S_arr[mask].sum()
-                        B = B_arr[mask].sum()
-                        F = F_arr[mask].sum()
-                        E = E_arr[mask].sum()
-
-                        # ---- fake fix AFTER ----
-                        F, B = fix_fake_and_bkg(
-                            F, B, FAKE_FLOOR,
-                            flavour=flav, era=era
-                        )
-
-                        # ---- QUAD ----
-                        if S > 0 and B > 0:
-                            Z = compute_bin_Z_with_unc(S, B, E)
-                            era_Z2 += Z * Z
-                        else:
-                            Z = 0.0
-
-                        region_results[cat]["per_era"][era].append({
-                            "lo": lo,
-                            "hi": hi,
-                            "S": S,
-                            "B": B,
-                            "E": E,
-                            "Z": Z
-                        })
-
-                        # ---- RUN2 accumulate ----
-                        region_results[cat]["run2_bins"][i]["S"] += S
-                        region_results[cat]["run2_bins"][i]["B"] += B
-                        region_results[cat]["run2_bins"][i]["E"] += E
-
-                    region_results[cat]["Z_quad"] += era_Z2
-
-            # =========================
-            # FINALIZE REGIONS
-            # =========================
-            for cat in region_results:
-
-                # ---- QUAD ----
-                region_results[cat]["Z_quad"] = math.sqrt(region_results[cat]["Z_quad"])
-                total_quad_Z2 += region_results[cat]["Z_quad"] ** 2
-
-                # ---- RUN2 ----
-                run2_Z2 = 0.0
-                run2_bin_details = []
-
-                bins = region_results[cat]["run2_bins"]
-                edges = region_results[cat]["bins"]
-
-                for i in range(len(bins)):
-
-                    S = bins[i]["S"]
-                    B = bins[i]["B"]
-                    E = bins[i]["E"]
-
-                    if S > 0 and B > 0:
-                        Z = compute_bin_Z_with_unc(S, B, E)
-                        run2_Z2 += Z * Z
-                    else:
-                        Z = 0.0
-
-                    run2_bin_details.append({
-                        "lo": edges[i],
-                        "hi": edges[i+1],
-                        "S": S,
-                        "B": B,
-                        "E": E,
-                        "Z": Z
-                    })
-
-                region_results[cat]["run2_bins"] = run2_bin_details
-                region_results[cat]["Z_run2"] = math.sqrt(run2_Z2)
-
-                total_run2_Z2 += region_results[cat]["Z_run2"] ** 2
-
-            run2 = math.sqrt(total_run2_Z2)
-            quad = math.sqrt(total_quad_Z2)
-
-            print(f"  >>> Run2 = {run2:.4f}, Quad = {quad:.4f}")
-
-            results.append({
-                "flav": flav,
-                "mass": mass,
-                "run2": run2,
-                "quad": quad,
-                "met": "boundary",
-                "regions": region_results,
-            })
-
-    return results
-
-
-
-
-def print_sr3_fom_summary(results):
-
-    print("\n==============================")
-    print(" SR3 RUN2 FOM SUMMARY")
-    print("==============================")
-
-    # collect flavours
-    flavours = sorted(set(r["flav"] for r in results))
 
     for flav in flavours:
+        for mass in masses:
 
-        print(f"\n================ {flav} =================")
-        print("Mass     Run2 FOM    Quad FOM    Ratio")
-        print("------------------------------------------------")
+            total_Z2 = 0.0
 
-        # filter + sort by mass
-        subset = [r for r in results if r["flav"] == flav]
-        subset = sorted(subset, key=lambda x: float(x["mass"]))
+            # ----------------------------------------
+            # DEFINE GLOBAL BINNING (use reference era)
+            # ----------------------------------------
+            ref_era = "2018"  # or ERAS[0]
 
-        for r in subset:
+            if ref_era not in sr2_cuts or flav not in sr2_cuts[ref_era]:
+                continue
 
-            run2 = r["run2"]
-            quad = r["quad"]
-            ratio = (run2 / quad) if quad > 0 else 0.0
+            cuts = sr2_cuts[ref_era][flav]
 
-            print(f"{r['mass']:6s}   {run2:10.4f}   {quad:10.4f}   {ratio:6.3f}")
+            region_bins = {
+                "low":  [0.0, cuts[0], cuts[1], 10.0],
+                "high": [0.0, cuts[2], cuts[3], 10.0]
+            }
+
+            # ----------------------------------------
+            # LOOP REGIONS
+            # ----------------------------------------
+            for region in ["low", "high"]:
+
+                sub = data[region]
+
+                edges_full = np.array(sub["edges"])
+                bin_lo = edges_full[:-1]
+
+                edges = region_bins[region]
+
+                region_Z2 = 0.0
+
+                # ----------------------------------------
+                # LOOP BINS
+                # ----------------------------------------
+                for i in range(len(edges) - 1):
+
+                    lo = edges[i]
+                    hi = edges[i + 1]
+
+                    if i == len(edges) - 2:
+                        mask = (bin_lo >= lo) & (bin_lo <= hi)
+                    else:
+                        mask = (bin_lo >= lo) & (bin_lo < hi)
+
+                    S_tot = 0.0
+                    B_tot = 0.0
+                    E_tot = 0.0
+
+                    # ----------------------------------------
+                    # SUM OVER ERAS
+                    # ----------------------------------------
+                    for era in ERAS:
+
+                        if era not in sr2_cuts:
+                            continue
+                        if flav not in sr2_cuts[era]:
+                            continue
+
+                        S_arr = sub["signal"][flav][mass][era]
+                        B_arr = sub["background"][flav][era]
+                        F_arr = sub["fake"][flav][era]
+                        E_arr = sub["bkg_err2"][flav][era]
+
+                        S = float(S_arr[mask].sum())
+                        B = float(B_arr[mask].sum())
+                        F = float(F_arr[mask].sum())
+                        E = float(E_arr[mask].sum())
+
+                        F, B = fix_fake_and_bkg(
+                            F, B, FAKE_FLOOR,
+                            flavour=flav,
+                            era=era
+                        )
+
+                        S_tot += S
+                        B_tot += B
+                        E_tot += E
+
+                    if B_tot > 0:
+                        Z = compute_bin_Z_with_unc(S_tot, B_tot, E_tot)
+                    else:
+                        Z = 0.0
+
+                    region_Z2 += Z * Z
+
+                total_Z2 += region_Z2
+
+            Z_run2 = math.sqrt(total_Z2)
+
+            results.append({
+                "flav": flav,
+                "mass": mass,
+                "run2": Z_run2,
+                "quad": Z_run2,
+                "regions": {
+                    "low":  {"bins": region_bins["low"]},
+                    "high": {"bins": region_bins["high"]}
+                }
+            })
+
+    return results
+
+def evaluate_per_era(edges_low, edges_high, low, high, cache,
+                     fake_low_per_era, fake_high_per_era):
+
+    results = {}
+
+    # =========================================================                                                                                                                                                                                                                       
+    # TRUE RUN2 MODE: FOM(s_Run2, sum b_era)                                                                                                                                                                                                                                          
+    # =========================================================                                                                                                                                                                                                                       
+    if USE_TRUE_RUN2_FOM:
+
+        total = 0
+
+        for m, c in cache.items():
+
+            f_bins = []
+
+            # -------------------------                                                                                                                                                                                                                                               
+            # LOW bins                                                                                                                                                                                                                                                                
+            # -------------------------                                                                                                                                                                                                                                               
+            for i in range(len(edges_low)-1):
+                lo = edges_low[i]
+                hi = edges_low[i+1]
+
+                bkg_sum = 0
+                for era2 in ERAS:
+                    sub = [b for b in low[era2] if lo <= b[0] < hi]
+                    bkg_sum += correct_bkg(lo, hi, sub, fake_low_per_era[era2])
+
+                sig = sum(v for x, v in c.items() if lo <= x < hi)
+                f_bins.append(fom(sig, bkg_sum))
+
+            # -------------------------                                                                                                                                                                                                                                               
+            # HIGH bins                                                                                                                                                                                                                                                               
+            # -------------------------                                                                                                                                                                                                                                               
+            for i in range(len(edges_high)-1):
+                lo = edges_high[i]
+                hi = edges_high[i+1]
+
+                bkg_sum = 0
+                for era2 in ERAS:
+                    sub = [b for b in high[era2] if lo <= b[0] < hi]
+                    bkg_sum += correct_bkg(lo, hi, sub, fake_high_per_era[era2])
+
+                sig = sum(v for x, v in c.items() if lo <= x < hi)
+                f_bins.append(fom(sig, bkg_sum))
+
+            total += sum(x*x for x in f_bins)
+
+        f_total = math.sqrt(total)
+
+        # In Run2 mode, per-era breakdown is not meaningful                                                                                                                                                                                                                           
+        # Assign same value for compatibility with existing code                                                                                                                                                                                                                      
+        for era in ERAS:
+            results[era] = f_total
+
+        return results
+
+    # =========================================================                                                                                                                                                                                                                       
+    # ORIGINAL MODE: per-era FOM                                                                                                                                                                                                                                                      
+    # =========================================================                                                                                                                                                                                                                       
+    for era in ERAS:
+
+        total = 0
+
+        for m, c in cache.items():
+
+            f_bins = []
+
+            # -------------------------                                                                                                                                                                                                                                               
+            # LOW bins                                                                                                                                                                                                                                                                
+            # -------------------------                                                                                                                                                                                                                                               
+            for i in range(len(edges_low)-1):
+                lo = edges_low[i]
+                hi = edges_low[i+1]
+
+                sub = [b for b in low[era] if lo <= b[0] < hi]
+                bkg = correct_bkg(lo, hi, sub, fake_low_per_era[era])
+
+                sig = sum(v for x, v in c.items() if lo <= x < hi)
+                f_bins.append(fom(sig, bkg))
+
+            # -------------------------                                                                                                                                                                                                                                               
+            # HIGH bins                                                                                                                                                                                                                                                               
+            # -------------------------                                                                                                                                                                                                                                               
+            for i in range(len(edges_high)-1):
+                lo = edges_high[i]
+                hi = edges_high[i+1]
+
+                sub = [b for b in high[era] if lo <= b[0] < hi]
+                bkg = correct_bkg(lo, hi, sub, fake_high_per_era[era])
+
+                sig = sum(v for x, v in c.items() if lo <= x < hi)
+                f_bins.append(fom(sig, bkg))
+
+            total += sum(x*x for x in f_bins)
+
+        results[era] = math.sqrt(total)
+
+    return results
+
+
+def evaluate_fixed_bins(edges_low, edges_high, low, high, cache,
+                        fake_low_per_era, fake_high_per_era):
+
+    total = 0
+
+    for m, c in cache.items():
+
+        f_bins = []
+
+        # =========================================================                                                                                                                                        
+        # TRUE RUN2 MODE                                                                                                                                                                                   
+        # =========================================================                                                                                                                                        
+        if USE_TRUE_RUN2_FOM:
+
+            # -------------------------                                                                                                                                                                    
+            # LOW bins                                                                                                                                                                                     
+            # -------------------------                                                                                                                                                                    
+            for i in range(len(edges_low)-1):
+                lo = edges_low[i]
+                hi = edges_low[i+1]
+
+                bkg_sum = 0
+                for era in ERAS:
+                    sub = [b for b in low[era] if lo <= b[0] < hi]
+                    bkg_sum += correct_bkg(lo, hi, sub, fake_low_per_era[era])
+
+                sig = sum(v for x, v in c.items() if lo <= x < hi)
+                f_bins.append(fom(sig, bkg_sum))
+
+            # -------------------------                                                                                                                                                                    
+            # HIGH bins                                                                                                                                                                                    
+            # -------------------------                                                                                                                                                                    
+            for i in range(len(edges_high)-1):
+                lo = edges_high[i]
+                hi = edges_high[i+1]
+
+                bkg_sum = 0
+                for era in ERAS:
+                    sub = [b for b in high[era] if lo <= b[0] < hi]
+                    bkg_sum += correct_bkg(lo, hi, sub, fake_high_per_era[era])
+
+                sig = sum(v for x, v in c.items() if lo <= x < hi)
+                f_bins.append(fom(sig, bkg_sum))
+
+        # =========================================================                                                                                                                                        
+        # ORIGINAL PER-ERA MODE                                                                                                                                                                            
+        # =========================================================                                                                                                                                        
+        else:
+
+            for era in ERAS:
+
+                # LOW                                                                                                                                                                                      
+                for i in range(len(edges_low)-1):
+                    lo = edges_low[i]
+                    hi = edges_low[i+1]
+
+                    sub = [b for b in low[era] if lo <= b[0] < hi]
+                    bkg = correct_bkg(lo, hi, sub, fake_low_per_era[era])
+
+                    sig = sum(v for x, v in c.items() if lo <= x < hi)
+                    f_bins.append(fom(sig, bkg))
+
+                # HIGH                                                                                                                                                                                     
+                for i in range(len(edges_high)-1):
+                    lo = edges_high[i]
+                    hi = edges_high[i+1]
+
+                    sub = [b for b in high[era] if lo <= b[0] < hi]
+                    bkg = correct_bkg(lo, hi, sub, fake_high_per_era[era])
+
+                    sig = sum(v for x, v in c.items() if lo <= x < hi)
+                    f_bins.append(fom(sig, bkg))
+
+        total += sum(x*x for x in f_bins)
+
+    return math.sqrt(total)
+
+
+
+
+def scan_predefined_verbose(bins_low, bins_high,
+                           sig_cache, mode,
+                            all_low, fake_low_per_era, fake_high_per_era):
+
+    print("\n==============================")
+    print("[REFERENCE] Predefined bin scan")
+    print("==============================")
+
+    boundaries = [1.0,1.5,2.0,2.5,3.0,3.5,4.0,5.0,7.5]
+
+    results = []
+
+    for b1 in boundaries:
+        for b2 in boundaries:
+            if b1 >= b2: continue
+
+            for b3 in boundaries:
+                for b4 in boundaries:
+                    if b3 >= b4: continue
+
+                    low  = [0, b1, b2, 10]
+                    high = [0, b3, b4, 10]
+
+                    r_low  = worker((low, bins_low, sig_cache, mode, all_low, fake_low_per_era))
+                    r_high = worker((high, bins_high, sig_cache, mode, all_low, fake_high_per_era))
+
+                    if not r_low or not r_high:
+                        continue
+
+                    per_era_tmp = evaluate_per_era(
+                        low, high,
+                        bins_low, bins_high,
+                        sig_cache,
+                        fake_low_per_era,
+                        fake_high_per_era
+                    )
+
+                    f_run = combine_per_era_fom(per_era_tmp)
+
+                    # per-era FOM                                                                                                                                                                                                    
+                    f_per = evaluate_fixed_bins(
+                        low, high,
+                        bins_low, bins_high,
+                        sig_cache,
+                        fake_low_per_era,
+                        fake_high_per_era
+                    )
+
+                    # --- STAT CHECKS ---                                                                                                                                                                                            
+                    pass_run2 = check_run2_per_flavour(low, all_low) and \
+                        check_run2_per_flavour(high, all_low)
+
+                    pass_per  = check_perera(low, bins_low) and \
+                        check_perera(high, bins_high)
+
+                    # --- BKG ---                                                                                                                                                                                                    
+                    def get_bkg(edges, bins):
+                        vals = []
+                        for i in range(len(edges)-1):
+                            lo, hi = edges[i], edges[i+1]
+                            sub = [b for b in bins if lo <= b[0] < hi]
+                            vals.append(round(sum(x[2] for x in sub),2))
+                        return vals
+
+                    bkg_low  = get_bkg(low,  list(bins_low.values())[0])
+                    bkg_high = get_bkg(high, list(bins_high.values())[0])
+
+                    results.append({
+                        "low": low,
+                        "high": high,
+                        "f_run": f_run,
+                        "f_per": f_per,
+                        "pass_run2": pass_run2,
+                        "pass_per": pass_per,
+                        "bkg_low": bkg_low,
+                        "bkg_high": bkg_high
+                    })
+
+    # -------------------------                                                                                                                                                                                                      
+    # SORT by Run2 FOM                                                                                                                                                                                                               
+    # -------------------------                                                                                                                                                                                                      
+    results.sort(key=lambda x: x["f_run"], reverse=True)
+
+    # -------------------------                                                                                                                                                                                                      
+    # PRINT                                                                                                                                                                                                                          
+    # -------------------------                                                                                                                                                                                                      
+    for r in results:
+
+        status = ""
+        if r["pass_run2"]:
+            status = " ----> PASS STAT REQ"
+        elif r["pass_per"]:
+            status = " ----> PASS PER-ERA ONLY"
+
+        print(
+            "REFERENCE RESULT Predefined | "
+            f"Low {r['low']} | High {r['high']} | "
+            f"BkgLow {r['bkg_low']} | BkgHigh {r['bkg_high']} | "
+            f"FOM_EraCombined {round(r['f_per'],2)} | "
+            f"FOM_Run2 {round(r['f_run'],2)}"
+            + status
+        )
+
+    best = results[0]
+    return best["f_run"], (best["low"], best["high"])
+
+def scan_predefined_binnings(bins_low, bins_high,
+                            bins_low_per_era, bins_high_per_era,
+                             sig_cache, mode, all_low, fake_low_per_era, fake_high_per_era):
+
+    print(f"\n[REFERENCE] Predefined ({mode})")
+
+    boundaries = [1.0,1.5,2.0,2.5,3.0,3.5,4.0,5.0,7.5]
+
+    best = (-1, None)
+
+    for b1 in boundaries:
+        for b2 in boundaries:
+            if b1 >= b2:
+                continue
+
+            for b3 in boundaries:
+                for b4 in boundaries:
+                    if b3 >= b4:
+                        continue
+
+                    # independent LOW and HIGH binning                                                                                                                                                                               
+                    low  = [0, b1, b2, 10]
+                    high = [0, b3, b4, 10]
+
+                    r_low  = worker((low,  bins_low,  sig_cache, mode, all_low, fake_low_per_era))
+                    r_high = worker((high, bins_high, sig_cache, mode, all_low, fake_high_per_era))
+
+                    if not r_low or not r_high:
+                        continue
+
+                    # combine LOW + HIGH FOM                                                                                                                                                                                         
+                    f = math.sqrt(r_low[0]**2 + r_high[0]**2)
+
+                    if f > best[0]:
+                        best = (f, (low, high))
+
+    return best
+
+
+
+def print_sr2_ref_bin_details(data, ref_results, flav, mass):
+
+    import numpy as np
+    import math
+
+    print("\n========================================")
+    print(f"REF BIN DETAILS | {flav} | mass={mass}")
+    print("========================================")
+
+    for r in ref_results:
+
+        if r["flav"] != flav or r["mass"] != mass:
+            continue
+
+        regions = r["regions"]
+
+        for region in ["low", "high"]:
+
+            print(f"\n--- {region.upper()} ---")
+
+            edges = regions[region]["bins"]
+            sub = data[region]
+
+            edges_full = np.array(sub["edges"])
+            bin_lo = edges_full[:-1]
+
+            for i in range(len(edges) - 1):
+
+                lo = edges[i]
+                hi = edges[i + 1]
+
+                if i == len(edges) - 2:
+                    mask = (bin_lo >= lo) & (bin_lo <= hi)
+                else:
+                    mask = (bin_lo >= lo) & (bin_lo < hi)
+
+                S_tot = 0.0
+                B_tot = 0.0
+                E_tot = 0.0
+
+                for era in ERAS:
+
+                    S = sub["signal"][flav][mass][era][mask].sum()
+                    B = sub["background"][flav][era][mask].sum()
+                    F = sub["fake"][flav][era][mask].sum()
+                    E = sub["bkg_err2"][flav][era][mask].sum()
+
+                    F, B = fix_fake_and_bkg(
+                        F, B, FAKE_FLOOR,
+                        flavour=flav,
+                        era=era
+                    )
+
+                    S_tot += S
+                    B_tot += B
+                    E_tot += E
+
+                if B_tot > 0:
+                    Z = compute_bin_Z_with_unc(S_tot, B_tot, E_tot)
+                    rel = math.sqrt(E_tot) / B_tot
+                else:
+                    Z = 0.0
+                    rel = 0.0
+
+                print(f"[{lo:5.2f},{hi:5.2f}] "
+                      f"S={S_tot:8.3f} "
+                      f"B={B_tot:8.3f} "
+                      f"rel={rel:6.3f} "
+                      f"Z={Z:6.3f}")

@@ -106,7 +106,8 @@ class AnalyzerParameter{
   enum Syst{
     Central,
     FRAJUp,FRAJ40,FRAJDown,
-    FRHighPtUp,FRHighPtDown,
+    FRMuonHighPtUp,FRMuonHighPtDown,
+    FRElectronHighPtUp,FRElectronHighPtDown,
     FRLooseIDDJUp,FRLooseIDDJDown,
     FRPartonSFUp, FRPartonSFDown,PRApplied,FRAltBinning,
     JetResUp, JetResDown,    JetEnUp, JetEnDown,

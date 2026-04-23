@@ -255,9 +255,10 @@ double HNL_LeptonCore::GetFakeWeight(std::vector<Lepton *> leps, AnalyzerParamet
     if(_param.syst_ == AnalyzerParameter::FRRateDown) FRStatSyst=-2;
 
     /// Use FRStatSyst to set for High Pt syst
-    if(_param.syst_ ==AnalyzerParameter::FRHighPtUp)  FRStatSyst=10;
-
-    if(_param.syst_ ==AnalyzerParameter::FRHighPtDown)    FRStatSyst=-10;
+    if(_param.syst_ ==AnalyzerParameter::FRMuonHighPtUp)      FRStatSyst=10;
+    if(_param.syst_ ==AnalyzerParameter::FRMuonHighPtDown)    FRStatSyst=-10;
+    if(_param.syst_ ==AnalyzerParameter::FRElectronHighPtUp)      FRStatSyst=20;
+    if(_param.syst_ ==AnalyzerParameter::FRElectronHighPtDown)    FRStatSyst=-20;
 
 
     double this_fr1 =  fakeEst->GetFakeRate(IsMuon1, ID1,  fr_key1, _param.FakeRateMethod, _param.FakeRateParam, leps[0]->fEta(), leps[0]->Pt(),leps[0]->LeptonFakeTagger(),FRStatSyst);

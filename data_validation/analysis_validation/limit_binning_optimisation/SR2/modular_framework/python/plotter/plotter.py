@@ -1,11 +1,11 @@
 import ROOT
 
-from python.scan.ref_fom_utils import evaluate_sr3_run2_with_boundary
+#from python.scan.ref_fom_utils import evaluate_sr2_run2_with_boundary
 
-def build_sr3_plot_results(data):
+def build_sr2_plot_results(data):
 
     # run main evaluator                                                                                                                                                                                    
-    res = evaluate_sr3_run2_with_boundary(data)
+    res = []#evaluate_sr2_run2_with_boundary(data)
 
     results_for_plots = []
 
@@ -13,14 +13,14 @@ def build_sr3_plot_results(data):
     results_for_plots.append({
         "results": convert_results_for_plot(res, mode="run2"),
         "raw": res,
-        "label": "SR3 Run2",
+        "label": "SR2 Run2",
     })
 
     # Quad                                                                                                                                                                                                  
     results_for_plots.append({
         "results": convert_results_for_plot(res, mode="quad"),
         "raw": res,
-        "label": "SR3 Quad",
+        "label": "SR2 Quad",
     })
 
     return results_for_plots
@@ -211,7 +211,7 @@ def make_mass_plot_multi(results_list, flav, LOG_TAG, out_tag="default"):
     # Save
     # ------------------
 
-    BASE_DIR = "/data6/Users/jalmond/HNL/SKFlatAnalyzer/data_validation/analysis_validation/limit_binning_optimisation/SR3/modular_framework/"
+    BASE_DIR = "/data6/Users/jalmond/HNL/SKFlatAnalyzer/data_validation/analysis_validation/limit_binning_optimisation/SR2/modular_framework/"
     #os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     outdir = os.path.join(BASE_DIR, "output", "plots", LOG_TAG, out_tag)
     os.makedirs(outdir, exist_ok=True)

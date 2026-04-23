@@ -26,8 +26,7 @@ def normalize_results(raw):
 
 
 
-    
-def print_sr3_scan_table_from_results(result, data):
+def print_sr2_scan_table_from_results(result, data):
 
     import math
     import numpy as np
@@ -37,19 +36,28 @@ def print_sr3_scan_table_from_results(result, data):
     # ----------------------------------------
     if isinstance(result, list):
         for r in result:
-            print_sr3_scan_table_from_results(r, data)
+            print_sr2_scan_table_from_results(r, data)
         return
+
+    # ----------------------------------------
+    # Enforce SR3-style schema
+    # ----------------------------------------
+    if "flav" not in result or "mass" not in result:
+        raise KeyError("Result must contain 'flav' and 'mass'")
+
+    if "regions" not in result:
+        raise KeyError("Result must contain 'regions'")
 
     flav = result["flav"]
     mass = result["mass"]
-    met  = result["met"]
+    regions = result["regions"]
 
     print("\n========================================================")
-    print(" SCAN TABLE (RUN2, per-era merged fake fix) | {} | mass={} | MET={}".format(flav, mass, met))
+    print(f" SCAN TABLE (SR2 Run2, per-era fake fix) | {flav} | mass={mass}")
     print("========================================================")
 
     header = (
-        "Bin | Jet     | MET   | LT range        | "
+        "Bin | Region | LT range        | "
         "   S      B      rel_unc     Z"
     )
     print(header)
@@ -60,25 +68,22 @@ def print_sr3_scan_table_from_results(result, data):
     total_Z2 = 0.0
 
     # ======================================================
-    # LOOP OVER REGIONS
+    # LOOP OVER REGIONS (low / high)
     # ======================================================
-    for cat, info in result["regions"].items():
+    for region, info in regions.items():
 
         edges = info["bins"]
-        sub = data[met][cat]
+        sub = data[region]
 
         edges_full = np.array(sub["edges"])
         bin_lo = edges_full[:-1]
 
         print("\n--------------------------------------------------------")
-        print(" REGION: {}".format(cat))
+        print(f" REGION: {region.upper()}")
         print("--------------------------------------------------------")
 
         region_B = 0.0
         region_Z2 = 0.0
-
-        jet = "LowJet" if "LowJet" in cat else "HighJet"
-        met_label = "<" if "LTcut" in cat else ">="
 
         # ----------------------------------------
         # LOOP MERGED BINS
@@ -112,7 +117,6 @@ def print_sr3_scan_table_from_results(result, data):
                 f = float(F_arr[mask].sum())
                 e = float(E_arr[mask].sum())
 
-                # Apply fake fix per era (CORRECT)
                 f, b = fix_fake_and_bkg(
                     f, b, FAKE_FLOOR,
                     flavour=flav,
@@ -133,8 +137,8 @@ def print_sr3_scan_table_from_results(result, data):
                 Z = 0.0
                 rel = 0.0
 
-            print("{:3d} | {:7s} | {:3s}{:>2s} | [{:5.0f},{:5.0f}] | {:7.3f} {:7.3f} {:6.3f} {:6.3f}".format(
-                idx, jet, met_label, str(met), lo, hi, S_tot, B_tot, rel, Z
+            print("{:3d} | {:6s} | [{:5.2f},{:5.2f}] | {:7.3f} {:7.3f} {:6.3f} {:6.3f}".format(
+                idx, region, lo, hi, S_tot, B_tot, rel, Z
             ))
 
             idx += 1
@@ -143,7 +147,7 @@ def print_sr3_scan_table_from_results(result, data):
 
         region_Z = math.sqrt(region_Z2)
 
-        print("\n>>> Region B = {:.3f} | Region Z = {:.4f}".format(region_B, region_Z))
+        print(f"\n>>> Region B = {region_B:.3f} | Region Z = {region_Z:.4f}")
 
         total_B += region_B
         total_Z2 += region_Z2
@@ -154,330 +158,85 @@ def print_sr3_scan_table_from_results(result, data):
     total_Z = math.sqrt(total_Z2)
 
     print("\n========================================================")
-    print(" TOTAL B (Run2) = {:.3f}".format(total_B))
-    print(" TOTAL Z (Run2) = {:.4f}".format(total_Z))
+    print(f" TOTAL B (Run2) = {total_B:.3f}")
+    print(f" TOTAL Z (Run2) = {total_Z:.4f}")
     print("========================================================")
-    
-
-def print_sr3_z_per_boundary(data, MASSES, FLAVOURS, ERAS):
-
-    print("\n====================================================")
-    print(" SR3 Z PER BOUNDARY (FIXED BINNING: [0,200,400,1200])")
-    print("====================================================")
-
-    colw = 12
-
-    target_edges = [0, 200, 400, 1200]
-    n_target_bins = len(target_edges) - 1
-
-    CATEGORIES = [
-        "LowJet_LT_MET{X}_LTcut",
-        "HighJet_LT_MET{X}_LTcut",
-        "LowJet_LT_MET{X}_GTcut",
-        "HighJet_LT_MET{X}_GTcut",
-    ]
-
-    for flav in FLAVOURS:
-
-        print("\n====================================================")
-        print(f" FLAVOUR: {flav}")
-        print("====================================================")
-
-        for boundary in data:
-
-            print("\n----------------------------------------------------")
-            print(f" MET boundary = {boundary}")
-            print("----------------------------------------------------")
-
-            header = (
-                f"{'Mass':>6} | "
-                + "".join([f"{era:>{colw}}" for era in ERAS])
-                + f" | {'QUAD':>{colw}} {'Run2':>{colw}}"
-            )
-            print(header)
-            print("-" * len(header))
-
-            for mass in MASSES:
-
-                Z_era = {era: 0.0 for era in ERAS}
-                total_quad_Z2 = 0.0
-
-                # Run2 bins (fixed binning)
-                run2_bins = [{"S": 0.0, "B": 0.0, "E": 0.0} for _ in range(n_target_bins)]
-
-                # ----------------------------
-                # LOOP ERA + CAT
-                # ----------------------------
-                for era in ERAS:
-
-                    era_Z2 = 0.0
-
-                    # per-era bins
-                    era_bins = [{"S": 0.0, "B": 0.0, "E": 0.0} for _ in range(n_target_bins)]
-
-                    for cat_template in CATEGORIES:
-
-                        cat = cat_template.format(X=boundary)
-
-                        if cat not in data[boundary]:
-                            continue
-
-                        sub = data[boundary][cat]
-
-                        edges_full = sub["edges"]
-                        S_arr = sub["signal"][flav][mass][era]
-                        B_arr = sub["background"][flav][era]
-                        E_arr = sub["bkg_err2"][flav][era]
-
-                        for i in range(len(edges_full) - 1):
-
-                            lo = edges_full[i]
-                            hi = edges_full[i + 1]
-
-                            S = S_arr[i]
-                            B = B_arr[i]
-                            E = E_arr[i]
-
-                            # find which target bin this belongs to
-                            for j in range(n_target_bins):
-                                t_lo = target_edges[j]
-                                t_hi = target_edges[j + 1]
-
-                                if lo >= t_lo and hi <= t_hi:
-                                    era_bins[j]["S"] += S
-                                    era_bins[j]["B"] += B
-                                    era_bins[j]["E"] += E
-
-                                    run2_bins[j]["S"] += S
-                                    run2_bins[j]["B"] += B
-                                    run2_bins[j]["E"] += E
-                                    break
-
-                    # compute era Z
-                    for j in range(n_target_bins):
-                        S = era_bins[j]["S"]
-                        B = era_bins[j]["B"]
-                        E = era_bins[j]["E"]
-
-                        if B <= 0:
-                            continue
-
-                        Z = compute_bin_Z_with_unc(S, B, E)
-                        era_Z2 += Z * Z
-
-                    Z_era[era] = math.sqrt(era_Z2)
-                    total_quad_Z2 += era_Z2
-
-                # ----------------------------
-                # RUN2
-                # ----------------------------
-                run2_Z2 = 0.0
-
-                for j in range(n_target_bins):
-                    S = run2_bins[j]["S"]
-                    B = run2_bins[j]["B"]
-                    E = run2_bins[j]["E"]
-
-                    if B <= 0:
-                        continue
-
-                    Z = compute_bin_Z_with_unc(S, B, E)
-                    run2_Z2 += Z * Z
-
-                Z_quad = math.sqrt(total_quad_Z2)
-                Z_run2 = math.sqrt(run2_Z2)
-
-                line = (
-                    f"{str(mass):>6} | "
-                    + "".join([f"{Z_era[e]:{colw}.3f}" for e in ERAS])
-                    + f" | {Z_quad:{colw}.3f} {Z_run2:{colw}.3f}"
-                )
-
-                print(line)
-
-
-
-
-def print_sr3_z_summary_per_metcat_flat(data, MASSES, FLAVOURS, ERAS):
-
-    import math
-
-    colw = 10
-
-    print("\n====================================================")
-    print(" SR3 Z SUMMARY PER MET + CATEGORY (FLAT TABLE)")
-    print("====================================================\n")
-
-    # -------------------------------
-    # HEADER
-    # -------------------------------
-    header = (
-        f"{'Flav':>6} {'MET':>4} {'Category':>28} {'Mass':>6} | "
-        + "".join([f"{era:>{colw}}" for era in ERAS])
-        + f" | {'QUAD':>{colw}} {'Run2':>{colw}} || "
-        + "".join([f"{era:>{colw}}" for era in ERAS])
-        + f" | {'QUAD':>{colw}} {'Run2':>{colw}}"
-    )
-
-    print(header)
-    print("-" * len(header))
-
-    # ===============================
-    # LOOP
-    # ===============================
-    for flav in FLAVOURS:
-        for boundary in data:
-            for cat in data[boundary]:
-
-                for mass in MASSES:
-
-                    sub = data[boundary][cat]
-
-                    nbins = len(sub["edges"]) - 1
-
-                    # -----------------------
-                    # INIT
-                    # -----------------------
-                    Z2_era_fine = {era: 0.0 for era in ERAS}
-                    Z2_era_1bin = {era: 0.0 for era in ERAS}
-
-                    run2_bins = [{"S": 0.0, "B": 0.0, "E": 0.0} for _ in range(nbins)]
-
-                    S_run2_1bin = 0.0
-                    B_run2_1bin = 0.0
-                    E_run2_1bin = 0.0
-
-                    # -----------------------
-                    # LOOP ERAS
-                    # -----------------------
-                    for era in ERAS:
-
-                        S_arr = sub["signal"][flav][mass][era]
-                        B_arr = sub["background"][flav][era]
-                        E_arr = sub["bkg_err2"][flav][era]
-
-                        # ---- fine binning ----
-                        for i in range(nbins):
-
-                            s = S_arr[i]
-                            b = B_arr[i]
-                            e = E_arr[i]
-
-                            if b <= 0:
-                                continue
-
-                            Z = compute_bin_Z_with_unc(s, b, e)
-                            Z2_era_fine[era] += Z * Z
-
-                            run2_bins[i]["S"] += s
-                            run2_bins[i]["B"] += b
-                            run2_bins[i]["E"] += e
-
-                        # ---- 1-bin ----
-                        s_tot = sum(S_arr)
-                        b_tot = sum(B_arr)
-                        e_tot = sum(E_arr)
-
-                        if b_tot > 0:
-                            Z = compute_bin_Z_with_unc(s_tot, b_tot, e_tot)
-                            Z2_era_1bin[era] += Z * Z
-
-                        S_run2_1bin += s_tot
-                        B_run2_1bin += b_tot
-                        E_run2_1bin += e_tot
-
-                    # -----------------------
-                    # FINAL CALCULATIONS
-                    # -----------------------
-                    Z_era_fine = {era: math.sqrt(Z2_era_fine[era]) for era in ERAS}
-                    Z_quad_fine = math.sqrt(sum(Z2_era_fine.values()))
-
-                    Z2_run2_fine = 0.0
-                    for i in range(nbins):
-                        S = run2_bins[i]["S"]
-                        B = run2_bins[i]["B"]
-                        E = run2_bins[i]["E"]
-
-                        if B <= 0:
-                            continue
-
-                        Z = compute_bin_Z_with_unc(S, B, E)
-                        Z2_run2_fine += Z * Z
-
-                    Z_run2_fine = math.sqrt(Z2_run2_fine)
-
-                    Z_era_1bin = {era: math.sqrt(Z2_era_1bin[era]) for era in ERAS}
-                    Z_quad_1bin = math.sqrt(sum(Z2_era_1bin.values()))
-
-                    if B_run2_1bin > 0:
-                        Z_run2_1bin = compute_bin_Z_with_unc(
-                            S_run2_1bin, B_run2_1bin, E_run2_1bin
-                        )
-                    else:
-                        Z_run2_1bin = 0.0
-
-                    # -----------------------
-                    # PRINT
-                    # -----------------------
-                    line = (
-                        f"{flav:>6} {boundary:>4} {cat:>28} {mass:>6} | "
-                        + "".join([f"{Z_era_fine[e]:{colw}.3f}" for e in ERAS])
-                        + f" | {Z_quad_fine:{colw}.3f} {Z_run2_fine:{colw}.3f} || "
-                        + "".join([f"{Z_era_1bin[e]:{colw}.3f}" for e in ERAS])
-                        + f" | {Z_quad_1bin:{colw}.3f} {Z_run2_1bin:{colw}.3f}"
-                    )
-
-                    print(line)
             
-def debug_print_yields_integral(data):
+def debug_print_yields_integral_sr2(data):
 
     print("\n========================================================")
-    print(" DEBUG YIELD DUMP (INTEGRALS)")
+    print(" DEBUG YIELD DUMP (INTEGRALS) [SR2]")
     print("========================================================")
 
-    for met in sorted(data.keys()):
+    for region in ["low", "high"]:
 
-        for region in data[met]:
+        sub = data[region]
 
-            sub = data[met][region]
+        print("\n--------------------------------------------------------")
+        print(f" REGION: {region}")
+        print("--------------------------------------------------------")
 
-            print("\n--------------------------------------------------------")
-            print(f" REGION: {region} | MET={met}")
-            print("--------------------------------------------------------")
+        # ----------------------------------------
+        # BACKGROUND
+        # ----------------------------------------
+        for flav in sub["background"]:
+            for era in sub["background"][flav]:
 
-            # ----------------------------------------
-            # BACKGROUND
-            # ----------------------------------------
-            for flav in sub["background"]:
-                for era in sub["background"][flav]:
+                arr = sub["background"][flav][era]
+                integral = arr.sum()
 
-                    arr = sub["background"][flav][era]
-                    integral = arr.sum()
+                print(f"Bkg   | {era:12s} | {flav:5s} | {region:10s} | {integral:10.4f}")
 
-                    print(f"Bkg   | {era:12s} | {flav:5s} | {region:25s} | {integral:10.4f}")
+        # ----------------------------------------
+        # FAKE
+        # ----------------------------------------
+        for flav in sub["fake"]:
+            for era in sub["fake"][flav]:
 
-            # ----------------------------------------
-            # FAKE
-            # ----------------------------------------
-            for flav in sub["fake"]:
-                for era in sub["fake"][flav]:
+                arr = sub["fake"][flav][era]
+                integral = arr.sum()
 
-                    arr = sub["fake"][flav][era]
-                    integral = arr.sum()
+                print(f"Fake  | {era:12s} | {flav:5s} | {region:10s} | {integral:10.4f}")
 
-                    print(f"Fake  | {era:12s} | {flav:5s} | {region:25s} | {integral:10.4f}")
+        # ----------------------------------------
+        # SIGNAL
+        # ----------------------------------------
+        for flav in sub["signal"]:
+            for mass in sub["signal"][flav]:
+                for era in sub["signal"][flav][mass]:
 
-            # ----------------------------------------
-            # SIGNAL
-            # ----------------------------------------
-            for flav in sub["signal"]:
-                for mass in sub["signal"][flav]:
-                    for era in sub["signal"][flav][mass]:
+                    arr = sub["signal"][flav][mass][era]
 
-                        arr = sub["signal"][flav][mass][era]
+                    if arr is None:
+                        integral = 0.0
+                    else:
                         integral = arr.sum()
 
-                        print(f"Sig{mass:<4} | {era:12s} | {flav:5s} | {region:25s} | {integral:10.4f}")
+                    print(f"Sig{mass:<4} | {era:12s} | {flav:5s} | {region:10s} | {integral:10.4f}")
+
+    # ----------------------------------------
+    # GLOBAL CHECK (very useful)
+    # ----------------------------------------
+    print("\n--------------------------------------------------------")
+    print(" GLOBAL TOTALS")
+    print("--------------------------------------------------------")
+
+    total_B = 0.0
+    total_F = 0.0
+
+    for region in ["low", "high"]:
+        sub = data[region]
+
+        for flav in sub["background"]:
+            for era in sub["background"][flav]:
+                total_B += sub["background"][flav][era].sum()
+
+        for flav in sub["fake"]:
+            for era in sub["fake"][flav]:
+                total_F += sub["fake"][flav][era].sum()
+
+    print(f"Total Background = {total_B:.4f}")
+    print(f"Total Fake       = {total_F:.4f}")
 
 def print_config_file(module, title="CONFIG"):
     import inspect
@@ -612,49 +371,137 @@ def print_scan_binning_tableOLD(scan_results_for_plots):
 
 
 
-def print_scan_summary(results):
+def print_sr2_scan_summary(results):
 
     print("\n==============================")
-    print(" SR3 SCAN SUMMARY (PER FLAV)")
+    print(" SR2 SCAN SUMMARY")
     print("==============================")
 
-    flavours = sorted(set(r["flav"] for r in results))
+    # ----------------------------------------
+    # flatten (handle nested lists)
+    # ----------------------------------------
+    flat = []
+    for r in results:
+        if isinstance(r, list):
+            flat.extend(r)
+        else:
+            flat.append(r)
 
-    for flav in flavours:
+    # ----------------------------------------
+    # group by flavour
+    # ----------------------------------------
+    results_by_flav = {}
+
+    for r in flat:
+
+        flavs = r.get("flavs", [])
+
+        for flav in flavs:
+            results_by_flav.setdefault(flav, []).append(r)
+
+    # ----------------------------------------
+    # print per flavour
+    # ----------------------------------------
+    for flav in sorted(results_by_flav.keys()):
 
         print(f"\n================ {flav} =================")
-        print("Mass     MET   Run2(Z)   Quad(Z)")
+        print("Mass     Run2(Z)   Quad(Z)")
         print("----------------------------------------")
 
-        subset = [r for r in results if r["flav"] == flav]
-        subset = sorted(subset, key=lambda x: float(x["mass"]))
+        subset = results_by_flav[flav]
+
+        # expand masses (important for global scans)
+        expanded = []
 
         for r in subset:
+            masses = r.get("masses", [])
+            for m in masses:
+                expanded.append((m, r))
 
-            print(f"{r['mass']:6s}   {r['met']:>3s}   "
-                  f"{r['run2']:8.4f}   {r['quad']:8.4f}")
+        # sort by mass
+        expanded = sorted(expanded, key=lambda x: float(x[0]))
 
-def print_scan_details(results, flav, mass):
+        for mass, r in expanded:
 
+            print(f"{str(mass):6s}   "
+                  f"{r['Z_run2']:8.4f}   {r['Z_quad']:8.4f}")
+
+
+
+def print_sr2_scan_details(results, flav, mass):
+
+    # ----------------------------------------
+    # flatten results
+    # ----------------------------------------
+    flat = []
     for r in results:
-        if r["flav"] == flav and r["mass"] == mass:
+        if isinstance(r, list):
+            flat.extend(r)
+        else:
+            flat.append(r)
 
-            print("\n========================================")
-            print(f"DETAILS | {flav} | mass={mass} | MET={r['met']}")
-            print("========================================")
+    found = False
 
-            for cat, info in r["regions"].items():
+    for r in flat:
 
-                print(f"\n--- {cat} ---")
-                print(f"Bins: {info['bins']}")
-                print(f"Z = {info['Z']:.4f}")
+        # ----------------------------------------
+        # enforce SR3-style schema
+        # ----------------------------------------
+        if "flav" not in r or "mass" not in r or "regions" not in r:
+            continue
 
-                for b in info["per_era"]["Run2"]:
-                    print(f"[{b['lo']:4.0f},{b['hi']:4.0f}] "
-                          f"S={b['S']:.3e} "
-                          f"B={b['B']:.3e} "
-                          f"Z={b['Z']:.3f}")
-            
+        if r["flav"] != flav or r["mass"] != mass:
+            continue
+
+        found = True
+
+        print("\n========================================")
+        print(f"DETAILS | {flav} | mass={mass}")
+        print("========================================")
+
+        regions = r["regions"]
+
+        # =========================================
+        # LOOP REGIONS (low / high)
+        # =========================================
+        for region, info in regions.items():
+
+            print(f"\n--- {region.upper()} ---")
+            print(f"Bins: {info.get('bins', [])}")
+            print(f"Z = {info.get('Z', 0.0):.4f}")
+
+            # ----------------------------------------
+            # bin-level info (from scan)
+            # ----------------------------------------
+            bin_info = info.get("bin_info", [])
+
+            if not bin_info:
+                print("  [No bin_info stored]")
+                continue
+
+            for b in bin_info:
+
+                lo = b.get("lo", 0)
+                hi = b.get("hi", 0)
+                S  = b.get("S", 0.0)
+                B  = b.get("B", 0.0)
+                Z  = b.get("Z", 0.0)
+                era = b.get("era", "Run2")
+
+                print(
+                    f"[{lo:5.2f},{hi:5.2f}]"
+                    f"{era:>6s}  "
+                    f"S={S:.3e} "
+                    f"B={B:.3e} "
+                    f"Z={Z:.3f}"
+                )
+
+                
+    if not found:
+        print(f"[WARNING] No result found for flav={flav}, mass={mass}")
+
+
+        
 def print_scan_summary_table(scan_results, use_quad=False):
 
     title = "QUAD" if use_quad else "Run2"
