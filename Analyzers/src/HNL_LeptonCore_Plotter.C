@@ -15,7 +15,7 @@ bool HNL_LeptonCore::DrawSyst(AnalyzerParameter& param_sys){
   vector<AnalyzerParameter::Syst> SystToPlot;
 
   if(IsData){
-    if(RunFake) SystToPlot= {AnalyzerParameter::Syst::FRUp,AnalyzerParameter::Syst::FRDown};
+    if(RunFake) SystToPlot= {AnalyzerParameter::Syst::FRMuonUp,AnalyzerParameter::Syst::FRMuonDown};
     
     if(RunCF)   SystToPlot= {AnalyzerParameter::Syst::CFRateUp,AnalyzerParameter::Syst::CFRateDown};
     

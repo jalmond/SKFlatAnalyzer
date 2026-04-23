@@ -125,7 +125,7 @@ void HNL_SignalRegion_Plotter::executeEvent(){
       vector<AnalyzerParameter::Syst> SystToPlot = {AnalyzerParameter::Syst::Central};
       if(HasFlag("RunSyst") && HasFlag("RunSystPlotter")){
 	if(IsData){
-	  if(RunFake) SystToPlot= {AnalyzerParameter::Syst::FRUp,AnalyzerParameter::Syst::FRDown};
+	  if(RunFake) SystToPlot= {AnalyzerParameter::Syst::FRMuonUp,AnalyzerParameter::Syst::FRMuonDown};
 	  if(RunCF)   SystToPlot= {AnalyzerParameter::Syst::CFRateUp,AnalyzerParameter::Syst::CFRateDown};
 	}
 	else {

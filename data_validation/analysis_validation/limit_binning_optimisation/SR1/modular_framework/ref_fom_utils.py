@@ -2,7 +2,7 @@
 # EVALUATORs
 # =========================================================
 
-from ref_bins import REF_BINS
+from ref_bins import REF_BINS,REF_BINS2
 from default_config import ERAS, FLAVOURS, FAKE_FLOOR
 from logger import fmt_ratio
 from helper import fix_fake_and_bkg,compute_bin_Z
@@ -60,10 +60,10 @@ def evaluate_ref_bins_fakecorr(data,DEBUG=False):
             # Use 900 bins for high masses
             # ----------------------------------
             ref_mass = mass
-            if int(mass) > 900:
-                ref_mass = "900"
+            if int(mass) > 1000:
+                ref_mass = "1000"
 
-            print(f"\n--- Mass {mass} (using REF {ref_mass}) ---")
+            print(f"\n--- Mass {mass} (using REF {ref_mass} mass={mass}) ---")
 
             quad_total = 0.0
 
@@ -77,11 +77,11 @@ def evaluate_ref_bins_fakecorr(data,DEBUG=False):
             
             for era in ERAS:
 
-                if ref_mass not in REF_BINS[era][flav]:
+                if ref_mass not in REF_BINS2[era][flav]:
                     print(f"[SKIP] Missing bins for {era} {flav} {ref_mass}")
                     continue
 
-                edges_ref = REF_BINS[era][flav][ref_mass]
+                edges_ref = REF_BINS2[era][flav][ref_mass]
 
                 print(f"\n[{era}]")
                 print("Edges:", edges_ref)
@@ -171,7 +171,7 @@ def evaluate_ref_bins_fakecorr(data,DEBUG=False):
             
             if S_run2 is not None:
 
-                edges_ref = REF_BINS[ERAS[-1]][flav].get(ref_mass, None)
+                edges_ref = REF_BINS2[ERAS[-1]][flav].get(ref_mass, None)
 
                 if edges_ref is not None:
 
@@ -239,8 +239,8 @@ def evaluate_ref_bins_fakecorr(data,DEBUG=False):
                 "binning": {
                     "Run2": None,
                     "per_era": {
-                        era: REF_BINS[era][flav][ref_mass]
-                        for era in ERAS if ref_mass in REF_BINS[era][flav]
+                        era: REF_BINS2[era][flav][ref_mass]
+                        for era in ERAS if ref_mass in REF_BINS2[era][flav]
                     }
                 }
             })
@@ -333,11 +333,11 @@ def evaluate_ref_bins_no_fakecorr(data):
             # ----------------------------------                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
             for era in ERAS:
 
-                if ref_mass not in REF_BINS[era][flav]:
+                if ref_mass not in REF_BINS2[era][flav]:
                     print(f"[SKIP] Missing bins for {era} {flav} {ref_mass}")
                     continue
 
-                edges_ref = REF_BINS[era][flav][ref_mass]
+                edges_ref = REF_BINS2[era][flav][ref_mass]
 
                 print(f"\n[{era}]")
                 print("Edges:", edges_ref)
@@ -392,7 +392,7 @@ def evaluate_ref_bins_no_fakecorr(data):
 
             if S_run2 is not None:
 
-                edges_ref = REF_BINS[ERAS[-1]][flav].get(ref_mass, None)
+                edges_ref = REF_BINS2[ERAS[-1]][flav].get(ref_mass, None)
 
                 if edges_ref is not None:
 
@@ -427,7 +427,7 @@ def evaluate_ref_bins_no_fakecorr(data):
                 "ratio": ratio,
                 "binning": {
                     "Run2": None,
-                    "per_era": {era: REF_BINS[era][flav][ref_mass] for era in ERAS if ref_mass in REF_BINS[era][flav]}
+                    "per_era": {era: REF_BINS2[era][flav][ref_mass] for era in ERAS if ref_mass in REF_BINS2[era][flav]}
                 }
             })
 

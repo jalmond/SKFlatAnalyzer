@@ -1,19 +1,43 @@
 #include "HNL_LeptonCore.h"
 
 // helper: return mass-specific bins if present and non-empty, else era default                                                              
-const vector<double>& HNL_LeptonCore::choose_bins(const map<TString, vector<double>>& per_mass, TString mass)
+const vector<double>& HNL_LeptonCore::choose_bins(
+    const map<TString, vector<double>>& per_mass,
+    TString mass)
 {
-  auto it = per_mass.find(mass);
-  if (it != per_mass.end() && !it->second.empty()) return it->second;
+    TString lookup_mass = mass;
 
-  auto it_fallback = per_mass.find("1000");
-  if (it_fallback != per_mass.end() && !it_fallback->second.empty()) return it_fallback->second;
-  
-  cout << "choose_bins " << mass << " missing" << endl;
-  exit(EXIT_FAILURE);
+    // ----------------------------
+    // Mass remapping
+    // ----------------------------
+    int m = mass.Atoi();
 
-  
+    if (m == 1000 || m == 1100 || m == 1200) {
+        lookup_mass = "1000";
+    }
+    else if (m == 1500 || m == 1700) {
+        lookup_mass = "1500";
+    }
+    else if (m == 2000 || m == 2500 || m == 3000) {
+        lookup_mass = "2000";
+    }
+
+    // ----------------------------
+    // Lookup
+    // ----------------------------
+    auto it = per_mass.find(lookup_mass);
+    if (it != per_mass.end() && !it->second.empty())
+        return it->second;
+
+    // Fallback to 1000
+    auto it_fallback = per_mass.find("1000");
+    if (it_fallback != per_mass.end() && !it_fallback->second.empty())
+        return it_fallback->second;
+
+    cout << "choose_bins " << mass << " missing" << endl;
+    exit(EXIT_FAILURE);
 }
+
 
 void HNL_LeptonCore::DefineLimitBins(){
   
@@ -41,15 +65,20 @@ void HNL_LeptonCore::DefineLimitBins(){
   sr1bins_mm_byMass["800"] = {0.0, 520.0, 570.0, 665.0, 710.0, 760.0, 910.0, 5000.0};
   sr1bins_mm_byMass["900"] = {0.0, 520.0, 570.0, 685.0, 760.0, 860.0, 1015.0, 5000.0};
   sr1bins_mm_byMass["1000"] = {0.0, 555.0, 665.0, 755.0, 860.0, 965.0, 1100.0, 5000.0};
-  
+  sr1bins_mm_byMass["1500"] = {0.0, 520.0, 545.0, 595.0, 760.0, 970.0, 1185.0, 5000.0};
+  sr1bins_mm_byMass["2000"] = {0.0, 510.0, 595.0, 740.0, 785.0, 965.0, 1185.0, 5000.0};
+    
   sr1bins_ee_byMass["400"] = {0.0, 365.0, 390.0, 430.0, 465.0, 655.0, 740.0, 5000.0};
   sr1bins_ee_byMass["450"] = {0.0, 410.0, 450.0, 485.0, 520.0, 740.0, 905.0, 5000.0};
   sr1bins_ee_byMass["500"] = {0.0, 455.0, 480.0, 505.0, 540.0, 565.0, 905.0, 5000.0};
   sr1bins_ee_byMass["600"] = {0.0, 545.0, 575.0, 600.0, 655.0, 700.0, 905.0, 5000.0};
   sr1bins_ee_byMass["700"] = {0.0, 585.0, 630.0, 685.0, 755.0, 835.0, 905.0, 5000.0};
   sr1bins_ee_byMass["800"] = {0.0, 525.0, 630.0, 710.0, 750.0, 780.0, 870.0, 5000.0};
-  sr1bins_ee_byMass["900"] = {0.0, 615.0, 750.0, 810.0, 860.0, 905.0, 980.0, 5000.0};
+  sr1bins_ee_byMass["900"] = {0.0, 615.0, 740.0, 795.0, 850.0, 890.0, 980.0, 5000.0};
   sr1bins_ee_byMass["1000"] = {0.0, 610.0, 720.0, 770.0, 860.0, 925.0, 1070.0, 5000.0};
+  sr1bins_ee_byMass["1500"] = {0.0, 505.0, 630.0, 780.0, 905.0, 1185.0, 1365.0, 5000.0};
+  sr1bins_ee_byMass["2000"] = {0.0, 540.0, 665.0, 750.0, 905.0, 1210.0, 1430.0, 5000.0};
+
   
   sr1bins_em_byMass["400"] = {0.0, 365.0, 390.0, 440.0, 665.0, 865.0, 915.0, 5000.0};
   sr1bins_em_byMass["450"] = {0.0, 385.0, 430.0, 455.0, 485.0, 510.0, 665.0, 5000.0};
@@ -59,8 +88,10 @@ void HNL_LeptonCore::DefineLimitBins(){
   sr1bins_em_byMass["800"] = {0.0, 665.0, 735.0, 785.0, 865.0, 1050.0, 1075.0, 5000.0};
   sr1bins_em_byMass["900"] = {0.0, 535.0, 665.0, 735.0, 820.0, 875.0, 990.0, 5000.0};
   sr1bins_em_byMass["1000"] = {0.0, 670.0, 800.0, 870.0, 915.0, 965.0, 1095.0, 5000.0};
+  sr1bins_em_byMass["1500"] = {0.0, 655.0, 735.0, 915.0, 1075.0, 1240.0, 1405.0, 5000.0};
+  sr1bins_em_byMass["2000"] = {0.0, 535.0, 680.0, 810.0, 980.0, 1125.0, 1495.0, 5000.0};
 
-  vector<TString> masses_to_prepare = {"400", "450","500", "600", "700", "800","900","1000"  };
+  vector<TString> masses_to_prepare = {"400", "450","500", "600", "700", "800","900","1000","1500","2000"  };
     
   // --------------------------------------------
   // SR1 Global Mass (per flavour, same for all masses)
@@ -204,41 +235,47 @@ TString HNL_LeptonCore::GetSR3StringBin(const TString& RegionTag, const TString&
   
   if (channel == "MuMu") {
     if (LowJet) {
-	  // LowJet Bins
+      // LowJet Bins
       if (met2_st < met2_st_boundary) {
 	binLimit1 = 220; binLimit2 = 290; binLimit3 = 360; binLimit4 = 480;
       }
       else {
 	binLimit1 = 260; binLimit2 = 360; binLimit3 = 460; binLimit4 = 650;
-	    
+	
       }
-    } else {
+    }
+    else {
       // HighJet Bins
       if (met2_st < met2_st_boundary) {
 	binLimit1 = 200; binLimit2 = 260; binLimit3 = 320; binLimit4 = 420;
-      } else {
+      }
+      else {
 	binLimit1 = 230; binLimit2 = 290; binLimit3 = 340; binLimit4 = 480;
-
+	
       }
     }
   }
+  
   if (channel == "EE") {
     if (LowJet) {
       // LowJet Bins
       if (met2_st < met2_st_boundary) {
 	binLimit1 = 340; binLimit2 = 600; binLimit3 = 800; binLimit4 = 1100;
-		    
-      } else {
-	binLimit1 = 270; binLimit2 = 420; binLimit3 = 600; binLimit4 = 800;
-	    
+	
       }
-    } else {
-	  // HighJet Bins
-      if (met2_st < met2_st_boundary) 
+      else {
+	binLimit1 = 270; binLimit2 = 420; binLimit3 = 600; binLimit4 = 800;
+	
+      }
+    }
+    else {
+      // HighJet Bins
+      if (met2_st < met2_st_boundary) {
 	binLimit1 = 270; binLimit2 = 360; binLimit3 = 650; binLimit4 = 1000;
-      } else {
+      }
+      else {
 	binLimit1 = 280; binLimit2 = 420; binLimit3 = 550; binLimit4 = 850;
-		    
+	
       }
     }
   }
@@ -261,9 +298,7 @@ TString HNL_LeptonCore::GetSR3StringBin(const TString& RegionTag, const TString&
       }
     }
   }
-
-
-  
+    
 
   // Determine the correct bin based on the LT value
   if (LowJet) {
