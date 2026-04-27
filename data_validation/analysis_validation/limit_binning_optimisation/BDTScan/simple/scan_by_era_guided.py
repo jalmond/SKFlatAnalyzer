@@ -10,7 +10,7 @@ import random
 
 ROOT.gROOT.SetBatch(True)
 
-FAKE_FLOOR = 0.096
+FAKE_FLOOR = 0.15 * 0.645
 
 class Tee:
     def __init__(self, *files):
@@ -39,14 +39,59 @@ def format_edges_str(edges, ndigits=2):
     return "[" + ", ".join(out) + "]"
 
 
+def build_cumsum_cache(bin_cache, all_edges):
+
+    new_cache = {}
+
+    edge_grid = np.round(np.arange(-0.4, 0.405, 0.005), 5)
+    
+    for era, (centers, bvals, fvals, svals) in bin_cache.items():
+
+        order = np.argsort(centers)
+
+        centers = centers[order]
+
+        bvals = bvals[order]
+
+        fvals = fvals[order]
+
+        svals = svals[order]
+
+        cumsum_b = np.cumsum(bvals)
+
+        cumsum_f = np.cumsum(fvals)
+
+        cumsum_s = np.cumsum(svals)
+
+       
+        edge_index_array = np.searchsorted(centers, edge_grid, side='left')
+        
+        new_cache[era] = (
+
+            centers,
+
+            cumsum_b,
+
+            cumsum_f,
+
+            cumsum_s,
+
+            edge_index_array
+
+        )
+
+    return new_cache
+        
+
 # ---------------------------------------
 # Fake correction
 # ---------------------------------------
 def fix_fake_and_bkg(F, B, FAKE_FLOOR, flavour=None, era=None, debug=False):
-    if F < FAKE_FLOOR:
+    if F <= 0:
         delta = FAKE_FLOOR - F
         F = FAKE_FLOOR
         B += delta
+    # If B is still < 0 other bkg are negative and so bin set to FAKE_FLOOR
     if B < FAKE_FLOOR:
         B=FAKE_FLOOR
     return F, B
@@ -60,6 +105,10 @@ def calculate_fom(s, b):
     term = (s + b) * math.log(1 + s / b) - s
     return 2 * term if term > 0 else 0
 
+
+# ---------------------------------------
+#  Print Tables
+# ---------------------------------------
 def print_run2_bkg_per_edge(histograms, edges_all, x_max=0.4):
 
     print("\n=== RUN2 BKG PER EDGE ===")
@@ -109,7 +158,7 @@ def print_run2_bkg_per_edge(histograms, edges_all, x_max=0.4):
 
 # ---------------------------------------
 # Random combinations
-
+# ---------------------------------------
 def get_random_combinations(edges, k, n_samples):
 
     edges = list(edges)
@@ -127,6 +176,10 @@ def get_unique_random_combinations(edges, k, n_samples):
             seen.add(combo)
             yield combo
 
+# ---------------------------------------
+# Evaluate the bin combination
+# ---------------------------------------
+            
 def evaluate_combination(args):
 
     try:
@@ -160,24 +213,36 @@ def evaluate_combination_fnct(args):
         scan_sig = 0
         scan_bkg = 0
 
-        for era, (centers, bvals,fvals, svals, evals) in bin_cache.items():
+        for era, (centers, cumsum_b, cumsum_f, cumsum_s, edge_indices) in bin_cache.items():
 
-            mask = (centers >= x_low) & (centers < x_high)
+            #centers, cumsum_b, cumsum_f, cumsum_s = bin_cache[era]
 
-            if not np.any(mask):
+            idx_low  = int(round((x_low  + 0.4) / 0.005))
+            
+            idx_high = int(round((x_high + 0.4) / 0.005))
+            
+            if idx_low < 0 or idx_high >= len(edge_indices):
+		
                 return None
+            
+            i_low  = edge_indices[idx_low]
+            
+            i_high = edge_indices[idx_high]
+            
 
-            bkg  = bvals[mask].sum()
-            fake = fvals[mask].sum()           
-            sig  = svals[mask].sum()
-            err2 = np.sum(evals[mask]**2)
 
+            bkg  = cumsum_b[i_high-1] - (cumsum_b[i_low-1] if i_low > 0 else 0.0)
+
+            fake = cumsum_f[i_high-1] - (cumsum_f[i_low-1] if i_low > 0 else 0.0)
+            
+            sig  = cumsum_s[i_high-1] - (cumsum_s[i_low-1] if i_low > 0 else 0.0)
+
+
+            
             fake, bkg = fix_fake_and_bkg(fake, bkg, FAKE_FLOOR)
-
             
             if bkg < 0.15:
                 return None
-
             
             run2_sig += sig
             run2_bkg += bkg
@@ -192,9 +257,14 @@ def evaluate_combination_fnct(args):
         total_fom += calculate_fom(scan_sig, scan_bkg)
         
     return (total_fom, edges)
-            
-def find_tail_cut(histograms, n_consecutive=0):
 
+
+# ---------------------------------------
+# Find tail cut  that reduces scan load
+# ---------------------------------------
+
+def find_tail_cut(histograms, n_consecutive=0):
+    
     test_edges = np.arange(0.4, -0.4, -0.01)
 
     pass_count = 0
@@ -240,6 +310,10 @@ def find_tail_cut(histograms, n_consecutive=0):
 
     return 0.4
 
+# ---------------------------------------
+# Build edges for comb list
+# ---------------------------------------
+
 def build_edges(Xcut):
     
     tmp_edges_low  = np.arange(-0.35, 0.0, 0.05)
@@ -251,8 +325,6 @@ def build_edges(Xcut):
     tmp_edges_all = np.concatenate((tmp_edges_low, tmp_edges_med, tmp_edges_high))
 
     tmp_edges_all = np.unique(np.round(tmp_edges_all, 5))
-
-    #tmp_edges_all = tmp_edges_all[tmp_edges_all < Xcut + 0.005]
 
     return tmp_edges_all
     
@@ -324,7 +396,6 @@ def scan_optimal_variable_binning(scan_era,histograms, nbins, max_trials, flav=N
         bvals = []
         fvals = []
         svals = []
-        evals = []
 
         for k in range(1, h.GetNbinsX()+1):
 
@@ -341,36 +412,45 @@ def scan_optimal_variable_binning(scan_era,histograms, nbins, max_trials, flav=N
             bvals.append(b)
             fvals.append(f)
             svals.append(s)
-            evals.append(h.GetBinError(k))
 
         bin_cache[era] = (
             np.array(centers),
             np.array(bvals),
             np.array(fvals),
             np.array(svals),
-            np.array(evals)
         )
 
+    
+    all_edges = np.round(np.arange(-0.4, 0.405, 0.005), 5)
+    bin_cache=build_cumsum_cache(bin_cache,all_edges)
+    
+    # ---------------------------------------
     # --- edges ---
-
+    # ---------------------------------------
+    from math import comb
+    k = nbins - 1
+    
     edges_simple = build_edges(tail_cut)
     print_run2_bkg_per_edge(histograms, edges_simple)
-        
-    from math import comb
+    N_precut_simple = len(edges_simple)
+    print(f"[INFO] simple edges before tail cut: {N_precut_simple}")
+    ncomb_simple_before = comb(N_precut_simple, k) if N_precut_simple >= k else 0
+    
+    ### Remove post tail edges
     edges_simple = edges_simple[edges_simple<tail_cut+0.005]
     N_simple = len(edges_simple)
-    k = nbins - 1
+
     ncomb_simple_after = comb(N_simple, k) if N_simple >= k else 0
     print(f"[INFO] edges after tail cut: {N_simple}")
     print(f"[INFO] combinations simple: {ncomb_simple_after:.3e}")
-    print(f"Skimmed bins : {format_edges_str(edges_simple)}")
+
+    print(f"Skimmed simple bins : {format_edges_str(edges_simple)}")
 
     edges_all = build_edges_from_tailcut(tail_cut)
     edges_all = edges_all[edges_all < tail_cut+0.005]
     
     print(f"All bins : {format_edges_str(edges_all)}")
     print_run2_bkg_per_edge(histograms, edges_all)
-
 
     N_after = len(edges_all)
     
@@ -382,8 +462,6 @@ def scan_optimal_variable_binning(scan_era,histograms, nbins, max_trials, flav=N
 
     from itertools import combinations
     from math import comb
-    
-    k = nbins - 1
     
     # ---------- edges_all ----------
     max_possible = comb(len(edges_all), k)
@@ -439,7 +517,7 @@ def scan_optimal_variable_binning(scan_era,histograms, nbins, max_trials, flav=N
     with Pool(ncpu) as pool:
 
         for i, result in enumerate(
-                pool.imap_unordered(evaluate_combination, args_case1)
+                pool.imap_unordered(evaluate_combination, args_case1,chunksize=2000)
         ):
             
             if i % 20000 == 0:
@@ -462,7 +540,7 @@ def scan_optimal_variable_binning(scan_era,histograms, nbins, max_trials, flav=N
     with Pool(ncpu) as pool:
 
         for i, result in enumerate(
-                pool.imap_unordered(evaluate_combination, args_case2)
+                pool.imap_unordered(evaluate_combination, args_case2,chunksize=2000)
         ):
 
             if i % 20000 == 0:
@@ -472,7 +550,7 @@ def scan_optimal_variable_binning(scan_era,histograms, nbins, max_trials, flav=N
                 
                 last_print_time = now
                 
-                print(f"[SCAN1] {i}/{max_trials}, best={best_fom:.3f}, dt={dt:.2f}s")
+                print(f"[SCAN2] {i}/{max_trials}, best={best_fom:.3f}, dt={dt:.2f}s")
                 
             if result is None:
                 continue
