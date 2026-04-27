@@ -5,6 +5,7 @@ from python.utils.helper import (
     compute_bin_Z_with_unc,
     generate_binnings,
     pass_stat_and_err,
+    pass_stat_era,
     build_run2_bkg_per_flavour
 )
 
@@ -262,7 +263,8 @@ def evaluate_strategy_sr2(edges, arrays, bin_lo, flavs, masses, config):
                     s_total = 0.0
                     b_total = 0.0
                     e_total = 0.0
-
+                    
+                    bin_ok = True
                     for era in ERAS:
 
                         if era not in arrays[(flav, mass)]["Era"]:
@@ -282,6 +284,15 @@ def evaluate_strategy_sr2(edges, arrays, bin_lo, flavs, masses, config):
                             era=era
                         )
 
+                        rel_e = math.sqrt(e) / b if b > 0 else 0
+
+                        if not pass_stat_era(b, rel_e):
+
+                            bin_ok = False
+                            
+                            break
+
+                        
                         s_total += s
                         b_total += b
                         e_total += e
@@ -291,7 +302,9 @@ def evaluate_strategy_sr2(edges, arrays, bin_lo, flavs, masses, config):
                     # ----------------------------------------
                     if b_total <= 0:
                         return 0.0, []
-
+                    if not bin_ok:
+                        return 0.0, []
+                    
                     rel = math.sqrt(e_total) / b_total if b_total > 0 else 0
 
                     if not pass_stat_and_err(b_total, rel):

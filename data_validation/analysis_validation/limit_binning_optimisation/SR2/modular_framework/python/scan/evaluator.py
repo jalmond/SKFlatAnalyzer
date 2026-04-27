@@ -1,7 +1,7 @@
 from python.config.default_config import ERAS, FLAVOURS, FAKE_FLOOR
 
 
-from python.utils.helper import fix_fake_and_bkg,compute_bin_Z_with_unc,pass_stat_and_err
+from python.utils.helper import fix_fake_and_bkg,compute_bin_Z_with_unc,pass_stat_and_err,pass_stat_era
 
 import math
 

@@ -1,6 +1,6 @@
 from python.config.default_config import ERAS, FLAVOURS, FAKE_FLOOR
 
-from python.utils.helper import fix_fake_and_bkg,compute_bin_Z_with_unc,parse_sr3_category,get_met_boundary,generate_binnings,get_nbins_for_region,pass_stat_and_err,build_run2_bkg_per_flavour
+from python.utils.helper import fix_fake_and_bkg,compute_bin_Z_with_unc,parse_sr3_category,get_met_boundary,generate_binnings,get_nbins_for_region,pass_stat_and_err,build_run2_bkg_per_flavour,pass_stat_era
 
 def run_scan_multi(args):
     data, flavs, masses, config = args
@@ -347,6 +347,11 @@ def evaluate_strategy(edges, arrays, bin_lo, flavs, masses, config):
                             era=era
                         )
 
+                        rel_e = math.sqrt(e) / b if b > 0 else 0
+
+                        if not pass_stat_era(b,rel_e):
+                            return 0.0, []   # reject this binning entirely     
+
                         s_total += s
                         b_total += b
                         e_total += e
@@ -407,7 +412,14 @@ def evaluate_strategy(edges, arrays, bin_lo, flavs, masses, config):
                             flavour=flav,
                             era=era
                         )
+                        
+                        rel = math.sqrt(e) / b if b > 0 else 0
 
+                        if not pass_stat_and_err(b, rel):
+                            
+                            return 0.0, []   # reject this binning entirely                                                                                                                       
+
+                        
                         if b > 0:
                             z = compute_bin_Z_with_unc(s, b, e)
                             Z2_bin_total += weight * (z * z)

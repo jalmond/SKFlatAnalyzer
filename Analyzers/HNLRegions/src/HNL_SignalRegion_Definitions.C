@@ -1078,10 +1078,20 @@ TString HNL_RegionDefinitions::RunSignalRegionWWString(bool ApplyForSR,HNL_Lepto
 	    {HNL_LeptonCore::Channel::EE,   {1.5, 2.4, 3.2, 0.7, 1.3, 2.5}},
 	    {HNL_LeptonCore::Channel::EMu,  {1.6, 2.1, 3.2, 0.7, 1.3, 2.5}}
 	  }},
+	{"Run2_PerFlavour_EraStatReq", {
+            {HNL_LeptonCore::Channel::MuMu, {2.2, 3.6, 4.5, 0.9, 1.5, 2.3}},
+            {HNL_LeptonCore::Channel::EE,   {1.5, 2.4, 3.2, 0.7, 1.3, 2.5}},
+            {HNL_LeptonCore::Channel::EMu,  {1.6, 2.1, 3.2, 0.7, 1.3, 2.5}}
+          }},
 	{"Run2_Global", {
             {HNL_LeptonCore::Channel::MuMu, {1.6, 2.2, 3.2, 0.9, 1.4, 2.4}},
             {HNL_LeptonCore::Channel::EE,   {1.6, 2.2, 3.2, 0.9, 1.4, 2.4}},
             {HNL_LeptonCore::Channel::EMu,  {1.6, 2.2, 3.2, 0.9, 1.4, 2.4}}
+          }},
+	{"Run2_Global_EraStatReq", {
+            {HNL_LeptonCore::Channel::MuMu, {1.6, 2.2, 3.2, 0.9, 1.5, 2.4}},
+            {HNL_LeptonCore::Channel::EE,   {1.6, 2.2, 3.2, 0.9, 1.5, 2.4}},
+            {HNL_LeptonCore::Channel::EMu,  {1.6, 2.2, 3.2, 0.9, 1.5, 2.4}}
           }},
 
       };
@@ -1098,6 +1108,8 @@ TString HNL_RegionDefinitions::RunSignalRegionWWString(bool ApplyForSR,HNL_Lepto
       // Safe lookup without creating entries
 
       std::string key = HasFlag("SR2_PerFlavour") ? "Run2_PerFlavour" : "Run2_Global";
+
+      if(HasFlag("StatReqEra")) key = "Run2_PerFlavour_EraStatReq";
       if (auto eraIt = sr2_cuts.find(key); eraIt != sr2_cuts.end()) {
 	if (auto chIt = eraIt->second.find(chan); chIt != eraIt->second.end()) {
 	  cuts = chIt->second;

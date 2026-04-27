@@ -166,6 +166,7 @@ def print_scan_summary_table(scan_results, use_quad=False):
 
     for entry in scan_results:
         label = entry["label"]
+        print (label)
         raw = normalize_results(entry["raw"])
 
         for flav in raw:

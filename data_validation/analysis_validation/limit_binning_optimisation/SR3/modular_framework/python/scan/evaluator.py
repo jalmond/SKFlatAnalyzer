@@ -1,7 +1,7 @@
 from python.config.default_config import ERAS, FLAVOURS, FAKE_FLOOR
 
 
-from python.utils.helper import fix_fake_and_bkg,compute_bin_Z_with_unc,parse_sr3_category,get_met_boundary,pass_stat_and_err
+from python.utils.helper import fix_fake_and_bkg,compute_bin_Z_with_unc,parse_sr3_category,get_met_boundary,pass_stat_and_err,pass_stat_era
 
 import math 
 
@@ -278,6 +278,10 @@ def evaluate_scan_results_v0(data, scan_outputs, config):
                                 flavour=flav,
                                 era=era
                             )
+                            rel_e = math.sqrt(e) / b if b > 0 else 0
+                        
+                            if not pass_stat_era(b,rel_e):
+                                return 0.0, []   # reject this binning entirely     
 
                             S_tot += s
                             B_tot += b
