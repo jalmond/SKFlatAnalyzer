@@ -31,6 +31,7 @@ void HNL_LeptonCore::DefineLimitBins(){
   map<TString, vector<double>> sr1bins_ee_byMass;
   map<TString, vector<double>> sr1bins_em_byMass;
 
+  vector<double> sr1bins_dummy;
   vector<double> sr1bins_mm, sr1bins_ee, sr1bins_em, sr1bins;
 
   ///// Global bins NOT OPTIMIAL
@@ -52,8 +53,9 @@ void HNL_LeptonCore::DefineLimitBins(){
     sr1bins_em_byMass["MassRange1"] = {0.0, 385.0, 445.0, 490.0, 565.0, 595.0, 640.0, 5000.0};
     sr1bins_em_byMass["MassRange2"] = {0.0, 595.0, 655.0, 680.0, 760.0, 890.0, 990.0, 5000.0};
     sr1bins_em_byMass["MassRange3"] = {0.0, 665.0, 810.0, 915.0, 965.0, 1080.0, 1450.0, 5000.0};
-
+    sr1bins_dummy = {0.0, 0.0, 0.0 , 0.0, 0.0, 0.0, 0.0, 0.0};
   }
+  sr1bins_dummy = {0.0,  0.0, 0.0, 0.0, 0.0, 0.0};
   /// Per mass scan 5 bins
   sr1bins_mm_byMass["400"] = {0.0, 365.0, 395.0, 450.0, 555.0, 5000.0};
   sr1bins_mm_byMass["450"] = {0.0, 415.0, 440.0, 495.0, 755.0, 5000.0};
@@ -118,6 +120,7 @@ void HNL_LeptonCore::DefineLimitBins(){
       sr1bins_ee_byMass[mass] = sr1bins_ee;
       sr1bins_em_byMass[mass] = sr1bins_em;
     }
+    sr1bins_dummy = {0.0, 0.0, 0.0 , 0.0, 0.0, 0.0, 0.0, 0.0};
     
   }
   
@@ -125,7 +128,8 @@ void HNL_LeptonCore::DefineLimitBins(){
   // SR1 Fully Global (same for everything)
   // --------------------------------------------
   if(HasFlag("SR1_Global")) {
-    
+    sr1bins_dummy = {0.0, 0.0, 0.0 , 0.0, 0.0, 0.0, 0.0, 0.0};
+	
     for(const auto& mass : masses_to_prepare) {
       
       sr1bins_mm_byMass[mass] = sr1bins;
@@ -135,10 +139,11 @@ void HNL_LeptonCore::DefineLimitBins(){
     }
   }
   vector<TString> MuMu_SR1_BinTags,  EE_SR1_BinTags ,EMu_SR1_BinTags, CR1_BinTags;
-  for(unsigned int i_d =1 ; i_d <  sr1bins_mm.size(); i_d++)  MuMu_SR1_BinTags.push_back("SR1_MNbin"+to_string(i_d));
-  for(unsigned int i_d =1 ; i_d <  sr1bins_ee.size(); i_d++)  EE_SR1_BinTags.push_back("SR1_MNbin"+to_string(i_d));
-  for(unsigned int i_d =1 ; i_d <  sr1bins_em.size(); i_d++)  EMu_SR1_BinTags.push_back("SR1_MNbin"+to_string(i_d));
-  
+  for(unsigned int i_d =1 ; i_d <  sr1bins_dummy.size(); i_d++) {
+    MuMu_SR1_BinTags.push_back("SR1_MNbin"+to_string(i_d));
+    EE_SR1_BinTags.push_back("SR1_MNbin"+to_string(i_d));
+    EMu_SR1_BinTags.push_back("SR1_MNbin"+to_string(i_d));
+  }
   
   //// EE/EMu have most bins
   
