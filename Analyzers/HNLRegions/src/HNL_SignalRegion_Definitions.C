@@ -458,7 +458,9 @@ void   HNL_RegionDefinitions::RunMainRegionCode(bool IsSR,HNL_LeptonCore::Channe
       {700, {700}},
       {800, {800}},
       {900, {900}},
-      {1000, {1000,1100, 1200, 1300}},
+      {1000, {1000}},
+      {1100, {1100}},
+      {1200, {1200, 1300}},
       {1500, {1500, 1700}},
       {2000, {2000, 2500, 3000}},
     };
@@ -679,7 +681,7 @@ void   HNL_RegionDefinitions::RunMainRegionCode(bool IsSR,HNL_LeptonCore::Channe
 				 weight_reg,
 				 RegBDT,
 				 "LimitExtractionBDT/"+param.Name+"_"+iversion+"_"+ibinning+"/M"+SampleMass,
-				 "SR3BDT_"+channel_string+"_"+DataEra+"_"+SampleMass+"_"+iversion+"_"+ibinning,
+				 "SR3BDT_"+channel_string+"_"+SampleMass+"_"+iversion+"_"+ibinning,
 				 channel_string);
 		  
 		  
@@ -688,14 +690,14 @@ void   HNL_RegionDefinitions::RunMainRegionCode(bool IsSR,HNL_LeptonCore::Channe
 							   weight_reg*param.w.btagSF_tight/param.w.btagSF,
 							   RegBDT,
 							   "LimitExtractionBDT/"+param.Name+"_"+iversion+"/M"+SampleMass,
-							   "SR3BDT_"+channel_string+"_"+DataEra+"_"+SampleMass+"_"+iversion,
+							   "SR3BDT_"+channel_string+"_"+SampleMass+"_"+iversion,
 							   channel_string);
 		    
 		    else  if(B_JetColl.size()==0) FillLimitInput(LimitRegionsInvMETBDTR3,
 					weight_reg,
 					RegBDT,
 					"LimitExtractionBDT/"+param.Name+"_"+iversion+"/M"+SampleMass,
-					"SR3BDT_"+channel_string+"_"+DataEra+"_"+SampleMass+"_"+iversion,
+					"SR3BDT_"+channel_string+"_"+SampleMass+"_"+iversion,
 					channel_string);
 		  }
 		}
@@ -1073,20 +1075,10 @@ TString HNL_RegionDefinitions::RunSignalRegionWWString(bool ApplyForSR,HNL_Lepto
 	double cut1, cut2, cut3, cut4, cut5, cut6;};
 	
       std::map<std::string, std::map<int, CutValues>> sr2_cuts = {
-	{"Run2_PerFlavour", {
-	    {HNL_LeptonCore::Channel::MuMu, {2.2, 3.6, 4.4, 0.9, 1.4, 2.3}},
-	    {HNL_LeptonCore::Channel::EE,   {1.5, 2.4, 3.2, 0.7, 1.3, 2.5}},
-	    {HNL_LeptonCore::Channel::EMu,  {1.6, 2.1, 3.2, 0.7, 1.3, 2.5}}
-	  }},
 	{"Run2_PerFlavour_EraStatReq", {
             {HNL_LeptonCore::Channel::MuMu, {2.2, 3.6, 4.5, 0.9, 1.5, 2.3}},
             {HNL_LeptonCore::Channel::EE,   {1.5, 2.4, 3.2, 0.7, 1.3, 2.5}},
             {HNL_LeptonCore::Channel::EMu,  {1.6, 2.1, 3.2, 0.7, 1.3, 2.5}}
-          }},
-	{"Run2_Global", {
-            {HNL_LeptonCore::Channel::MuMu, {1.6, 2.2, 3.2, 0.9, 1.4, 2.4}},
-            {HNL_LeptonCore::Channel::EE,   {1.6, 2.2, 3.2, 0.9, 1.4, 2.4}},
-            {HNL_LeptonCore::Channel::EMu,  {1.6, 2.2, 3.2, 0.9, 1.4, 2.4}}
           }},
 	{"Run2_Global_EraStatReq", {
             {HNL_LeptonCore::Channel::MuMu, {1.6, 2.2, 3.2, 0.9, 1.5, 2.4}},
@@ -1107,9 +1099,8 @@ TString HNL_RegionDefinitions::RunSignalRegionWWString(bool ApplyForSR,HNL_Lepto
       
       // Safe lookup without creating entries
 
-      std::string key = HasFlag("SR2_PerFlavour") ? "Run2_PerFlavour" : "Run2_Global";
+      std::string key = "Run2_PerFlavour_EraStatReq";
 
-      if(HasFlag("StatReqEra")) key = "Run2_PerFlavour_EraStatReq";
       if (auto eraIt = sr2_cuts.find(key); eraIt != sr2_cuts.end()) {
 	if (auto chIt = eraIt->second.find(chan); chIt != eraIt->second.end()) {
 	  cuts = chIt->second;
@@ -1241,9 +1232,9 @@ TString HNL_RegionDefinitions::RunSignalRegionAK4StringBDT(bool ApplyForSR, TStr
     
   //// Check Binnings in HNL_LeptonCore_BDT.C 
   if(ApplyForSR) {
-    if(channel == MuMu) SetBinningBDT(GetChannelString(channel), mN,RegionTag,  RegionTag+"_"+GetChannelString(channel)+"_"+ DataEra + "_"+mN +"_"+version+"_"+Binning ,  BDTLimitBinsMu);
-    if(channel == EE)   SetBinningBDT(GetChannelString(channel), mN,RegionTag,  RegionTag+ "_"+GetChannelString(channel)+"_"+ DataEra + "_"+mN +"_"+version+"_"+Binning ,  BDTLimitBinsEl);
-    if(channel == EMu)  SetBinningBDT(GetChannelString(channel), mN,RegionTag,  RegionTag+ "_"+GetChannelString(channel)+"_"+ DataEra + "_"+mN +"_"+version+"_"+Binning,  BDTLimitBinsEMu);
+    if(channel == MuMu) SetBinningBDT(GetChannelString(channel), mN,RegionTag,  RegionTag+"_"+GetChannelString(channel)+"_"+mN +"_"+version+"_"+Binning ,  BDTLimitBinsMu);
+    if(channel == EE)   SetBinningBDT(GetChannelString(channel), mN,RegionTag,  RegionTag+ "_"+GetChannelString(channel)+"_"+mN +"_"+version+"_"+Binning ,  BDTLimitBinsEl);
+    if(channel == EMu)  SetBinningBDT(GetChannelString(channel), mN,RegionTag,  RegionTag+ "_"+GetChannelString(channel)+"_"+mN +"_"+version+"_"+Binning,  BDTLimitBinsEMu);
   }
   else {
 
@@ -1371,7 +1362,7 @@ TString HNL_RegionDefinitions::RunSignalRegionAK4String(bool ApplyForSR,HNL_Lept
     if(ApplyForSR)        Fill_RegionPlots(param,"FullPass"+RegionTag ,  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);
 
     //// These cuts are temp HL will check
-    return GetSR3StringBin(RegionTag,GetChannelString(channel), true, met2_st,LT,ll_dphi);
+    return GetSR3StringBin(RegionTag,GetChannelString(channel), true, met2_st,LT,ll_dphi,leps[0]->HTOverPt() );
   }  
 
   if(!ApplyForSR){
@@ -1430,7 +1421,7 @@ TString HNL_RegionDefinitions::RunSignalRegionAK4String(bool ApplyForSR,HNL_Lept
     if(ApplyForSR)        Fill_RegionPlots(param,"FullPass"+RegionTag ,  TauColl, JetColl, AK8_JetColl, leps,  METv, nPV, w);
   }
   
-  TString LimitBin = GetSR3StringBin(RegionTag,GetChannelString(channel), false, met2_st,LT,ll_dphi);
+  TString LimitBin = GetSR3StringBin(RegionTag,GetChannelString(channel), false, met2_st,LT,ll_dphi,leps[0]->HTOverPt() );
 
   return LimitBin;
 }

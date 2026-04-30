@@ -338,7 +338,32 @@ void HNL_LeptonCore::Fill_Main_Plots(AnalyzerParameter& param, TString  region, 
 	
   }
   else{
-
+    double dynamic_Var = LT; 
+    if(jets.size() > 1){
+      //// Check for Jet pair from N->Wl->jjl                                                                                                                                                                        
+      double dijetmass_tmp=999.;
+      double dijetmass=9990000.;
+      int m=-999;
+      int n=-999;
+      
+      for(UInt_t emme=0; emme<jets.size(); emme++){
+	for(UInt_t enne=1; enne<jets.size(); enne++) {
+	  if(emme == enne) continue;
+	  dijetmass_tmp = (jets[emme]+jets[enne]).M();
+	  
+	  if ( fabs(dijetmass_tmp-M_W) < fabs(dijetmass-M_W) ) {
+	    dijetmass = dijetmass_tmp;
+	    m = emme;
+	    n = enne;
+	  }
+	}
+      }
+      Particle WCand   = jets[m]+jets[n];
+      Particle N1Cand  = jets[m]+jets[n]+ *leps[0] ;
+      double MN1 =  N1Cand.M() - WCand.M() + M_W;
+      dynamic_Var = MN1;
+    }
+    
     FillHist( plot_dir+ region+ "/MainPlots/HT_PT1",     leps[0]->HTOverPt(),     w, 100, 0, 10, "H_{T}/p_{T}");
     double ll_dphi = fabs(TVector2::Phi_mpi_pi( ( (*leps[0]).Phi() - (*leps[1]).Phi() )) );
 
@@ -348,20 +373,61 @@ void HNL_LeptonCore::Fill_Main_Plots(AnalyzerParameter& param, TString  region, 
       
       const TString jetTag = (jets.size() < 2) ? "LowJet" : "HighJet";
 
+      double signal_weight = 1.0;
+      if (IsSignal()) {
+	if (MCSample.Contains("SSWWType")) {
+	  signal_weight = 0.01;
+	}
+	else {
+	  // flavour factor
+	  if (leps[0]->LeptonFlavour() != leps[1]->LeptonFlavour()) {
+	    signal_weight *= 0.5;
+	  }
+	  // sample scaling
+	  if (MCSample.Contains("DYType") || MCSample.Contains("VBFType")) {
+	    signal_weight *= 0.1;
+	  }
+	}
+      }
+      
       for(double thr = 2.0; thr <= 5.0; thr += 1.0){
 
 	TString thrStr = TString::Format("%.0f", thr);
 	
 	TString hist_LT = plot_dir + region + "/MainPlots/" + jetTag + "_LT_MET" + thrStr + "_LTcut";
 	TString hist_GT = plot_dir + region + "/MainPlots/" + jetTag + "_LT_MET" + thrStr + "_GTcut";
+	TString hist_dv_LT = plot_dir + region + "/MainPlots/" + jetTag + "_DV_MET" + thrStr + "_LTcut";
+        TString hist_dv_GT = plot_dir + region + "/MainPlots/" + jetTag + "_DV_MET" + thrStr + "_GTcut";
+
+	bool pass_low_jet_ht =  (jets.size() < 2 && leps[0]->HTOverPt() < 1.);
+	bool pass_high_jet_ht =  (jets.size() >= 2 && leps[0]->HTOverPt() < 1.5) ;
 	
+	TString hist_ht_LT = plot_dir + region + "/MainPlots/" + jetTag + "_HT_LT_MET" + thrStr + "_LTcut";
+	TString hist_ht_GT = plot_dir + region + "/MainPlots/" + jetTag + "_HT_LT_MET" + thrStr + "_GTcut";
+
+	TString hist_ht_bin1 = plot_dir + region + "/MainPlots/" + jetTag + "_HT_LT_MET" + thrStr + "_bin1";
+	TString hist_ht_bin2 = plot_dir + region + "/MainPlots/" + jetTag + "_HT_LT_MET" + thrStr + "_bin2";
+	TString hist_ht_bin3 = plot_dir + region + "/MainPlots/" + jetTag + "_HT_LT_MET" + thrStr + "_bin3";
+
 	// Clamp LT into [0, 1199]
 	double LT_clamped = std::max(0.0, std::min(1199.0, LT));
-	
-	if(met2_st < thr) FillHist(hist_LT, LT_clamped, w, 240, 0, 1200, "l_{T} p_{T} GeV");
-	else              FillHist(hist_GT, LT_clamped, w, 240, 0, 1200, "l_{T} p_{T} GeV");
+	double DV_clamped = std::max(0.0, std::min(1199.0, dynamic_Var));
+	   
+	if(met2_st < thr) FillHist(hist_LT, LT_clamped, w*signal_weight, 240, 0, 1200, "l_{T} p_{T} GeV");
+	else              FillHist(hist_GT, LT_clamped, w*signal_weight, 240, 0, 1200, "l_{T} p_{T} GeV");
+
+	if(met2_st < thr &&  (pass_low_jet_ht || pass_high_jet_ht )) FillHist(hist_ht_LT, LT_clamped, w*signal_weight, 240, 0, 1200, "l_{T} p_{T} GeV");
+        else              FillHist(hist_ht_GT, LT_clamped, w*signal_weight, 240, 0, 1200, "l_{T} p_{T} GeV");
+
+	if(met2_st < thr &&  (pass_low_jet_ht || pass_high_jet_ht )) FillHist(hist_ht_bin1, LT_clamped, w*signal_weight, 240, 0, 1200, "l_{T} p_{T} GeV");
+	else 	if(pass_low_jet_ht || pass_high_jet_ht) FillHist(hist_ht_bin2, LT_clamped, w*signal_weight, 240, 0, 1200, "l_{T} p_{T} GeV");
+	else  FillHist(hist_ht_bin3, LT_clamped, w*signal_weight, 240, 0, 1200, "l_{T} p_{T} GeV");
+
+
+	if(met2_st < thr) FillHist(hist_dv_LT, DV_clamped, w*signal_weight, 240, 0, 1200, "X GeV");
+        else              FillHist(hist_dv_GT, DV_clamped, w*signal_weight, 240, 0, 1200, "X GeV");
       }
-            
+      
     }
   }
 

@@ -12,4 +12,4 @@ RUN_SCANS=True
 NO_CUMSUM=False
 ########## TEST_COMPARE True runs check on slow vs fast scan
 TEST_COMPARE=False
-BASE_DIR="/data9/Users/HNL_public/SUS-24-014/SKFlatOutput/Scan/HNL_SignalRegion_Plotter_2026-04-05/"
+BASE_DIR="/data9/Users/HNL_public/SUS-24-014/SKFlatOutput/Scan/SR1/"

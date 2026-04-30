@@ -240,7 +240,7 @@ def print_scan_summary_tableOLD(scan_results):
 
         
 
-def print_final_summary(results):
+def print_final_summary(results, tab):
 
     print("\n==============================")
     print(" FINAL SUMMARY (WITH BINNING)")
@@ -264,11 +264,11 @@ def print_final_summary(results):
         ratio = r["ratio"]
 
         print("\n----------------------------------------")
-        print(f"{flav}  Mass={mass}  Nbins={nbins}")
+        print(f"{flav}  Mass={mass}  Nbins={nbins} {tab}")
         print("----------------------------------------")
 
-        print(f"QUAD  = {quad:.4f}")
-        print(f"Run2  = {run2:.4f}")
+        print(f"QUAD  = {quad:.4f} {tab}")
+        print(f"Run2  = {run2:.4f} {tab}")
         print(f"Ratio = {ratio:.4f}")
 
         # ------------------------
@@ -277,7 +277,7 @@ def print_final_summary(results):
         binning = r["binning"]
 
         if binning["Run2"] is not None:
-            print("\n[Run2 binning]")
+            print("\n[Run2 binning] {tab}")
             print(binning["Run2"])
 
         # ------------------------

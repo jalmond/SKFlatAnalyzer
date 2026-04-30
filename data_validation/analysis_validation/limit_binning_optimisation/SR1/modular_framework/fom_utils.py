@@ -4,7 +4,7 @@
 
 from default_config import ERAS, FLAVOURS, FAKE_FLOOR, MIN_SIGNAL_FRAC,NO_CUMSUM,TEST_COMPARE,MIN_WIDTH
 from helper import fix_fake_and_bkg,compute_bin_Z,compute_run2_fom_for_edges,debug_check_path,compute_bin_Z_with_unc
-
+from ref_bins import sr1bins_mm_byMass,sr1bins_ee_byMass,sr1bins_em_byMass
 
 # Default fallback values (will be overridden at runtime)
 Bin_NBKG_REQ = 1.0
@@ -41,6 +41,230 @@ def pass_stat_and_err(B, rel):
 #=============================================
 ### Scan functions rundp_*
 #=============================================
+
+
+
+def validate_binning_with_stat(
+    edges,
+    data,
+    flav,
+    mass,
+    use_fake_corr,
+    verbose=False
+):
+    bin_lo = data["edges"][:-1]
+
+    for i in range(len(edges) - 1):
+        lo = edges[i]
+        hi = edges[i + 1]
+
+        # inclusive last bin
+        if i == len(edges) - 2:
+            mask = (bin_lo >= lo) & (bin_lo <= hi)
+        else:
+            mask = (bin_lo >= lo) & (bin_lo < hi)
+
+        B_run2 = 0.0
+        E_run2 = 0.0
+
+        # -----------------------------
+        # PER-ERA CHECK (STRICT)
+        # -----------------------------
+        for era in ERAS:
+            B = data["background"][flav][era][mask].sum()
+            F = data["fake"][flav][era][mask].sum()
+            E = data["bkg_err2"][flav][era][mask].sum()
+
+            if use_fake_corr:
+                F, B = fix_fake_and_bkg(
+                    F, B, FAKE_FLOOR,
+                    flavour=flav,
+                    era=era
+                )
+
+            rel = math.sqrt(E) / B if B > 0 else float("inf")
+
+            if not pass_stat_era(B, rel):
+                if verbose:
+                    reasons = []
+                    if B < 0.15:
+                        reasons.append("lowB")
+                    if rel >= 0.5:
+                        reasons.append("highRel")
+
+                    print(
+                        f"[FAIL][ERA] flav={flav} mass={mass} "
+                        f"bin={i} [{lo:.1f}, {hi:.1f}] era={era} "
+                        f"B={B:.3f}, rel={rel:.3f} "
+                        f"reason={','.join(reasons)}"
+                    )
+                return False
+
+            B_run2 += B
+            E_run2 += E
+
+        # -----------------------------
+        # RUN2 CHECK (LOOSER)
+        # -----------------------------
+        rel_run2 = math.sqrt(E_run2) / B_run2 if B_run2 > 0 else float("inf")
+
+        if not pass_stat_and_err(B_run2, rel_run2):
+            if verbose:
+                reasons = []
+                if B_run2 < Bin_NBKG_REQ:
+                    reasons.append("lowB")
+                if rel_run2 >= Bin_BKG_RelUnc:
+                    reasons.append("highRel")
+
+                print(
+                    f"[FAIL][RUN2] flav={flav} mass={mass} "
+                    f"bin={i} [{lo:.1f}, {hi:.1f}] "
+                    f"B={B_run2:.3f}, rel={rel_run2:.3f} "
+                    f"reason={','.join(reasons)}"
+                )
+            return False
+
+        elif verbose:
+            print(
+                f"[PASS] flav={flav} mass={mass} "
+                f"bin={i} [{lo:.1f}, {hi:.1f}] "
+                f"B={B_run2:.3f}, rel={rel_run2:.3f}"
+            )
+
+    return True
+
+
+def compare_fixed_vs_permass(
+    data,
+    fixed_edges,
+    sr1bins_mm_byMass,
+    sr1bins_ee_byMass,
+    sr1bins_em_byMass,
+    use_fake_corr=True,
+    run_z_no_unc=True
+):
+
+    print("\n==============================================")
+    print(" FIXED vs PER-MASS BINNING COMPARISON")
+    print("==============================================")
+    print(f"[FIXED] {fixed_edges}")
+    print("==============================================\n")
+
+    bin_lo = data["edges"][:-1]
+
+    def compute_Z(edges, flav, mass):
+
+        # ---- QUAD ----
+        quad_Z2 = 0.0
+
+        for era in ERAS:
+
+            S_arr = data["signal"][flav][mass][era]
+            B_arr = data["background"][flav][era]
+            F_arr = data["fake"][flav][era]
+            E_arr = data["bkg_err2"][flav][era]
+
+            for i in range(len(edges)-1):
+
+                lo, hi = edges[i], edges[i+1]
+
+                if i == len(edges)-2:
+                    mask = (bin_lo >= lo) & (bin_lo <= hi)
+                else:
+                    mask = (bin_lo >= lo) & (bin_lo < hi)
+
+                S = S_arr[mask].sum()
+                B = B_arr[mask].sum()
+                F = F_arr[mask].sum()
+                E = E_arr[mask].sum()
+
+                if use_fake_corr:
+                    F, B = fix_fake_and_bkg(F, B, FAKE_FLOOR, flavour=flav, era=era)
+
+                if S > 0 and B > 0:
+                    Z = compute_bin_Z_with_unc(S, B, E, run_z_no_unc=run_z_no_unc)
+                    quad_Z2 += Z * Z
+
+        quad = math.sqrt(quad_Z2)
+
+        # ---- Run2 ----
+        run2_Z2 = 0.0
+
+        for i in range(len(edges)-1):
+
+            lo, hi = edges[i], edges[i+1]
+
+            if i == len(edges)-2:
+                mask = (bin_lo >= lo) & (bin_lo <= hi)
+            else:
+                mask = (bin_lo >= lo) & (bin_lo < hi)
+
+            S_tot = B_tot = E_tot = 0.0
+
+            for era in ERAS:
+
+                S = data["signal"][flav][mass][era][mask].sum()
+                B = data["background"][flav][era][mask].sum()
+                F = data["fake"][flav][era][mask].sum()
+                E = data["bkg_err2"][flav][era][mask].sum()
+
+                if use_fake_corr:
+                    F, B = fix_fake_and_bkg(F, B, FAKE_FLOOR, flavour=flav, era=era)
+
+                S_tot += S
+                B_tot += B
+                E_tot += E
+
+            if S_tot > 0 and B_tot > 0:
+                Z = compute_bin_Z_with_unc(S_tot, B_tot, E_tot, run_z_no_unc=run_z_no_unc)
+                run2_Z2 += Z * Z
+
+        run2 = math.sqrt(run2_Z2)
+
+        return quad, run2
+
+
+    for flav in FLAVOURS:
+
+        print("\n==============================================")
+        print(f"FLAVOUR: {flav}")
+        print("==============================================")
+
+        for mass in data["signal_combined_mass"][flav]:
+
+            # ---- pick correct per-mass binning ----
+            if flav == "MuMu":
+                edges_pm = sr1bins_mm_byMass[mass]
+            elif flav == "EE":
+                edges_pm = sr1bins_ee_byMass[mass]
+            elif flav == "EMu":
+                edges_pm = sr1bins_em_byMass[mass]
+            else:
+                continue
+
+            # ---- compute ----
+            quad_pm, run2_pm = compute_Z(edges_pm, flav, mass)
+            quad_fx, run2_fx = compute_Z(fixed_edges, flav, mass)
+
+            # ---- ratios ----
+            ratio_pm = run2_pm / quad_pm if quad_pm > 0 else 0
+            ratio_fx = run2_fx / quad_fx if quad_fx > 0 else 0
+
+            rel_loss = run2_fx / run2_pm if run2_pm > 0 else 0
+
+            # ---- print ----
+            print("----------------------------------------")
+            print(f"{flav}  Mass={mass}")
+            print("----------------------------------------")
+
+            print("[PER-MASS]")
+            print(f"Run2  = {run2_pm:.4f}   QUAD = {quad_pm:.4f}   Ratio = {ratio_pm:.4f}")
+
+            print("[FIXED ]")
+            print(f"Run2  = {run2_fx:.4f}   QUAD = {quad_fx:.4f}   Ratio = {ratio_fx:.4f}")
+
+            print(f"[LOSS ] Fixed / PerMass = {rel_loss:.4f}")
+            print("")
 
 
 def run_dp_on_arrays_mass_with_weight(
