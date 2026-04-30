@@ -5,9 +5,9 @@ TAG="Full_Scan_SingleJob"
 # Rebuild tag AFTER override
 
 MASSES = [
-        "500","600",
-        "700","800","900",
-        "1000","2000"
+    "600",
+    "700","800","900",
+    "1000","2000"
 ]
 
 

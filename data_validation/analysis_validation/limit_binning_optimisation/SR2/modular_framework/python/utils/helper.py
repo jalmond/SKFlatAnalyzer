@@ -3,8 +3,8 @@ import os,sys
 from python.config.default_config import ERAS, FLAVOURS, FAKE_FLOOR
 
 Bin_NBKG_REQ = 1.0
-Bin_NBKG_REQ_Tight = 0.5
-Bin_BKG_RelUnc = 0.3
+Bin_NBKG_REQ_Tight = 1.
+Bin_BKG_RelUnc = 0.5
 
 import numpy as np
 import math
@@ -544,8 +544,8 @@ def set_stat_config(cfg):
     print(f"  Bin_NBKG_REQ_Tight = {Bin_NBKG_REQ_Tight}")
     print(f"  Bin_BKG_RelUnc     = {Bin_BKG_RelUnc}")
 
-def pass_stat(B):
-    return (B >= Bin_NBKG_REQ)
+def pass_stat_era(B,rel):
+    return (B >= 0.15) and (rel < 0.5)
 
 def pass_stat_and_err(B, rel, debug=False):
     if debug:
@@ -553,7 +553,7 @@ def pass_stat_and_err(B, rel, debug=False):
         print(f"  Bin_NBKG_REQ_Tight = {Bin_NBKG_REQ_Tight}")
         print(f"  Bin_BKG_RelUnc     = {Bin_BKG_RelUnc}")
         
-    return (B >= Bin_NBKG_REQ) or (B >= Bin_NBKG_REQ_Tight and rel < Bin_BKG_RelUnc)
+    return (B >= Bin_NBKG_REQ) and (rel < Bin_BKG_RelUnc)
 
 
 

@@ -248,8 +248,8 @@ def main():
     global_mass_config["scan_name"] = GetScanName(global_mass_config)
     global_mass_config["mass_weights"] = build_mass_weights_from_ref(ref_results)
 
-    global_flav_config["scan_name"] = GetScanName(global_flav_config)
-    global_flav_config["mass_weights"] = build_mass_weights_from_ref(ref_results)
+    #global_flav_config["scan_name"] = GetScanName(global_flav_config)
+    #global_flav_config["mass_weights"] = build_mass_weights_from_ref(ref_results)
 
     timer.start("Standard scan")
 
@@ -259,13 +259,13 @@ def main():
     global_mass_scan_outputs = run_parallel_global_scans(
         data, FLAVOURS, MASSES, global_mass_config, n_workers=NCORE
     )
-    global_flav_scan_outputs = run_parallel_global_scans(
-	data, FLAVOURS, MASSES, global_flav_config, n_workers=NCORE
-    )
+    #global_flav_scan_outputs = run_parallel_global_scans(
+    #data, FLAVOURS, MASSES, global_flav_config, n_workers=NCORE
+    #)
 
     final_scan = evaluate_scan_results_sr2(data, scan_outputs, standard_config)
     final_global_mass_scan = evaluate_scan_results_sr2(data, global_mass_scan_outputs, global_mass_config)
-    final_global_flav_scan = evaluate_scan_results_sr2(data, global_flav_scan_outputs, global_flav_config)
+    #final_global_flav_scan = evaluate_scan_results_sr2(data, global_flav_scan_outputs, global_flav_config)
 
     with redirect_stdout(results_logger):
         print_sr2_scan_table_from_results(final_scan, data)
@@ -274,8 +274,8 @@ def main():
         print_sr2_scan_table_from_results(final_global_mass_scan, data)
         print_bkg_per_bin_sr2(data, global_mass_scan_outputs, global_mass_config)
 
-        print_sr2_scan_table_from_results(final_global_flav_scan, data)
-        print_bkg_per_bin_sr2(data, global_flav_scan_outputs, global_flav_config)
+        #print_sr2_scan_table_from_results(final_global_flav_scan, data)
+        #print_bkg_per_bin_sr2(data, global_flav_scan_outputs, global_flav_config)
 
     print_sr2_scan_table_from_results(final_scan, data)
     print_bkg_per_bin_sr2(data, scan_outputs, standard_config)
@@ -283,8 +283,8 @@ def main():
     print_sr2_scan_table_from_results(final_global_mass_scan, data)
     print_bkg_per_bin_sr2(data, global_mass_scan_outputs, global_mass_config)
 
-    print_sr2_scan_table_from_results(final_global_flav_scan, data)
-    print_bkg_per_bin_sr2(data, global_flav_scan_outputs, global_flav_config)
+    #print_sr2_scan_table_from_results(final_global_flav_scan, data)
+    #print_bkg_per_bin_sr2(data, global_flav_scan_outputs, global_flav_config)
     
 
     global_mass_final_scan_recomputed = recompute_per_mass_with_fixed_binning_sr2(data,global_mass_scan_outputs)

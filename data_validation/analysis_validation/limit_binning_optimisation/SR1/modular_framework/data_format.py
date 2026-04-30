@@ -111,7 +111,12 @@ def build_data(base, masses):
         for m in masses:
 
             arr = sum(data["signal"][flav][m][era] for era in ERAS)
-
+            for era in ERAS:
+                
+                arr = data["signal"][flav][m][era]
+            
+                print(f"{flav} {m} {era} shape = {arr.shape}")
+                
             if arr.sum() > 0:
                 arr = arr / arr.sum()
 

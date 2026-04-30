@@ -54,7 +54,7 @@ def load_signal(base, flav, mass):
 
     path = f"PassSR1/HNL_ULIDv2/{flav}/AK8/AK8J_Unbinned_Mass/l1J"
     sig_name = f"HNL_DYVBF_{mass}"
-
+    
     total_integral = 0.0
 
     # ----------------------------------
