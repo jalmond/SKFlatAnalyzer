@@ -94,7 +94,7 @@ def build_arrays_sr2(data, region, flavs, masses):
 
             for era in ERAS:
 
-                S = np.array(sub["signal"][flav][mass][era])
+                S = np.array(sub["signal_norm_flav"][flav][mass][era])
                 B = np.array(sub["background"][flav][era])
                 F = np.array(sub["fake"][flav][era])
                 E = np.array(sub["bkg_err2"][flav][era])

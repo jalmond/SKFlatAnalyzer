@@ -72,7 +72,7 @@ def compute_sr2_z_for_binning_global(data, bins_dict, flav, mass):
 
             for era in ERAS:
 
-                S_arr = sub["signal"][flav][mass][era]
+                S_arr = sub["signal_norm_flav"][flav][mass][era]
                 B_arr = sub["background"][flav][era]
                 F_arr = sub["fake"][flav][era]
                 E_arr = sub["bkg_err2"][flav][era]
@@ -174,14 +174,14 @@ def recompute_per_mass_with_fixed_binning_sr2(data, scan_results):
 
                         for era in ERAS:
 
-                            if flav not in sub["signal"]:
+                            if flav not in sub["signal_norm_flav"]:
                                 continue
-                            if mass not in sub["signal"][flav]:
+                            if mass not in sub["signal_norm_flav"][flav]:
                                 continue
-                            if era not in sub["signal"][flav][mass]:
+                            if era not in sub["signal_norm_flav"][flav][mass]:
                                 continue
 
-                            S_arr = sub["signal"][flav][mass][era]
+                            S_arr = sub["signal_norm_flav"][flav][mass][era]
                             B_arr = sub["background"][flav][era]
                             F_arr = sub["fake"][flav][era]
                             E_arr = sub["bkg_err2"][flav][era]
@@ -615,7 +615,7 @@ def debug_compare_binning_sr2(data, flavs, masses):
 
                     for era in ERAS:
 
-                        S = sub["signal"][flav][mass][era][mask].sum()
+                        S = sub["signal_norm_flav"][flav][mass][era][mask].sum()
                         B = sub["background"][flav][era][mask].sum()
                         F = sub["fake"][flav][era][mask].sum()
                         E = sub["bkg_err2"][flav][era][mask].sum()
@@ -701,7 +701,7 @@ def debug_compare_binnings_sr2(data, scan_results, masses, flavours):
 
                         for era in ERAS:
 
-                            S = sub["signal"][flav][mass][era][mask].sum()
+                            S = sub["signal_norm_flav"][flav][mass][era][mask].sum()
                             B = sub["background"][flav][era][mask].sum()
                             F = sub["fake"][flav][era][mask].sum()
                             E = sub["bkg_err2"][flav][era][mask].sum()
@@ -745,7 +745,7 @@ def debug_compare_binnings_sr2(data, scan_results, masses, flavours):
 
                         for era in ERAS:
 
-                            S = sub["signal"][flav][mass][era][mask].sum()
+                            S = sub["signal_norm_flav"][flav][mass][era][mask].sum()
                             B = sub["background"][flav][era][mask].sum()
                             F = sub["fake"][flav][era][mask].sum()
                             E = sub["bkg_err2"][flav][era][mask].sum()
@@ -878,90 +878,6 @@ def get_latest_dir(base):
     return max(dirs, key=os.path.getmtime)
 
 
-def debug_data_summary_sr2(data, max_bins=5):
-
-    print("\n==============================")
-    print(" DEBUG DATA SUMMARY (SR2)")
-    print("==============================")
-
-    for region in ["low", "high"]:
-
-        sub = data[region]
-
-        print("\n========================================")
-        print(f" REGION: {region}")
-        print("========================================")
-
-        # ----------------------------------
-        # Edges
-        # ----------------------------------
-        edges = sub["edges"]
-
-        print("\n[EDGES]")
-        print("N bins =", len(edges) - 1)
-        print("First edges:", edges[:max_bins+1])
-        print("Last edges:", edges[-(max_bins+1):])
-
-        # ----------------------------------
-        # Background + Fake
-        # ----------------------------------
-        for flav in FLAVOURS:
-
-            print(f"\n================ {flav} =================")
-
-            for era in ERAS:
-
-                print(f"\n[{era}]")
-
-                B = sub["background"][flav][era]
-                F = sub["fake"][flav][era]
-
-                print(f"  Bkg:  sum={B.sum():.3f}, min={B.min():.3f}, max={B.max():.3f}")
-                print(f"  Fake: sum={F.sum():.3f}, min={F.min():.3f}, max={F.max():.3f}")
-
-                # Negative fake bins
-                neg_bins = [(i, F[i]) for i in range(len(F)) if F[i] <= 0]
-
-                if neg_bins:
-                    print(f"  [WARN] {len(neg_bins)} fake bins <= 0 (showing first {max_bins})")
-                    print("   ", neg_bins[:max_bins])
-                else:
-                    print("  Fake all positive")
-
-                print("  First bins:")
-                for i in range(min(max_bins, len(B))):
-                    print(f"    bin {i}: B={B[i]:.3f}, F={F[i]:.3f}")
-
-        # ----------------------------------
-        # Signal checks
-        # ----------------------------------
-        print("\n[SIGNAL CHECK]")
-
-        for flav in FLAVOURS:
-            for mass in list(sub["signal_combined_mass"][flav].keys())[:3]:
-
-                S = sub["signal_combined_mass"][flav][mass]
-
-                print(f"  {flav} Mass {mass}: sum={S.sum():.4f}, min={S.min():.4e}, max={S.max():.4e}")
-
-    # ----------------------------------
-    # Global norm check (SR2 style)
-    # ----------------------------------
-    print("\n[NORM CHECK - GLOBAL]")
-    for mass in list(data["norm"].keys())[:5]:
-        print(f"  Mass {mass}: norm = {data['norm'][mass]:.6f}")
-
-    # ----------------------------------
-    # Total background sanity
-    # ----------------------------------
-    totalB = sum(
-        data[region]["background"][flav][era].sum()
-        for region in ["low", "high"]
-        for flav in FLAVOURS
-        for era in ERAS
-    )
-
-    print(f"\n[TOTAL BKG] = {totalB:.3f}")
 
 def compute_bin_Z(s, b):
     if s <= 0 or b <= 0:
@@ -1053,7 +969,7 @@ def print_sr2_bin_table(data, flav, mass):
             edges_full = np.array(sub["edges"])
             bin_lo = edges_full[:-1]
 
-            S_arr = sub["signal"][flav][mass][era]
+            S_arr = sub["signal_norm_flav"][flav][mass][era]
             B_arr = sub["background"][flav][era]
             F_arr = sub["fake"][flav][era]
             E_arr = sub["bkg_err2"][flav][era]
@@ -1152,7 +1068,7 @@ def print_sr2_bin_table(data, flav, mass):
 
             for era in ERAS:
 
-                S_arr = sub["signal"][flav][mass][era]
+                S_arr = sub["signal_norm_flav"][flav][mass][era]
                 B_arr = sub["background"][flav][era]
                 F_arr = sub["fake"][flav][era]
                 E_arr = sub["bkg_err2"][flav][era]

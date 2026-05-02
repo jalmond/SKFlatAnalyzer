@@ -1077,13 +1077,13 @@ TString HNL_RegionDefinitions::RunSignalRegionWWString(bool ApplyForSR,HNL_Lepto
       std::map<std::string, std::map<int, CutValues>> sr2_cuts = {
 	{"Run2_PerFlavour_EraStatReq", {
             {HNL_LeptonCore::Channel::MuMu, {2.2, 3.6, 4.5, 0.9, 1.5, 2.3}},
-            {HNL_LeptonCore::Channel::EE,   {1.5, 2.4, 3.2, 0.7, 1.3, 2.5}},
-            {HNL_LeptonCore::Channel::EMu,  {1.6, 2.1, 3.2, 0.7, 1.3, 2.5}}
+            {HNL_LeptonCore::Channel::EE,   {0.9, 2.4, 3.2, 0.7, 1.3, 2.5}},
+            {HNL_LeptonCore::Channel::EMu,  {0.9, 2.1, 3.2, 0.7, 1.3, 2.5}}
           }},
 	{"Run2_Global_EraStatReq", {
-            {HNL_LeptonCore::Channel::MuMu, {1.6, 2.2, 3.2, 0.9, 1.5, 2.4}},
-            {HNL_LeptonCore::Channel::EE,   {1.6, 2.2, 3.2, 0.9, 1.5, 2.4}},
-            {HNL_LeptonCore::Channel::EMu,  {1.6, 2.2, 3.2, 0.9, 1.5, 2.4}}
+            {HNL_LeptonCore::Channel::MuMu, {2.2, 3.2, 4.4, 0.9, 1.5, 2.4}},
+            {HNL_LeptonCore::Channel::EE,   {2.2, 3.2, 4.4, 0.9, 1.5, 2.4}},
+            {HNL_LeptonCore::Channel::EMu,  {2.2, 3.2, 4.4, 0.9, 1.5, 2.4}}
           }},
 
       };
@@ -1208,7 +1208,7 @@ TString HNL_RegionDefinitions::RunSignalRegionAK4StringBDT(bool ApplyForSR, TStr
       else FillHist("LimitExtraction/"+param.Name+"/"+RegionTag+"BDT/InvMET_"+BDTLabel, MVAvalueIncl, w, 400, -1., 1.);
     }
     
-    if((ApplyForSR) && Binning == "Strict_15_Bin")   FillHist("LimitExtraction/"+param.Name+"/"+RegionTag+"BDT/"+BDTLabel_simple, MVAvalueIncl, w, 400, -1., 1.);
+    if((ApplyForSR) && Binning == "Strict_15_Bin")   FillHist("LimitExtraction/"+param.Name+"/"+RegionTag+"BDT/"+BDTLabel_simple, MVAvalueIncl, w, 2000, -1., 1.);
     
     if(ApplyForSR ) Fill_RegionPlots(param,"Pass"+RegionTag+"BDT" ,TauColl,  JetColl, AK8_JetColl, LepTColl,  METv, nPV, w);
     else{

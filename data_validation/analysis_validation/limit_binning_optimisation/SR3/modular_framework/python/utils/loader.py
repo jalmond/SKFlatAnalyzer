@@ -95,9 +95,6 @@ def load_signal(base, flav, mass, hist_name,sig_name):
             hist[era] = None
             continue
 
-        if h.Integral() > 0:
-            h.Scale(1.0 / h.Integral())
-
         hist[era] = h
 
     return hist

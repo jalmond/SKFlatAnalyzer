@@ -38,13 +38,13 @@ def evaluate_sr3_run2_with_boundary(data):
 
     example_met = next(iter(data))
     example_cat = next(iter(data[example_met]))
-    masses = data[example_met][example_cat]["signal"][FLAVOURS[0]].keys()
+    masses = data[example_met][example_cat]["signal_nonorm"][FLAVOURS[0]].keys()
 
     CATEGORIES = [
         "LowJet_HT_LT_MET{X}_bin1",
         "LowJet_HT_LT_MET{X}_bin2",
         "LowJet_HT_LT_MET{X}_bin3",
-	"HighJet_HT_LT_MET{X}_bin1",
+        "HighJet_HT_LT_MET{X}_bin1",
         "HighJet_HT_LT_MET{X}_bin2",
         "HighJet_HT_LT_MET{X}_bin3",
     ]
@@ -97,7 +97,7 @@ def evaluate_sr3_run2_with_boundary(data):
                                 "E": 0.0
                             })
 
-                    S_arr = sub["signal"][flav][mass][era]
+                    S_arr = sub["signal_nonorm"][flav][mass][era]
                     B_arr = sub["background"][flav][era]
                     F_arr = sub["fake"][flav][era]
                     E_arr = sub["bkg_err2"][flav][era]
@@ -229,7 +229,7 @@ def evaluate_sr3_run2_fom(data):
 
     example_met = next(iter(data))
     example_cat = next(iter(data[example_met]))
-    masses = data[example_met][example_cat]["signal"][FLAVOURS[0]].keys()
+    masses = data[example_met][example_cat]["signal_nonorm"][FLAVOURS[0]].keys()
 
     CATEGORIES = [
         "LowJet_HT_LT_MET{X}_LTcut",
@@ -289,7 +289,7 @@ def evaluate_sr3_run2_fom(data):
                                 "E": 0.0
                             })
 
-                    S_arr = sub["signal"][flav][mass][era]
+                    S_arr = sub["signal_nonorm"][flav][mass][era]
                     B_arr = sub["background"][flav][era]
                     F_arr = sub["fake"][flav][era]
                     E_arr = sub["bkg_err2"][flav][era]

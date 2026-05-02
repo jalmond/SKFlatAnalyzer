@@ -16,7 +16,7 @@ def redirect_stdout(target):
 
 
 # ---- Imports ----
-from python.utils.data_format import build_data_sr3
+from python.utils.data_format import build_data_sr3,normalize_signal_global
 
 from python.utils.helper import (
     debug_data_summary, get_latest_dir, ReadConfig, ConvertConfPath,
@@ -164,6 +164,8 @@ def main():
     # ----------------------------------
     timer.start("Build data")
     data = build_data_sr3(base, MASSES, sig_name="HNL")
+    normalize_signal_global(data, MASSES)
+    
     timer.stop("Build data")
 
     # ----------------------------------
@@ -178,7 +180,7 @@ def main():
     # =========================================================
     # GLOBAL NBIN STUDY
     # =========================================================
-    nbin_modes = [3,4,5]
+    nbin_modes = [4,5]
     comparison_plot_results = []
 
     for nbin in nbin_modes:
@@ -191,7 +193,7 @@ def main():
             "scan_type": "GlobalMassPerFlav",
             "nbin_mode": nbin,
             "opt_mode": "Run2",
-            "mets": ["2","3"],
+            "mets": ["2","3","4"],
             "min_bin_width": 20.0,
             "min_lt_first_edge": 120.0,
         }

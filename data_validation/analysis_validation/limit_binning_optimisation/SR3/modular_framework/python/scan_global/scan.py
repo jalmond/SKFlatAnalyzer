@@ -236,17 +236,17 @@ def build_arrays_multi(data, met, cat, flavs, masses):
             for era in ERAS:
 
                 # SAFETY CHECK (this is what was crashing you)
-                if flav not in sub["signal"]:
+                if flav not in sub["signal_global_norm"]:
                     continue
-                if mass not in sub["signal"][flav]:
+                if mass not in sub["signal_global_norm"][flav]:
                     continue
-                if era not in sub["signal"][flav][mass]:
+                if era not in sub["signal_global_norm"][flav][mass]:
                     continue
 
                 # ----------------------------------------
                 # GET ARRAYS
                 # ----------------------------------------
-                S_arr = np.array(sub["signal"][flav][mass][era])
+                S_arr = np.array(sub["signal_global_norm"][flav][mass][era])
                 B_arr = np.array(sub["background"][flav][era])
                 F_arr = np.array(sub["fake"][flav][era])
                 E_arr = np.array(sub["bkg_err2"][flav][era])
