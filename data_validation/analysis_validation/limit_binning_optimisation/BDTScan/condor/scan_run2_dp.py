@@ -53,7 +53,7 @@ def greedy_optimize_edges(initial_edges, bin_cache, nbins, x_min, x_max, tail_cu
             for direction in [-step, +step, -2*step, +2*step]:
 
                 new_edges = edges[:]
-                new_val = round(new_edges[i] + direction, 5)
+                new_val = round(round((new_edges[i] + direction) / step) * step, 5)
 
                 if abs(new_val - new_edges[i-1]) < 1e-6:
                     
@@ -65,7 +65,7 @@ def greedy_optimize_edges(initial_edges, bin_cache, nbins, x_min, x_max, tail_cu
                 
                 new_edges[i] = new_val
 
-                MIN_WIDTH = 0.002
+                MIN_WIDTH = 0.005
 
                 if not (new_edges[i-1] + MIN_WIDTH < new_val < new_edges[i+1] - MIN_WIDTH):
                     
@@ -278,9 +278,9 @@ def evaluate_combination_fnct(args):
             #centers, cumsum_b, cumsum_f, cumsum_s = bin_cache[era]
 
             BIN_STEP = 0.005
-            
-            idx_low  = int(round((x_low  + 0.4) / BIN_STEP))
-            idx_high = int(round((x_high + 0.4) / BIN_STEP))
+
+            idx_low = int((x_low - (-0.4)) / BIN_STEP + 0.5)
+            idx_high = int((x_high + (0.4)) / BIN_STEP + 0.5)
             
             if idx_low < 0 or idx_high >= len(edge_indices):
 		
@@ -487,7 +487,7 @@ def scan_optimal_variable_binning(scan_era,histograms, nbins, max_trials, flav=N
     BIN_STEP = 0.005
 
     edge_grid = np.round(np.arange(-0.4, 0.40+BIN_STEP, BIN_STEP), 5)
-    bin_cache=build_cumsum_cache(bin_cache,all_edges)
+    bin_cache = build_cumsum_cache(bin_cache, edge_grid)
     
     # ---------------------------------------
     # --- edges ---
@@ -960,6 +960,12 @@ edges_dp, fom_dp = dp_optimal_binning(
 
 )
 
+if edges_dp is None:
+
+    print("[FATAL] No valid binning found")
+
+    sys.exit(1)
+
 edges_greedy, fom_greedy = greedy_optimize_edges(
 
     edges_dp,
@@ -977,6 +983,12 @@ edges_greedy, fom_greedy = greedy_optimize_edges(
     scan_era="Run2"
 
 )
+
+if edges_greedy is None:
+
+    print("[FATAL] No valid binning found")
+
+    sys.exit(1)
 
 def snap_edges_to_grid(edges, step=0.005):
     snapped = []
@@ -996,10 +1008,19 @@ def snap_edges_to_grid(edges, step=0.005):
     return snapped
 
 edges_greedy = snap_edges_to_grid(edges_greedy, 0.005)
-fom_greedy = evaluate_combination_fnct(
-    (edges_greedy[1:-1], bin_cache, nbins, -0.4, 0.4, 0.4, "Run2")
-)[0]
+result = evaluate_combination_fnct(
 
+    (edges_greedy[1:-1], bin_cache, args.n_bins, -0.4, 0.4, 0.4, "Run2")
+
+)
+
+if result is None:
+
+    print("[ERROR] Final greedy binning invalid")
+
+    sys.exit(1)
+
+fom_greedy = result[0]
 
 
 print(f"Run2 : {format_edges_str(edges_greedy)}")

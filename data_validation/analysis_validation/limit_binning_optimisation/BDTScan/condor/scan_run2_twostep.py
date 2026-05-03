@@ -476,7 +476,7 @@ def refine_edges_locally(
     tail_cut,
     scan_era,
     step=0.005,
-    window=0.01,
+    window=0.02,
     max_iter=5,
 ):
 
