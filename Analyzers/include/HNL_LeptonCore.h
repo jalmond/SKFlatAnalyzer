@@ -184,14 +184,7 @@ class HNL_LeptonCore : public AnalyzerCore {
   TString GetSR3StringBin(const TString& RegionTag, const TString& channel, bool LowJet, double met2_st, double LT, double ll_dphi, double ht_pt);
 
   int getLTBinIndex(float LT, int b1, int b2, int b3) ;
-  TString getBinName(float LT,
-		     int binLimit1,
-		     int binLimit2,
-		     int binLimit3,
-		     bool LowJet,
-		     bool region1,
-		     bool region2,
-		     const TString& binPrefix) ;
+  int getLTBinIndex5(float LT, const std::vector<int>& edges) ;
 
   /// List of Setups
   AnalyzerParameter Setup_Param_POGTight(const TString& s_setup_version, const TString& channel_st);

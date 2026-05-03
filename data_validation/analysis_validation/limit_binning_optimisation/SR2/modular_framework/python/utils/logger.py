@@ -107,7 +107,7 @@ def print_sr2_scan_table_from_results(result, data):
             # ----------------------------------------
             for era in ERAS:
 
-                S_arr = sub["signal"][flav][mass][era]
+                S_arr = sub["signal_norm_flav"][flav][mass][era]
                 B_arr = sub["background"][flav][era]
                 F_arr = sub["fake"][flav][era]
                 E_arr = sub["bkg_err2"][flav][era]
@@ -201,11 +201,11 @@ def debug_print_yields_integral_sr2(data):
         # ----------------------------------------
         # SIGNAL
         # ----------------------------------------
-        for flav in sub["signal"]:
-            for mass in sub["signal"][flav]:
-                for era in sub["signal"][flav][mass]:
+        for flav in sub["signal_norm_flav"]:
+            for mass in sub["signal_norm_flav"][flav]:
+                for era in sub["signal_norm_flav"][flav][mass]:
 
-                    arr = sub["signal"][flav][mass][era]
+                    arr = sub["signal_norm_flav"][flav][mass][era]
 
                     if arr is None:
                         integral = 0.0

@@ -57,6 +57,7 @@ def print_sr3_scan_table_from_results(result, data):
 
     idx = 0
     total_B = 0.0
+    total_S = 0.0
     total_Z2 = 0.0
 
     # ======================================================
@@ -75,6 +76,7 @@ def print_sr3_scan_table_from_results(result, data):
         print("--------------------------------------------------------")
 
         region_B = 0.0
+        region_S = 0.0
         region_Z2 = 0.0
 
         jet = "LowJet" if "LowJet" in cat else "HighJet"
@@ -101,8 +103,7 @@ def print_sr3_scan_table_from_results(result, data):
             # PER ERA: merge -> fake fix -> sum
             # ----------------------------------------
             for era in ERAS:
-
-                S_arr = sub["signal"][flav][mass][era]
+                S_arr = sub["signal_nonorm"][flav][mass][era]
                 B_arr = sub["background"][flav][era]
                 F_arr = sub["fake"][flav][era]
                 E_arr = sub["bkg_err2"][flav][era]
@@ -139,6 +140,7 @@ def print_sr3_scan_table_from_results(result, data):
 
             idx += 1
             region_B += B_tot
+            region_S += S_tot
             region_Z2 += Z * Z
 
         region_Z = math.sqrt(region_Z2)
@@ -146,6 +148,7 @@ def print_sr3_scan_table_from_results(result, data):
         print("\n>>> Region B = {:.3f} | Region Z = {:.4f}".format(region_B, region_Z))
 
         total_B += region_B
+        total_S += region_S
         total_Z2 += region_Z2
 
     # ----------------------------------------
@@ -155,6 +158,7 @@ def print_sr3_scan_table_from_results(result, data):
 
     print("\n========================================================")
     print(" TOTAL B (Run2) = {:.3f}".format(total_B))
+    print(" TOTAL S (Run2) = {:.3f}".format(total_S))
     print(" TOTAL Z (Run2) = {:.4f}".format(total_Z))
     print("========================================================")
     
@@ -225,7 +229,7 @@ def print_sr3_z_per_boundary(data, MASSES, FLAVOURS, ERAS):
                         sub = data[boundary][cat]
 
                         edges_full = sub["edges"]
-                        S_arr = sub["signal"][flav][mass][era]
+                        S_arr = sub["signal_nonorm"][flav][mass][era]
                         B_arr = sub["background"][flav][era]
                         E_arr = sub["bkg_err2"][flav][era]
 
@@ -352,7 +356,7 @@ def print_sr3_z_summary_per_metcat_flat(data, MASSES, FLAVOURS, ERAS):
                     # -----------------------
                     for era in ERAS:
 
-                        S_arr = sub["signal"][flav][mass][era]
+                        S_arr = sub["signal_nonorm"][flav][mass][era]
                         B_arr = sub["background"][flav][era]
                         E_arr = sub["bkg_err2"][flav][era]
 
@@ -468,13 +472,13 @@ def debug_print_yields_integral(data):
                     print(f"Fake  | {era:12s} | {flav:5s} | {region:25s} | {integral:10.4f}")
 
             # ----------------------------------------
-            # SIGNAL
+            # SIGNAL_NONORM
             # ----------------------------------------
-            for flav in sub["signal"]:
-                for mass in sub["signal"][flav]:
-                    for era in sub["signal"][flav][mass]:
+            for flav in sub["signal_nonorm"]:
+                for mass in sub["signal_nonorm"][flav]:
+                    for era in sub["signal_nonorm"][flav][mass]:
 
-                        arr = sub["signal"][flav][mass][era]
+                        arr = sub["signal_nonorm"][flav][mass][era]
                         integral = arr.sum()
 
                         print(f"Sig{mass:<4} | {era:12s} | {flav:5s} | {region:25s} | {integral:10.4f}")

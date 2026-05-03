@@ -28,6 +28,69 @@ def bins_to_array_with_err(bins):
 # ========================================================
 # BUILD MAIN DATA STRUCTURE
 # =========================================================
+
+def normalize_signal_global(data, masses):
+
+    for met in data:
+
+        for flav in FLAVOURS:
+
+            # ----------------------------------------
+            # 1. Build global sums (per met, per flav)
+            # ----------------------------------------
+            global_sum = {}
+
+            for m in masses:
+                global_sum[m] = 0.0
+
+                for cat in data[met]:
+                    sub = data[met][cat]
+
+                    for era in ERAS:
+                        arr = sub["signal_nonorm"][flav][m][era]
+                        global_sum[m] += arr.sum()
+
+            # ----------------------------------------
+            # 2. Apply normalization
+            # ----------------------------------------
+            for cat in data[met]:
+                sub = data[met][cat]
+
+                if "signal_global_norm" not in sub:
+                    sub["signal_global_norm"] = {}
+
+                if flav not in sub["signal_global_norm"]:
+                    sub["signal_global_norm"][flav] = {}
+
+                for m in masses:
+
+                    if m not in sub["signal_global_norm"][flav]:
+                        sub["signal_global_norm"][flav][m] = {}
+
+                    norm = global_sum[m]
+
+                    for era in ERAS:
+                        arr = sub["signal_nonorm"][flav][m][era]
+
+                        if norm > 0:
+                            sub["signal_global_norm"][flav][m][era] = arr / norm
+                        else:
+                            sub["signal_global_norm"][flav][m][era] = arr.copy()
+
+            # ----------------------------------------
+            # 3. Sanity check (per met + flav)
+            # ----------------------------------------
+            for m in masses:
+                total = 0.0
+
+                for cat in data[met]:
+                    sub = data[met][cat]
+
+                    for era in ERAS:
+                        total += sub["signal_global_norm"][flav][m][era].sum()
+
+                print(f"[CHECK] met={met}, flav={flav}, mass={m} -> total={total:.6f}")
+                
 def build_data_sr3(base, masses, sig_name = "HNL" ):
 
     data = {}
@@ -38,7 +101,7 @@ def build_data_sr3(base, masses, sig_name = "HNL" ):
         "LowJet_HT_LT_MET{X}_bin1",
         "LowJet_HT_LT_MET{X}_bin2",
         "LowJet_HT_LT_MET{X}_bin3",
-	"HighJet_HT_LT_MET{X}_bin1",
+ 	"HighJet_HT_LT_MET{X}_bin1",
         "HighJet_HT_LT_MET{X}_bin2",
         "HighJet_HT_LT_MET{X}_bin3",
     ]
@@ -61,7 +124,6 @@ def build_data_sr3(base, masses, sig_name = "HNL" ):
             bkg_all = {}
             fake_all = {}
             sig_all = {}
-
             for flav in FLAVOURS:
 
                 bkg_all[flav] = load_background(base, flav, hist_name=cat)
@@ -129,95 +191,29 @@ def build_data_sr3(base, masses, sig_name = "HNL" ):
             # ----------------------------------
             # Signal arrays
             # ----------------------------------
-            subdata["signal"] = {}
-
+            # ----------------------------------
+            # Signal arrays (RAW ONLY)
+            # ----------------------------------
+            subdata["signal_nonorm"] = {}
+            
             for flav in FLAVOURS:
-                subdata["signal"][flav] = {}
-
+                subdata["signal_nonorm"][flav] = {}
+                
                 for m in masses:
-                    subdata["signal"][flav][m] = {}
-
+                    subdata["signal_nonorm"][flav][m] = {}
+                    
                     for era in ERAS:
 
                         h = sig_all[flav][m][era]
-
+                        
                         if h is None:
                             arr = np.zeros(nbins)
                         else:
                             arr = hist_to_array(h)
+                            
+                        subdata["signal_nonorm"][flav][m][era] = arr
 
-                        subdata["signal"][flav][m][era] = arr
 
-            # ----------------------------------
-            # Combine signal per mass (sum eras)
-            # ----------------------------------
-            subdata["signal_combined_mass"] = {}
-
-            for flav in FLAVOURS:
-
-                subdata["signal_combined_mass"][flav] = {}
-
-                for m in masses:
-
-                    arr = sum(subdata["signal"][flav][m][era] for era in ERAS)
-
-                    if arr.sum() > 0:
-                        arr = arr / arr.sum()
-
-                    subdata["signal_combined_mass"][flav][m] = arr
-
-            # ----------------------------------
-            # Sum over masses
-            # ----------------------------------
-            subdata["signal_sum"] = {}
-
-            for flav in FLAVOURS:
-                total = sum(subdata["signal_combined_mass"][flav][m] for m in masses)
-                subdata["signal_sum"][flav] = total
-
-            # ----------------------------------
-            # Global signal (all flavours)
-            # ----------------------------------
-            subdata["signal_global"] = {}
-
-            for m in masses:
-
-                total = 0
-
-                for flav in FLAVOURS:
-                    for era in ERAS:
-                        total += subdata["signal"][flav][m][era]
-
-                if total.sum() > 0:
-                    total = total / total.sum()
-
-                subdata["signal_global"][m] = total
-
-            # ----------------------------------
-            # Compute norm
-            # ----------------------------------
-            subdata["norm"] = {}
-
-            for m in masses:
-
-                S = subdata["signal_global"][m]
-
-                B = sum(
-                    subdata["background"][flav][era]
-                    for flav in FLAVOURS
-                    for era in ERAS
-                )
-
-                Z2 = 0.0
-
-                for i in range(len(S)):
-                    s = S[i]
-                    b = B[i]
-
-                    if s > 0 and b > 0:
-                        Z2 += 2 * ((s + b) * math.log(1 + s / b) - s)
-
-                subdata["norm"][m] = Z2
 
             # ----------------------------------
             # Store

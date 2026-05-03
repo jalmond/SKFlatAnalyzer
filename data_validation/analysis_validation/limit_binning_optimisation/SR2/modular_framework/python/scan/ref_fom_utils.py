@@ -77,7 +77,7 @@ def compute_sr2_z_from_cuts(data, sr2_cuts, masses, flavours):
                         if flav not in sr2_cuts[era]:
                             continue
 
-                        S_arr = sub["signal"][flav][mass][era]
+                        S_arr = sub["signal_norm_flav"][flav][mass][era]
                         B_arr = sub["background"][flav][era]
                         F_arr = sub["fake"][flav][era]
                         E_arr = sub["bkg_err2"][flav][era]
@@ -490,7 +490,7 @@ def print_sr2_ref_bin_details(data, ref_results, flav, mass):
 
                 for era in ERAS:
 
-                    S = sub["signal"][flav][mass][era][mask].sum()
+                    S = sub["signal_norm_flav"][flav][mass][era][mask].sum()
                     B = sub["background"][flav][era][mask].sum()
                     F = sub["fake"][flav][era][mask].sum()
                     E = sub["bkg_err2"][flav][era][mask].sum()

@@ -112,14 +112,14 @@ def recompute_per_mass_with_fixed_binning(data, global_results):
 
                         for era in ERAS:
 
-                            if flav not in sub["signal"]:
+                            if flav not in sub["signal_nonorm"]:
                                 continue
-                            if mass not in sub["signal"][flav]:
+                            if mass not in sub["signal_nonorm"][flav]:
                                 continue
-                            if era not in sub["signal"][flav][mass]:
+                            if era not in sub["signal_nonorm"][flav][mass]:
                                 continue
                             
-                            S_arr = sub["signal"][flav][mass][era]
+                            S_arr = sub["signal_nonorm"][flav][mass][era]
                             B_arr = sub["background"][flav][era]
                             F_arr = sub["fake"][flav][era]
                             E_arr = sub["bkg_err2"][flav][era]
@@ -369,14 +369,14 @@ def recompute_per_met_results(data, scan_outputs, met_target):
 
                         for era in ERAS:
 
-                            if flav not in sub["signal"]:
+                            if flav not in sub["signal_nonorm"]:
                                 continue
-                            if mass not in sub["signal"][flav]:
+                            if mass not in sub["signal_nonorm"][flav]:
                                 continue
-                            if era not in sub["signal"][flav][mass]:
+                            if era not in sub["signal_nonorm"][flav][mass]:
                                 continue
 
-                            S_arr = sub["signal"][flav][mass][era]
+                            S_arr = sub["signal_nonorm"][flav][mass][era]
                             B_arr = sub["background"][flav][era]
                             F_arr = sub["fake"][flav][era]
                             E_arr = sub["bkg_err2"][flav][era]
@@ -489,14 +489,14 @@ def build_fixed_met_results(data, scan_outputs, best_met_map, config):
 
                         for era in ERAS:
 
-                            if flav not in sub["signal"]:
+                            if flav not in sub["signal_nonorm"]:
                                 continue
-                            if mass not in sub["signal"][flav]:
+                            if mass not in sub["signal_nonorm"][flav]:
                                 continue
-                            if era not in sub["signal"][flav][mass]:
+                            if era not in sub["signal_nonorm"][flav][mass]:
                                 continue
 
-                            S_arr = sub["signal"][flav][mass][era]
+                            S_arr = sub["signal_nonorm"][flav][mass][era]
                             B_arr = sub["background"][flav][era]
                             F_arr = sub["fake"][flav][era]
                             E_arr = sub["bkg_err2"][flav][era]
@@ -835,7 +835,7 @@ def debug_compare_binnings_per_boundary(data, MASSES, FLAVOURS, ERAS):
                         edges_full = sub["edges"]
                         bin_lo = edges_full[:-1]
 
-                        S_arr = sub["signal"][flav][mass][era]
+                        S_arr = sub["signal_nonorm"][flav][mass][era]
                         B_arr = sub["background"][flav][era]
                         E_arr = sub["bkg_err2"][flav][era]
 
@@ -971,7 +971,7 @@ def debug_compare_binnings(data, masses, flavours, ERAS, mode="ref"):
                     else:
                         raise ValueError("mode must be 'ref' or 'fixed200'")
 
-                    S_arr = sub["signal"][flav][mass][era]
+                    S_arr = sub["signal_nonorm"][flav][mass][era]
                     B_arr = sub["background"][flav][era]
                     E_arr = sub["bkg_err2"][flav][era]
 
@@ -1055,7 +1055,7 @@ def debug_compare_binnings(data, masses, flavours, ERAS, mode="ref"):
                         cat_e = cat_template.format(X=boundary)
                         sub_e = data[boundary][cat_e]
 
-                        S_arr = sub_e["signal"][flav][mass][era]
+                        S_arr = sub_e["signal_nonorm"][flav][mass][era]
                         B_arr = sub_e["background"][flav][era]
                         E_arr = sub_e["bkg_err2"][flav][era]
 
@@ -1251,7 +1251,7 @@ def debug_fixed_binning_stat_failures(data, masses, flavours):
 
                         for era in ERAS:
 
-                            S_arr = sub["signal"][flav][mass][era]
+                            S_arr = sub["signal_nonorm"][flav][mass][era]
                             B_arr = sub["background"][flav][era]
                             F_arr = sub["fake"][flav][era]
                             E_arr = sub["bkg_err2"][flav][era]
@@ -1544,7 +1544,7 @@ def print_sr3_bin_table(data, flav, mass):
 
             edges_ref = get_sr3_ref_edges(flav, era, jet, is_ltcut)
 
-            S_arr = sub["signal"][flav][mass][era]
+            S_arr = sub["signal_nonorm"][flav][mass][era]
             B_arr = sub["background"][flav][era]
             F_arr = sub["fake"][flav][era]
             E_arr = sub["bkg_err2"][flav][era]
@@ -1655,7 +1655,7 @@ def print_sr3_bin_table(data, flav, mass):
 
             for era in ERAS:
 
-                S_arr = sub["signal"][flav][mass][era]
+                S_arr = sub["signal_nonorm"][flav][mass][era]
                 B_arr = sub["background"][flav][era]
                 F_arr = sub["fake"][flav][era]
                 E_arr = sub["bkg_err2"][flav][era]

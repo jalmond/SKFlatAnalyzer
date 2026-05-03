@@ -16,7 +16,7 @@ def redirect_stdout(target):
 
 
 # ---- Imports ----
-from python.utils.data_format import build_data
+from python.utils.data_format import build_data,normalize_signal_per_flavour
 from python.utils.helper import (
     get_latest_dir, ReadConfig, ConvertConfPath,
     list_available_configs, print_sr2_bin_table,
@@ -178,6 +178,7 @@ def main():
     # ----------------------------------
     timer.start("Build data")
     data = build_data(base, MASSES, sig_name="HNL")
+    normalize_signal_per_flavour(data, MASSES)
     
     timer.stop("Build data")
 
@@ -264,6 +265,7 @@ def main():
     )
 
     final_scan = evaluate_scan_results_sr2(data, scan_outputs, standard_config)
+
     final_global_mass_scan = evaluate_scan_results_sr2(data, global_mass_scan_outputs, global_mass_config)
     final_global_flav_scan = evaluate_scan_results_sr2(data, global_flav_scan_outputs, global_flav_config)
 

@@ -252,183 +252,84 @@ vector<TString> HNL_LeptonCore::GetLimitLabels(const TString& SR, const TString&
 }
 
 
-TString HNL_LeptonCore::GetSR3StringBin(const TString& RegionTag, const TString& channel, bool LowJet, double met2_st, double LT, double ll_dphi, double ht_pt){
-  
-  
-  /// Detailed binning for High Mass SR3
-  
+TString HNL_LeptonCore::GetSR3StringBin(const TString& RegionTag,
+                                        const TString& channel,
+                                        bool LowJet,
+                                        double met2_st,
+                                        double LT,
+                                        double ll_dphi,
+                                        double ht_pt) {
+
   if (RegionTag.Contains("CR3")) {
     if (LT < 150) return RegionTag + "_bin1";
     if (LT < 200) return RegionTag + "_bin2";
     if (LT < 300) return RegionTag + "_bin3";
     return RegionTag + "_bin4";
   }
-  
-  double met2_st_boundary = 2.;
-  double ht_pt_boundary = (LowJet) ? 1. : 1.5;
-  
-  bool region1 = (met2_st <= met2_st_boundary) && (ht_pt <= ht_pt_boundary);
-  bool region2 = (met2_st > met2_st_boundary) && (ht_pt <= ht_pt_boundary);
-  
+
   TString binPrefix = RegionTag + "_bin";
-  double binLimit1 = 0.0, binLimit2 = 0.0, binLimit3 = 0.0;
 
-  struct Binning {
-    
-    int b1, b2, b3;
-    
-  };
-  
-  // key = "channel_region"
-
-  
-  std::map<TString, Binning> binMap = {
-    
-    // =========================
-    
-    // MuMu
-    
-    // =========================
-    
-    {"MuMu_LowJet_bin1", {290, 360, 480}},
-    
-    {"MuMu_LowJet_bin2", {270, 360, 650}},
-    
-    {"MuMu_LowJet_bin3", {170, 230, 280}},
-    
-    {"MuMu_HighJet_bin1", {240, 320, 380}},
-    
-    {"MuMu_HighJet_bin2", {250, 360, 480}},
-    
-    {"MuMu_HighJet_bin3", {190, 230, 300}},
-    
-    // =========================
-    
-    // EE
-    
-    // =========================
-    
-    {"EE_LowJet_bin1", {400, 750, 1100}},
-    
-    {"EE_LowJet_bin2", {340, 550, 800}},
-    
-    {"EE_LowJet_bin3", {200, 250, 300}},
-    
-    {"EE_HighJet_bin1", {360, 650, 1000}},
-    
-    {"EE_HighJet_bin2", {300, 440, 800}},
-    
-    {"EE_HighJet_bin3", {180, 250, 320}},
-    
-    // =========================
-    
-    // EMu
-    
-    // =========================
-    
-    {"EMu_LowJet_bin1", {380, 550, 800}},
-    
-    {"EMu_LowJet_bin2", {320, 550, 850}},
-    
-    {"EMu_LowJet_bin3", {190, 240, 300}},
-    
-    {"EMu_HighJet_bin1", {300, 460, 550}},
-    
-    {"EMu_HighJet_bin2", {320, 460, 750}},
-    
-    {"EMu_HighJet_bin3", {180, 250, 320}}
-    
-  };
+  // Determine LTcut vs GTcut
+  TString metStr = (met2_st < 4.) ? "LTcut" : "GTcut";
   TString jetStr = LowJet ? "LowJet" : "HighJet";
-  
-  TString regionStr;
-  
-  if (region1) regionStr = "bin1";
-  
-  else if (region2) regionStr = "bin2";
-  
-  else regionStr = "bin3";
-  
-  TString key = channel + "_" + jetStr + "_" + regionStr;
-  
+
+  TString key = channel + "_" + jetStr + "_" + metStr;
+
+  std::map<TString, std::vector<int>> binMap = {
+
+    // MuMu
+    {"MuMu_LowJet_LTcut",  {270, 340, 420, 550}},
+    {"MuMu_LowJet_GTcut",  {260, 340, 460, 600}},
+    {"MuMu_HighJet_LTcut", {210, 270, 360, 460}},
+    {"MuMu_HighJet_GTcut", {210, 270, 340, 460}},
+
+    // EE
+    {"EE_LowJet_LTcut",  {360, 600, 800, 1100}},
+    {"EE_LowJet_GTcut",  {280, 420, 550, 800}},
+    {"EE_HighJet_LTcut", {300, 440, 650, 1000}},
+    {"EE_HighJet_GTcut", {220, 300, 420, 550}},
+
+    // EMu
+    {"EMu_LowJet_LTcut",  {380, 550, 750, 900}},
+    {"EMu_LowJet_GTcut",  {320, 460, 600, 900}},
+    {"EMu_HighJet_LTcut", {260, 380, 500, 750}},
+    {"EMu_HighJet_GTcut", {250, 360, 460, 700}}
+  };
+
   auto it = binMap.find(key);
-  
   if (it == binMap.end()) {
-    
     std::cerr << "ERROR: binning not found for key = " << key << std::endl;
-    
     exit(1);
-    
   }
-  
-  binLimit1 = it->second.b1;
-  
-  binLimit2 = it->second.b2;
-  
-  binLimit3 = it->second.b3;
-  return getBinName(LT,binLimit1,binLimit2,binLimit3, LowJet,region1,region2,binPrefix);
-    
-}
 
+  const std::vector<int>& edges = it->second;
 
+  int ltBin = getLTBinIndex5(LT, edges);
 
-// Helper: determine bin index (0..3) from LT and edges
-
-int HNL_LeptonCore::getLTBinIndex(float LT, int b1, int b2, int b3) {
-  
-  if (LT <= b1) return 0;
-  
-  if (LT <= b2) return 1;
-  
-  if (LT <= b3) return 2;
-  
-  return 3;
-  
-}
-
-// Main function
-
-TString HNL_LeptonCore::getBinName(float LT,
-		       		       int binLimit1,
-				       int binLimit2,
-				       int binLimit3,
-				       bool LowJet,
-				       bool region1,
-				       bool region2,
-				       const TString& binPrefix) {
-    
-  // Determine LT bin (0..3)
-  
-  int ltBin = getLTBinIndex(LT, binLimit1, binLimit2, binLimit3);
-  
-  // Determine region index (0..5)
-
+  // region index (unchanged structure)
   int regionIndex;
-  
-  if (LowJet) {
-    
-    if (region1) regionIndex = 0;
+  if (LowJet) regionIndex = 0;
+  else regionIndex = 1;
 
-    else if (region2) regionIndex = 1;
-
-    else regionIndex = 2;
-
-  } else {
-
-    if (region1) regionIndex = 3;
-
-    else if (region2) regionIndex = 4;
-
-    else regionIndex = 5;
-
-  }
-
-  // Each region has 4 bins
-
-  int globalBin = regionIndex * 4 + ltBin + 1;
+  // 5 bins per region now
+  int globalBin = regionIndex * 5 + ltBin + 1;
 
   return binPrefix + TString(std::to_string(globalBin));
+}
 
+
+
+
+
+
+
+int HNL_LeptonCore::getLTBinIndex5(float LT, const std::vector<int>& edges) {
+
+  if (LT <= edges[0]) return 0;
+  if (LT <= edges[1]) return 1;
+  if (LT <= edges[2]) return 2;
+  if (LT <= edges[3]) return 3;
+  return 4;
 }
 
 

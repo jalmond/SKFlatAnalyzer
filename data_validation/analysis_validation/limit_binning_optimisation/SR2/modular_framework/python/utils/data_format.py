@@ -14,6 +14,56 @@ def hist_to_array(h):
 # =========================================================
 # MAIN LOADER
 # =========================================================
+
+def normalize_signal_per_flavour(data, masses):
+
+    import numpy as np
+
+    # ----------------------------------------
+    # 1. Compute norm per (flavour, mass)
+    # ----------------------------------------
+    global_sum = {}
+
+    for flav in FLAVOURS:
+        global_sum[flav] = {}
+
+        for m in masses:
+            total = 0.0
+
+            for region in data:
+                sub = data[region]
+
+                for era in ERAS:
+                    arr = sub["signal_nonorm"][flav][m][era]
+                    total += arr.sum()
+
+            global_sum[flav][m] = total
+
+    # ----------------------------------------
+    # 2. Apply normalization
+    # ----------------------------------------
+    for region in data:
+        sub = data[region]
+
+        sub["signal_norm_flav"] = {}
+
+        for flav in FLAVOURS:
+            sub["signal_norm_flav"][flav] = {}
+
+            for m in masses:
+                sub["signal_norm_flav"][flav][m] = {}
+
+                norm = global_sum[flav][m]
+
+                for era in ERAS:
+                    arr = sub["signal_nonorm"][flav][m][era]
+
+                    if norm > 0:
+                        sub["signal_norm_flav"][flav][m][era] = arr / norm
+                    else:
+                        sub["signal_norm_flav"][flav][m][era] = arr.copy()
+
+                        
 def build_data(base, masses, sig_name="HNL"):
 
     data = {}
@@ -73,9 +123,6 @@ def build_data(base, masses, sig_name="HNL"):
                     )
 
                     h = load_histogram(fname, path)
-
-                    if h and h.Integral() > 0:
-                        h.Scale(1.0 / h.Integral())
 
                     sig_all[flav][m][era] = h
 
@@ -141,80 +188,25 @@ def build_data(base, masses, sig_name="HNL"):
         # =====================================================
         # SIGNAL ARRAYS
         # =====================================================
-        subdata["signal"] = {}
+        subdata["signal_nonorm"] = {}
 
         for flav in FLAVOURS:
-            subdata["signal"][flav] = {}
+            subdata["signal_nonorm"][flav] = {}
 
             for m in masses:
-                subdata["signal"][flav][m] = {}
+                subdata["signal_nonorm"][flav][m] = {}
 
                 for era in ERAS:
 
                     h = sig_all[flav][m][era]
                     arr = hist_to_array(h)
 
-                    subdata["signal"][flav][m][era] = arr
+                    subdata["signal_nonorm"][flav][m][era] = arr
 
-        # =====================================================
-        # SIGNAL COMBINED
-        # =====================================================
-        subdata["signal_combined_mass"] = {}
-
-        for flav in FLAVOURS:
-            subdata["signal_combined_mass"][flav] = {}
-
-            for m in masses:
-
-                arr = sum(
-                    subdata["signal"][flav][m][era]
-                    for era in ERAS
-                )
-
-                if arr.sum() > 0:
-                    arr = arr / arr.sum()
-
-                subdata["signal_combined_mass"][flav][m] = arr
 
         data[region] = subdata
 
-    # =====================================================
-    # GLOBAL SIGNAL + NORM
-    # =====================================================
-    data["signal_global"] = {}
-    data["norm"] = {}
 
-    for m in masses:
-
-        total = np.zeros_like(data["low"]["edges"][:-1])
-
-        for region in REGIONS:
-            for flav in FLAVOURS:
-                for era in ERAS:
-                    total += data[region]["signal"][flav][m][era]
-
-        if total.sum() > 0:
-            total = total / total.sum()
-
-        data["signal_global"][m] = total
-
-        B = sum(
-            data[region]["background"][flav][era]
-            for region in REGIONS
-            for flav in FLAVOURS
-            for era in ERAS
-        )
-
-        Z2 = 0.0
-
-        for i in range(len(total)):
-            s = total[i]
-            b = B[i]
-
-            if s > 0 and b > 0:
-                Z2 += 2 * ((s + b) * np.log(1 + s / b) - s)
-
-        data["norm"][m] = Z2
 
     return data
 
