@@ -1072,15 +1072,15 @@ TString HNL_RegionDefinitions::RunSignalRegionWWString(bool ApplyForSR,HNL_Lepto
       
       // Define cuts by era and channel
       struct CutValues {
-	double cut1, cut2, cut3, cut4, cut5, cut6;};
-	
+        double cut1, cut2, cut3, cut4, cut5, cut6;};
+        
       std::map<std::string, std::map<int, CutValues>> sr2_cuts = {
-	{"Run2_PerFlavour_EraStatReq", {
+          {"Run2_PerFlavour_EraStatReq", {
             {HNL_LeptonCore::Channel::MuMu, {2.2, 3.6, 4.5, 0.9, 1.5, 2.3}},
             {HNL_LeptonCore::Channel::EE,   {0.9, 2.4, 3.2, 0.7, 1.3, 2.5}},
             {HNL_LeptonCore::Channel::EMu,  {0.9, 2.1, 3.2, 0.7, 1.3, 2.5}}
           }},
-	{"Run2_Global_EraStatReq", {
+          {"Run2_Global_EraStatReq", {
             {HNL_LeptonCore::Channel::MuMu, {2.2, 3.2, 4.4, 0.9, 1.5, 2.4}},
             {HNL_LeptonCore::Channel::EE,   {2.2, 3.2, 4.4, 0.9, 1.5, 2.4}},
             {HNL_LeptonCore::Channel::EMu,  {2.2, 3.2, 4.4, 0.9, 1.5, 2.4}}
@@ -1102,27 +1102,27 @@ TString HNL_RegionDefinitions::RunSignalRegionWWString(bool ApplyForSR,HNL_Lepto
       std::string key = "Run2_PerFlavour_EraStatReq";
 
       if (auto eraIt = sr2_cuts.find(key); eraIt != sr2_cuts.end()) {
-	if (auto chIt = eraIt->second.find(chan); chIt != eraIt->second.end()) {
-	  cuts = chIt->second;
-	} else {
-	  throw std::runtime_error("Channel not found in sr2_cuts");
-	}
+        if (auto chIt = eraIt->second.find(chan); chIt != eraIt->second.end()) {
+          cuts = chIt->second;
+        } else {
+          throw std::runtime_error("Channel not found in sr2_cuts");
+        }
       } else {
-	throw std::runtime_error("Key not found in sr2_cuts");
+        throw std::runtime_error("Key not found in sr2_cuts");
       }
       
       
       // Bin selection (preserves your original logic)
       if (ll_dphi > 2.0) {
-	if (HTOverPT < cuts.cut4) return RegionTag + "_HTLT_Bin1";
-	if (HTOverPT < cuts.cut5) return RegionTag + "_HTLT_Bin2";
-	if (HTOverPT < cuts.cut6) return RegionTag + "_HTLT_Bin3";
-	return RegionTag + "_HTLT_Bin4";
+        if (HTOverPT < cuts.cut4) return RegionTag + "_HTLT_Bin1";
+        if (HTOverPT < cuts.cut5) return RegionTag + "_HTLT_Bin2";
+        if (HTOverPT < cuts.cut6) return RegionTag + "_HTLT_Bin3";
+        return RegionTag + "_HTLT_Bin4";
       } else {
-	if (HTOverPT < cuts.cut1) return RegionTag + "_HTLT_Bin5";
-	if (HTOverPT < cuts.cut2) return RegionTag + "_HTLT_Bin6";
-	if (HTOverPT < cuts.cut3) return RegionTag + "_HTLT_Bin7";
-	return RegionTag + "_HTLT_Bin8";
+        if (HTOverPT < cuts.cut1) return RegionTag + "_HTLT_Bin5";
+        if (HTOverPT < cuts.cut2) return RegionTag + "_HTLT_Bin6";
+        if (HTOverPT < cuts.cut3) return RegionTag + "_HTLT_Bin7";
+        return RegionTag + "_HTLT_Bin8";
       }
       
       
