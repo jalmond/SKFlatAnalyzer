@@ -110,7 +110,7 @@ void HNL_LeptonCore::DefineLimitBins(){
   
   vector<TString> masses_to_prepare = {"400", "450","500", "600", "700", "800","900","1000","1100","1200","1300","1500","1700","2000","2500","3000"};
   if(HasFlag("SR1_MassGroups"))  masses_to_prepare = {"MassRange1","MassRange2","MassRange3"};
-	
+  
   // --------------------------------------------
   // SR1 Global Mass (per flavour, same for all masses)
   // --------------------------------------------
@@ -129,7 +129,7 @@ void HNL_LeptonCore::DefineLimitBins(){
   // --------------------------------------------
   if(HasFlag("SR1_Global")) {
     sr1bins_dummy = {0.0, 0.0, 0.0 , 0.0, 0.0, 0.0, 0.0, 0.0};
-	
+  
     for(const auto& mass : masses_to_prepare) {
       
       sr1bins_mm_byMass[mass] = sr1bins;
@@ -183,7 +183,7 @@ void HNL_LeptonCore::DefineLimitBins(){
 
   //// Define SR 3 binning                                                                                                                              
 
-  vector<TString> minBinsSR3={"SR3_bin1","SR3_bin2","SR3_bin3","SR3_bin4","SR3_bin5","SR3_bin6","SR3_bin7","SR3_bin8", "SR3_bin9","SR3_bin10","SR3_bin11","SR3_bin12","SR3_bin13","SR3_bin14","SR3_bin15","SR3_bin16","SR3_bin17","SR3_bin18","SR3_bin19","SR3_bin20","SR3_bin21","SR3_bin22","SR3_bin23","SR3_bin24"};
+  vector<TString> minBinsSR3={"SR3_bin1","SR3_bin2","SR3_bin3","SR3_bin4","SR3_bin5","SR3_bin6","SR3_bin7","SR3_bin8", "SR3_bin9","SR3_bin10","SR3_bin11","SR3_bin12","SR3_bin13","SR3_bin14","SR3_bin15","SR3_bin16","SR3_bin17","SR3_bin18","SR3_bin19","SR3_bin20"};
 
   std::vector<TString> MuMu_SR3 = minBinsSR3;
   std::vector<TString> EE_SR3   = minBinsSR3;
@@ -197,7 +197,7 @@ void HNL_LeptonCore::DefineLimitBins(){
   map_bins_labels ["CR3"]    = CR3;
    
 
-		 
+     
   return ;
   
 }
@@ -267,10 +267,12 @@ TString HNL_LeptonCore::GetSR3StringBin(const TString& RegionTag,
     return RegionTag + "_bin4";
   }
 
+  double met2_st_boundary = 4.;
+
   TString binPrefix = RegionTag + "_bin";
 
   // Determine LTcut vs GTcut
-  TString metStr = (met2_st < 4.) ? "LTcut" : "GTcut";
+  TString metStr = (met2_st < met2_st_boundary) ? "LTcut" : "GTcut";
   TString jetStr = LowJet ? "LowJet" : "HighJet";
 
   TString key = channel + "_" + jetStr + "_" + metStr;
@@ -308,11 +310,17 @@ TString HNL_LeptonCore::GetSR3StringBin(const TString& RegionTag,
 
   // region index (unchanged structure)
   int regionIndex;
-  if (LowJet) regionIndex = 0;
-  else regionIndex = 1;
+  if (LowJet){
+    if (met2_st < met2_st_boundary) regionIndex = 0;
+    else regionIndex = 1;
+  }
+  else{ // HighJet
+    if (met2_st < met2_st_boundary) regionIndex = 2;
+    else regionIndex = 3;
+  }
 
   // 5 bins per region now
-  int globalBin = regionIndex * 5 + ltBin + 1;
+  int globalBin = regionIndex * 5 + ltBin;
 
   return binPrefix + TString(std::to_string(globalBin));
 }
@@ -325,11 +333,11 @@ TString HNL_LeptonCore::GetSR3StringBin(const TString& RegionTag,
 
 int HNL_LeptonCore::getLTBinIndex5(float LT, const std::vector<int>& edges) {
 
-  if (LT <= edges[0]) return 0;
-  if (LT <= edges[1]) return 1;
-  if (LT <= edges[2]) return 2;
-  if (LT <= edges[3]) return 3;
-  return 4;
+  if (LT <= edges[0]) return 1;
+  if (LT <= edges[1]) return 2;
+  if (LT <= edges[2]) return 3;
+  if (LT <= edges[3]) return 4;
+  return 5;
 }
 
 
@@ -349,7 +357,7 @@ vector<TString> HNL_LeptonCore::GetBDTLimitLabels(const TString& key){
 
 
 double HNL_LeptonCore::GetLimitBin(const TString& region, const std::vector<Lepton*>& leps, const std::vector<Jet>& AK4Jets,
-				   const std::vector<FatJet>& AK8_JetColl, const Event& ev, double& nbins_reg){
+           const std::vector<FatJet>& AK8_JetColl, const Event& ev, double& nbins_reg){
 
   double Binvalue=0;
   
