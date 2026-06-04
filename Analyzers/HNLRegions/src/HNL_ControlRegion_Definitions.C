@@ -330,7 +330,7 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
       if(SS_CR)  FillCutflow(CutFlow_Region, weight_channel, "SS_CR",param);
       if(RunCR("VBF_CR",CRs)) FillCutflow(CutFlow_Region, weight_channel, "VBF_CR",param);
 
-      if(!HasFlag("RegDepConv")){
+      if(!HasFlag("OldConv")){
 	
 	if(!ConversionSplitting(LepsT,RunConv,2,param))  return;
       }
