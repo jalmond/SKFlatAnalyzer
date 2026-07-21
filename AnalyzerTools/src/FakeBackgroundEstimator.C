@@ -301,7 +301,12 @@ double FakeBackgroundEstimator::GetElectronFakeRate(TString ID, TString key, TSt
 
   if(sys == 2)  return ApplyHighPtCorr*(value*1.3);
   if(sys == -2) return ApplyHighPtCorr*(value/1.3);
-  
+
+  if(sys == 3)  return ApplyHighPtCorr*(value);
+  if(sys == -3) return ApplyHighPtCorr*(value);
+  if(sys == 4)  return ApplyHighPtCorr*(value);
+  if(sys == -4) return ApplyHighPtCorr*(value);
+
   return ApplyHighPtCorr*(value+double(sys)*error);
 
 }
@@ -393,6 +398,11 @@ double FakeBackgroundEstimator::GetMuonFakeRate(TString ID, TString key, TString
 
   if(sys == 2)  return ApplyHighPtCorr*(value*1.2);
   if(sys == -2) return ApplyHighPtCorr*(value/1.2);
+  
+  if(sys == 3)  return ApplyHighPtCorr*(value);
+  if(sys == -3) return ApplyHighPtCorr*(value);
+  if(sys == 4)  return ApplyHighPtCorr*(value);
+  if(sys == -4) return ApplyHighPtCorr*(value);
 
   return ApplyHighPtCorr*(value+double(sys)*error);
 
