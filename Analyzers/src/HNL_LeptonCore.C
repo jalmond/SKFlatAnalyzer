@@ -568,7 +568,9 @@ vector<AnalyzerParameter::Syst> HNL_LeptonCore::GetSystList(TString SystType){
   if(RunCF){
     SystList = {
       AnalyzerParameter::CFRateUp,
-      AnalyzerParameter::CFRateDown
+      AnalyzerParameter::CFRateDown,
+      AnalyzerParameter::CFShiftUp,
+      AnalyzerParameter::CFShiftDown,
     };
   }
   

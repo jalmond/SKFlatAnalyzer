@@ -6,6 +6,7 @@
 #pragma link C++ nestedclasses;
 
 #pragma link C++ class HNL_RegionDefinitions+;
+#pragma link C++ class HNL_Lepton_FakeRate_MC+;
 #pragma link C++ class HNL_ControlRegion_Plotter+;
 #pragma link C++ class HNL_ControlRegionOne+;
 #pragma link C++ class HNL_ControlRegionTwo+;

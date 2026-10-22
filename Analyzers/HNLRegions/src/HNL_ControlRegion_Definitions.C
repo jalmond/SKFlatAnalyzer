@@ -11,8 +11,12 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
     for(unsigned int i=0; i<electronsInitial.size(); i++){
       Electron this_electron = electronsInitial.at(i);
       double ElEnergyShift = 1;
+
+      int shift_syst=0;
+      if (param.syst_ == AnalyzerParameter::CFShiftUp) shift_syst=1;
+      if (param.syst_ == AnalyzerParameter::CFShiftDown) shift_syst=-1;
       
-      if(int(i)==nElRun_ForCF) ElEnergyShift = GetShiftCFEl(this_electron, param.Electron_Tight_ID);
+      if(int(i)==nElRun_ForCF) ElEnergyShift = GetShiftCFEl(this_electron, param.Electron_Tight_ID,shift_syst);
       
       this_electron.SetPtEtaPhiM( electronsInitial.at(i).Pt()*ElEnergyShift, electronsInitial.at(i).Eta(), electronsInitial.at(i).Phi(), electronsInitial.at(i).M() );
       electrons.push_back( this_electron);
@@ -375,6 +379,9 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
     
     if(SS_CR){
 
+
+      FillSSZPeakCRPlots(dilep_channel, LepsT, LepsV,TauColl_Cleaned, JetColl, VBF_JetColl, AK8_JetColl, B_JetColl, ev, METv, param, weight_channel);
+		
       if(FillSSPreselectionPlots(dilep_channel,    LepsT, LepsV,TauColl_Cleaned, JetColl,     AK8_JetColl, B_JetColl, ev, METv, param, weight_channel))	{
 	passedFull.push_back("SSPresel");
 
@@ -413,7 +420,7 @@ void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electrons
 	  if(FillHighMassBJetCRPlots(dilep_channel, LepsT, LepsV,TauColl_Cleaned, JetColl,    AK8_JetColl, B_JetColl, ev, METv, param, weight_channel)) passedFull.push_back("HighMassBJet_CR");
 	  if(FillHighMassNPCRPlots(dilep_channel, LepsT, LepsV,TauColl_Cleaned, JetColl,      AK8_JetColl, B_JetColl, ev, METv, param, weight_channel)) passedFull.push_back("HighMassNP_CR");
 	
-	  FillSSZPeakCRPlots(dilep_channel, LepsT, LepsV,TauColl_Cleaned, JetColl, VBF_JetColl, AK8_JetColl, B_JetColl, ev, METv, param, weight_channel);
+	  //FillSSZPeakCRPlots(dilep_channel, LepsT, LepsV,TauColl_Cleaned, JetColl, VBF_JetColl, AK8_JetColl, B_JetColl, ev, METv, param, weight_channel);
 	
 	} // end of runsyst check
 
@@ -1407,12 +1414,16 @@ bool HNL_RegionDefinitions::FillSSZPeakCRPlots(HNL_LeptonCore::Channel channel, 
 
   if(AK8_JetColl.size() > 0){
     Fill_RegionPlots(param,"HNL_HighMassSSZPeak_AK8_TwoLepton_CR"  , taus, JetColl,  AK8_JetColl,  leps, METv, nPV, w);
+    if(leps[1]->Pt() > 200)      Fill_RegionPlots(param,"HNL_HighMassSSZPeak_AK8_HighPt_TwoLepton_CR"  , taus, JetColl,  AK8_JetColl,  leps, METv, nPV, w);
+    
   }
   else if(PassVBF(VBF_JetColl,leps,450)){
-    Fill_RegionPlots(param,"HNL_HighMassSSZPeak_VBF_TwoLepton_CR"  , taus, VBF_JetColl,  AK8_JetColl,  leps, METv, nPV, w);
+    if(leps[0]->HTOverPt()> 1)Fill_RegionPlots(param,"HNL_HighMassSSZPeak_VBF_TwoLepton_CR"  , taus, VBF_JetColl,  AK8_JetColl,  leps, METv, nPV, w);
   }
   else{
     Fill_RegionPlots(param,"HNL_HighMassSSZPeak_AK4_TwoLepton_CR"  , taus, JetColl,  AK8_JetColl,  leps,  METv, nPV, w);
+    if(leps[1]->Pt() > 200)     Fill_RegionPlots(param,"HNL_HighMassSSZPeak_AK4_HighPt_TwoLepton_CR"  , taus, JetColl,  AK8_JetColl,  leps,  METv, nPV, w);
+    
   }
 
   return true;

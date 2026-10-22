@@ -61,7 +61,11 @@ void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq,
       Electron this_electron = electronsInitial.at(i);
       double ElEnergyShift = 1;
 
-      if(int(i)==nElForRunCF) ElEnergyShift = GetShiftCFEl(this_electron, param.Electron_Tight_ID);
+      int shift_syst=0;
+      if (param.syst_ == AnalyzerParameter::CFShiftUp) shift_syst=1;
+      if (param.syst_ == AnalyzerParameter::CFShiftDown) shift_syst=-1;
+	    
+      if(int(i)==nElForRunCF) ElEnergyShift = GetShiftCFEl(this_electron, param.Electron_Tight_ID, shift_syst);
 
       this_electron.SetPtEtaPhiM( electronsInitial.at(i).Pt()*ElEnergyShift, electronsInitial.at(i).Eta(), electronsInitial.at(i).Phi(), electronsInitial.at(i).M() );
       electrons.push_back( this_electron);

@@ -193,6 +193,7 @@ class AnalyzerParameter{
     BTagSFLTagCorrUp,BTagSFLTagCorrDown,
     METUnclUp,METUnclDown,
     CFRateUp,CFRateDown,
+    CFShiftUp,CFShiftDown,
     CFSFUp,CFSFDown,
     FRElectronUp,FRElectronDown,
     FRMuonUp,FRMuonDown,
