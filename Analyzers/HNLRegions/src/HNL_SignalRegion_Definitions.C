@@ -53,6 +53,10 @@ void HNL_RegionDefinitions::RunAllSignalRegions(HNL_LeptonCore::ChargeType qq,
     std::cout << "  weight_ll        = " << weight_ll << std::endl;
   }
   
+  if (param.syst_ == AnalyzerParameter::CFShiftUp)   param.k.Electron_CF  = "CFRate_InvPtEta3_PBSExtrap_PSigma_HNL_HighPt_ULID";
+  if (param.syst_ == AnalyzerParameter::CFShiftDown) param.k.Electron_CF  = "CFRate_InvPtEta3_PBSExtrap_MSigma_HNL_HighPt_ULID";
+
+  
   //// Need to correct MET/Energy of electrons in the case of CF bkg estimate
   std::vector<Electron> electrons;
   if(RunCF) {
@@ -473,8 +477,11 @@ void   HNL_RegionDefinitions::RunMainRegionCode(bool IsSR,HNL_LeptonCore::Channe
       {1100, {1100}},
       {1200, {1200, 1300}},
       {1500, {1500, 1700}},
-      {2000, {2000, 2500, 3000}},
+      {2000, {2000, 2500, 3000,5000,10000,15000,20000,25000,30000,40000,50000,60000}},
     };
+
+    //// mass ref is for binning, list is all masses that use that binning
+    
     
     // Cache these once
     const bool isSR      = IsSR;
@@ -527,6 +534,12 @@ void   HNL_RegionDefinitions::RunMainRegionCode(bool IsSR,HNL_LeptonCore::Channe
 				      return mcSampleName.Contains(token);
 				    }
 				    );
+	//// since Weinberg has no mass in name add this line to run sample
+	if(mcSampleName.Contains("WeinbergOp")) {
+	  if(ref_mass==500)inSignalRange=true;
+	  else inSignalRange=false;
+	}
+      
 	if (!inSignalRange) continue;
       }
 

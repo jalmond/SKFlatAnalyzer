@@ -3,6 +3,9 @@
 
 void HNL_RegionDefinitions::RunAllControlRegions(std::vector<Electron> electronsInitial, std::vector<Electron> electrons_veto, std::vector<Muon> muons, std::vector<Muon> muons_veto, vector<Tau> TauColl_Cleaned,std::vector<Jet> AK4_JetCollLoose, std::vector<Jet> JetColl, std::vector<Jet> VBF_JetColl,   std::vector<FatJet> AK8_JetColl, std::vector<Jet> B_JetColl,  Event ev, Particle METv, AnalyzerParameter param, vector<TString> CRs, int nElRun_ForCF, float weight_ll ){
 
+  //// Change key for CF Rate  
+  if (param.syst_ == AnalyzerParameter::CFShiftUp)   param.k.Electron_CF  = "CFRate_InvPtEta3_PBSExtrap_PSigma_HNL_HighPt_ULID";
+  if (param.syst_ == AnalyzerParameter::CFShiftDown) param.k.Electron_CF  = "CFRate_InvPtEta3_PBSExtrap_MSigma_HNL_HighPt_ULID";
 
 
   std::vector<Electron> electrons;
