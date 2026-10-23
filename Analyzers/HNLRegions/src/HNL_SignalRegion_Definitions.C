@@ -477,7 +477,7 @@ void   HNL_RegionDefinitions::RunMainRegionCode(bool IsSR,HNL_LeptonCore::Channe
       {1100, {1100}},
       {1200, {1200, 1300}},
       {1500, {1500, 1700}},
-      {2000, {2000, 2500, 3000,5000,10000,15000,20000,25000,30000,40000,50000,60000}},
+      {2000, {2000, 2500, 3000,5000,7500, 10000,15000,20000,25000,30000,40000,50000,60000}},
     };
 
     //// mass ref is for binning, list is all masses that use that binning

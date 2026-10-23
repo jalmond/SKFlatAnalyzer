@@ -1421,7 +1421,7 @@ bool HNL_RegionDefinitions::FillSSZPeakCRPlots(HNL_LeptonCore::Channel channel, 
     
   }
   else if(PassVBF(VBF_JetColl,leps,450)){
-    if(leps[0]->HTOverPt()> 1)Fill_RegionPlots(param,"HNL_HighMassSSZPeak_VBF_TwoLepton_CR"  , taus, VBF_JetColl,  AK8_JetColl,  leps, METv, nPV, w);
+    Fill_RegionPlots(param,"HNL_HighMassSSZPeak_VBF_TwoLepton_CR"  , taus, VBF_JetColl,  AK8_JetColl,  leps, METv, nPV, w);
   }
   else{
     Fill_RegionPlots(param,"HNL_HighMassSSZPeak_AK4_TwoLepton_CR"  , taus, JetColl,  AK8_JetColl,  leps,  METv, nPV, w);
