@@ -1237,16 +1237,63 @@ TString HNL_RegionDefinitions::RunSignalRegionAK4StringBDT(bool ApplyForSR, TStr
   bool isBDTVar = false;
   if(HasFlag("SSDilepBDT") && !HasFlag("RunSyst")) isBDTVar = true;
 
-  float MVAvalueIncl    = EvaluateEventMVA(mN, "Incl", version, NCut, NTree, channel, LepTColl, ev, METv, param, w, isBDTVar); // true : fill MVA variables
+  float MVAvalueIncl = EvaluateEventMVA(mN, "Incl", version, NCut, NTree, channel, LepTColl, ev, METv, param, w, isBDTVar); // true : fill MVA variables
+  float MVAvalueM100 = 0., MVAvalueM125 = 0., MVAvalueM150 = 0., MVAvalueM200 = 0., MVAvalueM250 = 0., MVAvalueM300 = 0., MVAvalueM400 = 0., MVAvalueM500 = 0.;
 
   vector<Tau> TauColl;
 
   if(param.runPlotter){
 
     if(HasFlag("PlotBDT")){
+
       FillHist("LimitExtraction/"+param.Name+"/"+RegionTag+"BDT/"+BDTLabel, MVAvalueIncl, w, 400, -1., 1.);
       if(B_JetColl_CR.size() == 1) FillHist("LimitExtraction/"+param.Name+"/"+RegionTag+"BDT/InvBJet_"+BDTLabel, MVAvalueIncl, w*param.w.btagSF_tight/param.w.btagSF, 400, -1., 1.);
       else FillHist("LimitExtraction/"+param.Name+"/"+RegionTag+"BDT/InvMET_"+BDTLabel, MVAvalueIncl, w, 400, -1., 1.);
+
+      if(version == "V3"){
+        if(channel == MuMu){
+          MVAvalueM100 = EvaluateEventMVA("100", "Incl", version, "150", "700",  channel, LepTColl, ev, METv, param, w, false);
+          MVAvalueM125 = EvaluateEventMVA("125", "Incl", version, "150", "600",  channel, LepTColl, ev, METv, param, w, false);
+          MVAvalueM150 = EvaluateEventMVA("150", "Incl", version, "150", "850",  channel, LepTColl, ev, METv, param, w, false);
+          MVAvalueM200 = EvaluateEventMVA("200", "Incl", version, "400", "1000", channel, LepTColl, ev, METv, param, w, false);
+          MVAvalueM250 = EvaluateEventMVA("250", "Incl", version, "250", "1000", channel, LepTColl, ev, METv, param, w, false);
+          MVAvalueM300 = EvaluateEventMVA("300", "Incl", version, "400", "1000", channel, LepTColl, ev, METv, param, w, false);
+          MVAvalueM400 = EvaluateEventMVA("400", "Incl", version, "250", "850",  channel, LepTColl, ev, METv, param, w, false);
+          MVAvalueM500 = EvaluateEventMVA("500", "Incl", version, "150", "1000", channel, LepTColl, ev, METv, param, w, false);
+        }
+        if(channel == EE){
+          MVAvalueM100 = EvaluateEventMVA("100", "Incl", version, "150", "500",  channel, LepTColl, ev, METv, param, w, false);
+          MVAvalueM125 = EvaluateEventMVA("125", "Incl", version, "100", "600",  channel, LepTColl, ev, METv, param, w, false);
+          MVAvalueM150 = EvaluateEventMVA("150", "Incl", version, "300", "500",  channel, LepTColl, ev, METv, param, w, false);
+          MVAvalueM200 = EvaluateEventMVA("200", "Incl", version, "100", "700",  channel, LepTColl, ev, METv, param, w, false);
+          MVAvalueM250 = EvaluateEventMVA("250", "Incl", version, "100", "1000", channel, LepTColl, ev, METv, param, w, false);
+          MVAvalueM300 = EvaluateEventMVA("300", "Incl", version, "200", "1000", channel, LepTColl, ev, METv, param, w, false);
+          MVAvalueM400 = EvaluateEventMVA("400", "Incl", version, "150", "700",  channel, LepTColl, ev, METv, param, w, false);
+          MVAvalueM500 = EvaluateEventMVA("500", "Incl", version, "100", "1000", channel, LepTColl, ev, METv, param, w, false);
+        }
+        if(channel == EMu){
+          MVAvalueM100 = EvaluateEventMVA("100", "Incl", version, "100", "600",  channel, LepTColl, ev, METv, param, w, false);
+          MVAvalueM125 = EvaluateEventMVA("125", "Incl", version, "100", "600",  channel, LepTColl, ev, METv, param, w, false);
+          MVAvalueM150 = EvaluateEventMVA("150", "Incl", version, "400", "1000", channel, LepTColl, ev, METv, param, w, false);
+          MVAvalueM200 = EvaluateEventMVA("200", "Incl", version, "200", "1000", channel, LepTColl, ev, METv, param, w, false);
+          MVAvalueM250 = EvaluateEventMVA("250", "Incl", version, "100", "1000", channel, LepTColl, ev, METv, param, w, false);
+          MVAvalueM300 = EvaluateEventMVA("300", "Incl", version, "100", "1000", channel, LepTColl, ev, METv, param, w, false);
+          MVAvalueM400 = EvaluateEventMVA("400", "Incl", version, "250", "1000", channel, LepTColl, ev, METv, param, w, false);
+          MVAvalueM500 = EvaluateEventMVA("500", "Incl", version, "150", "1000", channel, LepTColl, ev, METv, param, w, false);
+        }
+      }
+
+      if(ApplyForSR && !HasFlag("RunSyst")){
+        FillHist("LimitExtraction/"+param.Name+"/"+RegionTag+"BDT/M100_"+version, MVAvalueM100, w, 400, -1., 1.);
+        FillHist("LimitExtraction/"+param.Name+"/"+RegionTag+"BDT/M125_"+version, MVAvalueM125, w, 400, -1., 1.);
+        FillHist("LimitExtraction/"+param.Name+"/"+RegionTag+"BDT/M150_"+version, MVAvalueM150, w, 400, -1., 1.);
+        FillHist("LimitExtraction/"+param.Name+"/"+RegionTag+"BDT/M200_"+version, MVAvalueM200, w, 400, -1., 1.);
+        FillHist("LimitExtraction/"+param.Name+"/"+RegionTag+"BDT/M250_"+version, MVAvalueM250, w, 400, -1., 1.);
+        FillHist("LimitExtraction/"+param.Name+"/"+RegionTag+"BDT/M300_"+version, MVAvalueM300, w, 400, -1., 1.);
+        FillHist("LimitExtraction/"+param.Name+"/"+RegionTag+"BDT/M400_"+version, MVAvalueM400, w, 400, -1., 1.);
+        FillHist("LimitExtraction/"+param.Name+"/"+RegionTag+"BDT/M500_"+version, MVAvalueM500, w, 400, -1., 1.); 
+      }
+
     }
     
     if((ApplyForSR) && Binning == "Strict_15_Bin" && !HasFlag("SSDilepBDT"))   FillHist("LimitExtraction/"+param.Name+"/"+RegionTag+"BDT/"+BDTLabel_simple, MVAvalueIncl, w, 2000, -1., 1.);

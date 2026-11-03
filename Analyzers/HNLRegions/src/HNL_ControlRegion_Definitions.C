@@ -1417,15 +1417,15 @@ bool HNL_RegionDefinitions::FillSSZPeakCRPlots(HNL_LeptonCore::Channel channel, 
 
   if(AK8_JetColl.size() > 0){
     Fill_RegionPlots(param,"HNL_HighMassSSZPeak_AK8_TwoLepton_CR"  , taus, JetColl,  AK8_JetColl,  leps, METv, nPV, w);
-    if(leps[1]->Pt() > 200)      Fill_RegionPlots(param,"HNL_HighMassSSZPeak_AK8_HighPt_TwoLepton_CR"  , taus, JetColl,  AK8_JetColl,  leps, METv, nPV, w);
+    if(leps[1]->Pt() > 100)      Fill_RegionPlots(param,"HNL_HighMassSSZPeak_AK8_HighPt_TwoLepton_CR"  , taus, JetColl,  AK8_JetColl,  leps, METv, nPV, w);
     
   }
-  else if(PassVBF(VBF_JetColl,leps,450)){
+  else if(PassVBF(VBF_JetColl,leps,500)){
     Fill_RegionPlots(param,"HNL_HighMassSSZPeak_VBF_TwoLepton_CR"  , taus, VBF_JetColl,  AK8_JetColl,  leps, METv, nPV, w);
   }
   else{
     Fill_RegionPlots(param,"HNL_HighMassSSZPeak_AK4_TwoLepton_CR"  , taus, JetColl,  AK8_JetColl,  leps,  METv, nPV, w);
-    if(leps[1]->Pt() > 200)     Fill_RegionPlots(param,"HNL_HighMassSSZPeak_AK4_HighPt_TwoLepton_CR"  , taus, JetColl,  AK8_JetColl,  leps,  METv, nPV, w);
+    if(leps[1]->Pt() > 100)     Fill_RegionPlots(param,"HNL_HighMassSSZPeak_AK4_HighPt_TwoLepton_CR"  , taus, JetColl,  AK8_JetColl,  leps,  METv, nPV, w);
     
   }
 
